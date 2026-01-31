@@ -1,0 +1,1898 @@
+[
+  {
+    "unitNumber": 1,
+    "title": "Daily Life",
+    "words": [
+      {
+        "word": "commute",
+        "meaning": "đi làm bằng phương tiện",
+        "example": "I commute to school by bus.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "routine",
+        "meaning": "thói quen hằng ngày",
+        "example": "My morning routine is simple.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "excited (about)",
+        "meaning": "háo hức, phấn khích (về điều gì đó)",
+        "example": "I'm really excited about going to Australia.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "stay with someone",
+        "meaning": "ở cùng ai đó",
+        "example": "I'll stay with my friend during the trip.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "student exchange trip",
+        "meaning": "chuyến trao đổi học sinh",
+        "example": "She joined a student exchange trip to Japan.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "next term",
+        "meaning": "học kỳ tới",
+        "example": "We will start new subjects next term.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "have a great time",
+        "meaning": "có thời gian tuyệt vời",
+        "example": "I hope you have a great time in Australia.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "family",
+        "meaning": "gia đình",
+        "example": "My family lives in Melbourne.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "love doing something",
+        "meaning": "thích làm gì",
+        "example": "I love playing volleyball on weekends.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "once a week / twice a week",
+        "meaning": "một lần/ hai lần mỗi tuần",
+        "example": "I go swimming once a week.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "be interested in",
+        "meaning": "quan tâm đến / thích",
+        "example": "Are you interested in sports?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "prefer doing something",
+        "meaning": "thích làm gì hơn",
+        "example": "I prefer staying at home and reading.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "local gym",
+        "meaning": "phòng tập thể dục địa phương",
+        "example": "He goes to the local gym after school.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "be good at",
+        "meaning": "giỏi về cái gì",
+        "example": "She's good at painting and drawing.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "hang up",
+        "meaning": "treo lên",
+        "example": "He hangs up his jacket on the wall.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "wall",
+        "meaning": "bức tường",
+        "example": "There are pictures on the wall.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "spend time (doing something)",
+        "meaning": "dành thời gian làm gì",
+        "example": "She spends a lot of time outdoors.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "outdoors",
+        "meaning": "ngoài trời",
+        "example": "My dad loves working outdoors.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "plant flowers",
+        "meaning": "trồng hoa",
+        "example": "She plants flowers every weekend.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "cut the grass",
+        "meaning": "cắt cỏ",
+        "example": "My brother cuts the grass once a week.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "build / fix things",
+        "meaning": "xây / sửa đồ vật",
+        "example": "My dad likes to fix things around the house.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "broken",
+        "meaning": "bị hỏng",
+        "example": "My phone is broken, I can't use it.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "furniture",
+        "meaning": "đồ nội thất",
+        "example": "He makes furniture like tables and chairs.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "cook",
+        "meaning": "đầu bếp / nấu ăn",
+        "example": "My grandma is a great cook.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "meal",
+        "meaning": "bữa ăn",
+        "example": "She makes delicious meals every day.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "recipe book",
+        "meaning": "sách nấu ăn",
+        "example": "I gave her a recipe book as a present.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "from (place)",
+        "meaning": "đến từ",
+        "example": "He's from the USA.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "give someone an idea",
+        "meaning": "khiến ai có ý tưởng",
+        "example": "That gives me an idea for a present.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 2,
+    "title": "House and Home",
+    "words": [
+      {
+        "word": "curriculum",
+        "meaning": "chương trình học",
+        "example": "The school updated its curriculum.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "excited about",
+        "meaning": "hào hứng về",
+        "example": "I'm excited about going to university.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "nervous about",
+        "meaning": "lo lắng về",
+        "example": "She is nervous about speaking in public.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "comfortable",
+        "meaning": "thoải mái",
+        "example": "This chair is very comfortable.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "pillow",
+        "meaning": "gối",
+        "example": "I sleep with two soft pillows.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "look out of the window",
+        "meaning": "nhìn ra ngoài cửa sổ",
+        "example": "I like to look out of the window in the morning.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "garden",
+        "meaning": "khu vườn",
+        "example": "There are many flowers in my garden.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "do homework",
+        "meaning": "làm bài tập về nhà",
+        "example": "I always do my homework after dinner.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "desk",
+        "meaning": "bàn học / bàn làm việc",
+        "example": "My desk is next to the window.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "lamp",
+        "meaning": "đèn bàn",
+        "example": "I use a lamp when I study at night.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "course book",
+        "meaning": "sách học",
+        "example": "We need our course books for English class.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "relax",
+        "meaning": "thư giãn",
+        "example": "I relax by listening to music.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "play games on my phone",
+        "meaning": "chơi game trên điện thoại",
+        "example": "He likes playing games on his phone after school.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "drawer",
+        "meaning": "ngăn kéo",
+        "example": "My keys are in the top drawer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "bathroom",
+        "meaning": "phòng tắm",
+        "example": "The bathroom is next to my bedroom.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "down the hall",
+        "meaning": "cuối hành lang / dọc hành lang",
+        "example": "The kitchen is down the hall.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sink",
+        "meaning": "bồn rửa",
+        "example": "She washed her face in the sink.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "brush my teeth",
+        "meaning": "đánh răng",
+        "example": "I brush my teeth every morning.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "poster",
+        "meaning": "áp phích / tranh dán tường",
+        "example": "I have a poster of my favorite singer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "curtain",
+        "meaning": "rèm cửa",
+        "example": "We have blue curtains in the living room.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "blind",
+        "meaning": "màn che cửa (kéo lên xuống)",
+        "example": "I prefer blinds to curtains.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "get used to",
+        "meaning": "quen với",
+        "example": "You'll get used to your new school soon.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "make it feel like home",
+        "meaning": "khiến nơi đó cảm giác như ở nhà",
+        "example": "I want to make my room feel like home.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "agency",
+        "meaning": "công ty / đại lý",
+        "example": "I called a travel agency to book a flight.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "student status",
+        "meaning": "tình trạng sinh viên",
+        "example": "The form asks for your student status.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "discuss",
+        "meaning": "thảo luận",
+        "example": "We need to discuss our weekend plans.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "accommodation",
+        "meaning": "chỗ ở",
+        "example": "Finding accommodation in London is expensive.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "advice",
+        "meaning": "lời khuyên",
+        "example": "Can you give me some advice?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "personality",
+        "meaning": "tính cách",
+        "example": "She has a friendly personality.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "preference",
+        "meaning": "sở thích / sự ưa thích",
+        "example": "My preference is to live near the city center.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sociable",
+        "meaning": "hòa đồng, thân thiện",
+        "example": "He’s very sociable and likes meeting new people.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "visitor",
+        "meaning": "khách đến chơi",
+        "example": "We have many visitors during the holidays.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "quiet",
+        "meaning": "yên tĩnh",
+        "example": "I need a quiet place to study.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "private",
+        "meaning": "riêng tư",
+        "example": "She prefers to have a private room.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "convenient",
+        "meaning": "thuận tiện",
+        "example": "This hotel is convenient for the airport.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "noisy",
+        "meaning": "ồn ào",
+        "example": "The city center is always noisy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "housemate",
+        "meaning": "bạn cùng nhà",
+        "example": "My housemate is also from Italy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "travel",
+        "meaning": "đi lại / di chuyển",
+        "example": "I travel to work by bus every day.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "make friends",
+        "meaning": "kết bạn",
+        "example": "It’s easy to make friends at university.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "catered",
+        "meaning": "có cung cấp bữa ăn",
+        "example": "A catered room includes breakfast and dinner.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "canteen",
+        "meaning": "nhà ăn / căn tin",
+        "example": "We usually eat lunch in the canteen.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "self-catered",
+        "meaning": "tự nấu ăn",
+        "example": "I prefer self-catered accommodation so I can cook.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "pay for",
+        "meaning": "trả tiền cho",
+        "example": "I have to pay for my own food.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "included in the price",
+        "meaning": "bao gồm trong giá",
+        "example": "Breakfast is included in the price.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 3,
+    "title": "HOBBIES, LEISURE AND ENTERTAINMENT",
+    "words": [
+      {
+        "word": "adventure holiday",
+        "meaning": "kỳ nghỉ phiêu lưu",
+        "example": "We're going on an adventure holiday this summer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "interested in",
+        "meaning": "quan tâm, hứng thú với",
+        "example": "I’m interested in learning English.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "book (a trip)",
+        "meaning": "đặt (chuyến đi)",
+        "example": "Let’s book our tickets online.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "company",
+        "meaning": "công ty",
+        "example": "She works for a travel company.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "cycling holiday",
+        "meaning": "kỳ nghỉ đạp xe",
+        "example": "He went on a cycling holiday in Italy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "information",
+        "meaning": "thông tin",
+        "example": "You can find more information on the website.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "by the sea",
+        "meaning": "gần biển",
+        "example": "We stayed in a small hotel by the sea.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "water sports",
+        "meaning": "thể thao dưới nước",
+        "example": "I love doing water sports like surfing and kayaking.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "forest",
+        "meaning": "khu rừng",
+        "example": "We walked through the forest.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "hiking",
+        "meaning": "đi bộ đường dài",
+        "example": "Hiking is my favorite outdoor activity.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "climbing",
+        "meaning": "leo núi",
+        "example": "Climbing can be dangerous without the right equipment.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "white water rafting",
+        "meaning": "chèo xuồng vượt thác",
+        "example": "White water rafting is very exciting.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "special offer",
+        "meaning": "khuyến mãi đặc biệt",
+        "example": "There’s a special offer on hotel rooms this week.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "price",
+        "meaning": "giá cả",
+        "example": "The price includes breakfast.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "include",
+        "meaning": "bao gồm",
+        "example": "The price includes accommodation.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "transport",
+        "meaning": "phương tiện di chuyển",
+        "example": "The price includes transport and food.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "accommodation",
+        "meaning": "chỗ ở",
+        "example": "Finding accommodation in London is hard.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "guide",
+        "meaning": "hướng dẫn viên",
+        "example": "The guide told us stories about the city.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "meal",
+        "meaning": "bữa ăn",
+        "example": "We had three meals a day.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "drinks",
+        "meaning": "đồ uống",
+        "example": "Drinks are not included in the price.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "lesson",
+        "meaning": "buổi học",
+        "example": "I have a tennis lesson on Wednesday.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 4,
+    "title": "TRAVEL AND HOLIDAYS",
+    "words": [
+      {
+        "word": "travel show",
+        "meaning": "chương trình truyền hình về du lịch",
+        "example": "I like watching the travel show on Sundays.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "recently",
+        "meaning": "gần đây",
+        "example": "She has recently started a new job.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "take part in",
+        "meaning": "tham gia vào",
+        "example": "Many students take part in exchange programmes.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "exchange programme",
+        "meaning": "chương trình trao đổi",
+        "example": "The school has an exchange programme with Japan.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "cultural",
+        "meaning": "thuộc về văn hóa",
+        "example": "They joined a cultural event.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "language exchange",
+        "meaning": "trao đổi ngôn ngữ",
+        "example": "She went on a language exchange to France.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sports exchange",
+        "meaning": "trao đổi thể thao",
+        "example": "He joined a sports exchange in the USA.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "music exchange",
+        "meaning": "trao đổi âm nhạc",
+        "example": "The school offers a music exchange every summer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "instead",
+        "meaning": "thay vì",
+        "example": "I wanted to go to France but went to Spain instead.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "decide to (do something)",
+        "meaning": "quyết định làm gì",
+        "example": "She decided to study Spanish.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "be good at",
+        "meaning": "giỏi về",
+        "example": "I’m good at playing basketball.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "option",
+        "meaning": "lựa chọn",
+        "example": "We have two options for lunch today.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "host family",
+        "meaning": "gia đình chủ nhà (nơi học sinh ở cùng)",
+        "example": "I stayed with a host family in Spain.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "village",
+        "meaning": "ngôi làng",
+        "example": "The village is small but beautiful.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "apartment",
+        "meaning": "căn hộ",
+        "example": "Most people in the city live in apartments.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "countryside",
+        "meaning": "vùng nông thôn",
+        "example": "I love spending time in the countryside.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "farm",
+        "meaning": "trang trại",
+        "example": "The cows live on a big farm.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "experience",
+        "meaning": "trải nghiệm",
+        "example": "Living abroad was a great experience.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "programme",
+        "meaning": "chương trình",
+        "example": "The programme lasts for two weeks.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "last (for + time)",
+        "meaning": "kéo dài",
+        "example": "The course lasts for six weeks.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "requirement",
+        "meaning": "yêu cầu",
+        "example": "There are some age requirements.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "over the age of",
+        "meaning": "trên độ tuổi",
+        "example": "You must be over the age of fourteen.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "orchestra",
+        "meaning": "dàn nhạc",
+        "example": "He plays the violin in the school orchestra.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "homesick",
+        "meaning": "nhớ nhà",
+        "example": "She felt homesick during the first week.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "friendly",
+        "meaning": "thân thiện",
+        "example": "The host family was very friendly.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "welcoming",
+        "meaning": "hiếu khách",
+        "example": "They were so welcoming and kind.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "improve",
+        "meaning": "cải thiện",
+        "example": "My Spanish has improved a lot.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "practise",
+        "meaning": "thực hành",
+        "example": "You need to practise speaking every day.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "definitely",
+        "meaning": "chắc chắn",
+        "example": "I definitely recommend this programme.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "sound",
+        "meaning": "nghe có vẻ",
+        "example": "That sounds like a great idea!",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 5,
+    "title": "FOOD",
+    "words": [
+      {
+        "word": "food festival",
+        "meaning": "lễ hội ẩm thực",
+        "example": "I’m going to the food festival this weekend.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "look forward to",
+        "meaning": "mong đợi",
+        "example": "I’m really looking forward to the concert.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "interested in",
+        "meaning": "quan tâm, thích",
+        "example": "She is interested in trying new food.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "afraid",
+        "meaning": "e ngại, sợ",
+        "example": "I’m afraid I can’t come to the party.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "flatmate",
+        "meaning": "bạn cùng phòng / cùng nhà",
+        "example": "My flatmate is very noisy.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "underground",
+        "meaning": "tàu điện ngầm",
+        "example": "We can take the underground to get there.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "lend (money)",
+        "meaning": "cho mượn tiền",
+        "example": "Could you lend me some money?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "show around",
+        "meaning": "dẫn đi tham quan",
+        "example": "I will show my parents around London.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "cooking",
+        "meaning": "nấu ăn",
+        "example": "She’s busy with cooking for the party.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "prepare for",
+        "meaning": "chuẩn bị cho",
+        "example": "I need to prepare for my exam.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "holiday",
+        "meaning": "kỳ nghỉ",
+        "example": "Lucy is on holiday in Italy.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "important",
+        "meaning": "quan trọng",
+        "example": "She has an important exam tomorrow.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "must / have to",
+        "meaning": "phải, cần phải",
+        "example": "You must be careful.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "maybe / perhaps",
+        "meaning": "có lẽ",
+        "example": "Perhaps we can go together.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "recipe",
+        "meaning": "công thức nấu ăn",
+        "example": "I found a new recipe for chocolate cake.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "favourite",
+        "meaning": "yêu thích",
+        "example": "Pizza is my favourite food.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "type of food",
+        "meaning": "loại món ăn",
+        "example": "Dumplings are a type of food popular in Asia.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "popular",
+        "meaning": "phổ biến",
+        "example": "Sushi is very popular around the world.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "thousand years",
+        "meaning": "hàng nghìn năm",
+        "example": "Tea has been popular for thousands of years.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "dumplings / Jiaozi",
+        "meaning": "bánh bao / há cảo",
+        "example": "Jiaozi are traditional Chinese dumplings.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "half-moon",
+        "meaning": "hình bán nguyệt",
+        "example": "The dumplings have a half-moon shape.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "dough",
+        "meaning": "bột nhào",
+        "example": "You need dough to make bread.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "noodles",
+        "meaning": "mì sợi",
+        "example": "We made fresh noodles for dinner.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "start by",
+        "meaning": "bắt đầu bằng",
+        "example": "Start by washing your hands.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "easy",
+        "meaning": "dễ dàng",
+        "example": "This recipe is very easy.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "case",
+        "meaning": "vỏ bánh, bao bọc",
+        "example": "Make the dough cases for the dumplings.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "ingredient",
+        "meaning": "nguyên liệu",
+        "example": "The main ingredients are flour, water, and salt.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "flour",
+        "meaning": "bột mì",
+        "example": "Add two cups of flour.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "mix",
+        "meaning": "trộn",
+        "example": "Mix the flour with water.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "salt",
+        "meaning": "muối",
+        "example": "Add a little salt for taste.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "bowl",
+        "meaning": "bát",
+        "example": "Leave the dough in the bowl for ten minutes.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "filling",
+        "meaning": "nhân bánh",
+        "example": "The filling is made of cabbage and meat.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "chop",
+        "meaning": "thái nhỏ",
+        "example": "Chop the cabbage finely.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "meat",
+        "meaning": "thịt",
+        "example": "You can use any meat for dumplings.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "lamb",
+        "meaning": "thịt cừu",
+        "example": "Today, I’m using lamb for the filling.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "spring onion",
+        "meaning": "hành lá",
+        "example": "Chop the spring onions into small pieces.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "seafood",
+        "meaning": "hải sản",
+        "example": "Add some seafood like shrimps.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "shrimp",
+        "meaning": "tôm",
+        "example": "I’m going to add shrimps to the filling.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "vegetable oil",
+        "meaning": "dầu thực vật",
+        "example": "Add some vegetable oil to make it stick.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "roll",
+        "meaning": "cán, lăn",
+        "example": "Roll the dough into flat circles.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "centre",
+        "meaning": "trung tâm",
+        "example": "Put the filling in the centre of the case.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "fold",
+        "meaning": "gập",
+        "example": "Fold the dumplings into half-moon shapes.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "boil",
+        "meaning": "luộc",
+        "example": "Boil the dumplings three times.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "delicious",
+        "meaning": "ngon",
+        "example": "The dumplings are delicious.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 6,
+    "title": "7 TRANSPORT AND PLACES IN TOWN",
+    "words": [
+      {
+        "word": "shopping centre",
+        "meaning": "trung tâm thương mại",
+        "example": "I often go to the shopping centre on Saturdays.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "prize-winning",
+        "meaning": "đoạt giải",
+        "example": "The building was designed by a prize-winning architect.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "architect",
+        "meaning": "kiến trúc sư",
+        "example": "John Gadzen is a famous architect.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "postcode",
+        "meaning": "mã bưu chính",
+        "example": "Use the postcode to find the place easily.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sat nav",
+        "meaning": "thiết bị định vị GPS",
+        "example": "Use your sat nav to get there.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "opening hours",
+        "meaning": "giờ mở cửa",
+        "example": "The opening hours are from 10 am to 6 pm.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "late-night shopping",
+        "meaning": "mua sắm đêm muộn",
+        "example": "On Thursdays, there is late-night shopping until 8 pm.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "car park",
+        "meaning": "bãi đậu xe",
+        "example": "The car park is free to use.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "bus",
+        "meaning": "xe buýt",
+        "example": "Bus 635 brings you to the entrance.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "underground",
+        "meaning": "tàu điện ngầm",
+        "example": "You can also take the underground.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "entrance",
+        "meaning": "lối vào",
+        "example": "The bus stops at the main entrance.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "ticket",
+        "meaning": "vé",
+        "example": "A ticket from town costs £3.50.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "faster",
+        "meaning": "nhanh hơn",
+        "example": "The underground is faster than the bus.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "spend time",
+        "meaning": "dành thời gian",
+        "example": "It’s a wonderful place to spend time.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "map",
+        "meaning": "bản đồ",
+        "example": "Look at the map to find the shops.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "floor",
+        "meaning": "tầng",
+        "example": "The cinema is on the first floor.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "cinema",
+        "meaning": "rạp chiếu phim",
+        "example": "We watched a movie at the cinema.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "opposite",
+        "meaning": "đối diện",
+        "example": "The café is opposite the cinema.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "fast-food restaurant",
+        "meaning": "nhanh hàng thức ăn nhanh",
+        "example": "If you’re busy, you can eat at a fast-food restaurant.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "shop / store",
+        "meaning": "cửa hàng",
+        "example": "There’s a big supermarket in the shopping centre.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "supermarket",
+        "meaning": "siêu thị",
+        "example": "Buy your groceries at the supermarket.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "department store",
+        "meaning": "cửa hàng bách hóa",
+        "example": "Green’s department store sells gifts and furniture.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "pharmacy",
+        "meaning": "nhà thuốc",
+        "example": "You can buy medicine at the pharmacy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "health and beauty products",
+        "meaning": "sản phẩm sức khỏe và làm đẹp",
+        "example": "The pharmacy sells health and beauty products.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "clothes shop",
+        "meaning": "cửa hàng quần áo",
+        "example": "There’s a men’s clothes shop next to the café.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "cafe",
+        "meaning": "quán cà phê",
+        "example": "We had coffee at the café.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "male / female toilets",
+        "meaning": "nhà vệ sinh nam / nữ",
+        "example": "The male toilets are next to the café.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "book store",
+        "meaning": "cửa hàng sách",
+        "example": "The book store has everything you need for school.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "mobile phone",
+        "meaning": "điện thoại di động",
+        "example": "You can buy a new mobile phone at the shop.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "bank",
+        "meaning": "ngân hàng",
+        "example": "The bank is next to the shoe shop.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "shoe shop",
+        "meaning": "cửa hàng giày",
+        "example": "Buy your new shoes at the shoe shop.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 8,
+    "title": "HEALTH AND MEDICINE",
+    "words": [
+      {
+        "word": "sports centre",
+        "meaning": "trung tâm thể thao",
+        "example": "I’m going to the sports centre after school.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "gym",
+        "meaning": "phòng tập gym",
+        "example": "I’m thinking of joining the gym there.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "join",
+        "meaning": "tham gia",
+        "example": "She wants to join the gym.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "get information",
+        "meaning": "lấy thông tin",
+        "example": "Let’s go and get some information about the sports centre.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "gym membership",
+        "meaning": "thẻ / phí thành viên phòng tập",
+        "example": "A gym membership costs £40 a month.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "equipment",
+        "meaning": "thiết bị",
+        "example": "The gym has really great equipment.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "student discount",
+        "meaning": "giảm giá cho sinh viên",
+        "example": "I got a student discount for the gym.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "group exercise class",
+        "meaning": "lớp tập nhóm",
+        "example": "They have group exercise classes in the park.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "fresh air",
+        "meaning": "không khí trong lành",
+        "example": "Exercising outside is better because you get fresh air.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "personal trainer",
+        "meaning": "huấn luyện viên cá nhân",
+        "example": "I exercise with a personal trainer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "advice",
+        "meaning": "lời khuyên",
+        "example": "She gives me advice on diet.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "diet",
+        "meaning": "chế độ ăn",
+        "example": "A healthy diet helps you get fit.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "worth the money",
+        "meaning": "đáng tiền",
+        "example": "Paying £20 an hour is worth the money.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "fit",
+        "meaning": "khỏe mạnh",
+        "example": "Exercise and a healthy diet help you stay fit.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "encourage",
+        "meaning": "khuyến khích",
+        "example": "Exercising with friends encourages me to work harder.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "relax",
+        "meaning": "thư giãn",
+        "example": "I usually read a book to relax.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "yoga",
+        "meaning": "yoga",
+        "example": "Doing yoga is a good way to relax.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "breathing exercises",
+        "meaning": "bài tập thở",
+        "example": "Five minutes of breathing exercises can make a difference.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "stress / stressful",
+        "meaning": "căng thẳng",
+        "example": "Tea helps people feel less stressed.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "mood",
+        "meaning": "tâm trạng",
+        "example": "A good novel can change your mood.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "benefits",
+        "meaning": "lợi ích",
+        "example": "Yoga has many benefits for the body and mind.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      }
+    ]
+  },
+  {
+    "unitNumber": 9,
+    "title": "10 LANGUAGE",
+    "words": [
+      {
+        "word": "project",
+        "meaning": "dự án",
+        "example": "We need to start our college project.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "report",
+        "meaning": "báo cáo",
+        "example": "The teacher wants us to write a report.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "language",
+        "meaning": "ngôn ngữ",
+        "example": "Some students speak more than one language.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "level",
+        "meaning": "trình độ",
+        "example": "We need to know what level their English is.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "graph / table",
+        "meaning": "biểu đồ / bảng",
+        "example": "Including graphs or tables is a good idea.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "registration form",
+        "meaning": "mẫu đăng ký",
+        "example": "I put information about my second language on the registration form.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "college office",
+        "meaning": "văn phòng trường",
+        "example": "We need to ask for information from the college office.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "appointment",
+        "meaning": "cuộc hẹn",
+        "example": "I’ll make an appointment to speak to somebody.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "student services",
+        "meaning": "bộ phận hỗ trợ sinh viên",
+        "example": "She works in student services.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "student administration",
+        "meaning": "phòng hành chính sinh viên",
+        "example": "Mr Black is in the student administration office.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "library",
+        "meaning": "thư viện",
+        "example": "I’m going to study in the library.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+        {
+        "word": "scientific",
+        "meaning": "liên quan tới khoa học",
+        "example": "Mr Black loves watching scientific movies.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      }
+    ]
+  }
+]

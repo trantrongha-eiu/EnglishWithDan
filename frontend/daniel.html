@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khai Giảng Lớp Speaking - Tết 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d4163c;
+            --secondary: #ffd700;
+            --accent: #ff6b35;
+            --dark: #1a1a2e;
+            --light: #fff9f0;
+            --gray: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff9f0 0%, #ffe8d6 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(212, 22, 60, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Decorative Elements */
+        .lantern {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, var(--primary) 0%, #a01028 100%);
+            border-radius: 50% 50% 45% 45%;
+            box-shadow: 0 10px 20px rgba(212, 22, 60, 0.3);
+            animation: swing 3s ease-in-out infinite;
+        }
+
+        .lantern::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 15px;
+            background: var(--secondary);
+            border-radius: 50% 50% 0 0;
+        }
+
+        .lantern::after {
+            content: '福';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--secondary);
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+        .lantern-left {
+            top: 50px;
+            left: -30px;
+            animation-delay: 0s;
+        }
+
+        .lantern-right {
+            top: 100px;
+            right: -30px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes swing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .blossom {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.6;
+            animation: fall 8s linear infinite;
+        }
+
+        .blossom::before {
+            content: '🌸';
+            font-size: 30px;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(800px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .blossom:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .blossom:nth-child(2) { left: 30%; animation-delay: 2s; }
+        .blossom:nth-child(3) { left: 50%; animation-delay: 4s; }
+        .blossom:nth-child(4) { left: 70%; animation-delay: 1s; }
+        .blossom:nth-child(5) { left: 90%; animation-delay: 3s; }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #a01028 100%);
+            padding: 3rem 2rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+
+        .tet-badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: white;
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subtitle {
+            color: var(--light);
+            font-size: 1.3rem;
+            font-weight: 500;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        /* Teacher Section */
+        .teacher-section {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 3rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, #fff 0%, #fef8f0 100%);
+        }
+
+        .teacher-card {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(212, 22, 60, 0.1);
+            text-align: center;
+            position: relative;
+            border: 3px solid var(--light);
+            animation: slideRight 0.8s ease-out;
+        }
+
+        @keyframes slideRight {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .teacher-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            border: 5px solid var(--secondary);
+            box-shadow: 0 10px 30px rgba(212, 22, 60, 0.2);
+            object-fit: cover;
+            background: linear-gradient(135deg, #e8e8e8 0%, #f5f5f5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--gray);
+        }
+
+        .teacher-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .teacher-title {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .credentials {
+            text-align: left;
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+
+        .credential-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--dark);
+        }
+
+        .credential-item::before {
+            content: '✓';
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff6b35 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Classes Section */
+        .classes-info {
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
+        }
+
+        .class-cards {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .class-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .class-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(212, 22, 60, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(212, 22, 60, 0.15);
+        }
+
+        .class-type {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .class-levels {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .class-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            background: var(--light);
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+
+        .detail-icon {
+            font-size: 1.5rem;
+        }
+
+        .price-box {
+            background: linear-gradient(135deg, var(--secondary) 0%, #ffed4e 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .price {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            color: var(--dark);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--dark) 0%, #2d2d44 100%);
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '🎊';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%) rotate(-15deg);
+        }
+
+        .cta-section::after {
+            content: '🎉';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%) rotate(15deg);
+        }
+
+        .cta-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text {
+            color: var(--light);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            box-shadow: 0 15px 35px rgba(212, 22, 60, 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(212, 22, 60, 0.5);
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--dark);
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .teacher-section {
+                grid-template-columns: 1fr;
+            }
+
+            .class-details {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blossom"></div>
+    <div class="blossom"></div>
+    <div class="blossom"></div>
+    <div class="blossom"></div>
+    <div class="blossom"></div>
+
+    <div class="container">
+        <div class="lantern lantern-left"></div>
+        <div class="lantern lantern-right"></div>
+
+        <div class="header">
+            <div class="tet-badge">🧧 ƯU ĐÃI TẾT 2026 🧧</div>
+            <h1>KHAI GIẢNG<br>LỚP SPEAKING</h1>
+            <p class="subtitle">Từ cơ bản đến thành thạo - Chinh phục IELTS Speaking</p>
+        </div>
+
+        <div class="teacher-section">
+            <div class="teacher-card">
+                <div class="teacher-photo">👤</div>
+                <div class="teacher-name">Your Name</div>
+                <div class="teacher-title">TESOL Certified Teacher</div>
+                
+                <div class="credentials">
+                    <div class="credential-item">IELTS 8.0 Overall</div>
+                    <div class="credential-item">Reading 9.0 | Listening 9.0</div>
+                    <div class="credential-item">Speaking 7.5 | Writing 7.0</div>
+                    <div class="credential-item">4 năm kinh nghiệm giảng dạy</div>
+                </div>
+
+                <div class="achievement">
+                    🏆 Đã hỗ trợ nhiều học viên đạt 6.0 - 7.0+ IELTS Speaking
+                </div>
+            </div>
+
+            <div class="classes-info">
+                <h2 class="section-title">Khóa Học Của Chúng Tôi</h2>
+
+                <div class="class-cards">
+                    <!-- Speaking Giao Tiếp -->
+                    <div class="class-card">
+                        <div class="class-type">Speaking Giao Tiếp</div>
+                        <div class="class-levels">Từ Cơ Bản → Thành Thạo</div>
+                        
+                        <div class="class-details">
+                            <div class="detail-item">
+                                <span class="detail-icon">⏱️</span>
+                                <div>
+                                    <strong>Thời lượng:</strong><br>
+                                    6 tháng
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">📅</span>
+                                <div>
+                                    <strong>Lịch học:</strong><br>
+                                    3 buổi/tuần
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">🕐</span>
+                                <div>
+                                    <strong>Mỗi buổi:</strong><br>
+                                    1 tiếng
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">👥</span>
+                                <div>
+                                    <strong>Sĩ số:</strong><br>
+                                    Dưới 8 học viên
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="price-box">
+                            <div class="price">900.000đ</div>
+                            <div class="price-label">/ tháng</div>
+                        </div>
+                    </div>
+
+                    <!-- IELTS Speaking Courses -->
+                    <div class="class-card">
+                        <div class="class-type">IELTS Speaking</div>
+                        <div class="class-levels">Band 4+ → 5+ | Band 5+ → 6+ | Band 6+ → 7+</div>
+                        
+                        <div class="class-details">
+                            <div class="detail-item">
+                                <span class="detail-icon">⏱️</span>
+                                <div>
+                                    <strong>Thời lượng:</strong><br>
+                                    2 tháng/band
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">🎯</span>
+                                <div>
+                                    <strong>Mục tiêu:</strong><br>
+                                    Tăng 1.0 band
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">📚</span>
+                                <div>
+                                    <strong>Luyện tập:</strong><br>
+                                    Chuyên sâu 3 parts
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-icon">👥</span>
+                                <div>
+                                    <strong>Sĩ số:</strong><br>
+                                    Nhóm nhỏ
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="price-box">
+                            <div class="price">2.500.000đ</div>
+                            <div class="price-label">/ trọn khóa (1 band điểm)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2 class="cta-title">Sẵn Sàng Chinh Phục Speaking?</h2>
+            <p class="cta-text">
+                Đăng ký ngay để nhận <span class="highlight">ưu đãi đặc biệt</span> trong dịp Tết!
+            </p>
+            <a href="#" class="cta-button">Đăng Ký Ngay</a>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth animations on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.class-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

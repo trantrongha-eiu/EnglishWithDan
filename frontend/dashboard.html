@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Vocabulary Learning - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles-enhanced.css">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="daniel">Daniel</span>
+                <span class="ha">Hà</span>
+            </div>
+            <div class="user-info">
+                <span id="userName">👋 Xin chào</span>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <ul class="nav-list">
+            <li><a href="reading.html"><i class="fas fa-book-open"></i> Reading</a></li>
+            <li><a href="listening.html"><i class="fas fa-headphones"></i> Listening</a></li>
+            <li><a href="writing.html"><i class="fas fa-pen"></i> Writing</a></li>
+            <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a></li>
+            <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3><i class="fas fa-book"></i> Chọn Unit</h3>
+            <select id="unitSelect" class="unit-select">
+                <option value="">-- Chọn Unit --</option>
+            </select>
+            <button class="btn-primary" onclick="loadUnit()">
+                <i class="fas fa-play"></i> Bắt Đầu Học
+            </button>
+
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-card">
+                    <i class="fas fa-graduation-cap welcome-icon"></i>
+                    <h2>Chào mừng đến với IELTS Vocabulary!</h2>
+                    <p>Chọn một Unit từ sidebar để bắt đầu học từ vựng</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Học từ vựng theo chủ đề</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-brain"></i>
+                            <span>Ôn tập thông minh với Spaced Repetition</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Theo dõi tiến độ chi tiết</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-headphones"></i>
+                            <span>Luyện nghe với Text-to-Speech</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Learning Mode -->
+            <div id="learningMode" class="learning-mode" style="display:none;">
+                <div class="mode-header">
+                    <h2 id="unitTitle"></h2>
+                    <div class="mode-tabs">
+                        <button class="tab-btn active" onclick="showMode('study')">
+                            <i class="fas fa-book-open"></i> Học Từ
+                        </button>
+                        <button class="tab-btn" onclick="showMode('multipleChoice')">
+                            <i class="fas fa-check-circle"></i> Trắc Nghiệm
+                        </button>
+                        <button class="tab-btn" onclick="showMode('fillBlank')">
+                            <i class="fas fa-pen"></i> Flashcard
+                        </button>
+                        <button class="tab-btn" onclick="showMode('listening')">
+                            <i class="fas fa-headphones"></i> Nghe
+                        </button>
+                        <button class="tab-btn" onclick="showMode('translation')">
+                            <i class="fas fa-language"></i> Dịch
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Study Mode -->
+                <div id="studyMode" class="study-mode">
+                    <div class="vocab-grid" id="vocabList"></div>
+                </div>
+
+                <!-- Multiple Choice Mode -->
+                <div id="multipleChoiceMode" class="practice-mode" style="display:none;">
+                    <div class="practice-container">
+                        <div class="practice-header">
+                            <h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3>
+                            <p>Chọn đáp án đúng cho từ vựng</p>
+                        </div>
+                        <div class="practice-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="mcProgressFill"></div>
+                            </div>
+                            <span id="mcProgressText">0/0</span>
+                        </div>
+
+                        <div class="question-card" id="mcQuestionCard">
+                            <div class="question-number" id="mcQuestionNumber"></div>
+                            <div class="question-text" id="mcQuestionText"></div>
+                            <div class="answer-options" id="mcAnswerOptions"></div>
+                            <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')"
+                                style="display:none;">
+                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fill in Blank Mode (Flashcard) -->
+                <div id="fillBlankMode" class="practice-mode" style="display:none;">
+                    <div class="practice-container">
+                        <div class="practice-header">
+                            <h3><i class="fas fa-pen"></i> Flashcard - Học Từ Vựng</h3>
+                            <p>Nhìn nghĩa → Nhớ từ → Lật thẻ → Kiểm tra</p>
+                        </div>
+                        <div class="practice-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="fbProgressFill"></div>
+                            </div>
+                            <span id="fbProgressText">0/0</span>
+                        </div>
+
+                        <div class="question-card" id="fbQuestionCard">
+                            <div class="question-number" id="fbQuestionNumber"></div>
+
+                            <!-- Flashcard Container -->
+                            <div class="fill-blank-content">
+                                <div class="flashcard-container" id="flashcardContainer">
+                                    <div class="flashcard" id="flashcard">
+
+                                        <!-- Mặt trước - hiện nghĩa -->
+                                        <div class="flashcard-front" id="flashcardFront">
+                                            <div class="card-label">Nghĩa tiếng Việt</div>
+                                            <div class="card-meaning" id="fbMeaning"></div>
+                                            <button class="btn-flip" onclick="flipCard()">
+                                                <i class="fas fa-sync-alt"></i> Lật thẻ để xem từ
+                                            </button>
+                                        </div>
+
+                                        <!-- Mặt sau - hiện từ + input -->
+                                        <div class="flashcard-back" id="flashcardBack" style="display: none;">
+                                            <div class="card-label">Từ tiếng Anh</div>
+                                            <div class="card-word" id="fbWord"></div>
+
+                                            <!-- Quick Review Buttons -->
+                                            <div class="quick-review-buttons">
+                                                <button class="btn-remembered" onclick="markAsRemembered()">
+                                                    <i class="fas fa-check-circle"></i> Đã nhớ
+                                                </button>
+                                                <button class="btn-not-remembered" onclick="markAsNotRemembered()">
+                                                    <i class="fas fa-times-circle"></i> Chưa nhớ
+                                                </button>
+                                            </div>
+
+                                            <!-- Test Yourself Section -->
+                                            <div class="test-yourself">
+                                                <p><i class="fas fa-pen"></i> Hoặc kiểm tra bằng cách nhập từ</p>
+                                                <div class="fb-input-container">
+                                                    <input type="text" id="fbInput" class="fb-input"
+                                                        placeholder="Nhập từ vựng để kiểm tra..."
+                                                        onkeypress="handleFillBlankEnter(event)">
+                                                    <button class="btn-hint" onclick="showHint()" id="btnHint">
+                                                        <i class="fas fa-lightbulb"></i> Gợi ý
+                                                    </button>
+                                                    <button class="btn-check" onclick="checkFillBlank()">
+                                                        <i class="fas fa-check"></i> Kiểm Tra
+                                                    </button>
+                                                </div>
+                                                <div id="fbFeedback" class="fb-feedback"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')"
+                                style="display:none;">
+                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listening Mode -->
+                <div id="listeningMode" class="practice-mode" style="display:none;">
+                    <div class="practice-container">
+                        <div class="practice-header">
+                            <h3><i class="fas fa-headphones"></i> Luyện Nghe</h3>
+                            <p>Nghe và viết lại từ vựng bạn nghe được</p>
+                        </div>
+                        <div class="practice-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="listenProgressFill"></div>
+                            </div>
+                            <span id="listenProgressText">0/0</span>
+                        </div>
+
+                        <div class="question-card" id="listenQuestionCard">
+                            <div class="question-number" id="listenQuestionNumber"></div>
+                            <div class="listening-content">
+                                <button class="btn-play-audio" id="btnPlayAudio" onclick="playAudio()">
+                                    <i class="fas fa-volume-up"></i>
+                                    <span>Phát Âm Thanh</span>
+                                </button>
+                                <div class="listen-hint" id="listenHint"></div>
+                                <div class="listen-input-container">
+                                    <input type="text" id="listenInput" class="listen-input"
+                                        placeholder="Nhập từ bạn nghe được..." onkeypress="handleListeningEnter(event)">
+                                    <button class="btn-check" onclick="checkListening()">
+                                        <i class="fas fa-check"></i> Kiểm Tra
+                                    </button>
+                                </div>
+                                <div id="listenFeedback" class="listen-feedback"></div>
+                            </div>
+                            <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')"
+                                style="display:none;">
+                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Translation Mode -->
+                <div id="translationMode" class="practice-mode" style="display:none;">
+                    <div class="practice-container">
+                        <div class="practice-header">
+                            <h3><i class="fas fa-language"></i> Dịch Từ Vựng</h3>
+                            <p>Dựa vào câu ví dụ, hãy dịch từ được in đậm</p>
+                        </div>
+                        <div class="practice-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="transProgressFill"></div>
+                            </div>
+                            <span id="transProgressText">0/0</span>
+                        </div>
+
+                        <div class="question-card" id="transQuestionCard">
+                            <div class="question-number" id="transQuestionNumber"></div>
+                            <div class="translation-content">
+                                <div class="trans-example" id="transExample"></div>
+                                <div class="trans-word-highlight" id="transWordHighlight"></div>
+                                <div class="trans-input-container">
+                                    <input type="text" id="transInput" class="trans-input"
+                                        placeholder="Nhập nghĩa tiếng Việt..."
+                                        onkeypress="handleTranslationEnter(event)">
+                                    <button class="btn-check" onclick="checkTranslation()">
+                                        <i class="fas fa-check"></i> Kiểm Tra
+                                    </button>
+                                </div>
+                                <div id="transFeedback" class="trans-feedback"></div>
+                            </div>
+                            <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')"
+                                style="display:none;">
+                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Screen -->
+                <div id="resultsScreen" class="results-screen" style="display:none;">
+                    <div class="results-card">
+                        <div class="results-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h2>Kết Quả Ôn Tập</h2>
+                        <div id="resultModeTitle" class="result-mode-title"></div>
+
+                        <div class="score-circle">
+                            <svg width="200" height="200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12" />
+                                <circle id="scoreCircle" cx="100" cy="100" r="90" fill="none" stroke="#10b981"
+                                    stroke-width="12" stroke-linecap="round" stroke-dasharray="565.48"
+                                    stroke-dashoffset="565.48" transform="rotate(-90 100 100)" />
+                            </svg>
+                            <div class="score-text">
+                                <span class="score-percent" id="scorePercent">0%</span>
+                                <span class="score-label">Chính xác</span>
+                            </div>
+                        </div>
+
+                        <div class="results-stats">
+                            <div class="result-stat correct">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <strong id="correctCount">0</strong>
+                                    <span>Câu đúng</span>
+                                </div>
+                            </div>
+                            <div class="result-stat wrong">
+                                <i class="fas fa-times-circle"></i>
+                                <div>
+                                    <strong id="wrongCount">0</strong>
+                                    <span>Câu sai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="results-actions">
+                            <button class="btn-secondary" onclick="showMode('study')">
+                                <i class="fas fa-book"></i> Xem lại từ vựng
+                            </button>
+                            <button class="btn-primary" onclick="restartPractice()">
+                                <i class="fas fa-redo"></i> Làm lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal" style="display: none;">
+        <div class="modal-overlay" onclick="closeConfirmModal()"></div>
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 id="modalTitle">Xác nhận chuyển chế độ</h3>
+            <p id="modalMessage"></p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button class="btn-confirm" id="btnConfirmSwitch">
+                    <i class="fas fa-check"></i> Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+
+
+</html>
