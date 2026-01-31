@@ -11,6 +11,11 @@ mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("MongoDB Atlas connected"))
 .catch(err=>console.log(err));
 
+// TEST ROOT ROUTE
+app.get("/", (req, res) => {
+  res.send("EnglishWithDan API is running 🚀");
+});
+
 // ROUTES
 app.use("/api/auth", require('./routes/auth'));
 app.use("/api/vocab", require('./routes/vocab'));
@@ -20,4 +25,8 @@ app.use("/api/writing", require('./routes/writing'));
 app.use("/api/history", require('./routes/history'));
 app.use("/api/progress", require('./routes/progress')); 
 
-app.listen(5000, ()=>console.log("Server running on port 5000"));
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => 
+  console.log(`Server running on port ${PORT}`)
+);
