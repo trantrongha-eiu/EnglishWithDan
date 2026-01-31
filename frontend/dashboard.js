@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://englishwithdan.onrender.com/api";
 const token = localStorage.getItem("token");
 
 if (!token) {
