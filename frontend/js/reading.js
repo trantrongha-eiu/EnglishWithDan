@@ -33,7 +33,7 @@ async function loadTest() {
         showLoading();
         
         // Fetch test data from API
-        const response = await fetch(`${API_BASE_URL}/api/reading/tests`);
+        const response = await fetch(`${API_BASE_URL}/api/readingtests`);
         
         if (!response.ok) {
             throw new Error('Failed to load test');
