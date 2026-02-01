@@ -719,31 +719,126 @@
     </div>
 
     <script>
+        // Toggle hiển thị mật khẩu
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const button = passwordInput.parentElement.querySelector('.toggle-password');
+            const eyeIcon = button.querySelector('.eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Kiểm tra độ mạnh mật khẩu
+        document.getElementById('password').addEventListener('input', function () {
+            const password = this.value;
+            const strengthFill = document.getElementById('strengthFill');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+            let text = 'Yếu';
+            let color = '#ef4444';
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            if (strength <= 2) {
+                text = 'Yếu';
+                color = '#ef4444';
+            } else if (strength === 3) {
+                text = 'Trung bình';
+                color = '#f59e0b';
+            } else if (strength === 4) {
+                text = 'Mạnh';
+                color = '#10b981';
+            } else {
+                text = 'Rất mạnh';
+                color = '#059669';
+            }
+
+            strengthFill.style.width = (strength * 20) + '%';
+            strengthFill.style.background = color;
+            strengthText.textContent = 'Độ mạnh: ' + text;
+            strengthText.style.color = color;
+        });
+
+        // Xử lý đăng ký
         document.getElementById('registerForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            // Lấy dữ liệu từ form
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAccepted = document.getElementById('terms').checked;
+
+            // Validate
+            if (!firstName || !lastName || !username || !email || !password) {
+                alert("⚠️ Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+
+            if (password.length < 8) {
+                alert("⚠️ Mật khẩu phải có ít nhất 8 ký tự!");
+                return;
+            }
+
             if (password !== confirmPassword) {
-                alert("Mật khẩu xác nhận không khớp!");
+                alert("⚠️ Mật khẩu xác nhận không khớp!");
+                document.getElementById('confirmPassword').focus();
+                return;
+            }
+
+            if (!termsAccepted) {
+                alert("⚠️ Bạn cần đồng ý với điều khoản dịch vụ!");
+                return;
+            }
+
+            // Kiểm tra định dạng username
+            if (username.length < 3) {
+                alert("⚠️ Username phải có ít nhất 3 ký tự!");
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                alert("⚠️ Username chỉ được chứa chữ cái, số và dấu gạch dưới!");
+                return;
+            }
+
+            // Kiểm tra định dạng email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert("⚠️ Email không hợp lệ!");
                 return;
             }
 
             const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
+                firstName: firstName,
+                lastName: lastName,
+                username: username,
+                email: email,
                 password: password
             };
 
             const btn = document.querySelector('.btn-register');
+            const originalHTML = btn.innerHTML;
             btn.innerHTML = '<span>Đang xử lý...</span>';
             btn.disabled = true;
 
             try {
                 const res = await fetch('https://englishwithdan.onrender.com/api/auth/register', {
-
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
@@ -752,19 +847,28 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    alert("Đăng ký thành công! Mời đăng nhập.");
+                    alert("✅ Đăng ký thành công! Mời bạn đăng nhập.");
                     window.location.href = "login.html";
+                } else {
+                    alert("❌ " + (data.message || "Đăng ký thất bại!"));
                 }
-                else {
-                    alert(data.message);
-                }
+            } catch (err) {
+                console.error('Register error:', err);
+                alert("⚠️ Không kết nối được server! Vui lòng thử lại.");
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
             }
-            catch (err) {
-                alert("Không kết nối được server!");
-            }
+        });
 
-            btn.innerHTML = '<span>Đăng Ký Ngay</span>';
-            btn.disabled = false;
+        // Đăng ký Google
+        document.querySelector('.btn-social.google').addEventListener('click', function () {
+            alert('🚧 Tính năng đăng ký Google đang được phát triển!');
+        });
+
+        // Đăng ký Facebook
+        document.querySelector('.btn-social.facebook').addEventListener('click', function () {
+            alert('🚧 Tính năng đăng ký Facebook đang được phát triển!');
         });
     </script>
 
