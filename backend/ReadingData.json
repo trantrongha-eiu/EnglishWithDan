@@ -1,0 +1,449 @@
+[
+  {
+    "title": "IELTS Reading Practice Test 1 - Academic",
+    "testType": "Academic",
+    "difficulty": "Medium",
+    "timeLimit": 60,
+    "passages": [
+      {
+        "passageNumber": 1,
+        "title": "The History of the Telephone",
+        "text": "The invention of the telephone revolutionized communication in the 19th century. Alexander Graham Bell is widely credited as the inventor of the telephone, though several other inventors were working on similar devices around the same time. Bell's telephone was patented in 1876, and it rapidly became one of the most important inventions in human history.\n\nThe first telephone call was made on March 10, 1876, when Bell spoke to his assistant, Thomas Watson, saying the famous words: \"Mr. Watson, come here, I want to see you.\" This simple message marked the beginning of a new era in human communication. Within a few years, telephone networks began to spread across cities, connecting businesses and homes.\n\nBy the early 20th century, the telephone had become a common feature in urban households throughout the developed world. The invention transformed not only personal communication but also business practices, emergency services, and social interactions. Today, with the advent of mobile phones and smartphones, the original vision of the telephone has evolved far beyond what Bell could have imagined.",
+        "questions": [
+          {
+            "questionNumber": 1,
+            "questionType": "Multiple Choice",
+            "question": "Who is credited as the inventor of the telephone?",
+            "options": [
+              "Thomas Watson",
+              "Alexander Graham Bell",
+              "Thomas Edison",
+              "Nikola Tesla"
+            ],
+            "correctAnswer": "Alexander Graham Bell",
+            "explanation": "Đoạn đầu tiên nói rõ: 'Alexander Graham Bell is widely credited as the inventor of the telephone'"
+          },
+          {
+            "questionNumber": 2,
+            "questionType": "True/False/Not Given",
+            "question": "The first telephone call was made in 1876.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "True",
+            "explanation": "Đoạn 2 nói: 'The first telephone call was made on March 10, 1876'"
+          },
+          {
+            "questionNumber": 3,
+            "questionType": "Multiple Choice",
+            "question": "What were the first words spoken on the telephone?",
+            "options": [
+              "Hello, can you hear me?",
+              "Mr. Watson, come here, I want to see you.",
+              "The telephone is working!",
+              "This is a historic moment."
+            ],
+            "correctAnswer": "Mr. Watson, come here, I want to see you.",
+            "explanation": "Câu nói được trích dẫn chính xác trong đoạn văn"
+          },
+          {
+            "questionNumber": 4,
+            "questionType": "True/False/Not Given",
+            "question": "Telephone networks spread across cities within a few years of the first call.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "True",
+            "explanation": "Đoạn 2 kết: 'Within a few years, telephone networks began to spread across cities'"
+          },
+          {
+            "questionNumber": 5,
+            "questionType": "Short-answer Questions",
+            "question": "In which century did the telephone become common in urban households?",
+            "options": [],
+            "correctAnswer": "20th century",
+            "explanation": "Đoạn 3: 'By the early 20th century, the telephone had become a common feature'"
+          }
+        ]
+      },
+      {
+        "passageNumber": 2,
+        "title": "Climate Change and Biodiversity",
+        "text": "Climate change poses one of the greatest threats to biodiversity in the 21st century. As global temperatures rise, ecosystems around the world are experiencing unprecedented changes. Species that cannot adapt quickly enough face extinction, while others may migrate to new habitats in search of suitable living conditions.\n\nThe impact of climate change on biodiversity is multifaceted. Rising temperatures affect the timing of natural events such as flowering, migration, and breeding. This can disrupt the delicate balance of ecosystems, where species have evolved to depend on each other. For example, if flowers bloom earlier due to warmer springs, but pollinators have not adjusted their life cycles accordingly, both species may suffer.\n\nCoral reefs are particularly vulnerable to climate change. Ocean warming and acidification caused by increased carbon dioxide absorption have led to widespread coral bleaching events. These colorful marine ecosystems, which support approximately 25% of all marine species despite covering less than 1% of the ocean floor, are under severe threat.\n\nConservation efforts are crucial in mitigating the effects of climate change on biodiversity. Protected areas, wildlife corridors, and restoration projects can help species adapt to changing conditions. However, scientists warn that without significant reductions in greenhouse gas emissions, many of these efforts may prove insufficient to prevent mass extinctions in the coming decades.",
+        "questions": [
+          {
+            "questionNumber": 6,
+            "questionType": "Multiple Choice",
+            "question": "According to the passage, what is one way species respond to climate change?",
+            "options": [
+              "They become extinct immediately",
+              "They migrate to new habitats",
+              "They stop reproducing",
+              "They change their physical appearance"
+            ],
+            "correctAnswer": "They migrate to new habitats",
+            "explanation": "Đoạn 1: 'others may migrate to new habitats in search of suitable living conditions'"
+          },
+          {
+            "questionNumber": 7,
+            "questionType": "True/False/Not Given",
+            "question": "Climate change only affects temperature and has no impact on timing of natural events.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "False",
+            "explanation": "Đoạn 2 nói rõ: 'Rising temperatures affect the timing of natural events such as flowering, migration, and breeding'"
+          },
+          {
+            "questionNumber": 8,
+            "questionType": "Multiple Choice",
+            "question": "What percentage of marine species do coral reefs support?",
+            "options": [
+              "1%",
+              "10%",
+              "25%",
+              "50%"
+            ],
+            "correctAnswer": "25%",
+            "explanation": "Đoạn 3: 'support approximately 25% of all marine species'"
+          },
+          {
+            "questionNumber": 9,
+            "questionType": "Matching Information",
+            "question": "Which paragraph discusses the vulnerability of coral reefs?",
+            "options": ["Paragraph 1", "Paragraph 2", "Paragraph 3", "Paragraph 4"],
+            "correctAnswer": "Paragraph 3",
+            "explanation": "Paragraph 3 nói chi tiết về coral reefs và ocean warming"
+          },
+          {
+            "questionNumber": 10,
+            "questionType": "Yes/No/Not Given",
+            "question": "The author believes conservation efforts alone can prevent mass extinctions.",
+            "options": ["Yes", "No", "Not Given"],
+            "correctAnswer": "No",
+            "explanation": "Đoạn cuối: 'without significant reductions in greenhouse gas emissions, many of these efforts may prove insufficient'"
+          }
+        ]
+      },
+      {
+        "passageNumber": 3,
+        "title": "The Psychology of Decision Making",
+        "text": "Decision making is a complex cognitive process that has fascinated psychologists for decades. Every day, humans make thousands of decisions, ranging from trivial choices like what to eat for breakfast to life-changing decisions such as choosing a career or life partner. Understanding how we make decisions can help us improve our judgment and avoid common pitfalls.\n\nOne influential theory in decision-making psychology is the dual-process theory, which suggests that humans use two distinct systems when making decisions. System 1 is fast, automatic, and intuitive, relying on mental shortcuts and past experiences. System 2 is slower, more deliberate, and analytical, requiring conscious effort and logical reasoning. Most of our daily decisions are made using System 1, which is efficient but can lead to cognitive biases.\n\nCognitive biases are systematic errors in thinking that affect our decisions and judgments. The confirmation bias, for instance, leads people to favor information that confirms their existing beliefs while ignoring contradictory evidence. The availability heuristic causes individuals to overestimate the likelihood of events that are easily recalled, often because they are recent or emotionally charged. Understanding these biases is the first step toward making better decisions.\n\nEmotional factors also play a significant role in decision making. Research has shown that emotions can both help and hinder the decision-making process. Positive emotions can enhance creativity and lead to more flexible thinking, while negative emotions might cause people to be more cautious and analytical. However, intense emotions can cloud judgment and lead to impulsive choices that one might later regret.\n\nThe environment in which decisions are made also matters. Studies have demonstrated that factors such as time pressure, the number of options available, and even the physical state of the decision-maker (such as hunger or fatigue) can significantly influence choices. This has important implications for situations ranging from consumer behavior to medical decisions.\n\nFinally, cultural background influences decision-making styles. Western cultures tend to emphasize individual autonomy and analytical thinking, while Eastern cultures often prioritize collective harmony and holistic reasoning. These cultural differences can lead to varied approaches when faced with the same decision-making scenario.",
+        "questions": [
+          {
+            "questionNumber": 11,
+            "questionType": "Multiple Choice",
+            "question": "According to dual-process theory, System 1 is characterized by:",
+            "options": [
+              "Slow and analytical processing",
+              "Fast and intuitive processing",
+              "Conscious logical reasoning",
+              "Deliberate decision making"
+            ],
+            "correctAnswer": "Fast and intuitive processing",
+            "explanation": "Đoạn 2: 'System 1 is fast, automatic, and intuitive'"
+          },
+          {
+            "questionNumber": 12,
+            "questionType": "True/False/Not Given",
+            "question": "Most daily decisions are made using System 2.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "False",
+            "explanation": "Đoạn 2 nói: 'Most of our daily decisions are made using System 1'"
+          },
+          {
+            "questionNumber": 13,
+            "questionType": "Matching Features",
+            "question": "Match the cognitive bias with its description: Confirmation bias",
+            "options": [
+              "Favoring information that confirms existing beliefs",
+              "Overestimating likelihood of easily recalled events",
+              "Making decisions based on emotions",
+              "Following group decisions"
+            ],
+            "correctAnswer": "Favoring information that confirms existing beliefs",
+            "explanation": "Đoạn 3 định nghĩa confirmation bias rõ ràng"
+          },
+          {
+            "questionNumber": 14,
+            "questionType": "Yes/No/Not Given",
+            "question": "Emotions always negatively affect decision making.",
+            "options": ["Yes", "No", "Not Given"],
+            "correctAnswer": "No",
+            "explanation": "Đoạn 4: 'emotions can both help and hinder the decision-making process'"
+          },
+          {
+            "questionNumber": 15,
+            "questionType": "Multiple Choice",
+            "question": "According to the passage, which factor does NOT influence decision making?",
+            "options": [
+              "Time pressure",
+              "Physical state",
+              "Astrological signs",
+              "Number of options"
+            ],
+            "correctAnswer": "Astrological signs",
+            "explanation": "Đoạn 5 liệt kê các yếu tố, không bao gồm astrological signs"
+          },
+          {
+            "questionNumber": 16,
+            "questionType": "Sentence Completion",
+            "question": "Western cultures tend to emphasize _____ and analytical thinking.",
+            "options": [],
+            "correctAnswer": "individual autonomy",
+            "explanation": "Đoạn cuối: 'Western cultures tend to emphasize individual autonomy and analytical thinking'"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "IELTS Reading Practice Test 2 - Academic",
+    "testType": "Academic",
+    "difficulty": "Hard",
+    "timeLimit": 60,
+    "passages": [
+      {
+        "passageNumber": 1,
+        "title": "The Rise of Electric Vehicles",
+        "text": "Electric vehicles (EVs) have transformed from a futuristic concept to a mainstream reality in recent decades. The first electric cars appeared in the late 19th century, but they were quickly overshadowed by gasoline-powered vehicles due to their limited range and the lack of charging infrastructure.\n\nHowever, the 21st century has witnessed a remarkable resurgence of electric vehicles. This revival has been driven by several factors, including growing environmental concerns, advances in battery technology, and supportive government policies. Companies like Tesla have revolutionized the EV market by producing high-performance electric cars that appeal to consumers seeking both sustainability and luxury.\n\nThe environmental benefits of electric vehicles are significant. Unlike traditional cars that emit harmful greenhouse gases, EVs produce zero direct emissions. This makes them particularly attractive in urban areas where air quality is a major concern. Studies have shown that even when accounting for the electricity used to charge EVs, they still produce fewer emissions over their lifetime compared to conventional vehicles.\n\nBattery technology has been crucial to the success of modern electric vehicles. Early EVs were hampered by heavy, expensive batteries with limited capacity. Today's lithium-ion batteries are lighter, more efficient, and capable of providing ranges that rival gasoline cars. Some new models can travel over 400 miles on a single charge, effectively eliminating \"range anxiety\" for most drivers.\n\nDespite these advances, challenges remain. The initial cost of electric vehicles is still higher than comparable gasoline cars, although this gap is narrowing. Charging infrastructure, while improving, is not yet as widespread as gas stations. Additionally, the environmental impact of battery production and disposal needs to be carefully managed to ensure EVs truly deliver on their green promise.",
+        "questions": [
+          {
+            "questionNumber": 1,
+            "questionType": "Multiple Choice",
+            "question": "What was the main reason early electric cars were not successful?",
+            "options": [
+              "They were too expensive",
+              "They had limited range and lacked charging stations",
+              "They were not environmentally friendly",
+              "They were slower than gasoline cars"
+            ],
+            "correctAnswer": "They had limited range and lacked charging stations",
+            "explanation": "Đoạn 1: 'they were quickly overshadowed by gasoline-powered vehicles due to their limited range and the lack of charging infrastructure'"
+          },
+          {
+            "questionNumber": 2,
+            "questionType": "True/False/Not Given",
+            "question": "Tesla was the first company to produce electric vehicles.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "False",
+            "explanation": "Đoạn 1 đề cập xe điện đã xuất hiện cuối thế kỷ 19, Tesla chỉ 'revolutionized' thị trường"
+          },
+          {
+            "questionNumber": 3,
+            "questionType": "Multiple Choice",
+            "question": "According to the passage, what is a major advantage of EVs in cities?",
+            "options": [
+              "They are cheaper to operate",
+              "They produce zero direct emissions",
+              "They are easier to park",
+              "They are faster in traffic"
+            ],
+            "correctAnswer": "They produce zero direct emissions",
+            "explanation": "Đoạn 3: 'EVs produce zero direct emissions. This makes them particularly attractive in urban areas'"
+          },
+          {
+            "questionNumber": 4,
+            "questionType": "Short-answer Questions",
+            "question": "What type of battery is commonly used in modern electric vehicles?",
+            "options": [],
+            "correctAnswer": "lithium-ion",
+            "explanation": "Đoạn 4: 'Today's lithium-ion batteries are lighter, more efficient'"
+          },
+          {
+            "questionNumber": 5,
+            "questionType": "True/False/Not Given",
+            "question": "All new electric vehicles can travel over 400 miles on a single charge.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "False",
+            "explanation": "Passage nói 'Some new models' có thể đi 400 miles, không phải tất cả"
+          },
+          {
+            "questionNumber": 6,
+            "questionType": "Sentence Completion",
+            "question": "The concern about running out of battery power is called _____.",
+            "options": [],
+            "correctAnswer": "range anxiety",
+            "explanation": "Đoạn 4: 'effectively eliminating \"range anxiety\" for most drivers'"
+          },
+          {
+            "questionNumber": 7,
+            "questionType": "Yes/No/Not Given",
+            "question": "The writer believes that the price difference between EVs and gasoline cars will disappear soon.",
+            "options": ["Yes", "No", "Not Given"],
+            "correctAnswer": "Not Given",
+            "explanation": "Passage chỉ nói 'this gap is narrowing' nhưng không nói khi nào sẽ biến mất"
+          },
+          {
+            "questionNumber": 8,
+            "questionType": "Multiple Choice",
+            "question": "What concern is mentioned about EV batteries?",
+            "options": [
+              "They are too heavy",
+              "They are too expensive",
+              "Their production and disposal impact",
+              "They don't last long enough"
+            ],
+            "correctAnswer": "Their production and disposal impact",
+            "explanation": "Đoạn cuối: 'the environmental impact of battery production and disposal needs to be carefully managed'"
+          }
+        ]
+      },
+      {
+        "passageNumber": 2,
+        "title": "Artificial Intelligence in Healthcare",
+        "text": "Artificial intelligence (AI) is rapidly transforming the healthcare industry, offering unprecedented opportunities to improve patient care, reduce costs, and accelerate medical research. From diagnostic tools to personalized treatment plans, AI applications are becoming increasingly sophisticated and widespread.\n\nOne of the most promising applications of AI in healthcare is in medical imaging. Machine learning algorithms can analyze X-rays, MRI scans, and CT images with remarkable accuracy, often detecting abnormalities that human radiologists might miss. Studies have shown that AI systems can identify certain types of cancer, heart disease, and neurological conditions as accurately as, or sometimes better than, experienced physicians.\n\nAI is also revolutionizing drug discovery and development. Traditional pharmaceutical research is time-consuming and expensive, often taking over a decade and billions of dollars to bring a new drug to market. AI can analyze vast amounts of biological data to identify potential drug candidates, predict their effectiveness, and even simulate how they might interact with the human body. This has the potential to dramatically reduce both the time and cost of developing new treatments.\n\nPersonalized medicine is another area where AI shows great promise. By analyzing a patient's genetic information, medical history, and lifestyle factors, AI systems can recommend tailored treatment plans that are more likely to be effective for that individual. This approach represents a significant shift from the traditional one-size-fits-all model of healthcare.\n\nHowever, the integration of AI into healthcare also raises important ethical and practical concerns. Issues of data privacy, algorithmic bias, and the potential for AI to make errors that could harm patients must be carefully addressed. There are also questions about liability when AI systems are involved in medical decisions, and concerns about whether AI might eventually replace human healthcare providers.\n\nDespite these challenges, most experts believe that AI will play an increasingly important role in healthcare. The key will be to develop robust regulations and ethical guidelines that ensure AI is used responsibly, while still allowing it to deliver its full potential benefits to patients and healthcare systems worldwide.",
+        "questions": [
+          {
+            "questionNumber": 9,
+            "questionType": "Multiple Choice",
+            "question": "AI in medical imaging can:",
+            "options": [
+              "Replace all radiologists",
+              "Detect abnormalities human doctors might miss",
+              "Only work with X-rays",
+              "Cure diseases automatically"
+            ],
+            "correctAnswer": "Detect abnormalities human doctors might miss",
+            "explanation": "Đoạn 2: 'often detecting abnormalities that human radiologists might miss'"
+          },
+          {
+            "questionNumber": 10,
+            "questionType": "True/False/Not Given",
+            "question": "Developing new drugs traditionally takes over ten years.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "True",
+            "explanation": "Đoạn 3: 'often taking over a decade and billions of dollars to bring a new drug to market'"
+          },
+          {
+            "questionNumber": 11,
+            "questionType": "Matching Headings",
+            "question": "Which paragraph discusses personalized treatment approaches?",
+            "options": [
+              "Paragraph 1",
+              "Paragraph 2",
+              "Paragraph 3",
+              "Paragraph 4"
+            ],
+            "correctAnswer": "Paragraph 4",
+            "explanation": "Paragraph 4 nói về personalized medicine và tailored treatment plans"
+          },
+          {
+            "questionNumber": 12,
+            "questionType": "Multiple Choice",
+            "question": "What is NOT mentioned as a concern about AI in healthcare?",
+            "options": [
+              "Data privacy",
+              "Algorithmic bias",
+              "Cost of implementation",
+              "Liability issues"
+            ],
+            "correctAnswer": "Cost of implementation",
+            "explanation": "Đoạn 5 liệt kê các mối quan ngại, không đề cập đến cost"
+          },
+          {
+            "questionNumber": 13,
+            "questionType": "Yes/No/Not Given",
+            "question": "The author believes AI will completely replace human doctors.",
+            "options": ["Yes", "No", "Not Given"],
+            "correctAnswer": "No",
+            "explanation": "Đoạn cuối nói AI sẽ 'play an increasingly important role' chứ không phải thay thế hoàn toàn"
+          },
+          {
+            "questionNumber": 14,
+            "questionType": "Sentence Completion",
+            "question": "Traditional healthcare often uses a _____ model.",
+            "options": [],
+            "correctAnswer": "one-size-fits-all",
+            "explanation": "Đoạn 4: 'a significant shift from the traditional one-size-fits-all model'"
+          }
+        ]
+      },
+      {
+        "passageNumber": 3,
+        "title": "The Future of Work: Automation and Employment",
+        "text": "The rapid advancement of automation and artificial intelligence is reshaping the global workforce at an unprecedented pace. While technological progress has always brought changes to employment, the current wave of automation is distinctive in its scope, speed, and potential impact on virtually every sector of the economy.\n\nHistorically, technological revolutions have displaced certain jobs while creating new ones. The Industrial Revolution, for example, eliminated many manual labor positions but simultaneously generated employment in factories, engineering, and related fields. However, some economists argue that the current automation revolution may be fundamentally different. Unlike previous technological shifts that primarily affected physical labor, modern AI and automation can perform cognitive tasks, potentially impacting white-collar professions that were previously considered secure.\n\nThe impact of automation varies significantly across different industries and job types. Routine tasks, whether physical or cognitive, are most susceptible to automation. Jobs in manufacturing, data entry, and basic customer service are already being transformed by robots and AI systems. Conversely, positions requiring creativity, emotional intelligence, complex problem-solving, or human interaction are less likely to be automated in the near future. Healthcare, education, and creative industries may see AI as a tool to enhance human capabilities rather than replace them entirely.\n\nOne of the most debated questions is whether automation will result in net job losses or gains. Optimists point to historical precedents where technology ultimately created more jobs than it destroyed. They argue that automation will increase productivity, lower costs, and create entirely new industries and job categories we cannot yet imagine. Pessimists, however, warn that the pace of current technological change may outstrip the economy's ability to create new employment opportunities, potentially leading to significant unemployment and economic inequality.\n\nThe future of work will likely require a fundamental shift in how we approach education and skill development. Traditional educational models that prepare students for specific careers may become obsolete as job requirements evolve rapidly. Instead, there is growing emphasis on continuous learning, adaptability, and developing skills that complement rather than compete with automation. Critical thinking, creativity, emotional intelligence, and the ability to work alongside AI systems are increasingly valuable.\n\nGovernments and organizations worldwide are grappling with how to manage this transition. Policy responses being considered include investment in education and retraining programs, reforms to social safety nets, and even proposals like universal basic income. Some countries are experimenting with shortened work weeks or job-sharing arrangements to distribute available work more equitably.\n\nUltimately, the relationship between automation and employment is not predetermined. The outcomes will depend on policy choices, business practices, and societal decisions about how to harness technology for broad-based prosperity. While automation presents significant challenges, it also offers opportunities to eliminate dangerous or monotonous work, increase productivity, and potentially create a future where humans focus on more fulfilling and creative endeavors.",
+        "questions": [
+          {
+            "questionNumber": 15,
+            "questionType": "Multiple Choice",
+            "question": "How does the current automation revolution differ from previous technological shifts?",
+            "options": [
+              "It only affects manufacturing",
+              "It can perform cognitive tasks",
+              "It is slower than previous changes",
+              "It only impacts physical labor"
+            ],
+            "correctAnswer": "It can perform cognitive tasks",
+            "explanation": "Đoạn 2: 'modern AI and automation can perform cognitive tasks, potentially impacting white-collar professions'"
+          },
+          {
+            "questionNumber": 16,
+            "questionType": "True/False/Not Given",
+            "question": "Routine tasks are most vulnerable to automation.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "True",
+            "explanation": "Đoạn 3: 'Routine tasks, whether physical or cognitive, are most susceptible to automation'"
+          },
+          {
+            "questionNumber": 17,
+            "questionType": "Multiple Choice",
+            "question": "Which industry is mentioned as likely to use AI to enhance rather than replace humans?",
+            "options": [
+              "Manufacturing",
+              "Data entry",
+              "Healthcare",
+              "Customer service"
+            ],
+            "correctAnswer": "Healthcare",
+            "explanation": "Đoạn 3: 'Healthcare, education, and creative industries may see AI as a tool to enhance human capabilities'"
+          },
+          {
+            "questionNumber": 18,
+            "questionType": "Matching Information",
+            "question": "Which paragraph discusses government policy responses?",
+            "options": [
+              "Paragraph 3",
+              "Paragraph 4",
+              "Paragraph 5",
+              "Paragraph 6"
+            ],
+            "correctAnswer": "Paragraph 6",
+            "explanation": "Paragraph 6 nói về policy responses và government actions"
+          },
+          {
+            "questionNumber": 19,
+            "questionType": "Yes/No/Not Given",
+            "question": "The author believes automation will definitely cause mass unemployment.",
+            "options": ["Yes", "No", "Not Given"],
+            "correctAnswer": "No",
+            "explanation": "Đoạn cuối: 'the relationship between automation and employment is not predetermined'"
+          },
+          {
+            "questionNumber": 20,
+            "questionType": "Matching Features",
+            "question": "Match: Skills that are increasingly valuable in the automated future",
+            "options": [
+              "Data entry skills",
+              "Critical thinking and creativity",
+              "Routine task completion",
+              "Basic customer service"
+            ],
+            "correctAnswer": "Critical thinking and creativity",
+            "explanation": "Đoạn 5: 'Critical thinking, creativity, emotional intelligence...are increasingly valuable'"
+          },
+          {
+            "questionNumber": 21,
+            "questionType": "Sentence Completion",
+            "question": "One policy proposal being considered is _____.",
+            "options": [],
+            "correctAnswer": "universal basic income",
+            "explanation": "Đoạn 6: 'proposals like universal basic income'"
+          },
+          {
+            "questionNumber": 22,
+            "questionType": "True/False/Not Given",
+            "question": "The Industrial Revolution created more jobs than it eliminated.",
+            "options": ["True", "False", "Not Given"],
+            "correctAnswer": "Not Given",
+            "explanation": "Passage chỉ nói Industrial Revolution tạo ra việc làm mới nhưng không so sánh số lượng"
+          }
+        ]
+      }
+    ]
+  }
+]
