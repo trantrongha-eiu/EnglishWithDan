@@ -3,18 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Reading Practice</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading Practice - Daniel Hà</title>
+    <link rel="stylesheet" href="css/reading.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
+    <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div class="logo">Daniel Hà</div>
+            <div class="timer-display" id="timerDisplay">
+                <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span id="timeRemaining">60:00</span>
+            </div>
         </div>
     </header>
 
+    <!-- Navigation -->
     <nav class="main-nav">
         <ul class="nav-list">
             <li><a href="reading.html" class="active">Reading</a></li>
@@ -25,17 +37,111 @@
         </ul>
     </nav>
 
-    <div class="container">
-        <h2>Reading Practice</h2>
-        <p>Chức năng đang phát triển...</p>
-        <div id="test"></div>
-        <button onclick="submitTest()">Submit</button>
-        <p id="result"></p>
+    <!-- Main Container -->
+    <div class="test-container">
+        <!-- Sidebar - Question Navigator -->
+        <aside class="question-navigator" id="questionNavigator">
+            <div class="navigator-header">
+                <h3>Questions</h3>
+                <button class="toggle-navigator" id="toggleNavigator">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+            <div class="question-grid" id="questionGrid">
+                <!-- Questions will be populated by JavaScript -->
+            </div>
+        </aside>
 
-        <script src="js/reading.js"></script>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Test Info Bar -->
+            <div class="test-info-bar" id="testInfoBar">
+                <div class="test-title" id="testTitle">Loading test...</div>
+                <div class="passage-selector" id="passageSelector">
+                    <!-- Passage buttons will be populated here -->
+                </div>
+            </div>
 
+            <!-- Reading Content -->
+            <div class="reading-layout">
+                <!-- Passage Panel -->
+                <section class="passage-panel" id="passagePanel">
+                    <div class="passage-content">
+                        <h2 class="passage-title" id="passageTitle">Select a passage to begin</h2>
+                        <div class="passage-text" id="passageText">
+                            <p class="loading-message">Đang tải bài test...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Questions Panel -->
+                <section class="questions-panel" id="questionsPanel">
+                    <div class="questions-content" id="questionsContent">
+                        <!-- Questions will be populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button class="btn-submit" id="btnSubmit" onclick="submitTest()">
+                    Submit Test
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </main>
     </div>
 
+    <!-- Results Modal -->
+    <div class="modal" id="resultsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Test Results</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="score-display">
+                    <div class="score-circle">
+                        <svg class="score-ring" viewBox="0 0 120 120">
+                            <circle class="score-ring-bg" cx="60" cy="60" r="50"></circle>
+                            <circle class="score-ring-fill" cx="60" cy="60" r="50" id="scoreRingFill"></circle>
+                        </svg>
+                        <div class="score-text">
+                            <span class="score-number" id="scoreNumber">0</span>
+                            <span class="score-total" id="scoreTotal">/40</span>
+                        </div>
+                    </div>
+                    <div class="score-details">
+                        <div class="score-item">
+                            <span class="score-label">Band Score:</span>
+                            <span class="score-value" id="bandScore">-</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Correct Answers:</span>
+                            <span class="score-value" id="correctCount">0</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">Wrong Answers:</span>
+                            <span class="score-value" id="wrongCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="answer-review" id="answerReview">
+                    <!-- Detailed review will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/reading.js"></script>
 </body>
 
 </html>

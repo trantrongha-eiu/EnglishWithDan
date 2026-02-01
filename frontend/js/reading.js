@@ -1,52 +1,174 @@
-let currentTest;
+/**
+ * API Routes for IELTS Reading Tests
+ * File: routes/reading.js
+ */
 
-async function loadTest(){
-  const res = await fetch('http://localhost:5000/api/reading');
-  const tests = await res.json();
-  currentTest = tests[0]; // lấy bài đầu
+const express = require('express');
+const router = express.Router();
+const ReadingTest = require('../models/ReadingTest');
 
-  test.innerHTML = `
-    <h3>${currentTest.title}</h3>
-    <p>${currentTest.passage}</p>
-    ${currentTest.questions.map((q,i)=>`
-      <p>${q.question}</p>
-      ${q.options.map(op=>`
-        <label>
-          <input type="radio" name="q${i}" value="${op}"> ${op}
-        </label>
-      `).join("<br>")}
-      <hr>
-    `).join("")}
-  `;
-}
+// GET /api/reading/tests - Lấy tất cả bài test
+router.get('/tests', async (req, res) => {
+    try {
+        const tests = await ReadingTest.find()
+            .sort({ createdAt: -1 })
+            .limit(20);
+        
+        res.json(tests);
+    } catch (error) {
+        console.error('Error fetching reading tests:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch reading tests',
+            message: error.message 
+        });
+    }
+});
 
-function submitTest(){
-  let score = 0;
-  const answers = [];
+// GET /api/reading/tests/:id - Lấy một bài test cụ thể
+router.get('/tests/:id', async (req, res) => {
+    try {
+        const test = await ReadingTest.findById(req.params.id);
+        
+        if (!test) {
+            return res.status(404).json({ error: 'Test not found' });
+        }
+        
+        res.json(test);
+    } catch (error) {
+        console.error('Error fetching reading test:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch reading test',
+            message: error.message 
+        });
+    }
+});
 
-  currentTest.questions.forEach((q,i)=>{
-    const chosen = document.querySelector(`input[name="q${i}"]:checked`);
-    const ans = chosen ? chosen.value : "";
-    answers.push(ans);
-    if(ans === q.correctAnswer) score++;
-  });
+// POST /api/reading/tests - Thêm bài test mới (Admin only)
+router.post('/tests', async (req, res) => {
+    try {
+        const testData = req.body;
+        
+        // Validate required fields
+        if (!testData.title || !testData.passages) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: title and passages are required' 
+            });
+        }
+        
+        const newTest = new ReadingTest(testData);
+        await newTest.save();
+        
+        res.status(201).json({
+            message: 'Test created successfully',
+            test: newTest
+        });
+    } catch (error) {
+        console.error('Error creating reading test:', error);
+        res.status(500).json({ 
+            error: 'Failed to create reading test',
+            message: error.message 
+        });
+    }
+});
 
-  result.innerText = `Score: ${score}/${currentTest.questions.length}`;
+// PUT /api/reading/tests/:id - Update bài test (Admin only)
+router.put('/tests/:id', async (req, res) => {
+    try {
+        const updatedTest = await ReadingTest.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        
+        if (!updatedTest) {
+            return res.status(404).json({ error: 'Test not found' });
+        }
+        
+        res.json({
+            message: 'Test updated successfully',
+            test: updatedTest
+        });
+    } catch (error) {
+        console.error('Error updating reading test:', error);
+        res.status(500).json({ 
+            error: 'Failed to update reading test',
+            message: error.message 
+        });
+    }
+});
 
-  // save history
-  const user = JSON.parse(localStorage.getItem("user"));
+// DELETE /api/reading/tests/:id - Xóa bài test (Admin only)
+router.delete('/tests/:id', async (req, res) => {
+    try {
+        const deletedTest = await ReadingTest.findByIdAndDelete(req.params.id);
+        
+        if (!deletedTest) {
+            return res.status(404).json({ error: 'Test not found' });
+        }
+        
+        res.json({
+            message: 'Test deleted successfully',
+            test: deletedTest
+        });
+    } catch (error) {
+        console.error('Error deleting reading test:', error);
+        res.status(500).json({ 
+            error: 'Failed to delete reading test',
+            message: error.message 
+        });
+    }
+});
 
-  fetch('http://localhost:5000/api/history/save',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      userId:user._id,
-      type:"reading",
-      referenceId:currentTest._id,
-      score:score,
-      answers:answers
-    })
-  });
-}
+// GET /api/reading/tests/difficulty/:level - Lấy test theo độ khó
+router.get('/tests/difficulty/:level', async (req, res) => {
+    try {
+        const { level } = req.params;
+        const validLevels = ['Easy', 'Medium', 'Hard'];
+        
+        if (!validLevels.includes(level)) {
+            return res.status(400).json({ 
+                error: 'Invalid difficulty level',
+                validLevels: validLevels 
+            });
+        }
+        
+        const tests = await ReadingTest.find({ difficulty: level })
+            .sort({ createdAt: -1 });
+        
+        res.json(tests);
+    } catch (error) {
+        console.error('Error fetching tests by difficulty:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch tests',
+            message: error.message 
+        });
+    }
+});
 
-loadTest();
+// GET /api/reading/tests/type/:testType - Lấy test theo loại (Academic/General Training)
+router.get('/tests/type/:testType', async (req, res) => {
+    try {
+        const { testType } = req.params;
+        const validTypes = ['Academic', 'General Training'];
+        
+        if (!validTypes.includes(testType)) {
+            return res.status(400).json({ 
+                error: 'Invalid test type',
+                validTypes: validTypes 
+            });
+        }
+        
+        const tests = await ReadingTest.find({ testType: testType })
+            .sort({ createdAt: -1 });
+        
+        res.json(tests);
+    } catch (error) {
+        console.error('Error fetching tests by type:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch tests',
+            message: error.message 
+        });
+    }
+});
+
+module.exports = router;
