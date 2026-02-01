@@ -8,12 +8,11 @@ let currentTest = null;
 let currentPassageIndex = 0;
 let userAnswers = {};
 let timerInterval = null;
-let timeRemaining = 3600; // 60 minutes in seconds
+let timeRemaining = 3650; // 60 minutes in seconds
 let testSubmitted = false;
 
 // API Configuration
-const API_BASE_URL = 'https://englishwithdan-1.onrender.com'; // Thay đổi theo server của bạn
-
+const API_BASE_URL = 'https://englishwithdan.onrender.com/api'; 
 // ===================================
 // Initialization
 // ===================================
@@ -33,7 +32,7 @@ async function loadTest() {
         showLoading();
         
         // Fetch test data from API
-        const response = await fetch(`${API_BASE_URL}/api/readingtests`);
+        const response = await fetch(`${API_BASE_URL}/api/reading/tests`);
         
         if (!response.ok) {
             throw new Error('Failed to load test');
