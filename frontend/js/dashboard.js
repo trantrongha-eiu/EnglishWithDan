@@ -19,8 +19,9 @@ let hintUsed = false; // Track xem đã dùng gợi ý chưa
 let answered = false;
 
 // Sound Effects
-const correctSound = new Audio("sounds/correct.mp3");
-const wrongSound = new Audio("/sounds/incorrect.mp3");
+const correctSound = new Audio("./sounds/correct.mp3");
+const wrongSound = new Audio("./sounds/incorrect.mp3");
+
 
 // Giảm âm lượng 
 correctSound.volume = 0.5;
@@ -836,6 +837,28 @@ function showResults(mode) {
         circle.style.stroke = "#ef4444";
     }
 }
+
+let soundEnabled = true;
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+
+    document.getElementById("soundToggle").textContent =
+        soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+}
+
+function playCorrectSound() {
+    if (!soundEnabled) return;
+    correctSound.currentTime = 0;
+    correctSound.play();
+}
+
+function playWrongSound() {
+    if (!soundEnabled) return;
+    wrongSound.currentTime = 0;
+    wrongSound.play();
+}
+
 
 // ==================== UTILITIES ====================
 
