@@ -18,6 +18,15 @@ let isFlipped = false; // Track trạng thái lật thẻ
 let hintUsed = false; // Track xem đã dùng gợi ý chưa
 let answered = false;
 
+// Sound Effects
+const correctSound = new Audio("sounds/correct.mp3");
+const wrongSound = new Audio("/sounds/incorrect.mp3");
+
+// Giảm âm lượng 
+correctSound.volume = 0.5;
+wrongSound.volume = 0.5;
+
+
 // Speech Synthesis for Text-to-Speech
 let speechSynthesis = window.speechSynthesis;
 let currentUtterance = null;
@@ -127,6 +136,17 @@ function displayVocabList() {
         list.appendChild(card);
     });
 }
+
+function playCorrectSound() {
+    correctSound.currentTime = 0;
+    correctSound.play();
+}
+
+function playWrongSound() {
+    wrongSound.currentTime = 0;
+    wrongSound.play();
+}
+
 
 // ==================== MODE SWITCHING ====================
 
@@ -303,9 +323,11 @@ function checkMultipleChoice(btn, selected, correct) {
     if (isCorrect) {
         btn.classList.add("correct");
         correctAnswers++;
+        playCorrectSound();
     } else {
         btn.classList.add("wrong");
         wrongAnswers++;
+        playWrongSound();
         allOptions.forEach(opt => {
             if (opt.textContent === correct) {
                 opt.classList.add("correct");
@@ -572,6 +594,7 @@ function checkFillBlank() {
             </div>
         `;
         correctAnswers++;
+         playCorrectSound();
     } else {
         feedback.innerHTML = `
             <div class="feedback-wrong">
@@ -584,6 +607,7 @@ function checkFillBlank() {
             </div>
         `;
         wrongAnswers++;
+        playWrongSound();
     }
 
     document.getElementById("fbBtnNext").style.display = "block";
@@ -657,6 +681,7 @@ function checkListening() {
             </div>
         `;
         correctAnswers++;
+        playCorrectSound(); 
     } else {
         feedback.innerHTML = `
             <div class="feedback-wrong">
@@ -669,6 +694,7 @@ function checkListening() {
             </div>
         `;
         wrongAnswers++;
+        playWrongSound();
     }
 
     document.getElementById("listenBtnNext").style.display = "block";
@@ -736,6 +762,7 @@ function checkTranslation() {
             </div>
         `;
         correctAnswers++;
+        playCorrectSound();
     } else {
         feedback.innerHTML = `
             <div class="feedback-wrong">
@@ -745,6 +772,7 @@ function checkTranslation() {
             </div>
         `;
         wrongAnswers++;
+        playWrongSound();
     }
 
     document.getElementById("transBtnNext").style.display = "block";
