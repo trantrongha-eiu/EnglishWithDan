@@ -20,7 +20,7 @@ let answered = false;
 
 // Sound Effects
 const correctSound = new Audio("./sounds/correct.mp3");
-const wrongSound = new Audio("./sounds/incorrect.mp3");
+const wrongSound = new Audio("./sounds/incorect.mp3");
 
 
 // Giảm âm lượng 
