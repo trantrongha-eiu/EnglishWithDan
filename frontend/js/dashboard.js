@@ -647,8 +647,8 @@ function speakWord(word) {
 
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'en-US';
-    utterance.rate = 0.6;
-    utterance.pitch = 0.9;
+    utterance.rate = 0.65;
+    utterance.pitch = 0.95;
     utterance.volume = 1;
 
     speechSynthesis.speak(utterance);
