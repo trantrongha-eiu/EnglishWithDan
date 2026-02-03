@@ -16,6 +16,7 @@ let currentMode = 'study';
 let currentWord = null;
 let isFlipped = false; // Track trạng thái lật thẻ
 let hintUsed = false; // Track xem đã dùng gợi ý chưa
+let answered = false;
 
 // Speech Synthesis for Text-to-Speech
 let speechSynthesis = window.speechSynthesis;
@@ -138,7 +139,7 @@ function showMode(mode) {
     // ⭐ KIỂM TRA NẾU ĐANG TRONG PRACTICE MODE VÀ MUỐN CHUYỂN SANG MODE KHÁC
     const practiceInProgress = ['multipleChoice', 'fillBlank', 'listening', 'translation'].includes(currentMode);
     const switchingMode = mode !== currentMode && mode !== 'study';
-    
+
     if (practiceInProgress && switchingMode && currentQuestionIndex > 0) {
         const modeNames = {
             'multipleChoice': 'Trắc Nghiệm',
@@ -147,16 +148,16 @@ function showMode(mode) {
             'translation': 'Dịch Từ',
             'study': 'Học Từ'
         };
-        
+
         const currentModeName = modeNames[currentMode] || currentMode;
         const newModeName = modeNames[mode] || mode;
-        
+
         const confirmed = confirm(
             `⚠️ Bạn đang học ${currentModeName} (${currentQuestionIndex}/${practiceWords.length} câu)\n\n` +
             `Bạn có chắc muốn chuyển sang ${newModeName}?\n\n` +
             `Tiến độ hiện tại sẽ không được lưu.`
         );
-        
+
         if (!confirmed) {
             return; // Không chuyển mode, ở lại mode cũ
         }
@@ -318,43 +319,44 @@ function checkMultipleChoice(btn, selected, correct) {
 // ==================== FILL IN BLANK MODE (FLASHCARD) ====================
 
 function showFillBlankQuestion() {
+    answered = false;
     const prefix = 'fb';
     updateProgress(prefix);
 
     document.getElementById(`${prefix}QuestionNumber`).textContent =
         `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    
+
     // Reset trạng thái flashcard
     isFlipped = false;
     hintUsed = false;
-    
+
     const front = document.getElementById('flashcardFront');
     const back = document.getElementById('flashcardBack');
     const card = document.getElementById('flashcard');
-    
+
     // Đảm bảo reset về trạng thái ban đầu
     front.style.display = 'flex';
     back.style.display = 'none';
     card.classList.remove('fade-out', 'fade-in');
-    
+
     // Hiển thị nghĩa ở mặt trước
     document.getElementById(`${prefix}Meaning`).textContent = currentWord.meaning;
-    
+
     // Hiển thị từ ở mặt sau
     document.getElementById(`${prefix}Word`).textContent = currentWord.word;
-    
+
     // Reset input và feedback
     const input = document.getElementById(`${prefix}Input`);
     input.value = "";
     input.disabled = false;
-    
+
     // Reset hint button
     const hintBtn = document.getElementById('btnHint');
     if (hintBtn) {
         hintBtn.disabled = false;
         hintBtn.style.display = 'inline-flex';
     }
-    
+
     // ⭐ RESET QUICK REVIEW BUTTONS - QUAN TRỌNG!
     const rememberedBtn = document.querySelector('.btn-remembered');
     const notRememberedBtn = document.querySelector('.btn-not-remembered');
@@ -364,7 +366,7 @@ function showFillBlankQuestion() {
     if (notRememberedBtn) {
         notRememberedBtn.disabled = false;
     }
-    
+
     document.getElementById(`${prefix}Feedback`).innerHTML = "";
     document.getElementById(`${prefix}BtnNext`).style.display = "none";
 }
@@ -373,23 +375,23 @@ function flipCard() {
     const front = document.getElementById('flashcardFront');
     const back = document.getElementById('flashcardBack');
     const card = document.getElementById('flashcard');
-    
+
     if (!isFlipped) {
         // Lật từ mặt trước sang mặt sau
         card.classList.add('fade-out');
-        
+
         setTimeout(() => {
             front.style.display = 'none';
             back.style.display = 'flex';
-            
+
             card.classList.remove('fade-out');
             card.classList.add('fade-in');
-            
+
             // Phát âm từ khi lật sang mặt sau
             setTimeout(() => {
                 speakWord(currentWord.word);
             }, 200);
-            
+
             // Focus vào input sau khi animation xong
             setTimeout(() => {
                 const input = document.getElementById('fbInput');
@@ -398,25 +400,25 @@ function flipCard() {
                 }
             }, 100);
         }, 300);
-        
+
         isFlipped = true;
-        
+
     } else {
         // Lật từ mặt sau về mặt trước
         card.classList.add('fade-out');
-        
+
         setTimeout(() => {
             back.style.display = 'none';
             front.style.display = 'flex';
-            
+
             card.classList.remove('fade-out');
             card.classList.add('fade-in');
-            
+
             // Reset input khi quay lại
             document.getElementById('fbInput').value = "";
             document.getElementById('fbInput').disabled = false;
             document.getElementById('fbFeedback').innerHTML = "";
-            
+
             // Reset hint button
             const hintBtn = document.getElementById('btnHint');
             if (hintBtn) {
@@ -424,7 +426,7 @@ function flipCard() {
             }
             hintUsed = false;
         }, 300);
-        
+
         isFlipped = false;
     }
 }
@@ -434,9 +436,9 @@ function markAsRemembered() {
         alert('Vui lòng lật thẻ để xem từ trước!');
         return;
     }
-    
+
     correctAnswers++;
-    
+
     // Hiển thị feedback ngắn
     document.getElementById('fbFeedback').innerHTML = `
         <div class="feedback-correct">
@@ -444,7 +446,7 @@ function markAsRemembered() {
             <strong>Tuyệt vời!</strong> Bạn đã ghi nhớ từ này! 🎉
         </div>
     `;
-    
+
     // Disable buttons để tránh spam
     disableQuickReviewButtons();
     document.getElementById('fbInput').disabled = true;
@@ -452,7 +454,7 @@ function markAsRemembered() {
     if (hintBtn) {
         hintBtn.disabled = true;
     }
-    
+
     // Tự động chuyển sang câu tiếp theo sau 1 giây
     setTimeout(() => {
         currentQuestionIndex++;
@@ -465,9 +467,9 @@ function markAsNotRemembered() {
         alert('Vui lòng lật thẻ để xem từ trước!');
         return;
     }
-    
+
     wrongAnswers++;
-    
+
     // Hiển thị feedback với thông tin từ
     document.getElementById('fbFeedback').innerHTML = `
         <div class="feedback-wrong">
@@ -476,7 +478,7 @@ function markAsNotRemembered() {
             <br><small>Nghĩa: ${currentWord.meaning}</small>
         </div>
     `;
-    
+
     // Disable buttons để tránh spam
     disableQuickReviewButtons();
     document.getElementById('fbInput').disabled = true;
@@ -484,7 +486,7 @@ function markAsNotRemembered() {
     if (hintBtn) {
         hintBtn.disabled = true;
     }
-    
+
     // Tự động chuyển sang câu tiếp theo sau 1.5 giây (lâu hơn 1 chút để đọc feedback)
     setTimeout(() => {
         currentQuestionIndex++;
@@ -502,18 +504,18 @@ function showHint() {
         alert('Vui lòng lật thẻ để xem từ trước!');
         return;
     }
-    
+
     const firstLetter = currentWord.word.charAt(0);
     const wordLength = currentWord.word.length;
     const hint = `${firstLetter}${'_'.repeat(wordLength - 1)}`;
-    
+
     document.getElementById('fbFeedback').innerHTML = `
         <div class="feedback-hint">
             <i class="fas fa-lightbulb"></i>
             Gợi ý: <strong>${hint}</strong> (${wordLength} chữ cái)
         </div>
     `;
-    
+
     document.getElementById('btnHint').disabled = true;
     hintUsed = true;
 }
@@ -525,12 +527,15 @@ function handleFillBlankEnter(event) {
 }
 
 function checkFillBlank() {
+    if (answered) return;   // ⭐ chặn chạy lần 2
+    answered = true;
+
     // Phải lật thẻ trước khi kiểm tra
     if (!isFlipped) {
         alert('Vui lòng lật thẻ để xem từ trước!');
         return;
     }
-    
+
     const input = document.getElementById("fbInput");
     const userAnswer = input.value.trim().toLowerCase();
     const correctAnswer = currentWord.word.toLowerCase();
@@ -547,13 +552,13 @@ function checkFillBlank() {
     }
 
     input.disabled = true;
-    
+
     // Disable hint button after checking
     const hintBtn = document.getElementById('btnHint');
     if (hintBtn) {
         hintBtn.disabled = true;
     }
-    
+
     // Disable quick review buttons
     disableQuickReviewButtons();
 
@@ -587,6 +592,7 @@ function checkFillBlank() {
 // ==================== LISTENING MODE ====================
 
 function showListeningQuestion() {
+    answered = false;
     const prefix = 'listen';
     updateProgress(prefix);
 
@@ -616,8 +622,8 @@ function speakWord(word) {
 
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'en-US';
-    utterance.rate = 0.8;
-    utterance.pitch = 1;
+    utterance.rate = 0.6;
+    utterance.pitch = 0.9;
     utterance.volume = 1;
 
     speechSynthesis.speak(utterance);
@@ -630,6 +636,9 @@ function handleListeningEnter(event) {
 }
 
 function checkListening() {
+    if (answered) return;   // ⭐ chặn chạy lần 2
+    answered = true;
+
     const input = document.getElementById("listenInput");
     const userAnswer = input.value.trim().toLowerCase();
     const correctAnswer = currentWord.word.toLowerCase();
@@ -668,6 +677,7 @@ function checkListening() {
 // ==================== TRANSLATION MODE ====================
 
 function showTranslationQuestion() {
+    answered = false;
     const prefix = 'trans';
     updateProgress(prefix);
 
@@ -698,6 +708,9 @@ function handleTranslationEnter(event) {
 }
 
 function checkTranslation() {
+    if (answered) return;   // ⭐ chặn chạy lần 2
+    answered = true;
+
     const input = document.getElementById("transInput");
     const userAnswer = input.value.trim().toLowerCase();
     const correctAnswer = currentWord.meaning.toLowerCase();
