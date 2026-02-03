@@ -647,7 +647,7 @@ function speakWord(word) {
 
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = 'en-US';
-    utterance.rate = 0.65;
+    utterance.rate = 0.75;
     utterance.pitch = 0.95;
     utterance.volume = 1;
 
