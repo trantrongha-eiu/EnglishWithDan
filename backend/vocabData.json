@@ -1798,6 +1798,438 @@
     "title": "10 LANGUAGE",
     "words": [
       {
+        "word": "foreign language",
+        "meaning": "ngoại ngữ",
+        "example": "English is the most popular foreign language in my country.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "second language",
+        "meaning": "ngôn ngữ thứ hai",
+        "example": "English is my second language.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "improve my proficiency",
+        "meaning": "cải thiện trình độ",
+        "example": "I want to improve my proficiency in English.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "communicate effectively",
+        "meaning": "giao tiếp hiệu quả",
+        "example": "I am learning it to communicate effectively with foreigners.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "expand my vocabulary",
+        "meaning": "mở rộng vốn từ vựng",
+        "example": "I try to expand my vocabulary every day.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "work on my pronunciation",
+        "meaning": "luyện phát âm",
+        "example": "I am working on my pronunciation to be clearer.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "fluent speaker",
+        "meaning": "người nói trôi chảy",
+        "example": "I hope to become a fluent speaker in the future.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "intermediate level",
+        "meaning": "trình độ trung cấp",
+        "example": "I am currently at an intermediate level.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "advanced level",
+        "meaning": "trình độ nâng cao",
+        "example": "I want to reach an advanced level.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "take language classes",
+        "meaning": "tham gia lớp học ngôn ngữ",
+        "example": "I take language classes twice a week.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "self-study",
+        "meaning": "tự học",
+        "example": "Besides classes, I also do self-study at home.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "practice regularly",
+        "meaning": "luyện tập thường xuyên",
+        "example": "I practice regularly to improve faster.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "language barrier",
+        "meaning": "rào cản ngôn ngữ",
+        "example": "I want to overcome the language barrier.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "boost my confidence",
+        "meaning": "tăng sự tự tin",
+        "example": "Speaking English helps boost my confidence.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "academic purposes",
+        "meaning": "mục đích học thuật",
+        "example": "I need English for academic purposes.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "career opportunities",
+        "meaning": "cơ hội nghề nghiệp",
+        "example": "This language opens up many career opportunities.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "cultural exchange",
+        "meaning": "trao đổi văn hóa",
+        "example": "Learning a language allows cultural exchange.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "make steady progress",
+        "meaning": "tiến bộ đều đặn",
+        "example": "I feel that I am making steady progress.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "set a goal",
+        "meaning": "đặt mục tiêu",
+        "example": "I have set a goal to get an IELTS band 7.0.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "long-term commitment",
+        "meaning": "cam kết lâu dài",
+        "example": "Learning a language requires long-term commitment.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "mother tongue",
+        "meaning": "tiếng mẹ đẻ",
+        "example": "My mother tongue is Vietnamese.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "prepare for",
+        "meaning": "chuẩn bị cho",
+        "example": "You should prepare for the exam carefully.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "make notes",
+        "meaning": "ghi chú",
+        "example": "Make notes while the teacher is speaking.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "give you energy",
+        "meaning": "cung cấp năng lượng",
+        "example": "Healthy snacks like bananas give you energy.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "be tempted to",
+        "meaning": "bị cám dỗ làm gì",
+        "example": "Don’t be tempted to play games while studying.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "sweets / candies",
+        "meaning": "kẹo, đồ ngọt",
+        "example": "Eating too many sweets is unhealthy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "cereal",
+        "meaning": "ngũ cốc",
+        "example": "I usually eat cereals for breakfast.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "especially",
+        "meaning": "đặc biệt là",
+        "example": "Apples are especially good for your brain.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "comfortable",
+        "meaning": "thoải mái",
+        "example": "Find a comfortable place to study.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "plenty of",
+        "meaning": "nhiều, dồi dào",
+        "example": "There is plenty of light in this room.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "fall asleep",
+        "meaning": "ngủ thiếp đi",
+        "example": "He fell asleep during the lesson.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "positive",
+        "meaning": "tích cực",
+        "example": "Try to stay positive before exams.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "relaxed",
+        "meaning": "thư giãn",
+        "example": "She feels relaxed after a short walk.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "anxious",
+        "meaning": "lo lắng",
+        "example": "Many students feel anxious before tests.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "have / take a break",
+        "meaning": "nghỉ giải lao",
+        "example": "Let’s have a short break after this task.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "stroll",
+        "meaning": "đi dạo",
+        "example": "He went for a stroll after studying.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "main ideas",
+        "meaning": "ý chính",
+        "example": "Focus on the main ideas first.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "details",
+        "meaning": "chi tiết",
+        "example": "Don’t worry about small details yet.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "key points",
+        "meaning": "ý chính, điểm quan trọng",
+        "example": "Write down the key points of the chapter.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "cover up",
+        "meaning": "che lại / che đậy",
+        "example": "Cover the answers and try to recall them.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "repetition",
+        "meaning": "sự lặp lại",
+        "example": "Repetition helps you remember words longer.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "past exam papers",
+        "meaning": "đề thi cũ",
+        "example": "Practice with past exam papers to get used to the format.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "come up",
+        "meaning": "xuất hiện (trong đề thi)",
+        "example": "This topic often comes up in exams.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "photocopy",
+        "meaning": "sao chụp",
+        "example": "You can photocopy the lecture notes.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "regular breaks",
+        "meaning": "nghỉ đều đặn",
+        "example": "Take regular breaks to stay fresh.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "stretch",
+        "meaning": "vươn, duỗi người",
+        "example": "Stretch your legs after sitting for too long.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "stay hydrated",
+        "meaning": "uống đủ nước",
+        "example": "Drink water to stay hydrated while studying.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "do your best",
+        "meaning": "cố gắng hết sức",
+        "example": "Just do your best in the upcoming exam.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "advice",
+        "meaning": "lời khuyên",
+        "example": "My teacher gave me a lot of advice for studying.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "upcoming",
+        "meaning": "sắp tới",
+        "example": "I am nervous about the upcoming exam.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "last but not least",
+        "meaning": "cuối cùng nhưng không kém phần quan trọng",
+        "example": "Last but not least, stay calm.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "distinguish",
+        "meaning": "phân biệt",
+        "example": "It's hard to distinguish between these two sounds.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "worried",
+        "meaning": "bị lo lắng",
+        "example": "I am worried about the test result.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "scared",
+        "meaning": "bị sợ hãi",
+        "example": "I am scared of the difficult test.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
         "word": "project",
         "meaning": "dự án",
         "example": "We need to start our college project.",
@@ -1820,7 +2252,6 @@
         "audioUrl": "",
         "level": "A1",
         "difficulty": 1
-        
       },
       {
         "word": "level",
@@ -1886,7 +2317,7 @@
         "level": "A1",
         "difficulty": 1
       },
-        {
+      {
         "word": "scientific",
         "meaning": "liên quan tới khoa học",
         "example": "Mr Black loves watching scientific movies.",
@@ -1897,649 +2328,649 @@
     ]
   },
   {
-  "unitNumber": 11,
-  "title": "IELTS CAM 19",
-  "words": [
-    {
-      "word": "agrarian society",
-      "meaning": "xã hội nông nghiệp",
-      "example": "Britain was a largely rural, agrarian society before the Industrial Revolution.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "in response to",
-      "meaning": "để đáp lại / ứng phó với",
-      "example": "Production expanded in response to demand created by the wars.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "livelihood",
-      "meaning": "kế sinh nhai",
-      "example": "Workers feared that machines were robbing them of their livelihood.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "undergo",
-      "meaning": "trải qua (thay đổi, quá trình)",
-      "example": "The British iron industry also underwent major change.",
-      "audioUrl": "B2",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "accelerate",
-      "meaning": "thúc đẩy / tăng tốc",
-      "example": "Urbanisation accelerated dramatically with industrialisation.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "inadequate sanitation",
-      "meaning": "hệ thống vệ sinh không đầy đủ",
-      "example": "Overcrowded cities suffered from pollution and inadequate sanitation.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "cottage industry",
-      "meaning": "ngành sản xuất thủ công tại gia",
-      "example": "The textile business was a true cottage industry before factories were built.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "psychological pressure",
-      "meaning": "áp lực tâm lý",
-      "example": "Athletes face intense psychological pressure during competition.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "regulate",
-      "meaning": "điều tiết / kiểm soát",
-      "example": "She had difficulty regulating her breathing and heart rate.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "inhibit",
-      "meaning": "ức chế / ngăn chặn",
-      "example": "Cortisol inhibits the positive effect of adrenaline.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "physiological response",
-      "meaning": "phản ứng sinh lý cơ thể",
-      "example": "Psychologists help athletes change how they see their physiological responses.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "manifest itself",
-      "meaning": "biểu hiện ra / lộ diện",
-      "example": "Anxiety may also manifest itself in the form of excitement.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "cope with",
-      "meaning": "đối mặt / xử lý",
-      "example": "Visualisation can help an athlete learn how to cope with stress.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "superior performance",
-      "meaning": "hiệu suất vượt trội",
-      "example": "Lower blood pressure is related to superior sport performance.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "extraordinary ability",
-      "meaning": "khả năng phi thường",
-      "example": "Gifted children have an extraordinary ability in a specific sphere.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "resolute",
-      "meaning": "kiên định / quyết tâm",
-      "example": "She was resolute in the face of setbacks.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "plugging away",
-      "meaning": "kiên trì làm việc bền bỉ",
-      "example": "Einstein kept plugging away and eventually rewrote the laws of mechanics.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "the jury is out",
-      "meaning": "vẫn chưa có kết luận cuối cùng",
-      "example": "The jury is out on whether giftedness is innate or learned.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 2
-    },
-    {
-      "word": "replicable",
-      "meaning": "có thể sao chép / làm theo",
-      "example": "High levels of performance are replicable and can be taught.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "deliberate practice",
-      "meaning": "sự luyện tập có chủ đích",
-      "example": "Deliberate practice is what produces success.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "disadvantaged area",
-      "meaning": "khu vực nghèo khó / thiếu thốn",
-      "example": "Four in five were living in disadvantaged areas.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "epitome",
-      "meaning": "hình mẫu tiêu biểu",
-      "example": "Einstein is the epitome of a genius.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "transform",
-      "meaning": "biến đổi hoàn toàn",
-      "example": "A rural society was transformed into an urban one.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "efficient",
-      "meaning": "hiệu quả / năng suất",
-      "example": "He succeeded in making the engine far more efficient.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "consistent",
-      "meaning": "nhất quán / kiên trì",
-      "example": "He worked hard and consistently at his craft.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "attribute",
-      "meaning": "quy cho là / do là",
-      "example": "She attributed her success to hard work.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "innate",
-      "meaning": "bẩm sinh",
-      "example": "Is talent innate or can it be taught?",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "unrest",
-      "meaning": "tình trạng bất ổn (xã hội)",
-      "example": "The unrest finally reached its peak in April 1812.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "standard of living",
-      "meaning": "chất lượng cuộc sống",
-      "example": "Industrialisation improved the standard of living for many.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "pause for thought",
-      "meaning": "điều đáng để suy ngẫm",
-      "example": "His research results give us pause for thought.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "adept",
-      "meaning": "tinh thông, lão luyện",
-      "example": "Prehistoric people on Obi were adept on both land and sea.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "disperse",
-      "meaning": "phân tán, lan tỏa",
-      "example": "The project studies how people first dispersed from mainland Asia.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "encompass",
-      "meaning": "bao gồm, bao quanh",
-      "example": "Obi was a much larger island, encompassing several smaller islands.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "impenetrable",
-      "meaning": "không thể xuyên qua, rậm rạp",
-      "example": "Dense rainforests would have been much less impenetrable than they are now.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "abandon",
-      "meaning": "bỏ hoang, từ bỏ",
-      "example": "The caves were abandoned about 8,000 years ago.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "mitigate",
-      "meaning": "giảm nhẹ, làm dịu bớt",
-      "example": "Wetlands are key tools in mitigating climate change.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "commodity",
-      "meaning": "hàng hóa, mặt hàng",
-      "example": "Wetlands are rich sources for in-demand commodities like palm oil.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "subsidence",
-      "meaning": "sự lún xuống, sụt lún",
-      "example": "The remainder of the solid matter in the peat starts to move downwards in a process known as subsidence.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "catastrophe",
-      "meaning": "thảm họa",
-      "example": "It is a huge catastrophe that is in preparation for some provinces.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "devastating",
-      "meaning": "tàn phá, sức hủy diệt lớn",
-      "example": "Subtle impacts on wetlands can be even more devastating.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "sustainability",
-      "meaning": "sự bền vững",
-      "example": "For sustainability, it is essential that local people are involved in decision making.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "degradation",
-      "meaning": "sự suy thoái, xuống cấp",
-      "example": "Wetland degradation still continues at a rapid pace.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "obstacle",
-      "meaning": "trở ngại, vật cản",
-      "example": "Distance is still an obstacle to communication.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "commonplace",
-      "meaning": "tầm thường, phổ biến",
-      "example": "Flat screen TVs were once a dream but are now commonplace.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "transparent",
-      "meaning": "minh bạch, xuyên thấu",
-      "example": "The goal is making a language-transparent society.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "prevalent",
-      "meaning": "thịnh hành, phổ biến",
-      "example": "The problem would be solved if earpiece translators became sufficiently prevalent.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "simultaneous",
-      "meaning": "đồng thời",
-      "example": "A translation system needs to be simultaneous rather than in sections.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "apprehension",
-      "meaning": "sự lo sợ, e sợ",
-      "example": "The system needs to address apprehensions about private speech data.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "etiquette",
-      "meaning": "nghi lễ, phép tắc",
-      "example": "Etiquette-sensitive artificial translators could relieve people of social pressure.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "ubiquitous",
-      "meaning": "ở khắp mọi nơi, phổ biến",
-      "example": "Technology is maturing into seamless, ubiquitous artificial speech translation.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "diminish",
-      "meaning": "giảm bớt, làm yếu đi",
-      "example": "The practical need for a common language will diminish over time.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "substitute",
-      "meaning": "sự thay thế",
-      "example": "Software will never be a substitute for the vital understanding of a language.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "forage",
-      "meaning": "tìm kiếm thức ăn",
-      "example": "Early settlers were foraging on the seashore for survival.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "mitigate",
-      "meaning": "giảm thiểu (tác động xấu)",
-      "example": "Coastal forests act as buffers, mitigating the effects of storms.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "accumulation",
-      "meaning": "sự tích tụ",
-      "example": "The system avoids the accumulation of private data in the cloud.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "knock-on effect",
-      "meaning": "hệ quả kéo theo, phản ứng dây chuyền",
-      "example": "Climate change might have unpredictable knock-on effects for other species in the ecosystem.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "phenology",
-      "meaning": "chu kỳ sinh học theo mùa",
-      "example": "Scientists refer to the timing of such lifecycle events as phenology.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "abundance",
-      "meaning": "sự phong phú, số lượng lớn",
-      "example": "Researchers estimated the abundance and distribution of each butterfly species.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "emergence",
-      "meaning": "sự xuất hiện, sự nảy sinh",
-      "example": "Species with flexible lifecycles benefit from an earlier emergence driven by climate change.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "endangered",
-      "meaning": "có nguy cơ tuyệt chủng",
-      "example": "The High Brown Fritillary is described as Britain’s most endangered butterfly.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "pathogenic",
-      "meaning": "gây bệnh",
-      "example": "Microbes from a deep-sea sponge were found killing pathogenic bugs.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "breakthrough",
-      "meaning": "bước đột phá",
-      "example": "The discovery could be a breakthrough in the fight against superbugs.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "exploit",
-      "meaning": "khai thác, tận dụng",
-      "example": "Companies are rushing to exploit the deep sea’s metal and mineral resources.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "diversify",
-      "meaning": "đa dạng hóa",
-      "example": "Deep-sea exploration could help diversify the supply of metals.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "ramification",
-      "meaning": "hệ lụy, biến chứng",
-      "example": "There are potentially massive and unknown ramifications for the environment.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "disregard",
-      "meaning": "sự coi thường, ngó lơ",
-      "example": "The gold rush of mining shares a general disregard for environmental impacts.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "untapped",
-      "meaning": "chưa được khai thác",
-      "example": "It makes sense to explore this untapped potential in a sustainable way.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "ruthless",
-      "meaning": "tàn nhẫn, nhẫn tâm",
-      "example": "There is an assumption that humans are essentially selfish and ruthless.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "transcend",
-      "meaning": "vượt qua (giới hạn)",
-      "example": "We are good only because we managed to transcend our innate selfishness.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "prevalent",
-      "meaning": "phổ biến, thịnh hành",
-      "level": "C1",
-      "example": "This view fitted well with the ethos that was so prevalent in the late 20th century.",
-      "audioUrl": "",
-      "difficulty": 2
-    },
-    {
-      "word": "sparsely",
-      "meaning": "thưa thớt",
-      "example": "In the prehistoric era, the world was very sparsely populated.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "egalitarianism",
-      "meaning": "chủ nghĩa bình quân",
-      "example": "Hunter-gatherers are characterized by extreme political and sexual egalitarianism.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "ostracise",
-      "meaning": "tẩy chay, loại ra khỏi nhóm",
-      "example": "If a person becomes too domineering, the other members of the group ostracise them.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "autonomy",
-      "meaning": "sự tự trị, quyền tự quyết",
-      "example": "Women in these groups often benefit from a high level of autonomy.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "altruism",
-      "meaning": "lòng vị tha",
-      "example": "Cooperation and altruism are innate characteristics of human beings.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "feasible",
-      "meaning": "khả thi",
-      "example": "It doesn’t seem feasible to explain negative traits in evolutionary terms.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "habitat",
-      "meaning": "môi trường sống",
-      "example": "When natural habitats are disrupted, animals tend to become more violent.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "coppiced",
-      "meaning": "được cắt tỉa (rừng)",
-      "example": "The butterfly is found only in coppiced woodland habitats.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "prospecting",
-      "meaning": "thăm dò, tìm kiếm",
-      "example": "Scientists view the deep ocean as a prospecting ground for new medicines.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "scramble",
-      "meaning": "sự tranh giành",
-      "example": "The deep-sea mining rush shares features with past resource scrambles.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    }
-  ]
-}
+    "unitNumber": 11,
+    "title": "IELTS CAM 19",
+    "words": [
+      {
+        "word": "agrarian society",
+        "meaning": "xã hội nông nghiệp",
+        "example": "Britain was a largely rural, agrarian society before the Industrial Revolution.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "in response to",
+        "meaning": "để đáp lại / ứng phó với",
+        "example": "Production expanded in response to demand created by the wars.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "livelihood",
+        "meaning": "kế sinh nhai",
+        "example": "Workers feared that machines were robbing them of their livelihood.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "undergo",
+        "meaning": "trải qua (thay đổi, quá trình)",
+        "example": "The British iron industry also underwent major change.",
+        "audioUrl": "B2",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "accelerate",
+        "meaning": "thúc đẩy / tăng tốc",
+        "example": "Urbanisation accelerated dramatically with industrialisation.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "inadequate sanitation",
+        "meaning": "hệ thống vệ sinh không đầy đủ",
+        "example": "Overcrowded cities suffered from pollution and inadequate sanitation.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "cottage industry",
+        "meaning": "ngành sản xuất thủ công tại gia",
+        "example": "The textile business was a true cottage industry before factories were built.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "psychological pressure",
+        "meaning": "áp lực tâm lý",
+        "example": "Athletes face intense psychological pressure during competition.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "regulate",
+        "meaning": "điều tiết / kiểm soát",
+        "example": "She had difficulty regulating her breathing and heart rate.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "inhibit",
+        "meaning": "ức chế / ngăn chặn",
+        "example": "Cortisol inhibits the positive effect of adrenaline.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "physiological response",
+        "meaning": "phản ứng sinh lý cơ thể",
+        "example": "Psychologists help athletes change how they see their physiological responses.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "manifest itself",
+        "meaning": "biểu hiện ra / lộ diện",
+        "example": "Anxiety may also manifest itself in the form of excitement.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "cope with",
+        "meaning": "đối mặt / xử lý",
+        "example": "Visualisation can help an athlete learn how to cope with stress.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "superior performance",
+        "meaning": "hiệu suất vượt trội",
+        "example": "Lower blood pressure is related to superior sport performance.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "extraordinary ability",
+        "meaning": "khả năng phi thường",
+        "example": "Gifted children have an extraordinary ability in a specific sphere.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "resolute",
+        "meaning": "kiên định / quyết tâm",
+        "example": "She was resolute in the face of setbacks.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "plugging away",
+        "meaning": "kiên trì làm việc bền bỉ",
+        "example": "Einstein kept plugging away and eventually rewrote the laws of mechanics.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "the jury is out",
+        "meaning": "vẫn chưa có kết luận cuối cùng",
+        "example": "The jury is out on whether giftedness is innate or learned.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 2
+      },
+      {
+        "word": "replicable",
+        "meaning": "có thể sao chép / làm theo",
+        "example": "High levels of performance are replicable and can be taught.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "deliberate practice",
+        "meaning": "sự luyện tập có chủ đích",
+        "example": "Deliberate practice is what produces success.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "disadvantaged area",
+        "meaning": "khu vực nghèo khó / thiếu thốn",
+        "example": "Four in five were living in disadvantaged areas.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "epitome",
+        "meaning": "hình mẫu tiêu biểu",
+        "example": "Einstein is the epitome of a genius.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "transform",
+        "meaning": "biến đổi hoàn toàn",
+        "example": "A rural society was transformed into an urban one.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "efficient",
+        "meaning": "hiệu quả / năng suất",
+        "example": "He succeeded in making the engine far more efficient.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "consistent",
+        "meaning": "nhất quán / kiên trì",
+        "example": "He worked hard and consistently at his craft.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "attribute",
+        "meaning": "quy cho là / do là",
+        "example": "She attributed her success to hard work.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "innate",
+        "meaning": "bẩm sinh",
+        "example": "Is talent innate or can it be taught?",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "unrest",
+        "meaning": "tình trạng bất ổn (xã hội)",
+        "example": "The unrest finally reached its peak in April 1812.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "standard of living",
+        "meaning": "chất lượng cuộc sống",
+        "example": "Industrialisation improved the standard of living for many.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "pause for thought",
+        "meaning": "điều đáng để suy ngẫm",
+        "example": "His research results give us pause for thought.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "adept",
+        "meaning": "tinh thông, lão luyện",
+        "example": "Prehistoric people on Obi were adept on both land and sea.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "disperse",
+        "meaning": "phân tán, lan tỏa",
+        "example": "The project studies how people first dispersed from mainland Asia.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "encompass",
+        "meaning": "bao gồm, bao quanh",
+        "example": "Obi was a much larger island, encompassing several smaller islands.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "impenetrable",
+        "meaning": "không thể xuyên qua, rậm rạp",
+        "example": "Dense rainforests would have been much less impenetrable than they are now.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "abandon",
+        "meaning": "bỏ hoang, từ bỏ",
+        "example": "The caves were abandoned about 8,000 years ago.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "mitigate",
+        "meaning": "giảm nhẹ, làm dịu bớt",
+        "example": "Wetlands are key tools in mitigating climate change.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "commodity",
+        "meaning": "hàng hóa, mặt hàng",
+        "example": "Wetlands are rich sources for in-demand commodities like palm oil.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "subsidence",
+        "meaning": "sự lún xuống, sụt lún",
+        "example": "The remainder of the solid matter in the peat starts to move downwards in a process known as subsidence.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "catastrophe",
+        "meaning": "thảm họa",
+        "example": "It is a huge catastrophe that is in preparation for some provinces.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "devastating",
+        "meaning": "tàn phá, sức hủy diệt lớn",
+        "example": "Subtle impacts on wetlands can be even more devastating.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "sustainability",
+        "meaning": "sự bền vững",
+        "example": "For sustainability, it is essential that local people are involved in decision making.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "degradation",
+        "meaning": "sự suy thoái, xuống cấp",
+        "example": "Wetland degradation still continues at a rapid pace.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "obstacle",
+        "meaning": "trở ngại, vật cản",
+        "example": "Distance is still an obstacle to communication.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "commonplace",
+        "meaning": "tầm thường, phổ biến",
+        "example": "Flat screen TVs were once a dream but are now commonplace.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "transparent",
+        "meaning": "minh bạch, xuyên thấu",
+        "example": "The goal is making a language-transparent society.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "prevalent",
+        "meaning": "thịnh hành, phổ biến",
+        "example": "The problem would be solved if earpiece translators became sufficiently prevalent.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "simultaneous",
+        "meaning": "đồng thời",
+        "example": "A translation system needs to be simultaneous rather than in sections.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "apprehension",
+        "meaning": "sự lo sợ, e sợ",
+        "example": "The system needs to address apprehensions about private speech data.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "etiquette",
+        "meaning": "nghi lễ, phép tắc",
+        "example": "Etiquette-sensitive artificial translators could relieve people of social pressure.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "ubiquitous",
+        "meaning": "ở khắp mọi nơi, phổ biến",
+        "example": "Technology is maturing into seamless, ubiquitous artificial speech translation.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "diminish",
+        "meaning": "giảm bớt, làm yếu đi",
+        "example": "The practical need for a common language will diminish over time.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "substitute",
+        "meaning": "sự thay thế",
+        "example": "Software will never be a substitute for the vital understanding of a language.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "forage",
+        "meaning": "tìm kiếm thức ăn",
+        "example": "Early settlers were foraging on the seashore for survival.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "mitigate",
+        "meaning": "giảm thiểu (tác động xấu)",
+        "example": "Coastal forests act as buffers, mitigating the effects of storms.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "accumulation",
+        "meaning": "sự tích tụ",
+        "example": "The system avoids the accumulation of private data in the cloud.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "knock-on effect",
+        "meaning": "hệ quả kéo theo, phản ứng dây chuyền",
+        "example": "Climate change might have unpredictable knock-on effects for other species in the ecosystem.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "phenology",
+        "meaning": "chu kỳ sinh học theo mùa",
+        "example": "Scientists refer to the timing of such lifecycle events as phenology.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "abundance",
+        "meaning": "sự phong phú, số lượng lớn",
+        "example": "Researchers estimated the abundance and distribution of each butterfly species.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "emergence",
+        "meaning": "sự xuất hiện, sự nảy sinh",
+        "example": "Species with flexible lifecycles benefit from an earlier emergence driven by climate change.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "endangered",
+        "meaning": "có nguy cơ tuyệt chủng",
+        "example": "The High Brown Fritillary is described as Britain’s most endangered butterfly.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "pathogenic",
+        "meaning": "gây bệnh",
+        "example": "Microbes from a deep-sea sponge were found killing pathogenic bugs.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "breakthrough",
+        "meaning": "bước đột phá",
+        "example": "The discovery could be a breakthrough in the fight against superbugs.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "exploit",
+        "meaning": "khai thác, tận dụng",
+        "example": "Companies are rushing to exploit the deep sea’s metal and mineral resources.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "diversify",
+        "meaning": "đa dạng hóa",
+        "example": "Deep-sea exploration could help diversify the supply of metals.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "ramification",
+        "meaning": "hệ lụy, biến chứng",
+        "example": "There are potentially massive and unknown ramifications for the environment.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "disregard",
+        "meaning": "sự coi thường, ngó lơ",
+        "example": "The gold rush of mining shares a general disregard for environmental impacts.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "untapped",
+        "meaning": "chưa được khai thác",
+        "example": "It makes sense to explore this untapped potential in a sustainable way.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "ruthless",
+        "meaning": "tàn nhẫn, nhẫn tâm",
+        "example": "There is an assumption that humans are essentially selfish and ruthless.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "transcend",
+        "meaning": "vượt qua (giới hạn)",
+        "example": "We are good only because we managed to transcend our innate selfishness.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "prevalent",
+        "meaning": "phổ biến, thịnh hành",
+        "level": "C1",
+        "example": "This view fitted well with the ethos that was so prevalent in the late 20th century.",
+        "audioUrl": "",
+        "difficulty": 2
+      },
+      {
+        "word": "sparsely",
+        "meaning": "thưa thớt",
+        "example": "In the prehistoric era, the world was very sparsely populated.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "egalitarianism",
+        "meaning": "chủ nghĩa bình quân",
+        "example": "Hunter-gatherers are characterized by extreme political and sexual egalitarianism.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "ostracise",
+        "meaning": "tẩy chay, loại ra khỏi nhóm",
+        "example": "If a person becomes too domineering, the other members of the group ostracise them.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "autonomy",
+        "meaning": "sự tự trị, quyền tự quyết",
+        "example": "Women in these groups often benefit from a high level of autonomy.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "altruism",
+        "meaning": "lòng vị tha",
+        "example": "Cooperation and altruism are innate characteristics of human beings.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "feasible",
+        "meaning": "khả thi",
+        "example": "It doesn’t seem feasible to explain negative traits in evolutionary terms.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "habitat",
+        "meaning": "môi trường sống",
+        "example": "When natural habitats are disrupted, animals tend to become more violent.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "coppiced",
+        "meaning": "được cắt tỉa (rừng)",
+        "example": "The butterfly is found only in coppiced woodland habitats.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "prospecting",
+        "meaning": "thăm dò, tìm kiếm",
+        "example": "Scientists view the deep ocean as a prospecting ground for new medicines.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "scramble",
+        "meaning": "sự tranh giành",
+        "example": "The deep-sea mining rush shares features with past resource scrambles.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      }
+    ]
+  }
 ]
