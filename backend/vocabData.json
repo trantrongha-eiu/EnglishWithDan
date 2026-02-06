@@ -1578,9 +1578,9 @@
         "difficulty": 1
       },
       {
-        "word": "male / female toilets",
-        "meaning": "nhà vệ sinh nam / nữ",
-        "example": "The male toilets are next to the café.",
+        "word": "female toilet",
+        "meaning": "nhà vệ sinh nữ",
+        "example": "The female toilets are next to the café.",
         "audioUrl": "",
         "level": "A2",
         "difficulty": 1
@@ -1631,6 +1631,206 @@
         "level": "A1",
         "difficulty": 1
       },
+      {
+      "word": "total population",
+      "meaning": "tổng dân số",
+      "example": "The world's total population is increasing every year.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "communicate",
+      "meaning": "giao tiếp",
+      "example": "Young people nowadays can communicate in many languages.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "hold a conversation",
+      "meaning": "duy trì cuộc hội thoại",
+      "example": "I hope to hold a conversation in English with a native speaker.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "teenager",
+      "meaning": "thiếu niên",
+      "example": "An American teenager might speak several languages.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "different countries",
+      "meaning": "các quốc gia khác nhau",
+      "example": "I enjoy meeting people from different countries.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "around",
+      "meaning": "khoảng",
+      "example": "There are around 180 languages spoken in this region.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "spoken language",
+      "meaning": "ngôn ngữ được nói",
+      "example": "What are the main languages spoken in schools here?",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "perfect city",
+      "meaning": "thành phố lý tưởng",
+      "example": "London is the perfect city for me to practice English.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "discuss a topic",
+      "meaning": "thảo luận chủ đề",
+      "example": "We need to discuss different topics in our speaking class.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "all over the world",
+      "meaning": "khắp thế giới",
+      "example": "English is popular all over the world.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "travel to another country",
+      "meaning": "du lịch đến nước khác",
+      "example": "I want to travel to another country next summer.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "see a disadvantage",
+      "meaning": "nhận thấy bất lợi",
+      "example": "Can you see a disadvantage of living in a big city?",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "put in effort",
+      "meaning": "nỗ lực",
+      "example": "You need to put in lots of effort to master a language.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "make progress",
+      "meaning": "tiến bộ",
+      "example": "He is making great progress in his English studies.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "get better",
+      "meaning": "trở nên tốt hơn",
+      "example": "You will get better at speaking if you practice every day.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "as often as possible",
+      "meaning": "thường xuyên nhất có thể",
+      "example": "You should practice speaking as often as possible.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "learn a language",
+      "meaning": "học một ngôn ngữ",
+      "example": "It is never too late to learn a new language.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "have fun",
+      "meaning": "vui vẻ",
+      "example": "The most important thing is to have fun while learning.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "take your time",
+      "meaning": "từ từ, không vội",
+      "example": "Take your time when learning complex grammar rules.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "at a speed that works for you",
+      "meaning": "với tốc độ phù hợp với bạn",
+      "example": "Everyone should learn at a speed that works for them.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "a wide range of",
+      "meaning": "nhiều loại, đa dạng",
+      "example": "The library has a wide range of languages books.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "practise skills",
+      "meaning": "luyện kỹ năng",
+      "example": "I spend two hours a day to practise speaking skills.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "forget phrases",
+      "meaning": "quên cụm từ",
+      "example": "I often forget important phrases when I am nervous.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "remember words",
+      "meaning": "nhớ từ vựng",
+      "example": "I use flashcards to help me remember new words.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "make it interesting",
+      "meaning": "làm cho nó thú vị",
+      "example": "Teachers always try to make learning interesting for students.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
       {
         "word": "gym",
         "meaning": "phòng tập gym",
