@@ -4560,5 +4560,300 @@
       "difficulty": 2
     }
   ]
+},
+{
+  "unitNumber": 14,
+  "title": "Grammar & Vocabulary Quiz",
+  "words": [
+    {
+      "word": "must / have to + Verb",
+      "meaning": "phải làm gì đó (sự bắt buộc/cho phép)",
+      "example": "I must brush my teeth / I have to go to school.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "verb",
+      "meaning": "động từ (từ chỉ hành động)",
+      "example": "Common verbs include: dance, sing, walk.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "noun",
+      "meaning": "danh từ (chỉ đồ vật, sự vật, cảm xúc)",
+      "example": "A pencil, happiness, and color are all nouns.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "line",
+      "meaning": "đường kẻ, dòng",
+      "example": "Please write your name on the first line.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "thing",
+      "meaning": "đồ đạc, vật",
+      "example": "What is that thing on the table?",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+   
+    {
+      "word": "have (past: had)",
+      "meaning": "có / ăn (quá khứ là had)",
+      "example": "I had dinner at 6 pm yesterday.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "god",
+      "meaning": "thần thánh",
+      "example": "In ancient stories, there are many powerful gods.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "mighty",
+      "meaning": "quyền năng, toàn năng",
+      "example": "The mighty king ruled the land for fifty years.",
+      "audioUrl": "",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "cruise",
+      "meaning": "du thuyền",
+      "example": "We are going on a luxury cruise this summer.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "dig",
+      "meaning": "đào bới",
+      "example": "The dog is trying to dig a hole in the garden.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "hole",
+      "meaning": "cái hố",
+      "example": "Be careful! There is a big hole in the ground.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "spade",
+      "meaning": "cái xẻng",
+      "example": "Children like to play with a bucket and spade at the beach.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "helmet",
+      "meaning": "mũ bảo hiểm, mũ giáp",
+      "example": "You must wear a helmet when riding a motorbike.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "curious",
+      "meaning": "tò mò",
+      "example": "The little boy is curious about how the toy works.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "singular",
+      "meaning": "số ít (lượng < 2)",
+      "example": "'Apple' is singular; 'Apples' is plural.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "plural",
+      "meaning": "số nhiều (lượng >= 2)",
+      "example": "Most plural nouns end with 's'.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "Can I have...",
+      "meaning": "Dùng để order đồ / xin phép lấy gì đó",
+      "example": "Can I have a cup of coffee, please?",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "shopkeeper",
+      "meaning": "người bán hàng / chủ tiệm",
+      "example": "The shopkeeper was very friendly and helpful.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "sweets / candies",
+      "meaning": "kẹo",
+      "example": "Don't eat too many sweets before dinner.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "phrase",
+      "meaning": "cụm từ",
+      "example": "What does this English phrase mean?",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "change(verb)",
+      "meaning": "thay đổi",
+      "example": "You need to change your clothes before the party.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "change",
+      "meaning": "tiền thừa, tiền lẻ",
+      "example": "Here is your coffee and your change.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "holiday / vacation",
+      "meaning": "kì nghỉ",
+      "example": "Where are you going for your summer holiday?",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "customer",
+      "meaning": "khách hàng",
+      "example": "The shop was full of customers during the sale.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "preparation",
+      "meaning": "sự chuẩn bị",
+      "example": "The party took a lot of preparation.",
+      "audioUrl": "",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "luggage",
+      "meaning": "hành lý",
+      "example": "We have a lot of luggage for our two-week trip.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "prepare",
+      "meaning": "chuẩn bị",
+      "example": "I prepare my luggage to go on holiday.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "everything",
+      "meaning": "mọi thứ",
+      "example": "Everything is ready for the trip.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "pound",
+      "meaning": "bảng Anh (đơn vị tiền tệ)",
+      "example": "This magazine costs three pounds.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "1.99 (one point ninety nine)",
+      "meaning": "cách đọc giá tiền (một phẩy chín chín)",
+      "example": "The price is one point ninety nine pounds.",
+      "audioUrl": "",
+      "level": "A1",
+      "difficulty": 1
+    },
+    {
+      "word": "magazine",
+      "meaning": "tờ tạp chí",
+      "example": "I like reading fashion magazines.",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "flyer",
+      "meaning": "tờ rơi",
+      "example": "They are giving out flyers for the new restaurant.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "cost",
+      "meaning": "tốn bao nhiêu",
+      "example": "How much does this laptop cost?",
+      "audioUrl": "",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "in total",
+      "meaning": "tổng cộng",
+      "example": "There were twenty people in total at the meeting.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "dialogue / conversation",
+      "meaning": "cuộc hội thoại",
+      "example": "The two friends had a long conversation on the phone.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "treasure",
+      "meaning": "kho báu",
+      "example": "The pirates buried the treasure on a secret island.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    }
+  ]
 }
 ]
