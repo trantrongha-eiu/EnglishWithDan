@@ -4563,11 +4563,11 @@
 },
 {
   "unitNumber": 14,
-  "title": "Grammar & Vocabulary Quiz",
+  "title": "Bé My",
   "words": [
     {
-      "word": "must / have to + Verb",
-      "meaning": "phải làm gì đó (sự bắt buộc/cho phép)",
+      "word": "must / have to",
+      "meaning": "phải làm gì đó",
       "example": "I must brush my teeth / I have to go to school.",
       "audioUrl": "",
       "level": "A2",
@@ -4606,14 +4606,6 @@
       "difficulty": 1
     },
    
-    {
-      "word": "have (past: had)",
-      "meaning": "có / ăn (quá khứ là had)",
-      "example": "I had dinner at 6 pm yesterday.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
     {
       "word": "god",
       "meaning": "thần thánh",
@@ -4696,7 +4688,7 @@
     },
     {
       "word": "Can I have...",
-      "meaning": "Dùng để order đồ / xin phép lấy gì đó",
+      "meaning": "Dùng để order đồ",
       "example": "Can I have a cup of coffee, please?",
       "audioUrl": "",
       "level": "A1",
