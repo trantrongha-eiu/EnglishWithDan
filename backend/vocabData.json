@@ -3175,735 +3175,15 @@
   },
   {
     "unitNumber": 12,
-    "title": "quiz lớp foundation",
+    "title": "foundation quiz",
     "words": [
       {
-        "word": "unifying term",
-        "meaning": "thuật ngữ bao quát",
-        "example": "“Digital learning” is a unifying term for many online education methods.",
+        "word": "will + V",
+        "meaning": "sẽ (quyết định ngay lúc nói)",
+        "example": "I will sleep when the class is finished.",
         "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "web-based training",
-        "meaning": "đào tạo qua nền tảng web",
-        "example": "Many companies use web-based training to reduce costs.",
-        "audioUrl": "",
-        "level": "B2",
+        "level": "A1",
         "difficulty": 1
-      },
-      {
-        "word": "institution (of a program)",
-        "meaning": "việc triển khai / thành lập",
-        "example": "The institution of the new policy improved productivity.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "in the range of",
-        "meaning": "trong khoảng",
-        "example": "The cost was in the range of $5,000 to $10,000.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "account for",
-        "meaning": "chiếm / giải thích",
-        "example": "Travel expenses account for most of the budget.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "the lion’s share",
-        "meaning": "phần lớn nhất",
-        "example": "Marketing takes the lion’s share of the company’s budget.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "scalability",
-        "meaning": "khả năng mở rộng",
-        "example": "Online platforms offer better scalability than traditional classrooms.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "standardized delivery",
-        "meaning": "cách truyền đạt tiêu chuẩn hóa",
-        "example": "Standardized delivery ensures equal learning opportunities.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "self-paced learning",
-        "meaning": "học theo tốc độ cá nhân",
-        "example": "Self-paced learning allows students to study anytime.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "hold great promise",
-        "meaning": "có tiềm năng lớn",
-        "example": "Artificial intelligence holds great promise in education.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "address (a topic/problem)",
-        "meaning": "giải quyết / đề cập",
-        "example": "This course addresses workplace communication skills.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "blended approach",
-        "meaning": "phương pháp kết hợp",
-        "example": "Many schools adopt a blended approach to teaching.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "implement",
-        "meaning": "triển khai",
-        "example": "The company implemented a new training system.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "critical to",
-        "meaning": "cực kỳ quan trọng đối với",
-        "example": "Good communication is critical to success.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "run the risk of",
-        "meaning": "có nguy cơ",
-        "example": "Students run the risk of failing if they don’t study.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "circumvent",
-        "meaning": "tránh / vượt qua (vấn đề)",
-        "example": "Technology helps businesses circumvent traditional challenges.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "drawbacks",
-        "meaning": "nhược điểm",
-        "example": "One of the main drawbacks is high cost.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "integrate",
-        "meaning": "tích hợp",
-        "example": "The system integrates video and text materials.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "on the average",
-        "meaning": "trung bình",
-        "example": "On the average, students spend two hours studying.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "complexity",
-        "meaning": "sự phức tạp",
-        "example": "The complexity of the task requires special skills.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "outsource",
-        "meaning": "thuê ngoài",
-        "example": "The company outsourced its IT services.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "infrastructure",
-        "meaning": "cơ sở hạ tầng",
-        "example": "The country is investing in digital infrastructure.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "invest heavily in",
-        "meaning": "đầu tư mạnh vào",
-        "example": "The government invests heavily in education.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "entirely",
-        "meaning": "hoàn toàn",
-        "example": "Online learning cannot entirely replace teachers.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "be suited to",
-        "meaning": "phù hợp với",
-        "example": "This method is suited to young learners.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "convey",
-        "meaning": "truyền đạt",
-        "example": "It is hard to convey emotions through text.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "perceived loss",
-        "meaning": "sự mất mát được cho là",
-        "example": "There is a perceived loss of quality in online classes.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "computer literacy",
-        "meaning": "khả năng sử dụng máy tính",
-        "example": "Computer literacy is essential today.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "systematic research",
-        "meaning": "nghiên cứu có hệ thống",
-        "example": "Systematic research is needed to confirm the results.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "acquire skills",
-        "meaning": "tiếp thu kỹ năng",
-        "example": "Students need time to acquire new skills.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "gain popularity",
-        "meaning": "trở nên phổ biến",
-        "example": "Online courses are gaining popularity worldwide.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "proponents",
-        "meaning": "người ủng hộ",
-        "example": "Proponents believe this method improves learning outcomes.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "integrated approach",
-        "meaning": "cách tiếp cận tích hợp",
-        "example": "An integrated approach combines theory and practice.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "technology-delivered instruction",
-        "meaning": "đào tạo qua công nghệ",
-        "example": "Technology-delivered instruction is common in large companies.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "reduce training costs",
-        "meaning": "giảm chi phí đào tạo",
-        "example": "Online courses help reduce training costs.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "improve consistency",
-        "meaning": "cải thiện tính nhất quán",
-        "example": "The system improves consistency across departments.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "high priority",
-        "meaning": "ưu tiên cao",
-        "example": "Employee training is a high priority for this company.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "in principle",
-        "meaning": "về mặt lý thuyết",
-        "example": "In principle, online learning is very flexible.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "engage with",
-        "meaning": "tham gia / tương tác với",
-        "example": "Students can engage with interactive materials.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "rich learning materials",
-        "meaning": "tài liệu học phong phú",
-        "example": "The website provides rich learning materials.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "specific information",
-        "meaning": "thông tin cụ thể",
-        "example": "The course teaches specific information about safety.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "certification programs",
-        "meaning": "chương trình cấp chứng chỉ",
-        "example": "Many employees join certification programs.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "clear set of objectives",
-        "meaning": "bộ mục tiêu rõ ràng",
-        "example": "The project has a clear set of objectives.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "decrease costs",
-        "meaning": "giảm chi phí",
-        "example": "Companies want to decrease costs and increase profits.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "filled with",
-        "meaning": "đầy",
-        "example": "The room was filled with students.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "capable manager",
-        "meaning": "người quản lý có năng lực",
-        "example": "A capable manager motivates employees effectively.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "smoothly run business",
-        "meaning": "doanh nghiệp vận hành trơn tru",
-        "example": "Good training ensures a smoothly run business.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "traditional route",
-        "meaning": "cách truyền thống",
-        "example": "The traditional route of learning is classroom-based.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "ineffective",
-        "meaning": "không hiệu quả",
-        "example": "The old system was slow and ineffective.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "take employees out of their jobs",
-        "meaning": "khiến nhân viên rời công việc",
-        "example": "Training sessions take employees out of their jobs temporarily.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "circumvent drawbacks",
-        "meaning": "tránh nhược điểm",
-        "example": "Online learning helps circumvent traditional drawbacks.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "integrate multimedia",
-        "meaning": "tích hợp đa phương tiện",
-        "example": "The platform integrates multimedia content.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "interactive materials",
-        "meaning": "tài liệu tương tác",
-        "example": "Interactive materials increase motivation.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "higher performance results",
-        "meaning": "kết quả hiệu suất cao hơn",
-        "example": "E-learning can lead to higher performance results.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "reduced test anxiety",
-        "meaning": "giảm lo lắng khi thi",
-        "example": "Practice tests help reduce test anxiety.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "service providers",
-        "meaning": "nhà cung cấp dịch vụ",
-        "example": "Many service providers offer online courses.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "depending on",
-        "meaning": "tùy thuộc vào",
-        "example": "The price varies depending on quality.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "streaming-video presentations",
-        "meaning": "bài giảng video trực tuyến",
-        "example": "Streaming-video presentations cost more to produce.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "starting place",
-        "meaning": "điểm khởi đầu",
-        "example": "The textbook is just the starting place.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "installed onsite",
-        "meaning": "lắp đặt tại chỗ",
-        "example": "The software was installed onsite.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "network bandwidth",
-        "meaning": "băng thông mạng",
-        "example": "High-quality video requires strong network bandwidth.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "top (a certain amount)",
-        "meaning": "vượt quá",
-        "example": "Costs can top $1 million.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "for the time being",
-        "meaning": "trong thời điểm hiện tại",
-        "example": "For the time being, we will use this system.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "pay for itself",
-        "meaning": "tự hoàn vốn",
-        "example": "The investment will pay for itself in two years.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "invest heavily",
-        "meaning": "đầu tư mạnh",
-        "example": "Companies invest heavily in technology.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "bandwidth limitations",
-        "meaning": "hạn chế về băng thông",
-        "example": "Bandwidth limitations affect video quality.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "mode of instruction",
-        "meaning": "hình thức giảng dạy",
-        "example": "Online learning is a new mode of instruction.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "impart knowledge",
-        "meaning": "truyền đạt kiến thức",
-        "example": "Teachers impart knowledge to students.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "corporate culture",
-        "meaning": "văn hóa doanh nghiệp",
-        "example": "It is hard to teach corporate culture online.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "appropriate level",
-        "meaning": "mức độ phù hợp",
-        "example": "The course is kept at an appropriate level.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "access to equipment",
-        "meaning": "tiếp cận thiết bị",
-        "example": "Students need access to equipment.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "minimum level",
-        "meaning": "mức tối thiểu",
-        "example": "A minimum level of skill is required.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "perform tasks",
-        "meaning": "thực hiện nhiệm vụ",
-        "example": "Employees must perform tasks efficiently.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "achieve outcomes",
-        "meaning": "đạt được kết quả",
-        "example": "Training helps achieve better outcomes.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "corporate environment",
-        "meaning": "môi trường doanh nghiệp",
-        "example": "Skills are applied in a corporate environment.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "face-to-face methods",
-        "meaning": "phương pháp trực tiếp",
-        "example": "Face-to-face methods allow interaction.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "computer-mediated activities",
-        "meaning": "hoạt động qua máy tính",
-        "example": "Students join computer-mediated activities.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "supporting role",
-        "meaning": "vai trò hỗ trợ",
-        "example": "Technology plays a supporting role in education.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "glance through",
-        "meaning": "lướt qua",
-        "example": "Students should glance through the questions first.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "skim (the passage)",
-        "meaning": "đọc lướt",
-        "example": "Skim the passage to get the main idea.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "highlight keywords",
-        "meaning": "làm nổi bật từ khóa",
-        "example": "Highlight keywords to find information faster.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "locate information",
-        "meaning": "xác định vị trí thông tin",
-        "example": "This strategy helps locate information quickly.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "efficiently",
-        "meaning": "một cách hiệu quả",
-        "example": "She completed the task efficiently.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "distractors",
-        "meaning": "yếu tố gây nhiễu",
-        "example": "IELTS often includes distractors in multiple-choice questions.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "subtle differences",
-        "meaning": "sự khác biệt nhỏ",
-        "example": "Pay attention to subtle differences in answer choices.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "eliminate",
-        "meaning": "loại bỏ",
-        "example": "Eliminate clearly wrong answers first.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "narrow down",
-        "meaning": "thu hẹp",
-        "example": "Narrow down your choices to two options.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "hesitate",
-        "meaning": "do dự",
-        "example": "Don’t hesitate to ask questions.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "revolutionize",
-        "meaning": "cách mạng hóa",
-        "example": "Social media has revolutionized communication.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "vast array of",
-        "meaning": "một lượng lớn đa dạng",
-        "example": "The Internet offers a vast array of resources.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "pervasive",
-        "meaning": "lan rộng",
-        "example": "Social media has a pervasive influence on society.",
-        "audioUrl": "",
-        "level": "C2",
-        "difficulty": 3
       },
       {
         "word": "raise concerns",
@@ -3955,14 +3235,14 @@
       },
       {
         "word": "well-being",
-        "meaning": "sức khỏe tinh thần / sự khỏe mạnh",
+        "meaning": "sức khỏe tinh thần",
         "example": "Exercise improves mental well-being.",
         "audioUrl": "",
         "level": "B2",
         "difficulty": 2
       },
       {
-        "word": "engaging in",
+        "word": "engage in",
         "meaning": "tham gia vào",
         "example": "Engaging in sports is good for health.",
         "audioUrl": "",
@@ -4096,756 +3376,1259 @@
         "audioUrl": "",
         "level": "B1",
         "difficulty": 1
+      },
+      {
+        "word": "be going to + V",
+        "meaning": "sẽ (kế hoạch đã có trước)",
+        "example": "I am going to hang out with my girlfriend tomorrow.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "get married to SO",
+        "meaning": "kết hôn với ai đó",
+        "example": "I am going to get married to my girlfriend next year.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "Excuse me",
+        "meaning": "xin lỗi (lịch sự khi hỏi)",
+        "example": "Excuse me, could you help me?",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "Could you tell me how to get to…",
+        "meaning": "bạn có thể chỉ tôi đường đến…",
+        "example": "Could you tell me how to get to the bank?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 2
+      },
+      {
+        "word": "Do you know where the nearest… is?",
+        "meaning": "bạn có biết … gần nhất ở đâu không",
+        "example": "Do you know where the nearest pharmacy is?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 2
+      },
+      {
+        "word": "Where is the supermarket?",
+        "meaning": "siêu thị ở đâu",
+        "example": "Excuse me, where is the supermarket?",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "How do I get to the bus stop?",
+        "meaning": "làm sao để tới trạm xe buýt",
+        "example": "How do I get to the bus stop?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "go straight",
+        "meaning": "đi thẳng",
+        "example": "Go straight for 200 meters.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "go past",
+        "meaning": "đi qua",
+        "example": "Go past the school.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "next to",
+        "meaning": "kế bên",
+        "example": "The bank is next to the post office.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "adjacent to",
+        "meaning": "sát bên",
+        "example": "The pharmacy is adjacent to the hospital.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "around the corner",
+        "meaning": "ngay góc đường",
+        "example": "The café is around the corner.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "you can't miss it",
+        "meaning": "bạn sẽ dễ dàng thấy nó",
+        "example": "It's a big building. You can't miss it.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "T-junction",
+        "meaning": "ngã 3",
+        "example": "The market is at the T-junction.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "intersection / junction",
+        "meaning": "ngã tư hoặc nhiều hơn",
+        "example": "Turn left at the next intersection.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "roundabout",
+        "meaning": "bùng binh",
+        "example": "Take the first exit at the roundabout.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "dead end",
+        "meaning": "đường cụt",
+        "example": "The street is a dead end.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "exit",
+        "meaning": "lối ra",
+        "example": "Take the second exit.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "Keep going until you see…",
+        "meaning": "đi thẳng cho đến khi thấy…",
+        "example": "Keep going until you see a big park.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "Keep going until you reach…",
+        "meaning": "đi tiếp cho đến khi tới…",
+        "example": "Keep going until you reach the bridge.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "Your destination is on your right",
+        "meaning": "đích đến ở bên phải",
+        "example": "Your destination is on your right.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "Make a U-turn",
+        "meaning": "quay đầu xe",
+        "example": "Make a U-turn at the traffic lights.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "If you reach the park, you've gone too far",
+        "meaning": "nếu bạn đến công viên thì bạn đi quá rồi",
+        "example": "If you reach the park, you've gone too far.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "city",
+        "meaning": "thành phố",
+        "example": "I live in a big city.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "urban area",
+        "meaning": "khu đô thị",
+        "example": "Urban areas are crowded.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "metropolitan area",
+        "meaning": "vùng đô thị lớn",
+        "example": "Ho Chi Minh City is a metropolitan area.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "metropolis",
+        "meaning": "siêu đô thị",
+        "example": "Tokyo is a huge metropolis.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "countryside",
+        "meaning": "nông thôn",
+        "example": "I like the countryside.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "rural area",
+        "meaning": "vùng nông thôn",
+        "example": "My grandparents live in a rural area.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "pharmacy / drugstore",
+        "meaning": "tiệm thuốc",
+        "example": "I bought medicine at the pharmacy.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "butcher",
+        "meaning": "người bán thịt",
+        "example": "The butcher sells fresh meat.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "university",
+        "meaning": "đại học",
+        "example": "I study at the university.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "college",
+        "meaning": "cao đẳng / đại học",
+        "example": "She goes to college.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "accommodation",
+        "meaning": "chỗ ở",
+        "example": "I am looking for accommodation.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "dormitory (dorm)",
+        "meaning": "ký túc xá",
+        "example": "I live in a dormitory.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "hostel",
+        "meaning": "nhà trọ",
+        "example": "Backpackers often stay in hostels.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "motel",
+        "meaning": "nhà nghỉ",
+        "example": "We stayed in a motel.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "studio room",
+        "meaning": "phòng nhỏ",
+        "example": "He rents a studio room.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "preposition",
+        "meaning": "giới từ",
+        "example": "In, on, at are prepositions.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "adjective",
+        "meaning": "tính từ",
+        "example": "She is a beautiful girl.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "adverb",
+        "meaning": "trạng từ",
+        "example": "He runs quickly.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "communicate with",
+        "meaning": "giao tiếp với",
+        "example": "I communicate with my friends in English.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "communicate by",
+        "meaning": "giao tiếp bằng",
+        "example": "We communicate by email.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "talk to / talk with",
+        "meaning": "nói chuyện với",
+        "example": "I talked with my teacher.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "have a chat with",
+        "meaning": "trò chuyện với",
+        "example": "I had a chat with my friend.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "hold a conversation",
+        "meaning": "duy trì cuộc trò chuyện",
+        "example": "She can hold a conversation in English.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "lecture",
+        "meaning": "bài giảng",
+        "example": "Today's lecture is interesting.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "lecturer",
+        "meaning": "giảng viên",
+        "example": "The lecturer explained the lesson well.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "advantage",
+        "meaning": "lợi thế",
+        "example": "Studying online has many advantages.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "disadvantage",
+        "meaning": "bất lợi",
+        "example": "The disadvantage is lack of interaction.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "motivate",
+        "meaning": "động viên",
+        "example": "My teacher motivates me to study.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "encourage",
+        "meaning": "khuyến khích",
+        "example": "My parents encourage me to learn English.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "make an effort",
+        "meaning": "nỗ lực",
+        "example": "I make an effort to learn English.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "make progress",
+        "meaning": "tiến bộ",
+        "example": "I make progress every day.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "discuss",
+        "meaning": "thảo luận",
+        "example": "We discuss the problem in class.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "look up",
+        "meaning": "tra cứu",
+        "example": "I look up new words in a dictionary.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "consumption",
+        "meaning": "sự tiêu thụ",
+        "example": "Fast food consumption is increasing.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "consume",
+        "meaning": "tiêu thụ",
+        "example": "People consume more fast food today.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "intake",
+        "meaning": "lượng nạp vào",
+        "example": "Sugar intake should be limited.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "positive",
+        "meaning": "tích cực",
+        "example": "The result is positive.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "negative",
+        "meaning": "tiêu cực / phủ định",
+        "example": "The answer is negative.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "question form",
+        "meaning": "dạng câu hỏi",
+        "example": "Use question form in interviews.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "career path",
+        "meaning": "con đường sự nghiệp",
+        "example": "Teaching is my career path.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
       }
     ]
   },
- {
-  "unitNumber": 13,
-  "title": "quiz lớp 4-5 (shine)",
-  "words": [
-    {
-      "word": "be engaged in",
-      "meaning": "tham gia vào",
-      "example": "The two countries were engaged in a long war.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "fleet",
-      "meaning": "hạm đội",
-      "example": "The naval fleet sailed at dawn.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "vessel",
-      "meaning": "tàu thuyền",
-      "example": "The fishing vessel returned safely to the port.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "account (of)",
-      "meaning": "bản tường thuật / lời kể",
-      "example": "His account of the accident was different from the others.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "vary",
-      "meaning": "khác nhau",
-      "example": "Opinions vary on this issue among experts.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "maintain (that)",
-      "meaning": "khẳng định rằng",
-      "example": "She maintains that she is innocent despite the evidence.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "outdated",
-      "meaning": "lỗi thời",
-      "example": "The system is outdated and needs updating immediately.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "overladen",
-      "meaning": "chở quá tải",
-      "example": "The truck was overladen with heavy goods.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "mishandle",
-      "meaning": "xử lý sai / điều khiển tồi",
-      "example": "The delicate situation was badly mishandled by the staff.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "undisputed",
-      "meaning": "không thể phủ nhận",
-      "example": "It is undisputed that the event changed history.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "attempt (to)",
-      "meaning": "nỗ lực làm gì",
-      "example": "They made an attempt to solve the complex problem.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "come to rest",
-      "meaning": "dừng lại / nằm lại",
-      "example": "The car came to rest by the roadside after spinning.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "seabed",
-      "meaning": "đáy biển",
-      "example": "The submarine explored the deep seabed.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "approximately",
-      "meaning": "xấp xỉ",
-      "example": "The journey takes approximately two hours.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "hull",
-      "meaning": "thân tàu",
-      "example": "The hull was badly damaged after hitting the rocks.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "act as",
-      "meaning": "đóng vai trò như",
-      "example": "This room acts as a meeting space for the team.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "erode",
-      "meaning": "xói mòn",
-      "example": "Strong waves eroded the coastline over many years.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "degradation",
-      "meaning": "sự suy thoái / xuống cấp",
-      "example": "Environmental degradation is a serious global issue.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "intact",
-      "meaning": "còn nguyên vẹn",
-      "example": "The building remained intact after the heavy storm.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "minimise",
-      "meaning": "giảm thiểu",
-      "example": "We must take action to minimise risks.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "obstruction",
-      "meaning": "vật cản",
-      "example": "There was an obstruction in the pipe causing a leak.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "uncover",
-      "meaning": "khám phá / làm lộ ra",
-      "example": "The police uncovered new evidence during the investigation.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "intermittently",
-      "meaning": "gián đoạn / lúc có lúc không",
-      "example": "It rained intermittently all day yesterday.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "fade into obscurity",
-      "meaning": "rơi vào quên lãng",
-      "example": "After one hit song, the singer faded into obscurity.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "initiate",
-      "meaning": "khởi xướng",
-      "example": "The company initiated a new project to save energy.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "in conjunction with",
-      "meaning": "cùng với / liên kết với",
-      "example": "The event was organised in conjunction with the local school.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "collaboration",
-      "meaning": "sự hợp tác",
-      "example": "The project is a collaboration between two major universities.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "reveal",
-      "meaning": "tiết lộ",
-      "example": "The report revealed shocking facts about the scandal.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "excavation",
-      "meaning": "cuộc khai quật",
-      "example": "The excavation of the ancient tomb lasted three years.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "climax",
-      "meaning": "cao trào / đỉnh điểm",
-      "example": "The film reached its climax at the very end.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "as yet",
-      "meaning": "cho đến nay",
-      "example": "The full results are not known as yet.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "treasure trove",
-      "meaning": "kho báu",
-      "example": "The old attic was a treasure trove of historical photos.",
-      "audioUrl": "",
-      "level": "C2",
-      "difficulty": 3
-    },
-    {
-      "word": "artefact",
-      "meaning": "hiện vật",
-      "example": "The museum displays ancient artefacts from Egypt.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "salvage",
-      "meaning": "trục vớt / cứu vãn",
-      "example": "The team worked hard to salvage the sunken ship.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "feasible",
-      "meaning": "khả thi",
-      "example": "The plan is not financially feasible for us.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "go-ahead",
-      "meaning": "sự chấp thuận cho phép",
-      "example": "They finally gave the go-ahead for the construction.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "hydraulic jack",
-      "meaning": "kích thủy lực",
-      "example": "The car was lifted using a heavy-duty hydraulic jack.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "suction effect",
-      "meaning": "hiệu ứng hút",
-      "example": "The suction effect of the mud made lifting difficult.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 3
-    },
-    {
-      "word": "precise",
-      "meaning": "chính xác",
-      "example": "The machine needs precise control to operate safely.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "positioning",
-      "meaning": "sự định vị / đặt vị trí",
-      "example": "Careful positioning of the sensors is essential.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "delicate",
-      "meaning": "mỏng manh / dễ vỡ",
-      "example": "The antique vase is very delicate.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "framework",
-      "meaning": "khung cấu trúc",
-      "example": "The steel framework supports the entire building.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "pursue a career in",
-      "meaning": "theo đuổi sự nghiệp trong lĩnh vực",
-      "example": "I plan to pursue a career in education.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "have a strong passion for",
-      "meaning": "có đam mê mạnh mẽ với",
-      "example": "I’ve always had a strong passion for helping others.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "be deeply interested in",
-      "meaning": "rất quan tâm đến",
-      "example": "I’m deeply interested in technology and innovation.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "provide a sense of fulfilment",
-      "meaning": "mang lại cảm giác mãn nguyện",
-      "example": "Teaching provides me with a sense of fulfilment.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "make a positive impact on",
-      "meaning": "tạo ảnh hưởng tích cực đến",
-      "example": "I want to make a positive impact on young learners.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "require strong interpersonal skills",
-      "meaning": "đòi hỏi kỹ năng giao tiếp tốt",
-      "example": "This job requires strong interpersonal skills.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "offer opportunities for career advancement",
-      "meaning": "mang lại cơ hội thăng tiến",
-      "example": "It offers great opportunities for career advancement.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "work in a dynamic environment",
-      "meaning": "làm việc trong môi trường năng động",
-      "example": "I prefer to work in a dynamic environment.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "deal with challenging situations",
-      "meaning": "xử lý tình huống khó khăn",
-      "example": "I enjoy dealing with challenging situations.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "be financially rewarding",
-      "meaning": "mang lại thu nhập tốt",
-      "example": "Although demanding, it can be financially rewarding.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "maintain a healthy work-life balance",
-      "meaning": "duy trì cân bằng công việc – cuộc sống",
-      "example": "I hope to maintain a healthy work-life balance.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "contribute to society",
-      "meaning": "đóng góp cho xã hội",
-      "example": "I want to contribute to society in a meaningful way.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 1
-    },
-    {
-      "word": "broaden my horizons",
-      "meaning": "mở rộng tầm nhìn",
-      "example": "This career would help me broaden my horizons.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "turn my passion into a profession",
-      "meaning": "biến đam mê thành nghề nghiệp",
-      "example": "I hope to turn my passion into a profession.",
-      "audioUrl": "",
-      "level": "C1",
-      "difficulty": 2
-    },
-    {
-      "word": "gain hands-on experience",
-      "meaning": "có được kinh nghiệm thực tế",
-      "example": "I want to gain hands-on experience in the field.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    }
-  ]
-},
-{
-  "unitNumber": 14,
-  "title": "Bé My",
-  "words": [
-    {
-      "word": "must / have to",
-      "meaning": "phải làm gì đó",
-      "example": "I must brush my teeth / I have to go to school.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "verb",
-      "meaning": "động từ (từ chỉ hành động)",
-      "example": "Common verbs include: dance, sing, walk.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "noun",
-      "meaning": "danh từ (chỉ đồ vật, sự vật, cảm xúc)",
-      "example": "A pencil, happiness, and color are all nouns.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "line",
-      "meaning": "đường kẻ, dòng",
-      "example": "Please write your name on the first line.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "thing",
-      "meaning": "đồ đạc, vật",
-      "example": "What is that thing on the table?",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-   
-    {
-      "word": "god",
-      "meaning": "thần thánh",
-      "example": "In ancient stories, there are many powerful gods.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "mighty",
-      "meaning": "quyền năng, toàn năng",
-      "example": "The mighty king ruled the land for fifty years.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "cruise",
-      "meaning": "du thuyền",
-      "example": "We are going on a luxury cruise this summer.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "dig",
-      "meaning": "đào bới",
-      "example": "The dog is trying to dig a hole in the garden.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "hole",
-      "meaning": "cái hố",
-      "example": "Be careful! There is a big hole in the ground.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "spade",
-      "meaning": "cái xẻng",
-      "example": "Children like to play with a bucket and spade at the beach.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 2
-    },
-    {
-      "word": "helmet",
-      "meaning": "mũ bảo hiểm, mũ giáp",
-      "example": "You must wear a helmet when riding a motorbike.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "curious",
-      "meaning": "tò mò",
-      "example": "The little boy is curious about how the toy works.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "singular",
-      "meaning": "số ít (lượng < 2)",
-      "example": "'Apple' is singular; 'Apples' is plural.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "plural",
-      "meaning": "số nhiều (lượng >= 2)",
-      "example": "Most plural nouns end with 's'.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "Can I have...",
-      "meaning": "Dùng để order đồ",
-      "example": "Can I have a cup of coffee, please?",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "shopkeeper",
-      "meaning": "người bán hàng / chủ tiệm",
-      "example": "The shopkeeper was very friendly and helpful.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "sweets / candies",
-      "meaning": "kẹo",
-      "example": "Don't eat too many sweets before dinner.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "phrase",
-      "meaning": "cụm từ",
-      "example": "What does this English phrase mean?",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "change(verb)",
-      "meaning": "thay đổi",
-      "example": "You need to change your clothes before the party.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "change",
-      "meaning": "tiền thừa, tiền lẻ",
-      "example": "Here is your coffee and your change.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 2
-    },
-    {
-      "word": "holiday / vacation",
-      "meaning": "kì nghỉ",
-      "example": "Where are you going for your summer holiday?",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "customer",
-      "meaning": "khách hàng",
-      "example": "The shop was full of customers during the sale.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "preparation",
-      "meaning": "sự chuẩn bị",
-      "example": "The party took a lot of preparation.",
-      "audioUrl": "",
-      "level": "B2",
-      "difficulty": 2
-    },
-    {
-      "word": "luggage",
-      "meaning": "hành lý",
-      "example": "We have a lot of luggage for our two-week trip.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 2
-    },
-    {
-      "word": "prepare",
-      "meaning": "chuẩn bị",
-      "example": "I prepare my luggage to go on holiday.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "everything",
-      "meaning": "mọi thứ",
-      "example": "Everything is ready for the trip.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "pound",
-      "meaning": "bảng Anh (đơn vị tiền tệ)",
-      "example": "This magazine costs three pounds.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "1.99 (one point ninety nine)",
-      "meaning": "cách đọc giá tiền (một phẩy chín chín)",
-      "example": "The price is one point ninety nine pounds.",
-      "audioUrl": "",
-      "level": "A1",
-      "difficulty": 1
-    },
-    {
-      "word": "magazine",
-      "meaning": "tờ tạp chí",
-      "example": "I like reading fashion magazines.",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "flyer",
-      "meaning": "tờ rơi",
-      "example": "They are giving out flyers for the new restaurant.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 2
-    },
-    {
-      "word": "cost",
-      "meaning": "tốn bao nhiêu",
-      "example": "How much does this laptop cost?",
-      "audioUrl": "",
-      "level": "A2",
-      "difficulty": 1
-    },
-    {
-      "word": "in total",
-      "meaning": "tổng cộng",
-      "example": "There were twenty people in total at the meeting.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "dialogue / conversation",
-      "meaning": "cuộc hội thoại",
-      "example": "The two friends had a long conversation on the phone.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    },
-    {
-      "word": "treasure",
-      "meaning": "kho báu",
-      "example": "The pirates buried the treasure on a secret island.",
-      "audioUrl": "",
-      "level": "B1",
-      "difficulty": 1
-    }
-  ]
-}
+  {
+    "unitNumber": 13,
+    "title": "quiz lớp 4-5 (shine)",
+    "words": [
+      {
+        "word": "be engaged in",
+        "meaning": "tham gia vào",
+        "example": "The two countries were engaged in a long war.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "fleet",
+        "meaning": "hạm đội",
+        "example": "The naval fleet sailed at dawn.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "vessel",
+        "meaning": "tàu thuyền",
+        "example": "The fishing vessel returned safely to the port.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "account (of)",
+        "meaning": "bản tường thuật / lời kể",
+        "example": "His account of the accident was different from the others.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "vary",
+        "meaning": "khác nhau",
+        "example": "Opinions vary on this issue among experts.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "maintain (that)",
+        "meaning": "khẳng định rằng",
+        "example": "She maintains that she is innocent despite the evidence.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "outdated",
+        "meaning": "lỗi thời",
+        "example": "The system is outdated and needs updating immediately.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "overladen",
+        "meaning": "chở quá tải",
+        "example": "The truck was overladen with heavy goods.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "mishandle",
+        "meaning": "xử lý sai / điều khiển tồi",
+        "example": "The delicate situation was badly mishandled by the staff.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "undisputed",
+        "meaning": "không thể phủ nhận",
+        "example": "It is undisputed that the event changed history.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "attempt (to)",
+        "meaning": "nỗ lực làm gì",
+        "example": "They made an attempt to solve the complex problem.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "come to rest",
+        "meaning": "dừng lại / nằm lại",
+        "example": "The car came to rest by the roadside after spinning.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "seabed",
+        "meaning": "đáy biển",
+        "example": "The submarine explored the deep seabed.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "approximately",
+        "meaning": "xấp xỉ",
+        "example": "The journey takes approximately two hours.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "hull",
+        "meaning": "thân tàu",
+        "example": "The hull was badly damaged after hitting the rocks.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "act as",
+        "meaning": "đóng vai trò như",
+        "example": "This room acts as a meeting space for the team.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "erode",
+        "meaning": "xói mòn",
+        "example": "Strong waves eroded the coastline over many years.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "degradation",
+        "meaning": "sự suy thoái / xuống cấp",
+        "example": "Environmental degradation is a serious global issue.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "intact",
+        "meaning": "còn nguyên vẹn",
+        "example": "The building remained intact after the heavy storm.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "minimise",
+        "meaning": "giảm thiểu",
+        "example": "We must take action to minimise risks.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "obstruction",
+        "meaning": "vật cản",
+        "example": "There was an obstruction in the pipe causing a leak.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "uncover",
+        "meaning": "khám phá / làm lộ ra",
+        "example": "The police uncovered new evidence during the investigation.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "intermittently",
+        "meaning": "gián đoạn / lúc có lúc không",
+        "example": "It rained intermittently all day yesterday.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "fade into obscurity",
+        "meaning": "rơi vào quên lãng",
+        "example": "After one hit song, the singer faded into obscurity.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "initiate",
+        "meaning": "khởi xướng",
+        "example": "The company initiated a new project to save energy.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "in conjunction with",
+        "meaning": "cùng với / liên kết với",
+        "example": "The event was organised in conjunction with the local school.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "collaboration",
+        "meaning": "sự hợp tác",
+        "example": "The project is a collaboration between two major universities.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "reveal",
+        "meaning": "tiết lộ",
+        "example": "The report revealed shocking facts about the scandal.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "excavation",
+        "meaning": "cuộc khai quật",
+        "example": "The excavation of the ancient tomb lasted three years.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "climax",
+        "meaning": "cao trào / đỉnh điểm",
+        "example": "The film reached its climax at the very end.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "as yet",
+        "meaning": "cho đến nay",
+        "example": "The full results are not known as yet.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "treasure trove",
+        "meaning": "kho báu",
+        "example": "The old attic was a treasure trove of historical photos.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "artefact",
+        "meaning": "hiện vật",
+        "example": "The museum displays ancient artefacts from Egypt.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "salvage",
+        "meaning": "trục vớt / cứu vãn",
+        "example": "The team worked hard to salvage the sunken ship.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "feasible",
+        "meaning": "khả thi",
+        "example": "The plan is not financially feasible for us.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "go-ahead",
+        "meaning": "sự chấp thuận cho phép",
+        "example": "They finally gave the go-ahead for the construction.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "hydraulic jack",
+        "meaning": "kích thủy lực",
+        "example": "The car was lifted using a heavy-duty hydraulic jack.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "suction effect",
+        "meaning": "hiệu ứng hút",
+        "example": "The suction effect of the mud made lifting difficult.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "precise",
+        "meaning": "chính xác",
+        "example": "The machine needs precise control to operate safely.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "positioning",
+        "meaning": "sự định vị / đặt vị trí",
+        "example": "Careful positioning of the sensors is essential.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "delicate",
+        "meaning": "mỏng manh / dễ vỡ",
+        "example": "The antique vase is very delicate.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "framework",
+        "meaning": "khung cấu trúc",
+        "example": "The steel framework supports the entire building.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "pursue a career in",
+        "meaning": "theo đuổi sự nghiệp trong lĩnh vực",
+        "example": "I plan to pursue a career in education.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "have a strong passion for",
+        "meaning": "có đam mê mạnh mẽ với",
+        "example": "I’ve always had a strong passion for helping others.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "be deeply interested in",
+        "meaning": "rất quan tâm đến",
+        "example": "I’m deeply interested in technology and innovation.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "provide a sense of fulfilment",
+        "meaning": "mang lại cảm giác mãn nguyện",
+        "example": "Teaching provides me with a sense of fulfilment.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "make a positive impact on",
+        "meaning": "tạo ảnh hưởng tích cực đến",
+        "example": "I want to make a positive impact on young learners.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "require strong interpersonal skills",
+        "meaning": "đòi hỏi kỹ năng giao tiếp tốt",
+        "example": "This job requires strong interpersonal skills.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "offer opportunities for career advancement",
+        "meaning": "mang lại cơ hội thăng tiến",
+        "example": "It offers great opportunities for career advancement.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "work in a dynamic environment",
+        "meaning": "làm việc trong môi trường năng động",
+        "example": "I prefer to work in a dynamic environment.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "deal with challenging situations",
+        "meaning": "xử lý tình huống khó khăn",
+        "example": "I enjoy dealing with challenging situations.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "be financially rewarding",
+        "meaning": "mang lại thu nhập tốt",
+        "example": "Although demanding, it can be financially rewarding.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "maintain a healthy work-life balance",
+        "meaning": "duy trì cân bằng công việc – cuộc sống",
+        "example": "I hope to maintain a healthy work-life balance.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "contribute to society",
+        "meaning": "đóng góp cho xã hội",
+        "example": "I want to contribute to society in a meaningful way.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 1
+      },
+      {
+        "word": "broaden my horizons",
+        "meaning": "mở rộng tầm nhìn",
+        "example": "This career would help me broaden my horizons.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "turn my passion into a profession",
+        "meaning": "biến đam mê thành nghề nghiệp",
+        "example": "I hope to turn my passion into a profession.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 2
+      },
+      {
+        "word": "gain hands-on experience",
+        "meaning": "có được kinh nghiệm thực tế",
+        "example": "I want to gain hands-on experience in the field.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      }
+    ]
+  },
+  {
+    "unitNumber": 14,
+    "title": "Bé My",
+    "words": [
+      {
+        "word": "must / have to",
+        "meaning": "phải làm gì đó",
+        "example": "I must brush my teeth / I have to go to school.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "verb",
+        "meaning": "động từ (từ chỉ hành động)",
+        "example": "Common verbs include: dance, sing, walk.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "noun",
+        "meaning": "danh từ (chỉ đồ vật, sự vật, cảm xúc)",
+        "example": "A pencil, happiness, and color are all nouns.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "line",
+        "meaning": "đường kẻ, dòng",
+        "example": "Please write your name on the first line.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "thing",
+        "meaning": "đồ đạc, vật",
+        "example": "What is that thing on the table?",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "god",
+        "meaning": "thần thánh",
+        "example": "In ancient stories, there are many powerful gods.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "mighty",
+        "meaning": "quyền năng, toàn năng",
+        "example": "The mighty king ruled the land for fifty years.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "cruise",
+        "meaning": "du thuyền",
+        "example": "We are going on a luxury cruise this summer.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "dig",
+        "meaning": "đào bới",
+        "example": "The dog is trying to dig a hole in the garden.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "hole",
+        "meaning": "cái hố",
+        "example": "Be careful! There is a big hole in the ground.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "spade",
+        "meaning": "cái xẻng",
+        "example": "Children like to play with a bucket and spade at the beach.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "helmet",
+        "meaning": "mũ bảo hiểm, mũ giáp",
+        "example": "You must wear a helmet when riding a motorbike.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "curious",
+        "meaning": "tò mò",
+        "example": "The little boy is curious about how the toy works.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "singular",
+        "meaning": "số ít (lượng < 2)",
+        "example": "'Apple' is singular; 'Apples' is plural.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "plural",
+        "meaning": "số nhiều (lượng >= 2)",
+        "example": "Most plural nouns end with 's'.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "Can I have...",
+        "meaning": "Dùng để order đồ",
+        "example": "Can I have a cup of coffee, please?",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "shopkeeper",
+        "meaning": "người bán hàng / chủ tiệm",
+        "example": "The shopkeeper was very friendly and helpful.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sweets / candies",
+        "meaning": "kẹo",
+        "example": "Don't eat too many sweets before dinner.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "phrase",
+        "meaning": "cụm từ",
+        "example": "What does this English phrase mean?",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "change(verb)",
+        "meaning": "thay đổi",
+        "example": "You need to change your clothes before the party.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "change",
+        "meaning": "tiền thừa, tiền lẻ",
+        "example": "Here is your coffee and your change.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "holiday / vacation",
+        "meaning": "kì nghỉ",
+        "example": "Where are you going for your summer holiday?",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "customer",
+        "meaning": "khách hàng",
+        "example": "The shop was full of customers during the sale.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "preparation",
+        "meaning": "sự chuẩn bị",
+        "example": "The party took a lot of preparation.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "luggage",
+        "meaning": "hành lý",
+        "example": "We have a lot of luggage for our two-week trip.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "prepare",
+        "meaning": "chuẩn bị",
+        "example": "I prepare my luggage to go on holiday.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "everything",
+        "meaning": "mọi thứ",
+        "example": "Everything is ready for the trip.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "pound",
+        "meaning": "bảng Anh (đơn vị tiền tệ)",
+        "example": "This magazine costs three pounds.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "1.99 (one point ninety nine)",
+        "meaning": "cách đọc giá tiền (một phẩy chín chín)",
+        "example": "The price is one point ninety nine pounds.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "magazine",
+        "meaning": "tờ tạp chí",
+        "example": "I like reading fashion magazines.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "flyer",
+        "meaning": "tờ rơi",
+        "example": "They are giving out flyers for the new restaurant.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "cost",
+        "meaning": "tốn bao nhiêu",
+        "example": "How much does this laptop cost?",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "in total",
+        "meaning": "tổng cộng",
+        "example": "There were twenty people in total at the meeting.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "dialogue / conversation",
+        "meaning": "cuộc hội thoại",
+        "example": "The two friends had a long conversation on the phone.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "treasure",
+        "meaning": "kho báu",
+        "example": "The pirates buried the treasure on a secret island.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      }
+    ]
+  }
 ]
