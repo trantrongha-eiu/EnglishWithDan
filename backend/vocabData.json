@@ -4630,5 +4630,811 @@
         "difficulty": 1
       }
     ]
+  },
+  {
+    "unitNumber": 15,
+    "title": "irregular verbs (động từ bất quy tắc)",
+    "words": [
+      {
+        "word": "be (was / were)",
+        "meaning": "thì, là, bị, ở",
+        "example": "I was happy yesterday.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "beat (beat)",
+        "meaning": "đánh, đập",
+        "example": "He beat the drum loudly.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "become (became)",
+        "meaning": "trở nên",
+        "example": "She became a doctor last year.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "begin (began)",
+        "meaning": "bắt đầu",
+        "example": "The movie began at 7 PM.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "bend (bent)",
+        "meaning": "uốn cong",
+        "example": "He bent the iron bar.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "bet (bet)",
+        "meaning": "đặt cược",
+        "example": "I bet ten dollars on the race.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "bid (bid)",
+        "meaning": "trả giá",
+        "example": "They bid for the antique vase.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "bind (bound)",
+        "meaning": "buộc, trói",
+        "example": "They bound his hands together.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "bite (bit)",
+        "meaning": "cắn",
+        "example": "The dog bit the mailman.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "bleed (bled)",
+        "meaning": "chảy máu",
+        "example": "His nose bled after the hit.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "blow (blew)",
+        "meaning": "thổi",
+        "example": "The wind blew strongly.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 2
+      },
+      {
+        "word": "break (broke)",
+        "meaning": "phá vỡ",
+        "example": "I broke my phone yesterday.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "breed (bred)",
+        "meaning": "nuôi dưỡng, sinh sản",
+        "example": "He bred rabbits for a living.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 3
+      },
+      {
+        "word": "bring (brought)",
+        "meaning": "mang đến",
+        "example": "She brought me a gift.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "build (built)",
+        "meaning": "xây dựng",
+        "example": "They built this house in 1990.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "bust (burst)",
+        "meaning": "nổ, vỡ",
+        "example": "The balloon burst suddenly.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "buy (bought)",
+        "meaning": "mua",
+        "example": "I bought a new shirt.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "cast (cast)",
+        "meaning": "ném, tung",
+        "example": "The fisherman cast his line.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "catch (caught)",
+        "meaning": "bắt",
+        "example": "He caught the ball easily.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "choose (chose)",
+        "meaning": "chọn, lựa",
+        "example": "I chose the blue one.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "cling (clung)",
+        "meaning": "bám, dính",
+        "example": "The baby clung to his mother.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "come (came)",
+        "meaning": "đến, đi đến",
+        "example": "He came home late.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "cost (cost)",
+        "meaning": "có giá là",
+        "example": "It cost five dollars.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "creep (crept)",
+        "meaning": "bò, trườn, lẻn",
+        "example": "The cat crept toward the bird.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "cut (cut)",
+        "meaning": "cắt",
+        "example": "I cut the paper.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "deal (dealt)",
+        "meaning": "giao dịch",
+        "example": "She dealt with the problem well.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "dig (dug)",
+        "meaning": "đào",
+        "example": "They dug a deep hole.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "do (did)",
+        "meaning": "làm",
+        "example": "I did my homework.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "draw (drew)",
+        "meaning": "vẽ, kéo",
+        "example": "She drew a beautiful picture.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "drink (drank)",
+        "meaning": "uống",
+        "example": "He drank all the juice.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "drive (drove)",
+        "meaning": "lái xe",
+        "example": "My dad drove me to school.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "eat (ate)",
+        "meaning": "ăn",
+        "example": "We ate pizza for lunch.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "fall (fell)",
+        "meaning": "rơi",
+        "example": "Leaves fell from the trees.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "feed (fed)",
+        "meaning": "cho ăn",
+        "example": "I fed my cat this morning.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "feel (felt)",
+        "meaning": "cảm thấy",
+        "example": "I felt very tired.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "fight (fought)",
+        "meaning": "chiến đấu",
+        "example": "They fought for their rights.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "find (found)",
+        "meaning": "tìm thấy",
+        "example": "I found my keys.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "fit (fit)",
+        "meaning": "làm cho vừa, hợp",
+        "example": "The key fit the lock.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "flee (fled)",
+        "meaning": "chạy trốn",
+        "example": "The thief fled the scene.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "fly (flew)",
+        "meaning": "bay",
+        "example": "The bird flew away.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "forbear (forbore)",
+        "meaning": "nhịn",
+        "example": "He forbore to express his anger.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "foresee (foresaw)",
+        "meaning": "thấy trước",
+        "example": "No one foresaw the crisis.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "forget (forgot)",
+        "meaning": "quên",
+        "example": "I forgot his name.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "forgive (forgave)",
+        "meaning": "tha thứ",
+        "example": "She forgave him immediately.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "forsake (forsook)",
+        "meaning": "ruồng bỏ",
+        "example": "He forsook his old friends.",
+        "audioUrl": "",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "freeze (froze)",
+        "meaning": "đóng băng",
+        "example": "The water froze overnight.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "get (got)",
+        "meaning": "nhận được",
+        "example": "I got a letter from her.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "give (gave)",
+        "meaning": "cho",
+        "example": "He gave me a book.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "go (went)",
+        "meaning": "đi",
+        "example": "They went to the park.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "grind (ground)",
+        "meaning": "nghiền, xay",
+        "example": "She ground the coffee beans.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 3
+      },
+      {
+        "word": "grow (grew)",
+        "meaning": "mọc, trồng",
+        "example": "The plant grew very fast.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "hang (hung)",
+        "meaning": "móc lên, treo lên",
+        "example": "I hung my coat on the hook.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "have (had)",
+        "meaning": "có",
+        "example": "I had a dog when I was young.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "hear (heard)",
+        "meaning": "nghe",
+        "example": "I heard a strange noise.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "hew (hewed)",
+        "meaning": "chặt, đốn",
+        "example": "They hewed the wood into planks.",
+        "audioUrl": "",
+        "level": "C2",
+        "difficulty": 3
+      },
+      {
+        "word": "hide (hid)",
+        "meaning": "giấu, trốn, nấp",
+        "example": "She hid the money under the bed.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 2
+      },
+      {
+        "word": "hit (hit)",
+        "meaning": "đánh",
+        "example": "He hit the ball with a bat.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "hold (held)",
+        "meaning": "cầm, nắm",
+        "example": "She held the baby in her arms.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "hurt (hurt)",
+        "meaning": "làm đau",
+        "example": "I hurt my leg playing soccer.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "input (input)",
+        "meaning": "đưa vào (máy tính)",
+        "example": "I input the data into the system.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "keep (kept)",
+        "meaning": "giữ",
+        "example": "He kept his promise.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "know (knew)",
+        "meaning": "biết",
+        "example": "I knew the answer.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "lay (laid)",
+        "meaning": "đặt, để",
+        "example": "She laid the book on the table.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "lead (led)",
+        "meaning": "dẫn dắt",
+        "example": "He led the team to victory.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "leave (left)",
+        "meaning": "rời đi",
+        "example": "The train left at 6 AM.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "light (lit)",
+        "meaning": "thắp sáng",
+        "example": "He lit a candle.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "lose (lost)",
+        "meaning": "mất",
+        "example": "I lost my wallet.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "make (made)",
+        "meaning": "làm, tạo ra",
+        "example": "My mom made a cake.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "meet (met)",
+        "meaning": "gặp mặt",
+        "example": "I met him last night.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "pay (paid)",
+        "meaning": "trả tiền",
+        "example": "I paid the bill.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "preset (preset)",
+        "meaning": "thiết lập sẵn",
+        "example": "I preset the oven to 180°C.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "put (put)",
+        "meaning": "đặt, để",
+        "example": "He put the keys in his pocket.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "read (read)",
+        "meaning": "đọc",
+        "example": "I read an interesting book.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "relay (relaid)",
+        "meaning": "đặt lại",
+        "example": "They relaid the tracks.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 3
+      },
+      {
+        "word": "rid (rid)",
+        "meaning": "giải thoát",
+        "example": "He rid himself of the debt.",
+        "audioUrl": "",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "ride (rode)",
+        "meaning": "cưỡi",
+        "example": "She rode her bike to school.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "ring (rang)",
+        "meaning": "rung chuông",
+        "example": "The phone rang twice.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "rise (rose)",
+        "meaning": "đứng dậy, mọc",
+        "example": "The sun rose at 6 AM.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "run (ran)",
+        "meaning": "chạy",
+        "example": "He ran very fast.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "say (said)",
+        "meaning": "nói",
+        "example": "She said 'Hello'.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "see (saw)",
+        "meaning": "thấy",
+        "example": "I saw a ghost.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "sell (sold)",
+        "meaning": "bán",
+        "example": "They sold their house.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "send (sent)",
+        "meaning": "gửi",
+        "example": "I sent an email.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "set (set)",
+        "meaning": "đặt, thiết lập",
+        "example": "I set the table.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "sew (sewed)",
+        "meaning": "may",
+        "example": "She sewed a button on.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "shine (shone)",
+        "meaning": "chiếu sáng",
+        "example": "The stars shone brightly.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "sing (sang)",
+        "meaning": "hát",
+        "example": "We sang a song.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "sit (sat)",
+        "meaning": "ngồi",
+        "example": "He sat on the chair.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "sleep (slept)",
+        "meaning": "ngủ",
+        "example": "I slept for 8 hours.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "stand (stood)",
+        "meaning": "đứng",
+        "example": "He stood at the door.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "steal (stole)",
+        "meaning": "trộm",
+        "example": "Someone stole my bike.",
+        "audioUrl": "",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "swim (swam)",
+        "meaning": "bơi",
+        "example": "I swam in the ocean.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "take (took)",
+        "meaning": "lấy, mang",
+        "example": "I took a taxi.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "teach (taught)",
+        "meaning": "dạy",
+        "example": "She taught me English.",
+        "audioUrl": "",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "tell (told)",
+        "meaning": "kể",
+        "example": "He told me a story.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "think (thought)",
+        "meaning": "nghĩ",
+        "example": "I thought about it.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "wake (woke)",
+        "meaning": "dậy",
+        "example": "I woke up early.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "wear (wore)",
+        "meaning": "mặc",
+        "example": "I wore a coat.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "win (won)",
+        "meaning": "thắng",
+        "example": "They won the game.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "write (wrote)",
+        "meaning": "viết",
+        "example": "He wrote a letter.",
+        "audioUrl": "",
+        "level": "A1",
+        "difficulty": 1
+      }
+    ]
   }
 ]
