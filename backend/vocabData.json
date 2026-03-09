@@ -3884,467 +3884,236 @@
     ]
   },
   {
-    "unitNumber": 13,
-    "title": "quiz lớp 4-5 (shine)",
-    "words": [
-      {
-        "word": "be engaged in",
-        "meaning": "tham gia vào",
-        "example": "The two countries were engaged in a long war.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "fleet",
-        "meaning": "hạm đội",
-        "example": "The naval fleet sailed at dawn.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "vessel",
-        "meaning": "tàu thuyền",
-        "example": "The fishing vessel returned safely to the port.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "account (of)",
-        "meaning": "bản tường thuật / lời kể",
-        "example": "His account of the accident was different from the others.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "vary",
-        "meaning": "khác nhau",
-        "example": "Opinions vary on this issue among experts.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "maintain (that)",
-        "meaning": "khẳng định rằng",
-        "example": "She maintains that she is innocent despite the evidence.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "outdated",
-        "meaning": "lỗi thời",
-        "example": "The system is outdated and needs updating immediately.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "overladen",
-        "meaning": "chở quá tải",
-        "example": "The truck was overladen with heavy goods.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "mishandle",
-        "meaning": "xử lý sai / điều khiển tồi",
-        "example": "The delicate situation was badly mishandled by the staff.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "undisputed",
-        "meaning": "không thể phủ nhận",
-        "example": "It is undisputed that the event changed history.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "attempt (to)",
-        "meaning": "nỗ lực làm gì",
-        "example": "They made an attempt to solve the complex problem.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "come to rest",
-        "meaning": "dừng lại / nằm lại",
-        "example": "The car came to rest by the roadside after spinning.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "seabed",
-        "meaning": "đáy biển",
-        "example": "The submarine explored the deep seabed.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "approximately",
-        "meaning": "xấp xỉ",
-        "example": "The journey takes approximately two hours.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "hull",
-        "meaning": "thân tàu",
-        "example": "The hull was badly damaged after hitting the rocks.",
-        "audioUrl": "",
-        "level": "C2",
-        "difficulty": 3
-      },
-      {
-        "word": "act as",
-        "meaning": "đóng vai trò như",
-        "example": "This room acts as a meeting space for the team.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "erode",
-        "meaning": "xói mòn",
-        "example": "Strong waves eroded the coastline over many years.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "degradation",
-        "meaning": "sự suy thoái / xuống cấp",
-        "example": "Environmental degradation is a serious global issue.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "intact",
-        "meaning": "còn nguyên vẹn",
-        "example": "The building remained intact after the heavy storm.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "minimise",
-        "meaning": "giảm thiểu",
-        "example": "We must take action to minimise risks.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "obstruction",
-        "meaning": "vật cản",
-        "example": "There was an obstruction in the pipe causing a leak.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "uncover",
-        "meaning": "khám phá / làm lộ ra",
-        "example": "The police uncovered new evidence during the investigation.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "intermittently",
-        "meaning": "gián đoạn / lúc có lúc không",
-        "example": "It rained intermittently all day yesterday.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "fade into obscurity",
-        "meaning": "rơi vào quên lãng",
-        "example": "After one hit song, the singer faded into obscurity.",
-        "audioUrl": "",
-        "level": "C2",
-        "difficulty": 3
-      },
-      {
-        "word": "initiate",
-        "meaning": "khởi xướng",
-        "example": "The company initiated a new project to save energy.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "in conjunction with",
-        "meaning": "cùng với / liên kết với",
-        "example": "The event was organised in conjunction with the local school.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "collaboration",
-        "meaning": "sự hợp tác",
-        "example": "The project is a collaboration between two major universities.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "reveal",
-        "meaning": "tiết lộ",
-        "example": "The report revealed shocking facts about the scandal.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "excavation",
-        "meaning": "cuộc khai quật",
-        "example": "The excavation of the ancient tomb lasted three years.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "climax",
-        "meaning": "cao trào / đỉnh điểm",
-        "example": "The film reached its climax at the very end.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "as yet",
-        "meaning": "cho đến nay",
-        "example": "The full results are not known as yet.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "treasure trove",
-        "meaning": "kho báu",
-        "example": "The old attic was a treasure trove of historical photos.",
-        "audioUrl": "",
-        "level": "C2",
-        "difficulty": 3
-      },
-      {
-        "word": "artefact",
-        "meaning": "hiện vật",
-        "example": "The museum displays ancient artefacts from Egypt.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "salvage",
-        "meaning": "trục vớt / cứu vãn",
-        "example": "The team worked hard to salvage the sunken ship.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "feasible",
-        "meaning": "khả thi",
-        "example": "The plan is not financially feasible for us.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "go-ahead",
-        "meaning": "sự chấp thuận cho phép",
-        "example": "They finally gave the go-ahead for the construction.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "hydraulic jack",
-        "meaning": "kích thủy lực",
-        "example": "The car was lifted using a heavy-duty hydraulic jack.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "suction effect",
-        "meaning": "hiệu ứng hút",
-        "example": "The suction effect of the mud made lifting difficult.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "precise",
-        "meaning": "chính xác",
-        "example": "The machine needs precise control to operate safely.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "positioning",
-        "meaning": "sự định vị / đặt vị trí",
-        "example": "Careful positioning of the sensors is essential.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "delicate",
-        "meaning": "mỏng manh / dễ vỡ",
-        "example": "The antique vase is very delicate.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "framework",
-        "meaning": "khung cấu trúc",
-        "example": "The steel framework supports the entire building.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "pursue a career in",
-        "meaning": "theo đuổi sự nghiệp trong lĩnh vực",
-        "example": "I plan to pursue a career in education.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "have a strong passion for",
-        "meaning": "có đam mê mạnh mẽ với",
-        "example": "I’ve always had a strong passion for helping others.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "be deeply interested in",
-        "meaning": "rất quan tâm đến",
-        "example": "I’m deeply interested in technology and innovation.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "provide a sense of fulfilment",
-        "meaning": "mang lại cảm giác mãn nguyện",
-        "example": "Teaching provides me with a sense of fulfilment.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "make a positive impact on",
-        "meaning": "tạo ảnh hưởng tích cực đến",
-        "example": "I want to make a positive impact on young learners.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "require strong interpersonal skills",
-        "meaning": "đòi hỏi kỹ năng giao tiếp tốt",
-        "example": "This job requires strong interpersonal skills.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "offer opportunities for career advancement",
-        "meaning": "mang lại cơ hội thăng tiến",
-        "example": "It offers great opportunities for career advancement.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "work in a dynamic environment",
-        "meaning": "làm việc trong môi trường năng động",
-        "example": "I prefer to work in a dynamic environment.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "deal with challenging situations",
-        "meaning": "xử lý tình huống khó khăn",
-        "example": "I enjoy dealing with challenging situations.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "be financially rewarding",
-        "meaning": "mang lại thu nhập tốt",
-        "example": "Although demanding, it can be financially rewarding.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "maintain a healthy work-life balance",
-        "meaning": "duy trì cân bằng công việc – cuộc sống",
-        "example": "I hope to maintain a healthy work-life balance.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "contribute to society",
-        "meaning": "đóng góp cho xã hội",
-        "example": "I want to contribute to society in a meaningful way.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "broaden my horizons",
-        "meaning": "mở rộng tầm nhìn",
-        "example": "This career would help me broaden my horizons.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "turn my passion into a profession",
-        "meaning": "biến đam mê thành nghề nghiệp",
-        "example": "I hope to turn my passion into a profession.",
-        "audioUrl": "",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "gain hands-on experience",
-        "meaning": "có được kinh nghiệm thực tế",
-        "example": "I want to gain hands-on experience in the field.",
-        "audioUrl": "",
-        "level": "B2",
-        "difficulty": 2
-      }
-    ]
-  },
+  "unitNumber": 13,
+  "title": "quiz 4-5 (shine)",
+  "words": [
+    {
+      "word": "key",
+      "meaning": "(v): gõ phím",
+      "example": "She keys the data into the computer very fast.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "specialize in",
+      "meaning": "(v): chuyên về",
+      "example": "They specialize in meat products.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "propose",
+      "meaning": "(v): đề xuất, cầu hôn",
+      "example": "Tom has just proposed to Jerry; Sally has proposed a new project.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "disabled / handicapped",
+      "meaning": "(adj): khuyết tật",
+      "example": "The building has special access for disabled people.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "wide",
+      "meaning": "(adj): rộng lớn",
+      "example": "The river is very wide at this point.",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "widen",
+      "meaning": "(v): làm rộng ra",
+      "example": "They spent more money to widen the road.",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "age",
+      "meaning": "(n): tuổi; (v): già đi",
+      "example": "She is twenty years of age. / Stress can age you quickly.",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "aged",
+      "meaning": "(adj): đã có tuổi",
+      "example": "He is caring for his aged parents.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "pavement / sidewalk",
+      "meaning": "(n): vỉa hè",
+      "example": "Don't ride your bicycle on the pavement.",
+      "audioUrl": "",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "load",
+      "meaning": "(v): xếp đồ lên xe",
+      "example": "They loaded the luggage into the car.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "unload",
+      "meaning": "(v): dỡ đồ xuống xe",
+      "example": "The workers are unloading the truck.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "restrict",
+      "meaning": "(v): hạn chế",
+      "example": "Speed is restricted to 30 mph in this area.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "restriction",
+      "meaning": "(n): sự hạn chế",
+      "example": "There are strict restrictions on parking here.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "regulation",
+      "meaning": "(n): quy định",
+      "example": "You must follow the safety regulations.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "raise money",
+      "meaning": "(v): gây quỹ",
+      "example": "They are running a marathon to raise money for charity.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "particularly",
+      "meaning": "(adv): cụ thể, đặc biệt là",
+      "example": "I love fruits, particularly mangoes.",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "chairman",
+      "meaning": "(n): chủ tịch",
+      "example": "The chairman called for a meeting.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "visibility",
+      "meaning": "(n): sự thấy được / tầm nhìn",
+      "example": "The fog made visibility very poor.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "drop off",
+      "meaning": "(v): thả xuống xe (người)",
+      "example": "Can you drop me off at the station?",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "police force",
+      "meaning": "(n): lực lượng cảnh sát",
+      "example": "The city has a very professional police force.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "forbid / ban / prohibit",
+      "meaning": "(v): cấm",
+      "example": "Smoking is forbidden in this building.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "ideal",
+      "meaning": "(adj): lí tưởng (hợp lí nhất)",
+      "example": "It's an ideal place for a picnic.",
+      "level": "B1",
+      "difficulty": 1
+    },
+    {
+      "word": "bend / curve",
+      "meaning": "(n): ngã quẹo, đường cong",
+      "example": "The car went around the bend too fast.",
+      "level": "B1",
+      "difficulty": 2
+    },
+    {
+      "word": "brace",
+      "meaning": "(n): niềng răng",
+      "example": "She has been wearing a brace for six months.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "bracelet",
+      "meaning": "(n): lắc tay",
+      "example": "He bought her a gold bracelet for her birthday.",
+      "level": "A2",
+      "difficulty": 1
+    },
+    {
+      "word": "estimate",
+      "meaning": "(v): ước tính",
+      "example": "They estimate that the journey will take two hours.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "qualified",
+      "meaning": "(adj): đạt tiêu chuẩn / đủ khả năng",
+      "example": "She is a highly qualified teacher.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "spending / expenditure",
+      "meaning": "(n): chi tiêu",
+      "example": "Public expenditure on health has increased.",
+      "level": "C1",
+      "difficulty": 3
+    },
+    {
+      "word": "extraordinary",
+      "meaning": "(adj): đặc biệt, phi thường",
+      "example": "She has an extraordinary talent for music.",
+      "level": "B2",
+      "difficulty": 2
+    },
+    {
+      "word": "insulate",
+      "meaning": "(v): cách nhiệt",
+      "example": "You can insulate your home to save on heating bills.",
+      "level": "C1",
+      "difficulty": 3
+    },
+    {
+      "word": "strip",
+      "meaning": "(v): lột vỏ cây / lột bỏ",
+      "example": "Deer had stripped the bark from the tree.",
+      "level": "C1",
+      "difficulty": 3
+    },
+    {
+      "word": "elastic",
+      "meaning": "(adj/n): đàn hồi / dây thun",
+      "example": "The material is very elastic.",
+      "level": "B2",
+      "difficulty": 2
+    }
+  ]
+},
   {
     "unitNumber": 14,
     "title": "Bé My",
