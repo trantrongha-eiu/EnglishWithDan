@@ -3178,326 +3178,228 @@
     "title": "foundation quiz",
     "words": [
       {
-        "word": "Hold (v)",
-        "meaning": "tổ chức, nắm giữ",
-        "example": "They hold a meeting every Monday.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "Paralyze (v)",
-        "meaning": "làm tê liệt",
-        "example": "The accident paralyzed his legs.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Physical disability (n)",
-        "meaning": "khiếm khuyết về thể chất",
-        "example": "He didn't let his physical disability stop him.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Athletes / sportspersons (n)",
-        "meaning": "vận động viên",
-        "example": "Thousands of athletes competed in the games.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "Ceremony (n)",
-        "meaning": "nghi lễ, buổi lễ",
-        "example": "The opening ceremony was grand.",
+        "word": "definite (adj)",
+        "meaning": "chắc chắn",
+        "example": "It’s a definite answer.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "Volunteer (v)",
-        "meaning": "làm tình nguyện",
-        "example": "I volunteer at the local shelter.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Piece of music / art",
-        "meaning": "một bài hát / một tác phẩm nghệ thuật",
-        "example": "This is a beautiful piece of art.",
+        "word": "probable (adj)",
+        "meaning": "có thể xảy ra",
+        "example": "It’s probable that he’s late.",
         "level": "B1",
         "difficulty": 2
       },
       {
-        "word": "Achieve / Attain (v)",
-        "meaning": "đạt được, có được",
-        "example": "My dream is to achieve a 7.0 in IELTS.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Achievement / Attainment (n)",
-        "meaning": "thành tựu, sự đạt được",
-        "example": "Passing the exam was a great achievement.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Disabled / Handicapped (adj)",
-        "meaning": "khuyết tật",
-        "example": "Special ramps are built for disabled people.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Compete (v)",
-        "meaning": "thi đấu, cạnh tranh",
-        "example": "Athletes from 50 countries compete here.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Competition / Contest (n)",
-        "meaning": "cuộc thi",
-        "example": "She won first prize in the singing competition.",
+        "word": "definitely (adv)",
+        "meaning": "chắc chắn rồi",
+        "example": "I will definitely join the party.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Sprint (n)",
-        "meaning": "chạy nước rút (100m/200m)",
-        "example": "He is the fastest in the 100m sprint.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "Stand out from the crowd",
-        "meaning": "xuất chúng, nổi bật giữa đám đông",
-        "example": "Her talent makes her stand out from the crowd.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Female (adj/n)",
-        "meaning": "thuộc về phụ nữ / phái nữ",
-        "example": "She is a strong female role model.",
+        "word": "probably (adv)",
+        "meaning": "có lẽ",
+        "example": "I will probably eat pho for lunch.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Crowd (n) / Crowded (adj)",
-        "meaning": "đám đông / đông đúc",
-        "example": "The market was very crowded.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "Last (v)",
-        "meaning": "kéo dài",
-        "example": "A semester at EIU usually lasts for 3 months.",
+        "word": "as = because = since",
+        "meaning": "bởi vì (liên từ chỉ nguyên nhân)",
+        "example": "As he’s sick, he won’t come to class.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "A couple of",
-        "meaning": "một vài (some)",
-        "example": "I'll be there in a couple of minutes.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "Grand opening (n)",
-        "meaning": "lễ khai trương",
-        "example": "We are invited to the grand opening of the mall.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Appearance (n)",
-        "meaning": "ngoại hình, diện mạo",
-        "example": "The monster’s appearance is disgusting.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Palace (n)",
-        "meaning": "cung điện",
-        "example": "The King lives in a huge palace.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Majestic (adj) / Majesty (n)",
-        "meaning": "hùng vĩ / sự hùng vĩ",
-        "example": "The mountain view is truly majestic.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Perform (v) / Performance (n)",
-        "meaning": "biểu diễn / sự trình diễn, hiệu năng",
-        "example": "The band performed their new song.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Be into something",
-        "meaning": "thích cái gì đó (like something)",
-        "example": "I am into tennis = I like tennis.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "According to",
-        "meaning": "dựa theo, theo như",
-        "example": "According to the author, he must be crazy.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Organize (v) / Well-organized (adj)",
-        "meaning": "tổ chức / được tổ chức tốt",
-        "example": "The event was very well-organized.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Cozy atmosphere",
-        "meaning": "bầu không khí ấm cúng",
-        "example": "The restaurant has a cozy atmosphere.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Spread (v)",
-        "meaning": "lan tỏa, phết",
-        "example": "He spread butter all over the toast.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Take part in / Join",
-        "meaning": "tham gia vào",
-        "example": "Do you want to take part in the match?",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "What will you have for dinner?",
-        "meaning": "Bạn sẽ ăn món gì? (tương lai - chưa ăn)",
-        "example": "Asking about a future meal.",
+        "word": "like (prep)",
+        "meaning": "giống như",
+        "example": "He looks like his dad.",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "What did you have for dinner?",
-        "meaning": "Bạn đã ăn món gì? (quá khứ - đã ăn rồi)",
-        "example": "Asking about a finished meal.",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "Should I...?",
-        "meaning": "Hỏi xem có nên làm gì không",
-        "example": "Should I take a course in tennis?",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "Formula / Recipe",
-        "meaning": "công thức (toán/hóa) / công thức nấu ăn",
-        "example": "I need a recipe for this cake.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Fact (n) / Factual (adj)",
-        "meaning": "sự thật / có thật, thực tế",
-        "example": "Is that story factual or fiction?",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Gadget / Device",
-        "meaning": "thiết bị, công cụ",
-        "example": "A smartphone is a useful digital gadget.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "Operation system (OS)",
-        "meaning": "hệ điều hành",
-        "example": "What operation system does your phone use?",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Distinguish (v)",
-        "meaning": "phân biệt",
-        "example": "Can you distinguish between a tablet and an iPad?",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "Look up / Search (v)",
-        "meaning": "tra cứu, tìm kiếm thông tin",
-        "example": "I look up info on the internet.",
+        "word": "like = such as",
+        "meaning": "ví dụ như",
+        "example": "I like fruits like apples and bananas.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Present (v/adj/n)",
-        "meaning": "thuyết trình / có mặt / món quà",
-        "example": "She will present her idea to the class.",
+        "word": "What’s he like?",
+        "meaning": "Hỏi về tính cách hoặc ngoại hình",
+        "example": "What's your new teacher like? - He's very kind.",
+        "level": "A2",
+        "difficulty": 2
+      },
+      {
+        "word": "What does he like?",
+        "meaning": "Hỏi về sở thích",
+        "example": "What does he like doing in his free time?",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "look like / seem like",
+        "meaning": "trông như / dường như là",
+        "example": "It looks like rain. / It seems like a problem.",
         "level": "B1",
         "difficulty": 2
       },
       {
-        "word": "Absent (adj)",
-        "meaning": "vắng mặt",
-        "example": "He was absent from school today.",
+        "word": "seem + adj",
+        "meaning": "có vẻ như thế nào đó",
+        "example": "He seems tired after the long trip.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "either…or",
+        "meaning": "1 trong 2",
+        "example": "I eat either rice or noodles.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "neither…nor",
+        "meaning": "không cái nào trong cả 2",
+        "example": "I like neither tea nor coffee.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "both",
+        "meaning": "cả hai",
+        "example": "I like both of them.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Attend (v) / Attendance (n)",
-        "meaning": "tham dự / sự tham dự",
-        "example": "The teacher takes attendance every morning.",
+        "word": "contain (v)",
+        "meaning": "chứa, bao gồm bên trong",
+        "example": "Water contains minerals.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "Attach (v) / Attachment (n)",
-        "meaning": "đính kèm / tệp đính kèm",
-        "example": "Please see the file in the attachment.",
+        "word": "A 21-year-old boy",
+        "meaning": "Cấu trúc tính từ ghép (tương đương who is 21)",
+        "example": "He is a 21-year-old boy.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "remain + adj",
+        "meaning": "vẫn còn, giữ nguyên trạng thái",
+        "example": "Prices remain stable this month.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "decrease / fall / drop",
+        "meaning": "giảm xuống (xu hướng)",
+        "example": "The temperature dropped significantly.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "Own (v)",
-        "meaning": "sở hữu",
-        "example": "I own three farms.",
+        "word": "increase / rise / surge",
+        "meaning": "tăng lên / tăng vọt",
+        "example": "Sales increased from 70% to 90%.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "Backup (v/n)",
-        "meaning": "sao lưu",
-        "example": "Always backup your important files.",
+        "word": "increased by 20%",
+        "meaning": "tăng thêm một khoảng là 20%",
+        "example": "The price increased by 20% compared to last year.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "dramatically / significantly",
+        "meaning": "mạnh mẽ, đáng kể (mức độ mạnh)",
+        "example": "The population grew dramatically.",
+        "level": "C1",
+        "difficulty": 3
+      },
+      {
+        "word": "steadily / gradually",
+        "meaning": "đều đặn / dần dần (mức độ vừa)",
+        "example": "The economy is recovering steadily.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "slightly (adv)",
+        "meaning": "một chút, không đáng kể (mức độ nhẹ)",
+        "example": "The profit rose slightly.",
         "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "a piece of music / art / tech",
+        "meaning": "một bài nhạc / tác phẩm / thiết bị",
+        "example": "An iPad is a great piece of technology.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "cooker / blender / kettle",
+        "meaning": "nồi cơm / máy xay / ấm điện",
+        "example": "I use the blender to make smoothies.",
+        "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Store (v) / Storage (n)",
-        "meaning": "lưu trữ / bộ nhớ, kho lưu trữ",
-        "example": "Where do you store your photos?",
-        "level": "B1",
+        "word": "iron / microwave / oven / stove",
+        "meaning": "bàn ủi / lò vi sóng / lò nướng / bếp",
+        "example": "Don't touch the stove, it's hot!",
+        "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "Release (v)",
-        "meaning": "ra mắt, phát hành",
-        "example": "The new iPhone was released last month.",
-        "level": "B1",
+        "word": "fridge / washing machine",
+        "meaning": "tủ lạnh / máy giặt",
+        "example": "Put the milk in the fridge.",
+        "level": "A1",
         "difficulty": 1
+      },
+      {
+        "word": "dishwasher / air conditioner",
+        "meaning": "máy rửa chén / máy lạnh",
+        "example": "Turn on the air conditioner, please.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "speaker / hair dryer",
+        "meaning": "loa / máy sấy tóc",
+        "example": "I need a hair dryer to dry my hair.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "safe (n) / hanger / rack",
+        "meaning": "két sắt / móc treo / giá treo",
+        "example": "Keep your money in the safe.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "drill (n/v)",
+        "meaning": "cái khoan / khoan",
+        "example": "He is using a drill to make a hole.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "will (n)",
+        "meaning": "ý chí / di chúc",
+        "example": "He has a strong will to win.",
+        "level": "C1",
+        "difficulty": 2
       }
     ]
   },
