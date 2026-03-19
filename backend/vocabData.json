@@ -3639,284 +3639,200 @@
     "title": "Bé My",
     "words": [
       {
-        "word": "must / have to",
-        "meaning": "phải làm gì đó",
-        "example": "I must brush my teeth / I have to go to school.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "verb",
-        "meaning": "động từ (từ chỉ hành động)",
-        "example": "Common verbs include: dance, sing, walk.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "noun",
-        "meaning": "danh từ (chỉ đồ vật, sự vật, cảm xúc)",
-        "example": "A pencil, happiness, and color are all nouns.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "line",
-        "meaning": "đường kẻ, dòng",
-        "example": "Please write your name on the first line.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "thing",
-        "meaning": "đồ đạc, vật",
-        "example": "What is that thing on the table?",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "god",
-        "meaning": "thần thánh",
-        "example": "In ancient stories, there are many powerful gods.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "mighty",
-        "meaning": "quyền năng, toàn năng",
-        "example": "The mighty king ruled the land for fifty years.",
-        "audioUrl": "",
+        "word": "demonstrate (v)",
+        "meaning": "minh họa, chứng minh",
+        "example": "The teacher demonstrated how to use the new software.",
         "level": "B2",
         "difficulty": 2
       },
       {
-        "word": "cruise",
-        "meaning": "du thuyền",
-        "example": "We are going on a luxury cruise this summer.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "dig",
-        "meaning": "đào bới",
-        "example": "The dog is trying to dig a hole in the garden.",
-        "audioUrl": "",
+        "word": "incorrect (adj)",
+        "meaning": "không đúng, sai",
+        "example": "That answer is incorrect; please try again.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "hole",
-        "meaning": "cái hố",
-        "example": "Be careful! There is a big hole in the ground.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "spade",
-        "meaning": "cái xẻng",
-        "example": "Children like to play with a bucket and spade at the beach.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "helmet",
-        "meaning": "mũ bảo hiểm, mũ giáp",
-        "example": "You must wear a helmet when riding a motorbike.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "curious",
-        "meaning": "tò mò",
-        "example": "The little boy is curious about how the toy works.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "singular",
-        "meaning": "số ít (lượng < 2)",
-        "example": "'Apple' is singular; 'Apples' is plural.",
-        "audioUrl": "",
+        "word": "correct (adj/v)",
+        "meaning": "đúng / sửa cho đúng",
+        "example": "Is this the correct way to the post office?",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "plural",
-        "meaning": "số nhiều (lượng >= 2)",
-        "example": "Most plural nouns end with 's'.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "Can I have...",
-        "meaning": "Dùng để order đồ",
-        "example": "Can I have a cup of coffee, please?",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "shopkeeper",
-        "meaning": "người bán hàng / chủ tiệm",
-        "example": "The shopkeeper was very friendly and helpful.",
-        "audioUrl": "",
+        "word": "following (adj)",
+        "meaning": "theo sau, đi kèm",
+        "example": "Please answer the following questions after reading.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "sweets / candies",
-        "meaning": "kẹo",
-        "example": "Don't eat too many sweets before dinner.",
-        "audioUrl": "",
-        "level": "A1",
+        "word": "complete (v/adj)",
+        "meaning": "hoàn thành / đầy đủ",
+        "example": "You need to complete the form to register.",
+        "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "phrase",
-        "meaning": "cụm từ",
-        "example": "What does this English phrase mean?",
-        "audioUrl": "",
+        "word": "contain (v)",
+        "meaning": "chứa, bao gồm",
+        "example": "This orange juice contains a lot of Vitamin C.",
         "level": "B1",
         "difficulty": 1
       },
       {
-        "word": "change(verb)",
-        "meaning": "thay đổi",
-        "example": "You need to change your clothes before the party.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "change",
-        "meaning": "tiền thừa, tiền lẻ",
-        "example": "Here is your coffee and your change.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "holiday / vacation",
-        "meaning": "kì nghỉ",
-        "example": "Where are you going for your summer holiday?",
-        "audioUrl": "",
+        "word": "use (v/n)",
+        "meaning": "sử dụng",
+        "example": "May I use your pen for a moment?",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "customer",
-        "meaning": "khách hàng",
-        "example": "The shop was full of customers during the sale.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "preparation",
-        "meaning": "sự chuẩn bị",
-        "example": "The party took a lot of preparation.",
-        "audioUrl": "",
+        "word": "identify (v)",
+        "meaning": "xác định, nhận dạng",
+        "example": "Can you identify the man in this photo?",
         "level": "B2",
         "difficulty": 2
       },
       {
-        "word": "luggage",
-        "meaning": "hành lý",
-        "example": "We have a lot of luggage for our two-week trip.",
-        "audioUrl": "",
+        "word": "versus (prep)",
+        "meaning": "đấu với (thường viết tắt là vs.)",
+        "example": "Tonight’s match is Vietnam versus Thailand.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "fair (n/adj)",
+        "meaning": "hội chợ / công bằng",
+        "example": "We enjoyed many games at the local fair.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "international (adj)",
+        "meaning": "quốc tế",
+        "example": "Tan Son Nhat is an international airport.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "national (adj)",
+        "meaning": "thuộc về quốc gia",
+        "example": "The lotus is the national flower of Vietnam.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "participant (n)",
+        "meaning": "người tham gia",
+        "example": "There are over 100 participants in the marathon.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "participate in (v)",
+        "meaning": "tham gia vào",
+        "example": "She loves to participate in school activities.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "exhibit (v/n)",
+        "meaning": "triển lãm / vật trưng bày",
+        "example": "They are exhibiting new paintings at the gallery.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "culture (n)",
+        "meaning": "văn hóa",
+        "example": "Learning a language helps you understand its culture.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "mechanic (n)",
+        "meaning": "thợ máy",
+        "example": "I took my car to the mechanic to fix the engine.",
         "level": "B1",
         "difficulty": 2
       },
       {
-        "word": "prepare",
-        "meaning": "chuẩn bị",
-        "example": "I prepare my luggage to go on holiday.",
-        "audioUrl": "",
+        "word": "gasoline (n)",
+        "meaning": "xăng (hệ Mỹ - Anh là petrol)",
+        "example": "The price of gasoline has increased this week.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "bite (v/n)",
+        "meaning": "cắn / miếng cắn",
+        "example": "Be careful, that dog might bite you!",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "everything",
-        "meaning": "mọi thứ",
-        "example": "Everything is ready for the trip.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "pound",
-        "meaning": "bảng Anh (đơn vị tiền tệ)",
-        "example": "This magazine costs three pounds.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "1.99 (one point ninety nine)",
-        "meaning": "cách đọc giá tiền (một phẩy chín chín)",
-        "example": "The price is one point ninety nine pounds.",
-        "audioUrl": "",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "magazine",
-        "meaning": "tờ tạp chí",
-        "example": "I like reading fashion magazines.",
-        "audioUrl": "",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "flyer",
-        "meaning": "tờ rơi",
-        "example": "They are giving out flyers for the new restaurant.",
-        "audioUrl": "",
+        "word": "escape (v/n)",
+        "meaning": "chạy trốn, thoát khỏi",
+        "example": "The prisoner tried to escape from the jail.",
         "level": "B1",
         "difficulty": 2
       },
       {
-        "word": "cost",
-        "meaning": "tốn bao nhiêu",
-        "example": "How much does this laptop cost?",
-        "audioUrl": "",
+        "word": "juggle (v)",
+        "meaning": "tung hứng",
+        "example": "The clown can juggle five balls at once.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "hide and seek (n)",
+        "meaning": "trò chơi trốn tìm",
+        "example": "Children love playing hide and seek in the park.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "echo (v/n)",
+        "meaning": "vang vọng / tiếng vang",
+        "example": "His voice echoed through the empty hallway.",
+        "level": "B2",
+        "difficulty": 2
+      },
+      {
+        "word": "celebration (n)",
+        "meaning": "sự ăn mừng, lễ kỷ niệm",
+        "example": "We had a big celebration for his birthday.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "set (v)",
+        "meaning": "lặn (mặt trời/mặt trăng)",
+        "example": "The sun sets in the west.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "in total",
-        "meaning": "tổng cộng",
-        "example": "There were twenty people in total at the meeting.",
-        "audioUrl": "",
-        "level": "B1",
+        "word": "west (n/adj)",
+        "meaning": "phía Tây",
+        "example": "They are traveling towards the west.",
+        "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "dialogue / conversation",
-        "meaning": "cuộc hội thoại",
-        "example": "The two friends had a long conversation on the phone.",
-        "audioUrl": "",
-        "level": "B1",
+        "word": "south (n/adj)",
+        "meaning": "phía Nam",
+        "example": "Can Tho is a city in the south of Vietnam.",
+        "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "treasure",
-        "meaning": "kho báu",
-        "example": "The pirates buried the treasure on a secret island.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
+        "word": "heritage (n)",
+        "meaning": "di sản",
+        "example": "Hoi An is a world cultural heritage site.",
+        "level": "C1",
+        "difficulty": 3
       }
     ]
   },
