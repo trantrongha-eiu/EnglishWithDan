@@ -3636,203 +3636,287 @@
   },
   {
     "unitNumber": 14,
-    "title": "Bé My",
+    "title": "BÉ MY",
     "words": [
       {
-        "word": "demonstrate",
-        "meaning": "minh họa, chứng minh",
-        "example": "The teacher demonstrated how to use the new software.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "incorrect",
-        "meaning": "không đúng",
-        "example": "That answer is incorrect; please try again.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "correct",
-        "meaning": "đúng",
-        "example": "Is this the correct way to the post office?",
+        "word": "ticket",
+        "meaning": "vé",
+        "example": "I bought a ticket for the new Batman movie.",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "following",
-        "meaning": "theo sau, đi kèm",
-        "example": "Please answer the following questions after reading.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "complete",
-        "meaning": "hoàn thành",
-        "example": "You need to complete the form to register.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "contain",
-        "meaning": "chứa, bao gồm",
-        "example": "This orange juice contains a lot of Vitamin C.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "use",
-        "meaning": "sử dụng",
-        "example": "May I use your pen for a moment?",
+        "word": "movie theater / cinema",
+        "meaning": "rạp chiếu phim",
+        "example": "Let's meet in front of the movie theater at 7 PM.",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "identify",
-        "meaning": "xác định",
-        "example": "Can you identify the man in this photo?",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "versus",
-        "meaning": "đấu với (thường viết tắt là vs.)",
-        "example": "Tonight’s match is Vietnam versus Thailand.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "fair",
-        "meaning": "hội chợ",
-        "example": "We enjoyed many games at the local fair.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "international",
-        "meaning": "quốc tế",
-        "example": "Tan Son Nhat is an international airport.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "national",
-        "meaning": "thuộc về quốc gia",
-        "example": "The lotus is the national flower of Vietnam.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "participant",
-        "meaning": "người tham gia",
-        "example": "There are over 100 participants in the marathon.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "participate in",
-        "meaning": "tham gia vào",
-        "example": "She loves to participate in school activities.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "exhibit",
-        "meaning": "triển lãm ",
-        "example": "They are exhibiting new paintings at the gallery.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "culture",
-        "meaning": "văn hóa",
-        "example": "Learning a language helps you understand its culture.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "mechanic",
-        "meaning": "thợ máy",
-        "example": "I took my car to the mechanic to fix the engine.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "gasoline",
-        "meaning": "xăng",
-        "example": "The price of gasoline has increased this week.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "bite",
-        "meaning": "cắn",
-        "example": "Be careful, that dog might bite you!",
+        "word": "celebrate",
+        "meaning": "ăn mừng",
+        "example": "We are going to celebrate my birthday at a restaurant.",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "escape",
-        "meaning": "chạy trốn, thoát khỏi",
-        "example": "The prisoner tried to escape from the jail.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "juggle",
-        "meaning": "tung hứng",
-        "example": "The clown can juggle five balls at once.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "hide and seek (n)",
-        "meaning": "trò chơi trốn tìm",
-        "example": "Children love playing hide and seek in the park.",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "echo (v/n)",
-        "meaning": "vang vọng",
-        "example": "His voice echoed through the empty hallway.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "celebration (n)",
-        "meaning": "sự ăn mừng, lễ kỷ niệm",
-        "example": "We had a big celebration for his birthday.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "set (v)",
-        "meaning": "lặn (mặt trời/mặt trăng)",
-        "example": "The sun sets in the west.",
+        "word": "look for / find",
+        "meaning": "tìm kiếm",
+        "example": "I am looking for my keys; have you seen them?",
         "level": "A2",
         "difficulty": 1
       },
       {
-        "word": "west (n/adj)",
-        "meaning": "phía Tây",
-        "example": "They are traveling towards the west.",
+        "word": "guest",
+        "meaning": "khách",
+        "example": "We have ten guests coming for dinner tonight.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "waiter",
+        "meaning": "phục vụ nam",
+        "example": "The waiter brought us the menu.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "waitress",
+        "meaning": "phục vụ nữ",
+        "example": "She is a very famous waitress at that cafe.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "actor",
+        "meaning": "diễn viên nam",
+        "example": "He is a talented young actor.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "actress",
+        "meaning": "diễn viên nữ",
+        "example": "She is a very famous actress in Vietnam.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "act",
+        "meaning": "diễn, hành động",
+        "example": "He acts very well in action movies.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "director",
+        "meaning": "đạo diễn",
+        "example": "The director told the actors what to do.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "cook / chef",
+        "meaning": "đầu bếp",
+        "example": "The chef prepared a delicious meal for us.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "travel",
+        "meaning": "di chuyển, du lịch",
+        "example": "I want to travel around the world.",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "south (n/adj)",
-        "meaning": "phía Nam",
-        "example": "Can Tho is a city in the south of Vietnam.",
+        "word": "famous",
+        "meaning": "nổi tiếng",
+        "example": "Son Tung M-TP is a famous singer.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "film star",
+        "meaning": "ngôi sao điện ảnh",
+        "example": "Many film stars attended the event.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "ill / sick",
+        "meaning": "bị bệnh",
+        "example": "I stayed at home because I felt ill.",
         "level": "A1",
         "difficulty": 1
       },
       {
-        "word": "heritage (n)",
-        "meaning": "di sản",
-        "example": "Hoi An is a world cultural heritage site.",
-        "level": "C1",
-        "difficulty": 3
+        "word": "inside",
+        "meaning": "bên trong",
+        "example": "It's raining, let's go inside.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "huge / large",
+        "meaning": "khổng lồ, bự",
+        "example": "They live in a huge house with a garden.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "feed",
+        "meaning": "cho ăn",
+        "example": "Don't forget to feed the cat.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "castle",
+        "meaning": "lâu đài",
+        "example": "The princess lives in a beautiful castle.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "go fishing",
+        "meaning": "đi câu cá",
+        "example": "My father loves to go fishing on weekends.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "paint",
+        "meaning": "sơn, vẽ",
+        "example": "They are painting the wall blue.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "clean / tidy",
+        "meaning": "dọn dẹp, sạch sẽ",
+        "example": "You should tidy your room every day.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "watch film",
+        "meaning": "xem phim",
+        "example": "We watched a funny film last night.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "go sailing",
+        "meaning": "đi thuyền buồm",
+        "example": "We went sailing on the lake last summer.",
+        "level": "B1",
+        "difficulty": 2
+      },
+      {
+        "word": "ground",
+        "meaning": "mặt đất",
+        "example": "The ground was wet after the rain.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "above",
+        "meaning": "ở trên",
+        "example": "The birds are flying above the trees.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "stone",
+        "meaning": "cục đá",
+        "example": "He threw a stone into the river.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "patient",
+        "meaning": "bệnh nhân",
+        "example": "The doctor is talking to a patient.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "field",
+        "meaning": "cánh đồng",
+        "example": "The farmers are working in the rice field.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "text",
+        "meaning": "văn bản, tin nhắn",
+        "example": "Send me a text when you arrive.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "chilly sauce",
+        "meaning": "tương ớt",
+        "example": "I like eating pizza with chilly sauce.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "soy sauce / soy milk",
+        "meaning": "nước tương / sữa đậu nành",
+        "example": "I drink soy milk every morning.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "fish sauce",
+        "meaning": "nước mắm",
+        "example": "Fish sauce is a traditional ingredient in Vietnam.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "would like / want",
+        "meaning": "muốn",
+        "example": "I would like a cup of coffee, please.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "weak",
+        "meaning": "yếu ớt",
+        "example": "He felt weak after the fever.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "grow",
+        "meaning": "lớn lên, phát triển",
+        "example": "Rice grows in warm climates.",
+        "level": "A2",
+        "difficulty": 1
+      },
+      {
+        "word": "grown-up / adult",
+        "meaning": "người lớn",
+        "example": "When I'm a grown-up, I want to be a pilot.",
+        "level": "B1",
+        "difficulty": 1
+      },
+      {
+        "word": "windy",
+        "meaning": "có gió",
+        "example": "It's too windy to play badminton outside.",
+        "level": "A1",
+        "difficulty": 1
+      },
+      {
+        "word": "foggy",
+        "meaning": "có sương mù",
+        "example": "It's very foggy in Da Lat today.",
+        "level": "A2",
+        "difficulty": 1
       }
     ]
   },
