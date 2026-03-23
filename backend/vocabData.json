@@ -3551,236 +3551,60 @@
     ]
   },
   {
-    "unitNumber": 13,
-    "title": "quiz 4-5 (shine)",
-    "words": [
-      {
-        "word": "key",
-        "meaning": "(v): gõ phím",
-        "example": "She keys the data into the computer very fast.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "specialize in",
-        "meaning": "(v): chuyên về",
-        "example": "They specialize in meat products.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "propose",
-        "meaning": "(v): đề xuất, cầu hôn",
-        "example": "Tom has just proposed to Jerry; Sally has proposed a new project.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "disabled / handicapped",
-        "meaning": "(adj): khuyết tật",
-        "example": "The building has special access for disabled people.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "wide",
-        "meaning": "(adj): rộng lớn",
-        "example": "The river is very wide at this point.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "widen",
-        "meaning": "(v): làm rộng ra",
-        "example": "They spent more money to widen the road.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "age",
-        "meaning": "(n): tuổi; (v): già đi",
-        "example": "She is twenty years of age. / Stress can age you quickly.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "aged",
-        "meaning": "(adj): đã có tuổi",
-        "example": "He is caring for his aged parents.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "pavement / sidewalk",
-        "meaning": "(n): vỉa hè",
-        "example": "Don't ride your bicycle on the pavement.",
-        "audioUrl": "",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "load",
-        "meaning": "(v): xếp đồ lên xe",
-        "example": "They loaded the luggage into the car.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "unload",
-        "meaning": "(v): dỡ đồ xuống xe",
-        "example": "The workers are unloading the truck.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "restrict",
-        "meaning": "(v): hạn chế",
-        "example": "Speed is restricted to 30 mph in this area.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "restriction",
-        "meaning": "(n): sự hạn chế",
-        "example": "There are strict restrictions on parking here.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "regulation",
-        "meaning": "(n): quy định",
-        "example": "You must follow the safety regulations.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "raise money",
-        "meaning": "(v): gây quỹ",
-        "example": "They are running a marathon to raise money for charity.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "particularly",
-        "meaning": "(adv): cụ thể, đặc biệt là",
-        "example": "I love fruits, particularly mangoes.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "chairman",
-        "meaning": "(n): chủ tịch",
-        "example": "The chairman called for a meeting.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "visibility",
-        "meaning": "(n): sự thấy được / tầm nhìn",
-        "example": "The fog made visibility very poor.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "drop off",
-        "meaning": "(v): thả xuống xe (người)",
-        "example": "Can you drop me off at the station?",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "police force",
-        "meaning": "(n): lực lượng cảnh sát",
-        "example": "The city has a very professional police force.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "forbid / ban / prohibit",
-        "meaning": "(v): cấm",
-        "example": "Smoking is forbidden in this building.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "ideal",
-        "meaning": "(adj): lí tưởng (hợp lí nhất)",
-        "example": "It's an ideal place for a picnic.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "bend / curve",
-        "meaning": "(n): ngã quẹo, đường cong",
-        "example": "The car went around the bend too fast.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "brace",
-        "meaning": "(n): niềng răng",
-        "example": "She has been wearing a brace for six months.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "bracelet",
-        "meaning": "(n): lắc tay",
-        "example": "He bought her a gold bracelet for her birthday.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "estimate",
-        "meaning": "(v): ước tính",
-        "example": "They estimate that the journey will take two hours.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "qualified",
-        "meaning": "(adj): đạt tiêu chuẩn / đủ khả năng",
-        "example": "She is a highly qualified teacher.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "spending / expenditure",
-        "meaning": "(n): chi tiêu",
-        "example": "Public expenditure on health has increased.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "extraordinary",
-        "meaning": "(adj): đặc biệt, phi thường",
-        "example": "She has an extraordinary talent for music.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "insulate",
-        "meaning": "(v): cách nhiệt",
-        "example": "You can insulate your home to save on heating bills.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "strip",
-        "meaning": "(v): lột vỏ cây / lột bỏ",
-        "example": "Deer had stripped the bark from the tree.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "elastic",
-        "meaning": "(adj/n): đàn hồi / dây thun",
-        "example": "The material is very elastic.",
-        "level": "B2",
-        "difficulty": 2
-      }
-    ]
-  },
+  "unitNumber": 13,
+  "title": "lớp 4. 5.(shine)",
+  "words": [
+    { "word": "investigate", "meaning": "điều tra, nghiên cứu", "example": "Scientists are investigating the cause of the fire.", "level": "B2", "difficulty": 2 },
+    { "word": "seed germination", "meaning": "sự nảy mầm của hạt", "example": "Water is essential for seed germination.", "level": "B2", "difficulty": 2 },
+    { "word": "module", "meaning": "mô đun, học phần", "example": "The course is divided into ten modules.", "level": "B1", "difficulty": 2 },
+    { "word": "dissertation", "meaning": "bài luận văn", "example": "She is writing her dissertation on history.", "level": "C1", "difficulty": 3 },
+    { "word": "experiment", "meaning": "thí nghiệm", "example": "We did a science experiment in class.", "level": "A2", "difficulty": 1 },
+    { "word": "carry out / conduct", "meaning": "tiến hành, thực hiện", "example": "They are conducting a survey on students.", "level": "B2", "difficulty": 2 },
+    { "word": "laboratory / lab", "meaning": "phòng thí nghiệm", "example": "The samples are sent to the lab for testing.", "level": "B1", "difficulty": 1 },
+    { "word": "whether", "meaning": "dù là, liệu rằng", "example": "Whether you like it or not, you still have to do it.", "level": "B1", "difficulty": 2 },
+    { "word": "advance", "meaning": "những tiến bộ", "example": "Advances in technology have changed our lives.", "level": "B2", "difficulty": 2 },
+    { "word": "relevant", "meaning": "có liên quan", "example": "Please provide all the relevant information.", "level": "B2", "difficulty": 2 },
+    { "word": "irrelevant", "meaning": "không liên quan", "example": "His comment was completely irrelevant.", "level": "B2", "difficulty": 2 },
+    { "word": "aim / target", "meaning": "mục tiêu", "example": "Our main aim is to improve quality.", "level": "A2", "difficulty": 1 },
+    { "word": "appropriate", "meaning": "phù hợp, chính đáng", "example": "Is this movie appropriate for children?", "level": "B2", "difficulty": 2 },
+    { "word": "inappropriate", "meaning": "không phù hợp", "example": "His behavior was inappropriate for the meeting.", "level": "B2", "difficulty": 2 },
+    { "word": "assignment / task", "meaning": "bài tập, nhiệm vụ", "example": "I have a lot of assignments this week.", "level": "A2", "difficulty": 1 },
+    { "word": "contribute", "meaning": "cống hiến, góp phần", "example": "Many people contributed to the project.", "level": "B2", "difficulty": 2 },
+    { "word": "theory", "meaning": "lý thuyết", "example": "I understand the theory, but not the practice.", "level": "B1", "difficulty": 1 },
+    { "word": "theoretical", "meaning": "mang tính lý thuyết", "example": "The class gives theoretical knowledge of physics.", "level": "B2", "difficulty": 2 },
+    { "word": "practical", "meaning": "thực tế, thực tiễn", "example": "He has a lot of practical experience.", "level": "B1", "difficulty": 1 },
+    { "word": "article", "meaning": "bài báo, bài văn", "example": "I read an interesting article about space.", "level": "A2", "difficulty": 1 },
+    { "word": "diagram", "meaning": "sơ đồ", "example": "The diagram shows how the engine works.", "level": "B1", "difficulty": 1 },
+    { "word": "analysis", "meaning": "sự phân tích", "example": "The doctor performed a blood analysis.", "level": "B2", "difficulty": 2 },
+    { "word": "statistic", "meaning": "số liệu, thống kê", "example": "The statistics show a decrease in crime.", "level": "C1", "difficulty": 2 },
+    { "word": "thorough", "meaning": "kỹ lưỡng, cẩn thận", "example": "The police made a thorough search of the area.", "level": "B2", "difficulty": 3 },
+    { "word": "finding / discovery", "meaning": "sự phát hiện, kết quả tìm thấy", "example": "The scientist shared his new findings.", "level": "B1", "difficulty": 2 },
+    { "word": "condition", "meaning": "điều kiện", "example": "The car is in very good condition.", "level": "A2", "difficulty": 1 },
+    { "word": "depth", "meaning": "chiều sâu", "example": "What is the depth of the pool?", "level": "B1", "difficulty": 2 },
+    { "word": "stage / phase", "meaning": "giai đoạn", "example": "The project is in its final stage.", "level": "B1", "difficulty": 1 },
+    { "word": "measure", "meaning": "biện pháp", "example": "We need to take measures to stop pollution.", "level": "B2", "difficulty": 2 },
+    { "word": "record", "meaning": "ghi lại, hồ sơ", "example": "Please record the results of the test.", "level": "A2", "difficulty": 1 },
+    { "word": "label", "meaning": "dán nhãn", "example": "You should label your bags clearly.", "level": "B1", "difficulty": 1 },
+    { "word": "final mark / final grade", "meaning": "điểm cuối kỳ", "example": "My final grade in math was an A.", "level": "A2", "difficulty": 1 },
+    { "word": "dimension", "meaning": "chiều, kích thước", "example": "What are the dimensions of the box?", "level": "C1", "difficulty": 3 },
+    { "word": "respond", "meaning": "phản hồi, trả lời", "example": "She hasn't responded to my email yet.", "level": "B1", "difficulty": 1 },
+    { "word": "response / answer", "meaning": "sự phản hồi, câu trả lời", "example": "I'm waiting for your response.", "level": "A2", "difficulty": 1 },
+    { "word": "adapt", "meaning": "thích nghi", "example": "Animals have to adapt to their environment.", "level": "B2", "difficulty": 2 },
+    { "word": "adaptation", "meaning": "sự thích nghi", "example": "Evolution involves the adaptation of species.", "level": "B2", "difficulty": 2 },
+    { "word": "squirrel", "meaning": "con sóc", "example": "A squirrel is gathering nuts in the park.", "level": "A1", "difficulty": 2 },
+    { "word": "represent", "meaning": "đại diện", "example": "The colors represent the national flag.", "level": "B1", "difficulty": 2 },
+    { "word": "long-term", "meaning": "dài hạn", "example": "We need a long-term plan for the future.", "level": "B2", "difficulty": 1 },
+    { "word": "pigeon", "meaning": "chim bồ câu", "example": "There are many pigeons in the square.", "level": "A1", "difficulty": 2 },
+    { "word": "cliff", "meaning": "vách đá", "example": "Don't stand too close to the edge of the cliff.", "level": "B1", "difficulty": 2 },
+    { "word": "mammal", "meaning": "động vật có vú", "example": "Whales and dolphins are mammals.", "level": "B1", "difficulty": 2 },
+    { "word": "cognitive", "meaning": "liên quan tới trí óc, nhận thức", "example": "Cognitive development is fast in early childhood.", "level": "C1", "difficulty": 3 },
+    { "word": "bold / brave", "meaning": "gan dạ, dũng cảm", "example": "It was a bold move to start a new business.", "level": "B2", "difficulty": 2 },
+    { "word": "frighten", "meaning": "làm cho sợ", "example": "The loud noise frightened the baby.", "level": "B1", "difficulty": 1 },
+    { "word": "sensible", "meaning": "hợp lý, khôn ngoan", "example": "It is sensible to save money for the future.", "level": "B1", "difficulty": 2 },
+    { "word": "permanent", "meaning": "vĩnh viễn, lâu dài", "example": "He found a permanent job.", "level": "B2", "difficulty": 2 },
+    { "word": "temporary", "meaning": "tạm thời", "example": "This is just a temporary solution.", "level": "B1", "difficulty": 2 }
+  ]
+},
   {
     "unitNumber": 14,
     "title": "BÉ MY",
