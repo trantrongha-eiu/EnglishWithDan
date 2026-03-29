@@ -1582,7 +1582,9 @@ body.eye-protection .split-questions {
   .result-band {
     font-size: 56px;
   }
-  .hidden {
-  display: none !important;
+
 }
+
+.hidden {
+  display: none !important;
 }
