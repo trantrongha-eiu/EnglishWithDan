@@ -1,561 +1,1025 @@
 /**
- * IELTS Reading Practice - JavaScript
- * Handles test loading, navigation, timing, and submission
+ * EnglishWithDan – Reading Full Test
+ * reading.js – complete frontend logic
  */
 
-// Global variables
-let currentTest = null;
-let currentPassageIndex = 0;
-let userAnswers = {};
-let timerInterval = null;
-let timeRemaining = 3650; // 60 minutes in seconds
-let testSubmitted = false;
+'use strict';
 
-// API Configuration
-const API_BASE_URL = 'https://englishwithdan.onrender.com/api';
-// ===================================
-// Initialization
-// ===================================
+// ══════════════════════════════════════════════════════
+// CONFIG & STATE
+// ══════════════════════════════════════════════════════
+const API = 'https://englishwithdan.onrender.com/api';
 
+const state = {
+  tests:         [],
+  currentTestId: null,
+  attemptId:     null,
+  passages:      [],
+  passageIdx:    0,       // passage đang hiển thị (0,1,2)
+  answers:       {},      // { questionNumber: value }
+  dragItem:      null,    // chip đang kéo
+  timer:         null,
+  timeLeft:      3600,
+  submitted:     false,
+  isReview:      false,
+  tool:          'highlight', // 'highlight' | 'dict'
+  dictWord:      '',
+  dictMeaning:   '',
+  dictExample:   '',
+};
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  loadTest();
-  initializeTimer();
-  setupEventListeners();
+  const token = getToken();
+  if (!token) { window.location.href = 'login.html'; return; }
+
+  loadTestList();
+  setupResizableSplitter('exam-split', 'split-divider', 'split-passage');
+  setupResizableSplitter('review-split', 'review-divider', 'review-passage');
+  setupHighlight();
+
+  // Hotkey H = toggle highlight
+  document.addEventListener('keydown', e => {
+    if (e.key === 'h' || e.key === 'H') {
+      if (!isInputFocused()) setTool('highlight');
+    }
+  });
 });
 
-// ===================================
-// Test Loading
-// ===================================
+// ══════════════════════════════════════════════════════
+// AUTH HELPERS
+// ══════════════════════════════════════════════════════
+function getToken() { return localStorage.getItem('token'); }
+function authHeader() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+function isInputFocused() {
+  const t = document.activeElement?.tagName;
+  return t === 'INPUT' || t === 'TEXTAREA';
+}
 
-async function loadTest() {
+// ══════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ══════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.classList.add('hidden');
+  });
+  const el = document.getElementById(`screen-${name}`);
+  if (el) { el.classList.remove('hidden'); el.classList.add('active'); }
+}
+
+function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ══════════════════════════════════════════════════════
+// SCREEN 1 – TEST LIST
+// ══════════════════════════════════════════════════════
+async function loadTestList() {
   try {
-    showLoading();
+    const res  = await fetch(`${API}/reading/tests`, { headers: authHeader() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    state.tests = data.tests;
+    renderTestList(data.tests);
+  } catch (err) {
+    document.getElementById('tests-wrapper').innerHTML =
+      `<p style="color:#e53935;padding:40px;text-align:center">Lỗi tải dữ liệu: ${err.message}</p>`;
+  }
+}
 
-    // Fetch test data from API
-    const response = await fetch(`${API_BASE_URL}/reading`);
+function renderTestList(tests) {
+  const wrap = document.getElementById('tests-wrapper');
+  if (!tests.length) {
+    wrap.innerHTML = '<p style="text-align:center;padding:60px;color:#9ca3af">Chưa có đề thi nào.</p>';
+    return;
+  }
 
+  // Group by seriesName
+  const groups = {};
+  tests.forEach(t => {
+    const g = t.seriesName || 'Bộ đề';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(t);
+  });
 
-    if (!response.ok) {
-      throw new Error('Failed to load test');
-    }
+  wrap.innerHTML = Object.entries(groups).map(([groupName, groupTests]) => {
+    const done  = groupTests.filter(t => t.lastAttempt).length;
+    const total = groupTests.length;
+    const pct   = total ? Math.round((done / total) * 100) : 0;
 
-    const tests = await response.json();
+    return `
+      <div class="test-group" data-group="${groupName}">
+        <div class="test-group-title">
+          ${groupName}
+          <span class="test-group-progress">Hoàn thành ${done}/${total} đề</span>
+          <div class="progress-bar-mini">
+            <div class="progress-bar-mini-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="test-grid">
+          ${groupTests.map(renderTestCard).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-    if (tests.length === 0) {
-      showError('No tests available');
+function renderTestCard(t) {
+  const la   = t.lastAttempt;
+  const done = !!la;
+
+  const lastInfo = done ? `
+    <div class="test-card-last">
+      Lần cuối: ${formatDate(la.endTime)} •
+      <span class="band-mini">${la.bandScore?.toFixed(1)} điểm</span>
+    </div>` : '';
+
+  return `
+    <div class="test-card ${done ? 'done' : ''}" data-testid="${t._id}">
+      <div class="test-card-cover">
+        ${done ? '<div class="test-done-tick">✓</div>' : ''}
+        <div class="test-cover-badge">Orange test</div>
+        <div class="test-cover-title">IELTS 20</div>
+        <div class="test-cover-sub">ACADEMIC TEST ${t.testNumber}</div>
+      </div>
+      <div class="test-card-body">
+        <div class="test-card-name">${t.name}</div>
+        <div class="test-card-meta">Reading · 40 câu · 60 phút</div>
+        ${lastInfo}
+        <button class="btn-do-test" onclick="onClickTest('${t._id}','${t.name}')">
+          Làm bài
+        </button>
+        ${done ? `<button class="btn-redo-test" onclick="onClickReview('${la._id}')">Xem lại</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function filterTests(mode) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  let filtered = state.tests;
+  if (mode === 'done') filtered = state.tests.filter(t => t.lastAttempt);
+  if (mode === 'new')  filtered = state.tests.filter(t => !t.lastAttempt);
+  renderTestList(filtered);
+}
+
+// ══════════════════════════════════════════════════════
+// SCREEN 2 – KEY
+// ══════════════════════════════════════════════════════
+function onClickTest(testId, testName) {
+  state.currentTestId = testId;
+  document.getElementById('key-test-name').textContent = testName;
+  document.getElementById('key-input').value = '';
+  hideMsg('key-msg');
+  showScreen('key');
+  setTimeout(() => document.getElementById('key-input').focus(), 100);
+}
+
+function formatKeyInput(input) {
+  // Format XXXX-XXXX
+  let v = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
+  if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+  input.value = v;
+}
+
+async function verifyAndStart() {
+  const key = document.getElementById('key-input').value.trim();
+  if (!key || key.length < 9) {
+    showMsg('key-msg', 'Vui lòng nhập đủ key (định dạng XXXX-XXXX)', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-start-key');
+  btn.disabled = true; btn.textContent = 'Đang kiểm tra...';
+
+  try {
+    const res  = await fetch(`${API}/reading/verify-key`, {
+      method: 'POST',
+      headers: authHeader(),
+      body: JSON.stringify({ key, testId: state.currentTestId })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      showMsg('key-msg', data.message, 'error');
+      btn.disabled = false; btn.textContent = 'Bắt đầu làm bài';
       return;
     }
 
-    // Load first test
-    currentTest = tests[0];
-    timeRemaining = currentTest.timeLimit * 60;
-
-    renderTest();
-
-  } catch (error) {
-    console.error('Error loading test:', error);
-    showError('Failed to load test. Please check your connection.');
+    showMsg('key-msg', data.message, 'success');
+    await startExam(key);
+  } catch {
+    showMsg('key-msg', 'Lỗi kết nối server', 'error');
+    btn.disabled = false; btn.textContent = 'Bắt đầu làm bài';
   }
 }
 
-function showLoading() {
-  document.getElementById('passageText').innerHTML = '<p class="loading-message">Đang tải bài test...</p>';
-}
-
-function showError(message) {
-  document.getElementById('passageText').innerHTML = `<p class="loading-message" style="color: var(--color-error);">${message}</p>`;
-}
-
-// ===================================
-// Test Rendering
-// ===================================
-
-function renderTest() {
-  // Render test title
-  document.getElementById('testTitle').textContent = currentTest.title;
-
-  // Render passage selector buttons
-  renderPassageSelector();
-
-  // Render question navigator
-  renderQuestionNavigator();
-
-  // Render first passage
-  renderPassage(0);
-}
-
-function renderPassageSelector() {
-    const selector = document.getElementById('passageSelector');
-    selector.innerHTML = '';
-    
-    currentTest.passages.forEach((passage, index) => {
-        const btn = document.createElement('button');
-        btn.className = `passage-btn ${index === 0 ? 'active' : ''}`;
-        // Nếu không có passageNumber thì dùng index + 1
-        btn.textContent = `Passage ${passage.passageNumber || (index + 1)}`; 
-        btn.onclick = () => switchPassage(index);
-        selector.appendChild(btn);
+// ══════════════════════════════════════════════════════
+// SCREEN 3 – EXAM
+// ══════════════════════════════════════════════════════
+async function startExam(key) {
+  try {
+    const res  = await fetch(`${API}/reading/start`, {
+      method: 'POST',
+      headers: authHeader(),
+      body: JSON.stringify({ key, testId: state.currentTestId })
     });
+    const data = await res.json();
+    if (!data.success) { alert(data.message); return; }
+
+    state.attemptId  = data.attemptId;
+    state.passages   = data.passages;
+    state.answers    = {};
+    state.timeLeft   = data.duration;
+    state.submitted  = false;
+    state.isReview   = false;
+    state.passageIdx = 0;
+
+    document.getElementById('exam-title').textContent = data.testName;
+
+    buildPassageTabs('toolbar-passage-tabs', false);
+    renderCurrentPassage(false);
+    renderQNav(false);
+    startTimer();
+    setTool('highlight');
+    showScreen('exam');
+
+    // Prevent accidental close
+    window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+  } catch (err) {
+    alert('Lỗi bắt đầu bài thi: ' + err.message);
+  }
 }
 
-function renderQuestionNavigator() {
-  const grid = document.getElementById('questionGrid');
-  grid.innerHTML = '';
+// ── Passage tabs ──
+function buildPassageTabs(containerId, isReview) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = state.passages.map((p, i) => `
+    <button class="passage-tab-btn ${i === 0 ? 'active' : ''}"
+            onclick="switchPassage(${i}, ${isReview})">
+      Passage ${i + 1}
+    </button>
+  `).join('');
+}
 
-  currentTest.passages.forEach(passage => {
-    passage.questions.forEach(question => {
-      const div = document.createElement('div');
-      div.className = 'question-number';
-      div.textContent = question.questionNumber;
-      div.onclick = () => scrollToQuestion(question.questionNumber);
-
-      // Check if answered
-      if (userAnswers[question.questionNumber]) {
-        div.classList.add('answered');
-      }
-
-      grid.appendChild(div);
-    });
+function switchPassage(idx, isReview) {
+  state.passageIdx = idx;
+  const tabsId = isReview ? 'toolbar-passage-tabs-rv' : 'toolbar-passage-tabs';
+  document.querySelectorAll(`#${tabsId} .passage-tab-btn`).forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
   });
+  renderCurrentPassage(isReview);
 }
 
-function renderPassage(passageIndex) {
-  currentPassageIndex = passageIndex;
-  const passage = currentTest.passages[passageIndex];
+// ── Passage text ──
+function renderCurrentPassage(isReview) {
+  const p        = state.passages[state.passageIdx];
+  const innerId  = isReview ? 'review-passage-inner' : 'passage-inner';
+  const el       = document.getElementById(innerId);
 
-  // Update active button
-  document.querySelectorAll('.passage-btn').forEach((btn, index) => {
-    btn.classList.toggle('active', index === passageIndex);
+  el.innerHTML = `
+    <div class="passage-title">${p.title}</div>
+    <div class="passage-text">${p.content}</div>
+  `;
+
+  renderCurrentQuestions(isReview);
+}
+
+// ── Questions ──
+function renderCurrentQuestions(isReview) {
+  const p       = state.passages[state.passageIdx];
+  const innerId = isReview ? 'review-questions-inner' : 'questions-inner';
+  const el      = document.getElementById(innerId);
+
+  const rangeText = `Questions ${p.questionRange.start}–${p.questionRange.end}`;
+  let html = `<div class="q-section-title">${rangeText}</div>`;
+
+  // Detect drag-drop groups
+  let prevType = null;
+  let bankRendered = false;
+
+  p.questions.forEach(q => {
+    const isDnD = ['sentence-completion', 'matching-headings', 'matching-info'].includes(q.type);
+
+    // Render word bank once per group of DnD questions
+    if (isDnD && q.wordBank?.length && (!bankRendered || prevType !== q.type)) {
+      html += renderWordBank(q.wordBank, p.questionRange.start, isReview);
+      bankRendered = true;
+    }
+    if (!isDnD) { bankRendered = false; }
+    prevType = q.type;
+
+    html += renderQuestion(q, isReview);
   });
 
-  // Render passage text
-  document.getElementById('passageTitle').textContent = passage.title;
-  document.getElementById('passageText').innerHTML = formatPassageText(passage.text);
+  el.innerHTML = html;
 
-  // Render questions
-  renderQuestions(passage.questions);
-}
+  // Restore answers
+  p.questions.forEach(q => {
+    const saved = state.answers[q.questionNumber];
+    if (!saved) return;
 
-function formatPassageText(text) {
-  const paragraphs = text.split('\n\n');
-  return paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
-}
-
-function renderQuestions(questions) {
-  const container = document.getElementById('questionsContent');
-  container.innerHTML = '';
-
-  questions.forEach(question => {
-    const questionDiv = document.createElement('div');
-    questionDiv.className = 'question-item';
-    questionDiv.id = `question-${question.questionNumber}`;
-
-    questionDiv.innerHTML = `
-            <div class="question-header">
-                <span class="question-number-badge">Question ${question.questionNumber}</span>
-                <span class="question-type-badge">${question.questionType}</span>
-            </div>
-            <div class="question-text">${question.question}</div>
-            ${renderQuestionInput(question)}
-            <div class="explanation" id="explanation-${question.questionNumber}">
-                <strong>Explanation:</strong> ${question.explanation || 'No explanation available.'}
-            </div>
-        `;
-
-    container.appendChild(questionDiv);
+    if (['sentence-completion', 'matching-headings', 'matching-info'].includes(q.type)) {
+      const dz = el.querySelector(`.drop-zone[data-qnum="${q.questionNumber}"]`);
+      if (dz) fillDropZone(dz, saved, isReview ? getCorrectAns(q) : null, isReview);
+    } else if (q.type === 'fill-blank') {
+      const inp = el.querySelector(`#fi-${q.questionNumber}`);
+      if (inp) inp.value = saved;
+    } else {
+      const opt = el.querySelector(`.radio-opt[data-value="${CSS.escape(saved)}"][data-qnum="${q.questionNumber}"]`);
+      if (opt) opt.classList.add('selected');
+    }
   });
+
+  // DnD setup
+  if (!isReview) setupDragDrop(el);
+
+  // Review: apply correct/wrong styling
+  if (isReview) applyReviewStyling(el, p.questions);
 }
 
-function renderQuestionInput(question) {
-  const qNum = question.questionNumber;
+function getCorrectAns(q) { return q.correctAnswer || ''; }
 
-  // For questions with options (Multiple Choice, True/False/Not Given, etc.)
-  if (question.options && question.options.length > 0) {
-    return `
-            <div class="question-options">
-                ${question.options.map((option, index) => `
-                    <div class="option-item ${userAnswers[qNum] === option ? 'selected' : ''}" 
-                         onclick="selectOption(${qNum}, '${escapeHtml(option)}')">
-                        <input type="radio" 
-                               name="q${qNum}" 
-                               value="${escapeHtml(option)}" 
-                               id="q${qNum}_${index}"
-                               ${userAnswers[qNum] === option ? 'checked' : ''}>
-                        <label for="q${qNum}_${index}">${option}</label>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+function renderWordBank(words, startNum, isReview) {
+  // In review mode, word bank is static
+  const chips = words.map(w => `
+    <div class="word-chip ${isReview ? 'used' : ''}"
+         data-word="${w}"
+         ${isReview ? '' : 'draggable="true"'}>
+      ${w}
+    </div>
+  `).join('');
+  return `<div class="word-bank" id="bank-${startNum}">${chips}</div>`;
+}
+
+function renderQuestion(q, isReview) {
+  const num = q.questionNumber;
+  const ua  = q.userAnswer  || state.answers[num] || '';
+  const ca  = q.correctAnswer || '';
+  const ok  = q.isCorrect;
+
+  let inputHtml = '';
+
+  switch (q.type) {
+    case 'true-false-ng':
+      inputHtml = renderRadioOpts(num, ['TRUE', 'FALSE', 'NOT GIVEN'], ua, ca, isReview);
+      break;
+    case 'multiple-choice':
+      inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview);
+      break;
+    case 'fill-blank':
+      inputHtml = renderFillBlank(num, ua, ca, isReview);
+      break;
+    case 'sentence-completion':
+    case 'matching-info':
+      inputHtml = renderInlineDropZone(num, q.questionText, ua, ca, isReview);
+      break;
+    case 'matching-headings':
+      inputHtml = renderMatchingHeadings(num, q, ua, ca, isReview);
+      break;
+    default:
+      inputHtml = renderFillBlank(num, ua, ca, isReview);
   }
 
-  // For text input questions (Short-answer, Sentence Completion, etc.)
+  const reviewExtra = isReview ? `
+    <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
+      ${ok ? '✓ Đúng' : `✗ Sai – Đáp án: <strong>${ca}</strong>`}
+    </div>
+    ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}
+  ` : '';
+
   return `
-        <input type="text" 
-               class="text-input" 
-               id="input-${qNum}"
-               placeholder="Type your answer here..."
-               value="${userAnswers[qNum] || ''}"
-               oninput="handleTextInput(${qNum}, this.value)">
-    `;
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ===================================
-// User Interaction
-// ===================================
-
-function switchPassage(index) {
-  renderPassage(index);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function selectOption(questionNumber, answer) {
-  userAnswers[questionNumber] = answer;
-
-  // Update UI
-  const questionDiv = document.getElementById(`question-${questionNumber}`);
-  const options = questionDiv.querySelectorAll('.option-item');
-
-  options.forEach(option => {
-    const radio = option.querySelector('input[type="radio"]');
-    if (radio.value === answer) {
-      option.classList.add('selected');
-      radio.checked = true;
-    } else {
-      option.classList.remove('selected');
-    }
-  });
-
-  updateQuestionNavigator();
-}
-
-function handleTextInput(questionNumber, value) {
-  userAnswers[questionNumber] = value.trim();
-  updateQuestionNavigator();
-}
-
-function scrollToQuestion(questionNumber) {
-  const element = document.getElementById(`question-${questionNumber}`);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    element.style.animation = 'none';
-    setTimeout(() => {
-      element.style.animation = 'slideDown 0.3s ease';
-    }, 10);
-  }
-}
-
-function updateQuestionNavigator() {
-  const questionNumbers = document.querySelectorAll('.question-number');
-  questionNumbers.forEach(div => {
-    const qNum = parseInt(div.textContent);
-    if (userAnswers[qNum]) {
-      div.classList.add('answered');
-    } else {
-      div.classList.remove('answered');
-    }
-  });
-}
-
-// ===================================
-// Timer
-// ===================================
-
-function initializeTimer() {
-  updateTimerDisplay();
-
-  timerInterval = setInterval(() => {
-    if (!testSubmitted) {
-      timeRemaining--;
-      updateTimerDisplay();
-
-      // Auto-submit when time runs out
-      if (timeRemaining <= 0) {
-        clearInterval(timerInterval);
-        alert('Time is up! Your test will be submitted automatically.');
-        submitTest();
+    <div class="question-item" id="qi-${num}" data-qnum="${num}">
+      <div class="q-num-label">
+        <span class="q-badge">${num}</span>
+        <span>${q.type.replace(/-/g,' ')}</span>
+      </div>
+      ${['sentence-completion','matching-headings','matching-info'].includes(q.type)
+        ? '' /* text embedded in drop zone */
+        : `<div class="q-text">${q.questionText}</div>`
       }
+      ${inputHtml}
+      ${reviewExtra}
+    </div>
+  `;
+}
+
+function renderRadioOpts(num, opts, userAns, correctAns, isReview) {
+  return `<div class="q-options">` +
+    opts.map(opt => {
+      let cls = '';
+      if (isReview) {
+        if (opt === correctAns) cls = 'correct-ans';
+        else if (opt === userAns && opt !== correctAns) cls = 'wrong-ans';
+      } else {
+        if (opt === userAns) cls = 'selected';
+      }
+      return `
+        <div class="radio-opt ${cls}"
+             data-qnum="${num}" data-value="${opt}"
+             ${isReview ? '' : `onclick="pickRadio(${num}, '${opt}')" `}>
+          <span class="radio-dot"></span>
+          <label>${opt}</label>
+        </div>
+      `;
+    }).join('') +
+  `</div>`;
+}
+
+function renderFillBlank(num, userAns, correctAns, isReview) {
+  const cls = isReview ? (userAns.toLowerCase().trim() === correctAns.toLowerCase().trim() ? 'correct' : 'incorrect') : '';
+  return `<input id="fi-${num}" class="fill-input ${cls}"
+    type="text" placeholder="Nhập câu trả lời..."
+    value="${userAns}"
+    ${isReview ? 'readonly' : `oninput="saveTextAnswer(${num}, this.value)"`}
+  />`;
+}
+
+// Sentence completion: "___ are important" → drop zone inline
+function renderInlineDropZone(num, questionText, userAns, correctAns, isReview) {
+  // Replace ___ or [blank] with drop zone
+  const dzHtml = `
+    <div class="drop-zone ${userAns ? 'filled' : ''} ${isReview ? (userAns.toLowerCase().trim()===correctAns.toLowerCase().trim()?'correct-drop':'wrong-drop') : ''}"
+         data-qnum="${num}"
+         ${isReview ? '' : `ondragover="dzDragOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
+      ${userAns ? `${userAns}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>` : '&nbsp;&nbsp;&nbsp;'}
+    </div>`;
+
+  const filled = questionText.replace(/_{2,}|\[blank\]/i, dzHtml);
+  // If question text had no blank marker, put drop zone after text
+  const html = filled !== questionText ? filled : `${questionText} ${dzHtml}`;
+  return `<div class="q-text">${html}</div>`;
+}
+
+function renderMatchingHeadings(num, q, userAns, correctAns, isReview) {
+  return `
+    <div class="q-text">${q.questionText}</div>
+    <div class="matching-item">
+      <span class="matching-label">${num}.</span>
+      <div class="matching-drop">
+        <div class="drop-zone ${userAns ? 'filled' : ''}"
+             data-qnum="${num}"
+             ${isReview ? '' : `ondragover="dzDragOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
+          ${userAns ? `${userAns}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>` : 'Kéo hoặc click để chọn'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════
+// DRAG-AND-DROP LOGIC
+// ══════════════════════════════════════════════════════
+function setupDragDrop(container) {
+  // Drag start on word chips
+  container.querySelectorAll('.word-chip:not(.used)').forEach(chip => {
+    chip.addEventListener('dragstart', e => {
+      state.dragItem = chip.dataset.word;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', e => {
+      chip.classList.remove('dragging');
+    });
+  });
+}
+
+function dzDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function dzDrop(e, qnum) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const word = state.dragItem || e.dataTransfer.getData('text');
+  if (!word) return;
+  placeAnswer(qnum, word, false);
+}
+
+// Click on drop zone → show word picker
+function dzClick(e, qnum) {
+  if (e.target.classList.contains('clear-drop')) return;
+  const p = state.passages[state.passageIdx];
+  const q = p.questions.find(q => q.questionNumber === qnum);
+  if (!q?.wordBank?.length) return;
+
+  const available = q.wordBank.filter(w => {
+    // Word not already used by another question in same passage (except current)
+    const usedElsewhere = p.questions
+      .filter(qq => qq.questionNumber !== qnum && state.answers[qq.questionNumber] === w)
+      .length > 0;
+    return !usedElsewhere;
+  });
+
+  // Simple picker popup
+  const existing = document.getElementById('word-picker');
+  if (existing) existing.remove();
+
+  const rect   = e.currentTarget.getBoundingClientRect();
+  const picker = document.createElement('div');
+  picker.id = 'word-picker';
+  Object.assign(picker.style, {
+    position: 'fixed',
+    top: (rect.bottom + 4) + 'px',
+    left: rect.left + 'px',
+    background: '#fff',
+    border: '1px solid #e5e7eb',
+    borderRadius: '10px',
+    padding: '10px',
+    boxShadow: '0 8px 24px rgba(0,0,0,.15)',
+    zIndex: '500',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '6px',
+    maxWidth: '280px'
+  });
+
+  available.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.onclick = () => { placeAnswer(qnum, w, false); picker.remove(); };
+    picker.appendChild(chip);
+  });
+
+  if (!available.length) {
+    picker.innerHTML = '<span style="color:#9ca3af;font-size:13px">Không còn từ khả dụng</span>';
+  }
+
+  document.body.appendChild(picker);
+  setTimeout(() => document.addEventListener('click', function closeP(ev) {
+    if (!picker.contains(ev.target)) { picker.remove(); document.removeEventListener('click', closeP); }
+  }), 0);
+}
+
+function clearDz(e, qnum) {
+  e.stopPropagation();
+  delete state.answers[qnum];
+  renderCurrentQuestions(false);
+  updateQNav();
+}
+
+function placeAnswer(qnum, word, isReview) {
+  state.answers[qnum] = word;
+  // Re-render questions to reflect new state
+  renderCurrentQuestions(isReview);
+  updateQNav();
+  state.dragItem = null;
+}
+
+function fillDropZone(dz, value, correctAns, isReview) {
+  dz.classList.add('filled');
+  if (isReview && correctAns) {
+    dz.classList.add(value.toLowerCase() === correctAns.toLowerCase() ? 'correct-drop' : 'wrong-drop');
+  }
+  dz.innerHTML = `${value}<span class="clear-drop" ${isReview ? '' : `onclick="clearDz(event,${dz.dataset.qnum})"`}>×</span>`;
+}
+
+// ══════════════════════════════════════════════════════
+// ANSWER HANDLERS
+// ══════════════════════════════════════════════════════
+function pickRadio(qnum, value) {
+  state.answers[qnum] = value;
+
+  const qi = document.getElementById(`qi-${qnum}`);
+  qi?.querySelectorAll('.radio-opt').forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.value === value);
+  });
+  updateQNav();
+}
+
+function saveTextAnswer(qnum, value) {
+  state.answers[qnum] = value.trim();
+  updateQNav();
+}
+
+// ══════════════════════════════════════════════════════
+// QUESTION NAV
+// ══════════════════════════════════════════════════════
+function renderQNav(isReview) {
+  const navId = isReview ? 'review-q-nav' : 'q-nav-scroll';
+  const nav   = document.getElementById(navId);
+  const allQs = state.passages.flatMap(p => p.questions);
+
+  nav.innerHTML = allQs.map(q => {
+    const num = q.questionNumber;
+    let cls = '';
+    if (isReview) {
+      cls = q.isCorrect ? 'correct' : (q.userAnswer ? 'wrong' : 'skipped');
+    } else {
+      cls = state.answers[num] ? 'answered' : '';
+    }
+    return `<button class="q-nav-btn ${cls}" id="qnb-${num}"
+              onclick="scrollToQuestion(${num})">${num}</button>`;
+  }).join('');
+}
+
+function updateQNav() {
+  const allQs = state.passages.flatMap(p => p.questions);
+  allQs.forEach(q => {
+    const btn = document.getElementById(`qnb-${q.questionNumber}`);
+    if (!btn) return;
+    btn.className = `q-nav-btn ${state.answers[q.questionNumber] ? 'answered' : ''}`;
+  });
+}
+
+function scrollToQuestion(num) {
+  const el = document.getElementById(`qi-${num}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ══════════════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════════════
+function startTimer() {
+  clearInterval(state.timer);
+  updateTimerDisplay();
+  state.timer = setInterval(() => {
+    if (state.submitted) return;
+    state.timeLeft--;
+    updateTimerDisplay();
+
+    const timerEl = document.getElementById('exam-timer');
+    if (state.timeLeft <= 300 && state.timeLeft > 60) timerEl.className = 'exam-timer warn';
+    if (state.timeLeft <= 60) timerEl.className = 'exam-timer danger';
+
+    if (state.timeLeft <= 0) {
+      clearInterval(state.timer);
+      alert('Hết giờ! Bài thi sẽ được nộp tự động.');
+      submitExam();
     }
   }, 1000);
 }
 
 function updateTimerDisplay() {
-  const minutes = Math.floor(timeRemaining / 60);
-  const seconds = timeRemaining % 60;
-  const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  document.getElementById('timeRemaining').textContent = display;
-
-  // Warning when less than 5 minutes
-  if (timeRemaining < 300 && timeRemaining > 0) {
-    document.getElementById('timerDisplay').style.background = 'linear-gradient(135deg, var(--color-error), #a00d25)';
-  }
+  const h = Math.floor(state.timeLeft / 3600);
+  const m = Math.floor((state.timeLeft % 3600) / 60);
+  const s = state.timeLeft % 60;
+  document.getElementById('timer-display').textContent =
+    `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
-// ===================================
-// Test Submission
-// ===================================
+function pad(n) { return String(n).padStart(2, '0'); }
 
-async function submitTest() {
-  if (testSubmitted) return;
+// ══════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════
+function confirmSubmit() { openModal('modal-submit'); }
 
-  // Confirm submission
-  const totalQuestions = currentTest.passages.reduce((sum, p) => sum + p.questions.length, 0);
-  const answeredCount = Object.keys(userAnswers).length;
+async function submitExam() {
+  closeModal('modal-submit');
+  if (state.submitted) return;
+  state.submitted = true;
+  clearInterval(state.timer);
+  window.onbeforeunload = null;
 
-  if (answeredCount < totalQuestions) {
-    const confirm = window.confirm(
-      `You have answered ${answeredCount} out of ${totalQuestions} questions.\n\nDo you want to submit anyway?`
-    );
-    if (!confirm) return;
-  }
-
-  testSubmitted = true;
-  clearInterval(timerInterval);
-
-  // Calculate score
-  const results = calculateScore();
-
-  // Save to database
-  await saveTestHistory(results);
-
-  // Show results
-  showResults(results);
-}
-
-function calculateScore() {
-  let correctCount = 0;
-  const totalQuestions = [];
-
-  currentTest.passages.forEach(passage => {
-    passage.questions.forEach(question => {
-      totalQuestions.push(question);
-
-      const userAnswer = userAnswers[question.questionNumber];
-      const correctAnswer = question.correctAnswer;
-
-      // Normalize answers for comparison
-      const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(correctAnswer);
-
-      if (isCorrect) {
-        correctCount++;
-      }
-    });
-  });
-
-  const bandScore = calculateBandScore(correctCount, totalQuestions.length);
-
-  return {
-    score: correctCount,
-    total: totalQuestions.length,
-    bandScore: bandScore,
-    questions: totalQuestions,
-    timeSpent: currentTest.timeLimit * 60 - timeRemaining
-  };
-}
-
-function normalizeAnswer(answer) {
-  if (!answer) return '';
-  return answer.toString().toLowerCase().trim();
-}
-
-function calculateBandScore(correct, total) {
-  const percentage = (correct / total) * 100;
-
-  // IELTS Reading band score conversion (approximate)
-  if (percentage >= 90) return 9.0;
-  if (percentage >= 83) return 8.5;
-  if (percentage >= 75) return 8.0;
-  if (percentage >= 68) return 7.5;
-  if (percentage >= 60) return 7.0;
-  if (percentage >= 53) return 6.5;
-  if (percentage >= 45) return 6.0;
-  if (percentage >= 38) return 5.5;
-  if (percentage >= 30) return 5.0;
-  if (percentage >= 23) return 4.5;
-  if (percentage >= 15) return 4.0;
-  return 3.5;
-}
-
-async function saveTestHistory(results) {
   try {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-    if (!user._id) {
-      console.warn('No user logged in. Test history not saved.');
-      return;
-    }
-
-    const response = await fetch(`${API_BASE_URL}/api/history/save`, {
+    const res  = await fetch(`${API}/reading/submit`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: user._id,
-        type: 'reading',
-        referenceId: currentTest._id,
-        score: results.score,
-        totalQuestions: results.total,
-        bandScore: results.bandScore,
-        answers: userAnswers,
-        timeSpent: results.timeSpent
-      })
+      headers: authHeader(),
+      body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers })
     });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
 
-    if (!response.ok) {
-      console.error('Failed to save test history');
-    }
+    const r = data.result;
+    document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
+    document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions} câu đúng`;
+    document.getElementById('r-correct').textContent    = r.correctCount;
+    document.getElementById('r-wrong').textContent      = r.wrongCount;
+    document.getElementById('r-skip').textContent       = r.skippedCount;
+    document.getElementById('result-msg').textContent   = getBandMessage(r.bandScore);
 
-  } catch (error) {
-    console.error('Error saving test history:', error);
+    showScreen('result');
+  } catch (err) {
+    alert('Lỗi nộp bài: ' + err.message);
+    state.submitted = false;
   }
 }
 
-function showResults(results) {
-  const modal = document.getElementById('resultsModal');
-
-  // Update score display
-  document.getElementById('scoreNumber').textContent = results.score;
-  document.getElementById('scoreTotal').textContent = `/${results.total}`;
-  document.getElementById('bandScore').textContent = results.bandScore.toFixed(1);
-  document.getElementById('correctCount').textContent = results.score;
-  document.getElementById('wrongCount').textContent = results.total - results.score;
-
-  // Animate score ring
-  const percentage = (results.score / results.total) * 100;
-  const circumference = 314; // 2 * PI * 50
-  const offset = circumference - (percentage / 100) * circumference;
-
-  setTimeout(() => {
-    document.getElementById('scoreRingFill').style.strokeDashoffset = offset;
-  }, 300);
-
-  // Render answer review
-  renderAnswerReview(results);
-
-  // Show modal
-  modal.classList.add('show');
-
-  // Mark questions in navigator
-  markQuestionsInNavigator(results);
+function getBandMessage(band) {
+  if (band >= 7.5) return 'Xuất sắc! Bạn đã đạt kết quả rất tốt 🎉';
+  if (band >= 6.5) return 'Tốt lắm! Hãy tiếp tục luyện tập để đạt band cao hơn 💪';
+  if (band >= 5.5) return 'Tiếp tục cố gắng nhé! Bạn đang tiến bộ rõ rệt 📚';
+  return 'Đề IELTS hơi khó bạn nhỉ, mình cố tiếp cùng nhau nha, từ từ sẽ giỏi thôi!';
 }
 
-function renderAnswerReview(results) {
-  const container = document.getElementById('answerReview');
-  container.innerHTML = '<h3 style="margin-bottom: 1rem; font-family: var(--font-display);">Answer Review</h3>';
+// ══════════════════════════════════════════════════════
+// REVIEW
+// ══════════════════════════════════════════════════════
+async function goToReview() {
+  try {
+    const res  = await fetch(`${API}/reading/attempt/${state.attemptId}/review`, { headers: authHeader() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
 
-  results.questions.forEach(question => {
-    const userAnswer = userAnswers[question.questionNumber] || 'Not answered';
-    const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.correctAnswer);
+    const a = data.attempt;
+    state.passages   = a.passages;
+    state.isReview   = true;
+    state.passageIdx = 0;
 
-    const reviewDiv = document.createElement('div');
-    reviewDiv.className = `review-item ${isCorrect ? 'correct-answer' : 'wrong-answer'}`;
-    reviewDiv.innerHTML = `
-            <strong>Question ${question.questionNumber}:</strong> ${question.question}<br>
-            <strong>Your answer:</strong> ${userAnswer}<br>
-            <strong>Correct answer:</strong> ${question.correctAnswer}<br>
-            ${isCorrect ? '✓ Correct' : '✗ Incorrect'}
-        `;
+    document.getElementById('review-title').textContent     = a.testName;
+    document.getElementById('review-band-badge').textContent = `Band Score: ${a.bandScore.toFixed(1)}`;
 
-    container.appendChild(reviewDiv);
-  });
-}
-
-function markQuestionsInNavigator(results) {
-  results.questions.forEach(question => {
-    const userAnswer = userAnswers[question.questionNumber];
-    const isCorrect = normalizeAnswer(userAnswer) === normalizeAnswer(question.correctAnswer);
-
-    const questionDiv = document.querySelector(`.question-number:nth-child(${question.questionNumber})`);
-    if (questionDiv) {
-      questionDiv.classList.remove('answered');
-      questionDiv.classList.add(isCorrect ? 'correct' : 'incorrect');
-    }
-
-    // Show explanations
-    const explanation = document.getElementById(`explanation-${question.questionNumber}`);
-    if (explanation) {
-      explanation.classList.add('show');
-    }
-
-    // Mark options as correct/incorrect
-    const questionElement = document.getElementById(`question-${question.questionNumber}`);
-    if (questionElement) {
-      const options = questionElement.querySelectorAll('.option-item');
-      options.forEach(option => {
-        const radio = option.querySelector('input[type="radio"]');
-        if (radio && radio.value === question.correctAnswer) {
-          option.classList.add('correct');
-        } else if (radio && radio.checked && !isCorrect) {
-          option.classList.add('incorrect');
-        }
-      });
-    }
-  });
-}
-
-// ===================================
-// Modal Controls
-// ===================================
-
-function closeModal() {
-  document.getElementById('resultsModal').classList.remove('show');
-}
-
-function retakeTest() {
-  if (confirm('Are you sure you want to retake this test? Your current answers will be lost.')) {
-    location.reload();
+    buildPassageTabs('toolbar-passage-tabs-rv', true);
+    renderCurrentPassage(true);
+    renderQNav(true);
+    setupDictionaryDouble('review-passage-inner');
+    showScreen('review');
+  } catch (err) {
+    alert('Lỗi tải bài review: ' + err.message);
   }
 }
 
-// ===================================
-// Event Listeners
-// ===================================
+async function onClickReview(attemptId) {
+  state.attemptId = attemptId;
+  await goToReview();
+}
 
-function setupEventListeners() {
-  // Toggle navigator on mobile
-  const toggleBtn = document.getElementById('toggleNavigator');
-  const navigator = document.getElementById('questionNavigator');
+function applyReviewStyling(container, questions) {
+  // Nav buttons already coloured in renderQNav
+  // Fill inputs and radio opts already have correct/wrong classes from renderQuestion
+}
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      navigator.classList.toggle('open');
+// ══════════════════════════════════════════════════════
+// HIGHLIGHT
+// ══════════════════════════════════════════════════════
+function setupHighlight() {
+  document.addEventListener('mouseup', () => {
+    if (state.tool !== 'highlight') return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
+
+    const range = sel.getRangeAt(0);
+    // Only inside passage panels
+    const passageEl = document.getElementById('passage-inner') ||
+                      document.getElementById('review-passage-inner');
+    if (!passageEl || !passageEl.contains(range.commonAncestorContainer)) return;
+
+    const span = document.createElement('span');
+    span.className = 'hl';
+    try { range.surroundContents(span); } catch {}
+    sel.removeAllRanges();
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// DICTIONARY (review only – double-click)
+// ══════════════════════════════════════════════════════
+function setupDictionaryDouble(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+
+  el.addEventListener('dblclick', async () => {
+    if (state.tool !== 'dict') return;
+    const word = window.getSelection()?.toString().trim();
+    if (!word || word.includes(' ') || word.length < 2) return;
+    await lookupWord(word);
+  });
+}
+
+async function lookupWord(word) {
+  const popup = document.getElementById('dict-popup');
+  document.getElementById('dict-word').textContent    = word;
+  document.getElementById('dict-phonetic').textContent = '...';
+  document.getElementById('dict-pos').textContent     = '';
+  document.getElementById('dict-meaning').textContent = 'Đang tra...';
+  document.getElementById('dict-example').textContent = '';
+  document.getElementById('dict-vn').textContent      = '';
+
+  // Position near cursor
+  const sel  = window.getSelection();
+  const rect = sel?.rangeCount ? sel.getRangeAt(0).getBoundingClientRect() : { bottom: 200, left: 200 };
+  popup.style.top  = Math.min(rect.bottom + 8, window.innerHeight - 260) + 'px';
+  popup.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
+  popup.classList.remove('hidden');
+
+  state.dictWord    = word;
+  state.dictMeaning = '';
+  state.dictExample = '';
+
+  try {
+    const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    const data = await res.json();
+    const entry   = data[0];
+    const meaning = entry.meanings[0];
+    const def     = meaning.definitions[0];
+
+    document.getElementById('dict-phonetic').textContent = entry.phonetic || '';
+    document.getElementById('dict-pos').textContent      = meaning.partOfSpeech;
+    document.getElementById('dict-meaning').textContent  = def.definition;
+    document.getElementById('dict-example').textContent  = def.example ? `"${def.example}"` : '';
+
+    state.dictMeaning = def.definition;
+    state.dictExample = def.example || '';
+  } catch {
+    document.getElementById('dict-meaning').textContent = 'Không tìm thấy định nghĩa.';
+  }
+}
+
+function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
+
+async function saveVocab() {
+  if (!state.dictWord) return;
+  try {
+    const res  = await fetch(`${API}/reading/vocab/save`, {
+      method: 'POST',
+      headers: authHeader(),
+      body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample })
     });
+    const data = await res.json();
+    closeDictPopup();
+    alert(data.message || 'Đã lưu!');
+  } catch { alert('Lỗi lưu từ vựng'); }
+}
+
+// ══════════════════════════════════════════════════════
+// TOOL SWITCHER
+// ══════════════════════════════════════════════════════
+function setTool(tool) {
+  state.tool = tool;
+
+  // Update all tool buttons on current screen
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'highlight') {
+    document.querySelectorAll('#tool-hl, #tool-hl-rv').forEach(b => b?.classList.add('active'));
+  } else if (tool === 'dict') {
+    document.getElementById('tool-dict')?.classList.add('active');
   }
+}
 
-  // Close modal on outside click
-  const modal = document.getElementById('resultsModal');
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
+// ══════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════
+function toggleSettings() {
+  const p = document.getElementById('settings-panel');
+  p.classList.toggle('hidden');
+}
 
-  // Prevent accidental page refresh
-  window.addEventListener('beforeunload', (e) => {
-    if (!testSubmitted) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
+function toggleEyeProtection() {
+  document.body.classList.toggle('eye-protection');
+}
+
+function setFontSize(size) {
+  const map = { S: '13px', M: '15px', L: '17px' };
+  document.documentElement.style.setProperty('--reading-font-size', map[size]);
+  document.querySelectorAll('.fs-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === size);
   });
 }
 
-// ===================================
-// Utility Functions
-// ===================================
+// ══════════════════════════════════════════════════════
+// RESIZABLE SPLITTER
+// ══════════════════════════════════════════════════════
+function setupResizableSplitter(splitId, dividerId, leftId) {
+  const split   = document.getElementById(splitId);
+  const divider = document.getElementById(dividerId);
+  const left    = document.getElementById(leftId);
+  if (!split || !divider || !left) return;
 
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}m ${secs}s`;
+  let dragging = false;
+
+  divider.addEventListener('mousedown', e => {
+    dragging = true;
+    divider.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const splitRect = split.getBoundingClientRect();
+    let pct = ((e.clientX - splitRect.left) / splitRect.width) * 100;
+    pct = Math.min(Math.max(pct, 20), 80);
+    left.style.width = pct + '%';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+
+  // Touch support
+  divider.addEventListener('touchstart', e => { dragging = true; e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    const touch = e.touches[0];
+    const splitRect = split.getBoundingClientRect();
+    let pct = ((touch.clientX - splitRect.left) / splitRect.width) * 100;
+    pct = Math.min(Math.max(pct, 20), 80);
+    left.style.width = pct + '%';
+  }, { passive: false });
+  document.addEventListener('touchend', () => { dragging = false; });
 }
 
-// Export functions for HTML onclick handlers
-window.submitTest = submitTest;
-window.closeModal = closeModal;
-window.retakeTest = retakeTest;
+// ══════════════════════════════════════════════════════
+// HISTORY MODAL
+// ══════════════════════════════════════════════════════
+async function showHistoryModal() {
+  try {
+    const res  = await fetch(`${API}/reading/history`, { headers: authHeader() });
+    const data = await res.json();
+
+    const tbody = document.getElementById('history-tbody');
+    if (!data.history.length) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#9ca3af;padding:20px">Chưa có lịch sử làm bài</td></tr>';
+    } else {
+      tbody.innerHTML = data.history.map(h => `
+        <tr>
+          <td>${h.testId?.name || '–'}</td>
+          <td>${formatDate(h.endTime)}</td>
+          <td>${formatDuration(h.duration)}</td>
+          <td>${h.totalQuestions}</td>
+          <td style="color:#43a047;font-weight:600">${h.correctCount}</td>
+          <td style="color:#e53935;font-weight:600">${h.wrongCount}</td>
+          <td style="color:#9ca3af">${h.skippedCount}</td>
+          <td class="band-cell">${h.bandScore?.toFixed(1)}</td>
+          <td><button class="btn-review-sm" onclick="onClickReview('${h._id}');closeModal('modal-history')">Xem lại</button></td>
+        </tr>
+      `).join('');
+    }
+
+    openModal('modal-history');
+  } catch (err) {
+    alert('Lỗi tải lịch sử: ' + err.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// EXIT
+// ══════════════════════════════════════════════════════
+function confirmExit() { openModal('modal-exit'); }
+
+function forceExit() {
+  closeModal('modal-exit');
+  clearInterval(state.timer);
+  window.onbeforeunload = null;
+  state.submitted = true;
+  showScreen('list');
+}
+
+// ══════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════
+function formatDate(dateStr) {
+  if (!dateStr) return '–';
+  const d = new Date(dateStr);
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatDuration(secs) {
+  if (!secs) return '–';
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}m${pad(s)}s`;
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = `key-msg ${type}`;
+  el.classList.remove('hidden');
+}
+
+function hideMsg(id) {
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('hidden'); el.textContent = ''; }
+}
+
+// Global exports for HTML onclick
+window.showScreen        = showScreen;
+window.openModal         = openModal;
+window.closeModal        = closeModal;
+window.onClickTest       = onClickTest;
+window.onClickReview     = onClickReview;
+window.verifyAndStart    = verifyAndStart;
+window.formatKeyInput    = formatKeyInput;
+window.filterTests       = filterTests;
+window.confirmSubmit     = confirmSubmit;
+window.submitExam        = submitExam;
+window.confirmExit       = confirmExit;
+window.forceExit         = forceExit;
+window.goToReview        = goToReview;
+window.showHistoryModal  = showHistoryModal;
+window.toggleSettings    = toggleSettings;
+window.toggleEyeProtection = toggleEyeProtection;
+window.setFontSize       = setFontSize;
+window.setTool           = setTool;
+window.pickRadio         = pickRadio;
+window.saveTextAnswer    = saveTextAnswer;
+window.dzDragOver        = dzDragOver;
+window.dzDrop            = dzDrop;
+window.dzClick           = dzClick;
+window.clearDz           = clearDz;
+window.scrollToQuestion  = scrollToQuestion;
+window.switchPassage     = switchPassage;
+window.closeDictPopup    = closeDictPopup;
+window.saveVocab         = saveVocab;

@@ -1,147 +1,319 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Reading Practice - Daniel Hà</title>
-    <link rel="stylesheet" href="reading.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading – EnglishWithDan</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="reading.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">Daniel Hà</div>
-            <div class="timer-display" id="timerDisplay">
-                <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                <span id="timeRemaining">60:00</span>
-            </div>
-        </div>
-    </header>
 
-    <!-- Navigation -->
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li><a href="reading.html" class="active">Reading</a></li>
-            <li><a href="listening.html">Listening</a></li>
-            <li><a href="writing.html">Writing</a></li>
-            <li><a href="speaking.html">Speaking</a></li>
-            <li><a href="dashboard.html">Vocab</a></li>
-        </ul>
-    </nav>
+<!-- ════════════════════════════════════════════════════════
+     SCREEN 1 – DANH SÁCH TEST
+     ════════════════════════════════════════════════════════ -->
+<div id="screen-list" class="screen active">
 
-    <!-- Main Container -->
-    <div class="test-container">
-        <!-- Sidebar - Question Navigator -->
-        <aside class="question-navigator" id="questionNavigator">
-            <div class="navigator-header">
-                <h3>Questions</h3>
-                <button class="toggle-navigator" id="toggleNavigator">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                </button>
-            </div>
-            <div class="question-grid" id="questionGrid">
-                <!-- Questions will be populated by JavaScript -->
-            </div>
-        </aside>
+  <!-- Skill tabs -->
+  <div class="skill-tabs-bar">
+    <button class="skill-tab active" data-skill="reading">📖 Reading</button>
+    <button class="skill-tab" data-skill="listening">🎧 Listening</button>
+    <button class="skill-tab" data-skill="writing">✏️ Writing</button>
+    <button class="skill-tab" data-skill="speaking">🎤 Speaking</button>
+  </div>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Test Info Bar -->
-            <div class="test-info-bar" id="testInfoBar">
-                <div class="test-title" id="testTitle">Loading test...</div>
-                <div class="passage-selector" id="passageSelector">
-                    <!-- Passage buttons will be populated here -->
-                </div>
-            </div>
-
-            <!-- Reading Content -->
-            <div class="reading-layout">
-                <!-- Passage Panel -->
-                <section class="passage-panel" id="passagePanel">
-                    <div class="passage-content">
-                        <h2 class="passage-title" id="passageTitle">Select a passage to begin</h2>
-                        <div class="passage-text" id="passageText">
-                            <p class="loading-message">Đang tải bài test...</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Questions Panel -->
-                <section class="questions-panel" id="questionsPanel">
-                    <div class="questions-content" id="questionsContent">
-                        <!-- Questions will be populated by JavaScript -->
-                    </div>
-                </section>
-            </div>
-
-            <!-- Submit Button -->
-            <div class="submit-section">
-                <button class="btn-submit" id="btnSubmit" onclick="submitTest()">
-                    Submit Test
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </button>
-            </div>
-        </main>
+  <div class="list-container">
+    <div class="list-header">
+      <div>
+        <h2>Luyện tập <span class="tag-red">Reading Full đề</span></h2>
+        <p class="list-subtitle">
+          Ở màn hình <strong>Luyện full đề</strong> này, bạn sẽ làm bài Reading với
+          thời gian giới hạn và được quy đổi điểm như khi thi thật.
+        </p>
+      </div>
+      <!-- Filter -->
+      <div class="list-filter">
+        <button class="filter-btn active" onclick="filterTests('all')">Tất cả</button>
+        <button class="filter-btn" onclick="filterTests('done')">Đã làm</button>
+        <button class="filter-btn" onclick="filterTests('new')">Chưa làm</button>
+      </div>
     </div>
 
-    <!-- Results Modal -->
-    <div class="modal" id="resultsModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Test Results</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="score-display">
-                    <div class="score-circle">
-                        <svg class="score-ring" viewBox="0 0 120 120">
-                            <circle class="score-ring-bg" cx="60" cy="60" r="50"></circle>
-                            <circle class="score-ring-fill" cx="60" cy="60" r="50" id="scoreRingFill"></circle>
-                        </svg>
-                        <div class="score-text">
-                            <span class="score-number" id="scoreNumber">0</span>
-                            <span class="score-total" id="scoreTotal">/40</span>
-                        </div>
-                    </div>
-                    <div class="score-details">
-                        <div class="score-item">
-                            <span class="score-label">Band Score:</span>
-                            <span class="score-value" id="bandScore">-</span>
-                        </div>
-                        <div class="score-item">
-                            <span class="score-label">Correct Answers:</span>
-                            <span class="score-value" id="correctCount">0</span>
-                        </div>
-                        <div class="score-item">
-                            <span class="score-label">Wrong Answers:</span>
-                            <span class="score-value" id="wrongCount">0</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="answer-review" id="answerReview">
-                    <!-- Detailed review will be populated here -->
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeModal()">Close</button>
-                <button class="btn-primary" onclick="retakeTest()">Retake Test</button>
-            </div>
-        </div>
+    <div id="tests-wrapper">
+      <!-- Các test group render bằng JS -->
+      <div class="loading-spinner">Đang tải danh sách đề thi...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SCREEN 2 – NHẬP KEY
+     ════════════════════════════════════════════════════════ -->
+<div id="screen-key" class="screen hidden">
+  <div class="key-overlay">
+    <div class="key-card">
+      <div class="key-card-icon">🔑</div>
+      <h3>Nhập mã truy cập</h3>
+      <p class="key-desc">Bạn cần mã từ giáo viên để làm bài thi này</p>
+      <div class="key-test-name" id="key-test-name"></div>
+
+      <input
+        id="key-input"
+        type="text"
+        class="key-input"
+        placeholder="VD: A3F9-B2C1"
+        maxlength="9"
+        autocomplete="off"
+        oninput="formatKeyInput(this)"
+      />
+      <div id="key-msg" class="key-msg hidden"></div>
+
+      <div class="key-actions">
+        <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
+        <button class="btn-primary" onclick="verifyAndStart()" id="btn-start-key">
+          Bắt đầu làm bài
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SCREEN 3 – LÀM BÀI THI
+     ════════════════════════════════════════════════════════ -->
+<div id="screen-exam" class="screen hidden">
+
+  <!-- Top bar -->
+  <div class="exam-bar">
+    <div class="exam-bar-left">
+      <button class="exam-exit-btn" onclick="confirmExit()">✕</button>
+      <span class="exam-title-txt" id="exam-title">Loading...</span>
+    </div>
+    <div class="exam-timer" id="exam-timer">
+      <span>⏱</span>
+      <span id="timer-display">01:00:00</span>
+    </div>
+    <div class="exam-bar-right">
+      <button class="btn-icon-sm" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Settings dropdown -->
+  <div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-row">
+      <span>👁️ Chế độ bảo vệ mắt</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
+        <span class="toggle-knob"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <span>Tᴛ Kích cỡ chữ</span>
+      <div class="fs-group">
+        <button class="fs-btn" onclick="setFontSize('S')">S</button>
+        <button class="fs-btn active" onclick="setFontSize('M')">M</button>
+        <button class="fs-btn" onclick="setFontSize('L')">L</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar (chỉ highlight khi thi) -->
+  <div class="exam-toolbar">
+    <button class="tool-btn active" id="tool-hl" onclick="setTool('highlight')">
+      🖊 <small>Highlight (H)</small>
+    </button>
+    <div class="toolbar-passage-tabs" id="toolbar-passage-tabs">
+      <!-- Passage 1 / 2 / 3 tabs -->
+    </div>
+  </div>
+
+  <!-- Split layout: passage | divider | questions -->
+  <div class="exam-split" id="exam-split">
+    <div class="split-passage" id="split-passage">
+      <div class="passage-inner" id="passage-inner">
+        <!-- Bài đọc render bởi JS -->
+      </div>
     </div>
 
-    <script src="js/reading.js"></script>
+    <div class="split-divider" id="split-divider" title="Kéo để thay đổi tỉ lệ">
+      <div class="divider-handle"></div>
+    </div>
+
+    <div class="split-questions" id="split-questions">
+      <div class="questions-inner" id="questions-inner">
+        <!-- Câu hỏi render bởi JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer: số câu + nộp bài -->
+  <div class="exam-footer">
+    <div class="q-nav-scroll" id="q-nav-scroll">
+      <!-- Nút số câu 1–40 -->
+    </div>
+    <button class="btn-submit-exam" onclick="confirmSubmit()">Hoàn thành</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SCREEN 4 – KẾT QUẢ
+     ════════════════════════════════════════════════════════ -->
+<div id="screen-result" class="screen hidden">
+  <div class="result-wrap">
+    <div class="result-left">
+      <div class="result-mascot">🦜</div>
+      <p class="result-msg" id="result-msg">
+        Đề IELTS hơi khó bạn nhỉ, mình cố tiếp cùng nhau nha, từ từ sẽ giỏi thôi!
+      </p>
+    </div>
+    <div class="result-right">
+      <p class="result-label">Band Score:</p>
+      <div class="result-band" id="result-band">1.0</div>
+      <div class="result-total" id="result-total">1/40 câu đúng</div>
+      <div class="result-breakdown">
+        <span class="rb-correct">● Đúng: <b id="r-correct">0</b> câu</span>
+        <span class="rb-wrong">● Sai: <b id="r-wrong">0</b> câu</span>
+        <span class="rb-skip">● Bỏ qua: <b id="r-skip">0</b> câu</span>
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" onclick="goToReview()">Xem giải thích chi tiết</button>
+        <button class="btn-ghost" onclick="showHistoryModal()">Lịch sử làm bài</button>
+        <button class="btn-ghost" onclick="showScreen('list')">Làm bài khác</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SCREEN 5 – REVIEW
+     ════════════════════════════════════════════════════════ -->
+<div id="screen-review" class="screen hidden">
+
+  <div class="exam-bar">
+    <div class="exam-bar-left">
+      <button class="exam-exit-btn" onclick="showScreen('result')">✕</button>
+      <span class="exam-title-txt" id="review-title">Review</span>
+    </div>
+    <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
+    <div class="exam-bar-right">
+      <button class="btn-icon-sm" onclick="toggleSettings()">⚙️</button>
+    </div>
+  </div>
+
+  <!-- Settings panel dùng chung -->
+
+  <!-- Toolbar review: highlight + tra từ -->
+  <div class="exam-toolbar">
+    <button class="tool-btn active" id="tool-hl-rv" onclick="setTool('highlight')">
+      🖊 <small>Highlight (H)</small>
+    </button>
+    <button class="tool-btn" id="tool-dict" onclick="setTool('dict')">
+      📖 <small>Tra từ (Double‑click)</small>
+    </button>
+    <div class="toolbar-passage-tabs" id="toolbar-passage-tabs-rv"></div>
+  </div>
+
+  <div class="exam-split" id="review-split">
+    <div class="split-passage" id="review-passage">
+      <div class="passage-inner" id="review-passage-inner"></div>
+    </div>
+    <div class="split-divider" id="review-divider">
+      <div class="divider-handle"></div>
+    </div>
+    <div class="split-questions review-q-panel" id="review-questions">
+      <div class="questions-inner" id="review-questions-inner"></div>
+    </div>
+  </div>
+
+  <div class="exam-footer">
+    <div class="q-nav-scroll" id="review-q-nav"></div>
+    <div class="exam-footer-btns">
+      <button class="btn-ghost" onclick="showHistoryModal()">Xem lịch sử làm bài</button>
+      <button class="btn-primary" onclick="showScreen('list')">Làm bài khác</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL – XÁC NHẬN NỘP BÀI
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-submit" class="modal-overlay hidden">
+  <div class="modal-box modal-sm">
+    <h3>Hoàn thành bài tập</h3>
+    <p>
+      Bạn có chắc chắn muốn nộp phần bài tập đã làm chưa?
+      Nếu chắc chắn với các đáp án đã làm hãy bấm nút <strong>hoàn thành</strong>.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modal-submit')">Quay lại</button>
+      <button class="btn-primary" onclick="submitExam()">Hoàn thành</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL – XÁC NHẬN THOÁT
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-exit" class="modal-overlay hidden">
+  <div class="modal-box modal-sm">
+    <h3>Thoát khỏi bài thi?</h3>
+    <p>Tiến trình làm bài của bạn sẽ bị mất nếu thoát.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal('modal-exit')">Tiếp tục làm bài</button>
+      <button class="btn-danger" onclick="forceExit()">Thoát</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL – LỊCH SỬ LÀM BÀI
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-history" class="modal-overlay hidden">
+  <div class="modal-box modal-lg">
+    <div class="modal-header">
+      <h3>Lịch sử làm bài</h3>
+      <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
+    </div>
+    <div class="modal-body-scroll">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Tên bài</th>
+            <th>Ngày nộp</th>
+            <th>Thời gian</th>
+            <th>Tổng câu</th>
+            <th>Đúng</th>
+            <th>Sai</th>
+            <th>Bỏ qua</th>
+            <th>Band</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     DICTIONARY POPUP (chỉ hiện khi review)
+     ════════════════════════════════════════════════════════ -->
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-close" onclick="closeDictPopup()">✕</button>
+  </div>
+  <div class="dict-pos" id="dict-pos"></div>
+  <div class="dict-meaning" id="dict-meaning"></div>
+  <div class="dict-example" id="dict-example"></div>
+  <div class="dict-vn" id="dict-vn"></div>
+  <button class="btn-save-vocab" onclick="saveVocab()">＋ Lưu từ vựng</button>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/reading.js"></script>
 </body>
-
 </html>
