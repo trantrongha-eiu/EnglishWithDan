@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 // ROUTES
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/vocab', require('./routes/vocab'));
+app.use('/api/vocabbook', require('./routes/vocabBook'));
 app.use('/api/reading', require('./routes/reading'));   // ← file mới
 app.use('/api/admin', require('./routes/admin'));      // ← mới
 app.use('/api/listening', require('./routes/listening'));
