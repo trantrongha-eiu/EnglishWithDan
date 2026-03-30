@@ -963,6 +963,9 @@ body.eye-protection .split-questions {
   border-radius: 10px;
   border: 1.5px dashed #d1d5db;
   min-height: 48px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .word-chip {
