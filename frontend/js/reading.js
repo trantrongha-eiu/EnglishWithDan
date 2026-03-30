@@ -852,7 +852,8 @@ async function lookupWord(word) {
     const data = await res.json();
     const entry = data[0];
     const meaning = entry.meanings[0];
-    const def = meaning.definitions[0];
+    //  ưu tiên lấy definition có example
+    const def = meaning.definitions.find(d => d.example) || meaning.definitions[0];
 
     setEl('dict-phonetic', entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '');
     setEl('dict-pos', meaning.partOfSpeech);
