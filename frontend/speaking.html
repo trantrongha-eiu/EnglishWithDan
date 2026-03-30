@@ -4,24 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Speaking Practice</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 
 <body>
 
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">Daniel Hà</div>
+   <header
+        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
+            <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
+            <button onclick="logout()"
+                style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
+                🚪 Đăng xuất
+            </button>
         </div>
     </header>
 
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li><a href="reading.html" >Reading</a></li>
-            <li><a href="listening.html"  >Listening</a></li>
-            <li><a href="writing.html"  >Writing</a></li>
-            <li><a href="speaking.html" class="active">Speaking</a></li>
-            <li><a href="dashboard.html">Vocab</a></li>
+    <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
+        <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
+            <li><a href="reading.html"
+                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📖
+                    Reading</a></li>
+            <li><a href="listening.html"
+                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#e53935;text-decoration:none;border-bottom:2px solid #e53935">🎧
+                    Listening</a></li>
+            <li><a href="writing.html"
+                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">✏️
+                    Writing</a></li>
+            <li><a href="speaking.html"
+                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎤
+                    Speaking</a></li>
+            <li><a href="dashboard.html"
+                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📚
+                    Vocab</a></li>
         </ul>
     </nav>
 
