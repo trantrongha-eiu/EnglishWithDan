@@ -206,4 +206,20 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/history – lịch sử tất cả học sinh
+router.get('/history', auth, teacherOnly, async (req, res) => {
+  try {
+    const history = await TestAttempt.find({ status: 'completed' })
+      .populate('userId', 'username firstName lastName')
+      .populate('testId', 'name testNumber')
+      .sort({ endTime: -1 })
+      .limit(100)
+      .select('-answers -passagesUsed');
+
+    res.json({ success: true, history });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;
