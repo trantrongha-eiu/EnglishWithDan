@@ -1129,6 +1129,21 @@ function hideMsg(id) {
   if (el) { el.classList.add('hidden'); el.textContent = ''; }
 }
 
+// Hiển thị tên user + logout
+(function initNav() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const name = user.firstName ? `${user.firstName} ${user.lastName}` : user.username || '';
+  const el = document.getElementById('userName');
+  if (el && name) el.textContent = `👋 ${name}`;
+})();
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = 'login.html';
+}
+window.logout = logout;
+
 // Global exports for HTML onclick
 window.showScreen = showScreen;
 window.openModal = openModal;

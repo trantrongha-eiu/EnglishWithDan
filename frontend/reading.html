@@ -20,10 +20,40 @@
 
     <!-- Skill tabs -->
     <div class="skill-tabs-bar">
-      <button class="skill-tab active" data-skill="reading">📖 Reading</button>
-      <button class="skill-tab" data-skill="listening">🎧 Listening</button>
-      <button class="skill-tab" data-skill="writing">✏️ Writing</button>
-      <button class="skill-tab" data-skill="speaking">🎤 Speaking</button>
+      <!-- Thay thế div.skill-tabs-bar bằng header + nav đầy đủ -->
+      <header
+        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
+        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
+          <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
+          <button onclick="logout()"
+            style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
+            🚪 Đăng xuất
+          </button>
+        </div>
+      </header>
+
+      <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
+        <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
+          <li><a href="reading.html"
+              style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#e53935;text-decoration:none;border-bottom:2px solid #e53935">📖
+              Reading</a></li>
+          <li><a href="listening.html"
+              style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎧
+              Listening</a></li>
+          <li><a href="writing.html"
+              style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">✏️
+              Writing</a></li>
+          <li><a href="speaking.html"
+              style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎤
+              Speaking</a></li>
+          <li><a href="dashboard.html"
+              style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📚
+              Vocab</a></li>
+        </ul>
+      </nav>
     </div>
 
     <div class="list-container">
@@ -295,18 +325,18 @@
   <!-- ════════════════════════════════════════════════════════
      DICTIONARY POPUP (chỉ hiện khi review)
      ════════════════════════════════════════════════════════ -->
- <div id="dict-popup" class="dict-popup hidden">
-  <div class="dict-header">
-    <span class="dict-word" id="dict-word"></span>
-    <span class="dict-phonetic" id="dict-phonetic"></span>
-    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm">🔊</button>
-    <button class="dict-close" onclick="closeDictPopup()">✕</button>
+  <div id="dict-popup" class="dict-popup hidden">
+    <div class="dict-header">
+      <span class="dict-word" id="dict-word"></span>
+      <span class="dict-phonetic" id="dict-phonetic"></span>
+      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm">🔊</button>
+      <button class="dict-close" onclick="closeDictPopup()">✕</button>
+    </div>
+    <div class="dict-pos" id="dict-pos"></div>
+    <div class="dict-meaning" id="dict-meaning"></div>
+    <div class="dict-example" id="dict-example"></div>
+    <button class="btn-save-vocab" onclick="saveVocab()">＋ Lưu vào sổ từ vựng</button>
   </div>
-  <div class="dict-pos" id="dict-pos"></div>
-  <div class="dict-meaning" id="dict-meaning"></div>
-  <div class="dict-example" id="dict-example"></div>
-  <button class="btn-save-vocab" onclick="saveVocab()">＋ Lưu vào sổ từ vựng</button>
-</div>
 
   <script src="js/auth.js"></script>
   <script src="js/reading.js"></script>
