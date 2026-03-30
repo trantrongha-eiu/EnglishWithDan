@@ -630,80 +630,90 @@
             </div>
         </div>
     </div>
-  <script>
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const eyeIcon = document.querySelector('.eye-icon');
-        
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
-        }
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const emailOrUsername = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-
-        const btn = document.querySelector('.btn-login');
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<span>Đang đăng nhập...</span>';
-        btn.disabled = true;
-
-        try {
-            // Gọi API login với email hoặc username
-            const res = await fetch('https://englishwithdan.onrender.com/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email: emailOrUsername,  // Backend sẽ xử lý cả email và username
-                    password: password 
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                // Lưu token và thông tin user
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", JSON.stringify(data.user));
-
-                // Hiển thị thông báo thành công
-                alert("Đăng nhập thành công!");
-                
-                // Chuyển hướng
-                window.location.href = "dashboard.html";
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.querySelector('.eye-icon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
             } else {
-                // Hiển thị lỗi
-                alert(data.message || "Đăng nhập thất bại!");
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
             }
-        } catch (err) {
-            console.error('Login error:', err);
-            alert("Không kết nối được server! Vui lòng thử lại.");
-        } finally {
-            // Khôi phục nút
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
         }
-    });
 
-    // Xử lý đăng nhập bằng Google
-    document.querySelector('.btn-social.google').addEventListener('click', function() {
-        alert('Tính năng đăng nhập Google đang được phát triển!');
-    });
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-    // Xử lý đăng nhập bằng Facebook
-    document.querySelector('.btn-social.facebook').addEventListener('click', function() {
-        alert('Tính năng đăng nhập Facebook đang được phát triển!');
-    });
-</script>
+            const emailOrUsername = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            const btn = document.querySelector('.btn-login');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<span>Đang đăng nhập...</span>';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('https://englishwithdan.onrender.com/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailOrUsername, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // Lưu token và user (bao gồm role)
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // ── Redirect theo role ──────────────────────────
+                    const role = data.user.role;
+                    if (role === 'admin' || role === 'teacher') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    showError(data.message || 'Đăng nhập thất bại!');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                showError('Không kết nối được server! Vui lòng thử lại.');
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
+
+        // Hiển thị lỗi đẹp hơn alert()
+        function showError(msg) {
+            let el = document.getElementById('login-error');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'login-error';
+                el.style.cssText = `
+                background:#fce4e4; color:#c62828;
+                border:1px solid #ef9a9a; border-radius:10px;
+                padding:12px 16px; font-size:14px; font-weight:500;
+                margin-top:16px; text-align:center;
+                animation: fadeIn .25s ease;
+            `;
+                document.getElementById('loginForm').after(el);
+            }
+            el.textContent = '⚠️ ' + msg;
+            setTimeout(() => el && (el.textContent = ''), 4000);
+        }
+
+        document.querySelector('.btn-social.google').addEventListener('click', function () {
+            showError('Tính năng đăng nhập Google đang được phát triển!');
+        });
+        document.querySelector('.btn-social.facebook').addEventListener('click', function () {
+            showError('Tính năng đăng nhập Facebook đang được phát triển!');
+        });
+    </script>
 
 
 </body>
