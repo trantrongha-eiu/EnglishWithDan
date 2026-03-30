@@ -1,10 +1,10 @@
-const express    = require('express');
-const router     = express.Router();
-const Passage     = require('../models/Passage');
+const express = require('express');
+const router = express.Router();
+const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
-const AccessKey   = require('../models/AccessKey');
-const auth        = require('../middleware/auth');
+const AccessKey = require('../models/AccessKey');
+const auth = require('../middleware/auth');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/reading/tests
@@ -131,17 +131,17 @@ router.post('/start', auth, async (req, res) => {
 
     // Trả về passages – ẨN correctAnswer và explanation khi đang thi
     const safePassages = passages.map(p => ({
-      _id:          p._id,
-      title:        p.title,
-      category:     p.category,
-      content:      p.content,
+      _id: p._id,
+      title: p.title,
+      category: p.category,
+      content: p.content,
       questionRange: p.questionRange,
       questions: p.questions.map(q => ({
         questionNumber: q.questionNumber,
-        type:           q.type,
-        questionText:   q.questionText,
-        options:        q.options,
-        wordBank:       q.wordBank,
+        type: q.type,
+        questionText: q.questionText,
+        options: q.options,
+        wordBank: q.wordBank,
         paragraphLabels: q.paragraphLabels
         // correctAnswer & explanation bị ẩn
       }))
@@ -180,20 +180,25 @@ router.post('/submit', auth, async (req, res) => {
     }
 
     // Lấy lại passages với đáp án
-    const passages = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    // Giữ đúng thứ tự passage1 → passage2 → passage3 như khi thi
+    const idOrder = attempt.passagesUsed.map(id => id.toString());
+    const passages = idOrder
+      .map(id => passagesRaw.find(p => p._id.toString() === id))
+      .filter(Boolean);
 
     // Chấm điểm
     let correctCount = 0;
-    let wrongCount   = 0;
+    let wrongCount = 0;
     let skippedCount = 0;
     const gradedAnswers = [];
 
     for (const passage of passages) {
       for (const q of passage.questions) {
-        const userAns    = (answers[q.questionNumber] || '').toString().toLowerCase().trim();
+        const userAns = (answers[q.questionNumber] || '').toString().toLowerCase().trim();
         const correctAns = (q.correctAnswer || '').toLowerCase().trim();
-        const answered   = userAns !== '';
-        const isCorrect  = answered && userAns === correctAns;
+        const answered = userAns !== '';
+        const isCorrect = answered && userAns === correctAns;
 
         if (!answered) skippedCount++;
         else if (isCorrect) correctCount++;
@@ -201,33 +206,33 @@ router.post('/submit', auth, async (req, res) => {
 
         gradedAnswers.push({
           questionNumber: q.questionNumber,
-          userAnswer:    answers[q.questionNumber] || '',
+          userAnswer: answers[q.questionNumber] || '',
           correctAnswer: q.correctAnswer,
           isCorrect
         });
       }
     }
 
-    const endTime  = new Date();
+    const endTime = new Date();
     const duration = Math.floor((endTime - attempt.startTime) / 1000);
 
-    attempt.answers       = gradedAnswers;
-    attempt.correctCount  = correctCount;
-    attempt.wrongCount    = wrongCount;
-    attempt.skippedCount  = skippedCount;
+    attempt.answers = gradedAnswers;
+    attempt.correctCount = correctCount;
+    attempt.wrongCount = wrongCount;
+    attempt.skippedCount = skippedCount;
     attempt.totalQuestions = gradedAnswers.length;
-    attempt.bandScore     = attempt.calculateBandScore();
-    attempt.endTime       = endTime;
-    attempt.duration      = duration;
-    attempt.status        = 'completed';
+    attempt.bandScore = attempt.calculateBandScore();
+    attempt.endTime = endTime;
+    attempt.duration = duration;
+    attempt.status = 'completed';
 
     await attempt.save();
 
     res.json({
       success: true,
       result: {
-        attemptId:     attempt._id,
-        bandScore:     attempt.bandScore,
+        attemptId: attempt._id,
+        bandScore: attempt.bandScore,
         correctCount,
         wrongCount,
         skippedCount,
@@ -265,38 +270,38 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
     attempt.answers.forEach(a => { answerMap[a.questionNumber] = a; });
 
     const passagesWithResult = passages.map(p => ({
-      _id:           p._id,
-      title:         p.title,
-      category:      p.category,
-      content:       p.content,
+      _id: p._id,
+      title: p.title,
+      category: p.category,
+      content: p.content,
       questionRange: p.questionRange,
       questions: p.questions.map(q => ({
         questionNumber: q.questionNumber,
-        type:           q.type,
-        questionText:   q.questionText,
-        options:        q.options,
-        wordBank:       q.wordBank,
+        type: q.type,
+        questionText: q.questionText,
+        options: q.options,
+        wordBank: q.wordBank,
         paragraphLabels: q.paragraphLabels,
-        correctAnswer:  q.correctAnswer,
-        explanation:    q.explanation,
-        userAnswer:     answerMap[q.questionNumber]?.userAnswer || '',
-        isCorrect:      answerMap[q.questionNumber]?.isCorrect || false
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation,
+        userAnswer: answerMap[q.questionNumber]?.userAnswer || '',
+        isCorrect: answerMap[q.questionNumber]?.isCorrect || false
       }))
     }));
 
     res.json({
       success: true,
       attempt: {
-        _id:           attempt._id,
-        testName:      attempt.testId?.name || '',
-        bandScore:     attempt.bandScore,
-        correctCount:  attempt.correctCount,
-        wrongCount:    attempt.wrongCount,
-        skippedCount:  attempt.skippedCount,
+        _id: attempt._id,
+        testName: attempt.testId?.name || '',
+        bandScore: attempt.bandScore,
+        correctCount: attempt.correctCount,
+        wrongCount: attempt.wrongCount,
+        skippedCount: attempt.skippedCount,
         totalQuestions: attempt.totalQuestions,
-        duration:      attempt.duration,
-        endTime:       attempt.endTime,
-        passages:      passagesWithResult
+        duration: attempt.duration,
+        endTime: attempt.endTime,
+        passages: passagesWithResult
       }
     });
   } catch (err) {
