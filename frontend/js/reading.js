@@ -273,6 +273,11 @@ function switchPassage(idx, isReview) {
     b.classList.toggle('active', i === idx);
   });
   renderCurrentPassage(isReview);
+
+  // FIX BUG 2: Re-attach dictionary listener sau mỗi lần switch passage khi review
+  if (isReview) {
+    setupDictionaryDouble('review-passage-inner');
+  }
 }
 
 // ── Passage text ──
@@ -720,7 +725,7 @@ async function goToReview() {
 
     const a = data.attempt;
     state.passages = a.passages;
-    state.isReview = true;   // ← phải set trước
+    state.isReview = true;
     state.passageIdx = 0;
 
     document.getElementById('review-title').textContent = a.testName;
@@ -729,6 +734,8 @@ async function goToReview() {
     buildPassageTabs('toolbar-passage-tabs-rv', true);
     renderCurrentPassage(true);
     renderQNav(true);
+
+    // FIX BUG 1: Gọi setupDictionaryDouble SAU KHI renderCurrentPassage đã render xong DOM
     setupDictionaryDouble('review-passage-inner');
 
     // Set tool về highlight mặc định khi vào review
@@ -781,14 +788,22 @@ function setupDictionaryDouble(containerId) {
   const el = document.getElementById(containerId);
   if (!el) return;
 
-  // Xóa listener cũ nếu có (tránh duplicate)
-  el.removeEventListener('dblclick', el._dictHandler);
+  // FIX BUG 1+2: Xóa listener cũ trước khi attach listener mới
+  // Dùng cloneNode để remove tất cả event listeners cũ triệt để
+  if (el._dictHandler) {
+    el.removeEventListener('dblclick', el._dictHandler);
+  }
 
   el._dictHandler = async (e) => {
     // Dict tool active mới tra từ
     if (state.tool !== 'dict') return;
-    const word = window.getSelection()?.toString().trim();
+
+    // Lấy từ được double-click
+    const selection = window.getSelection();
+    const word = selection?.toString().trim();
     if (!word || word.includes(' ') || word.length < 2) return;
+
+    e.preventDefault();
     await lookupWord(word);
   };
 
@@ -797,18 +812,34 @@ function setupDictionaryDouble(containerId) {
 
 async function lookupWord(word) {
   const popup = document.getElementById('dict-popup');
-  document.getElementById('dict-word').textContent = word;
-  document.getElementById('dict-phonetic').textContent = '...';
-  document.getElementById('dict-pos').textContent = '';
-  document.getElementById('dict-meaning').textContent = 'Đang tra...';
-  document.getElementById('dict-example').textContent = '';
-  document.getElementById('dict-vn').textContent = '';
+  if (!popup) return;
 
-  // Position near cursor
+  // FIX BUG 3: Chỉ set nếu element tồn tại (dict-vn không có trong HTML)
+  const setEl = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setEl('dict-word', word);
+  setEl('dict-phonetic', '...');
+  setEl('dict-pos', '');
+  setEl('dict-meaning', 'Đang tra...');
+  setEl('dict-example', '');
+  setEl('dict-vn', ''); // safe – không crash nếu không có
+
+  // Position near cursor / selection
   const sel = window.getSelection();
-  const rect = sel?.rangeCount ? sel.getRangeAt(0).getBoundingClientRect() : { bottom: 200, left: 200 };
-  popup.style.top = Math.min(rect.bottom + 8, window.innerHeight - 260) + 'px';
-  popup.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
+  let top = 200, left = 200;
+  if (sel && sel.rangeCount > 0) {
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    top = Math.min(rect.bottom + 8, window.innerHeight - 280);
+    left = Math.min(rect.left, window.innerWidth - 330);
+    // Đảm bảo không bị âm
+    top = Math.max(top, 8);
+    left = Math.max(left, 8);
+  }
+  popup.style.top = top + 'px';
+  popup.style.left = left + 'px';
   popup.classList.remove('hidden');
 
   state.dictWord = word;
@@ -817,24 +848,30 @@ async function lookupWord(word) {
 
   try {
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) throw new Error('Not found');
     const data = await res.json();
     const entry = data[0];
     const meaning = entry.meanings[0];
     const def = meaning.definitions[0];
 
-    document.getElementById('dict-phonetic').textContent = entry.phonetic || '';
-    document.getElementById('dict-pos').textContent = meaning.partOfSpeech;
-    document.getElementById('dict-meaning').textContent = def.definition;
-    document.getElementById('dict-example').textContent = def.example ? `"${def.example}"` : '';
+    setEl('dict-phonetic', entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '');
+    setEl('dict-pos', meaning.partOfSpeech);
+    setEl('dict-meaning', def.definition);
+    setEl('dict-example', def.example ? `"${def.example}"` : '');
 
     state.dictMeaning = def.definition;
     state.dictExample = def.example || '';
   } catch {
-    document.getElementById('dict-meaning').textContent = 'Không tìm thấy định nghĩa.';
+    setEl('dict-meaning', 'Không tìm thấy định nghĩa.');
+    setEl('dict-phonetic', '');
+    setEl('dict-pos', '');
   }
 }
 
-function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
+function closeDictPopup() {
+  const popup = document.getElementById('dict-popup');
+  if (popup) popup.classList.add('hidden');
+}
 
 // Phát âm từ trong dict popup
 function speakDictWord() {
