@@ -676,3 +676,7 @@ body {
         font-size: 36px;
     }
 }
+
+.hidden {
+    display: none !important
+}

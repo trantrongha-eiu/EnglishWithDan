@@ -1,1204 +1,1624 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel – EnglishWithDan</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
   <style>
-/* ══════════════════════════════════════════════
+    /* ══════════════════════════════════════════════
    RESET & TOKENS
 ══════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-:root {
-  --bg:        #0f1117;
-  --surface:   #181c27;
-  --surface2:  #1e2333;
-  --border:    #2a3045;
-  --border2:   #353d55;
-  --text:      #e8eaf0;
-  --text2:     #8b92a8;
-  --text3:     #555e78;
-  --accent:    #e53935;
-  --accent2:   #ff6b6b;
-  --blue:      #3d8bff;
-  --green:     #34d399;
-  --yellow:    #fbbf24;
-  --purple:    #a78bfa;
-  --font:      'Plus Jakarta Sans', sans-serif;
-  --mono:      'JetBrains Mono', monospace;
-  --radius:    12px;
-  --radius-sm: 8px;
-  --shadow:    0 4px 24px rgba(0,0,0,.35);
-}
+    :root {
+      --bg: #0f1117;
+      --surface: #181c27;
+      --surface2: #1e2333;
+      --border: #2a3045;
+      --border2: #353d55;
+      --text: #e8eaf0;
+      --text2: #8b92a8;
+      --text3: #555e78;
+      --accent: #e53935;
+      --accent2: #ff6b6b;
+      --blue: #3d8bff;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --purple: #a78bfa;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, .35);
+    }
 
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  font-size: 14px;
-  line-height: 1.5;
-}
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      font-size: 14px;
+      line-height: 1.5;
+    }
 
-/* ══════════════════════════════════════════════
+    /* ══════════════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════════════ */
-.sidebar {
-  width: 220px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 50;
-  padding: 0 0 16px;
-}
+    .sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 50;
+      padding: 0 0 16px;
+    }
 
-.sidebar-logo {
-  padding: 22px 20px 18px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 8px;
-}
-.sidebar-logo-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -.3px;
-}
-.sidebar-logo-sub {
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 600;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-}
+    .sidebar-logo {
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
 
-.nav-section-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text3);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 12px 20px 6px;
-}
+    .sidebar-logo-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  color: var(--text2);
-  cursor: pointer;
-  border-radius: 0;
-  transition: all .15s;
-  font-size: 13px;
-  font-weight: 500;
-  position: relative;
-  text-decoration: none;
-}
-.nav-item:hover { background: var(--surface2); color: var(--text); }
-.nav-item.active {
-  background: rgba(229,57,53,.12);
-  color: var(--accent2);
-}
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 4px; bottom: 4px;
-  width: 3px;
-  background: var(--accent);
-  border-radius: 0 2px 2px 0;
-}
-.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-logo-sub {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
 
-.sidebar-bottom {
-  margin-top: auto;
-  padding: 12px 16px 0;
-  border-top: 1px solid var(--border);
-}
-.user-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
-}
-.user-avatar {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--accent), #ff8f00);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; color: #fff;
-  flex-shrink: 0;
-}
-.user-name  { font-size: 13px; font-weight: 600; color: var(--text); }
-.user-role  { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
-.btn-logout {
-  background: none; border: none; cursor: pointer;
-  color: var(--text3); font-size: 16px; margin-left: auto;
-  padding: 4px; border-radius: 6px; transition: color .15s;
-}
-.btn-logout:hover { color: var(--accent2); }
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 20px 6px;
+    }
 
-/* ══════════════════════════════════════════════
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      color: var(--text2);
+      cursor: pointer;
+      border-radius: 0;
+      transition: all .15s;
+      font-size: 13px;
+      font-weight: 500;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(229, 57, 53, .12);
+      color: var(--accent2);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 12px 16px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #ff8f00);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .user-role {
+      font-size: 10px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text3);
+      font-size: 16px;
+      margin-left: auto;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color .15s;
+    }
+
+    .btn-logout:hover {
+      color: var(--accent2);
+    }
+
+    /* ══════════════════════════════════════════════
    MAIN
 ══════════════════════════════════════════════ */
-.main {
-  margin-left: 220px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-.topbar {
-  height: 56px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  position: sticky; top: 0; z-index: 40;
-}
-.topbar-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-}
-.topbar-right { display: flex; align-items: center; gap: 10px; }
+    .topbar {
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
 
-.content { padding: 28px; }
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
 
-/* Tabs */
-.tab-panels > div { display: none; }
-.tab-panels > div.active { display: block; }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* ══════════════════════════════════════════════
+    .content {
+      padding: 28px;
+    }
+
+    /* Tabs */
+    .tab-panels>div {
+      display: none;
+    }
+
+    .tab-panels>div.active {
+      display: block;
+    }
+
+    /* ══════════════════════════════════════════════
    STAT CARDS
 ══════════════════════════════════════════════ */
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px 22px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .2s;
-}
-.stat-card:hover { border-color: var(--border2); }
-.stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-}
-.stat-card.blue::after  { background: var(--blue); }
-.stat-card.green::after { background: var(--green); }
-.stat-card.yellow::after{ background: var(--yellow); }
-.stat-card.red::after   { background: var(--accent); }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
 
-.stat-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
-.stat-value { font-size: 30px; font-weight: 800; color: var(--text); line-height: 1; }
-.stat-sub   { font-size: 12px; color: var(--text2); margin-top: 5px; }
-.stat-icon  { position: absolute; top: 18px; right: 18px; font-size: 24px; opacity: .2; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
 
-/* ══════════════════════════════════════════════
+    .stat-card:hover {
+      border-color: var(--border2);
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .stat-card.blue::after {
+      background: var(--blue);
+    }
+
+    .stat-card.green::after {
+      background: var(--green);
+    }
+
+    .stat-card.yellow::after {
+      background: var(--yellow);
+    }
+
+    .stat-card.red::after {
+      background: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 5px;
+    }
+
+    .stat-icon {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      font-size: 24px;
+      opacity: .2;
+    }
+
+    /* ══════════════════════════════════════════════
    SECTION HEADER
 ══════════════════════════════════════════════ */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.section-title { font-size: 16px; font-weight: 700; color: var(--text); }
-.section-actions { display: flex; gap: 8px; align-items: center; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-/* Search */
-.search-input {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 8px 14px 8px 36px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: var(--font);
-  outline: none;
-  width: 220px;
-  transition: border-color .15s;
-  position: relative;
-}
-.search-input:focus { border-color: var(--blue); }
-.search-wrap { position: relative; }
-.search-wrap::before {
-  content: '🔍';
-  position: absolute;
-  left: 10px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 13px;
-  pointer-events: none;
-  opacity: .5;
-}
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
 
-select.filter-select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text2);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-family: var(--font);
-  outline: none;
-  cursor: pointer;
-  transition: border-color .15s;
-}
-select.filter-select:focus { border-color: var(--blue); }
-select.filter-select option { background: var(--surface2); }
+    .section-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
 
-/* ══════════════════════════════════════════════
+    /* Search */
+    .search-input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px 8px 36px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: var(--font);
+      outline: none;
+      width: 220px;
+      transition: border-color .15s;
+      position: relative;
+    }
+
+    .search-input:focus {
+      border-color: var(--blue);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap::before {
+      content: '🔍';
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      pointer-events: none;
+      opacity: .5;
+    }
+
+    select.filter-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: var(--font);
+      outline: none;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    select.filter-select:focus {
+      border-color: var(--blue);
+    }
+
+    select.filter-select option {
+      background: var(--surface2);
+    }
+
+    /* ══════════════════════════════════════════════
    TABLE
 ══════════════════════════════════════════════ */
-.table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-thead th {
-  background: var(--surface2);
-  padding: 11px 16px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: .7px;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--border);
-}
-tbody td {
-  padding: 12px 16px;
-  font-size: 13px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: middle;
-}
-tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: rgba(255,255,255,.025); }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
 
-.table-empty {
-  text-align: center;
-  padding: 48px 20px;
-  color: var(--text3);
-  font-size: 14px;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-/* ══════════════════════════════════════════════
+    thead th {
+      background: var(--surface2);
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover td {
+      background: rgba(255, 255, 255, .025);
+    }
+
+    .table-empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+      font-size: 14px;
+    }
+
+    /* ══════════════════════════════════════════════
    BADGES
 ══════════════════════════════════════════════ */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .3px;
-}
-.badge-blue   { background: rgba(61,139,255,.15); color: #6aabff; }
-.badge-green  { background: rgba(52,211,153,.15); color: #34d399; }
-.badge-yellow { background: rgba(251,191,36,.15);  color: #fbbf24; }
-.badge-red    { background: rgba(229,57,53,.15);   color: var(--accent2); }
-.badge-gray   { background: rgba(139,146,168,.12); color: var(--text2); }
-.badge-purple { background: rgba(167,139,250,.15); color: #c4b5fd; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .3px;
+    }
 
-.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge-blue {
+      background: rgba(61, 139, 255, .15);
+      color: #6aabff;
+    }
 
-/* ══════════════════════════════════════════════
+    .badge-green {
+      background: rgba(52, 211, 153, .15);
+      color: #34d399;
+    }
+
+    .badge-yellow {
+      background: rgba(251, 191, 36, .15);
+      color: #fbbf24;
+    }
+
+    .badge-red {
+      background: rgba(229, 57, 53, .15);
+      color: var(--accent2);
+    }
+
+    .badge-gray {
+      background: rgba(139, 146, 168, .12);
+      color: var(--text2);
+    }
+
+    .badge-purple {
+      background: rgba(167, 139, 250, .15);
+      color: #c4b5fd;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ══════════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════════ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-family: var(--font);
-  transition: all .15s;
-  white-space: nowrap;
-}
-.btn-primary  { background: var(--accent); color: #fff; }
-.btn-primary:hover  { background: #c62828; }
-.btn-blue     { background: var(--blue); color: #fff; }
-.btn-blue:hover     { background: #2c78f0; }
-.btn-ghost    { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
-.btn-ghost:hover    { border-color: var(--border2); color: var(--text); }
-.btn-danger   { background: rgba(229,57,53,.15); color: var(--accent2); border: 1px solid rgba(229,57,53,.3); }
-.btn-danger:hover   { background: rgba(229,57,53,.25); }
-.btn-sm       { padding: 5px 11px; font-size: 12px; }
-.btn-icon     { padding: 7px; }
-.btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font);
+      transition: all .15s;
+      white-space: nowrap;
+    }
 
-/* ══════════════════════════════════════════════
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #c62828;
+    }
+
+    .btn-blue {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-blue:hover {
+      background: #2c78f0;
+    }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: rgba(229, 57, 53, .15);
+      color: var(--accent2);
+      border: 1px solid rgba(229, 57, 53, .3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(229, 57, 53, .25);
+    }
+
+    .btn-sm {
+      padding: 5px 11px;
+      font-size: 12px;
+    }
+
+    .btn-icon {
+      padding: 7px;
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    /* ══════════════════════════════════════════════
    MODALS
 ══════════════════════════════════════════════ */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.65);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 200;
-  padding: 16px;
-  backdrop-filter: blur(4px);
-}
-.modal-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 0;
-  box-shadow: var(--shadow);
-  animation: modal-pop .18s ease;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-@keyframes modal-pop {
-  from { transform: scale(.94) translateY(8px); opacity: 0; }
-  to   { transform: scale(1)   translateY(0);   opacity: 1; }
-}
-.modal-sm { width: min(480px, 100%); }
-.modal-md { width: min(640px, 100%); }
-.modal-lg { width: min(860px, 100%); }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
 
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px 0;
-}
-.modal-header h3 { font-size: 17px; font-weight: 700; }
-.modal-close {
-  background: none; border: none;
-  color: var(--text3); font-size: 20px; cursor: pointer;
-  padding: 4px; border-radius: 6px; line-height: 1;
-  transition: color .15s;
-}
-.modal-close:hover { color: var(--text); }
-.modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
-.modal-footer {
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: var(--shadow);
+      animation: modal-pop .18s ease;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-/* Form elements */
-.form-group { margin-bottom: 18px; }
-.form-group label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 7px;
-}
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-family: var(--font);
-  outline: none;
-  transition: border-color .15s;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--blue); }
-.form-select option { background: var(--surface2); }
-.form-textarea {
-  resize: vertical;
-  min-height: 120px;
-  font-family: var(--mono);
-  font-size: 13px;
-  line-height: 1.6;
-}
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.form-hint { font-size: 11px; color: var(--text3); margin-top: 5px; }
-.form-error { font-size: 12px; color: var(--accent2); margin-top: 5px; }
+    @keyframes modal-pop {
+      from {
+        transform: scale(.94) translateY(8px);
+        opacity: 0;
+      }
 
-/* ══════════════════════════════════════════════
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-sm {
+      width: min(480px, 100%);
+    }
+
+    .modal-md {
+      width: min(640px, 100%);
+    }
+
+    .modal-lg {
+      width: min(860px, 100%);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 0;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text3);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      line-height: 1;
+      transition: color .15s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 7px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--blue);
+    }
+
+    .form-select option {
+      background: var(--surface2);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-hint {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 5px;
+    }
+
+    .form-error {
+      font-size: 12px;
+      color: var(--accent2);
+      margin-top: 5px;
+    }
+
+    /* ══════════════════════════════════════════════
    KEYS TABLE SPECIAL
 ══════════════════════════════════════════════ */
-.key-code {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--yellow);
-  letter-spacing: 2px;
-  background: rgba(251,191,36,.08);
-  padding: 3px 10px;
-  border-radius: 6px;
-}
-.key-uses { color: var(--text2); font-family: var(--mono); font-size: 13px; }
+    .key-code {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      background: rgba(251, 191, 36, .08);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
 
-/* Progress bar */
-.prog-bar {
-  height: 5px;
-  background: var(--surface2);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 5px;
-}
-.prog-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--green);
-  transition: width .4s;
-}
+    .key-uses {
+      color: var(--text2);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
 
-/* ══════════════════════════════════════════════
+    /* Progress bar */
+    .prog-bar {
+      height: 5px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .prog-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--green);
+      transition: width .4s;
+    }
+
+    /* ══════════════════════════════════════════════
    KEY GENERATION RESULT
 ══════════════════════════════════════════════ */
-.keys-result {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  margin-top: 14px;
-}
-.keys-result-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: .7px;
-  margin-bottom: 10px;
-}
-.keys-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.key-chip {
-  font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--yellow);
-  background: rgba(251,191,36,.1);
-  border: 1px solid rgba(251,191,36,.25);
-  padding: 5px 12px;
-  border-radius: 7px;
-  letter-spacing: 2px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.key-chip:hover { background: rgba(251,191,36,.2); }
-.btn-copy-all {
-  font-size: 12px;
-  padding: 5px 12px;
-}
+    .keys-result {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-top: 14px;
+    }
 
-/* ══════════════════════════════════════════════
+    .keys-result-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 10px;
+    }
+
+    .keys-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .key-chip {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--yellow);
+      background: rgba(251, 191, 36, .1);
+      border: 1px solid rgba(251, 191, 36, .25);
+      padding: 5px 12px;
+      border-radius: 7px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .key-chip:hover {
+      background: rgba(251, 191, 36, .2);
+    }
+
+    .btn-copy-all {
+      font-size: 12px;
+      padding: 5px 12px;
+    }
+
+    /* ══════════════════════════════════════════════
    PASSAGE EDITOR QUESTIONS
 ══════════════════════════════════════════════ */
-.q-builder {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-.q-builder-header {
-  background: var(--surface2);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  user-select: none;
-}
-.q-builder-title { font-size: 13px; font-weight: 600; }
-.q-builder-body { padding: 16px; border-top: 1px solid var(--border); }
+    .q-builder {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
 
-.question-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
-.question-row {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-}
-.question-row-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.q-num-badge {
-  background: var(--accent);
-  color: #fff;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; flex-shrink: 0;
-}
+    .q-builder-header {
+      background: var(--surface2);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
 
-/* ══════════════════════════════════════════════
+    .q-builder-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .q-builder-body {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .question-row {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+
+    .question-row-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .q-num-badge {
+      background: var(--accent);
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════
    TOAST
 ══════════════════════════════════════════════ */
-#toast {
-  position: fixed;
-  bottom: 28px; right: 28px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  box-shadow: var(--shadow);
-  z-index: 999;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all .25s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 340px;
-}
-#toast.show { transform: translateY(0); opacity: 1; }
-#toast.success .toast-dot { background: var(--green); }
-#toast.error   .toast-dot { background: var(--accent); }
-#toast.info    .toast-dot { background: var(--blue); }
-.toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      z-index: 999;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 340px;
+    }
 
-/* ══════════════════════════════════════════════
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.success .toast-dot {
+      background: var(--green);
+    }
+
+    #toast.error .toast-dot {
+      background: var(--accent);
+    }
+
+    #toast.info .toast-dot {
+      background: var(--blue);
+    }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════
    LOADING STATES
 ══════════════════════════════════════════════ */
-.skeleton {
-  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  border-radius: 6px;
-}
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
 
-.loading-row td { padding: 14px 16px; }
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
 
-/* ══════════════════════════════════════════════
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .loading-row td {
+      padding: 14px 16px;
+    }
+
+    /* ══════════════════════════════════════════════
    PAGINATION
 ══════════════════════════════════════════════ */
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  padding: 14px 16px;
-  border-top: 1px solid var(--border);
-}
-.page-btn {
-  width: 30px; height: 30px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text2);
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
-}
-.page-btn:hover { border-color: var(--border2); color: var(--text); }
-.page-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-.page-info { font-size: 12px; color: var(--text3); margin: 0 6px; }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+    }
 
-/* ══════════════════════════════════════════════
+    .page-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text2);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .page-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .page-info {
+      font-size: 12px;
+      color: var(--text3);
+      margin: 0 6px;
+    }
+
+    /* ══════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════ */
-@media (max-width: 1100px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); transition: transform .25s; }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .form-row { grid-template-columns: 1fr; }
-  .content { padding: 16px; }
-}
+    @media (max-width: 1100px) {
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<!-- ══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
      SIDEBAR
 ══════════════════════════════════════════ -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-title">EnglishWithDan</div>
-    <div class="sidebar-logo-sub">Admin Panel</div>
-  </div>
-
-  <span class="nav-section-label">Tổng quan</span>
-  <a class="nav-item active" onclick="switchTab('dashboard')" href="#">
-    <span class="nav-icon">📊</span> Dashboard
-  </a>
-
-  <span class="nav-section-label">Nội dung</span>
-  <a class="nav-item" onclick="switchTab('passages')" href="#">
-    <span class="nav-icon">📄</span> Bài đọc
-  </a>
-  <a class="nav-item" onclick="switchTab('tests')" href="#">
-    <span class="nav-icon">📝</span> Bộ đề
-  </a>
-
-  <span class="nav-section-label">Học sinh</span>
-  <a class="nav-item" onclick="switchTab('keys')" href="#">
-    <span class="nav-icon">🔑</span> Mã truy cập
-  </a>
-  <a class="nav-item" onclick="switchTab('history')" href="#">
-    <span class="nav-icon">📈</span> Kết quả học sinh
-  </a>
-
-  <div class="sidebar-bottom">
-    <div class="user-chip">
-      <div class="user-avatar" id="nav-avatar">A</div>
-      <div>
-        <div class="user-name" id="nav-name">Admin</div>
-        <div class="user-role" id="nav-role">teacher</div>
-      </div>
-      <button class="btn-logout" onclick="logout()" title="Đăng xuất">⏻</button>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-title">EnglishWithDan</div>
+      <div class="sidebar-logo-sub">Admin Panel</div>
     </div>
-  </div>
-</nav>
 
-<!-- ══════════════════════════════════════════
+    <span class="nav-section-label">Tổng quan</span>
+    <a class="nav-item active" onclick="switchTab('dashboard')" href="#">
+      <span class="nav-icon">📊</span> Dashboard
+    </a>
+
+    <span class="nav-section-label">Nội dung</span>
+    <a class="nav-item" onclick="switchTab('passages')" href="#">
+      <span class="nav-icon">📄</span> Bài đọc
+    </a>
+    <a class="nav-item" onclick="switchTab('tests')" href="#">
+      <span class="nav-icon">📝</span> Bộ đề
+    </a>
+
+    <span class="nav-section-label">Học sinh</span>
+    <a class="nav-item" onclick="switchTab('keys')" href="#">
+      <span class="nav-icon">🔑</span> Mã truy cập
+    </a>
+    <a class="nav-item" onclick="switchTab('history')" href="#">
+      <span class="nav-icon">📈</span> Kết quả học sinh
+    </a>
+
+    <div class="sidebar-bottom">
+      <div class="user-chip">
+        <div class="user-avatar" id="nav-avatar">A</div>
+        <div>
+          <div class="user-name" id="nav-name">Admin</div>
+          <div class="user-role" id="nav-role">teacher</div>
+        </div>
+        <button class="btn-logout" onclick="logout()" title="Đăng xuất">⏻</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
      MAIN
 ══════════════════════════════════════════ -->
-<div class="main">
-  <div class="topbar">
-    <div style="display:flex;align-items:center;gap:12px">
-      <button class="btn btn-ghost btn-icon" id="sidebar-toggle" onclick="toggleSidebar()" style="display:none">☰</button>
-      <span class="topbar-title" id="topbar-title">Dashboard</span>
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn btn-ghost btn-icon" id="sidebar-toggle" onclick="toggleSidebar()"
+          style="display:none">☰</button>
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html" class="btn btn-ghost btn-sm">← Về trang chủ</a>
+      </div>
     </div>
-    <div class="topbar-right">
-      <a href="index.html" class="btn btn-ghost btn-sm">← Về trang chủ</a>
-    </div>
-  </div>
 
-  <div class="content">
-    <div class="tab-panels" id="tab-panels">
+    <div class="content">
+      <div class="tab-panels" id="tab-panels">
 
-      <!-- ────────────────────────
+        <!-- ────────────────────────
            TAB: DASHBOARD
       ──────────────────────── -->
-      <div id="tab-dashboard" class="active">
-        <div class="stats-row" id="stats-row">
-          <div class="stat-card blue">
-            <div class="stat-icon">👨‍🎓</div>
-            <div class="stat-label">Học sinh</div>
-            <div class="stat-value" id="stat-students">–</div>
-            <div class="stat-sub">Tài khoản đã đăng ký</div>
+        <div id="tab-dashboard" class="active">
+          <div class="stats-row" id="stats-row">
+            <div class="stat-card blue">
+              <div class="stat-icon">👨‍🎓</div>
+              <div class="stat-label">Học sinh</div>
+              <div class="stat-value" id="stat-students">–</div>
+              <div class="stat-sub">Tài khoản đã đăng ký</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">✅</div>
+              <div class="stat-label">Lượt làm bài</div>
+              <div class="stat-value" id="stat-attempts">–</div>
+              <div class="stat-sub">Bài đã hoàn thành</div>
+            </div>
+            <div class="stat-card yellow">
+              <div class="stat-icon">📖</div>
+              <div class="stat-label">Band TB</div>
+              <div class="stat-value" id="stat-band">–</div>
+              <div class="stat-sub">Điểm trung bình</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-icon">📄</div>
+              <div class="stat-label">Bài đọc</div>
+              <div class="stat-value" id="stat-passages">–</div>
+              <div class="stat-sub">Trong database</div>
+            </div>
           </div>
-          <div class="stat-card green">
-            <div class="stat-icon">✅</div>
-            <div class="stat-label">Lượt làm bài</div>
-            <div class="stat-value" id="stat-attempts">–</div>
-            <div class="stat-sub">Bài đã hoàn thành</div>
+
+          <div class="section-header">
+            <span class="section-title">Kết quả gần đây</span>
           </div>
-          <div class="stat-card yellow">
-            <div class="stat-icon">📖</div>
-            <div class="stat-label">Band TB</div>
-            <div class="stat-value" id="stat-band">–</div>
-            <div class="stat-sub">Điểm trung bình</div>
-          </div>
-          <div class="stat-card red">
-            <div class="stat-icon">📄</div>
-            <div class="stat-label">Bài đọc</div>
-            <div class="stat-value" id="stat-passages">–</div>
-            <div class="stat-sub">Trong database</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th>Bộ đề</th>
+                  <th>Ngày làm</th>
+                  <th>Band Score</th>
+                  <th>Đúng / Tổng</th>
+                  <th>Thời gian</th>
+                </tr>
+              </thead>
+              <tbody id="recent-tbody">
+                <tr>
+                  <td colspan="6" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div class="section-header">
-          <span class="section-title">Kết quả gần đây</span>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Học sinh</th>
-                <th>Bộ đề</th>
-                <th>Ngày làm</th>
-                <th>Band Score</th>
-                <th>Đúng / Tổng</th>
-                <th>Thời gian</th>
-              </tr>
-            </thead>
-            <tbody id="recent-tbody">
-              <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ────────────────────────
+        <!-- ────────────────────────
            TAB: PASSAGES
       ──────────────────────── -->
-      <div id="tab-passages">
-        <div class="section-header">
-          <span class="section-title">Quản lý bài đọc</span>
-          <div class="section-actions">
-            <div class="search-wrap">
-              <input class="search-input" id="search-passages" placeholder="Tìm tên bài đọc..." oninput="filterPassages()"/>
+        <div id="tab-passages">
+          <div class="section-header">
+            <span class="section-title">Quản lý bài đọc</span>
+            <div class="section-actions">
+              <div class="search-wrap">
+                <input class="search-input" id="search-passages" placeholder="Tìm tên bài đọc..."
+                  oninput="filterPassages()" />
+              </div>
+              <select class="filter-select" id="filter-category" onchange="filterPassages()">
+                <option value="">Tất cả category</option>
+                <option value="passage1">Passage 1</option>
+                <option value="passage2">Passage 2</option>
+                <option value="passage3">Passage 3</option>
+              </select>
+              <button class="btn btn-primary" onclick="openPassageModal()">＋ Thêm bài đọc</button>
             </div>
-            <select class="filter-select" id="filter-category" onchange="filterPassages()">
-              <option value="">Tất cả category</option>
-              <option value="passage1">Passage 1</option>
-              <option value="passage2">Passage 2</option>
-              <option value="passage3">Passage 3</option>
-            </select>
-            <button class="btn btn-primary" onclick="openPassageModal()">＋ Thêm bài đọc</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tiêu đề</th>
+                  <th>Category</th>
+                  <th>Độ khó</th>
+                  <th>Số câu</th>
+                  <th>Phạm vi</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:120px"></th>
+                </tr>
+              </thead>
+              <tbody id="passages-tbody">
+                <tr>
+                  <td colspan="8" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination" id="passages-pagination"></div>
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Tiêu đề</th>
-                <th>Category</th>
-                <th>Độ khó</th>
-                <th>Số câu</th>
-                <th>Phạm vi</th>
-                <th>Trạng thái</th>
-                <th>Ngày tạo</th>
-                <th style="width:120px"></th>
-              </tr>
-            </thead>
-            <tbody id="passages-tbody">
-              <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
-            </tbody>
-          </table>
-          <div class="pagination" id="passages-pagination"></div>
-        </div>
-      </div>
-
-      <!-- ────────────────────────
+        <!-- ────────────────────────
            TAB: TESTS
       ──────────────────────── -->
-      <div id="tab-tests">
-        <div class="section-header">
-          <span class="section-title">Quản lý bộ đề</span>
-          <button class="btn btn-primary" onclick="openTestModal()">＋ Tạo bộ đề</button>
+        <div id="tab-tests">
+          <div class="section-header">
+            <span class="section-title">Quản lý bộ đề</span>
+            <button class="btn btn-primary" onclick="openTestModal()">＋ Tạo bộ đề</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên bộ đề</th>
+                  <th>Số thứ tự</th>
+                  <th>Series</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:100px"></th>
+                </tr>
+              </thead>
+              <tbody id="tests-tbody">
+                <tr>
+                  <td colspan="6" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Tên bộ đề</th>
-                <th>Số thứ tự</th>
-                <th>Series</th>
-                <th>Trạng thái</th>
-                <th>Ngày tạo</th>
-                <th style="width:100px"></th>
-              </tr>
-            </thead>
-            <tbody id="tests-tbody">
-              <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ────────────────────────
+        <!-- ────────────────────────
            TAB: KEYS
       ──────────────────────── -->
-      <div id="tab-keys">
-        <div class="section-header">
-          <span class="section-title">Mã truy cập (Access Keys)</span>
-          <button class="btn btn-primary" onclick="openKeyModal()">＋ Tạo mã mới</button>
+        <div id="tab-keys">
+          <div class="section-header">
+            <span class="section-title">Mã truy cập (Access Keys)</span>
+            <button class="btn btn-primary" onclick="openKeyModal()">＋ Tạo mã mới</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã key</th>
+                  <th>Áp dụng cho</th>
+                  <th>Lượt dùng</th>
+                  <th>Hết hạn</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:80px"></th>
+                </tr>
+              </thead>
+              <tbody id="keys-tbody">
+                <tr>
+                  <td colspan="7" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Mã key</th>
-                <th>Áp dụng cho</th>
-                <th>Lượt dùng</th>
-                <th>Hết hạn</th>
-                <th>Trạng thái</th>
-                <th>Ngày tạo</th>
-                <th style="width:80px"></th>
-              </tr>
-            </thead>
-            <tbody id="keys-tbody">
-              <tr><td colspan="7" class="table-empty">Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ────────────────────────
+        <!-- ────────────────────────
            TAB: HISTORY
       ──────────────────────── -->
-      <div id="tab-history">
-        <div class="section-header">
-          <span class="section-title">Kết quả học sinh</span>
-          <div class="section-actions">
-            <div class="search-wrap">
-              <input class="search-input" id="search-history" placeholder="Tìm tên học sinh..." oninput="filterHistory()"/>
+        <div id="tab-history">
+          <div class="section-header">
+            <span class="section-title">Kết quả học sinh</span>
+            <div class="section-actions">
+              <div class="search-wrap">
+                <input class="search-input" id="search-history" placeholder="Tìm tên học sinh..."
+                  oninput="filterHistory()" />
+              </div>
             </div>
           </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th>Bộ đề</th>
+                  <th>Ngày nộp</th>
+                  <th>Thời gian</th>
+                  <th>Đúng</th>
+                  <th>Sai</th>
+                  <th>Bỏ qua</th>
+                  <th>Band</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody">
+                <tr>
+                  <td colspan="8" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Học sinh</th>
-                <th>Bộ đề</th>
-                <th>Ngày nộp</th>
-                <th>Thời gian</th>
-                <th>Đúng</th>
-                <th>Sai</th>
-                <th>Bỏ qua</th>
-                <th>Band</th>
-              </tr>
-            </thead>
-            <tbody id="history-tbody">
-              <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      </div><!-- /tab-panels -->
+    </div><!-- /content -->
+  </div><!-- /main -->
 
-    </div><!-- /tab-panels -->
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- ══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
      MODAL – TẠO / SỬA BÀI ĐỌC
 ══════════════════════════════════════════ -->
-<div class="modal-overlay hidden" id="modal-passage">
-  <div class="modal-box modal-lg">
-    <div class="modal-header">
-      <h3 id="modal-passage-title">Thêm bài đọc mới</h3>
-      <button class="modal-close" onclick="closeModal('modal-passage')">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="passage-id"/>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Tiêu đề bài đọc *</label>
-          <input class="form-input" id="p-title" placeholder="VD: The kākāpō"/>
-        </div>
-        <div class="form-group">
-          <label>Category *</label>
-          <select class="form-select" id="p-category">
-            <option value="passage1">Passage 1 (dễ nhất)</option>
-            <option value="passage2">Passage 2</option>
-            <option value="passage3">Passage 3 (khó nhất)</option>
-          </select>
-        </div>
+  <div class="modal-overlay hidden" id="modal-passage">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-passage-title">Thêm bài đọc mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-passage')">×</button>
       </div>
+      <div class="modal-body">
+        <input type="hidden" id="passage-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tiêu đề bài đọc *</label>
+            <input class="form-input" id="p-title" placeholder="VD: The kākāpō" />
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select class="form-select" id="p-category">
+              <option value="passage1">Passage 1 (dễ nhất)</option>
+              <option value="passage2">Passage 2</option>
+              <option value="passage3">Passage 3 (khó nhất)</option>
+            </select>
+          </div>
+        </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Câu bắt đầu *</label>
-          <input class="form-input" id="p-qstart" type="number" placeholder="1" min="1"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Câu bắt đầu *</label>
+            <input class="form-input" id="p-qstart" type="number" placeholder="1" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Câu kết thúc *</label>
+            <input class="form-input" id="p-qend" type="number" placeholder="13" min="1" />
+          </div>
         </div>
-        <div class="form-group">
-          <label>Câu kết thúc *</label>
-          <input class="form-input" id="p-qend" type="number" placeholder="13" min="1"/>
-        </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Độ khó</label>
-          <select class="form-select" id="p-difficulty">
-            <option value="easy">Dễ</option>
-            <option value="medium" selected>Trung bình</option>
-            <option value="hard">Khó</option>
-          </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Độ khó</label>
+            <select class="form-select" id="p-difficulty">
+              <option value="easy">Dễ</option>
+              <option value="medium" selected>Trung bình</option>
+              <option value="hard">Khó</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tags (cách nhau bằng dấu phẩy)</label>
+            <input class="form-input" id="p-tags" placeholder="nature, animals, science" />
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Tags (cách nhau bằng dấu phẩy)</label>
-          <input class="form-input" id="p-tags" placeholder="nature, animals, science"/>
+          <label>Nội dung bài đọc (HTML) *</label>
+          <textarea class="form-textarea" id="p-content" rows="8"
+            placeholder="&lt;p&gt;&lt;strong&gt;Tiêu đề bài&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Paragraph A. Nội dung...&lt;/p&gt;"></textarea>
+          <div class="form-hint">Hỗ trợ HTML: &lt;p&gt; &lt;strong&gt; &lt;em&gt; &lt;u&gt;. Dùng
+            &lt;strong&gt;A.&lt;/strong&gt; cho nhãn đoạn văn.</div>
+        </div>
+
+        <!-- Questions builder -->
+        <div class="form-group">
+          <label>Câu hỏi</label>
+          <div id="questions-container"></div>
+          <button class="btn btn-ghost btn-sm" onclick="addQuestion()" style="margin-top:8px">＋ Thêm câu hỏi</button>
         </div>
       </div>
-
-      <div class="form-group">
-        <label>Nội dung bài đọc (HTML) *</label>
-        <textarea class="form-textarea" id="p-content" rows="8"
-          placeholder="&lt;p&gt;&lt;strong&gt;Tiêu đề bài&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Paragraph A. Nội dung...&lt;/p&gt;"></textarea>
-        <div class="form-hint">Hỗ trợ HTML: &lt;p&gt; &lt;strong&gt; &lt;em&gt; &lt;u&gt;. Dùng &lt;strong&gt;A.&lt;/strong&gt; cho nhãn đoạn văn.</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-passage')">Huỷ</button>
+        <button class="btn btn-primary" onclick="savePassage()" id="btn-save-passage">Lưu bài đọc</button>
       </div>
-
-      <!-- Questions builder -->
-      <div class="form-group">
-        <label>Câu hỏi</label>
-        <div id="questions-container"></div>
-        <button class="btn btn-ghost btn-sm" onclick="addQuestion()" style="margin-top:8px">＋ Thêm câu hỏi</button>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-passage')">Huỷ</button>
-      <button class="btn btn-primary" onclick="savePassage()" id="btn-save-passage">Lưu bài đọc</button>
     </div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
      MODAL – TẠO BỘ ĐỀ
 ══════════════════════════════════════════ -->
-<div class="modal-overlay hidden" id="modal-test">
-  <div class="modal-box modal-sm">
-    <div class="modal-header">
-      <h3 id="modal-test-title">Tạo bộ đề mới</h3>
-      <button class="modal-close" onclick="closeModal('modal-test')">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="test-id"/>
-      <div class="form-group">
-        <label>Tên bộ đề *</label>
-        <input class="form-input" id="t-name" placeholder="VD: Orange 20 Reading - Test 1"/>
+  <div class="modal-overlay hidden" id="modal-test">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3 id="modal-test-title">Tạo bộ đề mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-test')">×</button>
       </div>
-      <div class="form-row">
+      <div class="modal-body">
+        <input type="hidden" id="test-id" />
         <div class="form-group">
-          <label>Tên series</label>
-          <input class="form-input" id="t-series" placeholder="Orange Test 20"/>
+          <label>Tên bộ đề *</label>
+          <input class="form-input" id="t-name" placeholder="VD: Orange 20 Reading - Test 1" />
         </div>
-        <div class="form-group">
-          <label>Số thứ tự</label>
-          <input class="form-input" id="t-number" type="number" placeholder="1" min="1"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tên series</label>
+            <input class="form-input" id="t-series" placeholder="Orange Test 20" />
+          </div>
+          <div class="form-group">
+            <label>Số thứ tự</label>
+            <input class="form-input" id="t-number" type="number" placeholder="1" min="1" />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-test')">Huỷ</button>
-      <button class="btn btn-primary" onclick="saveTest()">Lưu bộ đề</button>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-test')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveTest()">Lưu bộ đề</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
      MODAL – TẠO KEY
 ══════════════════════════════════════════ -->
-<div class="modal-overlay hidden" id="modal-key">
-  <div class="modal-box modal-md">
-    <div class="modal-header">
-      <h3>Tạo mã truy cập</h3>
-      <button class="modal-close" onclick="closeModal('modal-key')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Số lượng key *</label>
-          <input class="form-input" id="k-count" type="number" value="1" min="1" max="100"/>
-          <div class="form-hint">Tối đa 100 key mỗi lần</div>
-        </div>
-        <div class="form-group">
-          <label>Lượt dùng tối đa / key</label>
-          <input class="form-input" id="k-maxuses" type="number" value="1" min="1"/>
-        </div>
+  <div class="modal-overlay hidden" id="modal-key">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3>Tạo mã truy cập</h3>
+        <button class="modal-close" onclick="closeModal('modal-key')">×</button>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Áp dụng cho bộ đề</label>
-          <select class="form-select" id="k-test">
-            <option value="">Tất cả bộ đề</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Hết hạn sau (ngày)</label>
-          <input class="form-input" id="k-expiry" type="number" placeholder="Để trống = không hết hạn" min="1"/>
-        </div>
-      </div>
-
-      <!-- Generated keys display -->
-      <div id="generated-keys" class="hidden">
-        <div class="keys-result">
-          <div class="keys-result-title" style="display:flex;justify-content:space-between;align-items:center">
-            <span>Các key đã tạo – click để copy từng key</span>
-            <button class="btn btn-ghost btn-copy-all btn-sm" onclick="copyAllKeys()">📋 Copy tất cả</button>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Số lượng key *</label>
+            <input class="form-input" id="k-count" type="number" value="1" min="1" max="100" />
+            <div class="form-hint">Tối đa 100 key mỗi lần</div>
           </div>
-          <div class="keys-list" id="keys-list-display"></div>
+          <div class="form-group">
+            <label>Lượt dùng tối đa / key</label>
+            <input class="form-input" id="k-maxuses" type="number" value="1" min="1" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Áp dụng cho bộ đề</label>
+            <select class="form-select" id="k-test">
+              <option value="">Tất cả bộ đề</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Hết hạn sau (ngày)</label>
+            <input class="form-input" id="k-expiry" type="number" placeholder="Để trống = không hết hạn" min="1" />
+          </div>
+        </div>
+
+        <!-- Generated keys display -->
+        <div id="generated-keys" class="hidden">
+          <div class="keys-result">
+            <div class="keys-result-title" style="display:flex;justify-content:space-between;align-items:center">
+              <span>Các key đã tạo – click để copy từng key</span>
+              <button class="btn btn-ghost btn-copy-all btn-sm" onclick="copyAllKeys()">📋 Copy tất cả</button>
+            </div>
+            <div class="keys-list" id="keys-list-display"></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-key')">Đóng</button>
-      <button class="btn btn-primary" onclick="generateKeys()" id="btn-gen-keys">Tạo key</button>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-key')">Đóng</button>
+        <button class="btn btn-primary" onclick="generateKeys()" id="btn-gen-keys">Tạo key</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════
+  <!-- ══════════════════════════════════════════
      MODAL – XÁC NHẬN XOÁ
 ══════════════════════════════════════════ -->
-<div class="modal-overlay hidden" id="modal-confirm">
-  <div class="modal-box modal-sm">
-    <div class="modal-header">
-      <h3>Xác nhận</h3>
-      <button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
-    </div>
-    <div class="modal-body">
-      <p id="confirm-msg" style="color:var(--text2)"></p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Huỷ</button>
-      <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận</button>
+  <div class="modal-overlay hidden" id="modal-confirm">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Xác nhận</h3>
+        <button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-msg" style="color:var(--text2)"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Huỷ</button>
+        <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Toast -->
-<div id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
+  <!-- Toast -->
+  <div id="toast">
+    <div class="toast-dot"></div><span id="toast-msg"></span>
+  </div>
 
-<script>
-/* ══════════════════════════════════════════════
-   CONFIG & STATE
-══════════════════════════════════════════════ */
-const API = 'https://englishwithdan.onrender.com/api';
-let allTests    = [];
-let allPassages = [];
-let allKeys     = [];
-let passagePage = 1;
-const PAGE_SIZE = 15;
-let editPassageId = null;
-let editTestId    = null;
-let questionCount = 0;
+  <script>
+    /* ══════════════════════════════════════════════
+       CONFIG & STATE
+    ══════════════════════════════════════════════ */
+    const API = 'https://englishwithdan.onrender.com/api';
+    let allTests = [];
+    let allPassages = [];
+    let allKeys = [];
+    let passagePage = 1;
+    const PAGE_SIZE = 15;
+    let editPassageId = null;
+    let editTestId = null;
+    let questionCount = 0;
 
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', async () => {
-  const token = localStorage.getItem('token');
-  const user  = JSON.parse(localStorage.getItem('user') || '{}');
+    /* ══════════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('token');
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  if (!token || !['teacher','admin'].includes(user.role)) {
-    alert('Bạn không có quyền truy cập trang này.');
-    window.location.href = 'login.html';
-    return;
-  }
+      if (!token || !['teacher', 'admin'].includes(user.role)) {
+        alert('Bạn không có quyền truy cập trang này.');
+        window.location.href = 'login.html';
+        return;
+      }
 
-  document.getElementById('nav-avatar').textContent = (user.username || 'A')[0].toUpperCase();
-  document.getElementById('nav-name').textContent   = user.username || 'Admin';
-  document.getElementById('nav-role').textContent   = user.role;
+      document.getElementById('nav-avatar').textContent = (user.username || 'A')[0].toUpperCase();
+      document.getElementById('nav-name').textContent = user.username || 'Admin';
+      document.getElementById('nav-role').textContent = user.role;
 
-  await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
-});
+      await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
+    });
 
-/* ══════════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════════ */
-function authH() {
-  return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' };
-}
+    /* ══════════════════════════════════════════════
+       HELPERS
+    ══════════════════════════════════════════════ */
+    function authH() {
+      return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' };
+    }
 
-function toast(msg, type = 'success') {
-  const el = document.getElementById('toast');
-  el.className = `show ${type}`;
-  document.getElementById('toast-msg').textContent = msg;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 3000);
-}
+    function toast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      el.className = `show ${type}`;
+      document.getElementById('toast-msg').textContent = msg;
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 3000);
+    }
 
-function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-function confirm2(msg, onOk) {
-  document.getElementById('confirm-msg').textContent = msg;
-  const btn = document.getElementById('btn-confirm-ok');
-  btn.onclick = () => { closeModal('modal-confirm'); onOk(); };
-  openModal('modal-confirm');
-}
+    function confirm2(msg, onOk) {
+      document.getElementById('confirm-msg').textContent = msg;
+      const btn = document.getElementById('btn-confirm-ok');
+      btn.onclick = () => { closeModal('modal-confirm'); onOk(); };
+      openModal('modal-confirm');
+    }
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-panels > div').forEach(d => d.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  const titles = { dashboard:'Dashboard', passages:'Bài đọc', tests:'Bộ đề', keys:'Mã truy cập', history:'Kết quả học sinh' };
-  document.getElementById('topbar-title').textContent = titles[tab] || tab;
-}
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-panels > div').forEach(d => d.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      const titles = { dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề', keys: 'Mã truy cập', history: 'Kết quả học sinh' };
+      document.getElementById('topbar-title').textContent = titles[tab] || tab;
+    }
 
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = 'login.html';
-}
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
 
-function formatDate(s) {
-  if (!s) return '–';
-  const d = new Date(s);
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function pad(n) { return String(n).padStart(2,'0'); }
-function formatDur(s) { if (!s) return '–'; return `${Math.floor(s/60)}m${pad(s%60)}s`; }
+    function formatDate(s) {
+      if (!s) return '–';
+      const d = new Date(s);
+      return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function formatDur(s) { if (!s) return '–'; return `${Math.floor(s / 60)}m${pad(s % 60)}s`; }
 
-function diffBadge(d) {
-  const map = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-red' };
-  const lbl = { easy: 'Dễ', medium: 'TB', hard: 'Khó' };
-  return `<span class="badge ${map[d]||'badge-gray'}">${lbl[d]||d}</span>`;
-}
-function catBadge(c) {
-  const map = { passage1:'badge-blue', passage2:'badge-purple', passage3:'badge-red' };
-  return `<span class="badge ${map[c]||'badge-gray'}">${c||'–'}</span>`;
-}
-function bandBadge(b) {
-  if (!b && b !== 0) return '–';
-  const cls = b >= 7 ? 'badge-green' : b >= 5.5 ? 'badge-yellow' : 'badge-red';
-  return `<span class="badge ${cls}">${b.toFixed(1)}</span>`;
-}
+    function diffBadge(d) {
+      const map = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-red' };
+      const lbl = { easy: 'Dễ', medium: 'TB', hard: 'Khó' };
+      return `<span class="badge ${map[d] || 'badge-gray'}">${lbl[d] || d}</span>`;
+    }
+    function catBadge(c) {
+      const map = { passage1: 'badge-blue', passage2: 'badge-purple', passage3: 'badge-red' };
+      return `<span class="badge ${map[c] || 'badge-gray'}">${c || '–'}</span>`;
+    }
+    function bandBadge(b) {
+      if (!b && b !== 0) return '–';
+      const cls = b >= 7 ? 'badge-green' : b >= 5.5 ? 'badge-yellow' : 'badge-red';
+      return `<span class="badge ${cls}">${b.toFixed(1)}</span>`;
+    }
 
-/* ══════════════════════════════════════════════
-   DASHBOARD
-══════════════════════════════════════════════ */
-async function loadStats() {
-  try {
-    const res  = await fetch(`${API}/admin/stats`, { headers: authH() });
-    const data = await res.json();
-    if (!data.success) return;
-    document.getElementById('stat-students').textContent  = data.stats.totalStudents;
-    document.getElementById('stat-attempts').textContent  = data.stats.totalAttempts;
-    document.getElementById('stat-band').textContent      = data.stats.avgBandScore;
-  } catch {}
-}
+    /* ══════════════════════════════════════════════
+       DASHBOARD
+    ══════════════════════════════════════════════ */
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API}/admin/stats`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        document.getElementById('stat-students').textContent = data.stats.totalStudents;
+        document.getElementById('stat-attempts').textContent = data.stats.totalAttempts;
+        document.getElementById('stat-band').textContent = data.stats.avgBandScore;
+      } catch { }
+    }
 
-async function loadHistory() {
-  try {
-    const res  = await fetch(`${API}/reading/history`, { headers: authH() });
-    const data = await res.json();
-    if (!data.success) return;
+    async function loadHistory() {
+      try {
+        const res = await fetch(`${API}/reading/history`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
 
-    // Recent (dashboard)
-    const recent = data.history.slice(0, 8);
-    document.getElementById('recent-tbody').innerHTML = recent.length
-      ? recent.map(h => `
+        // Recent (dashboard)
+        const recent = data.history.slice(0, 8);
+        document.getElementById('recent-tbody').innerHTML = recent.length
+          ? recent.map(h => `
         <tr>
           <td><strong>${h.userId?.username || '–'}</strong></td>
           <td>${h.testId?.name || '–'}</td>
@@ -1207,16 +1627,16 @@ async function loadHistory() {
           <td>${h.correctCount}/${h.totalQuestions}</td>
           <td>${formatDur(h.duration)}</td>
         </tr>`).join('')
-      : '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
+          : '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
 
-    // History tab
-    renderHistoryTable(data.history);
-  } catch {}
-}
+        // History tab
+        renderHistoryTable(data.history);
+      } catch { }
+    }
 
-function renderHistoryTable(list) {
-  document.getElementById('history-tbody').innerHTML = list.length
-    ? list.map(h => `
+    function renderHistoryTable(list) {
+      document.getElementById('history-tbody').innerHTML = list.length
+        ? list.map(h => `
       <tr>
         <td><strong>${h.userId?.username || h.userId || '–'}</strong></td>
         <td>${h.testId?.name || '–'}</td>
@@ -1227,37 +1647,37 @@ function renderHistoryTable(list) {
         <td style="color:var(--text3)">${h.skippedCount}</td>
         <td>${bandBadge(h.bandScore)}</td>
       </tr>`).join('')
-    : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
-}
+        : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
+    }
 
-function filterHistory() {
-  const q = document.getElementById('search-history').value.toLowerCase();
-  const rows = document.querySelectorAll('#history-tbody tr');
-  rows.forEach(r => {
-    r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
-  });
-}
+    function filterHistory() {
+      const q = document.getElementById('search-history').value.toLowerCase();
+      const rows = document.querySelectorAll('#history-tbody tr');
+      rows.forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
 
-/* ══════════════════════════════════════════════
-   PASSAGES
-══════════════════════════════════════════════ */
-async function loadPassages() {
-  try {
-    const res  = await fetch(`${API}/admin/passages?limit=200`, { headers: authH() });
-    const data = await res.json();
-    if (!data.success) return;
-    allPassages = data.passages;
-    document.getElementById('stat-passages').textContent = data.total;
-    renderPassagesTable(allPassages);
-  } catch {}
-}
+    /* ══════════════════════════════════════════════
+       PASSAGES
+    ══════════════════════════════════════════════ */
+    async function loadPassages() {
+      try {
+        const res = await fetch(`${API}/admin/passages?limit=200`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        allPassages = data.passages;
+        document.getElementById('stat-passages').textContent = data.total;
+        renderPassagesTable(allPassages);
+      } catch { }
+    }
 
-function renderPassagesTable(list) {
-  const start = (passagePage - 1) * PAGE_SIZE;
-  const page  = list.slice(start, start + PAGE_SIZE);
+    function renderPassagesTable(list) {
+      const start = (passagePage - 1) * PAGE_SIZE;
+      const page = list.slice(start, start + PAGE_SIZE);
 
-  document.getElementById('passages-tbody').innerHTML = page.length
-    ? page.map(p => `
+      document.getElementById('passages-tbody').innerHTML = page.length
+        ? page.map(p => `
       <tr>
         <td><strong>${p.title}</strong></td>
         <td>${catBadge(p.category)}</td>
@@ -1273,133 +1693,133 @@ function renderPassagesTable(list) {
           <button class="btn btn-danger btn-sm" onclick="deletePassage('${p._id}','${p.title}')">🗑</button>
         </td>
       </tr>`).join('')
-    : '<tr><td colspan="8" class="table-empty">Không có bài đọc nào</td></tr>';
+        : '<tr><td colspan="8" class="table-empty">Không có bài đọc nào</td></tr>';
 
-  // Pagination
-  const total = list.length;
-  const pages = Math.ceil(total / PAGE_SIZE);
-  const pg    = document.getElementById('passages-pagination');
-  if (pages <= 1) { pg.innerHTML = ''; return; }
-  let html = `<span class="page-info">${start+1}–${Math.min(start+PAGE_SIZE,total)} / ${total}</span>`;
-  for (let i = 1; i <= pages; i++) {
-    html += `<button class="page-btn ${i===passagePage?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  }
-  pg.innerHTML = html;
-}
-
-function goPage(p) { passagePage = p; filterPassages(); }
-
-function filterPassages() {
-  const q   = document.getElementById('search-passages').value.toLowerCase();
-  const cat = document.getElementById('filter-category').value;
-  const filtered = allPassages.filter(p =>
-    (!q || p.title.toLowerCase().includes(q)) &&
-    (!cat || p.category === cat)
-  );
-  passagePage = 1;
-  renderPassagesTable(filtered);
-}
-
-function openPassageModal(data = null) {
-  editPassageId = data?._id || null;
-  questionCount = 0;
-  document.getElementById('passage-id').value   = '';
-  document.getElementById('p-title').value      = data?.title || '';
-  document.getElementById('p-category').value   = data?.category || 'passage1';
-  document.getElementById('p-qstart').value     = data?.questionRange?.start || '';
-  document.getElementById('p-qend').value       = data?.questionRange?.end   || '';
-  document.getElementById('p-difficulty').value = data?.difficulty || 'medium';
-  document.getElementById('p-tags').value       = (data?.tags || []).join(', ');
-  document.getElementById('p-content').value    = data?.content || '';
-  document.getElementById('modal-passage-title').textContent = data ? 'Chỉnh sửa bài đọc' : 'Thêm bài đọc mới';
-
-  const qc = document.getElementById('questions-container');
-  qc.innerHTML = '';
-  if (data?.questions?.length) {
-    data.questions.forEach(q => addQuestion(q));
-  } else {
-    addQuestion();
-  }
-  openModal('modal-passage');
-}
-
-async function editPassage(id) {
-  const p = allPassages.find(x => x._id === id);
-  if (!p) return;
-  // Fetch full passage with questions
-  try {
-    const res  = await fetch(`${API}/admin/passages/${id}`, { headers: authH() });
-    if (res.ok) {
-      const data = await res.json();
-      openPassageModal(data.passage || p);
-    } else {
-      openPassageModal(p);
+      // Pagination
+      const total = list.length;
+      const pages = Math.ceil(total / PAGE_SIZE);
+      const pg = document.getElementById('passages-pagination');
+      if (pages <= 1) { pg.innerHTML = ''; return; }
+      let html = `<span class="page-info">${start + 1}–${Math.min(start + PAGE_SIZE, total)} / ${total}</span>`;
+      for (let i = 1; i <= pages; i++) {
+        html += `<button class="page-btn ${i === passagePage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
+      }
+      pg.innerHTML = html;
     }
-  } catch { openPassageModal(p); }
-}
 
-function deletePassage(id, title) {
-  confirm2(`Ẩn bài đọc "${title}"? (Bài sẽ không xuất hiện trong các đề thi mới)`, async () => {
-    try {
-      await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
-      toast('Đã ẩn bài đọc');
-      await loadPassages();
-    } catch { toast('Lỗi xoá bài đọc', 'error'); }
-  });
-}
+    function goPage(p) { passagePage = p; filterPassages(); }
 
-async function savePassage() {
-  const title   = document.getElementById('p-title').value.trim();
-  const content = document.getElementById('p-content').value.trim();
-  const qstart  = Number(document.getElementById('p-qstart').value);
-  const qend    = Number(document.getElementById('p-qend').value);
+    function filterPassages() {
+      const q = document.getElementById('search-passages').value.toLowerCase();
+      const cat = document.getElementById('filter-category').value;
+      const filtered = allPassages.filter(p =>
+        (!q || p.title.toLowerCase().includes(q)) &&
+        (!cat || p.category === cat)
+      );
+      passagePage = 1;
+      renderPassagesTable(filtered);
+    }
 
-  if (!title || !content || !qstart || !qend) {
-    toast('Vui lòng điền đầy đủ các trường bắt buộc *', 'error'); return;
-  }
+    function openPassageModal(data = null) {
+      editPassageId = data?._id || null;
+      questionCount = 0;
+      document.getElementById('passage-id').value = '';
+      document.getElementById('p-title').value = data?.title || '';
+      document.getElementById('p-category').value = data?.category || 'passage1';
+      document.getElementById('p-qstart').value = data?.questionRange?.start || '';
+      document.getElementById('p-qend').value = data?.questionRange?.end || '';
+      document.getElementById('p-difficulty').value = data?.difficulty || 'medium';
+      document.getElementById('p-tags').value = (data?.tags || []).join(', ');
+      document.getElementById('p-content').value = data?.content || '';
+      document.getElementById('modal-passage-title').textContent = data ? 'Chỉnh sửa bài đọc' : 'Thêm bài đọc mới';
 
-  const questions = collectQuestions();
-  if (!questions) return; // validation failed
+      const qc = document.getElementById('questions-container');
+      qc.innerHTML = '';
+      if (data?.questions?.length) {
+        data.questions.forEach(q => addQuestion(q));
+      } else {
+        addQuestion();
+      }
+      openModal('modal-passage');
+    }
 
-  const body = {
-    title,
-    category:      document.getElementById('p-category').value,
-    content,
-    questionRange: { start: qstart, end: qend },
-    difficulty:    document.getElementById('p-difficulty').value,
-    tags:          document.getElementById('p-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
-    questions
-  };
+    async function editPassage(id) {
+      const p = allPassages.find(x => x._id === id);
+      if (!p) return;
+      // Fetch full passage with questions
+      try {
+        const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() });
+        if (res.ok) {
+          const data = await res.json();
+          openPassageModal(data.passage || p);
+        } else {
+          openPassageModal(p);
+        }
+      } catch { openPassageModal(p); }
+    }
 
-  const btn = document.getElementById('btn-save-passage');
-  btn.disabled = true; btn.textContent = 'Đang lưu...';
+    function deletePassage(id, title) {
+      confirm2(`Ẩn bài đọc "${title}"? (Bài sẽ không xuất hiện trong các đề thi mới)`, async () => {
+        try {
+          await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
+          toast('Đã ẩn bài đọc');
+          await loadPassages();
+        } catch { toast('Lỗi xoá bài đọc', 'error'); }
+      });
+    }
 
-  try {
-    const url    = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
-    const method = editPassageId ? 'PUT' : 'POST';
-    const res    = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
-    const data   = await res.json();
-    if (!data.success) throw new Error(data.message);
-    toast(editPassageId ? 'Đã cập nhật bài đọc' : 'Đã thêm bài đọc mới');
-    closeModal('modal-passage');
-    await loadPassages();
-  } catch (err) {
-    toast('Lỗi: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Lưu bài đọc';
-  }
-}
+    async function savePassage() {
+      const title = document.getElementById('p-title').value.trim();
+      const content = document.getElementById('p-content').value.trim();
+      const qstart = Number(document.getElementById('p-qstart').value);
+      const qend = Number(document.getElementById('p-qend').value);
 
-/* ── Question builder ── */
-let qIdx = 0;
-function addQuestion(data = null) {
-  qIdx++;
-  const id  = `q-${qIdx}`;
-  const num = data?.questionNumber || '';
-  const div = document.createElement('div');
-  div.className = 'question-row';
-  div.id = id;
-  div.innerHTML = `
+      if (!title || !content || !qstart || !qend) {
+        toast('Vui lòng điền đầy đủ các trường bắt buộc *', 'error'); return;
+      }
+
+      const questions = collectQuestions();
+      if (!questions) return; // validation failed
+
+      const body = {
+        title,
+        category: document.getElementById('p-category').value,
+        content,
+        questionRange: { start: qstart, end: qend },
+        difficulty: document.getElementById('p-difficulty').value,
+        tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+        questions
+      };
+
+      const btn = document.getElementById('btn-save-passage');
+      btn.disabled = true; btn.textContent = 'Đang lưu...';
+
+      try {
+        const url = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
+        const method = editPassageId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        toast(editPassageId ? 'Đã cập nhật bài đọc' : 'Đã thêm bài đọc mới');
+        closeModal('modal-passage');
+        await loadPassages();
+      } catch (err) {
+        toast('Lỗi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Lưu bài đọc';
+      }
+    }
+
+    /* ── Question builder ── */
+    let qIdx = 0;
+    function addQuestion(data = null) {
+      qIdx++;
+      const id = `q-${qIdx}`;
+      const num = data?.questionNumber || '';
+      const div = document.createElement('div');
+      div.className = 'question-row';
+      div.id = id;
+      div.innerHTML = `
     <div class="question-row-header">
       <span class="q-num-badge">${qIdx}</span>
       <span style="font-size:13px;font-weight:600;flex:1">Câu hỏi ${num || qIdx}</span>
@@ -1413,202 +1833,202 @@ function addQuestion(data = null) {
       <div class="form-group">
         <label>Loại câu hỏi *</label>
         <select class="form-select q-type" onchange="onQTypeChange(this,'${id}')">
-          <option value="true-false-ng"    ${data?.type==='true-false-ng'?'selected':''}>True / False / Not Given</option>
-          <option value="multiple-choice"  ${data?.type==='multiple-choice'?'selected':''}>Multiple Choice</option>
-          <option value="fill-blank"       ${data?.type==='fill-blank'?'selected':''}>Fill in the blank</option>
-          <option value="sentence-completion" ${data?.type==='sentence-completion'?'selected':''}>Sentence Completion (kéo thả)</option>
-          <option value="matching-headings"   ${data?.type==='matching-headings'?'selected':''}>Matching Headings</option>
-          <option value="matching-info"       ${data?.type==='matching-info'?'selected':''}>Matching Information</option>
+          <option value="true-false-ng"    ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
+          <option value="multiple-choice"  ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+          <option value="fill-blank"       ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
+          <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
+          <option value="matching-headings"   ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
+          <option value="matching-info"       ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
         </select>
       </div>
     </div>
     <div class="form-group">
       <label>Nội dung câu hỏi *</label>
-      <textarea class="form-input q-text" rows="2" placeholder="Nhập nội dung câu hỏi. Dùng ___ để đánh dấu chỗ trống (cho fill/completion)">${data?.questionText||''}</textarea>
+      <textarea class="form-input q-text" rows="2" placeholder="Nhập nội dung câu hỏi. Dùng ___ để đánh dấu chỗ trống (cho fill/completion)">${data?.questionText || ''}</textarea>
     </div>
     <div class="q-extra" id="extra-${id}">
-      ${renderQExtra(data?.type||'true-false-ng', data)}
+      ${renderQExtra(data?.type || 'true-false-ng', data)}
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Đáp án đúng *</label>
-        <input class="form-input q-answer" value="${data?.correctAnswer||''}" placeholder="TRUE / FALSE / NOT GIVEN / text / A / B…"/>
+        <input class="form-input q-answer" value="${data?.correctAnswer || ''}" placeholder="TRUE / FALSE / NOT GIVEN / text / A / B…"/>
       </div>
       <div class="form-group">
         <label>Giải thích (hiện khi review)</label>
-        <input class="form-input q-explain" value="${data?.explanation||''}" placeholder="Giải thích đáp án..."/>
+        <input class="form-input q-explain" value="${data?.explanation || ''}" placeholder="Giải thích đáp án..."/>
       </div>
     </div>
   `;
-  document.getElementById('questions-container').appendChild(div);
-}
+      document.getElementById('questions-container').appendChild(div);
+    }
 
-function renderQExtra(type, data) {
-  if (type === 'multiple-choice') {
-    const opts = data?.options || ['','','',''];
-    return `
+    function renderQExtra(type, data) {
+      if (type === 'multiple-choice') {
+        const opts = data?.options || ['', '', '', ''];
+        return `
       <div class="form-group">
         <label>Các đáp án (A, B, C, D)</label>
-        ${['A','B','C','D'].map((l,i) => `
+        ${['A', 'B', 'C', 'D'].map((l, i) => `
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
             <span style="font-weight:700;color:var(--accent);width:20px">${l}.</span>
-            <input class="form-input q-opt" style="flex:1" value="${opts[i]||''}" placeholder="Đáp án ${l}"/>
+            <input class="form-input q-opt" style="flex:1" value="${opts[i] || ''}" placeholder="Đáp án ${l}"/>
           </div>`).join('')}
       </div>`;
-  }
-  if (['sentence-completion','matching-headings','matching-info'].includes(type)) {
-    const bank = (data?.wordBank || []).join(', ');
-    return `
+      }
+      if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
+        const bank = (data?.wordBank || []).join(', ');
+        return `
       <div class="form-group">
         <label>Word bank (cách nhau bằng dấu phẩy)</label>
         <input class="form-input q-wordbank" value="${bank}" placeholder="soil, trees, rocks, sand, grass"/>
         <div class="form-hint">Danh sách các từ/cụm cho học sinh kéo thả</div>
       </div>`;
-  }
-  return '';
-}
-
-function onQTypeChange(sel, rowId) {
-  const row  = document.getElementById(rowId);
-  const type = sel.value;
-  const data = {}; // no existing data when changing type
-  row.querySelector('.q-extra').innerHTML = renderQExtra(type, data);
-}
-
-function collectQuestions() {
-  const rows = document.querySelectorAll('#questions-container .question-row');
-  const questions = [];
-  for (const row of rows) {
-    const num    = Number(row.querySelector('.q-num').value);
-    const type   = row.querySelector('.q-type').value;
-    const text   = row.querySelector('.q-text').value.trim();
-    const answer = row.querySelector('.q-answer').value.trim();
-    const expl   = row.querySelector('.q-explain').value.trim();
-
-    if (!num || !text || !answer) {
-      toast('Vui lòng điền đầy đủ số câu, nội dung và đáp án đúng cho mỗi câu hỏi', 'error');
-      return null;
+      }
+      return '';
     }
 
-    const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
-
-    if (type === 'multiple-choice') {
-      q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
-    }
-    if (['sentence-completion','matching-headings','matching-info'].includes(type)) {
-      const wb = row.querySelector('.q-wordbank')?.value || '';
-      q.wordBank = wb.split(',').map(w=>w.trim()).filter(Boolean);
+    function onQTypeChange(sel, rowId) {
+      const row = document.getElementById(rowId);
+      const type = sel.value;
+      const data = {}; // no existing data when changing type
+      row.querySelector('.q-extra').innerHTML = renderQExtra(type, data);
     }
 
-    questions.push(q);
-  }
-  return questions;
-}
+    function collectQuestions() {
+      const rows = document.querySelectorAll('#questions-container .question-row');
+      const questions = [];
+      for (const row of rows) {
+        const num = Number(row.querySelector('.q-num').value);
+        const type = row.querySelector('.q-type').value;
+        const text = row.querySelector('.q-text').value.trim();
+        const answer = row.querySelector('.q-answer').value.trim();
+        const expl = row.querySelector('.q-explain').value.trim();
 
-/* ══════════════════════════════════════════════
-   TESTS
-══════════════════════════════════════════════ */
-async function loadTests() {
-  try {
-    const res  = await fetch(`${API}/admin/tests`, { headers: authH() });
-    const data = await res.json();
-    if (!data.success) return;
-    allTests = data.tests;
-    renderTestsTable(data.tests);
+        if (!num || !text || !answer) {
+          toast('Vui lòng điền đầy đủ số câu, nội dung và đáp án đúng cho mỗi câu hỏi', 'error');
+          return null;
+        }
 
-    // Populate key dropdown
-    const sel = document.getElementById('k-test');
-    sel.innerHTML = '<option value="">Tất cả bộ đề</option>' +
-      data.tests.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
-  } catch {}
-}
+        const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
 
-function renderTestsTable(list) {
-  document.getElementById('tests-tbody').innerHTML = list.length
-    ? list.map(t => `
+        if (type === 'multiple-choice') {
+          q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
+        }
+        if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
+          const wb = row.querySelector('.q-wordbank')?.value || '';
+          q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+        }
+
+        questions.push(q);
+      }
+      return questions;
+    }
+
+    /* ══════════════════════════════════════════════
+       TESTS
+    ══════════════════════════════════════════════ */
+    async function loadTests() {
+      try {
+        const res = await fetch(`${API}/admin/tests`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        allTests = data.tests;
+        renderTestsTable(data.tests);
+
+        // Populate key dropdown
+        const sel = document.getElementById('k-test');
+        sel.innerHTML = '<option value="">Tất cả bộ đề</option>' +
+          data.tests.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
+      } catch { }
+    }
+
+    function renderTestsTable(list) {
+      document.getElementById('tests-tbody').innerHTML = list.length
+        ? list.map(t => `
       <tr>
         <td><strong>${t.name}</strong></td>
         <td style="font-family:var(--mono)">${t.testNumber}</td>
-        <td>${t.seriesName||'–'}</td>
-        <td><span class="badge ${t.isActive?'badge-green':'badge-gray'}">
-          <span class="dot"></span>${t.isActive?'Hoạt động':'Ẩn'}
+        <td>${t.seriesName || '–'}</td>
+        <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
+          <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}
         </span></td>
         <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
         <td>
           <button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
         </td>
       </tr>`).join('')
-    : '<tr><td colspan="6" class="table-empty">Chưa có bộ đề nào</td></tr>';
-}
+        : '<tr><td colspan="6" class="table-empty">Chưa có bộ đề nào</td></tr>';
+    }
 
-function openTestModal(data = null) {
-  editTestId = data?._id || null;
-  document.getElementById('test-id').value  = '';
-  document.getElementById('t-name').value   = data?.name || '';
-  document.getElementById('t-series').value = data?.seriesName || '';
-  document.getElementById('t-number').value = data?.testNumber || '';
-  document.getElementById('modal-test-title').textContent = data ? 'Chỉnh sửa bộ đề' : 'Tạo bộ đề mới';
-  openModal('modal-test');
-}
+    function openTestModal(data = null) {
+      editTestId = data?._id || null;
+      document.getElementById('test-id').value = '';
+      document.getElementById('t-name').value = data?.name || '';
+      document.getElementById('t-series').value = data?.seriesName || '';
+      document.getElementById('t-number').value = data?.testNumber || '';
+      document.getElementById('modal-test-title').textContent = data ? 'Chỉnh sửa bộ đề' : 'Tạo bộ đề mới';
+      openModal('modal-test');
+    }
 
-function editTest(id) {
-  const t = allTests.find(x => x._id === id);
-  if (t) openTestModal(t);
-}
+    function editTest(id) {
+      const t = allTests.find(x => x._id === id);
+      if (t) openTestModal(t);
+    }
 
-async function saveTest() {
-  const name = document.getElementById('t-name').value.trim();
-  if (!name) { toast('Vui lòng nhập tên bộ đề', 'error'); return; }
+    async function saveTest() {
+      const name = document.getElementById('t-name').value.trim();
+      if (!name) { toast('Vui lòng nhập tên bộ đề', 'error'); return; }
 
-  const body = {
-    name,
-    seriesName:  document.getElementById('t-series').value.trim(),
-    testNumber:  Number(document.getElementById('t-number').value) || 1
-  };
+      const body = {
+        name,
+        seriesName: document.getElementById('t-series').value.trim(),
+        testNumber: Number(document.getElementById('t-number').value) || 1
+      };
 
-  try {
-    const url    = editTestId ? `${API}/admin/tests/${editTestId}` : `${API}/admin/tests`;
-    const method = editTestId ? 'PUT' : 'POST';
-    const res    = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
-    const data   = await res.json();
-    if (!data.success) throw new Error(data.message);
-    toast(editTestId ? 'Đã cập nhật bộ đề' : 'Đã tạo bộ đề mới');
-    closeModal('modal-test');
-    await loadTests();
-  } catch (err) {
-    toast('Lỗi: ' + err.message, 'error');
-  }
-}
+      try {
+        const url = editTestId ? `${API}/admin/tests/${editTestId}` : `${API}/admin/tests`;
+        const method = editTestId ? 'PUT' : 'POST';
+        const res = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        toast(editTestId ? 'Đã cập nhật bộ đề' : 'Đã tạo bộ đề mới');
+        closeModal('modal-test');
+        await loadTests();
+      } catch (err) {
+        toast('Lỗi: ' + err.message, 'error');
+      }
+    }
 
-/* ══════════════════════════════════════════════
-   KEYS
-══════════════════════════════════════════════ */
-async function loadKeys() {
-  try {
-    const res  = await fetch(`${API}/admin/keys`, { headers: authH() });
-    const data = await res.json();
-    if (!data.success) return;
-    allKeys = data.keys;
-    renderKeysTable(data.keys);
-  } catch {}
-}
+    /* ══════════════════════════════════════════════
+       KEYS
+    ══════════════════════════════════════════════ */
+    async function loadKeys() {
+      try {
+        const res = await fetch(`${API}/admin/keys`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        allKeys = data.keys;
+        renderKeysTable(data.keys);
+      } catch { }
+    }
 
-function renderKeysTable(list) {
-  document.getElementById('keys-tbody').innerHTML = list.length
-    ? list.map(k => {
-        const pct  = Math.round((k.currentUses / k.maxUses) * 100);
-        const exp  = k.expiresAt ? formatDate(k.expiresAt) : '–';
-        const used = k.currentUses >= k.maxUses;
-        const exp2 = k.expiresAt && new Date() > new Date(k.expiresAt);
-        const status = !k.isActive ? 'Vô hiệu' : used ? 'Hết lượt' : exp2 ? 'Hết hạn' : 'Còn dùng';
-        const statusCls = !k.isActive || used || exp2 ? 'badge-gray' : 'badge-green';
-        return `
+    function renderKeysTable(list) {
+      document.getElementById('keys-tbody').innerHTML = list.length
+        ? list.map(k => {
+          const pct = Math.round((k.currentUses / k.maxUses) * 100);
+          const exp = k.expiresAt ? formatDate(k.expiresAt) : '–';
+          const used = k.currentUses >= k.maxUses;
+          const exp2 = k.expiresAt && new Date() > new Date(k.expiresAt);
+          const status = !k.isActive ? 'Vô hiệu' : used ? 'Hết lượt' : exp2 ? 'Hết hạn' : 'Còn dùng';
+          const statusCls = !k.isActive || used || exp2 ? 'badge-gray' : 'badge-green';
+          return `
           <tr>
             <td><span class="key-code">${k.key}</span></td>
             <td>${k.testId?.name || '<span style="color:var(--text3)">Tất cả</span>'}</td>
             <td>
               <span class="key-uses">${k.currentUses}/${k.maxUses}</span>
-              <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%;background:${pct>=100?'var(--accent)':'var(--green)'}"></div></div>
+              <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%;background:${pct >= 100 ? 'var(--accent)' : 'var(--green)'}"></div></div>
             </td>
             <td style="color:var(--text3);font-size:12px">${exp}</td>
             <td><span class="badge ${statusCls}"><span class="dot"></span>${status}</span></td>
@@ -1617,73 +2037,74 @@ function renderKeysTable(list) {
               <button class="btn btn-danger btn-sm btn-icon" onclick="deactivateKey('${k._id}')" title="Vô hiệu hoá">✕</button>
             </td>
           </tr>`;
-      }).join('')
-    : '<tr><td colspan="7" class="table-empty">Chưa có key nào</td></tr>';
-}
+        }).join('')
+        : '<tr><td colspan="7" class="table-empty">Chưa có key nào</td></tr>';
+    }
 
-function openKeyModal() {
-  document.getElementById('generated-keys').classList.add('hidden');
-  document.getElementById('k-count').value   = 1;
-  document.getElementById('k-maxuses').value = 1;
-  document.getElementById('k-expiry').value  = '';
-  openModal('modal-key');
-}
+    function openKeyModal() {
+      document.getElementById('generated-keys').classList.add('hidden');
+      document.getElementById('k-count').value = 1;
+      document.getElementById('k-maxuses').value = 1;
+      document.getElementById('k-expiry').value = '';
+      openModal('modal-key');
+    }
 
-async function generateKeys() {
-  const count   = Number(document.getElementById('k-count').value) || 1;
-  const maxUses = Number(document.getElementById('k-maxuses').value) || 1;
-  const testId  = document.getElementById('k-test').value || null;
-  const expiry  = document.getElementById('k-expiry').value || null;
+    async function generateKeys() {
+      const count = Number(document.getElementById('k-count').value) || 1;
+      const maxUses = Number(document.getElementById('k-maxuses').value) || 1;
+      const testId = document.getElementById('k-test').value || null;
+      const expiry = document.getElementById('k-expiry').value || null;
 
-  const btn = document.getElementById('btn-gen-keys');
-  btn.disabled = true; btn.textContent = 'Đang tạo...';
+      const btn = document.getElementById('btn-gen-keys');
+      btn.disabled = true; btn.textContent = 'Đang tạo...';
 
-  try {
-    const res  = await fetch(`${API}/admin/keys/generate`, {
-      method: 'POST',
-      headers: authH(),
-      body: JSON.stringify({ count, testId, expiryDays: expiry ? Number(expiry) : null, maxUses })
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message);
+      try {
+        const res = await fetch(`${API}/admin/keys/generate`, {
+          method: 'POST',
+          headers: authH(),
+          body: JSON.stringify({ count, testId, expiryDays: expiry ? Number(expiry) : null, maxUses })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
 
-    // Show generated keys
-    const wrap = document.getElementById('generated-keys');
-    const list = document.getElementById('keys-list-display');
-    list.innerHTML = data.keys.map(k =>
-      `<div class="key-chip" onclick="copyKey('${k}')" title="Click để copy">${k}</div>`
-    ).join('');
-    wrap.classList.remove('hidden');
-    wrap._keys = data.keys;
+        // Show generated keys
+        const wrap = document.getElementById('generated-keys');
+        const list = document.getElementById('keys-list-display');
+        list.innerHTML = data.keys.map(k =>
+          `<div class="key-chip" onclick="copyKey('${k}')" title="Click để copy">${k}</div>`
+        ).join('');
+        wrap.classList.remove('hidden');
+        wrap._keys = data.keys;
 
-    toast(`Đã tạo ${data.keys.length} key thành công`);
-    await loadKeys();
-  } catch (err) {
-    toast('Lỗi: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Tạo key';
-  }
-}
+        toast(`Đã tạo ${data.keys.length} key thành công`);
+        await loadKeys();
+      } catch (err) {
+        toast('Lỗi: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Tạo key';
+      }
+    }
 
-function copyKey(key) {
-  navigator.clipboard.writeText(key).then(() => toast(`Đã copy: ${key}`, 'info'));
-}
+    function copyKey(key) {
+      navigator.clipboard.writeText(key).then(() => toast(`Đã copy: ${key}`, 'info'));
+    }
 
-function copyAllKeys() {
-  const wrap = document.getElementById('generated-keys');
-  const keys = wrap._keys || [];
-  navigator.clipboard.writeText(keys.join('\n')).then(() => toast(`Đã copy ${keys.length} keys`, 'info'));
-}
+    function copyAllKeys() {
+      const wrap = document.getElementById('generated-keys');
+      const keys = wrap._keys || [];
+      navigator.clipboard.writeText(keys.join('\n')).then(() => toast(`Đã copy ${keys.length} keys`, 'info'));
+    }
 
-async function deactivateKey(id) {
-  confirm2('Vô hiệu hoá key này? Học sinh đang dùng key này sẽ không thể tiếp tục.', async () => {
-    try {
-      await fetch(`${API}/admin/keys/${id}`, { method: 'DELETE', headers: authH() });
-      toast('Đã vô hiệu hoá key');
-      await loadKeys();
-    } catch { toast('Lỗi', 'error'); }
-  });
-}
-</script>
+    async function deactivateKey(id) {
+      confirm2('Vô hiệu hoá key này? Học sinh đang dùng key này sẽ không thể tiếp tục.', async () => {
+        try {
+          await fetch(`${API}/admin/keys/${id}`, { method: 'DELETE', headers: authH() });
+          toast('Đã vô hiệu hoá key');
+          await loadKeys();
+        } catch { toast('Lỗi', 'error'); }
+      });
+    }
+  </script>
 </body>
+
 </html>
