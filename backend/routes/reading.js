@@ -263,7 +263,12 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
     }
 
     // Lấy passages đầy đủ (có correctAnswer + explanation)
-    const passages = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    // Giữ đúng thứ tự passage1 → passage2 → passage3 như khi thi
+    const idOrder = attempt.passagesUsed.map(id => id.toString());
+    const passages = idOrder
+      .map(id => passagesRaw.find(p => p._id.toString() === id))
+      .filter(Boolean);
 
     // Gắn kết quả từng câu vào passage
     const answerMap = {};
