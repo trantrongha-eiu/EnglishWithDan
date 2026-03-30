@@ -10,9 +10,6 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet" />
   <style>
-    /* ══════════════════════════════════════════════
-   RESET & TOKENS
-══════════════════════════════════════════════ */
     *,
     *::before,
     *::after {
@@ -53,9 +50,7 @@
       line-height: 1.5;
     }
 
-    /* ══════════════════════════════════════════════
-   SIDEBAR
-══════════════════════════════════════════════ */
+    /* ── SIDEBAR ── */
     .sidebar {
       width: 220px;
       background: var(--surface);
@@ -200,9 +195,7 @@
       color: var(--accent2);
     }
 
-    /* ══════════════════════════════════════════════
-   MAIN
-══════════════════════════════════════════════ */
+    /* ── MAIN ── */
     .main {
       margin-left: 220px;
       flex: 1;
@@ -240,7 +233,6 @@
       padding: 28px;
     }
 
-    /* Tabs */
     .tab-panels>div {
       display: none;
     }
@@ -249,9 +241,7 @@
       display: block;
     }
 
-    /* ══════════════════════════════════════════════
-   STAT CARDS
-══════════════════════════════════════════════ */
+    /* ── STAT CARDS ── */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -328,9 +318,7 @@
       opacity: .2;
     }
 
-    /* ══════════════════════════════════════════════
-   SECTION HEADER
-══════════════════════════════════════════════ */
+    /* ── SECTION HEADER ── */
     .section-header {
       display: flex;
       align-items: center;
@@ -352,7 +340,6 @@
       align-items: center;
     }
 
-    /* Search */
     .search-input {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -364,7 +351,6 @@
       outline: none;
       width: 220px;
       transition: border-color .15s;
-      position: relative;
     }
 
     .search-input:focus {
@@ -407,9 +393,7 @@
       background: var(--surface2);
     }
 
-    /* ══════════════════════════════════════════════
-   TABLE
-══════════════════════════════════════════════ */
+    /* ── TABLE ── */
     .table-wrap {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -458,9 +442,7 @@
       font-size: 14px;
     }
 
-    /* ══════════════════════════════════════════════
-   BADGES
-══════════════════════════════════════════════ */
+    /* ── BADGES ── */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -509,9 +491,7 @@
       background: currentColor;
     }
 
-    /* ══════════════════════════════════════════════
-   BUTTONS
-══════════════════════════════════════════════ */
+    /* ── BUTTONS ── */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -534,15 +514,6 @@
 
     .btn-primary:hover {
       background: #c62828;
-    }
-
-    .btn-blue {
-      background: var(--blue);
-      color: #fff;
-    }
-
-    .btn-blue:hover {
-      background: #2c78f0;
     }
 
     .btn-ghost {
@@ -580,9 +551,7 @@
       cursor: not-allowed;
     }
 
-    /* ══════════════════════════════════════════════
-   MODALS
-══════════════════════════════════════════════ */
+    /* ── MODALS ── */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -632,6 +601,10 @@
       width: min(860px, 100%);
     }
 
+    .modal-xl {
+      width: min(960px, 100%);
+    }
+
     .modal-header {
       display: flex;
       align-items: center;
@@ -674,7 +647,7 @@
       gap: 10px;
     }
 
-    /* Form elements */
+    /* ── FORMS ── */
     .form-group {
       margin-bottom: 18px;
     }
@@ -734,15 +707,7 @@
       margin-top: 5px;
     }
 
-    .form-error {
-      font-size: 12px;
-      color: var(--accent2);
-      margin-top: 5px;
-    }
-
-    /* ══════════════════════════════════════════════
-   KEYS TABLE SPECIAL
-══════════════════════════════════════════════ */
+    /* ── KEYS ── */
     .key-code {
       font-family: var(--mono);
       font-size: 14px;
@@ -760,7 +725,6 @@
       font-size: 13px;
     }
 
-    /* Progress bar */
     .prog-bar {
       height: 5px;
       background: var(--surface2);
@@ -776,9 +740,6 @@
       transition: width .4s;
     }
 
-    /* ══════════════════════════════════════════════
-   KEY GENERATION RESULT
-══════════════════════════════════════════════ */
     .keys-result {
       background: var(--bg);
       border: 1px solid var(--border);
@@ -820,53 +781,13 @@
       background: rgba(251, 191, 36, .2);
     }
 
-    .btn-copy-all {
-      font-size: 12px;
-      padding: 5px 12px;
-    }
-
-    /* ══════════════════════════════════════════════
-   PASSAGE EDITOR QUESTIONS
-══════════════════════════════════════════════ */
-    .q-builder {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .q-builder-header {
-      background: var(--surface2);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .q-builder-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .q-builder-body {
-      padding: 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .question-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
+    /* ── QUESTION BUILDER ── */
     .question-row {
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 14px;
+      margin-bottom: 12px;
     }
 
     .question-row-header {
@@ -890,9 +811,49 @@
       flex-shrink: 0;
     }
 
-    /* ══════════════════════════════════════════════
-   TOAST
-══════════════════════════════════════════════ */
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .page-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text2);
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+
+    .page-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .page-info {
+      font-size: 12px;
+      color: var(--text3);
+      margin: 0 6px;
+    }
+
+    /* ── TOAST ── */
     #toast {
       position: fixed;
       bottom: 28px;
@@ -939,77 +900,42 @@
       flex-shrink: 0;
     }
 
-    /* ══════════════════════════════════════════════
-   LOADING STATES
-══════════════════════════════════════════════ */
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 6px;
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
-    }
-
-    .loading-row td {
-      padding: 14px 16px;
-    }
-
-    /* ══════════════════════════════════════════════
-   PAGINATION
-══════════════════════════════════════════════ */
-    .pagination {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      padding: 14px 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .page-btn {
-      width: 30px;
-      height: 30px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text2);
-      border-radius: 6px;
+    /* ── VOCAB WORDS TABLE ── */
+    .words-mini-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .15s;
     }
 
-    .page-btn:hover {
-      border-color: var(--border2);
-      color: var(--text);
-    }
-
-    .page-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .page-info {
-      font-size: 12px;
+    .words-mini-table th {
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: 700;
       color: var(--text3);
-      margin: 0 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
     }
 
-    /* ══════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════ */
+    .words-mini-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .words-mini-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .words-mini-table tr:hover td {
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     @media (max-width: 1100px) {
       .stats-row {
         grid-template-columns: repeat(2, 1fr);
@@ -1041,21 +967,13 @@
       .content {
         padding: 16px;
       }
-
-      
     }
-
-    .hidden {
-        display: none !important;
-      }
   </style>
 </head>
 
 <body>
 
-  <!-- ══════════════════════════════════════════
-     SIDEBAR
-══════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════ SIDEBAR ══════════════════════════════════════════ -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-title">EnglishWithDan</div>
@@ -1063,23 +981,27 @@
     </div>
 
     <span class="nav-section-label">Tổng quan</span>
-    <a class="nav-item active" onclick="switchTab('dashboard')" href="#">
+    <a class="nav-item active" onclick="switchTab('dashboard',event)" href="#">
       <span class="nav-icon">📊</span> Dashboard
     </a>
 
     <span class="nav-section-label">Nội dung</span>
-    <a class="nav-item" onclick="switchTab('passages')" href="#">
+    <a class="nav-item" onclick="switchTab('passages',event)" href="#">
       <span class="nav-icon">📄</span> Bài đọc
     </a>
-    <a class="nav-item" onclick="switchTab('tests')" href="#">
+    <a class="nav-item" onclick="switchTab('tests',event)" href="#">
       <span class="nav-icon">📝</span> Bộ đề
+    </a>
+    <!-- ★ MỚI: Tab Từ vựng -->
+    <a class="nav-item" onclick="switchTab('vocab',event)" href="#">
+      <span class="nav-icon">📚</span> Từ vựng (Units)
     </a>
 
     <span class="nav-section-label">Học sinh</span>
-    <a class="nav-item" onclick="switchTab('keys')" href="#">
+    <a class="nav-item" onclick="switchTab('keys',event)" href="#">
       <span class="nav-icon">🔑</span> Mã truy cập
     </a>
-    <a class="nav-item" onclick="switchTab('history')" href="#">
+    <a class="nav-item" onclick="switchTab('history',event)" href="#">
       <span class="nav-icon">📈</span> Kết quả học sinh
     </a>
 
@@ -1095,14 +1017,11 @@
     </div>
   </nav>
 
-  <!-- ══════════════════════════════════════════
-     MAIN
-══════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════ MAIN ══════════════════════════════════════════ -->
   <div class="main">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px">
-        <button class="btn btn-ghost btn-icon" id="sidebar-toggle" onclick="toggleSidebar()"
-          style="display:none">☰</button>
+        <button class="btn btn-ghost btn-icon" onclick="toggleSidebar()" style="display:none">☰</button>
         <span class="topbar-title" id="topbar-title">Dashboard</span>
       </div>
       <div class="topbar-right">
@@ -1113,11 +1032,9 @@
     <div class="content">
       <div class="tab-panels" id="tab-panels">
 
-        <!-- ────────────────────────
-           TAB: DASHBOARD
-      ──────────────────────── -->
+        <!-- ─── TAB: DASHBOARD ─── -->
         <div id="tab-dashboard" class="active">
-          <div class="stats-row" id="stats-row">
+          <div class="stats-row">
             <div class="stat-card blue">
               <div class="stat-icon">👨‍🎓</div>
               <div class="stat-label">Học sinh</div>
@@ -1143,10 +1060,7 @@
               <div class="stat-sub">Trong database</div>
             </div>
           </div>
-
-          <div class="section-header">
-            <span class="section-title">Kết quả gần đây</span>
-          </div>
+          <div class="section-header"><span class="section-title">Kết quả gần đây</span></div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -1168,17 +1082,13 @@
           </div>
         </div>
 
-        <!-- ────────────────────────
-           TAB: PASSAGES
-      ──────────────────────── -->
+        <!-- ─── TAB: PASSAGES ─── -->
         <div id="tab-passages">
           <div class="section-header">
             <span class="section-title">Quản lý bài đọc</span>
             <div class="section-actions">
-              <div class="search-wrap">
-                <input class="search-input" id="search-passages" placeholder="Tìm tên bài đọc..."
-                  oninput="filterPassages()" />
-              </div>
+              <div class="search-wrap"><input class="search-input" id="search-passages" placeholder="Tìm tên bài đọc..."
+                  oninput="filterPassages()" /></div>
               <select class="filter-select" id="filter-category" onchange="filterPassages()">
                 <option value="">Tất cả category</option>
                 <option value="passage1">Passage 1</option>
@@ -1188,7 +1098,6 @@
               <button class="btn btn-primary" onclick="openPassageModal()">＋ Thêm bài đọc</button>
             </div>
           </div>
-
           <div class="table-wrap">
             <table>
               <thead>
@@ -1213,15 +1122,12 @@
           </div>
         </div>
 
-        <!-- ────────────────────────
-           TAB: TESTS
-      ──────────────────────── -->
+        <!-- ─── TAB: TESTS ─── -->
         <div id="tab-tests">
           <div class="section-header">
             <span class="section-title">Quản lý bộ đề</span>
             <button class="btn btn-primary" onclick="openTestModal()">＋ Tạo bộ đề</button>
           </div>
-
           <div class="table-wrap">
             <table>
               <thead>
@@ -1243,15 +1149,45 @@
           </div>
         </div>
 
-        <!-- ────────────────────────
-           TAB: KEYS
-      ──────────────────────── -->
+        <!-- ─── TAB: VOCAB ★ MỚI ─── -->
+        <div id="tab-vocab">
+          <div class="section-header">
+            <span class="section-title">Quản lý từ vựng (Units)</span>
+            <div class="section-actions">
+              <div class="search-wrap"><input class="search-input" id="search-vocab" placeholder="Tìm tên unit..."
+                  oninput="filterVocabUnits()" /></div>
+              <button class="btn btn-ghost btn-sm" onclick="openImportJsonModal()">📂 Import JSON</button>
+              <button class="btn btn-primary" onclick="openUnitModal()">＋ Tạo Unit</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Số</th>
+                  <th>Tên Unit</th>
+                  <th>Level</th>
+                  <th>Số từ</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:160px"></th>
+                </tr>
+              </thead>
+              <tbody id="vocab-units-tbody">
+                <tr>
+                  <td colspan="7" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB: KEYS ─── -->
         <div id="tab-keys">
           <div class="section-header">
             <span class="section-title">Mã truy cập (Access Keys)</span>
             <button class="btn btn-primary" onclick="openKeyModal()">＋ Tạo mã mới</button>
           </div>
-
           <div class="table-wrap">
             <table>
               <thead>
@@ -1274,20 +1210,15 @@
           </div>
         </div>
 
-        <!-- ────────────────────────
-           TAB: HISTORY
-      ──────────────────────── -->
+        <!-- ─── TAB: HISTORY ─── -->
         <div id="tab-history">
           <div class="section-header">
             <span class="section-title">Kết quả học sinh</span>
             <div class="section-actions">
-              <div class="search-wrap">
-                <input class="search-input" id="search-history" placeholder="Tìm tên học sinh..."
-                  oninput="filterHistory()" />
-              </div>
+              <div class="search-wrap"><input class="search-input" id="search-history" placeholder="Tìm tên học sinh..."
+                  oninput="filterHistory()" /></div>
             </div>
           </div>
-
           <div class="table-wrap">
             <table>
               <thead>
@@ -1315,9 +1246,7 @@
     </div><!-- /content -->
   </div><!-- /main -->
 
-  <!-- ══════════════════════════════════════════
-     MODAL – TẠO / SỬA BÀI ĐỌC
-══════════════════════════════════════════ -->
+  <!-- ══ MODAL: Bài đọc ══ -->
   <div class="modal-overlay hidden" id="modal-passage">
     <div class="modal-box modal-lg">
       <div class="modal-header">
@@ -1327,12 +1256,9 @@
       <div class="modal-body">
         <input type="hidden" id="passage-id" />
         <div class="form-row">
-          <div class="form-group">
-            <label>Tiêu đề bài đọc *</label>
-            <input class="form-input" id="p-title" placeholder="VD: The kākāpō" />
-          </div>
-          <div class="form-group">
-            <label>Category *</label>
+          <div class="form-group"><label>Tiêu đề bài đọc *</label><input class="form-input" id="p-title"
+              placeholder="VD: The kākāpō" /></div>
+          <div class="form-group"><label>Category *</label>
             <select class="form-select" id="p-category">
               <option value="passage1">Passage 1 (dễ nhất)</option>
               <option value="passage2">Passage 2</option>
@@ -1340,42 +1266,29 @@
             </select>
           </div>
         </div>
-
         <div class="form-row">
-          <div class="form-group">
-            <label>Câu bắt đầu *</label>
-            <input class="form-input" id="p-qstart" type="number" placeholder="1" min="1" />
-          </div>
-          <div class="form-group">
-            <label>Câu kết thúc *</label>
-            <input class="form-input" id="p-qend" type="number" placeholder="13" min="1" />
-          </div>
+          <div class="form-group"><label>Câu bắt đầu *</label><input class="form-input" id="p-qstart" type="number"
+              placeholder="1" min="1" /></div>
+          <div class="form-group"><label>Câu kết thúc *</label><input class="form-input" id="p-qend" type="number"
+              placeholder="13" min="1" /></div>
         </div>
-
         <div class="form-row">
-          <div class="form-group">
-            <label>Độ khó</label>
+          <div class="form-group"><label>Độ khó</label>
             <select class="form-select" id="p-difficulty">
               <option value="easy">Dễ</option>
               <option value="medium" selected>Trung bình</option>
               <option value="hard">Khó</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Tags (cách nhau bằng dấu phẩy)</label>
-            <input class="form-input" id="p-tags" placeholder="nature, animals, science" />
-          </div>
+          <div class="form-group"><label>Tags (cách nhau bằng dấu phẩy)</label><input class="form-input" id="p-tags"
+              placeholder="nature, animals, science" /></div>
         </div>
-
         <div class="form-group">
           <label>Nội dung bài đọc (HTML) *</label>
           <textarea class="form-textarea" id="p-content" rows="8"
-            placeholder="&lt;p&gt;&lt;strong&gt;Tiêu đề bài&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Paragraph A. Nội dung...&lt;/p&gt;"></textarea>
-          <div class="form-hint">Hỗ trợ HTML: &lt;p&gt; &lt;strong&gt; &lt;em&gt; &lt;u&gt;. Dùng
-            &lt;strong&gt;A.&lt;/strong&gt; cho nhãn đoạn văn.</div>
+            placeholder="&lt;p&gt;Nội dung...&lt;/p&gt;"></textarea>
+          <div class="form-hint">Hỗ trợ HTML: &lt;p&gt; &lt;strong&gt; &lt;em&gt;</div>
         </div>
-
-        <!-- Questions builder -->
         <div class="form-group">
           <label>Câu hỏi</label>
           <div id="questions-container"></div>
@@ -1389,9 +1302,7 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-     MODAL – TẠO BỘ ĐỀ
-══════════════════════════════════════════ -->
+  <!-- ══ MODAL: Bộ đề ══ -->
   <div class="modal-overlay hidden" id="modal-test">
     <div class="modal-box modal-sm">
       <div class="modal-header">
@@ -1400,19 +1311,13 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="test-id" />
-        <div class="form-group">
-          <label>Tên bộ đề *</label>
-          <input class="form-input" id="t-name" placeholder="VD: Orange 20 Reading - Test 1" />
-        </div>
+        <div class="form-group"><label>Tên bộ đề *</label><input class="form-input" id="t-name"
+            placeholder="VD: Orange 20 Reading - Test 1" /></div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Tên series</label>
-            <input class="form-input" id="t-series" placeholder="Orange Test 20" />
-          </div>
-          <div class="form-group">
-            <label>Số thứ tự</label>
-            <input class="form-input" id="t-number" type="number" placeholder="1" min="1" />
-          </div>
+          <div class="form-group"><label>Tên series</label><input class="form-input" id="t-series"
+              placeholder="Orange Test 20" /></div>
+          <div class="form-group"><label>Số thứ tự</label><input class="form-input" id="t-number" type="number"
+              placeholder="1" min="1" /></div>
         </div>
       </div>
       <div class="modal-footer">
@@ -1422,9 +1327,7 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-     MODAL – TẠO KEY
-══════════════════════════════════════════ -->
+  <!-- ══ MODAL: Key ══ -->
   <div class="modal-overlay hidden" id="modal-key">
     <div class="modal-box modal-md">
       <div class="modal-header">
@@ -1433,35 +1336,25 @@
       </div>
       <div class="modal-body">
         <div class="form-row">
-          <div class="form-group">
-            <label>Số lượng key *</label>
-            <input class="form-input" id="k-count" type="number" value="1" min="1" max="100" />
+          <div class="form-group"><label>Số lượng key *</label><input class="form-input" id="k-count" type="number"
+              value="1" min="1" max="100" />
             <div class="form-hint">Tối đa 100 key mỗi lần</div>
           </div>
-          <div class="form-group">
-            <label>Lượt dùng tối đa / key</label>
-            <input class="form-input" id="k-maxuses" type="number" value="1" min="1" />
-          </div>
+          <div class="form-group"><label>Lượt dùng tối đa / key</label><input class="form-input" id="k-maxuses"
+              type="number" value="1" min="1" /></div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Áp dụng cho bộ đề</label>
-            <select class="form-select" id="k-test">
+          <div class="form-group"><label>Áp dụng cho bộ đề</label><select class="form-select" id="k-test">
               <option value="">Tất cả bộ đề</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Hết hạn sau (ngày)</label>
-            <input class="form-input" id="k-expiry" type="number" placeholder="Để trống = không hết hạn" min="1" />
-          </div>
+            </select></div>
+          <div class="form-group"><label>Hết hạn sau (ngày)</label><input class="form-input" id="k-expiry" type="number"
+              placeholder="Để trống = không hết hạn" min="1" /></div>
         </div>
-
-        <!-- Generated keys display -->
         <div id="generated-keys" class="hidden">
           <div class="keys-result">
             <div class="keys-result-title" style="display:flex;justify-content:space-between;align-items:center">
-              <span>Các key đã tạo – click để copy từng key</span>
-              <button class="btn btn-ghost btn-copy-all btn-sm" onclick="copyAllKeys()">📋 Copy tất cả</button>
+              <span>Các key đã tạo – click để copy</span>
+              <button class="btn btn-ghost btn-sm" onclick="copyAllKeys()">📋 Copy tất cả</button>
             </div>
             <div class="keys-list" id="keys-list-display"></div>
           </div>
@@ -1474,14 +1367,11 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-     MODAL – XÁC NHẬN XOÁ
-══════════════════════════════════════════ -->
+  <!-- ══ MODAL: Xác nhận ══ -->
   <div class="modal-overlay hidden" id="modal-confirm">
     <div class="modal-box modal-sm">
       <div class="modal-header">
-        <h3>Xác nhận</h3>
-        <button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
+        <h3>Xác nhận</h3><button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
       </div>
       <div class="modal-body">
         <p id="confirm-msg" style="color:var(--text2)"></p>
@@ -1489,6 +1379,142 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Huỷ</button>
         <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Tạo / sửa Unit ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-unit">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="modal-unit-title">Tạo Unit mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-unit')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="unit-edit-id" />
+        <div class="form-row">
+          <div class="form-group"><label>Số Unit *</label><input class="form-input" id="u-number" type="number" min="1"
+              placeholder="1" /></div>
+          <div class="form-group"><label>Level</label>
+            <select class="form-select" id="u-level">
+              <option value="A1">A1</option>
+              <option value="A2">A2</option>
+              <option value="B1" selected>B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Tên Unit *</label><input class="form-input" id="u-title"
+            placeholder="VD: Daily Life" /></div>
+        <div class="form-group"><label>Mô tả</label><input class="form-input" id="u-desc" placeholder="Tuỳ chọn..." />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-unit')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveUnit()">Lưu Unit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Quản lý từ trong Unit ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-unit-words">
+    <div class="modal-box modal-xl">
+      <div class="modal-header">
+        <h3 id="modal-uw-title">Từ vựng – Unit …</h3>
+        <button class="modal-close" onclick="closeModal('modal-unit-words')">×</button>
+      </div>
+      <div class="modal-body" style="padding:16px 20px">
+
+        <!-- Form thêm từ mới -->
+        <div
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+          <div
+            style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">
+            Thêm từ mới</div>
+          <div style="display:grid;grid-template-columns:1.2fr 1.2fr 1.5fr;gap:8px;margin-bottom:8px">
+            <input class="form-input" id="nw-word" placeholder="Từ tiếng Anh *"
+              style="font-size:13px;padding:8px 10px" />
+            <input class="form-input" id="nw-meaning" placeholder="Nghĩa tiếng Việt *"
+              style="font-size:13px;padding:8px 10px" />
+            <input class="form-input" id="nw-example" placeholder="Ví dụ" style="font-size:13px;padding:8px 10px" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 0.6fr auto;gap:8px;align-items:center">
+            <input class="form-input" id="nw-phonetic" placeholder="/fəˈnɛtɪk/"
+              style="font-size:13px;padding:8px 10px" />
+            <input class="form-input" id="nw-pos" placeholder="Loại từ (verb, noun...)"
+              style="font-size:13px;padding:8px 10px" />
+            <select class="form-select" id="nw-level" style="font-size:13px;padding:8px 10px">
+              <option value="A1">A1</option>
+              <option value="A2" selected>A2</option>
+              <option value="B1">B1</option>
+              <option value="B2">B2</option>
+              <option value="C1">C1</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px">＋
+              Thêm</button>
+          </div>
+        </div>
+
+        <!-- Danh sách từ -->
+        <div style="overflow-y:auto;max-height:400px;border:1px solid var(--border);border-radius:8px">
+          <table class="words-mini-table">
+            <thead>
+              <tr>
+                <th style="width:36px">#</th>
+                <th>Từ</th>
+                <th>Nghĩa</th>
+                <th>Ví dụ</th>
+                <th style="width:56px">Level</th>
+                <th style="width:44px"></th>
+              </tr>
+            </thead>
+            <tbody id="uw-words-tbody">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Chưa có từ nào</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content:space-between">
+        <span style="font-size:12px;color:var(--text3)" id="uw-word-count"></span>
+        <button class="btn btn-ghost" onclick="closeModal('modal-unit-words')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Import JSON ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-import-json">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3>Import Units từ JSON</h3>
+        <button class="modal-close" onclick="closeModal('modal-import-json')">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text2);font-size:13px;margin-bottom:14px;line-height:1.6">
+          Paste nội dung JSON của <code
+            style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-family:var(--mono)">vocabData.json</code>
+          vào đây.<br>
+          Chấp nhận <strong>array</strong> hoặc <strong>single object</strong>.
+        </p>
+        <div class="form-group">
+          <label>Nội dung JSON *</label>
+          <textarea class="form-textarea" id="import-json-text" rows="14"
+            placeholder='[{"unitNumber":1,"title":"Daily Life","words":[{"word":"commute","meaning":"đi làm bằng phương tiện",...}]}]'></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:-6px">
+          <input type="checkbox" id="import-replace" style="width:16px;height:16px;accent-color:var(--accent)" />
+          <label for="import-replace" style="font-size:13px;color:var(--text2);cursor:pointer">
+            Ghi đè words nếu unit đã tồn tại
+          </label>
+        </div>
+        <div id="import-result" class="hidden"
+          style="margin-top:12px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-import-json')">Đóng</button>
+        <button class="btn btn-primary" onclick="importJsonUnits()" id="btn-import-json">📥 Import</button>
       </div>
     </div>
   </div>
@@ -1506,11 +1532,14 @@
     let allTests = [];
     let allPassages = [];
     let allKeys = [];
+    let allVocabUnits = [];
     let passagePage = 1;
     const PAGE_SIZE = 15;
     let editPassageId = null;
     let editTestId = null;
-    let questionCount = 0;
+    let editingUnitId = null;
+    let editingUnitObj = null;
+    let qIdx = 0;
 
     /* ══════════════════════════════════════════════
        INIT
@@ -1538,7 +1567,6 @@
     function authH() {
       return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' };
     }
-
     function toast(msg, type = 'success') {
       const el = document.getElementById('toast');
       el.className = `show ${type}`;
@@ -1546,34 +1574,29 @@
       clearTimeout(el._t);
       el._t = setTimeout(() => el.classList.remove('show'), 3000);
     }
-
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
     function confirm2(msg, onOk) {
       document.getElementById('confirm-msg').textContent = msg;
-      const btn = document.getElementById('btn-confirm-ok');
-      btn.onclick = () => { closeModal('modal-confirm'); onOk(); };
+      document.getElementById('btn-confirm-ok').onclick = () => { closeModal('modal-confirm'); onOk(); };
       openModal('modal-confirm');
     }
-
-    function switchTab(tab) {
+    // ★ SỬA: nhận event làm tham số thứ 2 để không phụ thuộc window.event
+    function switchTab(tab, ev) {
       document.querySelectorAll('.tab-panels > div').forEach(d => d.classList.remove('active'));
       document.getElementById(`tab-${tab}`).classList.add('active');
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      const titles = { dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề', keys: 'Mã truy cập', history: 'Kết quả học sinh' };
+      if (ev) ev.currentTarget.classList.add('active');
+      const titles = {
+        dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
+        vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh'
+      };
       document.getElementById('topbar-title').textContent = titles[tab] || tab;
+      // Load lazy khi chuyển tab
+      if (tab === 'vocab') loadVocabUnits();
     }
-
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
-    function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = 'login.html';
-    }
-
+    function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
     function formatDate(s) {
       if (!s) return '–';
       const d = new Date(s);
@@ -1581,81 +1604,48 @@
     }
     function pad(n) { return String(n).padStart(2, '0'); }
     function formatDur(s) { if (!s) return '–'; return `${Math.floor(s / 60)}m${pad(s % 60)}s`; }
-
-    function diffBadge(d) {
-      const map = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-red' };
-      const lbl = { easy: 'Dễ', medium: 'TB', hard: 'Khó' };
-      return `<span class="badge ${map[d] || 'badge-gray'}">${lbl[d] || d}</span>`;
-    }
-    function catBadge(c) {
-      const map = { passage1: 'badge-blue', passage2: 'badge-purple', passage3: 'badge-red' };
-      return `<span class="badge ${map[c] || 'badge-gray'}">${c || '–'}</span>`;
-    }
-    function bandBadge(b) {
-      if (!b && b !== 0) return '–';
-      const cls = b >= 7 ? 'badge-green' : b >= 5.5 ? 'badge-yellow' : 'badge-red';
-      return `<span class="badge ${cls}">${b.toFixed(1)}</span>`;
-    }
+    function diffBadge(d) { const m = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-red' }, l = { easy: 'Dễ', medium: 'TB', hard: 'Khó' }; return `<span class="badge ${m[d] || 'badge-gray'}">${l[d] || d}</span>`; }
+    function catBadge(c) { const m = { passage1: 'badge-blue', passage2: 'badge-purple', passage3: 'badge-red' }; return `<span class="badge ${m[c] || 'badge-gray'}">${c || '–'}</span>`; }
+    function bandBadge(b) { if (!b && b !== 0) return '–'; const c = b >= 7 ? 'badge-green' : b >= 5.5 ? 'badge-yellow' : 'badge-red'; return `<span class="badge ${c}">${b.toFixed(1)}</span>`; }
 
     /* ══════════════════════════════════════════════
        DASHBOARD
     ══════════════════════════════════════════════ */
     async function loadStats() {
       try {
-        const res = await fetch(`${API}/admin/stats`, { headers: authH() });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/admin/stats`, { headers: authH() })).json();
         if (!data.success) return;
         document.getElementById('stat-students').textContent = data.stats.totalStudents;
         document.getElementById('stat-attempts').textContent = data.stats.totalAttempts;
         document.getElementById('stat-band').textContent = data.stats.avgBandScore;
       } catch { }
     }
-
     async function loadHistory() {
       try {
-        const res = await fetch(`${API}/reading/history`, { headers: authH() });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/reading/history`, { headers: authH() })).json();
         if (!data.success) return;
-
-        // Recent (dashboard)
-        const recent = data.history.slice(0, 8);
-        document.getElementById('recent-tbody').innerHTML = recent.length
-          ? recent.map(h => `
-        <tr>
-          <td><strong>${h.userId?.username || '–'}</strong></td>
-          <td>${h.testId?.name || '–'}</td>
-          <td>${formatDate(h.endTime)}</td>
-          <td>${bandBadge(h.bandScore)}</td>
-          <td>${h.correctCount}/${h.totalQuestions}</td>
-          <td>${formatDur(h.duration)}</td>
-        </tr>`).join('')
-          : '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
-
-        // History tab
+        document.getElementById('recent-tbody').innerHTML = data.history.slice(0, 8).map(h => `
+      <tr><td><strong>${h.userId?.username || '–'}</strong></td><td>${h.testId?.name || '–'}</td>
+      <td>${formatDate(h.endTime)}</td><td>${bandBadge(h.bandScore)}</td>
+      <td>${h.correctCount}/${h.totalQuestions}</td><td>${formatDur(h.duration)}</td></tr>`).join('')
+          || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
         renderHistoryTable(data.history);
       } catch { }
     }
-
     function renderHistoryTable(list) {
       document.getElementById('history-tbody').innerHTML = list.length
-        ? list.map(h => `
-      <tr>
+        ? list.map(h => `<tr>
         <td><strong>${h.userId?.username || h.userId || '–'}</strong></td>
-        <td>${h.testId?.name || '–'}</td>
-        <td>${formatDate(h.endTime)}</td>
-        <td>${formatDur(h.duration)}</td>
+        <td>${h.testId?.name || '–'}</td><td>${formatDate(h.endTime)}</td><td>${formatDur(h.duration)}</td>
         <td style="color:var(--green);font-weight:600">${h.correctCount}</td>
         <td style="color:var(--accent2);font-weight:600">${h.wrongCount}</td>
-        <td style="color:var(--text3)">${h.skippedCount}</td>
-        <td>${bandBadge(h.bandScore)}</td>
+        <td style="color:var(--text3)">${h.skippedCount}</td><td>${bandBadge(h.bandScore)}</td>
       </tr>`).join('')
         : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
     }
-
     function filterHistory() {
       const q = document.getElementById('search-history').value.toLowerCase();
-      const rows = document.querySelectorAll('#history-tbody tr');
-      rows.forEach(r => {
+      document.querySelectorAll('#history-tbody tr').forEach(r => {
         r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
       });
     }
@@ -1665,162 +1655,96 @@
     ══════════════════════════════════════════════ */
     async function loadPassages() {
       try {
-        const res = await fetch(`${API}/admin/passages?limit=200`, { headers: authH() });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/admin/passages?limit=200`, { headers: authH() })).json();
         if (!data.success) return;
         allPassages = data.passages;
         document.getElementById('stat-passages').textContent = data.total;
         renderPassagesTable(allPassages);
       } catch { }
     }
-
     function renderPassagesTable(list) {
       const start = (passagePage - 1) * PAGE_SIZE;
       const page = list.slice(start, start + PAGE_SIZE);
-
       document.getElementById('passages-tbody').innerHTML = page.length
-        ? page.map(p => `
-      <tr>
-        <td><strong>${p.title}</strong></td>
-        <td>${catBadge(p.category)}</td>
-        <td>${diffBadge(p.difficulty)}</td>
+        ? page.map(p => `<tr>
+        <td><strong>${p.title}</strong></td><td>${catBadge(p.category)}</td><td>${diffBadge(p.difficulty)}</td>
         <td>${p.questions?.length || 0}</td>
         <td style="font-family:var(--mono);font-size:12px">${p.questionRange?.start}–${p.questionRange?.end}</td>
-        <td><span class="badge ${p.isActive ? 'badge-green' : 'badge-gray'}">
-          <span class="dot"></span>${p.isActive ? 'Hoạt động' : 'Ẩn'}
-        </span></td>
+        <td><span class="badge ${p.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${p.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
         <td style="color:var(--text3)">${formatDate(p.createdAt).split(' ')[0]}</td>
-        <td>
-          <button class="btn btn-ghost btn-sm" onclick="editPassage('${p._id}')">✏️</button>
-          <button class="btn btn-danger btn-sm" onclick="deletePassage('${p._id}','${p.title}')">🗑</button>
-        </td>
+        <td><button class="btn btn-ghost btn-sm" onclick="editPassage('${p._id}')">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deletePassage('${p._id}','${p.title}')">🗑</button></td>
       </tr>`).join('')
         : '<tr><td colspan="8" class="table-empty">Không có bài đọc nào</td></tr>';
-
-      // Pagination
-      const total = list.length;
-      const pages = Math.ceil(total / PAGE_SIZE);
+      const total = list.length, pages = Math.ceil(total / PAGE_SIZE);
       const pg = document.getElementById('passages-pagination');
       if (pages <= 1) { pg.innerHTML = ''; return; }
       let html = `<span class="page-info">${start + 1}–${Math.min(start + PAGE_SIZE, total)} / ${total}</span>`;
-      for (let i = 1; i <= pages; i++) {
-        html += `<button class="page-btn ${i === passagePage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
-      }
+      for (let i = 1; i <= pages; i++) html += `<button class="page-btn ${i === passagePage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
       pg.innerHTML = html;
     }
-
     function goPage(p) { passagePage = p; filterPassages(); }
-
     function filterPassages() {
       const q = document.getElementById('search-passages').value.toLowerCase();
       const cat = document.getElementById('filter-category').value;
-      const filtered = allPassages.filter(p =>
-        (!q || p.title.toLowerCase().includes(q)) &&
-        (!cat || p.category === cat)
-      );
       passagePage = 1;
-      renderPassagesTable(filtered);
+      renderPassagesTable(allPassages.filter(p => (!q || p.title.toLowerCase().includes(q)) && (!cat || p.category === cat)));
     }
-
     function openPassageModal(data = null) {
-      editPassageId = data?._id || null;
-      questionCount = 0;
-      document.getElementById('passage-id').value = '';
+      editPassageId = data?._id || null; qIdx = 0;
+      ['p-title', 'p-content'].forEach(id => document.getElementById(id).value = data?.[id.replace('p-', '')] || '');
       document.getElementById('p-title').value = data?.title || '';
+      document.getElementById('p-content').value = data?.content || '';
       document.getElementById('p-category').value = data?.category || 'passage1';
       document.getElementById('p-qstart').value = data?.questionRange?.start || '';
       document.getElementById('p-qend').value = data?.questionRange?.end || '';
       document.getElementById('p-difficulty').value = data?.difficulty || 'medium';
       document.getElementById('p-tags').value = (data?.tags || []).join(', ');
-      document.getElementById('p-content').value = data?.content || '';
       document.getElementById('modal-passage-title').textContent = data ? 'Chỉnh sửa bài đọc' : 'Thêm bài đọc mới';
-
-      const qc = document.getElementById('questions-container');
-      qc.innerHTML = '';
-      if (data?.questions?.length) {
-        data.questions.forEach(q => addQuestion(q));
-      } else {
-        addQuestion();
-      }
+      const qc = document.getElementById('questions-container'); qc.innerHTML = '';
+      if (data?.questions?.length) data.questions.forEach(q => addQuestion(q)); else addQuestion();
       openModal('modal-passage');
     }
-
     async function editPassage(id) {
       const p = allPassages.find(x => x._id === id);
-      if (!p) return;
-      // Fetch full passage with questions
-      try {
-        const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() });
-        if (res.ok) {
-          const data = await res.json();
-          openPassageModal(data.passage || p);
-        } else {
-          openPassageModal(p);
-        }
-      } catch { openPassageModal(p); }
+      try { const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() }); if (res.ok) { const d = await res.json(); openPassageModal(d.passage || p); } else openPassageModal(p); }
+      catch { openPassageModal(p); }
     }
-
     function deletePassage(id, title) {
-      confirm2(`Ẩn bài đọc "${title}"? (Bài sẽ không xuất hiện trong các đề thi mới)`, async () => {
-        try {
-          await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
-          toast('Đã ẩn bài đọc');
-          await loadPassages();
-        } catch { toast('Lỗi xoá bài đọc', 'error'); }
+      confirm2(`Ẩn bài đọc "${title}"?`, async () => {
+        await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
+        toast('Đã ẩn bài đọc'); await loadPassages();
       });
     }
-
     async function savePassage() {
       const title = document.getElementById('p-title').value.trim();
       const content = document.getElementById('p-content').value.trim();
       const qstart = Number(document.getElementById('p-qstart').value);
       const qend = Number(document.getElementById('p-qend').value);
-
-      if (!title || !content || !qstart || !qend) {
-        toast('Vui lòng điền đầy đủ các trường bắt buộc *', 'error'); return;
-      }
-
-      const questions = collectQuestions();
-      if (!questions) return; // validation failed
-
+      if (!title || !content || !qstart || !qend) { toast('Điền đầy đủ trường bắt buộc *', 'error'); return; }
+      const questions = collectQuestions(); if (!questions) return;
       const body = {
-        title,
-        category: document.getElementById('p-category').value,
-        content,
-        questionRange: { start: qstart, end: qend },
-        difficulty: document.getElementById('p-difficulty').value,
-        tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-        questions
+        title, category: document.getElementById('p-category').value, content,
+        questionRange: { start: qstart, end: qend }, difficulty: document.getElementById('p-difficulty').value,
+        tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean), questions
       };
-
       const btn = document.getElementById('btn-save-passage');
       btn.disabled = true; btn.textContent = 'Đang lưu...';
-
       try {
         const url = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
-        const method = editPassageId ? 'PUT' : 'POST';
-        const res = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
-        const data = await res.json();
+        const data = await (await fetch(url, { method: editPassageId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
         if (!data.success) throw new Error(data.message);
-        toast(editPassageId ? 'Đã cập nhật bài đọc' : 'Đã thêm bài đọc mới');
-        closeModal('modal-passage');
-        await loadPassages();
-      } catch (err) {
-        toast('Lỗi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false; btn.textContent = 'Lưu bài đọc';
-      }
+        toast(editPassageId ? 'Đã cập nhật' : 'Đã thêm bài đọc mới');
+        closeModal('modal-passage'); await loadPassages();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
     }
 
     /* ── Question builder ── */
-    let qIdx = 0;
     function addQuestion(data = null) {
       qIdx++;
-      const id = `q-${qIdx}`;
-      const num = data?.questionNumber || '';
-      const div = document.createElement('div');
-      div.className = 'question-row';
-      div.id = id;
+      const id = `q-${qIdx}`, num = data?.questionNumber || '';
+      const div = document.createElement('div'); div.className = 'question-row'; div.id = id;
       div.innerHTML = `
     <div class="question-row-header">
       <span class="q-num-badge">${qIdx}</span>
@@ -1828,100 +1752,62 @@
       <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá</button>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Số câu *</label>
-        <input class="form-input q-num" type="number" value="${num}" placeholder="${qIdx}"/>
-      </div>
-      <div class="form-group">
-        <label>Loại câu hỏi *</label>
+      <div class="form-group"><label>Số câu *</label><input class="form-input q-num" type="number" value="${num}" placeholder="${qIdx}"/></div>
+      <div class="form-group"><label>Loại câu hỏi *</label>
         <select class="form-select q-type" onchange="onQTypeChange(this,'${id}')">
-          <option value="true-false-ng"    ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
-          <option value="multiple-choice"  ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
-          <option value="fill-blank"       ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
+          <option value="true-false-ng"     ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
+          <option value="multiple-choice"   ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+          <option value="fill-blank"        ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
           <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
-          <option value="matching-headings"   ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
-          <option value="matching-info"       ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
+          <option value="matching-headings" ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
+          <option value="matching-info"     ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
         </select>
       </div>
     </div>
-    <div class="form-group">
-      <label>Nội dung câu hỏi *</label>
-      <textarea class="form-input q-text" rows="2" placeholder="Nhập nội dung câu hỏi. Dùng ___ để đánh dấu chỗ trống (cho fill/completion)">${data?.questionText || ''}</textarea>
+    <div class="form-group"><label>Nội dung câu hỏi *</label>
+      <textarea class="form-input q-text" rows="2" placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
     </div>
-    <div class="q-extra" id="extra-${id}">
-      ${renderQExtra(data?.type || 'true-false-ng', data)}
-    </div>
+    <div class="q-extra" id="extra-${id}">${renderQExtra(data?.type || 'true-false-ng', data)}</div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Đáp án đúng *</label>
-        <input class="form-input q-answer" value="${data?.correctAnswer || ''}" placeholder="TRUE / FALSE / NOT GIVEN / text / A / B…"/>
-      </div>
-      <div class="form-group">
-        <label>Giải thích (hiện khi review)</label>
-        <input class="form-input q-explain" value="${data?.explanation || ''}" placeholder="Giải thích đáp án..."/>
-      </div>
-    </div>
-  `;
+      <div class="form-group"><label>Đáp án đúng *</label><input class="form-input q-answer" value="${data?.correctAnswer || ''}" placeholder="TRUE / FALSE / NOT GIVEN / text…"/></div>
+      <div class="form-group"><label>Giải thích (hiện khi review)</label><input class="form-input q-explain" value="${data?.explanation || ''}" placeholder="Giải thích đáp án..."/></div>
+    </div>`;
       document.getElementById('questions-container').appendChild(div);
     }
-
     function renderQExtra(type, data) {
       if (type === 'multiple-choice') {
         const opts = data?.options || ['', '', '', ''];
-        return `
-      <div class="form-group">
-        <label>Các đáp án (A, B, C, D)</label>
-        ${['A', 'B', 'C', 'D'].map((l, i) => `
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <span style="font-weight:700;color:var(--accent);width:20px">${l}.</span>
-            <input class="form-input q-opt" style="flex:1" value="${opts[i] || ''}" placeholder="Đáp án ${l}"/>
-          </div>`).join('')}
-      </div>`;
+        return `<div class="form-group"><label>Các đáp án (A, B, C, D)</label>
+      ${['A', 'B', 'C', 'D'].map((l, i) => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-weight:700;color:var(--accent);width:20px">${l}.</span>
+        <input class="form-input q-opt" style="flex:1" value="${opts[i] || ''}" placeholder="Đáp án ${l}"/></div>`).join('')}
+    </div>`;
       }
       if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
-        const bank = (data?.wordBank || []).join(', ');
-        return `
-      <div class="form-group">
-        <label>Word bank (cách nhau bằng dấu phẩy)</label>
-        <input class="form-input q-wordbank" value="${bank}" placeholder="soil, trees, rocks, sand, grass"/>
-        <div class="form-hint">Danh sách các từ/cụm cho học sinh kéo thả</div>
-      </div>`;
+        return `<div class="form-group"><label>Word bank (cách nhau bằng dấu phẩy)</label>
+      <input class="form-input q-wordbank" value="${(data?.wordBank || []).join(', ')}" placeholder="soil, trees, rocks…"/>
+      <div class="form-hint">Danh sách từ/cụm cho học sinh kéo thả</div></div>`;
       }
       return '';
     }
-
     function onQTypeChange(sel, rowId) {
-      const row = document.getElementById(rowId);
-      const type = sel.value;
-      const data = {}; // no existing data when changing type
-      row.querySelector('.q-extra').innerHTML = renderQExtra(type, data);
+      document.getElementById(rowId).querySelector('.q-extra').innerHTML = renderQExtra(sel.value, {});
     }
-
     function collectQuestions() {
-      const rows = document.querySelectorAll('#questions-container .question-row');
       const questions = [];
-      for (const row of rows) {
+      for (const row of document.querySelectorAll('#questions-container .question-row')) {
         const num = Number(row.querySelector('.q-num').value);
         const type = row.querySelector('.q-type').value;
         const text = row.querySelector('.q-text').value.trim();
         const answer = row.querySelector('.q-answer').value.trim();
         const expl = row.querySelector('.q-explain').value.trim();
-
-        if (!num || !text || !answer) {
-          toast('Vui lòng điền đầy đủ số câu, nội dung và đáp án đúng cho mỗi câu hỏi', 'error');
-          return null;
-        }
-
+        if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
         const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
-
-        if (type === 'multiple-choice') {
-          q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
-        }
+        if (type === 'multiple-choice') q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
         if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
           const wb = row.querySelector('.q-wordbank')?.value || '';
           q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
         }
-
         questions.push(q);
       }
       return questions;
@@ -1932,74 +1818,42 @@
     ══════════════════════════════════════════════ */
     async function loadTests() {
       try {
-        const res = await fetch(`${API}/admin/tests`, { headers: authH() });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/admin/tests`, { headers: authH() })).json();
         if (!data.success) return;
-        allTests = data.tests;
-        renderTestsTable(data.tests);
-
-        // Populate key dropdown
+        allTests = data.tests; renderTestsTable(data.tests);
         const sel = document.getElementById('k-test');
-        sel.innerHTML = '<option value="">Tất cả bộ đề</option>' +
-          data.tests.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
+        sel.innerHTML = '<option value="">Tất cả bộ đề</option>' + data.tests.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
       } catch { }
     }
-
     function renderTestsTable(list) {
       document.getElementById('tests-tbody').innerHTML = list.length
-        ? list.map(t => `
-      <tr>
-        <td><strong>${t.name}</strong></td>
-        <td style="font-family:var(--mono)">${t.testNumber}</td>
-        <td>${t.seriesName || '–'}</td>
-        <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
-          <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}
-        </span></td>
-        <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
-        <td>
-          <button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
-        </td>
-      </tr>`).join('')
+        ? list.map(t => `<tr><td><strong>${t.name}</strong></td><td style="font-family:var(--mono)">${t.testNumber}</td>
+      <td>${t.seriesName || '–'}</td>
+      <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
+      <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button></td></tr>`).join('')
         : '<tr><td colspan="6" class="table-empty">Chưa có bộ đề nào</td></tr>';
     }
-
     function openTestModal(data = null) {
       editTestId = data?._id || null;
-      document.getElementById('test-id').value = '';
       document.getElementById('t-name').value = data?.name || '';
       document.getElementById('t-series').value = data?.seriesName || '';
       document.getElementById('t-number').value = data?.testNumber || '';
       document.getElementById('modal-test-title').textContent = data ? 'Chỉnh sửa bộ đề' : 'Tạo bộ đề mới';
       openModal('modal-test');
     }
-
-    function editTest(id) {
-      const t = allTests.find(x => x._id === id);
-      if (t) openTestModal(t);
-    }
-
+    function editTest(id) { openTestModal(allTests.find(x => x._id === id)); }
     async function saveTest() {
       const name = document.getElementById('t-name').value.trim();
-      if (!name) { toast('Vui lòng nhập tên bộ đề', 'error'); return; }
-
-      const body = {
-        name,
-        seriesName: document.getElementById('t-series').value.trim(),
-        testNumber: Number(document.getElementById('t-number').value) || 1
-      };
-
+      if (!name) { toast('Nhập tên bộ đề', 'error'); return; }
+      const body = { name, seriesName: document.getElementById('t-series').value.trim(), testNumber: Number(document.getElementById('t-number').value) || 1 };
       try {
         const url = editTestId ? `${API}/admin/tests/${editTestId}` : `${API}/admin/tests`;
-        const method = editTestId ? 'PUT' : 'POST';
-        const res = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) });
-        const data = await res.json();
+        const data = await (await fetch(url, { method: editTestId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
         if (!data.success) throw new Error(data.message);
-        toast(editTestId ? 'Đã cập nhật bộ đề' : 'Đã tạo bộ đề mới');
-        closeModal('modal-test');
-        await loadTests();
-      } catch (err) {
-        toast('Lỗi: ' + err.message, 'error');
-      }
+        toast(editTestId ? 'Đã cập nhật' : 'Đã tạo bộ đề mới');
+        closeModal('modal-test'); await loadTests();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
     /* ══════════════════════════════════════════════
@@ -2007,104 +1861,245 @@
     ══════════════════════════════════════════════ */
     async function loadKeys() {
       try {
-        const res = await fetch(`${API}/admin/keys`, { headers: authH() });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/admin/keys`, { headers: authH() })).json();
         if (!data.success) return;
-        allKeys = data.keys;
-        renderKeysTable(data.keys);
+        allKeys = data.keys; renderKeysTable(data.keys);
       } catch { }
     }
-
     function renderKeysTable(list) {
       document.getElementById('keys-tbody').innerHTML = list.length
         ? list.map(k => {
           const pct = Math.round((k.currentUses / k.maxUses) * 100);
-          const exp = k.expiresAt ? formatDate(k.expiresAt) : '–';
-          const used = k.currentUses >= k.maxUses;
-          const exp2 = k.expiresAt && new Date() > new Date(k.expiresAt);
+          const used = k.currentUses >= k.maxUses, exp2 = k.expiresAt && new Date() > new Date(k.expiresAt);
           const status = !k.isActive ? 'Vô hiệu' : used ? 'Hết lượt' : exp2 ? 'Hết hạn' : 'Còn dùng';
-          const statusCls = !k.isActive || used || exp2 ? 'badge-gray' : 'badge-green';
-          return `
-          <tr>
-            <td><span class="key-code">${k.key}</span></td>
-            <td>${k.testId?.name || '<span style="color:var(--text3)">Tất cả</span>'}</td>
-            <td>
-              <span class="key-uses">${k.currentUses}/${k.maxUses}</span>
-              <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%;background:${pct >= 100 ? 'var(--accent)' : 'var(--green)'}"></div></div>
-            </td>
-            <td style="color:var(--text3);font-size:12px">${exp}</td>
-            <td><span class="badge ${statusCls}"><span class="dot"></span>${status}</span></td>
-            <td style="color:var(--text3);font-size:12px">${formatDate(k.createdAt).split(' ')[0]}</td>
-            <td>
-              <button class="btn btn-danger btn-sm btn-icon" onclick="deactivateKey('${k._id}')" title="Vô hiệu hoá">✕</button>
-            </td>
-          </tr>`;
+          const cls = !k.isActive || used || exp2 ? 'badge-gray' : 'badge-green';
+          return `<tr><td><span class="key-code">${k.key}</span></td>
+        <td>${k.testId?.name || '<span style="color:var(--text3)">Tất cả</span>'}</td>
+        <td><span class="key-uses">${k.currentUses}/${k.maxUses}</span>
+          <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%;background:${pct >= 100 ? 'var(--accent)' : 'var(--green)'}"></div></div></td>
+        <td style="color:var(--text3);font-size:12px">${k.expiresAt ? formatDate(k.expiresAt) : '–'}</td>
+        <td><span class="badge ${cls}"><span class="dot"></span>${status}</span></td>
+        <td style="color:var(--text3);font-size:12px">${formatDate(k.createdAt).split(' ')[0]}</td>
+        <td><button class="btn btn-danger btn-sm btn-icon" onclick="deactivateKey('${k._id}')" title="Vô hiệu hoá">✕</button></td></tr>`;
         }).join('')
         : '<tr><td colspan="7" class="table-empty">Chưa có key nào</td></tr>';
     }
-
     function openKeyModal() {
       document.getElementById('generated-keys').classList.add('hidden');
-      document.getElementById('k-count').value = 1;
-      document.getElementById('k-maxuses').value = 1;
-      document.getElementById('k-expiry').value = '';
+      document.getElementById('k-count').value = 1; document.getElementById('k-maxuses').value = 1; document.getElementById('k-expiry').value = '';
       openModal('modal-key');
     }
-
     async function generateKeys() {
-      const count = Number(document.getElementById('k-count').value) || 1;
-      const maxUses = Number(document.getElementById('k-maxuses').value) || 1;
-      const testId = document.getElementById('k-test').value || null;
-      const expiry = document.getElementById('k-expiry').value || null;
-
       const btn = document.getElementById('btn-gen-keys');
       btn.disabled = true; btn.textContent = 'Đang tạo...';
-
       try {
-        const res = await fetch(`${API}/admin/keys/generate`, {
-          method: 'POST',
-          headers: authH(),
-          body: JSON.stringify({ count, testId, expiryDays: expiry ? Number(expiry) : null, maxUses })
-        });
-        const data = await res.json();
+        const data = await (await fetch(`${API}/admin/keys/generate`, {
+          method: 'POST', headers: authH(), body: JSON.stringify({
+            count: Number(document.getElementById('k-count').value) || 1,
+            maxUses: Number(document.getElementById('k-maxuses').value) || 1,
+            testId: document.getElementById('k-test').value || null,
+            expiryDays: document.getElementById('k-expiry').value ? Number(document.getElementById('k-expiry').value) : null
+          })
+        })).json();
         if (!data.success) throw new Error(data.message);
-
-        // Show generated keys
         const wrap = document.getElementById('generated-keys');
-        const list = document.getElementById('keys-list-display');
-        list.innerHTML = data.keys.map(k =>
-          `<div class="key-chip" onclick="copyKey('${k}')" title="Click để copy">${k}</div>`
-        ).join('');
-        wrap.classList.remove('hidden');
-        wrap._keys = data.keys;
+        document.getElementById('keys-list-display').innerHTML = data.keys.map(k => `<div class="key-chip" onclick="copyKey('${k}')">${k}</div>`).join('');
+        wrap.classList.remove('hidden'); wrap._keys = data.keys;
+        toast(`Đã tạo ${data.keys.length} key`); await loadKeys();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Tạo key'; }
+    }
+    function copyKey(key) { navigator.clipboard.writeText(key).then(() => toast(`Đã copy: ${key}`, 'info')); }
+    function copyAllKeys() { const k = document.getElementById('generated-keys')._keys || []; navigator.clipboard.writeText(k.join('\n')).then(() => toast(`Đã copy ${k.length} keys`, 'info')); }
+    async function deactivateKey(id) {
+      confirm2('Vô hiệu hoá key này?', async () => {
+        await fetch(`${API}/admin/keys/${id}`, { method: 'DELETE', headers: authH() });
+        toast('Đã vô hiệu hoá'); await loadKeys();
+      });
+    }
 
-        toast(`Đã tạo ${data.keys.length} key thành công`);
-        await loadKeys();
+    /* ══════════════════════════════════════════════
+       ★ VOCAB UNITS
+    ══════════════════════════════════════════════ */
+    async function loadVocabUnits() {
+      try {
+        const data = await (await fetch(`${API}/vocab/admin/units`, { headers: authH() })).json();
+        if (!data.success) return;
+        allVocabUnits = data.units;
+        renderVocabUnitsTable(data.units);
       } catch (err) {
-        toast('Lỗi: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false; btn.textContent = 'Tạo key';
+        document.getElementById('vocab-units-tbody').innerHTML =
+          `<tr><td colspan="7" class="table-empty">Lỗi tải dữ liệu: ${err.message}</td></tr>`;
       }
     }
 
-    function copyKey(key) {
-      navigator.clipboard.writeText(key).then(() => toast(`Đã copy: ${key}`, 'info'));
+    function renderVocabUnitsTable(list) {
+      document.getElementById('vocab-units-tbody').innerHTML = list.length
+        ? list.map(u => `
+      <tr>
+        <td style="font-family:var(--mono);font-weight:700;color:var(--yellow)">${String(u.unitNumber).padStart(2, '0')}</td>
+        <td><strong>${u.title}</strong></td>
+        <td><span class="badge badge-blue">${u.level || 'B1'}</span></td>
+        <td style="font-weight:600;color:var(--text)">${u.wordCount} từ</td>
+        <td>
+          <span class="badge ${u.isActive ? 'badge-green' : 'badge-gray'}">
+            <span class="dot"></span>${u.isActive ? 'Hoạt động' : 'Ẩn'}
+          </span>
+        </td>
+        <td style="color:var(--text3);font-size:12px">${formatDate(u.createdAt).split(' ')[0]}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="openUnitWordsModal('${u._id}')">📝 Từ vựng</button>
+          <button class="btn btn-ghost btn-sm" onclick="editUnit('${u._id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="toggleUnitActive('${u._id}',${u.isActive})">
+            ${u.isActive ? '🙈 Ẩn' : '👁 Hiện'}
+          </button>
+        </td>
+      </tr>`).join('')
+        : '<tr><td colspan="7" class="table-empty">Chưa có Unit nào. Nhấn "+ Tạo Unit" hoặc "📂 Import JSON".</td></tr>';
     }
 
-    function copyAllKeys() {
-      const wrap = document.getElementById('generated-keys');
-      const keys = wrap._keys || [];
-      navigator.clipboard.writeText(keys.join('\n')).then(() => toast(`Đã copy ${keys.length} keys`, 'info'));
+    function filterVocabUnits() {
+      const q = document.getElementById('search-vocab').value.toLowerCase();
+      renderVocabUnitsTable(allVocabUnits.filter(u =>
+        u.title.toLowerCase().includes(q) || String(u.unitNumber).includes(q)
+      ));
     }
 
-    async function deactivateKey(id) {
-      confirm2('Vô hiệu hoá key này? Học sinh đang dùng key này sẽ không thể tiếp tục.', async () => {
-        try {
-          await fetch(`${API}/admin/keys/${id}`, { method: 'DELETE', headers: authH() });
-          toast('Đã vô hiệu hoá key');
-          await loadKeys();
-        } catch { toast('Lỗi', 'error'); }
-      });
+    /* ── Tạo / Sửa Unit ── */
+    function openUnitModal(data = null) {
+      editingUnitId = data?._id || null;
+      document.getElementById('u-number').value = data?.unitNumber || '';
+      document.getElementById('u-title').value = data?.title || '';
+      document.getElementById('u-desc').value = data?.description || '';
+      document.getElementById('u-level').value = data?.level || 'B1';
+      document.getElementById('modal-unit-title').textContent = data ? 'Chỉnh sửa Unit' : 'Tạo Unit mới';
+      openModal('modal-unit');
+      setTimeout(() => document.getElementById('u-number').focus(), 100);
+    }
+    function editUnit(id) { openUnitModal(allVocabUnits.find(u => u._id === id)); }
+
+    async function saveUnit() {
+      const num = Number(document.getElementById('u-number').value);
+      const title = document.getElementById('u-title').value.trim();
+      if (!num || !title) { toast('Số Unit và Tên là bắt buộc', 'error'); return; }
+      const body = { unitNumber: num, title, description: document.getElementById('u-desc').value.trim(), level: document.getElementById('u-level').value };
+      try {
+        const url = editingUnitId ? `${API}/vocab/admin/units/${editingUnitId}` : `${API}/vocab/admin/units`;
+        const data = await (await fetch(url, { method: editingUnitId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
+        if (!data.success) throw new Error(data.message);
+        toast(editingUnitId ? 'Đã cập nhật Unit' : `Đã tạo Unit ${num}`);
+        closeModal('modal-unit'); await loadVocabUnits();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    async function toggleUnitActive(id, isActive) {
+      try {
+        await fetch(`${API}/vocab/admin/units/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+        toast('Đã cập nhật trạng thái'); await loadVocabUnits();
+      } catch { toast('Lỗi', 'error'); }
+    }
+
+    /* ── Words Modal ── */
+    async function openUnitWordsModal(unitId) {
+      try {
+        const data = await (await fetch(`${API}/vocab/admin/units/${unitId}`, { headers: authH() })).json();
+        if (!data.success) { toast(data.message, 'error'); return; }
+        editingUnitObj = data.unit;
+        renderUnitWordsModal(data.unit);
+        openModal('modal-unit-words');
+      } catch (err) { toast(err.message, 'error'); }
+    }
+
+    function renderUnitWordsModal(unit) {
+      document.getElementById('modal-uw-title').textContent = `Từ vựng – Unit ${unit.unitNumber}: ${unit.title}`;
+      document.getElementById('uw-word-count').textContent = `${unit.words.length} từ`;
+      ['nw-word', 'nw-meaning', 'nw-example', 'nw-phonetic', 'nw-pos'].forEach(id => { document.getElementById(id).value = ''; });
+
+      document.getElementById('uw-words-tbody').innerHTML = unit.words.length
+        ? unit.words.map((w, i) => `
+      <tr>
+        <td style="color:var(--text3)">${i + 1}</td>
+        <td>
+          <strong>${w.word}</strong>
+          ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${w.phonetic}</div>` : ''}
+        </td>
+        <td style="color:var(--text2)">${w.meaning}</td>
+        <td style="font-size:12px;color:var(--text3);font-style:italic">${w.example || ''}</td>
+        <td><span class="badge badge-blue" style="font-size:10px">${w.level || 'B1'}</span></td>
+        <td>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWordFromUnit(${i})" title="Xoá từ">✕</button>
+        </td>
+      </tr>`).join('')
+        : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Chưa có từ nào – thêm từ ở form trên</td></tr>';
+    }
+
+    async function addWordToUnit() {
+      if (!editingUnitObj) return;
+      const word = document.getElementById('nw-word').value.trim();
+      const meaning = document.getElementById('nw-meaning').value.trim();
+      if (!word || !meaning) { toast('Từ và nghĩa là bắt buộc', 'error'); return; }
+      const body = {
+        word, meaning,
+        example: document.getElementById('nw-example').value.trim(),
+        phonetic: document.getElementById('nw-phonetic').value.trim(),
+        partOfSpeech: document.getElementById('nw-pos').value.trim(),
+        level: document.getElementById('nw-level').value
+      };
+      try {
+        const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words`, { method: 'POST', headers: authH(), body: JSON.stringify(body) })).json();
+        if (!data.success) { toast(data.message, 'error'); return; }
+        toast(data.message);
+        await openUnitWordsModal(editingUnitObj._id);
+        await loadVocabUnits();
+      } catch (err) { toast(err.message, 'error'); }
+    }
+
+    async function deleteWordFromUnit(idx) {
+      if (!editingUnitObj) return;
+      const word = editingUnitObj.words[idx]?.word;
+      if (!confirm(`Xoá từ "${word}"?`)) return;
+      try {
+        const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words/${idx}`, { method: 'DELETE', headers: authH() })).json();
+        toast(data.message);
+        await openUnitWordsModal(editingUnitObj._id);
+        await loadVocabUnits();
+      } catch (err) { toast(err.message, 'error'); }
+    }
+
+    /* ── Import JSON ── */
+    function openImportJsonModal() {
+      document.getElementById('import-json-text').value = '';
+      document.getElementById('import-replace').checked = false;
+      document.getElementById('import-result').classList.add('hidden');
+      openModal('modal-import-json');
+    }
+
+    async function importJsonUnits() {
+      const raw = document.getElementById('import-json-text').value.trim();
+      if (!raw) { toast('Paste JSON vào trước', 'error'); return; }
+      let parsed;
+      try { parsed = JSON.parse(raw); }
+      catch { toast('JSON không hợp lệ – kiểm tra định dạng', 'error'); return; }
+
+      const btn = document.getElementById('btn-import-json');
+      btn.disabled = true; btn.textContent = 'Đang import...';
+      try {
+        const data = await (await fetch(`${API}/vocab/admin/import`, {
+          method: 'POST', headers: authH(), body: JSON.stringify(parsed)
+        })).json();
+        const resultEl = document.getElementById('import-result');
+        resultEl.classList.remove('hidden');
+        if (data.success) {
+          resultEl.style.cssText = 'background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:#34d399;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6';
+          resultEl.innerHTML = `✅ ${data.message}<br><small style="opacity:.7">${(data.results || []).map(r => `Unit ${r.unitNumber}: ${r.status} (${r.wordCount || 0} từ)`).join(' · ')}</small>`;
+          toast(data.message);
+          await loadVocabUnits();
+        } else {
+          resultEl.style.cssText = 'background:rgba(229,57,53,.1);border:1px solid rgba(229,57,53,.3);color:var(--accent2);padding:12px 14px;border-radius:8px;font-size:13px';
+          resultEl.textContent = '❌ ' + data.message;
+        }
+      } catch (err) { toast(err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = '📥 Import'; }
     }
   </script>
 </body>

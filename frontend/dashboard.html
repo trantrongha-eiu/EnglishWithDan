@@ -1,377 +1,888 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Vocabulary Learning - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vocab – EnglishWithDan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root{
+  --brand:#e53935; --brand2:#ff6b6b;
+  --blue:#3d8bff; --green:#22c55e; --yellow:#f59e0b; --purple:#a78bfa;
+  --bg:#f7f8fc; --surface:#fff; --surface2:#f3f4f6;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#111827; --text2:#6b7280; --text3:#9ca3af;
+  --radius:14px; --radius-sm:9px;
+  --shadow:0 2px 12px rgba(0,0,0,.07);
+  --shadow-md:0 6px 24px rgba(0,0,0,.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="styles-enhanced.css">
+/* ══════════════════════════════════════════
+   HEADER + NAV
+══════════════════════════════════════════ */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.logo .d{color:#3d8bff}.logo .h{color:var(--brand)}
+.header-right{display:flex;align-items:center;gap:12px}
+.user-name{font-size:13px;font-weight:600;color:var(--text2)}
+.btn-logout{background:none;border:1px solid var(--border);padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--text2);transition:all .15s}
+.btn-logout:hover{border-color:var(--brand);color:var(--brand)}
 
+.main-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
+.nav-list{display:flex;gap:0;list-style:none}
+.nav-list a{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;transition:all .15s}
+.nav-list a:hover{color:var(--text)}
+.nav-list a.active{color:var(--brand);border-bottom-color:var(--brand)}
+
+/* ══════════════════════════════════════════
+   MAIN LAYOUT (sidebar + content)
+══════════════════════════════════════════ */
+.app-layout{display:flex;min-height:calc(100vh - 112px)}
+
+/* ── Sidebar (sổ từ vựng) ── */
+.vocab-sidebar{
+  width:240px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:112px;height:calc(100vh - 112px);
+  overflow-y:auto;
+}
+.sidebar-head{
+  padding:16px 18px 10px;
+  font-size:12px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.7px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.btn-add-book{background:none;border:none;cursor:pointer;color:var(--brand);font-size:18px;padding:2px;border-radius:6px;transition:background .15s}
+.btn-add-book:hover{background:#fce4e4}
+
+.book-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--text2);
+  border-left:3px solid transparent;
+  transition:all .15s;position:relative;
+}
+.book-item:hover{background:var(--surface2);color:var(--text)}
+.book-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
+.book-emoji{font-size:16px;flex-shrink:0}
+.book-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.book-count{font-size:11px;color:var(--text3);background:var(--surface2);padding:1px 7px;border-radius:10px}
+.book-item.active .book-count{background:#fce4e4;color:var(--brand)}
+.book-menu-btn{opacity:0;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;color:var(--text3);font-size:13px}
+.book-item:hover .book-menu-btn{opacity:1}
+
+.sidebar-divider{height:1px;background:var(--border);margin:6px 18px}
+
+/* Unit section trong sidebar */
+.unit-section{padding:12px 18px 0}
+.unit-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+#unitSelect{
+  width:100%;padding:8px 10px;
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:13px;font-family:inherit;outline:none;
+  background:var(--bg);color:var(--text);cursor:pointer;
+}
+#unitSelect:focus{border-color:var(--blue)}
+.btn-start-unit{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;margin-top:8px;padding:9px;
+  background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;
+}
+.btn-start-unit:hover{background:#2c78f0}
+.btn-sound-toggle{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;margin-top:6px;padding:8px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);
+}
+
+/* ══════════════════════════════════════════
+   MAIN CONTENT
+══════════════════════════════════════════ */
+.main-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── Sổ từ vựng view ── */
+#view-mybook{display:flex;flex-direction:column;height:100%}
+
+.book-topbar{
+  padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.book-top-title{display:flex;align-items:center;gap:8px;flex:1}
+.book-top-emoji{font-size:22px}
+.book-editable-name{
+  font-size:17px;font-weight:700;border:none;outline:none;background:none;
+  color:var(--text);font-family:inherit;cursor:text;padding:2px 6px;border-radius:6px;
+  transition:background .15s;
+}
+.book-editable-name:focus{background:var(--surface2)}
+.btn-rename{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;font-size:13px}
+
+.book-stats{display:flex;gap:16px;font-size:12px}
+.stat-dot{display:flex;align-items:center;gap:5px;font-weight:600}
+.dot-green{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.dot-yellow{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
+.dot-gray{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+
+.book-progress-bar{height:3px;background:var(--border);border-radius:2px;margin:0 24px;overflow:hidden}
+.book-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
+
+.book-action-bar{
+  padding:10px 24px;background:var(--surface2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:#c62828}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#2c78f0}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#16a34a}
+.btn-ghost{background:#fff;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+.btn-danger{background:#fce4e4;color:var(--brand);border:1px solid #fca5a5}.btn-danger:hover{background:#fecaca}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.bulk-bar{display:none;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.bulk-bar.show{display:flex}
+.bulk-count{font-weight:700;color:var(--brand)}
+
+/* Word table */
+.words-table-wrap{flex:1;overflow-y:auto;padding:0 24px 24px}
+table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
+.words-table thead th{
+  padding:10px 12px;text-align:left;font-size:11px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.6px;
+  border-bottom:2px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:2;
+}
+.words-table tbody td{
+  padding:11px 12px;border-bottom:1px solid var(--border);
+  font-size:13px;vertical-align:middle;color:var(--text)
+}
+.words-table tbody tr:hover td{background:#fafafa}
+.words-table tbody tr.selected td{background:#fef2f2}
+
+/* Checkbox */
+.cb-wrap input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--brand)}
+
+/* Status dropdown */
+.status-select{
+  background:none;border:1px solid var(--border);border-radius:20px;
+  padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;
+  outline:none;font-family:inherit;transition:all .15s;
+}
+.status-select.chua-thuoc{color:var(--text2);border-color:var(--border2)}
+.status-select.nho-so-so{color:var(--yellow);border-color:var(--yellow);background:#fffbeb}
+.status-select.da-thuoc{color:var(--green);border-color:var(--green);background:#f0fdf4}
+
+/* Audio button */
+.btn-audio{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;font-size:14px}
+.btn-audio:hover{color:var(--blue);background:#eff6ff}
+
+/* Word chip */
+.word-chip-main{font-weight:700;font-size:14px}
+
+/* Deep understand */
+.deep-badge{font-size:10px;background:#f0f9ff;color:#0ea5e9;border:1px solid #bae6fd;padding:2px 8px;border-radius:10px;font-weight:600}
+
+.empty-words{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-words .empty-icon{font-size:48px;margin-bottom:12px}
+.empty-words p{font-size:14px}
+
+/* ── Unit learning view ── */
+#view-unit{display:none;flex-direction:column;height:100%}
+
+.unit-header-bar{
+  padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.unit-header-bar h3{font-size:16px;font-weight:700;flex:1}
+
+.mode-tabs{display:flex;gap:4px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border)}
+.tab-btn{
+  padding:11px 18px;border:none;background:none;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--text2);
+  border-bottom:2px solid transparent;transition:all .15s;font-family:inherit;
+}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--brand);border-bottom-color:var(--brand)}
+
+.mode-body{flex:1;overflow-y:auto;padding:24px}
+
+/* Vocab grid (study mode) */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.vocab-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;transition:box-shadow .15s;
+}
+.vocab-card:hover{box-shadow:var(--shadow-md)}
+.vocab-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.vocab-num{background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px}
+.vocab-word-big{font-size:16px;font-weight:800;flex:1;color:var(--text)}
+.vocab-pos{font-size:11px;color:var(--purple);background:#f5f3ff;padding:2px 7px;border-radius:10px;font-weight:600}
+.vocab-phonetic{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.vocab-meaning{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
+.vocab-example{font-size:12px;color:var(--text2);font-style:italic;line-height:1.5}
+.btn-save-to-book{
+  display:flex;align-items:center;gap:5px;
+  background:none;border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;
+  color:var(--text2);margin-top:10px;width:100%;justify-content:center;
+  transition:all .15s;
+}
+.btn-save-to-book:hover{border-color:var(--brand);color:var(--brand);background:#fce4e4}
+
+/* Practice container */
+.practice-container{max-width:640px;margin:0 auto}
+.practice-header{text-align:center;margin-bottom:20px}
+.practice-header h3{font-size:20px;font-weight:800;margin-bottom:4px}
+.practice-header p{color:var(--text2);font-size:14px}
+.practice-progress{margin-bottom:20px}
+.progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--brand);border-radius:3px;transition:width .4s}
+.progress-text{font-size:12px;color:var(--text2);margin-top:6px;text-align:right;font-weight:600}
+
+/* Question card */
+.question-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px;box-shadow:var(--shadow);
+}
+.question-number{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.question-text{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--text);line-height:1.4}
+
+/* Multiple choice */
+.answer-options{display:flex;flex-direction:column;gap:10px}
+.answer-option{
+  padding:13px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:#fff;text-align:left;cursor:pointer;font-size:14px;font-weight:500;
+  font-family:inherit;transition:all .15s;color:var(--text);
+}
+.answer-option:hover:not(:disabled){border-color:var(--blue);background:#eff6ff;color:var(--blue)}
+.answer-option.correct{background:#f0fdf4;border-color:var(--green);color:#166534;font-weight:700}
+.answer-option.wrong{background:#fef2f2;border-color:var(--brand);color:#991b1b}
+.answer-option:disabled{cursor:not-allowed}
+
+/* Flashcard */
+.flashcard-wrap{perspective:1000px;margin:0 auto 20px;height:220px}
+.flashcard{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;transition:transform .5s ease;cursor:pointer;
+}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-face{
+  position:absolute;inset:0;backface-visibility:hidden;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px;text-align:center;box-shadow:var(--shadow);
+}
+.fc-back{transform:rotateY(180deg)}
+.fc-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.fc-main{font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px}
+.fc-sub{font-size:14px;color:var(--text2)}
+.fc-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.btn-flip-hint{font-size:12px;color:var(--text3);margin-top:16px;background:none;border:none;cursor:pointer;font-family:inherit}
+
+.quick-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+.btn-remembered{
+  flex:1;padding:12px;background:#f0fdf4;border:2px solid var(--green);
+  color:#166534;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;font-family:inherit;
+}
+.btn-remembered:hover{background:#dcfce7}
+.btn-not-remembered{
+  flex:1;padding:12px;background:#fef2f2;border:2px solid var(--brand);
+  color:#991b1b;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;font-family:inherit;
+}
+.btn-not-remembered:hover{background:#fee2e2}
+
+/* Text inputs */
+.text-input, .fb-input, .listen-input, .trans-input{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-size:14px;font-family:inherit;outline:none;background:var(--bg);color:var(--text);
+  transition:border-color .15s;
+}
+.text-input:focus, .fb-input:focus, .listen-input:focus, .trans-input:focus{border-color:var(--blue)}
+.fb-input-row{display:flex;gap:8px;margin-top:12px}
+.btn-check{background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-check:hover{background:#2c78f0}
+.btn-hint-sm{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+
+/* Feedback */
+.feedback-correct,.feedback-wrong,.feedback-hint{
+  margin-top:12px;padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;
+}
+.feedback-correct{background:#f0fdf4;color:#166534;border:1px solid #86efac}
+.feedback-wrong{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+.feedback-hint{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+
+/* btn next */
+.btn-next{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  width:100%;margin-top:16px;padding:12px;
+  background:var(--brand);color:#fff;border:none;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s;
+}
+.btn-next:hover{background:#c62828}
+
+/* Listening */
+.btn-play-audio{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:18px;background:var(--surface2);border:2px dashed var(--border2);
+  border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;
+  color:var(--blue);margin-bottom:14px;transition:all .2s;font-family:inherit;
+}
+.btn-play-audio:hover{background:#eff6ff;border-color:var(--blue)}
+.listen-hint{font-size:13px;color:var(--text2);background:var(--surface2);padding:8px 14px;border-radius:var(--radius-sm);margin-bottom:12px;text-align:center}
+
+/* Translation */
+.trans-example{
+  font-size:15px;font-style:italic;color:var(--text2);padding:14px 18px;
+  background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:12px;line-height:1.6;
+}
+.highlight-word{color:var(--blue);font-weight:800;font-style:normal}
+.trans-word-highlight{font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px}
+
+/* Results */
+.results-wrap{max-width:480px;margin:40px auto;text-align:center;padding:20px}
+.results-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;box-shadow:var(--shadow)}
+.trophy{font-size:52px;margin-bottom:12px}
+.results-card h2{font-size:22px;font-weight:800;margin-bottom:4px}
+.score-ring-wrap{position:relative;margin:20px auto;width:160px;height:160px}
+.score-ring-wrap svg{transform:rotate(-90deg)}
+.score-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-pct{font-size:28px;font-weight:800;color:var(--text)}
+.score-lbl{font-size:12px;color:var(--text2)}
+.results-counts{display:flex;justify-content:center;gap:24px;margin:16px 0;font-size:14px;font-weight:600}
+.res-correct{color:var(--green)}.res-wrong{color:var(--brand)}
+.results-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;
+  backdrop-filter:blur(3px);
+}
+.modal-box{
+  background:var(--surface);border-radius:16px;
+  box-shadow:var(--shadow-md);animation:pop .18s ease;
+  max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
+}
+@keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-sm{width:min(420px,100%)}
+.modal-md{width:min(560px,100%)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0}
+.modal-header h3{font-size:17px;font-weight:700}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3);padding:4px;border-radius:6px}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:18px 24px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+
+/* Form */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
+.form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;background:var(--bg);color:var(--text);transition:border-color .15s}
+.form-input:focus{border-color:var(--blue)}
+.emoji-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.emoji-opt{font-size:22px;padding:6px;border:2px solid transparent;border-radius:8px;cursor:pointer;transition:all .15s}
+.emoji-opt:hover,.emoji-opt.selected{border-color:var(--brand);background:#fce4e4}
+
+/* Save to book modal */
+.book-list-select{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
+.book-opt{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;
+  transition:all .15s;
+}
+.book-opt:hover{border-color:var(--blue);background:#eff6ff}
+.book-opt.selected{border-color:var(--brand);background:#fef2f2}
+.book-opt-emoji{font-size:20px}
+.book-opt-info{flex:1}
+.book-opt-name{font-weight:700;font-size:14px}
+.book-opt-count{font-size:12px;color:var(--text3);margin-top:1px}
+
+/* Toast */
+#toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--text);color:#fff;
+  padding:11px 18px;border-radius:10px;
+  font-size:13px;font-weight:500;
+  z-index:999;transform:translateY(20px);opacity:0;transition:all .25s;
+  display:flex;align-items:center;gap:8px;max-width:320px;box-shadow:var(--shadow-md);
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.success{background:#166534}
+#toast.error{background:#991b1b}
+#toast.info{background:var(--blue)}
+
+/* Confirm delete */
+.danger-icon{font-size:40px;text-align:center;margin-bottom:10px}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:768px){
+  .vocab-sidebar{position:fixed;left:0;top:112px;bottom:0;transform:translateX(-100%);transition:transform .25s;z-index:50}
+  .vocab-sidebar.open{transform:translateX(0)}
+  .main-content{width:100%}
+}
+  </style>
 </head>
-
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <span class="daniel">Daniel</span>
-                <span class="ha">Hà</span>
-            </div>
 
+<!-- HEADER -->
+<header class="header">
+  <div class="logo"><span class="d">Daniel</span><span class="h">Hà</span></div>
+  <div class="header-right">
+    <span class="user-name" id="userName">👋 Xin chào</span>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+  </div>
+</header>
 
+<!-- NAV -->
+<nav class="main-nav">
+  <ul class="nav-list">
+    <li><a href="reading.html"><i class="fas fa-book-open"></i> Reading</a></li>
+    <li><a href="listening.html"><i class="fas fa-headphones"></i> Listening</a></li>
+    <li><a href="writing.html"><i class="fas fa-pen"></i> Writing</a></li>
+    <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a></li>
+    <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
+  </ul>
+</nav>
 
-            <div class="user-info">
-                <span id="userName">👋 Xin chào</span>
-                <button class="btn-logout" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </button>
-            </div>
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="vocab-sidebar" id="vocabSidebar">
+
+    <!-- Sổ từ vựng cá nhân -->
+    <div class="sidebar-head">
+      Sổ của tôi
+      <button class="btn-add-book" onclick="openAddBookModal()" title="Thêm sổ mới">＋</button>
+    </div>
+    <div id="book-list-sidebar">
+      <!-- Render bởi JS -->
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Unit vocab -->
+    <div class="unit-section">
+      <h4><i class="fas fa-book"></i> Học Unit</h4>
+      <select id="unitSelect">
+        <option value="">-- Chọn Unit --</option>
+      </select>
+      <button class="btn-start-unit" onclick="loadUnit()">
+        <i class="fas fa-play"></i> Bắt Đầu Học
+      </button>
+      <button class="btn-sound-toggle" onclick="toggleSound()" id="soundToggle">
+        🔊 Sound: ON
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="main-content">
+
+    <!-- VIEW: Sổ từ vựng cá nhân -->
+    <div id="view-mybook" style="display:flex;flex-direction:column;height:100%">
+
+      <!-- Khi chưa chọn sổ -->
+      <div id="book-welcome" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
+        <div style="text-align:center;color:var(--text3)">
+          <div style="font-size:60px;margin-bottom:16px">📚</div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Sổ từ vựng của bạn</h3>
+          <p style="font-size:14px">Chọn một sổ từ sidebar để xem từ vựng đã lưu</p>
+          <p style="font-size:13px;margin-top:6px;color:var(--text3)">hoặc làm bài Reading rồi double-click từ để lưu</p>
         </div>
-    </header>
-    <!-- Main Navigation -->
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li><a href="reading.html"><i class="fas fa-book-open"></i> Reading</a></li>
-            <li><a href="listening.html"><i class="fas fa-headphones"></i> Listening</a></li>
-            <li><a href="writing.html"><i class="fas fa-pen"></i> Writing</a></li>
-            <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a></li>
-            <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
-        </ul>
-    </nav>
+      </div>
 
+      <!-- Nội dung sổ đã chọn -->
+      <div id="book-content" style="display:none;flex-direction:column;height:100%">
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <h3><i class="fas fa-book"></i> Chọn Unit</h3>
-            <select id="unitSelect" class="unit-select">
-                <option value="">-- Chọn Unit --</option>
+        <!-- Top bar -->
+        <div class="book-topbar">
+          <div class="book-top-title">
+            <span class="book-top-emoji" id="book-top-emoji">📘</span>
+            <input class="book-editable-name" id="book-editable-name"
+              value="Sổ 1" title="Click để đổi tên"/>
+            <button class="btn-rename" onclick="renameBook()" title="Đổi tên">
+              <i class="fas fa-pen"></i>
+            </button>
+          </div>
+          <div class="book-stats">
+            <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Đã thuộc</span>
+            <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> Nhớ sơ sơ</span>
+            <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Chưa thuộc</span>
+            <span style="color:var(--text3);font-size:12px">·</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> từ</span>
+          </div>
+        </div>
+        <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
+
+        <!-- Action bar -->
+        <div class="book-action-bar">
+          <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()">
+            <i class="fas fa-layer-group"></i> Học với Flashcards
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="openPreviewMode()">
+            <i class="fas fa-eye"></i> Xem trước
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="openAddWordManual()">
+            <i class="fas fa-plus"></i> Thêm từ
+          </button>
+
+          <!-- Bulk actions (hiện khi có chọn) -->
+          <div class="bulk-bar" id="bulk-bar">
+            <span>Đã chọn <span class="bulk-count" id="bulk-count">0</span> từ</span>
+            <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
+              <option value="">Đổi trạng thái...</option>
+              <option value="chua-thuoc">Chưa thuộc</option>
+              <option value="nho-so-so">Nhớ sơ sơ</option>
+              <option value="da-thuoc">Đã thuộc</option>
             </select>
-            <button class="btn-primary" onclick="loadUnit()">
-                <i class="fas fa-play"></i> Bắt Đầu Học
+            <button class="btn btn-danger btn-sm" onclick="bulkDelete()">
+              <i class="fas fa-trash"></i> Xoá
             </button>
-            <br>
-            <button class="btn-primary" onclick="toggleSound()" id="soundToggle">
-                🔊 Sound: ON
-            </button>
-
-
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Welcome Screen -->
-            <div id="welcomeScreen" class="welcome-screen">
-                <div class="welcome-card">
-                    <i class="fas fa-graduation-cap welcome-icon"></i>
-                    <h2>Chào mừng đến với IELTS Vocabulary!</h2>
-                    <p>Chọn một Unit từ sidebar để bắt đầu học từ vựng</p>
-                    <div class="features">
-                        <div class="feature">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Học từ vựng theo chủ đề</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-brain"></i>
-                            <span>Ôn tập thông minh với Spaced Repetition</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>Theo dõi tiến độ chi tiết</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-headphones"></i>
-                            <span>Luyện nghe với Text-to-Speech</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Learning Mode -->
-            <div id="learningMode" class="learning-mode" style="display:none;">
-                <div class="mode-header">
-                    <h2 id="unitTitle"></h2>
-                    <div class="mode-tabs">
-                        <button class="tab-btn active" onclick="showMode('study')">
-                            <i class="fas fa-book-open"></i> Học Từ
-                        </button>
-                        <button class="tab-btn" onclick="showMode('multipleChoice')">
-                            <i class="fas fa-check-circle"></i> Trắc Nghiệm
-                        </button>
-                        <button class="tab-btn" onclick="showMode('fillBlank')">
-                            <i class="fas fa-pen"></i> Flashcard
-                        </button>
-                        <button class="tab-btn" onclick="showMode('listening')">
-                            <i class="fas fa-headphones"></i> Nghe
-                        </button>
-                        <button class="tab-btn" onclick="showMode('translation')">
-                            <i class="fas fa-language"></i> Dịch
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Study Mode -->
-                <div id="studyMode" class="study-mode">
-                    <div class="vocab-grid" id="vocabList"></div>
-                </div>
-
-                <!-- Multiple Choice Mode -->
-                <div id="multipleChoiceMode" class="practice-mode" style="display:none;">
-                    <div class="practice-container">
-                        <div class="practice-header">
-
-                            <h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3>
-                            <p>Chọn đáp án đúng cho từ vựng</p>
-                        </div>
-                        <div class="practice-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="mcProgressFill"></div>
-                            </div>
-                            <span id="mcProgressText">0/0</span>
-                        </div>
-
-                        <div class="question-card" id="mcQuestionCard">
-                            <div class="question-number" id="mcQuestionNumber"></div>
-                            <div class="question-text" id="mcQuestionText"></div>
-                            <div class="answer-options" id="mcAnswerOptions"></div>
-                            <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')"
-                                style="display:none;">
-                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fill in Blank Mode (Flashcard) -->
-                <div id="fillBlankMode" class="practice-mode" style="display:none;">
-                    <div class="practice-container">
-                        <div class="practice-header">
-                            <h3><i class="fas fa-pen"></i> Flashcard - Học Từ Vựng</h3>
-                            <p>Nhìn nghĩa → Nhớ từ → Lật thẻ → Kiểm tra</p>
-                        </div>
-                        <div class="practice-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="fbProgressFill"></div>
-                            </div>
-                            <span id="fbProgressText">0/0</span>
-                        </div>
-
-                        <div class="question-card" id="fbQuestionCard">
-                            <div class="question-number" id="fbQuestionNumber"></div>
-
-                            <!-- Flashcard Container -->
-                            <div class="fill-blank-content">
-                                <div class="flashcard-container" id="flashcardContainer">
-                                    <div class="flashcard" id="flashcard">
-
-                                        <!-- Mặt trước - hiện nghĩa -->
-                                        <div class="flashcard-front" id="flashcardFront">
-                                            <div class="card-label">Nghĩa tiếng Việt</div>
-                                            <div class="card-meaning" id="fbMeaning"></div>
-                                            <button class="btn-flip" onclick="flipCard()">
-                                                <i class="fas fa-sync-alt"></i> Lật thẻ để xem từ
-                                            </button>
-                                        </div>
-
-                                        <!-- Mặt sau - hiện từ + input -->
-                                        <div class="flashcard-back" id="flashcardBack" style="display: none;">
-                                            <div class="card-label">Từ tiếng Anh</div>
-                                            <div class="card-word" id="fbWord"></div>
-
-                                            <!-- Quick Review Buttons -->
-                                            <div class="quick-review-buttons">
-                                                <button class="btn-remembered" onclick="markAsRemembered()">
-                                                    <i class="fas fa-check-circle"></i> Đã nhớ
-                                                </button>
-                                                <button class="btn-not-remembered" onclick="markAsNotRemembered()">
-                                                    <i class="fas fa-times-circle"></i> Chưa nhớ
-                                                </button>
-                                            </div>
-
-                                            <!-- Test Yourself Section -->
-                                            <div class="test-yourself">
-                                                <p><i class="fas fa-pen"></i> Hoặc kiểm tra bằng cách nhập từ</p>
-                                                <div class="fb-input-container">
-                                                    <input type="text" id="fbInput" class="fb-input"
-                                                        placeholder="Nhập từ vựng để kiểm tra..."
-                                                        onkeypress="handleFillBlankEnter(event)">
-                                                    <button class="btn-hint" onclick="showHint()" id="btnHint">
-                                                        <i class="fas fa-lightbulb"></i> Gợi ý
-                                                    </button>
-                                                    <button class="btn-check" onclick="checkFillBlank()">
-                                                        <i class="fas fa-check"></i> Kiểm Tra
-                                                    </button>
-                                                </div>
-                                                <div id="fbFeedback" class="fb-feedback"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')"
-                                style="display:none;">
-                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Listening Mode -->
-                <div id="listeningMode" class="practice-mode" style="display:none;">
-                    <div class="practice-container">
-                        <div class="practice-header">
-                            <h3><i class="fas fa-headphones"></i> Luyện Nghe</h3>
-                            <p>Nghe và viết lại từ vựng bạn nghe được</p>
-                        </div>
-                        <div class="practice-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="listenProgressFill"></div>
-                            </div>
-                            <span id="listenProgressText">0/0</span>
-                        </div>
-
-                        <div class="question-card" id="listenQuestionCard">
-                            <div class="question-number" id="listenQuestionNumber"></div>
-                            <div class="listening-content">
-                                <button class="btn-play-audio" id="btnPlayAudio" onclick="playAudio()">
-                                    <i class="fas fa-volume-up"></i>
-                                    <span>Phát Âm Thanh</span>
-                                </button>
-                                <div class="listen-hint" id="listenHint"></div>
-                                <div class="listen-input-container">
-                                    <input type="text" id="listenInput" class="listen-input"
-                                        placeholder="Nhập từ bạn nghe được..." onkeypress="handleListeningEnter(event)">
-                                    <button class="btn-check" onclick="checkListening()">
-                                        <i class="fas fa-check"></i> Kiểm Tra
-                                    </button>
-                                </div>
-                                <div id="listenFeedback" class="listen-feedback"></div>
-                            </div>
-                            <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')"
-                                style="display:none;">
-                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Translation Mode -->
-                <div id="translationMode" class="practice-mode" style="display:none;">
-                    <div class="practice-container">
-                        <div class="practice-header">
-                            <h3><i class="fas fa-language"></i> Dịch Từ Vựng</h3>
-                            <p>Dựa vào câu ví dụ, hãy dịch từ được in đậm</p>
-                        </div>
-                        <div class="practice-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="transProgressFill"></div>
-                            </div>
-                            <span id="transProgressText">0/0</span>
-                        </div>
-
-                        <div class="question-card" id="transQuestionCard">
-                            <div class="question-number" id="transQuestionNumber"></div>
-                            <div class="translation-content">
-                                <div class="trans-example" id="transExample"></div>
-                                <div class="trans-word-highlight" id="transWordHighlight"></div>
-                                <div class="trans-input-container">
-                                    <input type="text" id="transInput" class="trans-input"
-                                        placeholder="Nhập nghĩa tiếng Việt..."
-                                        onkeypress="handleTranslationEnter(event)">
-                                    <button class="btn-check" onclick="checkTranslation()">
-                                        <i class="fas fa-check"></i> Kiểm Tra
-                                    </button>
-                                </div>
-                                <div id="transFeedback" class="trans-feedback"></div>
-                            </div>
-                            <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')"
-                                style="display:none;">
-                                Câu tiếp theo <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Screen -->
-                <div id="resultsScreen" class="results-screen" style="display:none;">
-                    <div class="results-card">
-                        <div class="results-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <h2>Kết Quả Ôn Tập</h2>
-                        <div id="resultModeTitle" class="result-mode-title"></div>
-
-                        <div class="score-circle">
-                            <svg width="200" height="200">
-                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e5e7eb" stroke-width="12" />
-                                <circle id="scoreCircle" cx="100" cy="100" r="90" fill="none" stroke="#10b981"
-                                    stroke-width="12" stroke-linecap="round" stroke-dasharray="565.48"
-                                    stroke-dashoffset="565.48" transform="rotate(-90 100 100)" />
-                            </svg>
-                            <div class="score-text">
-                                <span class="score-percent" id="scorePercent">0%</span>
-                                <span class="score-label">Chính xác</span>
-                            </div>
-                        </div>
-
-                        <div class="results-stats">
-                            <div class="result-stat correct">
-                                <i class="fas fa-check-circle"></i>
-                                <div>
-                                    <strong id="correctCount">0</strong>
-                                    <span>Câu đúng</span>
-                                </div>
-                            </div>
-                            <div class="result-stat wrong">
-                                <i class="fas fa-times-circle"></i>
-                                <div>
-                                    <strong id="wrongCount">0</strong>
-                                    <span>Câu sai</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="results-actions">
-                            <button class="btn-secondary" onclick="showMode('study')">
-                                <i class="fas fa-book"></i> Xem lại từ vựng
-                            </button>
-                            <button class="btn-primary" onclick="restartPractice()">
-                                <i class="fas fa-redo"></i> Làm lại
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal" style="display: none;">
-        <div class="modal-overlay" onclick="closeConfirmModal()"></div>
-        <div class="modal-content">
-            <div class="modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3 id="modalTitle">Xác nhận chuyển chế độ</h3>
-            <p id="modalMessage"></p>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeConfirmModal()">
-                    <i class="fas fa-times"></i> Hủy
-                </button>
-                <button class="btn-confirm" id="btnConfirmSwitch">
-                    <i class="fas fa-check"></i> Xác nhận
-                </button>
-            </div>
+          </div>
         </div>
+
+        <!-- Word table -->
+        <div class="words-table-wrap">
+          <table class="words-table">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" id="check-all" onchange="toggleSelectAll(this)"/></th>
+                <th>Trạng thái</th>
+                <th>Từ vựng</th>
+                <th>Nghĩa</th>
+                <th>Ví dụ / Hiểu sâu</th>
+                <th>Ghi chú</th>
+                <th style="width:60px"></th>
+              </tr>
+            </thead>
+            <tbody id="words-tbody">
+              <tr><td colspan="7" class="table-empty" style="text-align:center;padding:40px;color:var(--text3)">Chưa có từ nào</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <script src="js/dashboard.js"></script>
+    <!-- VIEW: Unit learning -->
+    <div id="view-unit">
+      <div class="unit-header-bar">
+        <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Quay lại</button>
+        <h3 id="unitTitle">Unit …</h3>
+      </div>
+
+      <div class="mode-tabs" id="mode-tabs">
+        <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Học Từ</button>
+        <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Trắc Nghiệm</button>
+        <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
+        <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Nghe</button>
+        <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Dịch</button>
+      </div>
+
+      <div class="mode-body" id="mode-body">
+
+        <!-- Study mode -->
+        <div id="studyMode">
+          <div class="vocab-grid" id="vocabGrid"></div>
+        </div>
+
+        <!-- Multiple Choice -->
+        <div id="multipleChoiceMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header">
+              <h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3>
+              <p>Chọn đáp án đúng</p>
+            </div>
+            <div class="practice-progress">
+              <div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div>
+              <div class="progress-text" id="mcProgressText">0/0</div>
+            </div>
+            <div class="question-card">
+              <div class="question-number" id="mcQuestionNumber"></div>
+              <div class="question-text" id="mcQuestionText"></div>
+              <div class="answer-options" id="mcAnswerOptions"></div>
+              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">
+                Câu tiếp theo <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flashcard -->
+        <div id="fillBlankMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header">
+              <h3><i class="fas fa-sync-alt"></i> Flashcard</h3>
+              <p>Nhìn nghĩa → Nhớ từ → Lật thẻ</p>
+            </div>
+            <div class="practice-progress">
+              <div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div>
+              <div class="progress-text" id="fbProgressText">0/0</div>
+            </div>
+            <div class="question-card">
+              <div class="question-number" id="fbQuestionNumber"></div>
+              <div class="flashcard-wrap">
+                <div class="flashcard" id="flashcard" onclick="flipCard()">
+                  <div class="fc-face fc-front">
+                    <div class="fc-label">Nghĩa tiếng Việt</div>
+                    <div class="fc-main" id="fbMeaning"></div>
+                    <button class="btn-flip-hint">Nhấp để lật thẻ 🔄</button>
+                  </div>
+                  <div class="fc-face fc-back">
+                    <div class="fc-label">Từ tiếng Anh</div>
+                    <div class="fc-main" id="fbWord"></div>
+                    <div class="fc-sub" id="fbPhonetic"></div>
+                    <button class="btn-audio" onclick="event.stopPropagation();speakWord(currentWord?.word)" style="margin-top:6px;font-size:18px;color:var(--blue)">🔊</button>
+                  </div>
+                </div>
+              </div>
+              <div class="quick-btns" id="quick-btns" style="display:none">
+                <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Đã nhớ</button>
+                <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Chưa nhớ</button>
+              </div>
+              <div style="margin-top:14px" id="fbInputArea" style="display:none">
+                <div class="fb-input-row">
+                  <input class="fb-input" id="fbInput" placeholder="Gõ từ để kiểm tra..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
+                  <button class="btn-hint-sm" onclick="showHint()"><i class="fas fa-lightbulb"></i></button>
+                  <button class="btn-check" onclick="checkFillBlank()">Kiểm tra</button>
+                </div>
+                <div id="fbFeedback"></div>
+              </div>
+              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">
+                Câu tiếp <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listening -->
+        <div id="listeningMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header">
+              <h3><i class="fas fa-headphones"></i> Luyện Nghe</h3>
+              <p>Nghe và viết lại từ vựng</p>
+            </div>
+            <div class="practice-progress">
+              <div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div>
+              <div class="progress-text" id="listenProgressText">0/0</div>
+            </div>
+            <div class="question-card">
+              <div class="question-number" id="listenQuestionNumber"></div>
+              <button class="btn-play-audio" onclick="playAudio()">
+                <i class="fas fa-volume-up" style="font-size:24px"></i> Phát Âm Thanh
+              </button>
+              <div class="listen-hint" id="listenHint"></div>
+              <div class="fb-input-row">
+                <input class="listen-input" id="listenInput" placeholder="Nhập từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
+                <button class="btn-check" onclick="checkListening()">Kiểm Tra</button>
+              </div>
+              <div id="listenFeedback" style="margin-top:10px"></div>
+              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">
+                Câu tiếp <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Translation -->
+        <div id="translationMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header">
+              <h3><i class="fas fa-language"></i> Dịch Từ</h3>
+              <p>Dựa vào câu ví dụ, dịch từ được in đậm</p>
+            </div>
+            <div class="practice-progress">
+              <div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div>
+              <div class="progress-text" id="transProgressText">0/0</div>
+            </div>
+            <div class="question-card">
+              <div class="question-number" id="transQuestionNumber"></div>
+              <div class="trans-example" id="transExample"></div>
+              <div class="trans-word-highlight" id="transWordHighlight"></div>
+              <div class="fb-input-row">
+                <input class="trans-input" id="transInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
+                <button class="btn-check" onclick="checkTranslation()">Kiểm Tra</button>
+              </div>
+              <div id="transFeedback" style="margin-top:10px"></div>
+              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">
+                Câu tiếp <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsMode" style="display:none">
+          <div class="results-wrap">
+            <div class="results-card">
+              <div class="trophy">🏆</div>
+              <h2>Kết Quả</h2>
+              <div id="resultModeTitle" style="font-size:13px;color:var(--text2);margin-bottom:8px"></div>
+              <div class="score-ring-wrap">
+                <svg width="160" height="160" viewBox="0 0 160 160">
+                  <circle cx="80" cy="80" r="68" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+                  <circle id="scoreCircle" cx="80" cy="80" r="68" fill="none" stroke="#22c55e"
+                    stroke-width="10" stroke-linecap="round"
+                    stroke-dasharray="427.26" stroke-dashoffset="427.26"/>
+                </svg>
+                <div class="score-ring-text">
+                  <span class="score-pct" id="scorePercent">0%</span>
+                  <span class="score-lbl">Chính xác</span>
+                </div>
+              </div>
+              <div class="results-counts">
+                <span class="res-correct">✓ Đúng: <b id="correctCount">0</b></span>
+                <span class="res-wrong">✗ Sai: <b id="wrongCount">0</b></span>
+              </div>
+              <div class="results-btns">
+                <button class="btn btn-ghost" onclick="showMode('study')"><i class="fas fa-book"></i> Xem từ vựng</button>
+                <button class="btn btn-primary" onclick="restartPractice()"><i class="fas fa-redo"></i> Làm lại</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /mode-body -->
+    </div><!-- /view-unit -->
+
+  </main>
+</div><!-- /app-layout -->
+
+<!-- ══════════════════════════════════════
+     MODAL: Thêm sổ mới
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-add-book">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3>Tạo sổ từ vựng mới</h3>
+      <button class="modal-close" onclick="closeModal('modal-add-book')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tên sổ *</label>
+        <input class="form-input" id="new-book-name" placeholder="VD: IELTS Academic, Du lịch..."/>
+      </div>
+      <div class="form-group">
+        <label>Biểu tượng</label>
+        <div class="emoji-picker" id="emoji-picker">
+          📘📗📙📕📓📔📒📃🗒️🌟⭐🎯🔥💡🚀
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-book')">Huỷ</button>
+      <button class="btn btn-primary" onclick="createBook()">Tạo sổ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: Lưu từ vào sổ (từ Reading hoặc Unit)
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-save-word">
+  <div class="modal-box modal-md">
+    <div class="modal-header">
+      <h3>Lưu từ vào sổ</h3>
+      <button class="modal-close" onclick="closeModal('modal-save-word')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:18px;font-weight:800" id="sw-word"></span>
+          <button class="btn-audio" onclick="speakWord(document.getElementById('sw-word').textContent)" title="Nghe phát âm" style="font-size:16px">🔊</button>
+          <span style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace" id="sw-phonetic"></span>
+        </div>
+        <div style="font-size:13px;color:var(--text2)" id="sw-meaning"></div>
+        <div style="font-size:12px;font-style:italic;color:var(--text3);margin-top:4px" id="sw-example"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Chọn sổ để lưu</label>
+        <div class="book-list-select" id="sw-book-list"></div>
+      </div>
+      <div class="form-group">
+        <label>Ghi chú cá nhân (tuỳ chọn)</label>
+        <input class="form-input" id="sw-note" placeholder="VD: gặp trong bài reading tháng 3..."/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Huỷ</button>
+      <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Lưu từ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: Thêm từ thủ công
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-add-word">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3>Thêm từ vựng</h3>
+      <button class="modal-close" onclick="closeModal('modal-add-word')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Từ tiếng Anh *</label>
+        <input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/>
+      </div>
+      <div class="form-group">
+        <label>Nghĩa tiếng Việt</label>
+        <input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/>
+      </div>
+      <div class="form-group">
+        <label>Ví dụ</label>
+        <input class="form-input" id="aw-example" placeholder="She established a new company."/>
+      </div>
+      <div class="form-group">
+        <label>Ghi chú</label>
+        <input class="form-input" id="aw-note" placeholder="Tuỳ chọn..."/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Huỷ</button>
+      <button class="btn btn-primary" onclick="addWordManual()">Thêm từ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL: Xác nhận xoá
+══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="modal-confirm">
+  <div class="modal-box modal-sm">
+    <div class="modal-body" style="text-align:center;padding:28px 24px">
+      <div class="danger-icon">⚠️</div>
+      <h3 id="confirm-title" style="margin-bottom:8px">Xác nhận</h3>
+      <p id="confirm-msg" style="color:var(--text2);font-size:14px"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Thoát</button>
+      <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận xoá</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><span id="toast-msg"></span></div>
+
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
-
-
-
 </html>

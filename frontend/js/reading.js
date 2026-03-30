@@ -11,21 +11,21 @@
 const API = 'https://englishwithdan.onrender.com/api';
 
 const state = {
-  tests:         [],
+  tests: [],
   currentTestId: null,
-  attemptId:     null,
-  passages:      [],
-  passageIdx:    0,       // passage đang hiển thị (0,1,2)
-  answers:       {},      // { questionNumber: value }
-  dragItem:      null,    // chip đang kéo
-  timer:         null,
-  timeLeft:      3600,
-  submitted:     false,
-  isReview:      false,
-  tool:          'highlight', // 'highlight' | 'dict'
-  dictWord:      '',
-  dictMeaning:   '',
-  dictExample:   '',
+  attemptId: null,
+  passages: [],
+  passageIdx: 0,       // passage đang hiển thị (0,1,2)
+  answers: {},      // { questionNumber: value }
+  dragItem: null,    // chip đang kéo
+  timer: null,
+  timeLeft: 3600,
+  submitted: false,
+  isReview: false,
+  tool: 'highlight', // 'highlight' | 'dict'
+  dictWord: '',
+  dictMeaning: '',
+  dictExample: '',
 };
 
 // ══════════════════════════════════════════════════════
@@ -70,7 +70,7 @@ function showScreen(name) {
   if (el) { el.classList.remove('hidden'); el.classList.add('active'); }
 }
 
-function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
 // ══════════════════════════════════════════════════════
@@ -78,7 +78,7 @@ function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 // ══════════════════════════════════════════════════════
 async function loadTestList() {
   try {
-    const res  = await fetch(`${API}/reading/tests`, { headers: authHeader() });
+    const res = await fetch(`${API}/reading/tests`, { headers: authHeader() });
     const data = await res.json();
     if (!data.success) throw new Error(data.message);
     state.tests = data.tests;
@@ -105,9 +105,9 @@ function renderTestList(tests) {
   });
 
   wrap.innerHTML = Object.entries(groups).map(([groupName, groupTests]) => {
-    const done  = groupTests.filter(t => t.lastAttempt).length;
+    const done = groupTests.filter(t => t.lastAttempt).length;
     const total = groupTests.length;
-    const pct   = total ? Math.round((done / total) * 100) : 0;
+    const pct = total ? Math.round((done / total) * 100) : 0;
 
     return `
       <div class="test-group" data-group="${groupName}">
@@ -127,7 +127,7 @@ function renderTestList(tests) {
 }
 
 function renderTestCard(t) {
-  const la   = t.lastAttempt;
+  const la = t.lastAttempt;
   const done = !!la;
 
   const lastInfo = done ? `
@@ -163,7 +163,7 @@ function filterTests(mode) {
 
   let filtered = state.tests;
   if (mode === 'done') filtered = state.tests.filter(t => t.lastAttempt);
-  if (mode === 'new')  filtered = state.tests.filter(t => !t.lastAttempt);
+  if (mode === 'new') filtered = state.tests.filter(t => !t.lastAttempt);
   renderTestList(filtered);
 }
 
@@ -197,7 +197,7 @@ async function verifyAndStart() {
   btn.disabled = true; btn.textContent = 'Đang kiểm tra...';
 
   try {
-    const res  = await fetch(`${API}/reading/verify-key`, {
+    const res = await fetch(`${API}/reading/verify-key`, {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify({ key, testId: state.currentTestId })
@@ -223,7 +223,7 @@ async function verifyAndStart() {
 // ══════════════════════════════════════════════════════
 async function startExam(key) {
   try {
-    const res  = await fetch(`${API}/reading/start`, {
+    const res = await fetch(`${API}/reading/start`, {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify({ key, testId: state.currentTestId })
@@ -231,12 +231,12 @@ async function startExam(key) {
     const data = await res.json();
     if (!data.success) { alert(data.message); return; }
 
-    state.attemptId  = data.attemptId;
-    state.passages   = data.passages;
-    state.answers    = {};
-    state.timeLeft   = data.duration;
-    state.submitted  = false;
-    state.isReview   = false;
+    state.attemptId = data.attemptId;
+    state.passages = data.passages;
+    state.answers = {};
+    state.timeLeft = data.duration;
+    state.submitted = false;
+    state.isReview = false;
     state.passageIdx = 0;
 
     document.getElementById('exam-title').textContent = data.testName;
@@ -277,9 +277,9 @@ function switchPassage(idx, isReview) {
 
 // ── Passage text ──
 function renderCurrentPassage(isReview) {
-  const p        = state.passages[state.passageIdx];
-  const innerId  = isReview ? 'review-passage-inner' : 'passage-inner';
-  const el       = document.getElementById(innerId);
+  const p = state.passages[state.passageIdx];
+  const innerId = isReview ? 'review-passage-inner' : 'passage-inner';
+  const el = document.getElementById(innerId);
 
   el.innerHTML = `
     <div class="passage-title">${p.title}</div>
@@ -291,9 +291,9 @@ function renderCurrentPassage(isReview) {
 
 // ── Questions ──
 function renderCurrentQuestions(isReview) {
-  const p       = state.passages[state.passageIdx];
+  const p = state.passages[state.passageIdx];
   const innerId = isReview ? 'review-questions-inner' : 'questions-inner';
-  const el      = document.getElementById(innerId);
+  const el = document.getElementById(innerId);
 
   const rangeText = `Questions ${p.questionRange.start}–${p.questionRange.end}`;
   let html = `<div class="q-section-title">${rangeText}</div>`;
@@ -358,9 +358,9 @@ function renderWordBank(words, startNum, isReview) {
 
 function renderQuestion(q, isReview) {
   const num = q.questionNumber;
-  const ua  = q.userAnswer  || state.answers[num] || '';
-  const ca  = q.correctAnswer || '';
-  const ok  = q.isCorrect;
+  const ua = q.userAnswer || state.answers[num] || '';
+  const ca = q.correctAnswer || '';
+  const ok = q.isCorrect;
 
   let inputHtml = '';
 
@@ -396,12 +396,12 @@ function renderQuestion(q, isReview) {
     <div class="question-item" id="qi-${num}" data-qnum="${num}">
       <div class="q-num-label">
         <span class="q-badge">${num}</span>
-        <span>${q.type.replace(/-/g,' ')}</span>
+        <span>${q.type.replace(/-/g, ' ')}</span>
       </div>
-      ${['sentence-completion','matching-headings','matching-info'].includes(q.type)
-        ? '' /* text embedded in drop zone */
-        : `<div class="q-text">${q.questionText}</div>`
-      }
+      ${['sentence-completion', 'matching-headings', 'matching-info'].includes(q.type)
+      ? '' /* text embedded in drop zone */
+      : `<div class="q-text">${q.questionText}</div>`
+    }
       ${inputHtml}
       ${reviewExtra}
     </div>
@@ -427,7 +427,7 @@ function renderRadioOpts(num, opts, userAns, correctAns, isReview) {
         </div>
       `;
     }).join('') +
-  `</div>`;
+    `</div>`;
 }
 
 function renderFillBlank(num, userAns, correctAns, isReview) {
@@ -443,7 +443,7 @@ function renderFillBlank(num, userAns, correctAns, isReview) {
 function renderInlineDropZone(num, questionText, userAns, correctAns, isReview) {
   // Replace ___ or [blank] with drop zone
   const dzHtml = `
-    <div class="drop-zone ${userAns ? 'filled' : ''} ${isReview ? (userAns.toLowerCase().trim()===correctAns.toLowerCase().trim()?'correct-drop':'wrong-drop') : ''}"
+    <div class="drop-zone ${userAns ? 'filled' : ''} ${isReview ? (userAns.toLowerCase().trim() === correctAns.toLowerCase().trim() ? 'correct-drop' : 'wrong-drop') : ''}"
          data-qnum="${num}"
          ${isReview ? '' : `ondragover="dzDragOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
       ${userAns ? `${userAns}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>` : '&nbsp;&nbsp;&nbsp;'}
@@ -520,7 +520,7 @@ function dzClick(e, qnum) {
   const existing = document.getElementById('word-picker');
   if (existing) existing.remove();
 
-  const rect   = e.currentTarget.getBoundingClientRect();
+  const rect = e.currentTarget.getBoundingClientRect();
   const picker = document.createElement('div');
   picker.id = 'word-picker';
   Object.assign(picker.style, {
@@ -603,7 +603,7 @@ function saveTextAnswer(qnum, value) {
 // ══════════════════════════════════════════════════════
 function renderQNav(isReview) {
   const navId = isReview ? 'review-q-nav' : 'q-nav-scroll';
-  const nav   = document.getElementById(navId);
+  const nav = document.getElementById(navId);
   const allQs = state.passages.flatMap(p => p.questions);
 
   nav.innerHTML = allQs.map(q => {
@@ -679,7 +679,7 @@ async function submitExam() {
   window.onbeforeunload = null;
 
   try {
-    const res  = await fetch(`${API}/reading/submit`, {
+    const res = await fetch(`${API}/reading/submit`, {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers })
@@ -688,12 +688,12 @@ async function submitExam() {
     if (!data.success) throw new Error(data.message);
 
     const r = data.result;
-    document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
+    document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
     document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions} câu đúng`;
-    document.getElementById('r-correct').textContent    = r.correctCount;
-    document.getElementById('r-wrong').textContent      = r.wrongCount;
-    document.getElementById('r-skip').textContent       = r.skippedCount;
-    document.getElementById('result-msg').textContent   = getBandMessage(r.bandScore);
+    document.getElementById('r-correct').textContent = r.correctCount;
+    document.getElementById('r-wrong').textContent = r.wrongCount;
+    document.getElementById('r-skip').textContent = r.skippedCount;
+    document.getElementById('result-msg').textContent = getBandMessage(r.bandScore);
 
     showScreen('result');
   } catch (err) {
@@ -714,16 +714,16 @@ function getBandMessage(band) {
 // ══════════════════════════════════════════════════════
 async function goToReview() {
   try {
-    const res  = await fetch(`${API}/reading/attempt/${state.attemptId}/review`, { headers: authHeader() });
+    const res = await fetch(`${API}/reading/attempt/${state.attemptId}/review`, { headers: authHeader() });
     const data = await res.json();
     if (!data.success) throw new Error(data.message);
 
     const a = data.attempt;
-    state.passages   = a.passages;
-    state.isReview   = true;
+    state.passages = a.passages;
+    state.isReview = true;
     state.passageIdx = 0;
 
-    document.getElementById('review-title').textContent     = a.testName;
+    document.getElementById('review-title').textContent = a.testName;
     document.getElementById('review-band-badge').textContent = `Band Score: ${a.bandScore.toFixed(1)}`;
 
     buildPassageTabs('toolbar-passage-tabs-rv', true);
@@ -758,12 +758,12 @@ function setupHighlight() {
     const range = sel.getRangeAt(0);
     // Only inside passage panels
     const passageEl = document.getElementById('passage-inner') ||
-                      document.getElementById('review-passage-inner');
+      document.getElementById('review-passage-inner');
     if (!passageEl || !passageEl.contains(range.commonAncestorContainer)) return;
 
     const span = document.createElement('span');
     span.className = 'hl';
-    try { range.surroundContents(span); } catch {}
+    try { range.surroundContents(span); } catch { }
     sel.removeAllRanges();
   });
 }
@@ -785,35 +785,35 @@ function setupDictionaryDouble(containerId) {
 
 async function lookupWord(word) {
   const popup = document.getElementById('dict-popup');
-  document.getElementById('dict-word').textContent    = word;
+  document.getElementById('dict-word').textContent = word;
   document.getElementById('dict-phonetic').textContent = '...';
-  document.getElementById('dict-pos').textContent     = '';
+  document.getElementById('dict-pos').textContent = '';
   document.getElementById('dict-meaning').textContent = 'Đang tra...';
   document.getElementById('dict-example').textContent = '';
-  document.getElementById('dict-vn').textContent      = '';
+  document.getElementById('dict-vn').textContent = '';
 
   // Position near cursor
-  const sel  = window.getSelection();
+  const sel = window.getSelection();
   const rect = sel?.rangeCount ? sel.getRangeAt(0).getBoundingClientRect() : { bottom: 200, left: 200 };
-  popup.style.top  = Math.min(rect.bottom + 8, window.innerHeight - 260) + 'px';
+  popup.style.top = Math.min(rect.bottom + 8, window.innerHeight - 260) + 'px';
   popup.style.left = Math.min(rect.left, window.innerWidth - 320) + 'px';
   popup.classList.remove('hidden');
 
-  state.dictWord    = word;
+  state.dictWord = word;
   state.dictMeaning = '';
   state.dictExample = '';
 
   try {
-    const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
     const data = await res.json();
-    const entry   = data[0];
+    const entry = data[0];
     const meaning = entry.meanings[0];
-    const def     = meaning.definitions[0];
+    const def = meaning.definitions[0];
 
     document.getElementById('dict-phonetic').textContent = entry.phonetic || '';
-    document.getElementById('dict-pos').textContent      = meaning.partOfSpeech;
-    document.getElementById('dict-meaning').textContent  = def.definition;
-    document.getElementById('dict-example').textContent  = def.example ? `"${def.example}"` : '';
+    document.getElementById('dict-pos').textContent = meaning.partOfSpeech;
+    document.getElementById('dict-meaning').textContent = def.definition;
+    document.getElementById('dict-example').textContent = def.example ? `"${def.example}"` : '';
 
     state.dictMeaning = def.definition;
     state.dictExample = def.example || '';
@@ -827,7 +827,7 @@ function closeDictPopup() { document.getElementById('dict-popup').classList.add(
 async function saveVocab() {
   if (!state.dictWord) return;
   try {
-    const res  = await fetch(`${API}/reading/vocab/save`, {
+    const res = await fetch(`${API}/reading/vocab/save`, {
       method: 'POST',
       headers: authHeader(),
       body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample })
@@ -877,9 +877,9 @@ function setFontSize(size) {
 // RESIZABLE SPLITTER
 // ══════════════════════════════════════════════════════
 function setupResizableSplitter(splitId, dividerId, leftId) {
-  const split   = document.getElementById(splitId);
+  const split = document.getElementById(splitId);
   const divider = document.getElementById(dividerId);
-  const left    = document.getElementById(leftId);
+  const left = document.getElementById(leftId);
   if (!split || !divider || !left) return;
 
   let dragging = false;
@@ -925,7 +925,7 @@ function setupResizableSplitter(splitId, dividerId, leftId) {
 // ══════════════════════════════════════════════════════
 async function showHistoryModal() {
   try {
-    const res  = await fetch(`${API}/reading/history`, { headers: authHeader() });
+    const res = await fetch(`${API}/reading/history`, { headers: authHeader() });
     const data = await res.json();
 
     const tbody = document.getElementById('history-tbody');
@@ -972,7 +972,7 @@ function forceExit() {
 function formatDate(dateStr) {
   if (!dateStr) return '–';
   const d = new Date(dateStr);
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function formatDuration(secs) {
@@ -995,31 +995,31 @@ function hideMsg(id) {
 }
 
 // Global exports for HTML onclick
-window.showScreen        = showScreen;
-window.openModal         = openModal;
-window.closeModal        = closeModal;
-window.onClickTest       = onClickTest;
-window.onClickReview     = onClickReview;
-window.verifyAndStart    = verifyAndStart;
-window.formatKeyInput    = formatKeyInput;
-window.filterTests       = filterTests;
-window.confirmSubmit     = confirmSubmit;
-window.submitExam        = submitExam;
-window.confirmExit       = confirmExit;
-window.forceExit         = forceExit;
-window.goToReview        = goToReview;
-window.showHistoryModal  = showHistoryModal;
-window.toggleSettings    = toggleSettings;
+window.showScreen = showScreen;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.onClickTest = onClickTest;
+window.onClickReview = onClickReview;
+window.verifyAndStart = verifyAndStart;
+window.formatKeyInput = formatKeyInput;
+window.filterTests = filterTests;
+window.confirmSubmit = confirmSubmit;
+window.submitExam = submitExam;
+window.confirmExit = confirmExit;
+window.forceExit = forceExit;
+window.goToReview = goToReview;
+window.showHistoryModal = showHistoryModal;
+window.toggleSettings = toggleSettings;
 window.toggleEyeProtection = toggleEyeProtection;
-window.setFontSize       = setFontSize;
-window.setTool           = setTool;
-window.pickRadio         = pickRadio;
-window.saveTextAnswer    = saveTextAnswer;
-window.dzDragOver        = dzDragOver;
-window.dzDrop            = dzDrop;
-window.dzClick           = dzClick;
-window.clearDz           = clearDz;
-window.scrollToQuestion  = scrollToQuestion;
-window.switchPassage     = switchPassage;
-window.closeDictPopup    = closeDictPopup;
-window.saveVocab         = saveVocab;
+window.setFontSize = setFontSize;
+window.setTool = setTool;
+window.pickRadio = pickRadio;
+window.saveTextAnswer = saveTextAnswer;
+window.dzDragOver = dzDragOver;
+window.dzDrop = dzDrop;
+window.dzClick = dzClick;
+window.clearDz = clearDz;
+window.scrollToQuestion = scrollToQuestion;
+window.switchPassage = switchPassage;
+window.closeDictPopup = closeDictPopup;
+window.saveVocab = saveVocab;

@@ -1,12 +1,19 @@
-const API_URL = "https://englishwithdan.onrender.com/api";
-const token = localStorage.getItem("token");
-
-if (!token) {
-    alert("Bạn chưa đăng nhập!");
-    window.location.href = "login.html";
+'use strict';
+/* ══════════════════════════════════════════════
+   CONFIG & STATE
+══════════════════════════════════════════════ */
+const API = 'https://englishwithdan.onrender.com/api';
+function authH() {
+    return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' };
 }
 
-// Global variables
+// ── UI State ──────────────────────────────────
+let myBooks = [];          // sổ của user
+let currentBookId = null;        // sổ đang xem
+let currentBookData = null;        // chi tiết sổ
+let selectedWordIds = new Set();   // bulk select
+
+// ── Unit State ─────────────────────────────────
 let currentUnit = null;
 let practiceWords = [];
 let currentQuestionIndex = 0;
@@ -14,870 +21,877 @@ let correctAnswers = 0;
 let wrongAnswers = 0;
 let currentMode = 'study';
 let currentWord = null;
-let isFlipped = false; // Track trạng thái lật thẻ
-let hintUsed = false; // Track xem đã dùng gợi ý chưa
+let isFlipped = false;
+let hintUsed = false;
 let answered = false;
+let soundEnabled = true;
 
-// Sound Effects
-const correctSound = new Audio("./sounds/correct.mp3");
-const wrongSound = new Audio("./sounds/incorect.mp3");
+// ── Save-word pending ──────────────────────────
+let pendingSaveWord = null;      // { word, meaning, example, phonetic, source }
+let selectedBookForSave = null;
 
-
-// Giảm âm lượng 
+// ── Audio ──────────────────────────────────────
+const correctSound = new Audio('./sounds/correct.mp3');
+const wrongSound = new Audio('./sounds/incorect.mp3');
 correctSound.volume = 0.5;
 wrongSound.volume = 0.5;
+const speechSynth = window.speechSynthesis;
 
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+    // Username display
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const name = user.firstName ? `${user.firstName} ${user.lastName}` : user.username || '';
+    if (name) document.getElementById('userName').textContent = `👋 ${name}`;
 
-// Speech Synthesis for Text-to-Speech
-let speechSynthesis = window.speechSynthesis;
-let currentUtterance = null;
+    // Emoji picker setup
+    setupEmojiPicker();
 
-// Helper function for auth headers
-function getAuthHeaders() {
-    return {
-        "Authorization": "Bearer " + token,
-        "Content-Type": "application/json"
-    };
+    await Promise.all([loadMyBooks(), loadUnits()]);
+});
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.className = `show ${type}`;
+    document.getElementById('toast-msg').textContent = msg;
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function confirm2(title, msg, onOk) {
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('btn-confirm-ok').onclick = () => { closeModal('modal-confirm'); onOk(); };
+    openModal('modal-confirm');
+}
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function speakWord(word) {
+    if (!word) return;
+    speechSynth.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1;
+    speechSynth.speak(u);
 }
 
-// Load user info
-const user = JSON.parse(localStorage.getItem("user") || "{}");
-if (user.firstName && user.lastName) {
-    document.getElementById("userName").textContent = `👋 Xin chào, ${user.firstName} ${user.lastName}`;
-} else if (user.username) {
-    document.getElementById("userName").textContent = `👋 Xin chào, ${user.username}`;
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('soundToggle').textContent = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
 }
+function playCorrectSound() { if (soundEnabled) { correctSound.currentTime = 0; correctSound.play(); } }
+function playWrongSound() { if (soundEnabled) { wrongSound.currentTime = 0; wrongSound.play(); } }
+function shuffleArray(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } }
 
-// ==================== INITIALIZATION ====================
-
-async function loadUnits() {
+/* ══════════════════════════════════════════════
+   MY BOOKS – SIDEBAR
+══════════════════════════════════════════════ */
+async function loadMyBooks() {
     try {
-        const res = await fetch(`${API_URL}/vocab/units`, {
-            headers: getAuthHeaders()
-        });
-
-        if (!res.ok) {
-            if (res.status === 401) {
-                alert("Token hết hạn. Vui lòng đăng nhập lại!");
-                logout();
-                return;
-            }
-            throw new Error("Cannot load units");
-        }
-
-        const units = await res.json();
-        const select = document.getElementById("unitSelect");
-        select.innerHTML = `<option value="">-- Chọn Unit --</option>`;
-
-        units.forEach(u => {
-            const opt = document.createElement("option");
-            opt.value = u.unitNumber;
-            opt.textContent = `Unit ${u.unitNumber} - ${u.title}`;
-            select.appendChild(opt);
-        });
+        const res = await fetch(`${API}/vocabbook`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        myBooks = data.books;
+        renderBookSidebar();
     } catch (err) {
-        console.error("Error loading units:", err);
-        alert("Không thể kết nối đến server!");
+        console.error(err);
     }
 }
 
-async function loadUnit() {
-    const number = document.getElementById("unitSelect").value;
-    if (!number) {
-        alert("Vui lòng chọn Unit!");
+function renderBookSidebar() {
+    const wrap = document.getElementById('book-list-sidebar');
+    wrap.innerHTML = myBooks.map(b => `
+    <div class="book-item ${b._id === currentBookId ? 'active' : ''}"
+         onclick="openBook('${b._id}')" id="bi-${b._id}">
+      <span class="book-emoji">${b.emoji}</span>
+      <span class="book-name">${b.name}</span>
+      <span class="book-count">${b.totalWords}</span>
+      <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Tuỳ chọn">⋯</button>
+    </div>
+  `).join('');
+}
+
+async function openBook(bookId) {
+    currentBookId = bookId;
+    selectedWordIds.clear();
+
+    // Update sidebar active
+    document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
+    const item = document.getElementById(`bi-${bookId}`);
+    if (item) item.classList.add('active');
+
+    // Show mybook view, hide unit view
+    document.getElementById('view-mybook').style.display = 'flex';
+    document.getElementById('view-unit').style.display = 'none';
+    document.getElementById('book-welcome').style.display = 'none';
+    document.getElementById('book-content').style.display = 'flex';
+
+    await refreshCurrentBook();
+}
+
+async function refreshCurrentBook() {
+    try {
+        const res = await fetch(`${API}/vocabbook/${currentBookId}`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        currentBookData = data.book;
+        renderBookContent(data.book);
+    } catch (err) {
+        toast('Lỗi tải sổ: ' + err.message, 'error');
+    }
+}
+
+function renderBookContent(book) {
+    // Header
+    document.getElementById('book-top-emoji').textContent = book.emoji;
+    document.getElementById('book-editable-name').value = book.name;
+
+    const total = book.words.length;
+    const da = book.words.filter(w => w.status === 'da-thuoc').length;
+    const nho = book.words.filter(w => w.status === 'nho-so-so').length;
+    const chua = book.words.filter(w => w.status === 'chua-thuoc').length;
+    const pct = total ? Math.round((da / total) * 100) : 0;
+
+    document.getElementById('stat-da-thuoc').textContent = da;
+    document.getElementById('stat-nho-so-so').textContent = nho;
+    document.getElementById('stat-chua-thuoc').textContent = chua;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('book-progress-fill').style.width = pct + '%';
+
+    // Words table
+    const tbody = document.getElementById('words-tbody');
+    if (!total) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text3)">
+      <div style="font-size:40px;margin-bottom:10px">📭</div>
+      <div>Chưa có từ nào trong sổ này</div>
+      <div style="font-size:12px;margin-top:6px">Thêm từ thủ công hoặc lưu từ khi review bài Reading</div>
+    </td></tr>`;
         return;
     }
 
-    try {
-        const res = await fetch(`${API_URL}/vocab/unit/${number}`, {
-            headers: getAuthHeaders()
-        });
-
-        if (!res.ok) {
-            if (res.status === 401) {
-                alert("Token hết hạn. Vui lòng đăng nhập lại!");
-                logout();
-                return;
-            }
-            throw new Error("Cannot load unit");
-        }
-
-        currentUnit = await res.json();
-        document.getElementById("unitTitle").textContent = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
-
-        document.getElementById("welcomeScreen").style.display = "none";
-        document.getElementById("learningMode").style.display = "block";
-
-        displayVocabList();
-        showMode('study');
-    } catch (err) {
-        console.error("Error loading unit:", err);
-        alert("Không thể tải Unit!");
-    }
+    tbody.innerHTML = book.words.map(w => `
+    <tr class="${selectedWordIds.has(w._id) ? 'selected' : ''}" id="row-${w._id}">
+      <td class="cb-wrap"><input type="checkbox" ${selectedWordIds.has(w._id) ? 'checked' : ''}
+        onchange="toggleSelect('${w._id}', this.checked)"/></td>
+      <td>
+        <select class="status-select ${w.status}" onchange="updateWordStatus('${w._id}', this.value, this)"
+          data-wid="${w._id}">
+          <option value="chua-thuoc" ${w.status === 'chua-thuoc' ? 'selected' : ''}>Chưa thuộc</option>
+          <option value="nho-so-so"  ${w.status === 'nho-so-so' ? 'selected' : ''}>Nhớ sơ sơ</option>
+          <option value="da-thuoc"   ${w.status === 'da-thuoc' ? 'selected' : ''}>Đã thuộc</option>
+        </select>
+      </td>
+      <td>
+        <span class="word-chip-main">${w.word}</span>
+        <button class="btn-audio" onclick="speakWord('${w.word}')" title="Phát âm">🔊</button>
+        ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${w.phonetic}</div>` : ''}
+      </td>
+      <td style="color:var(--text2)">${w.meaning || '–'}</td>
+      <td style="max-width:240px">
+        ${w.example ? `<div style="font-size:12px;font-style:italic;color:var(--text2)">${w.example}</div>` : ''}
+      </td>
+      <td style="color:var(--text3);font-size:12px">${w.note || ''}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Xoá từ">🗑</button>
+      </td>
+    </tr>
+  `).join('');
 }
 
-function displayVocabList() {
-    const list = document.getElementById("vocabList");
-    list.innerHTML = "";
+/* ── Status update ── */
+async function updateWordStatus(wordId, status, selectEl) {
+    try {
+        selectEl.className = `status-select ${status}`;
+        await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
+            method: 'PATCH', headers: authH(),
+            body: JSON.stringify({ status })
+        });
+        // Update sidebar count
+        await loadMyBooks();
+        // Update stats without full reload
+        const book = currentBookData;
+        const w = book.words.find(w => w._id === wordId);
+        if (w) w.status = status;
+        updateStats(book);
+    } catch { toast('Lỗi cập nhật', 'error'); }
+}
 
-    currentUnit.words.forEach((w, index) => {
-        const card = document.createElement("div");
-        card.className = "vocab-card";
-        card.innerHTML = `
-            <div class="vocab-number">${index + 1}</div>
-            <div class="vocab-word">
-                ${w.word}
-                <button class="btn-audio-small" onclick="speakWord('${w.word}')" title="Phát âm">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-            </div>
-            <div class="vocab-meaning">${w.meaning}</div>
-            <div class="vocab-example">${w.example || ''}</div>
-        `;
-        list.appendChild(card);
+function updateStats(book) {
+    const da = book.words.filter(w => w.status === 'da-thuoc').length;
+    const nho = book.words.filter(w => w.status === 'nho-so-so').length;
+    const chua = book.words.filter(w => w.status === 'chua-thuoc').length;
+    const total = book.words.length;
+    const pct = total ? Math.round((da / total) * 100) : 0;
+    document.getElementById('stat-da-thuoc').textContent = da;
+    document.getElementById('stat-nho-so-so').textContent = nho;
+    document.getElementById('stat-chua-thuoc').textContent = chua;
+    document.getElementById('book-progress-fill').style.width = pct + '%';
+}
+
+/* ── Delete single word ── */
+function deleteWord(wordId) {
+    confirm2('Xoá từ vựng', 'Bạn có chắc muốn xoá từ này?', async () => {
+        await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
+        toast('Đã xoá từ');
+        await refreshCurrentBook();
+        await loadMyBooks();
     });
 }
 
-function playCorrectSound() {
-    correctSound.currentTime = 0;
-    correctSound.play();
+/* ── Bulk select ── */
+function toggleSelect(wordId, checked) {
+    if (checked) selectedWordIds.add(wordId);
+    else selectedWordIds.delete(wordId);
+    updateBulkBar();
+    const row = document.getElementById(`row-${wordId}`);
+    if (row) row.classList.toggle('selected', checked);
 }
-
-function playWrongSound() {
-    wrongSound.currentTime = 0;
-    wrongSound.play();
+function toggleSelectAll(cb) {
+    if (!currentBookData) return;
+    currentBookData.words.forEach(w => {
+        if (cb.checked) selectedWordIds.add(w._id);
+        else selectedWordIds.delete(w._id);
+    });
+    updateBulkBar();
+    renderBookContent(currentBookData);
 }
-
-
-// ==================== MODE SWITCHING ====================
-
-function showMode(mode) {
-    if (!currentUnit && mode !== 'study') {
-        alert("Vui lòng chọn Unit trước!");
-        return;
+function updateBulkBar() {
+    const bar = document.getElementById('bulk-bar');
+    if (selectedWordIds.size > 0) {
+        bar.classList.add('show');
+        document.getElementById('bulk-count').textContent = selectedWordIds.size;
+    } else {
+        bar.classList.remove('show');
     }
+}
+async function bulkChangeStatus(status) {
+    if (!status || !selectedWordIds.size) return;
+    for (const wid of selectedWordIds) {
+        await fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
+            method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
+        });
+    }
+    selectedWordIds.clear();
+    document.getElementById('bulk-status-sel').value = '';
+    toast('Đã cập nhật trạng thái');
+    await refreshCurrentBook();
+    await loadMyBooks();
+}
+async function bulkDelete() {
+    if (!selectedWordIds.size) return;
+    confirm2('Xoá từ vựng', `Xoá ${selectedWordIds.size} từ đã chọn?`, async () => {
+        await fetch(`${API}/vocabbook/${currentBookId}/words`, {
+            method: 'DELETE', headers: authH(),
+            body: JSON.stringify({ wordIds: [...selectedWordIds] })
+        });
+        selectedWordIds.clear();
+        updateBulkBar();
+        toast('Đã xoá');
+        await refreshCurrentBook();
+        await loadMyBooks();
+    });
+}
 
-    // ⭐ KIỂM TRA NẾU ĐANG TRONG PRACTICE MODE VÀ MUỐN CHUYỂN SANG MODE KHÁC
-    const practiceInProgress = ['multipleChoice', 'fillBlank', 'listening', 'translation'].includes(currentMode);
-    const switchingMode = mode !== currentMode && mode !== 'study';
+/* ── Rename book ── */
+async function renameBook() {
+    const name = document.getElementById('book-editable-name').value.trim();
+    if (!name || !currentBookId) return;
+    try {
+        await fetch(`${API}/vocabbook/${currentBookId}`, {
+            method: 'PUT', headers: authH(), body: JSON.stringify({ name })
+        });
+        toast('Đã đổi tên sổ');
+        await loadMyBooks();
+    } catch { toast('Lỗi đổi tên', 'error'); }
+}
 
-    if (practiceInProgress && switchingMode && currentQuestionIndex > 0) {
-        const modeNames = {
-            'multipleChoice': 'Trắc Nghiệm',
-            'fillBlank': 'Flashcard',
-            'listening': 'Luyện Nghe',
-            'translation': 'Dịch Từ',
-            'study': 'Học Từ'
-        };
+/* ── Book menu (rename/delete) ── */
+function openBookMenu(bookId) {
+    const book = myBooks.find(b => b._id === bookId);
+    if (!book) return;
+    // Simple inline confirm with options
+    const action = window.confirm(
+        `Sổ: "${book.name}"\n\nBấm OK để XOÁ sổ (không xoá sổ mặc định)\nBấm Cancel để huỷ`
+    );
+    if (action && !book.isDefault) {
+        confirm2('Xoá sổ từ vựng', `Xoá sổ "${book.name}"? Tất cả từ trong sổ sẽ bị mất.`, async () => {
+            await fetch(`${API}/vocabbook/${bookId}`, { method: 'DELETE', headers: authH() });
+            if (currentBookId === bookId) {
+                currentBookId = null;
+                document.getElementById('book-content').style.display = 'none';
+                document.getElementById('book-welcome').style.display = 'flex';
+            }
+            toast('Đã xoá sổ');
+            await loadMyBooks();
+        });
+    } else if (action && book.isDefault) {
+        toast('Không thể xoá sổ mặc định', 'error');
+    }
+}
 
-        const currentModeName = modeNames[currentMode] || currentMode;
-        const newModeName = modeNames[mode] || mode;
+/* ── Add book modal ── */
+let selectedEmoji = '📘';
+function setupEmojiPicker() {
+    const picker = document.getElementById('emoji-picker');
+    const emojis = ['📘', '📗', '📙', '📕', '📓', '📔', '📒', '📃', '🗒️', '🌟', '⭐', '🎯', '🔥', '💡', '🚀'];
+    picker.innerHTML = emojis.map(e => `
+    <span class="emoji-opt ${e === selectedEmoji ? 'selected' : ''}" onclick="selectEmoji('${e}')">${e}</span>
+  `).join('');
+}
+function selectEmoji(emoji) {
+    selectedEmoji = emoji;
+    setupEmojiPicker();
+}
+function openAddBookModal() {
+    document.getElementById('new-book-name').value = '';
+    openModal('modal-add-book');
+    setTimeout(() => document.getElementById('new-book-name').focus(), 100);
+}
+async function createBook() {
+    const name = document.getElementById('new-book-name').value.trim();
+    if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
+    try {
+        const res = await fetch(`${API}/vocabbook`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ name, emoji: selectedEmoji, color: '#3d8bff' })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        closeModal('modal-add-book');
+        toast('Đã tạo sổ mới');
+        await loadMyBooks();
+        openBook(data.book._id);
+    } catch (err) { toast(err.message, 'error'); }
+}
 
-        const confirmed = confirm(
-            `⚠️ Bạn đang học ${currentModeName} (${currentQuestionIndex}/${practiceWords.length} câu)\n\n` +
-            `Bạn có chắc muốn chuyển sang ${newModeName}?\n\n` +
-            `Tiến độ hiện tại sẽ không được lưu.`
-        );
+/* ── Add word manual ── */
+function openAddWordManual() {
+    ['aw-word', 'aw-meaning', 'aw-example', 'aw-note'].forEach(id => { document.getElementById(id).value = ''; });
+    openModal('modal-add-word');
+    setTimeout(() => document.getElementById('aw-word').focus(), 100);
+}
+async function lookupNewWord(word) {
+    if (!word || word.length < 2) return;
+    // Auto-fill meaning from dictionary API
+    clearTimeout(lookupNewWord._t);
+    lookupNewWord._t = setTimeout(async () => {
+        try {
+            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            const def = data[0]?.meanings[0]?.definitions[0];
+            if (def && !document.getElementById('aw-example').value) {
+                document.getElementById('aw-example').value = def.example || '';
+            }
+        } catch { }
+    }, 700);
+}
+async function addWordManual() {
+    const word = document.getElementById('aw-word').value.trim();
+    const meaning = document.getElementById('aw-meaning').value.trim();
+    const example = document.getElementById('aw-example').value.trim();
+    const note = document.getElementById('aw-note').value.trim();
 
-        if (!confirmed) {
-            return; // Không chuyển mode, ở lại mode cũ
+    if (!word) { toast('Nhập từ cần thêm', 'error'); return; }
+    if (!currentBookId) { toast('Chọn sổ trước', 'error'); return; }
+
+    try {
+        const res = await fetch(`${API}/vocabbook/${currentBookId}/words`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ word, meaning, example, note, source: 'manual' })
+        });
+        const data = await res.json();
+        if (!data.success) { toast(data.message, 'error'); return; }
+        closeModal('modal-add-word');
+        toast(data.message);
+        await refreshCurrentBook();
+        await loadMyBooks();
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+/* ══════════════════════════════════════════════
+   SAVE WORD FROM READING / UNIT (public API)
+   Gọi từ reading.js: window.openSaveWordModal(wordObj)
+══════════════════════════════════════════════ */
+window.openSaveWordModal = async function (wordObj) {
+    // wordObj: { word, meaning, example, phonetic, partOfSpeech, source }
+    pendingSaveWord = wordObj;
+    selectedBookForSave = null;
+
+    document.getElementById('sw-word').textContent = wordObj.word || '';
+    document.getElementById('sw-phonetic').textContent = wordObj.phonetic || '';
+    document.getElementById('sw-meaning').textContent = wordObj.meaning || '';
+    document.getElementById('sw-example').textContent = wordObj.example || '';
+    document.getElementById('sw-note').value = '';
+
+    // Render book list
+    if (!myBooks.length) await loadMyBooks();
+    const list = document.getElementById('sw-book-list');
+    list.innerHTML = myBooks.map(b => `
+    <div class="book-opt" onclick="selectBookForSave('${b._id}',this)" id="bopt-${b._id}">
+      <span class="book-opt-emoji">${b.emoji}</span>
+      <div class="book-opt-info">
+        <div class="book-opt-name">${b.name}</div>
+        <div class="book-opt-count">${b.totalWords} từ</div>
+      </div>
+    </div>
+  `).join('');
+
+    openModal('modal-save-word');
+};
+
+function selectBookForSave(bookId, el) {
+    selectedBookForSave = bookId;
+    document.querySelectorAll('.book-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+async function confirmSaveWord() {
+    if (!selectedBookForSave) { toast('Chọn sổ để lưu', 'error'); return; }
+    const note = document.getElementById('sw-note').value.trim();
+    const w = pendingSaveWord;
+
+    try {
+        const res = await fetch(`${API}/vocabbook/${selectedBookForSave}/words`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ ...w, note })
+        });
+        const data = await res.json();
+        closeModal('modal-save-word');
+        toast(data.message, data.success ? 'success' : 'error');
+        if (data.success) {
+            await loadMyBooks();
+            if (currentBookId === selectedBookForSave) await refreshCurrentBook();
         }
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+/* ══════════════════════════════════════════════
+   FLASHCARD MODE (từ sổ cá nhân)
+══════════════════════════════════════════════ */
+function openFlashcardMode() {
+    if (!currentBookData?.words?.length) { toast('Sổ chưa có từ nào', 'error'); return; }
+    // Load words vào unit practice và show fillBlank mode
+    currentUnit = { words: currentBookData.words, title: currentBookData.name };
+    document.getElementById('view-mybook').style.display = 'none';
+    document.getElementById('view-unit').style.display = 'flex';
+    document.getElementById('unitTitle').textContent = `📘 ${currentBookData.name}`;
+    showMode('fillBlank');
+}
+
+function openPreviewMode() {
+    if (!currentBookData?.words?.length) { toast('Sổ chưa có từ nào', 'error'); return; }
+    currentUnit = { words: currentBookData.words, title: currentBookData.name };
+    document.getElementById('view-mybook').style.display = 'none';
+    document.getElementById('view-unit').style.display = 'flex';
+    document.getElementById('unitTitle').textContent = `📘 ${currentBookData.name}`;
+    showMode('study');
+}
+
+function closeUnitView() {
+    document.getElementById('view-unit').style.display = 'none';
+    document.getElementById('view-mybook').style.display = 'flex';
+    if (!currentBookId) {
+        document.getElementById('book-welcome').style.display = 'flex';
+        document.getElementById('book-content').style.display = 'none';
     }
+}
 
-    // Hide all modes
-    document.getElementById("studyMode").style.display = "none";
-    document.getElementById("multipleChoiceMode").style.display = "none";
-    document.getElementById("fillBlankMode").style.display = "none";
-    document.getElementById("listeningMode").style.display = "none";
-    document.getElementById("translationMode").style.display = "none";
-    document.getElementById("resultsScreen").style.display = "none";
+/* ══════════════════════════════════════════════
+   UNIT LOADING
+══════════════════════════════════════════════ */
+async function loadUnits() {
+    try {
+        const res = await fetch(`${API}/vocab/units`, { headers: authH() });
+        const units = await res.json();
+        const sel = document.getElementById('unitSelect');
+        sel.innerHTML = '<option value="">-- Chọn Unit --</option>';
+        units.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.unitNumber;
+            opt.textContent = `Unit ${u.unitNumber} – ${u.title}`;
+            sel.appendChild(opt);
+        });
+    } catch { }
+}
 
-    // Remove active class from all tabs
-    document.querySelectorAll(".tab-btn").forEach(tab => tab.classList.remove("active"));
+async function loadUnit() {
+    const num = document.getElementById('unitSelect').value;
+    if (!num) { toast('Chọn Unit trước', 'error'); return; }
+    try {
+        const res = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
+        currentUnit = await res.json();
+        document.getElementById('unitTitle').textContent = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
+        document.getElementById('view-mybook').style.display = 'none';
+        document.getElementById('view-unit').style.display = 'flex';
+        showMode('study');
+    } catch { toast('Không thể tải Unit', 'error'); }
+}
 
-    // Show selected mode
+/* ══════════════════════════════════════════════
+   MODE SWITCHING
+══════════════════════════════════════════════ */
+function showMode(mode) {
+    if (!currentUnit) return;
+
+    // Hide all
+    ['studyMode', 'multipleChoiceMode', 'fillBlankMode', 'listeningMode', 'translationMode', 'resultsMode']
+        .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     currentMode = mode;
 
+    const tabMap = { study: 0, multipleChoice: 1, fillBlank: 2, listening: 3, translation: 4 };
+    const tabs = document.querySelectorAll('.tab-btn');
+    if (tabs[tabMap[mode]]) tabs[tabMap[mode]].classList.add('active');
+
     if (mode === 'study') {
-        document.getElementById("studyMode").style.display = "block";
-        document.querySelectorAll(".tab-btn")[0].classList.add("active");
-    } else if (mode === 'multipleChoice') {
-        startPractice('multipleChoice');
-        document.querySelectorAll(".tab-btn")[1].classList.add("active");
-    } else if (mode === 'fillBlank') {
-        startPractice('fillBlank');
-        document.querySelectorAll(".tab-btn")[2].classList.add("active");
-    } else if (mode === 'listening') {
-        startPractice('listening');
-        document.querySelectorAll(".tab-btn")[3].classList.add("active");
-    } else if (mode === 'translation') {
-        startPractice('translation');
-        document.querySelectorAll(".tab-btn")[4].classList.add("active");
+        document.getElementById('studyMode').style.display = 'block';
+        renderStudyGrid();
+    } else {
+        startPractice(mode);
     }
 }
 
-// ==================== PRACTICE INITIALIZATION ====================
+/* ══════════════════════════════════════════════
+   STUDY GRID
+══════════════════════════════════════════════ */
+function renderStudyGrid() {
+    const grid = document.getElementById('vocabGrid');
+    grid.innerHTML = currentUnit.words.map((w, i) => `
+    <div class="vocab-card">
+      <div class="vocab-card-top">
+        <span class="vocab-num">${i + 1}</span>
+        <span class="vocab-word-big">${w.word}</span>
+        <button class="btn-audio" onclick="speakWord('${w.word}')" title="Phát âm">🔊</button>
+        ${w.partOfSpeech ? `<span class="vocab-pos">${w.partOfSpeech}</span>` : ''}
+      </div>
+      ${w.phonetic ? `<div class="vocab-phonetic">${w.phonetic}</div>` : ''}
+      <div class="vocab-meaning">${w.meaning || ''}</div>
+      ${w.example ? `<div class="vocab-example">"${w.example}"</div>` : ''}
+      <button class="btn-save-to-book" onclick='openSaveWordFromUnit(${JSON.stringify(w)})'>
+        <i class="fas fa-bookmark"></i> Lưu vào sổ
+      </button>
+    </div>
+  `).join('');
+}
 
+function openSaveWordFromUnit(w) {
+    window.openSaveWordModal({
+        word: w.word, meaning: w.meaning, example: w.example || '',
+        phonetic: w.phonetic || '', partOfSpeech: w.partOfSpeech || '',
+        source: `Unit ${currentUnit.unitNumber || ''}`
+    });
+}
+
+/* ══════════════════════════════════════════════
+   PRACTICE
+══════════════════════════════════════════════ */
 function startPractice(mode) {
     practiceWords = [...currentUnit.words];
     shuffleArray(practiceWords);
     currentQuestionIndex = 0;
     correctAnswers = 0;
     wrongAnswers = 0;
-    currentMode = mode;
 
-    document.getElementById(`${getModeId(mode)}Mode`).style.display = "block";
+    const modeEl = {
+        multipleChoice: 'multipleChoiceMode',
+        fillBlank: 'fillBlankMode',
+        listening: 'listeningMode',
+        translation: 'translationMode'
+    }[mode];
+    if (modeEl) document.getElementById(modeEl).style.display = 'block';
     showQuestion(mode);
 }
-
-function getModeId(mode) {
-    const modeMap = {
-        'multipleChoice': 'multipleChoice',
-        'fillBlank': 'fillBlank',
-        'listening': 'listening',
-        'translation': 'translation'
-    };
-    return modeMap[mode] || mode;
-}
-
-function getModePrefix(mode) {
-    const prefixMap = {
-        'multipleChoice': 'mc',
-        'fillBlank': 'fb',
-        'listening': 'listen',
-        'translation': 'trans'
-    };
-    return prefixMap[mode] || 'mc';
-}
-
-// ==================== QUESTION DISPLAY ====================
 
 function showQuestion(mode) {
-    if (currentQuestionIndex >= practiceWords.length) {
-        showResults(mode);
-        return;
-    }
-
+    if (currentQuestionIndex >= practiceWords.length) { showResults(mode); return; }
     currentWord = practiceWords[currentQuestionIndex];
-
-    if (mode === 'multipleChoice') {
-        showMultipleChoiceQuestion();
-    } else if (mode === 'fillBlank') {
-        showFillBlankQuestion();
-    } else if (mode === 'listening') {
-        showListeningQuestion();
-    } else if (mode === 'translation') {
-        showTranslationQuestion();
-    }
+    if (mode === 'multipleChoice') showMultipleChoiceQuestion();
+    else if (mode === 'fillBlank') showFillBlankQuestion();
+    else if (mode === 'listening') showListeningQuestion();
+    else if (mode === 'translation') showTranslationQuestion();
 }
-
-// ==================== MULTIPLE CHOICE MODE ====================
-
-function showMultipleChoiceQuestion() {
-    const prefix = 'mc';
-    updateProgress(prefix);
-
-    document.getElementById(`${prefix}QuestionNumber`).textContent =
-        `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    document.getElementById(`${prefix}QuestionText`).textContent =
-        `"${currentWord.word}" có nghĩa là gì?`;
-
-    const options = generateOptions(currentWord);
-    const optionsContainer = document.getElementById(`${prefix}AnswerOptions`);
-    optionsContainer.innerHTML = "";
-
-    options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "answer-option";
-        btn.textContent = opt;
-        btn.onclick = () => checkMultipleChoice(btn, opt, currentWord.meaning);
-        optionsContainer.appendChild(btn);
-    });
-
-    document.getElementById(`${prefix}BtnNext`).style.display = "none";
-}
-
-function generateOptions(correctWord) {
-    const options = [correctWord.meaning];
-    const otherWords = currentUnit.words.filter(w => w.word !== correctWord.word);
-
-    while (options.length < 4 && otherWords.length > 0) {
-        const randomIndex = Math.floor(Math.random() * otherWords.length);
-        const randomMeaning = otherWords[randomIndex].meaning;
-
-        if (!options.includes(randomMeaning)) {
-            options.push(randomMeaning);
-        }
-        otherWords.splice(randomIndex, 1);
-    }
-
-    shuffleArray(options);
-    return options;
-}
-
-function checkMultipleChoice(btn, selected, correct) {
-    const allOptions = document.querySelectorAll("#mcAnswerOptions .answer-option");
-    allOptions.forEach(opt => opt.disabled = true);
-
-    const isCorrect = selected === correct;
-
-    if (isCorrect) {
-        btn.classList.add("correct");
-        correctAnswers++;
-        playCorrectSound();
-    } else {
-        btn.classList.add("wrong");
-        wrongAnswers++;
-        playWrongSound();
-        allOptions.forEach(opt => {
-            if (opt.textContent === correct) {
-                opt.classList.add("correct");
-            }
-        });
-    }
-
-    document.getElementById("mcBtnNext").style.display = "block";
-}
-
-// ==================== FILL IN BLANK MODE (FLASHCARD) ====================
-
-function showFillBlankQuestion() {
-    answered = false;
-    const prefix = 'fb';
-    updateProgress(prefix);
-
-    document.getElementById(`${prefix}QuestionNumber`).textContent =
-        `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-
-    // Reset trạng thái flashcard
-    isFlipped = false;
-    hintUsed = false;
-
-    const front = document.getElementById('flashcardFront');
-    const back = document.getElementById('flashcardBack');
-    const card = document.getElementById('flashcard');
-
-    // Đảm bảo reset về trạng thái ban đầu
-    front.style.display = 'flex';
-    back.style.display = 'none';
-    card.classList.remove('fade-out', 'fade-in');
-
-    // Hiển thị nghĩa ở mặt trước
-    document.getElementById(`${prefix}Meaning`).textContent = currentWord.meaning;
-
-    // Hiển thị từ ở mặt sau
-    document.getElementById(`${prefix}Word`).textContent = currentWord.word;
-
-    // Reset input và feedback
-    const input = document.getElementById(`${prefix}Input`);
-    input.value = "";
-    input.disabled = false;
-
-    // Reset hint button
-    const hintBtn = document.getElementById('btnHint');
-    if (hintBtn) {
-        hintBtn.disabled = false;
-        hintBtn.style.display = 'inline-flex';
-    }
-
-    // ⭐ RESET QUICK REVIEW BUTTONS - QUAN TRỌNG!
-    const rememberedBtn = document.querySelector('.btn-remembered');
-    const notRememberedBtn = document.querySelector('.btn-not-remembered');
-    if (rememberedBtn) {
-        rememberedBtn.disabled = false;
-    }
-    if (notRememberedBtn) {
-        notRememberedBtn.disabled = false;
-    }
-
-    document.getElementById(`${prefix}Feedback`).innerHTML = "";
-    document.getElementById(`${prefix}BtnNext`).style.display = "none";
-}
-
-function flipCard() {
-    const front = document.getElementById('flashcardFront');
-    const back = document.getElementById('flashcardBack');
-    const card = document.getElementById('flashcard');
-
-    if (!isFlipped) {
-        // Lật từ mặt trước sang mặt sau
-        card.classList.add('fade-out');
-
-        setTimeout(() => {
-            front.style.display = 'none';
-            back.style.display = 'flex';
-
-            card.classList.remove('fade-out');
-            card.classList.add('fade-in');
-
-            // Phát âm từ khi lật sang mặt sau
-            setTimeout(() => {
-                speakWord(currentWord.word);
-            }, 200);
-
-            // Focus vào input sau khi animation xong
-            setTimeout(() => {
-                const input = document.getElementById('fbInput');
-                if (input) {
-                    input.focus();
-                }
-            }, 100);
-        }, 300);
-
-        isFlipped = true;
-
-    } else {
-        // Lật từ mặt sau về mặt trước
-        card.classList.add('fade-out');
-
-        setTimeout(() => {
-            back.style.display = 'none';
-            front.style.display = 'flex';
-
-            card.classList.remove('fade-out');
-            card.classList.add('fade-in');
-
-            // Reset input khi quay lại
-            document.getElementById('fbInput').value = "";
-            document.getElementById('fbInput').disabled = false;
-            document.getElementById('fbFeedback').innerHTML = "";
-
-            // Reset hint button
-            const hintBtn = document.getElementById('btnHint');
-            if (hintBtn) {
-                hintBtn.disabled = false;
-            }
-            hintUsed = false;
-        }, 300);
-
-        isFlipped = false;
-    }
-}
-
-function markAsRemembered() {
-    if (!isFlipped) {
-        alert('Vui lòng lật thẻ để xem từ trước!');
-        return;
-    }
-
-    correctAnswers++;
-
-    // Hiển thị feedback ngắn
-    document.getElementById('fbFeedback').innerHTML = `
-        <div class="feedback-correct">
-            <i class="fas fa-check-circle"></i>
-            <strong>Tuyệt vời!</strong> Bạn đã ghi nhớ từ này! 🎉
-        </div>
-    `;
-
-    // Disable buttons để tránh spam
-    disableQuickReviewButtons();
-    document.getElementById('fbInput').disabled = true;
-    const hintBtn = document.getElementById('btnHint');
-    if (hintBtn) {
-        hintBtn.disabled = true;
-    }
-
-    // Tự động chuyển sang câu tiếp theo sau 1 giây
-    setTimeout(() => {
-        currentQuestionIndex++;
-        showQuestion('fillBlank');
-    }, 3000);
-}
-
-function markAsNotRemembered() {
-    if (!isFlipped) {
-        alert('Vui lòng lật thẻ để xem từ trước!');
-        return;
-    }
-
-    wrongAnswers++;
-
-    // Hiển thị feedback với thông tin từ
-    document.getElementById('fbFeedback').innerHTML = `
-        <div class="feedback-wrong">
-            <i class="fas fa-info-circle"></i>
-            Đừng lo! Hãy xem lại từ <strong>${currentWord.word}</strong>
-            <br><small>Nghĩa: ${currentWord.meaning}</small>
-        </div>
-    `;
-
-    // Disable buttons để tránh spam
-    disableQuickReviewButtons();
-    document.getElementById('fbInput').disabled = true;
-    const hintBtn = document.getElementById('btnHint');
-    if (hintBtn) {
-        hintBtn.disabled = true;
-    }
-
-    // Tự động chuyển sang câu tiếp theo sau 1.5 giây (lâu hơn 1 chút để đọc feedback)
-    setTimeout(() => {
-        currentQuestionIndex++;
-        showQuestion('fillBlank');
-    }, 3500);
-}
-
-function disableQuickReviewButtons() {
-    const btns = document.querySelectorAll('.btn-remembered, .btn-not-remembered');
-    btns.forEach(btn => btn.disabled = true);
-}
-
-function showHint() {
-    if (!isFlipped) {
-        alert('Vui lòng lật thẻ để xem từ trước!');
-        return;
-    }
-
-    const firstLetter = currentWord.word.charAt(0);
-    const wordLength = currentWord.word.length;
-    const hint = `${firstLetter}${'_'.repeat(wordLength - 1)}`;
-
-    document.getElementById('fbFeedback').innerHTML = `
-        <div class="feedback-hint">
-            <i class="fas fa-lightbulb"></i>
-            Gợi ý: <strong>${hint}</strong> (${wordLength} chữ cái)
-        </div>
-    `;
-
-    document.getElementById('btnHint').disabled = true;
-    hintUsed = true;
-}
-
-function handleFillBlankEnter(event) {
-    if (event.key === 'Enter') {
-        checkFillBlank();
-    }
-}
-
-function checkFillBlank() {
-    if (answered) return;   // ⭐ chặn chạy lần 2
-    answered = true;
-
-    // Phải lật thẻ trước khi kiểm tra
-    if (!isFlipped) {
-        alert('Vui lòng lật thẻ để xem từ trước!');
-        return;
-    }
-
-    const input = document.getElementById("fbInput");
-    const userAnswer = input.value.trim().toLowerCase();
-    const correctAnswer = currentWord.word.toLowerCase();
-    const feedback = document.getElementById("fbFeedback");
-
-    if (!userAnswer) {
-        feedback.innerHTML = `
-            <div class="feedback-wrong">
-                <i class="fas fa-exclamation-circle"></i>
-                Vui lòng nhập từ vào ô!
-            </div>
-        `;
-        return;
-    }
-
-    input.disabled = true;
-
-    // Disable hint button after checking
-    const hintBtn = document.getElementById('btnHint');
-    if (hintBtn) {
-        hintBtn.disabled = true;
-    }
-
-    // Disable quick review buttons
-    disableQuickReviewButtons();
-
-    const isCorrect = userAnswer === correctAnswer;
-
-    if (isCorrect) {
-        feedback.innerHTML = `
-            <div class="feedback-correct">
-                <i class="fas fa-check-circle"></i>
-                <strong>Xuất sắc!</strong> Bạn đã nhớ từ này rồi! 🎉
-            </div>
-        `;
-        correctAnswers++;
-         playCorrectSound();
-    } else {
-        feedback.innerHTML = `
-            <div class="feedback-wrong">
-                <i class="fas fa-times-circle"></i>
-                <strong>Chưa chính xác!</strong> Đáp án đúng là: <strong>${currentWord.word}</strong>
-                <br><small>Nghĩa: ${currentWord.meaning}</small>
-                <button class="btn-replay" onclick="speakWord('${currentWord.word}')">
-                    <i class="fas fa-redo"></i> Nghe lại
-                </button>
-            </div>
-        `;
-        wrongAnswers++;
-        playWrongSound();
-    }
-
-    document.getElementById("fbBtnNext").style.display = "block";
-}
-
-// ==================== LISTENING MODE ====================
-
-function showListeningQuestion() {
-    answered = false;
-    const prefix = 'listen';
-    updateProgress(prefix);
-
-    document.getElementById(`${prefix}QuestionNumber`).textContent =
-        `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-
-    const wordLength = currentWord.word.length;
-    document.getElementById(`${prefix}Hint`).innerHTML =
-        `<i class="fas fa-info-circle"></i> Gợi ý: Từ có ${wordLength} chữ cái`;
-
-    document.getElementById(`${prefix}Input`).value = "";
-    document.getElementById(`${prefix}Input`).disabled = false;
-    document.getElementById(`${prefix}Feedback`).innerHTML = "";
-    document.getElementById(`${prefix}BtnNext`).style.display = "none";
-
-    setTimeout(() => speakWord(currentWord.word), 500);
-}
-
-function playAudio() {
-    speakWord(currentWord.word);
-}
-
-function speakWord(word) {
-    if (speechSynthesis.speaking) {
-        speechSynthesis.cancel();
-    }
-
-    const utterance = new SpeechSynthesisUtterance(word);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.75;
-    utterance.pitch = 0.95;
-    utterance.volume = 1;
-
-    speechSynthesis.speak(utterance);
-}
-
-function handleListeningEnter(event) {
-    if (event.key === 'Enter') {
-        checkListening();
-    }
-}
-
-function checkListening() {
-    if (answered) return;   // ⭐ chặn chạy lần 2
-    answered = true;
-
-    const input = document.getElementById("listenInput");
-    const userAnswer = input.value.trim().toLowerCase();
-    const correctAnswer = currentWord.word.toLowerCase();
-    const feedback = document.getElementById("listenFeedback");
-
-    input.disabled = true;
-
-    const isCorrect = userAnswer === correctAnswer;
-
-    if (isCorrect) {
-        feedback.innerHTML = `
-            <div class="feedback-correct">
-                <i class="fas fa-check-circle"></i>
-                <strong>Xuất sắc!</strong> Bạn đã nghe đúng: <strong>${currentWord.word}</strong>
-                <br><small>Nghĩa: ${currentWord.meaning}</small>
-            </div>
-        `;
-        correctAnswers++;
-        playCorrectSound(); 
-    } else {
-        feedback.innerHTML = `
-            <div class="feedback-wrong">
-                <i class="fas fa-times-circle"></i>
-                <strong>Chưa chính xác!</strong> Từ đúng là: <strong>${currentWord.word}</strong>
-                <br><small>Nghĩa: ${currentWord.meaning}</small>
-                <button class="btn-replay" onclick="speakWord('${currentWord.word}')">
-                    <i class="fas fa-redo"></i> Nghe lại
-                </button>
-            </div>
-        `;
-        wrongAnswers++;
-        playWrongSound();
-    }
-
-    document.getElementById("listenBtnNext").style.display = "block";
-}
-
-// ==================== TRANSLATION MODE ====================
-
-function showTranslationQuestion() {
-    answered = false;
-    const prefix = 'trans';
-    updateProgress(prefix);
-
-    document.getElementById(`${prefix}QuestionNumber`).textContent =
-        `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-
-    const example = currentWord.example || `The word is: ${currentWord.word}`;
-    const highlightedExample = example.replace(
-        new RegExp(`\\b${currentWord.word}\\b`, 'gi'),
-        `<strong class="highlight-word">${currentWord.word}</strong>`
-    );
-
-    document.getElementById(`${prefix}Example`).innerHTML = highlightedExample;
-    document.getElementById(`${prefix}WordHighlight`).innerHTML =
-        `Dịch từ: <strong>${currentWord.word}</strong>`;
-
-    document.getElementById(`${prefix}Input`).value = "";
-    document.getElementById(`${prefix}Input`).disabled = false;
-    document.getElementById(`${prefix}Feedback`).innerHTML = "";
-    document.getElementById(`${prefix}BtnNext`).style.display = "none";
-    document.getElementById(`${prefix}Input`).focus();
-}
-
-function handleTranslationEnter(event) {
-    if (event.key === 'Enter') {
-        checkTranslation();
-    }
-}
-
-function checkTranslation() {
-    if (answered) return;   // ⭐ chặn chạy lần 2
-    answered = true;
-
-    const input = document.getElementById("transInput");
-    const userAnswer = input.value.trim().toLowerCase();
-    const correctAnswer = currentWord.meaning.toLowerCase();
-    const feedback = document.getElementById("transFeedback");
-
-    input.disabled = true;
-
-    const correctWords = correctAnswer.split(/[\s,]+/).filter(w => w.length > 2);
-    const userWords = userAnswer.split(/[\s,]+/).filter(w => w.length > 2);
-
-    const matchedWords = correctWords.filter(word =>
-        userWords.some(uword => uword.includes(word) || word.includes(uword))
-    );
-
-    const isCorrect = matchedWords.length >= correctWords.length * 0.7;
-
-    if (isCorrect) {
-        feedback.innerHTML = `
-            <div class="feedback-correct">
-                <i class="fas fa-check-circle"></i>
-                <strong>Tốt lắm!</strong> Đáp án của bạn đúng rồi!
-                <br><small>Đáp án chuẩn: ${currentWord.meaning}</small>
-            </div>
-        `;
-        correctAnswers++;
-        playCorrectSound();
-    } else {
-        feedback.innerHTML = `
-            <div class="feedback-wrong">
-                <i class="fas fa-times-circle"></i>
-                <strong>Chưa chính xác!</strong> 
-                <br>Nghĩa đúng: <strong>${currentWord.meaning}</strong>
-            </div>
-        `;
-        wrongAnswers++;
-        playWrongSound();
-    }
-
-    document.getElementById("transBtnNext").style.display = "block";
-}
-
-// ==================== PROGRESS TRACKING ====================
 
 function updateProgress(prefix) {
-    const progress = ((currentQuestionIndex) / practiceWords.length) * 100;
-    document.getElementById(`${prefix}ProgressFill`).style.width = progress + "%";
-    document.getElementById(`${prefix}ProgressText`).textContent =
-        `${currentQuestionIndex + 1}/${practiceWords.length}`;
+    const pct = (currentQuestionIndex / practiceWords.length) * 100;
+    const fill = document.getElementById(`${prefix}ProgressFill`);
+    const txt = document.getElementById(`${prefix}ProgressText`);
+    if (fill) fill.style.width = pct + '%';
+    if (txt) txt.textContent = `${currentQuestionIndex + 1}/${practiceWords.length}`;
 }
 
-// ==================== NAVIGATION ====================
+function nextQuestion(mode) { currentQuestionIndex++; showQuestion(mode); }
+function restartPractice() { startPractice(currentMode); }
 
-function nextQuestion(mode) {
-    currentQuestionIndex++;
-    showQuestion(mode);
+/* ── Multiple Choice ── */
+function showMultipleChoiceQuestion() {
+    answered = false;
+    updateProgress('mc');
+    document.getElementById('mcQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('mcQuestionText').innerHTML =
+        `"<strong>${currentWord.word}</strong>" có nghĩa là gì?`;
+
+    const opts = generateOptions(currentWord);
+    const container = document.getElementById('mcAnswerOptions');
+    container.innerHTML = opts.map(o => `
+    <button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${o}</button>
+  `).join('');
+    document.getElementById('mcBtnNext').style.display = 'none';
 }
-
-function restartPractice() {
-    document.getElementById("resultsScreen").style.display = "none";
-    startPractice(currentMode);
+function generateOptions(cw) {
+    const opts = [cw.meaning];
+    const other = currentUnit.words.filter(w => w.word !== cw.word);
+    while (opts.length < 4 && other.length) {
+        const i = Math.floor(Math.random() * other.length);
+        if (!opts.includes(other[i].meaning)) opts.push(other[i].meaning);
+        other.splice(i, 1);
+    }
+    shuffleArray(opts); return opts;
 }
-
-// ==================== RESULTS ====================
-
-function showResults(mode) {
-    const total = practiceWords.length;
-    const percentage = Math.round((correctAnswers / total) * 100);
-
-    document.getElementById(`${getModeId(mode)}Mode`).style.display = "none";
-    document.getElementById("resultsScreen").style.display = "block";
-
-    const modeNames = {
-        'multipleChoice': 'Trắc Nghiệm',
-        'fillBlank': 'Flashcard',
-        'listening': 'Luyện Nghe',
-        'translation': 'Dịch Từ'
-    };
-    document.getElementById("resultModeTitle").textContent = `Chế độ: ${modeNames[mode]}`;
-
-    document.getElementById("scorePercent").textContent = percentage + "%";
-    document.getElementById("correctCount").textContent = correctAnswers;
-    document.getElementById("wrongCount").textContent = wrongAnswers;
-
-    const circumference = 2 * Math.PI * 90;
-    const offset = circumference - (percentage / 100) * circumference;
-    const circle = document.getElementById("scoreCircle");
-
-    setTimeout(() => {
-        circle.style.strokeDashoffset = offset;
-    }, 100);
-
-    if (percentage >= 80) {
-        circle.style.stroke = "#10b981";
-    } else if (percentage >= 50) {
-        circle.style.stroke = "#f59e0b";
+function checkMultipleChoice(btn, selected, correct) {
+    if (answered) return; answered = true;
+    document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.disabled = true);
+    if (selected === correct) {
+        btn.classList.add('correct'); correctAnswers++; playCorrectSound();
     } else {
-        circle.style.stroke = "#ef4444";
+        btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
+        document.querySelectorAll('#mcAnswerOptions .answer-option')
+            .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    }
+    document.getElementById('mcBtnNext').style.display = 'flex';
+}
+function escH(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+/* ── Flashcard ── */
+function showFillBlankQuestion() {
+    answered = false; isFlipped = false; hintUsed = false;
+    updateProgress('fb');
+    document.getElementById('fbQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('fbMeaning').textContent = currentWord.meaning;
+    document.getElementById('fbWord').textContent = currentWord.word;
+    document.getElementById('fbPhonetic').textContent = currentWord.phonetic || '';
+
+    const fc = document.getElementById('flashcard');
+    fc.classList.remove('flipped');
+
+    // Reset
+    const input = document.getElementById('fbInput');
+    input.value = ''; input.disabled = false;
+    document.getElementById('fbFeedback').innerHTML = '';
+    document.getElementById('fbBtnNext').style.display = 'none';
+    document.getElementById('quick-btns').style.display = 'none';
+    document.getElementById('fbInputArea').style.display = 'none';
+}
+function flipCard() {
+    if (!isFlipped) {
+        document.getElementById('flashcard').classList.add('flipped');
+        isFlipped = true;
+        setTimeout(() => {
+            document.getElementById('quick-btns').style.display = 'flex';
+            document.getElementById('fbInputArea').style.display = 'block';
+            speakWord(currentWord.word);
+            document.getElementById('fbInput').focus();
+        }, 300);
+    } else {
+        document.getElementById('flashcard').classList.remove('flipped');
+        isFlipped = false;
+        document.getElementById('quick-btns').style.display = 'none';
+        document.getElementById('fbInputArea').style.display = 'none';
     }
 }
-
-let soundEnabled = true;
-
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-
-    document.getElementById("soundToggle").textContent =
-        soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+function markAsRemembered() {
+    if (!isFlipped) { toast('Lật thẻ trước!', 'error'); return; }
+    if (answered) return; answered = true;
+    correctAnswers++;
+    playCorrectSound();
+    document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Tuyệt vời! Bạn đã nhớ từ này! 🎉</div>';
+    disableFlashcardBtns();
+    setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
 }
-
-function playCorrectSound() {
-    if (!soundEnabled) return;
-    correctSound.currentTime = 0;
-    correctSound.play();
+function markAsNotRemembered() {
+    if (!isFlipped) { toast('Lật thẻ trước!', 'error'); return; }
+    if (answered) return; answered = true;
+    wrongAnswers++;
+    playWrongSound();
+    document.getElementById('fbFeedback').innerHTML =
+        `<div class="feedback-wrong">💪 Cố lên! Từ: <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+    disableFlashcardBtns();
+    setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 2000);
 }
-
-function playWrongSound() {
-    if (!soundEnabled) return;
-    wrongSound.currentTime = 0;
-    wrongSound.play();
+function disableFlashcardBtns() {
+    document.querySelectorAll('.btn-remembered,.btn-not-remembered').forEach(b => b.disabled = true);
+    const inp = document.getElementById('fbInput'); if (inp) inp.disabled = true;
 }
-
-
-// ==================== UTILITIES ====================
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+function showHint() {
+    const fc = document.getElementById('flashcard');
+    if (!fc.classList.contains('flipped')) return;
+    const hint = currentWord.word[0] + '_'.repeat(currentWord.word.length - 1);
+    document.getElementById('fbFeedback').innerHTML =
+        `<div class="feedback-hint">💡 Gợi ý: <strong>${hint}</strong> (${currentWord.word.length} chữ)</div>`;
+    hintUsed = true;
+}
+function checkFillBlank() {
+    if (answered || !isFlipped) return;
+    const ua = document.getElementById('fbInput').value.trim().toLowerCase();
+    const ca = currentWord.word.toLowerCase();
+    if (!ua) return;
+    answered = true;
+    document.getElementById('fbInput').disabled = true;
+    disableFlashcardBtns();
+    if (ua === ca) {
+        document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Chính xác! 🎉</div>';
+        correctAnswers++; playCorrectSound();
+    } else {
+        document.getElementById('fbFeedback').innerHTML =
+            `<div class="feedback-wrong">❌ Đáp án: <strong>${currentWord.word}</strong></div>`;
+        wrongAnswers++; playWrongSound();
     }
+    document.getElementById('fbBtnNext').style.display = 'flex';
 }
 
+/* ── Listening ── */
+function showListeningQuestion() {
+    answered = false;
+    updateProgress('listen');
+    document.getElementById('listenQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    document.getElementById('listenHint').textContent = `💡 Từ có ${currentWord.word.length} chữ cái`;
+    document.getElementById('listenInput').value = '';
+    document.getElementById('listenInput').disabled = false;
+    document.getElementById('listenFeedback').innerHTML = '';
+    document.getElementById('listenBtnNext').style.display = 'none';
+    setTimeout(() => speakWord(currentWord.word), 500);
+}
+function playAudio() { speakWord(currentWord?.word); }
+function checkListening() {
+    if (answered) return; answered = true;
+    const ua = document.getElementById('listenInput').value.trim().toLowerCase();
+    document.getElementById('listenInput').disabled = true;
+    const ok = ua === currentWord.word.toLowerCase();
+    if (ok) {
+        document.getElementById('listenFeedback').innerHTML =
+            `<div class="feedback-correct">✅ Đúng! <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+        correctAnswers++; playCorrectSound();
+    } else {
+        document.getElementById('listenFeedback').innerHTML =
+            `<div class="feedback-wrong">❌ Đáp án: <strong>${currentWord.word}</strong> – ${currentWord.meaning}
+       <button class="btn-check" style="margin-top:8px" onclick="speakWord('${currentWord.word}')">🔊 Nghe lại</button></div>`;
+        wrongAnswers++; playWrongSound();
+    }
+    document.getElementById('listenBtnNext').style.display = 'flex';
+}
+
+/* ── Translation ── */
+function showTranslationQuestion() {
+    answered = false;
+    updateProgress('trans');
+    document.getElementById('transQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    const ex = currentWord.example || `The word is: ${currentWord.word}`;
+    document.getElementById('transExample').innerHTML =
+        ex.replace(new RegExp(`\\b${currentWord.word}\\b`, 'gi'),
+            `<strong class="highlight-word">${currentWord.word}</strong>`);
+    document.getElementById('transWordHighlight').innerHTML = `Dịch từ: <strong>${currentWord.word}</strong>`;
+    document.getElementById('transInput').value = '';
+    document.getElementById('transInput').disabled = false;
+    document.getElementById('transFeedback').innerHTML = '';
+    document.getElementById('transBtnNext').style.display = 'none';
+    document.getElementById('transInput').focus();
+}
+function checkTranslation() {
+    if (answered) return; answered = true;
+    const ua = document.getElementById('transInput').value.trim().toLowerCase();
+    document.getElementById('transInput').disabled = true;
+    const ca = currentWord.meaning.toLowerCase();
+    const caWords = ca.split(/[\s,]+/).filter(w => w.length > 2);
+    const uaWords = ua.split(/[\s,]+/).filter(w => w.length > 2);
+    const matched = caWords.filter(w => uaWords.some(u => u.includes(w) || w.includes(u)));
+    const ok = matched.length >= caWords.length * 0.6;
+    if (ok) {
+        document.getElementById('transFeedback').innerHTML =
+            `<div class="feedback-correct">✅ Tốt lắm! Đáp án: <em>${currentWord.meaning}</em></div>`;
+        correctAnswers++; playCorrectSound();
+    } else {
+        document.getElementById('transFeedback').innerHTML =
+            `<div class="feedback-wrong">❌ Nghĩa đúng: <strong>${currentWord.meaning}</strong></div>`;
+        wrongAnswers++; playWrongSound();
+    }
+    document.getElementById('transBtnNext').style.display = 'flex';
+}
+
+/* ── Results ── */
+function showResults(mode) {
+    ['studyMode', 'multipleChoiceMode', 'fillBlankMode', 'listeningMode', 'translationMode']
+        .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
+    document.getElementById('resultsMode').style.display = 'block';
+
+    const total = practiceWords.length;
+    const pct = Math.round((correctAnswers / total) * 100);
+    const modeNames = { multipleChoice: 'Trắc Nghiệm', fillBlank: 'Flashcard', listening: 'Nghe', translation: 'Dịch' };
+
+    document.getElementById('resultModeTitle').textContent = `Chế độ: ${modeNames[mode] || mode}`;
+    document.getElementById('scorePercent').textContent = pct + '%';
+    document.getElementById('correctCount').textContent = correctAnswers;
+    document.getElementById('wrongCount').textContent = wrongAnswers;
+
+    const circ = 2 * Math.PI * 68;          // r=68 → 427.26
+    const offset = circ - (pct / 100) * circ;
+    const circle = document.getElementById('scoreCircle');
+    circle.style.stroke = pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#e53935';
+    setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
+}
+
+/* ══════════════════════════════════════════════
+   LOGOUT
+══════════════════════════════════════════════ */
 function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "login.html";
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'login.html';
 }
 
-// ==================== INITIALIZATION ====================
-
-window.addEventListener('DOMContentLoaded', () => {
-    console.log("🚀 Dashboard initializing...");
-    loadUnits();
-});
+/* ══════════════════════════════════════════════
+   EXPOSE globals
+══════════════════════════════════════════════ */
+window.logout = logout;
+window.loadUnit = loadUnit;
+window.showMode = showMode;
+window.toggleSound = toggleSound;
+window.openAddBookModal = openAddBookModal;
+window.createBook = createBook;
+window.openBook = openBook;
+window.openBookMenu = openBookMenu;
+window.renameBook = renameBook;
+window.deleteWord = deleteWord;
+window.updateWordStatus = updateWordStatus;
+window.toggleSelect = toggleSelect;
+window.toggleSelectAll = toggleSelectAll;
+window.bulkChangeStatus = bulkChangeStatus;
+window.bulkDelete = bulkDelete;
+window.openAddWordManual = openAddWordManual;
+window.addWordManual = addWordManual;
+window.selectBookForSave = selectBookForSave;
+window.confirmSaveWord = confirmSaveWord;
+window.openFlashcardMode = openFlashcardMode;
+window.openPreviewMode = openPreviewMode;
+window.closeUnitView = closeUnitView;
+window.speakWord = speakWord;
+window.flipCard = flipCard;
+window.markAsRemembered = markAsRemembered;
+window.markAsNotRemembered = markAsNotRemembered;
+window.showHint = showHint;
+window.checkFillBlank = checkFillBlank;
+window.nextQuestion = nextQuestion;
+window.restartPractice = restartPractice;
+window.playAudio = playAudio;
+window.checkListening = checkListening;
+window.checkTranslation = checkTranslation;
+window.checkMultipleChoice = checkMultipleChoice;
+window.closeModal = closeModal;
+window.selectEmoji = selectEmoji;
+window.lookupNewWord = lookupNewWord;
+window.openSaveWordFromUnit = openSaveWordFromUnit;
