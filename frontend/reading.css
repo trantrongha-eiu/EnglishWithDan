@@ -1533,6 +1533,23 @@ body.eye-protection .split-questions {
   background: #283593;
 }
 
+.dict-speak {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #3d8bff;
+  transition: background .15s;
+}
+.dict-speak:hover { background: #eff6ff; }
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
 /* ══════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════ */

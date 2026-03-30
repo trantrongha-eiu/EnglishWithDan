@@ -824,19 +824,154 @@ async function lookupWord(word) {
 
 function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
 
+// Phát âm từ trong dict popup
+function speakDictWord() {
+  if (!state.dictWord) return;
+  const u = new SpeechSynthesisUtterance(state.dictWord);
+  u.lang = 'en-US'; u.rate = 0.8;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// Mở modal chọn sổ (dùng lại modal từ dashboard)
 async function saveVocab() {
   if (!state.dictWord) return;
+  closeDictPopup();
+
+  // Nếu đang trong dashboard context thì dùng trực tiếp
+  if (window.openSaveWordModal) {
+    window.openSaveWordModal({
+      word: state.dictWord,
+      meaning: state.dictMeaning,
+      example: state.dictExample,
+      phonetic: document.getElementById('dict-phonetic')?.textContent || '',
+      source: 'reading'
+    });
+    return;
+  }
+
+  // Fallback: gọi API trực tiếp nếu không có dashboard
   try {
-    const res = await fetch(`${API}/reading/vocab/save`, {
+    const res = await fetch(`${API}/vocabbook`, { headers: authHeader() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    openBookPickerModal(data.books);
+  } catch (err) {
+    alert('Lỗi tải danh sách sổ: ' + err.message);
+  }
+}
+
+function openBookPickerModal(books) {
+  // Tạo modal chọn sổ inline
+  const existing = document.getElementById('reading-book-picker');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'reading-book-picker';
+  modal.className = 'modal-overlay';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(3px)';
+
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;width:min(460px,95%);box-shadow:0 8px 32px rgba(0,0,0,.15);overflow:hidden">
+      <div style="padding:18px 22px 0;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h3 style="font-size:16px;font-weight:700;margin-bottom:2px">Lưu vào sổ từ vựng</h3>
+          <div style="font-size:13px;color:#6b7280">
+            <strong style="color:#111">${state.dictWord}</strong>
+            ${document.getElementById('dict-phonetic')?.textContent ? `<span style="font-family:monospace;color:#9ca3af;margin-left:6px">${document.getElementById('dict-phonetic').textContent}</span>` : ''}
+          </div>
+          <div style="font-size:12px;color:#6b7280;margin-top:2px">${state.dictMeaning}</div>
+        </div>
+        <button onclick="document.getElementById('reading-book-picker').remove()"
+          style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;padding:4px">×</button>
+      </div>
+
+      <div style="padding:14px 22px;max-height:280px;overflow-y:auto">
+        <div style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Chọn sổ</div>
+        ${books.map(b => `
+          <div onclick="pickBookAndSave('${b._id}', this)"
+            style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s"
+            onmouseover="this.style.borderColor='#3d8bff';this.style.background='#eff6ff'"
+            onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'"
+            id="bpick-${b._id}">
+            <span style="font-size:20px">${b.emoji}</span>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:14px">${b.name}</div>
+              <div style="font-size:12px;color:#9ca3af">${b.totalWords} từ</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="padding:10px 22px 18px;border-top:1px solid #e5e7eb">
+        <label style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Ghi chú (tuỳ chọn)</label>
+        <input id="reading-save-note" placeholder="VD: gặp trong bài Reading tháng 3..."
+          style="width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;font-family:inherit"
+          onfocus="this.style.borderColor='#3d8bff'" onblur="this.style.borderColor='#e5e7eb'"/>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  // Click outside to close
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function pickBookAndSave(bookId, el) {
+  // Visual feedback
+  document.querySelectorAll('[id^="bpick-"]').forEach(el => {
+    el.style.borderColor = '#e5e7eb';
+    el.style.background = '#fff';
+  });
+  el.style.borderColor = '#e53935';
+  el.style.background = '#fef2f2';
+
+  const note = document.getElementById('reading-save-note')?.value.trim() || '';
+
+  try {
+    const res = await fetch(`${API}/vocabbook/${bookId}/words`, {
       method: 'POST',
       headers: authHeader(),
-      body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample })
+      body: JSON.stringify({
+        word: state.dictWord,
+        meaning: state.dictMeaning,
+        example: state.dictExample,
+        phonetic: document.getElementById('dict-phonetic')?.textContent || '',
+        source: 'reading',
+        note
+      })
     });
     const data = await res.json();
-    closeDictPopup();
-    alert(data.message || 'Đã lưu!');
-  } catch { alert('Lỗi lưu từ vựng'); }
+
+    document.getElementById('reading-book-picker')?.remove();
+
+    // Toast thông báo
+    showReadingToast(data.message || (data.success ? 'Đã lưu từ!' : 'Lỗi lưu từ'), data.success);
+  } catch (err) {
+    showReadingToast('Lỗi kết nối: ' + err.message, false);
+  }
 }
+
+function showReadingToast(msg, success = true) {
+  const existing = document.getElementById('reading-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'reading-toast';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position:fixed;bottom:24px;right:24px;z-index:9999;
+    padding:11px 18px;border-radius:10px;font-size:13px;font-weight:500;
+    color:#fff;background:${success ? '#166534' : '#991b1b'};
+    box-shadow:0 4px 16px rgba(0,0,0,.2);
+    animation:slideUp .25s ease;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+window.speakDictWord = speakDictWord;
+window.pickBookAndSave = pickBookAndSave;
 
 // ══════════════════════════════════════════════════════
 // TOOL SWITCHER

@@ -806,11 +806,27 @@ function checkTranslation() {
     if (answered) return; answered = true;
     const ua = document.getElementById('transInput').value.trim().toLowerCase();
     document.getElementById('transInput').disabled = true;
-    const ca = currentWord.meaning.toLowerCase();
-    const caWords = ca.split(/[\s,]+/).filter(w => w.length > 2);
-    const uaWords = ua.split(/[\s,]+/).filter(w => w.length > 2);
-    const matched = caWords.filter(w => uaWords.some(u => u.includes(w) || w.includes(u)));
-    const ok = matched.length >= caWords.length * 0.6;
+
+    // Tách các nghĩa theo dấu / hoặc ,
+    const caRaw = currentWord.meaning.toLowerCase();
+    const alternatives = caRaw
+        .split(/[\/,]/)
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+
+    // Check: đúng nếu user answer khớp ít nhất 1 nghĩa
+    const normalize = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý]/gi, '').trim();
+
+    const ok = alternatives.some(alt => {
+        const normAlt = normalize(alt);
+        const normUa = normalize(ua);
+        // Khớp hoàn toàn hoặc user answer chứa đủ các từ chính của 1 nghĩa
+        if (normUa === normAlt) return true;
+        const altWords = normAlt.split(/\s+/).filter(w => w.length > 1);
+        const uaWords = normUa.split(/\s+/).filter(w => w.length > 1);
+        return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
+    });
+
     if (ok) {
         document.getElementById('transFeedback').innerHTML =
             `<div class="feedback-correct">✅ Tốt lắm! Đáp án: <em>${currentWord.meaning}</em></div>`;
