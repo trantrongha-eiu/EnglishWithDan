@@ -157,9 +157,10 @@ function renderTestCard(t) {
   `;
 }
 
-function filterTests(mode) {
+
+function filterTests(mode, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
 
   let filtered = state.tests;
   if (mode === 'done') filtered = state.tests.filter(t => t.lastAttempt);
@@ -426,7 +427,7 @@ function renderRadioOpts(num, opts, userAns, correctAns, isReview) {
       return `
         <div class="radio-opt ${cls}"
              data-qnum="${num}" data-value="${opt}"
-             ${isReview ? '' : `onclick="pickRadio(${num}, '${opt}')" `}>
+             ${isReview ? '' : `onclick="pickRadio(${num}, this.dataset.value)" `}>
           <span class="radio-dot"></span>
           <label>${opt}</label>
         </div>
@@ -719,6 +720,7 @@ function getBandMessage(band) {
 // ══════════════════════════════════════════════════════
 async function goToReview() {
   try {
+    
     const res = await fetch(`${API}/reading/attempt/${state.attemptId}/review`, { headers: authHeader() });
     const data = await res.json();
     if (!data.success) throw new Error(data.message);

@@ -1620,27 +1620,50 @@
         document.getElementById('stat-band').textContent = data.stats.avgBandScore;
       } catch { }
     }
+    // ✅ Thay bằng
     async function loadHistory() {
       try {
-        const data = await (await fetch(`${API}/reading/history`, { headers: authH() })).json();
+        const data = await (await fetch(`${API}/admin/history`, { headers: authH() })).json();
         if (!data.success) return;
-        document.getElementById('recent-tbody').innerHTML = data.history.slice(0, 8).map(h => `
-      <tr><td><strong>${h.userId?.username || '–'}</strong></td><td>${h.testId?.name || '–'}</td>
-      <td>${formatDate(h.endTime)}</td><td>${bandBadge(h.bandScore)}</td>
-      <td>${h.correctCount}/${h.totalQuestions}</td><td>${formatDur(h.duration)}</td></tr>`).join('')
-          || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
+
+        // Dashboard: 8 bài gần nhất
+        document.getElementById('recent-tbody').innerHTML =
+          data.history.slice(0, 8).map(h => {
+            const name = h.userId?.firstName
+              ? `${h.userId.firstName} ${h.userId.lastName}`
+              : h.userId?.username || '–';
+            return `<tr>
+          <td><strong>${name}</strong></td>
+          <td>${h.testId?.name || '–'}</td>
+          <td>${formatDate(h.endTime)}</td>
+          <td>${bandBadge(h.bandScore)}</td>
+          <td>${h.correctCount}/${h.totalQuestions}</td>
+          <td>${formatDur(h.duration)}</td>
+        </tr>`;
+          }).join('') || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
+
         renderHistoryTable(data.history);
-      } catch { }
+      } catch (err) {
+        console.error(err);
+      }
     }
     function renderHistoryTable(list) {
       document.getElementById('history-tbody').innerHTML = list.length
-        ? list.map(h => `<tr>
-        <td><strong>${h.userId?.username || h.userId || '–'}</strong></td>
-        <td>${h.testId?.name || '–'}</td><td>${formatDate(h.endTime)}</td><td>${formatDur(h.duration)}</td>
-        <td style="color:var(--green);font-weight:600">${h.correctCount}</td>
-        <td style="color:var(--accent2);font-weight:600">${h.wrongCount}</td>
-        <td style="color:var(--text3)">${h.skippedCount}</td><td>${bandBadge(h.bandScore)}</td>
-      </tr>`).join('')
+        ? list.map(h => {
+          const name = h.userId?.firstName
+            ? `${h.userId.firstName} ${h.userId.lastName}`
+            : h.userId?.username || '–';
+          return `<tr>
+          <td><strong>${name}</strong></td>
+          <td>${h.testId?.name || '–'}</td>
+          <td>${formatDate(h.endTime)}</td>
+          <td>${formatDur(h.duration)}</td>
+          <td style="color:var(--green);font-weight:600">${h.correctCount}</td>
+          <td style="color:var(--accent2);font-weight:600">${h.wrongCount}</td>
+          <td style="color:var(--text3)">${h.skippedCount}</td>
+          <td>${bandBadge(h.bandScore)}</td>
+        </tr>`;
+        }).join('')
         : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
     }
     function filterHistory() {

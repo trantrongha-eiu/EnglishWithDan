@@ -18,24 +18,24 @@
      ════════════════════════════════════════════════════════ -->
   <div id="screen-list" class="screen active">
 
-      <!-- Thay thế div.skill-tabs-bar bằng header + nav đầy đủ -->
-      <header
-        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
-          <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-          <button onclick="logout()"
-            style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
-            🚪 Đăng xuất
-          </button>
-        </div>
-      </header>
+    <!-- Thay thế div.skill-tabs-bar bằng header + nav đầy đủ -->
+    <header
+      style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
+        <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
+        <button onclick="logout()"
+          style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
+          🚪 Đăng xuất
+        </button>
+      </div>
+    </header>
 
     <!-- Skill tabs -->
     <div class="skill-tabs-bar">
-    
+
 
       <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
         <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
@@ -69,9 +69,10 @@
         </div>
         <!-- Filter -->
         <div class="list-filter">
-          <button class="filter-btn active" onclick="filterTests('all')">Tất cả</button>
-          <button class="filter-btn" onclick="filterTests('done')">Đã làm</button>
-          <button class="filter-btn" onclick="filterTests('new')">Chưa làm</button>
+
+          <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
+          <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
+          <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
         </div>
       </div>
 
@@ -220,7 +221,7 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="showScreen('result')">✕</button>
+       <button class="exam-exit-btn" onclick="state.isReview && !state.submitted ? showScreen('list') : showScreen('result')">✕</button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
