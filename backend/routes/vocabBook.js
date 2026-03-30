@@ -1,0 +1,217 @@
+const express   = require('express');
+const router    = express.Router();
+const VocabBook = require('../models/VocabBook');
+const auth      = require('../middleware/auth');
+
+// ── Helper: tạo 5 sổ mặc định khi user mới ─────────────────────────────────
+async function ensureDefaultBooks(userId) {
+  const count = await VocabBook.countDocuments({ userId });
+  if (count > 0) return;
+
+  const defaults = [
+    { name: 'Sổ 1', emoji: '📘', color: '#3d8bff' },
+    { name: 'Sổ 2', emoji: '📗', color: '#34d399' },
+    { name: 'Sổ 3', emoji: '📙', color: '#f59e0b' },
+    { name: 'Sổ 4', emoji: '📕', color: '#e53935' },
+    { name: 'Sổ 5', emoji: '📓', color: '#a78bfa' },
+  ];
+
+  await VocabBook.insertMany(
+    defaults.map(d => ({ ...d, userId, isDefault: true, words: [] }))
+  );
+}
+
+// ══════════════════════════════════════════════════════
+// GET /api/vocabbook/  – lấy tất cả sổ của user (kèm số từ)
+// ══════════════════════════════════════════════════════
+router.get('/', auth, async (req, res) => {
+  try {
+    await ensureDefaultBooks(req.user._id);
+
+    const books = await VocabBook.find({ userId: req.user._id })
+      .select('name color emoji isDefault createdAt words')
+      .sort({ createdAt: 1 });
+
+    // Thêm thống kê nhỏ mà không load toàn bộ words
+    const result = books.map(b => ({
+      _id:       b._id,
+      name:      b.name,
+      color:     b.color,
+      emoji:     b.emoji,
+      isDefault: b.isDefault,
+      totalWords:    b.words.length,
+      daThucCount:   b.words.filter(w => w.status === 'da-thuoc').length,
+      nhoSoSoCount:  b.words.filter(w => w.status === 'nho-so-so').length,
+      chuaThuocCount:b.words.filter(w => w.status === 'chua-thuoc').length,
+    }));
+
+    res.json({ success: true, books: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
+// ══════════════════════════════════════════════════════
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const book = await VocabBook.findOne({
+      _id: req.params.id, userId: req.user._id
+    });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
+    res.json({ success: true, book });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// POST /api/vocabbook/  – tạo sổ mới
+// Body: { name, emoji, color }
+// ══════════════════════════════════════════════════════
+router.post('/', auth, async (req, res) => {
+  try {
+    const { name, emoji = '📘', color = '#3d8bff' } = req.body;
+    if (!name?.trim()) {
+      return res.status(400).json({ success: false, message: 'Tên sổ không được để trống' });
+    }
+    const book = new VocabBook({ userId: req.user._id, name: name.trim(), emoji, color });
+    await book.save();
+    res.status(201).json({ success: true, book });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// PUT /api/vocabbook/:id  – đổi tên / emoji / màu sổ
+// ══════════════════════════════════════════════════════
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const { name, emoji, color } = req.body;
+    const update = {};
+    if (name)  update.name  = name.trim();
+    if (emoji) update.emoji = emoji;
+    if (color) update.color = color;
+
+    const book = await VocabBook.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      update,
+      { new: true }
+    );
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
+    res.json({ success: true, book });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// DELETE /api/vocabbook/:id  – xoá sổ (không xoá sổ default)
+// ══════════════════════════════════════════════════════
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    if (book.isDefault) {
+      return res.status(400).json({ success: false, message: 'Không thể xoá sổ mặc định' });
+    }
+    await book.deleteOne();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// POST /api/vocabbook/:id/words  – thêm từ vào sổ
+// Body: { word, meaning, example, phonetic, partOfSpeech, source }
+// ══════════════════════════════════════════════════════
+router.post('/:id/words', auth, async (req, res) => {
+  try {
+    const { word, meaning, example, phonetic, partOfSpeech, source, note } = req.body;
+    if (!word?.trim()) {
+      return res.status(400).json({ success: false, message: 'Thiếu từ vựng' });
+    }
+
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
+
+    // Tránh trùng lặp trong cùng sổ
+    const duplicate = book.words.find(w => w.word.toLowerCase() === word.toLowerCase().trim());
+    if (duplicate) {
+      return res.json({ success: false, message: `"${word}" đã có trong sổ này` });
+    }
+
+    book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note });
+    await book.save();
+
+    res.status(201).json({
+      success: true,
+      message: `Đã lưu "${word}" vào "${book.name}"`,
+      word:    book.words[book.words.length - 1]
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// PATCH /api/vocabbook/:id/words/:wordId  – cập nhật trạng thái / ghi chú
+// Body: { status?, note? }
+// ══════════════════════════════════════════════════════
+router.patch('/:id/words/:wordId', auth, async (req, res) => {
+  try {
+    const { status, note } = req.body;
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    const wordDoc = book.words.id(req.params.wordId);
+    if (!wordDoc) return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
+
+    if (status !== undefined) wordDoc.status = status;
+    if (note   !== undefined) wordDoc.note   = note;
+
+    await book.save();
+    res.json({ success: true, word: wordDoc });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// DELETE /api/vocabbook/:id/words/:wordId  – xoá 1 từ
+// ══════════════════════════════════════════════════════
+router.delete('/:id/words/:wordId', auth, async (req, res) => {
+  try {
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    book.words = book.words.filter(w => w._id.toString() !== req.params.wordId);
+    await book.save();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// DELETE /api/vocabbook/:id/words  – xoá nhiều từ cùng lúc
+// Body: { wordIds: [...] }
+// ══════════════════════════════════════════════════════
+router.delete('/:id/words', auth, async (req, res) => {
+  try {
+    const { wordIds = [] } = req.body;
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    book.words = book.words.filter(w => !wordIds.includes(w._id.toString()));
+    await book.save();
+    res.json({ success: true, message: `Đã xoá ${wordIds.length} từ` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+module.exports = router;
