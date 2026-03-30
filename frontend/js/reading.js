@@ -720,7 +720,7 @@ async function goToReview() {
 
     const a = data.attempt;
     state.passages = a.passages;
-    state.isReview = true;
+    state.isReview = true;   // ← phải set trước
     state.passageIdx = 0;
 
     document.getElementById('review-title').textContent = a.testName;
@@ -730,6 +730,9 @@ async function goToReview() {
     renderCurrentPassage(true);
     renderQNav(true);
     setupDictionaryDouble('review-passage-inner');
+
+    // Set tool về highlight mặc định khi vào review
+    setTool('highlight');
     showScreen('review');
   } catch (err) {
     alert('Lỗi tải bài review: ' + err.message);
@@ -756,10 +759,13 @@ function setupHighlight() {
     if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
 
     const range = sel.getRangeAt(0);
-    // Only inside passage panels
-    const passageEl = document.getElementById('passage-inner') ||
-      document.getElementById('review-passage-inner');
-    if (!passageEl || !passageEl.contains(range.commonAncestorContainer)) return;
+
+    // Xác định đúng passage đang active
+    const activePassage = state.isReview
+      ? document.getElementById('review-passage-inner')
+      : document.getElementById('passage-inner');
+
+    if (!activePassage || !activePassage.contains(range.commonAncestorContainer)) return;
 
     const span = document.createElement('span');
     span.className = 'hl';
@@ -775,12 +781,18 @@ function setupDictionaryDouble(containerId) {
   const el = document.getElementById(containerId);
   if (!el) return;
 
-  el.addEventListener('dblclick', async () => {
+  // Xóa listener cũ nếu có (tránh duplicate)
+  el.removeEventListener('dblclick', el._dictHandler);
+
+  el._dictHandler = async (e) => {
+    // Dict tool active mới tra từ
     if (state.tool !== 'dict') return;
     const word = window.getSelection()?.toString().trim();
     if (!word || word.includes(' ') || word.length < 2) return;
     await lookupWord(word);
-  });
+  };
+
+  el.addEventListener('dblclick', el._dictHandler);
 }
 
 async function lookupWord(word) {
