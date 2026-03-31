@@ -1252,7 +1252,7 @@
             <div class="section-actions">
               <div class="search-wrap">
                 <input class="search-input" id="search-listening" placeholder="Tìm tên đề nghe..."
-                  oninput="filterListeningTests()" />
+                       oninput="filterListeningTests()" />
               </div>
               <button class="btn btn-primary" onclick="openListeningModal()">＋ Tạo đề nghe</button>
             </div>
@@ -1273,9 +1273,7 @@
                 </tr>
               </thead>
               <tbody id="listening-tbody">
-                <tr>
-                  <td colspan="9" class="table-empty">Đang tải...</td>
-                </tr>
+                <tr><td colspan="9" class="table-empty">Đang tải...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1590,8 +1588,7 @@
           <div class="form-hint">Sau khi lưu đề, dùng nút 🎵 Audio trong bảng để upload file.</div>
         </div>
         <div class="form-group">
-          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word
-              highlight)</span></label>
+          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word highlight)</span></label>
           <textarea class="form-textarea" id="lt-transcript" rows="5"
             placeholder="Dán toàn bộ nội dung bài nghe vào đây..."></textarea>
         </div>
@@ -1623,12 +1620,12 @@
         </p>
         <div class="form-group">
           <label>Chọn file audio *</label>
-          <input type="file" id="upload-audio-input" accept="audio/*,video/mp4" class="form-input"
-            style="padding:8px" />
+          <input type="file" id="upload-audio-input" accept="audio/*,video/mp4"
+                 class="form-input" style="padding:8px" />
           <div class="form-hint">MP3, M4A, WAV · Tối đa 200MB · Upload lên Cloudinary</div>
         </div>
         <div id="upload-progress" class="hidden"
-          style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text2);margin-top:8px">
+             style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text2);margin-top:8px">
           ⏳ Đang upload, vui lòng chờ...
         </div>
       </div>
@@ -1653,15 +1650,16 @@
         </p>
         <div class="form-group">
           <label>Transcript (plain text)</label>
-          <textarea class="form-textarea" id="tr-transcript" rows="7" placeholder="Nội dung bài nghe..."></textarea>
+          <textarea class="form-textarea" id="tr-transcript" rows="7"
+            placeholder="Nội dung bài nghe..."></textarea>
         </div>
         <div class="form-group">
           <label>Word Timestamps (JSON)</label>
-          <textarea class="form-textarea" id="tr-timestamps" rows="7" style="font-size:12px"
+          <textarea class="form-textarea" id="tr-timestamps" rows="7"
+            style="font-size:12px"
             placeholder='[{"word":"Hello","start":0.1,"end":0.5},{"word":"everyone","start":0.6,"end":1.2},...]'></textarea>
           <div class="form-hint">
-            Format: array of <code
-              style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
+            Format: array of <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
             · Export từ Whisper JSON hoặc nhập tay
           </div>
         </div>
@@ -2398,15 +2396,18 @@
           <span style="font-size:13px;font-weight:700;flex:1">Part ${data?.partNumber || sIdx}</span>
           <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá Part</button>
         </div>
-        <div style="display:grid;grid-template-columns:0.6fr 2fr 1.2fr 1fr 1fr;gap:10px;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:0.6fr 2fr 1.5fr;gap:10px;margin-bottom:10px">
           <div class="form-group" style="margin-bottom:0">
             <label>Part số *</label>
-            <select class="form-select ls-part" style="padding:8px 10px;font-size:13px">
-              <option value="1" ${data?.partNumber == 1 ? 'selected' : ''}>1</option>
-              <option value="2" ${data?.partNumber == 2 ? 'selected' : ''}>2</option>
-              <option value="3" ${data?.partNumber == 3 ? 'selected' : ''}>3</option>
-              <option value="4" ${data?.partNumber == 4 ? 'selected' : ''}>4</option>
+            <select class="form-select ls-part" style="padding:8px 10px;font-size:13px"
+                    onchange="onPartSelect(this)">
+              <option value="1" ${data?.partNumber==1?'selected':''}>Part 1 (Q1–10)</option>
+              <option value="2" ${data?.partNumber==2?'selected':''}>Part 2 (Q11–20)</option>
+              <option value="3" ${data?.partNumber==3?'selected':''}>Part 3 (Q21–30)</option>
+              <option value="4" ${data?.partNumber==4?'selected':''}>Part 4 (Q31–40)</option>
             </select>
+            <input type="hidden" class="ls-qstart" value="${data?.questionRange?.start || getPartRange(data?.partNumber||1).start}" />
+            <input type="hidden" class="ls-qend"   value="${data?.questionRange?.end   || getPartRange(data?.partNumber||1).end}" />
           </div>
           <div class="form-group" style="margin-bottom:0">
             <label>Tiêu đề *</label>
@@ -2416,18 +2417,12 @@
           <div class="form-group" style="margin-bottom:0">
             <label>Mô tả</label>
             <input class="form-input ls-desc" style="font-size:13px;padding:8px 10px"
-                   value="${data?.description || ''}" placeholder="Context..." />
+                   value="${data?.description || ''}" placeholder="Context ngắn gọn..." />
           </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Câu bắt đầu *</label>
-            <input class="form-input ls-qstart" type="number" style="font-size:13px;padding:8px 10px"
-                   value="${data?.questionRange?.start || ''}" placeholder="1" min="1" />
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Câu kết thúc *</label>
-            <input class="form-input ls-qend" type="number" style="font-size:13px;padding:8px 10px"
-                   value="${data?.questionRange?.end || ''}" placeholder="10" min="1" />
-          </div>
+        </div>
+        <div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.2);border-radius:6px;
+                    padding:6px 12px;font-size:12px;color:#3d8bff;margin-bottom:10px" class="ls-range-hint">
+          📌 Phạm vi: Questions <strong class="ls-range-text">${getPartRangeText(data?.partNumber||1)}</strong>
         </div>
         <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -2459,43 +2454,38 @@
         <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-bottom:8px">
           <div class="form-group" style="margin-bottom:0">
             <label style="font-size:10px">Số câu *</label>
-            <input class="form-input lq-num" type="number" value="${data?.questionNumber || ''}"
+            <input class="form-input lq-num" type="number" value="${data?.questionNumber||''}"
                    style="font-size:12px;padding:7px 10px" placeholder="${ltQIdx}" />
           </div>
           <div class="form-group" style="margin-bottom:0">
             <label style="font-size:10px">Loại câu *</label>
             <select class="form-select lq-type" onchange="onLQTypeChange(this,'${qId}')"
                     style="font-size:12px;padding:7px 10px">
-              <option value="multiple-choice"     ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
-              <option value="fill-blank"          ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
-              <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
-              <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
-              <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map / Diagram Labelling</option>
-              <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>Checkbox (chọn nhiều)</option>
+              <option value="multiple-choice"     ${data?.type==='multiple-choice'?'selected':''}>Multiple Choice</option>
+              <option value="fill-blank"          ${data?.type==='fill-blank'?'selected':''}>Fill in the blank</option>
+              <option value="sentence-completion" ${data?.type==='sentence-completion'?'selected':''}>Sentence Completion (kéo thả)</option>
+              <option value="matching"            ${data?.type==='matching'?'selected':''}>Matching</option>
+              <option value="map-labelling"       ${data?.type==='map-labelling'?'selected':''}>Map / Diagram Labelling</option>
+              <option value="checkbox"            ${data?.type==='checkbox'?'selected':''}>Checkbox (chọn nhiều)</option>
             </select>
           </div>
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label style="font-size:10px">Nội dung câu hỏi *</label>
           <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:7px 10px;resize:vertical"
-            placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
+            placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText||''}</textarea>
         </div>
-        <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data)}</div>
-        <div style="display:grid;grid-template-columns:1fr 0.6fr 1.2fr;gap:8px">
+        <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type||'multiple-choice', data)}</div>
+        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px">
           <div class="form-group" style="margin-bottom:0">
             <label style="font-size:10px">Đáp án đúng *</label>
-            <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
+            <input class="form-input lq-answer" value="${data?.correctAnswer||''}"
                    style="font-size:12px;padding:7px 10px"
                    placeholder='A / text / ["A","C"] cho checkbox' />
           </div>
           <div class="form-group" style="margin-bottom:0">
-            <label style="font-size:10px">Timestamp (giây)</label>
-            <input class="form-input lq-ts" type="number" value="${data?.audioTimestamp || ''}"
-                   style="font-size:12px;padding:7px 10px" placeholder="0.0" min="0" step="0.1" />
-          </div>
-          <div class="form-group" style="margin-bottom:0">
             <label style="font-size:10px">Giải thích</label>
-            <input class="form-input lq-explain" value="${data?.explanation || ''}"
+            <input class="form-input lq-explain" value="${data?.explanation||''}"
                    style="font-size:12px;padding:7px 10px" placeholder="Giải thích đáp án..." />
           </div>
         </div>`;
@@ -2508,18 +2498,18 @@
         return `<div class="form-group" style="margin-bottom:8px">
           <label style="font-size:10px">Các đáp án (A,B,C,D)</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            ${['A', 'B', 'C', 'D'].map((l, i) => `
+            ${['A','B','C','D'].map((l,i) => `
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
-                <input class="form-input lq-opt" value="${opts[i] || ''}"
+                <input class="form-input lq-opt" value="${opts[i]||''}"
                        style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
               </div>`).join('')}
           </div></div>`;
       }
-      if (['sentence-completion', 'matching'].includes(type)) {
+      if (['sentence-completion','matching'].includes(type)) {
         return `<div class="form-group" style="margin-bottom:8px">
           <label style="font-size:10px">Word Bank (cách nhau bằng dấu phẩy)</label>
-          <input class="form-input lq-wordbank" value="${(data?.wordBank || []).join(', ')}"
+          <input class="form-input lq-wordbank" value="${(data?.wordBank||[]).join(', ')}"
                  style="font-size:12px;padding:7px 10px" placeholder="word1, word2, word3..." /></div>`;
       }
       if (type === 'checkbox') {
@@ -2527,24 +2517,75 @@
         return `<div class="form-group" style="margin-bottom:8px">
           <label style="font-size:10px">Các đáp án (A→E)</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            ${['A', 'B', 'C', 'D', 'E'].map((l, i) => `
+            ${['A','B','C','D','E'].map((l,i) => `
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
-                <input class="form-input lq-opt" value="${opts[i] || ''}"
+                <input class="form-input lq-opt" value="${opts[i]||''}"
                        style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
               </div>`).join('')}
           </div>
           <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
             <label style="font-size:10px;margin-bottom:0;white-space:nowrap">Số đáp án cần chọn:</label>
-            <input class="form-input lq-cbcount" type="number" value="${data?.checkboxCount || 2}"
+            <input class="form-input lq-cbcount" type="number" value="${data?.checkboxCount||2}"
                    style="width:60px;font-size:12px;padding:5px 8px" min="1" max="5" />
+            <span style="font-size:10px;color:var(--text3)">Đáp án: <code style="background:var(--bg);padding:1px 4px;border-radius:3px">["A","C"]</code></span>
+          </div></div>`;
+      }
+      if (type === 'map-labelling') {
+        const imgId = `lqimg-${Date.now()}`;
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:10px">Hình ảnh sơ đồ / bản đồ</label>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="flex:1">
+              <input class="form-input lq-imageurl" value="${data?.imageUrl||''}"
+                     style="font-size:12px;padding:7px 10px"
+                     placeholder="URL hình ảnh (Imgur, Cloudinary...)"
+                     oninput="previewLQImage(this,'${imgId}')"/>
+              <div class="form-hint">Upload hình lên Imgur rồi dán URL vào đây</div>
+            </div>
+            <div id="${imgId}"
+                 style="width:130px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;
+                        display:flex;align-items:center;justify-content:center;
+                        overflow:hidden;background:var(--bg);flex-shrink:0">
+              ${data?.imageUrl
+                ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:100px;object-fit:contain"/>`
+                : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
+            </div>
           </div></div>`;
       }
       return '';
     }
 
+    function previewLQImage(input, previewId) {
+      const url = input.value.trim();
+      const preview = document.getElementById(previewId);
+      if (!preview) return;
+      preview.innerHTML = url
+        ? `<img src="${url}" style="max-width:100%;max-height:100px;object-fit:contain"
+               onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
+        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+    }
+
     function onLQTypeChange(sel, qId) {
       document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {});
+    }
+
+    /* ── Part range helpers ── */
+    function getPartRange(partNumber) {
+      const map = { 1:{start:1,end:10}, 2:{start:11,end:20}, 3:{start:21,end:30}, 4:{start:31,end:40} };
+      return map[partNumber] || {start:1,end:10};
+    }
+    function getPartRangeText(partNumber) {
+      const r = getPartRange(partNumber);
+      return `${r.start}–${r.end}`;
+    }
+    function onPartSelect(sel) {
+      const sDiv = sel.closest('.question-row');
+      const part = parseInt(sel.value);
+      const range = getPartRange(part);
+      sDiv.querySelector('.ls-qstart').value = range.start;
+      sDiv.querySelector('.ls-qend').value   = range.end;
+      sDiv.querySelector('.ls-range-text').textContent = `${range.start}–${range.end}`;
     }
 
     /* ── Collect & Save ── */
@@ -2566,17 +2607,18 @@
           const text = qDiv.querySelector('.lq-text').value.trim();
           const answer = qDiv.querySelector('.lq-answer').value.trim();
           const explain = qDiv.querySelector('.lq-explain').value.trim();
-          const ts = parseFloat(qDiv.querySelector('.lq-ts').value) || null;
           if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
-          const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: explain, audioTimestamp: ts };
-          if (['multiple-choice', 'checkbox'].includes(type))
+          const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: explain };
+          if (['multiple-choice','checkbox'].includes(type))
             q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
           if (type === 'checkbox')
             q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
-          if (['sentence-completion', 'matching'].includes(type)) {
+          if (['sentence-completion','matching'].includes(type)) {
             const wb = qDiv.querySelector('.lq-wordbank')?.value || '';
             q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
           }
+          if (type === 'map-labelling')
+            q.imageUrl = qDiv.querySelector('.lq-imageurl')?.value.trim() || '';
           questions.push(q);
         }
         sections.push({ partNumber, title, description: desc, questionRange: { start: qstart, end: qend }, questions });
@@ -2634,7 +2676,7 @@
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
-        toast(`Upload thành công! Thời lượng: ${Math.floor(data.audioDuration / 60)}:${pad(data.audioDuration % 60)}`);
+        toast(`Upload thành công! Thời lượng: ${Math.floor(data.audioDuration/60)}:${pad(data.audioDuration%60)}`);
         closeModal('modal-upload-audio'); await loadListeningTests();
       } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
       finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
