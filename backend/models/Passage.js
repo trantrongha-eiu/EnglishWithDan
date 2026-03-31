@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
  * - sentence-completion: drag-and-drop (bank of words)
  * - matching-headings  : drag heading → paragraph
  * - matching-info      : match statement → section letter
+ * - checkbox           : chọn nhiều đáp án (N trong M)
+ * - map-labelling      : điền nhãn vào sơ đồ/hình ảnh (fill-blank kèm image)
  */
 const QuestionSchema = new mongoose.Schema({
   questionNumber: { type: Number, required: true },
@@ -19,27 +21,37 @@ const QuestionSchema = new mongoose.Schema({
       'fill-blank',
       'sentence-completion',
       'matching-headings',
-      'matching-info'
+      'matching-info',
+      'checkbox',
+      'map-labelling'
     ],
     required: true
   },
   questionText: { type: String, required: true },
 
-  // Dùng cho multiple-choice
+  // Dùng cho multiple-choice / checkbox
   options: [String],
 
-  // Dùng cho sentence-completion / matching:
-  // bank = danh sách từ/cụm để kéo thả
+  // Checkbox: số đáp án cần chọn (VD: chọn 2 trong 5)
+  checkboxCount: { type: Number, default: 2 },
+
+  // Dùng cho sentence-completion / matching
   wordBank: [String],
 
-  // Đáp án đúng (string, hoặc JSON string nếu cần map)
+  // Đáp án đúng
+  // - string thông thường cho single answer
+  // - JSON stringified array cho checkbox: '["A","C"]'
   correctAnswer: { type: String, required: true },
 
   // Giải thích (chỉ hiện khi review)
   explanation: { type: String, default: '' },
 
   // Với matching-headings: danh sách paragraph labels (A, B, C…)
-  paragraphLabels: [String]
+  paragraphLabels: [String],
+
+  // Với map-labelling: URL hình ảnh sơ đồ/bản đồ
+  // (dùng chung cho cả Reading và Listening)
+  imageUrl: { type: String, default: '' }
 });
 
 const PassageSchema = new mongoose.Schema({
