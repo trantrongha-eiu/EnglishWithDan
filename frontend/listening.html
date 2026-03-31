@@ -79,12 +79,19 @@
             </div>
             <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
             <div class="speed-btns">
-                <button class="speed-btn active" onclick="setSpeed(0.75, this)">×0.75</button>
-                <button class="speed-btn" onclick="setSpeed(1, this)">×1</button>
-                <button class="speed-btn" onclick="setSpeed(1.25, this)">×1.25</button>
+                <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
+                <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
+                <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
                 <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
             </div>
             <audio id="audio-player" preload="metadata"></audio>
+        </div>
+
+        <!-- Exam toolbar: highlight -->
+        <div class="exam-toolbar" id="exam-toolbar">
+            <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
+                🖊 <small>Highlight (H)</small>
+            </button>
         </div>
 
         <div class="part-tabs" id="part-tabs"></div>
@@ -127,7 +134,8 @@
             </div>
             <div class="result-msg-box" id="result-msg"></div>
             <div class="result-actions">
-                <button class="btn-primary" onclick="goToReview()">📋 Xem đáp án</button>
+                <button class="btn-primary" onclick="goToReview()">📋 Xem đáp án chi tiết</button>
+                <button class="btn-ghost" onclick="showHistoryModal()">📜 Lịch sử làm bài</button>
                 <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
             </div>
         </div>
@@ -157,9 +165,9 @@
             </div>
             <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
             <div class="speed-btns">
-                <button class="speed-btn active" onclick="setSpeed(0.75, this)">×0.75</button>
-                <button class="speed-btn" onclick="setSpeed(1, this)">×1</button>
-                <button class="speed-btn" onclick="setSpeed(1.25, this)">×1.25</button>
+                <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
+                <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
+                <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
                 <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
             </div>
         </div>
@@ -198,6 +206,32 @@
         <div class="dict-actions">
             <button class="dict-btn" onclick="speakDictWord()">🔊 Phát âm</button>
             <button class="dict-btn primary" onclick="saveVocabWord()">💾 Lưu từ</button>
+        </div>
+    </div>
+
+    <!-- Modal: History -->
+    <div class="modal-overlay hidden" id="modal-history">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3>Lịch sử làm bài</h3>
+                <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
+            </div>
+            <div class="modal-body-scroll">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tên bài</th>
+                            <th>Ngày nộp</th>
+                            <th>Thời gian</th>
+                            <th>Đúng</th>
+                            <th>Sai</th>
+                            <th>Bỏ qua</th>
+                            <th>Band</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -358,6 +392,7 @@
                 state.partIdx = 0;
                 state.submitted = false;
                 state.isReview = false;
+                state.startTime = new Date().toISOString();
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
                 audio.load();
@@ -403,7 +438,10 @@
         function setSpeed(speed, btn) {
             audio.playbackRate = speed;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+            // Activate all buttons with same speed across both audio bars
+            document.querySelectorAll('.speed-btn').forEach(b => {
+                if (b.textContent.trim() === (btn?.textContent?.trim() || '')) b.classList.add('active');
+            });
         }
         function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.play(); }
 
@@ -618,6 +656,7 @@
             renderReviewPartQuestions(0);
             renderQNav('q-nav-grid-rv', true);
             setupDictionaryDouble('transcript-body');
+            setupDictionaryDouble('review-questions-inner');
             setTool('highlight');
             showScreen('review');
         }
@@ -869,7 +908,21 @@
             });
         }
 
-        function scrollToQ(num) { document.getElementById(`qi-${num}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        function scrollToQ(num) {
+            const el = document.getElementById(`qi-${num}`);
+            if (!el) return;
+            // Scroll trong panel đúng
+            const panel = state.isReview
+                ? document.getElementById('review-questions-panel')
+                : document.getElementById('questions-panel');
+            if (panel) {
+                const panelTop  = panel.getBoundingClientRect().top;
+                const elTop     = el.getBoundingClientRect().top;
+                panel.scrollTop += (elTop - panelTop) - 80;
+            } else {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
 
         function updateFooter() {
             const total    = getAllQuestions(false).length;
@@ -895,7 +948,7 @@
             audio.pause();
             try {
                 const res  = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
-                    method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers })
+                    method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
                 });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
@@ -927,8 +980,14 @@
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
-                const tb    = document.getElementById('transcript-body');
-                if (!tb || !tb.contains(range.commonAncestorContainer)) return;
+                // Cho phép highlight trong transcript (review) VÀ questions panel (exam)
+                const tb = document.getElementById('transcript-body');
+                const qp = document.getElementById('questions-panel');
+                const rv = document.getElementById('review-questions-inner');
+                const inTranscript = tb && tb.contains(range.commonAncestorContainer);
+                const inQPanel     = qp && qp.contains(range.commonAncestorContainer);
+                const inReviewQ    = rv && rv.contains(range.commonAncestorContainer);
+                if (!inTranscript && !inQPanel && !inReviewQ) return;
                 const span = document.createElement('span');
                 span.className = 'hl';
                 try { range.surroundContents(span); } catch {}
@@ -1053,6 +1112,44 @@
             if (tool === 'dict')      document.getElementById('tool-dict-rv')?.classList.add('active');
         }
 
+        function setToolExam(tool) {
+            state.tool = tool;
+            document.querySelectorAll('#exam-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
+            if (tool === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
+        }
+
+        // ══════════════════════════════════════════════
+        // HISTORY MODAL
+        // ══════════════════════════════════════════════
+        async function showHistoryModal() {
+            openModal('modal-history');
+            const tbody = document.getElementById('history-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Đang tải...</td></tr>';
+            try {
+                const res  = await fetch(`${API}/listening/history`, { headers: authH() });
+                const data = await res.json();
+                if (!data.success || !data.attempts?.length) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử làm bài.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = data.attempts.map(a => {
+                    const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
+                    const mins = a.timeTaken ? `${Math.floor(a.timeTaken/60)}:${pad(a.timeTaken%60)}` : '–';
+                    return `<tr>
+                        <td>${a.testName || '–'}</td>
+                        <td>${date}</td>
+                        <td>${mins}</td>
+                        <td style="color:#16a34a;font-weight:600">${a.correctCount ?? '–'}</td>
+                        <td style="color:#e53935;font-weight:600">${a.wrongCount ?? '–'}</td>
+                        <td style="color:#9ca3af;font-weight:600">${a.skippedCount ?? '–'}</td>
+                        <td><strong>${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
+                    </tr>`;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e53935">Lỗi: ${err.message}</td></tr>`;
+            }
+        }
+
         // ══════════════════════════════════════════════
         // MODALS & EXIT
         // ══════════════════════════════════════════════
@@ -1086,6 +1183,8 @@
         window.goToReview = goToReview;
         window.confirmExit = confirmExit; window.forceExit = forceExit;
         window.setTool = setTool;
+        window.setToolExam = setToolExam;
+        window.showHistoryModal = showHistoryModal;
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook;
     </script>
