@@ -1,58 +1,1471 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Listening Practice</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Listening – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f3f4f8;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --border2: #d1d5db;
+      --text: #111827;
+      --text2: #6b7280;
+      --text3: #9ca3af;
+      --accent: #e53935;
+      --blue: #3d8bff;
+      --green: #16a34a;
+      --green-light: #dcfce7;
+      --red-light: #fee2e2;
+      --yellow: #f59e0b;
+      --purple: #7c3aed;
+      --font: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0,0,0,.08);
+      --reading-font-size: 15px;
+    }
+
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+
+    .hidden { display: none !important; }
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+    }
+    .topbar-logo { font-size: 15px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .topbar-logo span { color: var(--accent); }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: var(--font); transition: all .15s; white-space: nowrap; }
+    .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #c62828; }
+    .btn-blue { background: var(--blue); color: #fff; }
+    .btn-blue:hover { background: #2563eb; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ══════════════════════════════════════════
+       SCREEN: LIST
+    ══════════════════════════════════════════ */
+    #screen-list { background: var(--bg); }
+    .list-hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 48px 32px 40px; text-align: center; }
+    .list-hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .list-hero p { color: rgba(255,255,255,.65); font-size: 14px; }
+    .list-hero-wave { color: #f59e0b; margin-right: 8px; }
+    .list-content { max-width: 900px; margin: 0 auto; padding: 32px 24px; flex: 1; }
+    .list-filter-row { display: flex; gap: 8px; margin-bottom: 24px; }
+    .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2); transition: all .15s; font-family: var(--font); }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .test-group { margin-bottom: 32px; }
+    .test-group-title { font-size: 13px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .test-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .test-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all .2s; cursor: pointer; }
+    .test-card:hover { border-color: var(--blue); box-shadow: 0 8px 24px rgba(61,139,255,.12); transform: translateY(-2px); }
+    .test-card.done { border-color: #bbf7d0; }
+    .test-card-cover { background: linear-gradient(135deg, #1e3a5f, #0f3460); padding: 20px; position: relative; min-height: 100px; }
+    .test-done-tick { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+    .test-cover-badge { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: 1px; }
+    .test-cover-title { font-size: 20px; font-weight: 800; color: #fff; margin: 4px 0 2px; }
+    .test-cover-sub { font-size: 11px; color: rgba(255,255,255,.6); }
+    .test-cover-wave { position: absolute; bottom: 0; left: 0; right: 0; height: 20px; background: linear-gradient(to right, #3d8bff, #7c3aed); opacity: .4; border-radius: 0 0 0 0; }
+    .test-card-body { padding: 16px; }
+    .test-card-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .test-card-meta { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+    .test-card-last { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+    .band-mini { font-weight: 700; color: var(--accent); }
+    .btn-do-test { width: 100%; padding: 9px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: background .15s; }
+    .btn-do-test:hover { background: #2563eb; }
+    .btn-redo-test { width: 100%; padding: 7px; background: transparent; color: var(--text2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; cursor: pointer; font-family: var(--font); margin-top: 6px; transition: all .15s; }
+    .btn-redo-test:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* ══════════════════════════════════════════
+       SCREEN: EXAM
+    ══════════════════════════════════════════ */
+    #screen-exam { flex-direction: column; background: var(--bg); }
+
+    .exam-topbar {
+      height: 56px; background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; padding: 0 20px;
+      position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+    }
+    .exam-title { font-size: 15px; font-weight: 700; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Audio Player */
+    .audio-bar {
+      background: #1a1a2e; color: #fff; padding: 12px 20px;
+      display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+      border-bottom: 2px solid #3d8bff;
+    }
+    .audio-play-btn {
+      width: 38px; height: 38px; border-radius: 50%; background: var(--blue);
+      border: none; color: #fff; font-size: 16px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s;
+    }
+    .audio-play-btn:hover { background: #2563eb; transform: scale(1.05); }
+    .audio-seek-wrap { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .audio-seek {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+      border-radius: 2px; background: rgba(255,255,255,.2); cursor: pointer; outline: none;
+    }
+    .audio-seek::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--blue); cursor: pointer; transition: transform .1s;
+    }
+    .audio-seek::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .audio-time { font-size: 12px; color: rgba(255,255,255,.7); font-family: var(--mono); display: flex; justify-content: space-between; }
+    .speed-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .speed-btn {
+      padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08); color: rgba(255,255,255,.8);
+      font-size: 11px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      transition: all .15s;
+    }
+    .speed-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .speed-btn:hover { background: rgba(255,255,255,.15); }
+    .audio-skip-btn {
+      padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08); color: rgba(255,255,255,.8);
+      font-size: 12px; cursor: pointer; font-family: var(--font); transition: all .15s; flex-shrink: 0;
+    }
+    .audio-skip-btn:hover { background: rgba(255,255,255,.2); }
+
+    /* Part tabs */
+    .part-tabs { background: var(--surface); border-bottom: 1px solid var(--border); display: flex; padding: 0 20px; overflow-x: auto; flex-shrink: 0; }
+    .part-tab-btn { padding: 12px 18px; font-size: 13px; font-weight: 600; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: all .15s; font-family: var(--font); white-space: nowrap; }
+    .part-tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+    /* Main content */
+    .exam-body { display: flex; flex: 1; overflow: hidden; }
+    .questions-panel { flex: 1; overflow-y: auto; padding: 24px; }
+    .sidebar-panel { width: 220px; background: var(--surface); border-left: 1px solid var(--border); padding: 16px; overflow-y: auto; flex-shrink: 0; }
+
+    /* Question nav */
+    .q-nav-label { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+    .q-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .q-nav-btn { width: 100%; aspect-ratio: 1; border: 1.5px solid var(--border); background: var(--surface); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s; color: var(--text2); }
+    .q-nav-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .q-nav-btn.answered { background: #dbeafe; border-color: var(--blue); color: var(--blue); }
+    .q-nav-btn.correct { background: var(--green-light); border-color: var(--green); color: var(--green); }
+    .q-nav-btn.wrong { background: var(--red-light); border-color: var(--accent); color: var(--accent); }
+    .q-nav-btn.skipped { background: #fef9c3; border-color: #ca8a04; color: #92400e; }
+
+    /* Questions */
+    .section-header-card { background: linear-gradient(135deg, #1e3a5f, #0f3460); color: #fff; border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px; }
+    .section-part-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .section-title-text { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .section-desc { font-size: 13px; color: rgba(255,255,255,.7); }
+    .section-range { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 6px; font-family: var(--mono); }
+
+    .question-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px; transition: border-color .15s; }
+    .question-item:hover { border-color: var(--border2); }
+    .q-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .q-badge { width: 26px; height: 26px; background: var(--blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .q-text { font-size: var(--reading-font-size); color: var(--text); line-height: 1.65; font-weight: 500; flex: 1; }
+    .q-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .radio-opt { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; font-size: 14px; }
+    .radio-opt:hover { border-color: var(--blue); background: #eff6ff; }
+    .radio-opt.selected { border-color: var(--blue); background: #dbeafe; }
+    .radio-opt.correct-ans { border-color: var(--green); background: var(--green-light); }
+    .radio-opt.wrong-ans { border-color: var(--accent); background: var(--red-light); }
+    .radio-dot { width: 16px; height: 16px; border: 2px solid var(--border2); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .radio-opt.selected .radio-dot, .radio-opt.correct-ans .radio-dot { background: var(--blue); border-color: var(--blue); }
+    .radio-opt.correct-ans .radio-dot { background: var(--green); border-color: var(--green); }
+    .radio-opt.wrong-ans .radio-dot { background: var(--accent); border-color: var(--accent); }
+    .radio-dot::after { content: ''; width: 6px; height: 6px; background: #fff; border-radius: 50%; display: none; }
+    .radio-opt.selected .radio-dot::after, .radio-opt.correct-ans .radio-dot::after, .radio-opt.wrong-ans .radio-dot::after { display: block; }
+
+    .fill-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font); outline: none; margin-top: 8px; transition: border-color .15s; }
+    .fill-input:focus { border-color: var(--blue); }
+    .fill-input.correct { border-color: var(--green); background: var(--green-light); }
+    .fill-input.incorrect { border-color: var(--accent); background: var(--red-light); }
+    .fill-input[readonly] { background: #f9fafb; cursor: default; }
+
+    /* Drag-and-drop */
+    .word-bank { display: flex; flex-wrap: wrap; gap: 8px; background: #f8faff; border: 1.5px dashed var(--blue); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 16px; }
+    .word-bank-label { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+    .word-chip { padding: 6px 14px; background: #fff; border: 1.5px solid var(--blue); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: grab; color: var(--blue); user-select: none; transition: all .15s; }
+    .word-chip:hover { background: var(--blue); color: #fff; }
+    .word-chip.dragging { opacity: .4; transform: scale(.95); }
+    .word-chip.used { background: #f3f4f8; border-color: var(--border2); color: var(--text3); cursor: default; }
+
+    .drop-zone { display: inline-flex; align-items: center; min-width: 100px; min-height: 34px; padding: 5px 12px; border: 2px dashed var(--border2); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--text3); cursor: pointer; transition: all .15s; vertical-align: middle; }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--blue); background: #eff6ff; }
+    .drop-zone.filled { border-style: solid; border-color: var(--blue); background: #dbeafe; color: var(--text); cursor: default; }
+    .drop-zone.correct-drop { border-color: var(--green); background: var(--green-light); color: var(--green); }
+    .drop-zone.wrong-drop { border-color: var(--accent); background: var(--red-light); color: var(--accent); }
+    .clear-drop { margin-left: 6px; color: var(--text3); cursor: pointer; font-size: 14px; }
+    .clear-drop:hover { color: var(--accent); }
+
+    /* Checkbox */
+    .checkbox-opts { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .checkbox-opt { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all .15s; font-size: 14px; }
+    .checkbox-opt:hover { border-color: var(--blue); background: #eff6ff; }
+    .checkbox-opt.selected { border-color: var(--blue); background: #dbeafe; }
+    .checkbox-opt.correct-ans { border-color: var(--green); background: var(--green-light); }
+    .checkbox-opt.wrong-ans { border-color: var(--accent); background: var(--red-light); }
+    .check-box { width: 18px; height: 18px; border: 2px solid var(--border2); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+    .checkbox-opt.selected .check-box { background: var(--blue); border-color: var(--blue); }
+    .checkbox-opt.correct-ans .check-box { background: var(--green); border-color: var(--green); }
+    .checkbox-opt.wrong-ans .check-box { background: var(--accent); border-color: var(--accent); }
+    .check-box::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; display: none; }
+    .checkbox-opt.selected .check-box::after, .checkbox-opt.correct-ans .check-box::after, .checkbox-opt.wrong-ans .check-box::after { display: block; }
+    .checkbox-hint { font-size: 12px; color: var(--text3); margin-top: 4px; margin-bottom: 6px; }
+
+    /* Review */
+    .q-correct-ans { font-size: 13px; font-weight: 600; margin-top: 10px; padding: 8px 12px; border-radius: var(--radius-sm); }
+    .q-correct-ans.right { background: var(--green-light); color: var(--green); }
+    .q-correct-ans.wrong { background: var(--red-light); color: #dc2626; }
+    .q-explanation { font-size: 13px; color: var(--text2); margin-top: 8px; padding: 8px 12px; background: #fef9c3; border-radius: var(--radius-sm); border-left: 3px solid var(--yellow); }
+
+    /* Submit bar */
+    .exam-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .footer-answered { font-size: 13px; color: var(--text2); }
+    .footer-answered strong { color: var(--blue); }
+
+    /* ══════════════════════════════════════════
+       SCREEN: RESULT
+    ══════════════════════════════════════════ */
+    #screen-result { background: var(--bg); align-items: center; justify-content: center; }
+    .result-card { background: var(--surface); border-radius: 20px; padding: 40px 48px; text-align: center; box-shadow: var(--shadow); max-width: 460px; width: 90%; }
+    .result-emoji { font-size: 56px; margin-bottom: 16px; }
+    .result-band { font-size: 64px; font-weight: 800; color: var(--blue); line-height: 1; }
+    .result-band-label { font-size: 14px; color: var(--text3); margin-bottom: 20px; }
+    .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+    .result-stat { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; }
+    .result-stat-val { font-size: 22px; font-weight: 800; }
+    .result-stat-lab { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; }
+    .result-msg { font-size: 14px; color: var(--text2); line-height: 1.6; margin: 16px 0 24px; padding: 14px; background: var(--bg); border-radius: var(--radius-sm); }
+    .result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* ══════════════════════════════════════════
+       SCREEN: REVIEW
+    ══════════════════════════════════════════ */
+    #screen-review { background: var(--bg); flex-direction: column; }
+    .review-topbar { height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; padding: 0 20px; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+    .review-band-badge { background: #dbeafe; color: var(--blue); font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .tool-btn { padding: 7px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text2); transition: all .15s; font-family: var(--font); }
+    .tool-btn.active { background: #fef3c7; border-color: var(--yellow); color: #92400e; }
+
+    /* Transcript panel */
+    .review-layout { display: flex; flex: 1; overflow: hidden; }
+    .transcript-panel { width: 380px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+    .transcript-header { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; justify-content: space-between; }
+    .transcript-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; line-height: 1.9; color: var(--text2); }
+    .transcript-body .tw { display: inline; cursor: pointer; border-radius: 3px; padding: 0 1px; transition: background .1s; }
+    .transcript-body .tw:hover { background: #fef3c7; color: var(--text); }
+    .transcript-body .tw.playing { background: #fde68a; color: #92400e; border-radius: 3px; font-weight: 600; }
+    .transcript-body .tw.hl { background: #fde68a; }
+    .review-questions-panel { flex: 1; overflow-y: auto; padding: 24px; }
+
+    /* Dict popup */
+    #dict-popup { position: fixed; z-index: 500; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,.15); }
+    .dict-word-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .dict-phonetic { font-family: var(--mono); font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+    .dict-pos { font-size: 11px; font-weight: 600; color: var(--purple); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .dict-meaning { font-size: 14px; color: var(--text); line-height: 1.5; margin-bottom: 6px; }
+    .dict-example { font-size: 13px; color: var(--text2); font-style: italic; margin-bottom: 12px; }
+    .dict-actions { display: flex; gap: 8px; }
+    .dict-btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--bg); font-family: var(--font); transition: all .15s; }
+    .dict-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .dict-btn:hover { border-color: var(--border2); }
+    .dict-btn.primary:hover { background: #c62828; }
+
+    /* Highlight */
+    .hl { background: #fde68a; border-radius: 2px; cursor: pointer; }
+    .hl:hover { background: #fbbf24; }
+
+    /* ── MODALS ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 16px; backdrop-filter: blur(4px); }
+    .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,.15); animation: pop .18s ease; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; }
+    @keyframes pop { from { transform: scale(.94) translateY(8px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    .modal-sm { width: min(440px, 100%); }
+    .modal-md { width: min(600px, 100%); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; }
+    .modal-header h3 { font-size: 17px; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text3); padding: 4px; border-radius: 6px; line-height: 1; }
+    .modal-body { padding: 18px 24px; overflow-y: auto; flex: 1; }
+    .modal-footer { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 24px; right: 24px; background: #1f2937; color: #fff; border-radius: var(--radius-sm); padding: 11px 18px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 16px rgba(0,0,0,.2); z-index: 999; transform: translateY(20px); opacity: 0; transition: all .25s; display: flex; align-items: center; gap: 8px; max-width: 320px; }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { background: #166534; }
+    #toast.error { background: #991b1b; }
+    #toast.info { background: #1e40af; }
+
+    @media (max-width: 768px) {
+      .transcript-panel { display: none; }
+      .sidebar-panel { display: none; }
+      .audio-bar { flex-wrap: wrap; }
+      .speed-btns { order: 3; }
+    }
+  </style>
 </head>
-
 <body>
-    <header
-        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
-            <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-            <button onclick="logout()"
-                style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
-                🚪 Đăng xuất
-            </button>
-        </div>
-    </header>
 
-    <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
-        <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
-            <li><a href="reading.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📖
-                    Reading</a></li>
-            <li><a href="listening.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#e53935;text-decoration:none;border-bottom:2px solid #e53935">🎧
-                    Listening</a></li>
-            <li><a href="writing.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">✏️
-                    Writing</a></li>
-            <li><a href="speaking.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎤
-                    Speaking</a></li>
-            <li><a href="dashboard.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📚
-                    Vocab</a></li>
-        </ul>
-    </nav>
+<!-- ══════════════════════════════════════════
+     SCREEN: LIST
+══════════════════════════════════════════ -->
+<div class="screen" id="screen-list">
+  <div class="topbar">
+    <div class="topbar-logo">🎧 <span>English</span>WithDan</div>
+    <div class="topbar-right">
+      <span id="userName" style="font-size:13px;color:var(--text2)"></span>
+      <a href="dashboard.html" class="btn btn-ghost btn-sm">📚 Từ vựng</a>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Đăng xuất</button>
+    </div>
+  </div>
 
-    <div class="container">
-        <h2>Listening Practice</h2>
-        <p>Chức năng đang phát triển...</p>
-        <div id="test"></div>
-        <button onclick="submitTest()">Submit</button>
-        <p id="result"></p>
+  <div class="list-hero">
+    <h1>🎧 IELTS Listening Practice</h1>
+    <p>Luyện nghe IELTS với audio chuẩn – word highlight đồng bộ theo từng từ</p>
+  </div>
 
-        <script src="js/listening.js"></script>
+  <div class="list-content">
+    <div class="list-filter-row">
+      <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
+      <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
+      <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
+    </div>
+    <div id="tests-wrapper">
+      <p style="text-align:center;padding:60px;color:var(--text3)">Đang tải đề nghe...</p>
+    </div>
+  </div>
+</div>
 
+<!-- ══════════════════════════════════════════
+     SCREEN: EXAM
+══════════════════════════════════════════ -->
+<div class="screen" id="screen-exam">
+  <!-- Topbar -->
+  <div class="exam-topbar">
+    <button class="btn btn-ghost btn-sm" onclick="confirmExit()">← Thoát</button>
+    <span class="exam-title" id="exam-title">IELTS Listening</span>
+    <button class="btn btn-primary btn-sm" onclick="confirmSubmit()">📤 Nộp bài</button>
+  </div>
+
+  <!-- Audio Player -->
+  <div class="audio-bar">
+    <button class="audio-play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+
+    <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
+
+    <div class="audio-seek-wrap">
+      <input type="range" class="audio-seek" id="audio-seek" value="0" min="0" max="100" step="0.1"
+             oninput="onSeekInput(this.value)" />
+      <div class="audio-time">
+        <span id="audio-current">00:00</span>
+        <span id="audio-total">00:00</span>
+      </div>
     </div>
 
-</body>
+    <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
 
+    <div class="speed-btns">
+      <button class="speed-btn active" onclick="setSpeed(0.75, this)">×0.75</button>
+      <button class="speed-btn" onclick="setSpeed(1, this)">×1</button>
+      <button class="speed-btn" onclick="setSpeed(1.25, this)">×1.25</button>
+      <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
+    </div>
+
+    <audio id="audio-player" preload="metadata"></audio>
+  </div>
+
+  <!-- Part tabs -->
+  <div class="part-tabs" id="part-tabs"></div>
+
+  <!-- Body -->
+  <div class="exam-body">
+    <div class="questions-panel" id="questions-panel"></div>
+    <div class="sidebar-panel">
+      <div class="q-nav-label">Câu hỏi</div>
+      <div class="q-nav-grid" id="q-nav-grid"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="exam-footer">
+    <div class="footer-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
+    <button class="btn btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: RESULT
+══════════════════════════════════════════ -->
+<div class="screen" id="screen-result">
+  <div class="result-card">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-band" id="result-band">0.0</div>
+    <div class="result-band-label">Band Score</div>
+    <div class="result-stats">
+      <div class="result-stat">
+        <div class="result-stat-val" style="color:var(--green)" id="r-correct">0</div>
+        <div class="result-stat-lab">Đúng</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-val" style="color:var(--accent)" id="r-wrong">0</div>
+        <div class="result-stat-lab">Sai</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-stat-val" style="color:var(--text3)" id="r-skip">0</div>
+        <div class="result-stat-lab">Bỏ qua</div>
+      </div>
+    </div>
+    <div class="result-msg" id="result-msg"></div>
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="goToReview()">📋 Xem đáp án</button>
+      <button class="btn btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: REVIEW
+══════════════════════════════════════════ -->
+<div class="screen" id="screen-review">
+  <div class="review-topbar">
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('list')">← Về trang chủ</button>
+    <span class="exam-title" id="review-title" style="flex:1">Review</span>
+    <span class="review-band-badge" id="review-band-badge">Band –</span>
+    <button class="tool-btn active" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Highlight</button>
+    <button class="tool-btn" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
+  </div>
+
+  <!-- Audio Player (review) -->
+  <div class="audio-bar" id="review-audio-bar">
+    <button class="audio-play-btn" id="play-btn-rv" onclick="togglePlay()">▶</button>
+    <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
+    <div class="audio-seek-wrap">
+      <input type="range" class="audio-seek" id="audio-seek-rv" value="0" min="0" max="100" step="0.1"
+             oninput="onSeekInput(this.value)" />
+      <div class="audio-time">
+        <span id="audio-current-rv">00:00</span>
+        <span id="audio-total-rv">00:00</span>
+      </div>
+    </div>
+    <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
+    <div class="speed-btns">
+      <button class="speed-btn active" onclick="setSpeed(0.75, this)">×0.75</button>
+      <button class="speed-btn" onclick="setSpeed(1, this)">×1</button>
+      <button class="speed-btn" onclick="setSpeed(1.25, this)">×1.25</button>
+      <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
+    </div>
+  </div>
+
+  <div class="part-tabs" id="part-tabs-rv"></div>
+
+  <div class="review-layout">
+    <!-- Transcript -->
+    <div class="transcript-panel">
+      <div class="transcript-header">
+        <span>📜 Transcript</span>
+        <span style="font-size:11px;color:var(--text3);font-weight:400">Double-click để tra từ</span>
+      </div>
+      <div class="transcript-body" id="transcript-body"></div>
+    </div>
+
+    <!-- Questions -->
+    <div class="review-questions-panel" id="review-questions-panel">
+      <div class="q-nav-label" style="margin-bottom:12px">Xem lại câu hỏi</div>
+      <div class="q-nav-grid" id="q-nav-grid-rv" style="margin-bottom:20px"></div>
+      <div id="review-questions-inner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Dict Popup -->
+<div id="dict-popup" class="hidden">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+    <div>
+      <div class="dict-word-title" id="dict-word"></div>
+      <div class="dict-phonetic" id="dict-phonetic"></div>
+    </div>
+    <button onclick="closeDictPopup()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);padding:2px">×</button>
+  </div>
+  <div class="dict-pos" id="dict-pos"></div>
+  <div class="dict-meaning" id="dict-meaning">Đang tra...</div>
+  <div class="dict-example" id="dict-example"></div>
+  <div class="dict-actions">
+    <button class="dict-btn" onclick="speakDictWord()">🔊 Phát âm</button>
+    <button class="dict-btn primary" onclick="saveVocabWord()">💾 Lưu từ</button>
+  </div>
+</div>
+
+<!-- Modal: Submit confirm -->
+<div class="modal-overlay hidden" id="modal-submit">
+  <div class="modal-box modal-sm">
+    <div class="modal-header"><h3>Nộp bài?</h3><button class="modal-close" onclick="closeModal('modal-submit')">×</button></div>
+    <div class="modal-body">
+      <p style="color:var(--text2);line-height:1.6">Bạn có chắc muốn nộp bài? Bạn đã trả lời <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> câu.</p>
+      <p id="modal-warning" style="color:var(--yellow);font-size:13px;margin-top:8px"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-submit')">Tiếp tục làm</button>
+      <button class="btn btn-primary" onclick="submitExam()">Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Exit confirm -->
+<div class="modal-overlay hidden" id="modal-exit">
+  <div class="modal-box modal-sm">
+    <div class="modal-header"><h3>Thoát bài thi?</h3><button class="modal-close" onclick="closeModal('modal-exit')">×</button></div>
+    <div class="modal-body"><p style="color:var(--text2)">Tiến trình làm bài sẽ không được lưu.</p></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-exit')">Ở lại</button>
+      <button class="btn btn-primary" onclick="forceExit()">Thoát</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"><span id="toast-msg"></span></div>
+
+<script>
+'use strict';
+
+const API = 'https://englishwithdan.onrender.com/api';
+
+const state = {
+  tests: [],
+  currentTestId: null,
+  currentTest: null,
+  answers: {},       // { questionNumber: value }
+  dragItem: null,
+  partIdx: 0,
+  isReview: false,
+  reviewResult: null,
+  tool: 'highlight',
+  dictWord: '', dictMeaning: '', dictExample: '',
+  submitted: false
+};
+
+// ── Audio state (shared between exam & review) ──
+const audio = document.getElementById('audio-player');
+let wordTimestamps = [];
+let animFrameId = null;
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  if (!token) { window.location.href = 'login.html'; return; }
+
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const name = user.firstName ? `${user.firstName} ${user.lastName}` : user.username || '';
+  const el = document.getElementById('userName');
+  if (el && name) el.textContent = `👋 ${name}`;
+
+  setupHighlight();
+  setupAudioEvents();
+  loadTestList();
+  showScreen('list');
+});
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+function getToken() { return localStorage.getItem('token'); }
+function authH() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
+function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
+
+// ══════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const el = document.getElementById(`screen-${name}`);
+  if (el) { el.style.display = 'flex'; el.classList.add('active'); }
+}
+
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.className = `show ${type}`;
+  document.getElementById('toast-msg').textContent = msg;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+// SCREEN: LIST
+// ══════════════════════════════════════════════
+async function loadTestList() {
+  try {
+    const res = await fetch(`${API}/listening/tests`, { headers: authH() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    state.tests = data.tests;
+    renderTestList(data.tests);
+  } catch (err) {
+    document.getElementById('tests-wrapper').innerHTML =
+      `<p style="text-align:center;padding:40px;color:var(--accent)">Lỗi tải đề: ${err.message}</p>`;
+  }
+}
+
+function renderTestList(tests) {
+  const wrap = document.getElementById('tests-wrapper');
+  if (!tests.length) {
+    wrap.innerHTML = '<p style="text-align:center;padding:60px;color:var(--text3)">Chưa có đề nghe nào.</p>';
+    return;
+  }
+  const groups = {};
+  tests.forEach(t => {
+    const g = t.seriesName || 'Bộ đề';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(t);
+  });
+  wrap.innerHTML = Object.entries(groups).map(([grp, list]) => `
+    <div class="test-group">
+      <div class="test-group-title">${grp}</div>
+      <div class="test-grid">${list.map(renderTestCard).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function renderTestCard(t) {
+  const dur = t.audioDuration ? `${Math.floor(t.audioDuration/60)}:${pad(t.audioDuration%60)} phút` : '–';
+  return `
+    <div class="test-card">
+      <div class="test-card-cover">
+        <div class="test-cover-badge">IELTS Listening</div>
+        <div class="test-cover-title">🎧</div>
+        <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} parts</div>
+        <div class="test-cover-wave"></div>
+      </div>
+      <div class="test-card-body">
+        <div class="test-card-name">${t.name}</div>
+        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
+        <button class="btn-do-test" onclick="startTest('${t._id}')">🎧 Làm bài</button>
+      </div>
+    </div>
+  `;
+}
+
+function filterTests(mode, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  let list = state.tests;
+  renderTestList(list);
+}
+
+// ══════════════════════════════════════════════
+// START EXAM
+// ══════════════════════════════════════════════
+async function startTest(testId) {
+  try {
+    const res = await fetch(`${API}/listening/tests/${testId}/start`, { headers: authH() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+
+    const t = data.test;
+    state.currentTestId = testId;
+    state.currentTest = t;
+    state.answers = {};
+    state.partIdx = 0;
+    state.submitted = false;
+    state.isReview = false;
+    wordTimestamps = t.wordTimestamps || [];
+
+    document.getElementById('exam-title').textContent = t.name;
+
+    // Load audio
+    audio.src = t.audioUrl || '';
+    audio.load();
+
+    buildPartTabs('part-tabs', false);
+    renderPartQuestions(state.partIdx, false);
+    renderQNav('q-nav-grid', false);
+    updateFooter();
+    showScreen('exam');
+
+    window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+  } catch (err) {
+    toast('Lỗi tải đề: ' + err.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════════════
+// AUDIO PLAYER
+// ══════════════════════════════════════════════
+function setupAudioEvents() {
+  audio.addEventListener('timeupdate', onTimeUpdate);
+  audio.addEventListener('loadedmetadata', () => {
+    const dur = audio.duration || 0;
+    setTimeDisplay('audio-current', 0);
+    setTimeDisplay('audio-total', dur);
+    setTimeDisplay('audio-current-rv', 0);
+    setTimeDisplay('audio-total-rv', dur);
+    document.getElementById('audio-seek').max = dur;
+    document.getElementById('audio-seek-rv').max = dur;
+  });
+  audio.addEventListener('play', () => {
+    document.getElementById('play-btn').textContent = '⏸';
+    document.getElementById('play-btn-rv').textContent = '⏸';
+  });
+  audio.addEventListener('pause', () => {
+    document.getElementById('play-btn').textContent = '▶';
+    document.getElementById('play-btn-rv').textContent = '▶';
+  });
+}
+
+function onTimeUpdate() {
+  const t = audio.currentTime;
+  const dur = audio.duration || 1;
+  const pct = (t / dur) * 100;
+  setTimeDisplay('audio-current', t);
+  setTimeDisplay('audio-current-rv', t);
+  document.getElementById('audio-seek').value = t;
+  document.getElementById('audio-seek-rv').value = t;
+  highlightCurrentWord(t);
+}
+
+function setTimeDisplay(id, secs) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = `${pad(Math.floor(secs/60))}:${pad(Math.floor(secs%60))}`;
+}
+
+function togglePlay() {
+  if (audio.paused) audio.play();
+  else audio.pause();
+}
+
+function skipAudio(secs) {
+  audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + secs));
+}
+
+function onSeekInput(val) {
+  audio.currentTime = parseFloat(val);
+}
+
+function setSpeed(speed, btn) {
+  audio.playbackRate = speed;
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ── Word-level highlight in transcript ──
+function highlightCurrentWord(t) {
+  if (!wordTimestamps.length) return;
+  const tb = document.getElementById('transcript-body');
+  if (!tb) return;
+  tb.querySelectorAll('.tw').forEach(el => el.classList.remove('playing'));
+  for (const wt of wordTimestamps) {
+    if (t >= wt.start && t < wt.end) {
+      const el = tb.querySelector(`.tw[data-start="${wt.start}"]`);
+      if (el) {
+        el.classList.add('playing');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      break;
+    }
+  }
+}
+
+// Click on transcript word → jump to that time
+function jumpToTime(start) {
+  audio.currentTime = start;
+  if (audio.paused) audio.play();
+}
+
+// ══════════════════════════════════════════════
+// PART TABS
+// ══════════════════════════════════════════════
+function buildPartTabs(containerId, isReview) {
+  const sections = isReview
+    ? (state.reviewResult?.sections || [])
+    : (state.currentTest?.sections || []);
+  const c = document.getElementById(containerId);
+  c.innerHTML = sections.map((s, i) => `
+    <button class="part-tab-btn ${i === 0 ? 'active' : ''}"
+            onclick="switchPart(${i}, ${isReview})">
+      Part ${s.partNumber}
+    </button>
+  `).join('');
+}
+
+function switchPart(idx, isReview) {
+  state.partIdx = idx;
+  const tabsId = isReview ? 'part-tabs-rv' : 'part-tabs';
+  document.querySelectorAll(`#${tabsId} .part-tab-btn`).forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  if (isReview) {
+    renderReviewPartQuestions(idx);
+  } else {
+    renderPartQuestions(idx, false);
+  }
+}
+
+// ══════════════════════════════════════════════
+// RENDER QUESTIONS (EXAM)
+// ══════════════════════════════════════════════
+function renderPartQuestions(partIdx, isReview) {
+  const sections = state.currentTest?.sections || [];
+  const section = sections[partIdx];
+  if (!section) return;
+
+  const panel = document.getElementById('questions-panel');
+  let html = `
+    <div class="section-header-card">
+      <div class="section-part-label">Part ${section.partNumber}</div>
+      <div class="section-title-text">${section.title}</div>
+      ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
+      <div class="section-range">Questions ${section.questionRange.start}–${section.questionRange.end}</div>
+    </div>
+  `;
+
+  let prevType = null, bankRendered = false;
+  section.questions.forEach(q => {
+    const isDnD = ['sentence-completion', 'matching'].includes(q.type);
+    if (isDnD && q.wordBank?.length && (!bankRendered || prevType !== q.type)) {
+      html += renderWordBankHtml(q.wordBank, section.questionRange.start);
+      bankRendered = true;
+    }
+    if (!isDnD) bankRendered = false;
+    prevType = q.type;
+    html += renderQuestion(q, false, null);
+  });
+
+  panel.innerHTML = html;
+
+  // Restore answers
+  section.questions.forEach(q => restoreAnswer(q, false));
+  // DnD
+  setupDragDrop(panel);
+}
+
+function renderWordBankHtml(words, startNum) {
+  return `
+    <div style="margin-bottom:16px">
+      <div class="word-bank-label">📦 Word Bank – kéo thả vào ô trống</div>
+      <div class="word-bank" id="bank-${startNum}">
+        ${words.map(w => `<div class="word-chip" data-word="${w}" draggable="true">${w}</div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestion(q, isReview, reviewData) {
+  const num = q.questionNumber;
+  const ua = isReview ? (reviewData?.userAnswer || '') : (state.answers[num] || '');
+  const ca = isReview ? (reviewData?.correctAnswer || '') : '';
+  const ok = isReview ? reviewData?.isCorrect : false;
+
+  let inputHtml = '';
+  switch (q.type) {
+    case 'multiple-choice':
+      inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview, false);
+      break;
+    case 'checkbox':
+      inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2);
+      break;
+    case 'fill-blank':
+    case 'map-labelling':
+      inputHtml = renderFillBlank(num, ua, ca, isReview);
+      break;
+    case 'sentence-completion':
+    case 'matching':
+      inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview);
+      break;
+    default:
+      inputHtml = renderFillBlank(num, ua, ca, isReview);
+  }
+
+  const reviewExtra = isReview ? `
+    <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
+      ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${ca}</strong>`}
+    </div>
+    ${reviewData?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${reviewData.explanation}</div>` : ''}
+  ` : '';
+
+  const questionBody = ['sentence-completion', 'matching'].includes(q.type) ? '' : `<div class="q-text">${q.questionText}</div>`;
+
+  return `
+    <div class="question-item" id="qi-${num}" data-qnum="${num}">
+      <div class="q-header">
+        <span class="q-badge">${num}</span>
+        ${questionBody}
+      </div>
+      ${inputHtml}
+      ${reviewExtra}
+    </div>
+  `;
+}
+
+function renderRadioOpts(num, opts, ua, ca, isReview, disabled) {
+  return `<div class="q-options">${opts.map(opt => {
+    let cls = '';
+    if (isReview) {
+      if (opt === ca) cls = 'correct-ans';
+      else if (opt === ua && opt !== ca) cls = 'wrong-ans';
+    } else {
+      if (opt === ua) cls = 'selected';
+    }
+    return `<div class="radio-opt ${cls}" data-qnum="${num}" data-value="${opt}"
+              ${isReview ? '' : `onclick="pickRadio(${num}, '${opt}')"`}>
+      <span class="radio-dot"></span><label>${opt}</label>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderCheckboxOpts(num, opts, ua, ca, isReview, count) {
+  let uaArr = [];
+  let caArr = [];
+  try { uaArr = JSON.parse(ua || '[]'); } catch {}
+  try { caArr = JSON.parse(ca || '[]'); } catch {}
+
+  return `
+    <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
+    <div class="checkbox-opts">${opts.map(opt => {
+    let cls = '';
+    if (isReview) {
+      if (caArr.includes(opt)) cls = 'correct-ans';
+      else if (uaArr.includes(opt) && !caArr.includes(opt)) cls = 'wrong-ans';
+    } else {
+      if (uaArr.includes(opt)) cls = 'selected';
+    }
+    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${opt}" data-count="${count}"
+              ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${opt}', ${count})"`}>
+      <span class="check-box"></span><label>${opt}</label>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderFillBlank(num, ua, ca, isReview) {
+  const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct' : 'incorrect') : '';
+  return `<input id="fi-${num}" class="fill-input ${cls}" type="text"
+    placeholder="Nhập câu trả lời..." value="${ua}"
+    ${isReview ? 'readonly' : `oninput="saveText(${num}, this.value)"`} />`;
+}
+
+function renderInlineDrop(num, questionText, ua, ca, isReview) {
+  const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : 'wrong-drop') : '';
+  const dzHtml = `
+    <div class="drop-zone ${ua ? 'filled' : ''} ${isReview ? cls : ''}"
+         data-qnum="${num}"
+         ${isReview ? '' : `ondragover="dzOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
+      ${ua ? `${ua}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
+    </div>`;
+  const filled = questionText.replace(/_{2,}|\[blank\]/i, dzHtml);
+  const html = filled !== questionText ? filled : `${questionText} ${dzHtml}`;
+  return `<div class="q-text" style="margin-top:-6px">${html}</div>`;
+}
+
+// ══════════════════════════════════════════════
+// ANSWER HANDLERS
+// ══════════════════════════════════════════════
+function pickRadio(qnum, value) {
+  state.answers[qnum] = value;
+  const qi = document.getElementById(`qi-${qnum}`);
+  qi?.querySelectorAll('.radio-opt').forEach(o => o.classList.toggle('selected', o.dataset.value === value));
+  updateQNav('q-nav-grid', false);
+  updateFooter();
+}
+
+function toggleCheckbox(qnum, value, maxCount) {
+  let arr = [];
+  try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch {}
+  if (arr.includes(value)) {
+    arr = arr.filter(v => v !== value);
+  } else {
+    if (arr.length >= maxCount) { toast(`Chỉ chọn tối đa ${maxCount} đáp án`, 'info'); return; }
+    arr.push(value);
+  }
+  state.answers[qnum] = JSON.stringify(arr);
+  const qi = document.getElementById(`qi-${qnum}`);
+  qi?.querySelectorAll('.checkbox-opt').forEach(o => o.classList.toggle('selected', arr.includes(o.dataset.value)));
+  updateQNav('q-nav-grid', false);
+  updateFooter();
+}
+
+function saveText(qnum, value) {
+  state.answers[qnum] = value.trim();
+  updateQNav('q-nav-grid', false);
+  updateFooter();
+}
+
+function restoreAnswer(q, isReview) {
+  const num = q.questionNumber;
+  const saved = state.answers[num];
+  if (!saved) return;
+  if (['sentence-completion', 'matching'].includes(q.type)) {
+    const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
+    if (dz) {
+      dz.classList.add('filled');
+      dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>`;
+    }
+  } else if (['fill-blank', 'map-labelling'].includes(q.type)) {
+    const inp = document.getElementById(`fi-${num}`);
+    if (inp) inp.value = saved;
+  }
+}
+
+// ══════════════════════════════════════════════
+// DRAG & DROP
+// ══════════════════════════════════════════════
+function setupDragDrop(container) {
+  container.querySelectorAll('.word-chip:not(.used)').forEach(chip => {
+    chip.addEventListener('dragstart', e => {
+      state.dragItem = chip.dataset.word;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+  });
+}
+
+function dzOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function dzDrop(e, qnum) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const word = state.dragItem || e.dataTransfer.getData('text');
+  if (word) placeAnswer(qnum, word);
+}
+
+function dzClick(e, qnum) {
+  if (e.target.classList.contains('clear-drop')) return;
+  // Find word bank for this section
+  const section = (state.currentTest?.sections || [])[state.partIdx];
+  const q = section?.questions.find(q => q.questionNumber === qnum);
+  if (!q?.wordBank?.length) return;
+
+  const existing = document.getElementById('word-picker');
+  if (existing) existing.remove();
+
+  const rect = e.currentTarget.getBoundingClientRect();
+  const picker = document.createElement('div');
+  picker.id = 'word-picker';
+  Object.assign(picker.style, {
+    position: 'fixed', top: (rect.bottom + 6) + 'px', left: rect.left + 'px',
+    background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px',
+    padding: '12px', boxShadow: '0 8px 24px rgba(0,0,0,.15)', zIndex: '500',
+    display: 'flex', flexWrap: 'wrap', gap: '8px', maxWidth: '300px'
+  });
+  q.wordBank.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip'; chip.textContent = w;
+    chip.onclick = () => { placeAnswer(qnum, w); picker.remove(); };
+    picker.appendChild(chip);
+  });
+  document.body.appendChild(picker);
+  setTimeout(() => document.addEventListener('click', function closeP(ev) {
+    if (!picker.contains(ev.target)) { picker.remove(); document.removeEventListener('click', closeP); }
+  }), 0);
+}
+
+function clearDz(e, qnum) {
+  e.stopPropagation();
+  delete state.answers[qnum];
+  const section = (state.currentTest?.sections || [])[state.partIdx];
+  if (section) renderPartQuestions(state.partIdx, false);
+  updateQNav('q-nav-grid', false);
+  updateFooter();
+}
+
+function placeAnswer(qnum, word) {
+  state.answers[qnum] = word;
+  const section = (state.currentTest?.sections || [])[state.partIdx];
+  if (section) renderPartQuestions(state.partIdx, false);
+  updateQNav('q-nav-grid', false);
+  state.dragItem = null;
+  updateFooter();
+}
+
+// ══════════════════════════════════════════════
+// Q NAV
+// ══════════════════════════════════════════════
+function renderQNav(gridId, isReview) {
+  const sections = isReview
+    ? (state.reviewResult?.sections || [])
+    : (state.currentTest?.sections || []);
+  const allQs = isReview
+    ? (state.reviewResult?.questions || [])
+    : sections.flatMap(s => s.questions);
+
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+
+  grid.innerHTML = allQs.map(q => {
+    const num = isReview ? q.questionNumber : q.questionNumber;
+    let cls = '';
+    if (isReview) {
+      cls = q.isCorrect ? 'correct' : (q.userAnswer ? 'wrong' : 'skipped');
+    } else {
+      cls = state.answers[num] ? 'answered' : '';
+    }
+    return `<button class="q-nav-btn ${cls}" id="qnb-${num}" onclick="scrollToQ(${num})">${num}</button>`;
+  }).join('');
+}
+
+function updateQNav(gridId, isReview) {
+  const sections = state.currentTest?.sections || [];
+  sections.flatMap(s => s.questions).forEach(q => {
+    const btn = document.getElementById(`qnb-${q.questionNumber}`);
+    if (!btn) return;
+    btn.className = `q-nav-btn ${state.answers[q.questionNumber] ? 'answered' : ''}`;
+  });
+}
+
+function scrollToQ(num) {
+  const el = document.getElementById(`qi-${num}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function updateFooter() {
+  const total = (state.currentTest?.sections || []).reduce((s, sec) => s + sec.questions.length, 0);
+  const answered = Object.keys(state.answers).length;
+  document.getElementById('footer-answered').textContent = answered;
+  document.getElementById('footer-total').textContent = total;
+  document.getElementById('modal-answered').textContent = answered;
+  document.getElementById('modal-total').textContent = total;
+  const unanswered = total - answered;
+  document.getElementById('modal-warning').textContent = unanswered > 0
+    ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
+}
+
+// ══════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════
+function confirmSubmit() {
+  updateFooter();
+  openModal('modal-submit');
+}
+
+async function submitExam() {
+  closeModal('modal-submit');
+  if (state.submitted) return;
+  state.submitted = true;
+  window.onbeforeunload = null;
+  audio.pause();
+
+  try {
+    const res = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
+      method: 'POST', headers: authH(),
+      body: JSON.stringify({ answers: state.answers })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+
+    const r = data.result;
+    state.reviewResult = r;
+
+    document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
+    document.getElementById('r-correct').textContent = r.correctCount;
+    document.getElementById('r-wrong').textContent = r.wrongCount;
+    document.getElementById('r-skip').textContent = r.skippedCount;
+    document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
+    document.getElementById('result-emoji').textContent = r.bandScore >= 7 ? '🎉' : r.bandScore >= 5.5 ? '💪' : '📚';
+    showScreen('result');
+  } catch (err) {
+    toast('Lỗi nộp bài: ' + err.message, 'error');
+    state.submitted = false;
+  }
+}
+
+function getBandMsg(band) {
+  if (band >= 7.5) return 'Xuất sắc! Bạn đã đạt kết quả rất tốt 🎉';
+  if (band >= 6.5) return 'Tốt lắm! Hãy tiếp tục luyện tập để đạt band cao hơn 💪';
+  if (band >= 5.5) return 'Tiếp tục cố gắng nhé! Bạn đang tiến bộ rõ rệt 📚';
+  return 'Đề hơi khó, cứ tiếp tục luyện – sẽ giỏi thôi! 🌱';
+}
+
+// ══════════════════════════════════════════════
+// REVIEW
+// ══════════════════════════════════════════════
+function goToReview() {
+  const r = state.reviewResult;
+  if (!r) return;
+
+  state.isReview = true;
+  state.partIdx = 0;
+  wordTimestamps = r.wordTimestamps || [];
+
+  document.getElementById('review-title').textContent = r.testName;
+  document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
+
+  // Audio
+  audio.src = r.audioUrl || '';
+  audio.load();
+
+  // Transcript
+  renderTranscript(r.transcript, r.wordTimestamps);
+
+  // Tabs & questions
+  buildReviewPartTabs(r.sections);
+  renderReviewPartQuestions(0);
+  renderQNav('q-nav-grid-rv', true);
+
+  setupDictionaryDouble('transcript-body');
+  setTool('highlight');
+  showScreen('review');
+}
+
+function buildReviewPartTabs(sections) {
+  const c = document.getElementById('part-tabs-rv');
+  c.innerHTML = (sections || []).map((s, i) => `
+    <button class="part-tab-btn ${i === 0 ? 'active' : ''}" onclick="switchPart(${i}, true)">
+      Part ${s.partNumber}
+    </button>
+  `).join('');
+}
+
+function renderReviewPartQuestions(partIdx) {
+  const r = state.reviewResult;
+  if (!r) return;
+  const section = r.sections[partIdx];
+  if (!section) return;
+
+  const panel = document.getElementById('review-questions-inner');
+  // Get questions for this part by range
+  const qs = r.questions.filter(q => q.questionNumber >= section.questionRange.start && q.questionNumber <= section.questionRange.end);
+
+  let html = `
+    <div class="section-header-card">
+      <div class="section-part-label">Part ${section.partNumber}</div>
+      <div class="section-title-text">${section.title}</div>
+      ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
+      <div class="section-range">Questions ${section.questionRange.start}–${section.questionRange.end}</div>
+    </div>
+  `;
+
+  qs.forEach(q => { html += renderQuestion(q, true, q); });
+  panel.innerHTML = html;
+}
+
+// ── Transcript ──
+function renderTranscript(transcript, wts) {
+  const tb = document.getElementById('transcript-body');
+  if (!transcript) { tb.innerHTML = '<p style="color:var(--text3);font-style:italic">Chưa có transcript.</p>'; return; }
+
+  if (wts && wts.length) {
+    // Word-level render
+    tb.innerHTML = wts.map(wt =>
+      `<span class="tw" data-start="${wt.start}" data-end="${wt.end}"
+             onclick="jumpToTime(${wt.start})">${wt.word} </span>`
+    ).join('');
+  } else {
+    // Plain text fallback
+    tb.innerHTML = transcript.split('\n').map(line =>
+      `<p style="margin-bottom:8px">${line}</p>`
+    ).join('');
+  }
+}
+
+// ══════════════════════════════════════════════
+// HIGHLIGHT
+// ══════════════════════════════════════════════
+function setupHighlight() {
+  document.addEventListener('mouseup', () => {
+    if (state.tool !== 'highlight') return;
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    const tb = document.getElementById('transcript-body');
+    if (!tb || !tb.contains(range.commonAncestorContainer)) return;
+    const span = document.createElement('span');
+    span.className = 'hl';
+    try { range.surroundContents(span); } catch {}
+    sel.removeAllRanges();
+  });
+}
+
+// ══════════════════════════════════════════════
+// DICTIONARY
+// ══════════════════════════════════════════════
+function setupDictionaryDouble(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
+  el._dictHandler = async e => {
+    if (state.tool !== 'dict') return;
+    const sel = window.getSelection();
+    const word = sel?.toString().trim();
+    if (!word || word.includes(' ') || word.length < 2) return;
+    e.preventDefault();
+    await lookupWord(word, e);
+  };
+  el.addEventListener('dblclick', el._dictHandler);
+}
+
+async function lookupWord(word, e) {
+  const popup = document.getElementById('dict-popup');
+  state.dictWord = word;
+  state.dictMeaning = '';
+  state.dictExample = '';
+
+  const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', ''); set('dict-meaning', 'Đang tra...'); set('dict-example', '');
+
+  // Position
+  const sel = window.getSelection();
+  let top = 200, left = 200;
+  if (sel?.rangeCount) {
+    const r = sel.getRangeAt(0).getBoundingClientRect();
+    top = Math.min(r.bottom + 8, window.innerHeight - 300);
+    left = Math.min(r.left, window.innerWidth - 320);
+    top = Math.max(top, 8); left = Math.max(left, 8);
+  }
+  popup.style.top = top + 'px'; popup.style.left = left + 'px';
+  popup.classList.remove('hidden');
+
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) throw new Error('Not found');
+    const data = await res.json();
+    const entry = data[0]; const meaning = entry.meanings[0];
+    const def = meaning.definitions.find(d => d.example) || meaning.definitions[0];
+    set('dict-phonetic', entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '');
+    set('dict-pos', meaning.partOfSpeech);
+    set('dict-meaning', def.definition);
+    set('dict-example', def.example ? `"${def.example}"` : '');
+    state.dictMeaning = def.definition;
+    state.dictExample = def.example || '';
+  } catch {
+    set('dict-meaning', 'Không tìm thấy định nghĩa.');
+  }
+}
+
+function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
+function speakDictWord() {
+  if (!state.dictWord) return;
+  const u = new SpeechSynthesisUtterance(state.dictWord);
+  u.lang = 'en-US'; u.rate = 0.8;
+  window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+}
+
+async function saveVocabWord() {
+  if (!state.dictWord) return;
+  closeDictPopup();
+  try {
+    const res = await fetch(`${API}/vocabbook`, { headers: authH() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    openBookPicker(data.books);
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+function openBookPicker(books) {
+  const existing = document.getElementById('book-picker-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'book-picker-modal';
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Lưu vào sổ từ vựng</h3>
+        <button class="modal-close" onclick="document.getElementById('book-picker-modal').remove()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:12px">
+          <strong>${state.dictWord}</strong>
+          <span style="color:var(--text3);font-size:13px"> – ${state.dictMeaning}</span>
+        </div>
+        ${books.map(b => `
+          <div onclick="pickBook('${b._id}', this)"
+            style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1.5px solid var(--border);
+                   border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s" id="bp-${b._id}"
+            onmouseover="this.style.borderColor='var(--blue)';this.style.background='#eff6ff'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+            <span style="font-size:20px">${b.emoji}</span>
+            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:var(--text3)">${b.totalWords} từ</div></div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
+async function pickBook(bookId, el) {
+  document.querySelectorAll('[id^="bp-"]').forEach(e => { e.style.borderColor = 'var(--border)'; e.style.background = '#fff'; });
+  el.style.borderColor = 'var(--accent)'; el.style.background = '#fef2f2';
+  try {
+    const res = await fetch(`${API}/vocabbook/${bookId}/words`, {
+      method: 'POST', headers: authH(),
+      body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, source: 'listening' })
+    });
+    const data = await res.json();
+    document.getElementById('book-picker-modal')?.remove();
+    toast(data.message || (data.success ? 'Đã lưu từ!' : 'Lỗi'), data.success ? 'success' : 'error');
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════
+// TOOL
+// ══════════════════════════════════════════════
+function setTool(tool) {
+  state.tool = tool;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  if (tool === 'highlight') document.getElementById('tool-hl-rv')?.classList.add('active');
+  if (tool === 'dict') document.getElementById('tool-dict-rv')?.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// MODALS & EXIT
+// ══════════════════════════════════════════════
+function confirmExit() { openModal('modal-exit'); }
+function forceExit() {
+  closeModal('modal-exit');
+  audio.pause();
+  window.onbeforeunload = null;
+  state.submitted = true;
+  showScreen('list');
+}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function pad(n) { return String(n).padStart(2, '0'); }
+
+// Expose globals
+window.logout = logout;
+window.showScreen = showScreen;
+window.openModal = openModal; window.closeModal = closeModal;
+window.filterTests = filterTests;
+window.startTest = startTest;
+window.togglePlay = togglePlay;
+window.skipAudio = skipAudio;
+window.onSeekInput = onSeekInput;
+window.setSpeed = setSpeed;
+window.switchPart = switchPart;
+window.pickRadio = pickRadio;
+window.toggleCheckbox = toggleCheckbox;
+window.saveText = saveText;
+window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz;
+window.scrollToQ = scrollToQ;
+window.jumpToTime = jumpToTime;
+window.confirmSubmit = confirmSubmit; window.submitExam = submitExam;
+window.goToReview = goToReview;
+window.confirmExit = confirmExit; window.forceExit = forceExit;
+window.setTool = setTool;
+window.closeDictPopup = closeDictPopup;
+window.speakDictWord = speakDictWord;
+window.saveVocabWord = saveVocabWord;
+window.pickBook = pickBook;
+</script>
+</body>
 </html>

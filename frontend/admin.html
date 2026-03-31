@@ -992,9 +992,12 @@
     <a class="nav-item" onclick="switchTab('tests',event)" href="#">
       <span class="nav-icon">📝</span> Bộ đề
     </a>
-    <!-- ★ MỚI: Tab Từ vựng -->
     <a class="nav-item" onclick="switchTab('vocab',event)" href="#">
       <span class="nav-icon">📚</span> Từ vựng (Units)
+    </a>
+    <!-- ★ MỚI: Tab Listening -->
+    <a class="nav-item" onclick="switchTab('listening',event)" href="#">
+      <span class="nav-icon">🎧</span> Đề nghe
     </a>
 
     <span class="nav-section-label">Học sinh</span>
@@ -1236,6 +1239,42 @@
               <tbody id="history-tbody">
                 <tr>
                   <td colspan="8" class="table-empty">Đang tải...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB: LISTENING ★ MỚI ─── -->
+        <div id="tab-listening">
+          <div class="section-header">
+            <span class="section-title">Quản lý đề nghe (Listening)</span>
+            <div class="section-actions">
+              <div class="search-wrap">
+                <input class="search-input" id="search-listening" placeholder="Tìm tên đề nghe..."
+                  oninput="filterListeningTests()" />
+              </div>
+              <button class="btn btn-primary" onclick="openListeningModal()">＋ Tạo đề nghe</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên đề</th>
+                  <th>Số</th>
+                  <th>Series</th>
+                  <th>Audio</th>
+                  <th>Thời lượng</th>
+                  <th>Số câu</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:210px"></th>
+                </tr>
+              </thead>
+              <tbody id="listening-tbody">
+                <tr>
+                  <td colspan="9" class="table-empty">Đang tải...</td>
                 </tr>
               </tbody>
             </table>
@@ -1519,6 +1558,121 @@
     </div>
   </div>
 
+  <!-- ══ MODAL: Tạo / Sửa Listening Test ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-listening">
+    <div class="modal-box modal-lg" style="width:min(900px,100%)">
+      <div class="modal-header">
+        <h3 id="modal-listening-title">Tạo đề nghe mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-listening')">×</button>
+      </div>
+      <div class="modal-body" style="padding:16px 20px">
+        <input type="hidden" id="lt-id" />
+        <div class="form-row" style="grid-template-columns:2fr 1.5fr 0.8fr;gap:12px">
+          <div class="form-group">
+            <label>Tên đề *</label>
+            <input class="form-input" id="lt-name" placeholder="VD: IELTS Listening Test 1" />
+          </div>
+          <div class="form-group">
+            <label>Series</label>
+            <input class="form-input" id="lt-series" placeholder="VD: Cambridge 18" />
+          </div>
+          <div class="form-group">
+            <label>Số thứ tự *</label>
+            <input class="form-input" id="lt-number" type="number" placeholder="1" min="1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Audio</label>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span id="lt-audio-url-chip" class="badge badge-green hidden">✓ Đã có audio</span>
+            <span id="lt-audio-name" style="font-size:13px;color:var(--text2)">Upload sau khi tạo đề xong</span>
+          </div>
+          <div class="form-hint">Sau khi lưu đề, dùng nút 🎵 Audio trong bảng để upload file.</div>
+        </div>
+        <div class="form-group">
+          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word
+              highlight)</span></label>
+          <textarea class="form-textarea" id="lt-transcript" rows="5"
+            placeholder="Dán toàn bộ nội dung bài nghe vào đây..."></textarea>
+        </div>
+        <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+          <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">
+            Các phần (Parts)
+          </label>
+          <button class="btn btn-ghost btn-sm" onclick="addListeningSection()">＋ Thêm Part</button>
+        </div>
+        <div id="lt-sections-container"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-listening')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveListeningTest()" id="btn-save-listening">Lưu đề nghe</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Upload Audio ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-upload-audio">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Upload Audio</h3>
+        <button class="modal-close" onclick="closeModal('modal-upload-audio')">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text2);font-size:13px;margin-bottom:14px">
+          Đề: <strong id="upload-audio-name"></strong>
+        </p>
+        <div class="form-group">
+          <label>Chọn file audio *</label>
+          <input type="file" id="upload-audio-input" accept="audio/*,video/mp4" class="form-input"
+            style="padding:8px" />
+          <div class="form-hint">MP3, M4A, WAV · Tối đa 200MB · Upload lên Cloudinary</div>
+        </div>
+        <div id="upload-progress" class="hidden"
+          style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text2);margin-top:8px">
+          ⏳ Đang upload, vui lòng chờ...
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-upload-audio')">Huỷ</button>
+        <button class="btn btn-primary" onclick="doUploadAudio()" id="btn-do-upload">📤 Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Transcript & Word Timestamps ★ ══ -->
+  <div class="modal-overlay hidden" id="modal-transcript">
+    <div class="modal-box" style="width:min(780px,100%)">
+      <div class="modal-header">
+        <h3>Transcript & Word Timestamps</h3>
+        <button class="modal-close" onclick="closeModal('modal-transcript')">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text2);font-size:13px;margin-bottom:16px;line-height:1.6">
+          Chỉnh sửa transcript và nhập word timestamps (JSON từ Whisper hoặc nhập tay) để bật tính năng
+          <strong>highlight theo từng từ</strong> khi audio phát trên trang học sinh.
+        </p>
+        <div class="form-group">
+          <label>Transcript (plain text)</label>
+          <textarea class="form-textarea" id="tr-transcript" rows="7" placeholder="Nội dung bài nghe..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Word Timestamps (JSON)</label>
+          <textarea class="form-textarea" id="tr-timestamps" rows="7" style="font-size:12px"
+            placeholder='[{"word":"Hello","start":0.1,"end":0.5},{"word":"everyone","start":0.6,"end":1.2},...]'></textarea>
+          <div class="form-hint">
+            Format: array of <code
+              style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
+            · Export từ Whisper JSON hoặc nhập tay
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-transcript')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveTranscript()" id="btn-save-transcript">Lưu Transcript</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toast">
     <div class="toast-dot"></div><span id="toast-msg"></span>
@@ -1589,11 +1743,13 @@
       if (ev) ev.currentTarget.classList.add('active');
       const titles = {
         dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
-        vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh'
+        vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
+        listening: 'Đề nghe (Listening)'
       };
       document.getElementById('topbar-title').textContent = titles[tab] || tab;
       // Load lazy khi chuyển tab
       if (tab === 'vocab') loadVocabUnits();
+      if (tab === 'listening') loadListeningTests();
     }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
@@ -2123,6 +2279,403 @@
         }
       } catch (err) { toast(err.message, 'error'); }
       finally { btn.disabled = false; btn.textContent = '📥 Import'; }
+    }
+    /* ══════════════════════════════════════════════
+       ★ LISTENING TESTS
+    ══════════════════════════════════════════════ */
+    let allListeningTests = [];
+    let editListeningId = null;
+    let uploadAudioTestId = null;
+    let transcriptTestId = null;
+    let ltSectionCount = 0;
+    let ltQIdx = 0;
+
+    async function loadListeningTests() {
+      try {
+        const data = await (await fetch(`${API}/listening/admin/tests`, { headers: authH() })).json();
+        if (!data.success) return;
+        allListeningTests = data.tests;
+        renderListeningTable(data.tests);
+      } catch (err) {
+        document.getElementById('listening-tbody').innerHTML =
+          `<tr><td colspan="9" class="table-empty">Lỗi: ${err.message}</td></tr>`;
+      }
+    }
+
+    function renderListeningTable(list) {
+      const tbody = document.getElementById('listening-tbody');
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="table-empty">Chưa có đề nghe nào. Nhấn "+ Tạo đề nghe".</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(t => {
+        const dur = t.audioDuration
+          ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)}`
+          : '–';
+        return `<tr>
+          <td><strong>${t.name}</strong></td>
+          <td style="font-family:var(--mono)">${t.testNumber}</td>
+          <td>${t.seriesName || '–'}</td>
+          <td>${t.audioUrl
+            ? `<span class="badge badge-green"><span class="dot"></span>Đã có</span>`
+            : `<span class="badge badge-gray">Chưa upload</span>`}</td>
+          <td style="font-family:var(--mono)">${dur}</td>
+          <td>${t.totalQuestions || 0} câu</td>
+          <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
+            <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
+          <td style="color:var(--text3);font-size:12px">${formatDate(t.createdAt).split(' ')[0]}</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
+            <button class="btn btn-ghost btn-sm" onclick="openTranscriptModal('${t._id}')">📜 Transcript</button>
+            <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')">🗑</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function filterListeningTests() {
+      const q = document.getElementById('search-listening').value.toLowerCase();
+      renderListeningTable(allListeningTests.filter(t => t.name.toLowerCase().includes(q)));
+    }
+
+    /* ── Open / Edit Modal ── */
+    function openListeningModal(data = null) {
+      editListeningId = data?._id || null;
+      ltSectionCount = 0; ltQIdx = 0;
+
+      document.getElementById('lt-id').value = data?._id || '';
+      document.getElementById('lt-name').value = data?.name || '';
+      document.getElementById('lt-series').value = data?.seriesName || '';
+      document.getElementById('lt-number').value = data?.testNumber || '';
+      document.getElementById('lt-transcript').value = data?.transcript || '';
+      document.getElementById('modal-listening-title').textContent = data ? 'Chỉnh sửa đề nghe' : 'Tạo đề nghe mới';
+
+      if (data?.audioUrl) {
+        document.getElementById('lt-audio-url-chip').classList.remove('hidden');
+        document.getElementById('lt-audio-name').textContent = data.audioFileName || 'Đã có audio';
+      } else {
+        document.getElementById('lt-audio-url-chip').classList.add('hidden');
+        document.getElementById('lt-audio-name').textContent = 'Upload sau khi tạo đề xong';
+      }
+
+      const container = document.getElementById('lt-sections-container');
+      container.innerHTML = '';
+      if (data?.sections?.length) {
+        data.sections.forEach(s => addListeningSection(s));
+      } else {
+        addListeningSection();
+      }
+      openModal('modal-listening');
+    }
+
+    async function editListeningTest(id) {
+      try {
+        const res = await fetch(`${API}/listening/admin/tests/${id}`, { headers: authH() });
+        const data = await res.json();
+        if (data.success) openListeningModal(data.test);
+      } catch { openListeningModal(allListeningTests.find(t => t._id === id)); }
+    }
+
+    function deleteListeningTest(id, name) {
+      confirm2(`Ẩn đề nghe "${name}"?`, async () => {
+        await fetch(`${API}/listening/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
+        toast('Đã ẩn đề nghe'); await loadListeningTests();
+      });
+    }
+
+    /* ── Sections / Parts Builder ── */
+    function addListeningSection(data = null) {
+      ltSectionCount++;
+      const sIdx = ltSectionCount;
+      const div = document.createElement('div');
+      div.className = 'question-row';
+      div.id = `ls-${sIdx}`;
+      div.style.marginBottom = '16px';
+      div.innerHTML = `
+        <div class="question-row-header" style="margin-bottom:12px">
+          <span class="q-num-badge" style="background:#3d8bff">P</span>
+          <span style="font-size:13px;font-weight:700;flex:1">Part ${data?.partNumber || sIdx}</span>
+          <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá Part</button>
+        </div>
+        <div style="display:grid;grid-template-columns:0.6fr 2fr 1.2fr 1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="form-group" style="margin-bottom:0">
+            <label>Part số *</label>
+            <select class="form-select ls-part" style="padding:8px 10px;font-size:13px">
+              <option value="1" ${data?.partNumber == 1 ? 'selected' : ''}>1</option>
+              <option value="2" ${data?.partNumber == 2 ? 'selected' : ''}>2</option>
+              <option value="3" ${data?.partNumber == 3 ? 'selected' : ''}>3</option>
+              <option value="4" ${data?.partNumber == 4 ? 'selected' : ''}>4</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Tiêu đề *</label>
+            <input class="form-input ls-title" style="font-size:13px;padding:8px 10px"
+                   value="${data?.title || ''}" placeholder="VD: A conversation about accommodation" />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Mô tả</label>
+            <input class="form-input ls-desc" style="font-size:13px;padding:8px 10px"
+                   value="${data?.description || ''}" placeholder="Context..." />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Câu bắt đầu *</label>
+            <input class="form-input ls-qstart" type="number" style="font-size:13px;padding:8px 10px"
+                   value="${data?.questionRange?.start || ''}" placeholder="1" min="1" />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label>Câu kết thúc *</label>
+            <input class="form-input ls-qend" type="number" style="font-size:13px;padding:8px 10px"
+                   value="${data?.questionRange?.end || ''}" placeholder="10" min="1" />
+          </div>
+        </div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Câu hỏi</span>
+            <button class="btn btn-ghost btn-sm" onclick="addListeningQuestion('${sIdx}')">＋ Thêm câu</button>
+          </div>
+          <div id="lqs-${sIdx}"></div>
+        </div>`;
+      document.getElementById('lt-sections-container').appendChild(div);
+      if (data?.questions?.length) data.questions.forEach(q => addListeningQuestion(sIdx, q));
+    }
+
+    function addListeningQuestion(sIdx, data = null) {
+      ltQIdx++;
+      const qId = `lq-${sIdx}-${ltQIdx}`;
+      const container = document.getElementById(`lqs-${sIdx}`);
+      if (!container) return;
+      const div = document.createElement('div');
+      div.id = qId;
+      div.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px';
+      div.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="background:var(--accent);color:#fff;width:20px;height:20px;border-radius:50%;
+                       display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${ltQIdx}</span>
+          <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
+          <button class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:11px"
+                  onclick="this.closest('[id^=lq-]').remove()">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-bottom:8px">
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:10px">Số câu *</label>
+            <input class="form-input lq-num" type="number" value="${data?.questionNumber || ''}"
+                   style="font-size:12px;padding:7px 10px" placeholder="${ltQIdx}" />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:10px">Loại câu *</label>
+            <select class="form-select lq-type" onchange="onLQTypeChange(this,'${qId}')"
+                    style="font-size:12px;padding:7px 10px">
+              <option value="multiple-choice"     ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+              <option value="fill-blank"          ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
+              <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
+              <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
+              <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map / Diagram Labelling</option>
+              <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>Checkbox (chọn nhiều)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:10px">Nội dung câu hỏi *</label>
+          <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:7px 10px;resize:vertical"
+            placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
+        </div>
+        <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data)}</div>
+        <div style="display:grid;grid-template-columns:1fr 0.6fr 1.2fr;gap:8px">
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:10px">Đáp án đúng *</label>
+            <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
+                   style="font-size:12px;padding:7px 10px"
+                   placeholder='A / text / ["A","C"] cho checkbox' />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:10px">Timestamp (giây)</label>
+            <input class="form-input lq-ts" type="number" value="${data?.audioTimestamp || ''}"
+                   style="font-size:12px;padding:7px 10px" placeholder="0.0" min="0" step="0.1" />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label style="font-size:10px">Giải thích</label>
+            <input class="form-input lq-explain" value="${data?.explanation || ''}"
+                   style="font-size:12px;padding:7px 10px" placeholder="Giải thích đáp án..." />
+          </div>
+        </div>`;
+      container.appendChild(div);
+    }
+
+    function renderLQExtra(type, data) {
+      if (type === 'multiple-choice') {
+        const opts = data?.options || ['', '', '', ''];
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:10px">Các đáp án (A,B,C,D)</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            ${['A', 'B', 'C', 'D'].map((l, i) => `
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
+                <input class="form-input lq-opt" value="${opts[i] || ''}"
+                       style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
+              </div>`).join('')}
+          </div></div>`;
+      }
+      if (['sentence-completion', 'matching'].includes(type)) {
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:10px">Word Bank (cách nhau bằng dấu phẩy)</label>
+          <input class="form-input lq-wordbank" value="${(data?.wordBank || []).join(', ')}"
+                 style="font-size:12px;padding:7px 10px" placeholder="word1, word2, word3..." /></div>`;
+      }
+      if (type === 'checkbox') {
+        const opts = data?.options || [];
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:10px">Các đáp án (A→E)</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            ${['A', 'B', 'C', 'D', 'E'].map((l, i) => `
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
+                <input class="form-input lq-opt" value="${opts[i] || ''}"
+                       style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
+              </div>`).join('')}
+          </div>
+          <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+            <label style="font-size:10px;margin-bottom:0;white-space:nowrap">Số đáp án cần chọn:</label>
+            <input class="form-input lq-cbcount" type="number" value="${data?.checkboxCount || 2}"
+                   style="width:60px;font-size:12px;padding:5px 8px" min="1" max="5" />
+          </div></div>`;
+      }
+      return '';
+    }
+
+    function onLQTypeChange(sel, qId) {
+      document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {});
+    }
+
+    /* ── Collect & Save ── */
+    function collectListeningSections() {
+      const sections = [];
+      for (const sDiv of document.querySelectorAll('#lt-sections-container .question-row')) {
+        const partNumber = parseInt(sDiv.querySelector('.ls-part').value);
+        const title = sDiv.querySelector('.ls-title').value.trim();
+        const desc = sDiv.querySelector('.ls-desc').value.trim();
+        const qstart = parseInt(sDiv.querySelector('.ls-qstart').value);
+        const qend = parseInt(sDiv.querySelector('.ls-qend').value);
+        if (!title || !qstart || !qend) {
+          toast('Điền đầy đủ tiêu đề và phạm vi câu cho tất cả Parts', 'error'); return null;
+        }
+        const questions = [];
+        for (const qDiv of sDiv.querySelectorAll('[id^="lq-"]')) {
+          const num = parseInt(qDiv.querySelector('.lq-num').value);
+          const type = qDiv.querySelector('.lq-type').value;
+          const text = qDiv.querySelector('.lq-text').value.trim();
+          const answer = qDiv.querySelector('.lq-answer').value.trim();
+          const explain = qDiv.querySelector('.lq-explain').value.trim();
+          const ts = parseFloat(qDiv.querySelector('.lq-ts').value) || null;
+          if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
+          const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: explain, audioTimestamp: ts };
+          if (['multiple-choice', 'checkbox'].includes(type))
+            q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
+          if (type === 'checkbox')
+            q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
+          if (['sentence-completion', 'matching'].includes(type)) {
+            const wb = qDiv.querySelector('.lq-wordbank')?.value || '';
+            q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+          }
+          questions.push(q);
+        }
+        sections.push({ partNumber, title, description: desc, questionRange: { start: qstart, end: qend }, questions });
+      }
+      return sections;
+    }
+
+    async function saveListeningTest() {
+      const name = document.getElementById('lt-name').value.trim();
+      const number = parseInt(document.getElementById('lt-number').value);
+      if (!name || !number) { toast('Tên đề và số thứ tự là bắt buộc', 'error'); return; }
+      const sections = collectListeningSections();
+      if (sections === null) return;
+      const body = {
+        name, testNumber: number,
+        seriesName: document.getElementById('lt-series').value.trim(),
+        transcript: document.getElementById('lt-transcript').value.trim(),
+        sections
+      };
+      const btn = document.getElementById('btn-save-listening');
+      btn.disabled = true; btn.textContent = 'Đang lưu...';
+      try {
+        const url = editListeningId ? `${API}/listening/admin/tests/${editListeningId}` : `${API}/listening/admin/tests`;
+        const method = editListeningId ? 'PUT' : 'POST';
+        const data = await (await fetch(url, { method, headers: authH(), body: JSON.stringify(body) })).json();
+        if (!data.success) throw new Error(data.message);
+        toast(editListeningId ? 'Đã cập nhật đề nghe' : 'Đã tạo đề nghe mới');
+        closeModal('modal-listening'); await loadListeningTests();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Lưu đề nghe'; }
+    }
+
+    /* ── Upload Audio ── */
+    function openUploadAudioModal(id, name) {
+      uploadAudioTestId = id;
+      document.getElementById('upload-audio-name').textContent = name;
+      document.getElementById('upload-audio-input').value = '';
+      document.getElementById('upload-progress').classList.add('hidden');
+      openModal('modal-upload-audio');
+    }
+
+    async function doUploadAudio() {
+      const file = document.getElementById('upload-audio-input').files[0];
+      if (!file) { toast('Chọn file audio trước', 'error'); return; }
+      const btn = document.getElementById('btn-do-upload');
+      btn.disabled = true; btn.textContent = 'Đang upload...';
+      document.getElementById('upload-progress').classList.remove('hidden');
+      const formData = new FormData();
+      formData.append('audio', file);
+      try {
+        const res = await fetch(`${API}/listening/admin/tests/${uploadAudioTestId}/audio`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        toast(`Upload thành công! Thời lượng: ${Math.floor(data.audioDuration / 60)}:${pad(data.audioDuration % 60)}`);
+        closeModal('modal-upload-audio'); await loadListeningTests();
+      } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
+    }
+
+    /* ── Transcript Modal ── */
+    async function openTranscriptModal(id) {
+      transcriptTestId = id;
+      try {
+        const res = await fetch(`${API}/listening/admin/tests/${id}`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        document.getElementById('tr-transcript').value = data.test.transcript || '';
+        document.getElementById('tr-timestamps').value =
+          data.test.wordTimestamps?.length
+            ? JSON.stringify(data.test.wordTimestamps, null, 2)
+            : '';
+        openModal('modal-transcript');
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    async function saveTranscript() {
+      const transcript = document.getElementById('tr-transcript').value.trim();
+      const rawTs = document.getElementById('tr-timestamps').value.trim();
+      let wordTimestamps = [];
+      if (rawTs) {
+        try { wordTimestamps = JSON.parse(rawTs); }
+        catch { toast('Word timestamps JSON không hợp lệ', 'error'); return; }
+      }
+      const btn = document.getElementById('btn-save-transcript');
+      btn.disabled = true; btn.textContent = 'Đang lưu...';
+      try {
+        const data = await (await fetch(`${API}/listening/admin/tests/${transcriptTestId}/transcript`, {
+          method: 'PUT', headers: authH(),
+          body: JSON.stringify({ transcript, wordTimestamps })
+        })).json();
+        if (!data.success) throw new Error(data.message);
+        toast('Đã lưu transcript & word timestamps');
+        closeModal('modal-transcript');
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Lưu Transcript'; }
     }
   </script>
 </body>
