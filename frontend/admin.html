@@ -3232,7 +3232,7 @@
       <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
         placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
     </div>
-    <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data)}</div>
+    <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data, qId)}</div>
     <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
       <div>
         <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Đáp án đúng *</label>
@@ -3251,7 +3251,7 @@
     }
 
     // renderLQExtra và onLQTypeChange giữ nguyên từ code cũ
-    function renderLQExtra(type, data) {
+    function renderLQExtra(type, data, qId) {
       if (type === 'multiple-choice') {
         const opts = data?.options || ['', '', '', ''];
         return `<div class="form-group" style="margin-bottom:0">
@@ -3290,7 +3290,7 @@
       </div></div>`;
       }
       if (type === 'map-labelling') {
-        const imgId = `lqimg-${Date.now()}`;
+        const imgId = `lqimg-${qId || Date.now()}`;
         return `<div class="form-group" style="margin-bottom:0">
       <label style="font-size:10px;font-weight:700;color:var(--text3)">Hình ảnh (nếu câu này có ảnh riêng)</label>
       <input class="form-input lq-imageurl" value="${data?.imageUrl || ''}"
@@ -3303,7 +3303,7 @@
     }
 
     function onLQTypeChange(sel, qId) {
-      document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {});
+      document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {}, qId);
     }
 
     // ════════════════════════════════════════════════════════════════

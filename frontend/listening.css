@@ -18,6 +18,7 @@ body {
 .screen { display: none; }
 .screen.active { display: block; }
 
+#screen-list.active  { display: block; }
 #screen-exam.active,
 #screen-review.active { display: flex; flex-direction: column; }
 
