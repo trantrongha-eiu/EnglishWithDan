@@ -2,15 +2,16 @@
  * backend/routes/listening.js
  * Admin quản lý đề nghe + Student làm bài
  */
-const express       = require('express');
-const router        = express.Router();
-const multer        = require('multer');
-const cloudinary    = require('cloudinary').v2;
-const streamifier   = require('streamifier');
-const ListeningTest = require('../models/ListeningTest');
-const auth          = require('../middleware/auth');
+const express          = require('express');
+const router           = express.Router();
+const multer           = require('multer');
+const cloudinary       = require('cloudinary').v2;
+const streamifier      = require('streamifier');
+const ListeningTest    = require('../models/ListeningTest');
+const ListeningAttempt = require('../models/ListeningAttempt');
+const auth             = require('../middleware/auth');
 
-// ── Middleware ──────────────────────────────────────
+// ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
   if (!['teacher', 'admin'].includes(req.user.role)) {
     return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
@@ -34,9 +35,22 @@ function flattenQuestions(sections) {
   );
 }
 
-// ══════════════════════════════════════════════════
+// ── Helper: tính band score Listening ───────────────────────────────────────
+function calcBandScore(correct) {
+  const bandMap = [
+    [39, 9.0], [37, 8.5], [35, 8.0], [32, 7.5], [30, 7.0],
+    [26, 6.5], [23, 6.0], [18, 5.5], [16, 5.0], [13, 4.5],
+    [10, 4.0], [8,  3.5], [6,  3.0], [4,  2.5]
+  ];
+  for (const [threshold, band] of bandMap) {
+    if (correct >= threshold) return band;
+  }
+  return 2.0;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // ADMIN – CRUD Tests
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 
 // GET /api/listening/admin/tests
 router.get('/admin/tests', auth, teacherOnly, async (req, res) => {
@@ -102,16 +116,21 @@ router.delete('/admin/tests/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 // ADMIN – Upload Audio
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 router.post('/admin/tests/:id/audio', auth, teacherOnly, upload.single('audio'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'Không có file audio' });
 
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { resource_type: 'video', folder: 'listening', public_id: `listening_${req.params.id}_${Date.now()}`, overwrite: true },
+        {
+          resource_type: 'video',
+          folder: 'listening',
+          public_id: `listening_${req.params.id}_${Date.now()}`,
+          overwrite: true
+        },
         (err, result) => err ? reject(err) : resolve(result)
       );
       streamifier.createReadStream(req.file.buffer).pipe(stream);
@@ -119,23 +138,31 @@ router.post('/admin/tests/:id/audio', auth, teacherOnly, upload.single('audio'),
 
     const test = await ListeningTest.findByIdAndUpdate(
       req.params.id,
-      { audioUrl: uploadResult.secure_url, audioFileName: req.file.originalname, audioDuration: Math.round(uploadResult.duration || 0) },
+      {
+        audioUrl: uploadResult.secure_url,
+        audioFileName: req.file.originalname,
+        audioDuration: Math.round(uploadResult.duration || 0)
+      },
       { new: true }
     );
 
-    res.json({ success: true, message: 'Upload audio thành công', audioUrl: test.audioUrl, audioDuration: test.audioDuration });
+    res.json({
+      success: true,
+      message: 'Upload audio thành công',
+      audioUrl: test.audioUrl,
+      audioDuration: test.audioDuration
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Upload thất bại: ' + err.message });
   }
 });
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 // ADMIN – Transcript (per section)
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 router.put('/admin/tests/:id/transcript', auth, teacherOnly, async (req, res) => {
   try {
     const { sectionTranscripts } = req.body;
-    // sectionTranscripts: [{ partNumber, transcript }]
     if (!Array.isArray(sectionTranscripts)) {
       return res.status(400).json({ success: false, message: 'sectionTranscripts phải là array' });
     }
@@ -155,9 +182,120 @@ router.put('/admin/tests/:id/transcript', auth, teacherOnly, async (req, res) =>
   }
 });
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// ADMIN – Lịch sử tất cả học viên (cho trang admin)
+// ══════════════════════════════════════════════════════════════════════════════
+
+// GET /api/listening/admin/attempts
+// Query params: testId, userId, page, limit
+router.get('/admin/attempts', auth, teacherOnly, async (req, res) => {
+  try {
+    const { testId, userId, page = 1, limit = 50 } = req.query;
+    const filter = {};
+    if (testId) filter.testId = testId;
+    if (userId) filter.userId = userId;
+
+    const [attempts, total] = await Promise.all([
+      ListeningAttempt.find(filter)
+        .populate('userId', 'firstName lastName username email')
+        .populate('testId', 'name testNumber')
+        .sort({ submittedAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(Number(limit)),
+      ListeningAttempt.countDocuments(filter)
+    ]);
+
+    res.json({ success: true, attempts, total, page: Number(page), limit: Number(limit) });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/listening/admin/attempts/stats
+// Thống kê tổng quan: avg band, số lượt, top performers
+router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
+  try {
+    const { testId } = req.query;
+    const match = testId ? { testId: new (require('mongoose').Types.ObjectId)(testId) } : {};
+
+    const [overview, byTest, topStudents] = await Promise.all([
+      // Tổng quan toàn bộ
+      ListeningAttempt.aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id: null,
+            totalAttempts:  { $sum: 1 },
+            avgBand:        { $avg: '$bandScore' },
+            avgCorrect:     { $avg: '$correctCount' },
+            maxBand:        { $max: '$bandScore' },
+            minBand:        { $min: '$bandScore' }
+          }
+        }
+      ]),
+
+      // Thống kê theo từng đề
+      ListeningAttempt.aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id:           '$testId',
+            testName:      { $first: '$testName' },
+            totalAttempts: { $sum: 1 },
+            avgBand:       { $avg: '$bandScore' },
+            avgCorrect:    { $avg: '$correctCount' }
+          }
+        },
+        { $sort: { totalAttempts: -1 } },
+        { $limit: 20 }
+      ]),
+
+      // Top 10 học viên band cao nhất
+      ListeningAttempt.aggregate([
+        { $match: match },
+        {
+          $group: {
+            _id:       '$userId',
+            bestBand:  { $max: '$bandScore' },
+            avgBand:   { $avg: '$bandScore' },
+            attempts:  { $sum: 1 }
+          }
+        },
+        { $sort: { bestBand: -1 } },
+        { $limit: 10 },
+        {
+          $lookup: {
+            from: 'users',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        { $unwind: '$user' },
+        {
+          $project: {
+            bestBand: 1, avgBand: 1, attempts: 1,
+            'user.firstName': 1, 'user.lastName': 1,
+            'user.username': 1, 'user.email': 1
+          }
+        }
+      ])
+    ]);
+
+    res.json({
+      success: true,
+      overview: overview[0] || { totalAttempts: 0, avgBand: 0, avgCorrect: 0, maxBand: 0, minBand: 0 },
+      byTest,
+      topStudents
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Danh sách đề
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
     const tests = await ListeningTest.find({ isActive: true })
@@ -180,21 +318,19 @@ router.get('/tests', auth, async (req, res) => {
   }
 });
 
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Lấy full đề để làm bài
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests/:id/start', auth, async (req, res) => {
   try {
     const test = await ListeningTest.findOne({ _id: req.params.id, isActive: true });
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
 
-    // Trả về cấu trúc đầy đủ, nhưng bỏ correctAnswer khỏi questions
     const sections = test.sections.map(s => ({
       partNumber: s.partNumber,
       title: s.title,
       description: s.description,
       questionRange: s.questionRange,
-      transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
         _id: g._id,
         groupType: g.groupType,
@@ -232,25 +368,28 @@ router.get('/tests/:id/start', auth, async (req, res) => {
   }
 });
 
-// ══════════════════════════════════════════════════
-// STUDENT – Nộp bài & chấm điểm
-// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════════
+// STUDENT – Nộp bài, chấm điểm & lưu attempt
+// ══════════════════════════════════════════════════════════════════════════════
 router.post('/tests/:id/submit', auth, async (req, res) => {
   try {
     const test = await ListeningTest.findById(req.params.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
 
-    const userAnswers = req.body.answers || {};
-    let correct = 0, wrong = 0, skipped = 0;
+    const userAnswers = req.body.answers  || {};
+    const startTime   = req.body.startTime ? new Date(req.body.startTime) : null;
+    const now         = new Date();
+    const timeTaken   = startTime ? Math.round((now - startTime) / 1000) : 0;
 
-    // Flatten: sections → questionGroups → questions
+    let correct = 0, wrong = 0, skipped = 0;
     const allQuestions = flattenQuestions(test.sections);
     const total = allQuestions.length;
 
+    // ── Chấm điểm ────────────────────────────────────────────────────────────
     const reviewed = allQuestions.map(q => {
       const num = q.questionNumber;
-      const ua = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
-      const ca = q.correctAnswer.trim();
+      const ua  = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
+      const ca  = q.correctAnswer.trim();
 
       let isCorrect = false;
       if (q.type === 'checkbox') {
@@ -263,69 +402,183 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
         isCorrect = ua.toLowerCase() === ca.toLowerCase();
       }
 
-      if (!ua) skipped++;
+      if (!ua)          skipped++;
       else if (isCorrect) correct++;
-      else wrong++;
+      else                wrong++;
 
       return {
         questionNumber: num,
-        userAnswer: ua,
+        userAnswer:    ua,
         correctAnswer: ca,
         isCorrect,
-        explanation: q.explanation,
-        type: q.type,
-        questionText: q.questionText,
-        options: q.options,
-        wordBank: q.wordBank,
+        explanation:   q.explanation,
+        type:          q.type,
+        questionText:  q.questionText,
+        options:       q.options,
+        wordBank:      q.wordBank,
         audioTimestamp: q.audioTimestamp
       };
     });
 
-    // Band score
-    const bandMap = [
-      [39,9.0],[37,8.5],[35,8.0],[32,7.5],[30,7.0],
-      [26,6.5],[23,6.0],[18,5.5],[16,5.0],[13,4.5],
-      [10,4.0],[8,3.5],[6,3.0],[4,2.5]
-    ];
-    let bandScore = 2.0;
-    for (const [threshold, band] of bandMap) {
-      if (correct >= threshold) { bandScore = band; break; }
-    }
+    const bandScore = calcBandScore(correct);
 
-    // Trả về sections với cấu trúc questionGroups để review render đúng layout
+    // ── Lưu ListeningAttempt ─────────────────────────────────────────────────
+    const attempt = new ListeningAttempt({
+      userId:         req.user._id || req.user.id,
+      testId:         test._id,
+      testName:       test.name,
+      answers:        reviewed.map(r => ({
+        questionNumber: r.questionNumber,
+        userAnswer:    r.userAnswer,
+        correctAnswer: r.correctAnswer,
+        isCorrect:     r.isCorrect
+      })),
+      totalQuestions: total,
+      correctCount:   correct,
+      wrongCount:     wrong,
+      skippedCount:   skipped,
+      bandScore,
+      startTime:      startTime || now,
+      submittedAt:    now,
+      timeTaken,
+      status:         'completed'
+    });
+    await attempt.save();
+
+    // ── Build review sections (giữ nguyên cấu trúc groups) ──────────────────
+    const reviewMap = {};
+    reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
+
     const reviewSections = test.sections.map(s => ({
-      partNumber: s.partNumber,
-      title: s.title,
-      description: s.description,
+      partNumber:    s.partNumber,
+      title:         s.title,
+      description:   s.description,
       questionRange: s.questionRange,
-      transcript: s.transcript || '',
+      transcript:    s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
-        groupType: g.groupType,
-        instruction: g.instruction,
-        tableConfig: g.tableConfig,
-        noteConfig: g.noteConfig,
+        groupType:    g.groupType,
+        instruction:  g.instruction,
+        tableConfig:  g.tableConfig,
+        noteConfig:   g.noteConfig,
         bulletConfig: g.bulletConfig,
-        imageUrl: g.imageUrl,
-        // Gắn kết quả chấm vào từng câu trong group
-        questions: g.questions.map(q => {
-          const r = reviewed.find(r => r.questionNumber === q.questionNumber);
-          return r || { questionNumber: q.questionNumber };
-        })
+        imageUrl:     g.imageUrl,
+        questions:    g.questions.map(q =>
+          reviewMap[q.questionNumber] || { questionNumber: q.questionNumber }
+        )
       }))
     }));
 
     res.json({
       success: true,
       result: {
-        testName: test.name,
+        attemptId:      attempt._id,
+        testName:       test.name,
         totalQuestions: total,
-        correctCount: correct,
-        wrongCount: wrong,
-        skippedCount: skipped,
+        correctCount:   correct,
+        wrongCount:     wrong,
+        skippedCount:   skipped,
         bandScore,
-        questions: reviewed,          // flat list (cho Q nav, tính điểm)
-        sections: reviewSections,     // có cấu trúc groups (cho render review)
-        audioUrl: test.audioUrl
+        timeTaken,
+        questions:      reviewed,      // flat list (Q nav + tính điểm)
+        sections:       reviewSections, // có groups (render review layout)
+        audioUrl:       test.audioUrl
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STUDENT – Lịch sử làm bài của bản thân
+// ══════════════════════════════════════════════════════════════════════════════
+router.get('/history', auth, async (req, res) => {
+  try {
+    const attempts = await ListeningAttempt.find({ userId: req.user._id || req.user.id })
+      .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status')
+      .populate('testId', 'name testNumber')
+      .sort({ submittedAt: -1 })
+      .limit(50);
+
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STUDENT – Chi tiết 1 attempt (xem lại bài cũ)
+// ══════════════════════════════════════════════════════════════════════════════
+router.get('/history/:attemptId', auth, async (req, res) => {
+  try {
+    const attempt = await ListeningAttempt.findOne({
+      _id:    req.params.attemptId,
+      userId: req.user._id || req.user.id
+    });
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    // Load lại test để có sections/transcript
+    const test = await ListeningTest.findById(attempt.testId);
+    if (!test) return res.status(404).json({ success: false, message: 'Đề thi không tồn tại' });
+
+    const reviewMap = {};
+    attempt.answers.forEach(a => { reviewMap[a.questionNumber] = a; });
+
+    // Merge câu hỏi đầy đủ (questionText, options...) với kết quả đã lưu
+    const allQuestions = flattenQuestions(test.sections);
+    const reviewed = allQuestions.map(q => {
+      const saved = reviewMap[q.questionNumber] || {};
+      return {
+        questionNumber: q.questionNumber,
+        type:          q.type,
+        questionText:  q.questionText,
+        options:       q.options,
+        wordBank:      q.wordBank,
+        audioTimestamp: q.audioTimestamp,
+        explanation:   q.explanation,
+        userAnswer:    saved.userAnswer    || '',
+        correctAnswer: saved.correctAnswer || q.correctAnswer,
+        isCorrect:     saved.isCorrect     || false
+      };
+    });
+
+    const reviewMap2 = {};
+    reviewed.forEach(r => { reviewMap2[r.questionNumber] = r; });
+
+    const reviewSections = test.sections.map(s => ({
+      partNumber:    s.partNumber,
+      title:         s.title,
+      description:   s.description,
+      questionRange: s.questionRange,
+      transcript:    s.transcript || '',
+      questionGroups: s.questionGroups.map(g => ({
+        groupType:    g.groupType,
+        instruction:  g.instruction,
+        tableConfig:  g.tableConfig,
+        noteConfig:   g.noteConfig,
+        bulletConfig: g.bulletConfig,
+        imageUrl:     g.imageUrl,
+        questions:    g.questions.map(q =>
+          reviewMap2[q.questionNumber] || { questionNumber: q.questionNumber }
+        )
+      }))
+    }));
+
+    res.json({
+      success: true,
+      result: {
+        attemptId:      attempt._id,
+        testName:       attempt.testName,
+        bandScore:      attempt.bandScore,
+        correctCount:   attempt.correctCount,
+        wrongCount:     attempt.wrongCount,
+        skippedCount:   attempt.skippedCount,
+        totalQuestions: attempt.totalQuestions,
+        timeTaken:      attempt.timeTaken,
+        submittedAt:    attempt.submittedAt,
+        questions:      reviewed,
+        sections:       reviewSections,
+        audioUrl:       test.audioUrl
       }
     });
   } catch (err) {
