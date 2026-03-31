@@ -644,7 +644,7 @@
                 // Gắn dữ liệu review vào từng câu trong group
                 const groupWithReview = {
                     ...group,
-                    questions: group.questions.map(q => reviewMap[q.questionNumber] || q)
+                    questions: group.questions.map(q => { const r = reviewMap[q.questionNumber]; return r ? { ...q, ...r } : q; })
                 };
                 html += renderQuestionGroup(groupWithReview, gi, true);
             });
@@ -813,16 +813,30 @@
             }), 0);
         }
 
+        function updateDropZone(qnum) {
+            // Targeted update: only repaint the specific drop-zone, avoids full re-render
+            const dz = document.querySelector(`.drop-zone[data-qnum="${qnum}"]`);
+            if (!dz) { renderPartQuestions(state.partIdx); return; } // fallback
+            const ua = state.answers[qnum] || '';
+            if (ua) {
+                dz.classList.add('filled');
+                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})">\u00d7</span>`;
+            } else {
+                dz.classList.remove('filled');
+                dz.innerHTML = '&nbsp;&nbsp;k\u00e9o v\u00e0o&nbsp;&nbsp;';
+            }
+        }
+
         function clearDz(e, qnum) {
             e.stopPropagation();
             delete state.answers[qnum];
-            renderPartQuestions(state.partIdx);
+            updateDropZone(qnum);
             updateQNav(); updateFooter();
         }
 
         function placeAnswer(qnum, word) {
             state.answers[qnum] = word;
-            renderPartQuestions(state.partIdx);
+            updateDropZone(qnum);
             updateQNav(); state.dragItem = null; updateFooter();
         }
 
@@ -1066,7 +1080,7 @@
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;
         window.pickRadio = pickRadio; window.toggleCheckbox = toggleCheckbox; window.saveText = saveText;
-        window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz;
+        window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz; window.updateDropZone = updateDropZone;
         window.scrollToQ = scrollToQ; window.jumpToTime = jumpToTime;
         window.confirmSubmit = confirmSubmit; window.submitExam = submitExam;
         window.goToReview = goToReview;
