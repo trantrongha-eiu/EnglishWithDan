@@ -1933,11 +1933,13 @@
       <div class="form-group"><label>Loại câu hỏi *</label>
         <select class="form-select q-type" onchange="onQTypeChange(this,'${id}')">
           <option value="true-false-ng"     ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
-          <option value="multiple-choice"   ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+          <option value="multiple-choice"   ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice (1 đáp án)</option>
+          <option value="checkbox"          ${data?.type === 'checkbox' ? 'selected' : ''}>Multiple Choice (nhiều đáp án)</option>
           <option value="fill-blank"        ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
           <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
           <option value="matching-headings" ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
           <option value="matching-info"     ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
+          <option value="map-labelling"     ${data?.type === 'map-labelling' ? 'selected' : ''}>Map / Diagram Labelling</option>
         </select>
       </div>
     </div>
@@ -1960,12 +1962,64 @@
         <input class="form-input q-opt" style="flex:1" value="${opts[i] || ''}" placeholder="Đáp án ${l}"/></div>`).join('')}
     </div>`;
       }
+      if (type === 'checkbox') {
+        const opts = data?.options || ['', '', '', '', ''];
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Các đáp án (A → E)</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px">
+            ${['A','B','C','D','E'].map((l,i) => `
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-weight:700;color:var(--accent);width:20px;font-size:12px">${l}.</span>
+                <input class="form-input q-opt" value="${opts[i]||''}"
+                       style="font-size:13px;padding:7px 10px" placeholder="Đáp án ${l}" />
+              </div>`).join('')}
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+            <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;margin-bottom:0">Số đáp án cần chọn:</label>
+            <input class="form-input q-cbcount" type="number" value="${data?.checkboxCount||2}"
+                   style="width:64px;font-size:13px;padding:6px 10px" min="1" max="5" />
+            <span style="font-size:12px;color:var(--text3)">Đáp án đúng ví dụ: <code style="background:var(--bg);padding:1px 6px;border-radius:3px;font-family:var(--mono)">["A","C"]</code></span>
+          </div>
+        </div>`;
+      }
       if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
         return `<div class="form-group"><label>Word bank (cách nhau bằng dấu phẩy)</label>
       <input class="form-input q-wordbank" value="${(data?.wordBank || []).join(', ')}" placeholder="soil, trees, rocks…"/>
       <div class="form-hint">Danh sách từ/cụm cho học sinh kéo thả</div></div>`;
       }
+      if (type === 'map-labelling') {
+        const imgId = `rqimg-${Date.now()}`;
+        return `<div class="form-group" style="margin-bottom:8px">
+          <label>Hình ảnh sơ đồ / bản đồ</label>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <div style="flex:1">
+              <input class="form-input q-imageurl" value="${data?.imageUrl||''}"
+                     style="font-size:13px;padding:8px 12px"
+                     placeholder="URL hình ảnh (Imgur, Cloudinary...)"
+                     oninput="previewRQImage(this,'${imgId}')"/>
+              <div class="form-hint">Upload hình lên Imgur rồi dán URL vào đây</div>
+            </div>
+            <div id="${imgId}"
+                 style="width:130px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;
+                        display:flex;align-items:center;justify-content:center;
+                        overflow:hidden;background:var(--bg);flex-shrink:0">
+              ${data?.imageUrl
+                ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:100px;object-fit:contain"/>`
+                : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
+            </div>
+          </div>
+        </div>`;
+      }
       return '';
+    }
+    function previewRQImage(input, previewId) {
+      const url = input.value.trim();
+      const preview = document.getElementById(previewId);
+      if (!preview) return;
+      preview.innerHTML = url
+        ? `<img src="${url}" style="max-width:100%;max-height:100px;object-fit:contain"
+               onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
+        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
     }
     function onQTypeChange(sel, rowId) {
       document.getElementById(rowId).querySelector('.q-extra').innerHTML = renderQExtra(sel.value, {});
@@ -1980,11 +2034,16 @@
         const expl = row.querySelector('.q-explain').value.trim();
         if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
         const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
-        if (type === 'multiple-choice') q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
+        if (['multiple-choice', 'checkbox'].includes(type))
+          q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
+        if (type === 'checkbox')
+          q.checkboxCount = parseInt(row.querySelector('.q-cbcount')?.value) || 2;
         if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
           const wb = row.querySelector('.q-wordbank')?.value || '';
           q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
         }
+        if (type === 'map-labelling')
+          q.imageUrl = row.querySelector('.q-imageurl')?.value.trim() || '';
         questions.push(q);
       }
       return questions;

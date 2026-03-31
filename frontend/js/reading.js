@@ -332,9 +332,12 @@ function renderCurrentQuestions(isReview) {
     if (['sentence-completion', 'matching-headings', 'matching-info'].includes(q.type)) {
       const dz = el.querySelector(`.drop-zone[data-qnum="${q.questionNumber}"]`);
       if (dz) fillDropZone(dz, saved, isReview ? getCorrectAns(q) : null, isReview);
-    } else if (q.type === 'fill-blank') {
+    } else if (q.type === 'fill-blank' || q.type === 'map-labelling') {
       const inp = el.querySelector(`#fi-${q.questionNumber}`);
       if (inp) inp.value = saved;
+    } else if (q.type === 'checkbox') {
+      // Checkbox: saved là JSON array string, re-render đã xử lý qua renderCheckboxOpts
+      // Không cần restore thêm vì renderCheckboxOpts đọc state.answers trực tiếp
     } else {
       const opt = el.querySelector(`.radio-opt[data-value="${CSS.escape(saved)}"][data-qnum="${q.questionNumber}"]`);
       if (opt) opt.classList.add('selected');
@@ -377,8 +380,14 @@ function renderQuestion(q, isReview) {
     case 'multiple-choice':
       inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview);
       break;
+    case 'checkbox':
+      inputHtml = renderCheckboxOpts(num, q, ua, ca, isReview);
+      break;
     case 'fill-blank':
       inputHtml = renderFillBlank(num, ua, ca, isReview);
+      break;
+    case 'map-labelling':
+      inputHtml = renderMapLabelling(num, q, ua, ca, isReview);
       break;
     case 'sentence-completion':
     case 'matching-info':
@@ -475,6 +484,55 @@ function renderMatchingHeadings(num, q, userAns, correctAns, isReview) {
       </div>
     </div>
   `;
+}
+
+// ── Checkbox (chọn nhiều đáp án) ──
+function renderCheckboxOpts(num, q, userAnsRaw, correctAns, isReview) {
+  // userAnsRaw có thể là JSON string "["A","C"]" hoặc array
+  let selected = [];
+  try { selected = Array.isArray(userAnsRaw) ? userAnsRaw : JSON.parse(userAnsRaw || '[]'); }
+  catch { selected = []; }
+
+  let correctArr = [];
+  try { correctArr = Array.isArray(correctAns) ? correctAns : JSON.parse(correctAns || '[]'); }
+  catch { correctArr = []; }
+
+  const count = q.checkboxCount || 2;
+  const hint = isReview ? '' : `<div class="checkbox-hint">Chọn ${count} đáp án</div>`;
+
+  const opts = (q.options || []).map((opt, i) => {
+    const letter = String.fromCharCode(65 + i); // A, B, C…
+    const isSelected = selected.includes(letter);
+    const isCorrect  = correctArr.includes(letter);
+
+    let cls = '';
+    if (isReview) {
+      if (isCorrect)                      cls = 'correct-ans';
+      else if (isSelected && !isCorrect)  cls = 'wrong-ans';
+    } else {
+      if (isSelected) cls = 'selected';
+    }
+
+    return `
+      <div class="checkbox-opt ${cls}"
+           data-qnum="${num}" data-letter="${letter}"
+           ${isReview ? '' : `onclick="toggleCheckboxReading(${num}, '${letter}', ${count}, this)"`}>
+        <div class="check-box"></div>
+        <span class="cb-letter">${letter}.</span>
+        <label>${opt}</label>
+      </div>`;
+  }).join('');
+
+  return `${hint}<div class="checkbox-opts">${opts}</div>`;
+}
+
+// ── Map / Diagram Labelling ──
+function renderMapLabelling(num, q, userAns, correctAns, isReview) {
+  const imgHtml = q.imageUrl
+    ? `<div class="map-img-wrap"><img src="${q.imageUrl}" alt="Diagram" class="map-img" /></div>`
+    : '';
+  const inputHtml = renderFillBlank(num, userAns, correctAns, isReview);
+  return `${imgHtml}${inputHtml}`;
 }
 
 // ══════════════════════════════════════════════════════
@@ -596,6 +654,30 @@ function pickRadio(qnum, value) {
   qi?.querySelectorAll('.radio-opt').forEach(opt => {
     opt.classList.toggle('selected', opt.dataset.value === value);
   });
+  updateQNav();
+}
+
+// Checkbox: toggle letter, enforce max count
+function toggleCheckboxReading(qnum, letter, maxCount, el) {
+  let current = [];
+  try { current = JSON.parse(state.answers[qnum] || '[]'); } catch { current = []; }
+
+  if (current.includes(letter)) {
+    current = current.filter(l => l !== letter);
+    el.classList.remove('selected');
+    el.querySelector('.check-box').style.background = '';
+  } else {
+    if (current.length >= maxCount) {
+      // Deselect the first selected one visually
+      const first = current.shift();
+      const qi = document.getElementById(`qi-${qnum}`);
+      qi?.querySelector(`.checkbox-opt[data-letter="${first}"]`)?.classList.remove('selected');
+    }
+    current.push(letter);
+    el.classList.add('selected');
+  }
+
+  state.answers[qnum] = JSON.stringify(current);
   updateQNav();
 }
 
@@ -1216,6 +1298,7 @@ window.toggleEyeProtection = toggleEyeProtection;
 window.setFontSize = setFontSize;
 window.setTool = setTool;
 window.pickRadio = pickRadio;
+window.toggleCheckboxReading = toggleCheckboxReading;
 window.saveTextAnswer = saveTextAnswer;
 window.dzDragOver = dzDragOver;
 window.dzDrop = dzDrop;

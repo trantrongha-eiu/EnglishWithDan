@@ -36,32 +36,40 @@ body.eye-protection .split-questions {
 }
 
 /* ══════════════════════════════════════════════
-   SKILL TABS
+   SITE NAV (dùng chung cho reading & listening)
 ══════════════════════════════════════════════ */
 .skill-tabs-bar {
-  display: flex;
-  gap: 4px;
-  padding: 12px 24px 0;
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.skill-tab {
-  padding: 9px 18px;
-  border: none;
-  background: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all .2s;
+.site-nav {
+  display: flex;
+  padding: 0 24px;
+  gap: 0;
 }
 
-.skill-tab.active {
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+
+.site-nav-link:hover {
+  color: #e53935;
+}
+
+.site-nav-link.active {
   color: #e53935;
   border-bottom-color: #e53935;
-  font-weight: 600;
 }
 
 /* ══════════════════════════════════════════════
@@ -1551,6 +1559,110 @@ body.eye-protection .split-questions {
 @keyframes slideUp {
   from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════
+   CHECKBOX (chọn nhiều đáp án) – Reading
+══════════════════════════════════════════════ */
+.checkbox-hint {
+  font-size: 12px;
+  color: #6b7280;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.checkbox-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.checkbox-opt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .15s;
+  user-select: none;
+}
+
+.checkbox-opt:hover {
+  background: #f3f4f6;
+  border-color: #c7d2fe;
+}
+
+.checkbox-opt.selected {
+  background: #e8f0fe;
+  border-color: #1565c0;
+}
+
+.checkbox-opt.correct-ans {
+  background: #e8f5e9 !important;
+  border-color: #43a047 !important;
+}
+
+.checkbox-opt.wrong-ans {
+  background: #fce4e4 !important;
+  border-color: #e53935 !important;
+}
+
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.checkbox-opt.selected   .check-box { background: #1565c0; border-color: #1565c0; }
+.checkbox-opt.correct-ans .check-box { background: #43a047; border-color: #43a047; }
+.checkbox-opt.wrong-ans  .check-box { background: #e53935; border-color: #e53935; }
+
+.checkbox-opt.selected    .check-box::after,
+.checkbox-opt.correct-ans .check-box::after,
+.checkbox-opt.wrong-ans   .check-box::after { content: '✓'; }
+
+.cb-letter {
+  font-weight: 700;
+  color: #6b7280;
+  min-width: 18px;
+}
+
+.checkbox-opt.selected    .cb-letter { color: #1565c0; }
+.checkbox-opt.correct-ans .cb-letter { color: #43a047; }
+.checkbox-opt.wrong-ans   .cb-letter { color: #e53935; }
+
+/* ══════════════════════════════════════════════
+   MAP / DIAGRAM LABELLING – Reading
+══════════════════════════════════════════════ */
+.map-img-wrap {
+  margin-bottom: 10px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8f9fb;
+  text-align: center;
+  padding: 8px;
+}
+
+.map-img {
+  max-width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
 }
 
 /* ══════════════════════════════════════════════
