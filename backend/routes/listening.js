@@ -9,6 +9,7 @@ const cloudinary       = require('cloudinary').v2;
 const streamifier      = require('streamifier');
 const ListeningTest    = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
+const AccessKey        = require('../models/AccessKey');
 const auth             = require('../middleware/auth');
 
 // ── Middleware ──────────────────────────────────────────────────────────────
@@ -187,7 +188,6 @@ router.put('/admin/tests/:id/transcript', auth, teacherOnly, async (req, res) =>
 // ══════════════════════════════════════════════════════════════════════════════
 
 // GET /api/listening/admin/attempts
-// Query params: testId, userId, page, limit
 router.get('/admin/attempts', auth, teacherOnly, async (req, res) => {
   try {
     const { testId, userId, page = 1, limit = 50 } = req.query;
@@ -212,14 +212,12 @@ router.get('/admin/attempts', auth, teacherOnly, async (req, res) => {
 });
 
 // GET /api/listening/admin/attempts/stats
-// Thống kê tổng quan: avg band, số lượt, top performers
 router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
   try {
     const { testId } = req.query;
     const match = testId ? { testId: new (require('mongoose').Types.ObjectId)(testId) } : {};
 
     const [overview, byTest, topStudents] = await Promise.all([
-      // Tổng quan toàn bộ
       ListeningAttempt.aggregate([
         { $match: match },
         {
@@ -233,8 +231,6 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
           }
         }
       ]),
-
-      // Thống kê theo từng đề
       ListeningAttempt.aggregate([
         { $match: match },
         {
@@ -249,8 +245,6 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
         { $sort: { totalAttempts: -1 } },
         { $limit: 20 }
       ]),
-
-      // Top 10 học viên band cao nhất
       ListeningAttempt.aggregate([
         { $match: match },
         {
@@ -294,13 +288,28 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-// STUDENT – Danh sách đề
+// STUDENT – Danh sách đề (kèm lịch sử làm bài của user)
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
     const tests = await ListeningTest.find({ isActive: true })
       .select('name testNumber seriesName audioDuration sections')
       .sort({ testNumber: -1 });
+
+    // Lấy attempt gần nhất của user cho mỗi test
+    const attempts = await ListeningAttempt.find({
+      userId: req.user._id || req.user.id,
+      status: 'completed'
+    }).select('testId bandScore correctCount wrongCount skippedCount submittedAt timeTaken');
+
+    // Map: testId → attempt mới nhất
+    const attemptMap = {};
+    attempts.forEach(a => {
+      const key = a.testId.toString();
+      if (!attemptMap[key] || attemptMap[key].submittedAt < a.submittedAt) {
+        attemptMap[key] = a;
+      }
+    });
 
     const list = tests.map(t => ({
       _id: t._id,
@@ -309,7 +318,8 @@ router.get('/tests', auth, async (req, res) => {
       seriesName: t.seriesName,
       audioDuration: t.audioDuration,
       totalParts: t.sections.length,
-      totalQuestions: flattenQuestions(t.sections).length
+      totalQuestions: flattenQuestions(t.sections).length,
+      lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
     res.json({ success: true, tests: list });
@@ -319,12 +329,65 @@ router.get('/tests', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-// STUDENT – Lấy full đề để làm bài
+// STUDENT – Xác thực Access Key (trước khi vào làm bài)
+// POST /api/listening/verify-key
+// Body: { key, testId }
 // ══════════════════════════════════════════════════════════════════════════════
-router.get('/tests/:id/start', auth, async (req, res) => {
+router.post('/verify-key', auth, async (req, res) => {
   try {
+    const { key, testId } = req.body;
+    if (!key) return res.json({ success: false, message: 'Vui lòng nhập key' });
+
+    const accessKey = await AccessKey.findOne({
+      key: key.toUpperCase().trim(),
+      isActive: true,
+      $or: [{ testId }, { testId: null }]
+    });
+
+    if (!accessKey) {
+      return res.json({ success: false, message: 'Key không hợp lệ' });
+    }
+    if (accessKey.currentUses >= accessKey.maxUses) {
+      return res.json({ success: false, message: 'Key đã được sử dụng hết lượt' });
+    }
+    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
+      return res.json({ success: false, message: 'Key đã hết hạn' });
+    }
+
+    res.json({ success: true, message: 'Key hợp lệ ✓' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STUDENT – Lấy full đề để làm bài (yêu cầu access key)
+// POST /api/listening/tests/:id/start
+// Body: { key }
+// ══════════════════════════════════════════════════════════════════════════════
+router.post('/tests/:id/start', auth, async (req, res) => {
+  try {
+    const { key } = req.body;
+
+    // Xác thực key (double-check)
+    const accessKey = await AccessKey.findOne({
+      key: (key || '').toUpperCase().trim(),
+      isActive: true,
+      $or: [{ testId: req.params.id }, { testId: null }]
+    });
+
+    if (!accessKey || accessKey.currentUses >= accessKey.maxUses) {
+      return res.status(403).json({ success: false, message: 'Key không hợp lệ hoặc đã hết lượt' });
+    }
+    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
+      return res.status(403).json({ success: false, message: 'Key đã hết hạn' });
+    }
+
     const test = await ListeningTest.findOne({ _id: req.params.id, isActive: true });
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+
+    // Tăng lượt dùng key
+    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
 
     const sections = test.sections.map(s => ({
       partNumber: s.partNumber,
@@ -385,7 +448,6 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const allQuestions = flattenQuestions(test.sections);
     const total = allQuestions.length;
 
-    // ── Chấm điểm ────────────────────────────────────────────────────────────
     const reviewed = allQuestions.map(q => {
       const num = q.questionNumber;
       const ua  = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
@@ -422,7 +484,6 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
 
     const bandScore = calcBandScore(correct);
 
-    // ── Lưu ListeningAttempt ─────────────────────────────────────────────────
     const attempt = new ListeningAttempt({
       userId:         req.user._id || req.user.id,
       testId:         test._id,
@@ -445,7 +506,6 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     });
     await attempt.save();
 
-    // ── Build review sections (giữ nguyên cấu trúc groups) ──────────────────
     const reviewMap = {};
     reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
 
@@ -479,8 +539,8 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
         skippedCount:   skipped,
         bandScore,
         timeTaken,
-        questions:      reviewed,      // flat list (Q nav + tính điểm)
-        sections:       reviewSections, // có groups (render review layout)
+        questions:      reviewed,
+        sections:       reviewSections,
         audioUrl:       test.audioUrl
       }
     });
@@ -495,7 +555,7 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
 router.get('/history', auth, async (req, res) => {
   try {
     const attempts = await ListeningAttempt.find({ userId: req.user._id || req.user.id })
-      .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status')
+      .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status testId')
       .populate('testId', 'name testNumber')
       .sort({ submittedAt: -1 })
       .limit(50);
@@ -517,14 +577,12 @@ router.get('/history/:attemptId', auth, async (req, res) => {
     });
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
-    // Load lại test để có sections/transcript
     const test = await ListeningTest.findById(attempt.testId);
     if (!test) return res.status(404).json({ success: false, message: 'Đề thi không tồn tại' });
 
     const reviewMap = {};
     attempt.answers.forEach(a => { reviewMap[a.questionNumber] = a; });
 
-    // Merge câu hỏi đầy đủ (questionText, options...) với kết quả đã lưu
     const allQuestions = flattenQuestions(test.sections);
     const reviewed = allQuestions.map(q => {
       const saved = reviewMap[q.questionNumber] || {};
