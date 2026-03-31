@@ -963,3 +963,200 @@ body {
   color: #1f2937;
 }
 .history-table tr:hover td { background: #f9fafb; }
+
+/* ══════════════════════════════════════════════════════════════
+   THÊM VÀO CUỐI listening.css
+   (Copy toàn bộ block này, dán vào cuối file listening.css)
+══════════════════════════════════════════════════════════════ */
+
+
+/* ────────────────────────────────────────────────────────────
+   SCREEN KEY  (copy 1:1 từ reading.css để UI giống hệt)
+──────────────────────────────────────────────────────────── */
+.key-overlay {
+  min-height: 100vh;
+  background: rgba(0, 0, 0, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.key-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 44px 36px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .18);
+}
+
+.key-card-icon { font-size: 48px; margin-bottom: 12px; }
+
+.key-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+
+.key-desc { color: #6b7280; font-size: 13px; margin-bottom: 8px; }
+
+.key-test-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3d8bff;
+  margin-bottom: 18px;
+}
+
+.key-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 22px;
+  letter-spacing: 6px;
+  text-align: center;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .2s;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #1a1a2e;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.key-input:focus { border-color: #3d8bff; }
+
+.key-msg {
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 10px 0 4px;
+}
+
+.key-msg.error   { background: #fce4e4; color: #c62828; display: block; }
+.key-msg.success { background: #e8f5e9; color: #2e7d32; display: block; }
+.key-msg.hidden  { display: none; }
+
+.key-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+/* ────────────────────────────────────────────────────────────
+   TEST CARD  (giống reading — done-tick + test-card-last)
+──────────────────────────────────────────────────────────── */
+.test-card-cover.ls-cover {
+  background: linear-gradient(135deg, #0d47a1 0%, #1565c0 60%, #1976d2 100%);
+}
+
+.test-done-tick {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: #43a047;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; font-weight: 700;
+}
+
+.test-card-last {
+  font-size: 11px;
+  color: #6b7280;
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 5px 8px;
+  margin-bottom: 10px;
+}
+
+.test-card-last .band-mini { color: #1565c0; font-weight: 700; }
+
+.btn-redo-test {
+  width: 100%;
+  padding: 9px 0;
+  background: #fff;
+  color: #1565c0;
+  border: 1.5px solid #1565c0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: all .2s;
+  font-family: inherit;
+}
+
+.btn-redo-test:hover { background: #e3f2fd; }
+
+/* Listening dùng blue cho btn-do-test thay vì red */
+.btn-do-test { background: #1565c0; }
+.btn-do-test:hover { background: #0d47a1; }
+
+
+/* ────────────────────────────────────────────────────────────
+   Q-NAV BUTTONS (fix size trong review screen)
+──────────────────────────────────────────────────────────── */
+.q-nav-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 190px;
+}
+
+.q-nav-btn {
+  width: 34px; height: 34px;
+  max-width: 36px; max-height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; color: #374151;
+}
+
+.q-nav-btn:hover    { border-color: #3d8bff; color: #3d8bff; }
+.q-nav-btn.answered { background: #3d8bff; border-color: #3d8bff; color: #fff; }
+.q-nav-btn.correct  { background: #16a34a; border-color: #16a34a; color: #fff; }
+.q-nav-btn.wrong    { background: #e53935; border-color: #e53935; color: #fff; }
+.q-nav-btn.skipped  { background: #f3f4f6; border-color: #d1d5db; color: #9ca3af; }
+
+
+/* ────────────────────────────────────────────────────────────
+   EXAM TOOLBAR
+──────────────────────────────────────────────────────────── */
+.exam-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #fff;
+  border-bottom: 1px solid #f3f4f6;
+  align-items: center;
+}
+
+.tool-btn {
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; color: #6b7280;
+  font-family: inherit;
+  transition: all .15s;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+
+.tool-btn:hover  { border-color: #3d8bff; color: #3d8bff; }
+.tool-btn.active { background: #3d8bff; border-color: #3d8bff; color: #fff; }
+
+
+/* ────────────────────────────────────────────────────────────
+   MODAL body scroll
+──────────────────────────────────────────────────────────── */
+.modal-body-scroll {
+  overflow-x: auto;
+  max-height: 60vh;
+  overflow-y: auto;
+}

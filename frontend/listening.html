@@ -23,6 +23,9 @@
             </div>
             <div style="display:flex;align-items:center;gap:12px">
                 <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
+                <button onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
+                    📜 Lịch sử
+                </button>
                 <button onclick="logout()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
                     🚪 Đăng xuất
                 </button>
@@ -87,10 +90,13 @@
             <audio id="audio-player" preload="metadata"></audio>
         </div>
 
-        <!-- Exam toolbar: highlight -->
+        <!-- Exam toolbar: highlight + dict -->
         <div class="exam-toolbar" id="exam-toolbar">
             <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
-                🖊 <small>Highlight (H)</small>
+                🖊 <small>Highlight</small>
+            </button>
+            <button class="tool-btn" id="tool-dict-exam" onclick="setToolExam('dict')">
+                🔍 <small>Tra từ</small>
             </button>
         </div>
 
@@ -209,11 +215,36 @@
         </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════
+     SCREEN: KEY  (giống reading)
+══════════════════════════════════════════════ -->
+    <div id="screen-key" class="screen">
+        <div class="key-overlay">
+            <div class="key-card">
+                <div class="key-card-icon">🔑</div>
+                <h3>Nhập mã truy cập</h3>
+                <p class="key-desc">Bạn cần mã từ giáo viên để làm bài thi này</p>
+                <div class="key-test-name" id="key-test-name"></div>
+                <input id="key-input" type="text" class="key-input ls-key-input"
+                    placeholder="VD: A3F9-B2C1" maxlength="9" autocomplete="off"
+                    oninput="formatKeyInput(this)"
+                    onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
+                <div id="key-msg" class="key-msg hidden"></div>
+                <div class="key-actions">
+                    <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
+                    <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
+                        🎧 Bắt đầu làm bài
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: History -->
     <div class="modal-overlay hidden" id="modal-history">
         <div class="modal-box modal-lg">
             <div class="modal-header">
-                <h3>Lịch sử làm bài</h3>
+                <h3>Lịch sử làm bài – Listening</h3>
                 <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
             </div>
             <div class="modal-body-scroll">
@@ -272,6 +303,7 @@
             tests: [],
             currentTestId: null,
             currentTest: null,
+            pendingTestId: null,   // testId đang chờ xác thực key
             answers: {},
             dragItem: null,
             partIdx: 0,
@@ -279,7 +311,8 @@
             reviewResult: null,
             tool: 'highlight',
             dictWord: '', dictMeaning: '', dictExample: '',
-            submitted: false
+            submitted: false,
+            startTime: null
         };
 
         const audio = document.getElementById('audio-player');
@@ -295,6 +328,7 @@
             const el = document.getElementById('userName');
             if (el && name) el.textContent = `👋 ${name}`;
             setupHighlight();
+            setupDictionaryDouble('questions-panel');   // dict trong exam
             setupAudioEvents();
             loadTestList();
             showScreen('list');
@@ -355,18 +389,25 @@
 
         function renderTestCard(t) {
             const dur = t.audioDuration ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)} phút` : '–';
+            const done = !!t.lastAttempt;
+            const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
+            const cor  = t.lastAttempt?.correctCount ?? '';
+            const tot  = t.lastAttempt?.totalQuestions ?? t.totalQuestions ?? '';
+            const safeName = (t.name || '').replace(/'/g, "\\'");
             return `
-                <div class="test-card">
-                    <div class="test-card-cover">
+                <div class="test-card" id="tcard-${t._id}" data-done="${done}">
+                    <div class="test-card-cover ls-cover">
+                        ${done ? '<div class="test-done-tick">✓</div>' : ''}
                         <div class="test-cover-badge">IELTS Listening</div>
                         <div class="test-cover-title">🎧</div>
                         <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} parts</div>
-                        <div class="test-cover-wave"></div>
                     </div>
                     <div class="test-card-body">
                         <div class="test-card-name">${t.name}</div>
                         <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
-                        <button class="btn-do-test" onclick="startTest('${t._id}')">🎧 Làm bài</button>
+                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu</div>` : ''}
+                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 Làm bài</button>
+                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">🔄 Làm lại</button>` : ''}
                     </div>
                 </div>`;
         }
@@ -374,15 +415,78 @@
         function filterTests(mode, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
-            renderTestList(state.tests);
+            document.querySelectorAll('.test-card').forEach(c => {
+                const done = c.dataset.done === 'true';
+                if (mode === 'all')  c.style.display = '';
+                else if (mode === 'done') c.style.display = done ? '' : 'none';
+                else c.style.display = !done ? '' : 'none';
+            });
+        }
+
+        // ══════════════════════════════════════════════
+        // ACCESS KEY FLOW  (screen-key, giống reading)
+        // ══════════════════════════════════════════════
+        function goToKey(testId, testName) {
+            state.pendingTestId = testId;
+            document.getElementById('key-test-name').textContent = testName;
+            document.getElementById('key-input').value = '';
+            const msg = document.getElementById('key-msg');
+            msg.textContent = ''; msg.className = 'key-msg hidden';
+            const btn = document.getElementById('btn-start-key');
+            btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+            showScreen('key');
+            setTimeout(() => document.getElementById('key-input').focus(), 100);
+        }
+
+        function formatKeyInput(inp) {
+            let v = inp.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
+            if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+            inp.value = v;
+        }
+
+        function showKeyMsg(text, type) {
+            const el = document.getElementById('key-msg');
+            el.textContent = text;
+            el.className = `key-msg ${type}`;
+        }
+
+        async function verifyKeyAndStart() {
+            const key = document.getElementById('key-input').value.trim();
+            const btn = document.getElementById('btn-start-key');
+            if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
+
+            btn.disabled = true; btn.textContent = 'Đang xác thực...';
+            document.getElementById('key-msg').className = 'key-msg hidden';
+
+            try {
+                // Bước 1: verify (không tốn lượt)
+                const vRes = await fetch(`${API}/listening/verify-key`, {
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ key, testId: state.pendingTestId })
+                });
+                const vData = await vRes.json();
+                if (!vData.success) {
+                    showKeyMsg(vData.message || 'Key không hợp lệ', 'error');
+                    btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+                    return;
+                }
+                // Key hợp lệ → vào thi (tốn lượt)
+                await startTest(state.pendingTestId, key);
+            } catch (err) {
+                showKeyMsg('Lỗi kết nối: ' + err.message, 'error');
+                btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+            }
         }
 
         // ══════════════════════════════════════════════
         // START EXAM
         // ══════════════════════════════════════════════
-        async function startTest(testId) {
+        async function startTest(testId, key) {
             try {
-                const res = await fetch(`${API}/listening/tests/${testId}/start`, { headers: authH() });
+                const res = await fetch(`${API}/listening/tests/${testId}/start`, {
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ key })
+                });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const t = data.test;
@@ -400,6 +504,7 @@
                 renderPartQuestions(0);
                 renderQNav('q-nav-grid', false);
                 updateFooter();
+                setToolExam('highlight');
                 showScreen('exam');
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
             } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
@@ -438,7 +543,6 @@
         function setSpeed(speed, btn) {
             audio.playbackRate = speed;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-            // Activate all buttons with same speed across both audio bars
             document.querySelectorAll('.speed-btn').forEach(b => {
                 if (b.textContent.trim() === (btn?.textContent?.trim() || '')) b.classList.add('active');
             });
@@ -486,9 +590,10 @@
                 html += renderQuestionGroup(group, gi, false);
             });
             panel.innerHTML = html;
-            // Restore answers & drag-drop
             (section.questionGroups || []).forEach(g => g.questions.forEach(q => restoreAnswer(q)));
             setupDragDrop(panel);
+            // re-attach dict to questions-panel sau khi re-render
+            setupDictionaryDouble('questions-panel');
         }
 
         // ── Group dispatcher ──────────────────────────────────────
@@ -497,7 +602,6 @@
             const instruction = group.instruction
                 ? `<div class="group-instruction">${group.instruction}</div>` : '';
 
-            // Word bank cho sentence-completion / matching (chỉ khi làm bài)
             let wordBankHtml = '';
             if (!isReview) {
                 const wbQs = group.questions.filter(q => ['sentence-completion','matching'].includes(q.type) && q.wordBank?.length);
@@ -520,7 +624,6 @@
             return `<div class="question-group" data-type="${groupType}">${instruction}${wordBankHtml}${contentHtml}${summary}</div>`;
         }
 
-        // ── TABLE ─────────────────────────────────────────────────
         function renderTableGroup(group, isReview) {
             const { headers = [], rows = [] } = group.tableConfig || {};
             const headerHtml = headers.length
@@ -533,7 +636,6 @@
             return `<div class="group-table-wrap"><table class="group-table">${headerHtml}<tbody>${bodyHtml}</tbody></table></div>`;
         }
 
-        // ── NOTE FORM ─────────────────────────────────────────────
         function renderNoteFormGroup(group, isReview) {
             const { title = '', lines = [] } = group.noteConfig || {};
             const linesHtml = lines.map(line =>
@@ -545,7 +647,6 @@
             </div>`;
         }
 
-        // ── BULLET LIST ───────────────────────────────────────────
         function renderBulletListGroup(group, isReview) {
             const { items = [] } = group.bulletConfig || {};
             const itemsHtml = items.map(item =>
@@ -554,7 +655,6 @@
             return `<div class="group-bullet-list"><ul>${itemsHtml}</ul></div>`;
         }
 
-        // ── MAP / DIAGRAM ─────────────────────────────────────────
         function renderMapGroup(group, isReview) {
             const imgUrl = group.imageUrl || '';
             const qsHtml = group.questions.map(q => renderStandaloneQuestion(q, isReview)).join('');
@@ -564,12 +664,10 @@
             </div>`;
         }
 
-        // ── PLAIN ─────────────────────────────────────────────────
         function renderPlainGroup(group, isReview) {
             return group.questions.map(q => renderStandaloneQuestion(q, isReview)).join('');
         }
 
-        // ── Standalone question (plain & map) ─────────────────────
         function renderStandaloneQuestion(q, isReview) {
             const num = q.questionNumber;
             const ua  = isReview ? (q.userAnswer   || '') : (state.answers[num] || '');
@@ -603,7 +701,6 @@
             </div>`;
         }
 
-        // ── Placeholder resolver (__Q1__ → input or answer) ───────
         function resolvePlaceholders(template, questions, isReview) {
             return template.replace(/__Q(\d+)__/g, (match, numStr) => {
                 const num = parseInt(numStr);
@@ -628,7 +725,6 @@
             });
         }
 
-        // ── Review summary per group ───────────────────────────────
         function renderGroupReviewSummary(group) {
             if (!group.questions?.length) return '';
             const total   = group.questions.length;
@@ -667,7 +763,6 @@
             const section = r.sections[partIdx];
             if (!section) return;
 
-            // Lookup map: questionNumber → reviewed question
             const reviewMap = {};
             (r.questions || []).forEach(q => { reviewMap[q.questionNumber] = q; });
 
@@ -680,7 +775,6 @@
                 </div>`;
 
             (section.questionGroups || []).forEach((group, gi) => {
-                // Gắn dữ liệu review vào từng câu trong group
                 const groupWithReview = {
                     ...group,
                     questions: group.questions.map(q => { const r = reviewMap[q.questionNumber]; return r ? { ...q, ...r } : q; })
@@ -700,7 +794,7 @@
         }
 
         // ══════════════════════════════════════════════
-        // INPUT RENDERERS (dùng cho plain/map group)
+        // INPUT RENDERERS
         // ══════════════════════════════════════════════
         function renderRadioOpts(num, opts, ua, ca, isReview) {
             return `<div class="q-options">${opts.map(opt => {
@@ -795,7 +889,6 @@
                 const inp = document.getElementById(`fi-${num}`);
                 if (inp) inp.value = saved;
             }
-            // inline inputs inside table/note/bullet
             const inlineInp = document.getElementById(`fi-${num}`);
             if (inlineInp && !inlineInp.value) inlineInp.value = saved;
         }
@@ -821,7 +914,6 @@
 
         function dzClick(e, qnum) {
             if (e.target.classList.contains('clear-drop')) return;
-            // Tìm wordBank từ bất kỳ group nào trong section hiện tại
             const section = (state.currentTest?.sections || [])[state.partIdx];
             let wordBank = [];
             for (const g of (section?.questionGroups || [])) {
@@ -853,16 +945,15 @@
         }
 
         function updateDropZone(qnum) {
-            // Targeted update: only repaint the specific drop-zone, avoids full re-render
             const dz = document.querySelector(`.drop-zone[data-qnum="${qnum}"]`);
-            if (!dz) { renderPartQuestions(state.partIdx); return; } // fallback
+            if (!dz) { renderPartQuestions(state.partIdx); return; }
             const ua = state.answers[qnum] || '';
             if (ua) {
                 dz.classList.add('filled');
-                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})">\u00d7</span>`;
+                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})">×</span>`;
             } else {
                 dz.classList.remove('filled');
-                dz.innerHTML = '&nbsp;&nbsp;k\u00e9o v\u00e0o&nbsp;&nbsp;';
+                dz.innerHTML = '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;';
             }
         }
 
@@ -909,19 +1000,30 @@
         }
 
         function scrollToQ(num) {
-            const el = document.getElementById(`qi-${num}`);
-            if (!el) return;
-            // Scroll trong panel đúng
-            const panel = state.isReview
-                ? document.getElementById('review-questions-panel')
-                : document.getElementById('questions-panel');
-            if (panel) {
-                const panelTop  = panel.getBoundingClientRect().top;
-                const elTop     = el.getBoundingClientRect().top;
-                panel.scrollTop += (elTop - panelTop) - 80;
-            } else {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Nếu câu thuộc part khác → switch part trước
+            if (!state.isReview) {
+                const sections = state.currentTest?.sections || [];
+                const partIdx = sections.findIndex(s =>
+                    num >= s.questionRange.start && num <= s.questionRange.end
+                );
+                if (partIdx >= 0 && partIdx !== state.partIdx) {
+                    switchPart(partIdx, false);
+                }
             }
+            setTimeout(() => {
+                const el = document.getElementById(`qi-${num}`);
+                if (!el) return;
+                const panel = state.isReview
+                    ? document.getElementById('review-questions-panel')
+                    : document.getElementById('questions-panel');
+                if (panel) {
+                    const panelTop  = panel.getBoundingClientRect().top;
+                    const elTop     = el.getBoundingClientRect().top;
+                    panel.scrollTop += (elTop - panelTop) - 80;
+                } else {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 50);
         }
 
         function updateFooter() {
@@ -954,6 +1056,8 @@
                 if (!data.success) throw new Error(data.message);
                 const r = data.result;
                 state.reviewResult = r;
+                // refresh test list để cập nhật trạng thái đã làm
+                loadTestList();
                 document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
                 document.getElementById('r-correct').textContent    = r.correctCount;
                 document.getElementById('r-wrong').textContent      = r.wrongCount;
@@ -980,7 +1084,6 @@
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
-                // Cho phép highlight trong transcript (review) VÀ questions panel (exam)
                 const tb = document.getElementById('transcript-body');
                 const qp = document.getElementById('questions-panel');
                 const rv = document.getElementById('review-questions-inner');
@@ -1116,6 +1219,7 @@
             state.tool = tool;
             document.querySelectorAll('#exam-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
             if (tool === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
+            if (tool === 'dict')      document.getElementById('tool-dict-exam')?.classList.add('active');
         }
 
         // ══════════════════════════════════════════════
@@ -1135,14 +1239,15 @@
                 tbody.innerHTML = data.attempts.map(a => {
                     const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
                     const mins = a.timeTaken ? `${Math.floor(a.timeTaken/60)}:${pad(a.timeTaken%60)}` : '–';
+                    const bandCls = a.bandScore >= 7 ? 'color:#16a34a' : a.bandScore >= 5.5 ? 'color:#f59e0b' : 'color:#e53935';
                     return `<tr>
-                        <td>${a.testName || '–'}</td>
+                        <td>${a.testName || a.testId?.name || '–'}</td>
                         <td>${date}</td>
                         <td>${mins}</td>
                         <td style="color:#16a34a;font-weight:600">${a.correctCount ?? '–'}</td>
                         <td style="color:#e53935;font-weight:600">${a.wrongCount ?? '–'}</td>
                         <td style="color:#9ca3af;font-weight:600">${a.skippedCount ?? '–'}</td>
-                        <td><strong>${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
+                        <td><strong style="${bandCls}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
                     </tr>`;
                 }).join('');
             } catch (err) {
@@ -1172,7 +1277,9 @@
         window.showScreen = showScreen;
         window.openModal = openModal; window.closeModal = closeModal;
         window.filterTests = filterTests;
-        window.startTest = startTest;
+        window.goToKey = goToKey;
+        window.formatKeyInput = formatKeyInput;
+        window.verifyKeyAndStart = verifyKeyAndStart;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;
