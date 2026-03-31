@@ -1331,7 +1331,7 @@
         <div class="form-group">
           <label>Câu hỏi</label>
           <div id="questions-container"></div>
-          <button class="btn btn-ghost btn-sm" onclick="addQuestion()" style="margin-top:8px">＋ Thêm câu hỏi</button>
+          <button class="btn btn-ghost btn-sm" onclick="openRQGroupModal('questions-container')" style="margin-top:8px">＋ Thêm nhóm câu hỏi</button>
         </div>
       </div>
       <div class="modal-footer">
@@ -1869,21 +1869,6 @@
       passagePage = 1;
       renderPassagesTable(allPassages.filter(p => (!q || p.title.toLowerCase().includes(q)) && (!cat || p.category === cat)));
     }
-    function openPassageModal(data = null) {
-      editPassageId = data?._id || null; qIdx = 0;
-      ['p-title', 'p-content'].forEach(id => document.getElementById(id).value = data?.[id.replace('p-', '')] || '');
-      document.getElementById('p-title').value = data?.title || '';
-      document.getElementById('p-content').value = data?.content || '';
-      document.getElementById('p-category').value = data?.category || 'passage1';
-      document.getElementById('p-qstart').value = data?.questionRange?.start || '';
-      document.getElementById('p-qend').value = data?.questionRange?.end || '';
-      document.getElementById('p-difficulty').value = data?.difficulty || 'medium';
-      document.getElementById('p-tags').value = (data?.tags || []).join(', ');
-      document.getElementById('modal-passage-title').textContent = data ? 'Chỉnh sửa bài đọc' : 'Thêm bài đọc mới';
-      const qc = document.getElementById('questions-container'); qc.innerHTML = '';
-      if (data?.questions?.length) data.questions.forEach(q => addQuestion(q)); else addQuestion();
-      openModal('modal-passage');
-    }
     async function editPassage(id) {
       const p = allPassages.find(x => x._id === id);
       try { const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() }); if (res.ok) { const d = await res.json(); openPassageModal(d.passage || p); } else openPassageModal(p); }
@@ -1895,35 +1880,9 @@
         toast('Đã ẩn bài đọc'); await loadPassages();
       });
     }
-    async function savePassage() {
-      const title = document.getElementById('p-title').value.trim();
-      const content = document.getElementById('p-content').value.trim();
-      const qstart = Number(document.getElementById('p-qstart').value);
-      const qend = Number(document.getElementById('p-qend').value);
-      if (!title || !content || !qstart || !qend) { toast('Điền đầy đủ trường bắt buộc *', 'error'); return; }
-      const questions = collectQuestions(); if (!questions) return;
-      const body = {
-        title, category: document.getElementById('p-category').value, content,
-        questionRange: { start: qstart, end: qend }, difficulty: document.getElementById('p-difficulty').value,
-        tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean), questions
-      };
-      const btn = document.getElementById('btn-save-passage');
-      btn.disabled = true; btn.textContent = 'Đang lưu...';
-      try {
-        const url = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
-        const data = await (await fetch(url, { method: editPassageId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
-        if (!data.success) throw new Error(data.message);
-        toast(editPassageId ? 'Đã cập nhật' : 'Đã thêm bài đọc mới');
-        closeModal('modal-passage'); await loadPassages();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-      finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
-    }
 
     /* ══════════════════════════════════════════════════════════════════════
        READING ADMIN – Question Group Builder
-       Thay thế toàn bộ phần "Question builder" trong admin.html
-       (các function: addQuestion, renderQExtra, onQTypeChange, collectQuestions)
-       Thêm modal HTML #modal-passage-group-picker vào body
     ══════════════════════════════════════════════════════════════════════ */
 
     // ── State ──────────────────────────────────────────────────────────────
@@ -2475,16 +2434,7 @@
       finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
     }
 
-    // Cập nhật HTML button trong modal-passage: thay "＋ Thêm câu hỏi" bằng "＋ Thêm nhóm câu hỏi"
-    // Tìm element và thay onclick
-    document.addEventListener('DOMContentLoaded', () => {
-      // Patch nút thêm câu hỏi trong modal passage
-      const addQBtn = document.querySelector('#modal-passage .btn-ghost[onclick="addQuestion()"]');
-      if (addQBtn) {
-        addQBtn.textContent = '＋ Thêm nhóm câu hỏi';
-        addQBtn.onclick = () => openRQGroupModal('questions-container');
-      }
-    });
+
 
     /* ══════════════════════════════════════════════
        TESTS
