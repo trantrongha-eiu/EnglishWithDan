@@ -130,17 +130,25 @@ router.post('/admin/tests/:id/audio', auth, teacherOnly, upload.single('audio'),
 });
 
 // ══════════════════════════════════════════════════
-// ADMIN – Transcript & Timestamps
+// ADMIN – Transcript (per section)
 // ══════════════════════════════════════════════════
 router.put('/admin/tests/:id/transcript', auth, teacherOnly, async (req, res) => {
   try {
-    const { transcript, wordTimestamps } = req.body;
-    const update = {};
-    if (transcript !== undefined) update.transcript = transcript;
-    if (wordTimestamps !== undefined) update.wordTimestamps = wordTimestamps;
+    const { sectionTranscripts } = req.body;
+    // sectionTranscripts: [{ partNumber, transcript }]
+    if (!Array.isArray(sectionTranscripts)) {
+      return res.status(400).json({ success: false, message: 'sectionTranscripts phải là array' });
+    }
 
-    const test = await ListeningTest.findByIdAndUpdate(req.params.id, update, { new: true });
+    const test = await ListeningTest.findById(req.params.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    sectionTranscripts.forEach(({ partNumber, transcript }) => {
+      const section = test.sections.find(s => s.partNumber === partNumber);
+      if (section) section.transcript = transcript || '';
+    });
+
+    await test.save();
     res.json({ success: true, message: 'Đã cập nhật transcript' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -186,6 +194,7 @@ router.get('/tests/:id/start', auth, async (req, res) => {
       title: s.title,
       description: s.description,
       questionRange: s.questionRange,
+      transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
         _id: g._id,
         groupType: g.groupType,
@@ -215,8 +224,6 @@ router.get('/tests/:id/start', auth, async (req, res) => {
         name: test.name,
         audioUrl: test.audioUrl,
         audioDuration: test.audioDuration,
-        wordTimestamps: test.wordTimestamps,
-        transcript: test.transcript,
         sections
       }
     });
@@ -291,6 +298,7 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
       title: s.title,
       description: s.description,
       questionRange: s.questionRange,
+      transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
         groupType: g.groupType,
         instruction: g.instruction,
@@ -317,9 +325,7 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
         bandScore,
         questions: reviewed,          // flat list (cho Q nav, tính điểm)
         sections: reviewSections,     // có cấu trúc groups (cho render review)
-        audioUrl: test.audioUrl,
-        transcript: test.transcript,
-        wordTimestamps: test.wordTimestamps
+        audioUrl: test.audioUrl
       }
     });
   } catch (err) {

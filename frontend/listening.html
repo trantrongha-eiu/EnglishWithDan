@@ -249,7 +249,6 @@
         };
 
         const audio = document.getElementById('audio-player');
-        let wordTimestamps = [];
 
         // ══════════════════════════════════════════════
         // INIT
@@ -359,7 +358,6 @@
                 state.partIdx = 0;
                 state.submitted = false;
                 state.isReview = false;
-                wordTimestamps = t.wordTimestamps || [];
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
                 audio.load();
@@ -393,7 +391,6 @@
             setTimeDisplay('audio-current', t); setTimeDisplay('audio-current-rv', t);
             document.getElementById('audio-seek').value = t;
             document.getElementById('audio-seek-rv').value = t;
-            highlightCurrentWord(t);
         }
 
         function setTimeDisplay(id, secs) {
@@ -407,19 +404,6 @@
             audio.playbackRate = speed;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
-        }
-        function highlightCurrentWord(t) {
-            if (!wordTimestamps.length) return;
-            const tb = document.getElementById('transcript-body');
-            if (!tb) return;
-            tb.querySelectorAll('.tw').forEach(el => el.classList.remove('playing'));
-            for (const wt of wordTimestamps) {
-                if (t >= wt.start && t < wt.end) {
-                    const el = tb.querySelector(`.tw[data-start="${wt.start}"]`);
-                    if (el) { el.classList.add('playing'); el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
-                    break;
-                }
-            }
         }
         function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.play(); }
 
@@ -437,8 +421,13 @@
             state.partIdx = idx;
             const tabsId = isReview ? 'part-tabs-rv' : 'part-tabs';
             document.querySelectorAll(`#${tabsId} .part-tab-btn`).forEach((b, i) => b.classList.toggle('active', i === idx));
-            if (isReview) renderReviewPartQuestions(idx);
-            else renderPartQuestions(idx);
+            if (isReview) {
+                renderReviewPartQuestions(idx);
+                const section = (state.reviewResult?.sections || [])[idx];
+                renderTranscript(section?.transcript || '');
+            } else {
+                renderPartQuestions(idx);
+            }
         }
 
         // ══════════════════════════════════════════════
@@ -619,12 +608,12 @@
             if (!r) return;
             state.isReview = true;
             state.partIdx = 0;
-            wordTimestamps = r.wordTimestamps || [];
             document.getElementById('review-title').textContent = r.testName;
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
             audio.src = r.audioUrl || '';
             audio.load();
-            renderTranscript(r.transcript, r.wordTimestamps);
+            const firstSection = (r.sections || [])[0];
+            renderTranscript(firstSection?.transcript || '');
             buildPartTabs('part-tabs-rv', true);
             renderReviewPartQuestions(0);
             renderQNav('q-nav-grid-rv', true);
@@ -663,16 +652,12 @@
             document.getElementById('review-questions-inner').innerHTML = html;
         }
 
-        function renderTranscript(transcript, wts) {
+        function renderTranscript(transcript) {
             const tb = document.getElementById('transcript-body');
             if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Chưa có transcript.</p>'; return; }
-            if (wts && wts.length) {
-                tb.innerHTML = wts.map(wt =>
-                    `<span class="tw" data-start="${wt.start}" data-end="${wt.end}" onclick="jumpToTime(${wt.start})">${wt.word} </span>`
-                ).join('');
-            } else {
-                tb.innerHTML = transcript.split('\n').map(line => `<p style="margin-bottom:8px">${line}</p>`).join('');
-            }
+            tb.innerHTML = transcript.split('\n').map(line =>
+                line.trim() ? `<p style="margin-bottom:8px">${line}</p>` : '<br>'
+            ).join('');
         }
 
         // ══════════════════════════════════════════════

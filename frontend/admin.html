@@ -1589,12 +1589,6 @@
           </div>
           <div class="form-hint">Sau khi lưu đề, dùng nút 🎵 Audio trong bảng để upload file.</div>
         </div>
-        <div class="form-group">
-          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word
-              highlight)</span></label>
-          <textarea class="form-textarea" id="lt-transcript" rows="5"
-            placeholder="Dán toàn bộ nội dung bài nghe vào đây..."></textarea>
-        </div>
         <div style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
           <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">
             Các phần (Parts)
@@ -1635,40 +1629,6 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('modal-upload-audio')">Huỷ</button>
         <button class="btn btn-primary" onclick="doUploadAudio()" id="btn-do-upload">📤 Upload</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ MODAL: Transcript & Word Timestamps ★ ══ -->
-  <div class="modal-overlay hidden" id="modal-transcript">
-    <div class="modal-box" style="width:min(780px,100%)">
-      <div class="modal-header">
-        <h3>Transcript & Word Timestamps</h3>
-        <button class="modal-close" onclick="closeModal('modal-transcript')">×</button>
-      </div>
-      <div class="modal-body">
-        <p style="color:var(--text2);font-size:13px;margin-bottom:16px;line-height:1.6">
-          Chỉnh sửa transcript và nhập word timestamps (JSON từ Whisper hoặc nhập tay) để bật tính năng
-          <strong>highlight theo từng từ</strong> khi audio phát trên trang học sinh.
-        </p>
-        <div class="form-group">
-          <label>Transcript (plain text)</label>
-          <textarea class="form-textarea" id="tr-transcript" rows="7" placeholder="Nội dung bài nghe..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Word Timestamps (JSON)</label>
-          <textarea class="form-textarea" id="tr-timestamps" rows="7" style="font-size:12px"
-            placeholder='[{"word":"Hello","start":0.1,"end":0.5},{"word":"everyone","start":0.6,"end":1.2},...]'></textarea>
-          <div class="form-hint">
-            Format: array of <code
-              style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
-            · Export từ Whisper JSON hoặc nhập tay
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeModal('modal-transcript')">Huỷ</button>
-        <button class="btn btn-primary" onclick="saveTranscript()" id="btn-save-transcript">Lưu Transcript</button>
       </div>
     </div>
   </div>
@@ -2732,7 +2692,7 @@
     let allListeningTests = [];
     let editListeningId = null;
     let uploadAudioTestId = null;
-    let transcriptTestId = null;
+    let uploadAudioTestId = null;
     let ltSectionCount = 0;
     let ltGroupIdx = 0;
     let ltQIdx = 0;
@@ -2774,7 +2734,6 @@
       <td style="color:var(--text3);font-size:12px">${formatDate(t.createdAt).split(' ')[0]}</td>
       <td>
         <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
-        <button class="btn btn-ghost btn-sm" onclick="openTranscriptModal('${t._id}')">📜 Transcript</button>
         <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')">🗑</button>
       </td>
@@ -2796,7 +2755,6 @@
       document.getElementById('lt-name').value = data?.name || '';
       document.getElementById('lt-series').value = data?.seriesName || '';
       document.getElementById('lt-number').value = data?.testNumber || '';
-      document.getElementById('lt-transcript').value = data?.transcript || '';
       document.getElementById('modal-listening-title').textContent = data ? 'Chỉnh sửa đề nghe' : 'Tạo đề nghe mới';
 
       if (data?.audioUrl) {
@@ -2877,6 +2835,14 @@
     <div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.2);border-radius:6px;
                 padding:6px 12px;font-size:12px;color:#3d8bff;margin-bottom:12px">
       📌 Phạm vi: Questions <strong class="ls-range-text">${getPartRangeText(partNum)}</strong>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">
+        📜 Transcript Part ${partNum} <span style="font-weight:400;color:var(--text3)">(plain text)</span>
+      </label>
+      <textarea class="form-textarea ls-transcript" rows="4"
+        style="font-size:13px;margin-top:4px"
+        placeholder="Dán nội dung bài nghe của Part ${partNum} vào đây...">${data?.transcript || ''}</textarea>
     </div>
 
     <!-- Question Groups container -->
@@ -3318,6 +3284,8 @@
         const qstart = parseInt(sDiv.querySelector('.ls-qstart').value);
         const qend = parseInt(sDiv.querySelector('.ls-qend').value);
 
+        const transcript = sDiv.querySelector('.ls-transcript')?.value.trim() || '';
+
         if (!title || !qstart || !qend) {
           toast('Điền đầy đủ tiêu đề và phạm vi câu cho tất cả Parts', 'error'); return null;
         }
@@ -3387,7 +3355,7 @@
           questionGroups.push(group);
         }
 
-        sections.push({ partNumber, title, description: desc, questionRange: { start: qstart, end: qend }, questionGroups });
+        sections.push({ partNumber, title, description: desc, transcript, questionRange: { start: qstart, end: qend }, questionGroups });
       }
       return sections;
     }
@@ -3403,7 +3371,6 @@
       const body = {
         name, testNumber: number,
         seriesName: document.getElementById('lt-series').value.trim(),
-        transcript: document.getElementById('lt-transcript').value.trim(),
         sections
       };
 
@@ -3469,41 +3436,6 @@
       finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
     }
 
-    // ── Transcript Modal (giữ nguyên) ────────────────────────────────
-    async function openTranscriptModal(id) {
-      transcriptTestId = id;
-      try {
-        const res = await fetch(`${API}/listening/admin/tests/${id}`, { headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        document.getElementById('tr-transcript').value = data.test.transcript || '';
-        document.getElementById('tr-timestamps').value =
-          data.test.wordTimestamps?.length ? JSON.stringify(data.test.wordTimestamps, null, 2) : '';
-        openModal('modal-transcript');
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-    }
-
-    async function saveTranscript() {
-      const transcript = document.getElementById('tr-transcript').value.trim();
-      const rawTs = document.getElementById('tr-timestamps').value.trim();
-      let wordTimestamps = [];
-      if (rawTs) {
-        try { wordTimestamps = JSON.parse(rawTs); }
-        catch { toast('Word timestamps JSON không hợp lệ', 'error'); return; }
-      }
-      const btn = document.getElementById('btn-save-transcript');
-      btn.disabled = true; btn.textContent = 'Đang lưu...';
-      try {
-        const data = await (await fetch(`${API}/listening/admin/tests/${transcriptTestId}/transcript`, {
-          method: 'PUT', headers: authH(),
-          body: JSON.stringify({ transcript, wordTimestamps })
-        })).json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã lưu transcript & word timestamps');
-        closeModal('modal-transcript');
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-      finally { btn.disabled = false; btn.textContent = 'Lưu Transcript'; }
-    }
   </script>
 </body>
 

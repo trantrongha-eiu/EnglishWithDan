@@ -70,6 +70,7 @@ const ListeningSectionSchema = new mongoose.Schema({
   partNumber: { type: Number, enum: [1, 2, 3, 4], required: true },
   title:       { type: String, required: true },
   description: { type: String, default: '' },
+  transcript:  { type: String, default: '' },   // Transcript riêng cho từng Part
   questionRange: {
     start: { type: Number, required: true },
     end:   { type: Number, required: true }
@@ -85,12 +86,6 @@ const ListeningTestSchema = new mongoose.Schema({
   audioUrl:      { type: String, default: '' },
   audioFileName: { type: String, default: '' },
   audioDuration: { type: Number, default: 0 },
-  transcript:    { type: String, default: '' },
-  wordTimestamps: [{
-    word:  String,
-    start: Number,
-    end:   Number
-  }],
   sections: [ListeningSectionSchema],
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
