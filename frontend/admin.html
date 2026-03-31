@@ -1252,7 +1252,7 @@
             <div class="section-actions">
               <div class="search-wrap">
                 <input class="search-input" id="search-listening" placeholder="Tìm tên đề nghe..."
-                       oninput="filterListeningTests()" />
+                  oninput="filterListeningTests()" />
               </div>
               <button class="btn btn-primary" onclick="openListeningModal()">＋ Tạo đề nghe</button>
             </div>
@@ -1273,7 +1273,9 @@
                 </tr>
               </thead>
               <tbody id="listening-tbody">
-                <tr><td colspan="9" class="table-empty">Đang tải...</td></tr>
+                <tr>
+                  <td colspan="9" class="table-empty">Đang tải...</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -1588,7 +1590,8 @@
           <div class="form-hint">Sau khi lưu đề, dùng nút 🎵 Audio trong bảng để upload file.</div>
         </div>
         <div class="form-group">
-          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word highlight)</span></label>
+          <label>Transcript <span style="color:var(--text3);font-weight:400">(plain text – dùng cho word
+              highlight)</span></label>
           <textarea class="form-textarea" id="lt-transcript" rows="5"
             placeholder="Dán toàn bộ nội dung bài nghe vào đây..."></textarea>
         </div>
@@ -1620,12 +1623,12 @@
         </p>
         <div class="form-group">
           <label>Chọn file audio *</label>
-          <input type="file" id="upload-audio-input" accept="audio/*,video/mp4"
-                 class="form-input" style="padding:8px" />
+          <input type="file" id="upload-audio-input" accept="audio/*,video/mp4" class="form-input"
+            style="padding:8px" />
           <div class="form-hint">MP3, M4A, WAV · Tối đa 200MB · Upload lên Cloudinary</div>
         </div>
         <div id="upload-progress" class="hidden"
-             style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text2);margin-top:8px">
+          style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text2);margin-top:8px">
           ⏳ Đang upload, vui lòng chờ...
         </div>
       </div>
@@ -1650,16 +1653,15 @@
         </p>
         <div class="form-group">
           <label>Transcript (plain text)</label>
-          <textarea class="form-textarea" id="tr-transcript" rows="7"
-            placeholder="Nội dung bài nghe..."></textarea>
+          <textarea class="form-textarea" id="tr-transcript" rows="7" placeholder="Nội dung bài nghe..."></textarea>
         </div>
         <div class="form-group">
           <label>Word Timestamps (JSON)</label>
-          <textarea class="form-textarea" id="tr-timestamps" rows="7"
-            style="font-size:12px"
+          <textarea class="form-textarea" id="tr-timestamps" rows="7" style="font-size:12px"
             placeholder='[{"word":"Hello","start":0.1,"end":0.5},{"word":"everyone","start":0.6,"end":1.2},...]'></textarea>
           <div class="form-hint">
-            Format: array of <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
+            Format: array of <code
+              style="background:var(--surface2);padding:1px 5px;border-radius:3px;font-family:var(--mono)">{"word","start","end"}</code>
             · Export từ Whisper JSON hoặc nhập tay
           </div>
         </div>
@@ -1917,21 +1919,368 @@
       finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
     }
 
-    /* ── Question builder ── */
-    function addQuestion(data = null) {
-      qIdx++;
-      const id = `q-${qIdx}`, num = data?.questionNumber || '';
-      const div = document.createElement('div'); div.className = 'question-row'; div.id = id;
+    /* ══════════════════════════════════════════════════════════════════════
+       READING ADMIN – Question Group Builder
+       Thay thế toàn bộ phần "Question builder" trong admin.html
+       (các function: addQuestion, renderQExtra, onQTypeChange, collectQuestions)
+       Thêm modal HTML #modal-passage-group-picker vào body
+    ══════════════════════════════════════════════════════════════════════ */
+
+    // ── State ──────────────────────────────────────────────────────────────
+    let rqGroupIdx = 0;
+    let rqQIdx = 0;
+    let _rqPendingGroupContainer = null;
+
+    // ── Mở modal passage (ghi đè function cũ) ──────────────────────────────
+    function openPassageModal(data = null) {
+      editPassageId = data?._id || null;
+      rqGroupIdx = 0; rqQIdx = 0;
+
+      document.getElementById('p-title').value = data?.title || '';
+      document.getElementById('p-content').value = data?.content || '';
+      document.getElementById('p-category').value = data?.category || 'passage1';
+      document.getElementById('p-qstart').value = data?.questionRange?.start || '';
+      document.getElementById('p-qend').value = data?.questionRange?.end || '';
+      document.getElementById('p-difficulty').value = data?.difficulty || 'medium';
+      document.getElementById('p-tags').value = (data?.tags || []).join(', ');
+      document.getElementById('modal-passage-title').textContent = data ? 'Chỉnh sửa bài đọc' : 'Thêm bài đọc mới';
+
+      // Clear & rebuild question groups
+      const qc = document.getElementById('questions-container');
+      qc.innerHTML = '';
+
+      if (data?.questionGroups?.length) {
+        data.questionGroups.forEach(g => addRQGroup(g));
+      } else if (data?.questions?.length) {
+        // Migration: nếu passage cũ dùng questions[] phẳng → gom vào 1 group plain
+        addRQGroup({ groupType: 'plain', instruction: '', questions: data.questions });
+      } else {
+        addRQGroup({ groupType: 'plain' });
+      }
+
+      openModal('modal-passage');
+    }
+
+    // ── "＋ Thêm nhóm câu hỏi" button handler ──────────────────────────────
+    function openRQGroupModal(containerId) {
+      _rqPendingGroupContainer = containerId;
+      let modal = document.getElementById('modal-rq-group-picker');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modal-rq-group-picker';
+        modal.className = 'modal-overlay hidden';
+        modal.innerHTML = `
+      <div class="modal-box" style="width:min(560px,100%)">
+        <div class="modal-header">
+          <h3>Chọn loại nhóm câu hỏi</h3>
+          <button class="modal-close" onclick="closeModal('modal-rq-group-picker')">×</button>
+        </div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            ${[
+            { type: 'plain', icon: '💬', label: 'Câu hỏi thường', desc: 'True/False, Multiple choice, Fill-blank riêng lẻ' },
+            { type: 'table', icon: '📋', label: 'Bảng (Table/Note)', desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
+            { type: 'note-form', icon: '📝', label: 'Note Completion', desc: 'Điền vào các dòng của biểu mẫu ghi chú' },
+            { type: 'matching-options', icon: '🔤', label: 'Matching Headings/Info', desc: 'List options A-F bên dưới, câu hỏi chọn letter' },
+            { type: 'bullet-list', icon: '•', label: 'Bullet List', desc: 'Danh sách câu hỏi dạng bullet' },
+            { type: 'map', icon: '🗺️', label: 'Map / Diagram', desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
+          ].map(g => `
+              <div onclick="pickRQGroupType('${g.type}')"
+                   style="border:1.5px solid var(--border);border-radius:10px;padding:13px;cursor:pointer;transition:all .15s"
+                   onmouseover="this.style.borderColor='#3d8bff';this.style.background='rgba(61,139,255,.06)'"
+                   onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+                <div style="font-size:18px;margin-bottom:5px">${g.icon}</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">${g.label}</div>
+                <div style="font-size:11px;color:var(--text3);line-height:1.4">${g.desc}</div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+        document.body.appendChild(modal);
+      }
+      openModal('modal-rq-group-picker');
+    }
+
+    function pickRQGroupType(groupType) {
+      closeModal('modal-rq-group-picker');
+      addRQGroup({ groupType }, _rqPendingGroupContainer);
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // ADD QUESTION GROUP
+    // ════════════════════════════════════════════════════════════════════════
+    function addRQGroup(data = null, containerId = 'questions-container') {
+      rqGroupIdx++;
+      const gIdx = rqGroupIdx;
+      const groupType = data?.groupType || 'plain';
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const labelMap = {
+        'plain': '💬 Câu hỏi thường',
+        'table': '📋 Bảng (Table)',
+        'note-form': '📝 Note Completion',
+        'matching-options': '🔤 Matching',
+        'bullet-list': '• Bullet List',
+        'map': '🗺️ Map/Diagram',
+      };
+
+      const div = document.createElement('div');
+      div.id = `rqg-${gIdx}`;
+      div.style.cssText = 'background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px';
       div.innerHTML = `
-    <div class="question-row-header">
-      <span class="q-num-badge">${qIdx}</span>
-      <span style="font-size:13px;font-weight:600;flex:1">Câu hỏi ${num || qIdx}</span>
-      <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá</button>
+    <!-- Group header -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="background:#3d8bff;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px">
+        ${labelMap[groupType] || groupType}
+      </span>
+      <span style="flex:1;font-size:12px;color:var(--text3)">Nhóm câu hỏi</span>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('[id^=rqg-]').remove()">✕ Xoá nhóm</button>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Số câu *</label><input class="form-input q-num" type="number" value="${num}" placeholder="${qIdx}"/></div>
-      <div class="form-group"><label>Loại câu hỏi *</label>
-        <select class="form-select q-type" onchange="onQTypeChange(this,'${id}')">
+    <input type="hidden" class="rqg-type" value="${groupType}" />
+
+    <!-- Tiêu đề nhóm + instruction -->
+    <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:8px;margin-bottom:10px">
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Tiêu đề nhóm</label>
+        <input class="form-input rqg-title" value="${data?.groupTitle || ''}"
+               style="font-size:12px;padding:7px 10px"
+               placeholder="VD: Questions 1-5" />
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Hướng dẫn</label>
+        <input class="form-input rqg-instruction" value="${data?.instruction || ''}"
+               style="font-size:12px;padding:7px 10px"
+               placeholder="VD: Choose NO MORE THAN TWO WORDS from the passage for each answer." />
+      </div>
+    </div>
+
+    <!-- Group-type config -->
+    <div id="rqgcfg-${gIdx}">${renderRQGroupConfig(groupType, data, gIdx)}</div>
+
+    <!-- Questions -->
+    <div style="margin-top:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Câu hỏi trong nhóm</span>
+        <button class="btn btn-ghost btn-sm" onclick="addRQQuestion(${gIdx})">＋ Thêm câu</button>
+      </div>
+      <div id="rqqs-${gIdx}" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>`;
+
+      container.appendChild(div);
+
+      if (data?.questions?.length) {
+        data.questions.forEach(q => addRQQuestion(gIdx, q));
+      }
+    }
+
+    // ── Group config renderers ──────────────────────────────────────────────
+    function renderRQGroupConfig(groupType, data, gIdx) {
+      if (groupType === 'table') {
+        const headers = data?.tableConfig?.headers || ['', '', ''];
+        const rows = data?.tableConfig?.rows || [['', '', '']];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Cấu trúc bảng</div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:10px;color:var(--text3)">Tiêu đề cột (cách nhau bằng |)</label>
+          <input class="form-input rqg-tbl-headers" value="${headers.join(' | ')}"
+                 style="font-size:12px;padding:6px 10px;margin-top:4px"
+                 placeholder="Apartments | Parking | Additional information" />
+        </div>
+        <label style="font-size:10px;color:var(--text3)">
+          Hàng – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q1__</code> cho ô câu hỏi
+        </label>
+        <div id="rqgtbl-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+          ${rows.map((r, ri) => renderRQTableRow(gIdx, ri, r)).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQTableRow(${gIdx})">＋ Thêm hàng</button>
+      </div>`;
+      }
+
+      if (groupType === 'note-form') {
+        const title = data?.noteConfig?.title || '';
+        const lines = data?.noteConfig?.lines || [''];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Cấu trúc Note</div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:10px;color:var(--text3)">Tiêu đề khung</label>
+          <input class="form-input rqg-note-title" value="${title}"
+                 style="font-size:12px;padding:6px 10px;margin-top:4px"
+                 placeholder="VD: How Business Works" />
+        </div>
+        <label style="font-size:10px;color:var(--text3)">
+          Dòng – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q6__</code> cho chỗ trống
+        </label>
+        <div id="rqgnote-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+          ${lines.map(l => renderRQNoteLine(gIdx, l)).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQNoteLine(${gIdx})">＋ Thêm dòng</button>
+      </div>`;
+      }
+
+      if (groupType === 'matching-options') {
+        const opts = data?.matchingOptions || ['', '', '', '', '', ''];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+          Danh sách Options (A, B, C…)
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <input type="checkbox" id="rqg-reuse-${gIdx}" class="rqg-reuse"
+                 ${data?.matchingReuseAllowed ? 'checked' : ''}
+                 style="width:14px;height:14px;accent-color:var(--blue)" />
+          <label for="rqg-reuse-${gIdx}" style="font-size:12px;color:var(--text2);cursor:pointer">
+            NB: You may use any letter more than once
+          </label>
+        </div>
+        <div id="rqgopt-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+          ${opts.map((o, i) => renderRQOption(gIdx, i, o)).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQOption(${gIdx})">＋ Thêm option</button>
+        <div class="form-hint" style="margin-top:8px">
+          Câu hỏi trong nhóm này: loại <strong>matching-headings</strong> hoặc <strong>matching-info</strong>, đáp án là chữ cái (A, B, C…)
+        </div>
+      </div>`;
+      }
+
+      if (groupType === 'bullet-list') {
+        const items = data?.bulletConfig?.items || [''];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Danh sách Bullet</div>
+        <label style="font-size:10px;color:var(--text3)">
+          Dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q27__</code> cho ô trả lời
+        </label>
+        <div id="rqgbul-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
+          ${items.map(it => renderRQBulletItem(gIdx, it)).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQBulletItem(${gIdx})">＋ Thêm mục</button>
+      </div>`;
+      }
+
+      if (groupType === 'map') {
+        const imgId = `rqgmap-${gIdx}`;
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Map / Diagram</div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="flex:1">
+            <input class="form-input rqg-map-url" value="${data?.imageUrl || ''}"
+                   style="font-size:12px;padding:7px 10px"
+                   placeholder="URL hình ảnh sơ đồ"
+                   oninput="previewRQGImage(this,'${imgId}')" />
+            <div class="form-hint">Upload lên Imgur/Cloudinary rồi paste URL</div>
+          </div>
+          <div id="${imgId}" style="width:150px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);flex-shrink:0">
+            ${data?.imageUrl ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:110px;object-fit:contain"/>` : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
+          </div>
+        </div>
+      </div>`;
+      }
+
+      // plain – no extra config
+      return `<div style="font-size:12px;color:var(--text3);padding:4px 0">Thêm câu hỏi True/False, Multiple Choice, Fill-blank,... bên dưới.</div>`;
+    }
+
+    function previewRQGImage(input, imgId) {
+      const url = input.value.trim();
+      const el = document.getElementById(imgId);
+      if (!el) return;
+      el.innerHTML = url
+        ? `<img src="${url}" style="max-width:100%;max-height:110px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
+        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+    }
+
+    // ── Table row ──────────────────────────────────────────────────────────
+    function renderRQTableRow(gIdx, ri, cells) {
+      return `<div style="display:flex;gap:5px;align-items:center">
+    <span style="font-size:11px;color:var(--text3);width:18px;text-align:center">${ri + 1}</span>
+    <input class="form-input rqg-tbl-row" value="${(cells || []).join(' | ')}"
+           style="flex:1;font-size:12px;padding:5px 9px"
+           placeholder="Rose Garden | free parking | a large __Q1__" />
+    <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+    }
+    function addRQTableRow(gIdx) {
+      const c = document.getElementById(`rqgtbl-${gIdx}`);
+      if (c) c.insertAdjacentHTML('beforeend', renderRQTableRow(gIdx, c.children.length, []));
+    }
+
+    // ── Note line ──────────────────────────────────────────────────────────
+    function renderRQNoteLine(gIdx, line) {
+      return `<div style="display:flex;gap:5px;align-items:center">
+    <input class="form-input rqg-note-line" value="${line || ''}"
+           style="flex:1;font-size:12px;padding:5px 9px"
+           placeholder="The most important aspect of business is having __Q6__ in others." />
+    <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+    }
+    function addRQNoteLine(gIdx) {
+      const c = document.getElementById(`rqgnote-${gIdx}`);
+      if (c) c.insertAdjacentHTML('beforeend', renderRQNoteLine(gIdx, ''));
+    }
+
+    // ── Matching option ────────────────────────────────────────────────────
+    function renderRQOption(gIdx, i, value) {
+      const letter = String.fromCharCode(65 + i);
+      return `<div style="display:flex;gap:6px;align-items:center">
+    <span style="font-weight:700;color:var(--blue);width:18px;font-size:13px">${letter}.</span>
+    <input class="form-input rqg-opt-item" value="${value || ''}"
+           style="flex:1;font-size:12px;padding:5px 9px"
+           placeholder="Option ${letter}" />
+    <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+    }
+    function addRQOption(gIdx) {
+      const c = document.getElementById(`rqgopt-${gIdx}`);
+      if (c) c.insertAdjacentHTML('beforeend', renderRQOption(gIdx, c.children.length, ''));
+    }
+
+    // ── Bullet item ────────────────────────────────────────────────────────
+    function renderRQBulletItem(gIdx, item) {
+      return `<div style="display:flex;gap:5px;align-items:center">
+    <span style="color:var(--text3)">•</span>
+    <input class="form-input rqg-bul-item" value="${item || ''}"
+           style="flex:1;font-size:12px;padding:5px 9px"
+           placeholder="Which section contains… __Q27__" />
+    <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+    }
+    function addRQBulletItem(gIdx) {
+      const c = document.getElementById(`rqgbul-${gIdx}`);
+      if (c) c.insertAdjacentHTML('beforeend', renderRQBulletItem(gIdx, ''));
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // ADD QUESTION INSIDE GROUP
+    // ════════════════════════════════════════════════════════════════════════
+    function addRQQuestion(gIdx, data = null) {
+      rqQIdx++;
+      const qId = `rqq-${gIdx}-${rqQIdx}`;
+      const container = document.getElementById(`rqqs-${gIdx}`);
+      if (!container) return;
+
+      const div = document.createElement('div');
+      div.id = qId;
+      div.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;';
+      div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">Q</span>
+      <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
+      <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px" onclick="this.closest('[id^=rqq-]').remove()">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:0.6fr 1.4fr;gap:8px;margin-bottom:8px">
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Số câu *</label>
+        <input class="form-input rqq-num" type="number" value="${data?.questionNumber || ''}"
+               style="font-size:12px;padding:6px 9px" placeholder="#" />
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Loại câu *</label>
+        <select class="form-select rqq-type" onchange="onRQQTypeChange(this,'${qId}')"
+                style="font-size:12px;padding:6px 9px">
           <option value="true-false-ng"     ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
           <option value="multiple-choice"   ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice (1 đáp án)</option>
           <option value="checkbox"          ${data?.type === 'checkbox' ? 'selected' : ''}>Multiple Choice (nhiều đáp án)</option>
@@ -1939,115 +2288,203 @@
           <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
           <option value="matching-headings" ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
           <option value="matching-info"     ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
-          <option value="map-labelling"     ${data?.type === 'map-labelling' ? 'selected' : ''}>Map / Diagram Labelling</option>
+          <option value="map-labelling"     ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
         </select>
       </div>
     </div>
-    <div class="form-group"><label>Nội dung câu hỏi *</label>
-      <textarea class="form-input q-text" rows="2" placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Nội dung câu hỏi *</label>
+      <textarea class="form-input rqq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
+        placeholder="Nội dung câu hỏi...">${data?.questionText || ''}</textarea>
     </div>
-    <div class="q-extra" id="extra-${id}">${renderQExtra(data?.type || 'true-false-ng', data)}</div>
-    <div class="form-row">
-      <div class="form-group"><label>Đáp án đúng *</label><input class="form-input q-answer" value="${data?.correctAnswer || ''}" placeholder="TRUE / FALSE / NOT GIVEN / text…"/></div>
-      <div class="form-group"><label>Giải thích (hiện khi review)</label><input class="form-input q-explain" value="${data?.explanation || ''}" placeholder="Giải thích đáp án..."/></div>
+    <div class="rqq-extra" id="rqqex-${qId}">${renderRQQExtra(data?.type || 'true-false-ng', data)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Đáp án đúng *</label>
+        <input class="form-input rqq-answer" value="${data?.correctAnswer || ''}"
+               style="font-size:12px;padding:6px 9px"
+               placeholder='TRUE / A / text / ["A","C"]' />
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Giải thích</label>
+        <input class="form-input rqq-explain" value="${data?.explanation || ''}"
+               style="font-size:12px;padding:6px 9px" placeholder="Giải thích đáp án..." />
+      </div>
     </div>`;
-      document.getElementById('questions-container').appendChild(div);
+      container.appendChild(div);
     }
-    function renderQExtra(type, data) {
+
+    function renderRQQExtra(type, data) {
       if (type === 'multiple-choice') {
         const opts = data?.options || ['', '', '', ''];
-        return `<div class="form-group"><label>Các đáp án (A, B, C, D)</label>
-      ${['A', 'B', 'C', 'D'].map((l, i) => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <span style="font-weight:700;color:var(--accent);width:20px">${l}.</span>
-        <input class="form-input q-opt" style="flex:1" value="${opts[i] || ''}" placeholder="Đáp án ${l}"/></div>`).join('')}
-    </div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án A-D</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
+        ${['A', 'B', 'C', 'D'].map((l, i) => `
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">${l}.</span>
+            <input class="form-input rqq-opt" value="${opts[i] || ''}" style="font-size:12px;padding:5px 8px" placeholder="${l}"/>
+          </div>`).join('')}
+      </div></div>`;
       }
       if (type === 'checkbox') {
-        const opts = data?.options || ['', '', '', '', ''];
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Các đáp án (A → E)</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px">
-            ${['A','B','C','D','E'].map((l,i) => `
-              <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-weight:700;color:var(--accent);width:20px;font-size:12px">${l}.</span>
-                <input class="form-input q-opt" value="${opts[i]||''}"
-                       style="font-size:13px;padding:7px 10px" placeholder="Đáp án ${l}" />
-              </div>`).join('')}
-          </div>
-          <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
-            <label style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;margin-bottom:0">Số đáp án cần chọn:</label>
-            <input class="form-input q-cbcount" type="number" value="${data?.checkboxCount||2}"
-                   style="width:64px;font-size:13px;padding:6px 10px" min="1" max="5" />
-            <span style="font-size:12px;color:var(--text3)">Đáp án đúng ví dụ: <code style="background:var(--bg);padding:1px 6px;border-radius:3px;font-family:var(--mono)">["A","C"]</code></span>
-          </div>
-        </div>`;
+        const opts = data?.options || [];
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án A-E</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
+        ${['A', 'B', 'C', 'D', 'E'].map((l, i) => `
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">${l}.</span>
+            <input class="form-input rqq-opt" value="${opts[i] || ''}" style="font-size:12px;padding:5px 8px" placeholder="${l}"/>
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:7px;display:flex;align-items:center;gap:8px">
+        <label style="font-size:10px;color:var(--text3);white-space:nowrap">Số đáp án cần chọn:</label>
+        <input class="form-input rqq-cbcount" type="number" value="${data?.checkboxCount || 2}"
+               style="width:55px;font-size:12px;padding:5px 8px" min="1" max="5"/>
+      </div></div>`;
       }
       if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
-        return `<div class="form-group"><label>Word bank (cách nhau bằng dấu phẩy)</label>
-      <input class="form-input q-wordbank" value="${(data?.wordBank || []).join(', ')}" placeholder="soil, trees, rocks…"/>
-      <div class="form-hint">Danh sách từ/cụm cho học sinh kéo thả</div></div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Word Bank (cách nhau bằng dấu phẩy)</label>
+      <input class="form-input rqq-wordbank" value="${(data?.wordBank || []).join(', ')}"
+             style="font-size:12px;padding:6px 9px;margin-top:4px"
+             placeholder="word1, phrase two, word3" /></div>`;
       }
       if (type === 'map-labelling') {
-        const imgId = `rqimg-${Date.now()}`;
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label>Hình ảnh sơ đồ / bản đồ</label>
-          <div style="display:flex;gap:8px;align-items:flex-start">
-            <div style="flex:1">
-              <input class="form-input q-imageurl" value="${data?.imageUrl||''}"
-                     style="font-size:13px;padding:8px 12px"
-                     placeholder="URL hình ảnh (Imgur, Cloudinary...)"
-                     oninput="previewRQImage(this,'${imgId}')"/>
-              <div class="form-hint">Upload hình lên Imgur rồi dán URL vào đây</div>
-            </div>
-            <div id="${imgId}"
-                 style="width:130px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;
-                        display:flex;align-items:center;justify-content:center;
-                        overflow:hidden;background:var(--bg);flex-shrink:0">
-              ${data?.imageUrl
-                ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:100px;object-fit:contain"/>`
-                : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
-            </div>
-          </div>
-        </div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Hình ảnh riêng (nếu không dùng hình chung của nhóm)</label>
+      <input class="form-input rqq-imageurl" value="${data?.imageUrl || ''}"
+             style="font-size:12px;padding:6px 9px;margin-top:4px" placeholder="URL hình (để trống nếu dùng hình nhóm)"/></div>`;
       }
-      return '';
+      return ''; // true-false-ng và fill-blank không cần extra
     }
-    function previewRQImage(input, previewId) {
-      const url = input.value.trim();
-      const preview = document.getElementById(previewId);
-      if (!preview) return;
-      preview.innerHTML = url
-        ? `<img src="${url}" style="max-width:100%;max-height:100px;object-fit:contain"
-               onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
-        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+
+    function onRQQTypeChange(sel, qId) {
+      document.getElementById(`rqqex-${qId}`).innerHTML = renderRQQExtra(sel.value, {});
     }
-    function onQTypeChange(sel, rowId) {
-      document.getElementById(rowId).querySelector('.q-extra').innerHTML = renderQExtra(sel.value, {});
-    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // COLLECT & SAVE
+    // ════════════════════════════════════════════════════════════════════════
     function collectQuestions() {
-      const questions = [];
-      for (const row of document.querySelectorAll('#questions-container .question-row')) {
-        const num = Number(row.querySelector('.q-num').value);
-        const type = row.querySelector('.q-type').value;
-        const text = row.querySelector('.q-text').value.trim();
-        const answer = row.querySelector('.q-answer').value.trim();
-        const expl = row.querySelector('.q-explain').value.trim();
-        if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
-        const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
-        if (['multiple-choice', 'checkbox'].includes(type))
-          q.options = [...row.querySelectorAll('.q-opt')].map(i => i.value.trim()).filter(Boolean);
-        if (type === 'checkbox')
-          q.checkboxCount = parseInt(row.querySelector('.q-cbcount')?.value) || 2;
-        if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
-          const wb = row.querySelector('.q-wordbank')?.value || '';
-          q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+      // Ghi đè function cũ - collect theo questionGroups mới
+      const questionGroups = [];
+
+      for (const gDiv of document.querySelectorAll('#questions-container [id^="rqg-"]')) {
+        const groupType = gDiv.querySelector('.rqg-type').value;
+        const groupTitle = gDiv.querySelector('.rqg-title')?.value.trim() || '';
+        const instruction = gDiv.querySelector('.rqg-instruction')?.value.trim() || '';
+
+        const group = { groupType, groupTitle, instruction };
+
+        // Collect group-type config
+        if (groupType === 'table') {
+          const rawH = gDiv.querySelector('.rqg-tbl-headers')?.value || '';
+          group.tableConfig = {
+            headers: rawH.split('|').map(h => h.trim()).filter(Boolean),
+            rows: [...gDiv.querySelectorAll('.rqg-tbl-row')].map(inp =>
+              inp.value.split('|').map(c => c.trim())
+            )
+          };
         }
-        if (type === 'map-labelling')
-          q.imageUrl = row.querySelector('.q-imageurl')?.value.trim() || '';
-        questions.push(q);
+        if (groupType === 'note-form') {
+          group.noteConfig = {
+            title: gDiv.querySelector('.rqg-note-title')?.value.trim() || '',
+            lines: [...gDiv.querySelectorAll('.rqg-note-line')].map(i => i.value)
+          };
+        }
+        if (groupType === 'matching-options') {
+          group.matchingOptions = [...gDiv.querySelectorAll('.rqg-opt-item')].map(i => i.value.trim());
+          group.matchingReuseAllowed = gDiv.querySelector('.rqg-reuse')?.checked || false;
+        }
+        if (groupType === 'bullet-list') {
+          group.bulletConfig = {
+            items: [...gDiv.querySelectorAll('.rqg-bul-item')].map(i => i.value)
+          };
+        }
+        if (groupType === 'map') {
+          group.imageUrl = gDiv.querySelector('.rqg-map-url')?.value.trim() || '';
+        }
+
+        // Collect questions
+        const questions = [];
+        for (const qDiv of gDiv.querySelectorAll('[id^="rqq-"]')) {
+          const num = parseInt(qDiv.querySelector('.rqq-num').value);
+          const type = qDiv.querySelector('.rqq-type').value;
+          const text = qDiv.querySelector('.rqq-text').value.trim();
+          const answer = qDiv.querySelector('.rqq-answer').value.trim();
+          const expl = qDiv.querySelector('.rqq-explain').value.trim();
+          if (!num || !text || !answer) {
+            toast(`Điền đầy đủ số câu, nội dung và đáp án (câu ${num || '?'})`, 'error');
+            return null;
+          }
+          const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
+          if (['multiple-choice', 'checkbox'].includes(type))
+            q.options = [...qDiv.querySelectorAll('.rqq-opt')].map(i => i.value.trim()).filter(Boolean);
+          if (type === 'checkbox')
+            q.checkboxCount = parseInt(qDiv.querySelector('.rqq-cbcount')?.value) || 2;
+          if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
+            const wb = qDiv.querySelector('.rqq-wordbank')?.value || '';
+            q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+          }
+          if (type === 'map-labelling')
+            q.imageUrl = qDiv.querySelector('.rqq-imageurl')?.value.trim() || '';
+          questions.push(q);
+        }
+        group.questions = questions;
+        questionGroups.push(group);
       }
-      return questions;
+      return questionGroups; // trả về groups, savePassage() sẽ dùng làm questionGroups
     }
+
+    // ── Patch savePassage để gửi questionGroups ──────────────────────────────
+    async function savePassage() {
+      const title = document.getElementById('p-title').value.trim();
+      const content = document.getElementById('p-content').value.trim();
+      const qstart = Number(document.getElementById('p-qstart').value);
+      const qend = Number(document.getElementById('p-qend').value);
+      if (!title || !content || !qstart || !qend) { toast('Điền đầy đủ trường bắt buộc *', 'error'); return; }
+
+      const questionGroups = collectQuestions();
+      if (!questionGroups) return;
+
+      // Flatten để gửi kèm questions[] (tương thích ngược với route cũ)
+      const questions = questionGroups.flatMap(g => g.questions);
+
+      const body = {
+        title,
+        category: document.getElementById('p-category').value,
+        content,
+        questionRange: { start: qstart, end: qend },
+        difficulty: document.getElementById('p-difficulty').value,
+        tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+        questionGroups,
+        questions      // giữ lại để tương thích
+      };
+
+      const btn = document.getElementById('btn-save-passage');
+      btn.disabled = true; btn.textContent = 'Đang lưu...';
+      try {
+        const url = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
+        const data = await (await fetch(url, { method: editPassageId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
+        if (!data.success) throw new Error(data.message);
+        toast(editPassageId ? 'Đã cập nhật' : 'Đã thêm bài đọc mới');
+        closeModal('modal-passage'); await loadPassages();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
+    }
+
+    // Cập nhật HTML button trong modal-passage: thay "＋ Thêm câu hỏi" bằng "＋ Thêm nhóm câu hỏi"
+    // Tìm element và thay onclick
+    document.addEventListener('DOMContentLoaded', () => {
+      // Patch nút thêm câu hỏi trong modal passage
+      const addQBtn = document.querySelector('#modal-passage .btn-ghost[onclick="addQuestion()"]');
+      if (addQBtn) {
+        addQBtn.textContent = '＋ Thêm nhóm câu hỏi';
+        addQBtn.onclick = () => openRQGroupModal('questions-container');
+      }
+    });
 
     /* ══════════════════════════════════════════════
        TESTS
@@ -2337,16 +2774,20 @@
       } catch (err) { toast(err.message, 'error'); }
       finally { btn.disabled = false; btn.textContent = '📥 Import'; }
     }
-    /* ══════════════════════════════════════════════
-       ★ LISTENING TESTS
-    ══════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════════
+     LISTENING ADMIN – Section & Question Group Builder
+     
+  ══════════════════════════════════════════════════════════════════ */
+
     let allListeningTests = [];
     let editListeningId = null;
     let uploadAudioTestId = null;
     let transcriptTestId = null;
     let ltSectionCount = 0;
+    let ltGroupIdx = 0;
     let ltQIdx = 0;
 
+    // ── Load & Render table ──────────────────────────────────────────
     async function loadListeningTests() {
       try {
         const data = await (await fetch(`${API}/listening/admin/tests`, { headers: authH() })).json();
@@ -2370,24 +2811,24 @@
           ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)}`
           : '–';
         return `<tr>
-          <td><strong>${t.name}</strong></td>
-          <td style="font-family:var(--mono)">${t.testNumber}</td>
-          <td>${t.seriesName || '–'}</td>
-          <td>${t.audioUrl
+      <td><strong>${t.name}</strong></td>
+      <td style="font-family:var(--mono)">${t.testNumber}</td>
+      <td>${t.seriesName || '–'}</td>
+      <td>${t.audioUrl
             ? `<span class="badge badge-green"><span class="dot"></span>Đã có</span>`
             : `<span class="badge badge-gray">Chưa upload</span>`}</td>
-          <td style="font-family:var(--mono)">${dur}</td>
-          <td>${t.totalQuestions || 0} câu</td>
-          <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
-            <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
-          <td style="color:var(--text3);font-size:12px">${formatDate(t.createdAt).split(' ')[0]}</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
-            <button class="btn btn-ghost btn-sm" onclick="openTranscriptModal('${t._id}')">📜 Transcript</button>
-            <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')">🗑</button>
-          </td>
-        </tr>`;
+      <td style="font-family:var(--mono)">${dur}</td>
+      <td>${t.totalQuestions || 0} câu</td>
+      <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
+        <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
+      <td style="color:var(--text3);font-size:12px">${formatDate(t.createdAt).split(' ')[0]}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
+        <button class="btn btn-ghost btn-sm" onclick="openTranscriptModal('${t._id}')">📜 Transcript</button>
+        <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')">🗑</button>
+      </td>
+    </tr>`;
       }).join('');
     }
 
@@ -2396,10 +2837,10 @@
       renderListeningTable(allListeningTests.filter(t => t.name.toLowerCase().includes(q)));
     }
 
-    /* ── Open / Edit Modal ── */
+    // ── Open / Edit Modal ────────────────────────────────────────────
     function openListeningModal(data = null) {
       editListeningId = data?._id || null;
-      ltSectionCount = 0; ltQIdx = 0;
+      ltSectionCount = 0; ltGroupIdx = 0; ltQIdx = 0;
 
       document.getElementById('lt-id').value = data?._id || '';
       document.getElementById('lt-name').value = data?.name || '';
@@ -2441,246 +2882,562 @@
       });
     }
 
-    /* ── Sections / Parts Builder ── */
+    // ════════════════════════════════════════════════════════════════
+    // SECTION (PART) BUILDER
+    // ════════════════════════════════════════════════════════════════
     function addListeningSection(data = null) {
       ltSectionCount++;
       const sIdx = ltSectionCount;
+      const partNum = data?.partNumber || sIdx;
+      const range = getPartRange(partNum);
+
       const div = document.createElement('div');
       div.className = 'question-row';
       div.id = `ls-${sIdx}`;
-      div.style.marginBottom = '16px';
+      div.style.marginBottom = '20px';
       div.innerHTML = `
-        <div class="question-row-header" style="margin-bottom:12px">
-          <span class="q-num-badge" style="background:#3d8bff">P</span>
-          <span style="font-size:13px;font-weight:700;flex:1">Part ${data?.partNumber || sIdx}</span>
-          <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá Part</button>
-        </div>
-        <div style="display:grid;grid-template-columns:0.6fr 2fr 1.5fr;gap:10px;margin-bottom:10px">
-          <div class="form-group" style="margin-bottom:0">
-            <label>Part số *</label>
-            <select class="form-select ls-part" style="padding:8px 10px;font-size:13px"
-                    onchange="onPartSelect(this)">
-              <option value="1" ${data?.partNumber==1?'selected':''}>Part 1 (Q1–10)</option>
-              <option value="2" ${data?.partNumber==2?'selected':''}>Part 2 (Q11–20)</option>
-              <option value="3" ${data?.partNumber==3?'selected':''}>Part 3 (Q21–30)</option>
-              <option value="4" ${data?.partNumber==4?'selected':''}>Part 4 (Q31–40)</option>
-            </select>
-            <input type="hidden" class="ls-qstart" value="${data?.questionRange?.start || getPartRange(data?.partNumber||1).start}" />
-            <input type="hidden" class="ls-qend"   value="${data?.questionRange?.end   || getPartRange(data?.partNumber||1).end}" />
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Tiêu đề *</label>
-            <input class="form-input ls-title" style="font-size:13px;padding:8px 10px"
-                   value="${data?.title || ''}" placeholder="VD: A conversation about accommodation" />
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label>Mô tả</label>
-            <input class="form-input ls-desc" style="font-size:13px;padding:8px 10px"
-                   value="${data?.description || ''}" placeholder="Context ngắn gọn..." />
-          </div>
-        </div>
-        <div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.2);border-radius:6px;
-                    padding:6px 12px;font-size:12px;color:#3d8bff;margin-bottom:10px" class="ls-range-hint">
-          📌 Phạm vi: Questions <strong class="ls-range-text">${getPartRangeText(data?.partNumber||1)}</strong>
-        </div>
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <span style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Câu hỏi</span>
-            <button class="btn btn-ghost btn-sm" onclick="addListeningQuestion('${sIdx}')">＋ Thêm câu</button>
-          </div>
-          <div id="lqs-${sIdx}"></div>
-        </div>`;
+    <div class="question-row-header" style="margin-bottom:12px">
+      <span class="q-num-badge" style="background:#3d8bff">P</span>
+      <span style="font-size:13px;font-weight:700;flex:1">Part ${partNum}</span>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('.question-row').remove()">✕ Xoá Part</button>
+    </div>
+    <div style="display:grid;grid-template-columns:0.6fr 2fr 1.5fr;gap:10px;margin-bottom:10px">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Part số *</label>
+        <select class="form-select ls-part" style="padding:8px 10px;font-size:13px" onchange="onPartSelect(this)">
+          <option value="1" ${partNum == 1 ? 'selected' : ''}>Part 1 (Q1–10)</option>
+          <option value="2" ${partNum == 2 ? 'selected' : ''}>Part 2 (Q11–20)</option>
+          <option value="3" ${partNum == 3 ? 'selected' : ''}>Part 3 (Q21–30)</option>
+          <option value="4" ${partNum == 4 ? 'selected' : ''}>Part 4 (Q31–40)</option>
+        </select>
+        <input type="hidden" class="ls-qstart" value="${data?.questionRange?.start || range.start}" />
+        <input type="hidden" class="ls-qend"   value="${data?.questionRange?.end || range.end}" />
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Tiêu đề *</label>
+        <input class="form-input ls-title" style="font-size:13px;padding:8px 10px"
+               value="${data?.title || ''}" placeholder="VD: A conversation about accommodation" />
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>Mô tả</label>
+        <input class="form-input ls-desc" style="font-size:13px;padding:8px 10px"
+               value="${data?.description || ''}" placeholder="Context ngắn gọn..." />
+      </div>
+    </div>
+    <div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.2);border-radius:6px;
+                padding:6px 12px;font-size:12px;color:#3d8bff;margin-bottom:12px">
+      📌 Phạm vi: Questions <strong class="ls-range-text">${getPartRangeText(partNum)}</strong>
+    </div>
+
+    <!-- Question Groups container -->
+    <div id="lgs-${sIdx}" style="display:flex;flex-direction:column;gap:12px"></div>
+
+    <button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%;justify-content:center"
+            onclick="openAddGroupModal(${sIdx})">
+      ＋ Thêm nhóm câu hỏi
+    </button>`;
+
       document.getElementById('lt-sections-container').appendChild(div);
-      if (data?.questions?.length) data.questions.forEach(q => addListeningQuestion(sIdx, q));
+
+      // Nếu có data, restore các groups
+      if (data?.questionGroups?.length) {
+        data.questionGroups.forEach(g => addQuestionGroup(sIdx, g));
+      }
     }
 
-    function addListeningQuestion(sIdx, data = null) {
-      ltQIdx++;
-      const qId = `lq-${sIdx}-${ltQIdx}`;
-      const container = document.getElementById(`lqs-${sIdx}`);
-      if (!container) return;
-      const div = document.createElement('div');
-      div.id = qId;
-      div.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px';
-      div.innerHTML = `
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span style="background:var(--accent);color:#fff;width:20px;height:20px;border-radius:50%;
-                       display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${ltQIdx}</span>
-          <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
-          <button class="btn btn-danger btn-sm" style="padding:4px 8px;font-size:11px"
-                  onclick="this.closest('[id^=lq-]').remove()">✕</button>
+    // ════════════════════════════════════════════════════════════════
+    // GROUP TYPE SELECTOR MODAL
+    // ════════════════════════════════════════════════════════════════
+    let _pendingGroupSIdx = null;
+
+    function openAddGroupModal(sIdx) {
+      _pendingGroupSIdx = sIdx;
+
+      // Tạo modal chọn loại group nếu chưa có
+      let modal = document.getElementById('modal-add-group');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modal-add-group';
+        modal.className = 'modal-overlay hidden';
+        modal.innerHTML = `
+      <div class="modal-box" style="width:min(520px,100%)">
+        <div class="modal-header">
+          <h3>Chọn loại nhóm câu hỏi</h3>
+          <button class="modal-close" onclick="closeModal('modal-add-group')">×</button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-bottom:8px">
-          <div class="form-group" style="margin-bottom:0">
-            <label style="font-size:10px">Số câu *</label>
-            <input class="form-input lq-num" type="number" value="${data?.questionNumber||''}"
-                   style="font-size:12px;padding:7px 10px" placeholder="${ltQIdx}" />
+        <div class="modal-body">
+          <p style="color:var(--text2);font-size:13px;margin-bottom:16px;line-height:1.6">
+            Chọn cách hiển thị các câu hỏi trong nhóm này:
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            ${[
+            { type: 'table', icon: '📋', label: 'Bảng (Table)', desc: 'Các câu nằm trong ô bảng – ví dụ bảng so sánh căn hộ' },
+            { type: 'note-form', icon: '📝', label: 'Note / Form', desc: 'Điền vào các dòng của một biểu mẫu hay ghi chú' },
+            { type: 'bullet-list', icon: '•', label: 'Bullet List', desc: 'Danh sách câu hỏi dạng bullet – ví dụ Q5-Q7' },
+            { type: 'map', icon: '🗺️', label: 'Map / Diagram', desc: 'Câu hỏi dán nhãn bản đồ hoặc sơ đồ' },
+            { type: 'plain', icon: '💬', label: 'Câu hỏi thường', desc: 'Câu hỏi riêng lẻ không có khung đặc biệt' },
+          ].map(g => `
+              <div onclick="pickGroupType('${g.type}')"
+                   style="border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;
+                          transition:all .15s"
+                   onmouseover="this.style.borderColor='#3d8bff';this.style.background='rgba(61,139,255,.06)'"
+                   onmouseout="this.style.borderColor='var(--border)';this.style.background='transparent'">
+                <div style="font-size:20px;margin-bottom:6px">${g.icon}</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">${g.label}</div>
+                <div style="font-size:11px;color:var(--text3);line-height:1.4">${g.desc}</div>
+              </div>
+            `).join('')}
           </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label style="font-size:10px">Loại câu *</label>
-            <select class="form-select lq-type" onchange="onLQTypeChange(this,'${qId}')"
-                    style="font-size:12px;padding:7px 10px">
-              <option value="multiple-choice"     ${data?.type==='multiple-choice'?'selected':''}>Multiple Choice</option>
-              <option value="fill-blank"          ${data?.type==='fill-blank'?'selected':''}>Fill in the blank</option>
-              <option value="sentence-completion" ${data?.type==='sentence-completion'?'selected':''}>Sentence Completion (kéo thả)</option>
-              <option value="matching"            ${data?.type==='matching'?'selected':''}>Matching</option>
-              <option value="map-labelling"       ${data?.type==='map-labelling'?'selected':''}>Map / Diagram Labelling</option>
-              <option value="checkbox"            ${data?.type==='checkbox'?'selected':''}>Checkbox (chọn nhiều)</option>
-            </select>
+        </div>
+      </div>`;
+        document.body.appendChild(modal);
+      }
+      openModal('modal-add-group');
+    }
+
+    function pickGroupType(groupType) {
+      closeModal('modal-add-group');
+      addQuestionGroup(_pendingGroupSIdx, { groupType });
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // QUESTION GROUP BUILDER
+    // ════════════════════════════════════════════════════════════════
+    function addQuestionGroup(sIdx, data = null) {
+      ltGroupIdx++;
+      const gIdx = ltGroupIdx;
+      const groupType = data?.groupType || 'plain';
+
+      const container = document.getElementById(`lgs-${sIdx}`);
+      if (!container) return;
+
+      const groupLabels = {
+        'table': '📋 Bảng (Table)',
+        'note-form': '📝 Note / Form',
+        'bullet-list': '• Bullet List',
+        'map': '🗺️ Map / Diagram',
+        'plain': '💬 Câu hỏi thường'
+      };
+
+      const div = document.createElement('div');
+      div.id = `lg-${gIdx}`;
+      div.style.cssText = 'background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px;';
+
+      div.innerHTML = `
+    <!-- Group header -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="background:#a78bfa;color:#fff;font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px">
+        ${groupLabels[groupType] || groupType}
+      </span>
+      <span style="flex:1;font-size:12px;color:var(--text3)">Nhóm câu hỏi</span>
+      <button class="btn btn-danger btn-sm" onclick="this.closest('[id^=lg-]').remove()">✕ Xoá nhóm</button>
+    </div>
+
+    <!-- Instruction -->
+    <div class="form-group" style="margin-bottom:10px">
+      <label style="font-size:10px">Hướng dẫn làm bài</label>
+      <input class="form-input lg-instruction" value="${data?.instruction || ''}"
+             style="font-size:12px;padding:7px 10px"
+             placeholder="VD: Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer." />
+    </div>
+
+    <!-- Group-type specific config -->
+    <input type="hidden" class="lg-type" value="${groupType}" />
+    <div class="lg-config" id="lgcfg-${gIdx}">
+      ${renderGroupConfig(groupType, data, gIdx)}
+    </div>
+
+    <!-- Questions inside group -->
+    <div style="margin-top:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">
+          Câu hỏi trong nhóm
+        </span>
+        <button class="btn btn-ghost btn-sm" onclick="addGroupQuestion(${gIdx})">＋ Thêm câu</button>
+      </div>
+      <div id="lgqs-${gIdx}" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>`;
+
+      container.appendChild(div);
+
+      // Restore existing questions
+      if (data?.questions?.length) {
+        data.questions.forEach(q => addGroupQuestion(gIdx, q));
+      }
+    }
+
+    // ── Render cấu hình theo loại group ─────────────────────────────
+    function renderGroupConfig(groupType, data, gIdx) {
+      if (groupType === 'table') {
+        const headers = data?.tableConfig?.headers || ['', '', ''];
+        const rows = data?.tableConfig?.rows || [['', '', '']];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+          Cấu trúc bảng
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:10px;color:var(--text3)">Tiêu đề cột (cách nhau bằng |)</label>
+          <input class="form-input lg-tbl-headers" value="${headers.join(' | ')}"
+                 style="font-size:12px;padding:7px 10px;margin-top:4px"
+                 placeholder="Apartments | Parking | Additional information" />
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--text3)">
+            Các hàng – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q1__</code> để đánh dấu ô câu hỏi
+          </label>
+          <div id="tbl-rows-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
+            ${rows.map((row, ri) => renderTableRow(gIdx, ri, row)).join('')}
           </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px"
+                  onclick="addTableRow(${gIdx})">＋ Thêm hàng</button>
+        </div>
+      </div>`;
+      }
+
+      if (groupType === 'note-form') {
+        const title = data?.noteConfig?.title || '';
+        const lines = data?.noteConfig?.lines || [''];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+          Cấu trúc Note / Form
         </div>
         <div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:10px">Nội dung câu hỏi *</label>
-          <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:7px 10px;resize:vertical"
-            placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText||''}</textarea>
+          <label style="font-size:10px">Tiêu đề khung</label>
+          <input class="form-input lg-note-title" value="${title}"
+                 style="font-size:12px;padding:7px 10px"
+                 placeholder="VD: Accommodation details" />
         </div>
-        <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type||'multiple-choice', data)}</div>
-        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px">
-          <div class="form-group" style="margin-bottom:0">
-            <label style="font-size:10px">Đáp án đúng *</label>
-            <input class="form-input lq-answer" value="${data?.correctAnswer||''}"
+        <div>
+          <label style="font-size:10px;color:var(--text3)">
+            Các dòng – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q1__</code> để đánh dấu chỗ trống
+          </label>
+          <div id="note-lines-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
+            ${lines.map((line, li) => renderNoteLine(gIdx, li, line)).join('')}
+          </div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px"
+                  onclick="addNoteLine(${gIdx})">＋ Thêm dòng</button>
+        </div>
+      </div>`;
+      }
+
+      if (groupType === 'bullet-list') {
+        const items = data?.bulletConfig?.items || [''];
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+          Danh sách câu hỏi (Bullet List)
+        </div>
+        <label style="font-size:10px;color:var(--text3)">
+          Các mục – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q5__</code> để đánh dấu chỗ trống
+        </label>
+        <div id="bullet-items-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
+          ${items.map((item, ii) => renderBulletItem(gIdx, ii, item)).join('')}
+        </div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px"
+                onclick="addBulletItem(${gIdx})">＋ Thêm mục</button>
+      </div>`;
+      }
+
+      if (groupType === 'map') {
+        const imgId = `lgmap-${gIdx}`;
+        return `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+          Map / Diagram
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <div style="flex:1">
+            <input class="form-input lg-map-url" value="${data?.imageUrl || ''}"
                    style="font-size:12px;padding:7px 10px"
-                   placeholder='A / text / ["A","C"] cho checkbox' />
+                   placeholder="URL hình ảnh bản đồ / sơ đồ"
+                   oninput="previewGroupImage(this,'${imgId}')" />
+            <div class="form-hint">Upload hình lên Imgur hoặc Cloudinary rồi dán URL vào đây</div>
           </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label style="font-size:10px">Giải thích</label>
-            <input class="form-input lq-explain" value="${data?.explanation||''}"
-                   style="font-size:12px;padding:7px 10px" placeholder="Giải thích đáp án..." />
+          <div id="${imgId}"
+               style="width:160px;min-height:90px;border:1.5px dashed var(--border2);border-radius:6px;
+                      display:flex;align-items:center;justify-content:center;overflow:hidden;
+                      background:var(--bg);flex-shrink:0">
+            ${data?.imageUrl
+            ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:120px;object-fit:contain"/>`
+            : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
           </div>
-        </div>`;
+        </div>
+      </div>`;
+      }
+
+      // plain – không cần config thêm
+      return `<div style="font-size:12px;color:var(--text3);padding:6px 0">
+    Câu hỏi thường – không có khung đặc biệt. Thêm câu hỏi bên dưới.
+  </div>`;
+    }
+
+    function previewGroupImage(input, imgId) {
+      const url = input.value.trim();
+      const el = document.getElementById(imgId);
+      if (!el) return;
+      el.innerHTML = url
+        ? `<img src="${url}" style="max-width:100%;max-height:120px;object-fit:contain"
+           onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
+        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+    }
+
+    // ── Table row helpers ────────────────────────────────────────────
+    function renderTableRow(gIdx, ri, cells) {
+      return `
+    <div style="display:flex;gap:6px;align-items:center" id="tblrow-${gIdx}-${ri}">
+      <span style="font-size:11px;color:var(--text3);width:20px;text-align:center">${ri + 1}</span>
+      <input class="form-input lg-tbl-row" value="${(cells || []).join(' | ')}"
+             style="flex:1;font-size:12px;padding:6px 10px"
+             placeholder="Tên căn hộ | Bãi đỗ xe | Ghi chú thêm __Q1__" />
+      <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+              onclick="this.parentElement.remove()">✕</button>
+    </div>`;
+    }
+
+    function addTableRow(gIdx) {
+      const container = document.getElementById(`tbl-rows-${gIdx}`);
+      if (!container) return;
+      const ri = container.children.length;
+      container.insertAdjacentHTML('beforeend', renderTableRow(gIdx, ri, []));
+    }
+
+    // ── Note line helpers ────────────────────────────────────────────
+    function renderNoteLine(gIdx, li, line) {
+      return `
+    <div style="display:flex;gap:6px;align-items:center">
+      <input class="form-input lg-note-line" value="${line}"
+             style="flex:1;font-size:12px;padding:6px 10px"
+             placeholder="Loại căn hộ: __Q1__" />
+      <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+              onclick="this.parentElement.remove()">✕</button>
+    </div>`;
+    }
+
+    function addNoteLine(gIdx) {
+      document.getElementById(`note-lines-${gIdx}`)
+        ?.insertAdjacentHTML('beforeend', renderNoteLine(gIdx, 0, ''));
+    }
+
+    // ── Bullet item helpers ──────────────────────────────────────────
+    function renderBulletItem(gIdx, ii, item) {
+      return `
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="color:var(--text3);font-size:14px">•</span>
+      <input class="form-input lg-bullet-item" value="${item}"
+             style="flex:1;font-size:12px;padding:6px 10px"
+             placeholder="What colour is the bus that the woman should take? __Q5__" />
+      <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+              onclick="this.parentElement.remove()">✕</button>
+    </div>`;
+    }
+
+    function addBulletItem(gIdx) {
+      document.getElementById(`bullet-items-${gIdx}`)
+        ?.insertAdjacentHTML('beforeend', renderBulletItem(gIdx, 0, ''));
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // INDIVIDUAL QUESTION INSIDE GROUP
+    // ════════════════════════════════════════════════════════════════
+    function addGroupQuestion(gIdx, data = null) {
+      ltQIdx++;
+      const qId = `lq-${gIdx}-${ltQIdx}`;
+      const container = document.getElementById(`lgqs-${gIdx}`);
+      if (!container) return;
+
+      const div = document.createElement('div');
+      div.id = qId;
+      div.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;';
+      div.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;
+                   display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">Q</span>
+      <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
+      <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px"
+              onclick="this.closest('[id^=lq-]').remove()">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-bottom:8px">
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Số câu *</label>
+        <input class="form-input lq-num" type="number" value="${data?.questionNumber || ''}"
+               style="font-size:12px;padding:6px 9px" placeholder="Số câu" />
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Loại câu *</label>
+        <select class="form-select lq-type" onchange="onLQTypeChange(this,'${qId}')"
+                style="font-size:12px;padding:6px 9px">
+          <option value="multiple-choice"     ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
+          <option value="fill-blank"          ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
+          <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
+          <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
+          <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
+          <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>Checkbox (chọn nhiều)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Nội dung câu hỏi *</label>
+      <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
+        placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
+    </div>
+    <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Đáp án đúng *</label>
+        <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
+               style="font-size:12px;padding:6px 9px"
+               placeholder='A / text / ["A","C"]' />
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Giải thích</label>
+        <input class="form-input lq-explain" value="${data?.explanation || ''}"
+               style="font-size:12px;padding:6px 9px" placeholder="Giải thích đáp án..." />
+      </div>
+    </div>`;
+
       container.appendChild(div);
     }
 
+    // renderLQExtra và onLQTypeChange giữ nguyên từ code cũ
     function renderLQExtra(type, data) {
       if (type === 'multiple-choice') {
         const opts = data?.options || ['', '', '', ''];
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:10px">Các đáp án (A,B,C,D)</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            ${['A','B','C','D'].map((l,i) => `
-              <div style="display:flex;align-items:center;gap:6px">
-                <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
-                <input class="form-input lq-opt" value="${opts[i]||''}"
-                       style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
-              </div>`).join('')}
-          </div></div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án (A,B,C,D)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+        ${['A', 'B', 'C', 'D'].map((l, i) => `
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">${l}.</span>
+            <input class="form-input lq-opt" value="${opts[i] || ''}"
+                   style="font-size:12px;padding:5px 8px" placeholder="${l}" />
+          </div>`).join('')}
+      </div></div>`;
       }
-      if (['sentence-completion','matching'].includes(type)) {
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:10px">Word Bank (cách nhau bằng dấu phẩy)</label>
-          <input class="form-input lq-wordbank" value="${(data?.wordBank||[]).join(', ')}"
-                 style="font-size:12px;padding:7px 10px" placeholder="word1, word2, word3..." /></div>`;
+      if (['sentence-completion', 'matching'].includes(type)) {
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Word Bank (cách nhau bằng dấu phẩy)</label>
+      <input class="form-input lq-wordbank" value="${(data?.wordBank || []).join(', ')}"
+             style="font-size:12px;padding:6px 9px;margin-top:4px" placeholder="word1, word2, word3..." /></div>`;
       }
       if (type === 'checkbox') {
         const opts = data?.options || [];
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:10px">Các đáp án (A→E)</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            ${['A','B','C','D','E'].map((l,i) => `
-              <div style="display:flex;align-items:center;gap:6px">
-                <span style="font-weight:700;color:var(--accent);width:16px;font-size:12px">${l}.</span>
-                <input class="form-input lq-opt" value="${opts[i]||''}"
-                       style="font-size:12px;padding:6px 8px" placeholder="Đáp án ${l}" />
-              </div>`).join('')}
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
-            <label style="font-size:10px;margin-bottom:0;white-space:nowrap">Số đáp án cần chọn:</label>
-            <input class="form-input lq-cbcount" type="number" value="${data?.checkboxCount||2}"
-                   style="width:60px;font-size:12px;padding:5px 8px" min="1" max="5" />
-            <span style="font-size:10px;color:var(--text3)">Đáp án: <code style="background:var(--bg);padding:1px 4px;border-radius:3px">["A","C"]</code></span>
-          </div></div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án (A→E)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
+        ${['A', 'B', 'C', 'D', 'E'].map((l, i) => `
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">${l}.</span>
+            <input class="form-input lq-opt" value="${opts[i] || ''}"
+                   style="font-size:12px;padding:5px 8px" placeholder="${l}" />
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:7px;display:flex;align-items:center;gap:8px">
+        <label style="font-size:10px;color:var(--text3);white-space:nowrap">Số đáp án cần chọn:</label>
+        <input class="form-input lq-cbcount" type="number" value="${data?.checkboxCount || 2}"
+               style="width:56px;font-size:12px;padding:5px 8px" min="1" max="5" />
+      </div></div>`;
       }
       if (type === 'map-labelling') {
         const imgId = `lqimg-${Date.now()}`;
-        return `<div class="form-group" style="margin-bottom:8px">
-          <label style="font-size:10px">Hình ảnh sơ đồ / bản đồ</label>
-          <div style="display:flex;gap:8px;align-items:flex-start">
-            <div style="flex:1">
-              <input class="form-input lq-imageurl" value="${data?.imageUrl||''}"
-                     style="font-size:12px;padding:7px 10px"
-                     placeholder="URL hình ảnh (Imgur, Cloudinary...)"
-                     oninput="previewLQImage(this,'${imgId}')"/>
-              <div class="form-hint">Upload hình lên Imgur rồi dán URL vào đây</div>
-            </div>
-            <div id="${imgId}"
-                 style="width:130px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;
-                        display:flex;align-items:center;justify-content:center;
-                        overflow:hidden;background:var(--bg);flex-shrink:0">
-              ${data?.imageUrl
-                ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:100px;object-fit:contain"/>`
-                : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
-            </div>
-          </div></div>`;
+        return `<div class="form-group" style="margin-bottom:0">
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Hình ảnh (nếu câu này có ảnh riêng)</label>
+      <input class="form-input lq-imageurl" value="${data?.imageUrl || ''}"
+             style="font-size:12px;padding:6px 9px;margin-top:4px"
+             placeholder="URL hình ảnh (để trống nếu dùng ảnh chung của nhóm)"
+             oninput="previewGroupImage(this,'${imgId}')"/>
+    </div>`;
       }
       return '';
-    }
-
-    function previewLQImage(input, previewId) {
-      const url = input.value.trim();
-      const preview = document.getElementById(previewId);
-      if (!preview) return;
-      preview.innerHTML = url
-        ? `<img src="${url}" style="max-width:100%;max-height:100px;object-fit:contain"
-               onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
-        : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
     }
 
     function onLQTypeChange(sel, qId) {
       document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {});
     }
 
-    /* ── Part range helpers ── */
-    function getPartRange(partNumber) {
-      const map = { 1:{start:1,end:10}, 2:{start:11,end:20}, 3:{start:21,end:30}, 4:{start:31,end:40} };
-      return map[partNumber] || {start:1,end:10};
-    }
-    function getPartRangeText(partNumber) {
-      const r = getPartRange(partNumber);
-      return `${r.start}–${r.end}`;
-    }
-    function onPartSelect(sel) {
-      const sDiv = sel.closest('.question-row');
-      const part = parseInt(sel.value);
-      const range = getPartRange(part);
-      sDiv.querySelector('.ls-qstart').value = range.start;
-      sDiv.querySelector('.ls-qend').value   = range.end;
-      sDiv.querySelector('.ls-range-text').textContent = `${range.start}–${range.end}`;
-    }
-
-    /* ── Collect & Save ── */
+    // ════════════════════════════════════════════════════════════════
+    // COLLECT & SAVE
+    // ════════════════════════════════════════════════════════════════
     function collectListeningSections() {
       const sections = [];
-      for (const sDiv of document.querySelectorAll('#lt-sections-container .question-row')) {
+      for (const sDiv of document.querySelectorAll('#lt-sections-container > .question-row')) {
         const partNumber = parseInt(sDiv.querySelector('.ls-part').value);
         const title = sDiv.querySelector('.ls-title').value.trim();
         const desc = sDiv.querySelector('.ls-desc').value.trim();
         const qstart = parseInt(sDiv.querySelector('.ls-qstart').value);
         const qend = parseInt(sDiv.querySelector('.ls-qend').value);
+
         if (!title || !qstart || !qend) {
           toast('Điền đầy đủ tiêu đề và phạm vi câu cho tất cả Parts', 'error'); return null;
         }
-        const questions = [];
-        for (const qDiv of sDiv.querySelectorAll('[id^="lq-"]')) {
-          const num = parseInt(qDiv.querySelector('.lq-num').value);
-          const type = qDiv.querySelector('.lq-type').value;
-          const text = qDiv.querySelector('.lq-text').value.trim();
-          const answer = qDiv.querySelector('.lq-answer').value.trim();
-          const explain = qDiv.querySelector('.lq-explain').value.trim();
-          if (!num || !text || !answer) { toast('Điền đầy đủ số câu, nội dung và đáp án', 'error'); return null; }
-          const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: explain };
-          if (['multiple-choice','checkbox'].includes(type))
-            q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
-          if (type === 'checkbox')
-            q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
-          if (['sentence-completion','matching'].includes(type)) {
-            const wb = qDiv.querySelector('.lq-wordbank')?.value || '';
-            q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+
+        const questionGroups = [];
+        for (const gDiv of sDiv.querySelectorAll('[id^="lg-"]')) {
+          const groupType = gDiv.querySelector('.lg-type').value;
+          const instruction = gDiv.querySelector('.lg-instruction')?.value.trim() || '';
+
+          const group = { groupType, instruction };
+
+          // ── Collect group-type config ──
+          if (groupType === 'table') {
+            const rawHeaders = gDiv.querySelector('.lg-tbl-headers')?.value || '';
+            group.tableConfig = {
+              headers: rawHeaders.split('|').map(h => h.trim()).filter(Boolean),
+              rows: [...gDiv.querySelectorAll('.lg-tbl-row')].map(inp =>
+                inp.value.split('|').map(c => c.trim())
+              )
+            };
           }
-          if (type === 'map-labelling')
-            q.imageUrl = qDiv.querySelector('.lq-imageurl')?.value.trim() || '';
-          questions.push(q);
+          if (groupType === 'note-form') {
+            group.noteConfig = {
+              title: gDiv.querySelector('.lg-note-title')?.value.trim() || '',
+              lines: [...gDiv.querySelectorAll('.lg-note-line')].map(i => i.value)
+            };
+          }
+          if (groupType === 'bullet-list') {
+            group.bulletConfig = {
+              items: [...gDiv.querySelectorAll('.lg-bullet-item')].map(i => i.value)
+            };
+          }
+          if (groupType === 'map') {
+            group.imageUrl = gDiv.querySelector('.lg-map-url')?.value.trim() || '';
+          }
+
+          // ── Collect questions ──
+          const questions = [];
+          for (const qDiv of gDiv.querySelectorAll('[id^="lq-"]')) {
+            const num = parseInt(qDiv.querySelector('.lq-num').value);
+            const type = qDiv.querySelector('.lq-type').value;
+            const text = qDiv.querySelector('.lq-text').value.trim();
+            const answer = qDiv.querySelector('.lq-answer').value.trim();
+            const expl = qDiv.querySelector('.lq-explain').value.trim();
+
+            if (!num || !text || !answer) {
+              toast(`Điền đầy đủ số câu, nội dung và đáp án (câu ${num || '?'})`, 'error'); return null;
+            }
+
+            const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
+
+            if (['multiple-choice', 'checkbox'].includes(type))
+              q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
+            if (type === 'checkbox')
+              q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
+            if (['sentence-completion', 'matching'].includes(type)) {
+              const wb = qDiv.querySelector('.lq-wordbank')?.value || '';
+              q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
+            }
+            if (type === 'map-labelling')
+              q.imageUrl = qDiv.querySelector('.lq-imageurl')?.value.trim() || '';
+
+            questions.push(q);
+          }
+
+          group.questions = questions;
+          questionGroups.push(group);
         }
-        sections.push({ partNumber, title, description: desc, questionRange: { start: qstart, end: qend }, questions });
+
+        sections.push({ partNumber, title, description: desc, questionRange: { start: qstart, end: qend }, questionGroups });
       }
       return sections;
     }
@@ -2689,14 +3446,17 @@
       const name = document.getElementById('lt-name').value.trim();
       const number = parseInt(document.getElementById('lt-number').value);
       if (!name || !number) { toast('Tên đề và số thứ tự là bắt buộc', 'error'); return; }
+
       const sections = collectListeningSections();
       if (sections === null) return;
+
       const body = {
         name, testNumber: number,
         seriesName: document.getElementById('lt-series').value.trim(),
         transcript: document.getElementById('lt-transcript').value.trim(),
         sections
       };
+
       const btn = document.getElementById('btn-save-listening');
       btn.disabled = true; btn.textContent = 'Đang lưu...';
       try {
@@ -2710,7 +3470,25 @@
       finally { btn.disabled = false; btn.textContent = 'Lưu đề nghe'; }
     }
 
-    /* ── Upload Audio ── */
+    // ── Part range helpers (giữ nguyên) ─────────────────────────────
+    function getPartRange(partNumber) {
+      const map = { 1: { start: 1, end: 10 }, 2: { start: 11, end: 20 }, 3: { start: 21, end: 30 }, 4: { start: 31, end: 40 } };
+      return map[partNumber] || { start: 1, end: 10 };
+    }
+    function getPartRangeText(partNumber) {
+      const r = getPartRange(partNumber);
+      return `${r.start}–${r.end}`;
+    }
+    function onPartSelect(sel) {
+      const sDiv = sel.closest('.question-row');
+      const part = parseInt(sel.value);
+      const range = getPartRange(part);
+      sDiv.querySelector('.ls-qstart').value = range.start;
+      sDiv.querySelector('.ls-qend').value = range.end;
+      sDiv.querySelector('.ls-range-text').textContent = `${range.start}–${range.end}`;
+    }
+
+    // ── Upload Audio (giữ nguyên) ────────────────────────────────────
     function openUploadAudioModal(id, name) {
       uploadAudioTestId = id;
       document.getElementById('upload-audio-name').textContent = name;
@@ -2735,13 +3513,13 @@
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
-        toast(`Upload thành công! Thời lượng: ${Math.floor(data.audioDuration/60)}:${pad(data.audioDuration%60)}`);
+        toast(`Upload thành công! Thời lượng: ${Math.floor(data.audioDuration / 60)}:${pad(data.audioDuration % 60)}`);
         closeModal('modal-upload-audio'); await loadListeningTests();
       } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
       finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
     }
 
-    /* ── Transcript Modal ── */
+    // ── Transcript Modal (giữ nguyên) ────────────────────────────────
     async function openTranscriptModal(id) {
       transcriptTestId = id;
       try {
@@ -2750,9 +3528,7 @@
         if (!data.success) throw new Error(data.message);
         document.getElementById('tr-transcript').value = data.test.transcript || '';
         document.getElementById('tr-timestamps').value =
-          data.test.wordTimestamps?.length
-            ? JSON.stringify(data.test.wordTimestamps, null, 2)
-            : '';
+          data.test.wordTimestamps?.length ? JSON.stringify(data.test.wordTimestamps, null, 2) : '';
         openModal('modal-transcript');
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
