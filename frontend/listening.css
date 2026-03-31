@@ -324,11 +324,13 @@ body {
   letter-spacing: .5px;
   margin-bottom: 10px;
 }
-.q-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.q-nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; max-width: 190px; }
 
 .q-nav-btn {
   width: 100%;
   aspect-ratio: 1;
+  max-width: 36px;
+  max-height: 36px;
   border: 1.5px solid #e5e7eb;
   background: #fff;
   border-radius: 6px;
