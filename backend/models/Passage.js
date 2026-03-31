@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-/**
- * Question types supported:
- * - true-false-ng      : True / False / Not Given
- * - multiple-choice    : A, B, C, D
- * - fill-blank         : text input
- * - sentence-completion: drag-and-drop (bank of words)
- * - matching-headings  : drag heading → paragraph
- * - matching-info      : match statement → section letter
- * - checkbox           : chọn nhiều đáp án (N trong M)
- * - map-labelling      : điền nhãn vào sơ đồ/hình ảnh (fill-blank kèm image)
- */
 const QuestionSchema = new mongoose.Schema({
   questionNumber: { type: Number, required: true },
   type: {
@@ -27,62 +16,88 @@ const QuestionSchema = new mongoose.Schema({
     ],
     required: true
   },
-  questionText: { type: String, required: true },
+  questionText:   { type: String, required: true },
+  options:        [String],
+  checkboxCount:  { type: Number, default: 2 },
+  wordBank:       [String],
+  correctAnswer:  { type: String, required: true },
+  explanation:    { type: String, default: '' },
+  paragraphLabels:[String],
+  imageUrl:       { type: String, default: '' }
+});
 
-  // Dùng cho multiple-choice / checkbox
-  options: [String],
+// ── Question Group ────────────────────────────────────────────────────────────
+// Một group = một khối câu hỏi có cùng instruction và layout
+// VD: "Questions 1-5: True/False/NG", "Questions 6-10: Fill in the table"
+const QuestionGroupSchema = new mongoose.Schema({
+  groupType: {
+    type: String,
+    enum: [
+      'plain',          // Câu hỏi thường (radio/fill), không khung đặc biệt
+      'table',          // Bảng có header, ô dùng __Qn__ placeholder
+      'note-form',      // Khung ghi chú/note với các dòng
+      'bullet-list',    // Danh sách bullet
+      'map',            // Map/diagram labelling với ảnh chung
+      'matching-options' // Matching headings/info: list options + câu hỏi chọn letter
+    ],
+    default: 'plain'
+  },
 
-  // Checkbox: số đáp án cần chọn (VD: chọn 2 trong 5)
-  checkboxCount: { type: Number, default: 2 },
+  // Tiêu đề nhóm (VD: "Questions 1-5", "Reading Passage 3 has six sections, A–F")
+  groupTitle: { type: String, default: '' },
 
-  // Dùng cho sentence-completion / matching
-  wordBank: [String],
+  // Hướng dẫn (VD: "Choose ONE WORD ONLY from the passage for each answer")
+  instruction: { type: String, default: '' },
 
-  // Đáp án đúng
-  // - string thông thường cho single answer
-  // - JSON stringified array cho checkbox: '["A","C"]'
-  correctAnswer: { type: String, required: true },
+  // ── table config ──
+  tableConfig: {
+    headers: [String],
+    rows:    [[String]]
+  },
 
-  // Giải thích (chỉ hiện khi review)
-  explanation: { type: String, default: '' },
+  // ── note-form config ──
+  noteConfig: {
+    title: { type: String, default: '' },
+    lines: [String]
+  },
 
-  // Với matching-headings: danh sách paragraph labels (A, B, C…)
-  paragraphLabels: [String],
+  // ── bullet-list config ──
+  bulletConfig: {
+    items: [String]
+  },
 
-  // Với map-labelling: URL hình ảnh sơ đồ/bản đồ
-  // (dùng chung cho cả Reading và Listening)
-  imageUrl: { type: String, default: '' }
+  // ── map config ──
+  imageUrl: { type: String, default: '' },
+
+  // ── matching-options config ──
+  // Danh sách options hiển thị bên dưới (VD: A. Shaping... B. Causes...)
+  matchingOptions: [String],
+
+  // Có cho dùng lại letter không (NB: You may use any letter more than once)
+  matchingReuseAllowed: { type: Boolean, default: false },
+
+  questions: [QuestionSchema]
 });
 
 const PassageSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title:    { type: String, required: true },
+  category: { type: String, enum: ['passage1','passage2','passage3'], required: true },
+  content:  { type: String, required: true },
 
-  category: {
-    type: String,
-    enum: ['passage1', 'passage2', 'passage3'],
-    required: true
-  },
+  // Mảng các question groups (thay thế questions[] phẳng)
+  questionGroups: [QuestionGroupSchema],
 
-  // Nội dung bài đọc – lưu HTML (giáo viên có thể in đậm, nghiêng…)
-  content: { type: String, required: true },
-
+  // Giữ lại questions[] để tương thích ngược (có thể để trống nếu dùng groups)
   questions: [QuestionSchema],
 
-  // Phạm vi câu hỏi, ví dụ: { start: 1, end: 13 }
   questionRange: {
     start: { type: Number, required: true },
     end:   { type: Number, required: true }
   },
 
-  difficulty: {
-    type: String,
-    enum: ['easy', 'medium', 'hard'],
-    default: 'medium'
-  },
-
-  tags: [String],
-
-  isActive: { type: Boolean, default: true }
+  difficulty: { type: String, enum: ['easy','medium','hard'], default: 'medium' },
+  tags:       [String],
+  isActive:   { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Passage', PassageSchema);
