@@ -14,6 +14,17 @@ body {
 .screen { display: none; }
 .screen.active { display: flex; flex-direction: column; }
 
+/* Done screen overlays exam (position:fixed covers everything) */
+#screen-done.active {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: #f8f9fb;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
 /* ══════════════════════════════════════════════
    SITE NAV (shared with reading/listening)
 ══════════════════════════════════════════════ */
@@ -153,11 +164,9 @@ body {
    EXAM SCREEN
    – full-viewport, no scroll on outer body
 ══════════════════════════════════════════════ */
-#screen-exam {
+#screen-exam.active {
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 /* ── Exam top bar ── */
