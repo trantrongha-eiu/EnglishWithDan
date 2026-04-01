@@ -37,14 +37,20 @@ router.post('/verify-key', auth, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Mã này không dùng cho Writing' });
 
     // Lấy đề thi (chỉ cần name + duration)
+    // Ưu tiên: exam gắn với key → exam active mới nhất → bất kỳ exam nào → tự tạo default
     let exam = null;
     if (accessKey.testId) {
       exam = await WritingExam.findById(accessKey.testId);
-    } else {
+    }
+    if (!exam) {
       exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 });
     }
-    if (!exam)
-      return res.status(404).json({ success: false, message: 'Không tìm thấy đề thi' });
+    if (!exam) {
+      exam = await WritingExam.findOne().sort({ createdAt: -1 });
+    }
+    if (!exam) {
+      exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
+    }
 
     // Random task1 + task2 từ pool
     const task1 = await randomDoc(WritingTask1);
