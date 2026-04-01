@@ -1,9 +1,12 @@
 const express      = require('express');
 const router       = express.Router();
 const crypto       = require('crypto');
+const cloudinary   = require('cloudinary').v2;
 const Passage      = require('../models/Passage');
 const ReadingTest  = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
+const WritingExam  = require('../models/WritingExam');
+const WritingAttempt = require('../models/WritingAttempt');
 const AccessKey    = require('../models/AccessKey');
 const TestAttempt  = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -173,7 +176,7 @@ router.post('/keys/generate', auth, teacherOnly, async (req, res) => {
     }
 
     // Validate testType
-    const validTypes = ['reading', 'listening', null];
+    const validTypes = ['reading', 'listening', 'writing', null];
     if (!validTypes.includes(testType)) {
       return res.status(400).json({ success: false, message: 'testType không hợp lệ' });
     }
@@ -273,6 +276,112 @@ router.get('/listening-history', auth, teacherOnly, async (req, res) => {
       // Model chưa tồn tại hoặc chưa có data
     }
     res.json({ success: true, history });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// WRITING TESTS (dropdown key)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/writing-tests  – dropdown tạo key
+router.get('/writing-tests', auth, teacherOnly, async (req, res) => {
+  try {
+    const exams = await WritingExam.find({ isActive: true })
+      .select('name')
+      .sort({ createdAt: -1 });
+    res.json({ success: true, exams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/writing-exams  – quản lý đề
+router.get('/writing-exams', auth, teacherOnly, async (req, res) => {
+  try {
+    const exams = await WritingExam.find().sort({ createdAt: -1 });
+    res.json({ success: true, exams });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing-exams/upload-image
+// Body: { imageBase64 }  → upload lên Cloudinary → trả về URL
+router.post('/writing-exams/upload-image', auth, teacherOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+
+    const result = await cloudinary.uploader.upload(imageBase64, {
+      folder: 'writing-tasks',
+      resource_type: 'image'
+    });
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing-exams  – tạo đề
+router.post('/writing-exams', auth, teacherOnly, async (req, res) => {
+  try {
+    const exam = new WritingExam(req.body);
+    await exam.save();
+    res.status(201).json({ success: true, exam });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/writing-exams/:id
+router.put('/writing-exams/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const exam = await WritingExam.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!exam) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, exam });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-exams/:id  (soft delete)
+router.delete('/writing-exams/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingExam.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn đề writing' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// WRITING HISTORY (bài nộp của học sinh)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/writing-history  – danh sách tất cả bài nộp (không kèm text)
+router.get('/writing-history', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempts = await WritingAttempt.find()
+      .populate('userId', 'username firstName lastName')
+      .sort({ submittedAt: -1 })
+      .limit(200)
+      .select('-task1Answer -task2Answer');
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/writing-attempt/:id  – chi tiết bài nộp (có text đầy đủ)
+router.get('/writing-attempt/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempt = await WritingAttempt.findById(req.params.id)
+      .populate('userId', 'username firstName lastName')
+      .populate('examId', 'name task1 task2');
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, attempt });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

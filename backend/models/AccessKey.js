@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const AccessKeySchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true, uppercase: true },
 
-  // 'reading' | 'listening' | null (null = dùng được cho mọi test mọi loại)
+  // 'reading' | 'listening' | 'writing' | null (null = dùng được cho mọi test mọi loại)
   testType: {
     type: String,
-    enum: ['reading', 'listening', null],
+    enum: ['reading', 'listening', 'writing', null],
     default: null
   },
 
@@ -36,6 +36,7 @@ const AccessKeySchema = new mongoose.Schema({
 AccessKeySchema.virtual('testRefModel').get(function () {
   if (this.testType === 'reading')   return 'ReadingTest';
   if (this.testType === 'listening') return 'ListeningTest';
+  if (this.testType === 'writing')   return 'WritingExam';
   return 'ReadingTest'; // fallback (sẽ không populate nếu testId = null)
 });
 
