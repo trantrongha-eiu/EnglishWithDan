@@ -1,59 +1,164 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Speaking Practice</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speaking – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="speaking.css" />
 </head>
-
 <body>
 
-    <header
-        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
-            <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-            <button onclick="logout()"
-                style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
-                🚪 Đăng xuất
-            </button>
-        </div>
-    </header>
+<!-- ── Header ── -->
+<header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
+  <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
+    <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
+    <button onclick="logout()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
+      🚪 Đăng xuất
+    </button>
+  </div>
+</header>
 
-    <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
-        <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
-            <li><a href="reading.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📖
-                    Reading</a></li>
-            <li><a href="listening.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎧
-                    Listening</a></li>
-            <li><a href="writing.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">✏️
-                    Writing</a></li>
-            <li><a href="speaking.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#e53935;text-decoration:none;border-bottom:2px solid #e53935">🎤
-                    Speaking</a></li>
-            <li><a href="dashboard.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📚
-                    Vocab</a></li>
-        </ul>
-    </nav>
+<!-- ── Nav ── -->
+<div class="skill-tabs-bar">
+  <nav class="site-nav">
+    <a href="reading.html"   class="site-nav-link">📖 Reading</a>
+    <a href="listening.html" class="site-nav-link">🎧 Listening</a>
+    <a href="writing.html"   class="site-nav-link">✏️ Writing</a>
+    <a href="speaking.html"  class="site-nav-link active">🎤 Speaking</a>
+    <a href="dashboard.html" class="site-nav-link">📚 Vocab</a>
+  </nav>
+</div>
 
-    <div class="container">
-        <h2>Speaking Practice</h2>
-        <p>Chức năng đang phát triển...</p>
-        <div id="test"></div>
-        <button onclick="submitTest()">Submit</button>
-        <p id="result"></p>
+<!-- ── Page tabs ── -->
+<div class="sp-tabs">
+  <button class="sp-tab active" id="tab-btn-practice"  onclick="switchTab('practice')">🎙 Practice</button>
+  <button class="sp-tab"        id="tab-btn-materials" onclick="switchTab('materials')">📚 Materials</button>
+</div>
 
-        <script src="js/speaking.js"></script>
+<!-- ════════════════════════════════════════════
+     TAB 1 – PRACTICE
+════════════════════════════════════════════ -->
+<div id="tab-practice" class="sp-content active">
+  <div class="practice-container">
 
+    <!-- No Speech API warning -->
+    <div class="no-speech-warning" id="no-speech-warning">
+      ⚠️ Trình duyệt của bạn không hỗ trợ ghi âm tự động. Bạn vẫn có thể gõ câu trả lời vào ô bên dưới để nhận AI feedback.
     </div>
 
-</body>
+    <!-- Controls -->
+    <div class="practice-controls">
+      <label for="sel-part">Part</label>
+      <select class="sp-select" id="sel-part" onchange="loadTopics()">
+        <option value="all">Tất cả</option>
+        <option value="1">Part 1</option>
+        <option value="2">Part 2</option>
+        <option value="3">Part 3</option>
+      </select>
 
+      <label for="sel-topic">Topic</label>
+      <select class="sp-select" id="sel-topic">
+        <option value="all">Tất cả</option>
+      </select>
+
+      <button class="btn-random" onclick="loadRandomQuestion()">🔀 Random</button>
+    </div>
+
+    <!-- Question card -->
+    <div class="question-card" id="question-card">
+      <div class="q-label" id="q-part-label">Part 1</div>
+      <div class="q-text" id="q-text">Nhấn 🔀 Random hoặc chọn topic để bắt đầu.</div>
+      <div class="q-cue hidden" id="q-cue"></div>
+    </div>
+
+    <!-- Record section -->
+    <div class="record-section">
+      <button class="btn-record" id="btn-record" onclick="toggleRecord()">
+        <span class="rec-icon" id="rec-icon">🎙</span>
+        <span class="rec-label" id="rec-label">Start Speaking</span>
+      </button>
+      <div class="rec-status" id="rec-status">Nhấn để bắt đầu ghi âm</div>
+      <div class="transcript-interim" id="transcript-interim"></div>
+    </div>
+
+    <!-- Transcript -->
+    <div class="transcript-box">
+      <div class="box-label">📝 Transcript – chỉnh sửa nếu cần</div>
+      <textarea class="transcript-textarea" id="transcript-textarea"
+        placeholder="Transcript sẽ hiện ở đây khi bạn nói..."></textarea>
+      <button class="btn-analyze" id="btn-analyze" onclick="analyzeTranscript()" disabled>
+        🤖 Analyze with AI
+      </button>
+    </div>
+
+    <!-- AI Feedback -->
+    <div class="feedback-box" id="feedback-box">
+      <div class="box-label">🤖 AI Feedback</div>
+      <div id="feedback-loading" style="text-align:center;padding:16px 0">
+        <div class="spinner"></div>
+        <p style="color:#9ca3af;font-size:13px;margin-top:8px">AI đang phân tích...</p>
+      </div>
+      <div id="feedback-content" style="display:none">
+        <div class="feedback-band" id="feedback-band" style="display:none">
+          🎯 Estimated Band: <span id="band-value"></span>
+        </div>
+        <div class="feedback-corrected" id="feedback-corrected"></div>
+        <div class="feedback-errors" id="feedback-errors"></div>
+        <div class="feedback-tips"   id="feedback-tips"></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="practice-actions">
+      <button class="btn-retry" onclick="retryQuestion()">🔁 Retry</button>
+      <button class="btn-next"  onclick="loadRandomQuestion()">➡ Next Question</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAB 2 – MATERIALS
+════════════════════════════════════════════ -->
+<div id="tab-materials" class="sp-content">
+  <div class="materials-layout">
+
+    <!-- Left: filter + list -->
+    <div class="materials-left">
+      <div class="materials-filter">
+        <div class="filter-section-title">Quarter</div>
+        <div class="filter-chip-group" id="quarter-chips">
+          <span class="filter-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>
+        </div>
+
+        <div class="filter-section-title">Topic</div>
+        <div class="filter-chip-group" id="topic-chips">
+          <span class="filter-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>
+        </div>
+      </div>
+
+      <div class="materials-list" id="materials-list">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+    <!-- Right: PDF viewer -->
+    <div class="materials-right" id="materials-right">
+      <div class="pdf-placeholder" id="pdf-placeholder">
+        <div class="ph-icon">📄</div>
+        <p>Chọn tài liệu để xem</p>
+      </div>
+      <iframe class="pdf-viewer-frame" id="pdf-frame" allowfullscreen></iframe>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/speaking.js"></script>
+</body>
 </html>
