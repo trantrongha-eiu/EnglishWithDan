@@ -26,62 +26,26 @@ async function seedSpeakingData() {
     const SpeakingQuestion = require('./models/SpeakingQuestion');
     const SpeakingMaterial = require('./models/SpeakingMaterial');
 
-    const qCount = await SpeakingQuestion.countDocuments();
-    if (qCount === 0) {
-      await SpeakingQuestion.insertMany([
-        {
-          topic: 'Travel',
-          part: 1,
-          question: 'Do you enjoy travelling? Why or why not?',
-          cueCard: '',
-          isActive: true
-        },
-        {
-          topic: 'Technology',
-          part: 1,
-          question: 'How often do you use the internet, and what do you mainly use it for?',
-          cueCard: '',
-          isActive: true
-        },
-        {
-          topic: 'Environment',
-          part: 2,
-          question: 'Describe a place in nature that you enjoy visiting.',
-          cueCard: 'You should say:\n• Where it is\n• How often you go there\n• What you do there\n• And explain why you enjoy it',
-          isActive: true
-        }
-      ]);
-      console.log('Seeded 3 sample speaking questions.');
+    const seedQuestions = [
+      { topic: 'Travel',      part: 1, question: 'Do you enjoy travelling? Why or why not?',                                    cueCard: '',                                                                                                                                               isActive: true },
+      { topic: 'Technology',  part: 1, question: 'How often do you use the internet, and what do you mainly use it for?',       cueCard: '',                                                                                                                                               isActive: true },
+      { topic: 'Environment', part: 2, question: 'Describe a place in nature that you enjoy visiting.',                         cueCard: 'You should say:\n• Where it is\n• How often you go there\n• What you do there\n• And explain why you enjoy it', isActive: true }
+    ];
+    for (const q of seedQuestions) {
+      await SpeakingQuestion.findOneAndUpdate({ question: q.question }, q, { upsert: true });
     }
+    console.log('Speaking questions seeded/updated.');
 
-    const mCount = await SpeakingMaterial.countDocuments();
-    if (mCount === 0) {
-      const samplePdf = 'https://www.africau.edu/images/default/sample.pdf';
-      await SpeakingMaterial.insertMany([
-        {
-          title: 'Speaking Part 1 – Travel Topics',
-          quarter: 'Q1 2025',
-          topic: 'Travel',
-          pdfUrl: samplePdf,
-          isActive: true
-        },
-        {
-          title: 'Speaking Part 1 – Technology',
-          quarter: 'Q1 2025',
-          topic: 'Technology',
-          pdfUrl: samplePdf,
-          isActive: true
-        },
-        {
-          title: 'Speaking Part 2 & 3 – Environment',
-          quarter: 'Q2 2025',
-          topic: 'Environment',
-          pdfUrl: samplePdf,
-          isActive: true
-        }
-      ]);
-      console.log('Seeded 3 sample speaking materials.');
+    const samplePdf = 'https://drive.google.com/file/d/1I_96YTlO5IcjFnkJ7VIbHkYfEcLsXQmQ/preview';
+    const seedMaterials = [
+      { title: 'Speaking Part 1 – Travel Topics',      quarter: 'Q1 2025', topic: 'Travel',       pdfUrl: samplePdf, isActive: true },
+      { title: 'Speaking Part 1 – Technology',         quarter: 'Q1 2025', topic: 'Technology',   pdfUrl: samplePdf, isActive: true },
+      { title: 'Speaking Part 2 & 3 – Environment',    quarter: 'Q2 2025', topic: 'Environment',  pdfUrl: samplePdf, isActive: true }
+    ];
+    for (const m of seedMaterials) {
+      await SpeakingMaterial.findOneAndUpdate({ title: m.title }, m, { upsert: true });
     }
+    console.log('Speaking materials seeded/updated.');
   } catch (err) {
     console.error('Seed error:', err.message);
   }
