@@ -3,10 +3,18 @@ const mongoose = require('mongoose');
 const AccessKeySchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true, uppercase: true },
 
-  // null = dùng được cho mọi test
+  // 'reading' | 'listening' | null (null = dùng được cho mọi test mọi loại)
+  testType: {
+    type: String,
+    enum: ['reading', 'listening', null],
+    default: null
+  },
+
+  // null = dùng được cho mọi test thuộc testType (hoặc mọi test nếu testType cũng null)
+  // refPath động theo testType
   testId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ReadingTest',
+    refPath: 'testRefModel',
     default: null
   },
 
@@ -23,6 +31,13 @@ const AccessKeySchema = new mongoose.Schema({
 
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+// Virtual dùng để refPath biết ref đến model nào
+AccessKeySchema.virtual('testRefModel').get(function () {
+  if (this.testType === 'reading')   return 'ReadingTest';
+  if (this.testType === 'listening') return 'ListeningTest';
+  return 'ReadingTest'; // fallback (sẽ không populate nếu testId = null)
+});
 
 // Virtual: còn hiệu lực?
 AccessKeySchema.virtual('isValid').get(function () {

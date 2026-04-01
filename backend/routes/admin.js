@@ -1,11 +1,13 @@
-const express     = require('express');
-const router      = express.Router();
-const crypto      = require('crypto');
-const Passage     = require('../models/Passage');
-const ReadingTest = require('../models/ReadingTest');
-const AccessKey   = require('../models/AccessKey');
-const TestAttempt = require('../models/TestAttempt');
-const auth        = require('../middleware/auth');
+const express      = require('express');
+const router       = express.Router();
+const crypto       = require('crypto');
+const Passage      = require('../models/Passage');
+const ReadingTest  = require('../models/ReadingTest');
+const ListeningTest = require('../models/ListeningTest');
+const AccessKey    = require('../models/AccessKey');
+const TestAttempt  = require('../models/TestAttempt');
+const ListeningAttempt = require('../models/ListeningAttempt');
+const auth         = require('../middleware/auth');
 
 // Chỉ teacher và admin mới dùng được
 const teacherOnly = (req, res, next) => {
@@ -19,7 +21,6 @@ const teacherOnly = (req, res, next) => {
 // PASSAGES
 // ══════════════════════════════════════════════════
 
-// GET  /api/admin/passages  – lấy danh sách bài đọc
 router.get('/passages', auth, teacherOnly, async (req, res) => {
   try {
     const { category, page = 1, limit = 20 } = req.query;
@@ -36,7 +37,6 @@ router.get('/passages', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/passages  – upload bài đọc mới
 router.post('/passages', auth, teacherOnly, async (req, res) => {
   try {
     const passage = new Passage(req.body);
@@ -47,7 +47,6 @@ router.post('/passages', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// GET  /api/admin/passages/:id  – lấy 1 bài đọc đầy đủ (để edit)
 router.get('/passages/:id', auth, teacherOnly, async (req, res) => {
   try {
     const passage = await Passage.findById(req.params.id);
@@ -58,7 +57,6 @@ router.get('/passages/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT  /api/admin/passages/:id  – chỉnh sửa bài đọc
 router.put('/passages/:id', auth, teacherOnly, async (req, res) => {
   try {
     const passage = await Passage.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
@@ -69,7 +67,6 @@ router.put('/passages/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/passages/:id  – xoá mềm (isActive = false)
 router.delete('/passages/:id', auth, teacherOnly, async (req, res) => {
   try {
     await Passage.findByIdAndUpdate(req.params.id, { isActive: false });
@@ -83,7 +80,6 @@ router.delete('/passages/:id', auth, teacherOnly, async (req, res) => {
 // READING TESTS
 // ══════════════════════════════════════════════════
 
-// GET  /api/admin/tests
 router.get('/tests', auth, teacherOnly, async (req, res) => {
   try {
     const tests = await ReadingTest.find().sort({ testNumber: -1 });
@@ -93,7 +89,6 @@ router.get('/tests', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/tests  – tạo bộ đề mới
 router.post('/tests', auth, teacherOnly, async (req, res) => {
   try {
     const test = new ReadingTest(req.body);
@@ -104,7 +99,6 @@ router.post('/tests', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT  /api/admin/tests/:id
 router.put('/tests/:id', auth, teacherOnly, async (req, res) => {
   try {
     const test = await ReadingTest.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -116,41 +110,84 @@ router.put('/tests/:id', auth, teacherOnly, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════
-// ACCESS KEYS
+// LISTENING TESTS (cho dropdown key)
 // ══════════════════════════════════════════════════
 
-// GET  /api/admin/keys  – danh sách key đã tạo
-router.get('/keys', auth, teacherOnly, async (req, res) => {
+// GET /api/admin/listening-tests  – dropdown tạo key
+router.get('/listening-tests', auth, teacherOnly, async (req, res) => {
   try {
-    const keys = await AccessKey.find({ createdBy: req.user._id })
-      .populate('testId', 'name')
-      .sort({ createdAt: -1 });
-    res.json({ success: true, keys });
+    const tests = await ListeningTest.find({ isActive: true })
+      .select('name testNumber seriesName')
+      .sort({ testNumber: -1 });
+    res.json({ success: true, tests });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// POST /api/admin/keys/generate  – tạo key mới
-// Body: { count, testId, expiryDays, maxUses }
+// ══════════════════════════════════════════════════
+// ACCESS KEYS
+// ══════════════════════════════════════════════════
+
+// GET  /api/admin/keys
+router.get('/keys', auth, teacherOnly, async (req, res) => {
+  try {
+    const keys = await AccessKey.find({ createdBy: req.user._id })
+      .sort({ createdAt: -1 });
+
+    // Populate thủ công vì refPath cần virtual (mongoose không tự resolve virtual refPath)
+    const populated = await Promise.all(keys.map(async (k) => {
+      const obj = k.toObject({ virtuals: true });
+      if (k.testId) {
+        try {
+          const Model = k.testType === 'listening' ? ListeningTest : ReadingTest;
+          const test  = await Model.findById(k.testId).select('name');
+          obj.testId = test ? { _id: test._id, name: test.name } : null;
+        } catch {
+          obj.testId = null;
+        }
+      }
+      return obj;
+    }));
+
+    res.json({ success: true, keys: populated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/keys/generate
+// Body: { count, testId, testType, expiryDays, maxUses }
 router.post('/keys/generate', auth, teacherOnly, async (req, res) => {
   try {
-    const { count = 1, testId = null, expiryDays = null, maxUses = 1 } = req.body;
+    const {
+      count     = 1,
+      testId    = null,
+      testType  = null,   // 'reading' | 'listening' | null
+      expiryDays = null,
+      maxUses   = 1
+    } = req.body;
 
     if (count < 1 || count > 100) {
       return res.status(400).json({ success: false, message: 'count phải từ 1 đến 100' });
     }
 
+    // Validate testType
+    const validTypes = ['reading', 'listening', null];
+    if (!validTypes.includes(testType)) {
+      return res.status(400).json({ success: false, message: 'testType không hợp lệ' });
+    }
+
     const createdKeys = [];
 
     for (let i = 0; i < count; i++) {
-      // Format: XXXX-XXXX (8 ký tự hex, dấu gạch giữa)
       const raw = crypto.randomBytes(4).toString('hex').toUpperCase();
       const key = `${raw.slice(0, 4)}-${raw.slice(4)}`;
 
       const accessKey = new AccessKey({
         key,
-        testId: testId || null,
+        testId:   testId   || null,
+        testType: testType  || null,
         createdBy: req.user._id,
         expiresAt: expiryDays
           ? new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000)
@@ -167,7 +204,7 @@ router.post('/keys/generate', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/keys/:id  – vô hiệu hoá key
+// DELETE /api/admin/keys/:id
 router.delete('/keys/:id', auth, teacherOnly, async (req, res) => {
   try {
     await AccessKey.findByIdAndUpdate(req.params.id, { isActive: false });
@@ -178,10 +215,9 @@ router.delete('/keys/:id', auth, teacherOnly, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════
-// THỐNG KÊ  (admin only)
+// THỐNG KÊ
 // ══════════════════════════════════════════════════
 
-// GET /api/admin/stats
 router.get('/stats', auth, teacherOnly, async (req, res) => {
   try {
     const [totalStudents, totalAttempts, avgBand] = await Promise.all([
@@ -206,7 +242,7 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// GET /api/admin/history – lịch sử tất cả học sinh
+// GET /api/admin/history – lịch sử Reading
 router.get('/history', auth, teacherOnly, async (req, res) => {
   try {
     const history = await TestAttempt.find({ status: 'completed' })
@@ -216,6 +252,26 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
       .limit(100)
       .select('-answers -passagesUsed');
 
+    res.json({ success: true, history });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/listening-history – lịch sử Listening
+router.get('/listening-history', auth, teacherOnly, async (req, res) => {
+  try {
+    // ListeningAttempt có thể chưa có model — wrap try/catch riêng
+    let history = [];
+    try {
+      history = await ListeningAttempt.find({ status: 'completed' })
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 })
+        .limit(100)
+        .select('-answers');
+    } catch {
+      // Model chưa tồn tại hoặc chưa có data
+    }
     res.json({ success: true, history });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
