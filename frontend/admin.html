@@ -1290,29 +1290,6 @@
         <!-- ─── TAB: WRITING ─── -->
         <div id="tab-writing">
 
-          <!-- Đề thi (tên + thời gian – key gắn vào đây) -->
-          <div class="section-header">
-            <span class="section-title">Đề thi Writing</span>
-            <button class="btn btn-primary btn-sm" onclick="openWritingModal()">＋ Tạo đề mới</button>
-          </div>
-          <p style="font-size:12px;color:var(--text3);margin:-8px 0 12px">Key gắn vào đây. Khi học sinh vào thi, Task 1 &amp; Task 2 sẽ được random từ pool bên dưới.</p>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tên đề</th>
-                  <th>Thời gian</th>
-                  <th>Trạng thái</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:160px"></th>
-                </tr>
-              </thead>
-              <tbody id="writing-exams-tbody">
-                <tr><td colspan="5" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
-          </div>
-
           <!-- Pool Task 1 -->
           <div class="section-header" style="margin-top:32px">
             <span class="section-title">Pool Task 1 (Chart / Diagram)</span>
@@ -1869,7 +1846,7 @@
       // Load lazy khi chuyển tab
       if (tab === 'vocab') loadVocabUnits();
       if (tab === 'listening') loadListeningTests();
-      if (tab === 'writing') { loadWritingExams(); loadTask1Pool(); loadTask2Pool(); loadWritingHistory(); }
+      if (tab === 'writing') { loadTask1Pool(); loadTask2Pool(); loadWritingHistory(); }
       if (tab === 'speaking') { loadSpeakingQuestions(); loadSpeakingMaterials(); }
     }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -2872,16 +2849,17 @@
       } catch (err) { toast(err.message, 'error'); }
     }
 
-    async function deleteWordFromUnit(idx) {
+    function deleteWordFromUnit(idx) {
       if (!editingUnitObj) return;
       const word = editingUnitObj.words[idx]?.word;
-      if (!confirm(`Xoá từ "${word}"?`)) return;
-      try {
-        const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words/${idx}`, { method: 'DELETE', headers: authH() })).json();
-        toast(data.message);
-        await openUnitWordsModal(editingUnitObj._id);
-        await loadVocabUnits();
-      } catch (err) { toast(err.message, 'error'); }
+      confirmAction(`Xoá từ "${word}"?`, async () => {
+        try {
+          const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words/${idx}`, { method: 'DELETE', headers: authH() })).json();
+          toast(data.message);
+          await openUnitWordsModal(editingUnitObj._id);
+          await loadVocabUnits();
+        } catch (err) { toast(err.message, 'error'); }
+      });
     }
 
     /* ── Import JSON ── */
@@ -3673,25 +3651,16 @@
     // ═══════════════════════════════════════════════════════
     // WRITING EXAMS
     // ═══════════════════════════════════════════════════════
-    async function loadWritingExams() {
-      try {
-        const res  = await fetch(`${API}/admin/writing-exams`, { headers: authH() });
-        const data = await res.json();
-        const list = data.success ? data.exams : [];
-        document.getElementById('writing-exams-tbody').innerHTML = list.length
-          ? list.map(e => `
-            <tr>
-              <td style="font-weight:600">${escH(e.name)}</td>
-              <td>${e.duration || 60} phút</td>
-              <td><span class="badge ${e.isActive ? 'badge-green' : 'badge-gray'}">${e.isActive ? 'Đang dùng' : 'Đã ẩn'}</span></td>
-              <td style="font-size:12px;color:var(--text3)">${formatDate(e.createdAt)}</td>
-              <td>
-                <button class="btn btn-ghost btn-sm" onclick="openWritingModal('${e._id}')">✏️ Sửa</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteWritingExam('${e._id}')" style="margin-left:4px">✕</button>
-              </td>
-            </tr>`).join('')
-          : '<tr><td colspan="5" class="table-empty">Chưa có đề nào</td></tr>';
-      } catch { toast('Lỗi load đề writing', 'error'); }
+    function confirmAction(message, onConfirm) {
+      const overlay = document.getElementById('modal-confirm-action');
+      document.getElementById('confirm-action-msg').textContent = message;
+      overlay.classList.remove('hidden');
+      const btnOk  = document.getElementById('confirm-action-ok');
+      const btnNo  = document.getElementById('confirm-action-no');
+      const close  = () => overlay.classList.add('hidden');
+      btnOk.onclick  = () => { close(); onConfirm(); };
+      btnNo.onclick  = close;
+      overlay.onclick = (e) => { if (e.target === overlay) close(); };
     }
 
     /* ── Task 1 Pool ── */
@@ -3709,7 +3678,8 @@
               <td style="font-size:12px;color:var(--text3)">${formatDate(t.createdAt)}</td>
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openTask1Modal('${t._id}')">✏️ Sửa</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteTask1('${t._id}')" style="margin-left:4px">✕</button>
+                <button class="btn btn-warning btn-sm" onclick="softDeleteTask1('${t._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
+                <button class="btn btn-danger btn-sm" onclick="hardDeleteTask1('${t._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
               </td>
             </tr>`).join('')
           : '<tr><td colspan="5" class="table-empty">Pool Task 1 đang trống. Thêm câu hỏi để học sinh có thể thi.</td></tr>';
@@ -3730,7 +3700,8 @@
               <td style="font-size:12px;color:var(--text3)">${formatDate(t.createdAt)}</td>
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openTask2Modal('${t._id}')">✏️ Sửa</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteTask2('${t._id}')" style="margin-left:4px">✕</button>
+                <button class="btn btn-warning btn-sm" onclick="softDeleteTask2('${t._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
+                <button class="btn btn-danger btn-sm" onclick="hardDeleteTask2('${t._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
               </td>
             </tr>`).join('')
           : '<tr><td colspan="4" class="table-empty">Pool Task 2 đang trống. Thêm câu hỏi để học sinh có thể thi.</td></tr>';
@@ -3761,60 +3732,6 @@
           }).join('')
           : '<tr><td colspan="6" class="table-empty">Chưa có bài nộp nào</td></tr>';
       } catch { toast('Lỗi load lịch sử writing', 'error'); }
-    }
-
-    let _editingWritingId = null;
-    function openWritingModal(id) {
-      _editingWritingId = id || null;
-      document.getElementById('wm-id').value       = id || '';
-      document.getElementById('wm-name').value     = '';
-      document.getElementById('wm-duration').value = 60;
-
-      if (id) {
-        fetch(`${API}/admin/writing-exams`, { headers: authH() })
-          .then(r => r.json()).then(data => {
-            const exam = (data.exams || []).find(e => e._id === id);
-            if (!exam) return;
-            document.getElementById('wm-name').value     = exam.name || '';
-            document.getElementById('wm-duration').value = exam.duration || 60;
-          });
-      }
-      openModal('modal-writing');
-    }
-
-    async function saveWritingExam() {
-      const btn = document.getElementById('btn-save-writing');
-      btn.disabled = true; btn.textContent = 'Đang lưu...';
-      try {
-        const payload = {
-          name:     document.getElementById('wm-name').value.trim(),
-          duration: Number(document.getElementById('wm-duration').value) || 60
-        };
-        if (!payload.name) { toast('Nhập tên đề', 'error'); return; }
-
-        const id  = document.getElementById('wm-id').value;
-        const url = id ? `${API}/admin/writing-exams/${id}` : `${API}/admin/writing-exams`;
-        const res  = await fetch(url, {
-          method: id ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast(id ? 'Đã cập nhật đề writing' : 'Đã tạo đề writing mới');
-        closeModal('modal-writing');
-        loadWritingExams();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-      finally { btn.disabled = false; btn.textContent = '💾 Lưu'; }
-    }
-
-    async function deleteWritingExam(id) {
-      if (!confirm('Ẩn đề writing này?')) return;
-      try {
-        const res  = await fetch(`${API}/admin/writing-exams/${id}`, { method: 'DELETE', headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã ẩn đề writing');
-        loadWritingExams();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
     /* ── Task 1 Pool modals ── */
@@ -3891,15 +3808,28 @@
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
-    async function deleteTask1(id) {
-      if (!confirm('Ẩn câu hỏi Task 1 này?')) return;
-      try {
-        const res  = await fetch(`${API}/admin/writing-task1/${id}`, { method: 'DELETE', headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã ẩn Task 1');
-        loadTask1Pool();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    async function softDeleteTask1(id) {
+      confirmAction('Ẩn câu hỏi Task 1 này?', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/writing-task1/${id}`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã ẩn Task 1');
+          loadTask1Pool();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+
+    async function hardDeleteTask1(id) {
+      confirmAction('Xóa VĨNH VIỄN Task 1 này? Không thể khôi phục!', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/writing-task1/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn Task 1');
+          loadTask1Pool();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
     }
 
     /* ── Task 2 Pool modals ── */
@@ -3945,15 +3875,28 @@
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
-    async function deleteTask2(id) {
-      if (!confirm('Ẩn câu hỏi Task 2 này?')) return;
-      try {
-        const res  = await fetch(`${API}/admin/writing-task2/${id}`, { method: 'DELETE', headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã ẩn Task 2');
-        loadTask2Pool();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    async function softDeleteTask2(id) {
+      confirmAction('Ẩn câu hỏi Task 2 này?', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/writing-task2/${id}`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã ẩn Task 2');
+          loadTask2Pool();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+
+    async function hardDeleteTask2(id) {
+      confirmAction('Xóa VĨNH VIỄN Task 2 này? Không thể khôi phục!', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/writing-task2/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn Task 2');
+          loadTask2Pool();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
     }
 
     async function viewWritingAttempt(id) {
@@ -4126,17 +4069,18 @@
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
-    async function deleteSpeakingQuestion(id) {
-      if (!confirm('Ẩn câu hỏi này?')) return;
-      try {
-        const res  = await fetch(`${API}/admin/speaking/questions/${id}`, {
-          method: 'DELETE', headers: authH()
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã ẩn câu hỏi');
-        loadSpeakingQuestions();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    function deleteSpeakingQuestion(id) {
+      confirmAction('Ẩn câu hỏi này?', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/speaking/questions/${id}`, {
+            method: 'DELETE', headers: authH()
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã ẩn câu hỏi');
+          loadSpeakingQuestions();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
     }
 
     /* ══════════════════════════════════════════════
@@ -4279,17 +4223,18 @@
       }
     }
 
-    async function deleteSpeakingMaterial(id) {
-      if (!confirm('Ẩn tài liệu này?')) return;
-      try {
-        const res  = await fetch(`${API}/admin/speaking/materials/${id}`, {
-          method: 'DELETE', headers: authH()
-        });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
-        toast('Đã ẩn tài liệu');
-        loadSpeakingMaterials();
-      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    function deleteSpeakingMaterial(id) {
+      confirmAction('Ẩn tài liệu này?', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/speaking/materials/${id}`, {
+            method: 'DELETE', headers: authH()
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã ẩn tài liệu');
+          loadSpeakingMaterials();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
     }
 
   </script>
@@ -4365,34 +4310,6 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('modal-speaking-mat')">Huỷ</button>
         <button class="btn btn-primary" id="smat-save-btn" onclick="saveSpeakingMaterial()">📤 Upload & Lưu</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ MODAL: Tạo / Sửa Writing Exam (simplified – chỉ tên + thời gian) ══ -->
-  <div class="modal-overlay hidden" id="modal-writing">
-    <div class="modal-box" style="width:min(480px,100%)">
-      <div class="modal-header">
-        <h3>Tạo / Sửa đề Writing</h3>
-        <button class="modal-close" onclick="closeModal('modal-writing')">×</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="wm-id" />
-        <div class="form-group">
-          <label>Tên đề *</label>
-          <input class="form-input" id="wm-name" placeholder="VD: Academic Writing Test 1" />
-        </div>
-        <div class="form-group">
-          <label>Thời gian (phút)</label>
-          <input class="form-input" id="wm-duration" type="number" value="60" min="1" />
-        </div>
-        <p style="font-size:12px;color:var(--text3);margin-top:8px">
-          Task 1 &amp; Task 2 được random từ pool khi học sinh vào thi.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeModal('modal-writing')">Huỷ</button>
-        <button class="btn btn-primary" id="btn-save-writing" onclick="saveWritingExam()">💾 Lưu</button>
       </div>
     </div>
   </div>
@@ -4473,6 +4390,22 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" id="btn-download-writing">⬇ Tải về (.txt)</button>
         <button class="btn btn-ghost" onclick="closeModal('modal-writing-view')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Confirm Action ══ -->
+  <div class="modal-overlay hidden" id="modal-confirm-action">
+    <div class="modal-box" style="width:min(400px,100%)">
+      <div class="modal-header">
+        <h3>Xác nhận</h3>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-action-msg" style="margin:0;font-size:15px"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="confirm-action-no">Huỷ</button>
+        <button class="btn btn-danger" id="confirm-action-ok">Xác nhận</button>
       </div>
     </div>
   </div>

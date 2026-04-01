@@ -499,5 +499,5 @@ function openMaterial(m, card) {
 
   placeholder.style.display = 'none';
   frame.classList.add('visible');
-  frame.src = m.pdfUrl;
+  frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
 }
