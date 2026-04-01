@@ -1384,9 +1384,14 @@
               type="number" value="1" min="1" /></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Áp dụng cho bộ đề</label><select class="form-select" id="k-test">
+          <div class="form-group">
+            <label>Áp dụng cho bộ đề</label>
+            <input type="hidden" id="k-type" value="" />
+            <select class="form-select" id="k-test">
               <option value="">Tất cả bộ đề</option>
-            </select></div>
+            </select>
+            <div class="form-hint">Chọn đề → key chỉ dùng cho đề đó. Để trống → key dùng cho tất cả.</div>
+          </div>
           <div class="form-group"><label>Hết hạn sau (ngày)</label><input class="form-input" id="k-expiry" type="number"
               placeholder="Để trống = không hết hạn" min="1" /></div>
         </div>
@@ -2405,8 +2410,7 @@
         const data = await (await fetch(`${API}/admin/tests`, { headers: authH() })).json();
         if (!data.success) return;
         allTests = data.tests; renderTestsTable(data.tests);
-        const sel = document.getElementById('k-test');
-        sel.innerHTML = '<option value="">Tất cả bộ đề</option>' + data.tests.map(t => `<option value="${t._id}">${t.name}</option>`).join('');
+        // Dropdown k-test được populate trong openKeyModal() để tách reading/listening
       } catch { }
     }
     function renderTestsTable(list) {
@@ -2458,7 +2462,14 @@
           const status = !k.isActive ? 'Vô hiệu' : used ? 'Hết lượt' : exp2 ? 'Hết hạn' : 'Còn dùng';
           const cls = !k.isActive || used || exp2 ? 'badge-gray' : 'badge-green';
           return `<tr><td><span class="key-code">${k.key}</span></td>
-        <td>${k.testId?.name || '<span style="color:var(--text3)">Tất cả</span>'}</td>
+        <td>${k.testId?.name
+            ? `${k.testType === 'listening' ? '🎧' : '📖'} ${k.testId.name}`
+            : k.testType === 'listening'
+              ? '<span style="color:var(--blue)">🎧 Tất cả Listening</span>'
+              : k.testType === 'reading'
+                ? '<span style="color:var(--green)">📖 Tất cả Reading</span>'
+                : '<span style="color:var(--text3)">Tất cả</span>'
+          }</td>
         <td><span class="key-uses">${k.currentUses}/${k.maxUses}</span>
           <div class="prog-bar"><div class="prog-bar-fill" style="width:${pct}%;background:${pct >= 100 ? 'var(--accent)' : 'var(--green)'}"></div></div></td>
         <td style="color:var(--text3);font-size:12px">${k.expiresAt ? formatDate(k.expiresAt) : '–'}</td>
@@ -2468,20 +2479,66 @@
         }).join('')
         : '<tr><td colspan="7" class="table-empty">Chưa có key nào</td></tr>';
     }
-    function openKeyModal() {
+    async function openKeyModal() {
       document.getElementById('generated-keys').classList.add('hidden');
-      document.getElementById('k-count').value = 1; document.getElementById('k-maxuses').value = 1; document.getElementById('k-expiry').value = '';
+      document.getElementById('k-count').value = 1;
+      document.getElementById('k-maxuses').value = 1;
+      document.getElementById('k-expiry').value = '';
+      document.getElementById('k-type').value = '';
+      document.getElementById('k-test').innerHTML = '<option value="">Tất cả bộ đề</option>';
+
+      // Load cả reading + listening tests vào dropdown (phân group)
+      try {
+        const [rdRes, lsRes] = await Promise.all([
+          fetch(`${API}/admin/tests`, { headers: authH() }),
+          fetch(`${API}/admin/listening-tests`, { headers: authH() })
+        ]);
+        const rdData = await rdRes.json();
+        const lsData = await lsRes.json();
+        const rdTests = rdData.success ? rdData.tests : [];
+        const lsTests = lsData.success ? lsData.tests : [];
+        const sel = document.getElementById('k-test');
+        if (rdTests.length) {
+          const grp = document.createElement('optgroup');
+          grp.label = '📖 Reading';
+          rdTests.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t._id; opt.dataset.type = 'reading';
+            opt.textContent = t.name;
+            grp.appendChild(opt);
+          });
+          sel.appendChild(grp);
+        }
+        if (lsTests.length) {
+          const grp = document.createElement('optgroup');
+          grp.label = '🎧 Listening';
+          lsTests.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t._id; opt.dataset.type = 'listening';
+            opt.textContent = t.name;
+            grp.appendChild(opt);
+          });
+          sel.appendChild(grp);
+        }
+      } catch { toast('Không load được danh sách đề', 'error'); }
+
       openModal('modal-key');
     }
     async function generateKeys() {
       const btn = document.getElementById('btn-gen-keys');
       btn.disabled = true; btn.textContent = 'Đang tạo...';
       try {
+        const kTestSel = document.getElementById('k-test');
+        const selectedOpt = kTestSel.options[kTestSel.selectedIndex];
+        const testId = kTestSel.value || null;
+        const testType = testId ? (selectedOpt?.dataset?.type || null) : null;
+
         const data = await (await fetch(`${API}/admin/keys/generate`, {
           method: 'POST', headers: authH(), body: JSON.stringify({
             count: Number(document.getElementById('k-count').value) || 1,
             maxUses: Number(document.getElementById('k-maxuses').value) || 1,
-            testId: document.getElementById('k-test').value || null,
+            testId,
+            testType,
             expiryDays: document.getElementById('k-expiry').value ? Number(document.getElementById('k-expiry').value) : null
           })
         })).json();
