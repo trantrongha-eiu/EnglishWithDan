@@ -37,6 +37,35 @@ body {
   border-bottom: 1px solid #e5e7eb;
 }
 
+.site-nav {
+  display: flex;
+  padding: 0 24px;
+  gap: 0;
+}
+
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+
+.site-nav-link:hover {
+  color: #e53935;
+}
+
+.site-nav-link.active {
+  color: #e53935;
+  border-bottom-color: #e53935;
+}
+
 /* ══════════════════════════════════════════════
    SCREEN: LIST
 ══════════════════════════════════════════════ */
