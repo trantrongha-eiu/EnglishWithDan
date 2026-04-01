@@ -95,9 +95,6 @@
             <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
                 🖊 <small>Highlight</small>
             </button>
-            <button class="tool-btn" id="tool-dict-exam" onclick="setToolExam('dict')">
-                🔍 <small>Tra từ</small>
-            </button>
         </div>
 
         <div class="part-tabs" id="part-tabs"></div>
@@ -1009,14 +1006,14 @@
 
         function scrollToQ(num) {
             // Nếu câu thuộc part khác → switch part trước
-            if (!state.isReview) {
-                const sections = state.currentTest?.sections || [];
-                const partIdx = sections.findIndex(s =>
-                    num >= s.questionRange.start && num <= s.questionRange.end
-                );
-                if (partIdx >= 0 && partIdx !== state.partIdx) {
-                    switchPart(partIdx, false);
-                }
+            const sections = state.isReview
+                ? (state.reviewResult?.sections || [])
+                : (state.currentTest?.sections || []);
+            const partIdx = sections.findIndex(s =>
+                num >= s.questionRange.start && num <= s.questionRange.end
+            );
+            if (partIdx >= 0 && partIdx !== state.partIdx) {
+                switchPart(partIdx, state.isReview);
             }
             setTimeout(() => {
                 const el = document.getElementById(`qi-${num}`);
@@ -1115,6 +1112,7 @@
             if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
             el._dictHandler = async e => {
                 if (state.tool !== 'dict') return;
+                if (!state.isReview) return;
                 const sel  = window.getSelection();
                 const word = sel?.toString().trim();
                 if (!word || word.includes(' ') || word.length < 2) return;
