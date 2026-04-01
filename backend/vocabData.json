@@ -3173,383 +3173,47 @@
       }
     ]
   },
-  {
-    "unitNumber": 12,
-    "title": "Foundation quiz",
-    "words": [
-      {
-        "word": "out of",
-        "meaning": "hết, cạn kiệt",
-        "example": "I am out of money, I'm broke.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "out of date / outdated / old-fashioned",
-        "meaning": "lỗi thời",
-        "example": "This phone model is out of date.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "stinky / smelly",
-        "meaning": "hôi, có mùi khó chịu",
-        "example": "Those old socks are really stinky.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "potential",
-        "meaning": "tiềm năng, tiềm ẩn",
-        "example": "The new project has great potential.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "swap",
-        "meaning": "đổi chéo, tráo đổi",
-        "example": "Can we swap seats?",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "swipe",
-        "meaning": "vuốt (màn hình)",
-        "example": "Swipe left to see more photos.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "sweep",
-        "meaning": "quét (nhà)",
-        "example": "Please sweep the floor before you leave.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "mop",
-        "meaning": "lau (sàn)",
-        "example": "I need to mop the kitchen floor.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "model",
-        "meaning": "mẫu, người mẫu",
-        "example": "She is a famous fashion model.",
-        "level": "A1",
-        "difficulty": 1
-      },
-      {
-        "word": "feature",
-        "meaning": "tính năng, đặc điểm",
-        "example": "This car has many safety features.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "fundamental to",
-        "meaning": "thiết yếu đối với",
-        "example": "Water is fundamental to life.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "dry season",
-        "meaning": "mùa khô",
-        "example": "Farmers struggle in the dry season.",
-        "level": "A2",
-        "difficulty": 1
-      },
-      {
-        "word": "groundwater",
-        "meaning": "nước ngầm",
-        "example": "They use groundwater for drinking.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "irrigation",
-        "meaning": "tưới tiêu",
-        "example": "Irrigation helps crops grow in dry areas.",
-        "level": "B2",
-        "difficulty": 3
-      },
-      {
-        "word": "utilitarian",
-        "meaning": "mang tính thực dụng",
-        "example": "The building design is simple and utilitarian.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "architecturally complex",
-        "meaning": "phức tạp về kiến trúc",
-        "example": "The temple is architecturally complex.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "vary widely",
-        "meaning": "thay đổi rất nhiều",
-        "example": "Prices vary widely between shops.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "heyday",
-        "meaning": "thời kỳ hoàng kim",
-        "example": "That city had its heyday long ago.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "place of gathering",
-        "meaning": "nơi tụ họp",
-        "example": "The park is a popular place of gathering.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "dotted around",
-        "meaning": "rải rác khắp nơi",
-        "example": "Houses are dotted around the hill.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "public space",
-        "meaning": "không gian công cộng",
-        "example": "Parks are important public spaces.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "descend",
-        "meaning": "đi xuống",
-        "example": "She descended the stairs slowly.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "water source",
-        "meaning": "nguồn nước",
-        "example": "This river is the main water source.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "water level",
-        "meaning": "mực nước",
-        "example": "The water level is low today.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "vast",
-        "meaning": "rộng lớn",
-        "example": "The desert is vast and empty.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "elaborate",
-        "meaning": "tinh xảo, cầu kỳ",
-        "example": "The design of the palace is very elaborate.",
-        "level": "C1",
-        "difficulty": 2
-      },
-      {
-        "word": "passage",
-        "meaning": "lối đi",
-        "example": "A narrow passage leads inside the tomb.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "pavilion",
-        "meaning": "gian nhà nhỏ",
-        "example": "They rested in a pavilion near the lake.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "shelter",
-        "meaning": "che chắn, trú ẩn",
-        "example": "The roof shelters us from the rain.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "relentless heat",
-        "meaning": "cái nóng gay gắt",
-        "example": "They walked in the relentless heat of the desert.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "intricate",
-        "meaning": "phức tạp, tinh vi",
-        "example": "The pattern on the carpet is intricate.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "sculpture",
-        "meaning": "tượng điêu khắc",
-        "example": "The museum has many ancient sculptures.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "embellish",
-        "meaning": "trang trí, làm đẹp thêm",
-        "example": "The walls are embellished with gold art.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "fall into disuse",
-        "meaning": "không còn được dùng đến",
-        "example": "The old factory fell into disuse years ago.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "derelict",
-        "meaning": "bỏ hoang",
-        "example": "The house is derelict and dangerous.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "divert",
-        "meaning": "chuyển hướng",
-        "example": "Water is diverted for farming purposes.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "drought",
-        "meaning": "hạn hán",
-        "example": "The area suffered a severe drought last year.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "restoration",
-        "meaning": "sự phục hồi, trùng tu",
-        "example": "The castle needs restoration work.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "pristine condition",
-        "meaning": "tình trạng hoàn hảo, nguyên sơ",
-        "example": "The car is in pristine condition.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "survive",
-        "meaning": "sống sót, tồn tại",
-        "example": "The building survived the earthquake.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "devastating",
-        "meaning": "tàn phá nghiêm trọng",
-        "example": "The storm was devastating for the city.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "geometric pattern",
-        "meaning": "hoa văn hình học",
-        "example": "The floor has a complex geometric pattern.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "shrine",
-        "meaning": "đền thờ nhỏ",
-        "example": "The shrine is a very holy place.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "renowned for",
-        "meaning": "nổi tiếng về cái gì",
-        "example": "The city is renowned for its delicious food.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "overlook",
-        "meaning": "nhìn ra / bỏ qua",
-        "example": "The hotel overlooks the beautiful sea.",
-        "level": "B1",
-        "difficulty": 2
-      },
-      {
-        "word": "ornate",
-        "meaning": "trang trí cầu kỳ",
-        "example": "The gate to the palace is very ornate.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "monument",
-        "meaning": "công trình di tích, đài kỷ niệm",
-        "example": "This is a historic monument for the war.",
-        "level": "B1",
-        "difficulty": 1
-      },
-      {
-        "word": "preserve",
-        "meaning": "bảo tồn",
-        "example": "We must preserve our local history.",
-        "level": "B2",
-        "difficulty": 1
-      },
-      {
-        "word": "flock to",
-        "meaning": "đổ xô đến",
-        "example": "Tourists flock to the beach in summer.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "marvel",
-        "meaning": "kỳ quan, điều kỳ diệu",
-        "example": "The bridge is an engineering marvel.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "ingenuity",
-        "meaning": "sự khéo léo, sáng tạo",
-        "example": "Human ingenuity can solve many problems.",
-        "level": "C1",
-        "difficulty": 3
-      },
-      {
-        "word": "gain access to",
-        "meaning": "tiếp cận được cái gì",
-        "example": "It is hard to gain access to the private library.",
-        "level": "B2",
-        "difficulty": 2
-      },
-      {
-        "word": "serve as a reminder of",
-        "meaning": "đóng vai trò như một lời nhắc nhở về",
-        "example": "The monument serves as a reminder of the past.",
-        "level": "B2",
-        "difficulty": 2
-      }
-    ]
-  },
+ {
+  "unitNumber": 12,
+  "title": "foundation quiz",
+  "words": [
+    { "word": "waste time", "meaning": "lãng phí thời gian", "example": "Don't waste time watching too much TV.", "level": "A2", "difficulty": 1 },
+    { "word": "go off", "meaning": "reo, kêu lên (chuông)", "example": "My alarm usually goes off at 7 am.", "level": "B1", "difficulty": 1 },
+    { "word": "deserve", "meaning": "xứng đáng", "example": "You worked hard, you deserve a break.", "level": "B1", "difficulty": 2 },
+    { "word": "to do list", "meaning": "danh sách những việc cần làm", "example": "I always write a to-do list every morning.", "level": "A1", "difficulty": 1 },
+    { "word": "productivity", "meaning": "năng suất, sản lượng", "example": "Taking breaks can actually increase your productivity.", "level": "B2", "difficulty": 2 },
+    { "word": "sensible", "meaning": "hợp lý, khôn ngoan", "example": "The reason sounds sensible and plausible.", "level": "B1", "difficulty": 2 },
+    { "word": "a timer", "meaning": "đồng hồ bấm giờ", "example": "Set a timer for 25 minutes to focus.", "level": "A2", "difficulty": 1 },
+    { "word": "judgement", "meaning": "sự phán đoán, phán quyết", "example": "Trust your own judgement when making decisions.", "level": "B2", "difficulty": 2 },
+    { "word": "common sense", "meaning": "lẽ thường, điều hiển nhiên", "example": "It's just common sense to wear a seatbelt.", "level": "B1", "difficulty": 1 },
+    { "word": "manner", "meaning": "cách cư xử phải phép, thái độ", "example": "He has a very polite manner.", "level": "B1", "difficulty": 2 },
+    { "word": "signal", "meaning": "tín hiệu, ra hiệu", "example": "The red light is a signal to stop.", "level": "B1", "difficulty": 1 },
+    { "word": "merit", "meaning": "xứng đáng, lợi ích (benefit)", "example": "The plan has several merits.", "level": "C1", "difficulty": 3 },
+    { "word": "technique", "meaning": "phương pháp, kỹ thuật", "example": "She has a great technique for playing piano.", "level": "B1", "difficulty": 2 },
+    { "word": "invention", "meaning": "sự phát minh", "example": "The light bulb was a great invention.", "level": "B1", "difficulty": 1 },
+    { "word": "complicated", "meaning": "phức tạp", "example": "The instructions are too complicated to follow.", "level": "B1", "difficulty": 2 },
+    { "word": "break down", "meaning": "chia nhỏ ra (hoặc bị hỏng)", "example": "You should break down big tasks into smaller steps.", "level": "B1", "difficulty": 2 },
+    { "word": "section", "meaning": "phần, đoạn", "example": "This book is divided into five sections.", "level": "A2", "difficulty": 1 },
+    { "word": "time", "meaning": "tính giờ, bấm giờ", "example": "He timed how long it took to finish the race.", "level": "A2", "difficulty": 1 },
+    { "word": "these days / nowadays", "meaning": "dạo này, ngày nay", "example": "These days, everyone uses a smartphone.", "level": "A2", "difficulty": 1 },
+    { "word": "means", "meaning": "phương thức, phương tiện", "example": "Email is a fast means of communication.", "level": "B2", "difficulty": 2 },
+    { "word": "professional", "meaning": "chuyên gia, người có chuyên môn", "example": "You should ask for advice from a professional.", "level": "B1", "difficulty": 1 },
+    { "word": "separate", "meaning": "riêng biệt, tách rời", "example": "Keep the two documents in separate folders.", "level": "B1", "difficulty": 2 },
+    { "word": "separation", "meaning": "sự chia cách, sự phân ly", "example": "The separation of the two countries caused problems.", "level": "B2", "difficulty": 2 },
+    { "word": "stage", "meaning": "giai đoạn hoặc sân khấu", "example": "The project is in its final stage.", "level": "B1", "difficulty": 2 },
+    { "word": "step", "meaning": "bước, bước đi", "example": "Follow these steps to install the app.", "level": "A1", "difficulty": 1 },
+    { "word": "session", "meaning": "phiên làm việc, buổi học", "example": "We had a long training session yesterday.", "level": "B1", "difficulty": 2 },
+    { "word": "tick off", "meaning": "đánh dấu tích (bỏ khỏi danh sách)", "example": "I ticked off the items on my shopping list.", "level": "B1", "difficulty": 2 },
+    { "word": "satisfaction", "meaning": "sự hài lòng", "example": "She looked at her work with satisfaction.", "level": "B2", "difficulty": 2 },
+    { "word": "danger", "meaning": "sự nguy hiểm", "example": "The sign warns of the danger of fire.", "level": "A2", "difficulty": 1 },
+    { "word": "intensive work", "meaning": "công việc chuyên sâu, cường độ cao", "example": "Writing a book requires intensive work.", "level": "C1", "difficulty": 3 },
+    { "word": "effect", "meaning": "sự ảnh hưởng, tác động (danh từ)", "example": "The medicine had a good effect on me.", "level": "B1", "difficulty": 2 },
+    { "word": "affect", "meaning": "ảnh hưởng đến (động từ)", "example": "Stress can affect your health.", "level": "B1", "difficulty": 2 },
+    { "word": "effective", "meaning": "có hiệu quả", "example": "This is a very effective way to learn English.", "level": "B1", "difficulty": 1 },
+    { "word": "productive", "meaning": "có năng suất, hiệu quả", "example": "I had a very productive afternoon.", "level": "B1", "difficulty": 1 },
+    { "word": "sense", "meaning": "cảm giác, ý thức", "example": "A sense of humor is very important.", "level": "B1", "difficulty": 1 }
+  ]
+},
   {
   "unitNumber": 13,
   "title": "lớp 4. 5.(shine)",
