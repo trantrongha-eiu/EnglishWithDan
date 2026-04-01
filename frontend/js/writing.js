@@ -301,11 +301,13 @@ async function submitExam(statusOverride) {
     const data = await apiFetch('/api/writing/submit', {
       method: 'POST',
       body: JSON.stringify({
-        examId:       state.exam._id,
-        task1Answer:  state.answers[1],
-        task2Answer:  state.answers[2],
-        wordCount1:   wc1,
-        wordCount2:   wc2,
+        examId:      state.exam._id,
+        task1Id:     state.exam.task1?._id,
+        task2Id:     state.exam.task2?._id,
+        task1Answer: state.answers[1],
+        task2Answer: state.answers[2],
+        wordCount1:  wc1,
+        wordCount2:  wc2,
         timeTaken,
         status
       })
@@ -405,10 +407,12 @@ async function viewAttempt(id) {
 
     document.getElementById('review-modal-title').textContent = a.examName || 'Xem lại bài làm';
 
-    const exam = a.examId || {};
-    const t1Prompt = exam.task1?.prompt || '';
-    const t2Prompt = exam.task2?.prompt || '';
-    const t1Img    = exam.task1?.imageUrl || '';
+    // Use snapshots (new), fall back to old embedded data for legacy attempts
+    const t1 = a.task1Snapshot || a.examId?.task1 || {};
+    const t2 = a.task2Snapshot || a.examId?.task2 || {};
+    const t1Prompt = t1.prompt || '';
+    const t2Prompt = t2.prompt || '';
+    const t1Img    = t1.imageUrl || '';
 
     document.getElementById('review-modal-body').innerHTML = `
       <div class="review-task-section">
@@ -455,7 +459,8 @@ async function downloadAttemptById(id) {
 }
 
 function doDownload(a) {
-  const exam = a.examId || {};
+  const t1   = a.task1Snapshot || a.examId?.task1 || {};
+  const t2   = a.task2Snapshot || a.examId?.task2 || {};
   const date = new Date(a.submittedAt).toLocaleString('vi-VN');
 
   const lines = [
@@ -468,14 +473,14 @@ function doDownload(a) {
     `────────────────────────────────────────`,
     `TASK 1`,
     `────────────────────────────────────────`,
-    exam.task1?.prompt || '',
+    t1.prompt || '',
     ``,
     a.task1Answer || '',
     ``,
     `────────────────────────────────────────`,
     `TASK 2`,
     `────────────────────────────────────────`,
-    exam.task2?.prompt || '',
+    t2.prompt || '',
     ``,
     a.task2Answer || '',
   ];
