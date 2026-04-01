@@ -365,7 +365,7 @@
         async function loadTestList() {
             try {
                 const res = await fetch(`${API}/listening/tests`, { headers: authH() });
-                const data = await res.json();
+                const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 state.tests = data.tests;
                 renderTestList(data.tests);
@@ -450,6 +450,14 @@
             el.className = `key-msg ${type}`;
         }
 
+        async function safeJson(res) {
+            const text = await res.text();
+            if (text.trimStart().startsWith('<')) {
+                throw new Error('Server đang khởi động, vui lòng thử lại sau 30 giây');
+            }
+            return JSON.parse(text);
+        }
+
         async function verifyKeyAndStart() {
             const key = document.getElementById('key-input').value.trim();
             const btn = document.getElementById('btn-start-key');
@@ -464,7 +472,7 @@
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ key, testId: state.pendingTestId })
                 });
-                const vData = await vRes.json();
+                const vData = await safeJson(vRes);
                 if (!vData.success) {
                     showKeyMsg(vData.message || 'Key không hợp lệ', 'error');
                     btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
@@ -473,7 +481,7 @@
                 // Key hợp lệ → vào thi (tốn lượt)
                 await startTest(state.pendingTestId, key);
             } catch (err) {
-                showKeyMsg('Lỗi kết nối: ' + err.message, 'error');
+                showKeyMsg(err.message, 'error');
                 btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
             }
         }
@@ -487,7 +495,7 @@
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ key })
                 });
-                const data = await res.json();
+                const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 const t = data.test;
                 state.currentTestId = testId;
