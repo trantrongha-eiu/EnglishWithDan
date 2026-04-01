@@ -4,7 +4,7 @@
              matching-options, plain) + legacy questions[] flat array
 ═══════════════════════════════════════════════════════════════════════ */
 
-const API = '';          // same-origin; set to full URL if different host
+const API = 'https://englishwithdan.onrender.com/api';   // backend on Render
 const DURATION = 3600;  // 60 min in seconds
 
 /* ── State ─────────────────────────────────────────────────────────── */
@@ -1070,7 +1070,9 @@ function logout() {
 }
 async function apiFetch(url, opts = {}) {
   const token = localStorage.getItem('token');
-  const res = await fetch(url, {
+  // Prepend API base for relative paths
+  const fullUrl = url.startsWith('/api/') ? API + url.slice(4) : url;
+  const res = await fetch(fullUrl, {
     ...opts,
     headers: {
       'Content-Type': 'application/json',
