@@ -5,6 +5,25 @@
 const API = 'https://englishwithdan.onrender.com';
 
 // ──────────────────────────────────────────────────────
+// Toast notification
+// ──────────────────────────────────────────────────────
+function showToast(message, type = 'info') {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    container.style.cssText = 'position:fixed;top:68px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+    document.body.appendChild(container);
+  }
+  const toast = document.createElement('div');
+  const colors = { info: '#3d8bff', error: '#e53935', success: '#22c55e', warn: '#f59e0b' };
+  toast.style.cssText = `background:#fff;border-left:4px solid ${colors[type]||colors.info};border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ──────────────────────────────────────────────────────
 // Auth helpers
 // ──────────────────────────────────────────────────────
 function getToken() { return localStorage.getItem('token'); }
@@ -121,7 +140,7 @@ async function loadRandomQuestion() {
   try {
     const data = await apiFetch(`/api/speaking/random${qs}`);
     if (!data.question) {
-      alert('Không tìm thấy câu hỏi phù hợp. Thử chọn topic khác.');
+      showToast('Không tìm thấy câu hỏi phù hợp. Thử chọn topic khác.', 'warn');
       return;
     }
     setQuestion(data.question);
@@ -186,7 +205,7 @@ function setupRecognition() {
   state.recognition.onresult = (e) => {
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
-      const t = e.results[i].transcript;
+      const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) finalTranscript += t + ' ';
       else interim += t;
     }
@@ -236,7 +255,7 @@ function setupRecognition() {
 
 function toggleRecord() {
   if (!state.recognition) {
-    alert('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.');
+    showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
     return;
   }
   if (state.isRecording) {
