@@ -564,7 +564,11 @@ router.post('/speaking/materials/upload-pdf', auth, teacherOnly, async (req, res
   try {
     const { pdfBase64 } = req.body;
     if (!pdfBase64) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
-    const result = await cloudinary.uploader.upload(pdfBase64, {
+    // Đảm bảo có data URI prefix để Cloudinary nhận dạng đúng file PDF
+    const fullBase64 = pdfBase64.startsWith('data:')
+      ? pdfBase64
+      : `data:application/pdf;base64,${pdfBase64}`;
+    const result = await cloudinary.uploader.upload(fullBase64, {
       folder: 'speaking-materials',
       resource_type: 'raw'
     });
