@@ -62,8 +62,13 @@
       </select>
 
       <label for="sel-topic">Topic</label>
-      <select class="sp-select" id="sel-topic">
+      <select class="sp-select" id="sel-topic" onchange="loadQuestions()">
         <option value="all">Tất cả</option>
+      </select>
+
+      <label for="sel-question">Câu hỏi</label>
+      <select class="sp-select" id="sel-question" onchange="selectQuestion(this.value)" style="max-width:320px">
+        <option value="">-- Chọn câu hỏi --</option>
       </select>
 
       <button class="btn-random" onclick="loadRandomQuestion()">🔀 Random</button>

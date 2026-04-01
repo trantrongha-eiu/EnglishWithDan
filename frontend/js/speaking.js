@@ -125,6 +125,55 @@ async function loadTopics() {
       sel.appendChild(opt);
     });
   } catch (e) { console.error('loadTopics:', e); }
+  await loadQuestions();
+}
+
+// ── Load questions filtered by part + topic ──
+async function loadQuestions() {
+  const part  = document.getElementById('sel-part').value;
+  const topic = document.getElementById('sel-topic').value;
+  const params = [];
+  if (part  !== 'all') params.push(`part=${part}`);
+  if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
+  const qs = params.length ? '?' + params.join('&') : '';
+
+  const sel = document.getElementById('sel-question');
+  sel.innerHTML = '<option value="">-- Chọn câu hỏi --</option>';
+
+  try {
+    const data = await apiFetch(`/api/speaking/questions${qs}`);
+    (data.questions || []).forEach(q => {
+      const opt = document.createElement('option');
+      opt.value = q._id;
+      const label = q.question.length > 65 ? q.question.slice(0, 62) + '…' : q.question;
+      opt.textContent = `[Part ${q.part}] ${label}`;
+      opt.dataset.q = JSON.stringify(q);
+      sel.appendChild(opt);
+    });
+  } catch (e) { console.error('loadQuestions:', e); }
+}
+
+// ── Select a specific question from dropdown ──
+function selectQuestion(id) {
+  if (!id) return;
+  const opt = document.querySelector(`#sel-question option[value="${id}"]`);
+  if (!opt) return;
+  try {
+    const q = JSON.parse(opt.dataset.q);
+    setQuestion(q);
+    resetPractice();
+  } catch (e) { console.error('selectQuestion:', e); }
+}
+
+// ── Text-to-Speech ──
+function readQuestion(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = 0.85;
+  utter.pitch = 1;
+  window.speechSynthesis.speak(utter);
 }
 
 // ── Load a random question ──
@@ -143,6 +192,9 @@ async function loadRandomQuestion() {
       showToast('Không tìm thấy câu hỏi phù hợp. Thử chọn topic khác.', 'warn');
       return;
     }
+    // Sync dropdown selection
+    const sel = document.getElementById('sel-question');
+    if (sel) sel.value = data.question._id || '';
     setQuestion(data.question);
     resetPractice();
   } catch (e) { console.error('loadRandomQuestion:', e); }
@@ -159,6 +211,7 @@ function setQuestion(q) {
   } else {
     cue.classList.add('hidden');
   }
+  readQuestion(q.question);
 }
 
 function resetPractice() {
