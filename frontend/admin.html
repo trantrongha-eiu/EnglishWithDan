@@ -4172,7 +4172,8 @@
       document.getElementById('smat-title').value   = '';
       document.getElementById('smat-quarter').value = '';
       document.getElementById('smat-topic').value   = '';
-      document.getElementById('smat-file-group').style.display = id ? 'none' : '';
+      document.getElementById('smat-file-group').querySelector('label').textContent = id ? 'Thay thế PDF (tuỳ chọn)' : 'File PDF *';
+      document.getElementById('smat-file').value = '';
       document.getElementById('smat-save-btn').textContent = id ? '💾 Lưu' : '📤 Upload & Lưu';
       document.getElementById('smat-upload-status').style.display = 'none';
       if (id) {
@@ -4204,11 +4205,32 @@
 
       try {
         if (id) {
-          // Update metadata only
+          // Update metadata; optionally replace PDF if new file selected
+          const file = document.getElementById('smat-file').files[0];
+          let updateBody = { title, quarter, topic };
+          if (file) {
+            status.style.display = 'block';
+            status.textContent   = '⬆️ Đang upload PDF mới...';
+            const base64 = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload  = () => resolve(reader.result.split(',')[1]);
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+            const uploadRes  = await fetch(`${API}/admin/speaking/materials/upload-pdf`, {
+              method: 'POST',
+              headers: { ...authH(), 'Content-Type': 'application/json' },
+              body: JSON.stringify({ pdfBase64: base64 })
+            });
+            const uploadData = await uploadRes.json();
+            if (!uploadData.success) throw new Error(uploadData.message);
+            updateBody.pdfUrl = uploadData.url;
+            status.textContent = '💾 Đang lưu...';
+          }
           const res  = await fetch(`${API}/admin/speaking/materials/${id}`, {
             method: 'PUT',
             headers: { ...authH(), 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, quarter, topic })
+            body: JSON.stringify(updateBody)
           });
           const data = await res.json();
           if (!data.success) throw new Error(data.message);
