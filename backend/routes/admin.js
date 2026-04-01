@@ -5,7 +5,9 @@ const cloudinary   = require('cloudinary').v2;
 const Passage      = require('../models/Passage');
 const ReadingTest  = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
-const WritingExam  = require('../models/WritingExam');
+const WritingExam    = require('../models/WritingExam');
+const WritingTask1   = require('../models/WritingTask1');
+const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
@@ -381,9 +383,116 @@ router.get('/writing-attempt/:id', auth, teacherOnly, async (req, res) => {
   try {
     const attempt = await WritingAttempt.findById(req.params.id)
       .populate('userId', 'username firstName lastName')
-      .populate('examId', 'name task1 task2');
+      .populate('examId', 'name');
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// WRITING TASK 1 POOL
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/writing-task1
+router.get('/writing-task1', auth, teacherOnly, async (req, res) => {
+  try {
+    const tasks = await WritingTask1.find().sort({ createdAt: -1 });
+    res.json({ success: true, tasks });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing-task1/upload-image
+router.post('/writing-task1/upload-image', auth, teacherOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+    const result = await cloudinary.uploader.upload(imageBase64, {
+      folder: 'writing-tasks',
+      resource_type: 'image'
+    });
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing-task1
+router.post('/writing-task1', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = new WritingTask1(req.body);
+    await task.save();
+    res.status(201).json({ success: true, task });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/writing-task1/:id
+router.put('/writing-task1/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = await WritingTask1.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, task });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-task1/:id  (soft delete)
+router.delete('/writing-task1/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingTask1.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn câu hỏi Task 1' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// WRITING TASK 2 POOL
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/writing-task2
+router.get('/writing-task2', auth, teacherOnly, async (req, res) => {
+  try {
+    const tasks = await WritingTask2.find().sort({ createdAt: -1 });
+    res.json({ success: true, tasks });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing-task2
+router.post('/writing-task2', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = new WritingTask2(req.body);
+    await task.save();
+    res.status(201).json({ success: true, task });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/writing-task2/:id
+router.put('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = await WritingTask2.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, task });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-task2/:id  (soft delete)
+router.delete('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingTask2.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn câu hỏi Task 2' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -14,6 +14,21 @@ const WritingAttemptSchema = new mongoose.Schema({
   },
   examName: { type: String, default: '' },  // snapshot tên đề
 
+  // Task references (pool-based)
+  task1Id: { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask1' },
+  task2Id: { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask2' },
+
+  // Snapshots – lưu nội dung tại thời điểm thi để history luôn đúng
+  task1Snapshot: {
+    imageUrl:     { type: String, default: '' },
+    instructions: { type: String, default: '' },
+    prompt:       { type: String, default: '' }
+  },
+  task2Snapshot: {
+    instructions: { type: String, default: '' },
+    prompt:       { type: String, default: '' }
+  },
+
   task1Answer: { type: String, default: '' },
   task2Answer: { type: String, default: '' },
   wordCount1:  { type: Number, default: 0 },
