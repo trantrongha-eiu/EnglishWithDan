@@ -452,6 +452,16 @@ router.delete('/writing-task1/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// DELETE /api/admin/writing-task1/:id/permanent  (hard delete)
+router.delete('/writing-task1/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingTask1.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn Task 1' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ══════════════════════════════════════════════════
 // WRITING TASK 2 POOL
 // ══════════════════════════════════════════════════
@@ -493,6 +503,16 @@ router.delete('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
   try {
     await WritingTask2.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: 'Đã ẩn câu hỏi Task 2' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-task2/:id/permanent  (hard delete)
+router.delete('/writing-task2/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingTask2.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn Task 2' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

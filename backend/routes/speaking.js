@@ -94,26 +94,38 @@ Rules:
 - band_estimate as a range like "5.5-6.0"
 - Be encouraging but honest`;
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://englishwithdan.onrender.com',
-        'X-Title': 'EnglishWithDan'
-      },
-      body: JSON.stringify({
-        model: 'mistralai/mistral-7b-instruct:free',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.3,
-        max_tokens: 600
-      })
-    });
+    const models = [
+      'meta-llama/llama-3.1-8b-instruct:free',
+      'mistralai/mistral-nemo:free',
+      'mistralai/mistral-7b-instruct:free'
+    ];
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || '';
+    let content = '';
+    for (const model of models) {
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENROUTER_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://englishwithdan.onrender.com',
+            'X-Title': 'EnglishWithDan'
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'user', content: prompt }],
+            temperature: 0.3,
+            max_tokens: 700,
+            response_format: { type: 'json_object' }
+          })
+        });
+        const data = await response.json();
+        content = data.choices?.[0]?.message?.content || '';
+        if (content && content.includes('"corrected"')) break;
+      } catch { /* try next model */ }
+    }
 
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    const jsonMatch = content.match(/\{[\s\S]*?\}/s) || content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       try {
         const feedback = JSON.parse(jsonMatch[0]);
@@ -123,7 +135,7 @@ Rules:
 
     res.json({
       success: true,
-      feedback: { corrected: content, errors: [], tips: [], band_estimate: null }
+      feedback: { corrected: content || transcript, errors: [], tips: [], band_estimate: null }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
