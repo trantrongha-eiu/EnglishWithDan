@@ -30,8 +30,9 @@ app.use('/api/vocabbook', require('./routes/vocabBook'));
 app.use('/api/reading', require('./routes/reading')); 
 app.use('/api/admin', require('./routes/admin'));      
 app.use('/api/listening', require('./routes/listening'));
-app.use('/api/writing', require('./routes/writing'));
-app.use('/api/history', require('./routes/history'));
+app.use('/api/writing',  require('./routes/writing'));
+app.use('/api/speaking', require('./routes/speaking'));
+app.use('/api/history',  require('./routes/history'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

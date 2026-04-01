@@ -7,6 +7,8 @@ const ReadingTest  = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
 const WritingExam  = require('../models/WritingExam');
 const WritingAttempt = require('../models/WritingAttempt');
+const SpeakingQuestion = require('../models/SpeakingQuestion');
+const SpeakingMaterial = require('../models/SpeakingMaterial');
 const AccessKey    = require('../models/AccessKey');
 const TestAttempt  = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -382,6 +384,114 @@ router.get('/writing-attempt/:id', auth, teacherOnly, async (req, res) => {
       .populate('examId', 'name task1 task2');
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// SPEAKING – QUESTIONS
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/speaking/questions
+router.get('/speaking/questions', auth, teacherOnly, async (req, res) => {
+  try {
+    const questions = await SpeakingQuestion.find().sort({ topic: 1, part: 1, createdAt: -1 });
+    res.json({ success: true, questions });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/speaking/questions
+router.post('/speaking/questions', auth, teacherOnly, async (req, res) => {
+  try {
+    const q = new SpeakingQuestion(req.body);
+    await q.save();
+    res.status(201).json({ success: true, question: q });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/speaking/questions/:id
+router.put('/speaking/questions/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const q = await SpeakingQuestion.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!q) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, question: q });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/speaking/questions/:id  (soft delete)
+router.delete('/speaking/questions/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await SpeakingQuestion.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn câu hỏi' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// SPEAKING – MATERIALS (PDF)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/speaking/materials
+router.get('/speaking/materials', auth, teacherOnly, async (req, res) => {
+  try {
+    const materials = await SpeakingMaterial.find().sort({ createdAt: -1 });
+    res.json({ success: true, materials });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/speaking/materials/upload-pdf
+// Body: { pdfBase64 }
+router.post('/speaking/materials/upload-pdf', auth, teacherOnly, async (req, res) => {
+  try {
+    const { pdfBase64 } = req.body;
+    if (!pdfBase64) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
+    const result = await cloudinary.uploader.upload(pdfBase64, {
+      folder: 'speaking-materials',
+      resource_type: 'raw'
+    });
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/speaking/materials
+router.post('/speaking/materials', auth, teacherOnly, async (req, res) => {
+  try {
+    const m = new SpeakingMaterial(req.body);
+    await m.save();
+    res.status(201).json({ success: true, material: m });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/speaking/materials/:id
+router.put('/speaking/materials/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const m = await SpeakingMaterial.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!m) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, material: m });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/speaking/materials/:id  (soft delete)
+router.delete('/speaking/materials/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await SpeakingMaterial.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn tài liệu' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
