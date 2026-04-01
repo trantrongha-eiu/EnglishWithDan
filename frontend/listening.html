@@ -453,7 +453,7 @@
         async function safeJson(res) {
             const text = await res.text();
             if (text.trimStart().startsWith('<')) {
-                throw new Error('Server đang khởi động, vui lòng thử lại sau 30 giây');
+                throw new Error(`HTTP ${res.status} – URL: ${res.url} – Response: ${text.slice(0, 120)}`);
             }
             return JSON.parse(text);
         }
