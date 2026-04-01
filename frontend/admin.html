@@ -999,6 +999,9 @@
     <a class="nav-item" onclick="switchTab('listening',event)" href="#">
       <span class="nav-icon">🎧</span> Đề nghe
     </a>
+    <a class="nav-item" onclick="switchTab('writing',event)" href="#">
+      <span class="nav-icon">✏️</span> Đề viết
+    </a>
 
     <span class="nav-section-label">Học sinh</span>
     <a class="nav-item" onclick="switchTab('keys',event)" href="#">
@@ -1276,6 +1279,52 @@
                 <tr>
                   <td colspan="9" class="table-empty">Đang tải...</td>
                 </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB: WRITING ─── -->
+        <div id="tab-writing">
+          <div class="section-header">
+            <span class="section-title">Quản lý đề Writing</span>
+            <button class="btn btn-primary btn-sm" onclick="openWritingModal()">＋ Tạo đề mới</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên đề</th>
+                  <th>Task 1 (ảnh)</th>
+                  <th>Thời gian</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:160px"></th>
+                </tr>
+              </thead>
+              <tbody id="writing-exams-tbody">
+                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-header" style="margin-top:32px">
+            <span class="section-title">Lịch sử nộp bài Writing</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th>Đề thi</th>
+                  <th>Task 1</th>
+                  <th>Task 2</th>
+                  <th>Ngày nộp</th>
+                  <th style="width:140px"></th>
+                </tr>
+              </thead>
+              <tbody id="writing-history-tbody">
+                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1705,12 +1754,13 @@
       const titles = {
         dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
         vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
-        listening: 'Đề nghe (Listening)'
+        listening: 'Đề nghe (Listening)', writing: 'Đề viết (Writing)'
       };
       document.getElementById('topbar-title').textContent = titles[tab] || tab;
       // Load lazy khi chuyển tab
       if (tab === 'vocab') loadVocabUnits();
       if (tab === 'listening') loadListeningTests();
+      if (tab === 'writing') { loadWritingExams(); loadWritingHistory(); }
     }
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
@@ -2460,12 +2510,14 @@
           return `<tr><td><span class="key-code">${k.key}</span></td>
         <td>
   ${k.testId?.name
-              ? `${k.testType === 'listening' ? '🎧' : '📖'} ${k.testId.name}`
+              ? `${k.testType === 'listening' ? '🎧' : k.testType === 'writing' ? '✏️' : '📖'} ${k.testId.name}`
               : k.testType === 'listening'
                 ? '<span style="color:var(--blue)">🎧 Tất cả Listening</span>'
                 : k.testType === 'reading'
                   ? '<span style="color:var(--green)">📖 Tất cả Reading</span>'
-                  : '<span style="color:var(--text3)">Tất cả</span>'
+                  : k.testType === 'writing'
+                    ? '<span style="color:var(--purple)">✏️ Tất cả Writing</span>'
+                    : '<span style="color:var(--text3)">Tất cả</span>'
             }
 </td>
         <td><span class="key-uses">${k.currentUses}/${k.maxUses}</span>
@@ -2485,17 +2537,20 @@
       document.getElementById('k-type').value = '';
       document.getElementById('k-test').innerHTML = '<option value="">Tất cả bộ đề</option>';
 
-      // Load cả reading + listening tests vào dropdown
+      // Load reading + listening + writing tests vào dropdown
       try {
-        const [rdRes, lsRes] = await Promise.all([
+        const [rdRes, lsRes, wrRes] = await Promise.all([
           fetch(`${API}/admin/tests`, { headers: authH() }),
-          fetch(`${API}/admin/listening-tests`, { headers: authH() })
+          fetch(`${API}/admin/listening-tests`, { headers: authH() }),
+          fetch(`${API}/admin/writing-tests`, { headers: authH() })
         ]);
         const rdData = await rdRes.json();
         const lsData = await lsRes.json();
+        const wrData = await wrRes.json();
 
         const rdTests = rdData.success ? rdData.tests : [];
         const lsTests = lsData.success ? lsData.tests : [];
+        const wrTests = wrData.success ? wrData.exams : [];
 
         const sel = document.getElementById('k-test');
         if (rdTests.length) {
@@ -2515,6 +2570,17 @@
           lsTests.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t._id; opt.dataset.type = 'listening';
+            opt.textContent = t.name;
+            grp.appendChild(opt);
+          });
+          sel.appendChild(grp);
+        }
+        if (wrTests.length) {
+          const grp = document.createElement('optgroup');
+          grp.label = '✏️ Writing';
+          wrTests.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t._id; opt.dataset.type = 'writing';
             opt.textContent = t.name;
             grp.appendChild(opt);
           });
@@ -3494,7 +3560,334 @@
       finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
     }
 
+    // ═══════════════════════════════════════════════════════
+    // WRITING EXAMS
+    // ═══════════════════════════════════════════════════════
+    async function loadWritingExams() {
+      try {
+        const res  = await fetch(`${API}/admin/writing-exams`, { headers: authH() });
+        const data = await res.json();
+        const list = data.success ? data.exams : [];
+        document.getElementById('writing-exams-tbody').innerHTML = list.length
+          ? list.map(e => `
+            <tr>
+              <td style="font-weight:600">${escH(e.name)}</td>
+              <td>${e.task1?.imageUrl
+                ? `<a href="${escH(e.task1.imageUrl)}" target="_blank" style="color:var(--blue);font-size:12px">🖼 Xem ảnh</a>`
+                : '<span style="color:var(--text3);font-size:12px">Không có</span>'}</td>
+              <td>${e.duration || 60} phút</td>
+              <td><span class="badge ${e.isActive ? 'badge-green' : 'badge-gray'}">${e.isActive ? 'Đang dùng' : 'Đã ẩn'}</span></td>
+              <td style="font-size:12px;color:var(--text3)">${formatDate(e.createdAt)}</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" onclick="openWritingModal('${e._id}')">✏️ Sửa</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteWritingExam('${e._id}')" style="margin-left:4px">✕</button>
+              </td>
+            </tr>`).join('')
+          : '<tr><td colspan="6" class="table-empty">Chưa có đề nào</td></tr>';
+      } catch { toast('Lỗi load đề writing', 'error'); }
+    }
+
+    async function loadWritingHistory() {
+      try {
+        const res  = await fetch(`${API}/admin/writing-history`, { headers: authH() });
+        const data = await res.json();
+        const list = data.success ? data.attempts : [];
+        document.getElementById('writing-history-tbody').innerHTML = list.length
+          ? list.map(a => {
+            const u = a.userId || {};
+            const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '–');
+            const date = formatDate(a.submittedAt);
+            return `<tr>
+              <td>${escH(name)}</td>
+              <td>${escH(a.examName || '–')}</td>
+              <td><span style="background:#eff6ff;color:#1d4ed8;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${a.wordCount1 || 0} từ</span></td>
+              <td><span style="background:#eff6ff;color:#1d4ed8;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${a.wordCount2 || 0} từ</span></td>
+              <td style="font-size:12px;color:var(--text3)">${date}</td>
+              <td>
+                <button class="btn btn-ghost btn-sm" onclick="viewWritingAttempt('${a._id}')">👁 Xem</button>
+                <button class="btn btn-ghost btn-sm" onclick="downloadWritingAttempt('${a._id}')" style="margin-left:4px">⬇</button>
+              </td>
+            </tr>`;
+          }).join('')
+          : '<tr><td colspan="6" class="table-empty">Chưa có bài nộp nào</td></tr>';
+      } catch { toast('Lỗi load lịch sử writing', 'error'); }
+    }
+
+    let _editingWritingId = null;
+    function openWritingModal(id) {
+      _editingWritingId = id || null;
+      document.getElementById('wm-id').value = id || '';
+      document.getElementById('wm-name').value = '';
+      document.getElementById('wm-duration').value = 60;
+      document.getElementById('wm-t1-instructions').value = 'You should spend about 20 minutes on this task. Write at least 150 words.';
+      document.getElementById('wm-t1-prompt').value = '';
+      document.getElementById('wm-t1-image').value = '';
+      document.getElementById('wm-t2-instructions').value = 'You should spend about 40 minutes on this task. Write at least 250 words.';
+      document.getElementById('wm-t2-prompt').value = '';
+      document.getElementById('wm-img-preview').style.display = 'none';
+
+      if (id) {
+        fetch(`${API}/admin/writing-exams`, { headers: authH() })
+          .then(r => r.json()).then(data => {
+            const exam = (data.exams || []).find(e => e._id === id);
+            if (!exam) return;
+            document.getElementById('wm-name').value = exam.name || '';
+            document.getElementById('wm-duration').value = exam.duration || 60;
+            document.getElementById('wm-t1-instructions').value = exam.task1?.instructions || '';
+            document.getElementById('wm-t1-prompt').value = exam.task1?.prompt || '';
+            document.getElementById('wm-t1-image').value = exam.task1?.imageUrl || '';
+            document.getElementById('wm-t2-instructions').value = exam.task2?.instructions || '';
+            document.getElementById('wm-t2-prompt').value = exam.task2?.prompt || '';
+            if (exam.task1?.imageUrl) {
+              const img = document.getElementById('wm-img-preview');
+              img.src = exam.task1.imageUrl;
+              img.style.display = 'block';
+            }
+          });
+      }
+      openModal('modal-writing');
+    }
+
+    async function uploadWritingImage() {
+      const file = document.getElementById('wm-img-file').files[0];
+      if (!file) { toast('Chọn ảnh trước', 'error'); return; }
+      const btn = document.getElementById('btn-upload-wimg');
+      btn.disabled = true; btn.textContent = 'Đang upload...';
+      try {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target.result;
+          const res  = await fetch(`${API}/admin/writing-exams/upload-image`, {
+            method: 'POST', headers: authH(), body: JSON.stringify({ imageBase64: base64 })
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          document.getElementById('wm-t1-image').value = data.url;
+          const img = document.getElementById('wm-img-preview');
+          img.src = data.url; img.style.display = 'block';
+          toast('Upload ảnh thành công!');
+        };
+        reader.readAsDataURL(file);
+      } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
+    }
+
+    async function saveWritingExam() {
+      const btn = document.getElementById('btn-save-writing');
+      btn.disabled = true; btn.textContent = 'Đang lưu...';
+      try {
+        const payload = {
+          name:     document.getElementById('wm-name').value.trim(),
+          duration: Number(document.getElementById('wm-duration').value) || 60,
+          task1: {
+            instructions: document.getElementById('wm-t1-instructions').value.trim(),
+            prompt:       document.getElementById('wm-t1-prompt').value.trim(),
+            imageUrl:     document.getElementById('wm-t1-image').value.trim()
+          },
+          task2: {
+            instructions: document.getElementById('wm-t2-instructions').value.trim(),
+            prompt:       document.getElementById('wm-t2-prompt').value.trim()
+          }
+        };
+        if (!payload.name) { toast('Nhập tên đề', 'error'); return; }
+
+        const id  = document.getElementById('wm-id').value;
+        const url = id ? `${API}/admin/writing-exams/${id}` : `${API}/admin/writing-exams`;
+        const res  = await fetch(url, {
+          method: id ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        toast(id ? 'Đã cập nhật đề writing' : 'Đã tạo đề writing mới');
+        closeModal('modal-writing');
+        loadWritingExams();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = '💾 Lưu'; }
+    }
+
+    async function deleteWritingExam(id) {
+      if (!confirm('Ẩn đề writing này?')) return;
+      try {
+        const res  = await fetch(`${API}/admin/writing-exams/${id}`, { method: 'DELETE', headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        toast('Đã ẩn đề writing');
+        loadWritingExams();
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    async function viewWritingAttempt(id) {
+      try {
+        const res  = await fetch(`${API}/admin/writing-attempt/${id}`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        const a = data.attempt;
+        const u = a.userId || {};
+        const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
+        const exam = a.examId || {};
+        const html = `
+          <div style="margin-bottom:14px">
+            <strong>${escH(a.examName || '')}</strong> – ${escH(name)}<br/>
+            <small style="color:var(--text3)">${formatDate(a.submittedAt)}</small>
+          </div>
+          <div style="margin-bottom:20px">
+            <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
+              TASK 1 – ${a.wordCount1 || 0} từ
+            </div>
+            ${exam.task1?.imageUrl ? `<img src="${escH(exam.task1.imageUrl)}" style="max-width:100%;border-radius:6px;margin-bottom:8px">` : ''}
+            ${exam.task1?.prompt   ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(exam.task1.prompt)}</div>` : ''}
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task1Answer || '(trống)')}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
+              TASK 2 – ${a.wordCount2 || 0} từ
+            </div>
+            ${exam.task2?.prompt ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(exam.task2.prompt)}</div>` : ''}
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task2Answer || '(trống)')}</div>
+          </div>
+        `;
+        document.getElementById('writing-view-body').innerHTML = html;
+        document.getElementById('writing-view-name').textContent = `${name} – ${a.examName || ''}`;
+        document.getElementById('btn-download-writing').onclick = () => downloadWritingAttemptData(a);
+        openModal('modal-writing-view');
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    async function downloadWritingAttempt(id) {
+      try {
+        const res  = await fetch(`${API}/admin/writing-attempt/${id}`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        downloadWritingAttemptData(data.attempt);
+      } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    function downloadWritingAttemptData(a) {
+      const u    = a.userId || {};
+      const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
+      const exam = a.examId || {};
+      const date = formatDate(a.submittedAt);
+      const lines = [
+        `ENGLISH WITH DAN – WRITING SUBMISSION`,
+        `========================================`,
+        `Học sinh: ${name}`,
+        `Đề: ${a.examName || ''}`,
+        `Ngày nộp: ${date}`,
+        `Task 1: ${a.wordCount1 || 0} từ   |   Task 2: ${a.wordCount2 || 0} từ`,
+        ``,
+        `────────────────────────────────────────`,
+        `TASK 1`,
+        `────────────────────────────────────────`,
+        exam.task1?.prompt || '',
+        ``,
+        a.task1Answer || '',
+        ``,
+        `────────────────────────────────────────`,
+        `TASK 2`,
+        `────────────────────────────────────────`,
+        exam.task2?.prompt || '',
+        ``,
+        a.task2Answer || '',
+      ];
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `writing_${name.replace(/\s+/g,'_')}_${(a.examName||'').replace(/\s+/g,'_')}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function escH(s) {
+      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
   </script>
+
+  <!-- ══ MODAL: Tạo / Sửa Writing Exam ══ -->
+  <div class="modal-overlay hidden" id="modal-writing">
+    <div class="modal-box modal-lg" style="width:min(820px,100%)">
+      <div class="modal-header">
+        <h3>Tạo / Sửa đề Writing</h3>
+        <button class="modal-close" onclick="closeModal('modal-writing')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="wm-id" />
+
+        <div class="form-row" style="grid-template-columns:2fr 1fr;gap:12px">
+          <div class="form-group">
+            <label>Tên đề *</label>
+            <input class="form-input" id="wm-name" placeholder="VD: Academic Writing Test 1" />
+          </div>
+          <div class="form-group">
+            <label>Thời gian (phút)</label>
+            <input class="form-input" id="wm-duration" type="number" value="60" min="1" />
+          </div>
+        </div>
+
+        <!-- TASK 1 -->
+        <div style="margin:14px 0 8px;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);padding-top:14px">
+          Task 1
+        </div>
+        <div class="form-group">
+          <label>Hướng dẫn Task 1</label>
+          <input class="form-input" id="wm-t1-instructions"
+            value="You should spend about 20 minutes on this task. Write at least 150 words." />
+        </div>
+        <div class="form-group">
+          <label>Đề bài Task 1 (mô tả biểu đồ / hình vẽ)</label>
+          <textarea class="form-textarea" id="wm-t1-prompt" rows="4"
+            placeholder="Describe the information in the chart..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Ảnh Task 1 (URL hoặc upload)</label>
+          <input class="form-input" id="wm-t1-image" placeholder="https://..." style="margin-bottom:8px" />
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input type="file" id="wm-img-file" accept="image/*" style="font-size:13px" />
+            <button class="btn btn-ghost btn-sm" id="btn-upload-wimg" onclick="uploadWritingImage()">📤 Upload ảnh</button>
+          </div>
+          <img id="wm-img-preview" style="display:none;max-width:100%;max-height:200px;border-radius:6px;margin-top:10px;border:1px solid var(--border)" />
+        </div>
+
+        <!-- TASK 2 -->
+        <div style="margin:14px 0 8px;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;border-top:1px solid var(--border);padding-top:14px">
+          Task 2
+        </div>
+        <div class="form-group">
+          <label>Hướng dẫn Task 2</label>
+          <input class="form-input" id="wm-t2-instructions"
+            value="You should spend about 40 minutes on this task. Write at least 250 words." />
+        </div>
+        <div class="form-group">
+          <label>Đề bài Task 2 (essay question) *</label>
+          <textarea class="form-textarea" id="wm-t2-prompt" rows="4"
+            placeholder="The average standard of people's health is likely to be lower in the future than it is now.&#10;&#10;To what extent do you agree or disagree with this statement?&#10;&#10;Give reasons for your answer and include any relevant examples from your own knowledge or experience."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-writing')">Huỷ</button>
+        <button class="btn btn-primary" id="btn-save-writing" onclick="saveWritingExam()">💾 Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Xem bài Writing của học sinh ══ -->
+  <div class="modal-overlay hidden" id="modal-writing-view">
+    <div class="modal-box modal-lg" style="width:min(860px,100%);max-height:90vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h3 id="writing-view-name">Xem bài Writing</h3>
+        <button class="modal-close" onclick="closeModal('modal-writing-view')">×</button>
+      </div>
+      <div class="modal-body" id="writing-view-body" style="overflow-y:auto;flex:1">
+        <div style="color:var(--text3);text-align:center;padding:40px">Đang tải...</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btn-download-writing">⬇ Tải về (.txt)</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-writing-view')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

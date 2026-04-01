@@ -1,58 +1,238 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Writing Practice</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="writing.css" />
 </head>
-
 <body>
-<header
-        style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
-        <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
-            <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-            <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-            <button onclick="logout()"
-                style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
-                🚪 Đăng xuất
-            </button>
-        </div>
-    </header>
 
-    <nav style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px">
-        <ul style="display:flex;gap:0;list-style:none;margin:0;padding:0">
-            <li><a href="reading.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📖
-                    Reading</a></li>
-            <li><a href="listening.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎧
-                    Listening</a></li>
-            <li><a href="writing.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#e53935;text-decoration:none;border-bottom:2px solid #e53935">✏️
-                    Writing</a></li>
-            <li><a href="speaking.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">🎤
-                    Speaking</a></li>
-            <li><a href="dashboard.html"
-                    style="display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;text-decoration:none;border-bottom:2px solid transparent">📚
-                    Vocab</a></li>
-        </ul>
-    </nav>
-
-    <div class="container">
-        <h2>Writing Practice</h2>
-        <p>Chức năng đang phát triển...</p>
-        <div id="test"></div>
-        <button onclick="submitTest()">Submit</button>
-        <p id="result"></p>
-
-        <script src="js/writing.js"></script>
-
+<!-- ═══════════════════════════════════════════
+     SCREEN 1 – ENTER KEY
+═══════════════════════════════════════════ -->
+<div id="screen-key" class="screen active">
+  <header class="main-header">
+    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
+    <div class="header-right">
+      <span id="user-name-key">👋 Xin chào</span>
+      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
     </div>
+  </header>
 
+  <nav class="skill-tabs-bar">
+    <div class="site-nav">
+      <a href="reading.html"   class="site-nav-link">📖 Reading</a>
+      <a href="listening.html" class="site-nav-link">🎧 Listening</a>
+      <a href="writing.html"   class="site-nav-link active">✏️ Writing</a>
+      <a href="speaking.html"  class="site-nav-link">🎤 Speaking</a>
+      <a href="dashboard.html" class="site-nav-link">📚 Vocab</a>
+    </div>
+  </nav>
+
+  <div class="key-screen-body">
+    <div class="key-card">
+      <div class="key-card-icon">✏️</div>
+      <h2>Writing Practice</h2>
+      <p>Nhập mã truy cập do giáo viên cung cấp để bắt đầu bài thi</p>
+      <input
+        type="text"
+        id="key-input"
+        class="key-input"
+        placeholder="XXXX-XXXX"
+        maxlength="9"
+        oninput="formatKey(this)"
+        onkeydown="if(event.key==='Enter') startExam()"
+      />
+      <button class="btn-start" id="btn-start" onclick="startExam()">Bắt đầu →</button>
+      <p class="error-msg" id="key-error"></p>
+      <div style="margin-top:20px;border-top:1px solid #f0f0f0;padding-top:16px">
+        <button class="btn-secondary" style="font-size:13px" onclick="showScreen('screen-history');loadHistory()">
+          📋 Xem lịch sử làm bài
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 2 – EXAM
+═══════════════════════════════════════════ -->
+<div id="screen-exam" class="screen">
+  <!-- Top bar -->
+  <div class="exam-topbar">
+    <div class="exam-topbar-left" id="exam-candidate"></div>
+    <div class="exam-topbar-center" id="exam-timer">
+      <span>⏱</span>
+      <span id="timer-display">60:00</span>
+    </div>
+    <div class="exam-topbar-right">
+      <button class="exam-topbar-btn" onclick="toggleHideTimer()" id="btn-hide-timer">Hide</button>
+      <button class="exam-topbar-btn" onclick="confirmSubmit()">Submit ✓</button>
+    </div>
+  </div>
+
+  <!-- Task title bar -->
+  <div class="task-titlebar">
+    <strong id="task-title-label">Academic Writing Part 1</strong>
+    <p id="task-instructions-label"></p>
+  </div>
+
+  <!-- Split body -->
+  <div class="exam-body">
+    <div class="exam-left" id="exam-left-panel">
+      <!-- Populated by JS: image + prompt (task1) or text prompt (task2) -->
+    </div>
+    <div class="exam-right">
+      <textarea
+        class="answer-textarea"
+        id="answer-textarea"
+        placeholder="Write your answer here..."
+        spellcheck="true"
+        oninput="onAnswerInput()"
+      ></textarea>
+      <div class="word-count-bar">
+        Word Count: <strong id="word-count" style="margin-left:4px;color:#111">0</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer nav -->
+  <div class="exam-footer">
+    <label class="review-label">
+      <input type="checkbox" id="review-check" onchange="toggleFlag()" />
+      Review
+    </label>
+    <div class="task-nav-btns" id="task-nav-btns">
+      <button class="task-nav-btn active" id="btn-task-1" onclick="switchTask(1)">1</button>
+      <button class="task-nav-btn"        id="btn-task-2" onclick="switchTask(2)">2</button>
+    </div>
+    <div class="footer-spacer"></div>
+    <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous">&#9664;</button>
+    <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next">&#9654;</button>
+    <button class="btn-submit-exam" onclick="confirmSubmit()">Submit</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 3 – DONE
+═══════════════════════════════════════════ -->
+<div id="screen-done" class="screen">
+  <header class="main-header">
+    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
+    <div class="header-right">
+      <span id="user-name-done">👋 Xin chào</span>
+      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+    </div>
+  </header>
+  <nav class="skill-tabs-bar">
+    <div class="site-nav">
+      <a href="reading.html"   class="site-nav-link">📖 Reading</a>
+      <a href="listening.html" class="site-nav-link">🎧 Listening</a>
+      <a href="writing.html"   class="site-nav-link active">✏️ Writing</a>
+      <a href="speaking.html"  class="site-nav-link">🎤 Speaking</a>
+      <a href="dashboard.html" class="site-nav-link">📚 Vocab</a>
+    </div>
+  </nav>
+  <div class="done-body">
+    <div class="done-card">
+      <div class="done-icon">✅</div>
+      <h2>Đã nộp bài!</h2>
+      <p id="done-exam-name" style="font-weight:600;color:#111;margin-bottom:4px"></p>
+      <p>Bài làm đã được lưu thành công.</p>
+      <div class="done-stats">
+        <div class="done-stat">
+          <div class="done-stat-val" id="done-wc1">0</div>
+          <div class="done-stat-label">Task 1 words</div>
+        </div>
+        <div class="done-stat">
+          <div class="done-stat-val" id="done-wc2">0</div>
+          <div class="done-stat-label">Task 2 words</div>
+        </div>
+      </div>
+      <div class="done-actions">
+        <button class="btn-secondary" onclick="showScreen('screen-history');loadHistory()">📋 Xem lịch sử</button>
+        <button class="btn-primary"   onclick="showScreen('screen-key')">✏️ Làm bài mới</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 4 – HISTORY
+═══════════════════════════════════════════ -->
+<div id="screen-history" class="screen">
+  <header class="main-header">
+    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
+    <div class="header-right">
+      <span id="user-name-history">👋 Xin chào</span>
+      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+    </div>
+  </header>
+  <nav class="skill-tabs-bar">
+    <div class="site-nav">
+      <a href="reading.html"   class="site-nav-link">📖 Reading</a>
+      <a href="listening.html" class="site-nav-link">🎧 Listening</a>
+      <a href="writing.html"   class="site-nav-link active">✏️ Writing</a>
+      <a href="speaking.html"  class="site-nav-link">🎤 Speaking</a>
+      <a href="dashboard.html" class="site-nav-link">📚 Vocab</a>
+    </div>
+  </nav>
+  <div class="history-body">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 class="history-title" style="margin-bottom:0">📋 Lịch sử làm bài Writing</h2>
+      <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+    </div>
+    <div id="history-content">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MODAL – Xem lại bài làm
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="review-modal-overlay">
+  <div class="review-modal">
+    <div class="review-modal-header">
+      <h3 id="review-modal-title">Xem lại bài làm</h3>
+      <button class="review-modal-close" onclick="closeReviewModal()">×</button>
+    </div>
+    <div class="review-modal-body" id="review-modal-body">
+      <div class="spinner"></div>
+    </div>
+    <div class="review-modal-footer">
+      <button class="btn-secondary" onclick="downloadAttempt()" id="btn-download">⬇ Tải về (.txt)</button>
+      <button class="btn-secondary" onclick="closeReviewModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CONFIRM SUBMIT MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="confirm-modal-overlay">
+  <div class="review-modal" style="max-width:420px">
+    <div class="review-modal-header">
+      <h3>Nộp bài?</h3>
+      <button class="review-modal-close" onclick="closeConfirmModal()">×</button>
+    </div>
+    <div class="review-modal-body" style="padding:20px">
+      <p style="font-size:14px;line-height:1.7;color:#444">
+        Bạn có chắc muốn nộp bài không?<br/>
+        Task 1: <strong id="confirm-wc1">0</strong> từ &nbsp;|&nbsp;
+        Task 2: <strong id="confirm-wc2">0</strong> từ
+      </p>
+    </div>
+    <div class="review-modal-footer">
+      <button class="btn-secondary" onclick="closeConfirmModal()">Tiếp tục làm</button>
+      <button class="btn-primary"   onclick="submitExam()">Nộp bài</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/writing.js"></script>
 </body>
-
 </html>
