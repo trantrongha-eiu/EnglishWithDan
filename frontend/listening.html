@@ -670,7 +670,89 @@
         }
 
         function renderPlainGroup(group, isReview) {
-            return group.questions.map(q => renderStandaloneQuestion(q, isReview)).join('');
+            // Gom các câu multi-answer-group liên tiếp có chung options thành 1 cluster UI
+            const items = [];
+            let i = 0;
+            while (i < group.questions.length) {
+                const q = group.questions[i];
+                if (q.type === 'multi-answer-group') {
+                    const cluster = [q];
+                    while (
+                        i + 1 < group.questions.length &&
+                        group.questions[i + 1].type === 'multi-answer-group' &&
+                        JSON.stringify(group.questions[i + 1].options) === JSON.stringify(q.options)
+                    ) {
+                        i++;
+                        cluster.push(group.questions[i]);
+                    }
+                    items.push(renderMultiAnswerCluster(cluster, isReview));
+                } else {
+                    items.push(renderStandaloneQuestion(q, isReview));
+                }
+                i++;
+            }
+            return items.join('');
+        }
+
+        // Render nhóm "Choose TWO letters A-E" gộp thành 1 UI
+        function renderMultiAnswerCluster(cluster, isReview) {
+            const count    = cluster.length;
+            const firstNum = cluster[0].questionNumber;
+            const lastNum  = cluster[cluster.length - 1].questionNumber;
+            const opts     = cluster[0].options || [];
+
+            // Đáp án đúng từng câu trong cluster (mảng chữ cái)
+            const caLetters = cluster.map(q => q.correctAnswer.trim().toUpperCase());
+
+            // Đáp án học sinh (lưu chung tại firstNum)
+            let uaArr = [];
+            if (isReview) {
+                try { uaArr = JSON.parse(cluster[0].userAnswer || '[]').map(x => x.toUpperCase()); } catch {}
+            } else {
+                try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch {}
+            }
+
+            const rangeLabel = count === 2
+                ? `Questions ${firstNum} and ${lastNum}`
+                : `Questions ${firstNum}–${lastNum}`;
+
+            const optHtml = opts.map((opt, idx) => {
+                const letter = ['A','B','C','D','E','F','G','H'][idx] || String.fromCharCode(65 + idx);
+                let cls = '';
+                if (isReview) {
+                    if (caLetters.includes(letter)) cls = 'correct-ans';
+                    else if (uaArr.includes(letter) && !caLetters.includes(letter)) cls = 'wrong-ans';
+                } else {
+                    if (uaArr.includes(letter)) cls = 'selected';
+                }
+                const onclick = isReview ? '' : `onclick="toggleMultiAnswer(${firstNum}, '${letter}', ${count}, ${lastNum})"`;
+                const label = opt.replace(/^[A-Ha-h]\s+/, '');
+                return `<div class="checkbox-opt ${cls}" data-cluster="${firstNum}" data-value="${letter}" ${onclick}>
+                    <span class="check-box"></span>
+                    <label><strong>${letter}</strong>&nbsp;&nbsp;${label}</label>
+                </div>`;
+            }).join('');
+
+            // Review: kết quả từng câu riêng
+            let reviewExtra = '';
+            if (isReview) {
+                reviewExtra = cluster.map(q => {
+                    const ok = uaArr.includes(q.correctAnswer.trim().toUpperCase());
+                    return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
+                        Câu ${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${q.correctAnswer}</strong>`}
+                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
+                }).join('');
+            }
+
+            return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}">
+                <div class="q-header">
+                    <span class="q-badge">${rangeLabel}</span>
+                    <div class="q-text">${cluster[0].questionText}</div>
+                </div>
+                <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
+                <div class="checkbox-opts">${optHtml}</div>
+                ${reviewExtra}
+            </div>`;
         }
 
         function renderStandaloneQuestion(q, isReview) {
@@ -887,6 +969,36 @@
             state.answers[qnum] = JSON.stringify(arr);
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.checkbox-opt')
                 .forEach(o => o.classList.toggle('selected', arr.includes(o.dataset.value)));
+            updateQNav(); updateFooter();
+        }
+
+        // Toggle đáp án cho nhóm multi-answer-group (Choose TWO letters)
+        // firstNum: số câu đầu cluster, lastNum: số câu cuối
+        function toggleMultiAnswer(firstNum, letter, maxCount, lastNum) {
+            let arr = [];
+            try { arr = JSON.parse(state.answers[firstNum] || '[]'); } catch {}
+
+            if (arr.includes(letter)) {
+                arr = arr.filter(v => v !== letter);
+            } else {
+                if (arr.length >= maxCount) {
+                    toast(`Chỉ chọn tối đa ${maxCount} đáp án`, 'info');
+                    return;
+                }
+                arr.push(letter);
+            }
+            arr.sort();
+            const val = JSON.stringify(arr);
+
+            // Lưu cùng giá trị cho TẤT CẢ câu trong cluster
+            for (let n = firstNum; n <= lastNum; n++) {
+                state.answers[n] = val;
+            }
+
+            // Cập nhật UI
+            document.querySelectorAll(`[data-cluster="${firstNum}"]`).forEach(o =>
+                o.classList.toggle('selected', arr.includes(o.dataset.value))
+            );
             updateQNav(); updateFooter();
         }
 
@@ -1309,7 +1421,7 @@
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;
-        window.pickRadio = pickRadio; window.toggleCheckbox = toggleCheckbox; window.saveText = saveText;
+        window.pickRadio = pickRadio; window.toggleCheckbox = toggleCheckbox; window.toggleMultiAnswer = toggleMultiAnswer; window.saveText = saveText;
         window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz; window.updateDropZone = updateDropZone;
         window.scrollToQ = scrollToQ; window.jumpToTime = jumpToTime;
         window.confirmSubmit = confirmSubmit; window.submitExam = submitExam;

@@ -3402,6 +3402,7 @@
           <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
           <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
           <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>Checkbox (chọn nhiều)</option>
+          <option value="multi-answer-group"  ${data?.type === 'multi-answer-group' ? 'selected' : ''}>🔢 Choose TWO letters (IELTS)</option>
         </select>
       </div>
     </div>
@@ -3412,7 +3413,7 @@
         placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
     </div>
     <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data, qId)}</div>
-    <div class="lq-answer-row" style="display:${(data?.type || 'multiple-choice') === 'checkbox' ? 'none' : 'grid'};grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
+    <div class="lq-answer-row" style="display:${['checkbox','multi-answer-group'].includes(data?.type || 'multiple-choice') ? 'none' : 'grid'};grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
       <div>
         <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Đáp án đúng *</label>
         <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
@@ -3487,6 +3488,38 @@
                style="width:56px;font-size:12px;padding:5px 8px" min="1" max="5" />
       </div></div>`;
       }
+      if (type === 'multi-answer-group') {
+        const opts = data?.options || ['', '', '', '', ''];
+        const ca = (data?.correctAnswer || '').toUpperCase().trim();
+        return `<div class="form-group" style="margin-bottom:0">
+      <div style="font-size:11px;color:#1d4ed8;margin-bottom:8px;padding:7px 10px;background:#eff6ff;border-left:3px solid #3d8bff;border-radius:4px;line-height:1.6">
+        💡 <strong>Hướng dẫn:</strong> Nhập 2 câu riêng (VD: câu 17 và 18) với <strong>cùng Options A-E</strong>.
+        Mỗi câu có <strong>1 đáp án riêng</strong>. Frontend tự gộp thành 1 UI "Choose TWO letters".
+      </div>
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án A→E (dùng chung cho cả nhóm)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
+        ${['A','B','C','D','E'].map((l,i)=>
+          '<div style="display:flex;align-items:center;gap:5px">'
+          +'<span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">'+l+'.</span>'
+          +'<input class="form-input lq-opt" value="'+(opts[i]||'')+'" style="font-size:12px;padding:5px 8px;flex:1" placeholder="'+l+'" />'
+          +'</div>'
+        ).join('')}
+      </div>
+      <div style="margin-top:10px;display:flex;align-items:flex-start;gap:14px">
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--green);display:block;margin-bottom:4px">✅ Đáp án đúng của câu này</label>
+          <input class="form-input lq-answer mag-answer" value="${ca}"
+                 style="font-size:15px;padding:7px 10px;width:60px;font-weight:800;letter-spacing:3px;text-transform:uppercase;text-align:center"
+                 maxlength="1" placeholder="A" oninput="this.value=this.value.toUpperCase()" />
+        </div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.7;padding-top:18px">
+          Câu 17 nhập <strong>A</strong>, câu 18 nhập <strong>E</strong>.<br>
+          Học sinh chọn A và E → mỗi câu 1 điểm riêng.<br>
+          Thứ tự chọn không quan trọng.
+        </div>
+      </div>
+    </div>`;
+      }
       if (type === 'map-labelling') {
         const imgId = `lqimg-${qId || Date.now()}`;
         return `<div class="form-group" style="margin-bottom:0">
@@ -3529,6 +3562,12 @@
           • Nhập đầy đủ 5 đáp án A→E vào các ô bên dưới.<br>
           • <strong>Tick vào các ô đáp án đúng</strong> (ô "Đáp án đúng" sẽ tự động điền).<br>
           • Đặt "Số đáp án cần chọn" đúng với đề bài (thường là 2).`,
+        'multi-answer-group': `
+          <strong>🔢 Choose TWO letters (IELTS)</strong> — Dạng câu "Questions 17 and 18 – Choose TWO letters, A-E".<br>
+          • Nhập <strong>2 câu riêng</strong> (câu 17 và câu 18) với <strong>cùng bộ Options A-E</strong>.<br>
+          • Câu 17 → đáp án đúng = <code>A</code> &nbsp;|&nbsp; Câu 18 → đáp án đúng = <code>E</code>.<br>
+          • Frontend tự <strong>gộp thành 1 UI</strong>. Học sinh chọn 2 đáp án, thứ tự không quan trọng.<br>
+          • Chấm: mỗi câu <strong>1 điểm riêng</strong> → đúng 1 được 1đ, đúng 2 được 2đ.`,
       };
       return guides[type] || '';
     }
@@ -3541,6 +3580,7 @@
         'matching':            '💡 Nhập từ trong Word Bank',
         'map-labelling':       '💡 Nhập tên địa điểm trên bản đồ',
         'checkbox':            '',
+        'multi-answer-group':  '💡 Nhập 1 chữ cái đáp án đúng của câu này (A, B, C, D hoặc E)',
       };
       return hints[type] || '';
     }
@@ -3552,15 +3592,16 @@
       if (guide) {
         guide.innerHTML = getLQTypeGuide(sel.value);
         const isCheckbox = sel.value === 'checkbox';
-        guide.style.background = isCheckbox ? '#f0fdf4' : '#eff6ff';
-        guide.style.borderLeftColor = isCheckbox ? 'var(--green)' : 'var(--accent)';
-        guide.style.color = isCheckbox ? '#15803d' : '#1e40af';
+        const isMAG = sel.value === 'multi-answer-group';
+        guide.style.background = isCheckbox ? '#f0fdf4' : isMAG ? '#fdf4ff' : '#eff6ff';
+        guide.style.borderLeftColor = isCheckbox ? 'var(--green)' : isMAG ? 'var(--purple)' : 'var(--accent)';
+        guide.style.color = isCheckbox ? '#15803d' : isMAG ? '#7e22ce' : '#1e40af';
       }
       const qDiv = sel.closest('[id^="lq-"]');
       if (qDiv) {
         const answerRow = qDiv.querySelector('.lq-answer-row');
         if (answerRow) {
-          const isCheckbox = sel.value === 'checkbox';
+          const isCheckbox = ['checkbox', 'multi-answer-group'].includes(sel.value);
           answerRow.style.display = isCheckbox ? 'none' : 'grid';
           const hint = answerRow.querySelector('.lq-answer-hint');
           if (hint) hint.textContent = getLQAnswerHint(sel.value);
@@ -3644,6 +3685,13 @@
                 toast(`Câu ${num || '?'}: chưa tick đáp án đúng`, 'error'); return null;
               }
               answer = JSON.stringify(ticked);
+            } else if (type === 'multi-answer-group') {
+              // Mỗi câu có 1 chữ cái riêng (A/B/C/D/E)
+              const magInput = qDiv.querySelector('.mag-answer') || qDiv.querySelector('.lq-answer');
+              answer = magInput ? magInput.value.trim().toUpperCase() : '';
+              if (!answer) {
+                toast(`Câu ${num || '?'}: chưa nhập đáp án đúng (1 chữ cái A-E)`, 'error'); return null;
+              }
             } else {
               answer = qDiv.querySelector('.lq-answer').value.trim();
             }
@@ -3654,7 +3702,7 @@
 
             const q = { questionNumber: num, type, questionText: text, correctAnswer: answer, explanation: expl };
 
-            if (['multiple-choice', 'checkbox'].includes(type))
+            if (['multiple-choice', 'checkbox', 'multi-answer-group'].includes(type))
               q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
             if (type === 'checkbox')
               q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
