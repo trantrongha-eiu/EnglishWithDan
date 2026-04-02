@@ -816,14 +816,25 @@
             let uaArr = [], caArr = [];
             try { uaArr = JSON.parse(ua || '[]'); } catch {}
             try { caArr = JSON.parse(ca || '[]'); } catch {}
+            // Normalize to uppercase letters for comparison
+            const normLetter = str => str ? str.trim().charAt(0).toUpperCase() : '';
+            const caLetters = caArr.map(x => normLetter(x));
+            const uaLetters = uaArr.map(x => normLetter(x));
             return `
                 <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
-                <div class="checkbox-opts">${opts.map(opt => {
+                <div class="checkbox-opts">${opts.map((opt, idx) => {
+                    const letters = ['A','B','C','D','E'];
+                    const letter = letters[idx] || normLetter(opt);
                     let cls = '';
-                    if (isReview) { if (caArr.includes(opt)) cls = 'correct-ans'; else if (uaArr.includes(opt) && !caArr.includes(opt)) cls = 'wrong-ans'; }
-                    else { if (uaArr.includes(opt)) cls = 'selected'; }
-                    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${opt}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${opt}', ${count})"`}>
-                        <span class="check-box"></span><label>${opt}</label>
+                    if (isReview) {
+                        if (caLetters.includes(letter)) cls = 'correct-ans';
+                        else if (uaLetters.includes(letter) && !caLetters.includes(letter)) cls = 'wrong-ans';
+                    } else {
+                        if (uaLetters.includes(letter)) cls = 'selected';
+                    }
+                    const safeOpt = opt.replace(/'/g, "\\'");
+                    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
+                        <span class="check-box"></span><label><strong>${letter}</strong> ${opt.replace(/^[A-Ea-e]\s+/, '')}</label>
                     </div>`;
                 }).join('')}</div>`;
         }
@@ -872,6 +883,7 @@
                 if (arr.length >= maxCount) { toast(`Chỉ chọn tối đa ${maxCount} đáp án`, 'info'); return; }
                 arr.push(value);
             }
+            arr.sort();
             state.answers[qnum] = JSON.stringify(arr);
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.checkbox-opt')
                 .forEach(o => o.classList.toggle('selected', arr.includes(o.dataset.value)));
@@ -997,10 +1009,17 @@
             }).join('');
         }
 
+        function isAnswered(qnum) {
+            const val = state.answers[qnum];
+            if (!val) return false;
+            try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.length > 0 : !!val; } catch {}
+            return !!val;
+        }
+
         function updateQNav() {
             getAllQuestions(false).forEach(q => {
                 const btn = document.getElementById(`qnb-${q.questionNumber}`);
-                if (btn) btn.className = `q-nav-btn ${state.answers[q.questionNumber] ? 'answered' : ''}`;
+                if (btn) btn.className = `q-nav-btn ${isAnswered(q.questionNumber) ? 'answered' : ''}`;
             });
         }
 
@@ -1032,8 +1051,9 @@
         }
 
         function updateFooter() {
-            const total    = getAllQuestions(false).length;
-            const answered = Object.keys(state.answers).length;
+            const allQs   = getAllQuestions(false);
+            const total   = allQs.length;
+            const answered = allQs.filter(q => isAnswered(q.questionNumber)).length;
             document.getElementById('footer-answered').textContent = answered;
             document.getElementById('footer-total').textContent    = total;
             document.getElementById('modal-answered').textContent  = answered;

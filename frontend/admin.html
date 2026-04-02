@@ -3405,18 +3405,20 @@
         </select>
       </div>
     </div>
+    <div class="lq-type-guide" id="lqguide-${qId}" style="margin-bottom:8px;padding:7px 10px;border-radius:6px;font-size:11px;line-height:1.6;background:#eff6ff;border-left:3px solid var(--accent);color:#1e40af">${getLQTypeGuide(data?.type || 'multiple-choice')}</div>
     <div style="margin-bottom:8px">
       <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Nội dung câu hỏi *</label>
       <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
         placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
     </div>
     <div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data, qId)}</div>
-    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
+    <div class="lq-answer-row" style="display:${(data?.type || 'multiple-choice') === 'checkbox' ? 'none' : 'grid'};grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
       <div>
         <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Đáp án đúng *</label>
         <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
                style="font-size:12px;padding:6px 9px"
                placeholder='A / text / ["A","C"]' />
+        <div class="lq-answer-hint" style="font-size:10px;color:var(--text3);margin-top:3px">${getLQAnswerHint(data?.type || 'multiple-choice')}</div>
       </div>
       <div>
         <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Giải thích</label>
@@ -3498,12 +3500,82 @@
       return '';
     }
 
+    function getLQTypeGuide(type) {
+      const guides = {
+        'multiple-choice': `
+          <strong>📝 Multiple Choice</strong> — Học sinh chọn 1 đáp án duy nhất.<br>
+          • Nhập 4 đáp án A, B, C, D vào các ô bên dưới.<br>
+          • <strong>Đáp án đúng:</strong> nhập chữ cái tương ứng, VD: <code>A</code>`,
+        'fill-blank': `
+          <strong>✏️ Fill in the blank</strong> — Học sinh điền từ/cụm từ vào ô trống.<br>
+          • Không cần nhập options.<br>
+          • <strong>Đáp án đúng:</strong> nhập chính xác từ/cụm từ cần điền, VD: <code>kiln</code>`,
+        'sentence-completion': `
+          <strong>🔗 Sentence Completion</strong> — Học sinh kéo thả từ vào chỗ trống trong câu.<br>
+          • Nhập Word Bank (cách nhau bằng dấu phẩy).<br>
+          • Trong "Nội dung câu hỏi", dùng <code>___</code> hoặc <code>[blank]</code> để đánh dấu chỗ trống.<br>
+          • <strong>Đáp án đúng:</strong> nhập đúng từ trong Word Bank, VD: <code>pottery</code>`,
+        'matching': `
+          <strong>🔀 Matching</strong> — Học sinh kéo thả để ghép cặp.<br>
+          • Nhập Word Bank (cách nhau bằng dấu phẩy).<br>
+          • Trong "Nội dung câu hỏi", dùng <code>___</code> để đánh dấu chỗ trống.<br>
+          • <strong>Đáp án đúng:</strong> nhập đúng từ cần ghép, VD: <code>clay</code>`,
+        'map-labelling': `
+          <strong>🗺️ Map Labelling</strong> — Học sinh điền tên địa điểm/vị trí trên bản đồ.<br>
+          • Có thể upload URL ảnh bản đồ riêng cho câu này (hoặc dùng ảnh chung của nhóm).<br>
+          • <strong>Đáp án đúng:</strong> nhập tên địa điểm, VD: <code>library</code>`,
+        'checkbox': `
+          <strong>☑️ Checkbox (chọn nhiều)</strong> — Học sinh chọn từ 2 đáp án trở lên.<br>
+          • Nhập đầy đủ 5 đáp án A→E vào các ô bên dưới.<br>
+          • <strong>Tick vào các ô đáp án đúng</strong> (ô "Đáp án đúng" sẽ tự động điền).<br>
+          • Đặt "Số đáp án cần chọn" đúng với đề bài (thường là 2).`,
+      };
+      return guides[type] || '';
+    }
+
+    function getLQAnswerHint(type) {
+      const hints = {
+        'multiple-choice':     '💡 Nhập chữ cái: A, B, C hoặc D',
+        'fill-blank':          '💡 Nhập đúng từ/cụm từ cần điền',
+        'sentence-completion': '💡 Nhập từ trong Word Bank',
+        'matching':            '💡 Nhập từ trong Word Bank',
+        'map-labelling':       '💡 Nhập tên địa điểm trên bản đồ',
+        'checkbox':            '',
+      };
+      return hints[type] || '';
+    }
+
     function onLQTypeChange(sel, qId) {
       document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {}, qId);
+      // Update guide banner
+      const guide = document.getElementById(`lqguide-${qId}`);
+      if (guide) {
+        guide.innerHTML = getLQTypeGuide(sel.value);
+        const isCheckbox = sel.value === 'checkbox';
+        guide.style.background = isCheckbox ? '#f0fdf4' : '#eff6ff';
+        guide.style.borderLeftColor = isCheckbox ? 'var(--green)' : 'var(--accent)';
+        guide.style.color = isCheckbox ? '#15803d' : '#1e40af';
+      }
       const qDiv = sel.closest('[id^="lq-"]');
       if (qDiv) {
         const answerRow = qDiv.querySelector('.lq-answer-row');
-        if (answerRow) answerRow.style.display = sel.value === 'checkbox' ? 'none' : 'grid';
+        if (answerRow) {
+          const isCheckbox = sel.value === 'checkbox';
+          answerRow.style.display = isCheckbox ? 'none' : 'grid';
+          const hint = answerRow.querySelector('.lq-answer-hint');
+          if (hint) hint.textContent = getLQAnswerHint(sel.value);
+          const answerInput = answerRow.querySelector('.lq-answer');
+          if (answerInput) {
+            const placeholders = {
+              'multiple-choice':     'A, B, C hoặc D',
+              'fill-blank':          'Nhập từ/cụm từ đúng',
+              'sentence-completion': 'Nhập từ trong Word Bank',
+              'matching':            'Nhập từ trong Word Bank',
+              'map-labelling':       'Tên địa điểm',
+            };
+            answerInput.placeholder = placeholders[sel.value] || 'Đáp án đúng';
+          }
+        }
       }
     }
 
