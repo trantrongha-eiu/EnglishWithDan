@@ -12,23 +12,15 @@
 
 <body>
 
-    <!-- ══════════════════════════════════════════════
-     SCREEN: LIST
-══════════════════════════════════════════════ -->
     <div id="screen-list" class="screen active">
-
         <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
             <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
                 <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
             </div>
             <div style="display:flex;align-items:center;gap:12px">
                 <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-                <button onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
-                    📜 Lịch sử
-                </button>
-                <button onclick="logout()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
-                    🚪 Đăng xuất
-                </button>
+                <button onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">📜 Lịch sử</button>
+                <button onclick="logout()" style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">🚪 Đăng xuất</button>
             </div>
         </header>
 
@@ -60,9 +52,6 @@
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
-     SCREEN: EXAM
-══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
         <div class="exam-topbar">
             <button class="btn-ghost" onclick="confirmExit()">← Thoát</button>
@@ -90,7 +79,6 @@
             <audio id="audio-player" preload="metadata"></audio>
         </div>
 
-        <!-- Exam toolbar: highlight + dict -->
         <div class="exam-toolbar" id="exam-toolbar">
             <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
                 🖊 <small>Highlight</small>
@@ -113,9 +101,6 @@
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
-     SCREEN: RESULT
-══════════════════════════════════════════════ -->
     <div class="screen" id="screen-result">
         <div class="result-card">
             <div class="result-emoji" id="result-emoji">🎉</div>
@@ -144,9 +129,6 @@
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
-     SCREEN: REVIEW
-══════════════════════════════════════════════ -->
     <div class="screen" id="screen-review">
         <div class="review-topbar">
             <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
@@ -185,7 +167,6 @@
                 </div>
                 <div class="transcript-body" id="transcript-body"></div>
             </div>
-
             <div class="review-questions-panel" id="review-questions-panel">
                 <div class="q-nav-label" style="margin-bottom:12px">Xem lại câu hỏi</div>
                 <div class="q-nav-grid" id="q-nav-grid-rv" style="margin-bottom:20px"></div>
@@ -194,7 +175,6 @@
         </div>
     </div>
 
-    <!-- Dict Popup -->
     <div id="dict-popup" class="hidden">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
             <div>
@@ -212,9 +192,6 @@
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════
-     SCREEN: KEY  (giống reading)
-══════════════════════════════════════════════ -->
     <div id="screen-key" class="screen">
         <div class="key-overlay">
             <div class="key-card">
@@ -229,15 +206,12 @@
                 <div id="key-msg" class="key-msg hidden"></div>
                 <div class="key-actions">
                     <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
-                    <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
-                        🎧 Bắt đầu làm bài
-                    </button>
+                    <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">🎧 Bắt đầu làm bài</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal: History -->
     <div class="modal-overlay hidden" id="modal-history">
         <div class="modal-box modal-lg">
             <div class="modal-header">
@@ -248,13 +222,8 @@
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>Tên bài</th>
-                            <th>Ngày nộp</th>
-                            <th>Thời gian</th>
-                            <th>Đúng</th>
-                            <th>Sai</th>
-                            <th>Bỏ qua</th>
-                            <th>Band</th>
+                            <th>Tên bài</th><th>Ngày nộp</th><th>Thời gian</th>
+                            <th>Đúng</th><th>Sai</th><th>Bỏ qua</th><th>Band</th>
                         </tr>
                     </thead>
                     <tbody id="history-tbody"></tbody>
@@ -263,7 +232,6 @@
         </div>
     </div>
 
-    <!-- Modal: Submit -->
     <div class="modal-overlay hidden" id="modal-submit">
         <div class="modal-box modal-sm">
             <h3>Nộp bài?</h3>
@@ -276,7 +244,6 @@
         </div>
     </div>
 
-    <!-- Modal: Exit -->
     <div class="modal-overlay hidden" id="modal-exit">
         <div class="modal-box modal-sm">
             <h3>Thoát bài thi?</h3>
@@ -288,7 +255,6 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast"><span id="toast-msg"></span></div>
 
     <script>
@@ -300,7 +266,7 @@
             tests: [],
             currentTestId: null,
             currentTest: null,
-            pendingTestId: null,   // testId đang chờ xác thực key
+            pendingTestId: null,
             answers: {},
             dragItem: null,
             partIdx: 0,
@@ -314,9 +280,7 @@
 
         const audio = document.getElementById('audio-player');
 
-        // ══════════════════════════════════════════════
-        // INIT
-        // ══════════════════════════════════════════════
+        // ── INIT ──────────────────────────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             if (!token) { window.location.href = 'login.html'; return; }
@@ -325,24 +289,20 @@
             const el = document.getElementById('userName');
             if (el && name) el.textContent = `👋 ${name}`;
             setupHighlight();
-            setupDictionaryDouble('questions-panel');   // dict trong exam
+            setupDictionaryDouble('questions-panel');
             setupAudioEvents();
             loadTestList();
             showScreen('list');
         });
 
-        // ══════════════════════════════════════════════
-        // AUTH
-        // ══════════════════════════════════════════════
+        // ── AUTH ──────────────────────────────────────────────────────
         function getToken() { return localStorage.getItem('token'); }
         function authH() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
         function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
 
-        // ══════════════════════════════════════════════
-        // SCREENS
-        // ══════════════════════════════════════════════
+        // ── SCREENS ───────────────────────────────────────────────────
         function showScreen(name) {
-            document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); });
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             const el = document.getElementById(`screen-${name}`);
             if (el) el.classList.add('active');
         }
@@ -356,9 +316,7 @@
             el._t = setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        // ══════════════════════════════════════════════
-        // SCREEN: LIST
-        // ══════════════════════════════════════════════
+        // ── TEST LIST ─────────────────────────────────────────────────
         async function loadTestList() {
             try {
                 const res = await fetch(`${API}/listening/tests`, { headers: authH() });
@@ -414,15 +372,13 @@
             if (btn) btn.classList.add('active');
             document.querySelectorAll('.test-card').forEach(c => {
                 const done = c.dataset.done === 'true';
-                if (mode === 'all')  c.style.display = '';
+                if (mode === 'all') c.style.display = '';
                 else if (mode === 'done') c.style.display = done ? '' : 'none';
                 else c.style.display = !done ? '' : 'none';
             });
         }
 
-        // ══════════════════════════════════════════════
-        // ACCESS KEY FLOW  (screen-key, giống reading)
-        // ══════════════════════════════════════════════
+        // ── ACCESS KEY ────────────────────────────────────────────────
         function goToKey(testId, testName) {
             state.pendingTestId = testId;
             document.getElementById('key-test-name').textContent = testName;
@@ -450,7 +406,7 @@
         async function safeJson(res) {
             const text = await res.text();
             if (text.trimStart().startsWith('<')) {
-                throw new Error(`HTTP ${res.status} – URL: ${res.url} – Response: ${text.slice(0, 120)}`);
+                throw new Error(`HTTP ${res.status} – URL: ${res.url}`);
             }
             return JSON.parse(text);
         }
@@ -459,12 +415,9 @@
             const key = document.getElementById('key-input').value.trim();
             const btn = document.getElementById('btn-start-key');
             if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
-
             btn.disabled = true; btn.textContent = 'Đang xác thực...';
             document.getElementById('key-msg').className = 'key-msg hidden';
-
             try {
-                // Bước 1: verify (không tốn lượt)
                 const vRes = await fetch(`${API}/listening/verify-key`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ key, testId: state.pendingTestId })
@@ -475,7 +428,6 @@
                     btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
                     return;
                 }
-                // Key hợp lệ → vào thi (tốn lượt)
                 await startTest(state.pendingTestId, key);
             } catch (err) {
                 showKeyMsg(err.message, 'error');
@@ -483,14 +435,11 @@
             }
         }
 
-        // ══════════════════════════════════════════════
-        // START EXAM
-        // ══════════════════════════════════════════════
+        // ── START EXAM ────────────────────────────────────────────────
         async function startTest(testId, key) {
             try {
                 const res = await fetch(`${API}/listening/tests/${testId}/start`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ key })
+                    method: 'POST', headers: authH(), body: JSON.stringify({ key })
                 });
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
@@ -515,9 +464,7 @@
             } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
         }
 
-        // ══════════════════════════════════════════════
-        // AUDIO PLAYER
-        // ══════════════════════════════════════════════
+        // ── AUDIO ─────────────────────────────────────────────────────
         function setupAudioEvents() {
             audio.addEventListener('timeupdate', onTimeUpdate);
             audio.addEventListener('loadedmetadata', () => {
@@ -527,8 +474,14 @@
                 document.getElementById('audio-seek').max = dur;
                 document.getElementById('audio-seek-rv').max = dur;
             });
-            audio.addEventListener('play', () => { document.getElementById('play-btn').textContent = '⏸'; document.getElementById('play-btn-rv').textContent = '⏸'; });
-            audio.addEventListener('pause', () => { document.getElementById('play-btn').textContent = '▶'; document.getElementById('play-btn-rv').textContent = '▶'; });
+            audio.addEventListener('play', () => {
+                document.getElementById('play-btn').textContent = '⏸';
+                document.getElementById('play-btn-rv').textContent = '⏸';
+            });
+            audio.addEventListener('pause', () => {
+                document.getElementById('play-btn').textContent = '▶';
+                document.getElementById('play-btn-rv').textContent = '▶';
+            });
         }
 
         function onTimeUpdate() {
@@ -554,9 +507,7 @@
         }
         function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.play(); }
 
-        // ══════════════════════════════════════════════
-        // PART TABS
-        // ══════════════════════════════════════════════
+        // ── PART TABS ─────────────────────────────────────────────────
         function buildPartTabs(containerId, isReview) {
             const sections = isReview ? (state.reviewResult?.sections || []) : (state.currentTest?.sections || []);
             document.getElementById(containerId).innerHTML = sections.map((s, i) =>
@@ -577,9 +528,7 @@
             }
         }
 
-        // ══════════════════════════════════════════════
-        // RENDER QUESTIONS (với questionGroups)
-        // ══════════════════════════════════════════════
+        // ── RENDER QUESTIONS ──────────────────────────────────────────
         function renderPartQuestions(partIdx) {
             const section = (state.currentTest?.sections || [])[partIdx];
             if (!section) return;
@@ -597,11 +546,9 @@
             panel.innerHTML = html;
             (section.questionGroups || []).forEach(g => g.questions.forEach(q => restoreAnswer(q)));
             setupDragDrop(panel);
-            // re-attach dict to questions-panel sau khi re-render
             setupDictionaryDouble('questions-panel');
         }
 
-        // ── Group dispatcher ──────────────────────────────────────
         function renderQuestionGroup(group, gi, isReview) {
             const groupType = group.groupType || 'plain';
             const instruction = group.instruction
@@ -681,19 +628,38 @@
 
             let inputHtml = '';
             switch (q.type) {
-                case 'multiple-choice':     inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview); break;
-                case 'checkbox':            inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2); break;
+                case 'multiple-choice':
+                    inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview);
+                    break;
+                case 'checkbox':
+                    inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2);
+                    break;
                 case 'fill-blank':
-                case 'map-labelling':       inputHtml = renderFillBlank(num, ua, ca, isReview); break;
+                case 'map-labelling':
+                    inputHtml = renderFillBlank(num, ua, ca, isReview);
+                    break;
                 case 'sentence-completion':
-                case 'matching':            inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview); break;
-                default:                    inputHtml = renderFillBlank(num, ua, ca, isReview);
+                case 'matching':
+                    inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview);
+                    break;
+                default:
+                    inputHtml = renderFillBlank(num, ua, ca, isReview);
             }
 
             const showText = !['sentence-completion','matching'].includes(q.type);
+
+            // Format correctAnswer for display in review
+            let caDisplay = ca;
+            if (isReview && q.type === 'checkbox') {
+                try {
+                    const arr = JSON.parse(ca);
+                    caDisplay = Array.isArray(arr) ? arr.join(', ') : ca;
+                } catch { caDisplay = ca; }
+            }
+
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
-                    ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${ca}</strong>`}
+                    ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${caDisplay}</strong>`}
                 </div>
                 ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}` : '';
 
@@ -714,7 +680,7 @@
                 const ua = isReview ? (q.userAnswer   || '') : (state.answers[num] || '');
                 const ca = isReview ? (q.correctAnswer || '') : '';
                 if (isReview) {
-                    const ok  = !!q.isCorrect;
+                    const ok = !!q.isCorrect;
                     return `<span class="inline-answer-wrap">
                         <span class="q-badge-inline">${num}</span>
                         <span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}">${ua || '–'}</span>
@@ -739,9 +705,7 @@
             </div>`;
         }
 
-        // ══════════════════════════════════════════════
-        // REVIEW
-        // ══════════════════════════════════════════════
+        // ── REVIEW ────────────────────────────────────────────────────
         function goToReview() {
             const r = state.reviewResult;
             if (!r) return;
@@ -782,7 +746,10 @@
             (section.questionGroups || []).forEach((group, gi) => {
                 const groupWithReview = {
                     ...group,
-                    questions: group.questions.map(q => { const r = reviewMap[q.questionNumber]; return r ? { ...q, ...r } : q; })
+                    questions: group.questions.map(q => {
+                        const rv = reviewMap[q.questionNumber];
+                        return rv ? { ...q, ...rv } : q;
+                    })
                 };
                 html += renderQuestionGroup(groupWithReview, gi, true);
             });
@@ -798,31 +765,46 @@
             ).join('');
         }
 
-        // ══════════════════════════════════════════════
-        // INPUT RENDERERS
-        // ══════════════════════════════════════════════
+        // ── INPUT RENDERERS ───────────────────────────────────────────
         function renderRadioOpts(num, opts, ua, ca, isReview) {
             return `<div class="q-options">${opts.map(opt => {
                 let cls = '';
-                if (isReview) { if (opt === ca) cls = 'correct-ans'; else if (opt === ua && opt !== ca) cls = 'wrong-ans'; }
-                else { if (opt === ua) cls = 'selected'; }
+                if (isReview) {
+                    if (opt === ca) cls = 'correct-ans';
+                    else if (opt === ua && opt !== ca) cls = 'wrong-ans';
+                } else {
+                    if (opt === ua) cls = 'selected';
+                }
                 return `<div class="radio-opt ${cls}" data-qnum="${num}" data-value="${opt}" ${isReview ? '' : `onclick="pickRadio(${num}, '${opt}')"`}>
                     <span class="radio-dot"></span><label>${opt}</label>
                 </div>`;
             }).join('')}</div>`;
         }
 
+        // ── FIX: Extract letter from option text e.g. "A what their function is" → "A"
+        function extractOptLetter(opt) {
+            const m = String(opt).trim().match(/^([A-E])\b/i);
+            return m ? m[1].toUpperCase() : opt.trim();
+        }
+
         function renderCheckboxOpts(num, opts, ua, ca, isReview, count) {
             let uaArr = [], caArr = [];
             try { uaArr = JSON.parse(ua || '[]'); } catch {}
             try { caArr = JSON.parse(ca || '[]'); } catch {}
+
             return `
                 <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
                 <div class="checkbox-opts">${opts.map(opt => {
+                    // Always use the letter (A/B/C/D/E) as the value, not full text
+                    const letter = extractOptLetter(opt);
                     let cls = '';
-                    if (isReview) { if (caArr.includes(opt)) cls = 'correct-ans'; else if (uaArr.includes(opt) && !caArr.includes(opt)) cls = 'wrong-ans'; }
-                    else { if (uaArr.includes(opt)) cls = 'selected'; }
-                    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${opt}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${opt}', ${count})"`}>
+                    if (isReview) {
+                        if (caArr.includes(letter)) cls = 'correct-ans';
+                        else if (uaArr.includes(letter) && !caArr.includes(letter)) cls = 'wrong-ans';
+                    } else {
+                        if (uaArr.includes(letter)) cls = 'selected';
+                    }
+                    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
                         <span class="check-box"></span><label>${opt}</label>
                     </div>`;
                 }).join('')}</div>`;
@@ -854,9 +836,7 @@
             </div>`;
         }
 
-        // ══════════════════════════════════════════════
-        // ANSWER HANDLERS
-        // ══════════════════════════════════════════════
+        // ── ANSWER HANDLERS ───────────────────────────────────────────
         function pickRadio(qnum, value) {
             state.answers[qnum] = value;
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.radio-opt')
@@ -864,11 +844,16 @@
             updateQNav(); updateFooter();
         }
 
+        // ── FIX: normalize value to letter before storing
         function toggleCheckbox(qnum, value, maxCount) {
+            // Normalize to letter only (A/B/C/D/E)
+            value = extractOptLetter(value);
+
             let arr = [];
             try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch {}
-            if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
-            else {
+            if (arr.includes(value)) {
+                arr = arr.filter(v => v !== value);
+            } else {
                 if (arr.length >= maxCount) { toast(`Chỉ chọn tối đa ${maxCount} đáp án`, 'info'); return; }
                 arr.push(value);
             }
@@ -898,9 +883,7 @@
             if (inlineInp && !inlineInp.value) inlineInp.value = saved;
         }
 
-        // ══════════════════════════════════════════════
-        // DRAG & DROP
-        // ══════════════════════════════════════════════
+        // ── DRAG & DROP ───────────────────────────────────────────────
         function setupDragDrop(container) {
             container.querySelectorAll('.word-chip:not(.used)').forEach(chip => {
                 chip.addEventListener('dragstart', e => { state.dragItem = chip.dataset.word; chip.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
@@ -975,9 +958,7 @@
             updateQNav(); state.dragItem = null; updateFooter();
         }
 
-        // ══════════════════════════════════════════════
-        // Q NAV
-        // ══════════════════════════════════════════════
+        // ── Q NAV ─────────────────────────────────────────────────────
         function getAllQuestions(isReview) {
             if (isReview) return state.reviewResult?.questions || [];
             return (state.currentTest?.sections || [])
@@ -1005,7 +986,6 @@
         }
 
         function scrollToQ(num) {
-            // Nếu câu thuộc part khác → switch part trước
             const sections = state.isReview
                 ? (state.reviewResult?.sections || [])
                 : (state.currentTest?.sections || []);
@@ -1022,8 +1002,8 @@
                     ? document.getElementById('review-questions-panel')
                     : document.getElementById('questions-panel');
                 if (panel) {
-                    const panelTop  = panel.getBoundingClientRect().top;
-                    const elTop     = el.getBoundingClientRect().top;
+                    const panelTop = panel.getBoundingClientRect().top;
+                    const elTop    = el.getBoundingClientRect().top;
                     panel.scrollTop += (elTop - panelTop) - 80;
                 } else {
                     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1042,9 +1022,7 @@
             document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
         }
 
-        // ══════════════════════════════════════════════
-        // SUBMIT
-        // ══════════════════════════════════════════════
+        // ── SUBMIT ────────────────────────────────────────────────────
         function confirmSubmit() { updateFooter(); openModal('modal-submit'); }
 
         async function submitExam() {
@@ -1055,13 +1033,13 @@
             audio.pause();
             try {
                 const res  = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
-                    method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
                 });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const r = data.result;
                 state.reviewResult = r;
-                // refresh test list để cập nhật trạng thái đã làm
                 loadTestList();
                 document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
                 document.getElementById('r-correct').textContent    = r.correctCount;
@@ -1080,9 +1058,7 @@
             return 'Đề hơi khó, cứ tiếp tục luyện – sẽ giỏi thôi! 🌱';
         }
 
-        // ══════════════════════════════════════════════
-        // HIGHLIGHT
-        // ══════════════════════════════════════════════
+        // ── HIGHLIGHT ─────────────────────────────────────────────────
         function setupHighlight() {
             document.addEventListener('mouseup', () => {
                 if (state.tool !== 'highlight') return;
@@ -1103,9 +1079,7 @@
             });
         }
 
-        // ══════════════════════════════════════════════
-        // DICTIONARY
-        // ══════════════════════════════════════════════
+        // ── DICTIONARY ────────────────────────────────────────────────
         function setupDictionaryDouble(containerId) {
             const el = document.getElementById(containerId);
             if (!el) return;
@@ -1126,7 +1100,8 @@
             const popup = document.getElementById('dict-popup');
             state.dictWord = word; state.dictMeaning = ''; state.dictExample = '';
             const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-            set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', ''); set('dict-meaning', 'Đang tra...'); set('dict-example', '');
+            set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', '');
+            set('dict-meaning', 'Đang tra...'); set('dict-example', '');
             const sel = window.getSelection();
             let top = 200, left = 200;
             if (sel?.rangeCount) {
@@ -1175,7 +1150,7 @@
             const existing = document.getElementById('book-picker-modal');
             if (existing) existing.remove();
             const modal = document.createElement('div');
-            modal.id    = 'book-picker-modal';
+            modal.id = 'book-picker-modal';
             modal.className = 'modal-overlay';
             modal.innerHTML = `
                 <div class="modal-box modal-sm">
@@ -1211,9 +1186,7 @@
             } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
         }
 
-        // ══════════════════════════════════════════════
-        // TOOL
-        // ══════════════════════════════════════════════
+        // ── TOOL ──────────────────────────────────────────────────────
         function setTool(tool) {
             state.tool = tool;
             document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
@@ -1228,9 +1201,7 @@
             if (tool === 'dict')      document.getElementById('tool-dict-exam')?.classList.add('active');
         }
 
-        // ══════════════════════════════════════════════
-        // HISTORY MODAL
-        // ══════════════════════════════════════════════
+        // ── HISTORY ───────────────────────────────────────────────────
         async function showHistoryModal() {
             openModal('modal-history');
             const tbody = document.getElementById('history-tbody');
@@ -1261,9 +1232,7 @@
             }
         }
 
-        // ══════════════════════════════════════════════
-        // MODALS & EXIT
-        // ══════════════════════════════════════════════
+        // ── EXIT ──────────────────────────────────────────────────────
         function confirmExit() { openModal('modal-exit'); }
         function forceExit() {
             closeModal('modal-exit');
@@ -1273,9 +1242,7 @@
             showScreen('list');
         }
 
-        // ══════════════════════════════════════════════
-        // UTILS
-        // ══════════════════════════════════════════════
+        // ── UTILS ─────────────────────────────────────────────────────
         function pad(n) { return String(n).padStart(2, '0'); }
 
         // Expose globals
@@ -1290,13 +1257,13 @@
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;
         window.pickRadio = pickRadio; window.toggleCheckbox = toggleCheckbox; window.saveText = saveText;
-        window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz; window.updateDropZone = updateDropZone;
+        window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick;
+        window.clearDz = clearDz; window.updateDropZone = updateDropZone;
         window.scrollToQ = scrollToQ; window.jumpToTime = jumpToTime;
         window.confirmSubmit = confirmSubmit; window.submitExam = submitExam;
         window.goToReview = goToReview;
         window.confirmExit = confirmExit; window.forceExit = forceExit;
-        window.setTool = setTool;
-        window.setToolExam = setToolExam;
+        window.setTool = setTool; window.setToolExam = setToolExam;
         window.showHistoryModal = showHistoryModal;
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook;

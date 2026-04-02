@@ -3430,6 +3430,13 @@
 
     // renderLQExtra và onLQTypeChange giữ nguyên từ code cũ
     function renderLQExtra(type, data, qId) {
+      // Hide/show answer row based on type (called after render)
+      requestAnimationFrame(() => {
+        const qDiv = document.getElementById(qId);
+        if (!qDiv) return;
+        const answerRow = qDiv.querySelector('.lq-answer-row');
+        if (answerRow) answerRow.style.display = type === 'checkbox' ? 'none' : 'grid';
+      });
       if (type === 'multiple-choice') {
         const opts = data?.options || ['', '', '', ''];
         return `<div class="form-group" style="margin-bottom:0">
@@ -3451,12 +3458,6 @@
       }
       if (type === 'checkbox') {
         const opts = data?.options || [];
-        let checkedLetters = [];
-        try {
-          const ca = data?.correctAnswer || '';
-          if (ca.startsWith('[')) checkedLetters = JSON.parse(ca).map(x => x.toUpperCase().trim());
-          else checkedLetters = ca.split(',').map(x => x.toUpperCase().trim()).filter(Boolean);
-        } catch { checkedLetters = []; }
         return `<div class="form-group" style="margin-bottom:0">
       <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án (A→E)</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
@@ -3464,20 +3465,8 @@
           <div style="display:flex;align-items:center;gap:5px">
             <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">${l}.</span>
             <input class="form-input lq-opt" value="${opts[i] || ''}"
-                   style="font-size:12px;padding:5px 8px;flex:1" placeholder="${l}" />
+                   style="font-size:12px;padding:5px 8px" placeholder="${l}" />
           </div>`).join('')}
-      </div>
-      <div style="margin-top:10px">
-        <label style="font-size:10px;font-weight:700;color:var(--green);display:block;margin-bottom:6px">✅ Tick đáp án đúng</label>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          ${['A','B','C','D','E'].map(l => `
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)">
-              <input type="checkbox" class="lq-cb-correct" value="${l}"
-                     ${checkedLetters.includes(l) ? 'checked' : ''}
-                     style="width:15px;height:15px;accent-color:var(--green);cursor:pointer" />
-              ${l}
-            </label>`).join('')}
-        </div>
       </div>
       <div style="margin-top:7px;display:flex;align-items:center;gap:8px">
         <label style="font-size:10px;color:var(--text3);white-space:nowrap">Số đáp án cần chọn:</label>
@@ -3500,11 +3489,6 @@
 
     function onLQTypeChange(sel, qId) {
       document.getElementById(`lqex-${qId}`).innerHTML = renderLQExtra(sel.value, {}, qId);
-      const qDiv = sel.closest('[id^="lq-"]');
-      if (qDiv) {
-        const answerRow = qDiv.querySelector('.lq-answer-row');
-        if (answerRow) answerRow.style.display = sel.value === 'checkbox' ? 'none' : 'grid';
-      }
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -3563,18 +3547,8 @@
             const num = parseInt(qDiv.querySelector('.lq-num').value);
             const type = qDiv.querySelector('.lq-type').value;
             const text = qDiv.querySelector('.lq-text').value.trim();
+            const answer = qDiv.querySelector('.lq-answer').value.trim();
             const expl = qDiv.querySelector('.lq-explain').value.trim();
-
-            let answer;
-            if (type === 'checkbox') {
-              const ticked = [...qDiv.querySelectorAll('.lq-cb-correct:checked')].map(cb => cb.value).sort();
-              if (ticked.length === 0) {
-                toast(`Câu ${num || '?'}: chưa tick đáp án đúng`, 'error'); return null;
-              }
-              answer = JSON.stringify(ticked);
-            } else {
-              answer = qDiv.querySelector('.lq-answer').value.trim();
-            }
 
             if (!num || !text || !answer) {
               toast(`Điền đầy đủ số câu, nội dung và đáp án (câu ${num || '?'})`, 'error'); return null;
