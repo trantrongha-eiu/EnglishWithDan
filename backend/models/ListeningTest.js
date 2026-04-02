@@ -5,7 +5,7 @@ const ListeningQuestionSchema = new mongoose.Schema({
   questionNumber: { type: Number, required: true },
   type: {
     type: String,
-    enum: ['multiple-choice', 'fill-blank', 'sentence-completion', 'matching', 'map-labelling', 'checkbox'],
+    enum: ['multiple-choice', 'fill-blank', 'sentence-completion', 'matching', 'map-labelling', 'checkbox', 'multi-answer-group'],
     required: true
   },
   questionText:  { type: String, required: true },
