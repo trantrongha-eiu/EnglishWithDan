@@ -3401,8 +3401,8 @@
           <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
           <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
           <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
-          <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>Checkbox (chọn nhiều)</option>
-          <option value="multi-answer-group"  ${data?.type === 'multi-answer-group' ? 'selected' : ''}>🔢 Choose TWO letters (IELTS)</option>
+          <option value="multi-answer-group"  ${data?.type === 'multi-answer-group' ? 'selected' : ''}>🔢 Choose N Letters – IELTS (2,3,4...)</option>
+          <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>☑️ Checkbox cũ (legacy – không dùng nữa)</option>
         </select>
       </div>
     </div>
@@ -3491,30 +3491,43 @@
       if (type === 'multi-answer-group') {
         const opts = data?.options || ['', '', '', '', ''];
         const ca = (data?.correctAnswer || '').toUpperCase().trim();
+        const optCount = Math.max(opts.length, 5); // tối thiểu 5 options
+        const allLetters = 'ABCDEFG';
+        const checkboxCount = data?.checkboxCount || 2;
         return `<div class="form-group" style="margin-bottom:0">
-      <div style="font-size:11px;color:#1d4ed8;margin-bottom:8px;padding:7px 10px;background:#eff6ff;border-left:3px solid #3d8bff;border-radius:4px;line-height:1.6">
-        💡 <strong>Hướng dẫn:</strong> Nhập 2 câu riêng (VD: câu 17 và 18) với <strong>cùng Options A-E</strong>.
-        Mỗi câu có <strong>1 đáp án riêng</strong>. Frontend tự gộp thành 1 UI "Choose TWO letters".
+      <div style="font-size:11px;color:#6b21a8;margin-bottom:8px;padding:7px 10px;background:#fdf4ff;border-left:3px solid #a855f7;border-radius:4px;line-height:1.6">
+        💡 <strong>Hướng dẫn:</strong> Mỗi câu trong nhóm nhập <strong>1 đáp án đúng riêng</strong> (1 chữ cái).<br>
+        Frontend tự <strong>gộp N câu liên tiếp</strong> có cùng Options thành 1 UI "Choose N letters".
+        VD: Q18=<code>A</code>, Q19=<code>C</code>, Q20=<code>F</code> → hiện "Choose THREE letters, A–G".
       </div>
-      <label style="font-size:10px;font-weight:700;color:var(--text3)">Các đáp án A→E (dùng chung cho cả nhóm)</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <label style="font-size:10px;font-weight:700;color:var(--text3);white-space:nowrap">Số đáp án cần chọn (= số câu trong nhóm):</label>
+        <input class="form-input lq-cbcount lq-mag-count" type="number" value="${checkboxCount}"
+               style="width:60px;font-size:13px;padding:5px 8px;font-weight:700" min="2" max="5"
+               title="Admin nhập để reference; frontend tự đếm số câu trong cluster" />
+        <span style="font-size:10px;color:var(--text3)">(chỉ để tham khảo – frontend tự đếm)</span>
+      </div>
+      <label style="font-size:10px;font-weight:700;color:var(--text3)">Options (A→G, dùng chung cho tất cả câu trong nhóm)</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px">
-        ${['A','B','C','D','E'].map((l,i)=>
+        ${'ABCDEFG'.split('').map((l,i)=>
           '<div style="display:flex;align-items:center;gap:5px">'
           +'<span style="font-weight:700;color:var(--accent);width:14px;font-size:12px">'+l+'.</span>'
-          +'<input class="form-input lq-opt" value="'+(opts[i]||'')+'" style="font-size:12px;padding:5px 8px;flex:1" placeholder="'+l+'" />'
+          +'<input class="form-input lq-opt" value="'+(opts[i]||'')+'" style="font-size:12px;padding:5px 8px;flex:1" placeholder="'+(i<5?'Bắt buộc':'Tuỳ chọn')+'" />'
           +'</div>'
         ).join('')}
       </div>
       <div style="margin-top:10px;display:flex;align-items:flex-start;gap:14px">
         <div>
-          <label style="font-size:10px;font-weight:700;color:var(--green);display:block;margin-bottom:4px">✅ Đáp án đúng của câu này</label>
+          <label style="font-size:10px;font-weight:700;color:var(--green);display:block;margin-bottom:4px">✅ Đáp án đúng của <u>câu này</u></label>
           <input class="form-input lq-answer mag-answer" value="${ca}"
-                 style="font-size:15px;padding:7px 10px;width:60px;font-weight:800;letter-spacing:3px;text-transform:uppercase;text-align:center"
-                 maxlength="1" placeholder="A" oninput="this.value=this.value.toUpperCase()" />
+                 style="font-size:18px;padding:7px 10px;width:64px;font-weight:900;letter-spacing:4px;text-transform:uppercase;text-align:center;border:2px solid var(--green)"
+                 maxlength="1" placeholder="A" oninput="this.value=this.value.toUpperCase().replace(/[^A-G]/,\'\')" />
         </div>
-        <div style="font-size:11px;color:var(--text3);line-height:1.7;padding-top:18px">
-          Câu 17 nhập <strong>A</strong>, câu 18 nhập <strong>E</strong>.<br>
-          Học sinh chọn A và E → mỗi câu 1 điểm riêng.<br>
+        <div style="font-size:11px;color:var(--text3);line-height:1.8;padding-top:18px">
+          <strong>Ví dụ Q18-20 Choose THREE:</strong><br>
+          • Câu 18 → nhập <strong>A</strong><br>
+          • Câu 19 → nhập <strong>C</strong><br>
+          • Câu 20 → nhập <strong>F</strong><br>
           Thứ tự chọn không quan trọng.
         </div>
       </div>
@@ -3558,16 +3571,17 @@
           • Có thể upload URL ảnh bản đồ riêng cho câu này (hoặc dùng ảnh chung của nhóm).<br>
           • <strong>Đáp án đúng:</strong> nhập tên địa điểm, VD: <code>library</code>`,
         'checkbox': `
-          <strong>☑️ Checkbox (chọn nhiều)</strong> — Học sinh chọn từ 2 đáp án trở lên.<br>
-          • Nhập đầy đủ 5 đáp án A→E vào các ô bên dưới.<br>
-          • <strong>Tick vào các ô đáp án đúng</strong> (ô "Đáp án đúng" sẽ tự động điền).<br>
-          • Đặt "Số đáp án cần chọn" đúng với đề bài (thường là 2).`,
+          <strong>☑️ Checkbox (legacy – không nên dùng)</strong> — Dạng cũ: chọn đúng <em>toàn bộ</em> set mới được điểm.<br>
+          • <span style="color:#dc2626">⚠️ Dạng này đã được thay thế bởi <strong>🔢 Choose N Letters</strong>.</span><br>
+          • Chỉ giữ lại để hiển thị đề cũ đã lưu trong DB. Đề mới hãy dùng <strong>multi-answer-group</strong>.<br>
+          • Chấm: đúng <strong>toàn bộ</strong> set → 1 điểm; sai/thiếu 1 cái → 0 điểm.`,
         'multi-answer-group': `
-          <strong>🔢 Choose TWO letters (IELTS)</strong> — Dạng câu "Questions 17 and 18 – Choose TWO letters, A-E".<br>
-          • Nhập <strong>2 câu riêng</strong> (câu 17 và câu 18) với <strong>cùng bộ Options A-E</strong>.<br>
-          • Câu 17 → đáp án đúng = <code>A</code> &nbsp;|&nbsp; Câu 18 → đáp án đúng = <code>E</code>.<br>
-          • Frontend tự <strong>gộp thành 1 UI</strong>. Học sinh chọn 2 đáp án, thứ tự không quan trọng.<br>
-          • Chấm: mỗi câu <strong>1 điểm riêng</strong> → đúng 1 được 1đ, đúng 2 được 2đ.`,
+          <strong>🔢 Choose N Letters – IELTS</strong> — Dạng "Questions 18-20 – Choose THREE letters, A-G".<br>
+          • Nhập <strong>N câu riêng</strong> với <strong>cùng bộ Options</strong> (tối đa A→G, 7 options).<br>
+          • Mỗi câu điền <strong>1 chữ cái đáp án đúng</strong>: Q18=<code>A</code>, Q19=<code>C</code>, Q20=<code>F</code>.<br>
+          • Frontend tự <strong>gộp N câu liên tiếp</strong> có cùng Options thành 1 UI chọn N letters.<br>
+          • Chấm: mỗi câu <strong>1 điểm riêng</strong>, thứ tự chọn không quan trọng.<br>
+          • <span style="color:#dc2626">⚠️ Tất cả câu trong nhóm phải nằm liền kề trong cùng 1 Group.</span>`,
       };
       return guides[type] || '';
     }
@@ -3580,7 +3594,7 @@
         'matching':            '💡 Nhập từ trong Word Bank',
         'map-labelling':       '💡 Nhập tên địa điểm trên bản đồ',
         'checkbox':            '',
-        'multi-answer-group':  '💡 Nhập 1 chữ cái đáp án đúng của câu này (A, B, C, D hoặc E)',
+        'multi-answer-group':  '💡 Nhập 1 chữ cái đáp án đúng của câu này (A → G). Frontend tự gộp các câu liên tiếp cùng options thành 1 UI.',
       };
       return hints[type] || '';
     }
@@ -3591,11 +3605,11 @@
       const guide = document.getElementById(`lqguide-${qId}`);
       if (guide) {
         guide.innerHTML = getLQTypeGuide(sel.value);
-        const isCheckbox = sel.value === 'checkbox';
         const isMAG = sel.value === 'multi-answer-group';
-        guide.style.background = isCheckbox ? '#f0fdf4' : isMAG ? '#fdf4ff' : '#eff6ff';
-        guide.style.borderLeftColor = isCheckbox ? 'var(--green)' : isMAG ? 'var(--purple)' : 'var(--accent)';
-        guide.style.color = isCheckbox ? '#15803d' : isMAG ? '#7e22ce' : '#1e40af';
+        const isCheckbox = sel.value === 'checkbox';
+        guide.style.background = isMAG ? '#fdf4ff' : isCheckbox ? '#fefce8' : '#eff6ff';
+        guide.style.borderLeftColor = isMAG ? '#a855f7' : isCheckbox ? '#eab308' : 'var(--accent)';
+        guide.style.color = isMAG ? '#6b21a8' : isCheckbox ? '#854d0e' : '#1e40af';
       }
       const qDiv = sel.closest('[id^="lq-"]');
       if (qDiv) {
@@ -3686,11 +3700,11 @@
               }
               answer = JSON.stringify(ticked);
             } else if (type === 'multi-answer-group') {
-              // Mỗi câu có 1 chữ cái riêng (A/B/C/D/E)
+              // Mỗi câu có 1 chữ cái riêng (A-G)
               const magInput = qDiv.querySelector('.mag-answer') || qDiv.querySelector('.lq-answer');
               answer = magInput ? magInput.value.trim().toUpperCase() : '';
-              if (!answer) {
-                toast(`Câu ${num || '?'}: chưa nhập đáp án đúng (1 chữ cái A-E)`, 'error'); return null;
+              if (!answer || !/^[A-G]$/.test(answer)) {
+                toast(`Câu ${num || '?'}: đáp án phải là 1 chữ cái A-G`, 'error'); return null;
               }
             } else {
               answer = qDiv.querySelector('.lq-answer').value.trim();
@@ -3706,6 +3720,8 @@
               q.options = [...qDiv.querySelectorAll('.lq-opt')].map(i => i.value.trim()).filter(Boolean);
             if (type === 'checkbox')
               q.checkboxCount = parseInt(qDiv.querySelector('.lq-cbcount')?.value) || 2;
+            if (type === 'multi-answer-group')
+              q.checkboxCount = parseInt(qDiv.querySelector('.lq-mag-count')?.value) || 2;
             if (['sentence-completion', 'matching'].includes(type)) {
               const wb = qDiv.querySelector('.lq-wordbank')?.value || '';
               q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);

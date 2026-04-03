@@ -578,8 +578,16 @@
                 renderReviewPartQuestions(idx);
                 const section = getSortedSections(true)[idx];
                 renderTranscript(section?.transcript || '');
+                // Scroll về đầu sau khi switch part
+                const rvInner = document.getElementById('review-questions-inner');
+                if (rvInner) rvInner.scrollTop = 0;
+                const rvPanel = document.getElementById('review-questions-panel');
+                if (rvPanel) rvPanel.scrollTop = 0;
             } else {
                 renderPartQuestions(idx);
+                // Scroll về đầu sau khi switch part
+                const qPanel = document.getElementById('questions-panel');
+                if (qPanel) qPanel.scrollTop = 0;
             }
         }
 
@@ -677,15 +685,17 @@
 
         function renderPlainGroup(group, isReview) {
             // Gom các câu multi-answer-group liên tiếp có chung options thành 1 cluster UI
+            // Cũng hỗ trợ legacy 'checkbox' type (backward-compatible)
+            const isMAGType = t => t === 'multi-answer-group';
             const items = [];
             let i = 0;
             while (i < group.questions.length) {
                 const q = group.questions[i];
-                if (q.type === 'multi-answer-group') {
+                if (isMAGType(q.type)) {
                     const cluster = [q];
                     while (
                         i + 1 < group.questions.length &&
-                        group.questions[i + 1].type === 'multi-answer-group' &&
+                        isMAGType(group.questions[i + 1].type) &&
                         JSON.stringify(group.questions[i + 1].options) === JSON.stringify(q.options)
                     ) {
                         i++;
@@ -700,39 +710,52 @@
             return items.join('');
         }
 
-        // Render nhóm "Choose TWO letters A-E" gộp thành 1 UI
+        // Render nhóm "Choose N letters A-G" gộp thành 1 UI chung
+        // Hỗ trợ 2, 3, 4 letters (Q18-20 Choose THREE letters, etc.)
         function renderMultiAnswerCluster(cluster, isReview) {
-            const count    = cluster.length;
+            const count    = cluster.length;   // = số đáp án cần chọn = số câu trong cluster
             const firstNum = cluster[0].questionNumber;
             const lastNum  = cluster[cluster.length - 1].questionNumber;
             const opts     = cluster[0].options || [];
 
             // Đáp án đúng từng câu trong cluster (mảng chữ cái)
-            const caLetters = cluster.map(q => q.correctAnswer.trim().toUpperCase());
+            const caLetters = cluster.map(q => (q.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
 
             // Đáp án học sinh (lưu chung tại firstNum)
+            // Review: đọc từ cluster[0].userAnswer (được merge từ reviewMap)
             let uaArr = [];
             if (isReview) {
-                try { uaArr = JSON.parse(cluster[0].userAnswer || '[]').map(x => x.toUpperCase()); } catch {}
+                // Thử đọc từ câu đầu cluster (sau khi merge reviewMap)
+                const rawUA = cluster[0].userAnswer || '';
+                try { uaArr = JSON.parse(rawUA).map(x => x.toUpperCase()); } catch { uaArr = []; }
             } else {
                 try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch {}
             }
 
-            const rangeLabel = count === 2
-                ? `Questions ${firstNum} and ${lastNum}`
-                : `Questions ${firstNum}–${lastNum}`;
+            // Label range: "Questions 18, 19 and 20" hoặc "Questions 17 and 18"
+            let rangeLabel;
+            if (count === 1) {
+                rangeLabel = `Question ${firstNum}`;
+            } else if (count === 2) {
+                rangeLabel = `Questions ${firstNum} and ${lastNum}`;
+            } else {
+                const nums = cluster.map(q => q.questionNumber);
+                rangeLabel = `Questions ${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`;
+            }
 
+            // Tên chữ cái: A, B, C, D, E, F, G
+            const LETTERS = 'ABCDEFGHIJ';
             const optHtml = opts.map((opt, idx) => {
-                const letter = ['A','B','C','D','E','F','G','H'][idx] || String.fromCharCode(65 + idx);
+                const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
                 let cls = '';
                 if (isReview) {
                     if (caLetters.includes(letter)) cls = 'correct-ans';
-                    else if (uaArr.includes(letter) && !caLetters.includes(letter)) cls = 'wrong-ans';
+                    else if (uaArr.includes(letter)) cls = 'wrong-ans';
                 } else {
                     if (uaArr.includes(letter)) cls = 'selected';
                 }
                 const onclick = isReview ? '' : `onclick="toggleMultiAnswer(${firstNum}, '${letter}', ${count}, ${lastNum})"`;
-                const label = opt.replace(/^[A-Ha-h]\s+/, '');
+                const label = opt.replace(/^[A-Ja-j]\s+/, '');
                 return `<div class="checkbox-opt ${cls}" data-cluster="${firstNum}" data-value="${letter}" ${onclick}>
                     <span class="check-box"></span>
                     <label><strong>${letter}</strong>&nbsp;&nbsp;${label}</label>
@@ -743,19 +766,24 @@
             let reviewExtra = '';
             if (isReview) {
                 reviewExtra = cluster.map(q => {
-                    const ok = uaArr.includes(q.correctAnswer.trim().toUpperCase());
+                    // q.isCorrect đã được tính ở backend
+                    const ok = !!q.isCorrect;
+                    const qCA = (q.correctAnswer || '').trim().toUpperCase();
                     return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
-                        Câu ${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${q.correctAnswer}</strong>`}
+                        Câu ${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án đúng: <strong>${qCA}</strong>`}
                     </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
                 }).join('');
             }
+
+            // Hint text
+            const letterWord = count === 2 ? 'TWO' : count === 3 ? 'THREE' : count === 4 ? 'FOUR' : count.toString();
 
             return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}">
                 <div class="q-header">
                     <span class="q-badge">${rangeLabel}</span>
                     <div class="q-text">${cluster[0].questionText}</div>
                 </div>
-                <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
+                <div class="checkbox-hint">Choose <strong>${letterWord}</strong> letters, A–${LETTERS[opts.length - 1] || 'E'}</div>
                 <div class="checkbox-opts">${optHtml}</div>
                 ${reviewExtra}
             </div>`;
@@ -1111,7 +1139,8 @@
         function getAllQuestions(isReview) {
             if (isReview) return state.reviewResult?.questions || [];
             return getSortedSections(false)
-                .flatMap(s => (s.questionGroups || []).flatMap(g => g.questions));
+                .flatMap(s => (s.questionGroups || []).flatMap(g => g.questions))
+                .sort((a, b) => a.questionNumber - b.questionNumber);
         }
 
         function renderQNav(gridId, isReview) {
@@ -1129,15 +1158,45 @@
 
         function isAnswered(qnum) {
             const val = state.answers[qnum];
-            if (!val) return false;
-            try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.length > 0 : !!val; } catch {}
-            return !!val;
+            if (val) {
+                try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.length > 0 : !!val; } catch {}
+                return !!val;
+            }
+            // Multi-answer-group: câu 2..N không có key riêng, answer lưu ở firstNum của cluster
+            // Tìm cluster element chứa câu này
+            const clusterEl = [...document.querySelectorAll('[data-cluster-start]')].find(el => {
+                const s = parseInt(el.dataset.clusterStart);
+                const e = parseInt(el.dataset.clusterEnd);
+                return qnum > s && qnum <= e;
+            });
+            if (clusterEl) {
+                const firstNum = parseInt(clusterEl.dataset.clusterStart);
+                const clusterVal = state.answers[firstNum];
+                if (clusterVal) {
+                    try { const arr = JSON.parse(clusterVal); return Array.isArray(arr) ? arr.length > 0 : !!clusterVal; } catch {}
+                    return !!clusterVal;
+                }
+            }
+            return false;
         }
 
         function updateQNav() {
+            // Tìm cluster starts để biết câu nào dùng chung answers
+            const clusterMap = {}; // qnum -> clusterStart
+            getAllQuestions(false).forEach(q => {
+                if (q.type === 'multi-answer-group') {
+                    // Cluster start được detect trong renderPlainGroup;
+                    // Ở đây dùng heuristic: tìm answered key
+                    clusterMap[q.questionNumber] = q.questionNumber;
+                }
+            });
             getAllQuestions(false).forEach(q => {
                 const btn = document.getElementById(`qnb-${q.questionNumber}`);
-                if (btn) btn.className = `q-nav-btn ${isAnswered(q.questionNumber) ? 'answered' : ''}`;
+                if (!btn) return;
+                let answered = isAnswered(q.questionNumber);
+                // Với multi-answer-group: câu có thể được lưu ở firstNum của cluster
+                // isAnswered đã handle qua state.answers[num]
+                btn.className = `q-nav-btn ${answered ? 'answered' : ''}`;
             });
         }
 
@@ -1147,23 +1206,39 @@
             const partIdx = sections.findIndex(s =>
                 num >= s.questionRange.start && num <= s.questionRange.end
             );
-            if (partIdx >= 0 && partIdx !== state.partIdx) {
+            const needSwitch = partIdx >= 0 && partIdx !== state.partIdx;
+            if (needSwitch) {
                 switchPart(partIdx, state.isReview);
             }
-            setTimeout(() => {
-                const el = document.getElementById(`qi-${num}`);
-                if (!el) return;
-                const panel = state.isReview
-                    ? document.getElementById('review-questions-panel')
-                    : document.getElementById('questions-panel');
-                if (panel) {
-                    const panelTop  = panel.getBoundingClientRect().top;
-                    const elTop     = el.getBoundingClientRect().top;
-                    panel.scrollTop += (elTop - panelTop) - 80;
-                } else {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Dùng requestAnimationFrame để chờ DOM render xong sau switchPart
+            const doScroll = () => {
+                // cluster: câu nằm trong 1 cluster thì tìm qi-firstNum
+                let el = document.getElementById(`qi-${num}`);
+                if (!el) {
+                    // Thử tìm cluster chứa câu này
+                    document.querySelectorAll('[data-cluster-start]').forEach(c => {
+                        const s = parseInt(c.dataset.clusterStart);
+                        const e = parseInt(c.dataset.clusterEnd);
+                        if (num >= s && num <= e) el = c;
+                    });
                 }
-            }, 50);
+                if (!el) return;
+                const panelId = state.isReview ? 'review-questions-panel' : 'questions-panel';
+                const panel = document.getElementById(panelId);
+                if (panel) {
+                    const panelRect = panel.getBoundingClientRect();
+                    const elRect = el.getBoundingClientRect();
+                    panel.scrollTop += (elRect.top - panelRect.top) - 80;
+                } else {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+            if (needSwitch) {
+                // Double rAF: chờ render 2 frame sau khi switch
+                requestAnimationFrame(() => requestAnimationFrame(doScroll));
+            } else {
+                requestAnimationFrame(doScroll);
+            }
         }
 
         function updateFooter() {
