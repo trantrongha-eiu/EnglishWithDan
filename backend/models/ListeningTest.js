@@ -5,12 +5,15 @@ const ListeningQuestionSchema = new mongoose.Schema({
   questionNumber: { type: Number, required: true },
   type: {
     type: String,
+    // 'checkbox' giữ lại để backward-compatible với data cũ; dùng 'multi-answer-group' cho data mới
     enum: ['multiple-choice', 'fill-blank', 'sentence-completion', 'matching', 'map-labelling', 'checkbox', 'multi-answer-group'],
     required: true
   },
   questionText:  { type: String, required: true },
   options:       [String],
-  checkboxCount: { type: Number, default: 1 },
+  // checkboxCount: số đáp án cần chọn trong cluster (2, 3, 4...)
+  // Dùng cho cả 'checkbox' (legacy) và 'multi-answer-group'
+  checkboxCount: { type: Number, default: 2 },
   wordBank:      [String],
   imageUrl:      { type: String, default: '' },
   correctAnswer: { type: String, required: true },

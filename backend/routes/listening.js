@@ -454,20 +454,20 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
       const ca  = q.correctAnswer.trim();
 
       let isCorrect = false;
-      if (q.type === 'checkbox') {
-        // Checkbox cũ: cả set phải khớp mới tính 1 điểm
-        try {
-          const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
-          const caArr = JSON.parse(ca).map(x => x.toLowerCase().trim()).sort();
-          isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
-        } catch { isCorrect = false; }
-      } else if (q.type === 'multi-answer-group') {
-        // Mỗi câu có 1 đáp án đúng riêng (VD: câu17="A", câu18="E")
-        // Học sinh chọn chung 1 mảng cho cả nhóm: ["A","E"] hoặc ["E","A"]
+      if (q.type === 'multi-answer-group') {
+        // Mỗi câu có 1 đáp án đúng riêng (VD: Q18="A", Q19="C", Q20="F")
+        // Học sinh chọn chung 1 mảng cho cả cluster: ["A","C","F"] theo thứ tự bất kỳ
         // Câu này đúng khi chữ cái đáp án của câu nằm trong mảng học sinh chọn
         try {
           const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
           isCorrect = uaArr.includes(ca.toUpperCase().trim());
+        } catch { isCorrect = false; }
+      } else if (q.type === 'checkbox') {
+        // Legacy checkbox: cả set phải khớp hoàn toàn mới tính 1 điểm (behavior cũ giữ nguyên)
+        try {
+          const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
+          const caArr = JSON.parse(ca).map(x => x.toLowerCase().trim()).sort();
+          isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
         } catch { isCorrect = false; }
       } else {
         isCorrect = ua.toLowerCase() === ca.toLowerCase();
