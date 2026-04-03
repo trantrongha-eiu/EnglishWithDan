@@ -557,8 +557,14 @@
         // ══════════════════════════════════════════════
         // PART TABS
         // ══════════════════════════════════════════════
+        // Sort sections theo partNumber để tránh lỗi render sai Part khi data không theo thứ tự
+        function getSortedSections(isReview) {
+            const raw = isReview ? (state.reviewResult?.sections || []) : (state.currentTest?.sections || []);
+            return [...raw].sort((a, b) => (a.partNumber || 0) - (b.partNumber || 0));
+        }
+
         function buildPartTabs(containerId, isReview) {
-            const sections = isReview ? (state.reviewResult?.sections || []) : (state.currentTest?.sections || []);
+            const sections = getSortedSections(isReview);
             document.getElementById(containerId).innerHTML = sections.map((s, i) =>
                 `<button class="part-tab-btn ${i === 0 ? 'active' : ''}" onclick="switchPart(${i}, ${isReview})">Part ${s.partNumber}</button>`
             ).join('');
@@ -570,7 +576,7 @@
             document.querySelectorAll(`#${tabsId} .part-tab-btn`).forEach((b, i) => b.classList.toggle('active', i === idx));
             if (isReview) {
                 renderReviewPartQuestions(idx);
-                const section = (state.reviewResult?.sections || [])[idx];
+                const section = getSortedSections(true)[idx];
                 renderTranscript(section?.transcript || '');
             } else {
                 renderPartQuestions(idx);
@@ -581,7 +587,7 @@
         // RENDER QUESTIONS (với questionGroups)
         // ══════════════════════════════════════════════
         function renderPartQuestions(partIdx) {
-            const section = (state.currentTest?.sections || [])[partIdx];
+            const section = getSortedSections(false)[partIdx];
             if (!section) return;
             const panel = document.getElementById('questions-panel');
             let html = `
@@ -847,7 +853,7 @@
         function renderReviewPartQuestions(partIdx) {
             const r = state.reviewResult;
             if (!r) return;
-            const section = r.sections[partIdx];
+            const section = getSortedSections(true)[partIdx];
             if (!section) return;
 
             const reviewMap = {};
@@ -1104,7 +1110,7 @@
         // ══════════════════════════════════════════════
         function getAllQuestions(isReview) {
             if (isReview) return state.reviewResult?.questions || [];
-            return (state.currentTest?.sections || [])
+            return getSortedSections(false)
                 .flatMap(s => (s.questionGroups || []).flatMap(g => g.questions));
         }
 
@@ -1137,9 +1143,7 @@
 
         function scrollToQ(num) {
             // Nếu câu thuộc part khác → switch part trước
-            const sections = state.isReview
-                ? (state.reviewResult?.sections || [])
-                : (state.currentTest?.sections || []);
+            const sections = getSortedSections(state.isReview);
             const partIdx = sections.findIndex(s =>
                 num >= s.questionRange.start && num <= s.questionRange.end
             );
