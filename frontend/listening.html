@@ -187,8 +187,10 @@
             </div>
 
             <div class="review-questions-panel" id="review-questions-panel">
-                <div class="q-nav-label" style="margin-bottom:12px">Xem lại câu hỏi</div>
-                <div class="q-nav-grid" id="q-nav-grid-rv" style="margin-bottom:20px"></div>
+                <div class="review-qnav-bar">
+                    <span class="review-qnav-label">Xem lại câu hỏi:</span>
+                    <div class="q-nav-grid-horizontal" id="q-nav-grid-rv"></div>
+                </div>
                 <div id="review-questions-inner"></div>
             </div>
         </div>
@@ -255,6 +257,7 @@
                             <th>Sai</th>
                             <th>Bỏ qua</th>
                             <th>Band</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="history-tbody"></tbody>
@@ -290,6 +293,38 @@
 
     <!-- Toast -->
     <div id="toast"><span id="toast-msg"></span></div>
+
+    <style>
+        /* ── Review Q-nav ngang ─────────────────────── */
+        .review-qnav-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            flex-wrap: wrap;
+        }
+        .review-qnav-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+        .q-nav-grid-horizontal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .q-nav-grid-horizontal .q-nav-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 11px;
+        }
+    </style>
 
     <script>
         'use strict';
@@ -1390,22 +1425,65 @@
             modal.className = 'modal-overlay';
             modal.innerHTML = `
                 <div class="modal-box modal-sm">
-                    <h3>Lưu vào sổ từ vựng</h3>
-                    <div style="margin-bottom:12px;margin-top:10px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                        <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
+                        <button onclick="document.getElementById('book-picker-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
+                    </div>
+                    <div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border-radius:10px">
                         <strong>${state.dictWord}</strong>
                         <span style="color:#9ca3af;font-size:13px"> – ${state.dictMeaning}</span>
                     </div>
-                    ${books.map(b => `
+                    <div id="bp-book-list">
+                    ${books.length ? books.map(b => `
                         <div onclick="pickBook('${b._id}', this)" id="bp-${b._id}"
                             style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s"
                             onmouseover="this.style.borderColor='#3d8bff';this.style.background='#eff6ff'"
                             onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'">
-                            <span style="font-size:20px">${b.emoji}</span>
-                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords} từ</div></div>
-                        </div>`).join('')}
+                            <span style="font-size:20px">${b.emoji || '📖'}</span>
+                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords ?? 0} từ</div></div>
+                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">Bạn chưa có sổ từ vựng nào.</p>'}
+                    </div>
+                    <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px">
+                        <div style="font-size:13px;font-weight:600;color:#6b7280;margin-bottom:8px">➕ Tạo sổ mới và lưu từ</div>
+                        <div style="display:flex;gap:8px">
+                            <input id="bp-new-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+                                style="flex:1;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;font-family:inherit;outline:none"
+                                onfocus="this.style.borderColor='#3d8bff'" onblur="this.style.borderColor='#e5e7eb'"
+                                onkeydown="if(event.key==='Enter') createBookAndSave()" />
+                            <button onclick="createBookAndSave()"
+                                style="background:#3d8bff;color:#fff;border:none;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">
+                                Tạo & Lưu
+                            </button>
+                        </div>
+                    </div>
                 </div>`;
             document.body.appendChild(modal);
             modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+            setTimeout(() => document.getElementById('bp-new-name')?.focus(), 50);
+        }
+
+        async function createBookAndSave() {
+            const nameEl = document.getElementById('bp-new-name');
+            const name   = nameEl?.value.trim();
+            if (!name) { nameEl?.focus(); toast('Vui lòng nhập tên sổ', 'info'); return; }
+            try {
+                // Tạo sổ mới
+                const res1  = await fetch(`${API}/vocabbook`, {
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ name, emoji: '📖' })
+                });
+                const d1 = await res1.json();
+                if (!d1.success) throw new Error(d1.message);
+                const bookId = d1.book._id;
+                // Lưu từ vào sổ mới
+                const res2  = await fetch(`${API}/vocabbook/${bookId}/words`, {
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, source: 'listening' })
+                });
+                const d2 = await res2.json();
+                document.getElementById('book-picker-modal')?.remove();
+                toast(d2.success ? `Đã tạo sổ "${name}" và lưu từ!` : (d2.message || 'Lỗi'), d2.success ? 'success' : 'error');
+            } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
         }
 
         async function pickBook(bookId, el) {
@@ -1440,6 +1518,23 @@
         }
 
         // ══════════════════════════════════════════════
+        // REVIEW FROM HISTORY
+        // ══════════════════════════════════════════════
+        async function reviewFromHistory(attemptId) {
+            closeModal('modal-history');
+            toast('Đang tải kết quả...', 'info');
+            try {
+                const res  = await fetch(`${API}/listening/history/${attemptId}`, { headers: authH() });
+                const data = await safeJson(res);
+                if (!data.success) throw new Error(data.message);
+                state.reviewResult = data.result;
+                goToReview();
+            } catch (err) {
+                toast('Lỗi tải kết quả: ' + err.message, 'error');
+            }
+        }
+
+        // ══════════════════════════════════════════════
         // HISTORY MODAL
         // ══════════════════════════════════════════════
         async function showHistoryModal() {
@@ -1457,6 +1552,7 @@
                     const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
                     const mins = a.timeTaken ? `${Math.floor(a.timeTaken/60)}:${pad(a.timeTaken%60)}` : '–';
                     const bandCls = a.bandScore >= 7 ? 'color:#16a34a' : a.bandScore >= 5.5 ? 'color:#f59e0b' : 'color:#e53935';
+                    const attemptId = a._id || '';
                     return `<tr>
                         <td>${a.testName || a.testId?.name || '–'}</td>
                         <td>${date}</td>
@@ -1465,6 +1561,7 @@
                         <td style="color:#e53935;font-weight:600">${a.wrongCount ?? '–'}</td>
                         <td style="color:#9ca3af;font-weight:600">${a.skippedCount ?? '–'}</td>
                         <td><strong style="${bandCls}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
+                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" style="background:#eff6ff;color:#3d8bff;border:1px solid #bfdbfe;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Xem lại</button>` : ''}</td>
                     </tr>`;
                 }).join('');
             } catch (err) {
@@ -1509,8 +1606,9 @@
         window.setTool = setTool;
         window.setToolExam = setToolExam;
         window.showHistoryModal = showHistoryModal;
+        window.reviewFromHistory = reviewFromHistory;
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
-        window.saveVocabWord = saveVocabWord; window.pickBook = pickBook;
+        window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
     </script>
 </body>
 </html>
