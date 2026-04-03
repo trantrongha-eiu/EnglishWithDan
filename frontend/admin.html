@@ -1949,8 +1949,11 @@
         <td style="font-family:var(--mono);font-size:12px">${p.questionRange?.start}–${p.questionRange?.end}</td>
         <td><span class="badge ${p.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${p.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
         <td style="color:var(--text3)">${formatDate(p.createdAt).split(' ')[0]}</td>
-        <td><button class="btn btn-ghost btn-sm" onclick="editPassage('${p._id}')">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deletePassage('${p._id}','${p.title}')">🗑</button></td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="editPassage('${p._id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="softDeletePassage('${p._id}','${p.title}')" title="Ẩn">🙈</button>
+          <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeletePassage('${p._id}','${p.title}')" title="Xóa vĩnh viễn">🗑</button>
+        </td>
       </tr>`).join('')
         : '<tr><td colspan="8" class="table-empty">Không có bài đọc nào</td></tr>';
       const total = list.length, pages = Math.ceil(total / PAGE_SIZE);
@@ -1972,10 +1975,20 @@
       try { const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() }); if (res.ok) { const d = await res.json(); openPassageModal(d.passage || p); } else openPassageModal(p); }
       catch { openPassageModal(p); }
     }
-    function deletePassage(id, title) {
+    function softDeletePassage(id, title) {
       confirm2(`Ẩn bài đọc "${title}"?`, async () => {
         await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
         toast('Đã ẩn bài đọc'); await loadPassages();
+      });
+    }
+    function hardDeletePassage(id, title) {
+      confirmAction(`Xóa VĨNH VIỄN bài đọc "${title}"? Không thể khôi phục!`, async () => {
+        try {
+          const res  = await fetch(`${API}/admin/passages/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn bài đọc'); await loadPassages();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
       });
     }
 
@@ -2552,7 +2565,10 @@
       <td>${t.seriesName || '–'}</td>
       <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
       <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button></td></tr>`).join('')
+      <td><button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="softDeleteTest('${t._id}','${t.name}')" title="Ẩn">🙈</button>
+          <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeleteTest('${t._id}','${t.name}')" title="Xóa vĩnh viễn">🗑</button>
+      </td></tr>`).join('')
         : '<tr><td colspan="6" class="table-empty">Chưa có bộ đề nào</td></tr>';
     }
     function openTestModal(data = null) {
@@ -2575,6 +2591,27 @@
         toast(editTestId ? 'Đã cập nhật' : 'Đã tạo bộ đề mới');
         closeModal('modal-test'); await loadTests();
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+    }
+
+    function softDeleteTest(id, name) {
+      confirmAction(`Ẩn bộ đề "${name}"?`, async () => {
+        try {
+          const res  = await fetch(`${API}/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã ẩn bộ đề'); await loadTests();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+    function hardDeleteTest(id, name) {
+      confirmAction(`Xóa VĨNH VIỄN bộ đề "${name}"? Không thể khôi phục!`, async () => {
+        try {
+          const res  = await fetch(`${API}/admin/tests/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn bộ đề'); await loadTests();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
     }
 
     /* ══════════════════════════════════════════════
@@ -2947,7 +2984,8 @@
       <td>
         <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
         <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')">🗑</button>
+        <button class="btn btn-danger btn-sm" onclick="softDeleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Ẩn">🙈</button>
+        <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Xóa vĩnh viễn">🗑</button>
       </td>
     </tr>`;
       }).join('');
@@ -2995,10 +3033,22 @@
       } catch { openListeningModal(allListeningTests.find(t => t._id === id)); }
     }
 
-    function deleteListeningTest(id, name) {
-      confirm2(`Ẩn đề nghe "${name}"?`, async () => {
-        await fetch(`${API}/listening/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
-        toast('Đã ẩn đề nghe'); await loadListeningTests();
+    function softDeleteListeningTest(id, name) {
+      confirmAction(`Ẩn đề nghe "${name}"?`, async () => {
+        try {
+          await fetch(`${API}/listening/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
+          toast('Đã ẩn đề nghe'); await loadListeningTests();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+    function hardDeleteListeningTest(id, name) {
+      confirmAction(`Xóa VĨNH VIỄN đề nghe "${name}"? Không thể khôi phục!`, async () => {
+        try {
+          const res  = await fetch(`${API}/listening/admin/tests/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn đề nghe'); await loadListeningTests();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
       });
     }
 
@@ -4180,7 +4230,8 @@
               <td>${formatDate(q.createdAt)}</td>
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openSpeakingQModal('${q._id}')">✏️ Sửa</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteSpeakingQuestion('${q._id}')" style="margin-left:4px">✕</button>
+                <button class="btn btn-danger btn-sm" onclick="softDeleteSpeakingQuestion('${q._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
+                <button class="btn btn-danger btn-sm" style="margin-left:4px;background:rgba(229,57,53,.3)" onclick="hardDeleteSpeakingQuestion('${q._id}')" title="Xóa vĩnh viễn">🗑</button>
               </td>
             </tr>`).join('')
           : '<tr><td colspan="6" class="table-empty">Chưa có câu hỏi nào.</td></tr>';
@@ -4238,15 +4289,24 @@
       } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
     }
 
-    function deleteSpeakingQuestion(id) {
+    function softDeleteSpeakingQuestion(id) {
       confirmAction('Ẩn câu hỏi này?', async () => {
         try {
-          const res  = await fetch(`${API}/admin/speaking/questions/${id}`, {
-            method: 'DELETE', headers: authH()
-          });
+          const res  = await fetch(`${API}/admin/speaking/questions/${id}`, { method: 'DELETE', headers: authH() });
           const data = await res.json();
           if (!data.success) throw new Error(data.message);
           toast('Đã ẩn câu hỏi');
+          loadSpeakingQuestions();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+    function hardDeleteSpeakingQuestion(id) {
+      confirmAction('Xóa VĨNH VIỄN câu hỏi này? Không thể khôi phục!', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/speaking/questions/${id}/permanent`, { method: 'DELETE', headers: authH() });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn câu hỏi');
           loadSpeakingQuestions();
         } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
       });
@@ -4270,7 +4330,8 @@
               <td>${formatDate(m.createdAt)}</td>
               <td>
                 <button class="btn btn-ghost btn-sm" onclick="openSpeakingMatModal('${m._id}')">✏️ Sửa</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteSpeakingMaterial('${m._id}')" style="margin-left:4px">✕</button>
+                <button class="btn btn-danger btn-sm" onclick="softDeleteSpeakingMaterial('${m._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
+                <button class="btn btn-danger btn-sm" style="margin-left:4px;background:rgba(229,57,53,.3)" onclick="hardDeleteSpeakingMaterial('${m._id}')" title="Xóa vĩnh viễn">🗑</button>
               </td>
             </tr>`).join('')
           : '<tr><td colspan="6" class="table-empty">Chưa có tài liệu nào.</td></tr>';
@@ -4392,7 +4453,7 @@
       }
     }
 
-    function deleteSpeakingMaterial(id) {
+    function softDeleteSpeakingMaterial(id) {
       confirmAction('Ẩn tài liệu này?', async () => {
         try {
           const res  = await fetch(`${API}/admin/speaking/materials/${id}`, {
@@ -4401,6 +4462,19 @@
           const data = await res.json();
           if (!data.success) throw new Error(data.message);
           toast('Đã ẩn tài liệu');
+          loadSpeakingMaterials();
+        } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+      });
+    }
+    function hardDeleteSpeakingMaterial(id) {
+      confirmAction('Xóa VĨNH VIỄN tài liệu này? Không thể khôi phục!', async () => {
+        try {
+          const res  = await fetch(`${API}/admin/speaking/materials/${id}/permanent`, {
+            method: 'DELETE', headers: authH()
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error(data.message);
+          toast('Đã xóa vĩnh viễn tài liệu');
           loadSpeakingMaterials();
         } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
       });
