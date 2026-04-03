@@ -331,6 +331,47 @@
     <button class="btn-save-vocab" onclick="saveVocab()">＋ Lưu vào sổ từ vựng</button>
   </div>
 
+  <!-- MODAL – CHỌN SỔ TỪ VỰNG -->
+  <div id="modal-vocab-picker" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>📚 Lưu vào sổ từ vựng</h3>
+        <button class="modal-close" onclick="closeModal('modal-vocab-picker')">✕</button>
+      </div>
+      <div class="modal-body-scroll" style="max-height:320px;overflow-y:auto;padding:8px 0">
+        <div id="vocab-book-list"></div>
+      </div>
+      <div style="border-top:1px solid #e5e7eb;padding:12px 0 0">
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:8px">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="new-book-name" type="text" placeholder="Tên sổ mới..."
+            style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;outline:none"
+            onkeydown="if(event.key==='Enter') createNewBookAndSave()" />
+          <button onclick="createNewBookAndSave()"
+            style="background:#3d8bff;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap">
+            + Tạo &amp; lưu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="vocab-toast" class="vocab-toast"></div>
+
+  <style>
+    .vb-pick-item { display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-radius:8px;transition:background .15s; }
+    .vb-pick-item:hover { background:#f3f4f6; }
+    .vb-pick-emoji { font-size:22px; }
+    .vb-pick-info { flex:1; }
+    .vb-pick-name { font-size:14px;font-weight:600;color:#1f2937; }
+    .vb-pick-count { font-size:12px;color:#9ca3af; }
+    .vb-pick-arrow { font-size:20px;color:#d1d5db; }
+    .vocab-toast { position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:9999;white-space:nowrap; }
+    .vocab-toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+    .vocab-toast.success { background:#065f46; }
+    .vocab-toast.info { background:#1e40af; }
+  </style>
+
   <script src="js/auth.js"></script>
   <script src="js/reading.js"></script>
 </body>

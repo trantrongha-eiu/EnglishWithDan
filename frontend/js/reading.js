@@ -874,8 +874,29 @@ function buildReviewQNav(attempt, reviewMap) {
   nav.innerHTML = allNums.map(n => {
     const r = reviewMap[n];
     const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
-    return `<button class="q-nav-btn ${cls}" title="Câu ${n}">${n}</button>`;
+    return `<button class="q-nav-btn ${cls}" title="Câu ${n}" onclick="jumpToReviewQuestion(${n})">${n}</button>`;
   }).join('');
+}
+
+function jumpToReviewQuestion(qNum) {
+  // Find which passage contains this question
+  let pIdx = state.currentPassageIdx;
+  state.passages.forEach((p, i) => {
+    const allQ = getAllQuestionsFromPassage(p);
+    if (allQ.some(q => q.questionNumber === qNum)) pIdx = i;
+  });
+  // Switch passage if needed, then scroll
+  if (pIdx !== state.currentPassageIdx) {
+    switchReviewPassage(pIdx);
+    // Wait for DOM to render before scrolling
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const el = document.getElementById(`q${qNum}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }));
+  } else {
+    const el = document.getElementById(`q${qNum}`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -958,13 +979,79 @@ async function saveVocab() {
   const word = _dictWord;
   const meaning = document.getElementById('dict-meaning').textContent;
   const example = document.getElementById('dict-example').textContent;
+  const phonetic = document.getElementById('dict-phonetic').textContent;
+  const pos = document.getElementById('dict-pos').textContent;
+  openVocabBookPicker({ word, meaning, example, phonetic, partOfSpeech: pos, source: 'reading' });
+}
+
+/* ── Vocab Book Picker Modal ─────────────────────────────────────── */
+let _pendingVocabWord = null;
+
+async function openVocabBookPicker(wordData) {
+  _pendingVocabWord = wordData;
+  const modal = document.getElementById('modal-vocab-picker');
+  const listEl = document.getElementById('vocab-book-list');
+  listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#9ca3af">Đang tải sổ...</div>';
+  modal.classList.remove('hidden');
   try {
-    await apiFetch('/api/reading/vocab/save', {
+    const res = await apiFetch('/api/vocabbook/');
+    const books = res.books || [];
+    if (!books.length) {
+      listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#9ca3af">Chưa có sổ nào</div>';
+      return;
+    }
+    listEl.innerHTML = books.map(b =>
+      `<div class="vb-pick-item" onclick="saveWordToBook('${b._id}')">
+        <span class="vb-pick-emoji">${b.emoji || '📘'}</span>
+        <div class="vb-pick-info">
+          <div class="vb-pick-name">${escHtml(b.name)}</div>
+          <div class="vb-pick-count">${b.totalWords} từ</div>
+        </div>
+        <span class="vb-pick-arrow">›</span>
+      </div>`
+    ).join('');
+  } catch {
+    listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#e53935">Lỗi tải sổ từ vựng</div>';
+  }
+}
+
+async function createNewBookAndSave() {
+  const nameInput = document.getElementById('new-book-name');
+  const name = nameInput?.value?.trim();
+  if (!name) { if (nameInput) nameInput.focus(); return; }
+  try {
+    const res = await apiFetch('/api/vocabbook/', {
       method: 'POST',
-      body: JSON.stringify({ word, meaning, example })
+      body: JSON.stringify({ name, emoji: '📘', color: '#3d8bff' })
     });
-    alert(`Đã lưu từ "${word}"`);
+    if (!res.success) { alert(res.message); return; }
+    if (nameInput) nameInput.value = '';
+    await saveWordToBook(res.book._id);
+  } catch { alert('Lỗi tạo sổ mới'); }
+}
+
+async function saveWordToBook(bookId) {
+  if (!_pendingVocabWord) return;
+  try {
+    const res = await apiFetch(`/api/vocabbook/${bookId}/words`, {
+      method: 'POST',
+      body: JSON.stringify(_pendingVocabWord)
+    });
+    closeModal('modal-vocab-picker');
+    const msg = res.success
+      ? `✓ Đã lưu "${_pendingVocabWord.word}" vào sổ`
+      : `ℹ️ ${res.message}`;
+    showVocabToast(msg, res.success ? 'success' : 'info');
+    _pendingVocabWord = null;
   } catch { alert('Lỗi lưu từ'); }
+}
+
+function showVocabToast(msg, type = 'success') {
+  const toast = document.getElementById('vocab-toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.className = `vocab-toast ${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
