@@ -1880,12 +1880,19 @@
         const data = await (await fetch(`${API}/admin/history`, { headers: authH() })).json();
         if (!data.success) return;
 
+        // Helper lấy tên người dùng, ưu tiên displayName từ backend
+        function getUsername(h) {
+          const u = h.userId;
+          if (!u) return '–';
+          if (u.displayName) return u.displayName;
+          if (u.firstName) return `${u.firstName} ${u.lastName || ''}`.trim();
+          return u.username || u.name || '–';
+        }
+
         // Dashboard: 8 bài gần nhất
         document.getElementById('recent-tbody').innerHTML =
           data.history.slice(0, 8).map(h => {
-            const name = h.userId?.firstName
-              ? `${h.userId.firstName} ${h.userId.lastName}`
-              : h.userId?.username || '–';
+            const name = getUsername(h);
             return `<tr>
           <td><strong>${name}</strong></td>
           <td>${h.testId?.name || '–'}</td>
@@ -1896,17 +1903,22 @@
         </tr>`;
           }).join('') || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
 
-        renderHistoryTable(data.history);
+        renderHistoryTable(data.history, getUsername);
       } catch (err) {
         console.error(err);
       }
     }
-    function renderHistoryTable(list) {
+    function renderHistoryTable(list, getUsername) {
+      if (!getUsername) getUsername = h => {
+        const u = h.userId;
+        if (!u) return '–';
+        if (u.displayName) return u.displayName;
+        if (u.firstName) return `${u.firstName} ${u.lastName || ''}`.trim();
+        return u.username || u.name || '–';
+      };
       document.getElementById('history-tbody').innerHTML = list.length
         ? list.map(h => {
-          const name = h.userId?.firstName
-            ? `${h.userId.firstName} ${h.userId.lastName}`
-            : h.userId?.username || '–';
+          const name = getUsername(h);
           return `<tr>
           <td><strong>${name}</strong></td>
           <td>${h.testId?.name || '–'}</td>
