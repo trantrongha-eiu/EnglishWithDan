@@ -253,13 +253,25 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
 router.get('/history', auth, teacherOnly, async (req, res) => {
   try {
     const history = await TestAttempt.find({ status: 'completed' })
-      .populate('userId', 'username firstName lastName')
+      .populate('userId', 'username firstName lastName name')
       .populate('testId', 'name testNumber')
       .sort({ endTime: -1 })
       .limit(100)
       .select('-answers -passagesUsed');
 
-    res.json({ success: true, history });
+    // Chuẩn hoá: đảm bảo userId luôn có displayName để frontend dùng
+    const normalized = history.map(h => {
+      const obj = h.toObject();
+      if (obj.userId && typeof obj.userId === 'object') {
+        const u = obj.userId;
+        obj.userId.displayName =
+          (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) ||
+          u.username || u.name || '–';
+      }
+      return obj;
+    });
+
+    res.json({ success: true, history: normalized });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -564,6 +576,16 @@ router.delete('/speaking/questions/:id', auth, teacherOnly, async (req, res) => 
   }
 });
 
+// DELETE /api/admin/speaking/questions/:id/permanent  (hard delete)
+router.delete('/speaking/questions/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await SpeakingQuestion.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn câu hỏi' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ══════════════════════════════════════════════════
 // SPEAKING – MATERIALS (PDF)
 // ══════════════════════════════════════════════════
@@ -625,6 +647,16 @@ router.delete('/speaking/materials/:id', auth, teacherOnly, async (req, res) => 
   try {
     await SpeakingMaterial.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: 'Đã ẩn tài liệu' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/speaking/materials/:id/permanent  (hard delete)
+router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await SpeakingMaterial.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn tài liệu' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
