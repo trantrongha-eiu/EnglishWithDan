@@ -18,6 +18,7 @@ const UserSchema = new mongoose.Schema({
     enum: ['student', 'teacher', 'admin'],
     default: 'student'
   },
+  isBanned: { type: Boolean, default: false },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 

@@ -253,20 +253,20 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
 router.get('/history', auth, teacherOnly, async (req, res) => {
   try {
     const history = await TestAttempt.find({ status: 'completed' })
-      .populate('userId', 'username firstName lastName name')
+      .populate('userId', 'username firstName lastName')
       .populate('testId', 'name testNumber')
       .sort({ endTime: -1 })
       .limit(100)
       .select('-answers -passagesUsed');
 
-    // Chuẩn hoá: đảm bảo userId luôn có displayName để frontend dùng
     const normalized = history.map(h => {
-      const obj = h.toObject();
+      const obj = h.toObject({ virtuals: false });
       if (obj.userId && typeof obj.userId === 'object') {
         const u = obj.userId;
-        obj.userId.displayName =
-          (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) ||
-          u.username || u.name || '–';
+        const first = (u.firstName || '').trim();
+        const last  = (u.lastName  || '').trim();
+        const full  = first ? (last ? `${first} ${last}` : first) : '';
+        obj.userId = { ...u, displayName: full || u.username || '–' };
       }
       return obj;
     });
@@ -657,6 +657,69 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
   try {
     await SpeakingMaterial.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Đã xóa vĩnh viễn tài liệu' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// USER MANAGEMENT
+// ══════════════════════════════════════════════════
+
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
+// GET /api/admin/users – danh sách tất cả user
+router.get('/users', auth, teacherOnly, async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('-password -savedVocab')
+      .sort({ createdAt: -1 });
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/users/:id – sửa thông tin user
+router.put('/users/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const { username, email, firstName, lastName, role, password } = req.body;
+    const update = { username, email, firstName, lastName, role };
+    if (password) {
+      update.password = await bcrypt.hash(password, 10);
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
+      .select('-password -savedVocab');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/users/:id/ban – cấm / bỏ cấm user
+router.put('/users/:id/ban', auth, teacherOnly, async (req, res) => {
+  try {
+    const { isBanned } = req.body;
+    const user = await User.findByIdAndUpdate(req.params.id, { isBanned }, { new: true })
+      .select('-password -savedVocab');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id – xóa vĩnh viễn user
+router.delete('/users/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    // Không cho phép tự xóa chính mình
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(400).json({ success: false, message: 'Không thể xóa tài khoản của chính mình' });
+    }
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa tài khoản' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
