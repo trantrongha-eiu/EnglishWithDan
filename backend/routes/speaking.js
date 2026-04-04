@@ -1,6 +1,6 @@
-const express  = require('express');
-const router   = express.Router();
-const auth     = require('../middleware/auth');
+const express = require('express');
+const router = express.Router();
+const auth = require('../middleware/auth');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 
@@ -20,12 +20,12 @@ router.get('/random', auth, async (req, res) => {
     const { topic, part } = req.query;
     const filter = { isActive: true };
     if (topic && topic !== 'all') filter.topic = topic;
-    if (part  && part  !== 'all') filter.part  = Number(part);
+    if (part && part !== 'all') filter.part = Number(part);
 
     const count = await SpeakingQuestion.countDocuments(filter);
     if (count === 0) return res.json({ success: false, message: 'Không có câu hỏi' });
 
-    const skip     = Math.floor(Math.random() * count);
+    const skip = Math.floor(Math.random() * count);
     const question = await SpeakingQuestion.findOne(filter).skip(skip);
     res.json({ success: true, question });
   } catch (err) {
@@ -39,7 +39,7 @@ router.get('/questions', auth, async (req, res) => {
     const { topic, part } = req.query;
     const filter = { isActive: true };
     if (topic && topic !== 'all') filter.topic = topic;
-    if (part  && part  !== 'all') filter.part  = Number(part);
+    if (part && part !== 'all') filter.part = Number(part);
 
     const questions = await SpeakingQuestion.find(filter).sort({ topic: 1, part: 1 });
     res.json({ success: true, questions });
@@ -49,7 +49,7 @@ router.get('/questions', auth, async (req, res) => {
 });
 
 // ── POST /api/speaking/analyze ────────────────────────────
-// Body: { transcript, question }
+// Thay thế toàn bộ route này trong backend/routes/speaking.js
 router.post('/analyze', auth, async (req, res) => {
   try {
     const { transcript, question } = req.body;
@@ -70,39 +70,28 @@ router.post('/analyze', auth, async (req, res) => {
       });
     }
 
-    const prompt = `You are an IELTS speaking examiner and coach.
+    const prompt = `You are an IELTS speaking examiner. Analyze this student response and reply ONLY with a JSON object, no markdown, no explanation, just raw JSON.
 
-The student was asked: "${question || 'General speaking practice'}"
+Question: "${question || 'General speaking practice'}"
+Student said: "${transcript}"
 
-The student said:
-"${transcript}"
+Return exactly this JSON structure:
+{"corrected":"improved natural version of what student said","errors":[{"wrong":"original phrase","right":"better phrase","tip":"why"}],"tips":["tip1","tip2"],"band_estimate":"5.0-6.0"}
 
-Respond ONLY with valid JSON in this exact format (no markdown, no extra text):
-{
-  "corrected": "A natural, improved version of what the student said",
-  "errors": [
-    {"wrong": "original phrase", "right": "corrected phrase", "tip": "short explanation"}
-  ],
-  "tips": ["vocabulary tip", "grammar or fluency tip"],
-  "band_estimate": "5.0-6.0"
-}
+Rules: max 3 errors, max 2 tips, band_estimate as range string. Return ONLY the JSON object.`;
 
-Rules:
-- Max 3 errors (pick the most important ones)
-- Max 2 tips (practical, actionable)
-- corrected should sound natural and fluent
-- band_estimate as a range like "5.5-6.0"
-- Be encouraging but honest`;
-
+    // Thử nhiều model, ưu tiên model ổn định hơn
     const models = [
+      'mistralai/mistral-7b-instruct:free',
       'meta-llama/llama-3.1-8b-instruct:free',
-      'mistralai/mistral-nemo:free',
-      'mistralai/mistral-7b-instruct:free'
+      'microsoft/phi-3-mini-128k-instruct:free'
     ];
 
-    let content = '';
+    let feedback = null;
+
     for (const model of models) {
       try {
+        console.log(`[Speaking] Trying model: ${model}`);
         const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -113,31 +102,73 @@ Rules:
           },
           body: JSON.stringify({
             model,
-            messages: [{ role: 'user', content: prompt }],
-            temperature: 0.3,
-            max_tokens: 700,
-            response_format: { type: 'json_object' }
+            messages: [
+              {
+                role: 'system',
+                content: 'You are an IELTS examiner. Always respond with valid JSON only, no markdown, no extra text.'
+              },
+              { role: 'user', content: prompt }
+            ],
+            temperature: 0.2,
+            max_tokens: 800
+            // KHÔNG dùng response_format vì nhiều free model không hỗ trợ
           })
         });
+
+        if (!response.ok) {
+          console.log(`[Speaking] Model ${model} returned ${response.status}`);
+          continue;
+        }
+
         const data = await response.json();
-        content = data.choices?.[0]?.message?.content || '';
-        if (content && content.includes('"corrected"')) break;
-      } catch { /* try next model */ }
+        console.log(`[Speaking] Raw response from ${model}:`, JSON.stringify(data).slice(0, 300));
+
+        const content = data.choices?.[0]?.message?.content || '';
+        if (!content) continue;
+
+        // Tìm JSON trong response (dù có markdown hay không)
+        const cleaned = content
+          .replace(/```json\s*/gi, '')
+          .replace(/```\s*/gi, '')
+          .trim();
+
+        // Thử parse trực tiếp
+        try {
+          feedback = JSON.parse(cleaned);
+          if (feedback.corrected) {
+            console.log(`[Speaking] Success with model: ${model}`);
+            break;
+          }
+        } catch {
+          // Thử tìm JSON object trong string
+          const match = cleaned.match(/\{[\s\S]*"corrected"[\s\S]*\}/);
+          if (match) {
+            try {
+              feedback = JSON.parse(match[0]);
+              if (feedback.corrected) {
+                console.log(`[Speaking] Extracted JSON from model: ${model}`);
+                break;
+              }
+            } catch { /* next model */ }
+          }
+        }
+      } catch (err) {
+        console.log(`[Speaking] Model ${model} error:`, err.message);
+      }
     }
 
-    const jsonMatch = content.match(/\{[\s\S]*?\}/s) || content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      try {
-        const feedback = JSON.parse(jsonMatch[0]);
-        return res.json({ success: true, feedback });
-      } catch { /* fall through */ }
+    if (feedback && feedback.corrected) {
+      return res.json({ success: true, feedback });
     }
 
-    res.json({
-      success: true,
-      feedback: { corrected: content || transcript, errors: [], tips: [], band_estimate: null }
+    // Fallback: trả về thông báo lỗi rõ ràng thay vì echo transcript
+    return res.json({
+      success: false,
+      message: 'AI không thể phân tích lúc này. Vui lòng thử lại sau.'
     });
+
   } catch (err) {
+    console.error('[Speaking] Analyze error:', err);
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -148,7 +179,7 @@ router.get('/materials', auth, async (req, res) => {
     const { quarter, topic } = req.query;
     const filter = { isActive: true };
     if (quarter && quarter !== 'all') filter.quarter = quarter;
-    if (topic   && topic   !== 'all') filter.topic   = topic;
+    if (topic && topic !== 'all') filter.topic = topic;
 
     const materials = await SpeakingMaterial.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, materials });
@@ -162,7 +193,7 @@ router.get('/material-filters', auth, async (req, res) => {
   try {
     const [quarters, topics] = await Promise.all([
       SpeakingMaterial.distinct('quarter', { isActive: true }),
-      SpeakingMaterial.distinct('topic',   { isActive: true })
+      SpeakingMaterial.distinct('topic', { isActive: true })
     ]);
     res.json({ success: true, quarters: quarters.sort().reverse(), topics: topics.sort() });
   } catch (err) {
