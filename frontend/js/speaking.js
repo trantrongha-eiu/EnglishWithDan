@@ -1,5 +1,7 @@
 /* ═══════════════════════════════════════════════════════
    speaking.js  –  EnglishWithDan Speaking Module
+   ⚠️  All AI calls go through /api/speaking/analyze (backend proxy)
+       No API keys are stored or used in this file.
 ═══════════════════════════════════════════════════════ */
 
 const API = 'https://englishwithdan.onrender.com';
@@ -12,21 +14,28 @@ function showToast(message, type = 'info') {
   if (!container) {
     container = document.createElement('div');
     container.id = 'toast-container';
-    container.style.cssText = 'position:fixed;top:68px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+    container.style.cssText =
+      'position:fixed;top:68px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
     document.body.appendChild(container);
   }
   const toast = document.createElement('div');
   const colors = { info: '#3d8bff', error: '#e53935', success: '#22c55e', warn: '#f59e0b' };
-  toast.style.cssText = `background:#fff;border-left:4px solid ${colors[type]||colors.info};border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
+  toast.style.cssText = `background:#fff;border-left:4px solid ${colors[type] || colors.info};border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
   toast.textContent = message;
   container.appendChild(toast);
-  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
 
 // ──────────────────────────────────────────────────────
 // Auth helpers
 // ──────────────────────────────────────────────────────
-function getToken() { return localStorage.getItem('token'); }
+function getToken() {
+  return localStorage.getItem('token');
+}
 
 function logout() {
   localStorage.removeItem('token');
@@ -36,15 +45,18 @@ function logout() {
 
 async function apiFetch(path, opts = {}) {
   const token = getToken();
-  const headers = { 'Authorization': `Bearer ${token}` };
+  const headers = { Authorization: `Bearer ${token}` };
   if (!(opts.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
   const res = await fetch(API + path, {
     ...opts,
-    headers: { ...headers, ...(opts.headers || {}) }
+    headers: { ...headers, ...(opts.headers || {}) },
   });
-  if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
+  if (res.status === 401) {
+    logout();
+    throw new Error('Unauthorized');
+  }
   const text = await res.text();
   if (text.trimStart().startsWith('<')) throw new Error('Server không phản hồi đúng.');
   return JSON.parse(text);
@@ -57,7 +69,7 @@ const state = {
   currentQuestion: null,
   recognition: null,
   isRecording: false,
-  materialFilter: { quarter: 'all', topic: 'all' }
+  materialFilter: { quarter: 'all', topic: 'all' },
 };
 
 // ──────────────────────────────────────────────────────
@@ -65,18 +77,22 @@ const state = {
 // ──────────────────────────────────────────────────────
 (function init() {
   const token = getToken();
-  if (!token) { window.location.href = 'index.html'; return; }
+  if (!token) {
+    window.location.href = 'index.html';
+    return;
+  }
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const name = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
-    : (user.username || '');
+    : user.username || '';
   const el = document.getElementById('userName');
   if (el) el.textContent = `👋 ${name}`;
 
   // Check Web Speech API support
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    document.getElementById('no-speech-warning').classList.add('visible');
+    const warn = document.getElementById('no-speech-warning');
+    if (warn) warn.classList.add('visible');
   } else {
     setupRecognition();
   }
@@ -84,19 +100,26 @@ const state = {
   loadTopics();
 
   // Enable analyze button on manual typing
-  document.getElementById('transcript-textarea').addEventListener('input', function () {
-    document.getElementById('btn-analyze').disabled = !this.value.trim();
-  });
+  const textarea = document.getElementById('transcript-textarea');
+  if (textarea) {
+    textarea.addEventListener('input', function () {
+      const btn = document.getElementById('btn-analyze');
+      if (btn) btn.disabled = !this.value.trim();
+    });
+  }
 })();
 
 // ──────────────────────────────────────────────────────
 // Tab switching
 // ──────────────────────────────────────────────────────
 function switchTab(tab) {
-  document.querySelectorAll('.sp-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.sp-content').forEach(c => c.classList.remove('active'));
-  document.getElementById('tab-btn-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.sp-tab').forEach((b) => b.classList.remove('active'));
+  document.querySelectorAll('.sp-content').forEach((c) => c.classList.remove('active'));
+
+  const tabBtn = document.getElementById('tab-btn-' + tab);
+  const tabContent = document.getElementById('tab-' + tab);
+  if (tabBtn) tabBtn.classList.add('active');
+  if (tabContent) tabContent.classList.add('active');
 
   if (tab === 'materials') {
     loadMaterialFilters();
@@ -117,23 +140,25 @@ async function loadTopics() {
     const sel = document.getElementById('sel-topic');
     const prev = sel.value;
     sel.innerHTML = '<option value="all">Tất cả</option>';
-    (data.topics || []).forEach(t => {
+    (data.topics || []).forEach((t) => {
       const opt = document.createElement('option');
       opt.value = t;
       opt.textContent = t;
       if (t === prev) opt.selected = true;
       sel.appendChild(opt);
     });
-  } catch (e) { console.error('loadTopics:', e); }
+  } catch (e) {
+    console.error('loadTopics:', e);
+  }
   await loadQuestions();
 }
 
 // ── Load questions filtered by part + topic ──
 async function loadQuestions() {
-  const part  = document.getElementById('sel-part').value;
+  const part = document.getElementById('sel-part').value;
   const topic = document.getElementById('sel-topic').value;
   const params = [];
-  if (part  !== 'all') params.push(`part=${part}`);
+  if (part !== 'all') params.push(`part=${part}`);
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
@@ -142,7 +167,7 @@ async function loadQuestions() {
 
   try {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
-    (data.questions || []).forEach(q => {
+    (data.questions || []).forEach((q) => {
       const opt = document.createElement('option');
       opt.value = q._id;
       const label = q.question.length > 65 ? q.question.slice(0, 62) + '…' : q.question;
@@ -150,7 +175,9 @@ async function loadQuestions() {
       opt.dataset.q = JSON.stringify(q);
       sel.appendChild(opt);
     });
-  } catch (e) { console.error('loadQuestions:', e); }
+  } catch (e) {
+    console.error('loadQuestions:', e);
+  }
 }
 
 // ── Select a specific question from dropdown ──
@@ -162,7 +189,9 @@ function selectQuestion(id) {
     const q = JSON.parse(opt.dataset.q);
     setQuestion(q);
     resetPractice();
-  } catch (e) { console.error('selectQuestion:', e); }
+  } catch (e) {
+    console.error('selectQuestion:', e);
+  }
 }
 
 // ── Text-to-Speech ──
@@ -178,11 +207,11 @@ function readQuestion(text) {
 
 // ── Load a random question ──
 async function loadRandomQuestion() {
-  const part  = document.getElementById('sel-part').value;
+  const part = document.getElementById('sel-part').value;
   const topic = document.getElementById('sel-topic').value;
 
   const params = [];
-  if (part  !== 'all') params.push(`part=${part}`);
+  if (part !== 'all') params.push(`part=${part}`);
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
@@ -197,19 +226,27 @@ async function loadRandomQuestion() {
     if (sel) sel.value = data.question._id || '';
     setQuestion(data.question);
     resetPractice();
-  } catch (e) { console.error('loadRandomQuestion:', e); }
+  } catch (e) {
+    console.error('loadRandomQuestion:', e);
+    showToast('Không thể tải câu hỏi. Vui lòng thử lại.', 'error');
+  }
 }
 
 function setQuestion(q) {
   state.currentQuestion = q;
-  document.getElementById('q-part-label').textContent = `Part ${q.part}`;
-  document.getElementById('q-text').textContent = q.question;
+  const partLabel = document.getElementById('q-part-label');
+  const qText = document.getElementById('q-text');
   const cue = document.getElementById('q-cue');
-  if (q.cueCard) {
-    cue.textContent = q.cueCard;
-    cue.classList.remove('hidden');
-  } else {
-    cue.classList.add('hidden');
+
+  if (partLabel) partLabel.textContent = `Part ${q.part}`;
+  if (qText) qText.textContent = q.question;
+  if (cue) {
+    if (q.cueCard) {
+      cue.textContent = q.cueCard;
+      cue.classList.remove('hidden');
+    } else {
+      cue.classList.add('hidden');
+    }
   }
   readQuestion(q.question);
 }
@@ -219,15 +256,27 @@ function resetPractice() {
   if (state.isRecording && state.recognition) {
     state.recognition.stop();
   }
-  document.getElementById('transcript-textarea').value = '';
-  document.getElementById('btn-analyze').disabled = true;
-  document.getElementById('feedback-box').classList.remove('visible');
-  document.getElementById('transcript-interim').textContent = '';
-  document.getElementById('rec-status').textContent = 'Nhấn để bắt đầu ghi âm';
-  document.getElementById('rec-status').classList.remove('live');
-  document.getElementById('rec-icon').textContent = '🎙';
-  document.getElementById('rec-label').textContent = 'Start Speaking';
-  document.getElementById('btn-record').classList.remove('recording');
+
+  const ta = document.getElementById('transcript-textarea');
+  const btnAnalyze = document.getElementById('btn-analyze');
+  const feedbackBox = document.getElementById('feedback-box');
+  const interim = document.getElementById('transcript-interim');
+  const recStatus = document.getElementById('rec-status');
+  const recIcon = document.getElementById('rec-icon');
+  const recLabel = document.getElementById('rec-label');
+  const btnRecord = document.getElementById('btn-record');
+
+  if (ta) ta.value = '';
+  if (btnAnalyze) btnAnalyze.disabled = true;
+  if (feedbackBox) feedbackBox.classList.remove('visible');
+  if (interim) interim.textContent = '';
+  if (recStatus) {
+    recStatus.textContent = 'Nhấn để bắt đầu ghi âm';
+    recStatus.classList.remove('live');
+  }
+  if (recIcon) recIcon.textContent = '🎙';
+  if (recLabel) recLabel.textContent = 'Start Speaking';
+  if (btnRecord) btnRecord.classList.remove('recording');
 }
 
 function retryQuestion() {
@@ -248,11 +297,18 @@ function setupRecognition() {
 
   state.recognition.onstart = () => {
     finalTranscript = '';
-    document.getElementById('rec-icon').textContent = '🔴';
-    document.getElementById('rec-label').textContent = 'Stop';
-    document.getElementById('rec-status').textContent = '🔴 Recording...';
-    document.getElementById('rec-status').classList.add('live');
-    document.getElementById('btn-record').classList.add('recording');
+    const recIcon = document.getElementById('rec-icon');
+    const recLabel = document.getElementById('rec-label');
+    const recStatus = document.getElementById('rec-status');
+    const btnRecord = document.getElementById('btn-record');
+
+    if (recIcon) recIcon.textContent = '🔴';
+    if (recLabel) recLabel.textContent = 'Stop';
+    if (recStatus) {
+      recStatus.textContent = '🔴 Recording...';
+      recStatus.classList.add('live');
+    }
+    if (btnRecord) btnRecord.classList.add('recording');
   };
 
   state.recognition.onresult = (e) => {
@@ -262,32 +318,45 @@ function setupRecognition() {
       if (e.results[i].isFinal) finalTranscript += t + ' ';
       else interim += t;
     }
-    document.getElementById('transcript-interim').textContent = interim;
+    const interimEl = document.getElementById('transcript-interim');
+    if (interimEl) interimEl.textContent = interim;
+
     const cleaned = finalTranscript.trim();
     if (cleaned) {
-      document.getElementById('transcript-textarea').value = cleaned;
-      document.getElementById('btn-analyze').disabled = false;
+      const ta = document.getElementById('transcript-textarea');
+      const btnAnalyze = document.getElementById('btn-analyze');
+      if (ta) ta.value = cleaned;
+      if (btnAnalyze) btnAnalyze.disabled = false;
     }
   };
 
   state.recognition.onend = () => {
     state.isRecording = false;
-    document.getElementById('rec-icon').textContent = '🎙';
-    document.getElementById('rec-label').textContent = 'Start Speaking';
-    document.getElementById('rec-status').classList.remove('live');
-    document.getElementById('btn-record').classList.remove('recording');
-    document.getElementById('transcript-interim').textContent = '';
 
+    const recIcon = document.getElementById('rec-icon');
+    const recLabel = document.getElementById('rec-label');
+    const recStatus = document.getElementById('rec-status');
+    const btnRecord = document.getElementById('btn-record');
+    const interimEl = document.getElementById('transcript-interim');
     const ta = document.getElementById('transcript-textarea');
-    const txt = ta.value.trim();
-    if (!txt && finalTranscript.trim()) {
+    const btnAnalyze = document.getElementById('btn-analyze');
+
+    if (recIcon) recIcon.textContent = '🎙';
+    if (recLabel) recLabel.textContent = 'Start Speaking';
+    if (recStatus) recStatus.classList.remove('live');
+    if (btnRecord) btnRecord.classList.remove('recording');
+    if (interimEl) interimEl.textContent = '';
+
+    // Fallback: if textarea is empty but we have a final transcript, fill it in
+    if (ta && !ta.value.trim() && finalTranscript.trim()) {
       ta.value = finalTranscript.trim();
     }
-    if (ta.value.trim()) {
-      document.getElementById('btn-analyze').disabled = false;
-      document.getElementById('rec-status').textContent = 'Ghi âm hoàn tất ✓';
+
+    if (ta && ta.value.trim()) {
+      if (btnAnalyze) btnAnalyze.disabled = false;
+      if (recStatus) recStatus.textContent = 'Ghi âm hoàn tất ✓';
     } else {
-      document.getElementById('rec-status').textContent = 'Ghi âm đã dừng';
+      if (recStatus) recStatus.textContent = 'Ghi âm đã dừng';
     }
   };
 
@@ -296,19 +365,27 @@ function setupRecognition() {
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro. Vui lòng cho phép trong cài đặt trình duyệt.',
       'no-speech': 'Không nhận được giọng nói. Thử lại nhé.',
-      'network': 'Lỗi mạng khi nhận dạng giọng nói.'
+      network: 'Lỗi mạng khi nhận dạng giọng nói.',
     };
-    document.getElementById('rec-status').textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+    const recStatus = document.getElementById('rec-status');
+    if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+
     state.isRecording = false;
-    document.getElementById('btn-record').classList.remove('recording');
-    document.getElementById('rec-icon').textContent = '🎙';
-    document.getElementById('rec-label').textContent = 'Start Speaking';
+    const btnRecord = document.getElementById('btn-record');
+    const recIcon = document.getElementById('rec-icon');
+    const recLabel = document.getElementById('rec-label');
+    if (btnRecord) btnRecord.classList.remove('recording');
+    if (recIcon) recIcon.textContent = '🎙';
+    if (recLabel) recLabel.textContent = 'Start Speaking';
   };
 }
 
 function toggleRecord() {
   if (!state.recognition) {
-    showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
+    showToast(
+      'Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.',
+      'warn'
+    );
     return;
   }
   if (state.isRecording) {
@@ -321,86 +398,93 @@ function toggleRecord() {
 }
 
 // ──────────────────────────────────────────────────────
-// AI Analyze
+// AI Analyze  –  calls backend proxy (no API key in frontend)
+// Backend route: POST /api/speaking/analyze
 // ──────────────────────────────────────────────────────
 async function analyzeTranscript() {
-  const transcript = document.getElementById('transcript-textarea').value.trim();
+  const ta = document.getElementById('transcript-textarea');
+  const transcript = ta ? ta.value.trim() : '';
   if (!transcript) return;
 
   const question = state.currentQuestion ? state.currentQuestion.question : '';
 
-  const box      = document.getElementById('feedback-box');
-  const loading  = document.getElementById('feedback-loading');
-  const content  = document.getElementById('feedback-content');
+  const box = document.getElementById('feedback-box');
+  const loading = document.getElementById('feedback-loading');
+  const content = document.getElementById('feedback-content');
 
-  box.classList.add('visible');
-  loading.style.display = 'block';
-  content.style.display = 'none';
+  if (box) box.classList.add('visible');
+  if (loading) loading.style.display = 'block';
+  if (content) content.style.display = 'none';
 
   // Scroll to feedback
-  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (box) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
+    // ✅ Calls backend proxy – API key stays server-side
     const data = await apiFetch('/api/speaking/analyze', {
       method: 'POST',
-      body: JSON.stringify({ transcript, question })
+      body: JSON.stringify({ transcript, question }),
     });
 
-    loading.style.display = 'none';
-    content.style.display = 'block';
+    if (loading) loading.style.display = 'none';
+    if (content) content.style.display = 'block';
 
     const fb = data.feedback || {};
 
     // Band score
-    const bandEl  = document.getElementById('feedback-band');
+    const bandEl = document.getElementById('feedback-band');
     const bandVal = document.getElementById('band-value');
     if (fb.band_estimate) {
-      bandVal.textContent = fb.band_estimate;
-      bandEl.style.display = 'inline-flex';
+      if (bandVal) bandVal.textContent = fb.band_estimate;
+      if (bandEl) bandEl.style.display = 'inline-flex';
     } else {
-      bandEl.style.display = 'none';
+      if (bandEl) bandEl.style.display = 'none';
     }
 
     // Corrected version
     const corrEl = document.getElementById('feedback-corrected');
-    corrEl.textContent = fb.corrected || transcript;
+    if (corrEl) corrEl.textContent = fb.corrected || transcript;
 
     // Errors
     const errEl = document.getElementById('feedback-errors');
-    errEl.innerHTML = '';
-    if (fb.errors && fb.errors.length) {
-      errEl.innerHTML = '<h4>❌ Lỗi cần sửa</h4>';
-      fb.errors.forEach(err => {
-        const d = document.createElement('div');
-        d.className = 'error-item';
-        d.innerHTML = `
-          <span class="error-wrong">${err.wrong}</span>
-          <span class="error-arrow">→</span>
-          <span class="error-right">${err.right}</span>
-          <span class="error-tip">${err.tip || ''}</span>`;
-        errEl.appendChild(d);
-      });
+    if (errEl) {
+      errEl.innerHTML = '';
+      if (fb.errors && fb.errors.length) {
+        errEl.innerHTML = '<h4>❌ Lỗi cần sửa</h4>';
+        fb.errors.forEach((err) => {
+          const d = document.createElement('div');
+          d.className = 'error-item';
+          d.innerHTML = `
+            <span class="error-wrong">${err.wrong}</span>
+            <span class="error-arrow">→</span>
+            <span class="error-right">${err.right}</span>
+            <span class="error-tip">${err.tip || ''}</span>`;
+          errEl.appendChild(d);
+        });
+      }
     }
 
     // Tips
     const tipEl = document.getElementById('feedback-tips');
-    tipEl.innerHTML = '';
-    if (fb.tips && fb.tips.length) {
-      tipEl.innerHTML = '<h4>💡 Gợi ý cải thiện</h4>';
-      fb.tips.forEach(t => {
-        const d = document.createElement('div');
-        d.className = 'tip-item';
-        d.textContent = t;
-        tipEl.appendChild(d);
-      });
+    if (tipEl) {
+      tipEl.innerHTML = '';
+      if (fb.tips && fb.tips.length) {
+        tipEl.innerHTML = '<h4>💡 Gợi ý cải thiện</h4>';
+        fb.tips.forEach((t) => {
+          const d = document.createElement('div');
+          d.className = 'tip-item';
+          d.textContent = t;
+          tipEl.appendChild(d);
+        });
+      }
     }
-
   } catch (e) {
-    loading.style.display = 'none';
-    content.style.display = 'block';
-    document.getElementById('feedback-corrected').textContent =
-      'Không thể phân tích lúc này. Vui lòng thử lại.';
+    if (loading) loading.style.display = 'none';
+    if (content) content.style.display = 'block';
+    const corrEl = document.getElementById('feedback-corrected');
+    if (corrEl) corrEl.textContent = 'Không thể phân tích lúc này. Vui lòng thử lại.';
     console.error('analyzeTranscript:', e);
+    showToast('Không thể phân tích. Vui lòng thử lại sau.', 'error');
   }
 }
 
@@ -414,39 +498,49 @@ async function loadMaterialFilters() {
 
     // Quarter chips
     const qChips = document.getElementById('quarter-chips');
-    qChips.innerHTML = `<span class="filter-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>`;
-    (data.quarters || []).forEach(q => {
-      const s = document.createElement('span');
-      s.className = 'filter-chip';
-      s.dataset.quarter = q;
-      s.textContent = q;
-      s.onclick = () => setQuarterFilter(q, s);
-      qChips.appendChild(s);
-    });
+    if (qChips) {
+      qChips.innerHTML = `<span class="filter-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>`;
+      (data.quarters || []).forEach((q) => {
+        const s = document.createElement('span');
+        s.className = 'filter-chip';
+        s.dataset.quarter = q;
+        s.textContent = q;
+        s.onclick = () => setQuarterFilter(q, s);
+        qChips.appendChild(s);
+      });
+    }
 
     // Topic chips
     const tChips = document.getElementById('topic-chips');
-    tChips.innerHTML = `<span class="filter-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>`;
-    (data.topics || []).forEach(t => {
-      const s = document.createElement('span');
-      s.className = 'filter-chip';
-      s.dataset.topic = t;
-      s.textContent = t;
-      s.onclick = () => setTopicFilter(t, s);
-      tChips.appendChild(s);
-    });
-  } catch (e) { console.error('loadMaterialFilters:', e); }
+    if (tChips) {
+      tChips.innerHTML = `<span class="filter-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>`;
+      (data.topics || []).forEach((t) => {
+        const s = document.createElement('span');
+        s.className = 'filter-chip';
+        s.dataset.topic = t;
+        s.textContent = t;
+        s.onclick = () => setTopicFilter(t, s);
+        tChips.appendChild(s);
+      });
+    }
+  } catch (e) {
+    console.error('loadMaterialFilters:', e);
+  }
 }
 
 function setQuarterFilter(q, el) {
-  document.querySelectorAll('#quarter-chips .filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#quarter-chips .filter-chip').forEach((c) =>
+    c.classList.remove('active')
+  );
   el.classList.add('active');
   state.materialFilter.quarter = q;
   loadMaterials();
 }
 
 function setTopicFilter(t, el) {
-  document.querySelectorAll('#topic-chips .filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#topic-chips .filter-chip').forEach((c) =>
+    c.classList.remove('active')
+  );
   el.classList.add('active');
   state.materialFilter.topic = t;
   loadMaterials();
@@ -454,12 +548,13 @@ function setTopicFilter(t, el) {
 
 async function loadMaterials() {
   const list = document.getElementById('materials-list');
+  if (!list) return;
   list.innerHTML = '<div class="spinner"></div>';
 
   const { quarter, topic } = state.materialFilter;
   const params = [];
   if (quarter !== 'all') params.push(`quarter=${encodeURIComponent(quarter)}`);
-  if (topic   !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
+  if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
   try {
@@ -472,7 +567,7 @@ async function loadMaterials() {
     }
 
     list.innerHTML = '';
-    materials.forEach(m => {
+    materials.forEach((m) => {
       const card = document.createElement('div');
       card.className = 'material-card';
       card.innerHTML = `
@@ -491,13 +586,15 @@ async function loadMaterials() {
 }
 
 function openMaterial(m, card) {
-  document.querySelectorAll('.material-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.material-card').forEach((c) => c.classList.remove('active'));
   card.classList.add('active');
 
   const placeholder = document.getElementById('pdf-placeholder');
-  const frame       = document.getElementById('pdf-frame');
+  const frame = document.getElementById('pdf-frame');
 
-  placeholder.style.display = 'none';
-  frame.classList.add('visible');
-  frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
+  if (placeholder) placeholder.style.display = 'none';
+  if (frame) {
+    frame.classList.add('visible');
+    frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
+  }
 }
