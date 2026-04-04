@@ -80,85 +80,46 @@ Return exactly this JSON structure:
 
 Rules: max 3 errors, max 2 tips, band_estimate as range string. Return ONLY the JSON object.`;
 
-    // Thử nhiều model, ưu tiên model ổn định hơn
-    const models = [
-      'google/gemma-3-4b-it:free',
-      'meta-llama/llama-4-scout:free',
-      'deepseek/deepseek-chat-v3-0324:free'
-    ];
-
+    // MỚI - thay toàn bộ vòng lặp for bằng 1 call duy nhất:
     let feedback = null;
 
-    for (const model of models) {
+    try {
+      console.log(`[Speaking] Trying openrouter/free router`);
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://englishwithdan.onrender.com',
+          'X-Title': 'EnglishWithDan'
+        },
+        body: JSON.stringify({
+          model: 'openrouter/free',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an IELTS examiner. Always respond with valid JSON only, no markdown, no extra text.'
+            },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.2,
+          max_tokens: 800
+        })
+      });
+
+      const data = await response.json();
+      console.log(`[Speaking] Response:`, JSON.stringify(data).slice(0, 300));
+      const content = data.choices?.[0]?.message?.content || '';
+
+      const cleaned = content.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
       try {
-        console.log(`[Speaking] Trying model: ${model}`);
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${OPENROUTER_KEY}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://englishwithdan.onrender.com',
-            'X-Title': 'EnglishWithDan'
-          },
-          body: JSON.stringify({
-            model,
-            messages: [
-              {
-                role: 'system',
-                content: 'You are an IELTS examiner. Always respond with valid JSON only, no markdown, no extra text.'
-              },
-              { role: 'user', content: prompt }
-            ],
-            temperature: 0.2,
-            max_tokens: 800
-            // KHÔNG dùng response_format vì nhiều free model không hỗ trợ
-          })
-        });
-
-        if (!response.ok) {
-          console.log(`[Speaking] Model ${model} returned ${response.status}`);
-          continue;
-        }
-
-        const data = await response.json();
-        console.log(`[Speaking] Raw response from ${model}:`, JSON.stringify(data).slice(0, 300));
-
-        const content = data.choices?.[0]?.message?.content || '';
-        if (!content) continue;
-
-        // Tìm JSON trong response (dù có markdown hay không)
-        const cleaned = content
-          .replace(/```json\s*/gi, '')
-          .replace(/```\s*/gi, '')
-          .trim();
-
-        // Thử parse trực tiếp
-        try {
-          feedback = JSON.parse(cleaned);
-          if (feedback.corrected) {
-            console.log(`[Speaking] Success with model: ${model}`);
-            break;
-          }
-        } catch {
-          // Thử tìm JSON object trong string
-          const match = cleaned.match(/\{[\s\S]*"corrected"[\s\S]*\}/);
-          if (match) {
-            try {
-              feedback = JSON.parse(match[0]);
-              if (feedback.corrected) {
-                console.log(`[Speaking] Extracted JSON from model: ${model}`);
-                break;
-              }
-            } catch { /* next model */ }
-          }
-        }
-      } catch (err) {
-        console.log(`[Speaking] Model ${model} error:`, err.message);
+        feedback = JSON.parse(cleaned);
+      } catch {
+        const match = cleaned.match(/\{[\s\S]*"corrected"[\s\S]*\}/);
+        if (match) feedback = JSON.parse(match[0]);
       }
-    }
-
-    if (feedback && feedback.corrected) {
-      return res.json({ success: true, feedback });
+    } catch (err) {
+      console.log(`[Speaking] Error:`, err.message);
     }
 
     // Fallback: trả về thông báo lỗi rõ ràng thay vì echo transcript
