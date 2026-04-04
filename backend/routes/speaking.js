@@ -82,9 +82,9 @@ Rules: max 3 errors, max 2 tips, band_estimate as range string. Return ONLY the 
 
     // Thử nhiều model, ưu tiên model ổn định hơn
     const models = [
-      'mistralai/mistral-7b-instruct:free',
-      'meta-llama/llama-3.1-8b-instruct:free',
-      'microsoft/phi-3-mini-128k-instruct:free'
+      'google/gemma-3-4b-it:free',
+      'meta-llama/llama-4-scout:free',
+      'deepseek/deepseek-chat-v3-0324:free'
     ];
 
     let feedback = null;
