@@ -16,6 +16,14 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại' });
     }
 
+    // ── Chặn token cũ nếu tài khoản đã bị cấm sau khi login ──
+    if (user.isBanned) {
+      return res.status(403).json({
+        success: false,
+        message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.'
+      });
+    }
+
     req.user = user;
     next();
   } catch (err) {
