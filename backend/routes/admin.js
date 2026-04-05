@@ -1,7 +1,18 @@
 const express      = require('express');
 const router       = express.Router();
 const crypto       = require('crypto');
+const multer       = require('multer');
 const cloudinary   = require('cloudinary').v2;
+
+// Multer: store file in memory for Cloudinary upload
+const uploadPdfMemory = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === 'application/pdf') cb(null, true);
+    else cb(new Error('Chỉ chấp nhận file PDF'));
+  }
+});
 const Passage      = require('../models/Passage');
 const ReadingTest  = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
@@ -632,16 +643,12 @@ router.get('/speaking/materials', auth, teacherOnly, async (req, res) => {
 });
 
 // POST /api/admin/speaking/materials/upload-pdf
-// Body: { pdfBase64 }
-router.post('/speaking/materials/upload-pdf', auth, teacherOnly, async (req, res) => {
+// Body: multipart/form-data with field "pdf"
+router.post('/speaking/materials/upload-pdf', auth, teacherOnly, uploadPdfMemory.single('pdf'), async (req, res) => {
   try {
-    const { pdfBase64 } = req.body;
-    if (!pdfBase64) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
-    // Đảm bảo có data URI prefix để Cloudinary nhận dạng đúng file PDF
-    const fullBase64 = pdfBase64.startsWith('data:')
-      ? pdfBase64
-      : `data:application/pdf;base64,${pdfBase64}`;
-    const result = await cloudinary.uploader.upload(fullBase64, {
+    if (!req.file) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
+    const dataUri = `data:application/pdf;base64,${req.file.buffer.toString('base64')}`;
+    const result = await cloudinary.uploader.upload(dataUri, {
       folder: 'speaking-materials',
       resource_type: 'raw'
     });
