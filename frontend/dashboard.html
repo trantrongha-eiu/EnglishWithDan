@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/mobile.css"/>
   <style>
 /* ══════════════════════════════════════════
    TOKENS
@@ -627,7 +628,10 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 <header class="header">
   <div class="logo"><span class="d">Daniel</span><span class="h">Hà</span></div>
   <div class="header-right">
-    <span class="user-name" id="userName">👋 Xin chào</span>
+    <a href="profile.html" id="navUserLink" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;padding:5px 10px;border-radius:20px;border:1px solid var(--border);transition:background .15s;" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background='transparent'">
+      <div id="navAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;">?</div>
+      <span class="user-name" id="userName" style="font-size:13px;font-weight:500;">👋 Xin chào</span>
+    </a>
     <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
   </div>
 </header>
@@ -640,6 +644,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
     <li><a href="writing.html"><i class="fas fa-pen"></i> Writing</a></li>
     <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a></li>
     <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
+    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Hồ sơ</a></li>
   </ul>
 </nav>
 

@@ -161,6 +161,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
     if (name) document.getElementById('userName').textContent = `👋 ${name}`;
+    // Show avatar initial
+    const navAv = document.getElementById('navAvatar');
+    if (navAv && name) navAv.textContent = name[0].toUpperCase();
+    if (navAv && user.avatar) {
+      navAv.style.background = 'none';
+      navAv.innerHTML = `<img src="${user.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" alt="avatar">`;
+    }
 
     // Preload voices (Chrome cần gọi getVoices trước)
     if (window.speechSynthesis) {

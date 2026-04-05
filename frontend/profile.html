@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ của tôi - EnglishWithDan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <style>
+    body { background: var(--bg); padding-top: var(--nav-height); }
+
+    /* Nav */
+    .top-nav { position: fixed; top:0; left:0; right:0; height: var(--nav-height);
+      background: var(--card); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 20px; z-index: 1000; gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .top-nav .nav-brand { font-size:18px; font-weight:700; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
+    .top-nav .nav-links { display:flex; align-items:center; gap:4px; flex:1; margin:0 16px; }
+    .top-nav .nav-links a { padding:7px 13px; border-radius:8px; color:var(--text-light); text-decoration:none; font-size:14px; font-weight:500; transition:var(--transition); white-space:nowrap; }
+    .top-nav .nav-links a:hover,.top-nav .nav-links a.active { background:rgba(102,126,234,.1); color:var(--primary); }
+
+    /* Profile layout */
+    .profile-layout { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+
+    /* Sidebar */
+    .profile-sidebar { display: flex; flex-direction: column; gap: 16px; }
+    .profile-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .avatar-wrap {
+      position: relative; width: 96px; height: 96px;
+      margin: 0 auto 16px;
+    }
+    .avatar-wrap img, .avatar-wrap .avatar-placeholder {
+      width: 96px; height: 96px; border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 32px; font-weight: 700;
+    }
+    .avatar-edit-btn {
+      position: absolute; bottom: 0; right: 0;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: white;
+      border: 2px solid var(--card);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 11px;
+    }
+    .profile-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .profile-username { color: var(--text-light); font-size: 13px; margin-bottom: 12px; }
+    .profile-role {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600;
+      background: rgba(102,126,234,.1); color: var(--primary);
+    }
+    .profile-bio { font-size: 13px; color: var(--text-light); margin-top: 12px; line-height: 1.5; }
+
+    /* Stats grid */
+    .mini-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mini-stat {
+      background: var(--bg); border-radius: 10px; padding: 12px;
+      text-align: center; border: 1px solid var(--border);
+    }
+    .mini-stat-val { font-size: 22px; font-weight: 700; color: var(--primary); }
+    .mini-stat-label { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--bg); padding: 4px; border-radius: 12px; border: 1px solid var(--border); }
+    .tab-btn {
+      flex: 1; padding: 9px 12px; border: none; background: none; border-radius: 9px;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition);
+      color: var(--text-light); font-family: 'Poppins', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .tab-btn.active { background: var(--card); color: var(--primary); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+
+    /* Tab content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Band score chart */
+    .band-history { display: flex; flex-direction: column; gap: 12px; }
+    .band-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--bg); border-radius: 10px; padding: 12px 16px;
+      border: 1px solid var(--border);
+    }
+    .band-skill { font-weight: 600; font-size: 14px; min-width: 80px; }
+    .band-bar-wrap { flex: 1; background: var(--border); border-radius: 50px; height: 8px; overflow: hidden; }
+    .band-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); transition: width .6s ease; }
+    .band-score { font-weight: 700; font-size: 16px; color: var(--primary); min-width: 36px; text-align: right; }
+
+    /* Activity items */
+    .activity-list { display: flex; flex-direction: column; gap: 8px; }
+    .activity-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; background: var(--bg); border-radius: 10px;
+      border: 1px solid var(--border); font-size: 14px;
+    }
+    .activity-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .activity-text { flex: 1; }
+    .activity-date { font-size: 12px; color: var(--text-light); }
+
+    /* Form sections */
+    .section-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-row { display: flex; gap: 16px; }
+    .form-row .form-group { flex: 1; }
+
+    /* Streaks */
+    .streak-display {
+      display: flex; align-items: center; gap: 16px;
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white; border-radius: 16px; padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .streak-fire { font-size: 48px; }
+    .streak-info h3 { font-size: 22px; font-weight: 700; }
+    .streak-info p { font-size: 13px; opacity: .9; }
+
+    @media (max-width: 768px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+      .tabs { flex-wrap: wrap; }
+      .tab-btn { flex: none; min-width: calc(50% - 2px); }
+    }
+    @media (max-width: 576px) {
+      .top-nav .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+
+  <!-- Top Nav -->
+  <nav class="top-nav">
+    <a href="dashboard.html" class="nav-brand"><i class="fas fa-graduation-cap"></i> EnglishWithDan</a>
+    <div class="nav-links">
+      <a href="dashboard.html"><i class="fas fa-home"></i> Trang chủ</a>
+      <a href="reading.html"><i class="fas fa-book-open"></i> Reading</a>
+      <a href="listening.html"><i class="fas fa-headphones"></i> Listening</a>
+      <a href="writing.html"><i class="fas fa-pen"></i> Writing</a>
+      <a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
+    </div>
+    <div class="nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+      <button class="btn-dark-mode" id="btnDark" title="Chế độ tối" onclick="toggleDark()">🌙</button>
+      <a href="profile.html" class="nav-user active">
+        <div class="avatar-placeholder" id="navAvatar">?</div>
+        <span class="user-name" id="navName">Profile</span>
+      </a>
+      <button class="btn btn-secondary btn-sm" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="profile-layout">
+
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+      <div class="profile-card">
+        <div class="avatar-wrap">
+          <div class="avatar-placeholder" id="avatarDisplay">?</div>
+          <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()" title="Đổi ảnh">
+            <i class="fas fa-camera"></i>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+        </div>
+        <div class="profile-name" id="profileName">Đang tải...</div>
+        <div class="profile-username" id="profileUsername">@...</div>
+        <div class="profile-role"><i class="fas fa-user"></i> <span id="profileRole">student</span></div>
+        <div class="profile-bio" id="profileBio"></div>
+      </div>
+
+      <!-- Mini stats -->
+      <div class="card" style="padding:16px;">
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <div class="mini-stat-val" id="statReading">-</div>
+            <div class="mini-stat-label">Reading Band</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val" id="statListening">-</div>
+            <div class="mini-stat-label">Listening Band</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val" id="statTests">0</div>
+            <div class="mini-stat-label">Bài kiểm tra</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-val" id="statSpeaking">0</div>
+            <div class="mini-stat-label">Speaking</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:16px; text-align:center;">
+        <div style="font-size:13px; color:var(--text-light); margin-bottom:6px;">Ngày tham gia</div>
+        <div style="font-weight:600;" id="joinDate">-</div>
+      </div>
+    </aside>
+
+    <!-- Main Panel -->
+    <main>
+      <!-- Streak banner -->
+      <div class="streak-display" id="streakDisplay" style="display:none;">
+        <div class="streak-fire">🔥</div>
+        <div class="streak-info">
+          <h3 id="streakCount">0 ngày</h3>
+          <p>Chuỗi học liên tục của bạn</p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('overview')"><i class="fas fa-chart-bar"></i> Tổng quan</button>
+        <button class="tab-btn" onclick="switchTab('edit')"><i class="fas fa-edit"></i> Chỉnh sửa</button>
+        <button class="tab-btn" onclick="switchTab('security')"><i class="fas fa-lock"></i> Bảo mật</button>
+        <button class="tab-btn" onclick="switchTab('history')"><i class="fas fa-history"></i> Lịch sử</button>
+      </div>
+
+      <!-- Overview Tab -->
+      <div class="tab-content active" id="tab-overview">
+        <div class="card mb-16">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-chart-line"></i> Band Score của tôi</span>
+          </div>
+          <div class="card-body">
+            <div class="band-history" id="bandHistory">
+              <div class="band-item">
+                <span class="band-skill">Reading</span>
+                <div class="band-bar-wrap"><div class="band-bar-fill" id="barReading" style="width:0%"></div></div>
+                <span class="band-score" id="scoreReading">-</span>
+              </div>
+              <div class="band-item">
+                <span class="band-skill">Listening</span>
+                <div class="band-bar-wrap"><div class="band-bar-fill" id="barListening" style="width:0%"></div></div>
+                <span class="band-score" id="scoreListening">-</span>
+              </div>
+              <div class="band-item">
+                <span class="band-skill">Speaking</span>
+                <div class="band-bar-wrap"><div class="band-bar-fill" id="barSpeaking" style="width:0%"></div></div>
+                <span class="band-score" id="scoreSpeaking">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-fire"></i> Hoạt động gần đây</span>
+          </div>
+          <div class="card-body" id="recentActivity">
+            <p style="color:var(--text-light);text-align:center;padding:20px 0;">Chưa có hoạt động nào</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Tab -->
+      <div class="tab-content" id="tab-edit">
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-user-edit"></i> Chỉnh sửa thông tin</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Họ</label>
+                <input class="form-control" id="editFirstName" placeholder="Nguyễn">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tên</label>
+                <input class="form-control" id="editLastName" placeholder="Văn A">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input class="form-control" id="editUsername" placeholder="username" disabled style="opacity:.6; cursor:not-allowed;">
+              <small style="color:var(--text-light);font-size:12px;">Username không thể thay đổi</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-control" id="editEmail" disabled style="opacity:.6; cursor:not-allowed;">
+              <small style="color:var(--text-light);font-size:12px;">Email không thể thay đổi</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giới thiệu bản thân</label>
+              <textarea class="form-control" id="editBio" placeholder="Viết vài điều về bạn..." rows="3" maxlength="200"></textarea>
+              <small style="color:var(--text-light);font-size:12px;"><span id="bioCount">0</span>/200 ký tự</small>
+            </div>
+            <div id="editMsg" style="display:none; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:12px;"></div>
+            <button class="btn btn-primary" onclick="saveProfile()">
+              <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Tab -->
+      <div class="tab-content" id="tab-security">
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-shield-alt"></i> Đổi mật khẩu</span>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Mật khẩu hiện tại</label>
+              <input class="form-control" type="password" id="secCurrentPass" placeholder="Nhập mật khẩu hiện tại">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mật khẩu mới</label>
+              <input class="form-control" type="password" id="secNewPass" placeholder="Ít nhất 6 ký tự">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Xác nhận mật khẩu mới</label>
+              <input class="form-control" type="password" id="secConfirmPass" placeholder="Nhập lại mật khẩu mới">
+            </div>
+            <div id="secMsg" style="display:none; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:12px;"></div>
+            <button class="btn btn-primary" onclick="changePassword()">
+              <i class="fas fa-key"></i> Đổi mật khẩu
+            </button>
+          </div>
+        </div>
+
+        <div class="card mt-16">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-sign-out-alt"></i> Phiên đăng nhập</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:14px; color:var(--text-light); margin-bottom:16px;">
+              Đăng xuất khỏi tài khoản trên thiết bị này.
+            </p>
+            <button class="btn btn-danger" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div class="tab-content" id="tab-history">
+        <div class="card mb-16">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-book-open"></i> Lịch sử Reading</span>
+          </div>
+          <div class="table-wrap">
+            <table class="responsive-table">
+              <thead><tr><th>#</th><th>Ngày</th><th>Band Score</th></tr></thead>
+              <tbody id="readingHistory"><tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-headphones"></i> Lịch sử Listening</span>
+          </div>
+          <div class="table-wrap">
+            <table class="responsive-table">
+              <thead><tr><th>#</th><th>Ngày</th><th>Band Score</th></tr></thead>
+              <tbody id="listeningHistory"><tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Hidden avatar file input handler -->
+  <script>
+    const API = 'https://englishwithdan.onrender.com';
+
+    // ── Auth helpers (from auth.js) ───────────────────────────
+    function token() { return localStorage.getItem('token'); }
+    function headers() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token() }; }
+
+    // ── Toast ─────────────────────────────────────────────────
+    function showToast(type, title, msg, duration = 4000) {
+      const icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<div class="toast-icon">${icons[type]||'ℹ️'}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
+      document.getElementById('toastContainer').appendChild(el);
+      if (duration > 0) setTimeout(() => { el.classList.add('hiding'); setTimeout(() => el.remove(), 300); }, duration);
+    }
+
+    // ── Dark mode ─────────────────────────────────────────────
+    function toggleDark() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('btnDark').textContent = isDark ? '🌙' : '☀️';
+      localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+    (function() {
+      const saved = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      const btn = document.getElementById('btnDark');
+      if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+    })();
+
+    // ── Tabs ──────────────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // ── Bio counter ───────────────────────────────────────────
+    document.getElementById('editBio').addEventListener('input', function() {
+      document.getElementById('bioCount').textContent = this.value.length;
+    });
+
+    // ── Load profile & stats ──────────────────────────────────
+    async function loadProfile() {
+      try {
+        const [profileRes, statsRes] = await Promise.all([
+          fetch(API + '/api/user/profile', { headers: headers() }),
+          fetch(API + '/api/user/stats',   { headers: headers() })
+        ]);
+        const pd = await profileRes.json();
+        const sd = await statsRes.json();
+
+        if (pd.success) {
+          const u = pd.user;
+          // Sidebar
+          const avatarEl = document.getElementById('avatarDisplay');
+          if (u.avatar) {
+            avatarEl.outerHTML = `<img id="avatarDisplay" src="${u.avatar}" alt="avatar" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);">`;
+          } else {
+            avatarEl.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
+          }
+          document.getElementById('profileName').textContent    = ((u.firstName||'') + ' ' + (u.lastName||'')).trim() || u.username;
+          document.getElementById('profileUsername').textContent = '@' + u.username;
+          document.getElementById('profileRole').textContent     = u.role === 'teacher' ? 'Giáo viên' : u.role === 'admin' ? 'Quản trị viên' : 'Học sinh';
+          document.getElementById('profileBio').textContent      = u.bio || '';
+          document.getElementById('joinDate').textContent        = new Date(u.createdAt).toLocaleDateString('vi-VN');
+
+          // Edit form
+          document.getElementById('editFirstName').value = u.firstName || '';
+          document.getElementById('editLastName').value  = u.lastName  || '';
+          document.getElementById('editUsername').value  = u.username  || '';
+          document.getElementById('editEmail').value     = u.email     || '';
+          document.getElementById('editBio').value       = u.bio       || '';
+          document.getElementById('bioCount').textContent = (u.bio||'').length;
+
+          // Nav
+          document.getElementById('navName').textContent = u.firstName || u.username;
+          const navAv = document.getElementById('navAvatar');
+          if (navAv) navAv.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
+        }
+
+        if (sd.success) {
+          const s = sd.stats;
+          // Streak
+          if (s.streak > 0) {
+            document.getElementById('streakDisplay').style.display = 'flex';
+            document.getElementById('streakCount').textContent = s.streak + ' ngày';
+          }
+          // Mini stats
+          document.getElementById('statReading').textContent  = s.reading.avgBand  || '-';
+          document.getElementById('statListening').textContent = s.listening.avgBand || '-';
+          document.getElementById('statTests').textContent    = s.reading.total + s.listening.total;
+          document.getElementById('statSpeaking').textContent = s.speaking.total;
+
+          // Band bars (0-9 scale)
+          const toPercent = v => v ? Math.min(100, (parseFloat(v)/9)*100) + '%' : '0%';
+          document.getElementById('barReading').style.width     = toPercent(s.reading.avgBand);
+          document.getElementById('barListening').style.width   = toPercent(s.listening.avgBand);
+          document.getElementById('scoreReading').textContent   = s.reading.avgBand  || '-';
+          document.getElementById('scoreListening').textContent = s.listening.avgBand || '-';
+
+          // Speaking band from history
+          const spkBands = s.speaking.history.map(h => h.aiFeedback?.overallBand).filter(Boolean);
+          if (spkBands.length) {
+            const avg = (spkBands.reduce((a,b)=>a+b,0)/spkBands.length).toFixed(1);
+            document.getElementById('barSpeaking').style.width   = toPercent(avg);
+            document.getElementById('scoreSpeaking').textContent = avg;
+          } else {
+            document.getElementById('scoreSpeaking').textContent = '-';
+          }
+
+          // Recent activity
+          const activities = [];
+          s.reading.history.slice(0,3).forEach(a => activities.push({ icon:'📖', color:'rgba(102,126,234,.1)', text: `Reading test – Band <strong>${a.bandScore}</strong>`, date: a.createdAt }));
+          s.listening.history.slice(0,3).forEach(a => activities.push({ icon:'🎧', color:'rgba(16,185,129,.1)', text: `Listening test – Band <strong>${a.bandScore}</strong>`, date: a.createdAt }));
+          s.speaking.history.slice(0,3).forEach(a => activities.push({ icon:'🎤', color:'rgba(245,158,11,.1)', text: `Speaking practice`, date: a.createdAt }));
+          activities.sort((a,b) => new Date(b.date)-new Date(a.date));
+
+          if (activities.length) {
+            document.getElementById('recentActivity').innerHTML = activities.slice(0,6).map(a => `
+              <div class="activity-item">
+                <div class="activity-icon" style="background:${a.color}">${a.icon}</div>
+                <div class="activity-text">${a.text}</div>
+                <div class="activity-date">${new Date(a.date).toLocaleDateString('vi-VN')}</div>
+              </div>`).join('');
+          }
+
+          // History tables
+          if (s.reading.history.length) {
+            document.getElementById('readingHistory').innerHTML = s.reading.history.map((a,i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
+                <td><span class="badge badge-primary">Band ${a.bandScore}</span></td>
+              </tr>`).join('');
+          }
+          if (s.listening.history.length) {
+            document.getElementById('listeningHistory').innerHTML = s.listening.history.map((a,i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
+                <td><span class="badge badge-success">Band ${a.bandScore}</span></td>
+              </tr>`).join('');
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('error', 'Lỗi', 'Không thể tải thông tin profile');
+      }
+    }
+
+    // ── Save profile ──────────────────────────────────────────
+    async function saveProfile() {
+      const body = {
+        firstName: document.getElementById('editFirstName').value.trim(),
+        lastName:  document.getElementById('editLastName').value.trim(),
+        bio:       document.getElementById('editBio').value.trim()
+      };
+      try {
+        const res  = await fetch(API + '/api/user/profile', { method:'PUT', headers: headers(), body: JSON.stringify(body) });
+        const data = await res.json();
+        const msgEl = document.getElementById('editMsg');
+        if (data.success) {
+          msgEl.style.display = 'block';
+          msgEl.style.background = '#ecfdf5'; msgEl.style.color = '#065f46'; msgEl.style.border = '1px solid #6ee7b7';
+          msgEl.textContent = 'Đã lưu thay đổi thành công!';
+          showToast('success', 'Thành công', 'Thông tin đã được cập nhật');
+          loadProfile();
+        } else {
+          msgEl.style.display = 'block';
+          msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
+          msgEl.textContent = data.message || 'Lỗi lưu thông tin';
+        }
+      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+    }
+
+    // ── Change password ───────────────────────────────────────
+    async function changePassword() {
+      const currentPassword = document.getElementById('secCurrentPass').value;
+      const newPassword     = document.getElementById('secNewPass').value;
+      const confirmPass     = document.getElementById('secConfirmPass').value;
+      const msgEl = document.getElementById('secMsg');
+
+      if (newPassword.length < 6) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu phải có ít nhất 6 ký tự'; return; }
+      if (newPassword !== confirmPass) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu xác nhận không khớp'; return; }
+
+      try {
+        const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify({ currentPassword, newPassword }) });
+        const data = await res.json();
+        if (data.success) {
+          msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
+          msgEl.textContent = data.message;
+          showToast('success', 'Thành công', 'Mật khẩu đã được đổi');
+          document.getElementById('secCurrentPass').value = '';
+          document.getElementById('secNewPass').value = '';
+          document.getElementById('secConfirmPass').value = '';
+        } else {
+          msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a';
+          msgEl.textContent = data.message;
+        }
+      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+    }
+
+    // ── Upload avatar ─────────────────────────────────────────
+    async function uploadAvatar(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) { showToast('warning', 'Cảnh báo', 'Ảnh phải nhỏ hơn 2MB'); return; }
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          showToast('info', 'Đang tải...', 'Vui lòng chờ');
+          const res  = await fetch(API + '/api/user/avatar', { method:'POST', headers: headers(), body: JSON.stringify({ imageBase64: e.target.result }) });
+          const data = await res.json();
+          if (data.success) {
+            const wrap = document.querySelector('.avatar-wrap');
+            const existing = wrap.querySelector('img, .avatar-placeholder');
+            if (existing) existing.remove();
+            const img = document.createElement('img');
+            img.src = data.avatar; img.alt = 'avatar';
+            img.style.cssText = 'width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);';
+            wrap.insertBefore(img, wrap.firstChild);
+            showToast('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
+          } else {
+            showToast('error', 'Lỗi', data.message || 'Upload thất bại');
+          }
+        } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ── Init ──────────────────────────────────────────────────
+    loadProfile();
+  </script>
+</body>
+</html>
