@@ -802,10 +802,27 @@ function markAsNotRemembered() {
     if (!isFlipped) { toast('Lật thẻ trước!', 'error'); return; }
     if (answered) return; answered = true;
     wrongAnswers++; playWrongSound();
+
+    // Hiện feedback + nút Tiếp theo ngay để học sinh tự review rồi bấm
     document.getElementById('fbFeedback').innerHTML =
         `<div class="feedback-wrong">💪 Cố lên! Từ: <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
     disableFlashcardBtns();
-    setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 2000);
+
+    // Hiện nút Tiếp theo ngay (học sinh tự bấm khi sẵn sàng)
+    const btnNext = document.getElementById('fbBtnNext');
+    if (btnNext) btnNext.style.display = 'flex';
+
+    // Tự động chuyển sau 15 giây nếu học sinh không bấm
+    const _autoNext = setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 15000);
+
+    // Nếu học sinh bấm nút Tiếp theo → huỷ timer tự động
+    if (btnNext) {
+        const _origOnclick = btnNext.onclick;
+        btnNext.onclick = function() {
+            clearTimeout(_autoNext);
+            currentQuestionIndex++; showQuestion('fillBlank');
+        };
+    }
 }
 function disableFlashcardBtns() {
     document.querySelectorAll('.btn-remembered,.btn-not-remembered').forEach(b => b.disabled = true);

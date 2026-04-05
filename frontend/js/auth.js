@@ -30,6 +30,27 @@
     }
   }
 
+  // ── Intercept fetch để bắt 403 banned từ middleware ─────
+  // Khi server trả 403 { success:false, message:'Tài khoản đã bị cấm.' }
+  // → xoá token + redirect về login với reason=banned
+  const _origFetch = window.fetch;
+  window.fetch = async function(...args) {
+    const res = await _origFetch(...args);
+    if (res.status === 403 && !isPublic) {
+      try {
+        const clone = res.clone();
+        const data  = await clone.json();
+        if (data && data.success === false &&
+            typeof data.message === 'string' &&
+            data.message.includes('bị cấm')) {
+          logout('banned');
+          return res;
+        }
+      } catch { /* ignore parse errors */ }
+    }
+    return res;
+  };
+
   // ── Expose globally ───────────────────────────────────────
   window.getToken  = getToken;
   window.getUser   = getUser;

@@ -692,12 +692,15 @@
         }
         function showError(msg) { showToast('error', 'Thông báo', msg); }
 
-        // ── PATCH: Hiển thị lý do bị logout (inactive 10 ngày) ─
+        // ── PATCH: Hiển thị lý do bị logout (inactive 10 ngày, hoặc bị ban) ─
         (function () {
             const reason = new URLSearchParams(window.location.search).get('reason');
             if (reason === 'inactive') {
                 showToast('error', 'Phiên đăng nhập hết hạn',
                     'Bạn đã không đăng nhập trong 10 ngày. Vui lòng đăng nhập lại.');
+            } else if (reason === 'banned') {
+                showToast('banned', 'Tài khoản bị khóa',
+                    'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.', 0);
             }
         })();
 

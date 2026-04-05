@@ -634,7 +634,12 @@ body {
     transform: translateY(-2px);
 }
 
-/* Responsive */
+/* ═══════════════════════════════════════════
+   RESPONSIVE — Tablet & Mobile
+   (ghi đè các rule cũ ở dưới cùng)
+═══════════════════════════════════════════ */
+
+/* ── Tablet: 768px – 1024px ── */
 @media (max-width: 1024px) {
     .container {
         grid-template-columns: 1fr;
@@ -649,64 +654,232 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    /* Tab nút học: scroll ngang thay vì wrap */
+    .mode-tabs {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        flex-wrap: nowrap;
+    }
+    .tab-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Flashcard to hơn trên tablet */
+    .question-card {
+        padding: 30px 28px;
+    }
 }
 
+/* ── Mobile: ≤ 768px ── */
 @media (max-width: 768px) {
     .container {
-        padding: 0 15px;
-        margin: 20px auto;
+        padding: 0 12px;
+        margin: 15px auto;
+        gap: 16px;
     }
 
     .header-content {
-        padding: 15px 20px;
+        padding: 12px 16px;
     }
 
     .main-content {
-        padding: 25px 20px;
+        padding: 20px 16px;
+        border-radius: 16px;
     }
 
-    .vocab-grid {
-        grid-template-columns: 1fr;
+    /* Sidebar thu gọn */
+    .sidebar {
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+    .stats-card {
+        margin-top: 16px;
     }
 
-    .results-stats {
-        grid-template-columns: 1fr;
+    /* Mode header */
+    .mode-header {
+        margin-bottom: 20px;
+        gap: 12px;
     }
-
-    .results-actions {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 576px) {
-    .user-info span {
-        display: none;
-    }
-
-    .logo {
-        font-size: 24px;
-    }
-
-    .question-card {
-        padding: 25px 20px;
-    }
-
-    .question-text {
+    .mode-header h2 {
         font-size: 20px;
     }
 
+    /* Tabs cuộn ngang */
+    .mode-tabs {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+    .tab-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    /* Vocab grid: 1 cột trên mobile */
+    .vocab-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .vocab-card {
+        padding: 16px;
+    }
+    .vocab-word {
+        font-size: 18px;
+    }
+
+    /* Flashcard question card */
+    .question-card {
+        padding: 22px 16px;
+        border-radius: 16px;
+    }
+    .question-text {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    .question-number {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
+    /* Answer options: dễ bấm hơn trên mobile */
+    .answer-options {
+        gap: 10px;
+    }
+    .answer-option {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+    .answer-option:hover:not(:disabled) {
+        transform: none; /* bỏ translateX trên mobile — tránh layout shift */
+    }
+
+    /* Progress bar */
+    .practice-progress {
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .practice-progress span {
+        font-size: 13px;
+        min-width: 50px;
+    }
+
+    /* Next button */
+    .btn-next {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    /* Results */
+    .results-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .results-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .results-card h2 {
+        font-size: 22px;
+    }
+
+    /* Score circle nhỏ lại */
     .score-circle {
-        width: 150px;
-        height: 150px;
+        width: 160px;
+        height: 160px;
+        margin-bottom: 28px;
     }
-
     .score-circle svg {
-        width: 150px;
-        height: 150px;
+        width: 160px;
+        height: 160px;
+    }
+    .score-percent {
+        font-size: 38px;
+    }
+}
+
+/* ── Small mobile: ≤ 480px ── */
+@media (max-width: 480px) {
+    .user-info span {
+        display: none;
+    }
+    .logo {
+        font-size: 22px;
     }
 
+    /* Header cực nhỏ */
+    .header-content {
+        padding: 10px 12px;
+    }
+    .btn-logout {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Main content */
+    .main-content {
+        padding: 16px 12px;
+    }
+
+    /* Flashcard */
+    .question-card {
+        padding: 18px 12px;
+    }
+    .question-text {
+        font-size: 16px;
+    }
+    .answer-option {
+        padding: 12px 14px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+
+    /* Score */
+    .score-circle {
+        width: 130px;
+        height: 130px;
+    }
+    .score-circle svg {
+        width: 130px;
+        height: 130px;
+    }
     .score-percent {
-        font-size: 36px;
+        font-size: 30px;
+    }
+
+    /* Result stat */
+    .result-stat i {
+        font-size: 24px;
+    }
+    .result-stat strong {
+        font-size: 22px;
+    }
+
+    /* Vocab card */
+    .vocab-word {
+        font-size: 16px;
+        padding-right: 40px; /* tránh chồng với số thứ tự */
+    }
+    .vocab-number {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    /* Primary/secondary buttons full-width */
+    .btn-primary,
+    .btn-secondary {
+        padding: 12px;
+        font-size: 13px;
     }
 }
 
