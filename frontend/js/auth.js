@@ -4,15 +4,30 @@
  */
 
 (function () {
+  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000; // 10 ngày tính bằng ms
+
   // ── Helpers ──────────────────────────────────────────────
   function getToken() { return localStorage.getItem('token'); }
   function getUser()  { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } }
   function saveToken(t) { localStorage.setItem('token', t); }
   function saveUser(u)  { localStorage.setItem('user', JSON.stringify(u)); }
-  function logout()  {
+
+  function logout(reason) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = 'login.html';
+    localStorage.removeItem('lastLoginAt');
+    // Nếu có lý do (ví dụ: hết hạn 10 ngày) thì truyền qua URL để login.html hiển thị
+    const url = reason ? `login.html?reason=${encodeURIComponent(reason)}` : 'login.html';
+    window.location.href = url;
+  }
+
+  // ── Kiểm tra 10 ngày không đăng nhập ─────────────────────
+  function checkInactiveLogout() {
+    const lastLoginAt = parseInt(localStorage.getItem('lastLoginAt') || '0', 10);
+    if (!lastLoginAt) return; // chưa có dữ liệu → bỏ qua
+    if (Date.now() - lastLoginAt > TEN_DAYS_MS) {
+      logout('inactive');
+    }
   }
 
   // ── Expose globally ───────────────────────────────────────
@@ -25,16 +40,19 @@
   // ── Xác định trang hiện tại ───────────────────────────────
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-  // Trang không cần đăng nhập
   const PUBLIC_PAGES = ['login.html', 'register.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
 
-  // Trang chỉ dành cho teacher / admin
   const ADMIN_PAGES = ['admin.html'];
   const isAdminPage = ADMIN_PAGES.includes(currentPage);
 
   const token = getToken();
   const user  = getUser();
+
+  // ── Kiểm tra inactive 10 ngày (chỉ khi đã login) ─────────
+  if (token) {
+    checkInactiveLogout();
+  }
 
   // ── Guard 1: chưa đăng nhập → về login ──────────────────
   if (!isPublic && !token) {
@@ -55,6 +73,25 @@
       window.location.href = 'admin.html';
     } else {
       window.location.href = 'dashboard.html';
+    }
+    return;
+  }
+
+  // ── Hiển thị thông báo từ URL reason (login.html) ────────
+  if (currentPage === 'login.html') {
+    const params = new URLSearchParams(window.location.search);
+    const reason = params.get('reason');
+    if (reason === 'inactive') {
+      // Đợi DOM load xong rồi mới show toast
+      window.addEventListener('DOMContentLoaded', () => {
+        if (typeof showToast === 'function') {
+          showToast(
+            'error',
+            'Phiên đăng nhập hết hạn',
+            'Bạn đã không đăng nhập trong 10 ngày. Vui lòng đăng nhập lại.'
+          );
+        }
+      });
     }
   }
 })();

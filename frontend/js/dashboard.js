@@ -91,16 +91,17 @@ async function speakWord(word) {
 }
 
 async function _speakFallback(word) {
-    // ── Layer 2: DictionaryAPI (có file MP3 thật) ─
+    // ── Layer 2: Cache hit ────────────────────────
     if (_ttsCache[word]) {
         _playAudioUrl(_ttsCache[word]);
         return;
     }
+
+    // ── Layer 2: DictionaryAPI (MP3 thật, không CORS) ─
     try {
         const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
         if (res.ok) {
             const data = await res.json();
-            // Tìm audio URL trong phonetics
             let audioUrl = '';
             for (const entry of data) {
                 for (const ph of (entry.phonetics || [])) {
@@ -117,10 +118,27 @@ async function _speakFallback(word) {
                 return;
             }
         }
-    } catch { /* ignore, go to layer 3 */ }
+    } catch { /* ignore */ }
 
-    // ── Layer 3: Google Translate TTS ─────────────
-    // Lưu ý: không dùng được khi bị CORS block → dùng Audio element bypass CORS
+    // ── Layer 3: Web Speech không cần voice check (voices load trễ trên mobile) ──
+    try {
+        const synth2 = window.speechSynthesis;
+        if (synth2) {
+            synth2.cancel();
+            const utt2 = new SpeechSynthesisUtterance(word);
+            utt2.lang  = 'en-US';
+            utt2.rate  = 0.85;
+            synth2.speak(utt2);
+            await new Promise(resolve => {
+                utt2.onend   = resolve;
+                utt2.onerror = resolve;
+                setTimeout(resolve, 2000);
+            });
+            return;
+        }
+    } catch { /* ignore */ }
+
+    // ── Layer 4: Google Translate TTS (Audio element bypass CORS) ─────────────
     const gtUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(word)}`;
     _ttsCache[word] = gtUrl;
     _playAudioUrl(gtUrl);
@@ -743,12 +761,15 @@ function showFillBlankQuestion() {
     document.getElementById('fbPhonetic').textContent = currentWord.phonetic || '';
 
     document.getElementById('flashcard').classList.remove('flipped');
-    document.getElementById('fbInput').value   = '';
+    document.getElementById('fbInput').value    = '';
     document.getElementById('fbInput').disabled = false;
     document.getElementById('fbFeedback').innerHTML = '';
     document.getElementById('fbBtnNext').style.display   = 'none';
     document.getElementById('quick-btns').style.display  = 'none';
     document.getElementById('fbInputArea').style.display = 'none';
+
+    // FIX: re-enable buttons bị disable từ lần trước
+    document.querySelectorAll('.btn-remembered,.btn-not-remembered').forEach(b => b.disabled = false);
 }
 function flipCard() {
     const fc = document.getElementById('flashcard');

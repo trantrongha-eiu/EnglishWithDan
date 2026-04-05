@@ -435,6 +435,28 @@
             text-decoration: underline;
         }
 
+        /* ── PATCH: Toast thông báo login ── */
+        .login-toast {
+            display: none;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 16px;
+            line-height: 1.5;
+            animation: fadeIn .25s ease;
+        }
+        .login-toast.error  { background:#fce4e4; color:#c62828; border:1px solid #ef9a9a; }
+        .login-toast.banned { background:#fff3e0; color:#e65100; border:1px solid #ffb74d; }
+        .login-toast.show   { display: flex; }
+        .toast-icon  { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+        .toast-body  { flex: 1; }
+        .toast-title { font-weight: 700; margin-bottom: 3px; font-size: 15px; }
+        .toast-msg   { font-weight: 400; opacity: 0.9; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
         /* Features Sidebar */
         .features-sidebar {
             background: rgba(255, 255, 255, 0.15);
@@ -583,6 +605,15 @@
                 </button>
             </form>
 
+            <!-- PATCH: Toast thông báo -->
+            <div class="login-toast" id="loginToast">
+                <div class="toast-icon" id="toastIcon"></div>
+                <div class="toast-body">
+                    <div class="toast-title" id="toastTitle"></div>
+                    <div class="toast-msg"   id="toastMsg"></div>
+                </div>
+            </div>
+
             <div class="divider">
                 <span>HOẶC</span>
             </div>
@@ -645,6 +676,31 @@
             }
         }
 
+        // ── PATCH: Toast helper ───────────────────────────────
+        let _toastTimer = null;
+        function showToast(type, title, msg, duration = 5000) {
+            const toast   = document.getElementById('loginToast');
+            const icon    = document.getElementById('toastIcon');
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl   = document.getElementById('toastMsg');
+            toast.className    = 'login-toast ' + type + ' show';
+            icon.textContent   = type === 'banned' ? '🚫' : '⚠️';
+            titleEl.textContent = title;
+            msgEl.textContent   = msg;
+            clearTimeout(_toastTimer);
+            if (duration > 0) _toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+        function showError(msg) { showToast('error', 'Thông báo', msg); }
+
+        // ── PATCH: Hiển thị lý do bị logout (inactive 10 ngày) ─
+        (function () {
+            const reason = new URLSearchParams(window.location.search).get('reason');
+            if (reason === 'inactive') {
+                showToast('error', 'Phiên đăng nhập hết hạn',
+                    'Bạn đã không đăng nhập trong 10 ngày. Vui lòng đăng nhập lại.');
+            }
+        })();
+
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
@@ -665,11 +721,11 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    // Lưu token và user (bao gồm role)
+                    // PATCH: Lưu thêm lastLoginAt cho tính năng auto logout 10 ngày
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('lastLoginAt', Date.now().toString());
 
-                    // ── Redirect theo role ──────────────────────────
                     const role = data.user.role;
                     if (role === 'admin' || role === 'teacher') {
                         window.location.href = 'admin.html';
@@ -677,35 +733,23 @@
                         window.location.href = 'dashboard.html';
                     }
                 } else {
-                    showError(data.message || 'Đăng nhập thất bại!');
+                    // PATCH: Phân biệt bị cấm vs lỗi thường
+                    const isBanned = data.message && data.message.includes('bị cấm');
+                    if (isBanned) {
+                        showToast('banned', 'Tài khoản bị khóa',
+                            'Vui lòng liên hệ giáo viên để mở khóa.', 0);
+                    } else {
+                        showToast('error', 'Đăng nhập thất bại', data.message || 'Vui lòng thử lại.');
+                    }
                 }
             } catch (err) {
                 console.error('Login error:', err);
-                showError('Không kết nối được server! Vui lòng thử lại.');
+                showToast('error', 'Lỗi kết nối', 'Không kết nối được server! Vui lòng thử lại.');
             } finally {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
         });
-
-        // Hiển thị lỗi đẹp hơn alert()
-        function showError(msg) {
-            let el = document.getElementById('login-error');
-            if (!el) {
-                el = document.createElement('div');
-                el.id = 'login-error';
-                el.style.cssText = `
-                background:#fce4e4; color:#c62828;
-                border:1px solid #ef9a9a; border-radius:10px;
-                padding:12px 16px; font-size:14px; font-weight:500;
-                margin-top:16px; text-align:center;
-                animation: fadeIn .25s ease;
-            `;
-                document.getElementById('loginForm').after(el);
-            }
-            el.textContent = '⚠️ ' + msg;
-            setTimeout(() => el && (el.textContent = ''), 4000);
-        }
 
         document.querySelector('.btn-social.google').addEventListener('click', function () {
             showError('Tính năng đăng nhập Google đang được phát triển!');
