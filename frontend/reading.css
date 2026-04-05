@@ -2081,3 +2081,109 @@ body.eye-protection .split-questions {
 .hidden {
   display: none !important;
 }
+/* ════════════════════════════════════════════════════════════════════
+   DRAG-DROP CHIP BANK (shared styles for new group types)
+════════════════════════════════════════════════════════════════════ */
+.rq-chip-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f0f4ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.drag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: #fff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: grab;
+  user-select: none;
+  transition: all .15s;
+  color: #1e40af;
+}
+.drag-chip:hover  { background: #e8f0fe; border-color: #1565c0; transform: translateY(-1px); }
+.drag-chip.used   { opacity: .35; pointer-events: none; }
+.drag-chip em     { font-style: italic; color: #1565c0; }
+.drag-chip strong { font-weight: 700; color: #1565c0; min-width: 16px; }
+
+/* ── Drop zones for new types ─────────────────────────────────────── */
+.rq-heading-drop, .rq-ending-drop, .sc-drop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 160px;
+  padding: 5px 10px;
+  border: 2px dashed #94a3b8;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all .15s;
+}
+.rq-heading-drop.filled, .rq-ending-drop.filled, .sc-drop.filled {
+  background: #e8f0fe;
+  border: 2px solid #1565c0;
+  color: #1e40af;
+  font-weight: 500;
+}
+.rq-heading-drop:not(.filled):hover,
+.rq-ending-drop:not(.filled):hover,
+.sc-drop:not(.filled):hover {
+  border-color: #3d8bff;
+  background: rgba(61,139,255,.04);
+}
+.rq-heading-drop em  { font-style: italic; color: #1565c0; }
+.rq-ending-drop strong { font-weight: 700; }
+
+/* ── Matching Headings ────────────────────────────────────────────── */
+.rq-mh-group { }
+.rq-mh-questions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Summary Completion ───────────────────────────────────────────── */
+.rq-summary-group { }
+.rq-summary-text {
+  line-height: 2.1;
+  font-size: 14px;
+  color: #1e293b;
+  padding: 12px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.sc-drop { min-width: 90px; vertical-align: middle; margin: 0 4px; }
+
+/* ── Sentence Endings ─────────────────────────────────────────────── */
+.rq-se-group { display: flex; flex-direction: column; gap: 14px; }
+.rq-se-questions { display: flex; flex-direction: column; gap: 8px; }
+.rq-se-endings {
+  background: #f8f9ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 12px;
+}
+.se-endings-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+.se-endings-list { display: flex; flex-direction: column; gap: 6px; }
+.se-ending-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 0;
+  transition: opacity .15s;
+}
+.se-ending-item.used { opacity: .35; }
+.se-ending-item .se-chip { flex-shrink: 0; min-width: 38px; }
+.se-ending-text { font-size: 13px; color: #374151; line-height: 1.5; }

@@ -278,11 +278,14 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
 
   let bodyHtml = '';
   switch (groupType) {
-    case 'table': bodyHtml = renderTableGroup(group, isReview, reviewMap); break;
-    case 'note-form': bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
-    case 'bullet-list': bodyHtml = renderBulletListGroup(group, isReview, reviewMap); break;
-    case 'map': bodyHtml = renderMapGroup(group, isReview, reviewMap); break;
-    case 'matching-options': bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
+    case 'table':              bodyHtml = renderTableGroup(group, isReview, reviewMap); break;
+    case 'note-form':          bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
+    case 'bullet-list':        bodyHtml = renderBulletListGroup(group, isReview, reviewMap); break;
+    case 'map':                bodyHtml = renderMapGroup(group, isReview, reviewMap); break;
+    case 'matching-options':   bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
+    case 'matching-headings':  bodyHtml = renderMatchingHeadingsGroup(group, isReview, reviewMap); break;
+    case 'summary-completion': bodyHtml = renderSummaryCompletionGroup(group, isReview, reviewMap); break;
+    case 'sentence-endings':   bodyHtml = renderSentenceEndingsGroup(group, isReview, reviewMap); break;
     default: bodyHtml = renderPlainGroup(questions, isReview, reviewMap); break;
   }
 
@@ -421,6 +424,178 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
       <div class="match-options-label">Options</div>
       ${reuseNote}
       <div class="match-options-grid">${optListHtml}</div>
+    </div>
+  </div>`;
+}
+
+/* ── MATCHING HEADINGS ────────────────────────────────────────────── */
+function renderMatchingHeadingsGroup(group, isReview, reviewMap) {
+  const { headingsConfig = {}, questions = [] } = group;
+  const headings = headingsConfig.headings || [];
+  if (!headings.length || !questions.length) return '<div class="form-hint">Chưa có dữ liệu matching headings.</div>';
+
+  const groupId = 'mhg-' + questions.map(q => q.questionNumber).join('-');
+
+  const chipsHtml = headings.map(h => {
+    const val = h.numeral || '';
+    const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === val);
+    return `<span class="drag-chip mh-chip${isUsed ? ' used' : ''}"
+      data-value="${escHtml(val)}" data-groupid="${groupId}"
+      draggable="${isReview ? 'false' : 'true'}"
+      ondragstart="dragStart(event,'${escHtml(val)}')"
+      onclick="clickMHChip('${escHtml(val)}','${groupId}')">
+      <em>${escHtml(val)}.</em> ${escHtml(h.text || '')}
+    </span>`;
+  }).join('');
+
+  const qRowsHtml = questions.map(q => {
+    const qNum = q.questionNumber;
+    const review = reviewMap[qNum];
+    const ans = isReview ? (review?.userAnswer || '') : (state.answers[qNum] || '');
+    const ansObj = headings.find(h => h.numeral === ans);
+    const displayText = ansObj ? `<em>${escHtml(ans)}</em>. ${escHtml(ansObj.text.slice(0, 40))}${ansObj.text.length > 40 ? '…' : ''}` : '';
+
+    if (isReview) {
+      const isCorrect = review?.isCorrect;
+      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtml(review.explanation)}</div>` : '';
+      return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
+        <div class="match-q-left">
+          <span class="match-q-num">${qNum}</span>
+          <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+        </div>
+        <div class="match-q-right">
+          <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
+          ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(review?.correctAnswer || '')}</span>` : ''}
+        </div>${expl}
+      </div>`;
+    }
+    return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
+      <div class="match-q-left">
+        <span class="match-q-num">${qNum}</span>
+        <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+      </div>
+      <div class="drop-zone rq-heading-drop${ans ? ' filled' : ''}"
+           data-qnum="${qNum}" data-groupid="${groupId}"
+           ondragover="event.preventDefault()"
+           ondrop="dropMH(event,${qNum},'${groupId}')">
+        ${ans ? `${displayText}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo tiêu đề vào đây'}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="rq-mh-group">
+    <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+    <div class="rq-mh-questions">${qRowsHtml}</div>
+  </div>`;
+}
+
+/* ── SUMMARY COMPLETION ───────────────────────────────────────────── */
+function renderSummaryCompletionGroup(group, isReview, reviewMap) {
+  const { summaryConfig = {}, questions = [] } = group;
+  const { text = '', wordBank = [] } = summaryConfig;
+  if (!wordBank.length) return '<div class="form-hint">Chưa có word bank.</div>';
+
+  const groupId = 'scg-' + questions.map(q => q.questionNumber).join('-');
+  const qMap = {};
+  questions.forEach(q => { qMap[q.questionNumber] = q; });
+
+  // Word bank chips (store the actual word as value)
+  const chipsHtml = wordBank.map(w => {
+    const word = w.word || '';
+    const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+    return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
+      data-value="${escHtml(word)}" data-groupid="${groupId}"
+      draggable="${isReview ? 'false' : 'true'}"
+      ondragstart="dragStart(event,'${escHtml(word)}')"
+      onclick="clickSCChip('${escHtml(word)}','${groupId}')">
+      <strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+    </span>`;
+  }).join('');
+
+  // Replace __Qn__ in summary text with drop zones (or review spans)
+  const summaryHtml = text.replace(/__Q(\d+)__/g, (_, numStr) => {
+    const qNum = parseInt(numStr);
+    const q = qMap[qNum];
+    if (!q) return `[Q${qNum}]`;
+    if (isReview) {
+      const review = reviewMap[qNum];
+      const cls = review?.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+      const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
+      return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(review?.userAnswer || '–')}</span>${hint}</span>`;
+    }
+    const ans = state.answers[qNum] || '';
+    return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="dropSC(event,${qNum},'${groupId}')" style="display:inline-flex;min-width:90px">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
+  });
+
+  return `<div class="rq-summary-group">
+    <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+    <div class="rq-summary-text">${summaryHtml}</div>
+  </div>`;
+}
+
+/* ── SENTENCE ENDINGS ─────────────────────────────────────────────── */
+function renderSentenceEndingsGroup(group, isReview, reviewMap) {
+  const { endingsConfig = {}, questions = [] } = group;
+  const endings = endingsConfig.endings || [];
+  if (!endings.length || !questions.length) return '<div class="form-hint">Chưa có dữ liệu sentence endings.</div>';
+
+  const groupId = 'seg-' + questions.map(q => q.questionNumber).join('-');
+
+  const qRowsHtml = questions.map(q => {
+    const qNum = q.questionNumber;
+    const review = reviewMap[qNum];
+    const ans = isReview ? (review?.userAnswer || '') : (state.answers[qNum] || '');
+    const ansObj = endings.find(e => e.letter === ans);
+
+    if (isReview) {
+      const isCorrect = review?.isCorrect;
+      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtml(review.explanation)}</div>` : '';
+      return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
+        <div class="match-q-left">
+          <span class="match-q-num">${qNum}</span>
+          <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+        </div>
+        <div class="match-q-right">
+          <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
+          ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(review?.correctAnswer || '')}</span>` : ''}
+        </div>${expl}
+      </div>`;
+    }
+    const displayText = ansObj ? `<strong>${escHtml(ans)}</strong>. ${escHtml(ansObj.text.slice(0, 40))}${ansObj.text.length > 40 ? '…' : ''}` : '';
+    return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
+      <div class="match-q-left">
+        <span class="match-q-num">${qNum}</span>
+        <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+      </div>
+      <div class="drop-zone rq-ending-drop${ans ? ' filled' : ''}"
+           data-qnum="${qNum}" data-groupid="${groupId}"
+           ondragover="event.preventDefault()"
+           ondrop="dropSE(event,${qNum},'${groupId}')">
+        ${ans ? `${displayText}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo phần kết vào đây'}
+      </div>
+    </div>`;
+  }).join('');
+
+  const chipsHtml = endings.map(e => {
+    const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === e.letter);
+    return `<div class="se-ending-item${isUsed ? ' used' : ''}"
+      data-value="${escHtml(e.letter)}" data-groupid="${groupId}">
+      <span class="drag-chip se-chip${isUsed ? ' used' : ''}"
+        data-value="${escHtml(e.letter)}" data-groupid="${groupId}"
+        draggable="${isReview ? 'false' : 'true'}"
+        ondragstart="dragStart(event,'${escHtml(e.letter)}')"
+        onclick="clickSEChip('${escHtml(e.letter)}','${groupId}')">
+        <strong>${escHtml(e.letter)}</strong>
+      </span>
+      <span class="se-ending-text">${escHtml(e.text || '')}</span>
+    </div>`;
+  }).join('');
+
+  return `<div class="rq-se-group">
+    <div class="rq-se-questions">${qRowsHtml}</div>
+    <div class="rq-se-endings">
+      <div class="se-endings-label">Danh sách phần kết câu</div>
+      <div class="se-endings-list">${chipsHtml}</div>
     </div>
   </div>`;
 }
@@ -691,6 +866,136 @@ function initDropZones() {
       if (_dragWord) { setAnswer(qNum, _dragWord); refreshWordBankZone(qNum, _dragWord); }
     });
   });
+}
+
+/* ── Generic clear for new drag-drop group types ──────────────────── */
+function clearDragDrop(qNum, groupId) {
+  delete state.answers[qNum];
+  const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
+  if (dz) {
+    dz.classList.remove('filled');
+    dz.innerHTML = dz.classList.contains('rq-heading-drop') ? 'Kéo tiêu đề vào đây'
+                 : dz.classList.contains('sc-drop')        ? 'Kéo từ vào'
+                 : 'Kéo phần kết vào đây';
+  }
+  _refreshGroupChips(groupId);
+  updateQNavBtn(qNum);
+}
+
+// Re-mark chips used/unused based on current answers for a group
+function _refreshGroupChips(groupId) {
+  // Get all drop zones in this group → what values are currently used
+  const usedVals = new Set();
+  document.querySelectorAll(`.drop-zone[data-groupid="${groupId}"]`).forEach(dz => {
+    const ans = state.answers[parseInt(dz.dataset.qnum)];
+    if (ans) usedVals.add(ans);
+  });
+  // Update chip states
+  document.querySelectorAll(`[data-groupid="${groupId}"].drag-chip`).forEach(chip => {
+    chip.classList.toggle('used', usedVals.has(chip.dataset.value));
+  });
+  // Also update se-ending-item containers
+  document.querySelectorAll(`[data-groupid="${groupId}"].se-ending-item`).forEach(item => {
+    item.classList.toggle('used', usedVals.has(item.dataset.value));
+  });
+}
+
+/* ── MATCHING HEADINGS drag-drop ──────────────────────────────────── */
+function dropMH(e, qNum, groupId) {
+  e.preventDefault();
+  if (!_dragWord) return;
+  setAnswer(qNum, _dragWord);
+  _refreshMHZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function clickMHChip(numeral, groupId) {
+  const emptyDz = document.querySelector(`.rq-heading-drop[data-groupid="${groupId}"]:not(.filled)`);
+  if (!emptyDz) return;
+  const qNum = parseInt(emptyDz.dataset.qnum);
+  _dragWord = numeral;
+  setAnswer(qNum, numeral);
+  _refreshMHZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function _refreshMHZone(qNum, groupId) {
+  const passage = state.passages[state.currentPassageIdx];
+  const allGroups = getAllGroupsFromPassage(passage);
+  let headingText = '';
+  for (const g of allGroups) {
+    if (g.groupType === 'matching-headings') {
+      const h = g.headingsConfig?.headings?.find(x => x.numeral === state.answers[qNum]);
+      if (h) { headingText = h.text; break; }
+    }
+  }
+  const dz = document.querySelector(`.rq-heading-drop[data-qnum="${qNum}"]`);
+  if (!dz) return;
+  const numeral = state.answers[qNum] || '';
+  const short = headingText.length > 40 ? headingText.slice(0, 40) + '…' : headingText;
+  dz.classList.add('filled');
+  dz.innerHTML = `<em>${escHtml(numeral)}</em>${short ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  updateQNavBtn(qNum);
+}
+
+/* ── SUMMARY COMPLETION drag-drop ─────────────────────────────────── */
+function dropSC(e, qNum, groupId) {
+  e.preventDefault();
+  if (!_dragWord) return;
+  setAnswer(qNum, _dragWord);
+  _refreshSCZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function clickSCChip(word, groupId) {
+  const emptyDz = document.querySelector(`.sc-drop[data-groupid="${groupId}"]:not(.filled)`);
+  if (!emptyDz) return;
+  const qNum = parseInt(emptyDz.dataset.qnum);
+  _dragWord = word;
+  setAnswer(qNum, word);
+  _refreshSCZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function _refreshSCZone(qNum, groupId) {
+  const dz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
+  if (!dz) return;
+  const word = state.answers[qNum] || '';
+  dz.classList.add('filled');
+  dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  updateQNavBtn(qNum);
+}
+
+/* ── SENTENCE ENDINGS drag-drop ───────────────────────────────────── */
+function dropSE(e, qNum, groupId) {
+  e.preventDefault();
+  if (!_dragWord) return;
+  setAnswer(qNum, _dragWord);
+  _refreshSEZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function clickSEChip(letter, groupId) {
+  const emptyDz = document.querySelector(`.rq-ending-drop[data-groupid="${groupId}"]:not(.filled)`);
+  if (!emptyDz) return;
+  const qNum = parseInt(emptyDz.dataset.qnum);
+  _dragWord = letter;
+  setAnswer(qNum, letter);
+  _refreshSEZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function _refreshSEZone(qNum, groupId) {
+  const passage = state.passages[state.currentPassageIdx];
+  const allGroups = getAllGroupsFromPassage(passage);
+  let endingText = '';
+  for (const g of allGroups) {
+    if (g.groupType === 'sentence-endings') {
+      const e = g.endingsConfig?.endings?.find(x => x.letter === state.answers[qNum]);
+      if (e) { endingText = e.text; break; }
+    }
+  }
+  const dz = document.querySelector(`.rq-ending-drop[data-qnum="${qNum}"]`);
+  if (!dz) return;
+  const letter = state.answers[qNum] || '';
+  const short = endingText.length > 40 ? endingText.slice(0, 40) + '…' : endingText;
+  dz.classList.add('filled');
+  dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  updateQNavBtn(qNum);
 }
 
 /* ── Restore saved answers back into DOM after re-render ──────────── */
