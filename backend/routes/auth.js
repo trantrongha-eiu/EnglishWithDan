@@ -58,6 +58,14 @@ router.post('/login', async (req, res) => {
       return res.json({ success: false, message: 'Sai mật khẩu' });
     }
 
+    // ─── Kiểm tra tài khoản bị cấm ──────────────────────────
+    if (user.isBanned) {
+      return res.json({
+        success: false,
+        message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.'
+      });
+    }
+
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
