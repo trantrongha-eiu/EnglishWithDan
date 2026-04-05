@@ -2627,16 +2627,12 @@ async function saveSpeakingMaterial() {
       if (file) {
         status.style.display = 'block';
         status.textContent   = '⬆️ Đang upload PDF mới...';
-        const base64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload  = () => resolve(reader.result.split(',')[1]);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        const formData = new FormData();
+        formData.append('pdf', file);
         const uploadRes  = await fetch(`${API}/admin/speaking/materials/upload-pdf`, {
           method: 'POST',
-          headers: { ...authH(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pdfBase64: base64 })
+          headers: { Authorization: authH().Authorization },
+          body: formData
         });
         const uploadData = await uploadRes.json();
         if (!uploadData.success) throw new Error(uploadData.message);
@@ -2659,18 +2655,12 @@ async function saveSpeakingMaterial() {
       status.style.display = 'block';
       status.textContent   = '⬆️ Đang upload PDF lên Cloudinary...';
 
-      // Convert to base64
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload  = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
+      const formData = new FormData();
+      formData.append('pdf', file);
       const uploadRes  = await fetch(`${API}/admin/speaking/materials/upload-pdf`, {
         method: 'POST',
-        headers: { ...authH(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pdfBase64: base64 })
+        headers: { Authorization: authH().Authorization },
+        body: formData
       });
       const uploadData = await uploadRes.json();
       if (!uploadData.success) throw new Error(uploadData.message);
