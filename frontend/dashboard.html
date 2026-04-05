@@ -36,8 +36,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .btn-logout:hover{border-color:var(--brand);color:var(--brand)}
 
 .main-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
-.nav-list{display:flex;gap:0;list-style:none}
-.nav-list a{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;transition:all .15s}
+.nav-list{display:flex;gap:0;list-style:none;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-list a{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .nav-list a:hover{color:var(--text)}
 .nav-list a.active{color:var(--brand);border-bottom-color:var(--brand)}
 
@@ -128,7 +128,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .book-editable-name:focus{background:var(--surface2)}
 .btn-rename{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;font-size:13px}
 
-.book-stats{display:flex;gap:16px;font-size:12px}
+.book-stats{display:flex;gap:16px;font-size:12px;flex-wrap:wrap}
 .stat-dot{display:flex;align-items:center;gap:5px;font-weight:600}
 .dot-green{width:8px;height:8px;border-radius:50%;background:var(--green)}
 .dot-yellow{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
@@ -171,10 +171,8 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .words-table tbody tr:hover td{background:#fafafa}
 .words-table tbody tr.selected td{background:#fef2f2}
 
-/* Checkbox */
 .cb-wrap input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--brand)}
 
-/* Status dropdown */
 .status-select{
   background:none;border:1px solid var(--border);border-radius:20px;
   padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer;
@@ -184,19 +182,9 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .status-select.nho-so-so{color:var(--yellow);border-color:var(--yellow);background:#fffbeb}
 .status-select.da-thuoc{color:var(--green);border-color:var(--green);background:#f0fdf4}
 
-/* Audio button */
 .btn-audio{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 6px;border-radius:6px;font-size:14px}
 .btn-audio:hover{color:var(--blue);background:#eff6ff}
-
-/* Word chip */
 .word-chip-main{font-weight:700;font-size:14px}
-
-/* Deep understand */
-.deep-badge{font-size:10px;background:#f0f9ff;color:#0ea5e9;border:1px solid #bae6fd;padding:2px 8px;border-radius:10px;font-weight:600}
-
-.empty-words{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty-words .empty-icon{font-size:48px;margin-bottom:12px}
-.empty-words p{font-size:14px}
 
 /* ── Unit learning view ── */
 #view-unit{display:none;flex-direction:column;height:100%}
@@ -207,18 +195,19 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .unit-header-bar h3{font-size:16px;font-weight:700;flex:1}
 
-.mode-tabs{display:flex;gap:4px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border)}
+.mode-tabs{display:flex;gap:4px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tab-btn{
   padding:11px 18px;border:none;background:none;cursor:pointer;
   font-size:13px;font-weight:600;color:var(--text2);
   border-bottom:2px solid transparent;transition:all .15s;font-family:inherit;
+  white-space:nowrap;flex-shrink:0;
 }
 .tab-btn:hover{color:var(--text)}
 .tab-btn.active{color:var(--brand);border-bottom-color:var(--brand)}
 
 .mode-body{flex:1;overflow-y:auto;padding:24px}
 
-/* Vocab grid (study mode) */
+/* Vocab grid */
 .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
 .vocab-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
@@ -259,7 +248,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .question-number{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
 .question-text{font-size:18px;font-weight:700;margin-bottom:20px;color:var(--text);line-height:1.4}
 
-/* Multiple choice */
 .answer-options{display:flex;flex-direction:column;gap:10px}
 .answer-option{
   padding:13px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
@@ -288,7 +276,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .fc-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
 .fc-main{font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px}
 .fc-sub{font-size:14px;color:var(--text2)}
-.fc-hint{font-size:12px;color:var(--text3);margin-top:4px}
 .btn-flip-hint{font-size:12px;color:var(--text3);margin-top:16px;background:none;border:none;cursor:pointer;font-family:inherit}
 
 .quick-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
@@ -305,19 +292,17 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .btn-not-remembered:hover{background:#fee2e2}
 
-/* Text inputs */
-.text-input, .fb-input, .listen-input, .trans-input{
+.text-input,.fb-input,.listen-input,.trans-input{
   width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
   font-size:14px;font-family:inherit;outline:none;background:var(--bg);color:var(--text);
   transition:border-color .15s;
 }
-.text-input:focus, .fb-input:focus, .listen-input:focus, .trans-input:focus{border-color:var(--blue)}
+.text-input:focus,.fb-input:focus,.listen-input:focus,.trans-input:focus{border-color:var(--blue)}
 .fb-input-row{display:flex;gap:8px;margin-top:12px}
 .btn-check{background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
 .btn-check:hover{background:#2c78f0}
 .btn-hint-sm{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;cursor:pointer;font-family:inherit}
 
-/* Feedback */
 .feedback-correct,.feedback-wrong,.feedback-hint{
   margin-top:12px;padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;
 }
@@ -325,7 +310,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .feedback-wrong{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
 .feedback-hint{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
 
-/* btn next */
 .btn-next{
   display:flex;align-items:center;justify-content:center;gap:6px;
   width:100%;margin-top:16px;padding:12px;
@@ -334,7 +318,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .btn-next:hover{background:#c62828}
 
-/* Listening */
 .btn-play-audio{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:18px;background:var(--surface2);border:2px dashed var(--border2);
@@ -344,7 +327,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .btn-play-audio:hover{background:#eff6ff;border-color:var(--blue)}
 .listen-hint{font-size:13px;color:var(--text2);background:var(--surface2);padding:8px 14px;border-radius:var(--radius-sm);margin-bottom:12px;text-align:center}
 
-/* Translation */
 .trans-example{
   font-size:15px;font-style:italic;color:var(--text2);padding:14px 18px;
   background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:12px;line-height:1.6;
@@ -389,7 +371,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .modal-body{padding:18px 24px;overflow-y:auto;flex:1}
 .modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
 
-/* Form */
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}
 .form-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;outline:none;background:var(--bg);color:var(--text);transition:border-color .15s}
@@ -398,7 +379,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .emoji-opt{font-size:22px;padding:6px;border:2px solid transparent;border-radius:8px;cursor:pointer;transition:all .15s}
 .emoji-opt:hover,.emoji-opt.selected{border-color:var(--brand);background:#fce4e4}
 
-/* Save to book modal */
 .book-list-select{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
 .book-opt{
   display:flex;align-items:center;gap:12px;padding:12px 14px;
@@ -426,19 +406,218 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 #toast.error{background:#991b1b}
 #toast.info{background:var(--blue)}
 
-/* Confirm delete */
 .danger-icon{font-size:40px;text-align:center;margin-bottom:10px}
-
-.hidden {
-  display: none !important;}
+.hidden{display:none !important}
 
 /* ══════════════════════════════════════════
-   RESPONSIVE
+   MOBILE FAB + BOTTOM SHEET
 ══════════════════════════════════════════ */
+
+/* FAB — nút tròn góc dưới phải, chỉ hiện trên mobile */
+.mob-fab{
+  display:none;
+  position:fixed;
+  bottom:24px;right:20px;
+  z-index:120;
+  width:56px;height:56px;
+  background:linear-gradient(135deg,var(--blue) 0%,#2563eb 100%);
+  color:#fff;border:none;border-radius:50%;
+  box-shadow:0 4px 20px rgba(61,139,255,.45);
+  font-size:22px;cursor:pointer;
+  align-items:center;justify-content:center;
+  transition:transform .2s,box-shadow .2s;
+}
+.mob-fab:active{transform:scale(.93)}
+.mob-fab.sheet-open{
+  background:linear-gradient(135deg,#6b7280 0%,#374151 100%);
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+
+/* Backdrop */
+.mob-backdrop{
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:130;
+  backdrop-filter:blur(2px);
+  opacity:0;transition:opacity .3s;
+}
+.mob-backdrop.visible{opacity:1}
+
+/* Bottom sheet */
+.mob-sheet{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:140;
+  background:var(--surface);
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 40px rgba(0,0,0,.18);
+  max-height:82vh;
+  overflow:hidden;
+  flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.32,1,.28,1);
+}
+.mob-sheet.open{transform:translateY(0)}
+
+/* Drag handle */
+.sheet-handle{
+  display:flex;justify-content:center;padding:12px 0 6px;
+  flex-shrink:0;cursor:grab;
+}
+.sheet-handle-bar{
+  width:40px;height:4px;
+  background:var(--border2);border-radius:2px;
+}
+
+/* Sheet header */
+.sheet-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:4px 20px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sheet-title{font-size:16px;font-weight:800;color:var(--text)}
+.sheet-close{
+  background:var(--surface2);border:none;
+  width:32px;height:32px;border-radius:50%;
+  font-size:16px;cursor:pointer;color:var(--text2);
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Sheet tabs (Sổ / Học Unit) */
+.sheet-tabs{
+  display:flex;padding:12px 20px 0;gap:8px;
+  flex-shrink:0;
+}
+.sheet-tab{
+  flex:1;padding:9px 0;border:none;background:var(--surface2);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:700;
+  color:var(--text2);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.sheet-tab.active{background:var(--brand);color:#fff}
+
+/* Sheet panels */
+.sheet-body{
+  flex:1;overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:env(safe-area-inset-bottom, 16px);
+}
+.sheet-panel{display:none;padding:14px 0}
+.sheet-panel.active{display:block}
+
+/* Book list inside sheet */
+.sheet-book-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 20px;cursor:pointer;
+  font-size:14px;font-weight:500;color:var(--text2);
+  border-left:3px solid transparent;
+  transition:all .15s;
+}
+.sheet-book-item:hover{background:var(--surface2)}
+.sheet-book-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
+.sheet-book-count{font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:10px;margin-left:auto}
+.sheet-book-item.active .sheet-book-count{background:#fce4e4;color:var(--brand)}
+
+.sheet-add-book-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 20px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--brand);
+  border-top:1px solid var(--border);
+  transition:background .15s;
+}
+.sheet-add-book-btn:hover{background:#fef2f2}
+
+/* Unit panel inside sheet */
+.sheet-unit-section{padding:16px 20px}
+.sheet-unit-section h4{
+  font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
+}
+#unitSelectMob{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-size:14px;font-family:inherit;outline:none;
+  background:var(--bg);color:var(--text);cursor:pointer;
+  margin-bottom:10px;
+}
+#unitSelectMob:focus{border-color:var(--blue)}
+.sheet-start-btn{
+  width:100%;padding:12px;
+  background:linear-gradient(135deg,var(--blue) 0%,#2563eb 100%);
+  color:#fff;border:none;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:10px;transition:opacity .15s;
+}
+.sheet-start-btn:hover{opacity:.9}
+.sheet-sound-btn{
+  width:100%;padding:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:600;
+  cursor:pointer;color:var(--text2);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+
+/* ── Show/hide by screen size ── */
 @media(max-width:768px){
-  .vocab-sidebar{position:fixed;left:0;top:112px;bottom:0;transform:translateX(-100%);transition:transform .25s;z-index:50}
-  .vocab-sidebar.open{transform:translateX(0)}
-  .main-content{width:100%}
+  /* Ẩn sidebar desktop */
+  .vocab-sidebar{display:none !important}
+
+  /* Hiện FAB */
+  .mob-fab{display:flex}
+
+  /* Hiện backdrop + sheet khi active */
+  .mob-backdrop.active,
+  .mob-sheet.active{display:flex}
+
+  /* Thêm padding bottom để content không bị FAB che */
+  .app-layout{padding-bottom:80px}
+
+  /* Mode body padding nhỏ hơn */
+  .mode-body{padding:16px}
+
+  /* Flashcard wrap nhỏ hơn */
+  .flashcard-wrap{height:180px}
+  .fc-main{font-size:18px}
+
+  /* Question card */
+  .question-card{padding:20px 16px}
+  .question-text{font-size:16px}
+
+  /* Answer options */
+  .answer-option{padding:12px 14px;font-size:14px}
+
+  /* Quick btns stack */
+  .quick-btns{flex-direction:column;gap:8px}
+  .btn-remembered,.btn-not-remembered{width:100%}
+
+  /* fb input row stack */
+  .fb-input-row{flex-direction:column}
+  .btn-check,.btn-hint-sm{width:100%}
+
+  /* Book topbar */
+  .book-topbar{padding:12px 16px;gap:8px}
+  .book-stats{gap:10px}
+  .book-action-bar{padding:8px 12px}
+  .words-table-wrap{padding:0 12px 20px}
+
+  /* Vocab grid 1 col */
+  .vocab-grid{grid-template-columns:1fr}
+
+  /* Results */
+  .results-btns{flex-direction:column}
+  .score-ring-wrap{width:130px;height:130px}
+  .score-ring-wrap svg{width:130px;height:130px}
+
+  /* Toast above FAB */
+  #toast{bottom:90px;right:16px;left:16px;max-width:100%}
+}
+
+@media(min-width:769px){
+  .mob-fab,.mob-backdrop,.mob-sheet{display:none !important}
 }
   </style>
 </head>
@@ -466,32 +645,21 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 
 <div class="app-layout">
 
-  <!-- ── SIDEBAR ── -->
+  <!-- ── SIDEBAR (desktop only) ── -->
   <aside class="vocab-sidebar" id="vocabSidebar">
-
-    <!-- Sổ từ vựng cá nhân -->
     <div class="sidebar-head">
       Sổ của tôi
       <button class="btn-add-book" onclick="openAddBookModal()" title="Thêm sổ mới">＋</button>
     </div>
-    <div id="book-list-sidebar">
-      <!-- Render bởi JS -->
-    </div>
-
+    <div id="book-list-sidebar"><!-- Render bởi JS --></div>
     <div class="sidebar-divider"></div>
-
-    <!-- Unit vocab -->
     <div class="unit-section">
       <h4><i class="fas fa-book"></i> Học Unit</h4>
-      <select id="unitSelect">
-        <option value="">-- Chọn Unit --</option>
-      </select>
+      <select id="unitSelect"><option value="">-- Chọn Unit --</option></select>
       <button class="btn-start-unit" onclick="loadUnit()">
         <i class="fas fa-play"></i> Bắt Đầu Học
       </button>
-      <button class="btn-sound-toggle" onclick="toggleSound()" id="soundToggle">
-        🔊 Sound: ON
-      </button>
+      <button class="btn-sound-toggle" onclick="toggleSound()" id="soundToggle">🔊 Sound: ON</button>
     </div>
   </aside>
 
@@ -501,28 +669,25 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
     <!-- VIEW: Sổ từ vựng cá nhân -->
     <div id="view-mybook" style="display:flex;flex-direction:column;height:100%">
 
-      <!-- Khi chưa chọn sổ -->
       <div id="book-welcome" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
         <div style="text-align:center;color:var(--text3)">
           <div style="font-size:60px;margin-bottom:16px">📚</div>
           <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Sổ từ vựng của bạn</h3>
           <p style="font-size:14px">Chọn một sổ từ sidebar để xem từ vựng đã lưu</p>
           <p style="font-size:13px;margin-top:6px;color:var(--text3)">hoặc làm bài Reading rồi double-click từ để lưu</p>
+          <!-- Hint cho mobile -->
+          <p style="font-size:13px;margin-top:14px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
+            <i class="fas fa-hand-pointer"></i> Bấm nút <strong>☰</strong> góc dưới để chọn sổ hoặc học Unit
+          </p>
         </div>
       </div>
 
-      <!-- Nội dung sổ đã chọn -->
       <div id="book-content" style="display:none;flex-direction:column;height:100%">
-
-        <!-- Top bar -->
         <div class="book-topbar">
           <div class="book-top-title">
             <span class="book-top-emoji" id="book-top-emoji">📘</span>
-            <input class="book-editable-name" id="book-editable-name"
-              value="Sổ 1" title="Click để đổi tên"/>
-            <button class="btn-rename" onclick="renameBook()" title="Đổi tên">
-              <i class="fas fa-pen"></i>
-            </button>
+            <input class="book-editable-name" id="book-editable-name" value="Sổ 1" title="Click để đổi tên"/>
+            <button class="btn-rename" onclick="renameBook()" title="Đổi tên"><i class="fas fa-pen"></i></button>
           </div>
           <div class="book-stats">
             <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Đã thuộc</span>
@@ -533,8 +698,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
           </div>
         </div>
         <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
-
-        <!-- Action bar -->
         <div class="book-action-bar">
           <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()">
             <i class="fas fa-layer-group"></i> Học với Flashcards
@@ -545,8 +708,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
           <button class="btn btn-ghost btn-sm" onclick="openAddWordManual()">
             <i class="fas fa-plus"></i> Thêm từ
           </button>
-
-          <!-- Bulk actions (hiện khi có chọn) -->
           <div class="bulk-bar" id="bulk-bar">
             <span>Đã chọn <span class="bulk-count" id="bulk-count">0</span> từ</span>
             <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
@@ -555,13 +716,9 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
               <option value="nho-so-so">Nhớ sơ sơ</option>
               <option value="da-thuoc">Đã thuộc</option>
             </select>
-            <button class="btn btn-danger btn-sm" onclick="bulkDelete()">
-              <i class="fas fa-trash"></i> Xoá
-            </button>
+            <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="fas fa-trash"></i> Xoá</button>
           </div>
         </div>
-
-        <!-- Word table -->
         <div class="words-table-wrap">
           <table class="words-table">
             <thead>
@@ -576,7 +733,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
               </tr>
             </thead>
             <tbody id="words-tbody">
-              <tr><td colspan="7" class="table-empty" style="text-align:center;padding:40px;color:var(--text3)">Chưa có từ nào</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">Chưa có từ nào</td></tr>
             </tbody>
           </table>
         </div>
@@ -589,7 +746,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
         <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Quay lại</button>
         <h3 id="unitTitle">Unit …</h3>
       </div>
-
       <div class="mode-tabs" id="mode-tabs">
         <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Học Từ</button>
         <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Trắc Nghiệm</button>
@@ -597,47 +753,26 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
         <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Nghe</button>
         <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Dịch</button>
       </div>
-
       <div class="mode-body" id="mode-body">
+        <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>
 
-        <!-- Study mode -->
-        <div id="studyMode">
-          <div class="vocab-grid" id="vocabGrid"></div>
-        </div>
-
-        <!-- Multiple Choice -->
         <div id="multipleChoiceMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header">
-              <h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3>
-              <p>Chọn đáp án đúng</p>
-            </div>
-            <div class="practice-progress">
-              <div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div>
-              <div class="progress-text" id="mcProgressText">0/0</div>
-            </div>
+            <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3><p>Chọn đáp án đúng</p></div>
+            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div><div class="progress-text" id="mcProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="mcQuestionNumber"></div>
               <div class="question-text" id="mcQuestionText"></div>
               <div class="answer-options" id="mcAnswerOptions"></div>
-              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">
-                Câu tiếp theo <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
-        <!-- Flashcard -->
         <div id="fillBlankMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header">
-              <h3><i class="fas fa-sync-alt"></i> Flashcard</h3>
-              <p>Nhìn nghĩa → Nhớ từ → Lật thẻ</p>
-            </div>
-            <div class="practice-progress">
-              <div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div>
-              <div class="progress-text" id="fbProgressText">0/0</div>
-            </div>
+            <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>Nhìn nghĩa → Nhớ từ → Lật thẻ</p></div>
+            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div><div class="progress-text" id="fbProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="fbQuestionNumber"></div>
               <div class="flashcard-wrap">
@@ -667,53 +802,33 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
                 </div>
                 <div id="fbFeedback"></div>
               </div>
-              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">
-                Câu tiếp <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
-        <!-- Listening -->
         <div id="listeningMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header">
-              <h3><i class="fas fa-headphones"></i> Luyện Nghe</h3>
-              <p>Nghe và viết lại từ vựng</p>
-            </div>
-            <div class="practice-progress">
-              <div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div>
-              <div class="progress-text" id="listenProgressText">0/0</div>
-            </div>
+            <div class="practice-header"><h3><i class="fas fa-headphones"></i> Luyện Nghe</h3><p>Nghe và viết lại từ vựng</p></div>
+            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div><div class="progress-text" id="listenProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
-              <button class="btn-play-audio" onclick="playAudio()">
-                <i class="fas fa-volume-up" style="font-size:24px"></i> Phát Âm Thanh
-              </button>
+              <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Phát Âm Thanh</button>
               <div class="listen-hint" id="listenHint"></div>
               <div class="fb-input-row">
                 <input class="listen-input" id="listenInput" placeholder="Nhập từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
                 <button class="btn-check" onclick="checkListening()">Kiểm Tra</button>
               </div>
               <div id="listenFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">
-                Câu tiếp <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
-        <!-- Translation -->
         <div id="translationMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header">
-              <h3><i class="fas fa-language"></i> Dịch Từ</h3>
-              <p>Dựa vào câu ví dụ, dịch từ được in đậm</p>
-            </div>
-            <div class="practice-progress">
-              <div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div>
-              <div class="progress-text" id="transProgressText">0/0</div>
-            </div>
+            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch Từ</h3><p>Dựa vào câu ví dụ, dịch từ được in đậm</p></div>
+            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
               <div class="trans-example" id="transExample"></div>
@@ -723,14 +838,11 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
                 <button class="btn-check" onclick="checkTranslation()">Kiểm Tra</button>
               </div>
               <div id="transFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">
-                Câu tiếp <i class="fas fa-arrow-right"></i>
-              </button>
+              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
-        <!-- Results -->
         <div id="resultsMode" style="display:none">
           <div class="results-wrap">
             <div class="results-card">
@@ -760,16 +872,87 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
             </div>
           </div>
         </div>
-
-      </div><!-- /mode-body -->
-    </div><!-- /view-unit -->
+      </div>
+    </div>
 
   </main>
-</div><!-- /app-layout -->
+</div>
 
-<!-- ══════════════════════════════════════
-     MODAL: Thêm sổ mới
-══════════════════════════════════════ -->
+<!-- ══════════════════════════════
+     MOBILE FAB + BOTTOM SHEET
+══════════════════════════════ -->
+
+<!-- FAB button -->
+<button class="mob-fab" id="mobFab" onclick="toggleSheet()" aria-label="Mở menu">
+  <i class="fas fa-bars" id="mobFabIcon"></i>
+</button>
+
+<!-- Backdrop -->
+<div class="mob-backdrop" id="mobBackdrop" onclick="closeSheet()"></div>
+
+<!-- Bottom Sheet -->
+<div class="mob-sheet" id="mobSheet">
+  <!-- Drag handle -->
+  <div class="sheet-handle" id="sheetHandle">
+    <div class="sheet-handle-bar"></div>
+  </div>
+
+  <!-- Sheet header -->
+  <div class="sheet-header">
+    <span class="sheet-title">📚 Từ vựng</span>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+
+  <!-- Tabs: Sổ của tôi | Học Unit -->
+  <div class="sheet-tabs">
+    <button class="sheet-tab active" id="sheetTab0" onclick="switchSheetTab(0)">
+      <i class="fas fa-book"></i> Sổ của tôi
+    </button>
+    <button class="sheet-tab" id="sheetTab1" onclick="switchSheetTab(1)">
+      <i class="fas fa-graduation-cap"></i> Học Unit
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="sheet-body">
+
+    <!-- Panel 0: Sổ từ vựng -->
+    <div class="sheet-panel active" id="sheetPanel0">
+      <div id="sheet-book-list">
+        <!-- Render bởi JS (sync với sidebar) -->
+        <div style="padding:30px;text-align:center;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:8px">📭</div>
+          <div style="font-size:13px">Chưa có sổ nào</div>
+        </div>
+      </div>
+      <div class="sheet-add-book-btn" onclick="openAddBookModal();closeSheet()">
+        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Tạo sổ từ vựng mới
+      </div>
+    </div>
+
+    <!-- Panel 1: Học Unit -->
+    <div class="sheet-panel" id="sheetPanel1">
+      <div class="sheet-unit-section">
+        <h4><i class="fas fa-book-open"></i> Chọn Unit để học</h4>
+        <select id="unitSelectMob">
+          <!-- Sync với #unitSelect bởi JS -->
+          <option value="">-- Chọn Unit --</option>
+        </select>
+        <button class="sheet-start-btn" onclick="loadUnitFromSheet()">
+          <i class="fas fa-play"></i> Bắt Đầu Học
+        </button>
+        <button class="sheet-sound-btn" onclick="toggleSound()" id="soundToggleMob">
+          🔊 Sound: ON
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /sheet-body -->
+</div><!-- /mob-sheet -->
+
+<!-- ══════════════════════════
+     MODALS (không đổi)
+══════════════════════════ -->
 <div class="modal-overlay hidden" id="modal-add-book">
   <div class="modal-box modal-sm">
     <div class="modal-header">
@@ -783,9 +966,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
       </div>
       <div class="form-group">
         <label>Biểu tượng</label>
-        <div class="emoji-picker" id="emoji-picker">
-          📘📗📙📕📓📔📒📃🗒️🌟⭐🎯🔥💡🚀
-        </div>
+        <div class="emoji-picker" id="emoji-picker"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -795,9 +976,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: Lưu từ vào sổ (từ Reading hoặc Unit)
-══════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="modal-save-word">
   <div class="modal-box modal-md">
     <div class="modal-header">
@@ -808,13 +986,12 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
       <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
           <span style="font-size:18px;font-weight:800" id="sw-word"></span>
-          <button class="btn-audio" onclick="speakWord(document.getElementById('sw-word').textContent)" title="Nghe phát âm" style="font-size:16px">🔊</button>
+          <button class="btn-audio" onclick="speakWord(document.getElementById('sw-word').textContent)" style="font-size:16px">🔊</button>
           <span style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace" id="sw-phonetic"></span>
         </div>
         <div style="font-size:13px;color:var(--text2)" id="sw-meaning"></div>
         <div style="font-size:12px;font-style:italic;color:var(--text3);margin-top:4px" id="sw-example"></div>
       </div>
-
       <div class="form-group">
         <label>Chọn sổ để lưu</label>
         <div class="book-list-select" id="sw-book-list"></div>
@@ -831,9 +1008,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: Thêm từ thủ công
-══════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="modal-add-word">
   <div class="modal-box modal-sm">
     <div class="modal-header">
@@ -841,22 +1015,10 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
       <button class="modal-close" onclick="closeModal('modal-add-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label>Từ tiếng Anh *</label>
-        <input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/>
-      </div>
-      <div class="form-group">
-        <label>Nghĩa tiếng Việt</label>
-        <input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/>
-      </div>
-      <div class="form-group">
-        <label>Ví dụ</label>
-        <input class="form-input" id="aw-example" placeholder="She established a new company."/>
-      </div>
-      <div class="form-group">
-        <label>Ghi chú</label>
-        <input class="form-input" id="aw-note" placeholder="Tuỳ chọn..."/>
-      </div>
+      <div class="form-group"><label>Từ tiếng Anh *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/></div>
+      <div class="form-group"><label>Nghĩa tiếng Việt</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/></div>
+      <div class="form-group"><label>Ví dụ</label><input class="form-input" id="aw-example" placeholder="She established a new company."/></div>
+      <div class="form-group"><label>Ghi chú</label><input class="form-input" id="aw-note" placeholder="Tuỳ chọn..."/></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Huỷ</button>
@@ -865,9 +1027,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   </div>
 </div>
 
-<!-- ══════════════════════════════════════
-     MODAL: Xác nhận xoá
-══════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="modal-confirm">
   <div class="modal-box modal-sm">
     <div class="modal-body" style="text-align:center;padding:28px 24px">
@@ -882,8 +1041,157 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast"><span id="toast-msg"></span></div>
+
+<!-- ══════════════════════════
+     BOTTOM SHEET JS
+══════════════════════════ -->
+<script>
+(function(){
+  var fab      = document.getElementById('mobFab');
+  var fabIcon  = document.getElementById('mobFabIcon');
+  var backdrop = document.getElementById('mobBackdrop');
+  var sheet    = document.getElementById('mobSheet');
+  var isOpen   = false;
+
+  // ── Open / close ────────────────────────────────
+  window.toggleSheet = function(){
+    isOpen ? closeSheet() : openSheet();
+  };
+  window.openSheet = function(){
+    isOpen = true;
+    backdrop.classList.add('active');
+    sheet.classList.add('active');
+    fab.classList.add('sheet-open');
+    fabIcon.className = 'fas fa-times';
+    // small delay so display:flex kicks in before transition
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        backdrop.classList.add('visible');
+        sheet.classList.add('open');
+      });
+    });
+    syncSheetBooks();
+    syncSheetUnits();
+  };
+  window.closeSheet = function(){
+    isOpen = false;
+    backdrop.classList.remove('visible');
+    sheet.classList.remove('open');
+    fab.classList.remove('sheet-open');
+    fabIcon.className = 'fas fa-bars';
+    setTimeout(function(){
+      backdrop.classList.remove('active');
+      sheet.classList.remove('active');
+    }, 320);
+  };
+
+  // ── Tabs ────────────────────────────────────────
+  window.switchSheetTab = function(idx){
+    [0,1].forEach(function(i){
+      document.getElementById('sheetTab'+i).classList.toggle('active', i===idx);
+      document.getElementById('sheetPanel'+i).classList.toggle('active', i===idx);
+    });
+  };
+
+  // ── Sync book list từ sidebar vào sheet ─────────
+  window.syncSheetBooks = function(){
+    var list = document.getElementById('sheet-book-list');
+    if(!list) return;
+    if(typeof myBooks === 'undefined' || !myBooks.length){
+      list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📭</div><div style="font-size:13px">Chưa có sổ nào</div></div>';
+      return;
+    }
+    list.innerHTML = myBooks.map(function(b){
+      var active = (b._id === currentBookId) ? 'active' : '';
+      return '<div class="sheet-book-item '+active+'" onclick="openBook(\''+b._id+'\');closeSheet()">'
+        +'<span style="font-size:18px">'+b.emoji+'</span>'
+        +'<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">'+b.name+'</span>'
+        +'<span class="sheet-book-count">'+b.totalWords+'</span>'
+        +'</div>';
+    }).join('');
+  };
+
+  // ── Sync unit select ────────────────────────────
+  window.syncSheetUnits = function(){
+    var src  = document.getElementById('unitSelect');
+    var dest = document.getElementById('unitSelectMob');
+    if(!src || !dest) return;
+    dest.innerHTML = src.innerHTML;
+    dest.value = src.value;
+  };
+
+  // ── Load unit từ sheet ──────────────────────────
+  window.loadUnitFromSheet = function(){
+    var mob = document.getElementById('unitSelectMob');
+    var src = document.getElementById('unitSelect');
+    if(mob && src) src.value = mob.value;
+    loadUnit();
+    closeSheet();
+  };
+
+  // ── Sound toggle sync ────────────────────────────
+  var origToggleSound = window.toggleSound;
+  window.toggleSound = function(){
+    if(origToggleSound) origToggleSound();
+    // sync label trên cả 2 nút
+    var main = document.getElementById('soundToggle');
+    var mob  = document.getElementById('soundToggleMob');
+    if(main && mob) mob.textContent = main.textContent;
+  };
+
+  // ── Hiện hint trên welcome screen mobile ────────
+  function checkMob(){
+    var hint = document.getElementById('mob-hint');
+    if(hint){
+      hint.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+    }
+  }
+  checkMob();
+  window.addEventListener('resize', checkMob);
+
+  // ── Drag-to-close (touch swipe down) ────────────
+  var handle   = document.getElementById('sheetHandle');
+  var startY   = 0;
+  var dragging = false;
+  handle.addEventListener('touchstart', function(e){
+    startY   = e.touches[0].clientY;
+    dragging = true;
+  }, {passive:true});
+  handle.addEventListener('touchmove', function(e){
+    if(!dragging) return;
+    var dy = e.touches[0].clientY - startY;
+    if(dy > 0) sheet.style.transform = 'translateY('+dy+'px)';
+  }, {passive:true});
+  handle.addEventListener('touchend', function(e){
+    if(!dragging) return;
+    dragging = false;
+    var dy = e.changedTouches[0].clientY - startY;
+    sheet.style.transform = '';
+    if(dy > 80) closeSheet();
+  });
+
+  // ── Patch renderBookSidebar để tự sync sheet ─────
+  // Chờ dashboard.js load xong rồi wrap
+  window.addEventListener('load', function(){
+    var orig = window.renderBookSidebar;
+    if(orig){
+      window.renderBookSidebar = function(){
+        orig();
+        if(isOpen) syncSheetBooks();
+      };
+    }
+    // Sync lần đầu sau khi units load
+    var origLoadUnits = window.loadUnits;
+    if(origLoadUnits){
+      window.loadUnits = async function(){
+        await origLoadUnits();
+        syncSheetUnits();
+      };
+    }
+  });
+})();
+</script>
 
 <script src="js/auth.js"></script>
 <script src="js/dashboard.js"></script>
