@@ -290,12 +290,15 @@ function openRQGroupModal(containerId) {
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         ${[
-        { type: 'plain', icon: '💬', label: 'Câu hỏi thường', desc: 'True/False, Multiple choice, Fill-blank riêng lẻ' },
-        { type: 'table', icon: '📋', label: 'Bảng (Table/Note)', desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
-        { type: 'note-form', icon: '📝', label: 'Note Completion', desc: 'Điền vào các dòng của biểu mẫu ghi chú' },
-        { type: 'matching-options', icon: '🔤', label: 'Matching Headings/Info', desc: 'List options A-F bên dưới, câu hỏi chọn letter' },
-        { type: 'bullet-list', icon: '•', label: 'Bullet List', desc: 'Danh sách câu hỏi dạng bullet' },
-        { type: 'map', icon: '🗺️', label: 'Map / Diagram', desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
+        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',          desc: 'True/False/NG, Multiple choice, Fill-blank riêng lẻ' },
+        { type: 'table',              icon: '📋', label: 'Bảng (Table/Note)',        desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
+        { type: 'note-form',          icon: '📝', label: 'Note Completion',          desc: 'Điền vào các dòng của biểu mẫu ghi chú' },
+        { type: 'bullet-list',        icon: '•',  label: 'Bullet List',              desc: 'Danh sách câu hỏi dạng bullet có chỗ trống' },
+        { type: 'matching-options',   icon: '🔗', label: 'Matching Features/People', desc: 'List người/sự vật A-G, câu hỏi ghép phát biểu (kéo thả)' },
+        { type: 'matching-headings',  icon: '📌', label: 'Matching Headings',        desc: 'List tiêu đề i,ii,iii – ghép vào đoạn văn A,B,C (kéo thả)' },
+        { type: 'summary-completion', icon: '🧩', label: 'Summary Completion',       desc: 'Đoạn tóm tắt + word bank A-J chọn từ điền vào (kéo thả)' },
+        { type: 'sentence-endings',   icon: '🔚', label: 'Sentence Endings',         desc: 'Câu chưa hoàn chỉnh – chọn phần kết A-H (kéo thả)' },
+        { type: 'map',                icon: '🗺️', label: 'Map / Diagram',            desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
       ].map(g => `
           <div onclick="pickRQGroupType('${g.type}')"
                style="border:1.5px solid var(--border);border-radius:10px;padding:13px;cursor:pointer;transition:all .15s"
@@ -329,12 +332,15 @@ function addRQGroup(data = null, containerId = 'questions-container') {
   if (!container) return;
 
   const labelMap = {
-    'plain': '💬 Câu hỏi thường',
-    'table': '📋 Bảng (Table)',
-    'note-form': '📝 Note Completion',
-    'matching-options': '🔤 Matching',
-    'bullet-list': '• Bullet List',
-    'map': '🗺️ Map/Diagram',
+    'plain':              '💬 Câu hỏi thường',
+    'table':              '📋 Bảng (Table)',
+    'note-form':          '📝 Note Completion',
+    'matching-options':   '🔗 Matching Features/People',
+    'matching-headings':  '📌 Matching Headings',
+    'summary-completion': '🧩 Summary Completion',
+    'sentence-endings':   '🔚 Sentence Endings',
+    'bullet-list':        '• Bullet List',
+    'map':                '🗺️ Map/Diagram',
   };
 
   const div = document.createElement('div');
@@ -386,6 +392,11 @@ function addRQGroup(data = null, containerId = 'questions-container') {
   }
 }
 
+// ── Admin guide helper ──────────────────────────────────────────────────
+function rqAdminGuide(html) {
+  return `<div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.25);border-radius:7px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:var(--text2);line-height:1.6">${html}</div>`;
+}
+
 // ── Group config renderers ──────────────────────────────────────────────
 function renderRQGroupConfig(groupType, data, gIdx) {
   if (groupType === 'table') {
@@ -393,6 +404,7 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const rows = data?.tableConfig?.rows || [['', '', '']];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('📋 <strong>Table/Note Completion:</strong> Nhập tiêu đề cột, sau đó từng hàng (cách ô bằng <code>|</code>). Dùng <code>__Q1__</code> để đánh dấu ô cần điền. Câu hỏi bên dưới chỉ cần số câu + đáp án đúng.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Cấu trúc bảng</div>
     <div style="margin-bottom:8px">
       <label style="font-size:10px;color:var(--text3)">Tiêu đề cột (cách nhau bằng |)</label>
@@ -415,6 +427,7 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const lines = data?.noteConfig?.lines || [''];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('📝 <strong>Note/Form Completion:</strong> Nhập tiêu đề khung rồi từng dòng nội dung. Dùng <code>__Q6__</code> để đánh dấu chỗ trống. Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là từ cần điền.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Cấu trúc Note</div>
     <div style="margin-bottom:8px">
       <label style="font-size:10px;color:var(--text3)">Tiêu đề khung</label>
@@ -436,8 +449,9 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const opts = data?.matchingOptions || ['', '', '', '', '', ''];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('🔗 <strong>Matching Features/People (Q19-23 style):</strong> Nhập danh sách người/sự vật A→G. Câu hỏi bên dưới: loại <strong>matching-info</strong>, mỗi câu là một phát biểu, đáp án là chữ cái (A, B, C…). Học sinh sẽ kéo thả chữ cái vào phát biểu.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Danh sách Options (A, B, C…)
+      Danh sách người / sự vật (A, B, C…)
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
       <input type="checkbox" id="rqg-reuse-${gIdx}" class="rqg-reuse"
@@ -450,10 +464,70 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     <div id="rqgopt-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
       ${opts.map((o, i) => renderRQOption(gIdx, i, o)).join('')}
     </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQOption(${gIdx})">＋ Thêm option</button>
-    <div class="form-hint" style="margin-top:8px">
-      Câu hỏi trong nhóm này: loại <strong>matching-headings</strong> hoặc <strong>matching-info</strong>, đáp án là chữ cái (A, B, C…)
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQOption(${gIdx})">＋ Thêm mục</button>
+  </div>`;
+  }
+
+  if (groupType === 'matching-headings') {
+    const headings = data?.headingsConfig?.headings || [
+      { numeral: 'i', text: '' }, { numeral: 'ii', text: '' }, { numeral: 'iii', text: '' },
+      { numeral: 'iv', text: '' }, { numeral: 'v', text: '' }, { numeral: 'vi', text: '' }
+    ];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('📌 <strong>Matching Headings (Q14-18 style):</strong> Nhập danh sách tiêu đề i, ii, iii… Câu hỏi bên dưới: mỗi câu = một đoạn văn (A, B, C…), đáp án là số La Mã (i, ii, iii…). Học sinh kéo tiêu đề vào đoạn văn tương ứng.<br>💡 Thường có nhiều tiêu đề hơn số câu hỏi (ví dụ 8 tiêu đề cho 5 câu).')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+      Danh sách tiêu đề (i, ii, iii…)
     </div>
+    <div id="rqghd-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${headings.map((h, i) => renderRQHeading(gIdx, i, h)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQHeading(${gIdx})">＋ Thêm tiêu đề</button>
+  </div>`;
+  }
+
+  if (groupType === 'summary-completion') {
+    const wb = data?.summaryConfig?.wordBank || [
+      { letter: 'A', word: '' }, { letter: 'B', word: '' }, { letter: 'C', word: '' },
+      { letter: 'D', word: '' }, { letter: 'E', word: '' }, { letter: 'F', word: '' },
+      { letter: 'G', word: '' }, { letter: 'H', word: '' }, { letter: 'I', word: '' },
+      { letter: 'J', word: '' }
+    ];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('🧩 <strong>Summary Completion with Word Bank (Q37-40 style):</strong> 1) Nhập đoạn tóm tắt có chỗ trống dùng <code>__Q37__</code>. 2) Nhập word bank A-J (chữ cái → từ). Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là <strong>từ thực tế</strong> (không phải chữ cái). Học sinh sẽ kéo từ vào ô trống.')}
+    <div style="margin-bottom:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">
+        Đoạn tóm tắt (dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q37__</code> cho chỗ trống)
+      </label>
+      <textarea class="form-input rqg-summary-text" rows="5"
+                style="font-size:12px;padding:8px 10px;resize:vertical;width:100%"
+                placeholder="The case of Mozart could be quoted as evidence against the 10,000-hour-practice theory. However, the writer points out that the young Mozart received a lot of __Q37__ from his father...">${data?.summaryConfig?.text || ''}</textarea>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Word Bank (A, B, C…)</div>
+    <div id="rqgwb-${gIdx}" style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+      ${wb.map((w, i) => renderRQWordBankItem(gIdx, i, w)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQWordBankItem(${gIdx})">＋ Thêm từ</button>
+  </div>`;
+  }
+
+  if (groupType === 'sentence-endings') {
+    const endings = data?.endingsConfig?.endings || [
+      { letter: 'A', text: '' }, { letter: 'B', text: '' }, { letter: 'C', text: '' },
+      { letter: 'D', text: '' }, { letter: 'E', text: '' }, { letter: 'F', text: '' },
+      { letter: 'G', text: '' }, { letter: 'H', text: '' }
+    ];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('🔚 <strong>Matching Sentence Endings (Q32-35 style):</strong> Nhập danh sách phần kết câu A-H. Câu hỏi bên dưới: mỗi câu = một phần đầu câu (sentence starter), đáp án là chữ cái phần kết (A, B, C…). Học sinh kéo phần kết vào phần đầu tương ứng.')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
+      Danh sách phần kết câu (A, B, C…)
+    </div>
+    <div id="rqgend-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${endings.map((e, i) => renderRQEnding(gIdx, i, e)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQEnding(${gIdx})">＋ Thêm phần kết</button>
   </div>`;
   }
 
@@ -461,10 +535,8 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const items = data?.bulletConfig?.items || [''];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Danh sách Bullet</div>
-    <label style="font-size:10px;color:var(--text3)">
-      Dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q27__</code> cho ô trả lời
-    </label>
+    ${rqAdminGuide('• <strong>Bullet List:</strong> Mỗi dòng là một mục trong danh sách bullet. Dùng <code>__Q27__</code> để đánh dấu chỗ trống cần điền. Câu hỏi bên dưới: loại <strong>fill-blank</strong>.')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách Bullet</div>
     <div id="rqgbul-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
       ${items.map(it => renderRQBulletItem(gIdx, it)).join('')}
     </div>
@@ -476,6 +548,7 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const imgId = `rqgmap-${gIdx}`;
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('🗺️ <strong>Map/Diagram Labelling:</strong> Upload hình ảnh sơ đồ, paste URL vào đây. Câu hỏi bên dưới: loại <strong>map-labelling</strong>, đáp án là nhãn điền vào sơ đồ.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Map / Diagram</div>
     <div style="display:flex;gap:10px;align-items:flex-start">
       <div style="flex:1">
@@ -493,7 +566,10 @@ function renderRQGroupConfig(groupType, data, gIdx) {
   }
 
   // plain – no extra config
-  return `<div style="font-size:12px;color:var(--text3);padding:4px 0">Thêm câu hỏi True/False, Multiple Choice, Fill-blank,... bên dưới.</div>`;
+  return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px">
+    ${rqAdminGuide('💬 <strong>Câu hỏi thường:</strong> Thêm từng câu hỏi bên dưới. Hỗ trợ: True/False/Not Given, Multiple Choice (1 đáp án), Multiple Choice (nhiều đáp án), Fill in the blank.')}
+  </div>`;
 }
 
 function previewRQGImage(input, imgId) {
@@ -506,7 +582,7 @@ function previewRQGImage(input, imgId) {
 }
 
 // ── Table row ──────────────────────────────────────────────────────────
-function renderRQTableRow(gIdx, ri, cells) {
+function renderRQTableRow(_gIdx, ri, cells) {
   return `<div style="display:flex;gap:5px;align-items:center">
 <span style="font-size:11px;color:var(--text3);width:18px;text-align:center">${ri + 1}</span>
 <input class="form-input rqg-tbl-row" value="${(cells || []).join(' | ')}"
@@ -521,7 +597,7 @@ function addRQTableRow(gIdx) {
 }
 
 // ── Note line ──────────────────────────────────────────────────────────
-function renderRQNoteLine(gIdx, line) {
+function renderRQNoteLine(_gIdx, line) {
   return `<div style="display:flex;gap:5px;align-items:center">
 <input class="form-input rqg-note-line" value="${line || ''}"
        style="flex:1;font-size:12px;padding:5px 9px"
@@ -535,7 +611,7 @@ function addRQNoteLine(gIdx) {
 }
 
 // ── Matching option ────────────────────────────────────────────────────
-function renderRQOption(gIdx, i, value) {
+function renderRQOption(_gIdx, i, value) {
   const letter = String.fromCharCode(65 + i);
   return `<div style="display:flex;gap:6px;align-items:center">
 <span style="font-weight:700;color:var(--blue);width:18px;font-size:13px">${letter}.</span>
@@ -551,7 +627,7 @@ function addRQOption(gIdx) {
 }
 
 // ── Bullet item ────────────────────────────────────────────────────────
-function renderRQBulletItem(gIdx, item) {
+function renderRQBulletItem(_gIdx, item) {
   return `<div style="display:flex;gap:5px;align-items:center">
 <span style="color:var(--text3)">•</span>
 <input class="form-input rqg-bul-item" value="${item || ''}"
@@ -563,6 +639,58 @@ function renderRQBulletItem(gIdx, item) {
 function addRQBulletItem(gIdx) {
   const c = document.getElementById(`rqgbul-${gIdx}`);
   if (c) c.insertAdjacentHTML('beforeend', renderRQBulletItem(gIdx, ''));
+}
+
+// ── Matching Headings ──────────────────────────────────────────────────
+const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii'];
+function renderRQHeading(_gIdx, i, h) {
+  const num = h?.numeral || ROMAN[i] || (i + 1).toString();
+  return `<div style="display:flex;gap:6px;align-items:center">
+<span style="font-style:italic;color:var(--blue);width:26px;font-size:13px;text-align:right;flex-shrink:0">${num}.</span>
+<input class="form-input rqg-hd-numeral" value="${num}" style="width:42px;font-size:12px;padding:5px 7px;font-style:italic" placeholder="i" />
+<input class="form-input rqg-hd-text" value="${h?.text || ''}" style="flex:1;font-size:12px;padding:5px 9px" placeholder="The history of silk production" />
+<button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+}
+function addRQHeading(gIdx) {
+  const c = document.getElementById(`rqghd-${gIdx}`);
+  if (c) c.insertAdjacentHTML('beforeend', renderRQHeading(gIdx, c.children.length, {}));
+}
+
+// ── Summary Completion Word Bank ───────────────────────────────────────
+function renderRQWordBankItem(_gIdx, i, w) {
+  const letter = w?.letter || String.fromCharCode(65 + i);
+  return `<div style="display:flex;gap:6px;align-items:center">
+<span style="font-weight:700;color:var(--blue);width:18px;font-size:13px">${letter}</span>
+<input class="form-input rqg-wb-letter" value="${letter}" style="width:38px;font-size:12px;padding:5px 7px;font-weight:700" placeholder="A" />
+<input class="form-input rqg-wb-word" value="${w?.word || ''}" style="flex:1;font-size:12px;padding:5px 9px" placeholder="popular" />
+<button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+}
+function addRQWordBankItem(gIdx) {
+  const c = document.getElementById(`rqgwb-${gIdx}`);
+  if (c) {
+    const idx = c.children.length;
+    c.insertAdjacentHTML('beforeend', renderRQWordBankItem(gIdx, idx, { letter: String.fromCharCode(65 + idx), word: '' }));
+  }
+}
+
+// ── Sentence Endings ───────────────────────────────────────────────────
+function renderRQEnding(_gIdx, i, e) {
+  const letter = e?.letter || String.fromCharCode(65 + i);
+  return `<div style="display:flex;gap:6px;align-items:center">
+<span style="font-weight:700;color:var(--accent);width:18px;font-size:13px">${letter}.</span>
+<input class="form-input rqg-end-letter" value="${letter}" style="width:38px;font-size:12px;padding:5px 7px;font-weight:700" placeholder="A" />
+<input class="form-input rqg-end-text" value="${e?.text || ''}" style="flex:1;font-size:12px;padding:5px 9px" placeholder="can be found in unusual thoughts and chance events." />
+<button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+}
+function addRQEnding(gIdx) {
+  const c = document.getElementById(`rqgend-${gIdx}`);
+  if (c) {
+    const idx = c.children.length;
+    c.insertAdjacentHTML('beforeend', renderRQEnding(gIdx, idx, { letter: String.fromCharCode(65 + idx), text: '' }));
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════
@@ -717,6 +845,34 @@ function collectQuestions() {
     }
     if (groupType === 'map') {
       group.imageUrl = gDiv.querySelector('.rqg-map-url')?.value.trim() || '';
+    }
+    if (groupType === 'matching-headings') {
+      const hdCont = gDiv.querySelector('[id^="rqghd-"]');
+      group.headingsConfig = {
+        headings: hdCont ? [...hdCont.children].map(row => ({
+          numeral: row.querySelector('.rqg-hd-numeral')?.value.trim() || '',
+          text:    row.querySelector('.rqg-hd-text')?.value.trim() || ''
+        })).filter(h => h.numeral || h.text) : []
+      };
+    }
+    if (groupType === 'summary-completion') {
+      const wbCont = gDiv.querySelector('[id^="rqgwb-"]');
+      group.summaryConfig = {
+        text:    gDiv.querySelector('.rqg-summary-text')?.value || '',
+        wordBank: wbCont ? [...wbCont.children].map(row => ({
+          letter: row.querySelector('.rqg-wb-letter')?.value.trim() || '',
+          word:   row.querySelector('.rqg-wb-word')?.value.trim() || ''
+        })).filter(w => w.letter) : []
+      };
+    }
+    if (groupType === 'sentence-endings') {
+      const endCont = gDiv.querySelector('[id^="rqgend-"]');
+      group.endingsConfig = {
+        endings: endCont ? [...endCont.children].map(row => ({
+          letter: row.querySelector('.rqg-end-letter')?.value.trim() || '',
+          text:   row.querySelector('.rqg-end-text')?.value.trim() || ''
+        })).filter(e => e.letter) : []
+      };
     }
 
     // Collect questions
