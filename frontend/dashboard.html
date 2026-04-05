@@ -750,6 +750,9 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
       <div class="unit-header-bar">
         <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Quay lại</button>
         <h3 id="unitTitle">Unit …</h3>
+        <button class="btn btn-danger btn-sm" id="btnStopPractice" onclick="stopPractice()" style="display:none">
+          <i class="fas fa-stop-circle"></i> Dừng học
+        </button>
       </div>
       <div class="mode-tabs" id="mode-tabs">
         <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Học Từ</button>
@@ -757,6 +760,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
         <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
         <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Nghe</button>
         <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Dịch</button>
+        <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Hỗn Hợp</button>
       </div>
       <div class="mode-body" id="mode-body">
         <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>
@@ -848,6 +852,20 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
           </div>
         </div>
 
+        <div id="mixedMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header">
+              <h3><i class="fas fa-random"></i> Hỗn Hợp</h3>
+              <p>Kết hợp Trắc Nghiệm · Nghe · Dịch – không thể đoán trước!</p>
+            </div>
+            <div class="practice-progress">
+              <div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div>
+              <div class="progress-text" id="mixProgressText">0/0</div>
+            </div>
+            <div id="mixQuestionWrap"></div>
+          </div>
+        </div>
+
         <div id="resultsMode" style="display:none">
           <div class="results-wrap">
             <div class="results-card">
@@ -869,6 +887,11 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
               <div class="results-counts">
                 <span class="res-correct">✓ Đúng: <b id="correctCount">0</b></span>
                 <span class="res-wrong">✗ Sai: <b id="wrongCount">0</b></span>
+              </div>
+              <div id="wrongRetryWrap" style="display:none;margin-bottom:10px;text-align:center">
+                <button class="btn btn-blue" onclick="retryWrongWords()" style="width:100%">
+                  <i class="fas fa-redo-alt"></i> Ôn lại <span id="wrongRetryCount">0</span> từ sai
+                </button>
               </div>
               <div class="results-btns">
                 <button class="btn btn-ghost" onclick="showMode('study')"><i class="fas fa-book"></i> Xem từ vựng</button>

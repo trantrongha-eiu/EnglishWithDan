@@ -26,6 +26,12 @@ let hintUsed = false;
 let answered = false;
 let soundEnabled = true;
 
+// ── Spaced Repetition & Mixed Mode ─────────────
+let wrongWordSet = new Set();   // word strings that were answered wrong this session
+let requeuedWords = new Set();  // prevent infinite requeue
+let mixedQueue = [];            // [{word, type}] for mixed mode
+let mixedIndex = 0;
+
 // ── Save-word pending ──────────────────────────
 let pendingSaveWord = null;
 let selectedBookForSave = null;
@@ -636,17 +642,37 @@ async function loadUnit() {
 /* ══════════════════════════════════════════════
    MODE SWITCHING
 ══════════════════════════════════════════════ */
-function showMode(mode) {
-    if (!currentUnit) return;
-    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','resultsMode']
+function _activateModeNow(mode) {
+    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode']
         .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     currentMode = mode;
-    const tabMap = { study: 0, multipleChoice: 1, fillBlank: 2, listening: 3, translation: 4 };
+    const tabMap = { study: 0, multipleChoice: 1, fillBlank: 2, listening: 3, translation: 4, mixed: 5 };
     const tabs = document.querySelectorAll('.tab-btn');
-    if (tabs[tabMap[mode]]) tabs[tabMap[mode]].classList.add('active');
+    if (tabs[tabMap[mode]] !== undefined) tabs[tabMap[mode]].classList.add('active');
+
+    const stopBtn = document.getElementById('btnStopPractice');
+    if (stopBtn) stopBtn.style.display = mode === 'study' ? 'none' : 'inline-flex';
+
     if (mode === 'study') { document.getElementById('studyMode').style.display = 'block'; renderStudyGrid(); }
     else startPractice(mode);
+}
+
+function showMode(mode) {
+    if (!currentUnit) return;
+    // Nếu đang học dở (không phải study/results) và chuyển sang mode khác → hỏi xác nhận
+    const isPracticing = currentMode !== 'study' && currentQuestionIndex > 0 &&
+        !document.getElementById('resultsMode')?.style.display?.includes('block') &&
+        mode !== currentMode;
+    if (isPracticing) {
+        confirm2(
+            'Chuyển chế độ học?',
+            'Tiến độ hiện tại sẽ mất. Bạn có muốn chuyển không?',
+            () => _activateModeNow(mode)
+        );
+        return;
+    }
+    _activateModeNow(mode);
 }
 
 /* ══════════════════════════════════════════════
@@ -684,11 +710,28 @@ function openSaveWordFromUnit(w) {
    PRACTICE
 ══════════════════════════════════════════════ */
 function startPractice(mode) {
-    practiceWords = [...currentUnit.words];
-    shuffleArray(practiceWords);
+    wrongWordSet.clear();
+    requeuedWords.clear();
+    mixedQueue = [];
+    mixedIndex = 0;
     currentQuestionIndex = 0;
     correctAnswers = 0;
     wrongAnswers   = 0;
+
+    if (mode === 'mixed') {
+        // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
+        const types = ['multipleChoice', 'listening', 'translation'];
+        const words = [...currentUnit.words];
+        shuffleArray(words);
+        mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
+        shuffleArray(mixedQueue);
+        document.getElementById('mixedMode').style.display = 'block';
+        showMixedQuestion();
+        return;
+    }
+
+    practiceWords = [...currentUnit.words];
+    shuffleArray(practiceWords);
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
         fillBlank:      'fillBlankMode',
@@ -709,15 +752,180 @@ function showQuestion(mode) {
 }
 
 function updateProgress(prefix) {
-    const pct  = (currentQuestionIndex / practiceWords.length) * 100;
-    const fill = document.getElementById(`${prefix}ProgressFill`);
-    const txt  = document.getElementById(`${prefix}ProgressText`);
+    const total = currentMode === 'mixed' ? mixedQueue.length : practiceWords.length;
+    const cur   = currentMode === 'mixed' ? mixedIndex : currentQuestionIndex;
+    const pct   = total ? (cur / total) * 100 : 0;
+    const fill  = document.getElementById(`${prefix}ProgressFill`);
+    const txt   = document.getElementById(`${prefix}ProgressText`);
     if (fill) fill.style.width = pct + '%';
-    if (txt)  txt.textContent = `${currentQuestionIndex + 1}/${practiceWords.length}`;
+    if (txt)  txt.textContent = `${cur + 1}/${total}`;
+}
+
+// Spaced repetition: đưa từ sai vào 3 vị trí sau trong hàng đợi
+function requeueWrongWord(word) {
+    const key = word.word;
+    if (requeuedWords.has(key)) return;
+    requeuedWords.add(key);
+    if (currentMode === 'mixed') {
+        const types = ['multipleChoice', 'listening', 'translation'];
+        const type  = types[Math.floor(Math.random() * types.length)];
+        const insertAt = Math.min(mixedIndex + 4, mixedQueue.length);
+        mixedQueue.splice(insertAt, 0, { word, type, _isRepeat: true });
+    } else {
+        const insertAt = Math.min(currentQuestionIndex + 4, practiceWords.length);
+        practiceWords.splice(insertAt, 0, word);
+    }
 }
 
 function nextQuestion(mode) { currentQuestionIndex++; showQuestion(mode); }
 function restartPractice()  { startPractice(currentMode); }
+
+/* ── Stop practice mid-session ── */
+function stopPractice() {
+    showResults(currentMode);
+}
+
+/* ══════════════════════════════════════════════
+   MIXED MODE
+══════════════════════════════════════════════ */
+function showMixedQuestion() {
+    if (mixedIndex >= mixedQueue.length) { showResults('mixed'); return; }
+    const item = mixedQueue[mixedIndex];
+    currentWord = item.word;
+    const type  = item.type;
+
+    // Update mixed progress bar
+    const total = mixedQueue.length;
+    const pct   = (mixedIndex / total) * 100;
+    const fill  = document.getElementById('mixProgressFill');
+    const txt   = document.getElementById('mixProgressText');
+    if (fill) fill.style.width = pct + '%';
+    if (txt)  txt.textContent = `${mixedIndex + 1}/${total}`;
+
+    // Badge ôn tập nếu là từ bị requeue
+    const repeatBadge = item._isRepeat
+        ? '<span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:12px;padding:2px 10px;font-size:11px;font-weight:700;margin-bottom:10px;display:inline-block">🔁 Ôn tập lại</span>'
+        : '';
+
+    // Render question theo type vào #mixQuestionWrap
+    const wrap = document.getElementById('mixQuestionWrap');
+    if (type === 'multipleChoice') {
+        const opts = generateOptions(currentWord);
+        wrap.innerHTML = `
+          <div class="question-card">
+            ${repeatBadge}
+            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
+              <i class="fas fa-check-circle"></i> Trắc nghiệm
+            </div>
+            <div class="question-text" style="font-size:18px;font-weight:700;margin-bottom:20px">
+              "<strong>${currentWord.word}</strong>" có nghĩa là gì?
+            </div>
+            <div class="answer-options" id="mixAnswerOptions">
+              ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${o}</button>`).join('')}
+            </div>
+            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+          </div>`;
+    } else if (type === 'listening') {
+        wrap.innerHTML = `
+          <div class="question-card">
+            ${repeatBadge}
+            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
+              <i class="fas fa-headphones"></i> Luyện nghe
+            </div>
+            <button class="btn-play-audio" onclick="speakWord('${escH(currentWord.word)}')"><i class="fas fa-volume-up" style="font-size:24px"></i> Phát Âm Thanh</button>
+            <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 Từ có ${currentWord.word.length} chữ cái</div>
+            <div class="fb-input-row">
+              <input class="listen-input" id="mixListenInput" placeholder="Nhập từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
+              <button class="btn-check" onclick="checkMixedListen()">Kiểm Tra</button>
+            </div>
+            <div id="mixListenFeedback" style="margin-top:10px"></div>
+            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+          </div>`;
+    } else {
+        const ex = currentWord.example || `The word is: ${currentWord.word}`;
+        const exHtml = ex.replace(new RegExp(`\\b${currentWord.word}\\b`, 'gi'),
+            `<strong class="highlight-word">${currentWord.word}</strong>`);
+        wrap.innerHTML = `
+          <div class="question-card">
+            ${repeatBadge}
+            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
+              <i class="fas fa-language"></i> Dịch từ
+            </div>
+            <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Dịch từ: <strong>${currentWord.word}</strong></div>
+            <div class="fb-input-row">
+              <input class="trans-input" id="mixTransInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
+              <button class="btn-check" onclick="checkMixedTrans()">Kiểm Tra</button>
+            </div>
+            <div id="mixTransFeedback" style="margin-top:10px"></div>
+            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+          </div>`;
+        setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
+    }
+}
+
+function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showMixedQuestion(); }
+
+function checkMixedMC(btn, selected, correct) {
+    answered = true;
+    document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.disabled = true);
+    if (selected === correct) {
+        btn.classList.add('correct'); correctAnswers++; playCorrectSound();
+    } else {
+        btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
+        document.querySelectorAll('#mixAnswerOptions .answer-option')
+            .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    }
+    document.getElementById('mixBtnNext').style.display = 'flex';
+}
+
+function checkMixedListen() {
+    const ua = document.getElementById('mixListenInput')?.value.trim().toLowerCase() || '';
+    document.getElementById('mixListenInput').disabled = true;
+    const ok = ua === currentWord.word.toLowerCase();
+    if (ok) {
+        document.getElementById('mixListenFeedback').innerHTML =
+            `<div class="feedback-correct">✅ Đúng! <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+        correctAnswers++; playCorrectSound();
+    } else {
+        document.getElementById('mixListenFeedback').innerHTML =
+            `<div class="feedback-wrong">❌ Đáp án: <strong>${currentWord.word}</strong> – ${currentWord.meaning}
+             <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Nghe lại</button></div>`;
+        wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
+    }
+    document.getElementById('mixBtnNext').style.display = 'flex';
+}
+
+function checkMixedTrans() {
+    const ua    = document.getElementById('mixTransInput')?.value.trim().toLowerCase() || '';
+    document.getElementById('mixTransInput').disabled = true;
+    const caRaw = currentWord.meaning.toLowerCase();
+    const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
+    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý]/gi, '').trim();
+    const ok    = alts.some(alt => {
+        const na = norm(alt), nu = norm(ua);
+        if (nu === na) return true;
+        const aw = na.split(/\s+/).filter(w => w.length > 1);
+        const uw = nu.split(/\s+/).filter(w => w.length > 1);
+        return aw.every(w => uw.some(u => u.includes(w) || w.includes(u)));
+    });
+    if (ok) {
+        document.getElementById('mixTransFeedback').innerHTML =
+            `<div class="feedback-correct">✅ Tốt lắm! Đáp án: <em>${currentWord.meaning}</em></div>`;
+        correctAnswers++; playCorrectSound();
+    } else {
+        document.getElementById('mixTransFeedback').innerHTML =
+            `<div class="feedback-wrong">❌ Nghĩa đúng: <strong>${currentWord.meaning}</strong></div>`;
+        wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
+    }
+    document.getElementById('mixBtnNext').style.display = 'flex';
+}
 
 /* ── Multiple Choice ── */
 function showMultipleChoiceQuestion() {
@@ -751,6 +959,8 @@ function checkMultipleChoice(btn, selected, correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
     } else {
         btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
         document.querySelectorAll('#mcAnswerOptions .answer-option')
             .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     }
@@ -809,6 +1019,8 @@ function markAsNotRemembered() {
     if (!isFlipped) { toast('Lật thẻ trước!', 'error'); return; }
     if (answered) return; answered = true;
     wrongAnswers++; playWrongSound();
+    wrongWordSet.add(currentWord.word);
+    requeueWrongWord(currentWord);
 
     // Hiện feedback + nút Tiếp theo ngay để học sinh tự review rồi bấm
     document.getElementById('fbFeedback').innerHTML =
@@ -824,7 +1036,6 @@ function markAsNotRemembered() {
 
     // Nếu học sinh bấm nút Tiếp theo → huỷ timer tự động
     if (btnNext) {
-        const _origOnclick = btnNext.onclick;
         btnNext.onclick = function() {
             clearTimeout(_autoNext);
             currentQuestionIndex++; showQuestion('fillBlank');
@@ -890,6 +1101,8 @@ function checkListening() {
             `<div class="feedback-wrong">❌ Đáp án: <strong>${currentWord.word}</strong> – ${currentWord.meaning}
        <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Nghe lại</button></div>`;
         wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
     }
     document.getElementById('listenBtnNext').style.display = 'flex';
 }
@@ -932,27 +1145,54 @@ function checkTranslation() {
         document.getElementById('transFeedback').innerHTML =
             `<div class="feedback-wrong">❌ Nghĩa đúng: <strong>${currentWord.meaning}</strong></div>`;
         wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
     }
     document.getElementById('transBtnNext').style.display = 'flex';
 }
 
 /* ── Results ── */
 function showResults(mode) {
-    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode']
+    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';
-    const total     = practiceWords.length;
-    const pct       = Math.round((correctAnswers / total) * 100);
-    const modeNames = { multipleChoice: 'Trắc Nghiệm', fillBlank: 'Flashcard', listening: 'Nghe', translation: 'Dịch' };
+
+    const stopBtn = document.getElementById('btnStopPractice');
+    if (stopBtn) stopBtn.style.display = 'none';
+
+    const total     = mode === 'mixed' ? mixedQueue.length : practiceWords.length;
+    const answered_ = correctAnswers + wrongAnswers;
+    const pct       = answered_ ? Math.round((correctAnswers / answered_) * 100) : 0;
+    const modeNames = { multipleChoice: 'Trắc Nghiệm', fillBlank: 'Flashcard', listening: 'Nghe', translation: 'Dịch', mixed: 'Hỗn Hợp' };
     document.getElementById('resultModeTitle').textContent = `Chế độ: ${modeNames[mode] || mode}`;
     document.getElementById('scorePercent').textContent    = pct + '%';
     document.getElementById('correctCount').textContent    = correctAnswers;
     document.getElementById('wrongCount').textContent      = wrongAnswers;
+
+    // Hiện nút ôn tập từ sai nếu có
+    const wrongCount = wrongWordSet.size;
+    const wrongWrap  = document.getElementById('wrongRetryWrap');
+    const wrongCntEl = document.getElementById('wrongRetryCount');
+    if (wrongWrap) wrongWrap.style.display = wrongCount > 0 ? 'block' : 'none';
+    if (wrongCntEl) wrongCntEl.textContent = wrongCount;
+
     const circ   = 2 * Math.PI * 68;
     const offset = circ - (pct / 100) * circ;
     const circle = document.getElementById('scoreCircle');
     circle.style.stroke = pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#e53935';
     setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
+    void total; // total used for reference only
+}
+
+/* ── Retry wrong words ── */
+function retryWrongWords() {
+    if (!wrongWordSet.size) return;
+    // Lấy các word objects từ currentUnit.words khớp với wrongWordSet
+    const wordsToRetry = (currentUnit.words || []).filter(w => wrongWordSet.has(w.word));
+    if (!wordsToRetry.length) { toast('Không tìm thấy từ cần ôn', 'error'); return; }
+    // Tạo unit tạm thời từ những từ sai
+    currentUnit = { ...currentUnit, words: wordsToRetry };
+    _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
 /* ══════════════════════════════════════════════
@@ -1005,3 +1245,9 @@ window.closeModal         = closeModal;
 window.selectEmoji        = selectEmoji;
 window.lookupNewWord      = lookupNewWord;
 window.openSaveWordFromUnit = openSaveWordFromUnit;
+window.stopPractice       = stopPractice;
+window.retryWrongWords    = retryWrongWords;
+window.advanceMixed       = advanceMixed;
+window.checkMixedMC       = checkMixedMC;
+window.checkMixedListen   = checkMixedListen;
+window.checkMixedTrans    = checkMixedTrans;
