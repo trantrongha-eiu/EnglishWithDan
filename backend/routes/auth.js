@@ -1,94 +1,82 @@
 const router = require('express').Router();
-const User   = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
+const authCtrl = require('../controllers/auth.controller');
 
-// =======================
-// REGISTER
-// =======================
-router.post('/register', async (req, res) => {
+// ── Local auth ────────────────────────────────────────────────
+router.post('/register',        authCtrl.register);
+router.post('/login',           authCtrl.login);
+router.post('/forgot-password', authCtrl.forgotPassword);
+router.post('/verify-otp',      authCtrl.verifyOTP);
+router.post('/reset-password',  authCtrl.resetPassword);
+
+// ── Google OAuth (requires passport-google-oauth20 to be installed) ──
+// Enabled only when GOOGLE_CLIENT_ID is configured in .env
+if (process.env.GOOGLE_CLIENT_ID) {
   try {
-    const existingUser = await User.findOne({
-      $or: [
-        { email: req.body.email },
-        { username: req.body.username }
-      ]
-    });
-    if (existingUser) {
-      return res.json({ success: false, message: 'Email hoặc Username đã tồn tại' });
-    }
+    const passport = require('passport');
+    const GoogleStrategy = require('passport-google-oauth20').Strategy;
+    const User = require('../models/User');
 
-    const hashed = await bcrypt.hash(req.body.password, 10);
-    const user   = new User({
-      firstName: req.body.firstName,
-      lastName:  req.body.lastName,
-      username:  req.body.username,
-      email:     req.body.email,
-      password:  hashed
-      // role mặc định = 'student' (theo schema)
-    });
+    passport.use(new GoogleStrategy({
+      clientID:     process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL:  `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/google/callback`
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+        if (!user) {
+          // Check if email already exists → link account
+          const email = profile.emails?.[0]?.value;
+          user = email ? await User.findOne({ email }) : null;
 
-    await user.save();
-    res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    res.json({ success: false, message: 'Lỗi server' });
-  }
-});
+          if (user) {
+            user.googleId = profile.id;
+            user.authProvider = 'google';
+            if (!user.avatar) user.avatar = profile.photos?.[0]?.value || '';
+          } else {
+            // Create new user
+            const base = (profile.displayName || 'user').toLowerCase().replace(/\s+/g, '');
+            let username = base;
+            let i = 1;
+            while (await User.findOne({ username })) { username = `${base}${i++}`; }
 
-// =======================
-// LOGIN
-// =======================
-router.post('/login', async (req, res) => {
-  try {
-    // Cho phép login bằng email HOẶC username
-    const user = await User.findOne({
-      $or: [
-        { email:    req.body.email },
-        { username: req.body.email }
-      ]
-    });
-
-    if (!user) {
-      return res.json({ success: false, message: 'Tài khoản không tồn tại' });
-    }
-
-    const valid = await bcrypt.compare(req.body.password, user.password);
-    if (!valid) {
-      return res.json({ success: false, message: 'Sai mật khẩu' });
-    }
-
-    // ─── Kiểm tra tài khoản bị cấm ──────────────────────────
-    if (user.isBanned) {
-      return res.json({
-        success: false,
-        message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.'
-      });
-    }
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    // ─── Trả đầy đủ thông tin kể cả role ───────────────────
-    res.json({
-      success: true,
-      token,
-      user: {
-        id:        user._id,
-        firstName: user.firstName,
-        lastName:  user.lastName,
-        username:  user.username,
-        email:     user.email,
-        role:      user.role          // ← THÊM DÒNG NÀY
+            user = new User({
+              googleId:     profile.id,
+              email:        email || `${profile.id}@google.oauth`,
+              username,
+              firstName:    profile.name?.givenName  || '',
+              lastName:     profile.name?.familyName || '',
+              avatar:       profile.photos?.[0]?.value || '',
+              authProvider: 'google'
+            });
+          }
+          await user.save();
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
       }
+    }));
+
+    passport.serializeUser((user, done) => done(null, user._id));
+    passport.deserializeUser(async (id, done) => {
+      try { done(null, await User.findById(id)); }
+      catch (e) { done(e, null); }
     });
-  } catch (err) {
-    console.error(err);
-    res.json({ success: false, message: 'Lỗi server' });
+
+    router.get('/google',
+      passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+    );
+    router.get('/google/callback',
+      passport.authenticate('google', { session: false, failureRedirect: '/login.html?error=google_failed' }),
+      authCtrl.googleCallback
+    );
+  } catch (e) {
+    console.warn('[Auth] passport-google-oauth20 not installed. Google login disabled.');
   }
-});
+} else {
+  // Stub routes when not configured
+  router.get('/google',          (req, res) => res.status(503).json({ success: false, message: 'Google OAuth chưa được cấu hình' }));
+  router.get('/google/callback', (req, res) => res.redirect('/login.html?error=not_configured'));
+}
 
 module.exports = router;

@@ -227,21 +227,52 @@ router.delete('/keys/:id', auth, teacherOnly, async (req, res) => {
 
 router.get('/stats', auth, teacherOnly, async (req, res) => {
   try {
-    const [totalStudents, totalAttempts, avgBand] = await Promise.all([
-      require('../models/User').countDocuments({ role: 'student' }),
+    const [
+      totalStudents,
+      totalTeachers,
+      bannedUsers,
+      totalReadingAttempts,
+      totalListeningAttempts,
+      totalWritingAttempts,
+      avgBandReading,
+      avgBandListening,
+      newUsersThisWeek,
+      passageCount,
+      vocabUnitCount
+    ] = await Promise.all([
+      User.countDocuments({ role: 'student' }),
+      User.countDocuments({ role: { $in: ['teacher', 'admin'] } }),
+      User.countDocuments({ isBanned: true }),
       TestAttempt.countDocuments({ status: 'completed' }),
+      ListeningAttempt.countDocuments({ status: 'completed' }),
+      require('../models/WritingAttempt').countDocuments(),
       TestAttempt.aggregate([
         { $match: { status: 'completed' } },
         { $group: { _id: null, avg: { $avg: '$bandScore' } } }
-      ])
+      ]),
+      ListeningAttempt.aggregate([
+        { $match: { status: 'completed' } },
+        { $group: { _id: null, avg: { $avg: '$bandScore' } } }
+      ]),
+      User.countDocuments({ role: 'student', createdAt: { $gte: new Date(Date.now() - 7*24*60*60*1000) } }),
+      require('../models/Passage').countDocuments({ isActive: true }),
+      require('../models/VocabUnit').countDocuments({ isActive: true })
     ]);
 
     res.json({
       success: true,
       stats: {
         totalStudents,
-        totalAttempts,
-        avgBandScore: avgBand[0]?.avg?.toFixed(1) || '0.0'
+        totalTeachers,
+        bannedUsers,
+        newUsersThisWeek,
+        totalReadingAttempts,
+        totalListeningAttempts,
+        totalWritingAttempts,
+        avgReadingBand:   avgBandReading[0]?.avg?.toFixed(1)  || '0.0',
+        avgListeningBand: avgBandListening[0]?.avg?.toFixed(1) || '0.0',
+        passageCount,
+        vocabUnitCount
       }
     });
   } catch (err) {
@@ -669,13 +700,31 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 
-// GET /api/admin/users – danh sách tất cả user
+// GET /api/admin/users – danh sách user (có search, phân trang)
 router.get('/users', auth, teacherOnly, async (req, res) => {
   try {
-    const users = await User.find()
-      .select('-password -savedVocab')
-      .sort({ createdAt: -1 });
-    res.json({ success: true, users });
+    const { search, role, isBanned, page = 1, limit = 50 } = req.query;
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { username:  { $regex: search, $options: 'i' } },
+        { email:     { $regex: search, $options: 'i' } },
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName:  { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (role)     filter.role = role;
+    if (isBanned !== undefined) filter.isBanned = isBanned === 'true';
+
+    const [users, total] = await Promise.all([
+      User.find(filter)
+        .select('-password -savedVocab -resetOTP -resetOTPExpires')
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(Number(limit)),
+      User.countDocuments(filter)
+    ]);
+    res.json({ success: true, users, total, page: Number(page), limit: Number(limit) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -698,14 +747,18 @@ router.put('/users/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id/ban – cấm / bỏ cấm user
+// PUT /api/admin/users/:id/ban – cấm / bỏ cấm user (có lý do)
 router.put('/users/:id/ban', auth, teacherOnly, async (req, res) => {
   try {
-    const { isBanned } = req.body;
-    const user = await User.findByIdAndUpdate(req.params.id, { isBanned }, { new: true })
+    const { isBanned, banReason = '' } = req.body;
+    const update = { isBanned };
+    if (isBanned) update.banReason = banReason;
+    else          update.banReason = '';
+
+    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true })
       .select('-password -savedVocab');
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
-    res.json({ success: true, user });
+    res.json({ success: true, user, message: isBanned ? 'Đã cấm tài khoản' : 'Đã mở khóa tài khoản' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
