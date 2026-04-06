@@ -69,7 +69,7 @@ function showScreen(id) {
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : (user.username || '');
 
-  document.querySelectorAll('#user-name-key, #user-name-done, #user-name-history')
+  document.querySelectorAll('#user-name-key, #user-name-done, #user-name-history, #user-name-samples')
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 })();
 
@@ -492,6 +492,100 @@ function doDownload(a) {
   link.download = `writing_${(a.examName || 'submission').replace(/\s+/g, '_')}_${date.replace(/[/:,\s]/g, '-')}.txt`;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+// ──────────────────────────────────────────────────────
+// Writing Samples (Tài liệu mẫu)
+// ──────────────────────────────────────────────────────
+const sampleFilters = { quarter: 'all', topic: 'all', taskType: 'all' };
+
+async function loadWritingSamples() {
+  showScreen('screen-samples');
+
+  // Load filters (quarters + topics) once
+  try {
+    const fData = await apiFetch('/api/writing/sample-filters');
+    if (fData.success) {
+      const qChips = document.getElementById('wsampl-quarter-chips');
+      const tChips = document.getElementById('wsampl-topic-chips');
+
+      // Render quarter chips
+      qChips.innerHTML = `<span class="sf-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
+      fData.quarters.forEach(q => {
+        qChips.insertAdjacentHTML('beforeend',
+          `<span class="sf-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
+      });
+
+      // Render topic chips
+      tChips.innerHTML = `<span class="sf-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
+      fData.topics.forEach(t => {
+        tChips.insertAdjacentHTML('beforeend',
+          `<span class="sf-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
+      });
+    }
+  } catch (e) { /* filters optional */ }
+
+  await _fetchAndRenderSamples();
+}
+
+async function _fetchAndRenderSamples() {
+  const list = document.getElementById('wsampl-list');
+  list.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const params = new URLSearchParams({
+      quarter:  sampleFilters.quarter,
+      topic:    sampleFilters.topic,
+      taskType: sampleFilters.taskType
+    });
+    const data = await apiFetch(`/api/writing/samples?${params}`);
+    if (!data.success) throw new Error(data.message || 'Lỗi');
+
+    if (!data.samples.length) {
+      list.innerHTML = '<p style="color:#9ca3af;padding:20px;text-align:center">Không có tài liệu nào.</p>';
+      return;
+    }
+
+    const taskLabel = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 & 2' };
+    list.innerHTML = data.samples.map(s => `
+      <div class="sample-card" onclick="openSamplePdf('${escHtml(s.pdfUrl)}','${escHtml(s.title)}',this)">
+        <div class="sample-card-icon">📄</div>
+        <div>
+          <div class="sample-card-title">${escHtml(s.title)}</div>
+          <div class="sample-card-meta">${escHtml(s.quarter)} · ${escHtml(s.topic)}</div>
+          <span class="sample-card-badge">${taskLabel[s.taskType] || s.taskType}</span>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    list.innerHTML = `<p style="color:#ef4444;padding:20px;text-align:center">Lỗi tải tài liệu: ${escHtml(e.message)}</p>`;
+  }
+}
+
+function setSampleFilter(type, val, el) {
+  sampleFilters[type] = val;
+
+  // Update active chip in the correct group
+  const groupMap = { quarter: 'wsampl-quarter-chips', topic: 'wsampl-topic-chips', taskType: 'wsampl-task-chips' };
+  const group = document.getElementById(groupMap[type]);
+  if (group) {
+    group.querySelectorAll('.sf-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  _fetchAndRenderSamples();
+}
+
+function openSamplePdf(url, title, el) {
+  document.getElementById('wsampl-placeholder').style.display = 'none';
+  const wrap = document.getElementById('wsampl-viewer-wrap');
+  wrap.style.display = 'flex';
+  document.getElementById('wsampl-viewer-title').textContent = title;
+  document.getElementById('wsampl-download-btn').href = url;
+  document.getElementById('wsampl-frame').src = url;
+
+  // Highlight selected item
+  document.querySelectorAll('.sample-card').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
 }
 
 // ──────────────────────────────────────────────────────
