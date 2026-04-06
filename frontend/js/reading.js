@@ -525,7 +525,7 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
     }
 
     const feedbackHtml = isReview && review?.explanation
-      ? `<div class="match-feedback q-explanation">${escHtml(review.explanation)}</div>` : '';
+      ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
 
     return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
       <div class="match-q-left">
@@ -586,7 +586,7 @@ function renderMatchingHeadingsGroup(group, isReview, reviewMap) {
 
     if (isReview) {
       const isCorrect = review?.isCorrect;
-      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtml(review.explanation)}</div>` : '';
+      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
       return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
         <div class="match-q-left">
           <span class="match-q-num">${qNum}</span>
@@ -678,7 +678,7 @@ function renderSentenceEndingsGroup(group, isReview, reviewMap) {
 
     if (isReview) {
       const isCorrect = review?.isCorrect;
-      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtml(review.explanation)}</div>` : '';
+      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
       return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
         <div class="match-q-left">
           <span class="match-q-num">${qNum}</span>
@@ -760,7 +760,7 @@ function renderSingleQuestion(q, isReview, reviewMap) {
     ? `<div class="q-correct-ans ${review.isCorrect ? 'right' : 'wrong'}">
         ${review.isCorrect ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`}
        </div>
-       ${review.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(review.explanation)}</div>` : ''}` : '';
+       ${review.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(review.explanation)}</div>` : ''}` : '';
 
   return `<div class="question-item" id="q${qNum}" data-qnum="${qNum}">
     <div class="q-num-label"><span class="q-badge">${qNum}</span></div>
@@ -1675,6 +1675,10 @@ async function apiFetch(url, opts = {}) {
 ══════════════════════════════════════════════════════════════════════ */
 function escHtml(str) {
   return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+// Like escHtml but also converts \n → <br> (for explanation text)
+function escHtmlNl(str) {
+  return escHtml(str).replace(/\n/g, '<br>');
 }
 function fmtDuration(s) {
   if (!s) return '–';
