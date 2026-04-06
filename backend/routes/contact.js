@@ -15,20 +15,17 @@ router.post('/', async (req, res) => {
   console.log(`[Contact] ${name} | ${phone} | ${course}`);
 
   try {
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      const nodemailer  = require('nodemailer');
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-      });
-      await transporter.sendMail({
-        from:    `"EnglishWithDan Form" <${process.env.EMAIL_USER}>`,
+    if (process.env.RESEND_API_KEY) {
+      const { Resend } = require('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from:    'EnglishWithDan <onboarding@resend.dev>',
         to:      'tranhaforwork@gmail.com',
         subject: `[Tư Vấn Khóa Học] ${name} – ${course || 'Chưa chọn khóa'}`,
         html: `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
             <div style="background:linear-gradient(135deg,#3d8bff,#e53935);padding:24px 28px">
-              <h2 style="color:#fff;margin:0;font-size:20px">📩 Có học viên muốn tư vấn!</h2>
+              <h2 style="color:#fff;margin:0;font-size:20px">&#128233; Có học viên muốn tư vấn!</h2>
             </div>
             <div style="padding:28px;background:#fff">
               <table style="width:100%;border-collapse:collapse;font-size:14px">
@@ -56,7 +53,6 @@ router.post('/', async (req, res) => {
     res.json({ success: true, message: 'Đã nhận thông tin! Chúng tôi sẽ liên hệ bạn sớm nhất.' });
   } catch (err) {
     console.error('[Contact] Mail error:', err.message);
-    // Vẫn trả success để UX không bị gián đoạn, nhưng log lỗi server
     res.json({ success: true, message: 'Đã nhận thông tin! Chúng tôi sẽ liên hệ bạn sớm.' });
   }
 });
