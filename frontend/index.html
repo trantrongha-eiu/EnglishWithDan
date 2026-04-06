@@ -1,938 +1,1736 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EnglishWithDan – Luyện IELTS & Giao Tiếp Tiếng Anh</title>
-  <meta name="description" content="Luyện thi IELTS và Tiếng Anh Giao Tiếp cùng thầy Daniel Hà. Các khóa học từ mất gốc đến 7.0+, giao tiếp cơ bản và văn phòng."/>
-  <meta name="keywords" content="IELTS, luyện IELTS, tiếng Anh giao tiếp, Daniel Hà, EnglishWithDan, IELTS 7.0"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/main.css"/>
+  <meta name="description"
+    content="Luyện thi IELTS và Tiếng Anh Giao Tiếp cùng thầy Daniel Hà. Các khóa học từ mất gốc đến 7.0+, giao tiếp cơ bản và văn phòng." />
+  <meta name="keywords" content="IELTS, luyện IELTS, tiếng Anh giao tiếp, Daniel Hà, EnglishWithDan, IELTS 7.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
   <style>
-/* ══════════════════════════════════════
+    /* ══════════════════════════════════════
    RESET & TOKENS
 ══════════════════════════════════════ */
-:root {
-  --blue:#3d8bff; --blue-dark:#2c78f0; --blue-light:#eff6ff;
-  --red:#e53935;  --red-light:#fef2f2;
-  --dark:#0f172a; --gray:#64748b; --border:#e5e7eb;
-  --bg:#f8fafc;   --white:#fff;
-  --radius:14px;  --radius-sm:9px;
-  --shadow:0 2px 16px rgba(0,0,0,.07);
-  --shadow-lg:0 8px 40px rgba(0,0,0,.12);
-  --font:'Plus Jakarta Sans',sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--dark);background:var(--white);line-height:1.6;font-size:15px}
-img{max-width:100%;height:auto;display:block}
-a{text-decoration:none;color:inherit}
-ul{list-style:none}
-button{font-family:inherit;cursor:pointer}
+    :root {
+      --blue: #3d8bff;
+      --blue-dark: #2c78f0;
+      --blue-light: #eff6ff;
+      --red: #e53935;
+      --red-light: #fef2f2;
+      --dark: #0f172a;
+      --gray: #64748b;
+      --border: #e5e7eb;
+      --bg: #f8fafc;
+      --white: #fff;
+      --radius: 14px;
+      --radius-sm: 9px;
+      --shadow: 0 2px 16px rgba(0, 0, 0, .07);
+      --shadow-lg: 0 8px 40px rgba(0, 0, 0, .12);
+      --font: 'Plus Jakarta Sans', sans-serif;
+    }
 
-/* ══════════════════════════════════════
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--dark);
+      background: var(--white);
+      line-height: 1.6;
+      font-size: 15px
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    ul {
+      list-style: none
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer
+    }
+
+    /* ══════════════════════════════════════
    NAVBAR
 ══════════════════════════════════════ */
-.navbar{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.95);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  padding:0 24px;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.nav-logo{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:900;letter-spacing:-.5px}
-.nav-logo .d{color:var(--blue)}.nav-logo .h{color:var(--red)}
-.nav-logo-sub{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.5px;line-height:1}
-.nav-links{display:flex;align-items:center;gap:6px}
-.nav-links a{
-  padding:8px 14px;border-radius:var(--radius-sm);
-  font-size:14px;font-weight:600;color:var(--gray);
-  transition:all .15s;white-space:nowrap;
-}
-.nav-links a:hover{color:var(--dark);background:var(--bg)}
-.nav-cta{display:flex;align-items:center;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;border:none;transition:all .17s;white-space:nowrap}
-.btn-outline{background:none;border:1.5px solid var(--border);color:var(--dark)}
-.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
-.btn-primary{background:var(--blue);color:#fff}
-.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px)}
-.btn-red{background:var(--red);color:#fff}
-.btn-red:hover{background:#c62828;transform:translateY(-1px)}
-.btn-lg{padding:13px 28px;font-size:16px;border-radius:12px}
-.btn-xl{padding:16px 36px;font-size:17px;border-radius:14px}
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, .95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-.nav-hamburger{display:none;background:none;border:none;font-size:22px;color:var(--dark);padding:4px}
-.mobile-menu{
-  display:none;position:fixed;inset:64px 0 0 0;z-index:99;
-  background:var(--white);border-top:1px solid var(--border);
-  flex-direction:column;padding:24px;gap:8px;
-  overflow-y:auto;
-}
-.mobile-menu.open{display:flex}
-.mobile-menu a{padding:14px 16px;border-radius:var(--radius-sm);font-weight:600;font-size:16px;color:var(--dark);border-bottom:1px solid var(--border)}
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: -.5px
+    }
 
-/* ══════════════════════════════════════
+    .nav-logo .d {
+      color: var(--blue)
+    }
+
+    .nav-logo .h {
+      color: var(--red)
+    }
+
+    .nav-logo-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray);
+      letter-spacing: .5px;
+      line-height: 1
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .nav-links a {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray);
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: var(--dark);
+      background: var(--bg)
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      transition: all .17s;
+      white-space: nowrap
+    }
+
+    .btn-outline {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--dark)
+    }
+
+    .btn-outline:hover {
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      transform: translateY(-1px)
+    }
+
+    .btn-red {
+      background: var(--red);
+      color: #fff
+    }
+
+    .btn-red:hover {
+      background: #c62828;
+      transform: translateY(-1px)
+    }
+
+    .btn-lg {
+      padding: 13px 28px;
+      font-size: 16px;
+      border-radius: 12px
+    }
+
+    .btn-xl {
+      padding: 16px 36px;
+      font-size: 17px;
+      border-radius: 14px
+    }
+
+    .nav-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--dark);
+      padding: 4px
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 64px 0 0 0;
+      z-index: 99;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      flex-direction: column;
+      padding: 24px;
+      gap: 8px;
+      overflow-y: auto;
+    }
+
+    .mobile-menu.open {
+      display: flex
+    }
+
+    .mobile-menu a {
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--dark);
+      border-bottom: 1px solid var(--border)
+    }
+
+    /* ══════════════════════════════════════
    HERO
 ══════════════════════════════════════ */
-.hero{
-  min-height:calc(100vh - 64px);
-  display:grid;grid-template-columns:1fr 1fr;
-  align-items:center;gap:40px;
-  padding:80px 80px 80px 80px;
-  background:linear-gradient(135deg,#f0f6ff 0%,#fff5f5 100%);
-  position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;top:-80px;right:-80px;
-  width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(61,139,255,.12),transparent 70%);
-  pointer-events:none;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--blue-light);border:1px solid rgba(61,139,255,.3);
-  color:var(--blue);font-size:13px;font-weight:700;
-  padding:6px 14px;border-radius:20px;margin-bottom:20px;
-}
-.hero h1{
-  font-size:clamp(36px,4.5vw,58px);font-weight:900;
-  line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;
-}
-.hero h1 .accent{
-  background:linear-gradient(135deg,var(--blue),var(--red));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.hero-sub{font-size:17px;color:var(--gray);line-height:1.7;max-width:480px;margin-bottom:32px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
-.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
-.hero-stat{display:flex;flex-direction:column}
-.hero-stat strong{font-size:26px;font-weight:900;color:var(--dark)}
-.hero-stat span{font-size:13px;color:var(--gray);font-weight:500}
-.hero-img{position:relative}
-.hero-img img{
-  width:100%;border-radius:20px;
-  box-shadow:var(--shadow-lg);
-  object-fit:cover;aspect-ratio:4/5;
-}
-.hero-float-card{
-  position:absolute;bottom:28px;left:-28px;
-  background:var(--white);border-radius:14px;
-  padding:14px 18px;box-shadow:var(--shadow-lg);
-  display:flex;align-items:center;gap:12px;
-}
-.hero-float-card .icon{
-  width:40px;height:40px;border-radius:10px;
-  background:linear-gradient(135deg,var(--blue),#7c3aed);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:18px;flex-shrink:0;
-}
-.hero-float-card strong{display:block;font-weight:800;font-size:15px}
-.hero-float-card span{font-size:12px;color:var(--gray)}
+    .hero {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 40px;
+      padding: 80px 80px 80px 80px;
+      background: linear-gradient(135deg, #f0f6ff 0%, #fff5f5 100%);
+      position: relative;
+      overflow: hidden;
+    }
 
-/* ══════════════════════════════════════
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(61, 139, 255, .12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-light);
+      border: 1px solid rgba(61, 139, 255, .3);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--blue), var(--red));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 32px
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 40px
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column
+    }
+
+    .hero-stat strong {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--dark)
+    }
+
+    .hero-stat span {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 500
+    }
+
+    .hero-img {
+      position: relative
+    }
+
+    .hero-img img {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      object-fit: cover;
+      aspect-ratio: 4/5;
+    }
+
+    .hero-float-card {
+      position: absolute;
+      bottom: 28px;
+      left: -28px;
+      background: var(--white);
+      border-radius: 14px;
+      padding: 14px 18px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-float-card .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .hero-float-card strong {
+      display: block;
+      font-weight: 800;
+      font-size: 15px
+    }
+
+    .hero-float-card span {
+      font-size: 12px;
+      color: var(--gray)
+    }
+
+    /* ══════════════════════════════════════
    SECTION COMMON
 ══════════════════════════════════════ */
-section{padding:80px 80px}
-.section-tag{
-  display:inline-block;background:var(--blue-light);
-  color:var(--blue);font-size:12px;font-weight:700;
-  padding:5px 13px;border-radius:20px;letter-spacing:.5px;
-  text-transform:uppercase;margin-bottom:14px;
-}
-.section-title{font-size:clamp(26px,3vw,38px);font-weight:900;letter-spacing:-.5px;margin-bottom:10px}
-.section-sub{font-size:16px;color:var(--gray);max-width:560px}
-.section-head{margin-bottom:48px}
+    section {
+      padding: 80px 80px
+    }
 
-/* ══════════════════════════════════════
+    .section-tag {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 20px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 3vw, 38px);
+      font-weight: 900;
+      letter-spacing: -.5px;
+      margin-bottom: 10px
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--gray);
+      max-width: 560px
+    }
+
+    .section-head {
+      margin-bottom: 48px
+    }
+
+    /* ══════════════════════════════════════
    WHY US
 ══════════════════════════════════════ */
-.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.why-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius);padding:28px 22px;
-  transition:box-shadow .2s,transform .2s;
-}
-.why-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.why-icon{
-  width:52px;height:52px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;margin-bottom:16px;
-}
-.why-card h3{font-size:16px;font-weight:800;margin-bottom:8px}
-.why-card p{font-size:14px;color:var(--gray);line-height:1.65}
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px
+    }
 
-/* ══════════════════════════════════════
+    .why-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .why-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px)
+    }
+
+    .why-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .why-card h3 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 8px
+    }
+
+    .why-card p {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.65
+    }
+
+    /* ══════════════════════════════════════
    COURSES
 ══════════════════════════════════════ */
-.courses-section{background:var(--bg)}
-.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.course-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius);overflow:hidden;
-  transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column;
-}
-.course-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.course-thumb{
-  width:100%;aspect-ratio:16/9;
-  background:linear-gradient(135deg,#dbeafe,#ede9fe);
-  display:flex;align-items:center;justify-content:center;
-  font-size:48px;position:relative;overflow:hidden;
-}
-.course-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.course-level{
-  position:absolute;top:12px;left:12px;
-  font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px;
-}
-.lv-red{background:#fce4e4;color:var(--red)}
-.lv-blue{background:var(--blue-light);color:var(--blue)}
-.lv-green{background:#f0fdf4;color:#16a34a}
-.lv-purple{background:#f5f3ff;color:#7c3aed}
-.course-body{padding:20px;flex:1;display:flex;flex-direction:column}
-.course-body h3{font-size:17px;font-weight:800;margin-bottom:6px}
-.course-target{font-size:13px;color:var(--blue);font-weight:600;margin-bottom:10px}
-.course-body p{font-size:13px;color:var(--gray);line-height:1.6;flex:1}
-.course-meta{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.course-meta span{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray)}
-.course-cta{margin-top:16px}
+    .courses-section {
+      background: var(--bg)
+    }
 
-/* ══════════════════════════════════════
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px
+    }
+
+    .course-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow .2s, transform .2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .course-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px)
+    }
+
+    .course-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #dbeafe, #ede9fe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0
+    }
+
+    .course-level {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 10px;
+    }
+
+    .lv-red {
+      background: #fce4e4;
+      color: var(--red)
+    }
+
+    .lv-blue {
+      background: var(--blue-light);
+      color: var(--blue)
+    }
+
+    .lv-green {
+      background: #f0fdf4;
+      color: #16a34a
+    }
+
+    .lv-purple {
+      background: #f5f3ff;
+      color: #7c3aed
+    }
+
+    .course-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column
+    }
+
+    .course-body h3 {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px
+    }
+
+    .course-target {
+      font-size: 13px;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 10px
+    }
+
+    .course-body p {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+      flex: 1
+    }
+
+    .course-meta {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border)
+    }
+
+    .course-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--gray)
+    }
+
+    .course-cta {
+      margin-top: 16px
+    }
+
+    /* ══════════════════════════════════════
    TEACHER
 ══════════════════════════════════════ */
-.teacher-wrap{
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
-}
-.teacher-img{
-  position:relative;
-}
-.teacher-img img{
-  width:100%;border-radius:20px;
-  object-fit:cover;aspect-ratio:3/4;
-  box-shadow:var(--shadow-lg);
-}
-.teacher-badge-wrap{
-  position:absolute;bottom:-20px;right:-20px;
-  display:flex;flex-direction:column;gap:10px;
-}
-.t-badge{
-  background:var(--white);border-radius:12px;
-  padding:12px 16px;box-shadow:var(--shadow-lg);
-  display:flex;align-items:center;gap:10px;
-  font-size:13px;font-weight:700;
-}
-.t-badge .dot{
-  width:36px;height:36px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:17px;flex-shrink:0;
-}
-.teacher-info .section-tag{margin-bottom:14px}
-.teacher-info h2{font-size:clamp(28px,3vw,40px);font-weight:900;letter-spacing:-.5px;margin-bottom:6px}
-.teacher-name-en{font-size:18px;font-weight:700;color:var(--blue);margin-bottom:20px}
-.teacher-info p{font-size:15px;color:var(--gray);line-height:1.8;margin-bottom:24px}
-.certs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
-.cert-item{
-  display:flex;align-items:center;gap:10px;
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--radius-sm);padding:12px 14px;
-}
-.cert-icon{font-size:20px;flex-shrink:0}
-.cert-item div{font-size:12px;color:var(--gray)}
-.cert-item strong{display:block;font-size:13px;font-weight:700;color:var(--dark)}
+    .teacher-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
 
-/* ══════════════════════════════════════
+    .teacher-img {
+      position: relative;
+    }
+
+    .teacher-img img {
+      width: 100%;
+      border-radius: 20px;
+      object-fit: cover;
+      aspect-ratio: 3/4;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .teacher-badge-wrap {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .t-badge {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .t-badge .dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .teacher-info .section-tag {
+      margin-bottom: 14px
+    }
+
+    .teacher-info h2 {
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 900;
+      letter-spacing: -.5px;
+      margin-bottom: 6px
+    }
+
+    .teacher-name-en {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 20px
+    }
+
+    .teacher-info p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.8;
+      margin-bottom: 24px
+    }
+
+    .certs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px
+    }
+
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+
+    .cert-icon {
+      font-size: 20px;
+      flex-shrink: 0
+    }
+
+    .cert-item div {
+      font-size: 12px;
+      color: var(--gray)
+    }
+
+    .cert-item strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark)
+    }
+
+    /* ══════════════════════════════════════
    TESTIMONIALS
 ══════════════════════════════════════ */
-.testimonials-section{background:var(--bg)}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.testi-card{
-  background:var(--white);border:1px solid var(--border);
-  border-radius:var(--radius);padding:24px;
-}
-.testi-stars{color:#f59e0b;font-size:14px;margin-bottom:12px}
-.testi-text{font-size:14px;color:var(--gray);line-height:1.7;font-style:italic;margin-bottom:16px}
-.testi-author{display:flex;align-items:center;gap:10px}
-.testi-avatar{
-  width:40px;height:40px;border-radius:50%;overflow:hidden;
-  background:linear-gradient(135deg,var(--blue),var(--red));
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:800;font-size:16px;flex-shrink:0;
-}
-.testi-avatar img{width:100%;height:100%;object-fit:cover}
-.testi-author strong{font-size:14px;font-weight:700;display:block}
-.testi-author span{font-size:12px;color:var(--gray)}
+    .testimonials-section {
+      background: var(--bg)
+    }
 
-/* ══════════════════════════════════════
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px
+    }
+
+    .testi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .testi-stars {
+      color: #f59e0b;
+      font-size: 14px;
+      margin-bottom: 12px
+    }
+
+    .testi-text {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 16px
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .testi-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--blue), var(--red));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .testi-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .testi-author strong {
+      font-size: 14px;
+      font-weight: 700;
+      display: block
+    }
+
+    .testi-author span {
+      font-size: 12px;
+      color: var(--gray)
+    }
+
+    /* ══════════════════════════════════════
    CONTACT FORM
 ══════════════════════════════════════ */
-.contact-section{
-  background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);
-  color:var(--white);
-}
-.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
-.contact-left h2{font-size:clamp(26px,3vw,38px);font-weight:900;margin-bottom:14px}
-.contact-left p{font-size:16px;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:28px}
-.contact-info-list{display:flex;flex-direction:column;gap:16px}
-.contact-info-item{display:flex;align-items:center;gap:14px}
-.contact-info-item .ci-icon{
-  width:44px;height:44px;border-radius:10px;
-  background:rgba(255,255,255,.1);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;flex-shrink:0;
-}
-.contact-info-item div{font-size:14px;color:rgba(255,255,255,.6)}
-.contact-info-item strong{display:block;font-size:15px;color:var(--white);font-weight:700}
+    .contact-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      color: var(--white);
+    }
 
-.form-card{
-  background:var(--white);border-radius:20px;
-  padding:36px;box-shadow:var(--shadow-lg);
-}
-.form-card h3{font-size:20px;font-weight:800;color:var(--dark);margin-bottom:22px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:6px}
-.form-group input,
-.form-group select,
-.form-group textarea{
-  width:100%;padding:11px 14px;
-  border:1.5px solid var(--border);border-radius:var(--radius-sm);
-  font-size:14px;font-family:inherit;outline:none;
-  background:var(--bg);color:var(--dark);
-  transition:border-color .15s;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{border-color:var(--blue);background:#fff}
-.form-group textarea{resize:vertical;min-height:90px}
-.form-submit{width:100%;padding:14px;font-size:15px;font-weight:800;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--red));color:#fff;border:none;cursor:pointer;transition:opacity .15s}
-.form-submit:hover{opacity:.9}
-.form-submit:disabled{opacity:.6;cursor:not-allowed}
-#form-msg{margin-top:12px;font-size:14px;font-weight:600;text-align:center}
-#form-msg.success{color:#16a34a}
-#form-msg.error{color:var(--red)}
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start
+    }
 
-/* ══════════════════════════════════════
+    .contact-left h2 {
+      font-size: clamp(26px, 3vw, 38px);
+      font-weight: 900;
+      margin-bottom: 14px
+    }
+
+    .contact-left p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, .7);
+      line-height: 1.75;
+      margin-bottom: 28px
+    }
+
+    .contact-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .contact-info-item {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .contact-info-item .ci-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .contact-info-item div {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .6)
+    }
+
+    .contact-info-item strong {
+      display: block;
+      font-size: 15px;
+      color: var(--white);
+      font-weight: 700
+    }
+
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .form-card h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 22px
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      background: var(--bg);
+      color: var(--dark);
+      transition: border-color .15s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+      background: #fff
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--red));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: opacity .15s
+    }
+
+    .form-submit:hover {
+      opacity: .9
+    }
+
+    .form-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+
+    #form-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center
+    }
+
+    #form-msg.success {
+      color: #16a34a
+    }
+
+    #form-msg.error {
+      color: var(--red)
+    }
+
+    /* ══════════════════════════════════════
    FOOTER
 ══════════════════════════════════════ */
-.footer{
-  background:#0f172a;padding:48px 80px 28px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand .nav-logo{margin-bottom:14px}
-.footer-brand p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.75;max-width:280px}
-.footer-col h4{font-size:13px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px}
-.footer-col ul{display:flex;flex-direction:column;gap:10px}
-.footer-col ul li a{font-size:13px;color:rgba(255,255,255,.5);transition:color .15s}
-.footer-col ul li a:hover{color:var(--white)}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.footer-bottom p{font-size:12px;color:rgba(255,255,255,.35)}
-.footer-socials{display:flex;gap:12px}
-.social-btn{
-  width:34px;height:34px;border-radius:8px;
-  background:rgba(255,255,255,.07);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:rgba(255,255,255,.5);
-  transition:all .15s;
-}
-.social-btn:hover{background:var(--blue);color:#fff}
+    .footer {
+      background: #0f172a;
+      padding: 48px 80px 28px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+    }
 
-/* ══════════════════════════════════════
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px
+    }
+
+    .footer-brand .nav-logo {
+      margin-bottom: 14px
+    }
+
+    .footer-brand p {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .5);
+      line-height: 1.75;
+      max-width: 280px
+    }
+
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 16px
+    }
+
+    .footer-col ul {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .footer-col ul li a {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .5);
+      transition: color .15s
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--white)
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding-top: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px
+    }
+
+    .footer-bottom p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .35)
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 12px
+    }
+
+    .social-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: rgba(255, 255, 255, .5);
+      transition: all .15s;
+    }
+
+    .social-btn:hover {
+      background: var(--blue);
+      color: #fff
+    }
+
+    /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
-@media(max-width:1024px){
-  section{padding:60px 40px}
-  .hero{padding:60px 40px;gap:30px}
-  .why-grid{grid-template-columns:repeat(2,1fr)}
-  .courses-grid{grid-template-columns:repeat(2,1fr)}
-  .footer-top{grid-template-columns:1fr 1fr}
-  .footer{padding:40px 40px 24px}
-}
-@media(max-width:768px){
-  .navbar{padding:0 18px}
-  .nav-links,.nav-cta{display:none}
-  .nav-hamburger{display:block}
-  section{padding:50px 20px}
-  .hero{grid-template-columns:1fr;padding:40px 20px;min-height:auto;text-align:center}
-  .hero-img{order:-1;max-width:340px;margin:0 auto}
-  .hero-float-card{display:none}
-  .hero-actions{justify-content:center}
-  .hero-stats{justify-content:center;gap:24px}
-  .teacher-wrap{grid-template-columns:1fr;gap:36px}
-  .teacher-img{max-width:320px;margin:0 auto}
-  .teacher-badge-wrap{position:static;flex-direction:row;flex-wrap:wrap;margin-top:12px}
-  .contact-wrap{grid-template-columns:1fr;gap:36px}
-  .form-row{grid-template-columns:1fr}
-  .certs-grid{grid-template-columns:1fr}
-  .courses-grid{grid-template-columns:1fr}
-  .why-grid{grid-template-columns:1fr 1fr}
-  .testi-grid{grid-template-columns:1fr}
-  .footer-top{grid-template-columns:1fr}
-  .footer{padding:40px 20px 20px}
-  .footer-bottom{flex-direction:column;text-align:center}
-}
+    @media(max-width:1024px) {
+      section {
+        padding: 60px 40px
+      }
+
+      .hero {
+        padding: 60px 40px;
+        gap: 30px
+      }
+
+      .why-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .courses-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .footer {
+        padding: 40px 40px 24px
+      }
+    }
+
+    @media(max-width:768px) {
+      .navbar {
+        padding: 0 18px
+      }
+
+      .nav-links,
+      .nav-cta {
+        display: none
+      }
+
+      .nav-hamburger {
+        display: block
+      }
+
+      section {
+        padding: 50px 20px
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+        min-height: auto;
+        text-align: center
+      }
+
+      .hero-img {
+        order: -1;
+        max-width: 340px;
+        margin: 0 auto
+      }
+
+      .hero-float-card {
+        display: none
+      }
+
+      .hero-actions {
+        justify-content: center
+      }
+
+      .hero-stats {
+        justify-content: center;
+        gap: 24px
+      }
+
+      .teacher-wrap {
+        grid-template-columns: 1fr;
+        gap: 36px
+      }
+
+      .teacher-img {
+        max-width: 320px;
+        margin: 0 auto
+      }
+
+      .teacher-badge-wrap {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-top: 12px
+      }
+
+      .contact-wrap {
+        grid-template-columns: 1fr;
+        gap: 36px
+      }
+
+      .form-row {
+        grid-template-columns: 1fr
+      }
+
+      .certs-grid {
+        grid-template-columns: 1fr
+      }
+
+      .courses-grid {
+        grid-template-columns: 1fr
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .testi-grid {
+        grid-template-columns: 1fr
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr
+      }
+
+      .footer {
+        padding: 40px 20px 20px
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<!-- ════════════════════ NAVBAR ════════════════════ -->
-<nav class="navbar" id="navbar">
-  <a href="index.html" class="nav-logo">
-    <span class="d">Daniel</span><span class="h">Hà</span>
-    <div class="nav-logo-sub">English Center</div>
-  </a>
+  <!-- ════════════════════ NAVBAR ════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="d">Daniel</span><span class="h">Hà</span>
+      <div class="nav-logo-sub">English Center</div>
+    </a>
 
-  <div class="nav-links">
-    <a href="courses.html">Khóa học</a>
-    <a href="about.html">Về chúng tôi</a>
-    <a href="contact.html">Liên hệ</a>
+    <div class="nav-links">
+      <a href="courses.html">Khóa học</a>
+      <a href="about.html">Về chúng tôi</a>
+      <a href="contact.html">Liên hệ</a>
+    </div>
+
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+      <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Đăng ký</a>
+    </div>
+
+    <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars"
+        id="ham-icon"></i></button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="courses.html" onclick="toggleMenu()">📚 Khóa học</a>
+    <a href="about.html" onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+    <a href="contact.html" onclick="toggleMenu()">📞 Liên hệ</a>
+    <a href="login.html" style="color:var(--blue)">→ Luyện thi</a>
+    <a href="register.html" style="color:var(--red)">→ Đăng ký học</a>
   </div>
 
-  <div class="nav-cta">
-    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
-    <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Đăng ký</a>
-  </div>
-
-  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
-</nav>
-
-<!-- Mobile menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
-  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
-  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
-  <a href="login.html"    style="color:var(--blue)">→ Luyện thi</a>
-  <a href="register.html" style="color:var(--red)">→ Đăng ký học</a>
-</div>
-
-<!-- ════════════════════ HERO ════════════════════ -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge"><i class="fas fa-star"></i> Trung tâm IELTS & Giao Tiếp</div>
-    <h1>Chinh phục <span class="accent">Tiếng Anh</span> cùng Daniel Hà</h1>
-    <p class="hero-sub">
-      Từ mất gốc đến IELTS 7.0+ hay giao tiếp tự tin nơi công sở —
-      lộ trình học cá nhân hoá, giáo viên tận tâm, kết quả thực chất.
-    </p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn btn-red btn-lg"><i class="fas fa-phone-alt"></i> Tư vấn miễn phí</a>
-      <a href="#courses" class="btn btn-outline btn-lg"><i class="fas fa-book-open"></i> Xem khóa học</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><strong>100+</strong><span>Học viên</span></div>
-      <div class="hero-stat"><strong>8.0</strong><span>IELTS của thầy</span></div>
-      <div class="hero-stat"><strong>4+</strong><span>Năm kinh nghiệm</span></div>
-      <div class="hero-stat"><strong>90%</strong><span>Đạt mục tiêu</span></div>
-    </div>
-  </div>
-
-  <div class="hero-img">
-    <!-- THAY ẢNH: ảnh thầy Daniel Hà hoặc ảnh học viên -->
-    <img src="img/hero-teacher.jpg" alt="Thầy Daniel Hà" onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')"/>
-    <div class="hero-float-card">
-      <div class="icon"><i class="fas fa-award"></i></div>
-      <div>
-        <strong>IELTS 8.0</strong>
-        <span>Chứng chỉ IDP & BC</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ WHY US ════════════════════ -->
-<section>
-  <div class="section-head" style="text-align:center;max-width:600px;margin:0 auto 48px">
-    <div class="section-tag">Tại sao chọn chúng tôi</div>
-    <h2 class="section-title">Học tiếng Anh đúng cách — hiệu quả thật sự</h2>
-  </div>
-  <div class="why-grid">
-    <div class="why-card">
-      <div class="why-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-route"></i></div>
-      <h3>Lộ trình cá nhân hoá</h3>
-      <p>Đánh giá trình độ đầu vào, xây lộ trình riêng phù hợp mục tiêu và thời gian của từng học viên.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-chalkboard-teacher"></i></div>
-      <h3>Giáo viên IELTS 8.0</h3>
-      <p>Thầy Daniel Hà — chứng chỉ IELTS 8.0, kinh nghiệm giảng dạy hơn 4 năm, phong cách giảng dễ hiểu và truyền động lực.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-laptop-code"></i></div>
-      <h3>Nền tảng học tập riêng</h3>
-      <p>Hệ thống luyện thi Reading, Listening, Writing, Speaking tích hợp AI — luyện tập mọi lúc, mọi nơi.</p>
-    </div>
-    <div class="why-card">
-      <div class="why-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-trophy"></i></div>
-      <h3>Cam kết đầu ra</h3>
-      <p>95% học viên đạt band điểm mục tiêu. Học lại miễn phí nếu chưa đạt kết quả cam kết.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ COURSES ════════════════════ -->
-<section id="courses" class="courses-section">
-  <div class="section-head">
-    <div class="section-tag">Khóa học</div>
-    <h2 class="section-title">Chọn khóa học phù hợp với bạn</h2>
-    <p class="section-sub">Từ mất gốc hoàn toàn đến mục tiêu 7.0+, chúng tôi có chương trình phù hợp cho mọi cấp độ.</p>
-  </div>
-  <div class="courses-grid">
-
-    <!-- 1 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH: ảnh liên quan IELTS mất gốc -->
-        <img src="img/course-starter.jpg" alt="IELTS Mất Gốc" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">🌱</span>
-        <span class="course-level lv-red">Mất gốc</span>
-      </div>
-      <div class="course-body">
-        <h3>IELTS Mất Gốc → 6.0+</h3>
-        <div class="course-target">Dành cho: Học viên chưa có nền tảng</div>
-        <p>Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 6–8 tháng</span>
-          <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH -->
-        <img src="img/course-3to6.jpg" alt="IELTS 3 to 6" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">📈</span>
-        <span class="course-level lv-blue">Cơ bản → Nâng cao</span>
-      </div>
-      <div class="course-body">
-        <h3>IELTS 3.0 → 6.0+</h3>
-        <div class="course-target">Dành cho: Band 3.0–4.5</div>
-        <p>Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 4–5 tháng</span>
-          <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH -->
-        <img src="img/course-6to7.jpg" alt="IELTS 6 to 7" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">🚀</span>
-        <span class="course-level lv-green">Nâng cao</span>
-      </div>
-      <div class="course-body">
-        <h3>IELTS 6.0 → 7.0+</h3>
-        <div class="course-target">Dành cho: Band 5.5–6.5</div>
-        <p>Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening. Mục tiêu 7.0–7.5.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 3–4 tháng</span>
-          <span><i class="fas fa-users"></i> 1–1 hoặc nhóm nhỏ</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH -->
-        <img src="img/course-speaking.jpg" alt="IELTS Speaking" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">🎤</span>
-        <span class="course-level lv-purple">Chuyên sâu</span>
-      </div>
-      <div class="course-body">
-        <h3>IELTS Speaking Chuyên Sâu</h3>
-        <div class="course-target">Dành cho: Học viên muốn đột phá Speaking</div>
-        <p>Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 6–8 tuần</span>
-          <span><i class="fas fa-user"></i> 1–1 hoặc nhóm 4</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 5 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH -->
-        <img src="img/course-comm.jpg" alt="Giao tiếp cơ bản" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">💬</span>
-        <span class="course-level lv-blue">Giao tiếp</span>
-      </div>
-      <div class="course-body">
-        <h3>Giao Tiếp Tiếng Anh Cơ Bản</h3>
-        <div class="course-target">Dành cho: Người mất gốc hoặc mới bắt đầu</div>
-        <p>Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 3 tháng</span>
-          <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 10</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6 -->
-    <div class="course-card">
-      <div class="course-thumb">
-        <!-- THAY ẢNH -->
-        <img src="img/course-business.jpg" alt="Giao tiếp văn phòng" onerror="this.style.display='none'"/>
-        <span style="font-size:48px" class="course-placeholder">💼</span>
-        <span class="course-level lv-green">Business</span>
-      </div>
-      <div class="course-body">
-        <h3>Tiếng Anh Giao Tiếp Văn Phòng</h3>
-        <div class="course-target">Dành cho: Người đi làm, dân văn phòng</div>
-        <p>Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.</p>
-        <div class="course-meta">
-          <span><i class="fas fa-clock"></i> 2–3 tháng</span>
-          <span><i class="fas fa-users"></i> Nhóm hoặc 1–1</span>
-        </div>
-        <div class="course-cta">
-          <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ════════════════════ TEACHER ════════════════════ -->
-<section id="teacher">
-  <div class="teacher-wrap">
-    <div class="teacher-img">
-      <!-- THAY ẢNH: ảnh thầy Daniel Hà chụp đẹp -->
-      <img src="img/teacher-profile.jpg" alt="Thầy Daniel Hà" onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')"/>
-      <div class="teacher-badge-wrap">
-        <div class="t-badge">
-          <div class="dot" style="background:#eff6ff;color:var(--blue)">🎓</div>
-          <div>IELTS 8.0<br><small style="color:var(--gray);font-weight:400">IDP Certified</small></div>
-        </div>
-        <div class="t-badge">
-          <div class="dot" style="background:#f0fdf4;color:#16a34a">🏆</div>
-          <div>4+ năm kinh nghiệm</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="teacher-info">
-      <div class="section-tag">Về giáo viên</div>
-      <h2>Hà Trọng — <br><em style="font-style:normal;color:var(--blue)">Thầy Daniel Hà</em></h2>
-      <p class="teacher-name-en">IELTS Instructor & English Coach</p>
-      <p>
-        Thầy Daniel Hà là giảng viên IELTS với chứng chỉ Overall 8.0 (IDP & British Council),
-        hơn 4 năm kinh nghiệm giảng dạy, đã đồng hành cùng hơn 500 học viên chinh phục mục tiêu IELTS.
-        Phong cách giảng dạy thực tế, gần gũi và truyền cảm hứng — học viên không chỉ học từ vựng mà hiểu cách tư duy bằng tiếng Anh.
+  <!-- ════════════════════ HERO ════════════════════ -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-star"></i> Trung tâm IELTS & Giao Tiếp</div>
+      <h1>Chinh phục <span class="accent">Tiếng Anh</span> cùng Daniel Hà</h1>
+      <p class="hero-sub">
+        Từ mất gốc đến IELTS 7.0+ hay giao tiếp tự tin nơi công sở —
+        lộ trình học cá nhân hoá, giáo viên tận tâm, kết quả thực chất.
       </p>
-      <div class="certs-grid">
-        <div class="cert-item">
-          <span class="cert-icon">🎓</span>
-          <div>
-            <strong>IELTS 8.0 Overall</strong>
-            <div>IDP &amp; British Council</div>
-          </div>
-        </div>
-        <div class="cert-item">
-          <span class="cert-icon">📜</span>
-          <div>
-            <!-- THAY: bằng cấp đại học/thạc sĩ thực tế của thầy -->
-            <strong>Cử nhân Ngôn Ngữ Anh</strong>
-            <div>Đại học [Tên trường]</div>
-          </div>
-        </div>
-        <div class="cert-item">
-          <span class="cert-icon">🏅</span>
-          <div>
-            <!-- THAY: chứng chỉ giảng dạy thực tế -->
-            <strong>CELTA / TESOL</strong>
-            <div>Chứng chỉ giảng dạy quốc tế</div>
-          </div>
-        </div>
-        <div class="cert-item">
-          <span class="cert-icon">⭐</span>
-          <div>
-            <strong>500+ học viên</strong>
-            <div>Tỷ lệ đạt mục tiêu 95%</div>
-          </div>
-        </div>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-red btn-lg"><i class="fas fa-phone-alt"></i> Tư vấn miễn phí</a>
+        <a href="#courses" class="btn btn-outline btn-lg"><i class="fas fa-book-open"></i> Xem khóa học</a>
       </div>
-      <a href="#contact" class="btn btn-red btn-lg">
-        <i class="fas fa-calendar-alt"></i> Đăng ký tư vấn 1–1 miễn phí
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ TESTIMONIALS ════════════════════ -->
-<section id="testimonials" class="testimonials-section">
-  <div class="section-head" style="text-align:center;max-width:560px;margin:0 auto 48px">
-    <div class="section-tag">Học viên nói gì</div>
-    <h2 class="section-title">Hàng trăm học viên đã thay đổi</h2>
-  </div>
-  <div class="testi-grid">
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"Mình từng thi IELTS 2 lần vẫn chỉ 5.5. Sau 4 tháng học với thầy Daniel, mình đạt 6.5. Cách thầy dạy Writing Task 2 và chiến lược Reading cực kỳ thực tế!"</p>
-      <div class="testi-author">
-        <!-- THAY ẢNH: ảnh học viên (nếu có) -->
-        <div class="testi-avatar">N</div>
-        <div>
-          <strong>Nguyễn Minh Phúc</strong>
-          <span>IELTS 5.5 → 6.5 · TP.HCM</span>
-        </div>
-      </div>
-    </div>
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"Mình hoàn toàn mất gốc, không biết bắt đầu từ đâu. Thầy kiên nhẫn, giảng cực dễ hiểu. Sau 7 tháng mình có IELTS 6.0 đi du học Úc rồi!"</p>
-      <div class="testi-author">
-        <div class="testi-avatar" style="background:linear-gradient(135deg,#16a34a,#065f46)">T</div>
-        <div>
-          <strong>Trần Thị Lan</strong>
-          <span>Mất gốc → IELTS 6.0 · Hà Nội</span>
-        </div>
-      </div>
-    </div>
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-text">"Khóa giao tiếp văn phòng của thầy giúp mình tự tin hơn rất nhiều khi meeting với đối tác nước ngoài. Thầy dạy sát với thực tế công việc, rất thiết thực."</p>
-      <div class="testi-author">
-        <div class="testi-avatar" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">H</div>
-        <div>
-          <strong>Hoàng Văn Dũng</strong>
-          <span>Khóa Business English · Đà Nẵng</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ CONTACT FORM ════════════════════ -->
-<section id="contact" class="contact-section">
-  <div class="contact-wrap">
-    <div class="contact-left">
-      <h2>Đăng ký tư vấn<br>miễn phí ngay hôm nay</h2>
-      <p>Điền form bên cạnh, thầy Daniel Hà sẽ liên hệ tư vấn lộ trình học phù hợp nhất với bạn — hoàn toàn miễn phí, không áp lực.</p>
-      <div class="contact-info-list">
-        <div class="contact-info-item">
-          <div class="ci-icon"><i class="fas fa-phone-alt"></i></div>
-          <div>
-            <div>Hotline / Zalo</div>
-            <strong>0914 769 618</strong>
-          </div>
-        </div>
-        <div class="contact-info-item">
-          <div class="ci-icon"><i class="fab fa-facebook-f"></i></div>
-          <div>
-            <div>Facebook</div>
-            <!-- THAY: link Facebook thật -->
-            <strong>facebook.com/EnglishWithDan</strong>
-          </div>
-        </div>
-        <div class="contact-info-item">
-          <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
-          <div>
-            <div>Địa chỉ</div>
-            <!-- THAY: địa chỉ thật -->
-            <strong>TP. Hồ Chí Minh, Việt Nam</strong>
-          </div>
-        </div>
-        <div class="contact-info-item">
-          <div class="ci-icon"><i class="fas fa-clock"></i></div>
-          <div>
-            <div>Giờ tư vấn</div>
-            <strong>T2–T7 · 8:00 – 21:00</strong>
-          </div>
-        </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>100+</strong><span>Học viên</span></div>
+        <div class="hero-stat"><strong>8.0</strong><span>IELTS của thầy</span></div>
+        <div class="hero-stat"><strong>4+</strong><span>Năm kinh nghiệm</span></div>
+        <div class="hero-stat"><strong>90%</strong><span>Đạt mục tiêu</span></div>
       </div>
     </div>
 
-    <div class="form-card">
-      <h3><i class="fas fa-paper-plane" style="color:var(--blue)"></i> Gửi thông tin tư vấn</h3>
-      <form id="consultForm" onsubmit="submitForm(event)">
-        <div class="form-row">
+    <div class="hero-img">
+      <!-- THAY ẢNH: ảnh thầy Daniel Hà hoặc ảnh học viên -->
+      <img src="img/IeltsCertificate.jpg" alt="Thầy Daniel Hà"
+        onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')" />
+      <div class="hero-float-card">
+        <div class="icon"><i class="fas fa-award"></i></div>
+        <div>
+          <strong>IELTS 8.0</strong>
+          <span>Chứng chỉ IDP & BC</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ WHY US ════════════════════ -->
+  <section>
+    <div class="section-head" style="text-align:center;max-width:600px;margin:0 auto 48px">
+      <div class="section-tag">Tại sao chọn chúng tôi</div>
+      <h2 class="section-title">Học tiếng Anh đúng cách — hiệu quả thật sự</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-route"></i></div>
+        <h3>Lộ trình cá nhân hoá</h3>
+        <p>Đánh giá trình độ đầu vào, xây lộ trình riêng phù hợp mục tiêu và thời gian của từng học viên.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-chalkboard-teacher"></i></div>
+        <h3>Giáo viên IELTS 8.0</h3>
+        <p>Thầy Daniel Hà — chứng chỉ IELTS 8.0, kinh nghiệm giảng dạy hơn 4 năm, phong cách giảng dễ hiểu và truyền
+          động lực.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-laptop-code"></i></div>
+        <h3>Nền tảng học tập riêng</h3>
+        <p>Hệ thống luyện thi Reading, Listening, Writing, Speaking tích hợp AI — luyện tập mọi lúc, mọi nơi.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-trophy"></i></div>
+        <h3>Cam kết đầu ra</h3>
+        <p>95% học viên đạt band điểm mục tiêu. Học lại miễn phí nếu chưa đạt kết quả cam kết.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ COURSES ════════════════════ -->
+  <section id="courses" class="courses-section">
+    <div class="section-head">
+      <div class="section-tag">Khóa học</div>
+      <h2 class="section-title">Chọn khóa học phù hợp với bạn</h2>
+      <p class="section-sub">Từ mất gốc hoàn toàn đến mục tiêu 7.0+, chúng tôi có chương trình phù hợp cho mọi cấp độ.
+      </p>
+    </div>
+    <div class="courses-grid">
+
+      <!-- 1 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH: ảnh liên quan IELTS mất gốc -->
+          <img src="img/course-starter.jpg" alt="IELTS Mất Gốc" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">🌱</span>
+          <span class="course-level lv-red">Mất gốc</span>
+        </div>
+        <div class="course-body">
+          <h3>IELTS Mất Gốc → 6.0+</h3>
+          <div class="course-target">Dành cho: Học viên chưa có nền tảng</div>
+          <p>Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.
+          </p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 6–8 tháng</span>
+            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH -->
+          <img src="img/course-3to6.jpg" alt="IELTS 3 to 6" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">📈</span>
+          <span class="course-level lv-blue">Cơ bản → Nâng cao</span>
+        </div>
+        <div class="course-body">
+          <h3>IELTS 3.0 → 6.0+</h3>
+          <div class="course-target">Dành cho: Band 3.0–4.5</div>
+          <p>Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.
+          </p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 4–5 tháng</span>
+            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH -->
+          <img src="img/course-6to7.jpg" alt="IELTS 6 to 7" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">🚀</span>
+          <span class="course-level lv-green">Nâng cao</span>
+        </div>
+        <div class="course-body">
+          <h3>IELTS 6.0 → 7.0+</h3>
+          <div class="course-target">Dành cho: Band 5.5–6.5</div>
+          <p>Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening.
+            Mục tiêu 7.0–7.5.</p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 3–4 tháng</span>
+            <span><i class="fas fa-users"></i> 1–1 hoặc nhóm nhỏ</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH -->
+          <img src="img/course-speaking.jpg" alt="IELTS Speaking" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">🎤</span>
+          <span class="course-level lv-purple">Chuyên sâu</span>
+        </div>
+        <div class="course-body">
+          <h3>IELTS Speaking Chuyên Sâu</h3>
+          <div class="course-target">Dành cho: Học viên muốn đột phá Speaking</div>
+          <p>Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.
+          </p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 6–8 tuần</span>
+            <span><i class="fas fa-user"></i> 1–1 hoặc nhóm 4</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH -->
+          <img src="img/course-comm.jpg" alt="Giao tiếp cơ bản" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">💬</span>
+          <span class="course-level lv-blue">Giao tiếp</span>
+        </div>
+        <div class="course-body">
+          <h3>Giao Tiếp Tiếng Anh Cơ Bản</h3>
+          <div class="course-target">Dành cho: Người mất gốc hoặc mới bắt đầu</div>
+          <p>Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.</p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 3 tháng</span>
+            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 10</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="course-card">
+        <div class="course-thumb">
+          <!-- THAY ẢNH -->
+          <img src="img/course-business.jpg" alt="Giao tiếp văn phòng" onerror="this.style.display='none'" />
+          <span style="font-size:48px" class="course-placeholder">💼</span>
+          <span class="course-level lv-green">Business</span>
+        </div>
+        <div class="course-body">
+          <h3>Tiếng Anh Giao Tiếp Văn Phòng</h3>
+          <div class="course-target">Dành cho: Người đi làm, dân văn phòng</div>
+          <p>Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.
+          </p>
+          <div class="course-meta">
+            <span><i class="fas fa-clock"></i> 2–3 tháng</span>
+            <span><i class="fas fa-users"></i> Nhóm hoặc 1–1</span>
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════ TEACHER ════════════════════ -->
+  <section id="teacher">
+    <div class="teacher-wrap">
+      <div class="teacher-img">
+        <!-- THAY ẢNH: ảnh thầy Daniel Hà chụp đẹp -->
+        <img src="img/teacher-profile.jpg" alt="Thầy Daniel Hà"
+          onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')" />
+        <div class="teacher-badge-wrap">
+          <div class="t-badge">
+            <div class="dot" style="background:#eff6ff;color:var(--blue)">🎓</div>
+            <div>IELTS 8.0<br><small style="color:var(--gray);font-weight:400">British Council Certified</small></div>
+          </div>
+          <div class="t-badge">
+            <div class="dot" style="background:#f0fdf4;color:#16a34a">🏆</div>
+            <div>4+ năm kinh nghiệm dạy Tiếng Anh</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="teacher-info">
+        <div class="section-tag">Về giáo viên</div>
+        <h2>Trần Hà <br><em style="font-style:normal;color:var(--blue)">Thầy Daniel Hà</em></h2>
+        <p class="teacher-name-en">IELTS Instructor & English Coach</p>
+        <p>
+          Thầy Daniel Hà là giảng viên IELTS với chứng chỉ Overall 8.0 (IDP & British Council), chứng chỉ giảng dạy
+          TESOL 120h. Với
+          hơn 4 năm kinh nghiệm giảng dạy, đã đồng hành cùng hơn 100 học viên chinh phục mục tiêu IELTS.
+          Phong cách giảng dạy thực tế, gần gũi và truyền cảm hứng — học viên không chỉ học từ vựng mà hiểu cách tư duy
+          bằng tiếng Anh.
+        </p>
+        <div class="certs-grid">
+          <div class="cert-item">
+            <span class="cert-icon">🎓</span>
+            <div>
+              <strong>IELTS 8.0 Overall</strong>
+              <div>IDP &amp; British Council</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">📜</span>
+            <div>
+              <!-- THAY: bằng cấp đại học/thạc sĩ thực tế của thầy -->
+              <strong>Graduated from </strong>
+              <div>Eastern International University</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">🏅</span>
+            <div>
+              <!-- THAY: chứng chỉ giảng dạy thực tế -->
+              <strong>TESOL 120h</strong>
+              <div>Chứng chỉ giảng dạy quốc tế</div>
+            </div>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">⭐</span>
+            <div>
+              <strong>100+ học viên</strong>
+              <div>Tỷ lệ đạt mục tiêu 90%</div>
+            </div>
+          </div>
+        </div>
+        <a href="#contact" class="btn btn-red btn-lg">
+          <i class="fas fa-calendar-alt"></i> Đăng ký tư vấn 1–1 miễn phí
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ TESTIMONIALS ════════════════════ -->
+  <section id="testimonials" class="testimonials-section">
+    <div class="section-head" style="text-align:center;max-width:560px;margin:0 auto 48px">
+      <div class="section-tag">Học viên nói gì</div>
+      <h2 class="section-title">Hàng trăm học viên đã thay đổi</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"When I came to study with Teacher Daniel, I was at a complete loss.My English was very
+          poor and my prounciation was a real disaster. But his patient and clear teaching style helped me improve
+          significantly. After 11 months, I achieved an IELTS score of 6.5! and got accepted into RMIT University in Sai
+          Gon."</p>
+        <div class="testi-author">
+          <!-- THAY ẢNH: ảnh học viên (nếu có) -->
+          <div class="testi-avatar">N</div>
+          <div>
+            <strong>Ding Weicheng</strong>
+            <span>IELTS 0 → 6.5 · Bình Dương</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Mình tìm đến thầy Hà với mục tiêu cải thiện kỹ năng Speaking cũng như điểm số overall để
+          apply vào Đại Học Ngoại Thương. Thầy kiên nhẫn, giảng cực dễ hiểu. Sau 5 tháng mình có IELTS 7.5! và đặt chân
+          vào trường đại học mơ ước!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#16a34a,#065f46)">T</div>
+          <div>
+            <strong>Nguyễn Thi Vân</strong>
+            <span>IELTS 6.5 → IELTS 7.5 · Online(Vũng Tàu)</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Khóa giao tiếp văn phòng của thầy giúp mình tự tin hơn rất nhiều khi meeting với đối tác
+          nước ngoài. Thầy dạy sát với thực tế công việc, rất thiết thực."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">H</div>
+          <div>
+            <strong>Hoàng Văn Dũng</strong>
+            <span>Khóa Business English · Online(Hà Nội)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ CONTACT FORM ════════════════════ -->
+  <section id="contact" class="contact-section">
+    <div class="contact-wrap">
+      <div class="contact-left">
+        <h2>Đăng ký tư vấn<br>miễn phí ngay hôm nay</h2>
+        <p>Điền form bên cạnh, thầy Daniel Hà sẽ liên hệ tư vấn lộ trình học phù hợp nhất với bạn — hoàn toàn miễn phí,
+          không áp lực.</p>
+        <div class="contact-info-list">
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-phone-alt"></i></div>
+            <div>
+              <div>Hotline / Zalo</div>
+              <strong>0914 769 618</strong>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fab fa-facebook-f"></i></div>
+            <div>
+              <div>Facebook</div>
+              <!-- THAY: link Facebook thật -->
+              <strong>facebook.com/EnglishWithDan</strong>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div>Địa chỉ</div>
+              <!-- THAY: địa chỉ thật -->
+              <strong>TP. Hồ Chí Minh, Việt Nam</strong>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon"><i class="fas fa-clock"></i></div>
+            <div>
+              <div>Giờ tư vấn</div>
+              <strong>T2–T7 · 8:00 – 21:00</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3><i class="fas fa-paper-plane" style="color:var(--blue)"></i> Gửi thông tin tư vấn</h3>
+        <form id="consultForm" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f-name">Họ &amp; tên <span style="color:var(--red)">*</span></label>
+              <input type="text" id="f-name" placeholder="Nguyễn Văn A" required />
+            </div>
+            <div class="form-group">
+              <label for="f-phone">Số điện thoại <span style="color:var(--red)">*</span></label>
+              <input type="tel" id="f-phone" placeholder="0912 345 678" required />
+            </div>
+          </div>
           <div class="form-group">
-            <label for="f-name">Họ &amp; tên <span style="color:var(--red)">*</span></label>
-            <input type="text" id="f-name" placeholder="Nguyễn Văn A" required/>
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" placeholder="example@gmail.com" />
           </div>
           <div class="form-group">
-            <label for="f-phone">Số điện thoại <span style="color:var(--red)">*</span></label>
-            <input type="tel" id="f-phone" placeholder="0912 345 678" required/>
+            <label for="f-course">Khóa học quan tâm</label>
+            <select id="f-course">
+              <option value="">-- Chọn khóa học --</option>
+              <option>IELTS Mất Gốc → 6.0+</option>
+              <option>IELTS 3.0 → 6.0+</option>
+              <option>IELTS 6.0 → 7.0+</option>
+              <option>IELTS Speaking Chuyên Sâu</option>
+              <option>Giao Tiếp Tiếng Anh Cơ Bản</option>
+              <option>Tiếng Anh Giao Tiếp Văn Phòng</option>
+              <option>Chưa biết – cần tư vấn</option>
+            </select>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="f-email">Email</label>
-          <input type="email" id="f-email" placeholder="example@gmail.com"/>
-        </div>
-        <div class="form-group">
-          <label for="f-course">Khóa học quan tâm</label>
-          <select id="f-course">
-            <option value="">-- Chọn khóa học --</option>
-            <option>IELTS Mất Gốc → 6.0+</option>
-            <option>IELTS 3.0 → 6.0+</option>
-            <option>IELTS 6.0 → 7.0+</option>
-            <option>IELTS Speaking Chuyên Sâu</option>
-            <option>Giao Tiếp Tiếng Anh Cơ Bản</option>
-            <option>Tiếng Anh Giao Tiếp Văn Phòng</option>
-            <option>Chưa biết – cần tư vấn</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="f-msg">Tin nhắn thêm</label>
-          <textarea id="f-msg" placeholder="Trình độ hiện tại, mục tiêu, thời gian học..."></textarea>
-        </div>
-        <button type="submit" class="form-submit" id="submit-btn">
-          <i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn
-        </button>
-        <div id="form-msg"></div>
-      </form>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════ FOOTER ════════════════════ -->
-<footer class="footer">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="nav-logo" style="margin-bottom:12px">
-        <span class="d">Daniel</span><span class="h">Hà</span>
-        <div class="nav-logo-sub" style="color:rgba(255,255,255,.4)">English Center</div>
+          <div class="form-group">
+            <label for="f-msg">Tin nhắn thêm</label>
+            <textarea id="f-msg" placeholder="Trình độ hiện tại, mục tiêu, thời gian học..."></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="submit-btn">
+            <i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn
+          </button>
+          <div id="form-msg"></div>
+        </form>
       </div>
-      <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Cam kết đầu ra thực chất, học viên là ưu tiên số 1.</p>
     </div>
-    <div class="footer-col">
-      <h4>Khóa học</h4>
-      <ul>
-        <li><a href="#courses">IELTS Mất Gốc → 6.0+</a></li>
-        <li><a href="#courses">IELTS 3.0 → 6.0+</a></li>
-        <li><a href="#courses">IELTS 6.0 → 7.0+</a></li>
-        <li><a href="#courses">IELTS Speaking</a></li>
-        <li><a href="#courses">Giao Tiếp Cơ Bản</a></li>
-        <li><a href="#courses">Giao Tiếp Văn Phòng</a></li>
-      </ul>
+  </section>
+
+  <!-- ════════════════════ FOOTER ════════════════════ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:12px">
+          <span class="d">Daniel</span><span class="h">Hà</span>
+          <div class="nav-logo-sub" style="color:rgba(255,255,255,.4)">English Center</div>
+        </div>
+        <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Cam kết đầu ra thực chất, học viên là ưu tiên số 1.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Khóa học</h4>
+        <ul>
+          <li><a href="#courses">IELTS Mất Gốc → 6.0+</a></li>
+          <li><a href="#courses">IELTS 3.0 → 6.0+</a></li>
+          <li><a href="#courses">IELTS 6.0 → 7.0+</a></li>
+          <li><a href="#courses">IELTS Speaking</a></li>
+          <li><a href="#courses">Giao Tiếp Cơ Bản</a></li>
+          <li><a href="#courses">Giao Tiếp Văn Phòng</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Tài nguyên</h4>
+        <ul>
+          <li><a href="login.html">Đăng nhập học</a></li>
+          <li><a href="register.html">Đăng ký tài khoản</a></li>
+          <li><a href="#teacher">Về giáo viên</a></li>
+          <li><a href="#contact">Tư vấn miễn phí</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <ul>
+          <li><a href="tel:0914769618">📞 0914 769 618</a></li>
+          <!-- THAY: link Facebook, Zalo, Youtube thật -->
+          <li><a href="#">📘 Facebook</a></li>
+          <li><a href="#">💬 Zalo OA</a></li>
+          <li><a href="#">🎬 YouTube</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4>Tài nguyên</h4>
-      <ul>
-        <li><a href="login.html">Đăng nhập học</a></li>
-        <li><a href="register.html">Đăng ký tài khoản</a></li>
-        <li><a href="#teacher">Về giáo viên</a></li>
-        <li><a href="#contact">Tư vấn miễn phí</a></li>
-      </ul>
+    <div class="footer-bottom">
+      <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+      <div class="footer-socials">
+        <!-- THAY: href đúng -->
+        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+        <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4>Liên hệ</h4>
-      <ul>
-        <li><a href="tel:0914769618">📞 0914 769 618</a></li>
-        <!-- THAY: link Facebook, Zalo, Youtube thật -->
-        <li><a href="#">📘 Facebook</a></li>
-        <li><a href="#">💬 Zalo OA</a></li>
-        <li><a href="#">🎬 YouTube</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
-    <div class="footer-socials">
-      <!-- THAY: href đúng -->
-      <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
-      <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
-      <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
-    </div>
-  </div>
-</footer>
+  </footer>
 
-<!-- ════════════════════ SCRIPTS ════════════════════ -->
-<script>
-const API = 'https://englishwithdan.onrender.com/api';
+  <!-- ════════════════════ SCRIPTS ════════════════════ -->
+  <script>
+    const API = 'https://englishwithdan.onrender.com/api';
 
-/* ── Mobile menu ── */
-function toggleMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const icon = document.getElementById('ham-icon');
-  const open = menu.classList.toggle('open');
-  icon.className = open ? 'fas fa-times' : 'fas fa-bars';
-}
-
-/* ── Contact form submit ── */
-async function submitForm(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const msg = document.getElementById('form-msg');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-  msg.textContent = '';
-  msg.className = '';
-
-  const body = {
-    name:    document.getElementById('f-name').value.trim(),
-    phone:   document.getElementById('f-phone').value.trim(),
-    email:   document.getElementById('f-email').value.trim(),
-    course:  document.getElementById('f-course').value,
-    message: document.getElementById('f-msg').value.trim()
-  };
-
-  try {
-    const res  = await fetch(`${API}/contact`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    if (data.success) {
-      msg.textContent = '✅ ' + data.message;
-      msg.className = 'success';
-      document.getElementById('consultForm').reset();
-    } else {
-      throw new Error(data.message);
+    /* ── Mobile menu ── */
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('ham-icon');
+      const open = menu.classList.toggle('open');
+      icon.className = open ? 'fas fa-times' : 'fas fa-bars';
     }
-  } catch (err) {
-    msg.textContent = '❌ ' + (err.message || 'Lỗi gửi form, thử lại sau.');
-    msg.className = 'error';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn';
-  }
-}
 
-/* ── Smooth active nav on scroll ── */
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 100) cur = s.id;
-  });
-  navLinks.forEach(a => {
-    a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--blue)' : '';
-  });
-}, { passive: true });
+    /* ── Contact form submit ── */
+    async function submitForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const msg = document.getElementById('form-msg');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+      msg.textContent = '';
+      msg.className = '';
 
-/* ── Course placeholder emoji hide khi img load thành công ── */
-document.querySelectorAll('.course-thumb img').forEach(img => {
-  img.addEventListener('load', () => {
-    const ph = img.closest('.course-thumb').querySelector('.course-placeholder');
-    if (ph) ph.style.display = 'none';
-  });
-});
-</script>
+      const body = {
+        name: document.getElementById('f-name').value.trim(),
+        phone: document.getElementById('f-phone').value.trim(),
+        email: document.getElementById('f-email').value.trim(),
+        course: document.getElementById('f-course').value,
+        message: document.getElementById('f-msg').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API}/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          msg.textContent = '✅ ' + data.message;
+          msg.className = 'success';
+          document.getElementById('consultForm').reset();
+        } else {
+          throw new Error(data.message);
+        }
+      } catch (err) {
+        msg.textContent = '❌ ' + (err.message || 'Lỗi gửi form, thử lại sau.');
+        msg.className = 'error';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn';
+      }
+    }
+
+    /* ── Smooth active nav on scroll ── */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 100) cur = s.id;
+      });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + cur ? 'var(--blue)' : '';
+      });
+    }, { passive: true });
+
+    /* ── Course placeholder emoji hide khi img load thành công ── */
+    document.querySelectorAll('.course-thumb img').forEach(img => {
+      img.addEventListener('load', () => {
+        const ph = img.closest('.course-thumb').querySelector('.course-placeholder');
+        if (ph) ph.style.display = 'none';
+      });
+    });
+  </script>
 </body>
+
 </html>
