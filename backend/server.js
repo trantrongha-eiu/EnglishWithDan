@@ -65,6 +65,7 @@ app.use('/api/listening',require('./routes/listening'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/history',  require('./routes/history'));
+app.use('/api/contact',  require('./routes/contact'));
 
 // ── 404 handler ──────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route không tồn tại' }));
