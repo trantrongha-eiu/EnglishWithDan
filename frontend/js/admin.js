@@ -61,6 +61,7 @@ function switchTab(tab, ev) {
   document.getElementById(`tab-${tab}`).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (ev) ev.currentTarget.classList.add('active');
+  if (window.innerWidth <= 768) closeSidebar();
   const titles = {
     dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
     vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
@@ -76,7 +77,16 @@ function switchTab(tab, ev) {
   if (tab === 'courses') loadCourses();
   if (tab === 'users') loadUsers();
 }
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function toggleSidebar() {
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
 function formatDate(s) {
   if (!s) return '–';
