@@ -69,9 +69,15 @@
         </div>
       </div>
 
+      <!-- Resume banner (hiện khi có bài thi dở dang) -->
+      <div id="resume-banner">
+        <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span id="resume-time-left"></span></span>
+        <button class="resume-btn-continue" onclick="resumeExam()">Tiếp tục làm</button>
+        <button class="resume-btn-dismiss" onclick="dismissResume()">Bỏ qua</button>
+      </div>
+
       <div id="tests-wrapper">
-        <!-- Các test group render bằng JS -->
-        <div class="loading-spinner">Đang tải danh sách đề thi...</div>
+        <!-- Các test group render bởi JS -->
       </div>
     </div>
   </div>
@@ -92,7 +98,7 @@
         <div id="key-msg" class="key-msg hidden"></div>
 
         <div class="key-actions">
-          <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
+          <button class="btn-ghost" onclick="loadTests(true)">← Quay lại</button>
           <button class="btn-primary" onclick="verifyAndStart()" id="btn-start-key">
             Bắt đầu làm bài
           </button>
@@ -211,7 +217,7 @@
         <div class="result-actions">
           <button class="btn-primary" onclick="goToReview()">Xem giải thích chi tiết</button>
           <button class="btn-ghost" onclick="showHistoryModal()">Lịch sử làm bài</button>
-          <button class="btn-ghost" onclick="showScreen('list')">Làm bài khác</button>
+          <button class="btn-ghost" onclick="loadTests(true)">Làm bài khác</button>
         </div>
       </div>
     </div>
@@ -224,7 +230,7 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-       <button class="exam-exit-btn" onclick="state.isReview && !state.submitted ? showScreen('list') : showScreen('result')">✕</button>
+       <button class="exam-exit-btn" onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')">✕</button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
@@ -262,7 +268,7 @@
       <div class="q-nav-scroll" id="review-q-nav"></div>
       <div class="exam-footer-btns">
         <button class="btn-ghost" onclick="showHistoryModal()">Xem lịch sử làm bài</button>
-        <button class="btn-primary" onclick="showScreen('list')">Làm bài khác</button>
+        <button class="btn-primary" onclick="loadTests(true)">Làm bài khác</button>
       </div>
     </div>
   </div>

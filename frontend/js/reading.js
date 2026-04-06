@@ -38,12 +38,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   initDividerDrag('review-divider', 'review-passage', 'review-questions');
   document.addEventListener('keydown', handleKeyShortcuts);
 
-  // Check if arriving from history (attemptId in URL)
+  // Handle browser back/forward button
+  window.addEventListener('popstate', (e) => {
+    const s = e.state?.screen;
+    if (!s || s === 'list') {
+      loadTests(true);
+    } else if (s === 'key' && e.state.testId) {
+      _openKeyScreen(e.state.testId, e.state.testName);
+    }
+  });
+
+  // Check URL params on load
   const params = new URLSearchParams(location.search);
   const reviewId = params.get('review');
-  if (reviewId) { await loadReview(reviewId); return; }
+  const testIdParam = params.get('testId');
+
+  if (reviewId) {
+    history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
+    await loadReview(reviewId);
+    return;
+  }
 
   await loadTests();
+
+  if (testIdParam) {
+    const test = allTests.find(t => t._id === testIdParam);
+    if (test) {
+      // Replace state so the initial list is still accessible via back
+      history.replaceState({ screen: 'key', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
+      _openKeyScreen(test._id, test.name);
+    }
+  } else {
+    history.replaceState({ screen: 'list' }, '', 'reading.html');
+  }
 });
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -61,16 +88,37 @@ function showScreen(name) {
 /* ══════════════════════════════════════════════════════════════════════
    SCREEN 1 – TEST LIST
 ══════════════════════════════════════════════════════════════════════ */
-async function loadTests() {
+async function loadTests(fromNav = false) {
+  // Clean URL when user explicitly navigates back to list (not on first load)
+  if (fromNav && location.search) history.pushState({ screen: 'list' }, '', 'reading.html');
   showScreen('list');
   const wrap = document.getElementById('tests-wrapper');
-  wrap.innerHTML = '<div class="loading-spinner">Đang tải danh sách đề thi...</div>';
+
+  // Skeleton cards while loading
+  const skCard = () => `
+    <div class="test-card-skeleton">
+      <div class="sk-cover sk-shimmer"></div>
+      <div class="sk-body">
+        <div class="sk-line sk-title sk-shimmer"></div>
+        <div class="sk-line sk-meta sk-shimmer"></div>
+        <div class="sk-line sk-btn sk-shimmer"></div>
+      </div>
+    </div>`;
+  wrap.innerHTML = `<div class="test-group"><div class="test-grid">${Array(6).fill(0).map(skCard).join('')}</div></div>`;
+
   try {
     const res = await apiFetch('/api/reading/tests');
     allTests = res.tests || [];
     renderTestList(allTests);
+    checkResumeExam();
   } catch (e) {
-    wrap.innerHTML = `<div class="loading-spinner" style="color:#e53935">Lỗi tải dữ liệu</div>`;
+    wrap.innerHTML = `
+      <div class="loading-spinner">
+        <div style="font-size:36px;margin-bottom:12px">😕</div>
+        <div style="font-weight:600;color:#374151;margin-bottom:6px">Không tải được danh sách đề thi</div>
+        <div style="font-size:12px;margin-bottom:16px;color:#9ca3af">Kiểm tra kết nối rồi thử lại</div>
+        <button onclick="loadTests()" style="background:#3d8bff;color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">↺ Thử lại</button>
+      </div>`;
   }
 }
 
@@ -143,7 +191,14 @@ function filterTests(filter, btn) {
 /* ══════════════════════════════════════════════════════════════════════
    SCREEN 2 – KEY
 ══════════════════════════════════════════════════════════════════════ */
+// Called from test card button — updates URL too
 function goToKey(testId, testName) {
+  history.pushState({ screen: 'key', testId, testName }, '', `?testId=${testId}`);
+  _openKeyScreen(testId, testName);
+}
+
+// Internal: opens key screen without touching URL (used by popstate / direct link)
+function _openKeyScreen(testId, testName) {
   state.testId = testId;
   state.testName = testName;
   document.getElementById('key-test-name').textContent = testName;
@@ -185,9 +240,82 @@ function showMsg(el, text, type) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   LOCAL-STORAGE: AUTO-SAVE & RESUME
+══════════════════════════════════════════════════════════════════════ */
+const _EXAM_KEY = 'ews_reading_progress';
+
+function saveExamToStorage() {
+  if (!state.attemptId || state.submitted) return;
+  try {
+    localStorage.setItem(_EXAM_KEY, JSON.stringify({
+      attemptId:   state.attemptId,
+      testId:      state.testId,
+      testName:    state.testName,
+      passages:    state.passages,      // full passage data (no correct answers)
+      answers:     state.answers,
+      secondsLeft: state.secondsLeft,
+      savedAt:     Date.now()
+    }));
+  } catch { /* quota exceeded – ignore */ }
+}
+
+function clearExamStorage() {
+  localStorage.removeItem(_EXAM_KEY);
+}
+
+function checkResumeExam() {
+  try {
+    const raw = localStorage.getItem(_EXAM_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data.attemptId || !data.passages?.length) { clearExamStorage(); return; }
+    // Expire after 70 min (exam is 60 min)
+    if (Date.now() - data.savedAt > 70 * 60 * 1000) { clearExamStorage(); return; }
+    const banner = document.getElementById('resume-banner');
+    if (!banner) return;
+    document.getElementById('resume-test-name').textContent = data.testName || 'bài thi';
+    const m = Math.floor((data.secondsLeft || 0) / 60);
+    document.getElementById('resume-time-left').textContent = `còn khoảng ${m} phút`;
+    banner._resumeData = data;
+    banner.style.display = 'flex';
+  } catch { clearExamStorage(); }
+}
+
+function resumeExam() {
+  const banner = document.getElementById('resume-banner');
+  const data   = banner?._resumeData;
+  if (!data) return;
+  banner.style.display = 'none';
+
+  state.passages         = data.passages;
+  state.attemptId        = data.attemptId;
+  state.testId           = data.testId;
+  state.testName         = data.testName;
+  state.answers          = data.answers || {};
+  state.secondsLeft      = data.secondsLeft || DURATION;
+  state.currentPassageIdx = 0;
+  state.isReview         = false;
+  state.submitted        = false;
+
+  document.getElementById('exam-title').textContent = state.testName;
+  renderPassageTabs('toolbar-passage-tabs', false);
+  switchPassage(0);
+  buildQNavFooter();
+  startTimer();
+  showScreen('exam');
+}
+
+function dismissResume() {
+  const banner = document.getElementById('resume-banner');
+  if (banner) banner.style.display = 'none';
+  clearExamStorage();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    SCREEN 3 – EXAM
 ══════════════════════════════════════════════════════════════════════ */
 function startExam(data) {
+  clearExamStorage();          // Clear any previous in-progress exam
   state.passages = data.passages;
   state.attemptId = data.attemptId;
   state.testName = data.testName;
@@ -203,6 +331,7 @@ function startExam(data) {
   buildQNavFooter();
   startTimer();
   showScreen('exam');
+  saveExamToStorage();         // Save initial state immediately
 }
 
 function renderPassageTabs(containerId, isReview) {
@@ -785,6 +914,7 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
 function setAnswer(qNum, val) {
   state.answers[qNum] = val;
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 
 function pickTFNG(qNum, val, el) {
@@ -1055,9 +1185,17 @@ function startTimer() {
   state.timer = setInterval(() => {
     state.secondsLeft--;
     updateTimerDisplay();
-    if (state.secondsLeft <= 0) { clearInterval(state.timer); submitExam(); }
-    else if (state.secondsLeft <= 300) timerEl()?.classList.add('danger');
-    else if (state.secondsLeft <= 600) timerEl()?.classList.add('warn');
+    saveExamToStorage();
+    if (state.secondsLeft <= 0) {
+      clearInterval(state.timer);
+      submitExam();
+    } else {
+      const el = timerEl();
+      if (el) {
+        el.classList.toggle('danger', state.secondsLeft <= 300);
+        el.classList.toggle('warn',   state.secondsLeft > 300 && state.secondsLeft <= 600);
+      }
+    }
   }, 1000);
 }
 function timerEl() { return document.getElementById('exam-timer'); }
@@ -1079,14 +1217,70 @@ async function submitExam() {
   closeModal('modal-submit');
   clearInterval(state.timer);
   state.submitted = true;
+
+  // Show loading overlay
+  let overlay = document.getElementById('submit-loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'submit-loading-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+    overlay.innerHTML = '<div style="width:48px;height:48px;border:5px solid #fff;border-top-color:#3d8bff;border-radius:50%;animation:spin 1s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0">Đang nộp bài, vui lòng chờ…</p>';
+    if (!document.getElementById('submit-spin-style')) {
+      const s = document.createElement('style');
+      s.id = 'submit-spin-style';
+      s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(overlay);
+  }
+  overlay.style.display = 'flex';
+
+  const hideOverlay = () => { overlay.style.display = 'none'; };
+
   try {
     const res = await apiFetch('/api/reading/submit', {
       method: 'POST',
       body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers })
     });
-    if (!res.success) { alert('Lỗi nộp bài: ' + res.message); return; }
+    hideOverlay();
+    if (!res.success) { showVocabToast('Lỗi nộp bài: ' + res.message); return; }
+    clearExamStorage();
     showResult(res.result);
-  } catch (e) { alert('Lỗi kết nối khi nộp bài'); }
+  } catch (e) {
+    hideOverlay();
+    // Server may have processed the request even if the network timed out
+    openSubmitErrorModal();
+  }
+}
+
+function openSubmitErrorModal() {
+  let m = document.getElementById('modal-submit-error');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'modal-submit-error';
+    m.className = 'modal-overlay';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+    m.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.18)">
+        <div style="font-size:40px;margin-bottom:12px">⚠️</div>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#1f2937">Kết nối bị gián đoạn</h3>
+        <p style="font-size:13px;color:#6b7280;line-height:1.6;margin-bottom:20px">
+          Bài thi có thể đã được lưu trên server.<br>Kiểm tra lịch sử để xem kết quả.
+        </p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button onclick="showHistoryModal();document.getElementById('modal-submit-error').remove()"
+            style="background:#3d8bff;color:#fff;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">
+            Xem lịch sử
+          </button>
+          <button onclick="document.getElementById('modal-submit-error').remove();state.submitted=false;submitExam()"
+            style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">
+            Nộp lại
+          </button>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
 }
 
 function showResult(r) {
@@ -1110,9 +1304,9 @@ function goToReview() {
 async function loadReview(attemptId) {
   try {
     const res = await apiFetch(`/api/reading/attempt/${attemptId}/review`);
-    if (!res.success) { alert('Không tải được bài review'); return; }
+    if (!res.success) { showVocabToast('Không tải được bài review'); return; }
     renderReview(res.attempt);
-  } catch (e) { alert('Lỗi tải review'); }
+  } catch (e) { showVocabToast('Lỗi tải bài review. Thử lại sau.'); }
 }
 
 async function loadReviewByTest(testId) {
@@ -1121,8 +1315,8 @@ async function loadReviewByTest(testId) {
     const attempts = histRes.history || [];
     const attempt = attempts.find(a => a.testId?._id === testId || a.testId === testId);
     if (attempt) loadReview(attempt._id);
-    else alert('Không tìm thấy lịch sử làm bài');
-  } catch { alert('Lỗi tải lịch sử'); }
+    else showVocabToast('Không tìm thấy lịch sử làm bài', 'info');
+  } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
 
 function renderReview(attempt) {
@@ -1225,7 +1419,7 @@ async function showHistoryModal() {
         <td><button class="btn-review-sm" onclick="loadReview('${h._id}');closeModal('modal-history')">Xem lại</button></td>
       </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#9ca3af">Chưa có lịch sử</td></tr>';
     openModal('modal-history');
-  } catch { alert('Lỗi tải lịch sử'); }
+  } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1329,10 +1523,10 @@ async function createNewBookAndSave() {
       method: 'POST',
       body: JSON.stringify({ name, emoji: '📘', color: '#3d8bff' })
     });
-    if (!res.success) { alert(res.message); return; }
+    if (!res.success) { showVocabToast(res.message); return; }
     if (nameInput) nameInput.value = '';
     await saveWordToBook(res.book._id);
-  } catch { alert('Lỗi tạo sổ mới'); }
+  } catch { showVocabToast('Lỗi tạo sổ mới'); }
 }
 
 async function saveWordToBook(bookId) {
@@ -1348,7 +1542,7 @@ async function saveWordToBook(bookId) {
       : `ℹ️ ${res.message}`;
     showVocabToast(msg, res.success ? 'success' : 'info');
     _pendingVocabWord = null;
-  } catch { alert('Lỗi lưu từ'); }
+  } catch { showVocabToast('Lỗi lưu từ'); }
 }
 
 function showVocabToast(msg, type = 'success') {
@@ -1415,7 +1609,7 @@ function handleKeyShortcuts(e) {
    CONFIRM / EXIT MODALS
 ══════════════════════════════════════════════════════════════════════ */
 function confirmExit() { openModal('modal-exit'); }
-function forceExit() { closeModal('modal-exit'); clearInterval(state.timer); showScreen('list'); }
+function forceExit() { closeModal('modal-exit'); clearInterval(state.timer); loadTests(true); }
 
 /* ══════════════════════════════════════════════════════════════════════
    RESIZABLE DIVIDER

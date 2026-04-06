@@ -6,6 +6,7 @@ let allTests = [];
 let allPassages = [];
 let allKeys = [];
 let allVocabUnits = [];
+let allReadingHistory = [];   // for per-test stats
 let passagePage = 1;
 const PAGE_SIZE = 15;
 let editPassageId = null;
@@ -141,10 +142,36 @@ async function loadHistory() {
     </tr>`;
       }).join('') || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
 
+    allReadingHistory = data.history;
     renderHistoryTable(data.history, getUsername);
+    // Update tests table if already rendered
+    if (allTests.length) _applyTestStats();
   } catch (err) {
     console.error(err);
   }
+}
+
+// Compute per-test attempt count + avg band and inject into tests table
+function _applyTestStats() {
+  const stats = {};
+  allReadingHistory.forEach(h => {
+    const tid = h.testId?._id || (typeof h.testId === 'string' ? h.testId : null);
+    if (!tid) return;
+    if (!stats[tid]) stats[tid] = { count: 0, bandSum: 0 };
+    stats[tid].count++;
+    stats[tid].bandSum += h.bandScore || 0;
+  });
+  allTests.forEach(t => {
+    const cell = document.getElementById(`tstat-${t._id}`);
+    if (!cell) return;
+    const s = stats[t._id];
+    if (s && s.count > 0) {
+      const avg = (s.bandSum / s.count).toFixed(1);
+      cell.innerHTML = `<span style="color:var(--text2)">${s.count} lượt</span> · <span style="color:var(--green);font-weight:600">Band TB: ${avg}</span>`;
+    } else {
+      cell.textContent = 'Chưa có lượt';
+    }
+  });
 }
 function renderHistoryTable(list, getUsername) {
   if (!getUsername) getUsername = h => {
@@ -965,20 +992,33 @@ async function loadTests() {
     if (!data.success) return;
     allTests = data.tests; renderTestsTable(data.tests);
     // Dropdown k-test sẽ do openKeyModal() populate riêng
-    // Không set ở đây nữa vì cần phân biệt reading/listening
+    if (allReadingHistory.length) _applyTestStats();
   } catch { }
 }
 function renderTestsTable(list) {
   document.getElementById('tests-tbody').innerHTML = list.length
-    ? list.map(t => `<tr><td><strong>${t.name}</strong></td><td style="font-family:var(--mono)">${t.testNumber}</td>
+    ? list.map(t => `<tr>
+  <td><strong>${t.name}</strong></td>
+  <td style="font-family:var(--mono)">${t.testNumber}</td>
   <td>${t.seriesName || '–'}</td>
+  <td id="tstat-${t._id}" style="font-size:12px;color:var(--text3)">–</td>
   <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
   <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
-  <td><button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
+  <td>
+      <button class="btn btn-ghost btn-sm" onclick="copyTestLink('${t._id}')" title="Copy link chia sẻ cho học sinh">🔗</button>
+      <button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
       <button class="btn btn-danger btn-sm" onclick="softDeleteTest('${t._id}','${t.name}')" title="Ẩn">🙈</button>
       <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeleteTest('${t._id}','${t.name}')" title="Xóa vĩnh viễn">🗑</button>
   </td></tr>`).join('')
-    : '<tr><td colspan="6" class="table-empty">Chưa có bộ đề nào</td></tr>';
+    : '<tr><td colspan="7" class="table-empty">Chưa có bộ đề nào</td></tr>';
+}
+
+function copyTestLink(testId) {
+  const base = location.origin + location.pathname.replace(/admin\.html.*$/, '');
+  const url  = `${base}reading.html?testId=${testId}`;
+  navigator.clipboard.writeText(url)
+    .then(() => toast('Đã copy link chia sẻ ✓'))
+    .catch(() => toast('Không thể copy, hãy copy thủ công: ' + url, 'error'));
 }
 function openTestModal(data = null) {
   editTestId = data?._id || null;

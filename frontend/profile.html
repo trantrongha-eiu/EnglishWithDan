@@ -580,32 +580,60 @@
     }
 
     // ── Upload avatar ─────────────────────────────────────────
+    function compressImage(file, maxSize, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = function() {
+            let { width, height } = img;
+            if (width > maxSize || height > maxSize) {
+              if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
+              else { width = Math.round(width * maxSize / height); height = maxSize; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function uploadAvatar(input) {
       const file = input.files[0];
       if (!file) return;
-      if (file.size > 2 * 1024 * 1024) { showToast('warning', 'Cảnh báo', 'Ảnh phải nhỏ hơn 2MB'); return; }
+      // Accept any size — we will compress on client side
+      if (!file.type.startsWith('image/')) { showToast('warning', 'Cảnh báo', 'Vui lòng chọn file ảnh'); return; }
 
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        try {
-          showToast('info', 'Đang tải...', 'Vui lòng chờ');
-          const res  = await fetch(API + '/api/user/avatar', { method:'POST', headers: headers(), body: JSON.stringify({ imageBase64: e.target.result }) });
-          const data = await res.json();
-          if (data.success) {
-            const wrap = document.querySelector('.avatar-wrap');
-            const existing = wrap.querySelector('img, .avatar-placeholder');
-            if (existing) existing.remove();
-            const img = document.createElement('img');
-            img.src = data.avatar; img.alt = 'avatar';
-            img.style.cssText = 'width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);';
-            wrap.insertBefore(img, wrap.firstChild);
-            showToast('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
-          } else {
-            showToast('error', 'Lỗi', data.message || 'Upload thất bại');
-          }
-        } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
-      };
-      reader.readAsDataURL(file);
+      try {
+        showToast('info', 'Đang xử lý...', 'Đang nén ảnh');
+        // Compress to max 600px, JPEG quality 0.85 — keeps under 200KB easily
+        const imageBase64 = await compressImage(file, 600, 0.85);
+
+        showToast('info', 'Đang tải...', 'Vui lòng chờ');
+        const res  = await fetch(API + '/api/user/avatar', { method:'POST', headers: headers(), body: JSON.stringify({ imageBase64 }) });
+        const data = await res.json();
+        if (data.success) {
+          const wrap = document.querySelector('.avatar-wrap');
+          const existing = wrap.querySelector('img, .avatar-placeholder');
+          if (existing) existing.remove();
+          const img = document.createElement('img');
+          img.src = data.avatar; img.alt = 'avatar';
+          img.style.cssText = 'width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);';
+          wrap.insertBefore(img, wrap.firstChild);
+          showToast('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
+        } else {
+          showToast('error', 'Lỗi', data.message || 'Upload thất bại');
+        }
+      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+
+      // Reset input so user can re-select same file if needed
+      input.value = '';
     }
 
     // ── Init ──────────────────────────────────────────────────

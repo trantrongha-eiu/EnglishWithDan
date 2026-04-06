@@ -250,16 +250,34 @@ async function openBook(bookId) {
     currentBookId = bookId;
     selectedWordIds.clear();
 
+    // Clear search when switching books
+    const searchEl = document.getElementById('book-search');
+    if (searchEl) searchEl.value = '';
+
     document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
     const item = document.getElementById(`bi-${bookId}`);
     if (item) item.classList.add('active');
 
+    const content = document.getElementById('book-content');
     document.getElementById('view-mybook').style.display  = 'flex';
     document.getElementById('view-unit').style.display    = 'none';
     document.getElementById('book-welcome').style.display = 'none';
-    document.getElementById('book-content').style.display = 'flex';
+    content.style.display = 'flex';
+
+    // Show skeleton while loading
+    document.getElementById('words-tbody').innerHTML = Array(5).fill(0).map(() => `
+      <tr>
+        <td></td>
+        <td><div class="skeleton-cell" style="width:80px"></div></td>
+        <td><div class="skeleton-cell" style="width:100px"></div></td>
+        <td><div class="skeleton-cell" style="width:140px"></div></td>
+        <td><div class="skeleton-cell" style="width:180px"></div></td>
+        <td></td><td></td>
+      </tr>`).join('');
+    content.classList.add('loading');
 
     await refreshCurrentBook();
+    content.classList.remove('loading');
 }
 
 async function refreshCurrentBook() {
@@ -282,13 +300,19 @@ function renderBookContent(book) {
     const chua  = book.words.filter(w => w.status === 'chua-thuoc').length;
     const pct   = total ? Math.round((da / total) * 100) : 0;
 
-    document.getElementById('stat-da-thuoc').textContent  = da;
-    document.getElementById('stat-nho-so-so').textContent = nho;
+    document.getElementById('stat-da-thuoc').textContent   = da;
+    document.getElementById('stat-nho-so-so').textContent  = nho;
     document.getElementById('stat-chua-thuoc').textContent = chua;
-    document.getElementById('stat-total').textContent     = total;
+    document.getElementById('stat-total').textContent      = total;
     document.getElementById('book-progress-fill').style.width = pct + '%';
 
+    renderWordsTable(book.words);
+}
+
+function renderWordsTable(words) {
     const tbody = document.getElementById('words-tbody');
+    const total = currentBookData?.words?.length ?? 0;
+
     if (!total) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text3)">
       <div style="font-size:40px;margin-bottom:10px">📭</div>
@@ -298,7 +322,15 @@ function renderBookContent(book) {
         return;
     }
 
-    tbody.innerHTML = book.words.map(w => `
+    if (!words.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">
+      <div style="font-size:32px;margin-bottom:10px">🔍</div>
+      <div>Không tìm thấy từ nào khớp</div>
+    </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = words.map(w => `
     <tr class="${selectedWordIds.has(w._id) ? 'selected' : ''}" id="row-${w._id}">
       <td class="cb-wrap"><input type="checkbox" ${selectedWordIds.has(w._id) ? 'checked' : ''}
         onchange="toggleSelect('${w._id}', this.checked)"/></td>
@@ -324,6 +356,23 @@ function renderBookContent(book) {
       </td>
     </tr>
   `).join('');
+}
+
+/* ── Word search / filter ── */
+function filterWords(q) {
+    if (!currentBookData) return;
+    const query = q.trim().toLowerCase();
+    const all   = currentBookData.words;
+    const words = query
+        ? all.filter(w =>
+            w.word.toLowerCase().includes(query) ||
+            (w.meaning || '').toLowerCase().includes(query) ||
+            (w.note || '').toLowerCase().includes(query))
+        : all;
+    renderWordsTable(words);
+    // Update total count label to show filtered result
+    const totalEl = document.getElementById('stat-total');
+    if (totalEl) totalEl.textContent = query ? `${words.length}/${all.length}` : all.length;
 }
 
 /* ── Status update ── */
