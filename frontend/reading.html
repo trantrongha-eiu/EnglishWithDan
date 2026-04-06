@@ -22,25 +22,28 @@
 
     <!-- Thay thế div.skill-tabs-bar bằng header + nav đầy đủ -->
     <header
-      style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60">
-      <div style="font-size:20px;font-weight:800;letter-spacing:-.5px">
+      style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60;gap:8px">
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0">
         <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:13px;font-weight:600;color:#6b7280" id="userName">👋 Xin chào</span>
-        <button onclick="showHistoryModal()"
-          style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit">
-          📋 Lịch sử
+      <div style="display:flex;align-items:center;gap:8px;min-width:0">
+        <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Xin chào</span>
+        <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng" aria-label="Mở menu kỹ năng">
+          <i class="fas fa-th-large"></i>
         </button>
-        <button onclick="logout()"
-          style="background:none;border:1px solid #e5e7eb;padding:6px 14px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280">
-          🚪 Đăng xuất
+        <button onclick="showHistoryModal()" class="hdr-btn"
+          style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
+          📋 <span class="hdr-btn-text">Lịch sử</span>
+        </button>
+        <button onclick="logout()" class="hdr-btn"
+          style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
+          🚪 <span class="hdr-btn-text">Đăng xuất</span>
         </button>
       </div>
     </header>
 
     <!-- Skill tabs -->
-    <div class="skill-tabs-bar">
+    <div class="skill-tabs-bar" id="skill-tabs-bar">
       <nav class="site-nav">
         <a href="reading.html"   class="site-nav-link active"><i class="fas fa-book-open"></i> Reading</a>
         <a href="listening.html" class="site-nav-link"><i class="fas fa-headphones"></i> Listening</a>
@@ -421,6 +424,15 @@
   <script src="js/auth.js"></script>
   <script src="js/reading.js"></script>
   <script>
+    // ── Skill nav toggle (mobile) ────────────────────────────
+    function toggleSkillNav() {
+      const bar = document.getElementById('skill-tabs-bar');
+      const btn = document.getElementById('skillNavToggle');
+      if (!bar) return;
+      const open = bar.classList.toggle('nav-open');
+      btn.classList.toggle('active', open);
+    }
+
     // ── Fullscreen toggle ───────────────────────────────────
     function toggleFullscreen() {
       const el = document.getElementById('screen-exam');

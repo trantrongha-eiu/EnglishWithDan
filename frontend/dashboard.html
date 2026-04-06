@@ -28,19 +28,31 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* ══════════════════════════════════════════
    HEADER + NAV
 ══════════════════════════════════════════ */
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:60}
+.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0}
 .logo .d{color:#3d8bff}.logo .h{color:var(--brand)}
-.header-right{display:flex;align-items:center;gap:12px}
-.user-name{font-size:13px;font-weight:600;color:var(--text2)}
-.btn-logout{background:none;border:1px solid var(--border);padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--text2);transition:all .15s}
+.header-right{display:flex;align-items:center;gap:8px;min-width:0}
+.user-name{font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.btn-logout{background:none;border:1px solid var(--border);padding:6px 12px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:inherit}
 .btn-logout:hover{border-color:var(--brand);color:var(--brand)}
+.hdr-nav-toggle{display:none;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;font-size:15px;color:var(--text2);cursor:pointer;flex-shrink:0;transition:background .15s,color .15s}
+.hdr-nav-toggle:hover{background:var(--surface2);color:var(--brand)}
+.hdr-nav-toggle.active{background:#fef2f2;color:var(--brand);border-color:#fca5a5}
 
 .main-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
 .nav-list{display:flex;gap:0;list-style:none;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .nav-list a{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
 .nav-list a:hover{color:var(--text)}
 .nav-list a.active{color:var(--brand);border-bottom-color:var(--brand)}
+
+@media(max-width:640px){
+  .main-nav{display:none}
+  .main-nav.nav-open{display:block}
+  .hdr-nav-toggle{display:flex}
+  .user-name{display:none}
+  .btn-logout-text{display:none}
+  .btn-logout{padding:6px 9px}
+}
 
 /* ══════════════════════════════════════════
    MAIN LAYOUT (sidebar + content)
@@ -643,16 +655,19 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 <header class="header">
   <div class="logo"><span class="d">Daniel</span><span class="h">Hà</span></div>
   <div class="header-right">
-    <a href="profile.html" id="navUserLink" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;padding:5px 10px;border-radius:20px;border:1px solid var(--border);transition:background .15s;" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background='transparent'">
-      <div id="navAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;">?</div>
+    <a href="profile.html" id="navUserLink" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;padding:5px 10px;border-radius:20px;border:1px solid var(--border);transition:background .15s;flex-shrink:0" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
+      <div id="navAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">?</div>
       <span class="user-name" id="userName" style="font-size:13px;font-weight:500;">👋 Xin chào</span>
     </a>
-    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+    <button class="hdr-nav-toggle" id="mainNavToggle" onclick="toggleMainNav()" title="Menu kỹ năng" aria-label="Mở menu kỹ năng">
+      <i class="fas fa-th-large"></i>
+    </button>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="btn-logout-text">Đăng xuất</span></button>
   </div>
 </header>
 
 <!-- NAV -->
-<nav class="main-nav">
+<nav class="main-nav" id="main-nav-bar">
   <ul class="nav-list">
     <li><a href="reading.html"><i class="fas fa-book-open"></i> Reading</a></li>
     <li><a href="listening.html"><i class="fas fa-headphones"></i> Listening</a></li>
@@ -1243,6 +1258,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 })();
 </script>
 
+<script>
+  function toggleMainNav() {
+    const nav = document.getElementById('main-nav-bar');
+    const btn = document.getElementById('mainNavToggle');
+    if (!nav) return;
+    const open = nav.classList.toggle('nav-open');
+    btn.classList.toggle('active', open);
+  }
+</script>
 <script src="js/auth.js"></script>
 <script src="js/dashboard.js"></script>
 </body>

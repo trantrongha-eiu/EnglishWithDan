@@ -1189,3 +1189,32 @@ body {
   max-height: 60vh;
   overflow-y: auto;
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE HEADER & SKILL NAV
+══════════════════════════════════════════════ */
+.hdr-skill-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: none;
+  font-size: 15px;
+  color: #6b7280;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.hdr-skill-toggle:hover { background: #f3f4f6; color: #e53935; }
+.hdr-skill-toggle.active { background: #fef2f2; color: #e53935; border-color: #fca5a5; }
+
+@media (max-width: 640px) {
+  .skill-tabs-bar { display: none; }
+  .skill-tabs-bar.nav-open { display: block; }
+  .hdr-skill-toggle { display: flex; }
+  .hdr-username { display: none !important; }
+  .hdr-btn-text { display: none; }
+  .hdr-btn { padding: 6px 9px !important; }
+}

@@ -313,6 +313,13 @@ function renderWordsTable(words) {
     const tbody = document.getElementById('words-tbody');
     const total = currentBookData?.words?.length ?? 0;
 
+    // Sort: chưa thuộc → nhớ sơ sơ → đã thuộc, rồi A–Z trong mỗi nhóm
+    const statusOrder = { 'chua-thuoc': 0, 'nho-so-so': 1, 'da-thuoc': 2 };
+    words = [...words].sort((a, b) => {
+        const sd = (statusOrder[a.status] ?? 0) - (statusOrder[b.status] ?? 0);
+        return sd !== 0 ? sd : a.word.localeCompare(b.word, 'vi', { sensitivity: 'base' });
+    });
+
     if (!total) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text3)">
       <div style="font-size:40px;margin-bottom:10px">📭</div>

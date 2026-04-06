@@ -2249,4 +2249,42 @@ body.eye-protection .split-questions {
 }
 .se-ending-item.used { opacity: .35; }
 .se-ending-item .se-chip { flex-shrink: 0; min-width: 38px; }
+
+/* ══════════════════════════════════════════════
+   MOBILE HEADER & SKILL NAV
+══════════════════════════════════════════════ */
+
+/* Toggle button: hiện trên mobile, ẩn trên desktop */
+.hdr-skill-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: none;
+  font-size: 15px;
+  color: #6b7280;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
+}
+.hdr-skill-toggle:hover { background: #f3f4f6; color: #e53935; }
+.hdr-skill-toggle.active { background: #fef2f2; color: #e53935; border-color: #fca5a5; }
+
+@media (max-width: 640px) {
+  /* Skill nav ẩn mặc định trên mobile */
+  .skill-tabs-bar { display: none; }
+  .skill-tabs-bar.nav-open { display: block; }
+
+  /* Hiện toggle button */
+  .hdr-skill-toggle { display: flex; }
+
+  /* Ẩn username text, chỉ giữ emoji/icon */
+  .hdr-username { display: none !important; }
+
+  /* Buttons compact: ẩn label text, chỉ giữ icon */
+  .hdr-btn-text { display: none; }
+  .hdr-btn { padding: 6px 9px !important; }
+}
 .se-ending-text { font-size: 13px; color: #374151; line-height: 1.5; }
