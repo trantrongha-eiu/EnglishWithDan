@@ -130,21 +130,37 @@ router.post('/start', auth, async (req, res) => {
     await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
 
     // Trả về passages – ẨN correctAnswer và explanation khi đang thi
+    const safeQ = q => ({
+      questionNumber: q.questionNumber,
+      type: q.type,
+      questionText: q.questionText,
+      options: q.options,
+      wordBank: q.wordBank,
+      paragraphLabels: q.paragraphLabels
+      // correctAnswer & explanation bị ẩn
+    });
     const safePassages = passages.map(p => ({
       _id: p._id,
       title: p.title,
       category: p.category,
       content: p.content,
       questionRange: p.questionRange,
-      questions: p.questions.map(q => ({
-        questionNumber: q.questionNumber,
-        type: q.type,
-        questionText: q.questionText,
-        options: q.options,
-        wordBank: q.wordBank,
-        paragraphLabels: q.paragraphLabels
-        // correctAnswer & explanation bị ẩn
-      }))
+      questionGroups: (p.questionGroups || []).map(g => ({
+        groupType: g.groupType,
+        groupTitle: g.groupTitle,
+        instruction: g.instruction,
+        tableConfig: g.tableConfig,
+        noteConfig: g.noteConfig,
+        bulletConfig: g.bulletConfig,
+        imageUrl: g.imageUrl,
+        matchingOptions: g.matchingOptions,
+        matchingReuseAllowed: g.matchingReuseAllowed,
+        headingsConfig: g.headingsConfig,
+        summaryConfig: g.summaryConfig,
+        endingsConfig: g.endingsConfig,
+        questions: (g.questions || []).map(safeQ)
+      })),
+      questions: p.questions.map(safeQ)
     }));
 
     res.json({
@@ -274,24 +290,40 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
     const answerMap = {};
     attempt.answers.forEach(a => { answerMap[a.questionNumber] = a; });
 
+    const reviewQ = q => ({
+      questionNumber: q.questionNumber,
+      type: q.type,
+      questionText: q.questionText,
+      options: q.options,
+      wordBank: q.wordBank,
+      paragraphLabels: q.paragraphLabels,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation,
+      userAnswer: answerMap[q.questionNumber]?.userAnswer || '',
+      isCorrect: answerMap[q.questionNumber]?.isCorrect || false
+    });
     const passagesWithResult = passages.map(p => ({
       _id: p._id,
       title: p.title,
       category: p.category,
       content: p.content,
       questionRange: p.questionRange,
-      questions: p.questions.map(q => ({
-        questionNumber: q.questionNumber,
-        type: q.type,
-        questionText: q.questionText,
-        options: q.options,
-        wordBank: q.wordBank,
-        paragraphLabels: q.paragraphLabels,
-        correctAnswer: q.correctAnswer,
-        explanation: q.explanation,
-        userAnswer: answerMap[q.questionNumber]?.userAnswer || '',
-        isCorrect: answerMap[q.questionNumber]?.isCorrect || false
-      }))
+      questionGroups: (p.questionGroups || []).map(g => ({
+        groupType: g.groupType,
+        groupTitle: g.groupTitle,
+        instruction: g.instruction,
+        tableConfig: g.tableConfig,
+        noteConfig: g.noteConfig,
+        bulletConfig: g.bulletConfig,
+        imageUrl: g.imageUrl,
+        matchingOptions: g.matchingOptions,
+        matchingReuseAllowed: g.matchingReuseAllowed,
+        headingsConfig: g.headingsConfig,
+        summaryConfig: g.summaryConfig,
+        endingsConfig: g.endingsConfig,
+        questions: (g.questions || []).map(reviewQ)
+      })),
+      questions: p.questions.map(reviewQ)
     }));
 
     res.json({
