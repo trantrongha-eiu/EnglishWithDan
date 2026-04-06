@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/mobile.css">
+  <script src="js/theme.js"></script>
   <style>
     body { background: var(--bg); padding-top: var(--nav-height); }
 
@@ -146,7 +147,7 @@
       <a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
     </div>
     <div class="nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:10px;">
-      <button class="btn-dark-mode" id="btnDark" title="Chế độ tối" onclick="toggleDark()">🌙</button>
+      <button class="btn-dark-mode dark-toggle-icon" id="btnDark" title="Chế độ tối" onclick="toggleDark()">🌙</button>
       <a href="profile.html" class="nav-user active">
         <div class="avatar-placeholder" id="navAvatar">?</div>
         <span class="user-name" id="navName">Profile</span>
@@ -391,19 +392,6 @@
       if (duration > 0) setTimeout(() => { el.classList.add('hiding'); setTimeout(() => el.remove(), 300); }, duration);
     }
 
-    // ── Dark mode ─────────────────────────────────────────────
-    function toggleDark() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      document.getElementById('btnDark').textContent = isDark ? '🌙' : '☀️';
-      localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    }
-    (function() {
-      const saved = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', saved);
-      const btn = document.getElementById('btnDark');
-      if (btn) btn.textContent = saved === 'dark' ? '☀️' : '🌙';
-    })();
 
     // ── Tabs ──────────────────────────────────────────────────
     function switchTab(name) {

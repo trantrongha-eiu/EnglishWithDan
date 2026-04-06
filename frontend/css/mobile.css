@@ -644,3 +644,141 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
 .w-full { width: 100%; }
 .flex-1 { flex: 1; }
 .pointer { cursor: pointer; }
+
+/* ══════════════════════════════════════════════════════
+   DARK MODE – Global overrides for all pages
+   (reading/listening/writing/speaking/dashboard/profile)
+   All pages include mobile.css so overrides go here.
+   ══════════════════════════════════════════════════════ */
+
+/* Body background/color – overrides page-specific CSS */
+[data-theme="dark"] body {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+}
+
+/* ── Inline-styled headers (reading, listening, speaking) ── */
+[data-theme="dark"] header {
+  background: #1f2937 !important;
+  border-bottom-color: #374151 !important;
+}
+[data-theme="dark"] header .hdr-btn,
+[data-theme="dark"] header .hdr-skill-toggle {
+  border-color: #4b5563 !important;
+  color: #9ca3af !important;
+}
+
+/* ── Writing's .main-header ── */
+[data-theme="dark"] .main-header {
+  background: #1f2937 !important;
+  border-bottom-color: #374151 !important;
+}
+[data-theme="dark"] .main-header .btn-logout,
+[data-theme="dark"] .main-header span {
+  color: #9ca3af !important;
+  border-color: #4b5563 !important;
+}
+
+/* ── Skill nav bar ── */
+[data-theme="dark"] .skill-tabs-bar {
+  background: #1f2937 !important;
+  border-bottom-color: #374151 !important;
+}
+[data-theme="dark"] .site-nav-link       { color: #9ca3af !important; }
+[data-theme="dark"] .site-nav-link:hover { color: #e53935 !important; }
+[data-theme="dark"] .site-nav-link.active {
+  color: #e53935 !important;
+  border-bottom-color: #e53935 !important;
+}
+
+/* ── Reading / Listening: list screen ── */
+[data-theme="dark"] .filter-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+[data-theme="dark"] .filter-btn.active,
+[data-theme="dark"] .filter-btn:hover {
+  background: #3b1516;
+  border-color: #e53935;
+  color: #e53935;
+}
+[data-theme="dark"] .test-group-title { color: #f3f4f6; }
+[data-theme="dark"] .list-subtitle    { color: #9ca3af; }
+[data-theme="dark"] .progress-bar-mini { background: #374151; }
+[data-theme="dark"] .test-card,
+[data-theme="dark"] .test-card-skeleton {
+  background: #1f2937;
+  border-color: #374151;
+}
+[data-theme="dark"] .test-card-name   { color: #f3f4f6; }
+[data-theme="dark"] .test-card-meta   { color: #9ca3af; }
+[data-theme="dark"] .test-card-last {
+  background: #374151;
+  color: #d1d5db;
+}
+[data-theme="dark"] #resume-banner {
+  background: #1e3a5f !important;
+  border-color: #1d4ed8 !important;
+  color: #bfdbfe !important;
+}
+[data-theme="dark"] #resume-banner strong { color: #bfdbfe; }
+
+/* ── Key entry screen ── */
+[data-theme="dark"] .key-card {
+  background: #1f2937;
+  color: #f3f4f6;
+}
+[data-theme="dark"] .key-desc  { color: #9ca3af; }
+[data-theme="dark"] .key-input {
+  background: #111827;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+/* ── Dashboard: use CSS variable overrides (vars defined in dashboard.html <style>) ── */
+[data-theme="dark"] .header {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+[data-theme="dark"] .main-nav,
+[data-theme="dark"] .vocab-sidebar {
+  background: #1f2937;
+  border-color: #374151;
+}
+[data-theme="dark"] .nav-list a       { color: #9ca3af; }
+[data-theme="dark"] .nav-list a:hover { color: #f3f4f6; }
+[data-theme="dark"] .nav-list a.active {
+  color: #e53935;
+  border-bottom-color: #e53935;
+}
+[data-theme="dark"] .btn-logout {
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+[data-theme="dark"] .btn-logout:hover { background: #374151; }
+[data-theme="dark"] .hdr-nav-toggle {
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+/* ── Dark toggle button ── */
+.dark-toggle-btn {
+  background: none;
+  border: 1px solid #e5e7eb;
+  padding: 6px 9px;
+  border-radius: 9px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background .15s, border-color .15s;
+}
+.dark-toggle-btn:hover { background: #f3f4f6; }
+[data-theme="dark"] .dark-toggle-btn {
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+[data-theme="dark"] .dark-toggle-btn:hover { background: #374151; }

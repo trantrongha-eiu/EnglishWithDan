@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/mobile.css"/>
+  <script src="js/theme.js"></script>
   <style>
 /* ══════════════════════════════════════════
    TOKENS
@@ -21,6 +22,13 @@
   --radius:14px; --radius-sm:9px;
   --shadow:0 2px 12px rgba(0,0,0,.07);
   --shadow-md:0 6px 24px rgba(0,0,0,.1);
+}
+html[data-theme="dark"]{
+  --bg:#111827; --surface:#1f2937; --surface2:#374151;
+  --border:#374151; --border2:#4b5563;
+  --text:#f9fafb; --text2:#9ca3af; --text3:#6b7280;
+  --shadow:0 2px 12px rgba(0,0,0,.3);
+  --shadow-md:0 6px 24px rgba(0,0,0,.4);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
@@ -662,6 +670,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
     <button class="hdr-nav-toggle" id="mainNavToggle" onclick="toggleMainNav()" title="Menu kỹ năng" aria-label="Mở menu kỹ năng">
       <i class="fas fa-th-large"></i>
     </button>
+    <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
     <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="btn-logout-text">Đăng xuất</span></button>
   </div>
 </header>

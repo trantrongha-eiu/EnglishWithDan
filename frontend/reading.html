@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 
 <head>
   <meta charset="UTF-8" />
@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="js/theme.js"></script>
 </head>
 
 <body>
@@ -30,6 +31,9 @@
         <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Xin chào</span>
         <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng" aria-label="Mở menu kỹ năng">
           <i class="fas fa-th-large"></i>
+        </button>
+        <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng" aria-label="Đổi chế độ sáng tối">
+          <span class="dark-toggle-icon">🌙</span>
         </button>
         <button onclick="showHistoryModal()" class="hdr-btn"
           style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
@@ -490,16 +494,6 @@
       }
     })();
 
-    // ── Profile link in reading header ──────────────────────
-    window.addEventListener('DOMContentLoaded', function() {
-      const user = window.getUser ? window.getUser() : null;
-      if (user) {
-        const el = document.getElementById('userName');
-        if (el) {
-          el.innerHTML = `👋 ${user.firstName || user.username} &nbsp;|&nbsp; <a href="profile.html" style="color:#3d8bff;text-decoration:none;font-weight:600;">👤 Hồ sơ</a>`;
-        }
-      }
-    });
   </script>
 </body>
 

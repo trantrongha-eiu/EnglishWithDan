@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="writing.css" />
   <link rel="stylesheet" href="css/mobile.css" />
+  <script src="js/theme.js"></script>
 </head>
 <body>
 
@@ -20,6 +21,7 @@
     <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
     <div class="header-right">
       <span id="user-name-key">👋 Xin chào</span>
+      <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
       <button class="btn-logout" onclick="showScreen('screen-history');loadHistory()">📋 Lịch sử</button>
       <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
     </div>
