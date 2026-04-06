@@ -785,8 +785,9 @@ function addRQQuestion(gIdx, data = null) {
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Giải thích</label>
-    <input class="form-input rqq-explain" value="${data?.explanation || ''}"
-           style="font-size:12px;padding:6px 9px" placeholder="Giải thích đáp án..." />
+    <textarea class="form-input rqq-explain" rows="3"
+              style="font-size:12px;padding:6px 9px;resize:vertical"
+              placeholder="Giải thích đáp án...">${(data?.explanation || '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
   </div>
 </div>`;
   container.appendChild(div);
@@ -1922,8 +1923,9 @@ function addGroupQuestion(gIdx, data = null) {
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Giải thích</label>
-    <input class="form-input lq-explain" value="${data?.explanation || ''}"
-           style="font-size:12px;padding:6px 9px" placeholder="Giải thích đáp án..." />
+    <textarea class="form-input lq-explain" rows="3"
+              style="font-size:12px;padding:6px 9px;resize:vertical"
+              placeholder="Giải thích đáp án...">${(data?.explanation || '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
   </div>
 </div>`;
 
