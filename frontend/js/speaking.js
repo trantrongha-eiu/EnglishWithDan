@@ -591,10 +591,25 @@ function openMaterial(m, card) {
 
   const placeholder = document.getElementById('pdf-placeholder');
   const frame = document.getElementById('pdf-frame');
+  const right = document.getElementById('materials-right');
 
   if (placeholder) placeholder.style.display = 'none';
   if (frame) {
     frame.classList.add('visible');
     frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
   }
+
+  // On mobile: show PDF panel, hide list panel
+  if (window.innerWidth <= 768 && right) {
+    right.classList.add('mobile-open');
+    document.getElementById('materials-left').style.display = 'none';
+    right.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function closeMobilePdf() {
+  const right = document.getElementById('materials-right');
+  const left = document.getElementById('materials-left');
+  if (right) right.classList.remove('mobile-open');
+  if (left) left.style.display = '';
 }

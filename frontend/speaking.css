@@ -490,3 +490,55 @@ body {
   display: none;
 }
 .no-speech-warning.visible { display: block; }
+
+/* ── PDF back button (mobile only) ── */
+.pdf-back-btn {
+  display: none;
+}
+
+/* ── Mobile: materials layout stack ── */
+@media (max-width: 768px) {
+  .materials-layout {
+    height: auto;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  /* Left panel: full width by default */
+  .materials-left {
+    width: 100%;
+    max-height: 380px;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Right panel: hidden by default on mobile, shown when PDF selected */
+  .materials-right {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    min-height: calc(100vh - 160px);
+    position: relative;
+  }
+
+  .materials-right.mobile-open {
+    display: flex;
+  }
+
+  .pdf-back-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 16px 8px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+  }
+
+  .pdf-viewer-frame {
+    min-height: calc(100vh - 200px);
+  }
+}
