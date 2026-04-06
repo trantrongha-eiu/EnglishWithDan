@@ -22,6 +22,8 @@ const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
+const WritingSample    = require('../models/WritingSample');
+const Course           = require('../models/Course');
 const AccessKey    = require('../models/AccessKey');
 const TestAttempt  = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -701,6 +703,77 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
 });
 
 // ══════════════════════════════════════════════════
+// WRITING SAMPLES (PDF)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/writing/samples
+router.get('/writing/samples', auth, teacherOnly, async (req, res) => {
+  try {
+    const samples = await WritingSample.find().sort({ createdAt: -1 });
+    res.json({ success: true, samples });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing/samples/upload-pdf
+router.post('/writing/samples/upload-pdf', auth, teacherOnly, uploadPdfMemory.single('pdf'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
+    const dataUri = `data:application/pdf;base64,${req.file.buffer.toString('base64')}`;
+    const result  = await cloudinary.uploader.upload(dataUri, {
+      folder:        'writing-samples',
+      resource_type: 'raw'
+    });
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/writing/samples
+router.post('/writing/samples', auth, teacherOnly, async (req, res) => {
+  try {
+    const s = new WritingSample(req.body);
+    await s.save();
+    res.status(201).json({ success: true, sample: s });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/writing/samples/:id
+router.put('/writing/samples/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const s = await WritingSample.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!s) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, sample: s });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing/samples/:id  (soft delete)
+router.delete('/writing/samples/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingSample.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn tài liệu' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing/samples/:id/permanent  (hard delete)
+router.delete('/writing/samples/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await WritingSample.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
 // USER MANAGEMENT
 // ══════════════════════════════════════════════════
 
@@ -780,6 +853,99 @@ router.delete('/users/:id', auth, teacherOnly, async (req, res) => {
     }
     await User.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Đã xóa tài khoản' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// COURSES (Quản lý khóa học)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/courses
+router.get('/courses', auth, teacherOnly, async (req, res) => {
+  try {
+    const courses = await Course.find().sort({ order: 1, createdAt: 1 });
+    res.json({ success: true, courses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/courses
+router.post('/courses', auth, teacherOnly, async (req, res) => {
+  try {
+    const course = new Course(req.body);
+    await course.save();
+    res.status(201).json({ success: true, course });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/courses/:id
+router.put('/courses/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!course) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, course });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/courses/:id  (soft delete – ẩn khỏi trang public)
+router.delete('/courses/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await Course.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn khóa học' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/courses/:id/permanent  (hard delete)
+router.delete('/courses/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    await Course.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn khóa học' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// DELETE EXAM ATTEMPTS (Admin xóa bài thi)
+// ══════════════════════════════════════════════════
+
+// DELETE /api/admin/attempts/:id  – xóa bài Reading
+router.delete('/attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await TestAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
+    res.json({ success: true, message: 'Đã xóa bài thi Reading' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/listening-attempts/:id  – xóa bài Listening
+router.delete('/listening-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await ListeningAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
+    res.json({ success: true, message: 'Đã xóa bài thi Listening' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-attempts/:id  – xóa bài Writing
+router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await WritingAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
+    res.json({ success: true, message: 'Đã xóa bài nộp Writing' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

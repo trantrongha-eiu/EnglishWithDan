@@ -6,6 +6,7 @@ const WritingExam    = require('../models/WritingExam');
 const WritingTask1   = require('../models/WritingTask1');
 const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
+const WritingSample  = require('../models/WritingSample');
 
 // helper – random document from a collection
 async function randomDoc(Model) {
@@ -163,6 +164,45 @@ router.get('/attempt/:id', auth, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Không có quyền' });
 
     res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// GET /api/writing/samples
+// Students: lấy danh sách tài liệu mẫu (isActive=true)
+// ══════════════════════════════════════════════════
+router.get('/samples', auth, async (req, res) => {
+  try {
+    const { quarter, topic, taskType } = req.query;
+    const filter = { isActive: true };
+    if (quarter  && quarter  !== 'all') filter.quarter  = quarter;
+    if (topic    && topic    !== 'all') filter.topic    = topic;
+    if (taskType && taskType !== 'all') filter.taskType = taskType;
+
+    const samples = await WritingSample.find(filter).sort({ createdAt: -1 });
+    res.json({ success: true, samples });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// GET /api/writing/sample-filters
+// Trả về distinct quarters, topics, taskTypes để render filter chips
+// ══════════════════════════════════════════════════
+router.get('/sample-filters', auth, async (req, res) => {
+  try {
+    const [quarters, topics] = await Promise.all([
+      WritingSample.distinct('quarter',  { isActive: true }),
+      WritingSample.distinct('topic',    { isActive: true })
+    ]);
+    res.json({
+      success: true,
+      quarters: quarters.sort().reverse(),
+      topics:   topics.sort()
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
