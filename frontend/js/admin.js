@@ -418,7 +418,7 @@ function addRQGroup(data = null, containerId = 'questions-container') {
 <div style="margin-top:12px">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
     <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Câu hỏi trong nhóm</span>
-    <button class="btn btn-ghost btn-sm" onclick="addRQQuestion(${gIdx})">＋ Thêm câu</button>
+    <button class="btn btn-ghost btn-sm" onclick="addRQQuestion(${gIdx},null,'${groupType}')">＋ Thêm câu</button>
   </div>
   <div id="rqqs-${gIdx}" style="display:flex;flex-direction:column;gap:8px"></div>
 </div>`;
@@ -426,7 +426,7 @@ function addRQGroup(data = null, containerId = 'questions-container') {
   container.appendChild(div);
 
   if (data?.questions?.length) {
-    data.questions.forEach(q => addRQQuestion(gIdx, q));
+    data.questions.forEach(q => addRQQuestion(gIdx, q, groupType));
   }
 }
 
@@ -584,20 +584,28 @@ function renderRQGroupConfig(groupType, data, gIdx) {
 
   if (groupType === 'map') {
     const imgId = `rqgmap-${gIdx}`;
+    const fileId = `rqgmapfile-${gIdx}`;
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('🗺️ <strong>Map/Diagram Labelling:</strong> Upload hình ảnh sơ đồ, paste URL vào đây. Câu hỏi bên dưới: loại <strong>map-labelling</strong>, đáp án là nhãn điền vào sơ đồ.')}
+    ${rqAdminGuide('🗺️ <strong>Map/Diagram Labelling:</strong> Upload hình ảnh sơ đồ hoặc paste URL. Câu hỏi bên dưới tự động chọn loại <strong>map-labelling</strong>, đáp án là nhãn điền vào sơ đồ.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Map / Diagram</div>
     <div style="display:flex;gap:10px;align-items:flex-start">
       <div style="flex:1">
         <input class="form-input rqg-map-url" value="${data?.imageUrl || ''}"
-               style="font-size:12px;padding:7px 10px"
-               placeholder="URL hình ảnh sơ đồ"
+               style="font-size:12px;padding:7px 10px;margin-bottom:6px"
+               placeholder="URL hoặc chọn file bên dưới"
                oninput="previewRQGImage(this,'${imgId}')" />
-        <div class="form-hint">Upload lên Imgur/Cloudinary rồi paste URL</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label style="cursor:pointer;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;white-space:nowrap">
+            📁 Chọn ảnh
+            <input type="file" id="${fileId}" accept="image/*" style="display:none"
+                   onchange="uploadRQGMapImage(this,'${imgId}')" />
+          </label>
+          <span style="font-size:10px;color:var(--text3)">JPG/PNG – tự động nén</span>
+        </div>
       </div>
-      <div id="${imgId}" style="width:150px;min-height:80px;border:1.5px dashed var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);flex-shrink:0">
-        ${data?.imageUrl ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:110px;object-fit:contain"/>` : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
+      <div id="${imgId}" style="width:160px;min-height:90px;border:1.5px dashed var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);flex-shrink:0">
+        ${data?.imageUrl ? `<img src="${data.imageUrl}" style="max-width:100%;max-height:120px;object-fit:contain"/>` : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`}
       </div>
     </div>
   </div>`;
@@ -615,8 +623,39 @@ function previewRQGImage(input, imgId) {
   const el = document.getElementById(imgId);
   if (!el) return;
   el.innerHTML = url
-    ? `<img src="${url}" style="max-width:100%;max-height:110px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
+    ? `<img src="${url}" style="max-width:100%;max-height:120px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
     : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+}
+
+function uploadRQGMapImage(fileInput, imgId) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const preview = document.getElementById(imgId);
+  if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--text3)">Đang nén...</span>`;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 900;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+      // Find the correct url input by proximity to file input
+      const container = fileInput.closest('[id^="rqg-"]');
+      if (container) {
+        const ui = container.querySelector('.rqg-map-url');
+        if (ui) ui.value = dataUrl;
+      }
+      if (preview) preview.innerHTML = `<img src="${dataUrl}" style="max-width:100%;max-height:120px;object-fit:contain"/>`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── Table row ──────────────────────────────────────────────────────────
@@ -734,11 +773,16 @@ function addRQEnding(gIdx) {
 // ════════════════════════════════════════════════════════════════════════
 // ADD QUESTION INSIDE GROUP
 // ════════════════════════════════════════════════════════════════════════
-function addRQQuestion(gIdx, data = null) {
+function addRQQuestion(gIdx, data = null, groupType = 'plain') {
   rqQIdx++;
   const qId = `rqq-${gIdx}-${rqQIdx}`;
   const container = document.getElementById(`rqqs-${gIdx}`);
   if (!container) return;
+
+  // Smart default type based on group
+  const autoType = data?.type || (
+    ['bullet-list','note-form','table','map'].includes(groupType) ? 'fill-blank' : 'true-false-ng'
+  );
 
   const div = document.createElement('div');
   div.id = qId;
@@ -759,29 +803,31 @@ function addRQQuestion(gIdx, data = null) {
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Loại câu *</label>
     <select class="form-select rqq-type" onchange="onRQQTypeChange(this,'${qId}')"
             style="font-size:12px;padding:6px 9px">
-      <option value="true-false-ng"     ${data?.type === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
-      <option value="multiple-choice"   ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice (1 đáp án)</option>
-      <option value="checkbox"          ${data?.type === 'checkbox' ? 'selected' : ''}>Multiple Choice (nhiều đáp án)</option>
-      <option value="fill-blank"        ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
-      <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
-      <option value="matching-headings" ${data?.type === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
-      <option value="matching-info"     ${data?.type === 'matching-info' ? 'selected' : ''}>Matching Information</option>
-      <option value="map-labelling"     ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
+      <option value="true-false-ng"     ${autoType === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
+      <option value="multiple-choice"   ${autoType === 'multiple-choice' ? 'selected' : ''}>Multiple Choice (1 đáp án)</option>
+      <option value="checkbox"          ${autoType === 'checkbox' ? 'selected' : ''}>Multiple Choice (nhiều đáp án)</option>
+      <option value="fill-blank"        ${autoType === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
+      <option value="sentence-completion" ${autoType === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
+      <option value="matching-headings" ${autoType === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
+      <option value="matching-info"     ${autoType === 'matching-info' ? 'selected' : ''}>Matching Information</option>
+      <option value="map-labelling"     ${autoType === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
     </select>
   </div>
 </div>
+<div id="rqqguide-${qId}" style="font-size:11px;line-height:1.6;border-radius:7px;padding:8px 11px;margin-bottom:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af">${getRQQTypeGuide(autoType)}</div>
 <div style="margin-bottom:8px">
   <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Nội dung câu hỏi *</label>
   <textarea class="form-input rqq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
     placeholder="Nội dung câu hỏi...">${data?.questionText || ''}</textarea>
 </div>
-<div class="rqq-extra" id="rqqex-${qId}">${renderRQQExtra(data?.type || 'true-false-ng', data)}</div>
+<div class="rqq-extra" id="rqqex-${qId}">${renderRQQExtra(autoType, data)}</div>
 <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Đáp án đúng *</label>
     <input class="form-input rqq-answer" value="${data?.correctAnswer || ''}"
            style="font-size:12px;padding:6px 9px"
            placeholder='TRUE / A / text / ["A","C"]' />
+    <div class="rqq-answer-hint" style="font-size:10px;color:var(--text3);margin-top:3px">${getRQQAnswerHint(autoType)}</div>
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Giải thích</label>
@@ -791,6 +837,34 @@ function addRQQuestion(gIdx, data = null) {
   </div>
 </div>`;
   container.appendChild(div);
+}
+
+function getRQQTypeGuide(type) {
+  const guides = {
+    'true-false-ng':     '✅ <strong>True / False / Not Given</strong> — Đọc passage, xác định câu đúng/sai/không có thông tin.<br>• <strong>Đáp án đúng:</strong> nhập <code>TRUE</code>, <code>FALSE</code> hoặc <code>NOT GIVEN</code>.',
+    'multiple-choice':   '🔘 <strong>Multiple Choice (1 đáp án)</strong> — Học sinh chọn 1 trong các lựa chọn A, B, C, D.<br>• Nhập 4 options A-D bên dưới. <strong>Đáp án đúng:</strong> nhập chữ cái VD <code>A</code>.',
+    'checkbox':          '☑️ <strong>Multiple Choice (nhiều đáp án)</strong> — Học sinh chọn nhiều ô, nhập số ô muốn chọn.<br>• Nhập options và số lượng cần chọn. <strong>Đáp án đúng:</strong> <code>["A","C"]</code>.',
+    'fill-blank':        '✏️ <strong>Fill in the blank</strong> — Học sinh điền từ/cụm từ vào ô trống.<br>• Không cần nhập options.<br>• <strong>Đáp án đúng:</strong> nhập chính xác từ/cụm từ cần điền, VD: <code>kiln</code>',
+    'sentence-completion':'🔗 <strong>Sentence Completion (kéo thả)</strong> — Học sinh kéo từ trong Word Bank vào chỗ trống.<br>• <strong>Đáp án đúng:</strong> nhập từ thực tế trong Word Bank.',
+    'matching-headings': '📌 <strong>Matching Headings</strong> — Học sinh ghép tiêu đề (i, ii, iii…) với đoạn văn.<br>• <strong>Đáp án đúng:</strong> nhập chữ số La Mã VD <code>iii</code>.',
+    'matching-info':     '🔗 <strong>Matching Information</strong> — Học sinh ghép phát biểu với người/sự vật A-G.<br>• <strong>Đáp án đúng:</strong> nhập chữ cái VD <code>B</code>.',
+    'map-labelling':     '🗺️ <strong>Map Labelling</strong> — Học sinh điền nhãn vào sơ đồ/bản đồ.<br>• Không cần options.<br>• <strong>Đáp án đúng:</strong> nhập nhãn cần điền, VD: <code>library</code>',
+  };
+  return guides[type] || '';
+}
+
+function getRQQAnswerHint(type) {
+  const hints = {
+    'true-false-ng':     '💡 TRUE / FALSE / NOT GIVEN',
+    'multiple-choice':   '💡 Nhập chữ cái: A, B, C hoặc D',
+    'checkbox':          '💡 VD: ["A","C"] — mảng các chữ cái',
+    'fill-blank':        '💡 Nhập đúng từ/cụm từ cần điền',
+    'sentence-completion':'💡 Nhập từ thực tế trong Word Bank',
+    'matching-headings': '💡 Nhập số La Mã: i, ii, iii…',
+    'matching-info':     '💡 Nhập chữ cái: A, B, C…',
+    'map-labelling':     '💡 Nhập tên/nhãn trên sơ đồ',
+  };
+  return hints[type] || '';
 }
 
 function renderRQQExtra(type, data) {
@@ -841,6 +915,27 @@ function renderRQQExtra(type, data) {
 
 function onRQQTypeChange(sel, qId) {
   document.getElementById(`rqqex-${qId}`).innerHTML = renderRQQExtra(sel.value, {});
+  const guide = document.getElementById(`rqqguide-${qId}`);
+  if (guide) guide.innerHTML = getRQQTypeGuide(sel.value);
+  const qDiv = sel.closest('[id^="rqq-"]');
+  if (qDiv) {
+    const hint = qDiv.querySelector('.rqq-answer-hint');
+    if (hint) hint.textContent = getRQQAnswerHint(sel.value);
+    const answerInput = qDiv.querySelector('.rqq-answer');
+    if (answerInput) {
+      const placeholders = {
+        'true-false-ng': 'TRUE / FALSE / NOT GIVEN',
+        'multiple-choice': 'A, B, C hoặc D',
+        'checkbox': '["A","C"]',
+        'fill-blank': 'Từ/cụm từ cần điền',
+        'sentence-completion': 'Từ trong Word Bank',
+        'matching-headings': 'i, ii, iii…',
+        'matching-info': 'A, B, C…',
+        'map-labelling': 'Nhãn trên sơ đồ',
+      };
+      answerInput.placeholder = placeholders[sel.value] || '';
+    }
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════
