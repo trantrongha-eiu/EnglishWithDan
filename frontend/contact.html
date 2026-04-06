@@ -1,245 +1,380 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>Liên Hệ – EnglishWithDan</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="liên hệ EnglishWithDan, Daniel Hà IELTS, 0914769618" name="keywords">
-    <meta content="Liên hệ thầy Daniel Hà để được tư vấn khóa học IELTS. SĐT: 0914 769 618." name="description">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liên Hệ – EnglishWithDan</title>
+  <meta name="description" content="Liên hệ thầy Daniel Hà để được tư vấn lộ trình học IELTS miễn phí. SĐT / Zalo: 0914 769 618."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+/* ── QUICK CONTACT CARDS ── */
+.quick-contacts{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  padding:48px 80px 0;
+}
+.qc-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px 24px;
+  display:flex;align-items:center;gap:18px;
+  transition:box-shadow .2s,transform .2s;
+}
+.qc-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.qc-icon{
+  width:52px;height:52px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.qc-card h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.qc-card a,.qc-card p{font-size:14px;color:var(--gray)}
+.qc-card a:hover{color:var(--blue)}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+/* ── FAQ SECTION ── */
+.faq-section{padding:72px 80px;background:var(--bg)}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+.faq-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.faq-question{
+  width:100%;padding:18px 22px;text-align:left;
+  background:none;border:none;cursor:pointer;
+  font-size:15px;font-weight:700;color:var(--dark);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  transition:background .15s;
+}
+.faq-question:hover{background:var(--bg)}
+.faq-question.open{color:var(--blue)}
+.faq-question .chevron{transition:transform .2s;font-size:12px;color:var(--gray);flex-shrink:0}
+.faq-question.open .chevron{transform:rotate(180deg);color:var(--blue)}
+.faq-answer{
+  max-height:0;overflow:hidden;
+  transition:max-height .3s ease,padding .3s;
+  padding:0 22px;font-size:14px;color:var(--gray);line-height:1.75;
+}
+.faq-answer.open{max-height:200px;padding:0 22px 18px}
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .quick-contacts{padding:36px 40px 0;grid-template-columns:1fr 1fr}
+  .faq-section{padding:56px 40px}
+}
+@media(max-width:768px){
+  .quick-contacts{padding:28px 20px 0;grid-template-columns:1fr}
+  .faq-section{padding:44px 20px}
+  .faq-grid{grid-template-columns:1fr}
+}
+  </style>
 </head>
 <body>
 
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+<!-- ════════════════════ NAVBAR ════════════════════ -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <span class="d">Daniel</span><span class="h">Hà</span>
+    <div class="nav-logo-sub">English Center</div>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Trang chủ</a>
+    <a href="courses.html">Khóa học</a>
+    <a href="about.html">Về chúng tôi</a>
+    <a href="contact.html" class="active">Liên hệ</a>
+  </div>
+
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+    <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Đăng ký</a>
+  </div>
+
+  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
+  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="contact.html"  onclick="toggleMenu()" style="color:var(--blue)">📞 Liên hệ</a>
+  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+  <a href="register.html" onclick="toggleMenu()" style="color:var(--red)">→ Đăng ký học</a>
+</div>
+
+<!-- ════════════════════ PAGE HERO ════════════════════ -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Trang chủ</a>
+      <i class="fas fa-chevron-right" style="font-size:10px"></i>
+      <span>Liên hệ</span>
+    </div>
+    <h1>Liên hệ &amp; Tư vấn miễn phí</h1>
+    <p>Để lại thông tin, thầy Daniel Hà sẽ liên hệ tư vấn lộ trình học phù hợp nhất cho bạn — không áp lực, không phí.</p>
+  </div>
+</div>
+
+<!-- ════════════════════ QUICK CONTACTS ════════════════════ -->
+<div class="quick-contacts">
+  <a href="tel:0914769618" class="qc-card" style="text-decoration:none;color:inherit">
+    <div class="qc-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-phone-alt"></i></div>
+    <div>
+      <h3>Gọi điện / Zalo</h3>
+      <p>0914 769 618</p>
+    </div>
+  </a>
+  <a href="mailto:englishwithdan@gmail.com" class="qc-card" style="text-decoration:none;color:inherit">
+    <div class="qc-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-envelope"></i></div>
+    <div>
+      <h3>Email</h3>
+      <p>englishwithdan@gmail.com</p>
+    </div>
+  </a>
+  <div class="qc-card">
+    <div class="qc-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-clock"></i></div>
+    <div>
+      <h3>Giờ tư vấn</h3>
+      <p>Thứ 2 – Thứ 7 · 8:00 – 21:00</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ CONTACT FORM ════════════════════ -->
+<section class="contact-section" style="margin-top:40px">
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <h2>Đăng ký tư vấn<br>miễn phí ngay hôm nay</h2>
+      <p>Điền form bên cạnh, thầy Daniel Hà sẽ liên hệ tư vấn lộ trình học phù hợp nhất với bạn — hoàn toàn miễn phí, không áp lực.</p>
+      <div class="contact-info-list">
+        <div class="contact-info-item">
+          <div class="ci-icon"><i class="fas fa-phone-alt"></i></div>
+          <div><div>Hotline / Zalo</div><strong>0914 769 618</strong></div>
         </div>
+        <div class="contact-info-item">
+          <div class="ci-icon"><i class="fab fa-facebook-f"></i></div>
+          <div><div>Facebook</div><strong>facebook.com/EnglishWithDan</strong></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
+          <div><div>Địa chỉ</div><strong>TP. Hồ Chí Minh, Việt Nam</strong></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon"><i class="fas fa-clock"></i></div>
+          <div><div>Giờ tư vấn</div><strong>T2–T7 · 8:00 – 21:00</strong></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="login.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-graduation-cap me-3"></i>EnglishWithDan</h2>
-        </a>
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
+    <div class="form-card">
+      <h3><i class="fas fa-paper-plane" style="color:var(--blue)"></i> Gửi thông tin tư vấn</h3>
+      <form id="consultForm" onsubmit="submitForm(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-name">Họ &amp; tên <span style="color:var(--red)">*</span></label>
+            <input type="text" id="f-name" placeholder="Nguyễn Văn A" required/>
+          </div>
+          <div class="form-group">
+            <label for="f-phone">Số điện thoại <span style="color:var(--red)">*</span></label>
+            <input type="tel" id="f-phone" placeholder="0912 345 678" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="f-email">Email</label>
+          <input type="email" id="f-email" placeholder="example@gmail.com"/>
+        </div>
+        <div class="form-group">
+          <label for="f-course">Khóa học quan tâm</label>
+          <select id="f-course">
+            <option value="">-- Chọn khóa học --</option>
+            <option>IELTS Mất Gốc → 6.0+</option>
+            <option>IELTS 3.0 → 6.0+</option>
+            <option>IELTS 6.0 → 7.0+</option>
+            <option>IELTS Speaking Chuyên Sâu</option>
+            <option>Giao Tiếp Tiếng Anh Cơ Bản</option>
+            <option>Tiếng Anh Giao Tiếp Văn Phòng</option>
+            <option>Chưa biết – cần tư vấn</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="f-msg">Tin nhắn thêm</label>
+          <textarea id="f-msg" placeholder="Trình độ hiện tại, mục tiêu, thời gian học..."></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="submit-btn">
+          <i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn
         </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="login.html" class="nav-item nav-link">Trang chủ</a>
-                <a href="about.html" class="nav-item nav-link">Về chúng tôi</a>
-                <a href="courses.html" class="nav-item nav-link">Khóa học</a>
-                <a href="contact.html" class="nav-item nav-link active">Liên hệ</a>
-            </div>
-            <a href="login.html" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đăng nhập<i class="fa fa-arrow-right ms-3"></i></a>
-        </div>
-    </nav>
-
-    <!-- Header -->
-    <div class="container-fluid bg-primary py-5 mb-5 page-header">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Liên Hệ</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a class="text-white" href="login.html">Trang chủ</a></li>
-                            <li class="breadcrumb-item text-white active" aria-current="page">Liên hệ</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        <div id="form-msg"></div>
+      </form>
     </div>
+  </div>
+</section>
 
-    <!-- Contact -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Liên Hệ</h6>
-                <h1 class="mb-5">Kết nối với thầy Daniel Hà</h1>
-            </div>
-            <div class="row g-4">
-                <!-- Contact info -->
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <h5>Thông tin liên hệ</h5>
-                    <p class="mb-4">Bạn có thắc mắc về khóa học hoặc cần tư vấn lộ trình IELTS? Hãy liên hệ trực tiếp với thầy qua các kênh bên dưới.</p>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary" style="width: 50px; height: 50px;">
-                            <i class="fa fa-map-marker-alt text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Địa điểm</h5>
-                            <p class="mb-0">Việt Nam</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary" style="width: 50px; height: 50px;">
-                            <i class="fa fa-phone-alt text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Điện thoại / Zalo</h5>
-                            <p class="mb-0"><a href="tel:0914769618" style="color:inherit">0914 769 618</a></p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-4">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary" style="width: 50px; height: 50px;">
-                            <i class="fa fa-envelope-open text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Email</h5>
-                            <p class="mb-0">englishwithdan@gmail.com</p>
-                        </div>
-                    </div>
-                    <!-- Quick contact buttons -->
-                    <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-primary me-2 mb-2">
-                        <i class="fas fa-comment-dots me-2"></i>Nhắn Zalo
-                    </a>
-                    <a href="tel:0914769618" class="btn btn-outline-primary mb-2">
-                        <i class="fa fa-phone me-2"></i>Gọi ngay
-                    </a>
-                </div>
-
-                <!-- Map -->
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <iframe class="position-relative rounded w-100 h-100"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d501126.52770592595!2d106.42349185!3d10.754053149999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529292e8d3dd1%3A0xf15f5aad773c112b!2sHo%20Chi%20Minh%20City%2C%20Vietnam!5e0!3m2!1sen!2s!4v1703000000000!5m2!1sen!2s"
-                        frameborder="0" style="min-height: 300px; border:0;" allowfullscreen="" aria-hidden="false"
-                        tabindex="0"></iframe>
-                </div>
-
-                <!-- Message form -->
-                <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <form onsubmit="handleContactForm(event)">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Họ và tên" required>
-                                    <label for="name">Họ và tên</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="tel" class="form-control" id="phone" placeholder="Số điện thoại">
-                                    <label for="phone">Số điện thoại</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Chủ đề" required>
-                                    <label for="subject">Chủ đề (VD: Hỏi về khóa Speaking)</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Nội dung tin nhắn" id="message" style="height: 120px" required></textarea>
-                                    <label for="message">Nội dung</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary w-100 py-3" type="submit" id="btn-send">
-                                    <i class="fa fa-paper-plane me-2"></i>Gửi tin nhắn
-                                </button>
-                            </div>
-                            <div class="col-12" id="form-msg" style="display:none"></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<!-- ════════════════════ FAQ ════════════════════ -->
+<section class="faq-section">
+  <div class="section-head" style="text-align:center;max-width:560px;margin:0 auto">
+    <div class="section-tag">FAQ</div>
+    <h2 class="section-title">Câu hỏi thường gặp</h2>
+  </div>
+  <div class="faq-grid">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Khóa học phù hợp với người mất gốc không?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Có. Thầy Daniel có khóa dành riêng cho người chưa có nền tảng, bắt đầu từ phát âm và ngữ pháp cơ bản nhất.</div>
     </div>
-
-    <!-- Footer -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Liên kết nhanh</h4>
-                    <a class="btn btn-link" href="about.html">Về chúng tôi</a>
-                    <a class="btn btn-link" href="contact.html">Liên hệ</a>
-                    <a class="btn btn-link" href="courses.html">Khóa học</a>
-                    <a class="btn btn-link" href="login.html">Đăng nhập</a>
-                    <a class="btn btn-link" href="register.html">Đăng ký</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Liên hệ</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Việt Nam</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0914 769 618</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>englishwithdan@gmail.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href="https://zalo.me/0914769618" target="_blank"><i class="fas fa-comment-dots"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="tel:0914769618"><i class="fa fa-phone"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Kỹ năng IELTS</h4>
-                    <a class="btn btn-link" href="login.html">📖 Reading</a>
-                    <a class="btn btn-link" href="login.html">🎧 Listening</a>
-                    <a class="btn btn-link" href="login.html">✏️ Writing</a>
-                    <a class="btn btn-link" href="login.html">🎤 Speaking</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Nhắn tin Zalo</h4>
-                    <p>Liên hệ ngay để được tư vấn lộ trình học IELTS phù hợp nhất với bạn.</p>
-                    <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-primary py-2 px-4">
-                        <i class="fas fa-comment-dots me-2"></i>Chat Zalo
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">EnglishWithDan</a>, All Right Reserved.
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <div class="footer-menu">
-                            <a href="login.html">Trang chủ</a>
-                            <a href="courses.html">Khóa học</a>
-                            <a href="contact.html">Liên hệ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Học phí bao nhiêu?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Học phí tuỳ theo khóa và hình thức học. Giao tiếp từ 900.000đ/tháng, IELTS Speaking từ 2.500.000đ/khóa. Điền form để được báo giá chi tiết.</div>
     </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Học online hay offline?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Thầy dạy cả online (Zoom/Google Meet) và offline (TP.HCM). Bạn có thể chọn hình thức phù hợp với lịch trình cá nhân.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Có cam kết đầu ra không?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Có. 95% học viên đạt band điểm mục tiêu. Nếu chưa đạt sau khi hoàn thành khóa, học viên được học lại miễn phí cho đến khi đạt.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Lớp học có bao nhiêu người?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Tối đa 8–10 học viên mỗi lớp. Thầy cũng nhận học 1–1 cho các bạn cần lộ trình riêng hoặc muốn tăng tốc nhanh hơn.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Làm thế nào để đăng ký?
+        <i class="fas fa-chevron-down chevron"></i>
+      </button>
+      <div class="faq-answer">Điền form tư vấn phía trên hoặc nhắn Zalo 0914 769 618. Thầy sẽ liên hệ trong vòng 24 giờ để sắp xếp buổi tư vấn miễn phí.</div>
+    </div>
+  </div>
+</section>
 
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:12px">
+        <span class="d">Daniel</span><span class="h">Hà</span>
+        <div class="nav-logo-sub" style="color:rgba(255,255,255,.4)">English Center</div>
+      </div>
+      <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Cam kết đầu ra thực chất, học viên là ưu tiên số 1.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Khóa học</h4>
+      <ul>
+        <li><a href="courses.html">IELTS Mất Gốc → 6.0+</a></li>
+        <li><a href="courses.html">IELTS 3.0 → 6.0+</a></li>
+        <li><a href="courses.html">IELTS 6.0 → 7.0+</a></li>
+        <li><a href="courses.html">IELTS Speaking</a></li>
+        <li><a href="courses.html">Giao Tiếp Cơ Bản</a></li>
+        <li><a href="courses.html">Giao Tiếp Văn Phòng</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Tài nguyên</h4>
+      <ul>
+        <li><a href="login.html">Đăng nhập học</a></li>
+        <li><a href="register.html">Đăng ký tài khoản</a></li>
+        <li><a href="about.html">Về giáo viên</a></li>
+        <li><a href="contact.html">Tư vấn miễn phí</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Liên hệ</h4>
+      <ul>
+        <li><a href="tel:0914769618">📞 0914 769 618</a></li>
+        <li><a href="#">📘 Facebook</a></li>
+        <li><a href="https://zalo.me/0914769618" target="_blank">💬 Zalo</a></li>
+        <li><a href="#">🎬 YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+    <div class="footer-socials">
+      <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+      <a href="mailto:englishwithdan@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+</footer>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-    function handleContactForm(e) {
-        e.preventDefault();
-        const btn = document.getElementById('btn-send');
-        const msg = document.getElementById('form-msg');
-        btn.disabled = true;
-        btn.textContent = 'Đang gửi...';
-        // Redirect to Zalo with message
-        const name    = document.getElementById('name').value;
-        const subject = document.getElementById('subject').value;
-        const content = document.getElementById('message').value;
-        const text    = encodeURIComponent(`Xin chào thầy Daniel! Em là ${name}. Chủ đề: ${subject}. ${content}`);
-        msg.style.display = 'block';
-        msg.innerHTML = '<div class="alert alert-success">Cảm ơn bạn! Thầy sẽ phản hồi qua Zalo sớm nhất.</div>';
-        setTimeout(() => { window.open(`https://zalo.me/0914769618`, '_blank'); btn.disabled = false; btn.innerHTML = '<i class="fa fa-paper-plane me-2"></i>Gửi tin nhắn'; }, 1000);
+<script>
+const API = 'https://englishwithdan.onrender.com/api';
+
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('ham-icon');
+  const open = menu.classList.toggle('open');
+  icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+}
+
+async function submitForm(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const msg = document.getElementById('form-msg');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+  msg.textContent = '';
+  msg.className = '';
+
+  const body = {
+    name:    document.getElementById('f-name').value.trim(),
+    phone:   document.getElementById('f-phone').value.trim(),
+    email:   document.getElementById('f-email').value.trim(),
+    course:  document.getElementById('f-course').value,
+    message: document.getElementById('f-msg').value.trim()
+  };
+
+  try {
+    const res  = await fetch(`${API}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      msg.textContent = '✅ ' + data.message;
+      msg.className = 'success';
+      document.getElementById('consultForm').reset();
+    } else {
+      throw new Error(data.message);
     }
-    </script>
+  } catch (err) {
+    msg.textContent = '❌ ' + (err.message || 'Lỗi gửi form, thử lại sau.');
+    msg.className = 'error';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn';
+  }
+}
+
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+
+  document.querySelectorAll('.faq-question.open').forEach(q => {
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+</script>
 </body>
 </html>

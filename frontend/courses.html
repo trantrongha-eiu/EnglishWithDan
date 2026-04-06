@@ -1,289 +1,328 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>Khóa Học IELTS – EnglishWithDan</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="khóa học IELTS, luyện Speaking IELTS, Writing IELTS, Reading IELTS, Listening IELTS" name="keywords">
-    <meta content="Các khóa học IELTS chuyên sâu cùng thầy Daniel Hà. Speaking, Writing, Reading & Listening." name="description">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Khóa Học – EnglishWithDan</title>
+  <meta name="description" content="Tất cả khóa học IELTS và tiếng Anh giao tiếp cùng thầy Daniel Hà. Mất gốc, trung cấp, nâng cao, speaking chuyên sâu, giao tiếp văn phòng."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+/* ── PAGE SECTIONS ── */
+section{padding:72px 80px}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+/* ── SUB-NAV (nav con) ── */
+.subnav{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 80px;position:sticky;top:64px;z-index:90;
+}
+.subnav-list{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.subnav-list::-webkit-scrollbar{display:none}
+.subnav-list a{
+  display:flex;align-items:center;gap:7px;
+  padding:14px 20px;font-size:14px;font-weight:600;color:var(--gray);
+  border-bottom:2.5px solid transparent;white-space:nowrap;
+  transition:all .15s;
+}
+.subnav-list a:hover{color:var(--dark)}
+.subnav-list a.active{color:var(--blue);border-bottom-color:var(--blue)}
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+/* ── COURSE GRID ── */
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.course-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column;
+}
+.course-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.course-thumb{
+  width:100%;aspect-ratio:16/9;
+  background:linear-gradient(135deg,#dbeafe,#ede9fe);
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;position:relative;overflow:hidden;
+}
+.course-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.course-level{
+  position:absolute;top:12px;left:12px;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:10px;
+}
+.lv-red{background:#fce4e4;color:var(--red)}
+.lv-blue{background:var(--blue-light);color:var(--blue)}
+.lv-green{background:#f0fdf4;color:#16a34a}
+.lv-purple{background:#f5f3ff;color:#7c3aed}
+.course-body{padding:22px;flex:1;display:flex;flex-direction:column}
+.course-body h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.course-target{font-size:13px;color:var(--blue);font-weight:600;margin-bottom:12px}
+.course-body p{font-size:14px;color:var(--gray);line-height:1.65;flex:1}
+.course-meta{
+  display:flex;gap:14px;flex-wrap:wrap;
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--border);
+}
+.course-meta span{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray)}
+.course-price{
+  margin-top:12px;font-size:15px;font-weight:800;color:var(--dark);
+}
+.course-cta{margin-top:16px;display:flex;gap:10px}
+.course-cta .btn{flex:1;justify-content:center}
 
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+/* ── CTA BANNER ── */
+.cta-banner{
+  background:linear-gradient(135deg,var(--blue) 0%,#7c3aed 100%);
+  border-radius:20px;padding:56px;text-align:center;color:#fff;
+  margin:0 80px 80px;
+}
+.cta-banner h2{font-size:clamp(24px,3vw,36px);font-weight:900;margin-bottom:12px}
+.cta-banner p{font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 28px}
+.cta-banner .btn-white{background:#fff;color:var(--blue);font-weight:800;padding:13px 28px;border-radius:12px}
+.cta-banner .btn-white:hover{background:rgba(255,255,255,.9);transform:translateY(-1px)}
+.cta-banner .btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);padding:13px 28px;border-radius:12px}
+.cta-banner .btn-ghost:hover{background:rgba(255,255,255,.25)}
+.cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  section{padding:56px 40px}
+  .subnav{padding:0 40px}
+  .courses-grid{grid-template-columns:repeat(2,1fr)}
+  .cta-banner{margin:0 40px 60px;padding:40px}
+}
+@media(max-width:768px){
+  section{padding:44px 20px}
+  .subnav{padding:0 16px;top:64px}
+  .subnav-list a{padding:12px 14px;font-size:13px}
+  .courses-grid{grid-template-columns:1fr}
+  .cta-banner{margin:0 20px 44px;padding:28px 20px}
+  .course-cta{flex-direction:column}
+  .course-cta .btn{flex:unset}
+}
+  </style>
 </head>
 <body>
 
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
+<!-- ════════════════════ NAVBAR (nav mẹ) ════════════════════ -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <span class="d">Daniel</span><span class="h">Hà</span>
+    <div class="nav-logo-sub">English Center</div>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Trang chủ</a>
+    <a href="courses.html" class="active">Khóa học</a>
+    <a href="about.html">Về chúng tôi</a>
+    <a href="contact.html">Liên hệ</a>
+  </div>
+
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+    <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Đăng ký</a>
+  </div>
+
+  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="courses.html"  onclick="toggleMenu()" style="color:var(--blue)">📚 Khóa học</a>
+  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
+  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+  <a href="register.html" onclick="toggleMenu()" style="color:var(--red)">→ Đăng ký học</a>
+</div>
+
+<!-- ════════════════════ PAGE HERO ════════════════════ -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Trang chủ</a>
+      <i class="fas fa-chevron-right" style="font-size:10px"></i>
+      <span>Khóa học</span>
     </div>
+    <h1>Khóa học IELTS &amp; Giao Tiếp</h1>
+    <p>Lộ trình học cá nhân hoá từ mất gốc đến 7.0+. Nhóm nhỏ, giáo viên tận tâm, cam kết đầu ra.</p>
+  </div>
+</div>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-        <a href="login.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-            <h2 class="m-0 text-primary"><i class="fa fa-graduation-cap me-3"></i>EnglishWithDan</h2>
-        </a>
-        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
-                <a href="login.html" class="nav-item nav-link">Trang chủ</a>
-                <a href="about.html" class="nav-item nav-link">Về chúng tôi</a>
-                <a href="courses.html" class="nav-item nav-link active">Khóa học</a>
-                <a href="contact.html" class="nav-item nav-link">Liên hệ</a>
-            </div>
-            <a href="login.html" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Đăng nhập<i class="fa fa-arrow-right ms-3"></i></a>
-        </div>
-    </nav>
+<!-- ════════════════════ SUBNAV (nav con) ════════════════════ -->
+<nav class="subnav" id="subnav" aria-label="Lọc khóa học">
+  <div class="subnav-list">
+    <a href="#" class="active" data-filter="all"><i class="fas fa-th"></i> Tất cả</a>
+    <a href="#" data-filter="ielts"><i class="fas fa-graduation-cap"></i> Luyện thi IELTS</a>
+    <a href="#" data-filter="speaking"><i class="fas fa-microphone"></i> Speaking chuyên sâu</a>
+    <a href="#" data-filter="comm"><i class="fas fa-comments"></i> Giao tiếp</a>
+  </div>
+</nav>
 
-    <!-- Header -->
-    <div class="container-fluid bg-primary py-5 mb-5 page-header">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Khóa Học IELTS</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a class="text-white" href="login.html">Trang chủ</a></li>
-                            <li class="breadcrumb-item text-white active" aria-current="page">Khóa học</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+<!-- ════════════════════ COURSE LIST ════════════════════ -->
+<section id="course-list">
+  <div class="section-head">
+    <div class="section-tag" id="course-count-tag">Đang tải...</div>
+    <h2 class="section-title">Chọn khóa phù hợp với bạn</h2>
+    <p class="section-sub">Từ mất gốc hoàn toàn đến mục tiêu 7.0+, chúng tôi có chương trình dành riêng cho mọi cấp độ.</p>
+  </div>
+
+  <div class="courses-grid" id="courses-grid" style="display:none">
+  </div>
+  <!-- empty state -->
+  <div id="no-results" style="display:none;text-align:center;padding:60px 20px;color:var(--gray);font-size:16px">
+    Không có khóa học nào phù hợp với bộ lọc này.
+  </div>
+</section>
+
+<!-- ════════════════════ CTA BANNER ════════════════════ -->
+<div class="cta-banner">
+  <h2>Chưa biết chọn khóa nào?</h2>
+  <p>Để lại thông tin, thầy Daniel Hà sẽ tư vấn lộ trình học phù hợp nhất cho bạn — hoàn toàn miễn phí.</p>
+  <div class="cta-actions">
+    <a href="contact.html" class="btn-white btn"><i class="fas fa-calendar-alt"></i> Đặt lịch tư vấn miễn phí</a>
+    <a href="https://zalo.me/0914769618" target="_blank" class="btn-ghost btn"><i class="fas fa-comment-dots"></i> Nhắn Zalo ngay</a>
+  </div>
+</div>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:12px">
+        <span class="d">Daniel</span><span class="h">Hà</span>
+        <div class="nav-logo-sub" style="color:rgba(255,255,255,.4)">English Center</div>
+      </div>
+      <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Cam kết đầu ra thực chất, học viên là ưu tiên số 1.</p>
     </div>
-
-    <!-- Categories -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Kỹ năng</h6>
-                <h1 class="mb-5">Chọn kỹ năng cần luyện</h1>
-            </div>
-            <div class="row g-3">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <a href="login.html" class="cat-item d-flex flex-column align-items-center text-center p-3 text-decoration-none">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center">
-                            <i class="fa fa-2x fa-book-open text-primary"></i>
-                        </div>
-                        <h6 class="mb-0">Reading</h6>
-                        <small class="text-muted">3 passages / 60 phút</small>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <a href="login.html" class="cat-item d-flex flex-column align-items-center text-center p-3 text-decoration-none">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center">
-                            <i class="fa fa-2x fa-headphones text-primary"></i>
-                        </div>
-                        <h6 class="mb-0">Listening</h6>
-                        <small class="text-muted">4 sections / 40 phút</small>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <a href="login.html" class="cat-item d-flex flex-column align-items-center text-center p-3 text-decoration-none">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center">
-                            <i class="fa fa-2x fa-pen-alt text-primary"></i>
-                        </div>
-                        <h6 class="mb-0">Writing</h6>
-                        <small class="text-muted">Task 1 + Task 2 / 60 phút</small>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <a href="login.html" class="cat-item d-flex flex-column align-items-center text-center p-3 text-decoration-none">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 mb-3" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center">
-                            <i class="fa fa-2x fa-microphone text-primary"></i>
-                        </div>
-                        <h6 class="mb-0">Speaking</h6>
-                        <small class="text-muted">Part 1, 2, 3 + AI Feedback</small>
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="footer-col">
+      <h4>Khóa học</h4>
+      <ul>
+        <li><a href="courses.html">IELTS Mất Gốc → 6.0+</a></li>
+        <li><a href="courses.html">IELTS 3.0 → 6.0+</a></li>
+        <li><a href="courses.html">IELTS 6.0 → 7.0+</a></li>
+        <li><a href="courses.html">IELTS Speaking</a></li>
+        <li><a href="courses.html">Giao Tiếp Cơ Bản</a></li>
+        <li><a href="courses.html">Giao Tiếp Văn Phòng</a></li>
+      </ul>
     </div>
-
-    <!-- Course Cards -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Khóa học</h6>
-                <h1 class="mb-5">Đăng ký học cùng thầy Daniel</h1>
-            </div>
-            <div class="row g-4 justify-content-center">
-
-                <!-- Speaking Giao Tiếp -->
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="img/course-1.jpg" alt="Speaking IELTS">
-                            <div class="w-100 d-flex justify-content-between p-4 position-absolute bottom-0">
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-primary">900.000đ/tháng</span>
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-warning text-dark">Đang khai giảng</span>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h5 class="mb-4">Khóa Speaking Giao Tiếp</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>6 tháng</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-users text-primary me-2"></i>Dưới 8 học sinh</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Thầy Daniel</small>
-                        </div>
-                        <div class="p-4 pt-0">
-                            <p class="mt-3 mb-3" style="font-size:14px">Từ cơ bản đến giao tiếp lưu loát. Luyện phát âm, vocabulary và tự tin nói chuyện bằng tiếng Anh mỗi ngày. 3 buổi/tuần.</p>
-                            <a href="contact.html" class="btn btn-primary py-2 px-4 me-2">Đăng ký</a>
-                            <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline-primary py-2 px-4">Zalo</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IELTS Speaking -->
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="img/course-2.jpg" alt="IELTS Speaking">
-                            <div class="w-100 d-flex justify-content-between p-4 position-absolute bottom-0">
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-primary">2.500.000đ/khóa</span>
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-warning text-dark">Đang khai giảng</span>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h5 class="mb-4">Khóa IELTS Speaking</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>2 tháng/band</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-chart-line text-primary me-2"></i>Band 4→7</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Thầy Daniel</small>
-                        </div>
-                        <div class="p-4 pt-0">
-                            <p class="mt-3 mb-3" style="font-size:14px">Lộ trình tăng band Speaking từng bước: 4→5, 5→6, 6→7. Chiến thuật trả lời Part 1, 2, 3 và AI phân tích bài nói tức thì.</p>
-                            <a href="contact.html" class="btn btn-primary py-2 px-4 me-2">Đăng ký</a>
-                            <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline-primary py-2 px-4">Zalo</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IELTS Full -->
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="img/course-3.jpg" alt="IELTS Full">
-                            <div class="w-100 d-flex justify-content-between p-4 position-absolute bottom-0">
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-primary">Liên hệ</span>
-                                <span class="h6 mb-0 text-white px-3 py-1 bg-success">Online</span>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h5 class="mb-4">Luyện thi IELTS Tổng hợp</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>3–6 tháng</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-star text-primary me-2"></i>4 kỹ năng</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Thầy Daniel</small>
-                        </div>
-                        <div class="p-4 pt-0">
-                            <p class="mt-3 mb-3" style="font-size:14px">Luyện đầy đủ 4 kỹ năng Reading, Listening, Writing và Speaking. Đề thi thực chiến, chấm điểm tự động, lịch sử làm bài đầy đủ.</p>
-                            <a href="contact.html" class="btn btn-primary py-2 px-4 me-2">Tư vấn</a>
-                            <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline-primary py-2 px-4">Zalo</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+    <div class="footer-col">
+      <h4>Tài nguyên</h4>
+      <ul>
+        <li><a href="login.html">Đăng nhập học</a></li>
+        <li><a href="register.html">Đăng ký tài khoản</a></li>
+        <li><a href="about.html">Về giáo viên</a></li>
+        <li><a href="contact.html">Tư vấn miễn phí</a></li>
+      </ul>
     </div>
-
-    <!-- CTA -->
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="bg-primary text-center rounded p-5">
-                <div class="d-flex align-items-center justify-content-center mb-4">
-                    <i class="fa fa-3x fa-graduation-cap text-white"></i>
-                </div>
-                <h1 class="text-white mb-4">Bắt đầu luyện IELTS ngay hôm nay!</h1>
-                <p class="text-white mb-4">Liên hệ thầy Daniel Hà để được tư vấn miễn phí và nhận lộ trình học phù hợp với mục tiêu của bạn.</p>
-                <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-light py-3 px-5 me-3">
-                    <i class="fas fa-comment-dots me-2"></i>Nhắn Zalo ngay
-                </a>
-                <a href="login.html" class="btn btn-outline-light py-3 px-5">
-                    <i class="fa fa-sign-in-alt me-2"></i>Vào học thử
-                </a>
-            </div>
-        </div>
+    <div class="footer-col">
+      <h4>Liên hệ</h4>
+      <ul>
+        <li><a href="tel:0914769618">📞 0914 769 618</a></li>
+        <li><a href="#">📘 Facebook</a></li>
+        <li><a href="https://zalo.me/0914769618" target="_blank">💬 Zalo</a></li>
+        <li><a href="#">🎬 YouTube</a></li>
+      </ul>
     </div>
-
-    <!-- Footer -->
-    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Liên kết nhanh</h4>
-                    <a class="btn btn-link" href="about.html">Về chúng tôi</a>
-                    <a class="btn btn-link" href="contact.html">Liên hệ</a>
-                    <a class="btn btn-link" href="courses.html">Khóa học</a>
-                    <a class="btn btn-link" href="login.html">Đăng nhập</a>
-                    <a class="btn btn-link" href="register.html">Đăng ký</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Liên hệ</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Việt Nam</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0914 769 618</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>englishwithdan@gmail.com</p>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href="https://zalo.me/0914769618" target="_blank"><i class="fas fa-comment-dots"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a class="btn btn-outline-light btn-social" href="tel:0914769618"><i class="fa fa-phone"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Kỹ năng IELTS</h4>
-                    <a class="btn btn-link" href="login.html">📖 Reading</a>
-                    <a class="btn btn-link" href="login.html">🎧 Listening</a>
-                    <a class="btn btn-link" href="login.html">✏️ Writing</a>
-                    <a class="btn btn-link" href="login.html">🎤 Speaking</a>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Nhắn tin Zalo</h4>
-                    <p>Liên hệ ngay để được tư vấn lộ trình học IELTS phù hợp nhất với bạn.</p>
-                    <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-primary py-2 px-4">
-                        <i class="fas fa-comment-dots me-2"></i>Chat Zalo
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom" href="#">EnglishWithDan</a>, All Right Reserved.
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <div class="footer-menu">
-                            <a href="login.html">Trang chủ</a>
-                            <a href="courses.html">Khóa học</a>
-                            <a href="contact.html">Liên hệ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+    <div class="footer-socials">
+      <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
+      <a href="mailto:englishwithdan@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
     </div>
+  </div>
+</footer>
 
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+<script>
+const API = 'https://englishwithdan.onrender.com/api';
+const LEVEL_COLOR = { red:'lv-red', blue:'lv-blue', green:'lv-green', purple:'lv-purple' };
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="js/main.js"></script>
+/* ── Static fallback courses (used when API returns empty or fails) ── */
+const STATIC_COURSES = [
+  { title:'IELTS Mất Gốc → 6.0+', subtitle:'Học viên chưa có nền tảng', description:'Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.', price:'Liên hệ tư vấn', imageUrl:'img/course-starter.jpg', placeholder:'🌱', category:'ielts', level:'Mất gốc', levelColor:'red', duration:'6–8 tháng', classSize:'Nhóm ≤ 8 người', isActive:true },
+  { title:'IELTS 3.0 → 6.0+', subtitle:'Band 3.0–4.5', description:'Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.', price:'Liên hệ tư vấn', imageUrl:'img/course-3to6.jpg', placeholder:'📈', category:'ielts', level:'Cơ bản → Nâng cao', levelColor:'blue', duration:'4–5 tháng', classSize:'Nhóm ≤ 8 người', isActive:true },
+  { title:'IELTS 6.0 → 7.0+', subtitle:'Band 5.5–6.5', description:'Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening. Mục tiêu 7.0–7.5.', price:'Liên hệ tư vấn', imageUrl:'img/course-6to7.jpg', placeholder:'🚀', category:'ielts', level:'Nâng cao', levelColor:'green', duration:'3–4 tháng', classSize:'1–1 hoặc nhóm nhỏ', isActive:true },
+  { title:'IELTS Speaking Chuyên Sâu', subtitle:'Học viên muốn đột phá Speaking', description:'Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.', price:'2.500.000đ / khóa', imageUrl:'img/course-speaking.jpg', placeholder:'🎤', category:'speaking ielts', level:'Speaking chuyên sâu', levelColor:'purple', duration:'6–8 tuần', classSize:'1–1 hoặc nhóm 4', isActive:true },
+  { title:'Giao Tiếp Tiếng Anh Cơ Bản', subtitle:'Người mất gốc hoặc mới bắt đầu', description:'Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.', price:'900.000đ / tháng', imageUrl:'img/course-comm.jpg', placeholder:'💬', category:'comm', level:'Giao tiếp', levelColor:'blue', duration:'3 tháng', classSize:'Nhóm ≤ 10', isActive:true },
+  { title:'Tiếng Anh Giao Tiếp Văn Phòng', subtitle:'Người đi làm, dân văn phòng', description:'Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.', price:'Liên hệ tư vấn', imageUrl:'img/course-business.jpg', placeholder:'💼', category:'comm', level:'Business', levelColor:'green', duration:'2–3 tháng', classSize:'Nhóm hoặc 1–1', isActive:true },
+];
+
+function buildCourseCard(c) {
+  const lvClass = LEVEL_COLOR[c.levelColor] || 'lv-blue';
+  return `<div class="course-card" data-category="${c.category || ''}">
+    <div class="course-thumb">
+      ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${c.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>` : ''}
+      <span class="course-placeholder" style="${c.imageUrl ? 'display:none' : ''}">${c.placeholder || '📚'}</span>
+      <span class="course-level ${lvClass}">${c.level || ''}</span>
+    </div>
+    <div class="course-body">
+      <h3>${c.title}</h3>
+      <div class="course-target">Dành cho: ${c.subtitle || ''}</div>
+      <p>${c.description || ''}</p>
+      <div class="course-meta">
+        ${c.duration  ? `<span><i class="fas fa-clock"></i> ${c.duration}</span>` : ''}
+        ${c.classSize ? `<span><i class="fas fa-users"></i> ${c.classSize}</span>` : ''}
+        <span><i class="fas fa-chalkboard-teacher"></i> Thầy Daniel</span>
+      </div>
+      <div class="course-price">${c.price || 'Liên hệ tư vấn'}</div>
+      <div class="course-cta">
+        <a href="contact.html" class="btn btn-primary"><i class="fas fa-phone-alt"></i> Tư vấn ngay</a>
+        <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline">Zalo</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+let _courses = [];
+
+async function loadCoursesFromAPI() {
+  const grid = document.getElementById('courses-grid');
+  const tag  = document.getElementById('course-count-tag');
+  try {
+    const res  = await fetch(`${API}/courses`);
+    const data = await res.json();
+    if (data.success && data.courses.length > 0) {
+      _courses = data.courses;
+    } else {
+      _courses = STATIC_COURSES;
+    }
+  } catch {
+    _courses = STATIC_COURSES;
+  }
+  grid.innerHTML = _courses.map(buildCourseCard).join('');
+  tag.textContent = `${_courses.length} Khóa học`;
+  grid.style.display = '';
+  initFilter();
+}
+
+function initFilter() {
+  document.querySelectorAll('.subnav-list a').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.subnav-list a').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      let visible  = 0;
+      document.querySelectorAll('.course-card').forEach(card => {
+        const cats = card.dataset.category || '';
+        const show = filter === 'all' || cats.includes(filter);
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+    });
+  });
+}
+
+/* ── Mobile menu ── */
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const icon = document.getElementById('ham-icon');
+  const open = menu.classList.toggle('open');
+  icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+}
+
+loadCoursesFromAPI();
+</script>
 </body>
 </html>

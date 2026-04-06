@@ -64,14 +64,15 @@ function switchTab(tab, ev) {
     dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
     vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
     listening: 'Đề nghe (Listening)', writing: 'Đề viết (Writing)', speaking: 'Speaking',
-    users: 'Quản lý người dùng'
+    courses: 'Quản lý khóa học', users: 'Quản lý người dùng'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
   // Load lazy khi chuyển tab
   if (tab === 'vocab') loadVocabUnits();
   if (tab === 'listening') loadListeningTests();
-  if (tab === 'writing') { loadTask1Pool(); loadTask2Pool(); loadWritingHistory(); }
+  if (tab === 'writing') { loadTask1Pool(); loadTask2Pool(); loadWritingHistory(); loadWritingSamples(); }
   if (tab === 'speaking') { loadSpeakingQuestions(); loadSpeakingMaterials(); }
+  if (tab === 'courses') loadCourses();
   if (tab === 'users') loadUsers();
 }
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -94,9 +95,18 @@ async function loadStats() {
   try {
     const data = await (await fetch(`${API}/admin/stats`, { headers: authH() })).json();
     if (!data.success) return;
-    document.getElementById('stat-students').textContent = data.stats.totalStudents;
-    document.getElementById('stat-attempts').textContent = data.stats.totalAttempts;
-    document.getElementById('stat-band').textContent = data.stats.avgBandScore;
+    const s = data.stats;
+    document.getElementById('stat-students').textContent          = s.totalStudents        ?? '–';
+    document.getElementById('stat-new-week').textContent          = s.newUsersThisWeek     ?? '–';
+    document.getElementById('stat-teachers').textContent          = s.totalTeachers        ?? '–';
+    document.getElementById('stat-banned').textContent            = s.bannedUsers          ?? '–';
+    document.getElementById('stat-reading-attempts').textContent  = s.totalReadingAttempts  ?? '–';
+    document.getElementById('stat-listening-attempts').textContent= s.totalListeningAttempts?? '–';
+    document.getElementById('stat-writing-attempts').textContent  = s.totalWritingAttempts  ?? '–';
+    document.getElementById('stat-passages').textContent          = s.passageCount          ?? '–';
+    document.getElementById('stat-reading-band').textContent      = s.avgReadingBand        ?? '–';
+    document.getElementById('stat-listening-band').textContent    = s.avgListeningBand      ?? '–';
+    document.getElementById('stat-vocab-units').textContent       = s.vocabUnitCount        ?? '–';
   } catch { }
 }
 // ✅ Thay bằng
@@ -158,9 +168,10 @@ function renderHistoryTable(list, getUsername) {
       <td style="color:var(--accent2);font-weight:600">${h.wrongCount}</td>
       <td style="color:var(--text3)">${h.skippedCount}</td>
       <td>${bandBadge(h.bandScore)}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteReadingAttempt('${h._id}','${name.replace(/'/g,"\\'")}')">🗑</button></td>
     </tr>`;
     }).join('')
-    : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
+    : '<tr><td colspan="9" class="table-empty">Chưa có kết quả</td></tr>';
 }
 function filterHistory() {
   const q = document.getElementById('search-history').value.toLowerCase();
@@ -2344,6 +2355,7 @@ async function loadWritingHistory() {
           <td>
             <button class="btn btn-ghost btn-sm" onclick="viewWritingAttempt('${a._id}')">👁 Xem</button>
             <button class="btn btn-ghost btn-sm" onclick="downloadWritingAttempt('${a._id}')" style="margin-left:4px">⬇</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteWritingAttempt('${a._id}')" style="margin-left:4px">🗑</button>
           </td>
         </tr>`;
       }).join('')
@@ -2994,3 +3006,300 @@ function deleteUser(id, username) {
     } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
   });
 }
+
+/* ══════════════════════════════════════════════
+   WRITING – Samples (PDF)
+══════════════════════════════════════════════ */
+const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 & 2' };
+
+async function loadWritingSamples() {
+  try {
+    const res  = await fetch(`${API}/admin/writing/samples`, { headers: authH() });
+    const data = await res.json();
+    const list = data.samples || [];
+    document.getElementById('writing-sample-tbody').innerHTML = list.length
+      ? list.map(s => `
+        <tr>
+          <td>${escH(s.title)}</td>
+          <td>${escH(s.quarter)}</td>
+          <td>${escH(s.topic)}</td>
+          <td><span style="font-size:12px;padding:2px 8px;border-radius:8px;background:#eff6ff;color:#3d8bff">${TASK_TYPE_LABEL[s.taskType] || s.taskType}</span></td>
+          <td style="font-size:12px;color:#999">${formatDate(s.createdAt)}</td>
+          <td style="text-align:center">
+            <button class="btn btn-ghost btn-sm" onclick="openWritingSampleModal('${s._id}')" title="Chỉnh sửa">✎</button>
+            <button class="btn btn-ghost btn-sm" onclick="softDeleteWritingSample('${s._id}')" title="Ẩn">👁‍🗨</button>
+            <button class="btn btn-danger btn-sm" onclick="hardDeleteWritingSample('${s._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
+          </td>
+        </tr>`).join('')
+      : '<tr><td colspan="6" class="table-empty">Chưa có tài liệu nào</td></tr>';
+  } catch { toast('Lỗi load tài liệu Writing', 'error'); }
+}
+
+function openWritingSampleModal(id) {
+  document.getElementById('wsample-modal-title').textContent = id ? 'Chỉnh sửa tài liệu' : 'Upload tài liệu mẫu Writing';
+  document.getElementById('wsample-id').value       = '';
+  document.getElementById('wsample-title').value    = '';
+  document.getElementById('wsample-quarter').value  = '';
+  document.getElementById('wsample-topic').value    = '';
+  document.getElementById('wsample-tasktype').value = 'task2';
+  document.getElementById('wsample-file').value     = '';
+  document.getElementById('wsample-upload-status').style.display = 'none';
+
+  if (id) {
+    document.getElementById('wsample-id').value = id;
+    document.getElementById('wsample-file-group').querySelector('label').textContent = 'File PDF (để trống nếu không đổi)';
+    fetch(`${API}/admin/writing/samples`, { headers: authH() })
+      .then(r => r.json())
+      .then(data => {
+        const s = (data.samples || []).find(x => x._id === id);
+        if (s) {
+          document.getElementById('wsample-title').value    = s.title;
+          document.getElementById('wsample-quarter').value  = s.quarter;
+          document.getElementById('wsample-topic').value    = s.topic;
+          document.getElementById('wsample-tasktype').value = s.taskType || 'task2';
+        }
+      });
+  } else {
+    document.getElementById('wsample-file-group').querySelector('label').textContent = 'File PDF *';
+  }
+  openModal('modal-writing-sample');
+}
+
+async function saveWritingSample() {
+  const id       = document.getElementById('wsample-id').value;
+  const title    = document.getElementById('wsample-title').value.trim();
+  const quarter  = document.getElementById('wsample-quarter').value.trim();
+  const topic    = document.getElementById('wsample-topic').value.trim();
+  const taskType = document.getElementById('wsample-tasktype').value;
+  if (!title || !quarter || !topic) { toast('Vui lòng điền đầy đủ thông tin', 'error'); return; }
+
+  const btn    = document.getElementById('wsample-save-btn');
+  const status = document.getElementById('wsample-upload-status');
+  btn.disabled = true;
+
+  try {
+    if (id) {
+      const file = document.getElementById('wsample-file').files[0];
+      let updateBody = { title, quarter, topic, taskType };
+      if (file) {
+        status.style.display = 'block';
+        status.textContent   = '⬆️ Đang upload PDF mới...';
+        const formData = new FormData();
+        formData.append('pdf', file);
+        const uploadRes  = await fetch(`${API}/admin/writing/samples/upload-pdf`, {
+          method: 'POST', headers: { Authorization: authH().Authorization }, body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (!uploadData.success) throw new Error(uploadData.message);
+        updateBody.pdfUrl = uploadData.url;
+        status.textContent = '💾 Đang lưu...';
+      }
+      const res  = await fetch(`${API}/admin/writing/samples/${id}`, {
+        method: 'PUT',
+        headers: { ...authH(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(updateBody)
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã cập nhật tài liệu');
+    } else {
+      const file = document.getElementById('wsample-file').files[0];
+      if (!file) { toast('Chưa chọn file PDF', 'error'); btn.disabled = false; return; }
+
+      status.style.display = 'block';
+      status.textContent   = '⬆️ Đang upload PDF lên Cloudinary...';
+      const formData = new FormData();
+      formData.append('pdf', file);
+      const uploadRes  = await fetch(`${API}/admin/writing/samples/upload-pdf`, {
+        method: 'POST', headers: { Authorization: authH().Authorization }, body: formData
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadData.success) throw new Error(uploadData.message);
+
+      status.textContent = '💾 Đang lưu thông tin...';
+      const saveRes  = await fetch(`${API}/admin/writing/samples`, {
+        method: 'POST',
+        headers: { ...authH(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, quarter, topic, taskType, pdfUrl: uploadData.url })
+      });
+      const saveData = await saveRes.json();
+      if (!saveData.success) throw new Error(saveData.message);
+      toast('Đã upload tài liệu mẫu Writing');
+    }
+    closeModal('modal-writing-sample');
+    loadWritingSamples();
+  } catch (err) {
+    toast('Lỗi: ' + err.message, 'error');
+    status.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function softDeleteWritingSample(id) {
+  confirmAction('Ẩn tài liệu này?', async () => {
+    try {
+      const res  = await fetch(`${API}/admin/writing/samples/${id}`, {
+        method: 'DELETE', headers: authH()
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã ẩn tài liệu');
+      loadWritingSamples();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+function hardDeleteWritingSample(id) {
+  confirmAction('Xóa VĨNH VIỄN tài liệu này? Không thể khôi phục!', async () => {
+    try {
+      const res  = await fetch(`${API}/admin/writing/samples/${id}/permanent`, {
+        method: 'DELETE', headers: authH()
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã xóa vĩnh viễn tài liệu');
+      loadWritingSamples();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   COURSES (Quản lý khóa học)
+══════════════════════════════════════════════ */
+let _allCourses = [];
+
+async function loadCourses() {
+  try {
+    const data = await (await fetch(`${API}/admin/courses`, { headers: authH() })).json();
+    _allCourses = data.success ? data.courses : [];
+    renderCoursesTable(_allCourses);
+  } catch { toast('Lỗi load khóa học', 'error'); }
+}
+
+function renderCoursesTable(list) {
+  const catLabel = { ielts: 'IELTS', speaking: 'Speaking', comm: 'Giao tiếp', 'speaking ielts': 'Speaking + IELTS' };
+  const colMap   = { red: 'badge-red', blue: 'badge-blue', green: 'badge-green', purple: 'badge-purple' };
+  document.getElementById('courses-tbody').innerHTML = list.length
+    ? list.map(c => `<tr>
+        <td><strong>${escH(c.title)}</strong><br><small style="color:var(--text3)">${escH(c.subtitle || '')}</small></td>
+        <td><span class="badge badge-blue">${catLabel[c.category] || c.category}</span></td>
+        <td><span class="badge ${colMap[c.levelColor] || 'badge-gray'}">${escH(c.level || '–')}</span></td>
+        <td style="font-size:12px">${escH(c.duration || '–')}</td>
+        <td style="font-size:13px;font-weight:600">${escH(c.price || '–')}</td>
+        <td><span class="badge ${c.isActive ? 'badge-green' : 'badge-gray'}">${c.isActive ? 'Hiển thị' : 'Ẩn'}</span></td>
+        <td style="font-family:var(--mono);font-size:12px">${c.order ?? 0}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="openCourseModal('${c._id}')">✏️ Sửa</button>
+          <button class="btn btn-sm ${c.isActive ? 'btn-warning' : 'btn-primary'}" onclick="toggleCourseActive('${c._id}',${c.isActive})">
+            ${c.isActive ? '🙈 Ẩn' : '👁 Hiện'}
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="hardDeleteCourse('${c._id}','${escH(c.title).replace(/'/g,"\\'")}')">🗑</button>
+        </td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" class="table-empty">Chưa có khóa học nào. Nhấn ＋ để thêm.</td></tr>';
+}
+
+function openCourseModal(id) {
+  const c = id ? _allCourses.find(x => x._id === id) : null;
+  document.getElementById('course-modal-title').textContent = c ? 'Sửa khóa học' : 'Thêm khóa học';
+  document.getElementById('course-id').value          = c?._id         || '';
+  document.getElementById('course-title').value       = c?.title       || '';
+  document.getElementById('course-subtitle').value    = c?.subtitle    || '';
+  document.getElementById('course-description').value = c?.description || '';
+  document.getElementById('course-price').value       = c?.price       || 'Liên hệ tư vấn';
+  document.getElementById('course-image').value       = c?.imageUrl    || '';
+  document.getElementById('course-placeholder').value = c?.placeholder || '📚';
+  document.getElementById('course-category').value   = c?.category    || 'ielts';
+  document.getElementById('course-level').value       = c?.level       || '';
+  document.getElementById('course-level-color').value = c?.levelColor  || 'blue';
+  document.getElementById('course-duration').value    = c?.duration    || '';
+  document.getElementById('course-classsize').value   = c?.classSize   || '';
+  document.getElementById('course-order').value       = c?.order       ?? 0;
+  document.getElementById('course-active').checked   = c ? c.isActive : true;
+  openModal('modal-course');
+}
+
+async function saveCourse() {
+  const id = document.getElementById('course-id').value;
+  const title = document.getElementById('course-title').value.trim();
+  if (!title) { toast('Tên khóa học là bắt buộc', 'error'); return; }
+  const body = {
+    title,
+    subtitle:    document.getElementById('course-subtitle').value.trim(),
+    description: document.getElementById('course-description').value.trim(),
+    price:       document.getElementById('course-price').value.trim() || 'Liên hệ tư vấn',
+    imageUrl:    document.getElementById('course-image').value.trim(),
+    placeholder: document.getElementById('course-placeholder').value.trim() || '📚',
+    category:    document.getElementById('course-category').value,
+    level:       document.getElementById('course-level').value.trim(),
+    levelColor:  document.getElementById('course-level-color').value,
+    duration:    document.getElementById('course-duration').value.trim(),
+    classSize:   document.getElementById('course-classsize').value.trim(),
+    order:       Number(document.getElementById('course-order').value) || 0,
+    isActive:    document.getElementById('course-active').checked,
+  };
+  try {
+    const url    = id ? `${API}/admin/courses/${id}` : `${API}/admin/courses`;
+    const method = id ? 'PUT' : 'POST';
+    const res    = await fetch(url, { method, headers: { ...authH(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const data   = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(id ? 'Đã cập nhật khóa học' : 'Đã thêm khóa học');
+    closeModal('modal-course');
+    loadCourses();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+async function toggleCourseActive(id, currentActive) {
+  try {
+    const res  = await fetch(`${API}/admin/courses/${id}`, {
+      method: 'PUT', headers: { ...authH(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive: !currentActive })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(currentActive ? 'Đã ẩn khóa học' : 'Đã hiện khóa học');
+    loadCourses();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+function hardDeleteCourse(id, title) {
+  confirmAction(`Xóa VĨNH VIỄN khóa học "${title}"? Không thể khôi phục!`, async () => {
+    try {
+      const res  = await fetch(`${API}/admin/courses/${id}/permanent`, { method: 'DELETE', headers: authH() });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã xóa khóa học');
+      loadCourses();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   XÓA BÀI THI (Admin delete attempts)
+══════════════════════════════════════════════ */
+function deleteReadingAttempt(id, studentName) {
+  confirmAction(`Xóa bài thi Reading của "${studentName}"? Không thể khôi phục!`, async () => {
+    try {
+      const res  = await fetch(`${API}/admin/attempts/${id}`, { method: 'DELETE', headers: authH() });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã xóa bài thi Reading');
+      loadHistory();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+function deleteWritingAttempt(id) {
+  confirmAction('Xóa bài nộp Writing này? Không thể khôi phục!', async () => {
+    try {
+      const res  = await fetch(`${API}/admin/writing-attempts/${id}`, { method: 'DELETE', headers: authH() });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      toast('Đã xóa bài nộp Writing');
+      loadWritingHistory();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+

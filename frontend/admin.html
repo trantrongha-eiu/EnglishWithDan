@@ -1005,6 +1005,9 @@
     <a class="nav-item" onclick="switchTab('speaking',event)" href="#">
       <span class="nav-icon">🎤</span> Speaking
     </a>
+    <a class="nav-item" onclick="switchTab('courses',event)" href="#">
+      <span class="nav-icon">🏫</span> Khóa học
+    </a>
 
     <span class="nav-section-label">Học sinh</span>
     <a class="nav-item" onclick="switchTab('keys',event)" href="#">
@@ -1046,6 +1049,7 @@
 
         <!-- ─── TAB: DASHBOARD ─── -->
         <div id="tab-dashboard" class="active">
+          <!-- Row 1: Người dùng -->
           <div class="stats-row">
             <div class="stat-card blue">
               <div class="stat-icon">👨‍🎓</div>
@@ -1054,25 +1058,52 @@
               <div class="stat-sub">Tài khoản đã đăng ký</div>
             </div>
             <div class="stat-card green">
-              <div class="stat-icon">✅</div>
-              <div class="stat-label">Lượt làm bài</div>
-              <div class="stat-value" id="stat-attempts">–</div>
-              <div class="stat-sub">Bài đã hoàn thành</div>
+              <div class="stat-icon">🆕</div>
+              <div class="stat-label">Mới tuần này</div>
+              <div class="stat-value" id="stat-new-week">–</div>
+              <div class="stat-sub">Đăng ký trong 7 ngày</div>
             </div>
             <div class="stat-card yellow">
+              <div class="stat-icon">👨‍🏫</div>
+              <div class="stat-label">Giáo viên / Admin</div>
+              <div class="stat-value" id="stat-teachers">–</div>
+              <div class="stat-sub">Tài khoản quản lý</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-icon">🚫</div>
+              <div class="stat-label">Bị cấm</div>
+              <div class="stat-value" id="stat-banned">–</div>
+              <div class="stat-sub">Tài khoản bị khoá</div>
+            </div>
+          </div>
+          <!-- Row 2: Lượt làm bài & nội dung -->
+          <div class="stats-row" style="margin-top:0">
+            <div class="stat-card blue">
               <div class="stat-icon">📖</div>
-              <div class="stat-label">Band TB</div>
-              <div class="stat-value" id="stat-band">–</div>
-              <div class="stat-sub">Điểm trung bình</div>
+              <div class="stat-label">Lượt Reading</div>
+              <div class="stat-value" id="stat-reading-attempts">–</div>
+              <div class="stat-sub">Band TB: <span id="stat-reading-band" style="color:var(--green);font-weight:700">–</span></div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">🎧</div>
+              <div class="stat-label">Lượt Listening</div>
+              <div class="stat-value" id="stat-listening-attempts">–</div>
+              <div class="stat-sub">Band TB: <span id="stat-listening-band" style="color:var(--green);font-weight:700">–</span></div>
+            </div>
+            <div class="stat-card yellow">
+              <div class="stat-icon">✏️</div>
+              <div class="stat-label">Lượt Writing</div>
+              <div class="stat-value" id="stat-writing-attempts">–</div>
+              <div class="stat-sub">Bài đã nộp</div>
             </div>
             <div class="stat-card red">
               <div class="stat-icon">📄</div>
-              <div class="stat-label">Bài đọc</div>
+              <div class="stat-label">Bài đọc / Từ vựng</div>
               <div class="stat-value" id="stat-passages">–</div>
-              <div class="stat-sub">Trong database</div>
+              <div class="stat-sub">Vocab units: <span id="stat-vocab-units" style="font-weight:700">–</span></div>
             </div>
           </div>
-          <div class="section-header"><span class="section-title">Kết quả gần đây</span></div>
+          <div class="section-header"><span class="section-title">Kết quả Reading gần đây</span></div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -1243,11 +1274,12 @@
                   <th>Sai</th>
                   <th>Bỏ qua</th>
                   <th>Band</th>
+                  <th style="width:70px"></th>
                 </tr>
               </thead>
               <tbody id="history-tbody">
                 <tr>
-                  <td colspan="8" class="table-empty">Đang tải...</td>
+                  <td colspan="9" class="table-empty">Đang tải...</td>
                 </tr>
               </tbody>
             </table>
@@ -1336,6 +1368,29 @@
             </table>
           </div>
 
+          <!-- Sample PDF -->
+          <div class="section-header" style="margin-top:36px">
+            <span class="section-title">Tài liệu mẫu PDF (Sample Writing)</span>
+            <button class="btn btn-primary btn-sm" onclick="openWritingSampleModal()">＋ Upload PDF</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tiêu đề</th>
+                  <th>Quarter</th>
+                  <th>Topic</th>
+                  <th>Loại</th>
+                  <th>Ngày tạo</th>
+                  <th style="width:140px"></th>
+                </tr>
+              </thead>
+              <tbody id="writing-sample-tbody">
+                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
           <!-- Lịch sử -->
           <div class="section-header" style="margin-top:32px">
             <span class="section-title">Lịch sử nộp bài Writing</span>
@@ -1349,11 +1404,38 @@
                   <th>Task 1</th>
                   <th>Task 2</th>
                   <th>Ngày nộp</th>
-                  <th style="width:140px"></th>
+                  <th style="width:180px"></th>
                 </tr>
               </thead>
               <tbody id="writing-history-tbody">
                 <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ─── TAB: COURSES ─── -->
+        <div id="tab-courses">
+          <div class="section-header">
+            <span class="section-title">Quản lý khóa học</span>
+            <button class="btn btn-primary" onclick="openCourseModal()">＋ Thêm khóa học</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tên khóa học</th>
+                  <th>Danh mục</th>
+                  <th>Cấp độ</th>
+                  <th>Thời lượng</th>
+                  <th>Học phí</th>
+                  <th>Trạng thái</th>
+                  <th>Thứ tự</th>
+                  <th style="width:190px"></th>
+                </tr>
+              </thead>
+              <tbody id="courses-tbody">
+                <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1891,6 +1973,50 @@
     </div>
   </div>
 
+  <!-- ══ MODAL: Writing Sample (PDF Upload) ══ -->
+  <div class="modal-overlay hidden" id="modal-writing-sample">
+    <div class="modal-box" style="width:min(520px,100%)">
+      <div class="modal-header">
+        <h3 id="wsample-modal-title">Upload tài liệu mẫu Writing</h3>
+        <button class="modal-close" onclick="closeModal('modal-writing-sample')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="wsample-id" />
+        <div class="form-group">
+          <label>Tiêu đề *</label>
+          <input class="form-input" id="wsample-title" placeholder="VD: Sample Writing Q1 2025 – Task 2 Environment" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quarter *</label>
+            <input class="form-input" id="wsample-quarter" placeholder="VD: Q1 2025" />
+          </div>
+          <div class="form-group">
+            <label>Topic *</label>
+            <input class="form-input" id="wsample-topic" placeholder="VD: Environment" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Loại bài</label>
+          <select class="form-input" id="wsample-tasktype">
+            <option value="task2">Task 2 (Essay)</option>
+            <option value="task1">Task 1 (Chart / Diagram)</option>
+            <option value="both">Cả Task 1 & Task 2</option>
+          </select>
+        </div>
+        <div class="form-group" id="wsample-file-group">
+          <label>File PDF *</label>
+          <input type="file" class="form-input" id="wsample-file" accept=".pdf" />
+        </div>
+        <div id="wsample-upload-status" style="display:none;color:#6b7280;font-size:13px;margin-top:6px"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-writing-sample')">Huỷ</button>
+        <button class="btn btn-primary" id="wsample-save-btn" onclick="saveWritingSample()">📤 Upload & Lưu</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ MODAL: Task 1 Pool (Chart / Diagram) ══ -->
   <div class="modal-overlay hidden" id="modal-task1">
     <div class="modal-box modal-lg" style="width:min(700px,100%)">
@@ -1983,6 +2109,75 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" id="confirm-action-no">Huỷ</button>
         <button class="btn btn-danger" id="confirm-action-ok">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: Khóa học ══ -->
+  <div class="modal-overlay hidden" id="modal-course">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="course-modal-title">Thêm khóa học</h3>
+        <button class="modal-close" onclick="closeModal('modal-course')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="course-id" />
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1"><label>Tên khóa học *</label>
+            <input class="form-input" id="course-title" placeholder="IELTS Mất Gốc → 6.0+" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Danh mục *</label>
+            <select class="form-select" id="course-category">
+              <option value="ielts">Luyện thi IELTS</option>
+              <option value="speaking">Speaking chuyên sâu</option>
+              <option value="comm">Giao tiếp</option>
+              <option value="speaking ielts">Speaking + IELTS</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Màu level</label>
+            <select class="form-select" id="course-level-color">
+              <option value="red">Đỏ (Mất gốc)</option>
+              <option value="blue">Xanh (Cơ bản)</option>
+              <option value="green">Xanh lá (Nâng cao)</option>
+              <option value="purple">Tím (Chuyên sâu)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Cấp độ / Label</label>
+            <input class="form-input" id="course-level" placeholder="Mất gốc / Nâng cao..." /></div>
+          <div class="form-group"><label>Emoji placeholder</label>
+            <input class="form-input" id="course-placeholder" placeholder="📚" /></div>
+        </div>
+        <div class="form-group"><label>Dành cho (subtitle)</label>
+          <input class="form-input" id="course-subtitle" placeholder="Học viên chưa có nền tảng" /></div>
+        <div class="form-group"><label>Mô tả ngắn</label>
+          <textarea class="form-textarea" id="course-description" rows="3" placeholder="Mô tả nội dung khóa học..."></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label>Thời lượng</label>
+            <input class="form-input" id="course-duration" placeholder="6–8 tháng" /></div>
+          <div class="form-group"><label>Sĩ số lớp</label>
+            <input class="form-input" id="course-classsize" placeholder="Nhóm ≤ 8 người" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Học phí</label>
+            <input class="form-input" id="course-price" placeholder="Liên hệ tư vấn" /></div>
+          <div class="form-group"><label>Thứ tự hiển thị</label>
+            <input class="form-input" id="course-order" type="number" value="0" min="0" /></div>
+        </div>
+        <div class="form-group"><label>URL ảnh đại diện</label>
+          <input class="form-input" id="course-image" placeholder="img/course-xxx.jpg hoặc URL Cloudinary" /></div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="course-active" checked style="width:16px;height:16px" />
+            Hiển thị trên trang web
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-course')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveCourse()">💾 Lưu khóa học</button>
       </div>
     </div>
   </div>
