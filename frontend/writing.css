@@ -678,10 +678,38 @@ body {
 
 .samples-empty { padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 14px; }
 
+/* ── Writing samples PDF back button (mobile only) ── */
+.wsampl-back-btn { display: none; }
+
 @media (max-width: 768px) {
   .samples-layout { grid-template-columns: 1fr; }
-  .samples-list-col { max-height: 280px; }
-  .pdf-viewer-frame { min-height: 340px; }
+  .samples-list-col { max-height: 320px; }
+
+  /* Right/viewer col: hidden by default, shown full-screen when PDF selected */
+  .samples-viewer-col {
+    display: none;
+    flex-direction: column;
+    min-height: calc(100vh - 200px);
+  }
+  .samples-viewer-col.mobile-open {
+    display: flex;
+  }
+
+  .wsampl-back-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #e53935;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 16px 8px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+  }
+
+  .pdf-viewer-frame { min-height: calc(100vh - 220px); }
+  .pdf-viewer-wrap { flex: 1; display: flex; flex-direction: column; }
 }
 
 /* ══════════════════════════════════════════════

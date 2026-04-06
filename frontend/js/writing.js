@@ -586,6 +586,18 @@ function openSamplePdf(url, title, el) {
   // Highlight selected item
   document.querySelectorAll('.sample-card').forEach(i => i.classList.remove('active'));
   if (el) el.classList.add('active');
+
+  // On mobile: show viewer col full-screen, hide list col
+  if (window.innerWidth <= 768) {
+    document.getElementById('wsampl-viewer-col').classList.add('mobile-open');
+    document.querySelector('.samples-list-col').style.display = 'none';
+    document.getElementById('wsampl-viewer-col').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function closeWritingMobilePdf() {
+  document.getElementById('wsampl-viewer-col').classList.remove('mobile-open');
+  document.querySelector('.samples-list-col').style.display = '';
 }
 
 // ──────────────────────────────────────────────────────
