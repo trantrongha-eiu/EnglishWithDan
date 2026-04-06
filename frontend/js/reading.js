@@ -496,6 +496,12 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
   const optLetters = matchingOptions.map((opt, i) => String.fromCharCode(65 + i));
 
   // Question rows with dropdown
+  const groupId = 'mog-' + questions.map(q => q.questionNumber).join('-');
+  // Build used-set for reuse enforcement on initial render
+  const usedInit = !matchingReuseAllowed ? new Set(
+    questions.map(q => state.answers[q.questionNumber]).filter(Boolean)
+  ) : null;
+
   const qRowsHtml = questions.map(q => {
     const qNum = q.questionNumber;
     const review = reviewMap[qNum];
@@ -511,12 +517,14 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
           ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(review?.correctAnswer || '')}</span>` : ''}
         </div>`;
     } else {
-      const opts = optLetters.map(l =>
-        `<option value="${l}" ${userAns === l ? 'selected' : ''}>${l}</option>`
-      ).join('');
+      const opts = optLetters.map(l => {
+        const isUsedByOther = usedInit && usedInit.has(l) && l !== userAns;
+        return `<option value="${l}" ${userAns === l ? 'selected' : ''} ${isUsedByOther ? 'disabled' : ''}>${l}</option>`;
+      }).join('');
       control = `
         <div class="match-q-right">
           <select class="match-select" data-qnum="${qNum}"
+                  data-groupid="${groupId}" data-reuse="${matchingReuseAllowed ? 1 : 0}"
                   onchange="pickMatchAnswer(${qNum},this.value)">
             <option value="">–</option>
             ${opts}
@@ -922,6 +930,7 @@ function pickTFNG(qNum, val, el) {
   el.closest('.tfng-opts').querySelectorAll('.tfng-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 
 function pickMC(qNum, val, el) {
@@ -929,6 +938,7 @@ function pickMC(qNum, val, el) {
   el.closest('.q-options').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 
 function toggleCheckbox(qNum, letter, maxCount, el) {
@@ -944,11 +954,32 @@ function toggleCheckbox(qNum, letter, maxCount, el) {
   }
   state.answers[qNum] = JSON.stringify(arr);
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 
 function pickMatchAnswer(qNum, val) {
   state.answers[qNum] = val;
   updateQNavBtn(qNum);
+  // Enforce reuse restriction if enabled
+  const sel = document.querySelector(`.match-select[data-qnum="${qNum}"]`);
+  if (sel && sel.dataset.reuse === '0') _refreshMatchingSelects(sel.dataset.groupid);
+  saveExamToStorage();
+}
+
+/* Refresh disabled state of options in a matching-options group (reuse=false) */
+function _refreshMatchingSelects(groupId) {
+  const usedVals = new Set();
+  document.querySelectorAll(`.match-select[data-groupid="${groupId}"]`).forEach(s => {
+    const ans = state.answers[parseInt(s.dataset.qnum)];
+    if (ans) usedVals.add(ans);
+  });
+  document.querySelectorAll(`.match-select[data-groupid="${groupId}"]`).forEach(s => {
+    const ownAns = state.answers[parseInt(s.dataset.qnum)] || '';
+    Array.from(s.options).forEach(opt => {
+      if (!opt.value) return;
+      opt.disabled = usedVals.has(opt.value) && opt.value !== ownAns;
+    });
+  });
 }
 
 /* ── Drag & drop ──────────────────────────────────────────────────── */
@@ -978,6 +1009,7 @@ function clearDrop(qNum) {
     });
   }
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 function refreshWordBankZone(qNum, word) {
   const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
@@ -1010,6 +1042,7 @@ function clearDragDrop(qNum, groupId) {
   }
   _refreshGroupChips(groupId);
   updateQNavBtn(qNum);
+  saveExamToStorage();
 }
 
 // Re-mark chips used/unused based on current answers for a group
@@ -1185,7 +1218,7 @@ function startTimer() {
   state.timer = setInterval(() => {
     state.secondsLeft--;
     updateTimerDisplay();
-    saveExamToStorage();
+    if (state.secondsLeft % 10 === 0) saveExamToStorage(); // save every 10s, not every second
     if (state.secondsLeft <= 0) {
       clearInterval(state.timer);
       submitExam();
