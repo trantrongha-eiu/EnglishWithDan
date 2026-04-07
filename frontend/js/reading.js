@@ -488,84 +488,80 @@ function renderMapGroup(group, isReview, reviewMap) {
   return `<div class="rq-map-group">${imgHtml}<div class="rq-map-questions">${questionsHtml}</div></div>`;
 }
 
-/* ── MATCHING OPTIONS ─────────────────────────────────────────────── */
+/* ── MATCHING OPTIONS (drag-and-drop) ─────────────────────────────── */
 function renderMatchingOptionsGroup(group, isReview, reviewMap) {
   const { matchingOptions = [], matchingReuseAllowed = false, questions = [] } = group;
-
-  // Build option letters
-  const optLetters = matchingOptions.map((opt, i) => String.fromCharCode(65 + i));
-
-  // Question rows with dropdown
+  const optLetters = matchingOptions.map((_, i) => String.fromCharCode(65 + i));
   const groupId = 'mog-' + questions.map(q => q.questionNumber).join('-');
-  // Build used-set for reuse enforcement on initial render
-  const usedInit = !matchingReuseAllowed ? new Set(
-    questions.map(q => state.answers[q.questionNumber]).filter(Boolean)
-  ) : null;
 
+  // NB note (before chip bank)
+  const reuseNote = matchingReuseAllowed
+    ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
+
+  // Chip bank — each letter is a draggable chip
+  const chipsHtml = matchingOptions.map((opt, i) => {
+    const letter = optLetters[i];
+    const isUsed = !isReview && !matchingReuseAllowed &&
+                   questions.some(q => state.answers[q.questionNumber] === letter);
+    const label = opt && opt.trim().length > 1 ? `. ${escHtml(opt)}` : '';
+    return `<span class="drag-chip mo-chip${isUsed ? ' used' : ''}"
+      data-value="${escHtml(letter)}" data-groupid="${groupId}"
+      data-reuse="${matchingReuseAllowed ? 1 : 0}"
+      draggable="${isReview ? 'false' : 'true'}"
+      ondragstart="dragStart(event,'${escHtml(letter)}')"
+      onclick="clickMOChip('${escHtml(letter)}','${groupId}')">
+      <strong>${escHtml(letter)}</strong>${label}
+    </span>`;
+  }).join('');
+
+  // Question rows with drop zones
   const qRowsHtml = questions.map(q => {
     const qNum = q.questionNumber;
     const review = reviewMap[qNum];
-    const userAns = review ? review.userAnswer : (state.answers[qNum] || '');
+    const ans = isReview ? (review?.userAnswer || '') : (state.answers[qNum] || '');
 
-    let control = '';
     if (isReview) {
       const isCorrect = review?.isCorrect;
-      const badgeClass = isCorrect ? 'match-ans-correct' : 'match-ans-wrong';
-      control = `
+      const expl = review?.explanation
+        ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
+      return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
+        <div class="match-q-left">
+          <span class="match-q-num">${qNum}</span>
+          <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+        </div>
         <div class="match-q-right">
-          <span class="match-answer-badge ${badgeClass}">${escHtml(userAns || '–')}</span>
+          <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
           ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(review?.correctAnswer || '')}</span>` : ''}
-        </div>`;
-    } else {
-      const opts = optLetters.map(l => {
-        const isUsedByOther = usedInit && usedInit.has(l) && l !== userAns;
-        return `<option value="${l}" ${userAns === l ? 'selected' : ''} ${isUsedByOther ? 'disabled' : ''}>${l}</option>`;
-      }).join('');
-      control = `
-        <div class="match-q-right">
-          <select class="match-select" data-qnum="${qNum}"
-                  data-groupid="${groupId}" data-reuse="${matchingReuseAllowed ? 1 : 0}"
-                  onchange="pickMatchAnswer(${qNum},this.value)">
-            <option value="">–</option>
-            ${opts}
-          </select>
-        </div>`;
+        </div>${expl}
+      </div>`;
     }
 
-    const feedbackHtml = isReview && review?.explanation
-      ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
+    // Build display text for filled drop zone
+    const optIdx = ans ? ans.charCodeAt(0) - 65 : -1;
+    const optDesc = optIdx >= 0 ? (matchingOptions[optIdx] || '') : '';
+    const short = optDesc.length > 30 ? optDesc.slice(0, 30) + '…' : optDesc;
+    const displayText = ans
+      ? `<strong>${escHtml(ans)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`
+      : 'Kéo chữ cái vào đây';
 
     return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
       <div class="match-q-left">
         <span class="match-q-num">${qNum}</span>
         <span class="match-q-text">${escHtml(q.questionText || '')}</span>
       </div>
-      ${control}
-      ${feedbackHtml}
+      <div class="drop-zone rq-mo-drop${ans ? ' filled' : ''}"
+           data-qnum="${qNum}" data-groupid="${groupId}"
+           ondragover="event.preventDefault()"
+           ondrop="dropMO(event,${qNum},'${groupId}')">
+        ${displayText}
+      </div>
     </div>`;
   }).join('');
 
-  // NB note hiển thị TRÊN các câu hỏi (đúng vị trí IELTS)
-  const reuseNote = matchingReuseAllowed
-    ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
-
-  // Options panel: chỉ hiển thị khi option có nội dung mô tả thực sự
-  // (không hiển thị nếu options chỉ là các chữ cái đơn A, B, C... vì instruction đã nói rõ)
-  const hasDescriptions = matchingOptions.some(opt => opt && opt.trim().length > 2);
-  const optPanelHtml = hasDescriptions ? `<div class="match-options-panel">
-    <div class="match-options-label">Options</div>
-    <div class="match-options-grid">${matchingOptions.map((opt, i) =>
-      `<div class="match-option-item">
-        <span class="match-option-letter">${optLetters[i]}.</span>
-        <span class="match-option-text">${escHtml(opt)}</span>
-      </div>`
-    ).join('')}</div>
-  </div>` : '';
-
-  return `<div class="matching-group-wrap">
+  return `<div class="rq-mo-group">
     ${reuseNote}
-    ${qRowsHtml}
-    ${optPanelHtml}
+    <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+    <div class="rq-mo-questions">${qRowsHtml}</div>
   </div>`;
 }
 
@@ -1042,6 +1038,7 @@ function clearDragDrop(qNum, groupId) {
     dz.classList.remove('filled');
     dz.innerHTML = dz.classList.contains('rq-heading-drop') ? 'Kéo tiêu đề vào đây'
                  : dz.classList.contains('sc-drop')        ? 'Kéo từ vào'
+                 : dz.classList.contains('rq-mo-drop')     ? 'Kéo chữ cái vào đây'
                  : 'Kéo phần kết vào đây';
   }
   _refreshGroupChips(groupId);
@@ -1051,20 +1048,58 @@ function clearDragDrop(qNum, groupId) {
 
 // Re-mark chips used/unused based on current answers for a group
 function _refreshGroupChips(groupId) {
-  // Get all drop zones in this group → what values are currently used
   const usedVals = new Set();
   document.querySelectorAll(`.drop-zone[data-groupid="${groupId}"]`).forEach(dz => {
     const ans = state.answers[parseInt(dz.dataset.qnum)];
     if (ans) usedVals.add(ans);
   });
-  // Update chip states
   document.querySelectorAll(`[data-groupid="${groupId}"].drag-chip`).forEach(chip => {
-    chip.classList.toggle('used', usedVals.has(chip.dataset.value));
+    // Chips in reuse-allowed groups (data-reuse="1") never get greyed out
+    const isUsed = chip.dataset.reuse === '1' ? false : usedVals.has(chip.dataset.value);
+    chip.classList.toggle('used', isUsed);
   });
-  // Also update se-ending-item containers
   document.querySelectorAll(`[data-groupid="${groupId}"].se-ending-item`).forEach(item => {
     item.classList.toggle('used', usedVals.has(item.dataset.value));
   });
+}
+
+/* ── MATCHING OPTIONS drag-drop ───────────────────────────────────── */
+function dropMO(e, qNum, groupId) {
+  e.preventDefault();
+  if (!_dragWord) return;
+  setAnswer(qNum, _dragWord);
+  _refreshMOZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function clickMOChip(letter, groupId) {
+  // Place chip into first empty drop zone; if all filled, place into last one
+  const emptyDz = document.querySelector(`.rq-mo-drop[data-groupid="${groupId}"]:not(.filled)`);
+  if (!emptyDz) return;
+  const qNum = parseInt(emptyDz.dataset.qnum);
+  _dragWord = letter;
+  setAnswer(qNum, letter);
+  _refreshMOZone(qNum, groupId);
+  _refreshGroupChips(groupId);
+}
+function _refreshMOZone(qNum, groupId) {
+  const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
+  if (!dz) return;
+  const letter = state.answers[qNum] || '';
+  // Find description text for the letter
+  const passage = state.passages[state.currentPassageIdx];
+  const allGroups = getAllGroupsFromPassage(passage);
+  let desc = '';
+  for (const g of allGroups) {
+    if (g.groupType === 'matching-options') {
+      const idx = letter.charCodeAt(0) - 65;
+      const opt = g.matchingOptions?.[idx] || '';
+      if (opt.length > 1) { desc = opt; break; }
+    }
+  }
+  const short = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
+  dz.classList.add('filled');
+  dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  updateQNavBtn(qNum);
 }
 
 /* ── MATCHING HEADINGS drag-drop ──────────────────────────────────── */

@@ -2177,7 +2177,7 @@ body.eye-protection .split-questions {
 .drag-chip strong { font-weight: 700; color: #1565c0; min-width: 16px; }
 
 /* ── Drop zones for new types ─────────────────────────────────────── */
-.rq-heading-drop, .rq-ending-drop, .sc-drop {
+.rq-heading-drop, .rq-ending-drop, .rq-mo-drop, .sc-drop {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2190,7 +2190,7 @@ body.eye-protection .split-questions {
   cursor: pointer;
   transition: all .15s;
 }
-.rq-heading-drop.filled, .rq-ending-drop.filled, .sc-drop.filled {
+.rq-heading-drop.filled, .rq-ending-drop.filled, .rq-mo-drop.filled, .sc-drop.filled {
   background: #e8f0fe;
   border: 2px solid #1565c0;
   color: #1e40af;
@@ -2198,12 +2198,19 @@ body.eye-protection .split-questions {
 }
 .rq-heading-drop:not(.filled):hover,
 .rq-ending-drop:not(.filled):hover,
+.rq-mo-drop:not(.filled):hover,
 .sc-drop:not(.filled):hover {
   border-color: #3d8bff;
   background: rgba(61,139,255,.04);
 }
 .rq-heading-drop em  { font-style: italic; color: #1565c0; }
 .rq-ending-drop strong { font-weight: 700; }
+.rq-mo-drop strong { font-weight: 700; color: #1565c0; }
+
+/* ── Matching Options ─────────────────────────────────────────────── */
+.rq-mo-group { display: flex; flex-direction: column; gap: 14px; }
+.rq-mo-questions { display: flex; flex-direction: column; gap: 8px; }
+.mo-chip strong { font-weight: 700; color: #1565c0; min-width: 16px; display: inline-block; }
 
 /* ── Matching Headings ────────────────────────────────────────────── */
 .rq-mh-group { }
