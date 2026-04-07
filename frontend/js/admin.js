@@ -791,7 +791,10 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 
   // Smart default type based on group
   const autoType = data?.type || (
-    ['bullet-list','note-form','table','map'].includes(groupType) ? 'fill-blank' : 'true-false-ng'
+    ['bullet-list','note-form','table','map'].includes(groupType) ? 'fill-blank' :
+    groupType === 'matching-options'  ? 'matching-info' :
+    groupType === 'matching-headings' ? 'matching-headings' :
+    'true-false-ng'
   );
 
   const div = document.createElement('div');
@@ -907,13 +910,14 @@ function renderRQQExtra(type, data) {
            style="width:55px;font-size:12px;padding:5px 8px" min="1" max="5"/>
   </div></div>`;
   }
-  if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
+  if (type === 'sentence-completion') {
     return `<div class="form-group" style="margin-bottom:0">
   <label style="font-size:10px;font-weight:700;color:var(--text3)">Word Bank (cách nhau bằng dấu phẩy)</label>
   <input class="form-input rqq-wordbank" value="${(data?.wordBank || []).join(', ')}"
          style="font-size:12px;padding:6px 9px;margin-top:4px"
          placeholder="word1, phrase two, word3" /></div>`;
   }
+  // matching-info và matching-headings: options đã được định nghĩa ở group level, không cần word bank riêng
   if (type === 'map-labelling') {
     return `<div class="form-group" style="margin-bottom:0">
   <label style="font-size:10px;font-weight:700;color:var(--text3)">Hình ảnh riêng (nếu không dùng hình chung của nhóm)</label>
@@ -1036,7 +1040,7 @@ function collectQuestions() {
         q.options = [...qDiv.querySelectorAll('.rqq-opt')].map(i => i.value.trim()).filter(Boolean);
       if (type === 'checkbox')
         q.checkboxCount = parseInt(qDiv.querySelector('.rqq-cbcount')?.value) || 2;
-      if (['sentence-completion', 'matching-headings', 'matching-info'].includes(type)) {
+      if (type === 'sentence-completion') {
         const wb = qDiv.querySelector('.rqq-wordbank')?.value || '';
         q.wordBank = wb.split(',').map(w => w.trim()).filter(Boolean);
       }
@@ -1058,33 +1062,37 @@ async function savePassage() {
   const qend = Number(document.getElementById('p-qend').value);
   if (!title || !content || !qstart || !qend) { toast('Điền đầy đủ trường bắt buộc *', 'error'); return; }
 
-  const questionGroups = collectQuestions();
-  if (!questionGroups) return;
-
-  // Flatten để gửi kèm questions[] (tương thích ngược với route cũ)
-  const questions = questionGroups.flatMap(g => g.questions);
-
-  const body = {
-    title,
-    category: document.getElementById('p-category').value,
-    content,
-    questionRange: { start: qstart, end: qend },
-    difficulty: document.getElementById('p-difficulty').value,
-    tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean),
-    questionGroups,
-    questions      // giữ lại để tương thích
-  };
-
   const btn = document.getElementById('btn-save-passage');
   btn.disabled = true; btn.textContent = 'Đang lưu...';
   try {
+    // collectQuestions bên trong try để bắt mọi lỗi JS và hiển thị thông báo
+    const questionGroups = collectQuestions();
+    if (!questionGroups) { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; return; }
+
+    // Flatten để gửi kèm questions[] (tương thích ngược với route cũ)
+    const questions = questionGroups.flatMap(g => g.questions);
+
+    const body = {
+      title,
+      category: document.getElementById('p-category').value,
+      content,
+      questionRange: { start: qstart, end: qend },
+      difficulty: document.getElementById('p-difficulty').value,
+      tags: document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+      questionGroups,
+      questions      // giữ lại để tương thích
+    };
+
     const url = editPassageId ? `${API}/admin/passages/${editPassageId}` : `${API}/admin/passages`;
-    const data = await (await fetch(url, { method: editPassageId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) })).json();
-    if (!data.success) throw new Error(data.message);
+    const res = await fetch(url, { method: editPassageId ? 'PUT' : 'POST', headers: authH(), body: JSON.stringify(body) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || `HTTP ${res.status}`);
     toast(editPassageId ? 'Đã cập nhật' : 'Đã thêm bài đọc mới');
     closeModal('modal-passage'); await loadPassages();
-  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
+  } catch (err) {
+    console.error('[savePassage]', err);
+    toast('Lỗi: ' + (err.message || 'Không xác định'), 'error');
+  } finally { btn.disabled = false; btn.textContent = 'Lưu bài đọc'; }
 }
 
 

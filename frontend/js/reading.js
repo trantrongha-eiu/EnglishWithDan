@@ -545,23 +545,27 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
     </div>`;
   }).join('');
 
-  // Options panel
+  // NB note hiển thị TRÊN các câu hỏi (đúng vị trí IELTS)
   const reuseNote = matchingReuseAllowed
-    ? `<div class="match-reuse-note">NB: You may use any letter more than once.</div>` : '';
-  const optListHtml = matchingOptions.map((opt, i) =>
-    `<div class="match-option-item">
-      <span class="match-option-letter">${optLetters[i]}.</span>
-      <span class="match-option-text">${escHtml(opt)}</span>
-    </div>`
-  ).join('');
+    ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
+
+  // Options panel: chỉ hiển thị khi option có nội dung mô tả thực sự
+  // (không hiển thị nếu options chỉ là các chữ cái đơn A, B, C... vì instruction đã nói rõ)
+  const hasDescriptions = matchingOptions.some(opt => opt && opt.trim().length > 2);
+  const optPanelHtml = hasDescriptions ? `<div class="match-options-panel">
+    <div class="match-options-label">Options</div>
+    <div class="match-options-grid">${matchingOptions.map((opt, i) =>
+      `<div class="match-option-item">
+        <span class="match-option-letter">${optLetters[i]}.</span>
+        <span class="match-option-text">${escHtml(opt)}</span>
+      </div>`
+    ).join('')}</div>
+  </div>` : '';
 
   return `<div class="matching-group-wrap">
+    ${reuseNote}
     ${qRowsHtml}
-    <div class="match-options-panel">
-      <div class="match-options-label">Options</div>
-      ${reuseNote}
-      <div class="match-options-grid">${optListHtml}</div>
-    </div>
+    ${optPanelHtml}
   </div>`;
 }
 
