@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     setupEmojiPicker();
     await Promise.all([loadMyBooks(), loadUnits()]);
+    loadStreakAndUpdateMascot();
 });
 
 /* ══════════════════════════════════════════════
@@ -218,6 +219,43 @@ function shuffleArray(a) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
+}
+
+/* ══════════════════════════════════════════════
+   MASCOT PANDA – STREAK & MOTIVATION
+══════════════════════════════════════════════ */
+const MASCOT_MSGS = [
+    ['🔥 Chuỗi {n} ngày! Đỉnh lắm, cứ giữ vậy nhé! 🌟', 7],
+    ['😤 {n} ngày liên tiếp! Mình không đùa đâu, bạn giỏi thật!', 3],
+    ['🥳 {n} ngày rồi! Mỗi từ là một bước gần hơn tới 7.0+!', 2],
+    ['💪 Cố lên! Học mỗi ngày sẽ tạo thói quen tuyệt vời!', 0],
+];
+function getMascotMsg(streak) {
+    for (const [msg, min] of MASCOT_MSGS) {
+        if (streak >= min) return msg.replace('{n}', streak);
+    }
+    return '💪 Học đi bạn ơi, mình tin bạn!';
+}
+function getMascotEmoji(streak) {
+    if (streak >= 30) return '🐼🎉';
+    if (streak >= 14) return '🐼🌟';
+    if (streak >= 7)  return '🐼🔥';
+    if (streak >= 3)  return '🐼😊';
+    return '🐼';
+}
+async function loadStreakAndUpdateMascot() {
+    try {
+        const res  = await fetch(`${API}/user/stats`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        const streak = data.stats?.streak ?? 0;
+        const numEl  = document.getElementById('mascot-streak-num');
+        const msgEl  = document.getElementById('mascot-msg');
+        const pandaEl = document.getElementById('mascot-panda');
+        if (numEl)  numEl.textContent  = streak;
+        if (msgEl)  msgEl.textContent  = getMascotMsg(streak);
+        if (pandaEl) pandaEl.textContent = getMascotEmoji(streak);
+    } catch { /* silent */ }
 }
 
 /* ══════════════════════════════════════════════
@@ -278,6 +316,7 @@ async function openBook(bookId) {
 
     await refreshCurrentBook();
     content.classList.remove('loading');
+    loadStreakAndUpdateMascot();
 }
 
 async function refreshCurrentBook() {
@@ -358,7 +397,8 @@ function renderWordsTable(words) {
         ${w.example ? `<div style="font-size:12px;font-style:italic;color:var(--text2)">${w.example}</div>` : ''}
       </td>
       <td style="color:var(--text3);font-size:12px">${w.note || ''}</td>
-      <td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="openEditWordModal('${w._id}')" title="Sửa từ">✏️</button>
         <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Xoá từ">🗑</button>
       </td>
     </tr>
@@ -416,6 +456,43 @@ function deleteWord(wordId) {
         await refreshCurrentBook();
         await loadMyBooks();
     });
+}
+
+/* ── Edit word ── */
+let editingWordId = null;
+function openEditWordModal(wordId) {
+    if (!currentBookData) return;
+    const w = currentBookData.words.find(x => x._id === wordId);
+    if (!w) return;
+    editingWordId = wordId;
+    document.getElementById('ew-word').value     = w.word     || '';
+    document.getElementById('ew-phonetic').value = w.phonetic || '';
+    document.getElementById('ew-meaning').value  = w.meaning  || '';
+    document.getElementById('ew-example').value  = w.example  || '';
+    document.getElementById('ew-note').value     = w.note     || '';
+    openModal('modal-edit-word');
+    setTimeout(() => document.getElementById('ew-word').focus(), 100);
+}
+async function saveEditWord() {
+    const word = document.getElementById('ew-word').value.trim();
+    if (!word) { toast('Từ không được để trống', 'error'); return; }
+    try {
+        const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${editingWordId}`, {
+            method: 'PATCH', headers: authH(),
+            body: JSON.stringify({
+                word,
+                phonetic:    document.getElementById('ew-phonetic').value.trim(),
+                meaning:     document.getElementById('ew-meaning').value.trim(),
+                example:     document.getElementById('ew-example').value.trim(),
+                note:        document.getElementById('ew-note').value.trim(),
+            })
+        });
+        const data = await res.json();
+        if (!data.success) { toast(data.message || 'Lỗi lưu từ', 'error'); return; }
+        closeModal('modal-edit-word');
+        toast('Đã cập nhật từ ✅');
+        await refreshCurrentBook();
+    } catch (err) { toast(err.message, 'error'); }
 }
 
 /* ── Bulk select ── */

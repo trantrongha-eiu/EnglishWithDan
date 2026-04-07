@@ -158,20 +158,25 @@ router.post('/:id/words', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════
-// PATCH /api/vocabbook/:id/words/:wordId  – cập nhật trạng thái / ghi chú
-// Body: { status?, note? }
+// PATCH /api/vocabbook/:id/words/:wordId  – cập nhật trạng thái / ghi chú / nội dung từ
+// Body: { status?, note?, word?, meaning?, example?, phonetic?, partOfSpeech? }
 // ══════════════════════════════════════════════════════
 router.patch('/:id/words/:wordId', auth, async (req, res) => {
   try {
-    const { status, note } = req.body;
+    const { status, note, word, meaning, example, phonetic, partOfSpeech } = req.body;
     const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
     if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
     const wordDoc = book.words.id(req.params.wordId);
     if (!wordDoc) return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
 
-    if (status !== undefined) wordDoc.status = status;
-    if (note   !== undefined) wordDoc.note   = note;
+    if (status      !== undefined) wordDoc.status      = status;
+    if (note        !== undefined) wordDoc.note        = note;
+    if (word        !== undefined) wordDoc.word        = word.trim();
+    if (meaning     !== undefined) wordDoc.meaning     = meaning;
+    if (example     !== undefined) wordDoc.example     = example;
+    if (phonetic    !== undefined) wordDoc.phonetic    = phonetic;
+    if (partOfSpeech !== undefined) wordDoc.partOfSpeech = partOfSpeech;
 
     await book.save();
     res.json({ success: true, word: wordDoc });
