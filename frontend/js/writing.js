@@ -581,7 +581,7 @@ function openSamplePdf(url, title, el) {
   wrap.style.display = 'flex';
   document.getElementById('wsampl-viewer-title').textContent = title;
   document.getElementById('wsampl-download-btn').href = url;
-  document.getElementById('wsampl-frame').src = url;
+  document.getElementById('wsampl-frame').src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
 
   // Highlight selected item
   document.querySelectorAll('.sample-card').forEach(i => i.classList.remove('active'));
