@@ -338,14 +338,12 @@ function openRQGroupModal(containerId) {
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         ${[
-        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',          desc: 'True/False/NG, Multiple choice, Fill-blank riêng lẻ' },
+        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',          desc: 'True/False/NG, Multiple choice, Checkbox, Fill-blank riêng lẻ' },
         { type: 'table',              icon: '📋', label: 'Bảng (Table/Note)',        desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
-        { type: 'note-form',          icon: '📝', label: 'Note Completion',          desc: 'Điền vào các dòng của biểu mẫu ghi chú' },
-        { type: 'bullet-list',        icon: '•',  label: 'Bullet List',              desc: 'Danh sách câu hỏi dạng bullet có chỗ trống' },
-        { type: 'matching-options',   icon: '🔗', label: 'Matching Features/People', desc: 'List người/sự vật A-G, câu hỏi ghép phát biểu (kéo thả)' },
+        { type: 'note-form',          icon: '📝', label: 'Note / Bullet Completion', desc: 'Điền vào dòng biểu mẫu hoặc danh sách bullet – dùng __Q6__' },
+        { type: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings / Choose Letters', desc: 'Ghép chữ cái (kéo thả). Dùng cho: Matching Features, Sentence Endings, Choose TWO/THREE letters (bật hoán đổi)' },
         { type: 'matching-headings',  icon: '📌', label: 'Matching Headings',        desc: 'List tiêu đề i,ii,iii – ghép vào đoạn văn A,B,C (kéo thả)' },
         { type: 'summary-completion', icon: '🧩', label: 'Summary Completion',       desc: 'Đoạn tóm tắt + word bank A-J chọn từ điền vào (kéo thả)' },
-        { type: 'sentence-endings',   icon: '🔚', label: 'Sentence Endings',         desc: 'Câu chưa hoàn chỉnh – chọn phần kết A-H (kéo thả)' },
         { type: 'map',                icon: '🗺️', label: 'Map / Diagram',            desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
       ].map(g => `
           <div onclick="pickRQGroupType('${g.type}')"
@@ -475,7 +473,7 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const lines = data?.noteConfig?.lines || [''];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('📝 <strong>Note/Form Completion:</strong> Nhập tiêu đề khung rồi từng dòng nội dung. Dùng <code>__Q6__</code> để đánh dấu chỗ trống. Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là từ cần điền.')}
+    ${rqAdminGuide('📝 <strong>Note / Bullet Completion:</strong> Dùng cho cả <em>Note Form</em> (khung ghi chú) và <em>Bullet List</em> (danh sách chấm tròn). Nhập tiêu đề khung (không bắt buộc), rồi từng dòng nội dung – dùng <code>__Q6__</code> để đánh dấu chỗ trống. Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là từ cần điền.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Cấu trúc Note</div>
     <div style="margin-bottom:8px">
       <label style="font-size:10px;color:var(--text3)">Tiêu đề khung</label>
@@ -497,16 +495,25 @@ function renderRQGroupConfig(groupType, data, gIdx) {
     const opts = data?.matchingOptions || ['', '', '', '', '', ''];
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('🔗 <strong>Matching Features/People (Q19-23 style):</strong> Nhập danh sách người/sự vật A→G. Câu hỏi bên dưới: loại <strong>matching-info</strong>, mỗi câu là một phát biểu, đáp án là chữ cái (A, B, C…). Học sinh sẽ kéo thả chữ cái vào phát biểu.')}
+    ${rqAdminGuide(`🔗 <strong>Matching / Sentence Endings / Choose Letters</strong> — Nhóm đa năng dùng thả chữ cái:<br>
+• <strong>Matching Features/People</strong> (Q19-23): Nhập danh sách người/sự vật A→G, câu hỏi loại <code>matching-info</code>, đáp án A/B/C…<br>
+• <strong>Sentence Endings</strong> (Q32-35): Nhập phần kết câu A-H, câu hỏi là phần đầu câu (loại <code>matching-info</code>), đáp án A/B/C…<br>
+• <strong>Choose TWO/THREE letters</strong> (Q23-24): Nhập 5 lựa chọn A-E, mỗi câu hỏi (loại <code>matching-info</code>) là một câu riêng, bật <strong>Hoán đổi thứ tự</strong> bên dưới – đáp án Q23=B Q24=D hoặc Q23=D Q24=B đều đúng.`)}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Danh sách người / sự vật (A, B, C…)
+      Danh sách lựa chọn (A, B, C…)
     </div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <input type="checkbox" id="rqg-reuse-${gIdx}" class="rqg-reuse"
-             ${data?.matchingReuseAllowed ? 'checked' : ''}
-             style="width:14px;height:14px;accent-color:var(--blue)" />
-      <label for="rqg-reuse-${gIdx}" style="font-size:12px;color:var(--text2);cursor:pointer">
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="rqg-reuse-${gIdx}" class="rqg-reuse"
+               ${data?.matchingReuseAllowed ? 'checked' : ''}
+               style="width:14px;height:14px;accent-color:var(--blue)" />
         NB: You may use any letter more than once
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer" title="Choose TWO/THREE letters – Q23 và Q24 hoán đổi vẫn đúng">
+        <input type="checkbox" id="rqg-interchangeable-${gIdx}" class="rqg-interchangeable"
+               ${data?.interchangeableAnswers ? 'checked' : ''}
+               style="width:14px;height:14px;accent-color:var(--green)" />
+        <span style="color:var(--green);font-weight:600">Hoán đổi thứ tự (Choose TWO/THREE letters)</span>
       </label>
     </div>
     <div id="rqgopt-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
@@ -1026,6 +1033,7 @@ function collectQuestions() {
     if (groupType === 'matching-options') {
       group.matchingOptions = [...gDiv.querySelectorAll('.rqg-opt-item')].map(i => i.value.trim());
       group.matchingReuseAllowed = gDiv.querySelector('.rqg-reuse')?.checked || false;
+      group.interchangeableAnswers = gDiv.querySelector('.rqg-interchangeable')?.checked || false;
     }
     if (groupType === 'bullet-list') {
       group.bulletConfig = {

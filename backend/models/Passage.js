@@ -79,6 +79,9 @@ const QuestionGroupSchema = new mongoose.Schema({
   // Có cho dùng lại letter không (NB: You may use any letter more than once)
   matchingReuseAllowed: { type: Boolean, default: false },
 
+  // Hoán đổi thứ tự: các câu trong nhóm có thể đổi đáp án cho nhau (VD: Q23+Q24 "Choose TWO letters")
+  interchangeableAnswers: { type: Boolean, default: false },
+
   // ── matching-headings config ──
   // Danh sách tiêu đề (i. text, ii. text, iii. text...)
   headingsConfig: {

@@ -408,13 +408,13 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
   let bodyHtml = '';
   switch (groupType) {
     case 'table':              bodyHtml = renderTableGroup(group, isReview, reviewMap); break;
-    case 'note-form':          bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
-    case 'bullet-list':        bodyHtml = renderBulletListGroup(group, isReview, reviewMap); break;
+    case 'note-form':
+    case 'bullet-list':        bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
     case 'map':                bodyHtml = renderMapGroup(group, isReview, reviewMap); break;
-    case 'matching-options':   bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
+    case 'matching-options':
+    case 'sentence-endings':   bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
     case 'matching-headings':  bodyHtml = renderMatchingHeadingsGroup(group, isReview, reviewMap); break;
     case 'summary-completion': bodyHtml = renderSummaryCompletionGroup(group, isReview, reviewMap); break;
-    case 'sentence-endings':   bodyHtml = renderSentenceEndingsGroup(group, isReview, reviewMap); break;
     default: bodyHtml = renderPlainGroup(questions, isReview, reviewMap); break;
   }
 
@@ -446,11 +446,12 @@ function renderTableGroup(group, isReview, reviewMap) {
   return `<div class="rq-table-wrap"><table class="rq-table">${thead}<tbody>${tbody}</tbody></table></div>`;
 }
 
-/* ── NOTE FORM ────────────────────────────────────────────────────── */
+/* ── NOTE FORM (cũng xử lý bullet-list backward compat) ──────────── */
 function renderNoteFormGroup(group, isReview, reviewMap) {
-  const { noteConfig = {}, questions = [] } = group;
+  const { noteConfig = {}, bulletConfig, questions = [] } = group;
   const title = noteConfig.title || '';
-  const lines = noteConfig.lines || [];
+  // Backward compat: bullet-list lưu trong bulletConfig.items thay vì noteConfig.lines
+  const lines = noteConfig.lines?.length ? noteConfig.lines : (bulletConfig?.items || []);
 
   const qMap = {};
   questions.forEach(q => { qMap[q.questionNumber] = q; });
@@ -463,21 +464,6 @@ function renderNoteFormGroup(group, isReview, reviewMap) {
   return `<div class="rq-note-form">${titleHtml}<div class="rq-note-body">${linesHtml}</div></div>`;
 }
 
-/* ── BULLET LIST ──────────────────────────────────────────────────── */
-function renderBulletListGroup(group, isReview, reviewMap) {
-  const { bulletConfig = {}, questions = [] } = group;
-  const items = bulletConfig.items || [];
-
-  const qMap = {};
-  questions.forEach(q => { qMap[q.questionNumber] = q; });
-
-  const itemsHtml = items.map(item =>
-    `<li class="rq-bullet-item">${resolvePlaceholders(item, qMap, isReview, reviewMap)}</li>`
-  ).join('');
-
-  return `<div class="rq-bullet-list"><ul>${itemsHtml}</ul></div>`;
-}
-
 /* ── MAP ──────────────────────────────────────────────────────────── */
 function renderMapGroup(group, isReview, reviewMap) {
   const { imageUrl = '', questions = [] } = group;
@@ -488,9 +474,13 @@ function renderMapGroup(group, isReview, reviewMap) {
   return `<div class="rq-map-group">${imgHtml}<div class="rq-map-questions">${questionsHtml}</div></div>`;
 }
 
-/* ── MATCHING OPTIONS (drag-and-drop) ─────────────────────────────── */
+/* ── MATCHING OPTIONS (drag-and-drop) — dùng cho Matching Features, Sentence Endings, Choose Letters ── */
 function renderMatchingOptionsGroup(group, isReview, reviewMap) {
-  const { matchingOptions = [], matchingReuseAllowed = false, questions = [] } = group;
+  const { matchingReuseAllowed = false, questions = [] } = group;
+  // Backward compat: sentence-endings lưu trong endingsConfig.endings thay vì matchingOptions
+  const matchingOptions = group.matchingOptions?.length
+    ? group.matchingOptions
+    : (group.endingsConfig?.endings || []).map(e => e.text || '');
   const optLetters = matchingOptions.map((_, i) => String.fromCharCode(65 + i));
   const groupId = 'mog-' + questions.map(q => q.questionNumber).join('-');
 
@@ -670,72 +660,6 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
   </div>`;
 }
 
-/* ── SENTENCE ENDINGS ─────────────────────────────────────────────── */
-function renderSentenceEndingsGroup(group, isReview, reviewMap) {
-  const { endingsConfig = {}, questions = [] } = group;
-  const endings = endingsConfig.endings || [];
-  if (!endings.length || !questions.length) return '<div class="form-hint">Chưa có dữ liệu sentence endings.</div>';
-
-  const groupId = 'seg-' + questions.map(q => q.questionNumber).join('-');
-
-  const qRowsHtml = questions.map(q => {
-    const qNum = q.questionNumber;
-    const review = reviewMap[qNum];
-    const ans = isReview ? (review?.userAnswer || '') : (state.answers[qNum] || '');
-    const ansObj = endings.find(e => e.letter === ans);
-
-    if (isReview) {
-      const isCorrect = review?.isCorrect;
-      const expl = review?.explanation ? `<div class="match-feedback q-explanation">${escHtmlNl(review.explanation)}</div>` : '';
-      return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
-        <div class="match-q-left">
-          <span class="match-q-num">${qNum}</span>
-          <span class="match-q-text">${escHtml(q.questionText || '')}</span>
-        </div>
-        <div class="match-q-right">
-          <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
-          ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(review?.correctAnswer || '')}</span>` : ''}
-        </div>${expl}
-      </div>`;
-    }
-    const displayText = ansObj ? `<strong>${escHtml(ans)}</strong>. ${escHtml(ansObj.text.slice(0, 40))}${ansObj.text.length > 40 ? '…' : ''}` : '';
-    return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
-      <div class="match-q-left">
-        <span class="match-q-num">${qNum}</span>
-        <span class="match-q-text">${escHtml(q.questionText || '')}</span>
-      </div>
-      <div class="drop-zone rq-ending-drop${ans ? ' filled' : ''}"
-           data-qnum="${qNum}" data-groupid="${groupId}"
-           ondragover="event.preventDefault()"
-           ondrop="dropSE(event,${qNum},'${groupId}')">
-        ${ans ? `${displayText}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo phần kết vào đây'}
-      </div>
-    </div>`;
-  }).join('');
-
-  const chipsHtml = endings.map(e => {
-    const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === e.letter);
-    return `<div class="se-ending-item${isUsed ? ' used' : ''}"
-      data-value="${escHtml(e.letter)}" data-groupid="${groupId}">
-      <span class="drag-chip se-chip${isUsed ? ' used' : ''}"
-        data-value="${escHtml(e.letter)}" data-groupid="${groupId}"
-        draggable="${isReview ? 'false' : 'true'}"
-        ondragstart="dragStart(event,'${escHtml(e.letter)}')"
-        onclick="clickSEChip('${escHtml(e.letter)}','${groupId}')">
-        <strong>${escHtml(e.letter)}</strong>
-      </span>
-      <span class="se-ending-text">${escHtml(e.text || '')}</span>
-    </div>`;
-  }).join('');
-
-  return `<div class="rq-se-group">
-    <div class="rq-se-questions">${qRowsHtml}</div>
-    <div class="rq-se-endings">
-      <div class="se-endings-label">Danh sách phần kết câu</div>
-      <div class="se-endings-list">${chipsHtml}</div>
-    </div>
-  </div>`;
-}
 
 /* ── SINGLE QUESTION (plain / map inner) ──────────────────────────── */
 function renderSingleQuestion(q, isReview, reviewMap) {
@@ -1030,7 +954,7 @@ function initDropZones() {
   });
 }
 
-/* ── Generic clear for new drag-drop group types ──────────────────── */
+/* ── Generic clear for drag-drop group types ──────────────────────── */
 function clearDragDrop(qNum, groupId) {
   delete state.answers[qNum];
   const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
@@ -1039,7 +963,7 @@ function clearDragDrop(qNum, groupId) {
     dz.innerHTML = dz.classList.contains('rq-heading-drop') ? 'Kéo tiêu đề vào đây'
                  : dz.classList.contains('sc-drop')        ? 'Kéo từ vào'
                  : dz.classList.contains('rq-mo-drop')     ? 'Kéo chữ cái vào đây'
-                 : 'Kéo phần kết vào đây';
+                 : 'Thả vào đây';
   }
   _refreshGroupChips(groupId);
   updateQNavBtn(qNum);
@@ -1054,12 +978,8 @@ function _refreshGroupChips(groupId) {
     if (ans) usedVals.add(ans);
   });
   document.querySelectorAll(`[data-groupid="${groupId}"].drag-chip`).forEach(chip => {
-    // Chips in reuse-allowed groups (data-reuse="1") never get greyed out
     const isUsed = chip.dataset.reuse === '1' ? false : usedVals.has(chip.dataset.value);
     chip.classList.toggle('used', isUsed);
-  });
-  document.querySelectorAll(`[data-groupid="${groupId}"].se-ending-item`).forEach(item => {
-    item.classList.toggle('used', usedVals.has(item.dataset.value));
   });
 }
 
@@ -1085,14 +1005,17 @@ function _refreshMOZone(qNum, groupId) {
   const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
   if (!dz) return;
   const letter = state.answers[qNum] || '';
-  // Find description text for the letter
   const passage = state.passages[state.currentPassageIdx];
   const allGroups = getAllGroupsFromPassage(passage);
   let desc = '';
   for (const g of allGroups) {
-    if (g.groupType === 'matching-options') {
+    if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
       const idx = letter.charCodeAt(0) - 65;
-      const opt = g.matchingOptions?.[idx] || '';
+      // matchingOptions for new data, endingsConfig.endings for old sentence-endings data
+      const opts = g.matchingOptions?.length
+        ? g.matchingOptions
+        : (g.endingsConfig?.endings || []).map(e => e.text || '');
+      const opt = opts[idx] || '';
       if (opt.length > 1) { desc = opt; break; }
     }
   }
@@ -1164,41 +1087,6 @@ function _refreshSCZone(qNum, groupId) {
   updateQNavBtn(qNum);
 }
 
-/* ── SENTENCE ENDINGS drag-drop ───────────────────────────────────── */
-function dropSE(e, qNum, groupId) {
-  e.preventDefault();
-  if (!_dragWord) return;
-  setAnswer(qNum, _dragWord);
-  _refreshSEZone(qNum, groupId);
-  _refreshGroupChips(groupId);
-}
-function clickSEChip(letter, groupId) {
-  const emptyDz = document.querySelector(`.rq-ending-drop[data-groupid="${groupId}"]:not(.filled)`);
-  if (!emptyDz) return;
-  const qNum = parseInt(emptyDz.dataset.qnum);
-  _dragWord = letter;
-  setAnswer(qNum, letter);
-  _refreshSEZone(qNum, groupId);
-  _refreshGroupChips(groupId);
-}
-function _refreshSEZone(qNum, groupId) {
-  const passage = state.passages[state.currentPassageIdx];
-  const allGroups = getAllGroupsFromPassage(passage);
-  let endingText = '';
-  for (const g of allGroups) {
-    if (g.groupType === 'sentence-endings') {
-      const e = g.endingsConfig?.endings?.find(x => x.letter === state.answers[qNum]);
-      if (e) { endingText = e.text; break; }
-    }
-  }
-  const dz = document.querySelector(`.rq-ending-drop[data-qnum="${qNum}"]`);
-  if (!dz) return;
-  const letter = state.answers[qNum] || '';
-  const short = endingText.length > 40 ? endingText.slice(0, 40) + '…' : endingText;
-  dz.classList.add('filled');
-  dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
-  updateQNavBtn(qNum);
-}
 
 /* ── Restore saved answers back into DOM after re-render ──────────── */
 function restoreAnswers(isReview) {

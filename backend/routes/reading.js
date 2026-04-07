@@ -155,6 +155,7 @@ router.post('/start', auth, async (req, res) => {
         imageUrl: g.imageUrl,
         matchingOptions: g.matchingOptions,
         matchingReuseAllowed: g.matchingReuseAllowed,
+        interchangeableAnswers: g.interchangeableAnswers,
         headingsConfig: g.headingsConfig,
         summaryConfig: g.summaryConfig,
         endingsConfig: g.endingsConfig,
@@ -209,23 +210,71 @@ router.post('/submit', auth, async (req, res) => {
     let skippedCount = 0;
     const gradedAnswers = [];
 
+    // Helper: grade một câu riêng lẻ (trả về isCorrect)
+    function gradeOne(rawUser, rawCorrect) {
+      if (!rawUser) return false;
+      try {
+        const userArr = JSON.parse(rawUser);
+        const correctArr = JSON.parse(rawCorrect);
+        if (Array.isArray(userArr) && Array.isArray(correctArr)) {
+          const su = [...userArr].map(s => s.toLowerCase()).sort().join(',');
+          const sc = [...correctArr].map(s => s.toLowerCase()).sort().join(',');
+          return su === sc;
+        }
+      } catch { /* fall through */ }
+      return rawUser.toLowerCase() === rawCorrect.toLowerCase();
+    }
+
     for (const passage of passages) {
-      for (const q of passage.questions) {
-        const userAns = (answers[q.questionNumber] || '').toString().toLowerCase().trim();
-        const correctAns = (q.correctAnswer || '').toLowerCase().trim();
-        const answered = userAns !== '';
-        const isCorrect = answered && userAns === correctAns;
+      // Dùng questionGroups nếu có, fallback sang questions[] phẳng
+      const groups = passage.questionGroups?.length
+        ? passage.questionGroups
+        : [{ interchangeableAnswers: false, questions: passage.questions || [] }];
 
-        if (!answered) skippedCount++;
-        else if (isCorrect) correctCount++;
-        else wrongCount++;
+      for (const group of groups) {
+        const qs = group.questions || [];
 
-        gradedAnswers.push({
-          questionNumber: q.questionNumber,
-          userAnswer: answers[q.questionNumber] || '',
-          correctAnswer: q.correctAnswer,
-          isCorrect
-        });
+        if (group.interchangeableAnswers && qs.length > 0) {
+          // ── Interchangeable: so sánh tập hợp đáp án của cả nhóm ──
+          const userSet  = qs.map(q => (answers[q.questionNumber] || '').toString().trim().toLowerCase()).sort().join(',');
+          const correctSet = qs.map(q => (q.correctAnswer || '').trim().toLowerCase()).sort().join(',');
+          const anyUnanswered = qs.some(q => !(answers[q.questionNumber] || '').toString().trim());
+          const setCorrect = !anyUnanswered && userSet === correctSet;
+
+          for (const q of qs) {
+            const rawUser = (answers[q.questionNumber] || '').toString().trim();
+            const answered = rawUser !== '';
+            const isCorrect = answered && setCorrect;
+            if (!answered) skippedCount++;
+            else if (isCorrect) correctCount++;
+            else wrongCount++;
+            gradedAnswers.push({
+              questionNumber: q.questionNumber,
+              userAnswer: answers[q.questionNumber] || '',
+              correctAnswer: q.correctAnswer,
+              isCorrect
+            });
+          }
+        } else {
+          // ── Chấm bình thường từng câu ──
+          for (const q of qs) {
+            const rawUser  = (answers[q.questionNumber] || '').toString().trim();
+            const rawCorrect = (q.correctAnswer || '').trim();
+            const answered = rawUser !== '';
+            const isCorrect = gradeOne(rawUser, rawCorrect);
+
+            if (!answered) skippedCount++;
+            else if (isCorrect) correctCount++;
+            else wrongCount++;
+
+            gradedAnswers.push({
+              questionNumber: q.questionNumber,
+              userAnswer: answers[q.questionNumber] || '',
+              correctAnswer: q.correctAnswer,
+              isCorrect
+            });
+          }
+        }
       }
     }
 
@@ -318,6 +367,7 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
         imageUrl: g.imageUrl,
         matchingOptions: g.matchingOptions,
         matchingReuseAllowed: g.matchingReuseAllowed,
+        interchangeableAnswers: g.interchangeableAnswers,
         headingsConfig: g.headingsConfig,
         summaryConfig: g.summaryConfig,
         endingsConfig: g.endingsConfig,
