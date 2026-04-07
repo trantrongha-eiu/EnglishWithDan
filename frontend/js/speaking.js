@@ -590,14 +590,18 @@ function openMaterial(m, card) {
   card.classList.add('active');
 
   const placeholder = document.getElementById('pdf-placeholder');
-  const frame = document.getElementById('pdf-frame');
-  const right = document.getElementById('materials-right');
+  const wrap        = document.getElementById('sp-viewer-wrap');
+  const frame       = document.getElementById('pdf-frame');
+  const right       = document.getElementById('materials-right');
 
   if (placeholder) placeholder.style.display = 'none';
-  if (frame) {
-    frame.classList.add('visible');
-    frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
-  }
+  if (wrap) wrap.style.display = 'flex';
+  if (frame) frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
+
+  const titleEl = document.getElementById('sp-viewer-title');
+  const dlBtn   = document.getElementById('sp-download-btn');
+  if (titleEl) titleEl.textContent = m.title;
+  if (dlBtn)   dlBtn.href = m.pdfUrl;
 
   // On mobile: show PDF panel, hide list panel
   if (window.innerWidth <= 768 && right) {

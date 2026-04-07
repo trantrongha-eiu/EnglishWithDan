@@ -164,7 +164,13 @@
         <div class="ph-icon">📄</div>
         <p>Chọn tài liệu để xem</p>
       </div>
-      <iframe class="pdf-viewer-frame" id="pdf-frame" allowfullscreen></iframe>
+      <div class="pdf-viewer-wrap" id="sp-viewer-wrap" style="display:none;flex-direction:column;flex:1;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
+        <div class="pdf-viewer-toolbar">
+          <span id="sp-viewer-title" style="font-weight:700;font-size:14px;color:inherit"></span>
+          <a id="sp-download-btn" href="#" target="_blank" class="btn-secondary" style="font-size:13px;text-decoration:none;padding:5px 12px;border-radius:8px;border:1px solid #e5e7eb;color:#374151;white-space:nowrap">⬇ Tải về PDF</a>
+        </div>
+        <iframe class="pdf-viewer-frame" id="pdf-frame" allowfullscreen style="display:block;flex:1;min-height:500px"></iframe>
+      </div>
     </div>
 
   </div>
