@@ -783,6 +783,44 @@ function addRQEnding(gIdx) {
 // ════════════════════════════════════════════════════════════════════════
 // ADD QUESTION INSIDE GROUP
 // ════════════════════════════════════════════════════════════════════════
+
+// Danh sách tất cả loại câu hỏi
+const RQQ_ALL_TYPES = [
+  { value: 'true-false-ng',      label: 'True / False / Not Given' },
+  { value: 'multiple-choice',    label: 'Multiple Choice (1 đáp án)' },
+  { value: 'checkbox',           label: 'Multiple Choice (nhiều đáp án)' },
+  { value: 'fill-blank',         label: 'Fill in the blank' },
+  { value: 'sentence-completion',label: 'Sentence Completion (kéo thả)' },
+  { value: 'matching-headings',  label: 'Matching Headings' },
+  { value: 'matching-info',      label: 'Matching Information / Sections' },
+  { value: 'map-labelling',      label: 'Map Labelling' },
+];
+
+// Loại câu hỏi phù hợp cho từng kiểu nhóm
+const RQQ_ALLOWED = {
+  'plain':              null,   // null = tất cả loại
+  'table':              ['fill-blank', 'sentence-completion'],
+  'note-form':          ['fill-blank', 'sentence-completion'],
+  'bullet-list':        ['fill-blank', 'sentence-completion'],
+  'map':                ['map-labelling', 'fill-blank'],
+  'matching-options':   ['matching-info'],
+  'matching-headings':  ['matching-headings'],
+  'summary-completion': ['fill-blank'],
+  'sentence-endings':   ['matching-info'],
+};
+
+function getAllowedTypes(groupType, existingType) {
+  const allowed = RQQ_ALLOWED[groupType];
+  if (!allowed) return RQQ_ALL_TYPES; // plain → tất cả
+  let list = RQQ_ALL_TYPES.filter(t => allowed.includes(t.value));
+  // Luôn giữ loại hiện tại (dữ liệu cũ) dù không trong danh sách
+  if (existingType && !list.find(t => t.value === existingType)) {
+    const found = RQQ_ALL_TYPES.find(t => t.value === existingType);
+    if (found) list = [found, ...list];
+  }
+  return list;
+}
+
 function addRQQuestion(gIdx, data = null, groupType = 'plain') {
   rqQIdx++;
   const qId = `rqq-${gIdx}-${rqQIdx}`;
@@ -791,11 +829,20 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 
   // Smart default type based on group
   const autoType = data?.type || (
-    ['bullet-list','note-form','table','map'].includes(groupType) ? 'fill-blank' :
+    ['bullet-list','note-form','table'].includes(groupType) ? 'fill-blank' :
+    groupType === 'map'               ? 'map-labelling' :
     groupType === 'matching-options'  ? 'matching-info' :
     groupType === 'matching-headings' ? 'matching-headings' :
+    groupType === 'sentence-endings'  ? 'matching-info' :
+    groupType === 'summary-completion'? 'fill-blank' :
     'true-false-ng'
   );
+
+  const allowedTypes = getAllowedTypes(groupType, data?.type);
+  const isSingle = allowedTypes.length === 1;
+  const typeOptionsHtml = allowedTypes.map(t =>
+    `<option value="${t.value}" ${autoType === t.value ? 'selected' : ''}>${t.label}</option>`
+  ).join('');
 
   const div = document.createElement('div');
   div.id = qId;
@@ -815,16 +862,10 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Loại câu *</label>
     <select class="form-select rqq-type" onchange="onRQQTypeChange(this,'${qId}')"
-            style="font-size:12px;padding:6px 9px">
-      <option value="true-false-ng"     ${autoType === 'true-false-ng' ? 'selected' : ''}>True / False / Not Given</option>
-      <option value="multiple-choice"   ${autoType === 'multiple-choice' ? 'selected' : ''}>Multiple Choice (1 đáp án)</option>
-      <option value="checkbox"          ${autoType === 'checkbox' ? 'selected' : ''}>Multiple Choice (nhiều đáp án)</option>
-      <option value="fill-blank"        ${autoType === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
-      <option value="sentence-completion" ${autoType === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
-      <option value="matching-headings" ${autoType === 'matching-headings' ? 'selected' : ''}>Matching Headings</option>
-      <option value="matching-info"     ${autoType === 'matching-info' ? 'selected' : ''}>Matching Information</option>
-      <option value="map-labelling"     ${autoType === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
+            style="font-size:12px;padding:6px 9px${isSingle ? ';opacity:.65;pointer-events:none' : ''}">
+      ${typeOptionsHtml}
     </select>
+    ${isSingle ? `<div style="font-size:10px;color:var(--text3);margin-top:3px">💡 Loại câu cố định cho nhóm này</div>` : ''}
   </div>
 </div>
 <div id="rqqguide-${qId}" style="font-size:11px;line-height:1.6;border-radius:7px;padding:8px 11px;margin-bottom:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af">${getRQQTypeGuide(autoType)}</div>
