@@ -30,6 +30,49 @@ html[data-theme="dark"]{
   --shadow:0 2px 12px rgba(0,0,0,.3);
   --shadow-md:0 6px 24px rgba(0,0,0,.4);
 }
+/* ── Dark mode component overrides ── */
+[data-theme="dark"] .btn-ghost{background:var(--surface2);color:var(--text2)}
+[data-theme="dark"] .btn-ghost:hover{color:var(--text)}
+
+/* Vocab table rows */
+[data-theme="dark"] .words-table tbody tr:hover td{background:var(--surface2)}
+[data-theme="dark"] .words-table tbody tr.selected td{background:rgba(229,57,53,.15)}
+[data-theme="dark"] .status-select.nho-so-so{background:rgba(234,179,8,.12)}
+[data-theme="dark"] .status-select.da-thuoc{background:rgba(34,197,94,.12)}
+
+/* Quiz answer options */
+[data-theme="dark"] .answer-option{background:var(--surface2);color:var(--text)}
+[data-theme="dark"] .answer-option:hover:not(:disabled){background:rgba(61,139,255,.15);border-color:var(--blue);color:var(--blue)}
+[data-theme="dark"] .answer-option.correct{background:rgba(34,197,94,.18);border-color:#4ade80;color:#86efac}
+[data-theme="dark"] .answer-option.wrong{background:rgba(229,57,53,.18);border-color:#f87171;color:#fca5a5}
+
+/* Flashcard remembered/not-remembered buttons */
+[data-theme="dark"] .btn-remembered{background:rgba(34,197,94,.15);color:#86efac}
+[data-theme="dark"] .btn-remembered:hover{background:rgba(34,197,94,.25)}
+[data-theme="dark"] .btn-not-remembered{background:rgba(229,57,53,.15);color:#fca5a5}
+[data-theme="dark"] .btn-not-remembered:hover{background:rgba(229,57,53,.25)}
+
+/* Feedback (fill-blank) */
+[data-theme="dark"] .feedback-correct{background:rgba(34,197,94,.15);color:#86efac;border-color:#4ade80}
+[data-theme="dark"] .feedback-wrong{background:rgba(229,57,53,.15);color:#fca5a5;border-color:#f87171}
+[data-theme="dark"] .feedback-hint{background:rgba(234,179,8,.15);color:#fde68a;border-color:#fcd34d}
+
+/* Sidebar book list */
+[data-theme="dark"] .book-item.active{background:rgba(229,57,53,.2);color:var(--brand)}
+[data-theme="dark"] .hdr-nav-toggle.active{background:rgba(229,57,53,.2);color:var(--brand)}
+
+/* Book picker (Xem trước modal) */
+[data-theme="dark"] .book-opt:hover{background:rgba(61,139,255,.15)}
+[data-theme="dark"] .book-opt.selected{background:rgba(229,57,53,.2)}
+
+/* Audio buttons hover */
+[data-theme="dark"] .btn-audio:hover{background:rgba(61,139,255,.15)}
+[data-theme="dark"] .btn-play-audio:hover{background:rgba(61,139,255,.15);border-color:var(--blue)}
+
+/* Bottom sheet */
+[data-theme="dark"] .sheet-book-item.active{background:rgba(229,57,53,.2);color:var(--brand)}
+[data-theme="dark"] .sheet-add-book-btn:hover{background:rgba(229,57,53,.15)}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 
