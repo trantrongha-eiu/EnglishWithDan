@@ -499,10 +499,10 @@ async function loadMaterialFilters() {
     // Quarter chips
     const qChips = document.getElementById('quarter-chips');
     if (qChips) {
-      qChips.innerHTML = `<span class="filter-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>`;
+      qChips.innerHTML = `<span class="pv-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>`;
       (data.quarters || []).forEach((q) => {
         const s = document.createElement('span');
-        s.className = 'filter-chip';
+        s.className = 'pv-chip';
         s.dataset.quarter = q;
         s.textContent = q;
         s.onclick = () => setQuarterFilter(q, s);
@@ -513,10 +513,10 @@ async function loadMaterialFilters() {
     // Topic chips
     const tChips = document.getElementById('topic-chips');
     if (tChips) {
-      tChips.innerHTML = `<span class="filter-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>`;
+      tChips.innerHTML = `<span class="pv-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>`;
       (data.topics || []).forEach((t) => {
         const s = document.createElement('span');
-        s.className = 'filter-chip';
+        s.className = 'pv-chip';
         s.dataset.topic = t;
         s.textContent = t;
         s.onclick = () => setTopicFilter(t, s);
@@ -529,7 +529,7 @@ async function loadMaterialFilters() {
 }
 
 function setQuarterFilter(q, el) {
-  document.querySelectorAll('#quarter-chips .filter-chip').forEach((c) =>
+  document.querySelectorAll('#quarter-chips .pv-chip').forEach((c) =>
     c.classList.remove('active')
   );
   el.classList.add('active');
@@ -538,7 +538,7 @@ function setQuarterFilter(q, el) {
 }
 
 function setTopicFilter(t, el) {
-  document.querySelectorAll('#topic-chips .filter-chip').forEach((c) =>
+  document.querySelectorAll('#topic-chips .pv-chip').forEach((c) =>
     c.classList.remove('active')
   );
   el.classList.add('active');
@@ -569,12 +569,12 @@ async function loadMaterials() {
     list.innerHTML = '';
     materials.forEach((m) => {
       const card = document.createElement('div');
-      card.className = 'material-card';
+      card.className = 'pv-doc-card';
       card.innerHTML = `
-        <div class="material-card-icon">📄</div>
-        <div class="material-card-info">
-          <div class="material-card-title">${m.title}</div>
-          <div class="material-card-meta">${m.quarter} · ${m.topic}</div>
+        <div class="pv-doc-icon">📄</div>
+        <div class="pv-doc-info">
+          <div class="pv-doc-title">${m.title}</div>
+          <div class="pv-doc-meta">${m.quarter} · ${m.topic}</div>
         </div>`;
       card.onclick = () => openMaterial(m, card);
       list.appendChild(card);
@@ -586,7 +586,7 @@ async function loadMaterials() {
 }
 
 function openMaterial(m, card) {
-  document.querySelectorAll('.material-card').forEach((c) => c.classList.remove('active'));
+  document.querySelectorAll('.pv-doc-card').forEach((c) => c.classList.remove('active'));
   card.classList.add('active');
 
   const placeholder = document.getElementById('pdf-placeholder');
@@ -598,22 +598,24 @@ function openMaterial(m, card) {
   if (wrap) wrap.style.display = 'flex';
   if (frame) frame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(m.pdfUrl)}&embedded=true`;
 
-  const titleEl = document.getElementById('sp-viewer-title');
-  const dlBtn   = document.getElementById('sp-download-btn');
+  const titleEl  = document.getElementById('sp-viewer-title');
+  const dlBtn    = document.getElementById('sp-download-btn');
+  const tabBtn   = document.getElementById('sp-newtab-btn');
   if (titleEl) titleEl.textContent = m.title;
-  if (dlBtn)   dlBtn.href = m.pdfUrl;
+  if (dlBtn)   dlBtn.href  = m.pdfUrl;
+  if (tabBtn)  tabBtn.href = m.pdfUrl;
 
   // On mobile: show PDF panel, hide list panel
   if (window.innerWidth <= 768 && right) {
     right.classList.add('mobile-open');
-    document.getElementById('materials-left').style.display = 'none';
+    document.querySelector('.pv-sidebar').style.display = 'none';
     right.scrollIntoView({ behavior: 'smooth' });
   }
 }
 
 function closeMobilePdf() {
   const right = document.getElementById('materials-right');
-  const left = document.getElementById('materials-left');
-  if (right) right.classList.remove('mobile-open');
-  if (left) left.style.display = '';
+  const sidebar = document.querySelector('#tab-materials .pv-sidebar');
+  if (right)   right.classList.remove('mobile-open');
+  if (sidebar) sidebar.style.display = '';
 }

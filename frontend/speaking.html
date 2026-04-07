@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="speaking.css" />
+  <link rel="stylesheet" href="css/pdf-viewer.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <script src="js/theme.js"></script>
 </head>
@@ -136,40 +137,41 @@
      TAB 2 – MATERIALS
 ════════════════════════════════════════════ -->
 <div id="tab-materials" class="sp-content">
-  <div class="materials-layout">
+  <div class="pv-layout">
 
     <!-- Left: filter + list -->
-    <div class="materials-left">
-      <div class="materials-filter">
-        <div class="filter-section-title">Quarter</div>
-        <div class="filter-chip-group" id="quarter-chips">
-          <span class="filter-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>
+    <div class="pv-sidebar">
+      <div class="pv-sidebar-filter">
+        <div class="pv-filter-title">Quarter</div>
+        <div class="pv-chip-group" id="quarter-chips">
+          <span class="pv-chip active" data-quarter="all" onclick="setQuarterFilter('all',this)">Tất cả</span>
         </div>
-
-        <div class="filter-section-title">Topic</div>
-        <div class="filter-chip-group" id="topic-chips">
-          <span class="filter-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>
+        <div class="pv-filter-title">Topic</div>
+        <div class="pv-chip-group" id="topic-chips">
+          <span class="pv-chip active" data-topic="all" onclick="setTopicFilter('all',this)">Tất cả</span>
         </div>
       </div>
-
-      <div class="materials-list" id="materials-list">
+      <div class="pv-doc-list" id="materials-list">
         <div class="spinner"></div>
       </div>
     </div>
 
     <!-- Right: PDF viewer -->
-    <div class="materials-right" id="materials-right">
-      <button class="pdf-back-btn" id="pdf-back-btn" onclick="closeMobilePdf()">← Quay lại danh sách</button>
-      <div class="pdf-placeholder" id="pdf-placeholder">
-        <div class="ph-icon">📄</div>
+    <div class="pv-viewer" id="materials-right">
+      <button class="pv-back-btn" id="pdf-back-btn" onclick="closeMobilePdf()">← Quay lại danh sách</button>
+      <div class="pv-placeholder" id="pdf-placeholder">
+        <div class="pv-placeholder-icon">📄</div>
         <p>Chọn tài liệu để xem</p>
       </div>
-      <div class="pdf-viewer-wrap" id="sp-viewer-wrap" style="display:none;flex-direction:column;flex:1;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
-        <div class="pdf-viewer-toolbar">
-          <span id="sp-viewer-title" style="font-weight:700;font-size:14px;color:inherit"></span>
-          <a id="sp-download-btn" href="#" target="_blank" class="btn-secondary" style="font-size:13px;text-decoration:none;padding:5px 12px;border-radius:8px;border:1px solid #e5e7eb;color:#374151;white-space:nowrap">⬇ Tải về PDF</a>
+      <div class="pv-box" id="sp-viewer-wrap" style="display:none">
+        <div class="pv-toolbar">
+          <span class="pv-toolbar-title" id="sp-viewer-title"></span>
+          <div class="pv-toolbar-actions">
+            <a class="pv-btn-action" id="sp-newtab-btn" href="#" target="_blank">↗ Mở tab mới</a>
+            <a class="pv-btn-action" id="sp-download-btn" href="#" target="_blank">⬇ Tải về PDF</a>
+          </div>
         </div>
-        <iframe class="pdf-viewer-frame" id="pdf-frame" allowfullscreen style="display:block;flex:1;min-height:500px"></iframe>
+        <iframe class="pv-frame" id="pdf-frame" allowfullscreen></iframe>
       </div>
     </div>
 

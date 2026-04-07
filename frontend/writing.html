@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="writing.css" />
+  <link rel="stylesheet" href="css/pdf-viewer.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <script src="js/theme.js"></script>
 </head>
@@ -223,57 +224,59 @@
       <a href="profile.html"   class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
     </div>
   </nav>
-  <div class="samples-body">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-      <h2 class="history-title" style="margin-bottom:0">📄 Tài liệu mẫu Writing</h2>
-      <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+
+  <!-- Topbar: title + back -->
+  <div class="wsampl-topbar">
+    <h2 class="wsampl-topbar-title">📄 Tài liệu mẫu Writing</h2>
+    <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+  </div>
+
+  <!-- Full-height layout: sidebar + PDF viewer -->
+  <div class="pv-layout">
+
+    <!-- Left: filters + list -->
+    <div class="pv-sidebar samples-list-col">
+      <div class="pv-sidebar-filter">
+        <div class="pv-filter-title">Quarter</div>
+        <div class="pv-chip-group" id="wsampl-quarter-chips">
+          <span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>
+        </div>
+        <div class="pv-filter-title">Topic</div>
+        <div class="pv-chip-group" id="wsampl-topic-chips">
+          <span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>
+        </div>
+        <div class="pv-filter-title">Loại</div>
+        <div class="pv-chip-group" id="wsampl-task-chips">
+          <span class="pv-chip active" data-val="all"   onclick="setSampleFilter('taskType','all',this)">Tất cả</span>
+          <span class="pv-chip"        data-val="task1" onclick="setSampleFilter('taskType','task1',this)">Task 1</span>
+          <span class="pv-chip"        data-val="task2" onclick="setSampleFilter('taskType','task2',this)">Task 2</span>
+          <span class="pv-chip"        data-val="both"  onclick="setSampleFilter('taskType','both',this)">Task 1 &amp; 2</span>
+        </div>
+      </div>
+      <div class="pv-doc-list" id="wsampl-list">
+        <div class="spinner"></div>
+      </div>
     </div>
 
-    <!-- Filters -->
-    <div class="samples-filters">
-      <div class="sf-group">
-        <span class="sf-label">Quarter:</span>
-        <div class="sf-chips" id="wsampl-quarter-chips">
-          <span class="sf-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>
-        </div>
+    <!-- Right: PDF viewer -->
+    <div class="pv-viewer" id="wsampl-viewer-col">
+      <button class="pv-back-btn" id="wsampl-back-btn" onclick="closeWritingMobilePdf()">← Quay lại danh sách</button>
+      <div class="pv-placeholder" id="wsampl-placeholder">
+        <div class="pv-placeholder-icon">📄</div>
+        <p>Chọn tài liệu để xem</p>
       </div>
-      <div class="sf-group">
-        <span class="sf-label">Topic:</span>
-        <div class="sf-chips" id="wsampl-topic-chips">
-          <span class="sf-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>
-        </div>
-      </div>
-      <div class="sf-group">
-        <span class="sf-label">Loại:</span>
-        <div class="sf-chips" id="wsampl-task-chips">
-          <span class="sf-chip active" data-val="all" onclick="setSampleFilter('taskType','all',this)">Tất cả</span>
-          <span class="sf-chip" data-val="task1" onclick="setSampleFilter('taskType','task1',this)">Task 1</span>
-          <span class="sf-chip" data-val="task2" onclick="setSampleFilter('taskType','task2',this)">Task 2</span>
-          <span class="sf-chip" data-val="both" onclick="setSampleFilter('taskType','both',this)">Task 1 &amp; 2</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Layout: list + PDF viewer -->
-    <div class="samples-layout">
-      <div class="samples-list-col">
-        <div id="wsampl-list"><div class="spinner"></div></div>
-      </div>
-      <div class="samples-viewer-col" id="wsampl-viewer-col">
-        <button class="wsampl-back-btn" id="wsampl-back-btn" onclick="closeWritingMobilePdf()">← Quay lại danh sách</button>
-        <div class="pdf-placeholder" id="wsampl-placeholder">
-          <div style="font-size:40px;margin-bottom:12px">📄</div>
-          <p>Chọn tài liệu để xem</p>
-        </div>
-        <div class="pdf-viewer-wrap" id="wsampl-viewer-wrap" style="display:none">
-          <div class="pdf-viewer-toolbar">
-            <span id="wsampl-viewer-title" style="font-weight:700;font-size:14px"></span>
-            <a id="wsampl-download-btn" href="#" target="_blank" class="btn-secondary" style="font-size:13px;text-decoration:none">⬇ Tải về PDF</a>
+      <div class="pv-box" id="wsampl-viewer-wrap" style="display:none">
+        <div class="pv-toolbar">
+          <span class="pv-toolbar-title" id="wsampl-viewer-title"></span>
+          <div class="pv-toolbar-actions">
+            <a class="pv-btn-action" id="wsampl-newtab-btn" href="#" target="_blank">↗ Mở tab mới</a>
+            <a class="pv-btn-action" id="wsampl-download-btn" href="#" target="_blank">⬇ Tải về PDF</a>
           </div>
-          <iframe id="wsampl-frame" class="pdf-viewer-frame" allowfullscreen></iframe>
         </div>
+        <iframe class="pv-frame" id="wsampl-frame" allowfullscreen></iframe>
       </div>
     </div>
+
   </div>
 </div>
 

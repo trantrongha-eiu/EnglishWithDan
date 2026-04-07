@@ -510,17 +510,17 @@ async function loadWritingSamples() {
       const tChips = document.getElementById('wsampl-topic-chips');
 
       // Render quarter chips
-      qChips.innerHTML = `<span class="sf-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
+      qChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
       fData.quarters.forEach(q => {
         qChips.insertAdjacentHTML('beforeend',
-          `<span class="sf-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
+          `<span class="pv-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
       });
 
       // Render topic chips
-      tChips.innerHTML = `<span class="sf-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
+      tChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
       fData.topics.forEach(t => {
         tChips.insertAdjacentHTML('beforeend',
-          `<span class="sf-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
+          `<span class="pv-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
       });
     }
   } catch (e) { /* filters optional */ }
@@ -548,12 +548,12 @@ async function _fetchAndRenderSamples() {
 
     const taskLabel = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 & 2' };
     list.innerHTML = data.samples.map(s => `
-      <div class="sample-card" onclick="openSamplePdf('${escHtml(s.pdfUrl)}','${escHtml(s.title)}',this)">
-        <div class="sample-card-icon">📄</div>
-        <div>
-          <div class="sample-card-title">${escHtml(s.title)}</div>
-          <div class="sample-card-meta">${escHtml(s.quarter)} · ${escHtml(s.topic)}</div>
-          <span class="sample-card-badge">${taskLabel[s.taskType] || s.taskType}</span>
+      <div class="pv-doc-card" onclick="openSamplePdf('${escHtml(s.pdfUrl)}','${escHtml(s.title)}',this)">
+        <div class="pv-doc-icon">📄</div>
+        <div class="pv-doc-info">
+          <div class="pv-doc-title">${escHtml(s.title)}</div>
+          <div class="pv-doc-meta">${escHtml(s.quarter)} · ${escHtml(s.topic)}</div>
+          <span class="pv-doc-badge">${taskLabel[s.taskType] || s.taskType}</span>
         </div>
       </div>`).join('');
   } catch (e) {
@@ -568,7 +568,7 @@ function setSampleFilter(type, val, el) {
   const groupMap = { quarter: 'wsampl-quarter-chips', topic: 'wsampl-topic-chips', taskType: 'wsampl-task-chips' };
   const group = document.getElementById(groupMap[type]);
   if (group) {
-    group.querySelectorAll('.sf-chip').forEach(c => c.classList.remove('active'));
+    group.querySelectorAll('.pv-chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
   }
 
@@ -581,13 +581,15 @@ function openSamplePdf(url, title, el) {
   wrap.style.display = 'flex';
   document.getElementById('wsampl-viewer-title').textContent = title;
   document.getElementById('wsampl-download-btn').href = url;
+  const tabBtn = document.getElementById('wsampl-newtab-btn');
+  if (tabBtn) tabBtn.href = url;
   document.getElementById('wsampl-frame').src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
 
   // Highlight selected item
-  document.querySelectorAll('.sample-card').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.pv-doc-card').forEach(i => i.classList.remove('active'));
   if (el) el.classList.add('active');
 
-  // On mobile: show viewer col full-screen, hide list col
+  // On mobile: show viewer col full-screen, hide sidebar
   if (window.innerWidth <= 768) {
     document.getElementById('wsampl-viewer-col').classList.add('mobile-open');
     document.querySelector('.samples-list-col').style.display = 'none';
