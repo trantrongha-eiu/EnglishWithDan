@@ -96,6 +96,16 @@ router.delete('/passages/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
+router.delete('/passages/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    const passage = await Passage.findByIdAndDelete(req.params.id);
+    if (!passage) return res.status(404).json({ success: false, message: 'Không tìm thấy bài đọc' });
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn bài đọc' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ══════════════════════════════════════════════════
 // READING TESTS
 // ══════════════════════════════════════════════════
@@ -126,6 +136,25 @@ router.put('/tests/:id', auth, teacherOnly, async (req, res) => {
     res.json({ success: true, test });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+router.delete('/tests/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await ReadingTest.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true, message: 'Đã ẩn bộ đề' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.delete('/tests/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    const test = await ReadingTest.findByIdAndDelete(req.params.id);
+    if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn bộ đề' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
