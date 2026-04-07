@@ -239,11 +239,11 @@ function renderPassagesTable(list) {
     <td style="font-family:var(--mono);font-size:12px">${p.questionRange?.start}–${p.questionRange?.end}</td>
     <td><span class="badge ${p.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${p.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
     <td style="color:var(--text3)">${formatDate(p.createdAt).split(' ')[0]}</td>
-    <td>
-      <button class="btn btn-ghost btn-sm" onclick="editPassage('${p._id}')">✏️</button>
-      <button class="btn btn-danger btn-sm" onclick="softDeletePassage('${p._id}','${p.title}')" title="Ẩn">🙈</button>
-      <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeletePassage('${p._id}','${p.title}')" title="Xóa vĩnh viễn">🗑</button>
-    </td>
+    <td><div class="row-actions">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="editPassage('${p._id}')" title="Chỉnh sửa">✏️</button>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="togglePassage('${p._id}',${p.isActive})" title="${p.isActive ? 'Ẩn' : 'Hiện'}">${p.isActive ? '🙈' : '👁'}</button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeletePassage('${p._id}','${p.title.replace(/'/g,"\\'")}')" title="Xóa vĩnh viễn">🗑</button>
+    </div></td>
   </tr>`).join('')
     : '<tr><td colspan="8" class="table-empty">Không có bài đọc nào</td></tr>';
   const total = list.length, pages = Math.ceil(total / PAGE_SIZE);
@@ -265,11 +265,11 @@ async function editPassage(id) {
   try { const res = await fetch(`${API}/admin/passages/${id}`, { headers: authH() }); if (res.ok) { const d = await res.json(); openPassageModal(d.passage || p); } else openPassageModal(p); }
   catch { openPassageModal(p); }
 }
-function softDeletePassage(id, title) {
-  confirm2(`Ẩn bài đọc "${title}"?`, async () => {
-    await fetch(`${API}/admin/passages/${id}`, { method: 'DELETE', headers: authH() });
-    toast('Đã ẩn bài đọc'); await loadPassages();
-  });
+async function togglePassage(id, isActive) {
+  try {
+    await fetch(`${API}/admin/passages/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    toast(isActive ? 'Đã ẩn bài đọc' : 'Đã hiện bài đọc'); await loadPassages();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 function hardDeletePassage(id, title) {
   confirmAction(`Xóa VĨNH VIỄN bài đọc "${title}"? Không thể khôi phục!`, async () => {
@@ -1110,12 +1110,12 @@ function renderTestsTable(list) {
   <td id="tstat-${t._id}" style="font-size:12px;color:var(--text3)">–</td>
   <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}"><span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
   <td style="color:var(--text3)">${formatDate(t.createdAt).split(' ')[0]}</td>
-  <td>
-      <button class="btn btn-ghost btn-sm" onclick="copyTestLink('${t._id}')" title="Copy link chia sẻ cho học sinh">🔗</button>
-      <button class="btn btn-ghost btn-sm" onclick="editTest('${t._id}')">✏️</button>
-      <button class="btn btn-danger btn-sm" onclick="softDeleteTest('${t._id}','${t.name}')" title="Ẩn">🙈</button>
-      <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeleteTest('${t._id}','${t.name}')" title="Xóa vĩnh viễn">🗑</button>
-  </td></tr>`).join('')
+  <td><div class="row-actions">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="copyTestLink('${t._id}')" title="Copy link chia sẻ">🔗</button>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="editTest('${t._id}')" title="Chỉnh sửa">✏️</button>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleReadingTest('${t._id}',${t.isActive})" title="${t.isActive ? 'Ẩn' : 'Hiện'}">${t.isActive ? '🙈' : '👁'}</button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteTest('${t._id}','${t.name.replace(/'/g,"\\'")}')" title="Xóa vĩnh viễn">🗑</button>
+  </div></td></tr>`).join('')
     : '<tr><td colspan="7" class="table-empty">Chưa có bộ đề nào</td></tr>';
 }
 
@@ -1148,15 +1148,13 @@ async function saveTest() {
   } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
-function softDeleteTest(id, name) {
-  confirmAction(`Ẩn bộ đề "${name}"?`, async () => {
-    try {
-      const res  = await fetch(`${API}/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn bộ đề'); await loadTests();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleReadingTest(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/tests/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn bộ đề' : 'Đã hiện bộ đề'); await loadTests();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 function hardDeleteTest(id, name) {
   confirmAction(`Xóa VĨNH VIỄN bộ đề "${name}"? Không thể khôi phục!`, async () => {
@@ -1334,13 +1332,11 @@ function renderVocabUnitsTable(list) {
       </span>
     </td>
     <td style="color:var(--text3);font-size:12px">${formatDate(u.createdAt).split(' ')[0]}</td>
-    <td>
-      <button class="btn btn-ghost btn-sm" onclick="openUnitWordsModal('${u._id}')">📝 Từ vựng</button>
-      <button class="btn btn-ghost btn-sm" onclick="editUnit('${u._id}')">✏️</button>
-      <button class="btn btn-danger btn-sm" onclick="toggleUnitActive('${u._id}',${u.isActive})">
-        ${u.isActive ? '🙈 Ẩn' : '👁 Hiện'}
-      </button>
-    </td>
+    <td><div class="row-actions">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="openUnitWordsModal('${u._id}')" title="Quản lý từ vựng">📝</button>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="editUnit('${u._id}')" title="Chỉnh sửa">✏️</button>
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleUnitActive('${u._id}',${u.isActive})" title="${u.isActive ? 'Ẩn' : 'Hiện'}">${u.isActive ? '🙈' : '👁'}</button>
+    </div></td>
   </tr>`).join('')
     : '<tr><td colspan="7" class="table-empty">Chưa có Unit nào. Nhấn "+ Tạo Unit" hoặc "📂 Import JSON".</td></tr>';
 }
@@ -1536,12 +1532,12 @@ function renderListeningTable(list) {
   <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">
     <span class="dot"></span>${t.isActive ? 'Hoạt động' : 'Ẩn'}</span></td>
   <td style="color:var(--text3);font-size:12px">${formatDate(t.createdAt).split(' ')[0]}</td>
-  <td>
-    <button class="btn btn-ghost btn-sm" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')">🎵 Audio</button>
-    <button class="btn btn-ghost btn-sm" onclick="editListeningTest('${t._id}')">✏️</button>
-    <button class="btn btn-danger btn-sm" onclick="softDeleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Ẩn">🙈</button>
-    <button class="btn btn-danger btn-sm" style="background:rgba(229,57,53,.3)" onclick="hardDeleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Xóa vĩnh viễn">🗑</button>
-  </td>
+  <td><div class="row-actions">
+    <button class="btn btn-ghost btn-sm btn-icon" onclick="openUploadAudioModal('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Upload Audio">🎵</button>
+    <button class="btn btn-ghost btn-sm btn-icon" onclick="editListeningTest('${t._id}')" title="Chỉnh sửa">✏️</button>
+    <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleListeningTest('${t._id}',${t.isActive})" title="${t.isActive ? 'Ẩn' : 'Hiện'}">${t.isActive ? '🙈' : '👁'}</button>
+    <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteListeningTest('${t._id}','${t.name.replace(/'/g, "\\'")}')" title="Xóa vĩnh viễn">🗑</button>
+  </div></td>
 </tr>`;
   }).join('');
 }
@@ -1588,13 +1584,11 @@ async function editListeningTest(id) {
   } catch { openListeningModal(allListeningTests.find(t => t._id === id)); }
 }
 
-function softDeleteListeningTest(id, name) {
-  confirmAction(`Ẩn đề nghe "${name}"?`, async () => {
-    try {
-      await fetch(`${API}/listening/admin/tests/${id}`, { method: 'DELETE', headers: authH() });
-      toast('Đã ẩn đề nghe'); await loadListeningTests();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleListeningTest(id, isActive) {
+  try {
+    await fetch(`${API}/listening/admin/tests/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    toast(isActive ? 'Đã ẩn đề nghe' : 'Đã hiện đề nghe'); await loadListeningTests();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 function hardDeleteListeningTest(id, name) {
   confirmAction(`Xóa VĨNH VIỄN đề nghe "${name}"? Không thể khôi phục!`, async () => {
@@ -2451,11 +2445,11 @@ async function loadTask1Pool() {
           <td>${t.imageUrl ? `<a href="${escH(t.imageUrl)}" target="_blank" style="color:var(--blue);font-size:12px">🖼 Xem</a>` : '<span style="color:var(--text3);font-size:12px">–</span>'}</td>
           <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">${t.isActive ? 'Active' : 'Ẩn'}</span></td>
           <td style="font-size:12px;color:var(--text3)">${formatDate(t.createdAt)}</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="openTask1Modal('${t._id}')">✏️ Sửa</button>
-            <button class="btn btn-warning btn-sm" onclick="softDeleteTask1('${t._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
-            <button class="btn btn-danger btn-sm" onclick="hardDeleteTask1('${t._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
-          </td>
+          <td><div class="row-actions">
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="openTask1Modal('${t._id}')" title="Chỉnh sửa">✏️</button>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleTask1('${t._id}',${t.isActive})" title="${t.isActive ? 'Ẩn' : 'Hiện'}">${t.isActive ? '🙈' : '👁'}</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteTask1('${t._id}')" title="Xóa vĩnh viễn">🗑</button>
+          </div></td>
         </tr>`).join('')
       : '<tr><td colspan="5" class="table-empty">Pool Task 1 đang trống. Thêm câu hỏi để học sinh có thể thi.</td></tr>';
   } catch { toast('Lỗi load Task 1 pool', 'error'); }
@@ -2473,11 +2467,11 @@ async function loadTask2Pool() {
           <td style="max-width:400px;white-space:normal;font-size:13px">${escH((t.prompt || '').slice(0, 140))}${t.prompt?.length > 140 ? '…' : ''}</td>
           <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">${t.isActive ? 'Active' : 'Ẩn'}</span></td>
           <td style="font-size:12px;color:var(--text3)">${formatDate(t.createdAt)}</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="openTask2Modal('${t._id}')">✏️ Sửa</button>
-            <button class="btn btn-warning btn-sm" onclick="softDeleteTask2('${t._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
-            <button class="btn btn-danger btn-sm" onclick="hardDeleteTask2('${t._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
-          </td>
+          <td><div class="row-actions">
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="openTask2Modal('${t._id}')" title="Chỉnh sửa">✏️</button>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleTask2('${t._id}',${t.isActive})" title="${t.isActive ? 'Ẩn' : 'Hiện'}">${t.isActive ? '🙈' : '👁'}</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteTask2('${t._id}')" title="Xóa vĩnh viễn">🗑</button>
+          </div></td>
         </tr>`).join('')
       : '<tr><td colspan="4" class="table-empty">Pool Task 2 đang trống. Thêm câu hỏi để học sinh có thể thi.</td></tr>';
   } catch { toast('Lỗi load Task 2 pool', 'error'); }
@@ -2584,16 +2578,13 @@ async function saveTask1() {
   } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
-async function softDeleteTask1(id) {
-  confirmAction('Ẩn câu hỏi Task 1 này?', async () => {
-    try {
-      const res  = await fetch(`${API}/admin/writing-task1/${id}`, { method: 'DELETE', headers: authH() });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn Task 1');
-      loadTask1Pool();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleTask1(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/writing-task1/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn Task 1' : 'Đã hiện Task 1'); loadTask1Pool();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
 async function hardDeleteTask1(id) {
@@ -2651,16 +2642,13 @@ async function saveTask2() {
   } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
-async function softDeleteTask2(id) {
-  confirmAction('Ẩn câu hỏi Task 2 này?', async () => {
-    try {
-      const res  = await fetch(`${API}/admin/writing-task2/${id}`, { method: 'DELETE', headers: authH() });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn Task 2');
-      loadTask2Pool();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleTask2(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/writing-task2/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn Task 2' : 'Đã hiện Task 2'); loadTask2Pool();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
 async function hardDeleteTask2(id) {
@@ -2785,11 +2773,11 @@ async function loadSpeakingQuestions() {
           <td style="max-width:300px;white-space:normal">${escH(q.question)}</td>
           <td>${q.cueCard ? '✅' : '–'}</td>
           <td>${formatDate(q.createdAt)}</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="openSpeakingQModal('${q._id}')">✏️ Sửa</button>
-            <button class="btn btn-danger btn-sm" onclick="softDeleteSpeakingQuestion('${q._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
-            <button class="btn btn-danger btn-sm" style="margin-left:4px;background:rgba(229,57,53,.3)" onclick="hardDeleteSpeakingQuestion('${q._id}')" title="Xóa vĩnh viễn">🗑</button>
-          </td>
+          <td><div class="row-actions">
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="openSpeakingQModal('${q._id}')" title="Chỉnh sửa">✏️</button>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleSpeakingQuestion('${q._id}',${q.isActive !== false})" title="${q.isActive !== false ? 'Ẩn' : 'Hiện'}">${q.isActive !== false ? '🙈' : '👁'}</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteSpeakingQuestion('${q._id}')" title="Xóa vĩnh viễn">🗑</button>
+          </div></td>
         </tr>`).join('')
       : '<tr><td colspan="6" class="table-empty">Chưa có câu hỏi nào.</td></tr>';
   } catch { toast('Lỗi load câu hỏi speaking', 'error'); }
@@ -2846,16 +2834,13 @@ async function saveSpeakingQuestion() {
   } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
-function softDeleteSpeakingQuestion(id) {
-  confirmAction('Ẩn câu hỏi này?', async () => {
-    try {
-      const res  = await fetch(`${API}/admin/speaking/questions/${id}`, { method: 'DELETE', headers: authH() });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn câu hỏi');
-      loadSpeakingQuestions();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleSpeakingQuestion(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/speaking/questions/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn câu hỏi' : 'Đã hiện câu hỏi'); loadSpeakingQuestions();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 function hardDeleteSpeakingQuestion(id) {
   confirmAction('Xóa VĨNH VIỄN câu hỏi này? Không thể khôi phục!', async () => {
@@ -2885,11 +2870,11 @@ async function loadSpeakingMaterials() {
           <td>${escH(m.topic)}</td>
           <td><a href="${escH(m.pdfUrl)}" target="_blank" style="color:var(--primary)">📄 Xem</a></td>
           <td>${formatDate(m.createdAt)}</td>
-          <td>
-            <button class="btn btn-ghost btn-sm" onclick="openSpeakingMatModal('${m._id}')">✏️ Sửa</button>
-            <button class="btn btn-danger btn-sm" onclick="softDeleteSpeakingMaterial('${m._id}')" style="margin-left:4px" title="Ẩn">🙈</button>
-            <button class="btn btn-danger btn-sm" style="margin-left:4px;background:rgba(229,57,53,.3)" onclick="hardDeleteSpeakingMaterial('${m._id}')" title="Xóa vĩnh viễn">🗑</button>
-          </td>
+          <td><div class="row-actions">
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="openSpeakingMatModal('${m._id}')" title="Chỉnh sửa">✏️</button>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleSpeakingMaterial('${m._id}',${m.isActive !== false})" title="${m.isActive !== false ? 'Ẩn' : 'Hiện'}">${m.isActive !== false ? '🙈' : '👁'}</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteSpeakingMaterial('${m._id}')" title="Xóa vĩnh viễn">🗑</button>
+          </div></td>
         </tr>`).join('')
       : '<tr><td colspan="6" class="table-empty">Chưa có tài liệu nào.</td></tr>';
   } catch { toast('Lỗi load tài liệu speaking', 'error'); }
@@ -3000,18 +2985,13 @@ async function saveSpeakingMaterial() {
   }
 }
 
-function softDeleteSpeakingMaterial(id) {
-  confirmAction('Ẩn tài liệu này?', async () => {
-    try {
-      const res  = await fetch(`${API}/admin/speaking/materials/${id}`, {
-        method: 'DELETE', headers: authH()
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn tài liệu');
-      loadSpeakingMaterials();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleSpeakingMaterial(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/speaking/materials/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn tài liệu' : 'Đã hiện tài liệu'); loadSpeakingMaterials();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 function hardDeleteSpeakingMaterial(id) {
   confirmAction('Xóa VĨNH VIỄN tài liệu này? Không thể khôi phục!', async () => {
@@ -3172,11 +3152,11 @@ async function loadWritingSamples() {
           <td>${escH(s.topic)}</td>
           <td><span style="font-size:12px;padding:2px 8px;border-radius:8px;background:#eff6ff;color:#3d8bff">${TASK_TYPE_LABEL[s.taskType] || s.taskType}</span></td>
           <td style="font-size:12px;color:#999">${formatDate(s.createdAt)}</td>
-          <td style="text-align:center">
-            <button class="btn btn-ghost btn-sm" onclick="openWritingSampleModal('${s._id}')" title="Chỉnh sửa">✎</button>
-            <button class="btn btn-ghost btn-sm" onclick="softDeleteWritingSample('${s._id}')" title="Ẩn">👁‍🗨</button>
-            <button class="btn btn-danger btn-sm" onclick="hardDeleteWritingSample('${s._id}')" style="margin-left:4px" title="Xóa vĩnh viễn">🗑</button>
-          </td>
+          <td><div class="row-actions">
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="openWritingSampleModal('${s._id}')" title="Chỉnh sửa">✏️</button>
+            <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleWritingSample('${s._id}',${s.isActive !== false})" title="${s.isActive !== false ? 'Ẩn' : 'Hiện'}">${s.isActive !== false ? '🙈' : '👁'}</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="hardDeleteWritingSample('${s._id}')" title="Xóa vĩnh viễn">🗑</button>
+          </div></td>
         </tr>`).join('')
       : '<tr><td colspan="6" class="table-empty">Chưa có tài liệu nào</td></tr>';
   } catch { toast('Lỗi load tài liệu Writing', 'error'); }
@@ -3283,18 +3263,13 @@ async function saveWritingSample() {
   }
 }
 
-function softDeleteWritingSample(id) {
-  confirmAction('Ẩn tài liệu này?', async () => {
-    try {
-      const res  = await fetch(`${API}/admin/writing/samples/${id}`, {
-        method: 'DELETE', headers: authH()
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      toast('Đã ẩn tài liệu');
-      loadWritingSamples();
-    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
-  });
+async function toggleWritingSample(id, isActive) {
+  try {
+    const res  = await fetch(`${API}/admin/writing/samples/${id}`, { method: 'PUT', headers: authH(), body: JSON.stringify({ isActive: !isActive }) });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast(isActive ? 'Đã ẩn tài liệu' : 'Đã hiện tài liệu'); loadWritingSamples();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
 function hardDeleteWritingSample(id) {
