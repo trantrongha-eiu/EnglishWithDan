@@ -831,7 +831,7 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 <div style="margin-bottom:8px">
   <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Nội dung câu hỏi *</label>
   <textarea class="form-input rqq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
-    placeholder="Nội dung câu hỏi...">${data?.questionText || ''}</textarea>
+    placeholder="Nội dung câu hỏi...">${(data?.questionText || '').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
 </div>
 <div class="rqq-extra" id="rqqex-${qId}">${renderRQQExtra(autoType, data)}</div>
 <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
@@ -960,7 +960,7 @@ function collectQuestions() {
   const questionGroups = [];
 
   for (const gDiv of document.querySelectorAll('#questions-container [id^="rqg-"]')) {
-    const groupType = gDiv.querySelector('.rqg-type').value;
+    const groupType = gDiv.querySelector('.rqg-type')?.value || 'plain';
     const groupTitle = gDiv.querySelector('.rqg-title')?.value.trim() || '';
     const instruction = gDiv.querySelector('.rqg-instruction')?.value.trim() || '';
 
@@ -1026,11 +1026,11 @@ function collectQuestions() {
     // Collect questions
     const questions = [];
     for (const qDiv of gDiv.querySelectorAll('[id^="rqq-"]')) {
-      const num = parseInt(qDiv.querySelector('.rqq-num').value);
-      const type = qDiv.querySelector('.rqq-type').value;
-      const text = qDiv.querySelector('.rqq-text').value.trim();
-      const answer = qDiv.querySelector('.rqq-answer').value.trim();
-      const expl = qDiv.querySelector('.rqq-explain').value.trim();
+      const num = parseInt(qDiv.querySelector('.rqq-num')?.value || '0');
+      const type = qDiv.querySelector('.rqq-type')?.value || '';
+      const text = (qDiv.querySelector('.rqq-text')?.value || '').trim();
+      const answer = (qDiv.querySelector('.rqq-answer')?.value || '').trim();
+      const expl = (qDiv.querySelector('.rqq-explain')?.value || '').trim();
       if (!num || !text || !answer) {
         toast(`Điền đầy đủ số câu, nội dung và đáp án (câu ${num || '?'})`, 'error');
         return null;
