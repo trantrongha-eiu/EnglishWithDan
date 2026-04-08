@@ -2284,14 +2284,10 @@ function addGroupQuestion(gIdx, data = null, groupType = 'plain') {
   const container = document.getElementById(`lgqs-${gIdx}`);
   if (!container) return;
 
-  const autoType = data?.type || (
-    ['table', 'note-form', 'bullet-list'].includes(groupType) ? 'fill-blank' :
-    groupType === 'map' ? 'map-labelling' :
-    'multiple-choice'
-  );
-
   const allowedTypes = getAllowedLQTypes(groupType, data?.type);
   const isSingle = allowedTypes.length === 1;
+  // autoType: always start from the allowed list so single-type groups render correctly
+  const autoType = data?.type || allowedTypes[0]?.value || 'multiple-choice';
   const typeOptionsHtml = allowedTypes.map(t =>
     `<option value="${t.value}" ${autoType === t.value ? 'selected' : ''}>${t.label}</option>`
   ).join('');
@@ -2551,6 +2547,7 @@ function onLQTypeChange(sel, qId) {
           'fill-blank':          'Nhập từ/cụm từ đúng',
           'sentence-completion': 'Nhập từ trong Word Bank',
           'matching':            'Nhập từ trong Word Bank',
+          'matching-info':       'A, B, C…',
           'map-labelling':       'Tên địa điểm',
         };
         answerInput.placeholder = placeholders[sel.value] || 'Đáp án đúng';
