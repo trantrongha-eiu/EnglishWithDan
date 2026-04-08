@@ -221,8 +221,8 @@ function switchTask(num) {
   const leftPanel = document.getElementById('exam-left-panel');
   if (num === 1) {
     leftPanel.innerHTML = `
-      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" />` : ''}
       <div class="task-prompt">${escHtml(task.prompt || '')}</div>
+      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" />` : ''}
     `;
   } else {
     leftPanel.innerHTML = `
