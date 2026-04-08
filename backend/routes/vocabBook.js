@@ -1,7 +1,20 @@
-const express   = require('express');
-const router    = express.Router();
-const VocabBook = require('../models/VocabBook');
-const auth      = require('../middleware/auth');
+const express        = require('express');
+const router         = express.Router();
+const VocabBook      = require('../models/VocabBook');
+const VocabActivity  = require('../models/VocabActivity');
+const auth           = require('../middleware/auth');
+
+// ── Helper: cộng dồn activity vào bản ghi ngày hôm nay (UTC) ──────────────
+function logActivity(userId, inc) {
+  const now  = new Date();
+  const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  // fire-and-forget, không chặn response
+  VocabActivity.findOneAndUpdate(
+    { userId, date },
+    { $inc: inc },
+    { upsert: true, new: false }
+  ).catch(() => {}); // bỏ qua lỗi ghi log
+}
 
 // ── Helper: tạo 5 sổ mặc định khi user mới ─────────────────────────────────
 async function ensureDefaultBooks(userId) {
@@ -27,6 +40,8 @@ async function ensureDefaultBooks(userId) {
 router.get('/', auth, async (req, res) => {
   try {
     await ensureDefaultBooks(req.user._id);
+    // Chỉ log view cho student (không log khi admin/teacher xem)
+    if (req.user.role === 'student') logActivity(req.user._id, { viewCount: 1 });
 
     const books = await VocabBook.find({ userId: req.user._id })
       .select('name color emoji isDefault createdAt words')
@@ -147,6 +162,8 @@ router.post('/:id/words', auth, async (req, res) => {
     book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note });
     await book.save();
 
+    if (req.user.role === 'student') logActivity(req.user._id, { wordsAdded: 1 });
+
     res.status(201).json({
       success: true,
       message: `Đã lưu "${word}" vào "${book.name}"`,
@@ -170,6 +187,7 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
     const wordDoc = book.words.id(req.params.wordId);
     if (!wordDoc) return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
 
+    const hadStatusChange = status !== undefined && status !== wordDoc.status;
     if (status      !== undefined) wordDoc.status      = status;
     if (note        !== undefined) wordDoc.note        = note;
     if (word        !== undefined) wordDoc.word        = word.trim();
@@ -179,6 +197,12 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
     if (partOfSpeech !== undefined) wordDoc.partOfSpeech = partOfSpeech;
 
     await book.save();
+
+    // Chỉ tính "ôn từ" khi thực sự đổi trạng thái học
+    if (hadStatusChange && req.user.role === 'student') {
+      logActivity(req.user._id, { wordsStudied: 1 });
+    }
+
     res.json({ success: true, word: wordDoc });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

@@ -66,7 +66,8 @@ function switchTab(tab, ev) {
     dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
     vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
     listening: 'Đề nghe (Listening)', writing: 'Đề viết (Writing)', speaking: 'Speaking',
-    courses: 'Quản lý khóa học', users: 'Quản lý người dùng'
+    courses: 'Quản lý khóa học', users: 'Quản lý người dùng',
+    'vocab-students': 'Từ vựng học sinh'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
   // Load lazy khi chuyển tab
@@ -76,6 +77,7 @@ function switchTab(tab, ev) {
   if (tab === 'speaking') { loadSpeakingQuestions(); loadSpeakingMaterials(); }
   if (tab === 'courses') loadCourses();
   if (tab === 'users') loadUsers();
+  if (tab === 'vocab-students') loadVocabStudents();
 }
 function toggleSidebar() {
   const open = document.getElementById('sidebar').classList.toggle('open');
@@ -3481,5 +3483,391 @@ function deleteWritingAttempt(id) {
       loadWritingHistory();
     } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
   });
+}
+
+/* ══════════════════════════════════════════════
+   VOCAB STUDENTS – Quản lý từ vựng học sinh
+══════════════════════════════════════════════ */
+let _allVocabStudents = [];
+
+async function loadVocabStudents() {
+  document.getElementById('vocab-students-tbody').innerHTML =
+    '<tr><td colspan="8" class="table-empty">⏳ Đang tải...</td></tr>';
+  try {
+    const sort = document.getElementById('vs-sort')?.value || 'words-desc';
+    const q    = (document.getElementById('vs-search')?.value || '').trim();
+    const params = new URLSearchParams({ sort });
+    if (q) params.set('search', q);
+    const res  = await fetch(`${API}/admin/vocab-students?${params}`, { headers: authH() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    _allVocabStudents = data.students;
+    renderVocabStudents(_allVocabStudents);
+  } catch (err) {
+    document.getElementById('vocab-students-tbody').innerHTML =
+      `<tr><td colspan="8" class="table-empty" style="color:var(--accent)">Lỗi: ${err.message}</td></tr>`;
+  }
+}
+
+function renderVocabStudents(list) {
+  // Cập nhật summary cards
+  const activeCount  = list.filter(s => s.totalWords > 0).length;
+  const totalWords   = list.reduce((s, u) => s + u.totalWords,   0);
+  const totalViews   = list.reduce((s, u) => s + u.totalViews,   0);
+  const totalStudied = list.reduce((s, u) => s + u.totalStudied, 0);
+  document.getElementById('vs-stat-active').textContent  = activeCount;
+  document.getElementById('vs-stat-words').textContent   = totalWords.toLocaleString('vi-VN');
+  document.getElementById('vs-stat-views').textContent   = totalViews.toLocaleString('vi-VN');
+  document.getElementById('vs-stat-studied').textContent = totalStudied.toLocaleString('vi-VN');
+
+  if (!list.length) {
+    document.getElementById('vocab-students-tbody').innerHTML =
+      '<tr><td colspan="8" class="table-empty">Không tìm thấy học sinh nào</td></tr>';
+    return;
+  }
+
+  document.getElementById('vocab-students-tbody').innerHTML = list.map(u => {
+    const name     = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username;
+    const mastered = u.totalWords > 0 ? Math.round((u.daThuoc / u.totalWords) * 100) : 0;
+    const lastAct  = u.lastVocabActivity
+      ? formatDateShort(u.lastVocabActivity)
+      : '<span style="color:var(--text3)">Chưa có</span>';
+
+    const streakBadge = u.learningStreak > 0
+      ? `<span title="Streak học" style="font-size:11px;color:#fbbf24;margin-left:4px">🔥${u.learningStreak}</span>`
+      : '';
+
+    const activityDot = (() => {
+      if (!u.lastVocabActivity) return '<span style="color:var(--text3)">●</span>';
+      const days = (Date.now() - new Date(u.lastVocabActivity)) / 86400000;
+      if (days <= 1)  return '<span style="color:var(--green)">●</span>';
+      if (days <= 7)  return '<span style="color:var(--yellow)">●</span>';
+      return '<span style="color:var(--accent2)">●</span>';
+    })();
+
+    return `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);
+               display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;color:var(--blue)">
+            ${(u.username[0] || '?').toUpperCase()}
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:13px">${escH(name)}${streakBadge}</div>
+            <div style="font-size:11px;color:var(--text3)">@${escH(u.username)}</div>
+          </div>
+        </div>
+      </td>
+      <td style="text-align:center">
+        <span style="font-weight:700;color:var(--blue)">${u.totalBooks}</span>
+        <span style="font-size:11px;color:var(--text3)"> sổ</span>
+      </td>
+      <td style="text-align:center">
+        <span style="font-weight:700;font-size:15px">${u.totalWords.toLocaleString('vi-VN')}</span>
+        ${u.totalWords > 0 ? `<div style="font-size:10px;color:var(--text3)">${u.totalAdded} mới thêm</div>` : ''}
+      </td>
+      <td style="text-align:center">
+        ${u.totalWords > 0
+          ? `<div style="font-weight:700;color:var(--green)">${u.daThuoc}</div>
+             <div class="vs-progress-bar" style="margin:4px auto 0">
+               <div class="vs-progress-fill" style="width:${mastered}%"></div>
+             </div>
+             <div style="font-size:10px;color:var(--text3);margin-top:2px">${mastered}%</div>`
+          : '<span style="color:var(--text3)">–</span>'}
+      </td>
+      <td style="text-align:center">
+        <span style="font-weight:700;color:var(--yellow)">${u.totalViews.toLocaleString('vi-VN')}</span>
+        ${u.activeDays > 0 ? `<div style="font-size:10px;color:var(--text3)">${u.activeDays} ngày</div>` : ''}
+      </td>
+      <td style="text-align:center">
+        ${u.activeDays > 0
+          ? `<span style="font-weight:700">${u.activeDays}</span><span style="font-size:11px;color:var(--text3)"> ngày</span>`
+          : '<span style="color:var(--text3)">–</span>'}
+      </td>
+      <td>${activityDot} ${lastAct}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="openVocabActivityModal('${u._id}')">
+          📊 Chi tiết
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterVocabStudents() {
+  const q = (document.getElementById('vs-search').value || '').toLowerCase();
+  const sort = document.getElementById('vs-sort').value;
+
+  let filtered = _allVocabStudents.filter(u => {
+    if (!q) return true;
+    return u.username.toLowerCase().includes(q)
+      || (u.email || '').toLowerCase().includes(q)
+      || (u.firstName || '').toLowerCase().includes(q)
+      || (u.lastName  || '').toLowerCase().includes(q);
+  });
+
+  const sortFns = {
+    'words-desc': (a, b) => b.totalWords   - a.totalWords,
+    'views-desc': (a, b) => b.totalViews   - a.totalViews,
+    'recent':     (a, b) => {
+      const da = a.lastVocabActivity ? new Date(a.lastVocabActivity) : new Date(0);
+      const db = b.lastVocabActivity ? new Date(b.lastVocabActivity) : new Date(0);
+      return db - da;
+    },
+    'name': (a, b) => (a.username || '').localeCompare(b.username || ''),
+  };
+  filtered.sort(sortFns[sort] || sortFns['words-desc']);
+  renderVocabStudents(filtered);
+}
+
+function formatDateShort(s) {
+  if (!s) return '–';
+  const d = new Date(s);
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+/* ── Vocab Activity Modal ─────────────────────── */
+let _vaUserId   = null;
+let _vaView     = 'day'; // day | month | year
+
+async function openVocabActivityModal(userId) {
+  _vaUserId = userId;
+  _vaView   = 'day';
+
+  // Reset view buttons
+  document.querySelectorAll('.va-view-btn').forEach(b => b.classList.remove('active-view'));
+  document.getElementById('va-btn-day').classList.add('active-view');
+
+  // Set default period to current month/year
+  const now = new Date();
+  const selMonth = document.getElementById('va-sel-month');
+  const selYear  = document.getElementById('va-sel-year');
+  selMonth.value = now.getMonth() + 1;
+  // Populate year options (last 3 years)
+  selYear.innerHTML = '';
+  for (let y = now.getFullYear(); y >= now.getFullYear() - 2; y--) {
+    selYear.innerHTML += `<option value="${y}">${y}</option>`;
+  }
+  selYear.value = now.getFullYear();
+  document.getElementById('va-period-wrap').style.display = 'flex';
+
+  // Fill student info
+  const student = _allVocabStudents.find(s => s._id === userId);
+  if (student) {
+    const name = [student.firstName, student.lastName].filter(Boolean).join(' ') || student.username;
+    document.getElementById('va-modal-name').textContent = `📖 ${name}`;
+    document.getElementById('va-modal-sub').textContent  = `@${student.username} · ${student.email || ''}`;
+
+    // Mini stats
+    document.getElementById('va-mini-stats').innerHTML = [
+      { val: student.totalBooks,                  lbl: 'Sổ từ vựng',    color: '#3d8bff' },
+      { val: student.totalWords.toLocaleString('vi-VN'), lbl: 'Tổng từ đã lưu', color: '#34d399' },
+      { val: student.totalViews.toLocaleString('vi-VN'), lbl: 'Lượt truy cập',  color: '#fbbf24' },
+      { val: student.totalStudied.toLocaleString('vi-VN'), lbl: 'Từ đã ôn',     color: '#a78bfa' },
+    ].map(c => `
+      <div class="va-mini-card">
+        <div class="va-mc-lbl">${c.lbl}</div>
+        <div class="va-mc-val" style="color:${c.color}">${c.val}</div>
+      </div>`).join('');
+
+    // Notebook table
+    renderVaBooksTable(userId);
+  }
+
+  openModal('modal-vocab-activity');
+  loadVocabActivity();
+}
+
+async function renderVaBooksTable(userId) {
+  // Fetch books from server
+  try {
+    // We use the admin vocab-students data that includes daThuoc/nhoSoSo/chuaThuoc totals
+    // For per-book breakdown we need a dedicated call – use vocabbook admin endpoint
+    const res  = await fetch(`${API}/admin/vocab-books/${userId}`, { headers: authH() });
+    if (!res.ok) { document.getElementById('va-books-tbody').innerHTML = '<tr><td colspan="6" class="table-empty">Không có dữ liệu sổ</td></tr>'; return; }
+    const data = await res.json();
+    if (!data.success || !data.books?.length) {
+      document.getElementById('va-books-tbody').innerHTML = '<tr><td colspan="6" class="table-empty">Chưa có sổ từ vựng</td></tr>';
+      return;
+    }
+    document.getElementById('va-books-tbody').innerHTML = data.books.map(b => {
+      const total     = b.totalWords || 0;
+      const pct       = total > 0 ? Math.round((b.daThucCount / total) * 100) : 0;
+      return `<tr>
+        <td>
+          <span style="margin-right:6px">${b.emoji || '📘'}</span>
+          <span style="font-weight:600">${escH(b.name)}</span>
+          ${b.isDefault ? '<span style="font-size:10px;color:var(--text3);margin-left:4px">mặc định</span>' : ''}
+        </td>
+        <td style="text-align:center;font-weight:700">${total}</td>
+        <td style="text-align:center;color:var(--green);font-weight:700">${b.daThucCount || 0}</td>
+        <td style="text-align:center;color:var(--yellow)">${b.nhoSoSoCount || 0}</td>
+        <td style="text-align:center;color:var(--accent2)">${b.chuaThuocCount || 0}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="vs-progress-bar" style="width:100px">
+              <div class="vs-progress-fill" style="width:${pct}%"></div>
+            </div>
+            <span style="font-size:11px;color:var(--text3)">${pct}%</span>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch {
+    document.getElementById('va-books-tbody').innerHTML = '<tr><td colspan="6" class="table-empty">Không thể tải dữ liệu sổ</td></tr>';
+  }
+}
+
+function setVaView(view, btn) {
+  _vaView = view;
+  document.querySelectorAll('.va-view-btn').forEach(b => b.classList.remove('active-view'));
+  btn.classList.add('active-view');
+
+  // Show/hide month selector based on view
+  const periodWrap = document.getElementById('va-period-wrap');
+  if (view === 'year') {
+    periodWrap.style.display = 'none';
+  } else if (view === 'month') {
+    periodWrap.style.display = 'flex';
+    document.getElementById('va-sel-month').style.display = 'none';
+  } else {
+    periodWrap.style.display = 'flex';
+    document.getElementById('va-sel-month').style.display = '';
+  }
+  loadVocabActivity();
+}
+
+async function loadVocabActivity() {
+  if (!_vaUserId) return;
+  const wrap = document.getElementById('va-chart-wrap');
+  document.getElementById('va-loading-indicator').style.display = '';
+  wrap.innerHTML = '<div class="table-empty" style="padding:60px 20px">⏳ Đang tải dữ liệu...</div>';
+
+  try {
+    const year  = document.getElementById('va-sel-year').value;
+    const month = document.getElementById('va-sel-month').value;
+    const params = new URLSearchParams({ view: _vaView, year });
+    if (_vaView === 'day') params.set('month', month);
+
+    const res  = await fetch(`${API}/admin/vocab-activity/${_vaUserId}?${params}`, { headers: authH() });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+
+    renderVaChart(wrap, data.data, _vaView);
+  } catch (err) {
+    wrap.innerHTML = `<div class="table-empty" style="padding:60px 20px;color:var(--accent)">Lỗi: ${err.message}</div>`;
+  } finally {
+    document.getElementById('va-loading-indicator').style.display = 'none';
+  }
+}
+
+function renderVaChart(container, data, view) {
+  if (!data || data.length === 0) {
+    container.innerHTML = '<div class="table-empty" style="padding:60px 20px">Không có dữ liệu trong kỳ này</div>';
+    return;
+  }
+
+  // Tính maxVal để scale
+  const maxVal = Math.max(1, ...data.map(d => Math.max(d.viewCount, d.wordsAdded, d.wordsStudied)));
+  const niceMax = (() => {
+    if (maxVal <= 5)  return 5;
+    if (maxVal <= 10) return 10;
+    if (maxVal <= 20) return 20;
+    if (maxVal <= 50) return 50;
+    if (maxVal <= 100) return 100;
+    const mag = Math.pow(10, Math.floor(Math.log10(maxVal)));
+    return Math.ceil(maxVal / mag) * mag;
+  })();
+
+  const n     = data.length;
+  const padL  = 44, padR = 12, padT = 14, padB = 32;
+  const H     = 220;
+  const chartH = H - padT - padB;
+  // Responsive width: dựa theo số cột
+  const svgW  = Math.max(520, n * (view === 'day' ? 22 : 56) + padL + padR);
+  const xSlot = (svgW - padL - padR) / n;
+  const barW  = Math.max(5, Math.min(14, xSlot / 4.5));
+  const gap   = 2;
+  const groupW = (barW + gap) * 3 - gap;
+
+  const toH = v => (v / niceMax) * chartH;
+
+  // Y ticks
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => ({
+    val: Math.round(niceMax * f),
+    y:   padT + chartH * (1 - f),
+  }));
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${H}"
+    style="width:100%;min-width:${Math.min(svgW, 480)}px;display:block;overflow:visible">`;
+
+  // Grid + Y labels
+  ticks.forEach(t => {
+    svg += `<line x1="${padL}" y1="${t.y}" x2="${svgW - padR}" y2="${t.y}"
+      stroke="#2a3045" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${t.y + 4}" text-anchor="end"
+      fill="#555e78" font-size="10" font-family="monospace">${t.val}</text>`;
+  });
+
+  // Bars + X labels
+  data.forEach((d, i) => {
+    const cx  = padL + i * xSlot + xSlot / 2;
+    const bx0 = cx - groupW / 2;
+
+    const bars = [
+      { v: d.viewCount,    color: '#3d8bff' },
+      { v: d.wordsAdded,   color: '#34d399' },
+      { v: d.wordsStudied, color: '#a78bfa' },
+    ];
+
+    bars.forEach((b, bi) => {
+      if (b.v <= 0) return;
+      const bh  = Math.max(2, toH(b.v));
+      const bx  = bx0 + bi * (barW + gap);
+      const by  = padT + chartH - bh;
+      svg += `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}"
+        width="${barW}" height="${bh.toFixed(1)}"
+        fill="${b.color}" rx="3" opacity="0.88">
+        <title>${b.v}</title>
+      </rect>`;
+      // value on top if tall enough
+      if (bh > 16) {
+        svg += `<text x="${(bx + barW / 2).toFixed(1)}" y="${(by - 3).toFixed(1)}"
+          text-anchor="middle" fill="${b.color}" font-size="9">${b.v}</text>`;
+      }
+    });
+
+    // X label – chỉ show mỗi 3 ngày ở view day để tránh chật
+    const showLabel = view !== 'day' || (i % 3 === 0) || i === n - 1;
+    if (showLabel) {
+      svg += `<text x="${cx.toFixed(1)}" y="${H - 4}"
+        text-anchor="middle" fill="#8b92a8" font-size="10">${escH(d.label)}</text>`;
+    }
+
+    // Highlight hiện tại (day view: ngày hôm nay)
+    if (view === 'day') {
+      const today = new Date().getDate();
+      if (parseInt(d.label) === today) {
+        svg += `<rect x="${(cx - xSlot / 2).toFixed(1)}" y="${padT}"
+          width="${xSlot.toFixed(1)}" height="${chartH}"
+          fill="#3d8bff" opacity="0.05" rx="4"/>`;
+      }
+    }
+  });
+
+  // Baseline
+  svg += `<line x1="${padL}" y1="${padT + chartH}" x2="${svgW - padR}" y2="${padT + chartH}"
+    stroke="#353d55" stroke-width="1.5"/>`;
+
+  // Nếu không có data thực sự (tất cả = 0)
+  const hasAny = data.some(d => d.viewCount > 0 || d.wordsAdded > 0 || d.wordsStudied > 0);
+  if (!hasAny) {
+    svg += `<text x="${svgW / 2}" y="${padT + chartH / 2}"
+      text-anchor="middle" fill="#555e78" font-size="13">Không có hoạt động trong kỳ này</text>`;
+  }
+
+  svg += `</svg>`;
+
+  container.innerHTML = `<div style="overflow-x:auto;overflow-y:hidden">${svg}</div>`;
 }
 

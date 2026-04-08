@@ -654,6 +654,45 @@
       gap: 10px;
     }
 
+    /* ── Vocab activity modal ── */
+    .va-view-btn {
+      background: transparent;
+      color: var(--text2);
+      border: none;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .va-view-btn:hover { background: var(--border); color: var(--text); }
+    .va-view-btn.active-view { background: var(--blue); color: #fff; }
+
+    .va-mini-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .va-mini-card .va-mc-val { font-size: 22px; font-weight: 800; margin: 4px 0 2px; }
+    .va-mini-card .va-mc-lbl { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+
+    .vs-progress-bar {
+      height: 6px;
+      border-radius: 99px;
+      background: var(--border);
+      overflow: hidden;
+      width: 120px;
+    }
+    .vs-progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #34d399, #3d8bff);
+      transition: width .4s;
+    }
+
     /* ── FORMS ── */
     .form-group {
       margin-bottom: 18px;
@@ -1079,6 +1118,9 @@
     </a>
     <a class="nav-item" onclick="switchTab('history',event)" href="#">
       <span class="nav-icon">📈</span> Kết quả học sinh
+    </a>
+    <a class="nav-item" onclick="switchTab('vocab-students',event)" href="#">
+      <span class="nav-icon">📖</span> Từ vựng học sinh
     </a>
     <a class="nav-item" onclick="switchTab('users',event)" href="#">
       <span class="nav-icon">👥</span> Quản lý người dùng
@@ -1603,9 +1645,159 @@
           </div>
         </div><!-- /tab-users -->
 
+        <!-- ══ TAB: VOCAB STUDENTS ══ -->
+        <div id="tab-vocab-students">
+          <!-- Summary cards -->
+          <div class="stats-row">
+            <div class="stat-card blue">
+              <div class="stat-icon">📚</div>
+              <div class="stat-label">HS có từ đã lưu</div>
+              <div class="stat-value" id="vs-stat-active">–</div>
+              <div class="stat-sub">Đã lưu ít nhất 1 từ</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-icon">💾</div>
+              <div class="stat-label">Tổng từ đã lưu</div>
+              <div class="stat-value" id="vs-stat-words">–</div>
+              <div class="stat-sub">Toàn bộ học sinh</div>
+            </div>
+            <div class="stat-card yellow">
+              <div class="stat-icon">👁</div>
+              <div class="stat-label">Tổng lượt truy cập</div>
+              <div class="stat-value" id="vs-stat-views">–</div>
+              <div class="stat-sub">Mở trang từ vựng</div>
+            </div>
+            <div class="stat-card" style="background:linear-gradient(135deg,#1e2333,#1e2333);border-color:#a78bfa33">
+              <div class="stat-icon">🎯</div>
+              <div class="stat-label" style="color:var(--text2)">Tổng từ đã ôn</div>
+              <div class="stat-value" id="vs-stat-studied" style="color:#a78bfa">–</div>
+              <div class="stat-sub">Đổi trạng thái học</div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="section-header" style="margin-top:8px">
+            <span class="section-title">Danh sách học sinh</span>
+            <div class="section-actions">
+              <div class="search-wrap">
+                <input class="search-input" id="vs-search" placeholder="Tìm học sinh..." oninput="filterVocabStudents()" />
+              </div>
+              <select class="filter-select" id="vs-sort" onchange="filterVocabStudents()" style="width:180px">
+                <option value="words-desc">📊 Nhiều từ nhất</option>
+                <option value="views-desc">👁 Truy cập nhiều nhất</option>
+                <option value="recent">🕐 Hoạt động gần đây</option>
+                <option value="name">🔤 Tên A–Z</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" onclick="loadVocabStudents()" title="Làm mới">🔄 Làm mới</button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th style="text-align:center">Sổ từ vựng</th>
+                  <th style="text-align:center">Tổng từ đã lưu</th>
+                  <th style="text-align:center">Đã thuộc</th>
+                  <th style="text-align:center">Lượt truy cập</th>
+                  <th style="text-align:center">Ngày hoạt động</th>
+                  <th>Hoạt động cuối</th>
+                  <th style="width:110px"></th>
+                </tr>
+              </thead>
+              <tbody id="vocab-students-tbody">
+                <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /tab-vocab-students -->
+
       </div><!-- /tab-panels -->
     </div><!-- /content -->
   </div><!-- /main -->
+
+  <!-- ══ MODAL: Chi tiết hoạt động từ vựng học sinh ══ -->
+  <div class="modal-overlay hidden" id="modal-vocab-activity">
+    <div class="modal-box" style="max-width:900px;width:95vw">
+      <div class="modal-header">
+        <div>
+          <h3 id="va-modal-name" style="margin:0;font-size:16px">Chi tiết từ vựng</h3>
+          <div id="va-modal-sub" style="font-size:12px;color:var(--text3);margin-top:2px"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-vocab-activity')">×</button>
+      </div>
+      <div class="modal-body" style="padding:20px">
+
+        <!-- Mini stats row -->
+        <div id="va-mini-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px"></div>
+
+        <!-- View toggle + period controls -->
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+          <div style="display:flex;gap:4px;background:var(--surface2);border-radius:8px;padding:3px">
+            <button id="va-btn-day"   class="btn btn-sm va-view-btn active-view" onclick="setVaView('day',this)">📅 Theo ngày</button>
+            <button id="va-btn-month" class="btn btn-sm va-view-btn"             onclick="setVaView('month',this)">📆 Theo tháng</button>
+            <button id="va-btn-year"  class="btn btn-sm va-view-btn"             onclick="setVaView('year',this)">📊 Theo năm</button>
+          </div>
+          <div id="va-period-wrap" style="display:flex;gap:8px;align-items:center">
+            <select class="form-select" id="va-sel-month" onchange="loadVocabActivity()" style="width:130px">
+              <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+              <option value="3">Tháng 3</option><option value="4">Tháng 4</option>
+              <option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+              <option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+              <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+              <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+            </select>
+            <select class="form-select" id="va-sel-year" onchange="loadVocabActivity()" style="width:100px"></select>
+          </div>
+          <div id="va-loading-indicator" style="font-size:12px;color:var(--text3);display:none">⏳ Đang tải...</div>
+        </div>
+
+        <!-- Chart area -->
+        <div id="va-chart-wrap" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;min-height:200px;position:relative">
+          <div id="va-chart-placeholder" class="table-empty" style="padding:60px 20px">Đang tải dữ liệu...</div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display:flex;gap:20px;justify-content:center;margin-top:12px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)">
+            <span style="width:12px;height:12px;background:#3d8bff;border-radius:3px;display:inline-block"></span>
+            Lượt truy cập
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)">
+            <span style="width:12px;height:12px;background:#34d399;border-radius:3px;display:inline-block"></span>
+            Từ mới thêm
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)">
+            <span style="width:12px;height:12px;background:#a78bfa;border-radius:3px;display:inline-block"></span>
+            Từ đã ôn
+          </div>
+        </div>
+
+        <!-- Notebook detail table -->
+        <div style="margin-top:24px">
+          <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:10px">Chi tiết sổ từ vựng</div>
+          <div class="table-wrap" style="margin:0">
+            <table>
+              <thead><tr>
+                <th>Sổ</th>
+                <th style="text-align:center">Tổng từ</th>
+                <th style="text-align:center">Đã thuộc</th>
+                <th style="text-align:center">Nhớ sơ sơ</th>
+                <th style="text-align:center">Chưa thuộc</th>
+                <th>Tiến độ</th>
+              </tr></thead>
+              <tbody id="va-books-tbody">
+                <tr><td colspan="6" class="table-empty">–</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /modal-body -->
+    </div>
+  </div>
 
   <!-- ══ MODAL: Bài đọc ══ -->
   <div class="modal-overlay hidden" id="modal-passage">
