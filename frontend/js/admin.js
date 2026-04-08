@@ -1824,11 +1824,14 @@ function openAddGroupModal(sIdx) {
       </p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         ${[
-        { type: 'table', icon: '📋', label: 'Bảng (Table)', desc: 'Các câu nằm trong ô bảng – ví dụ bảng so sánh căn hộ' },
-        { type: 'note-form', icon: '📝', label: 'Note / Form', desc: 'Điền vào các dòng của một biểu mẫu hay ghi chú' },
-        { type: 'bullet-list', icon: '•', label: 'Bullet List', desc: 'Danh sách câu hỏi dạng bullet – ví dụ Q5-Q7' },
-        { type: 'map', icon: '🗺️', label: 'Map / Diagram', desc: 'Câu hỏi dán nhãn bản đồ hoặc sơ đồ' },
-        { type: 'plain', icon: '💬', label: 'Câu hỏi thường', desc: 'Câu hỏi riêng lẻ không có khung đặc biệt' },
+        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',                desc: 'Multiple Choice, Choose N Letters, Fill-blank riêng lẻ' },
+        { type: 'table',              icon: '📋', label: 'Bảng (Table/Note)',              desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
+        { type: 'note-form',          icon: '📝', label: 'Note / Form',                   desc: 'Điền vào dòng biểu mẫu hoặc ghi chú – dùng __Q6__' },
+        { type: 'bullet-list',        icon: '•',  label: 'Bullet List',                   desc: 'Danh sách bullet có chỗ trống – dùng __Q5__' },
+        { type: 'matching-options',   icon: '🔗', label: 'Matching / Choose Letters',     desc: 'Ghép chữ cái (kéo thả). Dùng cho: Matching speakers/features, Choose TWO/THREE letters' },
+        { type: 'summary-completion', icon: '🧩', label: 'Summary Completion',            desc: 'Đoạn tóm tắt + word bank A-J chọn từ điền vào (kéo thả)' },
+        { type: 'sentence-endings',   icon: '🔚', label: 'Sentence Endings',              desc: 'Danh sách phần kết câu A-H; câu hỏi là phần đầu câu' },
+        { type: 'map',                icon: '🗺️', label: 'Map / Diagram',                 desc: 'Câu hỏi dán nhãn bản đồ hoặc sơ đồ' },
       ].map(g => `
           <div onclick="pickGroupType('${g.type}')"
                style="border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;
@@ -1865,11 +1868,14 @@ function addQuestionGroup(sIdx, data = null) {
   if (!container) return;
 
   const groupLabels = {
-    'table': '📋 Bảng (Table)',
-    'note-form': '📝 Note / Form',
-    'bullet-list': '• Bullet List',
-    'map': '🗺️ Map / Diagram',
-    'plain': '💬 Câu hỏi thường'
+    'plain':              '💬 Câu hỏi thường',
+    'table':              '📋 Bảng (Table)',
+    'note-form':          '📝 Note / Form',
+    'bullet-list':        '• Bullet List',
+    'matching-options':   '🔗 Matching / Choose Letters',
+    'summary-completion': '🧩 Summary Completion',
+    'sentence-endings':   '🔚 Sentence Endings',
+    'map':                '🗺️ Map / Diagram',
   };
 
   const div = document.createElement('div');
@@ -1993,6 +1999,78 @@ function renderGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
+  if (groupType === 'matching-options') {
+    const opts = data?.matchingOptions || ['', '', '', '', '', ''];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${lgAdminGuide(`🔗 <strong>Matching / Choose Letters</strong> — Nhóm đa năng dùng kéo thả chữ cái:<br>
+• <strong>Matching speakers/features</strong>: Nhập danh sách người/sự vật A→G, câu hỏi loại <code>matching-info</code>, đáp án A/B/C…<br>
+• <strong>Choose TWO/THREE letters</strong>: Nhập 5–7 lựa chọn A–G, mỗi câu hỏi loại <code>matching-info</code>, bật <strong>Hoán đổi thứ tự</strong> – đáp án Q13=B Q14=D hoặc hoán đổi đều đúng.`)}
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="checkbox" class="lg-reuse" id="lg-reuse-${gIdx}"
+               ${data?.matchingReuseAllowed ? 'checked' : ''}
+               style="width:14px;height:14px;accent-color:var(--blue)" />
+        NB: You may use any letter more than once
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="checkbox" class="lg-interchangeable" id="lg-interchangeable-${gIdx}"
+               ${data?.interchangeableAnswers ? 'checked' : ''}
+               style="width:14px;height:14px;accent-color:var(--green)" />
+        <span style="color:var(--green);font-weight:600">Hoán đổi thứ tự (Choose TWO/THREE letters)</span>
+      </label>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách lựa chọn (A, B, C…)</div>
+    <div id="lg-opts-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${opts.map((o, i) => renderLGOption(gIdx, i, o)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addLGOption(${gIdx})">＋ Thêm mục</button>
+  </div>`;
+  }
+
+  if (groupType === 'summary-completion') {
+    const wb = data?.summaryConfig?.wordBank || [
+      { letter: 'A', word: '' }, { letter: 'B', word: '' }, { letter: 'C', word: '' },
+      { letter: 'D', word: '' }, { letter: 'E', word: '' }, { letter: 'F', word: '' },
+      { letter: 'G', word: '' }, { letter: 'H', word: '' }, { letter: 'I', word: '' },
+      { letter: 'J', word: '' }
+    ];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${lgAdminGuide('🧩 <strong>Summary Completion with Word Bank:</strong> 1) Nhập đoạn tóm tắt có chỗ trống dùng <code>__Q37__</code>. 2) Nhập word bank A-J (chữ cái → từ). Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là <strong>từ thực tế</strong> (không phải chữ cái). Học sinh sẽ kéo từ vào ô trống.')}
+    <div style="margin-bottom:10px">
+      <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">
+        Đoạn tóm tắt (dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q37__</code> cho chỗ trống)
+      </label>
+      <textarea class="form-input lg-summary-text" rows="5"
+                style="font-size:12px;padding:8px 10px;resize:vertical;width:100%"
+                placeholder="The tour begins near the __Q37__ at the main entrance...">${data?.summaryConfig?.text || ''}</textarea>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Word Bank (A, B, C…)</div>
+    <div id="lg-wb-${gIdx}" style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+      ${wb.map((w, i) => renderLGWbItem(gIdx, i, w)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addLGWbItem(${gIdx})">＋ Thêm từ</button>
+  </div>`;
+  }
+
+  if (groupType === 'sentence-endings') {
+    const endings = data?.endingsConfig?.endings || [
+      { letter: 'A', text: '' }, { letter: 'B', text: '' }, { letter: 'C', text: '' },
+      { letter: 'D', text: '' }, { letter: 'E', text: '' }, { letter: 'F', text: '' },
+      { letter: 'G', text: '' }, { letter: 'H', text: '' }
+    ];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${lgAdminGuide('🔚 <strong>Matching Sentence Endings:</strong> Nhập danh sách phần kết câu A-H. Câu hỏi bên dưới: mỗi câu = một phần đầu câu, đáp án là chữ cái phần kết (A, B, C…). Học sinh kéo phần kết vào phần đầu tương ứng.')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách phần kết câu (A, B, C…)</div>
+    <div id="lg-endings-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${endings.map((e, i) => renderLGEnding(gIdx, i, e)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addLGEnding(${gIdx})">＋ Thêm phần kết</button>
+  </div>`;
+  }
+
   if (groupType === 'map') {
     const imgId = `lgmap-${gIdx}`;
     return `
@@ -2024,6 +2102,10 @@ function renderGroupConfig(groupType, data, gIdx) {
   return `<div style="font-size:12px;color:var(--text3);padding:6px 0">
 Câu hỏi thường – không có khung đặc biệt. Thêm câu hỏi bên dưới.
   </div>`;
+}
+
+function lgAdminGuide(html) {
+  return `<div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.25);border-radius:7px;padding:9px 12px;margin-bottom:10px;font-size:11px;color:var(--text2);line-height:1.6">${html}</div>`;
 }
 
 function previewGroupImage(input, imgId) {
@@ -2091,6 +2173,67 @@ function addBulletItem(gIdx) {
     ?.insertAdjacentHTML('beforeend', renderBulletItem(gIdx, 0, ''));
 }
 
+// ── Matching option helpers ──────────────────────────────────────
+function renderLGOption(gIdx, i, text) {
+  const letter = 'ABCDEFGHIJ'[i] || String(i + 1);
+  return `
+<div style="display:flex;gap:6px;align-items:center">
+  <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px;flex-shrink:0">${letter}.</span>
+  <input class="form-input lg-opt" value="${text}"
+         style="flex:1;font-size:12px;padding:6px 10px" placeholder="Mô tả lựa chọn ${letter}…" />
+  <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+          onclick="this.parentElement.remove()">✕</button>
+</div>`;
+}
+
+function addLGOption(gIdx) {
+  const c = document.getElementById(`lg-opts-${gIdx}`);
+  if (!c) return;
+  c.insertAdjacentHTML('beforeend', renderLGOption(gIdx, c.children.length, ''));
+}
+
+// ── Summary word bank helpers ────────────────────────────────────
+function renderLGWbItem(gIdx, i, w) {
+  const letter = w?.letter || 'ABCDEFGHIJ'[i] || String(i + 1);
+  return `
+<div style="display:flex;gap:6px;align-items:center">
+  <span style="font-weight:700;color:var(--accent);width:20px;font-size:12px;flex-shrink:0">${letter}.</span>
+  <input class="form-input lg-wb-word" value="${w?.word || ''}"
+         style="flex:1;font-size:12px;padding:6px 10px" placeholder="từ / cụm từ" />
+  <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+          onclick="this.parentElement.remove()">✕</button>
+</div>`;
+}
+
+function addLGWbItem(gIdx) {
+  const c = document.getElementById(`lg-wb-${gIdx}`);
+  if (!c) return;
+  const i = c.children.length;
+  const letter = 'ABCDEFGHIJ'[i] || String(i + 1);
+  c.insertAdjacentHTML('beforeend', renderLGWbItem(gIdx, i, { letter, word: '' }));
+}
+
+// ── Sentence ending helpers ──────────────────────────────────────
+function renderLGEnding(gIdx, i, e) {
+  const letter = e?.letter || 'ABCDEFGHIJ'[i] || String(i + 1);
+  return `
+<div style="display:flex;gap:6px;align-items:center">
+  <span style="font-weight:700;color:var(--accent);width:14px;font-size:12px;flex-shrink:0">${letter}.</span>
+  <input class="form-input lg-ending" value="${e?.text || ''}"
+         style="flex:1;font-size:12px;padding:6px 10px" placeholder="…phần kết câu ${letter}" />
+  <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
+          onclick="this.parentElement.remove()">✕</button>
+</div>`;
+}
+
+function addLGEnding(gIdx) {
+  const c = document.getElementById(`lg-endings-${gIdx}`);
+  if (!c) return;
+  const i = c.children.length;
+  const letter = 'ABCDEFGHIJ'[i] || String(i + 1);
+  c.insertAdjacentHTML('beforeend', renderLGEnding(gIdx, i, { letter, text: '' }));
+}
+
 // ════════════════════════════════════════════════════════════════
 // LISTENING QUESTION TYPES & ALLOWED TYPES PER GROUP
 // ════════════════════════════════════════════════════════════════
@@ -2099,16 +2242,20 @@ const LQQ_ALL_TYPES = [
   { value: 'fill-blank',         label: 'Fill in the blank' },
   { value: 'sentence-completion',label: 'Sentence Completion (kéo thả)' },
   { value: 'matching',           label: 'Matching' },
+  { value: 'matching-info',      label: 'Matching Information / People' },
   { value: 'map-labelling',      label: 'Map Labelling' },
   { value: 'multi-answer-group', label: '🔢 Choose N Letters – IELTS (2,3,4...)' },
 ];
 
 const LQQ_ALLOWED = {
-  'plain':       null,  // null = tất cả loại
-  'table':       ['fill-blank', 'sentence-completion'],
-  'note-form':   ['fill-blank', 'sentence-completion'],
-  'bullet-list': ['fill-blank', 'sentence-completion'],
-  'map':         ['map-labelling', 'fill-blank'],
+  'plain':              null,  // null = tất cả loại
+  'table':              ['fill-blank', 'sentence-completion'],
+  'note-form':          ['fill-blank', 'sentence-completion'],
+  'bullet-list':        ['fill-blank', 'sentence-completion'],
+  'matching-options':   ['matching-info'],
+  'summary-completion': ['fill-blank'],
+  'sentence-endings':   ['matching-info'],
+  'map':                ['map-labelling', 'fill-blank'],
 };
 
 function getAllowedLQTypes(groupType, existingType) {
@@ -2340,6 +2487,10 @@ function getLQTypeGuide(type) {
       • Nhập Word Bank (cách nhau bằng dấu phẩy).<br>
       • Trong "Nội dung câu hỏi", dùng <code>___</code> để đánh dấu chỗ trống.<br>
       • <strong>Đáp án đúng:</strong> nhập đúng từ cần ghép, VD: <code>clay</code>`,
+    'matching-info': `
+      <strong>🔗 Matching Information / People</strong> — Học sinh ghép câu hỏi với chữ cái (người nói, sự vật…).<br>
+      • Danh sách lựa chọn A-G được định nghĩa ở cấp <strong>nhóm</strong> (matching-options group).<br>
+      • <strong>Đáp án đúng:</strong> nhập chữ cái, VD: <code>B</code>`,
     'map-labelling': `
       <strong>🗺️ Map Labelling</strong> — Học sinh điền tên địa điểm/vị trí trên bản đồ.<br>
       • Có thể upload URL ảnh bản đồ riêng cho câu này (hoặc dùng ảnh chung của nhóm).<br>
@@ -2366,6 +2517,7 @@ function getLQAnswerHint(type) {
     'fill-blank':          '💡 Nhập đúng từ/cụm từ cần điền',
     'sentence-completion': '💡 Nhập từ trong Word Bank',
     'matching':            '💡 Nhập từ trong Word Bank',
+    'matching-info':       '💡 Nhập chữ cái: A, B, C…',
     'map-labelling':       '💡 Nhập tên địa điểm trên bản đồ',
     'checkbox':            '',
     'multi-answer-group':  '💡 Nhập 1 chữ cái đáp án đúng của câu này (A → G). Frontend tự gộp các câu liên tiếp cùng options thành 1 UI.',
@@ -2451,6 +2603,28 @@ function collectListeningSections() {
       if (groupType === 'bullet-list') {
         group.bulletConfig = {
           items: [...gDiv.querySelectorAll('.lg-bullet-item')].map(i => i.value)
+        };
+      }
+      if (groupType === 'matching-options') {
+        group.matchingOptions = [...gDiv.querySelectorAll('.lg-opt')].map(i => i.value.trim());
+        group.matchingReuseAllowed = gDiv.querySelector('.lg-reuse')?.checked || false;
+        group.interchangeableAnswers = gDiv.querySelector('.lg-interchangeable')?.checked || false;
+      }
+      if (groupType === 'summary-completion') {
+        group.summaryConfig = {
+          text: gDiv.querySelector('.lg-summary-text')?.value.trim() || '',
+          wordBank: [...gDiv.querySelectorAll('.lg-wb-word')].map((inp, i) => ({
+            letter: 'ABCDEFGHIJ'[i] || String(i + 1),
+            word: inp.value.trim()
+          }))
+        };
+      }
+      if (groupType === 'sentence-endings') {
+        group.endingsConfig = {
+          endings: [...gDiv.querySelectorAll('.lg-ending')].map((inp, i) => ({
+            letter: 'ABCDEFGHIJ'[i] || String(i + 1),
+            text: inp.value.trim()
+          }))
         };
       }
       if (groupType === 'map') {
