@@ -736,6 +736,8 @@ function closeUnitView() {
     const doClose = () => {
         document.getElementById('view-unit').style.display   = 'none';
         document.getElementById('view-mybook').style.display = 'flex';
+        const panel = document.getElementById('kbd-hint-panel');
+        if (panel) panel.style.display = 'none';
         if (!currentBookId) {
             document.getElementById('book-welcome').style.display = 'flex';
             document.getElementById('book-content').style.display = 'none';
@@ -792,6 +794,7 @@ function _activateModeNow(mode) {
 
     if (mode === 'study') { document.getElementById('studyMode').style.display = 'block'; renderStudyGrid(); }
     else startPractice(mode);
+    updateKbdHint();
 }
 
 function showMode(mode) {
@@ -1346,6 +1349,7 @@ function showResults(mode) {
 
     const stopBtn = document.getElementById('btnStopPractice');
     if (stopBtn) stopBtn.style.display = 'none';
+    updateKbdHint(); // hide shortcut panel on results screen
 
     const total     = mode === 'mixed' ? mixedQueue.length : practiceWords.length;
     const answered_ = correctAnswers + wrongAnswers;
@@ -1372,8 +1376,41 @@ function showResults(mode) {
 }
 
 /* ══════════════════════════════════════════════
+   KEYBOARD SHORTCUT HINT PANEL
+══════════════════════════════════════════════ */
+function updateKbdHint() {
+    const panel = document.getElementById('kbd-hint-panel');
+    const list  = document.getElementById('kbd-hint-list');
+    if (!panel || !list) return;
+
+    const isResults = document.getElementById('resultsMode')?.style.display === 'block';
+    if (currentMode === 'study' || isResults) { panel.style.display = 'none'; return; }
+
+    const hints = [];
+    if (currentMode === 'fillBlank') {
+        hints.push(['Space', 'Lật thẻ']);
+        hints.push(['Enter', 'Câu tiếp']);
+    } else if (currentMode === 'multipleChoice' || currentMode === 'mixed') {
+        hints.push(['1 – 4', 'Chọn đáp án']);
+        hints.push(['Enter / →', 'Câu tiếp']);
+    } else {
+        hints.push(['Enter / →', 'Câu tiếp']);
+    }
+    hints.push(['Esc', 'Dừng học']);
+
+    list.innerHTML = hints.map(([key, label]) => `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;justify-content:space-between">
+        <kbd style="background:var(--surface2);border:1px solid var(--border2);border-radius:5px;padding:2px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap;flex-shrink:0">${key}</kbd>
+        <span style="font-size:11px;color:var(--text2);text-align:right">${label}</span>
+      </div>`).join('');
+
+    panel.style.display = 'block';
+}
+
+/* ══════════════════════════════════════════════
    KEYBOARD SHORTCUTS during practice
    Space / → : flip flashcard or advance to next
+   Enter     : advance to next question (after answering)
    1–4       : select multiple-choice option
    Esc       : trigger quit modal
 ══════════════════════════════════════════════ */
@@ -1387,18 +1424,28 @@ document.addEventListener('keydown', e => {
     // Skip if any modal is open
     if (document.querySelector('.modal-overlay:not(.hidden)')) return;
 
-    if (e.key === ' ' || e.key === 'ArrowRight') {
-        e.preventDefault();
-
-        // Flashcard: Space flips the card
-        if (currentMode === 'fillBlank' && !answered) { flipCard(); return; }
-
-        // Any mode: advance if "next" button is visible
+    const _nextBtn = () => {
         const nextIds = ['mcBtnNext','fbBtnNext','listenBtnNext','transBtnNext','mixBtnNext'];
         for (const id of nextIds) {
             const btn = document.getElementById(id);
-            if (btn && btn.style.display !== 'none') { btn.click(); return; }
+            if (btn && btn.style.display !== 'none') { btn.click(); return true; }
         }
+        return false;
+    };
+
+    // Space / → : flip flashcard or advance
+    if (e.key === ' ' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (currentMode === 'fillBlank' && !answered) { flipCard(); return; }
+        _nextBtn();
+        return;
+    }
+
+    // Enter: flip if card not yet revealed, otherwise advance
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentMode === 'fillBlank' && !answered && !isFlipped) { flipCard(); return; }
+        _nextBtn();
         return;
     }
 
