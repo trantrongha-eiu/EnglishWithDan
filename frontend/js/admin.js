@@ -861,13 +861,15 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
   <span style="background:var(--accent);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">Q</span>
   <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
-  <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px" onclick="this.closest('[id^=rqq-]').remove()">✕</button>
+  <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px" onclick="this.closest('[id^=rqq-]').remove(); checkDuplicateQNum()">✕</button>
 </div>
 <div style="display:grid;grid-template-columns:0.6fr 1.4fr;gap:8px;margin-bottom:8px">
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Số câu *</label>
     <input class="form-input rqq-num" type="number" value="${data?.questionNumber || ''}"
-           style="font-size:12px;padding:6px 9px" placeholder="#" />
+           style="font-size:12px;padding:6px 9px" placeholder="#"
+           oninput="checkDuplicateQNum(this)" />
+    <div class="rqq-dup-warn" style="display:none;font-size:10px;color:#ef4444;margin-top:3px;font-weight:600">⚠ Số câu này đã tồn tại!</div>
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Loại câu *</label>
@@ -1004,6 +1006,40 @@ function onRQQTypeChange(sel, qId) {
       answerInput.placeholder = placeholders[sel.value] || '';
     }
   }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// DUPLICATE QUESTION NUMBER CHECK
+// ════════════════════════════════════════════════════════════════════════
+function checkDuplicateQNum(changedInput) {
+  // Thu thập tất cả .rqq-num trong cùng passage modal
+  const allInputs = [...document.querySelectorAll('#questions-container .rqq-num')];
+
+  // Build map: number → danh sách input có cùng số
+  const numMap = {};
+  allInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (!v) return;
+    if (!numMap[v]) numMap[v] = [];
+    numMap[v].push(inp);
+  });
+
+  // Cập nhật trạng thái từng input
+  allInputs.forEach(inp => {
+    const v = inp.value.trim();
+    const isDup = v && numMap[v] && numMap[v].length > 1;
+    const warn  = inp.parentElement.querySelector('.rqq-dup-warn');
+
+    if (isDup) {
+      inp.style.borderColor  = '#ef4444';
+      inp.style.background   = '#2d1515';
+      if (warn) warn.style.display = 'block';
+    } else {
+      inp.style.borderColor  = '';
+      inp.style.background   = '';
+      if (warn) warn.style.display = 'none';
+    }
+  });
 }
 
 // ════════════════════════════════════════════════════════════════════════
