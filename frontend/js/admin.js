@@ -2576,7 +2576,10 @@ function collectListeningSections() {
 
     const questionGroups = [];
     for (const gDiv of sDiv.querySelectorAll('[id^="lg-"]')) {
-      const groupType = gDiv.querySelector('.lg-type').value;
+      // Skip non-group elements whose IDs also start with "lg-" (e.g. lg-opts-1, lg-wb-1, lg-reuse-1)
+      const lgTypeEl = gDiv.querySelector('.lg-type');
+      if (!lgTypeEl) continue;
+      const groupType = lgTypeEl.value;
       const instruction = gDiv.querySelector('.lg-instruction')?.value.trim() || '';
 
       const group = { groupType, instruction };
