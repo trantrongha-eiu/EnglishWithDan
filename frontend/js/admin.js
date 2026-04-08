@@ -1906,7 +1906,7 @@ function addQuestionGroup(sIdx, data = null) {
     <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">
       Câu hỏi trong nhóm
     </span>
-    <button class="btn btn-ghost btn-sm" onclick="addGroupQuestion(${gIdx})">＋ Thêm câu</button>
+    <button class="btn btn-ghost btn-sm" onclick="addGroupQuestion(${gIdx}, null, '${groupType}')">＋ Thêm câu</button>
   </div>
   <div id="lgqs-${gIdx}" style="display:flex;flex-direction:column;gap:8px"></div>
 </div>`;
@@ -1915,7 +1915,7 @@ function addQuestionGroup(sIdx, data = null) {
 
   // Restore existing questions
   if (data?.questions?.length) {
-    data.questions.forEach(q => addGroupQuestion(gIdx, q));
+    data.questions.forEach(q => addGroupQuestion(gIdx, q, groupType));
   }
 }
 
@@ -2092,13 +2092,64 @@ function addBulletItem(gIdx) {
 }
 
 // ════════════════════════════════════════════════════════════════
+// LISTENING QUESTION TYPES & ALLOWED TYPES PER GROUP
+// ════════════════════════════════════════════════════════════════
+const LQQ_ALL_TYPES = [
+  { value: 'multiple-choice',    label: 'Multiple Choice' },
+  { value: 'fill-blank',         label: 'Fill in the blank' },
+  { value: 'sentence-completion',label: 'Sentence Completion (kéo thả)' },
+  { value: 'matching',           label: 'Matching' },
+  { value: 'map-labelling',      label: 'Map Labelling' },
+  { value: 'multi-answer-group', label: '🔢 Choose N Letters – IELTS (2,3,4...)' },
+];
+
+const LQQ_ALLOWED = {
+  'plain':       null,  // null = tất cả loại
+  'table':       ['fill-blank', 'sentence-completion'],
+  'note-form':   ['fill-blank', 'sentence-completion'],
+  'bullet-list': ['fill-blank', 'sentence-completion'],
+  'map':         ['map-labelling', 'fill-blank'],
+};
+
+function getAllowedLQTypes(groupType, existingType) {
+  const allowed = LQQ_ALLOWED[groupType];
+  if (!allowed) return LQQ_ALL_TYPES;
+  let list = LQQ_ALL_TYPES.filter(t => allowed.includes(t.value));
+  if (existingType && !list.find(t => t.value === existingType)) {
+    const found = LQQ_ALL_TYPES.find(t => t.value === existingType);
+    if (found) list = [found, ...list];
+  }
+  return list;
+}
+
+function _lqGuideStyle(type) {
+  if (type === 'multi-answer-group') return { bg: '#fdf4ff', border: '#a855f7', color: '#6b21a8' };
+  if (type === 'checkbox')           return { bg: '#fefce8', border: '#eab308', color: '#854d0e' };
+  return { bg: '#eff6ff', border: 'var(--accent)', color: '#1e40af' };
+}
+
+// ════════════════════════════════════════════════════════════════
 // INDIVIDUAL QUESTION INSIDE GROUP
 // ════════════════════════════════════════════════════════════════
-function addGroupQuestion(gIdx, data = null) {
+function addGroupQuestion(gIdx, data = null, groupType = 'plain') {
   ltQIdx++;
   const qId = `lq-${gIdx}-${ltQIdx}`;
   const container = document.getElementById(`lgqs-${gIdx}`);
   if (!container) return;
+
+  const autoType = data?.type || (
+    ['table', 'note-form', 'bullet-list'].includes(groupType) ? 'fill-blank' :
+    groupType === 'map' ? 'map-labelling' :
+    'multiple-choice'
+  );
+
+  const allowedTypes = getAllowedLQTypes(groupType, data?.type);
+  const isSingle = allowedTypes.length === 1;
+  const typeOptionsHtml = allowedTypes.map(t =>
+    `<option value="${t.value}" ${autoType === t.value ? 'selected' : ''}>${t.label}</option>`
+  ).join('');
+
+  const gs = _lqGuideStyle(autoType);
 
   const div = document.createElement('div');
   div.id = qId;
@@ -2122,31 +2173,26 @@ function addGroupQuestion(gIdx, data = null) {
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Loại câu *</label>
     <select class="form-select lq-type" onchange="onLQTypeChange(this,'${qId}')"
-            style="font-size:12px;padding:6px 9px">
-      <option value="multiple-choice"     ${data?.type === 'multiple-choice' ? 'selected' : ''}>Multiple Choice</option>
-      <option value="fill-blank"          ${data?.type === 'fill-blank' ? 'selected' : ''}>Fill in the blank</option>
-      <option value="sentence-completion" ${data?.type === 'sentence-completion' ? 'selected' : ''}>Sentence Completion (kéo thả)</option>
-      <option value="matching"            ${data?.type === 'matching' ? 'selected' : ''}>Matching</option>
-      <option value="map-labelling"       ${data?.type === 'map-labelling' ? 'selected' : ''}>Map Labelling</option>
-      <option value="multi-answer-group"  ${data?.type === 'multi-answer-group' ? 'selected' : ''}>🔢 Choose N Letters – IELTS (2,3,4...)</option>
-      <option value="checkbox"            ${data?.type === 'checkbox' ? 'selected' : ''}>☑️ Checkbox cũ (legacy – không dùng nữa)</option>
+            style="font-size:12px;padding:6px 9px${isSingle ? ';opacity:.65;pointer-events:none' : ''}">
+      ${typeOptionsHtml}
     </select>
+    ${isSingle ? `<div style="font-size:10px;color:var(--text3);margin-top:3px">💡 Loại câu cố định cho nhóm này</div>` : ''}
   </div>
 </div>
-<div class="lq-type-guide" id="lqguide-${qId}" style="margin-bottom:8px;padding:7px 10px;border-radius:6px;font-size:11px;line-height:1.6;background:#eff6ff;border-left:3px solid var(--accent);color:#1e40af">${getLQTypeGuide(data?.type || 'multiple-choice')}</div>
+<div class="lq-type-guide" id="lqguide-${qId}" style="margin-bottom:8px;padding:7px 10px;border-radius:6px;font-size:11px;line-height:1.6;background:${gs.bg};border-left:3px solid ${gs.border};color:${gs.color}">${getLQTypeGuide(autoType)}</div>
 <div style="margin-bottom:8px">
   <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Nội dung câu hỏi *</label>
   <textarea class="form-input lq-text" rows="2" style="font-size:12px;padding:6px 9px;resize:vertical"
     placeholder="Dùng ___ để đánh dấu chỗ trống">${data?.questionText || ''}</textarea>
 </div>
-<div class="lq-extra" id="lqex-${qId}">${renderLQExtra(data?.type || 'multiple-choice', data, qId)}</div>
-<div class="lq-answer-row" style="display:${['checkbox','multi-answer-group'].includes(data?.type || 'multiple-choice') ? 'none' : 'grid'};grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
+<div class="lq-extra" id="lqex-${qId}">${renderLQExtra(autoType, data, qId)}</div>
+<div class="lq-answer-row" style="display:${['checkbox','multi-answer-group'].includes(autoType) ? 'none' : 'grid'};grid-template-columns:1fr 1.5fr;gap:8px;margin-top:8px">
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Đáp án đúng *</label>
     <input class="form-input lq-answer" value="${data?.correctAnswer || ''}"
            style="font-size:12px;padding:6px 9px"
            placeholder='A / text / ["A","C"]' />
-    <div class="lq-answer-hint" style="font-size:10px;color:var(--text3);margin-top:3px">${getLQAnswerHint(data?.type || 'multiple-choice')}</div>
+    <div class="lq-answer-hint" style="font-size:10px;color:var(--text3);margin-top:3px">${getLQAnswerHint(autoType)}</div>
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Giải thích</label>
@@ -2333,11 +2379,10 @@ function onLQTypeChange(sel, qId) {
   const guide = document.getElementById(`lqguide-${qId}`);
   if (guide) {
     guide.innerHTML = getLQTypeGuide(sel.value);
-    const isMAG = sel.value === 'multi-answer-group';
-    const isCheckbox = sel.value === 'checkbox';
-    guide.style.background = isMAG ? '#fdf4ff' : isCheckbox ? '#fefce8' : '#eff6ff';
-    guide.style.borderLeftColor = isMAG ? '#a855f7' : isCheckbox ? '#eab308' : 'var(--accent)';
-    guide.style.color = isMAG ? '#6b21a8' : isCheckbox ? '#854d0e' : '#1e40af';
+    const gs = _lqGuideStyle(sel.value);
+    guide.style.background = gs.bg;
+    guide.style.borderLeftColor = gs.border;
+    guide.style.color = gs.color;
   }
   const qDiv = sel.closest('[id^="lq-"]');
   if (qDiv) {
