@@ -722,6 +722,43 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 @media(min-width:769px){
   .mob-fab,.mob-backdrop,.mob-sheet{display:none !important}
 }
+
+/* ── Quit-practice modal mascot ── */
+@keyframes quitBounce{
+  0%{transform:translateY(0) rotate(-6deg)}
+  100%{transform:translateY(-10px) rotate(6deg)}
+}
+@keyframes quitShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+.quit-mascot-wrap{
+  background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%);
+  padding:28px 24px 20px;text-align:center;
+  border-radius:16px 16px 0 0;
+}
+[data-theme="dark"] .quit-mascot-wrap{background:linear-gradient(135deg,#064e3b 0%,#065f46 100%)}
+.quit-mascot{
+  font-size:68px;line-height:1;margin-bottom:10px;display:inline-block;
+  animation:quitBounce .65s ease-in-out infinite alternate;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.12));
+}
+.quit-title{font-size:17px;font-weight:800;color:#065f46;margin:0 0 6px}
+[data-theme="dark"] .quit-title{color:#6ee7b7}
+.quit-sub{font-size:13px;color:#6b7280;line-height:1.5;min-height:18px}
+.quit-actions{padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+.quit-btn-continue{
+  padding:14px;background:#22c55e;color:#fff;border:none;border-radius:12px;
+  font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.quit-btn-continue:hover{background:#16a34a}
+.quit-btn-leave{
+  padding:11px;background:none;border:1.5px solid var(--border);border-radius:12px;
+  font-size:14px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.quit-btn-leave:hover{border-color:#e53935;color:#e53935}
   </style>
 </head>
 <body>
@@ -1377,6 +1414,23 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
     btn.classList.toggle('active', open);
   }
 </script>
+<!-- ══ MODAL: Quit practice (Duolingo-style) ══ -->
+<div class="modal-overlay hidden" id="modal-quit-practice">
+  <div class="modal-box modal-sm" style="overflow:hidden;padding:0">
+    <div class="quit-mascot-wrap">
+      <div class="quit-mascot" id="quit-mascot-emoji">🐼</div>
+      <p class="quit-title" id="quit-title">Vẫn còn từ cần được ôn tập!</p>
+      <p class="quit-sub" id="quit-sub"></p>
+    </div>
+    <div class="quit-actions">
+      <button class="quit-btn-continue" onclick="cancelQuit()">
+        <i class="fas fa-play-circle"></i> Tiếp tục học
+      </button>
+      <button class="quit-btn-leave" onclick="confirmQuit()">Thoát</button>
+    </div>
+  </div>
+</div>
+
 <script src="js/auth.js"></script>
 <script src="js/dashboard.js"></script>
 </body>

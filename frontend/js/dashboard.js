@@ -733,12 +733,15 @@ function openPreviewMode() {
     showMode('study');
 }
 function closeUnitView() {
-    document.getElementById('view-unit').style.display   = 'none';
-    document.getElementById('view-mybook').style.display = 'flex';
-    if (!currentBookId) {
-        document.getElementById('book-welcome').style.display = 'flex';
-        document.getElementById('book-content').style.display = 'none';
-    }
+    const doClose = () => {
+        document.getElementById('view-unit').style.display   = 'none';
+        document.getElementById('view-mybook').style.display = 'flex';
+        if (!currentBookId) {
+            document.getElementById('book-welcome').style.display = 'flex';
+            document.getElementById('book-content').style.display = 'none';
+        }
+    };
+    askQuitPractice(doClose);
 }
 
 /* ══════════════════════════════════════════════
@@ -913,9 +916,60 @@ function requeueWrongWord(word) {
 function nextQuestion(mode) { currentQuestionIndex++; showQuestion(mode); }
 function restartPractice()  { startPractice(currentMode); }
 
+/* ── Quit-practice confirmation modal ── */
+let _quitCallback = null;
+
+function _isActivePractice() {
+    if (currentMode === 'study') return false;
+    const resultsEl = document.getElementById('resultsMode');
+    if (resultsEl && resultsEl.style.display === 'block') return false;
+    const total = currentMode === 'mixed' ? mixedQueue.length : practiceWords.length;
+    return total > 0;
+}
+
+function askQuitPractice(onQuit) {
+    if (!_isActivePractice()) { onQuit(); return; }
+
+    _quitCallback = onQuit;
+
+    const remaining = currentMode === 'mixed'
+        ? Math.max(0, mixedQueue.length - mixedIndex)
+        : Math.max(0, practiceWords.length - currentQuestionIndex);
+    const wrongCount = wrongWordSet.size;
+
+    const parts = [];
+    if (remaining > 0)   parts.push(`Còn ${remaining} từ chưa học xong`);
+    if (wrongCount > 0)  parts.push(`${wrongCount} từ bạn vẫn đang ôn lại`);
+    const streakEl = document.getElementById('mascot-streak-num');
+    const streak   = streakEl ? (parseInt(streakEl.textContent) || 0) : 0;
+    if (streak > 0)      parts.push(`Chuỗi ${streak} ngày đang chờ bạn! 🔥`);
+
+    const titleEl = document.getElementById('quit-title');
+    const subEl   = document.getElementById('quit-sub');
+    const emoji   = document.getElementById('quit-mascot-emoji');
+
+    if (titleEl) titleEl.textContent = wrongCount > 0
+        ? 'Vẫn còn từ cần được ôn tập!'
+        : 'Bạn có muốn học tiếp không?';
+    if (subEl)   subEl.textContent   = parts.join(' · ');
+    if (emoji)   emoji.textContent   = streak >= 7 ? '🐼🔥' : '🐼';
+
+    openModal('modal-quit-practice');
+}
+
+function confirmQuit() {
+    closeModal('modal-quit-practice');
+    if (_quitCallback) { const cb = _quitCallback; _quitCallback = null; cb(); }
+}
+
+function cancelQuit() {
+    closeModal('modal-quit-practice');
+    _quitCallback = null;
+}
+
 /* ── Stop practice mid-session ── */
 function stopPractice() {
-    showResults(currentMode);
+    askQuitPractice(() => showResults(currentMode));
 }
 
 /* ══════════════════════════════════════════════
@@ -1317,6 +1371,55 @@ function showResults(mode) {
     void total; // total used for reference only
 }
 
+/* ══════════════════════════════════════════════
+   KEYBOARD SHORTCUTS during practice
+   Space / → : flip flashcard or advance to next
+   1–4       : select multiple-choice option
+   Esc       : trigger quit modal
+══════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+    // Skip if typing in an input / textarea
+    if (e.target.matches('input,textarea,select')) return;
+
+    const unitView = document.getElementById('view-unit');
+    if (!unitView || unitView.style.display === 'none') return;
+
+    // Skip if any modal is open
+    if (document.querySelector('.modal-overlay:not(.hidden)')) return;
+
+    if (e.key === ' ' || e.key === 'ArrowRight') {
+        e.preventDefault();
+
+        // Flashcard: Space flips the card
+        if (currentMode === 'fillBlank' && !answered) { flipCard(); return; }
+
+        // Any mode: advance if "next" button is visible
+        const nextIds = ['mcBtnNext','fbBtnNext','listenBtnNext','transBtnNext','mixBtnNext'];
+        for (const id of nextIds) {
+            const btn = document.getElementById(id);
+            if (btn && btn.style.display !== 'none') { btn.click(); return; }
+        }
+        return;
+    }
+
+    // 1–4: pick multiple-choice answer
+    if (['1','2','3','4'].includes(e.key)) {
+        if ((currentMode === 'multipleChoice' || currentMode === 'mixed') && !answered) {
+            const opts = document.querySelectorAll(
+                '#mcAnswerOptions .answer-option:not(:disabled), #mixAnswerOptions .answer-option:not(:disabled)'
+            );
+            const idx = parseInt(e.key) - 1;
+            if (opts[idx]) { opts[idx].click(); }
+        }
+        return;
+    }
+
+    // Esc: quit practice
+    if (e.key === 'Escape') {
+        if (_isActivePractice()) stopPractice();
+    }
+});
+
 /* ── Retry wrong words ── */
 function retryWrongWords() {
     if (!wrongWordSet.size) return;
@@ -1379,6 +1482,8 @@ window.selectEmoji        = selectEmoji;
 window.lookupNewWord      = lookupNewWord;
 window.openSaveWordFromUnit = openSaveWordFromUnit;
 window.stopPractice       = stopPractice;
+window.confirmQuit        = confirmQuit;
+window.cancelQuit         = cancelQuit;
 window.retryWrongWords    = retryWrongWords;
 window.advanceMixed       = advanceMixed;
 window.checkMixedMC       = checkMixedMC;
