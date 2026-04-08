@@ -1042,6 +1042,32 @@ function checkDuplicateQNum(changedInput) {
   });
 }
 
+// Kiểm tra số câu trùng cho Listening (lq-num)
+function checkDuplicateLQNum() {
+  const allInputs = [...document.querySelectorAll('#lt-sections-container .lq-num')];
+  const numMap = {};
+  allInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (!v) return;
+    if (!numMap[v]) numMap[v] = [];
+    numMap[v].push(inp);
+  });
+  allInputs.forEach(inp => {
+    const v    = inp.value.trim();
+    const isDup = v && numMap[v] && numMap[v].length > 1;
+    const warn  = inp.parentElement.querySelector('.lq-dup-warn');
+    if (isDup) {
+      inp.style.borderColor = '#ef4444';
+      inp.style.background  = '#2d1515';
+      if (warn) warn.style.display = 'block';
+    } else {
+      inp.style.borderColor = '';
+      inp.style.background  = '';
+      if (warn) warn.style.display = 'none';
+    }
+  });
+}
+
 // ════════════════════════════════════════════════════════════════════════
 // COLLECT & SAVE
 // ════════════════════════════════════════════════════════════════════════
@@ -2083,13 +2109,15 @@ function addGroupQuestion(gIdx, data = null) {
                display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">Q</span>
   <span style="font-size:12px;font-weight:600;flex:1">Câu hỏi</span>
   <button class="btn btn-danger btn-sm" style="padding:3px 7px;font-size:11px"
-          onclick="this.closest('[id^=lq-]').remove()">✕</button>
+          onclick="this.closest('[id^=lq-]').remove(); checkDuplicateLQNum()">✕</button>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-bottom:8px">
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Số câu *</label>
     <input class="form-input lq-num" type="number" value="${data?.questionNumber || ''}"
-           style="font-size:12px;padding:6px 9px" placeholder="Số câu" />
+           style="font-size:12px;padding:6px 9px" placeholder="Số câu"
+           oninput="checkDuplicateLQNum(this)" />
+    <div class="lq-dup-warn" style="display:none;font-size:10px;color:#ef4444;margin-top:3px;font-weight:600">⚠ Số câu này đã tồn tại!</div>
   </div>
   <div>
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">Loại câu *</label>
@@ -2250,8 +2278,8 @@ function getLQTypeGuide(type) {
   const guides = {
     'multiple-choice': `
       <strong>📝 Multiple Choice</strong> — Học sinh chọn 1 đáp án duy nhất.<br>
-      • Nhập 4 đáp án A, B, C, D vào các ô bên dưới.<br>
-      • <strong>Đáp án đúng:</strong> nhập chữ cái tương ứng, VD: <code>A</code>`,
+      • Nhập nội dung 4 đáp án vào ô A, B, C, D — <strong>không cần thêm chữ cái A/B/C/D vào đầu</strong> (hệ thống tự hiển thị).<br>
+      • <strong>Đáp án đúng:</strong> nhập chữ cái tương ứng, VD: <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code>.`,
     'fill-blank': `
       <strong>✏️ Fill in the blank</strong> — Học sinh điền từ/cụm từ vào ô trống.<br>
       • Không cần nhập options.<br>

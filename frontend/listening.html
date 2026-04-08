@@ -974,12 +974,23 @@
         // INPUT RENDERERS
         // ══════════════════════════════════════════════
         function renderRadioOpts(num, opts, ua, ca, isReview) {
-            return `<div class="q-options">${opts.map(opt => {
+            const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+            // Chuẩn hoá: so sánh chỉ bằng chữ cái (A/B/C/D), bỏ qua text đầy đủ
+            const uaNorm = (ua || '').trim().toUpperCase();
+            const caNorm = (ca || '').trim().toUpperCase();
+            return `<div class="q-options">${opts.map((opt, idx) => {
+                const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
+                // Strip letter prefix nếu admin nhập "A text..." hoặc "A. text..."
+                const displayText = opt.replace(/^[A-Ea-e][\.\)]\s*|^[A-Ea-e]\s+/, '').trim() || opt;
                 let cls = '';
-                if (isReview) { if (opt === ca) cls = 'correct-ans'; else if (opt === ua && opt !== ca) cls = 'wrong-ans'; }
-                else { if (opt === ua) cls = 'selected'; }
-                return `<div class="radio-opt ${cls}" data-qnum="${num}" data-value="${opt}" ${isReview ? '' : `onclick="pickRadio(${num}, '${opt}')"`}>
-                    <span class="radio-dot"></span><label>${opt}</label>
+                if (isReview) {
+                    if (letter === caNorm) cls = 'correct-ans';
+                    else if (letter === uaNorm && letter !== caNorm) cls = 'wrong-ans';
+                } else {
+                    if (letter === uaNorm) cls = 'selected';
+                }
+                return `<div class="radio-opt ${cls}" data-qnum="${num}" data-value="${letter}" ${isReview ? '' : `onclick="pickRadio(${num}, '${letter}')"`}>
+                    <span class="radio-dot"></span><label><strong>${letter}.</strong> ${displayText}</label>
                 </div>`;
             }).join('')}</div>`;
         }
