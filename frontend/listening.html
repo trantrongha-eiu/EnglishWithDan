@@ -855,6 +855,7 @@
             switch (q.type) {
                 case 'multiple-choice':     inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview); break;
                 case 'checkbox':            inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2); break;
+                case 'multi-answer-group':  inputHtml = renderMultiAnswerCluster([q], isReview); break;
                 case 'fill-blank':
                 case 'map-labelling':       inputHtml = renderFillBlank(num, ua, ca, isReview); break;
                 case 'sentence-completion':
@@ -923,6 +924,7 @@
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
             audio.src = r.audioUrl || '';
             audio.load();
+            audio.currentTime = 0;
             const firstSection = (r.sections || [])[0];
             renderTranscript(firstSection?.transcript || '');
             buildPartTabs('part-tabs-rv', true);
@@ -1234,7 +1236,7 @@
             const clusterEl = [...document.querySelectorAll('[data-cluster-start]')].find(el => {
                 const s = parseInt(el.dataset.clusterStart);
                 const e = parseInt(el.dataset.clusterEnd);
-                return qnum > s && qnum <= e;
+                return qnum >= s && qnum <= e;
             });
             if (clusterEl) {
                 const firstNum = parseInt(clusterEl.dataset.clusterStart);
@@ -1248,15 +1250,6 @@
         }
 
         function updateQNav() {
-            // Tìm cluster starts để biết câu nào dùng chung answers
-            const clusterMap = {}; // qnum -> clusterStart
-            getAllQuestions(false).forEach(q => {
-                if (q.type === 'multi-answer-group') {
-                    // Cluster start được detect trong renderPlainGroup;
-                    // Ở đây dùng heuristic: tìm answered key
-                    clusterMap[q.questionNumber] = q.questionNumber;
-                }
-            });
             getAllQuestions(false).forEach(q => {
                 const btn = document.getElementById(`qnb-${q.questionNumber}`);
                 if (!btn) return;
