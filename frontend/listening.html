@@ -334,6 +334,38 @@
             height: 30px;
             font-size: 11px;
         }
+        /* ── Matching-options / chip bank ── */
+        .rq-mo-group { display:flex;flex-direction:column;gap:12px; }
+        .rq-chip-bank { display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px; }
+        .drag-chip { display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:#fff;border:1.5px solid #3b82f6;border-radius:20px;font-size:13px;cursor:grab;user-select:none;transition:opacity .15s; }
+        .drag-chip.used { opacity:.35;pointer-events:none; }
+        .drag-chip.dragging { opacity:.5; }
+        .rq-mo-questions,.rq-summary-group { display:flex;flex-direction:column;gap:8px; }
+        .match-question-row { display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px; }
+        .match-q-left { display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0; }
+        .match-q-num { font-weight:700;color:#3b82f6;min-width:28px;flex-shrink:0; }
+        .match-q-text { font-size:14px;color:#374151; }
+        .match-q-right { display:flex;align-items:center;gap:8px; }
+        .match-answer-badge { display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 8px;border-radius:8px;font-size:15px;font-weight:700;background:#f3f4f6; }
+        .match-ans-correct { background:#dcfce7;color:#16a34a; }
+        .match-ans-wrong { background:#fee2e2;color:#dc2626; }
+        .match-correct-ans { font-size:12px;color:#16a34a;font-weight:600; }
+        .match-reuse-note { font-size:12px;color:#6b7280;background:#fefce8;border:1px solid #fde68a;border-radius:6px;padding:6px 10px; }
+        .match-feedback { font-size:12px;color:#6b7280;margin-top:4px;width:100%; }
+        .drop-zone.rq-mo-drop { min-width:80px;padding:6px 12px;background:#f9fafb;border:2px dashed #d1d5db;border-radius:8px;font-size:13px;color:#9ca3af;cursor:pointer;display:flex;align-items:center;gap:6px; }
+        .drop-zone.rq-mo-drop.filled { background:#eff6ff;border-color:#3b82f6;color:#1d4ed8; }
+        /* ── Summary completion ── */
+        .rq-summary-text { font-size:14px;line-height:2;color:#374151;padding:14px;background:#fafafa;border:1px solid #e5e7eb;border-radius:8px; }
+        .sc-drop { min-width:90px;padding:4px 10px;background:#f9fafb;border:2px dashed #d1d5db;border-radius:6px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:#9ca3af; }
+        .sc-drop.filled { background:#eff6ff;border-color:#3b82f6;color:#1d4ed8; }
+        .rq-inline-wrap { display:inline-flex;align-items:center;gap:4px;vertical-align:middle; }
+        .rq-q-badge { font-size:10px;font-weight:700;background:#3b82f6;color:#fff;border-radius:4px;padding:1px 5px; }
+        .rq-inline-ans { padding:2px 8px;border-radius:4px;font-size:13px;font-weight:600; }
+        .rq-ans-ok { background:#dcfce7;color:#16a34a; }
+        .rq-ans-wrong { background:#fee2e2;color:#dc2626; }
+        .rq-ans-correct { font-size:11px;color:#16a34a; }
+        .clear-drop { cursor:pointer;font-size:11px;color:#9ca3af;margin-left:4px; }
+        .clear-drop:hover { color:#ef4444; }
     </style>
 
     <script>
@@ -671,6 +703,11 @@
             setupDictionaryDouble('questions-panel');
         }
 
+        // ── Helpers ───────────────────────────────────────────────
+        function escHtml(s) {
+            return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         // ── Group dispatcher ──────────────────────────────────────
         function renderQuestionGroup(group, gi, isReview) {
             const groupType = group.groupType || 'plain';
@@ -688,11 +725,14 @@
 
             let contentHtml = '';
             switch (groupType) {
-                case 'table':       contentHtml = renderTableGroup(group, isReview);      break;
-                case 'note-form':   contentHtml = renderNoteFormGroup(group, isReview);   break;
-                case 'bullet-list': contentHtml = renderBulletListGroup(group, isReview); break;
-                case 'map':         contentHtml = renderMapGroup(group, isReview);        break;
-                default:            contentHtml = renderPlainGroup(group, isReview);      break;
+                case 'table':              contentHtml = renderTableGroup(group, isReview);            break;
+                case 'note-form':          contentHtml = renderNoteFormGroup(group, isReview);         break;
+                case 'bullet-list':        contentHtml = renderBulletListGroup(group, isReview);       break;
+                case 'map':                contentHtml = renderMapGroup(group, isReview);              break;
+                case 'matching-options':
+                case 'sentence-endings':   contentHtml = renderMatchingOptionsGroup(group, isReview);  break;
+                case 'summary-completion': contentHtml = renderSummaryCompletionGroup(group, isReview);break;
+                default:                   contentHtml = renderPlainGroup(group, isReview);            break;
             }
 
             const summary = isReview ? renderGroupReviewSummary(group) : '';
@@ -736,6 +776,119 @@
             return `<div class="group-map">
                 ${imgUrl ? `<div class="map-img-wrap"><img src="${imgUrl}" class="map-img" alt="Diagram"/></div>` : ''}
                 <div class="map-questions">${qsHtml}</div>
+            </div>`;
+        }
+
+        // ── Matching-options / sentence-endings ───────────────────
+        function renderMatchingOptionsGroup(group, isReview) {
+            const { matchingReuseAllowed = false, questions = [] } = group;
+            // sentence-endings stores options in endingsConfig.endings
+            const matchingOptions = group.matchingOptions?.length
+                ? group.matchingOptions
+                : (group.endingsConfig?.endings || []).map(e => e.text || '');
+            const groupId = 'lmog-' + questions.map(q => q.questionNumber).join('-');
+
+            const reuseNote = matchingReuseAllowed
+                ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
+
+            const chipsHtml = matchingOptions.map((opt, i) => {
+                const letter = String.fromCharCode(65 + i);
+                const isUsed = !isReview && !matchingReuseAllowed &&
+                               questions.some(q => state.answers[q.questionNumber] === letter);
+                const label = opt && opt.trim().length > 1 ? `. ${escHtml(opt)}` : '';
+                return `<span class="drag-chip mo-chip${isUsed ? ' used' : ''}"
+                    data-value="${letter}" data-groupid="${groupId}"
+                    data-reuse="${matchingReuseAllowed ? 1 : 0}"
+                    draggable="${isReview ? 'false' : 'true'}"
+                    ondragstart="ltDragStart(event,'${letter}')"
+                    onclick="ltClickMOChip('${letter}','${groupId}')">
+                    <strong>${letter}</strong>${label}
+                </span>`;
+            }).join('');
+
+            const qRowsHtml = questions.map(q => {
+                const qNum = q.questionNumber;
+                const ans = isReview ? (q.userAnswer || '') : (state.answers[qNum] || '');
+                if (isReview) {
+                    const isCorrect = !!q.isCorrect;
+                    const expl = q.explanation
+                        ? `<div class="match-feedback q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : '';
+                    return `<div class="match-question-row" id="qi-${qNum}" data-qnum="${qNum}">
+                        <div class="match-q-left">
+                            <span class="match-q-num">${qNum}</span>
+                            <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+                        </div>
+                        <div class="match-q-right">
+                            <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
+                            ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(q.correctAnswer || '')}</span>` : ''}
+                        </div>${expl}
+                    </div>`;
+                }
+                const optIdx = ans ? ans.charCodeAt(0) - 65 : -1;
+                const optDesc = optIdx >= 0 ? (matchingOptions[optIdx] || '') : '';
+                const short = optDesc.length > 30 ? optDesc.slice(0, 30) + '…' : optDesc;
+                const displayText = ans
+                    ? `<strong>${escHtml(ans)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`
+                    : 'Kéo chữ cái vào đây';
+                return `<div class="match-question-row" id="qi-${qNum}" data-qnum="${qNum}">
+                    <div class="match-q-left">
+                        <span class="match-q-num">${qNum}</span>
+                        <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+                    </div>
+                    <div class="drop-zone rq-mo-drop${ans ? ' filled' : ''}"
+                         data-qnum="${qNum}" data-groupid="${groupId}"
+                         ondragover="event.preventDefault()"
+                         ondrop="ltDropMO(event,${qNum},'${groupId}')">
+                        ${displayText}
+                    </div>
+                </div>`;
+            }).join('');
+
+            return `<div class="rq-mo-group">
+                ${reuseNote}
+                <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+                <div class="rq-mo-questions">${qRowsHtml}</div>
+            </div>`;
+        }
+
+        // ── Summary completion ────────────────────────────────────
+        function renderSummaryCompletionGroup(group, isReview) {
+            const { summaryConfig = {}, questions = [] } = group;
+            const { text = '', wordBank = [] } = summaryConfig;
+            if (!wordBank.length) return '<div class="form-hint">Chưa có word bank.</div>';
+            const groupId = 'lscg-' + questions.map(q => q.questionNumber).join('-');
+            const qMap = {};
+            questions.forEach(q => { qMap[q.questionNumber] = q; });
+
+            const chipsHtml = wordBank.map(w => {
+                const word = w.word || '';
+                const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+                return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
+                    data-value="${escHtml(word)}" data-groupid="${groupId}"
+                    data-reuse="0"
+                    draggable="${isReview ? 'false' : 'true'}"
+                    ondragstart="ltDragStart(event,'${escHtml(word)}')"
+                    onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                    <strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+                </span>`;
+            }).join('');
+
+            const summaryHtml = text.replace(/__Q(\d+)__/g, (_, numStr) => {
+                const qNum = parseInt(numStr);
+                const q = qMap[qNum];
+                if (!q) return `[Q${qNum}]`;
+                if (isReview) {
+                    const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                    const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
+                    return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
+                }
+                const ans = state.answers[qNum] || '';
+                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
+            });
+
+            return `<div class="rq-summary-group">
+                <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+                <div class="rq-summary-text">${summaryHtml}</div>
             </div>`;
         }
 
@@ -857,7 +1010,8 @@
                 case 'checkbox':            inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2); break;
                 case 'multi-answer-group':  inputHtml = renderMultiAnswerCluster([q], isReview); break;
                 case 'fill-blank':
-                case 'map-labelling':       inputHtml = renderFillBlank(num, ua, ca, isReview); break;
+                case 'map-labelling':
+                case 'matching-info':       inputHtml = renderFillBlank(num, ua, ca, isReview); break;
                 case 'sentence-completion':
                 case 'matching':            inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview); break;
                 default:                    inputHtml = renderFillBlank(num, ua, ca, isReview);
@@ -1117,16 +1271,122 @@
             if (['sentence-completion','matching'].includes(q.type)) {
                 const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
                 if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>`; }
-            } else if (['fill-blank','map-labelling'].includes(q.type)) {
+            } else if (['fill-blank','map-labelling','matching-info'].includes(q.type)) {
                 const inp = document.getElementById(`fi-${num}`);
                 if (inp) inp.value = saved;
             }
-            const inlineInp = document.getElementById(`fi-${num}`);
-            if (inlineInp && !inlineInp.value) inlineInp.value = saved;
+            // matching-options / sentence-endings drop zones
+            const moDz = document.querySelector(`.rq-mo-drop[data-qnum="${num}"]`);
+            if (moDz) {
+                const groupId = moDz.dataset.groupid;
+                _ltRefreshMOZone(num, groupId);
+                _ltRefreshGroupChips(groupId);
+            }
+            // summary-completion drop zones
+            const scDz = document.querySelector(`.sc-drop[data-qnum="${num}"]`);
+            if (scDz) {
+                const groupId = scDz.dataset.groupid;
+                _ltRefreshSCZone(num, groupId);
+                _ltRefreshGroupChips(groupId);
+            }
         }
 
         // ══════════════════════════════════════════════
-        // DRAG & DROP
+        // DRAG & DROP – matching-options / summary
+        // ══════════════════════════════════════════════
+        let _ltDragVal = '';
+        function ltDragStart(e, val) { _ltDragVal = val; e.dataTransfer.effectAllowed = 'copy'; }
+
+        function _ltRefreshGroupChips(groupId) {
+            const usedVals = new Set();
+            document.querySelectorAll(`.drop-zone[data-groupid="${groupId}"]`).forEach(dz => {
+                const ans = state.answers[parseInt(dz.dataset.qnum)];
+                if (ans) usedVals.add(ans);
+            });
+            document.querySelectorAll(`[data-groupid="${groupId}"].drag-chip`).forEach(chip => {
+                const isUsed = chip.dataset.reuse === '1' ? false : usedVals.has(chip.dataset.value);
+                chip.classList.toggle('used', isUsed);
+            });
+        }
+
+        function ltDropMO(e, qNum, groupId) {
+            e.preventDefault();
+            const val = _ltDragVal || e.dataTransfer.getData('text');
+            if (!val) return;
+            state.answers[qNum] = val;
+            _ltRefreshMOZone(qNum, groupId);
+            _ltRefreshGroupChips(groupId);
+            updateQNav(); updateFooter();
+        }
+        function ltClickMOChip(letter, groupId) {
+            const emptyDz = document.querySelector(`.rq-mo-drop[data-groupid="${groupId}"]:not(.filled)`);
+            if (!emptyDz) return;
+            const qNum = parseInt(emptyDz.dataset.qnum);
+            state.answers[qNum] = letter;
+            _ltRefreshMOZone(qNum, groupId);
+            _ltRefreshGroupChips(groupId);
+            updateQNav(); updateFooter();
+        }
+        function _ltRefreshMOZone(qNum, groupId) {
+            const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
+            if (!dz) return;
+            const letter = state.answers[qNum] || '';
+            // Find description from group data
+            const section = (state.currentTest?.sections || [])[state.partIdx];
+            let desc = '';
+            for (const g of (section?.questionGroups || [])) {
+                if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
+                    const idx = letter.charCodeAt(0) - 65;
+                    const opts = g.matchingOptions?.length
+                        ? g.matchingOptions
+                        : (g.endingsConfig?.endings || []).map(e => e.text || '');
+                    if (opts[idx]?.length > 1) { desc = opts[idx]; break; }
+                }
+            }
+            const short = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
+            dz.classList.add('filled');
+            dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
+        }
+
+        function ltDropSC(e, qNum, groupId) {
+            e.preventDefault();
+            const val = _ltDragVal || e.dataTransfer.getData('text');
+            if (!val) return;
+            state.answers[qNum] = val;
+            _ltRefreshSCZone(qNum, groupId);
+            _ltRefreshGroupChips(groupId);
+            updateQNav(); updateFooter();
+        }
+        function ltClickSCChip(word, groupId) {
+            const emptyDz = document.querySelector(`.sc-drop[data-groupid="${groupId}"]:not(.filled)`);
+            if (!emptyDz) return;
+            const qNum = parseInt(emptyDz.dataset.qnum);
+            state.answers[qNum] = word;
+            _ltRefreshSCZone(qNum, groupId);
+            _ltRefreshGroupChips(groupId);
+            updateQNav(); updateFooter();
+        }
+        function _ltRefreshSCZone(qNum, groupId) {
+            const dz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
+            if (!dz) return;
+            const word = state.answers[qNum] || '';
+            dz.classList.add('filled');
+            dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
+        }
+
+        function ltClearDragDrop(qNum, groupId) {
+            delete state.answers[qNum];
+            const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
+            if (dz) {
+                dz.classList.remove('filled');
+                dz.innerHTML = dz.classList.contains('sc-drop') ? 'Kéo từ vào' : 'Kéo chữ cái vào đây';
+            }
+            _ltRefreshGroupChips(groupId);
+            updateQNav(); updateFooter();
+        }
+
+        // ══════════════════════════════════════════════
+        // DRAG & DROP – word bank (sentence-completion/matching)
         // ══════════════════════════════════════════════
         function setupDragDrop(container) {
             container.querySelectorAll('.word-chip:not(.used)').forEach(chip => {
@@ -1647,6 +1907,8 @@
         window.switchPart = switchPart;
         window.pickRadio = pickRadio; window.toggleCheckbox = toggleCheckbox; window.toggleMultiAnswer = toggleMultiAnswer; window.saveText = saveText;
         window.dzOver = dzOver; window.dzDrop = dzDrop; window.dzClick = dzClick; window.clearDz = clearDz; window.updateDropZone = updateDropZone;
+        window.ltDragStart = ltDragStart; window.ltClickMOChip = ltClickMOChip; window.ltDropMO = ltDropMO;
+        window.ltClickSCChip = ltClickSCChip; window.ltDropSC = ltDropSC; window.ltClearDragDrop = ltClearDragDrop;
         window.scrollToQ = scrollToQ; window.jumpToTime = jumpToTime;
         window.confirmSubmit = confirmSubmit; window.submitExam = submitExam;
         window.goToReview = goToReview;
