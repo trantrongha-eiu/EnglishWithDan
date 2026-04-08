@@ -6,6 +6,7 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     enum: [
       'true-false-ng',
+      'yes-no-ng',
       'multiple-choice',
       'fill-blank',
       'sentence-completion',

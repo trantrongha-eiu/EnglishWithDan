@@ -669,7 +669,9 @@ function renderSingleQuestion(q, isReview, reviewMap) {
   let inputHtml = '';
 
   if (type === 'true-false-ng') {
-    inputHtml = renderTFNG(qNum, isReview, review);
+    inputHtml = renderTFNG(qNum, isReview, review, ['TRUE', 'FALSE', 'NOT GIVEN']);
+  } else if (type === 'yes-no-ng') {
+    inputHtml = renderTFNG(qNum, isReview, review, ['YES', 'NO', 'NOT GIVEN']);
   } else if (type === 'multiple-choice') {
     inputHtml = renderMC(qNum, options, isReview, review);
   } else if (type === 'checkbox') {
@@ -703,10 +705,9 @@ function renderSingleQuestion(q, isReview, reviewMap) {
   </div>`;
 }
 
-/* ── True/False/NG ────────────────────────────────────────────────── */
-function renderTFNG(qNum, isReview, review) {
+/* ── True/False/NG  &  Yes/No/NG ─────────────────────────────────── */
+function renderTFNG(qNum, isReview, review, labels = ['TRUE', 'FALSE', 'NOT GIVEN']) {
   const chosen = review ? review.userAnswer?.toUpperCase() : (state.answers[qNum] || '');
-  const labels = ['TRUE', 'FALSE', 'NOT GIVEN'];
   if (isReview) {
     return `<div class="tfng-opts">${labels.map(l => {
       let cls = '';

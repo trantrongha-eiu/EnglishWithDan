@@ -340,7 +340,7 @@ function openRQGroupModal(containerId) {
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         ${[
-        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',          desc: 'True/False/NG, Multiple choice, Checkbox, Fill-blank riêng lẻ' },
+        { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',          desc: 'True/False/NG, Yes/No/NG, Multiple choice, Checkbox, Fill-blank riêng lẻ' },
         { type: 'table',              icon: '📋', label: 'Bảng (Table/Note)',        desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
         { type: 'note-form',          icon: '📝', label: 'Note / Bullet Completion', desc: 'Điền vào dòng biểu mẫu hoặc danh sách bullet – dùng __Q6__' },
         { type: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings / Choose Letters', desc: 'Ghép chữ cái (kéo thả). Dùng cho: Matching Features, Sentence Endings, Choose TWO/THREE letters (bật hoán đổi)' },
@@ -633,7 +633,7 @@ function renderRQGroupConfig(groupType, data, gIdx) {
   // plain – no extra config
   return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px">
-    ${rqAdminGuide('💬 <strong>Câu hỏi thường:</strong> Thêm từng câu hỏi bên dưới. Hỗ trợ: True/False/Not Given, Multiple Choice (1 đáp án), Multiple Choice (nhiều đáp án), Fill in the blank.')}
+    ${rqAdminGuide('💬 <strong>Câu hỏi thường:</strong> Thêm từng câu hỏi bên dưới. Hỗ trợ: True/False/Not Given, Yes/No/Not Given, Multiple Choice (1 đáp án), Multiple Choice (nhiều đáp án), Fill in the blank.')}
   </div>`;
 }
 
@@ -796,6 +796,7 @@ function addRQEnding(gIdx) {
 // Danh sách tất cả loại câu hỏi
 const RQQ_ALL_TYPES = [
   { value: 'true-false-ng',      label: 'True / False / Not Given' },
+  { value: 'yes-no-ng',          label: 'Yes / No / Not Given' },
   { value: 'multiple-choice',    label: 'Multiple Choice (1 đáp án)' },
   { value: 'checkbox',           label: 'Multiple Choice (nhiều đáp án)' },
   { value: 'fill-blank',         label: 'Fill in the blank' },
@@ -905,6 +906,7 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 function getRQQTypeGuide(type) {
   const guides = {
     'true-false-ng':     '✅ <strong>True / False / Not Given</strong> — Đọc passage, xác định câu đúng/sai/không có thông tin.<br>• <strong>Đáp án đúng:</strong> nhập <code>TRUE</code>, <code>FALSE</code> hoặc <code>NOT GIVEN</code>.',
+    'yes-no-ng':         '✅ <strong>Yes / No / Not Given</strong> — Xác định ý kiến/quan điểm đồng ý/không đồng ý/không đề cập.<br>• <strong>Đáp án đúng:</strong> nhập <code>YES</code>, <code>NO</code> hoặc <code>NOT GIVEN</code>.',
     'multiple-choice':   '🔘 <strong>Multiple Choice (1 đáp án)</strong> — Học sinh chọn 1 trong các lựa chọn A, B, C, D.<br>• Nhập 4 options A-D bên dưới. <strong>Đáp án đúng:</strong> nhập chữ cái VD <code>A</code>.',
     'checkbox':          '☑️ <strong>Multiple Choice (nhiều đáp án)</strong> — Học sinh chọn nhiều ô, nhập số ô muốn chọn.<br>• Nhập options và số lượng cần chọn. <strong>Đáp án đúng:</strong> <code>["A","C"]</code>.',
     'fill-blank':        '✏️ <strong>Fill in the blank</strong> — Học sinh điền từ/cụm từ vào ô trống.<br>• Không cần nhập options.<br>• <strong>Đáp án đúng:</strong> nhập chính xác từ/cụm từ cần điền, VD: <code>kiln</code>',
@@ -919,6 +921,7 @@ function getRQQTypeGuide(type) {
 function getRQQAnswerHint(type) {
   const hints = {
     'true-false-ng':     '💡 TRUE / FALSE / NOT GIVEN',
+    'yes-no-ng':         '💡 YES / NO / NOT GIVEN',
     'multiple-choice':   '💡 Nhập chữ cái: A, B, C hoặc D',
     'checkbox':          '💡 VD: ["A","C"] — mảng các chữ cái',
     'fill-blank':        '💡 Nhập đúng từ/cụm từ cần điền',
@@ -989,6 +992,7 @@ function onRQQTypeChange(sel, qId) {
     if (answerInput) {
       const placeholders = {
         'true-false-ng': 'TRUE / FALSE / NOT GIVEN',
+        'yes-no-ng':     'YES / NO / NOT GIVEN',
         'multiple-choice': 'A, B, C hoặc D',
         'checkbox': '["A","C"]',
         'fill-blank': 'Từ/cụm từ cần điền',
