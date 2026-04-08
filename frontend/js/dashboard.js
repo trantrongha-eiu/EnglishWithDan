@@ -917,7 +917,14 @@ function requeueWrongWord(word) {
 }
 
 function nextQuestion(mode) { currentQuestionIndex++; showQuestion(mode); }
-function restartPractice()  { startPractice(currentMode); }
+function restartPractice() {
+    // Ưu tiên ôn lại từ sai; nếu không có từ sai thì làm lại toàn bộ
+    if (wrongWordSet.size > 0) {
+        retryWrongWords();
+    } else {
+        _activateModeNow(currentMode); // _activateModeNow ẩn resultsMode trước khi bắt đầu
+    }
+}
 
 /* ── Quit-practice confirmation modal ── */
 let _quitCallback = null;
