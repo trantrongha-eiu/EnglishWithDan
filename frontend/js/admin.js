@@ -1098,6 +1098,7 @@ function collectQuestions() {
       questions.push(q);
     }
     group.questions = questions;
+    if (questions.length === 0) continue; // bỏ qua nhóm rỗng (không có câu hỏi) để không tích lũy nhóm thừa
     questionGroups.push(group);
   }
   return questionGroups; // trả về groups, savePassage() sẽ dùng làm questionGroups

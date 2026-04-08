@@ -193,8 +193,12 @@ body {
   letter-spacing: 1px;
   color: #fff;
   flex-shrink: 0;
+  background: rgba(255,255,255,.18);
+  padding: 3px 14px;
+  border-radius: 20px;
+  transition: background .4s;
 }
-.exam-topbar-center.warning { color: #f87171; }
+.exam-topbar-center.warning { background: #d97706; color: #fff; }
 .exam-topbar-right { display: flex; gap: 8px; flex-shrink: 0; }
 
 .exam-topbar-btn {

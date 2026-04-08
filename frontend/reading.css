@@ -519,7 +519,7 @@ body.eye-protection .split-questions {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #e53935;
+  background: #1e40af;
   color: #fff;
   padding: 6px 16px;
   border-radius: 20px;
@@ -531,11 +531,11 @@ body.eye-protection .split-questions {
 }
 
 .exam-timer.warn {
-  background: #f57c00;
+  background: #d97706;
 }
 
 .exam-timer.danger {
-  background: #b71c1c;
+  background: #dc2626;
   animation: pulse-timer .8s infinite;
 }
 
