@@ -1502,6 +1502,11 @@
           <div class="section-header" style="margin-top:32px">
             <span class="section-title">Lịch sử nộp bài Writing</span>
           </div>
+          <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+            <input id="writing-history-search" class="form-input" style="max-width:260px;font-size:13px"
+              placeholder="🔍 Tìm học sinh hoặc đề thi…"
+              oninput="filterWritingHistory(this.value)" />
+          </div>
           <div class="table-wrap">
             <table>
               <thead>

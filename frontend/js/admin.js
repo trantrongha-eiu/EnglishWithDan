@@ -2605,21 +2605,52 @@ async function loadTask2Pool() {
   } catch { toast('Lỗi load Task 2 pool', 'error'); }
 }
 
+let _writingAttempts = [];
+
 async function loadWritingHistory() {
   try {
     const res  = await fetch(`${API}/admin/writing-history`, { headers: authH() });
     const data = await res.json();
-    const list = data.success ? data.attempts : [];
-    document.getElementById('writing-history-tbody').innerHTML = list.length
-      ? list.map(a => {
-        const u = a.userId || {};
+    _writingAttempts = data.success ? data.attempts : [];
+    const q = (document.getElementById('writing-history-search')?.value || '').trim();
+    renderWritingHistory(_writingAttempts, q);
+  } catch { toast('Lỗi load lịch sử writing', 'error'); }
+}
+
+function filterWritingHistory(q) {
+  renderWritingHistory(_writingAttempts, q.trim());
+}
+
+function _wcBadge(wc, target) {
+  const num  = wc || 0;
+  const met  = num >= target;
+  const close = num >= target * 0.8;
+  const bg   = met ? '#dcfce7' : close ? '#fef9c3' : '#fee2e2';
+  const col  = met ? '#15803d' : close ? '#a16207' : '#b91c1c';
+  const warn = met ? '' : ` ⚠ <${target}`;
+  return `<span style="background:${bg};color:${col};border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${num} từ${warn}</span>`;
+}
+
+function renderWritingHistory(list, q) {
+  const filtered = q
+    ? list.filter(a => {
+        const u    = a.userId || {};
+        const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
+        return name.toLowerCase().includes(q.toLowerCase())
+            || (a.examName || '').toLowerCase().includes(q.toLowerCase());
+      })
+    : list;
+
+  document.getElementById('writing-history-tbody').innerHTML = filtered.length
+    ? filtered.map(a => {
+        const u    = a.userId || {};
         const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '–');
         const date = formatDate(a.submittedAt);
         return `<tr>
           <td>${escH(name)}</td>
           <td>${escH(a.examName || '–')}</td>
-          <td><span style="background:#eff6ff;color:#1d4ed8;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${a.wordCount1 || 0} từ</span></td>
-          <td><span style="background:#eff6ff;color:#1d4ed8;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${a.wordCount2 || 0} từ</span></td>
+          <td>${_wcBadge(a.wordCount1, 150)}</td>
+          <td>${_wcBadge(a.wordCount2, 250)}</td>
           <td style="font-size:12px;color:var(--text3)">${date}</td>
           <td>
             <button class="btn btn-ghost btn-sm" onclick="viewWritingAttempt('${a._id}')">👁 Xem</button>
@@ -2628,8 +2659,7 @@ async function loadWritingHistory() {
           </td>
         </tr>`;
       }).join('')
-      : '<tr><td colspan="6" class="table-empty">Chưa có bài nộp nào</td></tr>';
-  } catch { toast('Lỗi load lịch sử writing', 'error'); }
+    : '<tr><td colspan="6" class="table-empty">Không tìm thấy bài nộp nào</td></tr>';
 }
 
 /* ── Task 1 Pool modals ── */

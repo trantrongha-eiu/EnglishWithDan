@@ -1324,6 +1324,24 @@
             state.submitted = true;
             window.onbeforeunload = null;
             audio.pause();
+
+            // Show loading overlay
+            let overlay = document.getElementById('submit-loading-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'submit-loading-overlay';
+                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+                overlay.innerHTML = '<div style="width:48px;height:48px;border:5px solid #fff;border-top-color:#3d8bff;border-radius:50%;animation:spin 1s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0">Đang nộp bài, vui lòng chờ…</p>';
+                if (!document.getElementById('submit-spin-style')) {
+                    const s = document.createElement('style');
+                    s.id = 'submit-spin-style';
+                    s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+                    document.head.appendChild(s);
+                }
+                document.body.appendChild(overlay);
+            }
+            overlay.style.display = 'flex';
+
             try {
                 const res  = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
                     method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
@@ -1332,6 +1350,7 @@
                 if (!data.success) throw new Error(data.message);
                 const r = data.result;
                 state.reviewResult = r;
+                overlay.style.display = 'none';
                 // refresh test list để cập nhật trạng thái đã làm
                 loadTestList();
                 document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
@@ -1341,7 +1360,11 @@
                 document.getElementById('result-msg').textContent   = getBandMsg(r.bandScore);
                 document.getElementById('result-emoji').textContent = r.bandScore >= 7 ? '🎉' : r.bandScore >= 5.5 ? '💪' : '📚';
                 showScreen('result');
-            } catch (err) { toast('Lỗi nộp bài: ' + err.message, 'error'); state.submitted = false; }
+            } catch (err) {
+                overlay.style.display = 'none';
+                toast('Lỗi nộp bài: ' + err.message, 'error');
+                state.submitted = false;
+            }
         }
 
         function getBandMsg(band) {

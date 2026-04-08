@@ -71,6 +71,8 @@ function showScreen(id) {
 
   document.querySelectorAll('#user-name-key, #user-name-done, #user-name-history, #user-name-samples')
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
+
+  checkRestoreBanner();
 })();
 
 // ──────────────────────────────────────────────────────
@@ -114,6 +116,8 @@ async function startExam() {
     state.answers = { 1: '', 2: '' };
     state.flags   = { 1: false, 2: false };
     state.currentTask = 1;
+    // Reset timer for fresh exam
+    state.secondsLeft = 0;
 
     launchExam();
   } catch (e) {
@@ -134,15 +138,20 @@ function launchExam() {
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : (user.username || 'Candidate');
 
+  document.getElementById('restore-banner').style.display = 'none';
+
   // Top bar candidate info
   document.getElementById('exam-candidate').textContent =
     `${displayName}  –  ${exam.name}`;
 
-  // Timer
-  const mins = (exam.duration || 60) * 60;
-  state.totalSeconds = mins;
-  state.secondsLeft  = mins;
+  // Timer – only reset if not restoring (secondsLeft already set by restoreExam)
+  if (!state.secondsLeft || state.secondsLeft <= 0) {
+    const mins = (exam.duration || 60) * 60;
+    state.totalSeconds = mins;
+    state.secondsLeft  = mins;
+  }
   startTimer();
+  saveToStorage();
 
   // Render task 1
   switchTask(1);
@@ -159,6 +168,7 @@ function startTimer() {
   state.timerInterval = setInterval(() => {
     state.secondsLeft--;
     renderTimer();
+    if (state.secondsLeft % 30 === 0) saveToStorage(); // auto-save every 30s
     if (state.secondsLeft <= 0) {
       clearInterval(state.timerInterval);
       submitExam('timeout');
@@ -251,10 +261,45 @@ function onAnswerInput() {
   const text = document.getElementById('answer-textarea').value;
   state.answers[state.currentTask] = text;
   updateWordCount(text);
+  saveToStorage();
 }
 
+const _WC_TARGETS = { 1: 150, 2: 250 };
+
 function updateWordCount(text) {
-  document.getElementById('word-count').textContent = countWords(text);
+  const wc     = countWords(text);
+  const target = _WC_TARGETS[state.currentTask] || 150;
+  const pct    = wc / target;
+
+  // Color coding
+  let color;
+  if (wc >= target)       color = '#16a34a'; // green – met
+  else if (pct >= 0.8)    color = '#f59e0b'; // amber – close
+  else                    color = '#6b7280'; // gray – not yet
+
+  const wcEl = document.getElementById('word-count');
+  if (wcEl) { wcEl.textContent = wc; wcEl.style.color = color; }
+
+  const targetEl = document.getElementById('word-count-target');
+  if (targetEl) {
+    targetEl.textContent = `/ ${target} từ`;
+    targetEl.style.color = color;
+  }
+
+  updateFooterWcSummary();
+}
+
+function updateFooterWcSummary() {
+  const wc1El = document.getElementById('footer-wc1');
+  const wc2El = document.getElementById('footer-wc2');
+  if (!wc1El || !wc2El) return;
+
+  const wc1 = countWords(state.answers[1] || '');
+  const wc2 = countWords(state.answers[2] || '');
+  wc1El.textContent = wc1;
+  wc2El.textContent = wc2;
+  wc1El.style.color = wc1 >= 150 ? '#16a34a' : wc1 >= 120 ? '#f59e0b' : '#374151';
+  wc2El.style.color = wc2 >= 250 ? '#16a34a' : wc2 >= 200 ? '#f59e0b' : '#374151';
 }
 
 // ──────────────────────────────────────────────────────
@@ -297,6 +342,23 @@ async function submitExam(statusOverride) {
   const wc2 = countWords(state.answers[2]);
   const timeTaken = state.totalSeconds - state.secondsLeft;
 
+  // Show loading overlay
+  let overlay = document.getElementById('submit-loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'submit-loading-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+    overlay.innerHTML = '<div style="width:48px;height:48px;border:5px solid #fff;border-top-color:#3d8bff;border-radius:50%;animation:spin 1s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0">Đang nộp bài, vui lòng chờ…</p>';
+    if (!document.getElementById('submit-spin-style')) {
+      const s = document.createElement('style');
+      s.id = 'submit-spin-style';
+      s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(overlay);
+  }
+  overlay.style.display = 'flex';
+
   try {
     const data = await apiFetch('/api/writing/submit', {
       method: 'POST',
@@ -312,8 +374,10 @@ async function submitExam(statusOverride) {
         status
       })
     });
+    overlay.style.display = 'none';
 
     if (data.success) {
+      clearAutoSave();
       state.currentAttemptId = data.attemptId;
       // Done screen
       const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -331,6 +395,7 @@ async function submitExam(statusOverride) {
       alert('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'));
     }
   } catch (e) {
+    overlay.style.display = 'none';
     alert('Lỗi nộp bài: ' + e.message);
   }
 }
@@ -606,9 +671,80 @@ function closeWritingMobilePdf() {
 // Utility
 // ──────────────────────────────────────────────────────
 function escHtml(str) {
+  if (str == null) return '';
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// ──────────────────────────────────────────────────────
+// Auto-save to localStorage
+// ──────────────────────────────────────────────────────
+const _AUTOSAVE_KEY = 'ews_writing_autosave';
+const _AUTOSAVE_MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 hours
+
+function saveToStorage() {
+  if (!state.exam) return;
+  try {
+    localStorage.setItem(_AUTOSAVE_KEY, JSON.stringify({
+      exam:        state.exam,
+      answers:     state.answers,
+      flags:       state.flags,
+      secondsLeft: state.secondsLeft,
+      savedAt:     Date.now()
+    }));
+  } catch (_) {}
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem(_AUTOSAVE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (!saved || !saved.exam) return null;
+    if (Date.now() - saved.savedAt > _AUTOSAVE_MAX_AGE_MS) {
+      localStorage.removeItem(_AUTOSAVE_KEY);
+      return null;
+    }
+    return saved;
+  } catch (_) { return null; }
+}
+
+function clearAutoSave() {
+  localStorage.removeItem(_AUTOSAVE_KEY);
+}
+
+function checkRestoreBanner() {
+  const saved = loadFromStorage();
+  const banner = document.getElementById('restore-banner');
+  const desc   = document.getElementById('restore-banner-desc');
+  if (!saved || !banner) return;
+
+  const mins = Math.floor(saved.secondsLeft / 60);
+  const secs = saved.secondsLeft % 60;
+  const wc1  = countWords(saved.answers[1] || '');
+  const wc2  = countWords(saved.answers[2] || '');
+  desc.textContent =
+    `${saved.exam.name}  •  Task 1: ${wc1} từ  |  Task 2: ${wc2} từ  •  Còn ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  banner.style.display = 'block';
+}
+
+function restoreExam() {
+  const saved = loadFromStorage();
+  if (!saved) return;
+  state.exam        = saved.exam;
+  state.answers     = saved.answers  || { 1: '', 2: '' };
+  state.flags       = saved.flags    || { 1: false, 2: false };
+  state.secondsLeft = saved.secondsLeft || 3600;
+  state.totalSeconds = state.exam.duration ? state.exam.duration * 60 : 3600;
+  state.currentTask  = 1;
+  document.getElementById('restore-banner').style.display = 'none';
+  launchExam();
+}
+
+function discardSaved() {
+  clearAutoSave();
+  document.getElementById('restore-banner').style.display = 'none';
 }
