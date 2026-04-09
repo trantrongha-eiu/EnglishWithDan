@@ -6,7 +6,7 @@ const ListeningQuestionSchema = new mongoose.Schema({
   type: {
     type: String,
     // 'checkbox' giữ lại để backward-compatible với data cũ; dùng 'multi-answer-group' cho data mới
-    enum: ['multiple-choice', 'fill-blank', 'sentence-completion', 'matching', 'map-labelling', 'checkbox', 'multi-answer-group'],
+    enum: ['multiple-choice', 'fill-blank', 'sentence-completion', 'matching', 'map-labelling', 'checkbox', 'multi-answer-group', 'matching-info'],
     required: true
   },
   questionText:  { type: String, required: true },
@@ -27,7 +27,7 @@ const ListeningQuestionSchema = new mongoose.Schema({
 const QuestionGroupSchema = new mongoose.Schema({
   groupType: {
     type: String,
-    enum: ['table', 'note-form', 'bullet-list', 'plain', 'map'],
+    enum: ['table', 'note-form', 'bullet-list', 'plain', 'map', 'matching-options', 'summary-completion', 'sentence-endings'],
     required: true,
     default: 'plain'
   },
@@ -63,6 +63,26 @@ const QuestionGroupSchema = new mongoose.Schema({
 
   // ── Cấu hình cho groupType = 'map' ────────────────────────────────────────
   imageUrl: { type: String, default: '' },
+
+  // ── Cấu hình cho groupType = 'matching-options' ───────────────────────────
+  // matchingOptions: danh sách lựa chọn A→G (VD: ['the museum', 'the library', ...])
+  matchingOptions:        [String],
+  matchingReuseAllowed:   { type: Boolean, default: false },
+  interchangeableAnswers: { type: Boolean, default: false },
+
+  // ── Cấu hình cho groupType = 'summary-completion' ─────────────────────────
+  // summaryConfig.text: đoạn văn tóm tắt với placeholder __Q{n}__
+  // summaryConfig.wordBank: mảng { letter, word }
+  summaryConfig: {
+    text:     { type: String, default: '' },
+    wordBank: [{ letter: String, word: String }]
+  },
+
+  // ── Cấu hình cho groupType = 'sentence-endings' ───────────────────────────
+  // endingsConfig.endings: mảng { letter, text } — phần kết câu A→H
+  endingsConfig: {
+    endings: [{ letter: String, text: String }]
+  },
 
   // Các câu hỏi trong group này
   questions: [ListeningQuestionSchema]
