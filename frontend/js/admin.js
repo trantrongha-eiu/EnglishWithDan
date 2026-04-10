@@ -493,111 +493,54 @@ function renderRQGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
-  if (groupType === 'matching-options') {
-    const opts = data?.matchingOptions || ['', '', '', '', '', ''];
+  if (groupType === 'matching-options' || groupType === 'sentence-endings') {
+    const isSentEnding = groupType === 'sentence-endings'
+      || (!!(data?.endingsConfig?.endings?.length) && !(data?.matchingOptions?.length));
+    const rawOpts = isSentEnding
+      ? (data?.endingsConfig?.endings || []).map(e => e.text || '')
+      : (data?.matchingOptions || ['', '', '', '', '', '']);
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide(`🔗 <strong>Matching / Sentence Endings / Choose Letters</strong> — Nhóm đa năng dùng thả chữ cái:<br>
-• <strong>Matching Features/People</strong> (Q19-23): Nhập danh sách người/sự vật A→G, câu hỏi loại <code>matching-info</code>, đáp án A/B/C…<br>
-• <strong>Sentence Endings</strong> (Q32-35): Nhập phần kết câu A-H, câu hỏi là phần đầu câu (loại <code>matching-info</code>), đáp án A/B/C…<br>
-• <strong>Choose TWO/THREE letters</strong> (Q23-24): Nhập 5 lựa chọn A-E, mỗi câu hỏi (loại <code>matching-info</code>) là một câu riêng, bật <strong>Hoán đổi thứ tự</strong> bên dưới – đáp án Q23=B Q24=D hoặc Q23=D Q24=B đều đúng.`)}
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Danh sách lựa chọn (A, B, C…)
+    <div style="display:flex;gap:16px;margin-bottom:12px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-mo-mode-${gIdx}" class="lg-mo-mode" value="matching"
+               ${!isSentEnding ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleMOMode(${gIdx},this.value)" />
+        🔗 Matching / Choose Letters
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-mo-mode-${gIdx}" class="lg-mo-mode" value="endings"
+               ${isSentEnding ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleMOMode(${gIdx},this.value)" />
+        🔚 Sentence Endings
+      </label>
     </div>
-    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px">
-      <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer">
-        <input type="checkbox" id="rqg-reuse-${gIdx}" class="rqg-reuse"
+    <div id="lg-mo-guide-${gIdx}">
+      ${!isSentEnding
+        ? lgAdminGuide('🔗 <strong>Matching / Choose Letters</strong>: Nhập danh sách người/sự vật A→G, câu hỏi loại <code>matching-info</code>. Hoặc 5–7 lựa chọn cho Choose TWO/THREE letters + bật Hoán đổi thứ tự.')
+        : lgAdminGuide('🔚 <strong>Sentence Endings:</strong> Nhập danh sách phần kết câu A-H. Câu hỏi bên dưới: mỗi câu = một phần đầu câu, đáp án là chữ cái phần kết (A, B, C…).')}
+    </div>
+    <div id="lg-mo-checkboxes-${gIdx}" style="display:${!isSentEnding ? 'flex' : 'none'};flex-wrap:wrap;gap:14px;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="checkbox" class="lg-reuse" id="lg-reuse-${gIdx}"
                ${data?.matchingReuseAllowed ? 'checked' : ''}
                style="width:14px;height:14px;accent-color:var(--blue)" />
         NB: You may use any letter more than once
       </label>
-      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer" title="Choose TWO/THREE letters – Q23 và Q24 hoán đổi vẫn đúng">
-        <input type="checkbox" id="rqg-interchangeable-${gIdx}" class="rqg-interchangeable"
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="checkbox" class="lg-interchangeable" id="lg-interchangeable-${gIdx}"
                ${data?.interchangeableAnswers ? 'checked' : ''}
                style="width:14px;height:14px;accent-color:var(--green)" />
         <span style="color:var(--green);font-weight:600">Hoán đổi thứ tự (Choose TWO/THREE letters)</span>
       </label>
     </div>
-    <div id="rqgopt-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
-      ${opts.map((o, i) => renderRQOption(gIdx, i, o)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQOption(${gIdx})">＋ Thêm mục</button>
-  </div>`;
-  }
-
-  if (groupType === 'matching-headings') {
-    const headings = data?.headingsConfig?.headings || [
-      { numeral: 'i', text: '' }, { numeral: 'ii', text: '' }, { numeral: 'iii', text: '' },
-      { numeral: 'iv', text: '' }, { numeral: 'v', text: '' }, { numeral: 'vi', text: '' }
-    ];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('📌 <strong>Matching Headings (Q14-18 style):</strong> Nhập danh sách tiêu đề i, ii, iii… Câu hỏi bên dưới: mỗi câu = một đoạn văn (A, B, C…), đáp án là số La Mã (i, ii, iii…). Học sinh kéo tiêu đề vào đoạn văn tương ứng.<br>💡 Thường có nhiều tiêu đề hơn số câu hỏi (ví dụ 8 tiêu đề cho 5 câu).')}
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Danh sách tiêu đề (i, ii, iii…)
-    </div>
-    <div id="rqghd-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
-      ${headings.map((h, i) => renderRQHeading(gIdx, i, h)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQHeading(${gIdx})">＋ Thêm tiêu đề</button>
-  </div>`;
-  }
-
-  if (groupType === 'summary-completion') {
-    const wb = data?.summaryConfig?.wordBank || [
-      { letter: 'A', word: '' }, { letter: 'B', word: '' }, { letter: 'C', word: '' },
-      { letter: 'D', word: '' }, { letter: 'E', word: '' }, { letter: 'F', word: '' },
-      { letter: 'G', word: '' }, { letter: 'H', word: '' }, { letter: 'I', word: '' },
-      { letter: 'J', word: '' }
-    ];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('🧩 <strong>Summary Completion with Word Bank (Q37-40 style):</strong> 1) Nhập đoạn tóm tắt có chỗ trống dùng <code>__Q37__</code>. 2) Nhập word bank A-J (chữ cái → từ). Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là <strong>từ thực tế</strong> (không phải chữ cái). Học sinh sẽ kéo từ vào ô trống.')}
-    <div style="margin-bottom:10px">
-      <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:4px">
-        Đoạn tóm tắt (dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q37__</code> cho chỗ trống)
-      </label>
-      <textarea class="form-input rqg-summary-text" rows="5"
-                style="font-size:12px;padding:8px 10px;resize:vertical;width:100%"
-                placeholder="The case of Mozart could be quoted as evidence against the 10,000-hour-practice theory. However, the writer points out that the young Mozart received a lot of __Q37__ from his father...">${data?.summaryConfig?.text || ''}</textarea>
-    </div>
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Word Bank (A, B, C…)</div>
-    <div id="rqgwb-${gIdx}" style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-      ${wb.map((w, i) => renderRQWordBankItem(gIdx, i, w)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQWordBankItem(${gIdx})">＋ Thêm từ</button>
-  </div>`;
-  }
-
-  if (groupType === 'sentence-endings') {
-    const endings = data?.endingsConfig?.endings || [
-      { letter: 'A', text: '' }, { letter: 'B', text: '' }, { letter: 'C', text: '' },
-      { letter: 'D', text: '' }, { letter: 'E', text: '' }, { letter: 'F', text: '' },
-      { letter: 'G', text: '' }, { letter: 'H', text: '' }
-    ];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('🔚 <strong>Matching Sentence Endings (Q32-35 style):</strong> Nhập danh sách phần kết câu A-H. Câu hỏi bên dưới: mỗi câu = một phần đầu câu (sentence starter), đáp án là chữ cái phần kết (A, B, C…). Học sinh kéo phần kết vào phần đầu tương ứng.')}
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
-      Danh sách phần kết câu (A, B, C…)
+      ${!isSentEnding ? 'Danh sách lựa chọn (A, B, C…)' : 'Danh sách phần kết câu (A, B, C…)'}
     </div>
-    <div id="rqgend-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
-      ${endings.map((e, i) => renderRQEnding(gIdx, i, e)).join('')}
+    <div id="lg-opts-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${rawOpts.map((o, i) => renderLGOption(gIdx, i, o)).join('')}
     </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQEnding(${gIdx})">＋ Thêm phần kết</button>
-  </div>`;
-  }
-
-  if (groupType === 'bullet-list') {
-    const items = data?.bulletConfig?.items || [''];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${rqAdminGuide('• <strong>Bullet List:</strong> Mỗi dòng là một mục trong danh sách bullet. Dùng <code>__Q27__</code> để đánh dấu chỗ trống cần điền. Câu hỏi bên dưới: loại <strong>fill-blank</strong>.')}
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách Bullet</div>
-    <div id="rqgbul-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:5px">
-      ${items.map(it => renderRQBulletItem(gIdx, it)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQBulletItem(${gIdx})">＋ Thêm mục</button>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addLGOption(${gIdx})">＋ Thêm mục</button>
   </div>`;
   }
 
@@ -839,11 +782,9 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
 
   // Smart default type based on group
   const autoType = data?.type || (
-    ['bullet-list','note-form','table'].includes(groupType) ? 'fill-blank' :
+    ['note-form','table'].includes(groupType) ? 'fill-blank' :
     groupType === 'map'               ? 'map-labelling' :
     groupType === 'matching-options'  ? 'matching-info' :
-    groupType === 'matching-headings' ? 'matching-headings' :
-    groupType === 'sentence-endings'  ? 'matching-info' :
     groupType === 'summary-completion'? 'fill-blank' :
     'true-false-ng'
   );
@@ -1826,11 +1767,9 @@ function openAddGroupModal(sIdx) {
         ${[
         { type: 'plain',              icon: '💬', label: 'Câu hỏi thường',                desc: 'Multiple Choice, Choose N Letters, Fill-blank riêng lẻ' },
         { type: 'table',              icon: '📋', label: 'Bảng (Table/Note)',              desc: 'Fill-blank trong ô bảng – dùng __Q1__ làm placeholder' },
-        { type: 'note-form',          icon: '📝', label: 'Note / Form',                   desc: 'Điền vào dòng biểu mẫu hoặc ghi chú – dùng __Q6__' },
-        { type: 'bullet-list',        icon: '•',  label: 'Bullet List',                   desc: 'Danh sách bullet có chỗ trống – dùng __Q5__' },
-        { type: 'matching-options',   icon: '🔗', label: 'Matching / Choose Letters',     desc: 'Ghép chữ cái (kéo thả). Dùng cho: Matching speakers/features, Choose TWO/THREE letters' },
+        { type: 'note-form',          icon: '📝', label: 'Note / Bullet Completion',      desc: 'Khung ghi chú hoặc danh sách bullet – chọn kiểu hiển thị trong nhóm' },
+        { type: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings / Choose Letters', desc: 'Ghép chữ cái kéo thả. Dùng cho: Matching speakers/features, Sentence Endings, Choose TWO/THREE letters' },
         { type: 'summary-completion', icon: '🧩', label: 'Summary Completion',            desc: 'Đoạn tóm tắt + word bank A-J chọn từ điền vào (kéo thả)' },
-        { type: 'sentence-endings',   icon: '🔚', label: 'Sentence Endings',              desc: 'Danh sách phần kết câu A-H; câu hỏi là phần đầu câu' },
         { type: 'map',                icon: '🗺️', label: 'Map / Diagram',                 desc: 'Câu hỏi dán nhãn bản đồ hoặc sơ đồ' },
       ].map(g => `
           <div onclick="pickGroupType('${g.type}')"
@@ -1870,11 +1809,9 @@ function addQuestionGroup(sIdx, data = null) {
   const groupLabels = {
     'plain':              '💬 Câu hỏi thường',
     'table':              '📋 Bảng (Table)',
-    'note-form':          '📝 Note / Form',
-    'bullet-list':        '• Bullet List',
-    'matching-options':   '🔗 Matching / Choose Letters',
+    'note-form':          '📝 Note / Bullet',
+    'matching-options':   '🔗 Matching / Sentence Endings',
     'summary-completion': '🧩 Summary Completion',
-    'sentence-endings':   '🔚 Sentence Endings',
     'map':                '🗺️ Map / Diagram',
   };
 
@@ -1954,26 +1891,44 @@ function renderGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
-  if (groupType === 'note-form') {
-    const title = data?.noteConfig?.title || '';
-    const lines = data?.noteConfig?.lines || [''];
+  if (groupType === 'note-form' || groupType === 'bullet-list') {
+    const isBullet = groupType === 'bullet-list'
+      || (!!(data?.bulletConfig?.items?.length) && !(data?.noteConfig?.lines?.length));
+    const title = data?.noteConfig?.title || data?.bulletConfig?.title || '';
+    const lineData = isBullet
+      ? (data?.bulletConfig?.items || [''])
+      : (data?.noteConfig?.lines || ['']);
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Cấu trúc Note / Form
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+      Cấu trúc Note / Bullet
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:12px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-note-mode-${gIdx}" class="lg-note-mode" value="note"
+               ${!isBullet ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleNoteMode(${gIdx},this.value)" />
+        📝 Note / Form
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-note-mode-${gIdx}" class="lg-note-mode" value="bullet"
+               ${isBullet ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleNoteMode(${gIdx},this.value)" />
+        • Bullet List
+      </label>
     </div>
     <div class="form-group" style="margin-bottom:8px">
-      <label style="font-size:10px">Tiêu đề khung</label>
+      <label style="font-size:10px">Tiêu đề khung <span style="color:var(--text3)">(không bắt buộc)</span></label>
       <input class="form-input lg-note-title" value="${title}"
              style="font-size:12px;padding:7px 10px"
-             placeholder="VD: Accommodation details" />
+             placeholder="VĐ: Accommodation details" />
     </div>
     <div>
       <label style="font-size:10px;color:var(--text3)">
         Các dòng – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q1__</code> để đánh dấu chỗ trống
       </label>
       <div id="note-lines-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
-        ${lines.map((line, li) => renderNoteLine(gIdx, li, line)).join('')}
+        ${lineData.map((line, li) => renderNoteLine(gIdx, li, line)).join('')}
       </div>
       <button class="btn btn-ghost btn-sm" style="margin-top:8px"
               onclick="addNoteLine(${gIdx})">＋ Thêm dòng</button>
@@ -1981,23 +1936,6 @@ function renderGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
-  if (groupType === 'bullet-list') {
-    const items = data?.bulletConfig?.items || [''];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
-      Danh sách câu hỏi (Bullet List)
-    </div>
-    <label style="font-size:10px;color:var(--text3)">
-      Các mục – dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q5__</code> để đánh dấu chỗ trống
-    </label>
-    <div id="bullet-items-${gIdx}" style="margin-top:6px;display:flex;flex-direction:column;gap:6px">
-      ${items.map((item, ii) => renderBulletItem(gIdx, ii, item)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:8px"
-            onclick="addBulletItem(${gIdx})">＋ Thêm mục</button>
-  </div>`;
-  }
 
   if (groupType === 'matching-options') {
     const opts = data?.matchingOptions || ['', '', '', '', '', ''];
@@ -2174,6 +2112,29 @@ function addBulletItem(gIdx) {
 }
 
 // ── Matching option helpers ──────────────────────────────────────
+// ── Note/Bullet mode toggle ─────────────────────────────────
+function lgToggleNoteMode(gIdx, val) {
+  const lines = document.getElementById(`note-lines-${gIdx}`);
+  if (!lines) return;
+  const isBullet = val === 'bullet';
+  lines.querySelectorAll('.lg-note-line').forEach(inp => {
+    inp.placeholder = isBullet
+      ? 'What colour is the bus? __Q5__'
+      : 'Loại căn hộ: __Q1__';
+  });
+}
+
+// ── Matching/SentenceEndings mode toggle ────────────────────
+function lgToggleMOMode(gIdx, val) {
+  const isSE = val === 'endings';
+  const guide = document.getElementById(`lg-mo-guide-${gIdx}`);
+  const cbs   = document.getElementById(`lg-mo-checkboxes-${gIdx}`);
+  if (guide) guide.innerHTML = isSE
+    ? lgAdminGuide('🔚 <strong>Sentence Endings:</strong> Nhập danh sách phần kết câu A-H. Câu hỏi: mỗi câu = một phần đầu câu, đáp án là chữ cái phần kết (A, B, C…).')
+    : lgAdminGuide('🔗 <strong>Matching / Choose Letters</strong>: Nhập danh sách người/sự vật A→G hoặc 5–7 lựa chọn cho Choose TWO/THREE letters.');
+  if (cbs) cbs.style.display = isSE ? 'none' : 'flex';
+}
+
 function renderLGOption(gIdx, i, text) {
   const letter = 'ABCDEFGHIJ'[i] || String(i + 1);
   return `
@@ -2251,10 +2212,8 @@ const LQQ_ALLOWED = {
   'plain':              null,  // null = tất cả loại
   'table':              ['fill-blank', 'sentence-completion'],
   'note-form':          ['fill-blank', 'sentence-completion'],
-  'bullet-list':        ['fill-blank', 'sentence-completion'],
   'matching-options':   ['matching-info'],
   'summary-completion': ['fill-blank'],
-  'sentence-endings':   ['matching-info'],
   'map':                ['map-labelling', 'fill-blank'],
 };
 
@@ -2594,21 +2553,30 @@ function collectListeningSections() {
           )
         };
       }
-      if (groupType === 'note-form') {
-        group.noteConfig = {
-          title: gDiv.querySelector('.lg-note-title')?.value.trim() || '',
-          lines: [...gDiv.querySelectorAll('.lg-note-line')].map(i => i.value)
-        };
+      if (groupType === 'note-form' || groupType === 'bullet-list') {
+        const noteMode = gDiv.querySelector('.lg-note-mode:checked')?.value || 'note';
+        const title = gDiv.querySelector('.lg-note-title')?.value.trim() || '';
+        const lineVals = [...gDiv.querySelectorAll('.lg-note-line')].map(i => i.value);
+        if (noteMode === 'bullet') {
+          group.groupType = 'bullet-list';
+          group.bulletConfig = { title, items: lineVals };
+        } else {
+          group.noteConfig = { title, lines: lineVals };
+        }
       }
-      if (groupType === 'bullet-list') {
-        group.bulletConfig = {
-          items: [...gDiv.querySelectorAll('.lg-bullet-item')].map(i => i.value)
-        };
-      }
-      if (groupType === 'matching-options') {
-        group.matchingOptions = [...gDiv.querySelectorAll('.lg-opt')].map(i => i.value.trim());
-        group.matchingReuseAllowed = gDiv.querySelector('.lg-reuse')?.checked || false;
-        group.interchangeableAnswers = gDiv.querySelector('.lg-interchangeable')?.checked || false;
+      if (groupType === 'matching-options' || groupType === 'sentence-endings') {
+        const moMode = gDiv.querySelector('.lg-mo-mode:checked')?.value || 'matching';
+        const opts = [...gDiv.querySelectorAll('.lg-opt')].map(i => i.value.trim());
+        if (moMode === 'endings') {
+          group.groupType = 'sentence-endings';
+          group.endingsConfig = {
+            endings: opts.map((text, i) => ({ letter: 'ABCDEFGHIJ'[i] || String(i+1), text }))
+          };
+        } else {
+          group.matchingOptions = opts;
+          group.matchingReuseAllowed = gDiv.querySelector('.lg-reuse')?.checked || false;
+          group.interchangeableAnswers = gDiv.querySelector('.lg-interchangeable')?.checked || false;
+        }
       }
       if (groupType === 'summary-completion') {
         group.summaryConfig = {
@@ -4187,4 +4155,3 @@ function renderVaChart(container, data, view) {
 
   container.innerHTML = `<div style="overflow-x:auto;overflow-y:hidden">${svg}</div>`;
 }
-
