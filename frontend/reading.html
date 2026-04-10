@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="reading.css" />
   <link rel="stylesheet" href="css/mobile.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="js/theme.js"></script>
@@ -21,15 +21,17 @@
      ════════════════════════════════════════════════════════ -->
   <div id="screen-list" class="screen active">
 
-    <!-- Thay thế div.skill-tabs-bar bằng header + nav đầy đủ -->
     <header
       style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60;gap:8px">
       <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0">
         <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;min-width:0">
-        <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Xin chào</span>
-        <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng" aria-label="Mở menu kỹ năng">
+        <span class="hdr-username" id="userName"
+          style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋
+          Xin chào</span>
+        <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng"
+          aria-label="Mở menu kỹ năng">
           <i class="fas fa-th-large"></i>
         </button>
         <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng" aria-label="Đổi chế độ sáng tối">
@@ -49,12 +51,12 @@
     <!-- Skill tabs -->
     <div class="skill-tabs-bar" id="skill-tabs-bar">
       <nav class="site-nav">
-        <a href="reading.html"   class="site-nav-link active"><i class="fas fa-book-open"></i> Reading</a>
+        <a href="reading.html" class="site-nav-link active"><i class="fas fa-book-open"></i> Reading</a>
         <a href="listening.html" class="site-nav-link"><i class="fas fa-headphones"></i> Listening</a>
-        <a href="writing.html"   class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
-        <a href="speaking.html"  class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
+        <a href="writing.html" class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
+        <a href="speaking.html" class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
         <a href="dashboard.html" class="site-nav-link"><i class="fas fa-layer-group"></i> Vocab</a>
-        <a href="profile.html"   class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
+        <a href="profile.html" class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
       </nav>
     </div>
 
@@ -67,16 +69,14 @@
             thời gian giới hạn và được quy đổi điểm như khi thi thật.
           </p>
         </div>
-        <!-- Filter -->
         <div class="list-filter">
-
           <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
           <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
           <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
         </div>
       </div>
 
-      <!-- Resume banner (hiện khi có bài thi dở dang) -->
+      <!-- Resume banner -->
       <div id="resume-banner">
         <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span id="resume-time-left"></span></span>
         <button class="resume-btn-continue" onclick="resumeExam()">Tiếp tục làm</button>
@@ -130,8 +130,8 @@
         <span id="timer-display">01:00:00</span>
       </div>
       <div class="exam-bar-right" style="display:flex;align-items:center;gap:8px;">
-        <!-- Progress indicator -->
-        <div id="exam-progress-pill" style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;">
+        <div id="exam-progress-pill"
+          style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;">
           <span id="prog-answered">0</span>/<span id="prog-total">40</span>
         </div>
         <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen">⛶</button>
@@ -141,7 +141,8 @@
 
     <!-- Progress bar -->
     <div style="height:3px;background:#e5e7eb;position:relative;">
-      <div id="exam-progress-bar" style="height:100%;background:linear-gradient(90deg,#3d8bff,#7c3aed);width:0%;transition:width .3s ease;"></div>
+      <div id="exam-progress-bar"
+        style="height:100%;background:linear-gradient(90deg,#3d8bff,#7c3aed);width:0%;transition:width .3s ease;"></div>
     </div>
 
     <!-- Settings dropdown -->
@@ -163,43 +164,61 @@
       </div>
     </div>
 
-    <!-- Toolbar (chỉ highlight khi thi) -->
+    <!-- Toolbar -->
     <div class="exam-toolbar">
       <button class="tool-btn active" id="tool-hl" onclick="setTool('highlight')">
         🖊 <small>Highlight (H)</small>
       </button>
-      <div class="toolbar-passage-tabs" id="toolbar-passage-tabs">
-        <!-- Passage 1 / 2 / 3 tabs -->
-      </div>
+      <div class="toolbar-passage-tabs" id="toolbar-passage-tabs"></div>
     </div>
 
-    <!-- Split layout: passage | divider | questions -->
+    <!-- Split layout -->
     <div class="exam-split" id="exam-split">
       <div class="split-passage" id="split-passage">
-        <div class="passage-inner" id="passage-inner">
-          <!-- Bài đọc render bởi JS -->
-        </div>
+        <div class="passage-inner" id="passage-inner"></div>
       </div>
-
       <div class="split-divider" id="split-divider" title="Kéo để thay đổi tỉ lệ">
         <div class="divider-handle"></div>
       </div>
-
       <div class="split-questions" id="split-questions">
-        <div class="questions-inner" id="questions-inner">
-          <!-- Câu hỏi render bởi JS -->
+        <div class="questions-inner" id="questions-inner"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="exam-footer">
+      <div class="q-nav-scroll" id="q-nav-scroll"></div>
+      <button class="btn-submit-exam" onclick="confirmSubmit()">Hoàn thành</button>
+    </div>
+
+    <!-- ══ MODAL NỘP BÀI – nằm trong screen-exam để hiển thị đúng khi fullscreen ══ -->
+    <div id="modal-submit" class="modal-overlay hidden" style="position:absolute;z-index:9999;">
+      <div class="modal-box modal-sm">
+        <h3>Hoàn thành bài tập</h3>
+        <p>
+          Bạn có chắc chắn muốn nộp phần bài tập đã làm chưa?
+          Nếu chắc chắn với các đáp án đã làm hãy bấm nút <strong>hoàn thành</strong>.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-ghost" onclick="closeModal('modal-submit')">Quay lại</button>
+          <button class="btn-primary" onclick="submitExam()">Hoàn thành</button>
         </div>
       </div>
     </div>
 
-    <!-- Footer: số câu + nộp bài -->
-    <div class="exam-footer">
-      <div class="q-nav-scroll" id="q-nav-scroll">
-        <!-- Nút số câu 1–40 -->
+    <!-- ══ MODAL THOÁT – nằm trong screen-exam để hiển thị đúng khi fullscreen ══ -->
+    <div id="modal-exit" class="modal-overlay hidden" style="position:absolute;z-index:9999;">
+      <div class="modal-box modal-sm">
+        <h3>Thoát khỏi bài thi?</h3>
+        <p>Tiến trình làm bài của bạn sẽ bị mất nếu thoát.</p>
+        <div class="modal-actions">
+          <button class="btn-ghost" onclick="closeModal('modal-exit')">Tiếp tục làm bài</button>
+          <button class="btn-danger" onclick="forceExit()">Thoát</button>
+        </div>
       </div>
-      <button class="btn-submit-exam" onclick="confirmSubmit()">Hoàn thành</button>
     </div>
-  </div>
+
+  </div><!-- /screen-exam -->
 
   <!-- ════════════════════════════════════════════════════════
      SCREEN 4 – KẾT QUẢ
@@ -237,7 +256,8 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-       <button class="exam-exit-btn" onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')">✕</button>
+        <button class="exam-exit-btn"
+          onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')">✕</button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
@@ -246,9 +266,6 @@
       </div>
     </div>
 
-    <!-- Settings panel dùng chung -->
-
-    <!-- Toolbar review: highlight + tra từ -->
     <div class="exam-toolbar">
       <button class="tool-btn active" id="tool-hl-rv" onclick="setTool('highlight')">
         🖊 <small>Highlight (H)</small>
@@ -276,37 +293,6 @@
       <div class="exam-footer-btns">
         <button class="btn-ghost" onclick="showHistoryModal()">Xem lịch sử làm bài</button>
         <button class="btn-primary" onclick="loadTests(true)">Làm bài khác</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════════════════
-     MODAL – XÁC NHẬN NỘP BÀI
-     ════════════════════════════════════════════════════════ -->
-  <div id="modal-submit" class="modal-overlay hidden">
-    <div class="modal-box modal-sm">
-      <h3>Hoàn thành bài tập</h3>
-      <p>
-        Bạn có chắc chắn muốn nộp phần bài tập đã làm chưa?
-        Nếu chắc chắn với các đáp án đã làm hãy bấm nút <strong>hoàn thành</strong>.
-      </p>
-      <div class="modal-actions">
-        <button class="btn-ghost" onclick="closeModal('modal-submit')">Quay lại</button>
-        <button class="btn-primary" onclick="submitExam()">Hoàn thành</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════════════════════════════════════════
-     MODAL – XÁC NHẬN THOÁT
-     ════════════════════════════════════════════════════════ -->
-  <div id="modal-exit" class="modal-overlay hidden">
-    <div class="modal-box modal-sm">
-      <h3>Thoát khỏi bài thi?</h3>
-      <p>Tiến trình làm bài của bạn sẽ bị mất nếu thoát.</p>
-      <div class="modal-actions">
-        <button class="btn-ghost" onclick="closeModal('modal-exit')">Tiếp tục làm bài</button>
-        <button class="btn-danger" onclick="forceExit()">Thoát</button>
       </div>
     </div>
   </div>
@@ -342,7 +328,7 @@
   </div>
 
   <!-- ════════════════════════════════════════════════════════
-     DICTIONARY POPUP (chỉ hiện khi review)
+     DICTIONARY POPUP
      ════════════════════════════════════════════════════════ -->
   <div id="dict-popup" class="dict-popup hidden">
     <div class="dict-header">
@@ -385,44 +371,160 @@
   <div id="vocab-toast" class="vocab-toast"></div>
 
   <style>
-    .vb-pick-item { display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-radius:8px;transition:background .15s; }
-    .vb-pick-item:hover { background:#f3f4f6; }
-    .vb-pick-emoji { font-size:22px; }
-    .vb-pick-info { flex:1; }
-    .vb-pick-name { font-size:14px;font-weight:600;color:#1f2937; }
-    .vb-pick-count { font-size:12px;color:#9ca3af; }
-    .vb-pick-arrow { font-size:20px;color:#d1d5db; }
-    .vocab-toast { position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:24px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:9999;white-space:nowrap; }
-    .vocab-toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
-    .vocab-toast.success { background:#065f46; }
-    .vocab-toast.info { background:#1e40af; }
+    /* ── screen-exam làm containing block cho modal khi fullscreen ── */
+    #screen-exam {
+      position: relative;
+    }
+
+    .vb-pick-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background .15s;
+    }
+
+    .vb-pick-item:hover {
+      background: #f3f4f6;
+    }
+
+    .vb-pick-emoji {
+      font-size: 22px;
+    }
+
+    .vb-pick-info {
+      flex: 1;
+    }
+
+    .vb-pick-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .vb-pick-count {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .vb-pick-arrow {
+      font-size: 20px;
+      color: #d1d5db;
+    }
+
+    .vocab-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1f2937;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    .vocab-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .vocab-toast.success {
+      background: #065f46;
+    }
+
+    .vocab-toast.info {
+      background: #1e40af;
+    }
   </style>
 
   <style>
     /* Mobile exam improvements */
     @media (max-width: 768px) {
-      .exam-split { flex-direction: column !important; }
-      .split-passage { width: 100% !important; height: 40vh; overflow-y: auto; border-right: none !important; border-bottom: 1px solid #e5e7eb; }
-      .split-questions { width: 100% !important; }
-      .split-divider { display: none !important; }
-      .exam-bar { padding: 8px 12px !important; }
-      .exam-title-txt { font-size: 13px !important; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      #exam-progress-pill { display: none; }
-      .q-nav-scroll { max-height: 60px; overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
+      .exam-split {
+        flex-direction: column !important;
+      }
+
+      .split-passage {
+        width: 100% !important;
+        height: 40vh;
+        overflow-y: auto;
+        border-right: none !important;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .split-questions {
+        width: 100% !important;
+      }
+
+      .split-divider {
+        display: none !important;
+      }
+
+      .exam-bar {
+        padding: 8px 12px !important;
+      }
+
+      .exam-title-txt {
+        font-size: 13px !important;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #exam-progress-pill {
+        display: none;
+      }
+
+      .q-nav-scroll {
+        max-height: 60px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+      }
     }
+
     @media (max-width: 576px) {
-      .exam-toolbar { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
-      .tool-btn { font-size: 12px; padding: 5px 10px; }
-      .toolbar-passage-tabs { flex-wrap: wrap; }
+      .exam-toolbar {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 12px;
+      }
+
+      .tool-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
+      .toolbar-passage-tabs {
+        flex-wrap: wrap;
+      }
     }
-    /* Profile link in nav */
+
     .exam-bar .profile-link {
-      display: flex; align-items: center; gap: 6px;
-      text-decoration: none; color: #6b7280; font-size: 13px;
-      padding: 5px 10px; border-radius: 8px; border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: #6b7280;
+      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
       transition: all .2s;
     }
-    .exam-bar .profile-link:hover { background: #f3f4f6; }
+
+    .exam-bar .profile-link:hover {
+      background: #f3f4f6;
+    }
   </style>
 
   <script src="js/auth.js"></script>
@@ -453,8 +555,7 @@
     }
 
     // ── Progress bar auto-update ────────────────────────────
-    // Monkey-patch: observe answer changes and update progress bar
-    (function() {
+    (function () {
       const origSetInterval = window.setInterval;
       let _progInterval = null;
       function updateProgress() {
@@ -471,16 +572,14 @@
         const pill = document.getElementById('exam-progress-pill');
         const progAns = document.getElementById('prog-answered');
         const progTotal = document.getElementById('prog-total');
-        if (bar)       bar.style.width = pct + '%';
-        if (progAns)   progAns.textContent = answered;
+        if (bar) bar.style.width = pct + '%';
+        if (progAns) progAns.textContent = answered;
         if (progTotal) progTotal.textContent = total;
-        // Color pill
         if (pill) {
           if (pct === 100) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; pill.style.borderColor = '#6ee7b7'; }
           else if (pct > 50) { pill.style.background = '#fffbeb'; pill.style.color = '#92400e'; pill.style.borderColor = '#fde68a'; }
         }
       }
-      // Start polling when exam is visible
       const examEl = document.getElementById('screen-exam');
       if (examEl) {
         const obs = new MutationObserver(() => {
@@ -493,7 +592,6 @@
         obs.observe(examEl, { attributes: true, attributeFilter: ['class', 'style'] });
       }
     })();
-
   </script>
 </body>
 
