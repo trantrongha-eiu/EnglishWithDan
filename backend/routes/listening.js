@@ -2,15 +2,15 @@
  * backend/routes/listening.js
  * Admin quản lý đề nghe + Student làm bài
  */
-const express          = require('express');
-const router           = express.Router();
-const multer           = require('multer');
-const cloudinary       = require('cloudinary').v2;
-const streamifier      = require('streamifier');
-const ListeningTest    = require('../models/ListeningTest');
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
-const AccessKey        = require('../models/AccessKey');
-const auth             = require('../middleware/auth');
+const AccessKey = require('../models/AccessKey');
+const auth = require('../middleware/auth');
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -41,7 +41,7 @@ function calcBandScore(correct) {
   const bandMap = [
     [39, 9.0], [37, 8.5], [35, 8.0], [32, 7.5], [30, 7.0],
     [26, 6.5], [23, 6.0], [18, 5.5], [16, 5.0], [13, 4.5],
-    [10, 4.0], [8,  3.5], [6,  3.0], [4,  2.5]
+    [10, 4.0], [8, 3.5], [6, 3.0], [4, 2.5]
   ];
   for (const [threshold, band] of bandMap) {
     if (correct >= threshold) return band;
@@ -223,11 +223,11 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
         {
           $group: {
             _id: null,
-            totalAttempts:  { $sum: 1 },
-            avgBand:        { $avg: '$bandScore' },
-            avgCorrect:     { $avg: '$correctCount' },
-            maxBand:        { $max: '$bandScore' },
-            minBand:        { $min: '$bandScore' }
+            totalAttempts: { $sum: 1 },
+            avgBand: { $avg: '$bandScore' },
+            avgCorrect: { $avg: '$correctCount' },
+            maxBand: { $max: '$bandScore' },
+            minBand: { $min: '$bandScore' }
           }
         }
       ]),
@@ -235,11 +235,11 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
         { $match: match },
         {
           $group: {
-            _id:           '$testId',
-            testName:      { $first: '$testName' },
+            _id: '$testId',
+            testName: { $first: '$testName' },
             totalAttempts: { $sum: 1 },
-            avgBand:       { $avg: '$bandScore' },
-            avgCorrect:    { $avg: '$correctCount' }
+            avgBand: { $avg: '$bandScore' },
+            avgCorrect: { $avg: '$correctCount' }
           }
         },
         { $sort: { totalAttempts: -1 } },
@@ -249,10 +249,10 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
         { $match: match },
         {
           $group: {
-            _id:       '$userId',
-            bestBand:  { $max: '$bandScore' },
-            avgBand:   { $avg: '$bandScore' },
-            attempts:  { $sum: 1 }
+            _id: '$userId',
+            bestBand: { $max: '$bandScore' },
+            avgBand: { $avg: '$bandScore' },
+            attempts: { $sum: 1 }
           }
         },
         { $sort: { bestBand: -1 } },
@@ -401,6 +401,10 @@ router.post('/tests/:id/start', auth, async (req, res) => {
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
+        summaryConfig: g.summaryConfig,        // ← THÊM
+        matchingOptions: g.matchingOptions,    // ← THÊM
+        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
+        endingsConfig: g.endingsConfig,        // ← THÊM
         imageUrl: g.imageUrl,
         questions: g.questions.map(q => ({
           _id: q._id,
@@ -439,10 +443,10 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const test = await ListeningTest.findById(req.params.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
 
-    const userAnswers = req.body.answers  || {};
-    const startTime   = req.body.startTime ? new Date(req.body.startTime) : null;
-    const now         = new Date();
-    const timeTaken   = startTime ? Math.round((now - startTime) / 1000) : 0;
+    const userAnswers = req.body.answers || {};
+    const startTime = req.body.startTime ? new Date(req.body.startTime) : null;
+    const now = new Date();
+    const timeTaken = startTime ? Math.round((now - startTime) / 1000) : 0;
 
     let correct = 0, wrong = 0, skipped = 0;
     const allQuestions = flattenQuestions(test.sections);
@@ -450,8 +454,8 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
 
     const reviewed = allQuestions.map(q => {
       const num = q.questionNumber;
-      const ua  = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
-      const ca  = q.correctAnswer.trim();
+      const ua = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
+      const ca = q.correctAnswer.trim();
 
       let isCorrect = false;
       if (q.type === 'multi-answer-group') {
@@ -473,20 +477,20 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
         isCorrect = ua.toLowerCase() === ca.toLowerCase();
       }
 
-      if (!ua)          skipped++;
+      if (!ua) skipped++;
       else if (isCorrect) correct++;
-      else                wrong++;
+      else wrong++;
 
       return {
         questionNumber: num,
-        userAnswer:    ua,
+        userAnswer: ua,
         correctAnswer: ca,
         isCorrect,
-        explanation:   q.explanation,
-        type:          q.type,
-        questionText:  q.questionText,
-        options:       q.options,
-        wordBank:      q.wordBank,
+        explanation: q.explanation,
+        type: q.type,
+        questionText: q.questionText,
+        options: q.options,
+        wordBank: q.wordBank,
         audioTimestamp: q.audioTimestamp
       };
     });
@@ -494,24 +498,24 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const bandScore = calcBandScore(correct);
 
     const attempt = new ListeningAttempt({
-      userId:         req.user._id || req.user.id,
-      testId:         test._id,
-      testName:       test.name,
-      answers:        reviewed.map(r => ({
+      userId: req.user._id || req.user.id,
+      testId: test._id,
+      testName: test.name,
+      answers: reviewed.map(r => ({
         questionNumber: r.questionNumber,
-        userAnswer:    r.userAnswer,
+        userAnswer: r.userAnswer,
         correctAnswer: r.correctAnswer,
-        isCorrect:     r.isCorrect
+        isCorrect: r.isCorrect
       })),
       totalQuestions: total,
-      correctCount:   correct,
-      wrongCount:     wrong,
-      skippedCount:   skipped,
+      correctCount: correct,
+      wrongCount: wrong,
+      skippedCount: skipped,
       bandScore,
-      startTime:      startTime || now,
-      submittedAt:    now,
+      startTime: startTime || now,
+      submittedAt: now,
       timeTaken,
-      status:         'completed'
+      status: 'completed'
     });
     await attempt.save();
 
@@ -519,19 +523,23 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
 
     const reviewSections = test.sections.map(s => ({
-      partNumber:    s.partNumber,
-      title:         s.title,
-      description:   s.description,
+      partNumber: s.partNumber,
+      title: s.title,
+      description: s.description,
       questionRange: s.questionRange,
-      transcript:    s.transcript || '',
+      transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
-        groupType:    g.groupType,
-        instruction:  g.instruction,
-        tableConfig:  g.tableConfig,
-        noteConfig:   g.noteConfig,
+        groupType: g.groupType,
+        instruction: g.instruction,
+        tableConfig: g.tableConfig,
+        noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
-        imageUrl:     g.imageUrl,
-        questions:    g.questions.map(q =>
+        summaryConfig: g.summaryConfig,              // ← THÊM
+        matchingOptions: g.matchingOptions,          // ← THÊM
+        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
+        endingsConfig: g.endingsConfig,              // ← THÊM
+        imageUrl: g.imageUrl,
+        questions: g.questions.map(q =>
           reviewMap[q.questionNumber] || { questionNumber: q.questionNumber }
         )
       }))
@@ -540,17 +548,17 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     res.json({
       success: true,
       result: {
-        attemptId:      attempt._id,
-        testName:       test.name,
+        attemptId: attempt._id,
+        testName: test.name,
         totalQuestions: total,
-        correctCount:   correct,
-        wrongCount:     wrong,
-        skippedCount:   skipped,
+        correctCount: correct,
+        wrongCount: wrong,
+        skippedCount: skipped,
         bandScore,
         timeTaken,
-        questions:      reviewed,
-        sections:       reviewSections,
-        audioUrl:       test.audioUrl
+        questions: reviewed,
+        sections: reviewSections,
+        audioUrl: test.audioUrl
       }
     });
   } catch (err) {
@@ -581,7 +589,7 @@ router.get('/history', auth, async (req, res) => {
 router.get('/history/:attemptId', auth, async (req, res) => {
   try {
     const attempt = await ListeningAttempt.findOne({
-      _id:    req.params.attemptId,
+      _id: req.params.attemptId,
       userId: req.user._id || req.user.id
     });
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
@@ -597,15 +605,15 @@ router.get('/history/:attemptId', auth, async (req, res) => {
       const saved = reviewMap[q.questionNumber] || {};
       return {
         questionNumber: q.questionNumber,
-        type:          q.type,
-        questionText:  q.questionText,
-        options:       q.options,
-        wordBank:      q.wordBank,
+        type: q.type,
+        questionText: q.questionText,
+        options: q.options,
+        wordBank: q.wordBank,
         audioTimestamp: q.audioTimestamp,
-        explanation:   q.explanation,
-        userAnswer:    saved.userAnswer    || '',
+        explanation: q.explanation,
+        userAnswer: saved.userAnswer || '',
         correctAnswer: saved.correctAnswer || q.correctAnswer,
-        isCorrect:     saved.isCorrect     || false
+        isCorrect: saved.isCorrect || false
       };
     });
 
@@ -613,19 +621,23 @@ router.get('/history/:attemptId', auth, async (req, res) => {
     reviewed.forEach(r => { reviewMap2[r.questionNumber] = r; });
 
     const reviewSections = test.sections.map(s => ({
-      partNumber:    s.partNumber,
-      title:         s.title,
-      description:   s.description,
+      partNumber: s.partNumber,
+      title: s.title,
+      description: s.description,
       questionRange: s.questionRange,
-      transcript:    s.transcript || '',
+      transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
-        groupType:    g.groupType,
-        instruction:  g.instruction,
-        tableConfig:  g.tableConfig,
-        noteConfig:   g.noteConfig,
+        groupType: g.groupType,
+        instruction: g.instruction,
+        tableConfig: g.tableConfig,
+        noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
-        imageUrl:     g.imageUrl,
-        questions:    g.questions.map(q =>
+        summaryConfig: g.summaryConfig,        // ← THÊM
+        matchingOptions: g.matchingOptions,      // ← THÊM
+        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
+        endingsConfig: g.endingsConfig,        // ← THÊM
+        imageUrl: g.imageUrl,
+        questions: g.questions.map(q =>
           reviewMap2[q.questionNumber] || { questionNumber: q.questionNumber }
         )
       }))
@@ -634,18 +646,18 @@ router.get('/history/:attemptId', auth, async (req, res) => {
     res.json({
       success: true,
       result: {
-        attemptId:      attempt._id,
-        testName:       attempt.testName,
-        bandScore:      attempt.bandScore,
-        correctCount:   attempt.correctCount,
-        wrongCount:     attempt.wrongCount,
-        skippedCount:   attempt.skippedCount,
+        attemptId: attempt._id,
+        testName: attempt.testName,
+        bandScore: attempt.bandScore,
+        correctCount: attempt.correctCount,
+        wrongCount: attempt.wrongCount,
+        skippedCount: attempt.skippedCount,
         totalQuestions: attempt.totalQuestions,
-        timeTaken:      attempt.timeTaken,
-        submittedAt:    attempt.submittedAt,
-        questions:      reviewed,
-        sections:       reviewSections,
-        audioUrl:       test.audioUrl
+        timeTaken: attempt.timeTaken,
+        submittedAt: attempt.submittedAt,
+        questions: reviewed,
+        sections: reviewSections,
+        audioUrl: test.audioUrl
       }
     });
   } catch (err) {
