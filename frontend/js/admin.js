@@ -122,42 +122,57 @@ async function loadStats() {
     document.getElementById('stat-vocab-units').textContent       = s.vocabUnitCount        ?? '–';
   } catch { }
 }
-// ✅ Thay bằng
 async function loadHistory() {
   try {
-    const data = await (await fetch(`${API}/admin/history`, { headers: authH() })).json();
-    if (!data.success) return;
+    // Fetch song song: combined recent + reading history riêng cho bảng Reading History
+    const [recentData, readingData] = await Promise.all([
+      fetch(`${API}/admin/recent-attempts`, { headers: authH() }).then(r => r.json()),
+      fetch(`${API}/admin/history`, { headers: authH() }).then(r => r.json())
+    ]);
 
+    // ── Dashboard: 10 bài nộp gần nhất từ mọi kỹ năng ──
+    if (recentData.success) {
+      const skillBadge = s => {
+        const map = { reading: ['badge-blue','Reading'], listening: ['badge-purple','Listening'], writing: ['badge-yellow','Writing'] };
+        const [cls, label] = map[s] || ['badge-gray', s];
+        return `<span class="badge ${cls}">${label}</span>`;
+      };
+      document.getElementById('recent-tbody').innerHTML =
+        (recentData.attempts || []).slice(0, 10).map(h => {
+          const name = h.userId?.displayName || '–';
+          const score = h.skill === 'writing'
+            ? (h.bandScore != null ? bandBadge(h.bandScore) : '<span style="color:var(--text3)">Chờ chấm</span>')
+            : bandBadge(h.bandScore);
+          const correct = (h.correctCount != null && h.totalQuestions != null)
+            ? `${h.correctCount}/${h.totalQuestions}` : '–';
+          const dur = h.duration != null ? formatDur(h.duration) : '–';
+          return `<tr>
+            <td><strong>${name}</strong></td>
+            <td>${skillBadge(h.skill)}</td>
+            <td>${h.testName || '–'}</td>
+            <td>${formatDate(h.date)}</td>
+            <td>${score}</td>
+            <td>${correct}</td>
+            <td>${dur}</td>
+          </tr>`;
+        }).join('') || '<tr><td colspan="7" class="table-empty">Chưa có dữ liệu</td></tr>';
+    }
+
+    // ── Reading History tab riêng ──
     function getUsername(h) {
       const u = h.userId;
       if (!u) return '–';
-      // Ưu tiên displayName do backend tổng hợp
       if (u.displayName) return u.displayName;
-      // Tự tính từ firstName/lastName
       const first = (u.firstName || '').trim();
       const last  = (u.lastName  || '').trim();
       if (first) return last ? `${first} ${last}` : first;
       return u.username || '–';
     }
-
-    // Dashboard: 8 bài gần nhất
-    document.getElementById('recent-tbody').innerHTML =
-      data.history.slice(0, 8).map(h => {
-        const name = getUsername(h);
-        return `<tr>
-      <td><strong>${name}</strong></td>
-      <td>${h.testId?.name || '–'}</td>
-      <td>${formatDate(h.endTime)}</td>
-      <td>${bandBadge(h.bandScore)}</td>
-      <td>${h.correctCount}/${h.totalQuestions}</td>
-      <td>${formatDur(h.duration)}</td>
-    </tr>`;
-      }).join('') || '<tr><td colspan="6" class="table-empty">Chưa có dữ liệu</td></tr>';
-
-    allReadingHistory = data.history;
-    renderHistoryTable(data.history, getUsername);
-    // Update tests table if already rendered
-    if (allTests.length) _applyTestStats();
+    if (readingData.success) {
+      allReadingHistory = readingData.history;
+      renderHistoryTable(readingData.history, getUsername);
+      if (allTests.length) _applyTestStats();
+    }
   } catch (err) {
     console.error(err);
   }
@@ -607,13 +622,29 @@ function uploadRQGMapImage(fileInput, imgId) {
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
 
-      // Find the correct url input by proximity to file input
-      const container = fileInput.closest('[id^="rqg-"]');
-      if (container) {
-        const ui = container.querySelector('.rqg-map-url');
-        if (ui) ui.value = dataUrl;
-      }
-      if (preview) preview.innerHTML = `<img src="${dataUrl}" style="max-width:100%;max-height:120px;object-fit:contain"/>`;
+      if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--text3)">Đang upload...</span>`;
+
+      fetch('/api/admin/passages/upload-map-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ imageBase64: dataUrl })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.success) throw new Error(data.message || 'Upload thất bại');
+        const container = fileInput.closest('[id^="rqg-"]');
+        if (container) {
+          const ui = container.querySelector('.rqg-map-url');
+          if (ui) {
+            ui.value = data.url;
+            previewRQGImage(ui, imgId);
+          }
+        }
+        if (preview) preview.innerHTML = `<img src="${data.url}" style="max-width:100%;max-height:120px;object-fit:contain"/>`;
+      })
+      .catch(err => {
+        if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--accent)">Lỗi: ${err.message}</span>`;
+      });
     };
     img.src = e.target.result;
   };
@@ -1039,10 +1070,20 @@ function collectQuestions() {
         lines: [...gDiv.querySelectorAll('.rqg-note-line')].map(i => i.value)
       };
     }
-    if (groupType === 'matching-options') {
-      group.matchingOptions = [...gDiv.querySelectorAll('.rqg-opt-item')].map(i => i.value.trim());
-      group.matchingReuseAllowed = gDiv.querySelector('.rqg-reuse')?.checked || false;
-      group.interchangeableAnswers = gDiv.querySelector('.rqg-interchangeable')?.checked || false;
+    if (groupType === 'matching-options' || groupType === 'sentence-endings') {
+      // Cả 2 loại giờ dùng chung UI với radio lg-mo-mode
+      const moMode = gDiv.querySelector('.lg-mo-mode:checked')?.value || 'matching';
+      const opts = [...gDiv.querySelectorAll('.lg-opt')].map(i => i.value.trim());
+      if (moMode === 'endings') {
+        group.groupType = 'sentence-endings';
+        group.endingsConfig = {
+          endings: opts.map((text, i) => ({ letter: 'ABCDEFGHIJ'[i] || String(i+1), text }))
+        };
+      } else {
+        group.matchingOptions = opts;
+        group.matchingReuseAllowed = gDiv.querySelector('.lg-reuse')?.checked || false;
+        group.interchangeableAnswers = gDiv.querySelector('.lg-interchangeable')?.checked || false;
+      }
     }
     if (groupType === 'bullet-list') {
       group.bulletConfig = {
@@ -1069,15 +1110,6 @@ function collectQuestions() {
           letter: row.querySelector('.rqg-wb-letter')?.value.trim() || '',
           word:   row.querySelector('.rqg-wb-word')?.value.trim() || ''
         })).filter(w => w.letter) : []
-      };
-    }
-    if (groupType === 'sentence-endings') {
-      const endCont = gDiv.querySelector('[id^="rqgend-"]');
-      group.endingsConfig = {
-        endings: endCont ? [...endCont.children].map(row => ({
-          letter: row.querySelector('.rqg-end-letter')?.value.trim() || '',
-          text:   row.querySelector('.rqg-end-text')?.value.trim() || ''
-        })).filter(e => e.letter) : []
       };
     }
 
@@ -1937,14 +1969,38 @@ function renderGroupConfig(groupType, data, gIdx) {
   }
 
 
-  if (groupType === 'matching-options') {
-    const opts = data?.matchingOptions || ['', '', '', '', '', ''];
+  if (groupType === 'matching-options' || groupType === 'sentence-endings') {
+    // Auto-detect mode: nếu data có endingsConfig thì là sentence-endings
+    const isEndings = groupType === 'sentence-endings'
+      || (!!(data?.endingsConfig?.endings?.length) && !(data?.matchingOptions?.length));
+    const moMode = isEndings ? 'endings' : 'matching';
+    const opts = isEndings
+      ? (data?.endingsConfig?.endings || Array(8).fill(0).map((_, i) => ({ letter: 'ABCDEFGHIJ'[i] || String(i+1), text: '' }))).map(e => e.text || '')
+      : (data?.matchingOptions || ['', '', '', '', '', '']);
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${lgAdminGuide(`🔗 <strong>Matching / Choose Letters</strong> — Nhóm đa năng dùng kéo thả chữ cái:<br>
+    <div style="display:flex;gap:16px;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-mo-mode-${gIdx}" class="lg-mo-mode" value="matching"
+               ${moMode === 'matching' ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleMOMode(${gIdx},'matching')" />
+        🔗 Matching / Choose Letters
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
+        <input type="radio" name="lg-mo-mode-${gIdx}" class="lg-mo-mode" value="endings"
+               ${moMode === 'endings' ? 'checked' : ''}
+               style="accent-color:var(--accent)" onchange="lgToggleMOMode(${gIdx},'endings')" />
+        🔚 Sentence Endings
+      </label>
+    </div>
+    <div id="lg-mo-guide-${gIdx}">
+      ${moMode === 'endings'
+        ? lgAdminGuide('🔚 <strong>Sentence Endings:</strong> Nhập danh sách phần kết câu A-H. Câu hỏi: mỗi câu = một phần đầu câu, đáp án là chữ cái phần kết (A, B, C…).')
+        : lgAdminGuide(`🔗 <strong>Matching / Choose Letters</strong> — Nhóm đa năng dùng kéo thả chữ cái:<br>
 • <strong>Matching speakers/features</strong>: Nhập danh sách người/sự vật A→G, câu hỏi loại <code>matching-info</code>, đáp án A/B/C…<br>
 • <strong>Choose TWO/THREE letters</strong>: Nhập 5–7 lựa chọn A–G, mỗi câu hỏi loại <code>matching-info</code>, bật <strong>Hoán đổi thứ tự</strong> – đáp án Q13=B Q14=D hoặc hoán đổi đều đúng.`)}
-    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px">
+    </div>
+    <div id="lg-mo-checkboxes-${gIdx}" style="display:${moMode === 'endings' ? 'none' : 'flex'};flex-wrap:wrap;gap:14px;margin-bottom:10px;margin-top:8px">
       <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
         <input type="checkbox" class="lg-reuse" id="lg-reuse-${gIdx}"
                ${data?.matchingReuseAllowed ? 'checked' : ''}
@@ -1992,25 +2048,9 @@ function renderGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
-  if (groupType === 'sentence-endings') {
-    const endings = data?.endingsConfig?.endings || [
-      { letter: 'A', text: '' }, { letter: 'B', text: '' }, { letter: 'C', text: '' },
-      { letter: 'D', text: '' }, { letter: 'E', text: '' }, { letter: 'F', text: '' },
-      { letter: 'G', text: '' }, { letter: 'H', text: '' }
-    ];
-    return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
-    ${lgAdminGuide('🔚 <strong>Matching Sentence Endings:</strong> Nhập danh sách phần kết câu A-H. Câu hỏi bên dưới: mỗi câu = một phần đầu câu, đáp án là chữ cái phần kết (A, B, C…). Học sinh kéo phần kết vào phần đầu tương ứng.')}
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách phần kết câu (A, B, C…)</div>
-    <div id="lg-endings-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
-      ${endings.map((e, i) => renderLGEnding(gIdx, i, e)).join('')}
-    </div>
-    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addLGEnding(${gIdx})">＋ Thêm phần kết</button>
-  </div>`;
-  }
-
   if (groupType === 'map') {
     const imgId = `lgmap-${gIdx}`;
+    const fileId = `lgmapfile-${gIdx}`;
     return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
     <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
@@ -2019,10 +2059,17 @@ function renderGroupConfig(groupType, data, gIdx) {
     <div style="display:flex;gap:10px;align-items:flex-start">
       <div style="flex:1">
         <input class="form-input lg-map-url" value="${data?.imageUrl || ''}"
-               style="font-size:12px;padding:7px 10px"
-               placeholder="URL hình ảnh bản đồ / sơ đồ"
+               style="font-size:12px;padding:7px 10px;margin-bottom:6px"
+               placeholder="URL hoặc chọn file bên dưới"
                oninput="previewGroupImage(this,'${imgId}')" />
-        <div class="form-hint">Upload hình lên Imgur hoặc Cloudinary rồi dán URL vào đây</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label style="cursor:pointer;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;white-space:nowrap">
+            📁 Chọn ảnh
+            <input type="file" id="${fileId}" accept="image/*" style="display:none"
+                   onchange="uploadLGMapImage(this,'${imgId}')" />
+          </label>
+          <span style="font-size:10px;color:var(--text3)">JPG/PNG – tự động nén & upload Cloudinary</span>
+        </div>
       </div>
       <div id="${imgId}"
            style="width:160px;min-height:90px;border:1.5px dashed var(--border2);border-radius:6px;
@@ -2054,6 +2101,55 @@ function previewGroupImage(input, imgId) {
     ? `<img src="${url}" style="max-width:100%;max-height:120px;object-fit:contain"
        onerror="this.parentElement.innerHTML='<span style=\\'font-size:11px;color:var(--accent)\\'>URL lỗi</span>'">`
     : `<span style="font-size:11px;color:var(--text3)">Xem trước</span>`;
+}
+
+function uploadLGMapImage(fileInput, imgId) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const preview = document.getElementById(imgId);
+  if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--text3)">Đang nén...</span>`;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 900;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+      if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--text3)">Đang upload...</span>`;
+
+      fetch(`${API}/listening/admin/upload-map-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ imageBase64: dataUrl })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.success) throw new Error(data.message || 'Upload thất bại');
+        const container = fileInput.closest('[id^="lg-"]');
+        if (container) {
+          const urlInput = container.querySelector('.lg-map-url');
+          if (urlInput) {
+            urlInput.value = data.url;
+            previewGroupImage(urlInput, imgId);
+          }
+        }
+        if (preview) preview.innerHTML = `<img src="${data.url}" style="max-width:100%;max-height:120px;object-fit:contain"/>`;
+        toast('Upload hình thành công!');
+      })
+      .catch(err => {
+        if (preview) preview.innerHTML = `<span style="font-size:11px;color:var(--accent)">Lỗi: ${err.message}</span>`;
+        toast('Upload thất bại: ' + err.message, 'error');
+      });
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 // ── Table row helpers ────────────────────────────────────────────
@@ -2212,7 +2308,9 @@ const LQQ_ALLOWED = {
   'plain':              null,  // null = tất cả loại
   'table':              ['fill-blank', 'sentence-completion'],
   'note-form':          ['fill-blank', 'sentence-completion'],
+  'bullet-list':        ['fill-blank', 'sentence-completion'],  // backward compat
   'matching-options':   ['matching-info'],
+  'sentence-endings':   ['matching-info'],                       // backward compat
   'summary-completion': ['fill-blank'],
   'map':                ['map-labelling', 'fill-blank'],
 };
@@ -2561,6 +2659,7 @@ function collectListeningSections() {
           group.groupType = 'bullet-list';
           group.bulletConfig = { title, items: lineVals };
         } else {
+          group.groupType = 'note-form';
           group.noteConfig = { title, lines: lineVals };
         }
       }
@@ -2573,6 +2672,7 @@ function collectListeningSections() {
             endings: opts.map((text, i) => ({ letter: 'ABCDEFGHIJ'[i] || String(i+1), text }))
           };
         } else {
+          group.groupType = 'matching-options';
           group.matchingOptions = opts;
           group.matchingReuseAllowed = gDiv.querySelector('.lg-reuse')?.checked || false;
           group.interchangeableAnswers = gDiv.querySelector('.lg-interchangeable')?.checked || false;
@@ -2584,14 +2684,6 @@ function collectListeningSections() {
           wordBank: [...gDiv.querySelectorAll('.lg-wb-word')].map((inp, i) => ({
             letter: 'ABCDEFGHIJ'[i] || String(i + 1),
             word: inp.value.trim()
-          }))
-        };
-      }
-      if (groupType === 'sentence-endings') {
-        group.endingsConfig = {
-          endings: [...gDiv.querySelectorAll('.lg-ending')].map((inp, i) => ({
-            letter: 'ABCDEFGHIJ'[i] || String(i + 1),
-            text: inp.value.trim()
           }))
         };
       }
@@ -2860,20 +2952,19 @@ async function openTask1Modal(id) {
   document.getElementById('t1m-img-preview').style.display = 'none';
   if (id) {
     try {
-      const res  = await fetch(`${API}/admin/writing-task1`, { headers: authH() });
+      const res  = await fetch(`${API}/admin/writing-task1/${id}`, { headers: authH() });
       const data = await res.json();
-      const t = (data.tasks || []).find(x => x._id === id);
-      if (t) {
-        document.getElementById('t1m-id').value           = t._id;
-        document.getElementById('t1m-prompt').value       = t.prompt || '';
-        document.getElementById('t1m-instructions').value = t.instructions || '';
-        document.getElementById('t1m-image').value        = t.imageUrl || '';
-        if (t.imageUrl) {
-          const img = document.getElementById('t1m-img-preview');
-          img.src = t.imageUrl; img.style.display = 'block';
-        }
+      if (!data.success) throw new Error(data.message);
+      const t = data.task;
+      document.getElementById('t1m-id').value           = t._id;
+      document.getElementById('t1m-prompt').value       = t.prompt || '';
+      document.getElementById('t1m-instructions').value = t.instructions || '';
+      document.getElementById('t1m-image').value        = t.imageUrl || '';
+      if (t.imageUrl) {
+        const img = document.getElementById('t1m-img-preview');
+        img.src = t.imageUrl; img.style.display = 'block';
       }
-    } catch { toast('Lỗi load Task 1', 'error'); return; }
+    } catch (err) { toast('Lỗi load Task 1: ' + err.message, 'error'); return; }
   }
   openModal('modal-task1');
 }
@@ -2884,19 +2975,21 @@ async function uploadTask1Image() {
   const btn = document.getElementById('btn-upload-t1img');
   btn.disabled = true; btn.textContent = 'Đang upload...';
   try {
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const res  = await fetch(`${API}/admin/writing-task1/upload-image`, {
-        method: 'POST', headers: authH(), body: JSON.stringify({ imageBase64: ev.target.result })
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      document.getElementById('t1m-image').value = data.url;
-      const img = document.getElementById('t1m-img-preview');
-      img.src = data.url; img.style.display = 'block';
-      toast('Upload ảnh thành công!');
-    };
-    reader.readAsDataURL(file);
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const res  = await fetch(`${API}/admin/writing-task1/upload-image`, {
+      method: 'POST', headers: authH(), body: JSON.stringify({ imageBase64: dataUrl })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    document.getElementById('t1m-image').value = data.url;
+    const img = document.getElementById('t1m-img-preview');
+    img.src = data.url; img.style.display = 'block';
+    toast('Upload ảnh thành công!');
   } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
   finally { btn.disabled = false; btn.textContent = '📤 Upload'; }
 }
@@ -2953,15 +3046,14 @@ async function openTask2Modal(id) {
   document.getElementById('t2m-instructions').value = 'You should spend about 40 minutes on this task. Write at least 250 words.';
   if (id) {
     try {
-      const res  = await fetch(`${API}/admin/writing-task2`, { headers: authH() });
+      const res  = await fetch(`${API}/admin/writing-task2/${id}`, { headers: authH() });
       const data = await res.json();
-      const t = (data.tasks || []).find(x => x._id === id);
-      if (t) {
-        document.getElementById('t2m-id').value           = t._id;
-        document.getElementById('t2m-prompt').value       = t.prompt || '';
-        document.getElementById('t2m-instructions').value = t.instructions || '';
-      }
-    } catch { toast('Lỗi load Task 2', 'error'); return; }
+      if (!data.success) throw new Error(data.message);
+      const t = data.task;
+      document.getElementById('t2m-id').value           = t._id;
+      document.getElementById('t2m-prompt').value       = t.prompt || '';
+      document.getElementById('t2m-instructions').value = t.instructions || '';
+    } catch (err) { toast('Lỗi load Task 2: ' + err.message, 'error'); return; }
   }
   openModal('modal-task2');
 }
@@ -3059,8 +3151,9 @@ async function downloadWritingAttempt(id) {
 function downloadWritingAttemptData(a) {
   const u    = a.userId || {};
   const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
-  const exam = a.examId || {};
   const date = formatDate(a.submittedAt);
+  const t1Prompt = a.task1Snapshot?.prompt || '';
+  const t2Prompt = a.task2Snapshot?.prompt || '';
   const lines = [
     `ENGLISH WITH DAN – WRITING SUBMISSION`,
     `========================================`,
@@ -3072,14 +3165,14 @@ function downloadWritingAttemptData(a) {
     `────────────────────────────────────────`,
     `TASK 1`,
     `────────────────────────────────────────`,
-    exam.task1?.prompt || '',
+    t1Prompt,
     ``,
     a.task1Answer || '',
     ``,
     `────────────────────────────────────────`,
     `TASK 2`,
     `────────────────────────────────────────`,
-    exam.task2?.prompt || '',
+    t2Prompt,
     ``,
     a.task2Answer || '',
   ];

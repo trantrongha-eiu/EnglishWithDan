@@ -34,6 +34,28 @@ async function apiFetch(path, opts = {}) {
 }
 
 // ──────────────────────────────────────────────────────
+// Toast notification
+// ──────────────────────────────────────────────────────
+function showToast(msg, type = 'error', duration = 4000) {
+  let toast = document.getElementById('wt-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'wt-toast';
+    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);z-index:99999;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.22);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;max-width:90vw;text-align:center;';
+    document.body.appendChild(toast);
+  }
+  clearTimeout(toast._hideTimer);
+  toast.textContent = msg;
+  toast.style.background = type === 'error' ? '#ef4444' : type === 'success' ? '#22c55e' : '#3b82f6';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  toast._hideTimer = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, duration);
+}
+
+// ──────────────────────────────────────────────────────
 // State
 // ──────────────────────────────────────────────────────
 const state = {
@@ -221,13 +243,13 @@ function switchTask(num) {
   const leftPanel = document.getElementById('exam-left-panel');
   if (num === 1) {
     leftPanel.innerHTML = `
-      <div class="task-prompt">${escHtml(task.prompt || '')}</div>
-      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" />` : ''}
+      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" style="max-width:100%;border-radius:8px;margin-bottom:12px" />` : ''}
+      <div class="task-prompt" style="white-space:pre-wrap">${escHtml(task.prompt || '')}</div>
     `;
   } else {
     leftPanel.innerHTML = `
       <div style="margin-bottom:10px;font-size:13px;color:#555">Write about the following topic:</div>
-      <div class="task-prompt" style="font-weight:600">${escHtml(task.prompt || '')}</div>
+      <div class="task-prompt" style="font-weight:600;white-space:pre-wrap">${escHtml(task.prompt || '')}</div>
     `;
   }
 
@@ -392,11 +414,11 @@ async function submitExam(statusOverride) {
       document.getElementById('done-wc2').textContent = wc2;
       showScreen('screen-done');
     } else {
-      alert('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'));
+      showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'));
     }
   } catch (e) {
     overlay.style.display = 'none';
-    alert('Lỗi nộp bài: ' + e.message);
+    showToast('Lỗi nộp bài: ' + e.message);
   }
 }
 

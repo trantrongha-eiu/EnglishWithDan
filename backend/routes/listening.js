@@ -159,6 +159,31 @@ router.post('/admin/tests/:id/audio', auth, teacherOnly, upload.single('audio'),
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
+// ADMIN – Upload Map/Diagram Image
+// ══════════════════════════════════════════════════════════════════════════════
+router.post('/admin/upload-map-image', auth, teacherOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu imageBase64' });
+
+    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: 'listening-maps', resource_type: 'image' },
+        (err, result) => err ? reject(err) : resolve(result)
+      );
+      streamifier.createReadStream(buffer).pipe(stream);
+    });
+
+    res.json({ success: true, url: uploadResult.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Upload thất bại: ' + err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
 // ADMIN – Transcript (per section)
 // ══════════════════════════════════════════════════════════════════════════════
 router.put('/admin/tests/:id/transcript', auth, teacherOnly, async (req, res) => {

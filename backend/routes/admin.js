@@ -57,6 +57,23 @@ router.get('/passages', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// POST /api/admin/passages/upload-map-image
+// Body: { imageBase64 }  → upload lên Cloudinary → trả về URL
+router.post('/passages/upload-map-image', auth, teacherOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+
+    const result = await cloudinary.uploader.upload(imageBase64, {
+      folder: 'reading-maps',
+      resource_type: 'image'
+    });
+    res.json({ success: true, url: result.secure_url });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 router.post('/passages', auth, teacherOnly, async (req, res) => {
   try {
     const passage = new Passage(req.body);
@@ -343,22 +360,90 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
       .populate('userId', 'username firstName lastName')
       .populate('testId', 'name testNumber')
       .sort({ endTime: -1 })
-      .limit(100)
-      .select('-answers -passagesUsed');
+      .limit(50)
+      .select('-answers -passagesUsed')
+      .lean();
 
     const normalized = history.map(h => {
-      const obj = h.toObject({ virtuals: false });
-      if (obj.userId && typeof obj.userId === 'object') {
-        const u = obj.userId;
+      if (h.userId && typeof h.userId === 'object') {
+        const u = h.userId;
         const first = (u.firstName || '').trim();
         const last  = (u.lastName  || '').trim();
-        const full  = first ? (last ? `${first} ${last}` : first) : '';
-        obj.userId = { ...u, displayName: full || u.username || '–' };
+        h.userId = { ...u, displayName: (first ? (last ? `${first} ${last}` : first) : '') || u.username || '–' };
       }
-      return obj;
+      return h;
     });
 
     res.json({ success: true, history: normalized });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing)
+router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
+  try {
+    const LIMIT = 40;
+    function normUser(u) {
+      if (!u || typeof u !== 'object') return { displayName: '–' };
+      const first = (u.firstName || '').trim();
+      const last  = (u.lastName  || '').trim();
+      return { ...u, displayName: (first ? (last ? `${first} ${last}` : first) : '') || u.username || '–' };
+    }
+
+    const [reading, listening, writing] = await Promise.all([
+      TestAttempt.find({ status: 'completed' })
+        .populate('userId', 'username firstName lastName')
+        .populate('testId', 'name testNumber')
+        .sort({ endTime: -1 }).limit(LIMIT)
+        .select('-answers -passagesUsed').lean(),
+      ListeningAttempt.find({ status: 'completed' })
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-answers').lean()
+        .catch(() => []),
+      require('../models/WritingAttempt').find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
+        .catch(() => [])
+    ]);
+
+    const rows = [
+      ...reading.map(h => ({
+        _id: h._id, skill: 'reading',
+        testName: h.testId?.name || `Test #${h.testId?.testNumber || ''}`,
+        userId: normUser(h.userId),
+        date: h.endTime || h.createdAt,
+        bandScore: h.bandScore,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalQuestions,
+        duration: h.duration
+      })),
+      ...listening.map(h => ({
+        _id: h._id, skill: 'listening',
+        testName: h.testName || '–',
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: h.bandScore,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalQuestions,
+        duration: h.timeTaken
+      })),
+      ...writing.map(h => ({
+        _id: h._id, skill: 'writing',
+        testName: h.examName || h.testName || '–',
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: h.bandScore || null,
+        correctCount: null,
+        totalQuestions: null,
+        duration: null
+      }))
+    ];
+
+    rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+    res.json({ success: true, attempts: rows.slice(0, 60) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -504,6 +589,17 @@ router.get('/writing-task1', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/writing-task1/:id
+router.get('/writing-task1/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = await WritingTask1.findById(req.params.id);
+    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, task });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/writing-task1/upload-image
 router.post('/writing-task1/upload-image', auth, teacherOnly, async (req, res) => {
   try {
@@ -570,6 +666,17 @@ router.get('/writing-task2', auth, teacherOnly, async (req, res) => {
   try {
     const tasks = await WritingTask2.find().sort({ createdAt: -1 });
     res.json({ success: true, tasks });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/writing-task2/:id
+router.get('/writing-task2/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const task = await WritingTask2.findById(req.params.id);
+    if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, task });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

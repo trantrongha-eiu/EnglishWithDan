@@ -80,24 +80,28 @@
             <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
         </div>
 
-        <div class="audio-bar">
-            <button class="audio-play-btn" id="play-btn" onclick="togglePlay()">▶</button>
-            <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
-            <div class="audio-seek-wrap">
-                <input type="range" class="audio-seek" id="audio-seek" value="0" min="0" max="100" step="0.1" oninput="onSeekInput(this.value)" />
+        <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
+            <span class="exam-audio-status" id="exam-audio-status">🎧 Đang phát</span>
+            <div class="audio-seek-wrap" style="flex:1">
+                <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100" step="0.1" tabindex="-1" />
                 <div class="audio-time">
                     <span id="audio-current">00:00</span>
                     <span id="audio-total">00:00</span>
                 </div>
             </div>
-            <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
-            <div class="speed-btns">
-                <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
-                <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
-                <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
-                <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
-            </div>
+            <!-- hidden play btn kept for JS parity with review -->
+            <button id="play-btn" style="display:none" onclick="togglePlay()">▶</button>
             <audio id="audio-player" preload="metadata"></audio>
+        </div>
+
+        <!-- Audio start overlay (shows before exam audio begins) -->
+        <div id="audio-start-overlay" class="audio-start-overlay hidden">
+            <div class="aso-card">
+                <div class="aso-icon">🎧</div>
+                <p class="aso-text">You will be listening to an audio clip during this test.<br>You will not be permitted to <strong>pause</strong> or <strong>rewind</strong> the audio while answering the questions.</p>
+                <p class="aso-sub">To continue, click Play</p>
+                <button class="aso-play-btn" onclick="startAudioPlay()">▶ Play</button>
+            </div>
         </div>
 
         <!-- Exam toolbar: highlight + dict -->
@@ -305,6 +309,76 @@
     <div id="toast"><span id="toast-msg"></span></div>
 
     <style>
+        /* ── Exam audio bar – restricted ───────────────── */
+        .exam-audio-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;   /* anchor for overlay */
+        }
+        .exam-audio-status {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: .2px;
+        }
+        .exam-seek-readonly {
+            pointer-events: none !important;
+            cursor: default !important;
+            opacity: 0.55;
+        }
+
+        /* ── Audio start overlay ────────────────────── */
+        .audio-start-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.60);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .audio-start-overlay.hidden { display: none; }
+        .aso-card {
+            background: #1e2330;
+            border-radius: 16px;
+            padding: 36px 40px 32px;
+            max-width: 540px;
+            width: 92%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,.5);
+            color: #fff;
+        }
+        .aso-icon { font-size: 48px; margin-bottom: 18px; }
+        .aso-text {
+            font-size: 15px;
+            line-height: 1.65;
+            color: #d1d5db;
+            margin-bottom: 18px;
+        }
+        .aso-sub {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 24px;
+        }
+        .aso-play-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background .15s;
+        }
+        .aso-play-btn:hover { background: #3d8bff; }
+
         /* ── Review Q-nav ngang ─────────────────────── */
         .review-qnav-bar {
             display: flex;
@@ -599,6 +673,9 @@
                 updateFooter();
                 setToolExam('highlight');
                 showScreen('exam');
+                // Show audio start overlay
+                document.getElementById('audio-start-overlay').classList.remove('hidden');
+                updateExamAudioStatus(false);
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
             } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
         }
@@ -615,8 +692,19 @@
                 document.getElementById('audio-seek').max = dur;
                 document.getElementById('audio-seek-rv').max = dur;
             });
-            audio.addEventListener('play', () => { document.getElementById('play-btn').textContent = '⏸'; document.getElementById('play-btn-rv').textContent = '⏸'; });
-            audio.addEventListener('pause', () => { document.getElementById('play-btn').textContent = '▶'; document.getElementById('play-btn-rv').textContent = '▶'; });
+            audio.addEventListener('play', () => {
+                document.getElementById('play-btn').textContent = '⏸';
+                document.getElementById('play-btn-rv').textContent = '⏸';
+                if (!state.isReview) updateExamAudioStatus(true);
+            });
+            audio.addEventListener('pause', () => {
+                document.getElementById('play-btn').textContent = '▶';
+                document.getElementById('play-btn-rv').textContent = '▶';
+                if (!state.isReview) updateExamAudioStatus(false);
+            });
+            audio.addEventListener('ended', () => {
+                if (!state.isReview) updateExamAudioStatus(false);
+            });
         }
 
         function onTimeUpdate() {
@@ -641,6 +729,18 @@
             });
         }
         function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.play(); }
+
+        function startAudioPlay() {
+            document.getElementById('audio-start-overlay').classList.add('hidden');
+            audio.play().catch(() => {});
+            updateExamAudioStatus(true);
+        }
+
+        function updateExamAudioStatus(playing) {
+            const el = document.getElementById('exam-audio-status');
+            if (!el) return;
+            el.textContent = playing ? '🎧 Đang phát' : '🎧 Chờ phát';
+        }
 
         // ══════════════════════════════════════════════
         // PART TABS
@@ -880,7 +980,7 @@
                 if (isReview) {
                     const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
                     const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
-                    return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
+                    return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }
                 const ans = state.answers[qNum] || '';
                 return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
@@ -1042,13 +1142,13 @@
                 const ca = isReview ? (q.correctAnswer || '') : '';
                 if (isReview) {
                     const ok  = !!q.isCorrect;
-                    return `<span class="inline-answer-wrap">
+                    return `<span class="inline-answer-wrap" id="rv-q${num}" data-qnum="${num}">
                         <span class="q-badge-inline">${num}</span>
                         <span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}">${ua || '–'}</span>
                         ${!ok ? `<span class="inline-correct-ans">(${ca})</span>` : ''}
                     </span>`;
                 }
-                return `<span class="inline-input-wrap">
+                return `<span class="inline-input-wrap" id="q${num}" data-qnum="${num}">
                     <span class="q-badge-inline">${num}</span>
                     <input id="fi-${num}" class="fill-input-inline" type="text"
                         value="${ua}" placeholder="..."
@@ -1331,8 +1431,8 @@
             const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
             if (!dz) return;
             const letter = state.answers[qNum] || '';
-            // Find description from group data
-            const section = (state.currentTest?.sections || [])[state.partIdx];
+            // Find description from group data (use sorted sections to match partIdx)
+            const section = getSortedSections(false)[state.partIdx];
             let desc = '';
             for (const g of (section?.questionGroups || [])) {
                 if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
@@ -1532,10 +1632,26 @@
             }
             // Dùng requestAnimationFrame để chờ DOM render xong sau switchPart
             const doScroll = () => {
-                // cluster: câu nằm trong 1 cluster thì tìm qi-firstNum
+                // 1. Standalone question (matching, plain, map)
                 let el = document.getElementById(`qi-${num}`);
+                if (!el && state.isReview) {
+                    // 2a. Review inline: note-form / bullet / table / summary inline answer
+                    el = document.getElementById(`rv-q${num}`);
+                    if (el) el = el.closest('.note-line, .bullet-item, td, .rq-summary-text') || el;
+                }
                 if (!el) {
-                    // Thử tìm cluster chứa câu này
+                    // 2b. Exam inline fill-blank: note-form / bullet / table
+                    const fi = document.getElementById(`fi-${num}`);
+                    if (fi) {
+                        el = fi.closest('.note-line, .bullet-item, td') || fi.closest('.group-note-form, .group-bullet-list, .group-table-wrap') || fi;
+                    }
+                }
+                if (!el) {
+                    // 2c. Exam inline wrap (q${num} id added by resolvePlaceholders)
+                    el = document.getElementById(`q${num}`);
+                }
+                if (!el) {
+                    // 3. Multi-answer cluster
                     document.querySelectorAll('[data-cluster-start]').forEach(c => {
                         const s = parseInt(c.dataset.clusterStart);
                         const e = parseInt(c.dataset.clusterEnd);
@@ -1585,20 +1701,26 @@
             window.onbeforeunload = null;
             audio.pause();
 
-            // Show loading overlay
+            // Show loading overlay (works in both normal and fullscreen mode)
             let overlay = document.getElementById('submit-loading-overlay');
             if (!overlay) {
                 overlay = document.createElement('div');
                 overlay.id = 'submit-loading-overlay';
-                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
-                overlay.innerHTML = '<div style="width:48px;height:48px;border:5px solid #fff;border-top-color:#3d8bff;border-radius:50%;animation:spin 1s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0">Đang nộp bài, vui lòng chờ…</p>';
+                overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+                overlay.innerHTML = '<div style="width:52px;height:52px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:submitSpin .8s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0;text-shadow:0 1px 4px rgba(0,0,0,.4)">Đang nộp bài, vui lòng chờ…</p>';
                 if (!document.getElementById('submit-spin-style')) {
                     const s = document.createElement('style');
                     s.id = 'submit-spin-style';
-                    s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+                    s.textContent = '@keyframes submitSpin{to{transform:rotate(360deg)}}';
                     document.head.appendChild(s);
                 }
                 document.body.appendChild(overlay);
+            }
+            // Nếu đang ở fullscreen, chuyển overlay vào fullscreen element
+            const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+            if (fsEl && !fsEl.contains(overlay)) {
+                fsEl.appendChild(overlay);
+                overlay.style.position = 'absolute';
             }
             overlay.style.display = 'flex';
 

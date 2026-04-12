@@ -825,7 +825,7 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
       const cls = isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
       const correctHint = !isCorrect && review?.correctAnswer
         ? `<span class="rq-ans-correct">(✓ ${escHtml(review.correctAnswer)})</span>` : '';
-      return `<span class="rq-inline-wrap">
+      return `<span class="rq-inline-wrap" id="q${qNum}" data-qnum="${qNum}">
         <span class="rq-q-badge">${qNum}</span>
         <span class="rq-inline-ans ${cls}">${escHtml(userAns || '–')}</span>
         ${correctHint}
@@ -833,7 +833,7 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
     }
 
     const val = state.answers[qNum] || '';
-    return `<span class="rq-inline-wrap">
+    return `<span class="rq-inline-wrap" id="q${qNum}" data-qnum="${qNum}">
       <span class="rq-q-badge">${qNum}</span>
       <input class="rq-inline-input" data-qnum="${qNum}" value="${escHtml(val)}"
              oninput="setAnswer(${qNum},this.value)" placeholder="Q${qNum}" />
@@ -1292,7 +1292,7 @@ function renderReview(attempt) {
   // Build reviewMap: { questionNumber: { userAnswer, correctAnswer, isCorrect, explanation } }
   const reviewMap = {};
   attempt.passages.forEach(p => {
-    (p.questions || []).forEach(q => {
+    getAllQuestionsFromPassage(p).forEach(q => {
       reviewMap[q.questionNumber] = {
         userAnswer: q.userAnswer,
         correctAnswer: q.correctAnswer,
@@ -1329,7 +1329,7 @@ function buildReviewQNav(attempt, reviewMap) {
   const nav = document.getElementById('review-q-nav');
   if (!nav) return;
   const allNums = attempt.passages.flatMap(p =>
-    (p.questions || []).map(q => q.questionNumber)
+    getAllQuestionsFromPassage(p).map(q => q.questionNumber)
   );
   nav.innerHTML = allNums.map(n => {
     const r = reviewMap[n];

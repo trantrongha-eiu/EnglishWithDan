@@ -46,6 +46,11 @@ const TestAttemptSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// ─── Indexes ───────────────────────────────────────────────────────────────
+TestAttemptSchema.index({ status: 1, endTime: -1 });
+TestAttemptSchema.index({ userId: 1, status: 1 });
+TestAttemptSchema.index({ testId: 1, status: 1 });
+
 // ─── Tính band score theo thang IELTS chính thức ───────────────────────────
 TestAttemptSchema.methods.calculateBandScore = function () {
   const c = this.correctCount;
