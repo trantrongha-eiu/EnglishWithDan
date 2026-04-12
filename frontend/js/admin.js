@@ -3942,7 +3942,9 @@ function renderVocabStudents(list) {
       </td>
       <td style="text-align:center">
         <span style="font-weight:700;font-size:15px">${u.totalWords.toLocaleString('vi-VN')}</span>
-        ${u.totalWords > 0 ? `<div style="font-size:10px;color:var(--text3)">${u.totalAdded} mới thêm</div>` : ''}
+        ${u.totalAdded > u.totalWords
+          ? `<div style="font-size:10px;color:var(--text3)" title="Đã thêm ${u.totalAdded} từ, xoá ${u.totalAdded - u.totalWords} từ">${u.totalAdded - u.totalWords} đã xoá</div>`
+          : (u.totalAdded > 0 ? `<div style="font-size:10px;color:var(--text3)">${u.totalAdded} tổng thêm</div>` : '')}
       </td>
       <td style="text-align:center">
         ${u.totalWords > 0
