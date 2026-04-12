@@ -28,9 +28,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  document.getElementById('nav-avatar').textContent = (user.username || 'A')[0].toUpperCase();
+  const avatarChar = (user.username || 'A')[0].toUpperCase();
+  document.getElementById('nav-avatar').textContent = avatarChar;
   document.getElementById('nav-name').textContent = user.username || 'Admin';
   document.getElementById('nav-role').textContent = user.role;
+  // Topbar user
+  const tbAvatar = document.getElementById('topbar-avatar');
+  const tbName   = document.getElementById('topbar-username');
+  if (tbAvatar) tbAvatar.textContent = avatarChar;
+  if (tbName)   tbName.textContent   = user.username || 'Admin';
 
   await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
 });
@@ -61,13 +67,15 @@ function switchTab(tab, ev) {
   document.getElementById(`tab-${tab}`).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (ev) ev.currentTarget.classList.add('active');
-  if (window.innerWidth <= 768) closeSidebar();
+  if (window.innerWidth <= 1024) closeSidebar();
   const titles = {
-    dashboard: 'Dashboard', passages: 'Bài đọc', tests: 'Bộ đề',
-    vocab: 'Từ vựng (Units)', keys: 'Mã truy cập', history: 'Kết quả học sinh',
-    listening: 'Đề nghe (Listening)', writing: 'Đề viết (Writing)', speaking: 'Speaking',
-    courses: 'Quản lý khóa học', users: 'Quản lý người dùng',
-    'vocab-students': 'Từ vựng học sinh'
+    dashboard: 'Dashboard',
+    passages: 'Bài đọc (Passages)', tests: 'Bộ đề Reading',
+    vocab: 'Từ vựng (Units)', keys: 'Mã truy cập',
+    history: 'Lịch sử làm bài',
+    listening: 'Đề Listening', writing: 'Đề Writing', speaking: 'Speaking',
+    courses: 'Khóa học', users: 'Người dùng',
+    'vocab-students': 'Hoạt động từ vựng'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
   // Load lazy khi chuyển tab
@@ -1218,6 +1226,16 @@ function renderTestsTable(list) {
     : '<tr><td colspan="7" class="table-empty">Chưa có bộ đề nào</td></tr>';
 }
 
+function filterTests() {
+  const q      = (document.getElementById('search-tests')?.value || '').toLowerCase();
+  const status = document.getElementById('filter-tests-status')?.value || '';
+  let list = allTests;
+  if (q)      list = list.filter(t => t.name.toLowerCase().includes(q) || (t.seriesName || '').toLowerCase().includes(q));
+  if (status === 'active')  list = list.filter(t => t.isActive);
+  if (status === 'hidden')  list = list.filter(t => !t.isActive);
+  renderTestsTable(list);
+}
+
 function copyTestLink(testId) {
   const base = location.origin + location.pathname.replace(/admin\.html.*$/, '');
   const url  = `${base}reading.html?testId=${testId}`;
@@ -1305,6 +1323,28 @@ function renderKeysTable(list) {
     }).join('')
     : '<tr><td colspan="7" class="table-empty">Chưa có key nào</td></tr>';
 }
+function filterKeys() {
+  const q      = (document.getElementById('search-keys')?.value || '').toLowerCase();
+  const type   = document.getElementById('filter-keys-type')?.value || '';
+  const status = document.getElementById('filter-keys-status')?.value || '';
+  let list = allKeys;
+  if (q)    list = list.filter(k => k.key.toLowerCase().includes(q) || (k.testId?.name || '').toLowerCase().includes(q));
+  if (type) list = list.filter(k => (k.testType || '') === type);
+  if (status === 'active') {
+    list = list.filter(k => {
+      const expired = k.expiresAt && new Date() > new Date(k.expiresAt);
+      return k.isActive && k.currentUses < k.maxUses && !expired;
+    });
+  }
+  if (status === 'used') {
+    list = list.filter(k => {
+      const expired = k.expiresAt && new Date() > new Date(k.expiresAt);
+      return !k.isActive || k.currentUses >= k.maxUses || expired;
+    });
+  }
+  renderKeysTable(list);
+}
+
 async function openKeyModal() {
   document.getElementById('generated-keys').classList.add('hidden');
   document.getElementById('k-count').value = 1;
@@ -3760,6 +3800,15 @@ function renderCoursesTable(list) {
     : '<tr><td colspan="8" class="table-empty">Chưa có khóa học nào. Nhấn ＋ để thêm.</td></tr>';
 }
 
+function filterCourses() {
+  const q   = (document.getElementById('search-courses')?.value || '').toLowerCase();
+  const cat = document.getElementById('filter-courses-cat')?.value || '';
+  let list = _allCourses;
+  if (q)   list = list.filter(c => c.title.toLowerCase().includes(q) || (c.subtitle || '').toLowerCase().includes(q));
+  if (cat) list = list.filter(c => (c.category || '').toLowerCase() === cat);
+  renderCoursesTable(list);
+}
+
 function openCourseModal(id) {
   const c = id ? _allCourses.find(x => x._id === id) : null;
   document.getElementById('course-modal-title').textContent = c ? 'Sửa khóa học' : 'Thêm khóa học';
@@ -4249,4 +4298,19 @@ function renderVaChart(container, data, view) {
   svg += `</svg>`;
 
   container.innerHTML = `<div style="overflow-x:auto;overflow-y:hidden">${svg}</div>`;
+}
+
+/* ══════════════════════════════════════════════
+   INNER SUB-TABS (Writing, Speaking)
+══════════════════════════════════════════════ */
+function switchInnerTab(group, name, btn) {
+  // Ẩn tất cả panels của group này
+  const prefix = `${group}-sub-`;
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => el.classList.remove('active'));
+  // Hiện panel được chọn
+  const target = document.getElementById(`${prefix}${name}`);
+  if (target) target.classList.add('active');
+  // Toggle trạng thái nút
+  btn.closest('.inner-tabs-nav').querySelectorAll('.inner-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }

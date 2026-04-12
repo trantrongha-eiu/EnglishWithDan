@@ -70,10 +70,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Update streak
-    user.updateStreak();
-    await user.save();
-
     const token = signToken(user._id);
     res.json({ success: true, token, user: userPayload(user) });
   } catch (err) {

@@ -526,6 +526,10 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
   .top-nav .nav-links { display: none; }
   .hamburger { display: flex; }
   :root { --sidebar-w: 220px; }
+
+  #kbd-hint-panel {
+    display: none !important;
+  }
 }
 
 /* Tablet */
@@ -557,10 +561,6 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
   .fullscreen-exam .exam-body   { padding: 16px; }
 
   .exam-timer { font-size: 17px; padding: 6px 12px; }
-
-  #kbd-hint-panel {
-    display: none !important;
-  }
 }
 
 /* Mobile */
@@ -599,10 +599,6 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
 
   /* Audio player responsive */
   .audio-player { flex-direction: column; align-items: flex-start; }
-
-  #kbd-hint-panel {
-    display: none !important;
-  }
 }
 
 /* Very small phones */

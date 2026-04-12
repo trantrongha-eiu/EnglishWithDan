@@ -399,6 +399,8 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
@@ -986,7 +988,7 @@
       .stats-row { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* ── Sidebar toggle button: ẩn trên desktop, hiện trên mobile ── */
+    /* ── Sidebar toggle button: ẩn trên desktop, hiện trên tablet/mobile ── */
     .sidebar-toggle { display: none !important; }
 
     /* ── Sidebar overlay backdrop ── */
@@ -1004,7 +1006,8 @@
       pointer-events: all;
     }
 
-    @media (max-width: 768px) {
+    /* Tablet & mobile: sidebar collapse */
+    @media (max-width: 1024px) {
       /* Sidebar slide off-screen */
       .sidebar {
         transform: translateX(-100%);
@@ -1022,18 +1025,16 @@
       /* Topbar compact */
       .topbar { padding: 0 14px; gap: 10px; }
       .topbar-title { font-size: 14px; }
+    }
 
+    @media (max-width: 768px) {
       /* Stats 2 col */
       .stats-row { grid-template-columns: 1fr 1fr; }
 
       /* Form 1 col */
       .form-row { grid-template-columns: 1fr; }
 
-      /* Table horizontal scroll */
-      .table-wrap {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
+      /* Table min-width for small screens */
       .table-wrap table { min-width: 520px; }
 
       /* Content padding */
@@ -1071,6 +1072,132 @@
       /* Content tighter */
       .content { padding: 10px; }
     }
+
+    /* ── INNER SUB-TABS (Writing, Speaking) ── */
+    .inner-tabs-nav {
+      display: flex;
+      gap: 2px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .inner-tab {
+      flex: 1;
+      min-width: 100px;
+      padding: 8px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all .15s;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .inner-tab:hover { background: var(--border); color: var(--text); }
+    .inner-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    }
+    .inner-tab-panel { display: none; }
+    .inner-tab-panel.active { display: block; }
+
+    /* ── EMPTY STATE (loading vs empty) ── */
+    .state-loading {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+      font-size: 13px;
+    }
+    .state-loading::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      animation: spin .7s linear infinite;
+    }
+    .state-empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+      font-size: 13px;
+    }
+    .state-empty .empty-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SIDEBAR nav-item badge count ── */
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+
+    /* ── TOPBAR user info ── */
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+    .topbar-user-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #ff8f00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+    @media (max-width: 576px) {
+      .topbar-user-name { display: none; }
+    }
+
+    /* ── SECTION divider ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── QUICK STATS row compact ── */
+    .stats-row-sm {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .stats-row-sm { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 480px) {
+      .stats-row-sm { grid-template-columns: 1fr 1fr; }
+      .inner-tabs-nav { gap: 2px; padding: 3px; }
+      .inner-tab { font-size: 12px; padding: 7px 10px; }
+    }
   </style>
 </head>
 
@@ -1087,43 +1214,42 @@
     <a class="nav-item active" onclick="switchTab('dashboard',event)" href="#">
       <span class="nav-icon">📊</span> Dashboard
     </a>
-
-    <span class="nav-section-label">Nội dung</span>
-    <a class="nav-item" onclick="switchTab('passages',event)" href="#">
-      <span class="nav-icon">📄</span> Bài đọc
+    <a class="nav-item" onclick="switchTab('users',event)" href="#">
+      <span class="nav-icon">👥</span> Người dùng
     </a>
-    <a class="nav-item" onclick="switchTab('tests',event)" href="#">
-      <span class="nav-icon">📝</span> Đề đọc
-    </a>
-    <a class="nav-item" onclick="switchTab('vocab',event)" href="#">
-      <span class="nav-icon">📚</span> Từ vựng (Units)
-    </a>
-    <!-- ★ MỚI: Tab Listening -->
-    <a class="nav-item" onclick="switchTab('listening',event)" href="#">
-      <span class="nav-icon">🎧</span> Đề nghe
-    </a>
-    <a class="nav-item" onclick="switchTab('writing',event)" href="#">
-      <span class="nav-icon">✏️</span> Đề viết
-    </a>
-    <a class="nav-item" onclick="switchTab('speaking',event)" href="#">
-      <span class="nav-icon">🎤</span> Speaking
+    <a class="nav-item" onclick="switchTab('keys',event)" href="#">
+      <span class="nav-icon">🔑</span> Mã truy cập
     </a>
     <a class="nav-item" onclick="switchTab('courses',event)" href="#">
       <span class="nav-icon">🏫</span> Khóa học
     </a>
 
-    <span class="nav-section-label">Học sinh</span>
-    <a class="nav-item" onclick="switchTab('keys',event)" href="#">
-      <span class="nav-icon">🔑</span> Mã truy cập
+    <span class="nav-section-label">Nội dung thi</span>
+    <a class="nav-item" onclick="switchTab('passages',event)" href="#">
+      <span class="nav-icon">📄</span> Bài đọc (Passages)
     </a>
+    <a class="nav-item" onclick="switchTab('tests',event)" href="#">
+      <span class="nav-icon">📝</span> Bộ đề Reading
+    </a>
+    <a class="nav-item" onclick="switchTab('listening',event)" href="#">
+      <span class="nav-icon">🎧</span> Đề Listening
+    </a>
+    <a class="nav-item" onclick="switchTab('writing',event)" href="#">
+      <span class="nav-icon">✏️</span> Đề Writing
+    </a>
+    <a class="nav-item" onclick="switchTab('speaking',event)" href="#">
+      <span class="nav-icon">🎤</span> Speaking
+    </a>
+    <a class="nav-item" onclick="switchTab('vocab',event)" href="#">
+      <span class="nav-icon">📚</span> Từ vựng (Units)
+    </a>
+
+    <span class="nav-section-label">Học sinh</span>
     <a class="nav-item" onclick="switchTab('history',event)" href="#">
-      <span class="nav-icon">📈</span> Kết quả học sinh
+      <span class="nav-icon">📈</span> Lịch sử làm bài
     </a>
     <a class="nav-item" onclick="switchTab('vocab-students',event)" href="#">
-      <span class="nav-icon">📖</span> Từ vựng học sinh
-    </a>
-    <a class="nav-item" onclick="switchTab('users',event)" href="#">
-      <span class="nav-icon">👥</span> Quản lý người dùng
+      <span class="nav-icon">📖</span> Hoạt động từ vựng
     </a>
 
     <div class="sidebar-bottom">
@@ -1146,7 +1272,11 @@
         <span class="topbar-title" id="topbar-title">Dashboard</span>
       </div>
       <div class="topbar-right">
-        <a href="index.html" class="btn btn-ghost btn-sm">← Về trang chủ</a>
+        <div class="topbar-user">
+          <div class="topbar-user-dot" id="topbar-avatar">A</div>
+          <span class="topbar-user-name" id="topbar-username">Admin</span>
+        </div>
+        <a href="index.html" class="btn btn-ghost btn-sm">← Trang chủ</a>
       </div>
     </div>
 
@@ -1275,8 +1405,16 @@
         <!-- ─── TAB: TESTS ─── -->
         <div id="tab-tests">
           <div class="section-header">
-            <span class="section-title">Quản lý bộ đề</span>
-            <button class="btn btn-primary" onclick="openTestModal()">＋ Tạo bộ đề</button>
+            <span class="section-title">Bộ đề Reading</span>
+            <div class="section-actions">
+              <div class="search-wrap"><input class="search-input" id="search-tests" placeholder="Tìm tên bộ đề, series..." oninput="filterTests()" /></div>
+              <select class="filter-select" id="filter-tests-status" onchange="filterTests()" style="width:140px">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">Đang hoạt động</option>
+                <option value="hidden">Đã ẩn</option>
+              </select>
+              <button class="btn btn-primary" onclick="openTestModal()">＋ Tạo bộ đề</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -1337,7 +1475,21 @@
         <div id="tab-keys">
           <div class="section-header">
             <span class="section-title">Mã truy cập (Access Keys)</span>
-            <button class="btn btn-primary" onclick="openKeyModal()">＋ Tạo mã mới</button>
+            <div class="section-actions">
+              <div class="search-wrap"><input class="search-input" id="search-keys" placeholder="Tìm mã key..." oninput="filterKeys()" /></div>
+              <select class="filter-select" id="filter-keys-type" onchange="filterKeys()" style="width:150px">
+                <option value="">Tất cả loại</option>
+                <option value="reading">📖 Reading</option>
+                <option value="listening">🎧 Listening</option>
+                <option value="writing">✏️ Writing</option>
+              </select>
+              <select class="filter-select" id="filter-keys-status" onchange="filterKeys()" style="width:150px">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">Còn dùng</option>
+                <option value="used">Hết lượt / hết hạn</option>
+              </select>
+              <button class="btn btn-primary" onclick="openKeyModal()">＋ Tạo mã mới</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -1433,105 +1585,131 @@
         <!-- ─── TAB: WRITING ─── -->
         <div id="tab-writing">
 
-          <!-- Pool Task 1 -->
-          <div class="section-header" style="margin-top:32px">
-            <span class="section-title">Pool Task 1 (Chart / Diagram)</span>
-            <button class="btn btn-primary btn-sm" onclick="openTask1Modal()">＋ Thêm Task 1</button>
+          <!-- Inner sub-tabs nav -->
+          <div class="inner-tabs-nav">
+            <button class="inner-tab active" onclick="switchInnerTab('writing','task1',this)">✏️ Pool Task 1</button>
+            <button class="inner-tab" onclick="switchInnerTab('writing','task2',this)">📝 Pool Task 2</button>
+            <button class="inner-tab" onclick="switchInnerTab('writing','samples',this)">📄 Tài liệu mẫu</button>
+            <button class="inner-tab" onclick="switchInnerTab('writing','history',this)">📋 Lịch sử nộp bài</button>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Prompt</th>
-                  <th>Ảnh</th>
-                  <th>Trạng thái</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:140px"></th>
-                </tr>
-              </thead>
-              <tbody id="writing-task1-tbody">
-                <tr><td colspan="5" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
+
+          <!-- Pool Task 1 -->
+          <div id="writing-sub-task1" class="inner-tab-panel active">
+            <div class="section-header">
+              <span class="section-title">Pool Task 1 (Chart / Diagram)</span>
+              <button class="btn btn-primary btn-sm" onclick="openTask1Modal()">＋ Thêm Task 1</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Prompt</th>
+                    <th>Ảnh</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:140px"></th>
+                  </tr>
+                </thead>
+                <tbody id="writing-task1-tbody">
+                  <tr><td colspan="5" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Pool Task 2 -->
-          <div class="section-header" style="margin-top:32px">
-            <span class="section-title">Pool Task 2 (Essay)</span>
-            <button class="btn btn-primary btn-sm" onclick="openTask2Modal()">＋ Thêm Task 2</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Prompt</th>
-                  <th>Trạng thái</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:140px"></th>
-                </tr>
-              </thead>
-              <tbody id="writing-task2-tbody">
-                <tr><td colspan="4" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
+          <div id="writing-sub-task2" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Pool Task 2 (Essay)</span>
+              <button class="btn btn-primary btn-sm" onclick="openTask2Modal()">＋ Thêm Task 2</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Prompt</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:140px"></th>
+                  </tr>
+                </thead>
+                <tbody id="writing-task2-tbody">
+                  <tr><td colspan="4" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Sample PDF -->
-          <div class="section-header" style="margin-top:36px">
-            <span class="section-title">Tài liệu mẫu PDF (Sample Writing)</span>
-            <button class="btn btn-primary btn-sm" onclick="openWritingSampleModal()">＋ Upload PDF</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tiêu đề</th>
-                  <th>Quarter</th>
-                  <th>Topic</th>
-                  <th>Loại</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:140px"></th>
-                </tr>
-              </thead>
-              <tbody id="writing-sample-tbody">
-                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
+          <div id="writing-sub-samples" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Tài liệu mẫu PDF (Sample Writing)</span>
+              <button class="btn btn-primary btn-sm" onclick="openWritingSampleModal()">＋ Upload PDF</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tiêu đề</th>
+                    <th>Quarter</th>
+                    <th>Topic</th>
+                    <th>Loại</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:140px"></th>
+                  </tr>
+                </thead>
+                <tbody id="writing-sample-tbody">
+                  <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <!-- Lịch sử -->
-          <div class="section-header" style="margin-top:32px">
-            <span class="section-title">Lịch sử nộp bài Writing</span>
+          <!-- Lịch sử nộp bài -->
+          <div id="writing-sub-history" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Lịch sử nộp bài Writing</span>
+              <div class="search-wrap">
+                <input id="writing-history-search" class="search-input"
+                  placeholder="Tìm học sinh hoặc đề thi…"
+                  oninput="filterWritingHistory(this.value)" />
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Học sinh</th>
+                    <th>Đề thi</th>
+                    <th>Task 1</th>
+                    <th>Task 2</th>
+                    <th>Ngày nộp</th>
+                    <th style="width:180px"></th>
+                  </tr>
+                </thead>
+                <tbody id="writing-history-tbody">
+                  <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
-            <input id="writing-history-search" class="form-input" style="max-width:260px;font-size:13px"
-              placeholder="🔍 Tìm học sinh hoặc đề thi…"
-              oninput="filterWritingHistory(this.value)" />
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Học sinh</th>
-                  <th>Đề thi</th>
-                  <th>Task 1</th>
-                  <th>Task 2</th>
-                  <th>Ngày nộp</th>
-                  <th style="width:180px"></th>
-                </tr>
-              </thead>
-              <tbody id="writing-history-tbody">
-                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
-          </div>
+
         </div>
 
         <!-- ─── TAB: COURSES ─── -->
         <div id="tab-courses">
           <div class="section-header">
             <span class="section-title">Quản lý khóa học</span>
-            <button class="btn btn-primary" onclick="openCourseModal()">＋ Thêm khóa học</button>
+            <div class="section-actions">
+              <div class="search-wrap"><input class="search-input" id="search-courses" placeholder="Tìm tên khóa học..." oninput="filterCourses()" /></div>
+              <select class="filter-select" id="filter-courses-cat" onchange="filterCourses()" style="width:160px">
+                <option value="">Tất cả danh mục</option>
+                <option value="ielts">IELTS</option>
+                <option value="speaking">Speaking</option>
+                <option value="comm">Giao tiếp</option>
+              </select>
+              <button class="btn btn-primary" onclick="openCourseModal()">＋ Thêm khóa học</button>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -1557,59 +1735,69 @@
         <!-- ─── TAB: SPEAKING ─── -->
         <div id="tab-speaking">
 
+          <!-- Inner sub-tabs nav -->
+          <div class="inner-tabs-nav">
+            <button class="inner-tab active" onclick="switchInnerTab('speaking','questions',this)">🎤 Câu hỏi Speaking</button>
+            <button class="inner-tab" onclick="switchInnerTab('speaking','materials',this)">📄 Tài liệu PDF</button>
+          </div>
+
           <!-- Questions -->
-          <div class="section-header">
-            <span class="section-title">Câu hỏi Speaking</span>
-            <button class="btn btn-primary btn-sm" onclick="openSpeakingQModal()">＋ Thêm câu hỏi</button>
-          </div>
-          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-            <select class="form-select" id="sq-filter-part" onchange="loadSpeakingQuestions()" style="width:140px">
-              <option value="">Tất cả Part</option>
-              <option value="1">Part 1</option>
-              <option value="2">Part 2</option>
-              <option value="3">Part 3</option>
-            </select>
-            <input class="form-input" id="sq-filter-topic" placeholder="Lọc topic..." oninput="loadSpeakingQuestions()" style="width:200px" />
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Part</th>
-                  <th>Topic</th>
-                  <th>Câu hỏi</th>
-                  <th>Cue Card</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:140px"></th>
-                </tr>
-              </thead>
-              <tbody id="speaking-q-tbody">
-                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
+          <div id="speaking-sub-questions" class="inner-tab-panel active">
+            <div class="section-header">
+              <span class="section-title">Câu hỏi Speaking</span>
+              <div class="section-actions">
+                <select class="filter-select" id="sq-filter-part" onchange="loadSpeakingQuestions()" style="width:130px">
+                  <option value="">Tất cả Part</option>
+                  <option value="1">Part 1</option>
+                  <option value="2">Part 2</option>
+                  <option value="3">Part 3</option>
+                </select>
+                <div class="search-wrap"><input class="search-input" id="sq-filter-topic" placeholder="Lọc topic..." oninput="loadSpeakingQuestions()" /></div>
+                <button class="btn btn-primary btn-sm" onclick="openSpeakingQModal()">＋ Thêm câu hỏi</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Part</th>
+                    <th>Topic</th>
+                    <th>Câu hỏi</th>
+                    <th>Cue Card</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:140px"></th>
+                  </tr>
+                </thead>
+                <tbody id="speaking-q-tbody">
+                  <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Materials -->
-          <div class="section-header" style="margin-top:36px">
-            <span class="section-title">Tài liệu PDF</span>
-            <button class="btn btn-primary btn-sm" onclick="openSpeakingMatModal()">＋ Upload PDF</button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tiêu đề</th>
-                  <th>Quarter</th>
-                  <th>Topic</th>
-                  <th>PDF</th>
-                  <th>Ngày tạo</th>
-                  <th style="width:140px"></th>
-                </tr>
-              </thead>
-              <tbody id="speaking-mat-tbody">
-                <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
-              </tbody>
-            </table>
+          <div id="speaking-sub-materials" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Tài liệu PDF Speaking</span>
+              <button class="btn btn-primary btn-sm" onclick="openSpeakingMatModal()">＋ Upload PDF</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tiêu đề</th>
+                    <th>Quarter</th>
+                    <th>Topic</th>
+                    <th>PDF</th>
+                    <th>Ngày tạo</th>
+                    <th style="width:140px"></th>
+                  </tr>
+                </thead>
+                <tbody id="speaking-mat-tbody">
+                  <tr><td colspan="6" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
         </div><!-- /tab-speaking -->

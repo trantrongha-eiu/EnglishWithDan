@@ -162,7 +162,11 @@ router.post('/:id/words', auth, async (req, res) => {
     book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note });
     await book.save();
 
-    if (req.user.role === 'student') logActivity(req.user._id, { wordsAdded: 1 });
+    if (req.user.role === 'student') {
+      logActivity(req.user._id, { wordsAdded: 1 });
+      req.user.updateStreak();
+      req.user.save().catch(() => {});
+    }
 
     res.status(201).json({
       success: true,
@@ -201,6 +205,8 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
     // Chỉ tính "ôn từ" khi thực sự đổi trạng thái học
     if (hadStatusChange && req.user.role === 'student') {
       logActivity(req.user._id, { wordsStudied: 1 });
+      req.user.updateStreak();
+      req.user.save().catch(() => {});
     }
 
     res.json({ success: true, word: wordDoc });
