@@ -723,6 +723,9 @@ body {
 ══════════════════════════════════════════════ */
 .note-line-indent { padding-left: 28px !important; }
 .bullet-item-indent { padding-left: 20px !important; list-style-type: circle !important; }
+.note-line-spacer { height: 14px; border: none !important; }
+.bullet-item-spacer { height: 14px; border: none !important; padding: 0 !important; }
+.bullet-item-spacer::before { display: none !important; }
 
 /* ══════════════════════════════════════════════
    SCREEN: RESULT

@@ -2220,7 +2220,7 @@ function renderNoteLine(gIdx, li, line) {
 <div style="display:flex;gap:6px;align-items:center">
   <input class="form-input lg-note-line" value="${line}"
          style="flex:1;font-size:12px;padding:6px 10px"
-         placeholder="Loại căn hộ: __Q1__ | Thụt lề: >>Nội dung __Q2__" />
+         placeholder="Nội dung __Q1__ | Thụt lề: >>text | Để trống = khoảng trắng" />
   <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
           onclick="this.parentElement.remove()">✕</button>
 </div>`;

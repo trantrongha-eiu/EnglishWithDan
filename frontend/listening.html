@@ -906,9 +906,10 @@
         function renderNoteFormGroup(group, isReview) {
             const { title = '', lines = [] } = group.noteConfig || {};
             const linesHtml = lines.map(line => {
-                // Hỗ trợ thụt lề: dòng bắt đầu bằng ">>" sẽ thụt vào 28px
                 const isIndent = line.startsWith('>>');
                 const cleanLine = isIndent ? line.slice(2) : line;
+                // Dòng trống → khoảng cách
+                if (cleanLine.trim() === '') return `<div class="note-line-spacer"></div>`;
                 return `<div class="note-line${isIndent ? ' note-line-indent' : ''}">${resolvePlaceholders(cleanLine, group.questions, isReview)}</div>`;
             }).join('');
             return `<div class="group-note-form">
@@ -920,9 +921,10 @@
         function renderBulletListGroup(group, isReview) {
             const { items = [] } = group.bulletConfig || {};
             const itemsHtml = items.map(item => {
-                // Hỗ trợ thụt lề: item bắt đầu bằng ">>" sẽ thụt vào và dùng bullet con
                 const isIndent = item.startsWith('>>');
                 const cleanItem = isIndent ? item.slice(2) : item;
+                // Item trống → khoảng cách
+                if (cleanItem.trim() === '') return `<li class="bullet-item-spacer"></li>`;
                 return `<li class="bullet-item${isIndent ? ' bullet-item-indent' : ''}">${resolvePlaceholders(cleanItem, group.questions, isReview)}</li>`;
             }).join('');
             return `<div class="group-bullet-list"><ul>${itemsHtml}</ul></div>`;
