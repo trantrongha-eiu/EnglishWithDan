@@ -25,7 +25,7 @@
                 <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;min-width:0">
-                <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Xin chào</span>
+                <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Hello</span>
                 <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng" aria-label="Mở menu kỹ năng">
                     <i class="fas fa-th-large"></i>
                 </button>
@@ -55,17 +55,17 @@
         <div class="list-container">
             <div class="list-header">
                 <div>
-                    <h2>Luyện tập <span class="tag-red">Listening Full đề</span></h2>
-                    <p class="list-subtitle">Làm bài Listening với đầy đủ 4 parts, audio player và transcript sau khi nộp bài.</p>
+                    <h2>Practice <span class="tag-red">Listening Full Test</span></h2>
+                    <p class="list-subtitle">Complete IELTS Listening with 4 parts, audio player and transcript after submission.</p>
                 </div>
                 <div class="list-filter">
-                    <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
-                    <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
-                    <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
+                    <button class="filter-btn active" onclick="filterTests('all', this)">All</button>
+                    <button class="filter-btn" onclick="filterTests('done', this)">Attempted</button>
+                    <button class="filter-btn" onclick="filterTests('new', this)">Not attempted</button>
                 </div>
             </div>
             <div id="tests-wrapper">
-                <div class="loading-spinner">Đang tải danh sách đề thi...</div>
+                <div class="loading-spinner">Loading tests...</div>
             </div>
         </div>
     </div>
@@ -75,14 +75,14 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
         <div class="exam-topbar">
-            <button class="btn-ghost" onclick="confirmExit()">← Thoát</button>
+            <button class="btn-ghost" onclick="confirmExit()">← Exit</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
-            <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
+            <button class="btn-primary" onclick="confirmSubmit()">📤 Submit</button>
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
-            <span class="exam-audio-status" id="exam-audio-status">🎧 Chờ phát</span>
-            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Phát ngay</button>
+            <span class="exam-audio-status" id="exam-audio-status">🎧 Waiting</span>
+            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Play now</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100" step="0.1" tabindex="-1" />
                 <div class="audio-time">
@@ -99,9 +99,9 @@
         <div id="audio-start-overlay" class="audio-start-overlay hidden">
             <div class="aso-card">
                 <div class="aso-icon">🎧</div>
-                <p class="aso-text">Bài nghe sẽ phát <strong>1 lần duy nhất</strong>.<br>Bạn <strong>không thể tạm dừng</strong> hoặc <strong>tua lại</strong> trong khi làm bài.</p>
-                <p class="aso-sub">Sau khi bấm bên dưới, bạn có <strong>30 giây</strong> để đọc câu hỏi trước khi audio tự phát.</p>
-                <button class="aso-play-btn" onclick="startReadingTime()">📖 Đã hiểu — Bắt đầu đọc câu hỏi</button>
+                <p class="aso-text">The audio will be played <strong>once only</strong>.<br>You are <strong>not permitted to pause</strong> or <strong>rewind</strong> the audio while answering the questions.</p>
+                <p class="aso-sub">After clicking below, you have <strong>30 seconds</strong> to read the questions before the audio plays automatically.</p>
+                <button class="aso-play-btn" onclick="startReadingTime()">📖 Understood — Start reading</button>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
         <div class="exam-body">
             <div class="questions-panel" id="questions-panel"></div>
             <div class="sidebar-panel">
-                <div class="q-nav-label">Câu hỏi</div>
+                <div class="q-nav-label">Questions</div>
                 <div class="q-nav-grid" id="q-nav-grid"></div>
             </div>
         </div>
@@ -132,22 +132,22 @@
             <div class="result-stats">
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#16a34a" id="r-correct">0</div>
-                    <div class="result-stat-lab">Đúng</div>
+                    <div class="result-stat-lab">Correct</div>
                 </div>
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#e53935" id="r-wrong">0</div>
-                    <div class="result-stat-lab">Sai</div>
+                    <div class="result-stat-lab">Incorrect</div>
                 </div>
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#9ca3af" id="r-skip">0</div>
-                    <div class="result-stat-lab">Bỏ qua</div>
+                    <div class="result-stat-lab">Skipped</div>
                 </div>
             </div>
             <div class="result-msg-box" id="result-msg"></div>
             <div class="result-actions">
-                <button class="btn-primary" onclick="goToReview()">📋 Xem đáp án chi tiết</button>
-                <button class="btn-ghost" onclick="showHistoryModal()">📜 Lịch sử làm bài</button>
-                <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+                <button class="btn-primary" onclick="goToReview()">📋 View detailed answers</button>
+                <button class="btn-ghost" onclick="showHistoryModal()">📜 History</button>
+                <button class="btn-ghost" onclick="showScreen('list')">← Back to home</button>
             </div>
         </div>
     </div>
@@ -157,11 +157,11 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-review">
         <div class="review-topbar">
-            <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+            <button class="btn-ghost" onclick="showScreen('list')">← Back to home</button>
             <span class="exam-title" id="review-title" style="flex:1">Review</span>
             <span class="review-band-badge" id="review-band-badge">Band –</span>
             <button class="tool-btn-rv active" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Highlight</button>
-            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
+            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Dictionary</button>
         </div>
 
         <div class="audio-bar" id="review-audio-bar">
@@ -187,14 +187,14 @@
             <div class="transcript-panel">
                 <div class="transcript-header">
                     <span>📜 Transcript</span>
-                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click để tra từ</span>
+                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click to look up a word</span>
                 </div>
                 <div class="transcript-body" id="transcript-body"></div>
             </div>
 
             <div class="review-questions-panel" id="review-questions-panel">
                 <div class="review-qnav-bar">
-                    <span class="review-qnav-label">Xem lại câu hỏi:</span>
+                    <span class="review-qnav-label">Jump to question:</span>
                     <div class="q-nav-grid-horizontal" id="q-nav-grid-rv"></div>
                 </div>
                 <div id="review-questions-inner"></div>
@@ -212,11 +212,11 @@
             <button onclick="closeDictPopup()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
         </div>
         <div class="dict-pos" id="dict-pos"></div>
-        <div class="dict-meaning" id="dict-meaning">Đang tra...</div>
+        <div class="dict-meaning" id="dict-meaning">Looking up...</div>
         <div class="dict-example" id="dict-example"></div>
         <div class="dict-actions">
-            <button class="dict-btn" onclick="speakDictWord()">🔊 Phát âm</button>
-            <button class="dict-btn primary" onclick="saveVocabWord()">💾 Lưu từ</button>
+            <button class="dict-btn" onclick="speakDictWord()">🔊 Pronounce</button>
+            <button class="dict-btn primary" onclick="saveVocabWord()">💾 Save word</button>
         </div>
     </div>
 
@@ -227,8 +227,8 @@
         <div class="key-overlay">
             <div class="key-card">
                 <div class="key-card-icon">🔑</div>
-                <h3>Nhập mã truy cập</h3>
-                <p class="key-desc">Bạn cần mã từ giáo viên để làm bài thi này</p>
+                <h3>Enter access code</h3>
+                <p class="key-desc">You need a code from your teacher to start this test</p>
                 <div class="key-test-name" id="key-test-name"></div>
                 <input id="key-input" type="text" class="key-input ls-key-input"
                     placeholder="VD: A3F9-B2C1" maxlength="9" autocomplete="off"
@@ -236,9 +236,9 @@
                     onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
                 <div id="key-msg" class="key-msg hidden"></div>
                 <div class="key-actions">
-                    <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
+                    <button class="btn-ghost" onclick="showScreen('list')">← Back</button>
                     <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
-                        🎧 Bắt đầu làm bài
+                        🎧 Start test
                     </button>
                 </div>
             </div>
@@ -249,19 +249,19 @@
     <div class="modal-overlay hidden" id="modal-history">
         <div class="modal-box modal-lg">
             <div class="modal-header">
-                <h3>Lịch sử làm bài – Listening</h3>
+                <h3>Attempt History – Listening</h3>
                 <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
             </div>
             <div class="modal-body-scroll">
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>Tên bài</th>
-                            <th>Ngày nộp</th>
-                            <th>Thời gian</th>
-                            <th>Đúng</th>
-                            <th>Sai</th>
-                            <th>Bỏ qua</th>
+                            <th>Test name</th>
+                            <th>Date submitted</th>
+                            <th>Duration</th>
+                            <th>Correct</th>
+                            <th>Incorrect</th>
+                            <th>Skipped</th>
                             <th>Band</th>
                             <th></th>
                         </tr>
@@ -275,12 +275,12 @@
     <!-- Modal: Submit -->
     <div class="modal-overlay hidden" id="modal-submit">
         <div class="modal-box modal-sm">
-            <h3>Nộp bài?</h3>
-            <p>Bạn có chắc muốn nộp bài? Bạn đã trả lời <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> câu.</p>
+            <h3>Submit test?</h3>
+            <p>Are you sure you want to submit? You have answered <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> questions.</p>
             <p id="modal-warning" style="color:#f59e0b;font-size:13px;margin-top:8px"></p>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModal('modal-submit')">Tiếp tục làm</button>
-                <button class="btn-primary" onclick="submitExam()">Nộp bài</button>
+                <button class="btn-ghost" onclick="closeModal('modal-submit')">Continue</button>
+                <button class="btn-primary" onclick="submitExam()">Submit</button>
             </div>
         </div>
     </div>
@@ -288,11 +288,11 @@
     <!-- Modal: Exit -->
     <div class="modal-overlay hidden" id="modal-exit">
         <div class="modal-box modal-sm">
-            <h3>Thoát bài thi?</h3>
-            <p>Tiến trình làm bài sẽ không được lưu.</p>
+            <h3>Exit test?</h3>
+            <p>Your progress will not be saved.</p>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModal('modal-exit')">Ở lại</button>
-                <button class="btn-danger" onclick="forceExit()">Thoát</button>
+                <button class="btn-ghost" onclick="closeModal('modal-exit')">Stay</button>
+                <button class="btn-danger" onclick="forceExit()">Exit</button>
             </div>
         </div>
     </div>
@@ -309,8 +309,8 @@
                 <!-- Buttons built dynamically by buildPartTabs() -->
             </div>
             <div class="snf-exam-controls" id="snf-exam-controls">
-                <div class="snf-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
-                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Nộp bài</button>
+                <div class="snf-answered">Answered: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
+                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Submit</button>
             </div>
         </div>
     </div>
@@ -567,15 +567,15 @@
                 renderTestList(data.tests);
             } catch (err) {
                 document.getElementById('tests-wrapper').innerHTML =
-                    `<p style="text-align:center;padding:40px;color:#e53935">Lỗi tải đề: ${err.message}</p>`;
+                    `<p style="text-align:center;padding:40px;color:#e53935">Error loading tests: ${err.message}</p>`;
             }
         }
 
         function renderTestList(tests) {
             const wrap = document.getElementById('tests-wrapper');
-            if (!tests.length) { wrap.innerHTML = '<p style="text-align:center;padding:60px;color:#9ca3af">Chưa có đề nghe nào.</p>'; return; }
+            if (!tests.length) { wrap.innerHTML = '<p style="text-align:center;padding:60px;color:#9ca3af">No listening tests available.</p>'; return; }
             const groups = {};
-            tests.forEach(t => { const g = t.seriesName || 'Bộ đề'; if (!groups[g]) groups[g] = []; groups[g].push(t); });
+            tests.forEach(t => { const g = t.seriesName || 'Tests'; if (!groups[g]) groups[g] = []; groups[g].push(t); });
             wrap.innerHTML = Object.entries(groups).map(([grp, list]) => `
                 <div class="test-group">
                     <div class="test-group-title">${grp}</div>
@@ -584,7 +584,7 @@
         }
 
         function renderTestCard(t) {
-            const dur = t.audioDuration ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)} phút` : '–';
+            const dur = t.audioDuration ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)} min` : '–';
             const done = !!t.lastAttempt;
             const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
             const cor  = t.lastAttempt?.correctCount ?? '';
@@ -600,10 +600,10 @@
                     </div>
                     <div class="test-card-body">
                         <div class="test-card-name">${t.name}</div>
-                        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
-                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu</div>` : ''}
-                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 Làm bài</button>
-                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">🔄 Làm lại</button>` : ''}
+                        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} questions</div>
+                        ${done ? `<div class="test-card-last">Last attempt: <span class="band-mini">${band}</span> · ${cor}/${tot}</div>` : ''}
+                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 Start</button>
+                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">🔄 Retake</button>` : ''}
                     </div>
                 </div>`;
         }
@@ -629,7 +629,7 @@
             const msg = document.getElementById('key-msg');
             msg.textContent = ''; msg.className = 'key-msg hidden';
             const btn = document.getElementById('btn-start-key');
-            btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+            btn.disabled = false; btn.textContent = '🎧 Start test';
             showScreen('key');
             setTimeout(() => document.getElementById('key-input').focus(), 100);
         }
@@ -657,9 +657,9 @@
         async function verifyKeyAndStart() {
             const key = document.getElementById('key-input').value.trim();
             const btn = document.getElementById('btn-start-key');
-            if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
+            if (!key) { showKeyMsg('Please enter your access code', 'error'); return; }
 
-            btn.disabled = true; btn.textContent = 'Đang xác thực...';
+            btn.disabled = true; btn.textContent = 'Verifying...';
             document.getElementById('key-msg').className = 'key-msg hidden';
 
             try {
@@ -670,15 +670,15 @@
                 });
                 const vData = await safeJson(vRes);
                 if (!vData.success) {
-                    showKeyMsg(vData.message || 'Key không hợp lệ', 'error');
-                    btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+                    showKeyMsg(vData.message || 'Invalid access code', 'error');
+                    btn.disabled = false; btn.textContent = '🎧 Start test';
                     return;
                 }
-                // Key hợp lệ → vào thi (tốn lượt)
+                // Key valid → start test
                 await startTest(state.pendingTestId, key);
             } catch (err) {
                 showKeyMsg(err.message, 'error');
-                btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+                btn.disabled = false; btn.textContent = '🎧 Start test';
             }
         }
 
@@ -716,7 +716,7 @@
                 if (playNowBtn) playNowBtn.classList.add('hidden');
                 updateExamAudioStatus(false);
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
-            } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
+            } catch (err) { toast('Error loading test: ' + err.message, 'error'); }
         }
 
         // ══════════════════════════════════════════════
@@ -771,7 +771,7 @@
 
         let _asoTimer = null;
 
-        // Học sinh bấm "Đã hiểu" trên overlay → đóng overlay, bắt đầu đếm ngược 30s ở audio bar
+        // Student clicks "Understood" on overlay → close overlay, start 30s countdown in audio bar
         function startReadingTime() {
             document.getElementById('audio-start-overlay').classList.add('hidden');
             const playNowBtn = document.getElementById('aso-play-now-btn');
@@ -807,13 +807,13 @@
             const el = document.getElementById('exam-audio-status');
             if (!el) return;
             if (playing) {
-                el.textContent = '🎧 Đang phát';
+                el.textContent = '🎧 Playing';
                 el.style.color = '';
             } else if (countdown != null) {
-                el.textContent = `⏱ Tự phát sau: ${countdown}s`;
+                el.textContent = `⏱ Auto-play in: ${countdown}s`;
                 el.style.color = countdown <= 10 ? '#f59e0b' : '';
             } else {
-                el.textContent = '🎧 Chờ phát';
+                el.textContent = '🎧 Waiting';
                 el.style.color = '';
             }
         }
@@ -1053,7 +1053,7 @@
         function renderSummaryCompletionGroup(group, isReview) {
             const { summaryConfig = {}, questions = [] } = group;
             const { text = '', wordBank = [] } = summaryConfig;
-            if (!wordBank.length) return '<div class="form-hint">Chưa có word bank.</div>';
+            if (!wordBank.length) return '<div class="form-hint">No word bank available.</div>';
             const groupId = 'lscg-' + questions.map(q => q.questionNumber).join('-');
             const qMap = {};
             questions.forEach(q => { qMap[q.questionNumber] = q; });
@@ -1177,8 +1177,8 @@
                     const ok = !!q.isCorrect;
                     const qCA = (q.correctAnswer || '').trim().toUpperCase();
                     return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
-                        Câu ${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án đúng: <strong>${qCA}</strong>`}
-                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
+                        Q${q.questionNumber}: ${ok ? '✓ Correct' : `✗ Incorrect — Answer: <strong>${qCA}</strong>`}
+                    </div>${q.explanation ? `<div class="q-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}`;
                 }).join('');
             }
 
@@ -1218,9 +1218,9 @@
             const showText = !['sentence-completion','matching'].includes(q.type);
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
-                    ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${ca}</strong>`}
+                    ${ok ? '✓ Correct' : `✗ Incorrect — Answer: <strong>${ca}</strong>`}
                 </div>
-                ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}` : '';
+                ${q.explanation ? `<div class="q-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}` : '';
 
             return `<div class="question-item" id="qi-${num}" data-qnum="${num}">
                 <div class="q-header">
@@ -1318,7 +1318,7 @@
 
         function renderTranscript(transcript) {
             const tb = document.getElementById('transcript-body');
-            if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Chưa có transcript.</p>'; return; }
+            if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Transcript not available.</p>'; return; }
             tb.innerHTML = transcript.split('\n').map(line =>
                 line.trim() ? `<p style="margin-bottom:8px">${line}</p>` : '<br>'
             ).join('');
@@ -1417,7 +1417,7 @@
             try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch {}
             if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
             else {
-                if (arr.length >= maxCount) { toast(`Chỉ chọn tối đa ${maxCount} đáp án`, 'info'); return; }
+                if (arr.length >= maxCount) { toast(`You can only select ${maxCount} answers`, 'info'); return; }
                 arr.push(value);
             }
             arr.sort();
@@ -1789,7 +1789,7 @@
             document.getElementById('modal-answered').textContent  = answered;
             document.getElementById('modal-total').textContent     = total;
             const unanswered = total - answered;
-            document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
+            document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ You still have ${unanswered} unanswered question(s).` : '';
         }
 
         // ══════════════════════════════════════════════
@@ -1810,7 +1810,7 @@
                 overlay = document.createElement('div');
                 overlay.id = 'submit-loading-overlay';
                 overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
-                overlay.innerHTML = '<div style="width:52px;height:52px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:submitSpin .8s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0;text-shadow:0 1px 4px rgba(0,0,0,.4)">Đang nộp bài, vui lòng chờ…</p>';
+                overlay.innerHTML = '<div style="width:52px;height:52px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:submitSpin .8s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0;text-shadow:0 1px 4px rgba(0,0,0,.4)">Submitting, please wait…</p>';
                 if (!document.getElementById('submit-spin-style')) {
                     const s = document.createElement('style');
                     s.id = 'submit-spin-style';
@@ -1847,16 +1847,16 @@
                 showScreen('result');
             } catch (err) {
                 overlay.style.display = 'none';
-                toast('Lỗi nộp bài: ' + err.message, 'error');
+                toast('Submission error: ' + err.message, 'error');
                 state.submitted = false;
             }
         }
 
         function getBandMsg(band) {
-            if (band >= 7.5) return 'Xuất sắc! Bạn đã đạt kết quả rất tốt 🎉';
-            if (band >= 6.5) return 'Tốt lắm! Hãy tiếp tục luyện tập để đạt band cao hơn 💪';
-            if (band >= 5.5) return 'Tiếp tục cố gắng nhé! Bạn đang tiến bộ rõ rệt 📚';
-            return 'Đề hơi khó, cứ tiếp tục luyện – sẽ giỏi thôi! 🌱';
+            if (band >= 7.5) return 'Excellent! Outstanding performance 🎉';
+            if (band >= 6.5) return 'Well done! Keep practising to reach a higher band 💪';
+            if (band >= 5.5) return 'Good effort! You\'re making clear progress 📚';
+            return 'Keep going – consistent practice will get you there! 🌱';
         }
 
         // ══════════════════════════════════════════════
@@ -1905,7 +1905,7 @@
             const popup = document.getElementById('dict-popup');
             state.dictWord = word; state.dictMeaning = ''; state.dictExample = '';
             const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-            set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', ''); set('dict-meaning', 'Đang tra...'); set('dict-example', '');
+            set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', ''); set('dict-meaning', 'Looking up...'); set('dict-example', '');
             const sel = window.getSelection();
             let top = 200, left = 200;
             if (sel?.rangeCount) {
@@ -1928,7 +1928,7 @@
                 set('dict-example', def.example ? `"${def.example}"` : '');
                 state.dictMeaning = def.definition;
                 state.dictExample = def.example || '';
-            } catch { set('dict-meaning', 'Không tìm thấy định nghĩa.'); }
+            } catch { set('dict-meaning', 'Definition not found.'); }
         }
 
         function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
@@ -1947,7 +1947,7 @@
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 openBookPicker(data.books);
-            } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+            } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
         function openBookPicker(books) {
@@ -1959,7 +1959,7 @@
             modal.innerHTML = `
                 <div class="modal-box modal-sm">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                        <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
+                        <h3 style="margin:0">Save to vocabulary book</h3>
                         <button onclick="document.getElementById('book-picker-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
                     </div>
                     <div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border-radius:10px">
@@ -1967,25 +1967,24 @@
                         <span style="color:#9ca3af;font-size:13px"> – ${state.dictMeaning}</span>
                     </div>
                     <div id="bp-book-list">
-                    ${books.length ? books.map(b => `
-                        <div onclick="pickBook('${b._id}', this)" id="bp-${b._id}"
+                    ${books.length ? books.map(b => `<div onclick="pickBook('${b._id}', this)" id="bp-${b._id}"
                             style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s"
                             onmouseover="this.style.borderColor='#3d8bff';this.style.background='#eff6ff'"
                             onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'">
                             <span style="font-size:20px">${b.emoji || '📖'}</span>
-                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords ?? 0} từ</div></div>
-                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">Bạn chưa có sổ từ vựng nào.</p>'}
+                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords ?? 0} words</div></div>
+                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">No vocabulary books yet.</p>'}
                     </div>
                     <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px">
-                        <div style="font-size:13px;font-weight:600;color:#6b7280;margin-bottom:8px">➕ Tạo sổ mới và lưu từ</div>
+                        <div style="font-size:13px;font-weight:600;color:#6b7280;margin-bottom:8px">➕ Create new book &amp; save word</div>
                         <div style="display:flex;gap:8px">
-                            <input id="bp-new-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+                            <input id="bp-new-name" type="text" placeholder="Book name..." maxlength="40"
                                 style="flex:1;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;font-family:inherit;outline:none"
                                 onfocus="this.style.borderColor='#3d8bff'" onblur="this.style.borderColor='#e5e7eb'"
                                 onkeydown="if(event.key==='Enter') createBookAndSave()" />
                             <button onclick="createBookAndSave()"
                                 style="background:#3d8bff;color:#fff;border:none;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">
-                                Tạo & Lưu
+                                Create &amp; Save
                             </button>
                         </div>
                     </div>
@@ -1998,9 +1997,8 @@
         async function createBookAndSave() {
             const nameEl = document.getElementById('bp-new-name');
             const name   = nameEl?.value.trim();
-            if (!name) { nameEl?.focus(); toast('Vui lòng nhập tên sổ', 'info'); return; }
+            if (!name) { nameEl?.focus(); toast('Please enter a book name', 'info'); return; }
             try {
-                // Tạo sổ mới
                 const res1  = await fetch(`${API}/vocabbook`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ name, emoji: '📖' })
@@ -2008,15 +2006,14 @@
                 const d1 = await res1.json();
                 if (!d1.success) throw new Error(d1.message);
                 const bookId = d1.book._id;
-                // Lưu từ vào sổ mới
                 const res2  = await fetch(`${API}/vocabbook/${bookId}/words`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, source: 'listening' })
                 });
                 const d2 = await res2.json();
                 document.getElementById('book-picker-modal')?.remove();
-                toast(d2.success ? `Đã tạo sổ "${name}" và lưu từ!` : (d2.message || 'Lỗi'), d2.success ? 'success' : 'error');
-            } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+                toast(d2.success ? `Book "${name}" created and word saved!` : (d2.message || 'Error'), d2.success ? 'success' : 'error');
+            } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
         async function pickBook(bookId, el) {
@@ -2029,8 +2026,8 @@
                 });
                 const data = await res.json();
                 document.getElementById('book-picker-modal')?.remove();
-                toast(data.message || (data.success ? 'Đã lưu từ!' : 'Lỗi'), data.success ? 'success' : 'error');
-            } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+                toast(data.message || (data.success ? 'Word saved!' : 'Error'), data.success ? 'success' : 'error');
+            } catch (err) { toast('Error: ' + err.message, 'error'); }
         }
 
         // ══════════════════════════════════════════════
@@ -2055,7 +2052,7 @@
         // ══════════════════════════════════════════════
         async function reviewFromHistory(attemptId) {
             closeModal('modal-history');
-            toast('Đang tải kết quả...', 'info');
+            toast('Loading result...', 'info');
             try {
                 const res  = await fetch(`${API}/listening/history/${attemptId}`, { headers: authH() });
                 const data = await safeJson(res);
@@ -2063,7 +2060,7 @@
                 state.reviewResult = data.result;
                 goToReview();
             } catch (err) {
-                toast('Lỗi tải kết quả: ' + err.message, 'error');
+                toast('Error loading result: ' + err.message, 'error');
             }
         }
 
@@ -2073,16 +2070,16 @@
         async function showHistoryModal() {
             openModal('modal-history');
             const tbody = document.getElementById('history-tbody');
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Đang tải...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Loading...</td></tr>';
             try {
                 const res  = await fetch(`${API}/listening/history`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success || !data.attempts?.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử làm bài.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">No attempts yet.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.attempts.map(a => {
-                    const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
+                    const date = new Date(a.submittedAt).toLocaleDateString('en-GB');
                     const mins = a.timeTaken ? `${Math.floor(a.timeTaken/60)}:${pad(a.timeTaken%60)}` : '–';
                     const bandCls = a.bandScore >= 7 ? 'color:#16a34a' : a.bandScore >= 5.5 ? 'color:#f59e0b' : 'color:#e53935';
                     const attemptId = a._id || '';
@@ -2094,11 +2091,11 @@
                         <td style="color:#e53935;font-weight:600">${a.wrongCount ?? '–'}</td>
                         <td style="color:#9ca3af;font-weight:600">${a.skippedCount ?? '–'}</td>
                         <td><strong style="${bandCls}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
-                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" style="background:#eff6ff;color:#3d8bff;border:1px solid #bfdbfe;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Xem lại</button>` : ''}</td>
+                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" style="background:#eff6ff;color:#3d8bff;border:1px solid #bfdbfe;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Review</button>` : ''}</td>
                     </tr>`;
                 }).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e53935">Lỗi: ${err.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e53935">Error: ${err.message}</td></tr>`;
             }
         }
 
