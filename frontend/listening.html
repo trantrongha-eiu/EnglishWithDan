@@ -956,7 +956,7 @@
                 const letter = String.fromCharCode(65 + i);
                 const isUsed = !isReview && !matchingReuseAllowed &&
                                questions.some(q => state.answers[q.questionNumber] === letter);
-                return `<div class="mo-opt-row drag-chip${isUsed ? ' used' : ''}"
+                return `<div class="mo-opt-row${isUsed ? ' mo-opt-used' : ''}"
                     data-value="${letter}" data-groupid="${groupId}"
                     data-reuse="${matchingReuseAllowed ? 1 : 0}"
                     draggable="${isReview ? 'false' : 'true'}"
@@ -1460,13 +1460,16 @@
 
         function _ltRefreshGroupChips(groupId) {
             const usedVals = new Set();
-            document.querySelectorAll(`.drop-zone[data-groupid="${groupId}"]`).forEach(dz => {
+            // Gom tất cả drop-zones của group (rq-mo-drop + sc-drop + drop-zone cũ)
+            document.querySelectorAll(`.rq-mo-drop[data-groupid="${groupId}"],.sc-drop[data-groupid="${groupId}"],.drop-zone[data-groupid="${groupId}"]`).forEach(dz => {
                 const ans = state.answers[parseInt(dz.dataset.qnum)];
                 if (ans) usedVals.add(ans);
             });
-            document.querySelectorAll(`[data-groupid="${groupId}"].drag-chip`).forEach(chip => {
-                const isUsed = chip.dataset.reuse === '1' ? false : usedVals.has(chip.dataset.value);
-                chip.classList.toggle('used', isUsed);
+            // Cập nhật matching option rows (mo-opt-row) và summary chips (drag-chip)
+            document.querySelectorAll(`[data-groupid="${groupId}"].mo-opt-row,[data-groupid="${groupId}"].drag-chip`).forEach(el => {
+                const isUsed = el.dataset.reuse === '1' ? false : usedVals.has(el.dataset.value);
+                el.classList.toggle('mo-opt-used', isUsed);
+                el.classList.toggle('used', isUsed);
             });
         }
 
