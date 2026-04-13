@@ -166,18 +166,12 @@ router.post('/admin/upload-map-image', auth, teacherOnly, async (req, res) => {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu imageBase64' });
 
-    const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64Data, 'base64');
-
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: 'listening-maps', resource_type: 'image' },
-        (err, result) => err ? reject(err) : resolve(result)
-      );
-      streamifier.createReadStream(buffer).pipe(stream);
+    const result = await cloudinary.uploader.upload(imageBase64, {
+      folder: 'listening-maps',
+      resource_type: 'image'
     });
 
-    res.json({ success: true, url: uploadResult.secure_url });
+    res.json({ success: true, url: result.secure_url });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Upload thất bại: ' + err.message });
   }
