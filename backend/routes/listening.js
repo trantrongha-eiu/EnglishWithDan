@@ -499,7 +499,9 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
           isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
         } catch { isCorrect = false; }
       } else {
-        isCorrect = ua.toLowerCase() === ca.toLowerCase();
+        // Hỗ trợ nhiều đáp án đúng phân cách bằng "/" (VD: "answer1 / answer2")
+        const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
+        isCorrect = caVariants.includes(ua.toLowerCase());
       }
 
       if (!ua) skipped++;

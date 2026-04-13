@@ -99,8 +99,8 @@
             <div class="aso-card">
                 <div class="aso-icon">🎧</div>
                 <p class="aso-text">You will be listening to an audio clip during this test.<br>You will not be permitted to <strong>pause</strong> or <strong>rewind</strong> the audio while answering the questions.</p>
-                <p class="aso-sub">To continue, click Play</p>
-                <button class="aso-play-btn" onclick="startAudioPlay()">▶ Play</button>
+                <p class="aso-sub">Bài nghe sẽ tự phát sau <strong id="aso-countdown">30</strong> giây</p>
+                <button class="aso-play-btn" onclick="startAudioPlay()">▶ Phát ngay</button>
             </div>
         </div>
 
@@ -111,19 +111,12 @@
             </button>
         </div>
 
-        <div class="part-tabs" id="part-tabs"></div>
-
         <div class="exam-body">
             <div class="questions-panel" id="questions-panel"></div>
             <div class="sidebar-panel">
                 <div class="q-nav-label">Câu hỏi</div>
                 <div class="q-nav-grid" id="q-nav-grid"></div>
             </div>
-        </div>
-
-        <div class="exam-footer-listening">
-            <div class="footer-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
-            <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
         </div>
     </div>
 
@@ -188,8 +181,6 @@
                 <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
             </div>
         </div>
-
-        <div class="part-tabs" id="part-tabs-rv"></div>
 
         <div class="review-layout">
             <div class="transcript-panel">
@@ -308,6 +299,21 @@
     <!-- Toast -->
     <div id="toast"><span id="toast-msg"></span></div>
 
+    <!-- ══════════════════════════════════════════════
+         FIXED SECTION NAVIGATION BAR (exam + review)
+    ══════════════════════════════════════════════ -->
+    <div id="section-nav-fixed" class="section-nav-fixed hidden">
+        <div class="snf-inner">
+            <div class="snf-sections" id="snf-section-btns">
+                <!-- Buttons built dynamically by buildPartTabs() -->
+            </div>
+            <div class="snf-exam-controls" id="snf-exam-controls">
+                <div class="snf-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
+                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Nộp bài</button>
+            </div>
+        </div>
+    </div>
+
     <style>
         /* ── Exam audio bar – restricted ───────────────── */
         .exam-audio-bar {
@@ -362,6 +368,11 @@
             font-size: 14px;
             color: #9ca3af;
             margin-bottom: 24px;
+        }
+        #aso-countdown {
+            color: #3d8bff;
+            font-size: 18px;
+            font-weight: 800;
         }
         .aso-play-btn {
             background: #111;
@@ -507,6 +518,15 @@
             document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); });
             const el = document.getElementById(`screen-${name}`);
             if (el) el.classList.add('active');
+            // Show/hide fixed section nav bar only on exam and review screens
+            const navBar = document.getElementById('section-nav-fixed');
+            if (navBar) {
+                if (name === 'exam' || name === 'review') {
+                    navBar.classList.remove('hidden');
+                } else {
+                    navBar.classList.add('hidden');
+                }
+            }
         }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
@@ -673,9 +693,10 @@
                 updateFooter();
                 setToolExam('highlight');
                 showScreen('exam');
-                // Show audio start overlay
+                // Show audio start overlay rồi bắt đầu đếm ngược 30 giây
                 document.getElementById('audio-start-overlay').classList.remove('hidden');
                 updateExamAudioStatus(false);
+                startAudioCountdown();
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
             } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
         }
@@ -730,7 +751,25 @@
         }
         function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.play(); }
 
+        let _asoTimer = null;
+
+        function startAudioCountdown() {
+            let count = 30;
+            const el = document.getElementById('aso-countdown');
+            if (el) el.textContent = count;
+            clearInterval(_asoTimer);
+            _asoTimer = setInterval(() => {
+                count--;
+                if (el) el.textContent = count;
+                if (count <= 0) {
+                    clearInterval(_asoTimer);
+                    startAudioPlay();
+                }
+            }, 1000);
+        }
+
         function startAudioPlay() {
+            clearInterval(_asoTimer);
             document.getElementById('audio-start-overlay').classList.add('hidden');
             audio.play().catch(() => {});
             updateExamAudioStatus(true);
@@ -753,15 +792,28 @@
 
         function buildPartTabs(containerId, isReview) {
             const sections = getSortedSections(isReview);
-            document.getElementById(containerId).innerHTML = sections.map((s, i) =>
-                `<button class="part-tab-btn ${i === 0 ? 'active' : ''}" onclick="switchPart(${i}, ${isReview})">Part ${s.partNumber}</button>`
-            ).join('');
+            // Build buttons in unified fixed nav bar
+            const btnContainer = document.getElementById('snf-section-btns');
+            if (btnContainer) {
+                btnContainer.innerHTML = sections.map((s, i) =>
+                    `<button class="snf-section-btn ${i === 0 ? 'active' : ''}"
+                             onclick="switchPart(${i}, ${isReview})"
+                             data-part-idx="${i}">
+                        <span class="snf-btn-section-label">Section</span>
+                        <span class="snf-btn-num">${s.partNumber}</span>
+                    </button>`
+                ).join('');
+            }
+            // Show/hide exam-only controls (answered count + submit)
+            const examControls = document.getElementById('snf-exam-controls');
+            if (examControls) examControls.style.display = isReview ? 'none' : 'flex';
         }
 
         function switchPart(idx, isReview) {
             state.partIdx = idx;
-            const tabsId = isReview ? 'part-tabs-rv' : 'part-tabs';
-            document.querySelectorAll(`#${tabsId} .part-tab-btn`).forEach((b, i) => b.classList.toggle('active', i === idx));
+            // Update active state in fixed nav bar
+            document.querySelectorAll('#snf-section-btns .snf-section-btn')
+                .forEach((b, i) => b.classList.toggle('active', i === idx));
             if (isReview) {
                 renderReviewPartQuestions(idx);
                 const section = getSortedSections(true)[idx];
@@ -853,9 +905,12 @@
 
         function renderNoteFormGroup(group, isReview) {
             const { title = '', lines = [] } = group.noteConfig || {};
-            const linesHtml = lines.map(line =>
-                `<div class="note-line">${resolvePlaceholders(line, group.questions, isReview)}</div>`
-            ).join('');
+            const linesHtml = lines.map(line => {
+                // Hỗ trợ thụt lề: dòng bắt đầu bằng ">>" sẽ thụt vào 28px
+                const isIndent = line.startsWith('>>');
+                const cleanLine = isIndent ? line.slice(2) : line;
+                return `<div class="note-line${isIndent ? ' note-line-indent' : ''}">${resolvePlaceholders(cleanLine, group.questions, isReview)}</div>`;
+            }).join('');
             return `<div class="group-note-form">
                 ${title ? `<div class="note-form-title">${title}</div>` : ''}
                 <div class="note-form-body">${linesHtml}</div>
@@ -864,9 +919,12 @@
 
         function renderBulletListGroup(group, isReview) {
             const { items = [] } = group.bulletConfig || {};
-            const itemsHtml = items.map(item =>
-                `<li class="bullet-item">${resolvePlaceholders(item, group.questions, isReview)}</li>`
-            ).join('');
+            const itemsHtml = items.map(item => {
+                // Hỗ trợ thụt lề: item bắt đầu bằng ">>" sẽ thụt vào và dùng bullet con
+                const isIndent = item.startsWith('>>');
+                const cleanItem = isIndent ? item.slice(2) : item;
+                return `<li class="bullet-item${isIndent ? ' bullet-item-indent' : ''}">${resolvePlaceholders(cleanItem, group.questions, isReview)}</li>`;
+            }).join('');
             return `<div class="group-bullet-list"><ul>${itemsHtml}</ul></div>`;
         }
 
@@ -891,63 +949,64 @@
             const reuseNote = matchingReuseAllowed
                 ? `<div class="match-reuse-note"><strong>NB</strong> &nbsp;You may use any letter more than once.</div>` : '';
 
-            const chipsHtml = matchingOptions.map((opt, i) => {
+            // Cột trái: danh sách options dọc (A–G)
+            const optListHtml = matchingOptions.map((opt, i) => {
                 const letter = String.fromCharCode(65 + i);
                 const isUsed = !isReview && !matchingReuseAllowed &&
                                questions.some(q => state.answers[q.questionNumber] === letter);
-                const label = opt && opt.trim().length > 1 ? `. ${escHtml(opt)}` : '';
-                return `<span class="drag-chip mo-chip${isUsed ? ' used' : ''}"
+                return `<div class="mo-opt-row drag-chip${isUsed ? ' used' : ''}"
                     data-value="${letter}" data-groupid="${groupId}"
                     data-reuse="${matchingReuseAllowed ? 1 : 0}"
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${letter}')"
-                    onclick="ltClickMOChip('${letter}','${groupId}')">
-                    <strong>${letter}</strong>${label}
-                </span>`;
+                    onclick="${isReview ? '' : `ltClickMOChip('${letter}','${groupId}')`}">
+                    <span class="mo-opt-letter">${letter}</span>
+                    <span class="mo-opt-text">${escHtml(opt)}</span>
+                </div>`;
             }).join('');
 
+            // Cột phải: các câu hỏi với ô điền
             const qRowsHtml = questions.map(q => {
                 const qNum = q.questionNumber;
                 const ans = isReview ? (q.userAnswer || '') : (state.answers[qNum] || '');
                 if (isReview) {
                     const isCorrect = !!q.isCorrect;
                     const expl = q.explanation
-                        ? `<div class="match-feedback q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : '';
-                    return `<div class="match-question-row" id="qi-${qNum}" data-qnum="${qNum}">
-                        <div class="match-q-left">
-                            <span class="match-q-num">${qNum}</span>
-                            <span class="match-q-text">${escHtml(q.questionText || '')}</span>
+                        ? `<div class="match-feedback q-explanation" style="width:100%;font-size:12px;color:#6b7280;margin-top:4px"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : '';
+                    return `<div class="mo-q-row" id="qi-${qNum}" data-qnum="${qNum}">
+                        <span class="mo-q-num">${qNum}</span>
+                        <span class="mo-q-text">${escHtml(q.questionText || '')}</span>
+                        <div class="mo-q-answer">
+                            <span class="mo-ans-letter ${isCorrect ? 'correct' : 'wrong'}">${escHtml(ans || '–')}</span>
+                            ${!isCorrect ? `<span class="mo-correct-ans">✓ ${escHtml(q.correctAnswer || '')}</span>` : ''}
                         </div>
-                        <div class="match-q-right">
-                            <span class="match-answer-badge ${isCorrect ? 'match-ans-correct' : 'match-ans-wrong'}">${escHtml(ans || '–')}</span>
-                            ${!isCorrect ? `<span class="match-correct-ans">✓ ${escHtml(q.correctAnswer || '')}</span>` : ''}
-                        </div>${expl}
+                        ${expl}
                     </div>`;
                 }
-                const optIdx = ans ? ans.charCodeAt(0) - 65 : -1;
-                const optDesc = optIdx >= 0 ? (matchingOptions[optIdx] || '') : '';
-                const short = optDesc.length > 30 ? optDesc.slice(0, 30) + '…' : optDesc;
-                const displayText = ans
-                    ? `<strong>${escHtml(ans)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`
-                    : 'Kéo chữ cái vào đây';
-                return `<div class="match-question-row" id="qi-${qNum}" data-qnum="${qNum}">
-                    <div class="match-q-left">
-                        <span class="match-q-num">${qNum}</span>
-                        <span class="match-q-text">${escHtml(q.questionText || '')}</span>
-                    </div>
-                    <div class="drop-zone rq-mo-drop${ans ? ' filled' : ''}"
-                         data-qnum="${qNum}" data-groupid="${groupId}"
-                         ondragover="event.preventDefault()"
-                         ondrop="ltDropMO(event,${qNum},'${groupId}')">
-                        ${displayText}
+                const dropInner = ans
+                    ? `<span class="mo-ans-letter">${escHtml(ans)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')">✕</span>`
+                    : `<span class="mo-ans-placeholder">?</span>`;
+                return `<div class="mo-q-row" id="qi-${qNum}" data-qnum="${qNum}">
+                    <span class="mo-q-num">${qNum}</span>
+                    <span class="mo-q-text">${escHtml(q.questionText || '')}</span>
+                    <div class="mo-q-answer">
+                        <div class="mo-ans-drop rq-mo-drop${ans ? ' filled' : ''}"
+                             data-qnum="${qNum}" data-groupid="${groupId}"
+                             ondragover="event.preventDefault();this.classList.add('dragover')"
+                             ondragleave="this.classList.remove('dragover')"
+                             ondrop="this.classList.remove('dragover');ltDropMO(event,${qNum},'${groupId}')">
+                            ${dropInner}
+                        </div>
                     </div>
                 </div>`;
             }).join('');
 
             return `<div class="rq-mo-group">
                 ${reuseNote}
-                <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
-                <div class="rq-mo-questions">${qRowsHtml}</div>
+                <div class="mo-two-col">
+                    <div class="mo-options-col" id="${groupId}-bank">${optListHtml}</div>
+                    <div class="mo-questions-col">${qRowsHtml}</div>
+                </div>
             </div>`;
         }
 
@@ -1431,21 +1490,13 @@
             const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
             if (!dz) return;
             const letter = state.answers[qNum] || '';
-            // Find description from group data (use sorted sections to match partIdx)
-            const section = getSortedSections(false)[state.partIdx];
-            let desc = '';
-            for (const g of (section?.questionGroups || [])) {
-                if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
-                    const idx = letter.charCodeAt(0) - 65;
-                    const opts = g.matchingOptions?.length
-                        ? g.matchingOptions
-                        : (g.endingsConfig?.endings || []).map(e => e.text || '');
-                    if (opts[idx]?.length > 1) { desc = opts[idx]; break; }
-                }
+            if (!letter) {
+                dz.classList.remove('filled');
+                dz.innerHTML = `<span class="mo-ans-placeholder">?</span>`;
+                return;
             }
-            const short = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
             dz.classList.add('filled');
-            dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
+            dz.innerHTML = `<span class="mo-ans-letter">${escHtml(letter)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
         }
 
         function ltDropSC(e, qNum, groupId) {
@@ -1476,10 +1527,10 @@
 
         function ltClearDragDrop(qNum, groupId) {
             delete state.answers[qNum];
-            const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
+            const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"],.sc-drop[data-qnum="${qNum}"],.drop-zone[data-qnum="${qNum}"]`);
             if (dz) {
                 dz.classList.remove('filled');
-                dz.innerHTML = dz.classList.contains('sc-drop') ? 'Kéo từ vào' : 'Kéo chữ cái vào đây';
+                dz.innerHTML = dz.classList.contains('sc-drop') ? 'Kéo từ vào' : '<span class="mo-ans-placeholder">?</span>';
             }
             _ltRefreshGroupChips(groupId);
             updateQNav(); updateFooter();
@@ -1632,18 +1683,19 @@
             }
             // Dùng requestAnimationFrame để chờ DOM render xong sau switchPart
             const doScroll = () => {
-                // 1. Standalone question (matching, plain, map)
+                // 1. Standalone question (matching, plain, map, mo-q-row)
                 let el = document.getElementById(`qi-${num}`);
                 if (!el && state.isReview) {
                     // 2a. Review inline: note-form / bullet / table / summary inline answer
-                    el = document.getElementById(`rv-q${num}`);
-                    if (el) el = el.closest('.note-line, .bullet-item, td, .rq-summary-text') || el;
+                    const rv = document.getElementById(`rv-q${num}`);
+                    if (rv) el = rv.closest('.note-line, .bullet-item, td, .rq-summary-text') || rv;
                 }
                 if (!el) {
                     // 2b. Exam inline fill-blank: note-form / bullet / table
                     const fi = document.getElementById(`fi-${num}`);
                     if (fi) {
-                        el = fi.closest('.note-line, .bullet-item, td') || fi.closest('.group-note-form, .group-bullet-list, .group-table-wrap') || fi;
+                        el = fi.closest('.note-line, .bullet-item, td') ||
+                             fi.closest('.group-note-form, .group-bullet-list, .group-table-wrap') || fi;
                     }
                 }
                 if (!el) {
@@ -1659,15 +1711,24 @@
                     });
                 }
                 if (!el) return;
+                // Scroll element vào view
                 const panelId = state.isReview ? 'review-questions-panel' : 'questions-panel';
                 const panel = document.getElementById(panelId);
                 if (panel) {
                     const panelRect = panel.getBoundingClientRect();
-                    const elRect = el.getBoundingClientRect();
-                    panel.scrollTop += (elRect.top - panelRect.top) - 80;
+                    const elRect   = el.getBoundingClientRect();
+                    // Tính offset: 16px margin từ top của panel (trừ sticky nav trong review)
+                    const stickyBar = panel.querySelector('.review-qnav-bar');
+                    const stickyH   = stickyBar ? stickyBar.offsetHeight + 8 : 16;
+                    panel.scrollTop += (elRect.top - panelRect.top) - stickyH;
                 } else {
                     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
+                // Flash highlight để người dùng dễ nhận ra câu vừa nhảy tới
+                el.classList.remove('q-scroll-flash');
+                void el.offsetWidth; // reflow để reset animation
+                el.classList.add('q-scroll-flash');
+                setTimeout(() => el.classList.remove('q-scroll-flash'), 950);
             };
             if (needSwitch) {
                 // Double rAF: chờ render 2 frame sau khi switch
@@ -2005,6 +2066,7 @@
         function confirmExit() { openModal('modal-exit'); }
         function forceExit() {
             closeModal('modal-exit');
+            clearInterval(_asoTimer);
             audio.pause();
             window.onbeforeunload = null;
             state.submitted = true;
@@ -2024,6 +2086,7 @@
         window.goToKey = goToKey;
         window.formatKeyInput = formatKeyInput;
         window.verifyKeyAndStart = verifyKeyAndStart;
+        window.startAudioPlay = startAudioPlay;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;

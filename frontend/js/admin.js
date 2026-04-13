@@ -872,7 +872,7 @@ function addRQQuestion(gIdx, data = null, groupType = 'plain') {
     <label style="font-size:10px;font-weight:700;color:var(--text3);display:block;margin-bottom:3px">Đáp án đúng *</label>
     <input class="form-input rqq-answer" value="${data?.correctAnswer || ''}"
            style="font-size:12px;padding:6px 9px"
-           placeholder='TRUE / A / text / ["A","C"]' />
+           placeholder='text (nhiều đáp án: word1 / word2)' />
     <div class="rqq-answer-hint" style="font-size:10px;color:var(--text3);margin-top:3px">${getRQQAnswerHint(autoType)}</div>
   </div>
   <div>
@@ -906,7 +906,7 @@ function getRQQAnswerHint(type) {
     'yes-no-ng':         '💡 YES / NO / NOT GIVEN',
     'multiple-choice':   '💡 Nhập chữ cái: A, B, C hoặc D',
     'checkbox':          '💡 VD: ["A","C"] — mảng các chữ cái',
-    'fill-blank':        '💡 Nhập đúng từ/cụm từ cần điền',
+    'fill-blank':        '💡 Nhập từ/cụm từ cần điền. Nhiều đáp án: word1 / word2',
     'sentence-completion':'💡 Nhập từ thực tế trong Word Bank',
     'matching-headings': '💡 Nhập số La Mã: i, ii, iii…',
     'matching-info':     '💡 Nhập chữ cái: A, B, C…',
@@ -2218,7 +2218,7 @@ function renderNoteLine(gIdx, li, line) {
 <div style="display:flex;gap:6px;align-items:center">
   <input class="form-input lg-note-line" value="${line}"
          style="flex:1;font-size:12px;padding:6px 10px"
-         placeholder="Loại căn hộ: __Q1__" />
+         placeholder="Loại căn hộ: __Q1__ | Thụt lề: >>Nội dung __Q2__" />
   <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
           onclick="this.parentElement.remove()">✕</button>
 </div>`;
@@ -2236,7 +2236,7 @@ function renderBulletItem(gIdx, ii, item) {
   <span style="color:var(--text3);font-size:14px">•</span>
   <input class="form-input lg-bullet-item" value="${item}"
          style="flex:1;font-size:12px;padding:6px 10px"
-         placeholder="What colour is the bus that the woman should take? __Q5__" />
+         placeholder="Item __Q5__ | Thụt lề con: >>Sub-item __Q6__" />
   <button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px"
           onclick="this.parentElement.remove()">✕</button>
 </div>`;
