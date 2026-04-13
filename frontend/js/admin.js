@@ -6,7 +6,6 @@ let allTests = [];
 let allPassages = [];
 let allKeys = [];
 let allVocabUnits = [];
-let allReadingHistory = [];   // for per-test stats
 let passagePage = 1;
 const PAGE_SIZE = 15;
 let editPassageId = null;
@@ -39,6 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (tbName)   tbName.textContent   = user.username || 'Admin';
 
   await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
+
+  // Real-time polling: refresh stats + history every 30s
+  setInterval(async () => {
+    await Promise.all([loadStats(), loadHistory()]);
+  }, 30000);
 });
 
 /* ══════════════════════════════════════════════
@@ -132,110 +136,75 @@ async function loadStats() {
     document.getElementById('stat-vocab-units').textContent       = s.vocabUnitCount        ?? '–';
   } catch { }
 }
+const _skillBadge = s => {
+  const map = { reading: ['badge-blue','Reading'], listening: ['badge-purple','Listening'], writing: ['badge-yellow','Writing'] };
+  const [cls, label] = map[s] || ['badge-gray', s];
+  return `<span class="badge ${cls}">${label}</span>`;
+};
+
 async function loadHistory() {
   try {
-    // Fetch song song: combined recent + reading history riêng cho bảng Reading History
-    const [recentData, readingData] = await Promise.all([
-      fetch(`${API}/admin/recent-attempts`, { headers: authH() }).then(r => r.json()),
-      fetch(`${API}/admin/history`, { headers: authH() }).then(r => r.json())
-    ]);
+    const data = await fetch(`${API}/admin/recent-attempts?limit=200`, { headers: authH() }).then(r => r.json());
+    if (!data.success) return;
+    const attempts = data.attempts || [];
 
-    // ── Dashboard: 10 bài nộp gần nhất từ mọi kỹ năng ──
-    if (recentData.success) {
-      const skillBadge = s => {
-        const map = { reading: ['badge-blue','Reading'], listening: ['badge-purple','Listening'], writing: ['badge-yellow','Writing'] };
-        const [cls, label] = map[s] || ['badge-gray', s];
-        return `<span class="badge ${cls}">${label}</span>`;
-      };
-      document.getElementById('recent-tbody').innerHTML =
-        (recentData.attempts || []).slice(0, 10).map(h => {
-          const name = h.userId?.displayName || '–';
-          const score = h.skill === 'writing'
-            ? (h.bandScore != null ? bandBadge(h.bandScore) : '<span style="color:var(--text3)">Chờ chấm</span>')
-            : bandBadge(h.bandScore);
-          const correct = (h.correctCount != null && h.totalQuestions != null)
-            ? `${h.correctCount}/${h.totalQuestions}` : '–';
-          const dur = h.duration != null ? formatDur(h.duration) : '–';
-          return `<tr>
-            <td><strong>${name}</strong></td>
-            <td>${skillBadge(h.skill)}</td>
-            <td>${h.testName || '–'}</td>
-            <td>${formatDate(h.date)}</td>
-            <td>${score}</td>
-            <td>${correct}</td>
-            <td>${dur}</td>
-          </tr>`;
-        }).join('') || '<tr><td colspan="7" class="table-empty">Chưa có dữ liệu</td></tr>';
-    }
+    // ── Dashboard: 10 bài nộp gần nhất ──
+    document.getElementById('recent-tbody').innerHTML =
+      attempts.slice(0, 10).map(h => {
+        const name = h.userId?.displayName || '–';
+        const score = h.skill === 'writing'
+          ? (h.bandScore != null ? bandBadge(h.bandScore) : '<span style="color:var(--text3)">Chờ chấm</span>')
+          : bandBadge(h.bandScore);
+        const correct = (h.correctCount != null && h.totalQuestions != null)
+          ? `${h.correctCount}/${h.totalQuestions}` : '–';
+        const dur = h.duration != null ? formatDur(h.duration) : '–';
+        return `<tr>
+          <td><strong>${name}</strong></td>
+          <td>${_skillBadge(h.skill)}</td>
+          <td>${h.testName || '–'}</td>
+          <td>${formatDate(h.date)}</td>
+          <td>${score}</td>
+          <td>${correct}</td>
+          <td>${dur}</td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="7" class="table-empty">Chưa có dữ liệu</td></tr>';
 
-    // ── Reading History tab riêng ──
-    function getUsername(h) {
-      const u = h.userId;
-      if (!u) return '–';
-      if (u.displayName) return u.displayName;
-      const first = (u.firstName || '').trim();
-      const last  = (u.lastName  || '').trim();
-      if (first) return last ? `${first} ${last}` : first;
-      return u.username || '–';
-    }
-    if (readingData.success) {
-      allReadingHistory = readingData.history;
-      renderHistoryTable(readingData.history, getUsername);
-      if (allTests.length) _applyTestStats();
-    }
+    // ── History tab: tất cả kỹ năng ──
+    renderHistoryTable(attempts);
   } catch (err) {
     console.error(err);
   }
 }
 
-// Compute per-test attempt count + avg band and inject into tests table
-function _applyTestStats() {
-  const stats = {};
-  allReadingHistory.forEach(h => {
-    const tid = h.testId?._id || (typeof h.testId === 'string' ? h.testId : null);
-    if (!tid) return;
-    if (!stats[tid]) stats[tid] = { count: 0, bandSum: 0 };
-    stats[tid].count++;
-    stats[tid].bandSum += h.bandScore || 0;
-  });
-  allTests.forEach(t => {
-    const cell = document.getElementById(`tstat-${t._id}`);
-    if (!cell) return;
-    const s = stats[t._id];
-    if (s && s.count > 0) {
-      const avg = (s.bandSum / s.count).toFixed(1);
-      cell.innerHTML = `<span style="color:var(--text2)">${s.count} lượt</span> · <span style="color:var(--green);font-weight:600">Band TB: ${avg}</span>`;
-    } else {
-      cell.textContent = 'Chưa có lượt';
-    }
-  });
-}
-function renderHistoryTable(list, getUsername) {
-  if (!getUsername) getUsername = h => {
-    const u = h.userId;
-    if (!u) return '–';
-    if (u.displayName) return u.displayName;
-    const first = (u.firstName || '').trim();
-    const last  = (u.lastName  || '').trim();
-    if (first) return last ? `${first} ${last}` : first;
-    return u.username || '–';
-  };
+function renderHistoryTable(list) {
   document.getElementById('history-tbody').innerHTML = list.length
     ? list.map(h => {
-      const name = getUsername(h);
+      const name = h.userId?.displayName || '–';
+      const score = h.skill === 'writing'
+        ? (h.bandScore != null ? bandBadge(h.bandScore) : '<span style="color:var(--text3)">Chờ chấm</span>')
+        : bandBadge(h.bandScore);
+      const correct = (h.correctCount != null && h.totalQuestions != null)
+        ? `${h.correctCount}/${h.totalQuestions}` : '–';
+      const dur = h.duration != null ? formatDur(h.duration) : '–';
+      const deleteBtn = h.skill === 'reading'
+        ? `<button class="btn btn-danger btn-sm" onclick="deleteAttempt('${h._id}','reading','${name.replace(/'/g,"\\'")}')">🗑</button>`
+        : h.skill === 'listening'
+        ? `<button class="btn btn-danger btn-sm" onclick="deleteAttempt('${h._id}','listening','${name.replace(/'/g,"\\'")}')">🗑</button>`
+        : h.skill === 'writing'
+        ? `<button class="btn btn-danger btn-sm" onclick="deleteAttempt('${h._id}','writing','${name.replace(/'/g,"\\'")}')">🗑</button>`
+        : '';
       return `<tr>
-      <td><strong>${name}</strong></td>
-      <td>${h.testId?.name || '–'}</td>
-      <td>${formatDate(h.endTime)}</td>
-      <td>${formatDur(h.duration)}</td>
-      <td style="color:var(--green);font-weight:600">${h.correctCount}</td>
-      <td style="color:var(--accent2);font-weight:600">${h.wrongCount}</td>
-      <td style="color:var(--text3)">${h.skippedCount}</td>
-      <td>${bandBadge(h.bandScore)}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteReadingAttempt('${h._id}','${name.replace(/'/g,"\\'")}')">🗑</button></td>
-    </tr>`;
+        <td><strong>${name}</strong></td>
+        <td>${_skillBadge(h.skill)}</td>
+        <td>${h.testName || '–'}</td>
+        <td>${formatDate(h.date)}</td>
+        <td>${dur}</td>
+        <td>${correct}</td>
+        <td>${score}</td>
+        <td>${deleteBtn}</td>
+      </tr>`;
     }).join('')
-    : '<tr><td colspan="9" class="table-empty">Chưa có kết quả</td></tr>';
+    : '<tr><td colspan="8" class="table-empty">Chưa có kết quả</td></tr>';
 }
 function filterHistory() {
   const q = document.getElementById('search-history').value.toLowerCase();
@@ -1207,7 +1176,6 @@ async function loadTests() {
     if (!data.success) return;
     allTests = data.tests; renderTestsTable(data.tests);
     // Dropdown k-test sẽ do openKeyModal() populate riêng
-    if (allReadingHistory.length) _applyTestStats();
   } catch { }
 }
 function renderTestsTable(list) {
@@ -3890,17 +3858,22 @@ function hardDeleteCourse(id, title) {
 /* ══════════════════════════════════════════════
    XÓA BÀI THI (Admin delete attempts)
 ══════════════════════════════════════════════ */
-function deleteReadingAttempt(id, studentName) {
-  confirmAction(`Xóa bài thi Reading của "${studentName}"? Không thể khôi phục!`, async () => {
+function deleteAttempt(id, skill, studentName) {
+  const skillLabel = { reading: 'Reading', listening: 'Listening', writing: 'Writing' }[skill] || skill;
+  confirmAction(`Xóa bài thi ${skillLabel} của "${studentName}"? Không thể khôi phục!`, async () => {
     try {
-      const res  = await fetch(`${API}/admin/attempts/${id}`, { method: 'DELETE', headers: authH() });
+      const endpointMap = { reading: 'attempts', listening: 'listening-attempts', writing: 'writing-attempts' };
+      const ep = endpointMap[skill] || 'attempts';
+      const res  = await fetch(`${API}/admin/${ep}/${id}`, { method: 'DELETE', headers: authH() });
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
-      toast('Đã xóa bài thi Reading');
+      toast(`Đã xóa bài thi ${skillLabel}`);
       loadHistory();
     } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
   });
 }
+// Alias giữ tương thích nếu còn nơi nào gọi tên cũ
+function deleteReadingAttempt(id, studentName) { deleteAttempt(id, 'reading', studentName); }
 
 function deleteWritingAttempt(id) {
   confirmAction('Xóa bài nộp Writing này? Không thể khôi phục!', async () => {

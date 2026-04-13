@@ -383,7 +383,7 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
 // GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing)
 router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
   try {
-    const LIMIT = 40;
+    const LIMIT = Math.min(parseInt(req.query.limit) || 80, 300);
     function normUser(u) {
       if (!u || typeof u !== 'object') return { displayName: '–' };
       const first = (u.firstName || '').trim();
@@ -443,7 +443,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     ];
 
     rows.sort((a, b) => new Date(b.date) - new Date(a.date));
-    res.json({ success: true, attempts: rows.slice(0, 60) });
+    res.json({ success: true, attempts: rows.slice(0, LIMIT * 3) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
