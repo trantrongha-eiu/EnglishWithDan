@@ -86,6 +86,8 @@ function switchTab(tab, ev) {
   if (tab === 'courses') loadCourses();
   if (tab === 'users') loadUsers();
   if (tab === 'vocab-students') loadVocabStudents();
+  if (tab === 'history') loadHistory();       // Luôn fetch mới khi vào tab lịch sử
+  if (tab === 'dashboard') loadHistory();     // Cập nhật bảng bài nộp gần nhất trên dashboard
 }
 function toggleSidebar() {
   const open = document.getElementById('sidebar').classList.toggle('open');
