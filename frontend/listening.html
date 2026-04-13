@@ -81,7 +81,8 @@
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
-            <span class="exam-audio-status" id="exam-audio-status">🎧 Đang phát</span>
+            <span class="exam-audio-status" id="exam-audio-status">🎧 Chờ phát</span>
+            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Phát ngay</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100" step="0.1" tabindex="-1" />
                 <div class="audio-time">
@@ -98,9 +99,9 @@
         <div id="audio-start-overlay" class="audio-start-overlay hidden">
             <div class="aso-card">
                 <div class="aso-icon">🎧</div>
-                <p class="aso-text">You will be listening to an audio clip during this test.<br>You will not be permitted to <strong>pause</strong> or <strong>rewind</strong> the audio while answering the questions.</p>
-                <p class="aso-sub">Bài nghe sẽ tự phát sau <strong id="aso-countdown">30</strong> giây</p>
-                <button class="aso-play-btn" onclick="startAudioPlay()">▶ Phát ngay</button>
+                <p class="aso-text">Bài nghe sẽ phát <strong>1 lần duy nhất</strong>.<br>Bạn <strong>không thể tạm dừng</strong> hoặc <strong>tua lại</strong> trong khi làm bài.</p>
+                <p class="aso-sub">Sau khi bấm bên dưới, bạn có <strong>30 giây</strong> để đọc câu hỏi trước khi audio tự phát.</p>
+                <button class="aso-play-btn" onclick="startReadingTime()">📖 Đã hiểu — Bắt đầu đọc câu hỏi</button>
             </div>
         </div>
 
@@ -375,12 +376,12 @@
             font-weight: 800;
         }
         .aso-play-btn {
-            background: #111;
+            background: #3d8bff;
             color: #fff;
             border: none;
             border-radius: 50px;
-            padding: 12px 40px;
-            font-size: 16px;
+            padding: 12px 32px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
@@ -388,7 +389,23 @@
             gap: 10px;
             transition: background .15s;
         }
-        .aso-play-btn:hover { background: #3d8bff; }
+        .aso-play-btn:hover { background: #2563eb; }
+        /* small "Phát ngay" button inside audio bar during countdown */
+        .aso-play-now-btn {
+            background: transparent;
+            color: #3d8bff;
+            border: 1px solid #3d8bff;
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background .15s, color .15s;
+        }
+        .aso-play-now-btn:hover { background: #3d8bff; color: #fff; }
+        .aso-play-now-btn.hidden { display: none; }
 
         /* ── Review Q-nav ngang ─────────────────────── */
         .review-qnav-bar {
@@ -693,10 +710,11 @@
                 updateFooter();
                 setToolExam('highlight');
                 showScreen('exam');
-                // Show audio start overlay rồi bắt đầu đếm ngược 30 giây
+                // Show overlay — học sinh đọc cảnh báo rồi tự bấm để bắt đầu đếm ngược
                 document.getElementById('audio-start-overlay').classList.remove('hidden');
+                const playNowBtn = document.getElementById('aso-play-now-btn');
+                if (playNowBtn) playNowBtn.classList.add('hidden');
                 updateExamAudioStatus(false);
-                startAudioCountdown();
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
             } catch (err) { toast('Lỗi tải đề: ' + err.message, 'error'); }
         }
@@ -753,17 +771,25 @@
 
         let _asoTimer = null;
 
+        // Học sinh bấm "Đã hiểu" trên overlay → đóng overlay, bắt đầu đếm ngược 30s ở audio bar
+        function startReadingTime() {
+            document.getElementById('audio-start-overlay').classList.add('hidden');
+            const playNowBtn = document.getElementById('aso-play-now-btn');
+            if (playNowBtn) playNowBtn.classList.remove('hidden');
+            startAudioCountdown();
+        }
+
         function startAudioCountdown() {
             let count = 30;
-            const el = document.getElementById('aso-countdown');
-            if (el) el.textContent = count;
+            updateExamAudioStatus(false, count);
             clearInterval(_asoTimer);
             _asoTimer = setInterval(() => {
                 count--;
-                if (el) el.textContent = count;
                 if (count <= 0) {
                     clearInterval(_asoTimer);
                     startAudioPlay();
+                } else {
+                    updateExamAudioStatus(false, count);
                 }
             }, 1000);
         }
@@ -771,14 +797,25 @@
         function startAudioPlay() {
             clearInterval(_asoTimer);
             document.getElementById('audio-start-overlay').classList.add('hidden');
+            const playNowBtn = document.getElementById('aso-play-now-btn');
+            if (playNowBtn) playNowBtn.classList.add('hidden');
             audio.play().catch(() => {});
             updateExamAudioStatus(true);
         }
 
-        function updateExamAudioStatus(playing) {
+        function updateExamAudioStatus(playing, countdown) {
             const el = document.getElementById('exam-audio-status');
             if (!el) return;
-            el.textContent = playing ? '🎧 Đang phát' : '🎧 Chờ phát';
+            if (playing) {
+                el.textContent = '🎧 Đang phát';
+                el.style.color = '';
+            } else if (countdown != null) {
+                el.textContent = `⏱ Tự phát sau: ${countdown}s`;
+                el.style.color = countdown <= 10 ? '#f59e0b' : '';
+            } else {
+                el.textContent = '🎧 Chờ phát';
+                el.style.color = '';
+            }
         }
 
         // ══════════════════════════════════════════════
@@ -2091,7 +2128,7 @@
         window.goToKey = goToKey;
         window.formatKeyInput = formatKeyInput;
         window.verifyKeyAndStart = verifyKeyAndStart;
-        window.startAudioPlay = startAudioPlay;
+        window.startAudioPlay = startAudioPlay; window.startReadingTime = startReadingTime;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
         window.switchPart = switchPart;
