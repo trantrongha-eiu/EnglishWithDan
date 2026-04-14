@@ -90,6 +90,11 @@
                     <span id="audio-total">00:00</span>
                 </div>
             </div>
+            <!-- Volume control -->
+            <div class="volume-wrap">
+                <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()">🔊</span>
+                <input type="range" class="volume-seek" id="volume-seek-exam" value="100" min="0" max="100" step="1" oninput="setVolume(this.value, 'exam')" title="Volume" />
+            </div>
             <!-- hidden play btn kept for JS parity with review -->
             <button id="play-btn" style="display:none" onclick="togglePlay()">▶</button>
             <audio id="audio-player" preload="metadata"></audio>
@@ -180,6 +185,11 @@
                 <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
                 <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
                 <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
+            </div>
+            <!-- Volume control -->
+            <div class="volume-wrap">
+                <span class="volume-icon" id="vol-icon-rv" onclick="toggleMute()">🔊</span>
+                <input type="range" class="volume-seek" id="volume-seek-rv" value="100" min="0" max="100" step="1" oninput="setVolume(this.value, 'rv')" title="Volume" />
             </div>
         </div>
 
@@ -406,6 +416,49 @@
         }
         .aso-play-now-btn:hover { background: #3d8bff; color: #fff; }
         .aso-play-now-btn.hidden { display: none; }
+
+        /* ── Volume control ────────────────────────── */
+        .volume-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .volume-icon {
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .volume-seek {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,.2);
+            cursor: pointer;
+            outline: none;
+        }
+        .volume-seek::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #3d8bff;
+            cursor: pointer;
+            transition: transform .1s;
+        }
+        .volume-seek::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .volume-seek::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #3d8bff;
+            cursor: pointer;
+            border: none;
+        }
 
         /* ── Review Q-nav ngang ─────────────────────── */
         .review-qnav-bar {
@@ -760,6 +813,47 @@
         function togglePlay() { if (audio.paused) audio.play(); else audio.pause(); }
         function skipAudio(secs) { audio.currentTime = Math.max(0, Math.min(audio.duration || 0, audio.currentTime + secs)); }
         function onSeekInput(val) { audio.currentTime = parseFloat(val); }
+        let _prevVolume = 1;
+
+        function setVolume(val, source) {
+            const v = parseInt(val) / 100;
+            audio.volume = v;
+            // Sync the other slider
+            const otherId = source === 'exam' ? 'volume-seek-rv' : 'volume-seek-exam';
+            const other = document.getElementById(otherId);
+            if (other) other.value = val;
+            // Update icons on both bars
+            const icon = v === 0 ? '🔇' : v < 0.4 ? '🔉' : '🔊';
+            ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = icon;
+            });
+            if (v > 0) _prevVolume = v;
+        }
+
+        function toggleMute() {
+            if (audio.volume > 0) {
+                _prevVolume = audio.volume;
+                audio.volume = 0;
+                document.getElementById('volume-seek-exam').value = 0;
+                document.getElementById('volume-seek-rv').value   = 0;
+                ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '🔇';
+                });
+            } else {
+                const restore = Math.round(_prevVolume * 100);
+                audio.volume = _prevVolume;
+                document.getElementById('volume-seek-exam').value = restore;
+                document.getElementById('volume-seek-rv').value   = restore;
+                const icon = _prevVolume < 0.4 ? '🔉' : '🔊';
+                ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = icon;
+                });
+            }
+        }
+
         function setSpeed(speed, btn) {
             audio.playbackRate = speed;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
