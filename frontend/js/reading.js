@@ -1509,8 +1509,13 @@ async function openVocabBookPicker(wordData) {
         <span class="vb-pick-arrow">›</span>
       </div>`
     ).join('');
-  } catch {
-    listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#e53935">Lỗi tải sổ từ vựng</div>';
+  } catch (e) {
+    const isColdStart = e.message === 'server-cold-start';
+    listEl.innerHTML = `<div style="text-align:center;padding:16px;color:${isColdStart ? '#f59e0b' : '#e53935'}">
+      ${isColdStart
+        ? '🔄 Server đang khởi động,<br>vui lòng thử lại sau vài giây.'
+        : 'Lỗi tải sổ từ vựng'}
+    </div>`;
   }
 }
 
@@ -1526,7 +1531,9 @@ async function createNewBookAndSave() {
     if (!res.success) { showVocabToast(res.message); return; }
     if (nameInput) nameInput.value = '';
     await saveWordToBook(res.book._id);
-  } catch { showVocabToast('Lỗi tạo sổ mới'); }
+  } catch (e) {
+    showVocabToast(e.message === 'server-cold-start' ? 'Server đang khởi động, thử lại sau.' : 'Lỗi tạo sổ mới');
+  }
 }
 
 async function saveWordToBook(bookId) {
@@ -1670,6 +1677,10 @@ async function apiFetch(url, opts = {}) {
     }
   });
   if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
+  if (!res.ok) {
+    const isColdStart = res.status === 502 || res.status === 503;
+    throw new Error(isColdStart ? 'server-cold-start' : `HTTP ${res.status}`);
+  }
   return res.json();
 }
 

@@ -187,7 +187,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dot-gray{width:8px;height:8px;border-radius:50%;background:var(--border2)}
 
 .book-progress-bar{height:3px;background:var(--border);border-radius:2px;margin:0 24px;overflow:hidden}
-.book-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s}
+.book-progress-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 
 /* Mascot panda streak banner */
 @keyframes pandaBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
@@ -747,3 +747,83 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   font-size:14px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;
 }
 .quit-btn-leave:hover{border-color:#e53935;color:#e53935}
+
+/* ══════════════════════════════════════════
+   UX ENHANCEMENTS – ANIMATIONS & POLISH
+══════════════════════════════════════════ */
+
+/* ── Word row staggered fade-in ── */
+@keyframes rowIn{
+  from{opacity:0;transform:translateY(7px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+.word-row-anim{animation:rowIn .22s ease both}
+
+/* ── Flash xanh khi mark "đã thuộc" ── */
+@keyframes wordMastered{
+  0%  {background:transparent}
+  20% {background:rgba(34,197,94,.2)}
+  100%{background:transparent}
+}
+.word-mastered-flash td{animation:wordMastered .85s ease forwards}
+
+/* ── Progress bar gradient thay solid green ── */
+.book-progress-fill{background:linear-gradient(90deg,#22c55e 0%,#4ade80 100%)}
+
+/* ── Glow khi hoàn thành sổ 100% ── */
+@keyframes completionPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+  50%    {box-shadow:0 0 16px 6px rgba(34,197,94,.38)}
+}
+.book-progress-fill.complete{animation:completionPulse .85s ease 3}
+
+/* ── Confetti particles ── */
+@keyframes confettiFall{
+  0%  {transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+}
+.confetti-particle{position:fixed;top:-8px;pointer-events:none;z-index:9999}
+
+/* ── Stat number pop khi thay đổi ── */
+@keyframes statPop{
+  0%  {transform:scale(1)}
+  45% {transform:scale(1.3)}
+  100%{transform:scale(1)}
+}
+.stat-pop{display:inline-block;animation:statPop .32s ease}
+
+/* ── Score ring: smooth CSS transition (thay setTimeout) ── */
+#scoreCircle{transition:stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1),stroke .4s ease}
+
+/* ── Vocab card hover lift ── */
+.vocab-card{transition:box-shadow .2s,transform .2s}
+.vocab-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.12)}
+
+/* ── Flashcard perspective & transition cải tiến ── */
+.flashcard-wrap{perspective:1400px}
+.flashcard{transition:transform .42s cubic-bezier(.4,.2,.2,1)}
+.fc-face{box-shadow:0 4px 20px rgba(0,0,0,.07)}
+
+/* ── Practice progress gradient ── */
+.progress-fill{background:linear-gradient(90deg,var(--brand) 0%,#ff6b6b 100%)}
+
+/* ── Answer option active micro-press ── */
+.answer-option:not(:disabled):active{transform:scale(.98)}
+
+/* ── Book item hover smooth ── */
+.book-item{transition:all .18s}
+
+/* ── Btn-next pulse khi hiện ── */
+@keyframes btnPop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.btn-next{animation:btnPop .18s ease}
+
+/* ── Quick btns hover glow ── */
+.btn-remembered:hover{background:#dcfce7;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.btn-not-remembered:hover{background:#fee2e2;box-shadow:0 0 0 3px rgba(229,57,53,.2)}
+
+/* ── Flashcard front gradient nhẹ ── */
+.fc-face.fc-front{background:linear-gradient(135deg,var(--surface) 60%,var(--surface2) 100%)}
+
+/* ── Dark theme overrides cho các class mới ── */
+[data-theme="dark"] .fc-face.fc-front{background:linear-gradient(135deg,var(--surface) 60%,#2d3748 100%)}
+[data-theme="dark"] .vocab-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.35)}

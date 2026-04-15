@@ -187,6 +187,63 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ══════════════════════════════════════════════
+   ANIMATION UTILITIES
+══════════════════════════════════════════════ */
+
+/* Count-up từ giá trị hiện tại lên target */
+function animateCount(el, target, duration = 480) {
+    if (!el) return;
+    const from = parseInt(el.textContent, 10) || 0;
+    if (from === target) return;
+    const startTime = performance.now();
+    function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        el.textContent = Math.round(from + (target - from) * eased);
+        if (t < 1) requestAnimationFrame(step);
+        else el.textContent = target; // đảm bảo chính xác
+    }
+    requestAnimationFrame(step);
+}
+
+/* Confetti burst – dùng khi đạt thành tích */
+function spawnConfetti(count = 60) {
+    const colors = ['#e53935','#3d8bff','#22c55e','#f59e0b','#a78bfa','#fb7185','#34d399'];
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-particle';
+        const size = 5 + Math.random() * 8;
+        el.style.cssText =
+            `left:${8 + Math.random() * 84}%;` +
+            `background:${colors[Math.floor(Math.random() * colors.length)]};` +
+            `animation:confettiFall ${0.9 + Math.random() * 1.3}s ${Math.random() * 0.35}s linear forwards;` +
+            `width:${size}px;height:${size}px;` +
+            `border-radius:${Math.random() > .5 ? '50%' : '2px'};`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+    }
+}
+
+/* Kiểm tra xem sổ đã thuộc hết chưa → celebrate */
+function checkBookCompletion() {
+    if (!currentBookData?.words?.length) return;
+    const total    = currentBookData.words.length;
+    const mastered = currentBookData.words.filter(w => w.status === 'da-thuoc').length;
+    if (mastered === total) {
+        const fill = document.getElementById('book-progress-fill');
+        if (fill) {
+            fill.classList.remove('complete');
+            // Force reflow để restart animation
+            void fill.offsetWidth;
+            fill.classList.add('complete');
+            setTimeout(() => fill.classList.remove('complete'), 2800);
+        }
+        spawnConfetti(90);
+        toast(`🎉 Xuất sắc! Bạn đã thuộc hết ${total} từ!`, 'success');
+    }
+}
+
+/* ══════════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════════ */
 function toast(msg, type = 'success') {
@@ -264,11 +321,27 @@ async function loadStreakAndUpdateMascot() {
 async function loadMyBooks() {
     try {
         const res  = await fetch(`${API}/vocabbook`, { headers: authH() });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) {
+            const isColdStart = res.status === 502 || res.status === 503;
+            throw new Error(isColdStart ? 'cold-start' : `HTTP ${res.status}`);
+        }
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
         myBooks = data.books;
         renderBookSidebar();
-    } catch (err) { console.error(err); }
+    } catch (err) {
+        console.error('loadMyBooks:', err);
+        const isColdStart = err.message === 'cold-start';
+        const wrap = document.getElementById('book-list-sidebar');
+        if (wrap) {
+            wrap.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">
+              <div style="font-size:28px;margin-bottom:8px">${isColdStart ? '🔄' : '⚠️'}</div>
+              <div style="margin-bottom:10px">${isColdStart ? 'Server đang khởi động,<br>vui lòng thử lại sau vài giây.' : 'Không tải được sổ từ vựng'}</div>
+              <button onclick="loadMyBooks()" style="background:var(--brand);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit">Thử lại</button>
+            </div>`;
+        }
+    }
 }
 
 function renderBookSidebar() {
@@ -282,6 +355,8 @@ function renderBookSidebar() {
       <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Tuỳ chọn">⋯</button>
     </div>
   `).join('');
+    // Sync mobile bottom sheet nếu hàm đã được khởi tạo
+    if (typeof syncSheetBooks === 'function') syncSheetBooks();
 }
 
 async function openBook(bookId) {
@@ -322,6 +397,11 @@ async function openBook(bookId) {
 async function refreshCurrentBook() {
     try {
         const res  = await fetch(`${API}/vocabbook/${currentBookId}`, { headers: authH() });
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) {
+            const isColdStart = res.status === 502 || res.status === 503;
+            throw new Error(isColdStart ? 'Server đang khởi động, vui lòng thử lại.' : `Lỗi server (${res.status})`);
+        }
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
         currentBookData = data.book;
@@ -330,8 +410,8 @@ async function refreshCurrentBook() {
 }
 
 function renderBookContent(book) {
-    document.getElementById('book-top-emoji').textContent     = book.emoji;
-    document.getElementById('book-editable-name').value       = book.name;
+    document.getElementById('book-top-emoji').textContent = book.emoji;
+    document.getElementById('book-editable-name').value   = book.name;
 
     const total = book.words.length;
     const da    = book.words.filter(w => w.status === 'da-thuoc').length;
@@ -339,11 +419,16 @@ function renderBookContent(book) {
     const chua  = book.words.filter(w => w.status === 'chua-thuoc').length;
     const pct   = total ? Math.round((da / total) * 100) : 0;
 
-    document.getElementById('stat-da-thuoc').textContent   = da;
-    document.getElementById('stat-nho-so-so').textContent  = nho;
-    document.getElementById('stat-chua-thuoc').textContent = chua;
-    document.getElementById('stat-total').textContent      = total;
-    document.getElementById('book-progress-fill').style.width = pct + '%';
+    // Animate stats count-up khi mở sổ
+    animateCount(document.getElementById('stat-da-thuoc'),   da,   550);
+    animateCount(document.getElementById('stat-nho-so-so'),  nho,  550);
+    animateCount(document.getElementById('stat-chua-thuoc'), chua, 550);
+    animateCount(document.getElementById('stat-total'),      total, 550);
+
+    // Delay nhỏ để progress bar animate sau khi DOM render
+    requestAnimationFrame(() => {
+        document.getElementById('book-progress-fill').style.width = pct + '%';
+    });
 
     renderWordsTable(book.words);
 }
@@ -376,8 +461,9 @@ function renderWordsTable(words) {
         return;
     }
 
-    tbody.innerHTML = words.map(w => `
-    <tr class="${selectedWordIds.has(w._id) ? 'selected' : ''}" id="row-${w._id}">
+    tbody.innerHTML = words.map((w, i) => `
+    <tr class="word-row-anim ${selectedWordIds.has(w._id) ? 'selected' : ''}" id="row-${w._id}"
+        style="animation-delay:${Math.min(i * 22, 380)}ms">
       <td class="cb-wrap"><input type="checkbox" ${selectedWordIds.has(w._id) ? 'checked' : ''}
         onchange="toggleSelect('${w._id}', this.checked)"/></td>
       <td>
@@ -1498,6 +1584,7 @@ function logout() {
    EXPOSE globals
 ══════════════════════════════════════════════ */
 window.logout             = logout;
+window.loadMyBooks        = loadMyBooks;
 window.loadUnit           = loadUnit;
 window.showMode           = showMode;
 window.toggleSound        = toggleSound;
