@@ -492,33 +492,56 @@ function renderWordsTable(words) {
 }
 
 /* ── Word search / filter ── */
+let _filterTimer = null;
 function filterWords(q) {
-    if (!currentBookData) return;
-    const query = q.trim().toLowerCase();
-    const all   = currentBookData.words;
-    const words = query
-        ? all.filter(w =>
-            w.word.toLowerCase().includes(query) ||
-            (w.meaning || '').toLowerCase().includes(query) ||
-            (w.note || '').toLowerCase().includes(query))
-        : all;
-    renderWordsTable(words);
-    // Update total count label to show filtered result
-    const totalEl = document.getElementById('stat-total');
-    if (totalEl) totalEl.textContent = query ? `${words.length}/${all.length}` : all.length;
+    clearTimeout(_filterTimer);
+    _filterTimer = setTimeout(() => {
+        if (!currentBookData) return;
+        const query = q.trim().toLowerCase();
+        const all   = currentBookData.words;
+        const words = query
+            ? all.filter(w =>
+                w.word.toLowerCase().includes(query) ||
+                (w.meaning || '').toLowerCase().includes(query) ||
+                (w.note || '').toLowerCase().includes(query))
+            : all;
+        renderWordsTable(words);
+        // Update total count label to show filtered result
+        const totalEl = document.getElementById('stat-total');
+        if (totalEl) totalEl.textContent = query ? `${words.length}/${all.length}` : all.length;
+    }, 120);
 }
 
 /* ── Status update ── */
 async function updateWordStatus(wordId, status, selectEl) {
     try {
         selectEl.className = `status-select ${status}`;
+        // Optimistic local update — no full reload needed
+        const w = currentBookData?.words?.find(w => w._id === wordId);
+        if (w) {
+            w.status = status;
+            updateStats(currentBookData);
+            // Flash the row green when marking as mastered
+            if (status === 'da-thuoc') {
+                const row = document.getElementById(`row-${wordId}`);
+                if (row) {
+                    row.querySelectorAll('td').forEach(td => td.classList.add('word-mastered-flash'));
+                    setTimeout(() => row.querySelectorAll('td').forEach(td => td.classList.remove('word-mastered-flash')), 700);
+                }
+                checkBookCompletion();
+            }
+            // Update sidebar badge count
+            const badge = document.querySelector(`.book-card[data-id="${currentBookId}"] .word-count`);
+            if (badge) {
+                const total    = currentBookData.words.length;
+                const mastered = currentBookData.words.filter(x => x.status === 'da-thuoc').length;
+                badge.textContent = `${mastered}/${total} từ`;
+            }
+        }
         await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ status })
         });
-        await loadMyBooks();
-        const w = currentBookData?.words?.find(w => w._id === wordId);
-        if (w) { w.status = status; updateStats(currentBookData); }
     } catch { toast('Lỗi cập nhật', 'error'); }
 }
 
@@ -528,10 +551,13 @@ function updateStats(book) {
     const chua  = book.words.filter(w => w.status === 'chua-thuoc').length;
     const total = book.words.length;
     const pct   = total ? Math.round((da / total) * 100) : 0;
-    document.getElementById('stat-da-thuoc').textContent   = da;
-    document.getElementById('stat-nho-so-so').textContent  = nho;
-    document.getElementById('stat-chua-thuoc').textContent = chua;
-    document.getElementById('book-progress-fill').style.width = pct + '%';
+    animateCount(document.getElementById('stat-da-thuoc'),   da,   380);
+    animateCount(document.getElementById('stat-nho-so-so'),  nho,  380);
+    animateCount(document.getElementById('stat-chua-thuoc'), chua, 380);
+    requestAnimationFrame(() => {
+        const fill = document.getElementById('book-progress-fill');
+        if (fill) fill.style.width = pct + '%';
+    });
 }
 
 /* ── Delete word ── */
@@ -609,11 +635,11 @@ function updateBulkBar() {
 }
 async function bulkChangeStatus(status) {
     if (!status || !selectedWordIds.size) return;
-    for (const wid of selectedWordIds) {
-        await fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
+    await Promise.all([...selectedWordIds].map(wid =>
+        fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
             method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
-        });
-    }
+        })
+    ));
     selectedWordIds.clear();
     document.getElementById('bulk-status-sel').value = '';
     toast('Đã cập nhật trạng thái');
@@ -1464,7 +1490,18 @@ function showResults(mode) {
     const offset = circ - (pct / 100) * circ;
     const circle = document.getElementById('scoreCircle');
     circle.style.stroke = pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#e53935';
-    setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
+    // Reset to full offset first, then animate to target via CSS transition
+    circle.style.transition = 'none';
+    circle.style.strokeDashoffset = circ;
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            circle.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1)';
+            circle.style.strokeDashoffset = offset;
+        });
+    });
+    if (pct === 100) {
+        setTimeout(() => spawnConfetti(100), 400);
+    }
     void total; // total used for reference only
 }
 
