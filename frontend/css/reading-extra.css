@@ -1,0 +1,152 @@
+    /* ── screen-exam làm containing block cho modal khi fullscreen ── */
+    #screen-exam {
+      position: relative;
+    }
+
+    .vb-pick-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background .15s;
+    }
+
+    .vb-pick-item:hover {
+      background: #f3f4f6;
+    }
+
+    .vb-pick-emoji {
+      font-size: 22px;
+    }
+
+    .vb-pick-info {
+      flex: 1;
+    }
+
+    .vb-pick-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .vb-pick-count {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .vb-pick-arrow {
+      font-size: 20px;
+      color: #d1d5db;
+    }
+
+    .vocab-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1f2937;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    .vocab-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .vocab-toast.success {
+      background: #065f46;
+    }
+
+    .vocab-toast.info {
+      background: #1e40af;
+    }
+
+    /* Mobile exam improvements */
+    @media (max-width: 768px) {
+      .exam-split {
+        flex-direction: column !important;
+      }
+
+      .split-passage {
+        width: 100% !important;
+        height: 40vh;
+        overflow-y: auto;
+        border-right: none !important;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .split-questions {
+        width: 100% !important;
+      }
+
+      .split-divider {
+        display: none !important;
+      }
+
+      .exam-bar {
+        padding: 8px 12px !important;
+      }
+
+      .exam-title-txt {
+        font-size: 13px !important;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #exam-progress-pill {
+        display: none;
+      }
+
+      .q-nav-scroll {
+        max-height: 60px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .exam-toolbar {
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 12px;
+      }
+
+      .tool-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
+      .toolbar-passage-tabs {
+        flex-wrap: wrap;
+      }
+    }
+
+    .exam-bar .profile-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: #6b7280;
+      font-size: 13px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      transition: all .2s;
+    }
+
+    .exam-bar .profile-link:hover {
+      background: #f3f4f6;
+    }
