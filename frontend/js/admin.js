@@ -1320,7 +1320,6 @@ async function openKeyModal() {
   document.getElementById('k-count').value = 1;
   document.getElementById('k-maxuses').value = 1;
   document.getElementById('k-expiry').value = '';
-  document.getElementById('k-type').value = '';
   document.getElementById('k-test').innerHTML = '<option value="">Tất cả bộ đề</option>';
 
   // Load reading + listening + writing tests vào dropdown
