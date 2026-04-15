@@ -350,36 +350,42 @@ function renderPassageTabs(containerId, isReview) {
 }
 
 function switchPassage(idx) {
-  const passageInner = document.getElementById('passage-inner');
+  const passageInner   = document.getElementById('passage-inner');
+  const questionsInner = document.getElementById('questions-inner');
 
-  // Save current passage highlight before overwriting (skip on first load when idx === currentPassageIdx)
-  if (passageInner && state.currentPassageIdx !== idx) {
-    passageHlCache[state.currentPassageIdx] = passageInner.innerHTML;
+  // Save both panels' highlights before overwriting (skip on first load when idx === currentPassageIdx)
+  if (state.currentPassageIdx !== idx) {
+    passageHlCache[state.currentPassageIdx] = {
+      passage:   passageInner   ? passageInner.innerHTML   : null,
+      questions: questionsInner ? questionsInner.innerHTML : null,
+    };
   }
 
   state.currentPassageIdx = idx;
   const p = state.passages[idx];
   if (!p) return;
 
-  // Restore highlighted passage text if available, otherwise render fresh
-  if (passageInner) {
-    passageInner.innerHTML = passageHlCache[idx] !== undefined
-      ? passageHlCache[idx]
-      : `<div class="passage-title">${escHtml(p.title)}</div>
+  const cached = passageHlCache[idx];
+  if (cached !== undefined) {
+    // Restore both panels with saved highlights
+    if (passageInner)   passageInner.innerHTML   = cached.passage   ?? '';
+    if (questionsInner) questionsInner.innerHTML = cached.questions ?? '';
+    restoreAnswers(false);
+    initDropZones();
+  } else {
+    // Fresh render
+    if (passageInner) {
+      passageInner.innerHTML =
+        `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
+    }
+    if (questionsInner) questionsInner.innerHTML = renderPassageQuestions(p, false);
+    restoreAnswers(false);
+    initDropZones();
   }
 
-  // Questions always render fresh (highlights only apply to passage panel, not questions)
-  document.getElementById('questions-inner').innerHTML =
-    renderPassageQuestions(p, false);
-
-  // Restore existing answers
-  restoreAnswers(false);
   updateQNavFooter();
-
-  // Update tabs
   renderPassageTabs('toolbar-passage-tabs', false);
-  initDropZones();
 }
 
 /* ── Render questions for a passage ──────────────────────────────── */
@@ -1326,11 +1332,15 @@ function renderReview(attempt) {
 }
 
 function switchReviewPassage(idx) {
-  const rvPassageInner = document.getElementById('review-passage-inner');
+  const rvPassageInner   = document.getElementById('review-passage-inner');
+  const rvQuestionsInner = document.getElementById('review-questions-inner');
 
-  // Save current passage highlight before overwriting
-  if (rvPassageInner && state.currentPassageIdx !== idx) {
-    reviewHlCache[state.currentPassageIdx] = rvPassageInner.innerHTML;
+  // Save both panels' highlights before overwriting
+  if (state.currentPassageIdx !== idx) {
+    reviewHlCache[state.currentPassageIdx] = {
+      passage:   rvPassageInner   ? rvPassageInner.innerHTML   : null,
+      questions: rvQuestionsInner ? rvQuestionsInner.innerHTML : null,
+    };
   }
 
   state.currentPassageIdx = idx;
@@ -1338,16 +1348,18 @@ function switchReviewPassage(idx) {
   if (!p) return;
   const { reviewMap } = state.reviewData;
 
-  // Restore highlighted passage text if available, otherwise render fresh
-  if (rvPassageInner) {
-    rvPassageInner.innerHTML = reviewHlCache[idx] !== undefined
-      ? reviewHlCache[idx]
-      : `<div class="passage-title">${escHtml(p.title)}</div>
+  const cached = reviewHlCache[idx];
+  if (cached !== undefined) {
+    if (rvPassageInner)   rvPassageInner.innerHTML   = cached.passage   ?? '';
+    if (rvQuestionsInner) rvQuestionsInner.innerHTML = cached.questions ?? '';
+  } else {
+    if (rvPassageInner) {
+      rvPassageInner.innerHTML =
+        `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
+    }
+    if (rvQuestionsInner) rvQuestionsInner.innerHTML = renderPassageQuestions(p, true, reviewMap);
   }
-
-  document.getElementById('review-questions-inner').innerHTML =
-    renderPassageQuestions(p, true, reviewMap);
 
   renderPassageTabs('toolbar-passage-tabs-rv', true);
 }
@@ -1557,15 +1569,18 @@ function setTool(tool) {
 
 document.addEventListener('mouseup', e => {
   if (state.tool !== 'highlight') return;
-  if (e.target.closest('.split-passage') || e.target.closest('.review-passage')) {
-    const sel = window.getSelection();
-    if (!sel || sel.isCollapsed) return;
-    const range = sel.getRangeAt(0);
-    const span = document.createElement('span');
-    span.className = 'hl';
-    try { range.surroundContents(span); } catch { }
-    sel.removeAllRanges();
-  }
+  const inPassage   = e.target.closest('.split-passage')   || e.target.closest('.review-passage');
+  const inQuestions = e.target.closest('.split-questions') || e.target.closest('.review-q-panel');
+  if (!inPassage && !inQuestions) return;
+  // Don't highlight when clicking on interactive inputs
+  if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone')) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span');
+  span.className = 'hl';
+  try { range.surroundContents(span); } catch { }
+  sel.removeAllRanges();
 });
 
 /* ══════════════════════════════════════════════════════════════════════

@@ -1795,8 +1795,10 @@
         // HIGHLIGHT
         // ══════════════════════════════════════════════
         function setupHighlight() {
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('mouseup', e => {
                 if (state.tool !== 'highlight') return;
+                // Don't highlight when clicking on interactive inputs
+                if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop')) return;
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
