@@ -1,14 +1,26 @@
 const mongoose = require('mongoose');
 
 const WordSchema = new mongoose.Schema({
-  word:       { type: String, required: true },
-  meaning:    { type: String, required: true },   // nghĩa tiếng Việt
-  example:    { type: String, default: '' },       // ví dụ
-  audioUrl:   { type: String, default: '' },       // URL audio nếu có
-  phonetic:   { type: String, default: '' },       // /kəˈmjuːt/
+  // ── Loại mục từ ─────────────────────────────────────────────────
+  // 'vocab'      : từ vựng thông thường (mặc định)
+  // 'paraphrase' : cặp paraphrase dùng cho luyện IELTS
+  type:        { type: String, enum: ['vocab', 'paraphrase'], default: 'vocab' },
+
+  // ── Trường dùng chung ────────────────────────────────────────────
+  word:        { type: String, required: true },  // từ / "Text trong bài"
+  meaning:     { type: String, default: '' },      // nghĩa tiếng Việt
+
+  // ── Chỉ dùng cho type: 'vocab' ──────────────────────────────────
+  example:     { type: String, default: '' },      // ví dụ câu
+  audioUrl:    { type: String, default: '' },      // URL audio
+  phonetic:    { type: String, default: '' },      // /fəˈnɛtɪk/
   partOfSpeech:{ type: String, default: '' },      // verb, noun, adj…
-  level:      { type: String, default: 'B1' },     // A1 A2 B1 B2 C1
-  difficulty: { type: Number, default: 1 }         // 1–5
+  level:       { type: String, default: 'B1' },    // A1 A2 B1 B2 C1
+  difficulty:  { type: Number, default: 1 },       // 1–5
+
+  // ── Chỉ dùng cho type: 'paraphrase' ────────────────────────────
+  paraphrase:  { type: String, default: '' },      // Paraphrase trong câu hỏi
+  explanation: { type: String, default: '' },      // Giải thích chi tiết
 }, { _id: false });
 
 const VocabUnitSchema = new mongoose.Schema({
