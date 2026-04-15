@@ -827,3 +827,117 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 /* ── Dark theme overrides cho các class mới ── */
 [data-theme="dark"] .fc-face.fc-front{background:linear-gradient(135deg,var(--surface) 60%,#2d3748 100%)}
 [data-theme="dark"] .vocab-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.35)}
+
+/* ════════════════════════════════════════════
+   PARAPHRASE TABLE
+════════════════════════════════════════════ */
+.paraphrase-section {
+  grid-column: 1 / -1;   /* span full width inside vocab grid */
+  background: var(--surface);
+  border: 1.5px solid #e0e7ef;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 4px;
+  box-shadow: 0 2px 12px rgba(61,139,255,.07);
+}
+.para-table-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px 10px;
+  background: linear-gradient(90deg, #f0f7ff 0%, #fff7ed 100%);
+  border-bottom: 1.5px solid #e0e7ef;
+  flex-wrap: wrap;
+}
+.para-table-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1e40af;
+  letter-spacing: .4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.para-icon { font-size: 16px; }
+.para-passage-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  flex: 1;
+}
+.para-copy-btn {
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: var(--text3);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 3px 8px;
+  transition: background .15s, color .15s;
+}
+.para-copy-btn:hover { background: #e5e7eb; color: var(--text); }
+
+.para-table-wrap { overflow-x: auto; }
+.para-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.para-table thead th {
+  background: #f8fafc;
+  padding: 9px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border-bottom: 1.5px solid #e5e7eb;
+  white-space: nowrap;
+}
+.para-row { transition: background .12s; }
+.para-row:hover { background: #f8fafc; }
+.para-row + .para-row { border-top: 1px solid #f0f0f0; }
+
+.para-cell-original,
+.para-cell-paraphrase,
+.para-cell-meaning,
+.para-cell-explain {
+  padding: 10px 14px;
+  vertical-align: top;
+  line-height: 1.5;
+}
+.para-cell-original  { width: 22%; }
+.para-cell-paraphrase{ width: 22%; }
+.para-cell-meaning   { width: 14%; color: var(--text3); font-size: 12px; }
+.para-cell-explain   { width: 42%; font-size: 12px; color: var(--text2); }
+
+.para-original-text {
+  display: inline-block;
+  background: rgba(219,234,254,.6);
+  color: #1d4ed8;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.para-para-text {
+  display: inline-block;
+  background: rgba(254,243,199,.8);
+  color: #b45309;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Dark mode */
+[data-theme="dark"] .paraphrase-section { border-color: var(--border2); box-shadow: none; }
+[data-theme="dark"] .para-table-header  { background: linear-gradient(90deg,rgba(61,139,255,.08) 0%,rgba(245,158,11,.07) 100%); border-color: var(--border2); }
+[data-theme="dark"] .para-table-title   { color: #93c5fd; }
+[data-theme="dark"] .para-passage-label { color: #60a5fa; }
+[data-theme="dark"] .para-table thead th{ background: var(--surface2); border-color: var(--border2); }
+[data-theme="dark"] .para-row:hover     { background: var(--surface2); }
+[data-theme="dark"] .para-row + .para-row { border-color: var(--border2); }
+[data-theme="dark"] .para-original-text { background: rgba(59,130,246,.15); color: #93c5fd; }
+[data-theme="dark"] .para-para-text     { background: rgba(245,158,11,.12); color: #fbbf24; }

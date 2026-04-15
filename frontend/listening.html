@@ -64,6 +64,14 @@
                     <button class="filter-btn" onclick="filterTests('new', this)">Not attempted</button>
                 </div>
             </div>
+
+            <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
+            <div id="resume-banner">
+                <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span id="resume-answered-count"></span></span>
+                <button class="resume-btn-continue" onclick="resumeExam()">▶ Tiếp tục làm</button>
+                <button class="resume-btn-dismiss" onclick="dismissResume()">Bỏ qua</button>
+            </div>
+
             <div id="tests-wrapper">
                 <div class="loading-spinner">Loading tests...</div>
             </div>
@@ -366,6 +374,100 @@
         const audio = document.getElementById('audio-player');
 
         // ══════════════════════════════════════════════
+        // LOCAL-STORAGE: AUTO-SAVE & RESUME
+        // ══════════════════════════════════════════════
+        const _LS_KEY    = 'ews_listening_progress';
+        const _LS_MAX_MS = 2 * 60 * 60 * 1000; // expire after 2 hours
+        let   _saveInterval = null;
+
+        function saveExamToStorage() {
+            if (!state.currentTestId || state.submitted) return;
+            try {
+                localStorage.setItem(_LS_KEY, JSON.stringify({
+                    currentTestId: state.currentTestId,
+                    currentTest:   state.currentTest,
+                    answers:       state.answers,
+                    partIdx:       state.partIdx,
+                    audioTime:     audio.currentTime,
+                    startTime:     state.startTime,
+                    savedAt:       Date.now()
+                }));
+            } catch { /* storage quota – ignore */ }
+        }
+
+        function clearExamStorage() {
+            localStorage.removeItem(_LS_KEY);
+            clearInterval(_saveInterval);
+            _saveInterval = null;
+        }
+
+        function checkResumeExam() {
+            try {
+                const raw = localStorage.getItem(_LS_KEY);
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (!data.currentTestId || !data.currentTest) { clearExamStorage(); return; }
+                if (Date.now() - data.savedAt > _LS_MAX_MS) { clearExamStorage(); return; }
+                const banner = document.getElementById('resume-banner');
+                if (!banner) return;
+                const allQs = (data.currentTest.sections || [])
+                    .flatMap(s => (s.questionGroups || []).flatMap(g => g.questions || []));
+                const answered = Object.keys(data.answers || {}).length;
+                const total    = data.currentTest.totalQuestions || allQs.length || '?';
+                document.getElementById('resume-test-name').textContent     = data.currentTest.name || 'bài thi';
+                document.getElementById('resume-answered-count').textContent = `${answered}/${total} câu đã trả lời`;
+                banner._resumeData = data;
+                banner.style.display = 'flex';
+            } catch { clearExamStorage(); }
+        }
+
+        function resumeExam() {
+            const banner = document.getElementById('resume-banner');
+            const data   = banner?._resumeData;
+            if (!data) return;
+            banner.style.display = 'none';
+
+            const t = data.currentTest;
+            state.currentTestId = data.currentTestId;
+            state.currentTest   = t;
+            state.answers       = data.answers   || {};
+            state.partIdx       = data.partIdx   || 0;
+            state.submitted     = false;
+            state.isReview      = false;
+            state.startTime     = data.startTime || new Date().toISOString();
+            for (const k in partHlCache) delete partHlCache[k];
+
+            document.getElementById('exam-title').textContent = t.name;
+            audio.src = t.audioUrl || '';
+            audio.load();
+
+            // Restore audio position after metadata is ready
+            if (data.audioTime > 0) {
+                audio.addEventListener('loadedmetadata', function seekOnce() {
+                    audio.currentTime = data.audioTime;
+                    audio.removeEventListener('loadedmetadata', seekOnce);
+                });
+            }
+
+            buildPartTabs('part-tabs', false);
+            renderPartQuestions(data.partIdx || 0);
+            renderQNav('q-nav-grid', false);
+            updateFooter();
+            setToolExam('highlight');
+            showScreen('exam');
+            // Start periodic auto-save
+            clearInterval(_saveInterval);
+            _saveInterval = setInterval(saveExamToStorage, 10000);
+            window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+        }
+
+        function dismissResume() {
+            const banner = document.getElementById('resume-banner');
+            if (banner) banner.style.display = 'none';
+            clearExamStorage();
+        }
+
+        // ══════════════════════════════════════════════
         // INIT
         // ══════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', () => {
@@ -379,6 +481,7 @@
             setupDictionaryDouble('questions-panel');   // dict trong exam
             setupAudioEvents();
             loadTestList();
+            checkResumeExam();
             showScreen('list');
         });
 
@@ -548,6 +651,7 @@
         // ══════════════════════════════════════════════
         async function startTest(testId, key) {
             try {
+                clearExamStorage(); // clear any previous in-progress exam
                 const res = await fetch(`${API}/listening/tests/${testId}/start`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ key })
@@ -578,6 +682,9 @@
                 if (playNowBtn) playNowBtn.classList.add('hidden');
                 updateExamAudioStatus(false);
                 window.onbeforeunload = e => { if (!state.submitted) { e.preventDefault(); e.returnValue = ''; } };
+                // Start periodic auto-save every 10s
+                clearInterval(_saveInterval);
+                _saveInterval = setInterval(saveExamToStorage, 10000);
             } catch (err) { toast('Error loading test: ' + err.message, 'error'); }
         }
 
@@ -1341,7 +1448,7 @@
             state.answers[qnum] = value;
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.radio-opt')
                 .forEach(o => o.classList.toggle('selected', o.dataset.value === value));
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
 
         function toggleCheckbox(qnum, value, maxCount) {
@@ -1356,7 +1463,7 @@
             state.answers[qnum] = JSON.stringify(arr);
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.checkbox-opt')
                 .forEach(o => o.classList.toggle('selected', arr.includes(o.dataset.value)));
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
 
         // Toggle đáp án cho nhóm multi-answer-group (Choose TWO letters)
@@ -1386,12 +1493,12 @@
             document.querySelectorAll(`[data-cluster="${firstNum}"]`).forEach(o =>
                 o.classList.toggle('selected', arr.includes(o.dataset.value))
             );
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
 
         function saveText(qnum, value) {
             state.answers[qnum] = value.trim();
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
 
         function restoreAnswer(q) {
@@ -1449,7 +1556,7 @@
             state.answers[qNum] = val;
             _ltRefreshMOZone(qNum, groupId);
             _ltRefreshGroupChips(groupId);
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
         function ltClickMOChip(letter, groupId) {
             const emptyDz = document.querySelector(`.rq-mo-drop[data-groupid="${groupId}"]:not(.filled)`);
@@ -1458,7 +1565,7 @@
             state.answers[qNum] = letter;
             _ltRefreshMOZone(qNum, groupId);
             _ltRefreshGroupChips(groupId);
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
         function _ltRefreshMOZone(qNum, groupId) {
             const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
@@ -1480,7 +1587,7 @@
             state.answers[qNum] = val;
             _ltRefreshSCZone(qNum, groupId);
             _ltRefreshGroupChips(groupId);
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
         function ltClickSCChip(word, groupId) {
             const emptyDz = document.querySelector(`.sc-drop[data-groupid="${groupId}"]:not(.filled)`);
@@ -1489,7 +1596,7 @@
             state.answers[qNum] = word;
             _ltRefreshSCZone(qNum, groupId);
             _ltRefreshGroupChips(groupId);
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
         function _ltRefreshSCZone(qNum, groupId) {
             const dz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
@@ -1507,7 +1614,7 @@
                 dz.innerHTML = dz.classList.contains('sc-drop') ? 'Kéo từ vào' : '<span class="mo-ans-placeholder">?</span>';
             }
             _ltRefreshGroupChips(groupId);
-            updateQNav(); updateFooter();
+            updateQNav(); updateFooter(); saveExamToStorage();
         }
 
         // ══════════════════════════════════════════════
@@ -1577,6 +1684,7 @@
         function clearDz(e, qnum) {
             e.stopPropagation();
             delete state.answers[qnum];
+            saveExamToStorage();
             updateDropZone(qnum);
             updateQNav(); updateFooter();
         }
@@ -1584,7 +1692,7 @@
         function placeAnswer(qnum, word) {
             state.answers[qnum] = word;
             updateDropZone(qnum);
-            updateQNav(); state.dragItem = null; updateFooter();
+            updateQNav(); state.dragItem = null; updateFooter(); saveExamToStorage();
         }
 
         // ══════════════════════════════════════════════
@@ -1733,6 +1841,7 @@
             closeModal('modal-submit');
             if (state.submitted) return;
             state.submitted = true;
+            clearExamStorage(); // clear saved progress on submit
             window.onbeforeunload = null;
             audio.pause();
 

@@ -1501,41 +1501,87 @@ async function openUnitWordsModal(unitId) {
   } catch (err) { toast(err.message, 'error'); }
 }
 
+function toggleWordTypeForm() {
+  const type = document.querySelector('input[name="nw-type"]:checked')?.value || 'vocab';
+  document.getElementById('nw-vocab-fields').style.display = type === 'vocab' ? '' : 'none';
+  document.getElementById('nw-para-fields').style.display  = type === 'paraphrase' ? '' : 'none';
+}
+
 function renderUnitWordsModal(unit) {
   document.getElementById('modal-uw-title').textContent = `Từ vựng – Unit ${unit.unitNumber}: ${unit.title}`;
-  document.getElementById('uw-word-count').textContent = `${unit.words.length} từ`;
-  ['nw-word', 'nw-meaning', 'nw-example', 'nw-phonetic', 'nw-pos'].forEach(id => { document.getElementById(id).value = ''; });
+  const total  = unit.words.length;
+  const vocab  = unit.words.filter(w => (w.type || 'vocab') === 'vocab').length;
+  const para   = unit.words.filter(w => w.type === 'paraphrase').length;
+  document.getElementById('uw-word-count').textContent =
+    `${total} mục${vocab ? ` · ${vocab} từ vựng` : ''}${para ? ` · ${para} paraphrase` : ''}`;
+
+  // Reset form
+  ['nw-word','nw-meaning','nw-example','nw-phonetic','nw-pos',
+   'nw-para-original','nw-para-paraphrase','nw-para-meaning','nw-para-explanation']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const vocabRadio = document.querySelector('input[name="nw-type"][value="vocab"]');
+  if (vocabRadio) { vocabRadio.checked = true; toggleWordTypeForm(); }
 
   document.getElementById('uw-words-tbody').innerHTML = unit.words.length
-    ? unit.words.map((w, i) => `
+    ? unit.words.map((w, i) => {
+        const isPara = w.type === 'paraphrase';
+        const typeBadge = isPara
+          ? `<span class="badge" style="background:rgba(245,158,11,.15);color:#b45309;font-size:10px;white-space:nowrap">📊 Para</span>`
+          : `<span class="badge badge-blue" style="font-size:10px">📚 Vocab</span>`;
+        const col2 = isPara
+          ? `<strong>${w.word}</strong>`
+          : `<strong>${w.word}</strong>${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${w.phonetic}</div>` : ''}`;
+        const col3 = isPara
+          ? `<span style="color:#b45309;font-size:12px">${w.paraphrase || ''}</span>`
+          : `<span style="color:var(--text2)">${w.meaning || ''}</span>`;
+        const col4 = isPara
+          ? `<span style="font-size:11px;color:var(--text3)">${(w.explanation || '').slice(0, 80)}${w.explanation?.length > 80 ? '…' : ''}</span>`
+          : `<span style="font-size:12px;color:var(--text3);font-style:italic">${w.example || ''}</span>`;
+        return `
   <tr>
     <td style="color:var(--text3)">${i + 1}</td>
+    <td>${typeBadge}</td>
+    <td>${col2}</td>
+    <td>${col3}</td>
+    <td>${col4}</td>
     <td>
-      <strong>${w.word}</strong>
-      ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${w.phonetic}</div>` : ''}
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWordFromUnit(${i})" title="Xoá">✕</button>
     </td>
-    <td style="color:var(--text2)">${w.meaning}</td>
-    <td style="font-size:12px;color:var(--text3);font-style:italic">${w.example || ''}</td>
-    <td><span class="badge badge-blue" style="font-size:10px">${w.level || 'B1'}</span></td>
-    <td>
-      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWordFromUnit(${i})" title="Xoá từ">✕</button>
-    </td>
-  </tr>`).join('')
+  </tr>`;
+      }).join('')
     : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Chưa có từ nào – thêm từ ở form trên</td></tr>';
 }
 
 async function addWordToUnit() {
   if (!editingUnitObj) return;
-  const word = document.getElementById('nw-word').value.trim();
-  const meaning = document.getElementById('nw-meaning').value.trim();
-  if (!word || !meaning) { toast('Từ và nghĩa là bắt buộc', 'error'); return; }
-  const body = {
-    word, meaning,
-    example: document.getElementById('nw-example').value.trim(),
-    phonetic: document.getElementById('nw-phonetic').value.trim(),
-    partOfSpeech: document.getElementById('nw-pos').value.trim(),
-    level: document.getElementById('nw-level').value
-  };
+  const type = document.querySelector('input[name="nw-type"]:checked')?.value || 'vocab';
+  let body;
+
+  if (type === 'paraphrase') {
+    const word       = document.getElementById('nw-para-original').value.trim();
+    const paraphrase = document.getElementById('nw-para-paraphrase').value.trim();
+    if (!word || !paraphrase) { toast('Text gốc và Paraphrase là bắt buộc', 'error'); return; }
+    body = {
+      type: 'paraphrase',
+      word,
+      paraphrase,
+      meaning:     document.getElementById('nw-para-meaning').value.trim(),
+      explanation: document.getElementById('nw-para-explanation').value.trim(),
+    };
+  } else {
+    const word    = document.getElementById('nw-word').value.trim();
+    const meaning = document.getElementById('nw-meaning').value.trim();
+    if (!word || !meaning) { toast('Từ và nghĩa là bắt buộc', 'error'); return; }
+    body = {
+      type: 'vocab',
+      word, meaning,
+      example:      document.getElementById('nw-example').value.trim(),
+      phonetic:     document.getElementById('nw-phonetic').value.trim(),
+      partOfSpeech: document.getElementById('nw-pos').value.trim(),
+      level:        document.getElementById('nw-level').value
+    };
+  }
+
   try {
     const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words`, { method: 'POST', headers: authH(), body: JSON.stringify(body) })).json();
     if (!data.success) { toast(data.message, 'error'); return; }

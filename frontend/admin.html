@@ -985,32 +985,48 @@
       <div class="modal-body" style="padding:16px 20px">
 
         <!-- Form thêm từ mới -->
-        <div
-          style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
-          <div
-            style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">
-            Thêm từ mới</div>
-          <div style="display:grid;grid-template-columns:1.2fr 1.2fr 1.5fr;gap:8px;margin-bottom:8px">
-            <input class="form-input" id="nw-word" placeholder="Từ tiếng Anh *"
-              style="font-size:13px;padding:8px 10px" />
-            <input class="form-input" id="nw-meaning" placeholder="Nghĩa tiếng Việt *"
-              style="font-size:13px;padding:8px 10px" />
-            <input class="form-input" id="nw-example" placeholder="Ví dụ" style="font-size:13px;padding:8px 10px" />
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+          <!-- Type toggle -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Loại mục</span>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px">
+              <input type="radio" name="nw-type" value="vocab" checked onchange="toggleWordTypeForm()" style="accent-color:var(--accent)"> Từ vựng
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px">
+              <input type="radio" name="nw-type" value="paraphrase" onchange="toggleWordTypeForm()" style="accent-color:#f59e0b"> 📊 Paraphrase
+            </label>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 0.6fr auto;gap:8px;align-items:center">
-            <input class="form-input" id="nw-phonetic" placeholder="/fəˈnɛtɪk/"
-              style="font-size:13px;padding:8px 10px" />
-            <input class="form-input" id="nw-pos" placeholder="Loại từ (verb, noun...)"
-              style="font-size:13px;padding:8px 10px" />
-            <select class="form-select" id="nw-level" style="font-size:13px;padding:8px 10px">
-              <option value="A1">A1</option>
-              <option value="A2" selected>A2</option>
-              <option value="B1">B1</option>
-              <option value="B2">B2</option>
-              <option value="C1">C1</option>
-            </select>
-            <button class="btn btn-primary btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px">＋
-              Thêm</button>
+
+          <!-- Vocab fields -->
+          <div id="nw-vocab-fields">
+            <div style="display:grid;grid-template-columns:1.2fr 1.2fr 1.5fr;gap:8px;margin-bottom:8px">
+              <input class="form-input" id="nw-word" placeholder="Từ tiếng Anh *" style="font-size:13px;padding:8px 10px" />
+              <input class="form-input" id="nw-meaning" placeholder="Nghĩa tiếng Việt *" style="font-size:13px;padding:8px 10px" />
+              <input class="form-input" id="nw-example" placeholder="Ví dụ" style="font-size:13px;padding:8px 10px" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 0.6fr auto;gap:8px;align-items:center">
+              <input class="form-input" id="nw-phonetic" placeholder="/fəˈnɛtɪk/" style="font-size:13px;padding:8px 10px" />
+              <input class="form-input" id="nw-pos" placeholder="Loại từ (verb, noun...)" style="font-size:13px;padding:8px 10px" />
+              <select class="form-select" id="nw-level" style="font-size:13px;padding:8px 10px">
+                <option value="A1">A1</option><option value="A2" selected>A2</option>
+                <option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px">＋ Thêm</button>
+            </div>
+          </div>
+
+          <!-- Paraphrase fields -->
+          <div id="nw-para-fields" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <input class="form-input" id="nw-para-original" placeholder="Text trong bài *" style="font-size:13px;padding:8px 10px" />
+              <input class="form-input" id="nw-para-paraphrase" placeholder="Paraphrase trong câu hỏi *" style="font-size:13px;padding:8px 10px" />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:start">
+              <input class="form-input" id="nw-para-meaning" placeholder="Nghĩa tiếng Việt" style="font-size:13px;padding:8px 10px" />
+              <textarea class="form-input" id="nw-para-explanation" placeholder="Giải thích chi tiết (ví dụ: &quot;byproduct&quot; = sản phẩm phụ → khái quát hoá thành &quot;industrial processes&quot;)"
+                style="font-size:12px;padding:8px 10px;resize:vertical;min-height:38px;line-height:1.4" rows="2"></textarea>
+              <button class="btn btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px;background:#f59e0b;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">＋ Thêm</button>
+            </div>
           </div>
         </div>
 
@@ -1020,10 +1036,10 @@
             <thead>
               <tr>
                 <th style="width:36px">#</th>
-                <th>Từ</th>
-                <th>Nghĩa</th>
-                <th>Ví dụ</th>
-                <th style="width:56px">Level</th>
+                <th style="width:60px">Loại</th>
+                <th>Từ / Text gốc</th>
+                <th>Nghĩa / Paraphrase</th>
+                <th>Ví dụ / Giải thích</th>
                 <th style="width:44px"></th>
               </tr>
             </thead>
@@ -1058,8 +1074,18 @@
         </p>
         <div class="form-group">
           <label>Nội dung JSON *</label>
-          <textarea class="form-textarea" id="import-json-text" rows="14"
-            placeholder='[{"unitNumber":1,"title":"Daily Life","words":[{"word":"commute","meaning":"đi làm bằng phương tiện",...}]}]'></textarea>
+          <textarea class="form-textarea" id="import-json-text" rows="16"
+            placeholder='[
+  {
+    "unitNumber": 1,
+    "title": "Daily Life",
+    "level": "B1",
+    "words": [
+      { "word": "commute", "meaning": "đi làm bằng phương tiện", "example": "I commute by train.", "phonetic": "/kəˈmjuːt/", "partOfSpeech": "verb" },
+      { "type": "paraphrase", "word": "byproduct of coal-burning", "paraphrase": "industrial processes create raw materials", "meaning": "sản phẩm phụ công nghiệp", "explanation": "\"byproduct\" = kết quả của quá trình CN → khái quát hoá thành \"industrial processes\"" }
+    ]
+  }
+]'></textarea>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:-6px">
           <input type="checkbox" id="import-replace" style="width:16px;height:16px;accent-color:var(--accent)" />

@@ -530,13 +530,6 @@ async function updateWordStatus(wordId, status, selectEl) {
                 }
                 checkBookCompletion();
             }
-            // Update sidebar badge count
-            const badge = document.querySelector(`.book-card[data-id="${currentBookId}"] .word-count`);
-            if (badge) {
-                const total    = currentBookData.words.length;
-                const mastered = currentBookData.words.filter(x => x.status === 'da-thuoc').length;
-                badge.textContent = `${mastered}/${total} từ`;
-            }
         }
         await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
             method: 'PATCH', headers: authH(),
@@ -551,9 +544,22 @@ function updateStats(book) {
     const chua  = book.words.filter(w => w.status === 'chua-thuoc').length;
     const total = book.words.length;
     const pct   = total ? Math.round((da / total) * 100) : 0;
-    animateCount(document.getElementById('stat-da-thuoc'),   da,   380);
-    animateCount(document.getElementById('stat-nho-so-so'),  nho,  380);
-    animateCount(document.getElementById('stat-chua-thuoc'), chua, 380);
+
+    function popStat(el, target) {
+        if (!el) return;
+        const prev = parseInt(el.textContent, 10) || 0;
+        animateCount(el, target, 380);
+        if (prev !== target) {
+            el.classList.remove('stat-pop');
+            void el.offsetWidth; // force reflow to restart animation
+            el.classList.add('stat-pop');
+            el.addEventListener('animationend', () => el.classList.remove('stat-pop'), { once: true });
+        }
+    }
+    popStat(document.getElementById('stat-da-thuoc'),   da);
+    popStat(document.getElementById('stat-nho-so-so'),  nho);
+    popStat(document.getElementById('stat-chua-thuoc'), chua);
+
     requestAnimationFrame(() => {
         const fill = document.getElementById('book-progress-fill');
         if (fill) fill.style.width = pct + '%';
@@ -565,8 +571,7 @@ function deleteWord(wordId) {
     confirm2('Xoá từ vựng', 'Bạn có chắc muốn xoá từ này?', async () => {
         await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
         toast('Đã xoá từ');
-        await refreshCurrentBook();
-        await loadMyBooks();
+        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
     });
 }
 
@@ -643,8 +648,7 @@ async function bulkChangeStatus(status) {
     selectedWordIds.clear();
     document.getElementById('bulk-status-sel').value = '';
     toast('Đã cập nhật trạng thái');
-    await refreshCurrentBook();
-    await loadMyBooks();
+    await Promise.all([refreshCurrentBook(), loadMyBooks()]);
 }
 async function bulkDelete() {
     if (!selectedWordIds.size) return;
@@ -656,8 +660,7 @@ async function bulkDelete() {
         selectedWordIds.clear();
         updateBulkBar();
         toast('Đã xoá');
-        await refreshCurrentBook();
-        await loadMyBooks();
+        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
     });
 }
 
@@ -767,8 +770,7 @@ async function addWordManual() {
         if (!data.success) { toast(data.message, 'error'); return; }
         closeModal('modal-add-word');
         toast(data.message);
-        await refreshCurrentBook();
-        await loadMyBooks();
+        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
     } catch (err) { toast(err.message, 'error'); }
 }
 
@@ -819,8 +821,10 @@ async function confirmSaveWord() {
         closeModal('modal-save-word');
         toast(data.message, data.success ? 'success' : 'error');
         if (data.success) {
-            await loadMyBooks();
-            if (currentBookId === selectedBookForSave) await refreshCurrentBook();
+            await Promise.all([
+                loadMyBooks(),
+                currentBookId === selectedBookForSave ? refreshCurrentBook() : Promise.resolve()
+            ]);
         }
     } catch (err) { toast(err.message, 'error'); }
 }
@@ -931,22 +935,89 @@ function showMode(mode) {
 ══════════════════════════════════════════════ */
 function renderStudyGrid() {
     const grid = document.getElementById('vocabGrid');
-    grid.innerHTML = currentUnit.words.map((w, i) => `
-    <div class="vocab-card">
-      <div class="vocab-card-top">
-        <span class="vocab-num">${i + 1}</span>
-        <span class="vocab-word-big">${w.word}</span>
-        <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Phát âm">🔊</button>
-        ${w.partOfSpeech ? `<span class="vocab-pos">${w.partOfSpeech}</span>` : ''}
-      </div>
-      ${w.phonetic ? `<div class="vocab-phonetic">${w.phonetic}</div>` : ''}
-      <div class="vocab-meaning">${w.meaning || ''}</div>
-      ${w.example ? `<div class="vocab-example">"${w.example}"</div>` : ''}
-      <button class="btn-save-to-book" onclick='openSaveWordFromUnit(${JSON.stringify(w)})'>
-        <i class="fas fa-bookmark"></i> Lưu vào sổ
-      </button>
+    const vocabWords = currentUnit.words.filter(w => (w.type || 'vocab') === 'vocab');
+    const paraWords  = currentUnit.words.filter(w => w.type === 'paraphrase');
+
+    let html = '';
+
+    // ── Vocab cards ──────────────────────────────
+    if (vocabWords.length) {
+        html += vocabWords.map((w, i) => `
+        <div class="vocab-card">
+          <div class="vocab-card-top">
+            <span class="vocab-num">${i + 1}</span>
+            <span class="vocab-word-big">${w.word}</span>
+            <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Phát âm">🔊</button>
+            ${w.partOfSpeech ? `<span class="vocab-pos">${w.partOfSpeech}</span>` : ''}
+          </div>
+          ${w.phonetic ? `<div class="vocab-phonetic">${w.phonetic}</div>` : ''}
+          <div class="vocab-meaning">${w.meaning || ''}</div>
+          ${w.example ? `<div class="vocab-example">"${w.example}"</div>` : ''}
+          <button class="btn-save-to-book" onclick='openSaveWordFromUnit(${JSON.stringify(w)})'>
+            <i class="fas fa-bookmark"></i> Lưu vào sổ
+          </button>
+        </div>`).join('');
+    }
+
+    grid.innerHTML = html;
+
+    // ── Paraphrase table (below grid, full width) ──
+    const existingTable = document.getElementById('paraphrase-table-section');
+    if (existingTable) existingTable.remove();
+
+    if (paraWords.length) {
+        const section = document.createElement('div');
+        section.id = 'paraphrase-table-section';
+        section.className = 'paraphrase-section';
+        section.innerHTML = renderParaphraseTable(paraWords, currentUnit.title);
+        grid.parentElement.insertBefore(section, grid.nextSibling);
+    }
+}
+
+function renderParaphraseTable(words, title) {
+    const rows = words.map(w => `
+        <tr class="para-row">
+            <td class="para-cell-original">
+                <span class="para-original-text">${w.word}</span>
+            </td>
+            <td class="para-cell-paraphrase">
+                <span class="para-para-text">${w.paraphrase || '–'}</span>
+            </td>
+            <td class="para-cell-meaning">${w.meaning || '–'}</td>
+            <td class="para-cell-explain">${w.explanation || ''}</td>
+        </tr>`).join('');
+
+    return `
+    <div class="para-table-header">
+        <div class="para-table-title">
+            <span class="para-icon">📊</span>
+            PARAPHRASE TABLE + EXPLANATION
+        </div>
+        ${title ? `<div class="para-passage-label">◆ ${title.toUpperCase()}</div>` : ''}
+        <button class="para-copy-btn" onclick="copyParaphraseTable()" title="Copy bảng">⧉</button>
     </div>
-  `).join('');
+    <div class="para-table-wrap">
+        <table class="para-table">
+            <thead>
+                <tr>
+                    <th>Text (trong bài)</th>
+                    <th>Paraphrase (trong câu hỏi)</th>
+                    <th>Nghĩa</th>
+                    <th>Giải thích chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`;
+}
+
+function copyParaphraseTable() {
+    if (!currentUnit?.words) return;
+    const paraWords = currentUnit.words.filter(w => w.type === 'paraphrase');
+    const text = paraWords.map(w =>
+        `${w.word}\t${w.paraphrase || ''}\t${w.meaning || ''}\t${w.explanation || ''}`
+    ).join('\n');
+    navigator.clipboard.writeText(text).then(() => toast('Đã copy bảng paraphrase ✅'));
 }
 
 function openSaveWordFromUnit(w) {
@@ -969,10 +1040,14 @@ function startPractice(mode) {
     correctAnswers = 0;
     wrongAnswers   = 0;
 
+    // Chỉ lấy từ vựng thực sự (bỏ qua paraphrase entries – chúng là bảng tham chiếu, không dùng để luyện)
+    const vocabOnly = currentUnit.words.filter(w => (w.type || 'vocab') === 'vocab');
+    if (!vocabOnly.length) { toast('Unit này chỉ chứa bảng paraphrase – không có từ vựng để luyện tập', 'info'); return; }
+
     if (mode === 'mixed') {
         // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
         const types = ['multipleChoice', 'listening', 'translation'];
-        const words = [...currentUnit.words];
+        const words = [...vocabOnly];
         shuffleArray(words);
         mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
         shuffleArray(mixedQueue);
@@ -981,7 +1056,7 @@ function startPractice(mode) {
         return;
     }
 
-    practiceWords = [...currentUnit.words];
+    practiceWords = [...vocabOnly];
     shuffleArray(practiceWords);
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
@@ -1658,7 +1733,8 @@ window.checkMultipleChoice = checkMultipleChoice;
 window.closeModal         = closeModal;
 window.selectEmoji        = selectEmoji;
 window.lookupNewWord      = lookupNewWord;
-window.openSaveWordFromUnit = openSaveWordFromUnit;
+window.openSaveWordFromUnit    = openSaveWordFromUnit;
+window.copyParaphraseTable     = copyParaphraseTable;
 window.stopPractice       = stopPractice;
 window.confirmQuit        = confirmQuit;
 window.cancelQuit         = cancelQuit;
