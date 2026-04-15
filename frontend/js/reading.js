@@ -25,6 +25,10 @@ const state = {
 
 let allTests = [];
 
+/* Highlight cache – preserve <span class="hl"> spans across passage switches */
+const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
+const reviewHlCache  = {};   // review mode: { passageIdx: passageInnerHTML }
+
 /* ══════════════════════════════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════════════════════════════ */
@@ -316,6 +320,7 @@ function dismissResume() {
 ══════════════════════════════════════════════════════════════════════ */
 function startExam(data) {
   clearExamStorage();          // Clear any previous in-progress exam
+  for (const k in passageHlCache) delete passageHlCache[k];
   state.passages = data.passages;
   state.attemptId = data.attemptId;
   state.testName = data.testName;
@@ -345,16 +350,26 @@ function renderPassageTabs(containerId, isReview) {
 }
 
 function switchPassage(idx) {
+  const passageInner = document.getElementById('passage-inner');
+
+  // Save current passage highlight before overwriting (skip on first load when idx === currentPassageIdx)
+  if (passageInner && state.currentPassageIdx !== idx) {
+    passageHlCache[state.currentPassageIdx] = passageInner.innerHTML;
+  }
+
   state.currentPassageIdx = idx;
   const p = state.passages[idx];
   if (!p) return;
 
-  // Passage text
-  document.getElementById('passage-inner').innerHTML =
-    `<div class="passage-title">${escHtml(p.title)}</div>
+  // Restore highlighted passage text if available, otherwise render fresh
+  if (passageInner) {
+    passageInner.innerHTML = passageHlCache[idx] !== undefined
+      ? passageHlCache[idx]
+      : `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
+  }
 
-  // Questions
+  // Questions always render fresh (highlights only apply to passage panel, not questions)
   document.getElementById('questions-inner').innerHTML =
     renderPassageQuestions(p, false);
 
@@ -1284,6 +1299,7 @@ function renderReview(attempt) {
   state.isReview = true;
   state.passages = attempt.passages;
   state.currentPassageIdx = 0;
+  for (const k in reviewHlCache) delete reviewHlCache[k];
 
   document.getElementById('review-title').textContent = attempt.testName || 'Review';
   const badge = document.getElementById('review-band-badge');
@@ -1310,14 +1326,25 @@ function renderReview(attempt) {
 }
 
 function switchReviewPassage(idx) {
+  const rvPassageInner = document.getElementById('review-passage-inner');
+
+  // Save current passage highlight before overwriting
+  if (rvPassageInner && state.currentPassageIdx !== idx) {
+    reviewHlCache[state.currentPassageIdx] = rvPassageInner.innerHTML;
+  }
+
   state.currentPassageIdx = idx;
   const p = state.passages[idx];
   if (!p) return;
   const { reviewMap } = state.reviewData;
 
-  document.getElementById('review-passage-inner').innerHTML =
-    `<div class="passage-title">${escHtml(p.title)}</div>
+  // Restore highlighted passage text if available, otherwise render fresh
+  if (rvPassageInner) {
+    rvPassageInner.innerHTML = reviewHlCache[idx] !== undefined
+      ? reviewHlCache[idx]
+      : `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
+  }
 
   document.getElementById('review-questions-inner').innerHTML =
     renderPassageQuestions(p, true, reviewMap);

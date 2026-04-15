@@ -555,6 +555,10 @@
             startTime: null
         };
 
+        /* Highlight cache – preserve <span class="hl"> spans across part switches */
+        const partHlCache   = {};  // exam mode  : { partIdx: questionsPanelHTML }
+        const partHlCacheRv = {};  // review mode: { partIdx: { transcript, questions } }
+
         const audio = document.getElementById('audio-player');
 
         // ══════════════════════════════════════════════
@@ -754,6 +758,7 @@
                 state.submitted = false;
                 state.isReview = false;
                 state.startTime = new Date().toISOString();
+                for (const k in partHlCache) delete partHlCache[k];
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
                 audio.load();
@@ -941,21 +946,49 @@
         }
 
         function switchPart(idx, isReview) {
+            const prevIdx = state.partIdx;
+
+            // Save current part's highlights before switching
+            if (prevIdx !== idx) {
+                if (isReview) {
+                    const tb = document.getElementById('transcript-body');
+                    const rv = document.getElementById('review-questions-inner');
+                    if (tb && rv) partHlCacheRv[prevIdx] = { transcript: tb.innerHTML, questions: rv.innerHTML };
+                } else {
+                    const qp = document.getElementById('questions-panel');
+                    if (qp) partHlCache[prevIdx] = qp.innerHTML;
+                }
+            }
+
             state.partIdx = idx;
             // Update active state in fixed nav bar
             document.querySelectorAll('#snf-section-btns .snf-section-btn')
                 .forEach((b, i) => b.classList.toggle('active', i === idx));
             if (isReview) {
-                renderReviewPartQuestions(idx);
-                const section = getSortedSections(true)[idx];
-                renderTranscript(section?.transcript || '');
+                if (partHlCacheRv[idx] !== undefined) {
+                    // Restore highlights from cache
+                    document.getElementById('transcript-body').innerHTML = partHlCacheRv[idx].transcript;
+                    document.getElementById('review-questions-inner').innerHTML = partHlCacheRv[idx].questions;
+                } else {
+                    renderReviewPartQuestions(idx);
+                    const section = getSortedSections(true)[idx];
+                    renderTranscript(section?.transcript || '');
+                }
                 // Scroll về đầu sau khi switch part
                 const rvInner = document.getElementById('review-questions-inner');
                 if (rvInner) rvInner.scrollTop = 0;
                 const rvPanel = document.getElementById('review-questions-panel');
                 if (rvPanel) rvPanel.scrollTop = 0;
             } else {
-                renderPartQuestions(idx);
+                if (partHlCache[idx] !== undefined) {
+                    // Restore highlights from cache, then re-setup event listeners
+                    const panel = document.getElementById('questions-panel');
+                    panel.innerHTML = partHlCache[idx];
+                    setupDragDrop(panel);
+                    setupDictionaryDouble('questions-panel');
+                } else {
+                    renderPartQuestions(idx);
+                }
                 // Scroll về đầu sau khi switch part
                 const qPanel = document.getElementById('questions-panel');
                 if (qPanel) qPanel.scrollTop = 0;
@@ -1366,6 +1399,7 @@
             if (!r) return;
             state.isReview = true;
             state.partIdx = 0;
+            for (const k in partHlCacheRv) delete partHlCacheRv[k];
             document.getElementById('review-title').textContent = r.testName;
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
             audio.src = r.audioUrl || '';
