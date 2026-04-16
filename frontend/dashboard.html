@@ -206,9 +206,10 @@
                     <button class="btn-flip-hint">Nhấp để lật thẻ 🔄</button>
                   </div>
                   <div class="fc-face fc-back">
-                    <div class="fc-label">Từ tiếng Anh</div>
+                    <div class="fc-label" id="fcBackLabel">Từ tiếng Anh</div>
                     <div class="fc-main" id="fbWord"></div>
                     <div class="fc-sub" id="fbPhonetic"></div>
+                    <div class="fc-sub" id="fbParaphrase" style="display:none;color:var(--orange,#f59e0b);font-style:italic;margin-top:4px;font-size:0.9em"></div>
                     <button class="btn-audio" onclick="event.stopPropagation();speakWord(currentWord?.word)" style="margin-top:6px;font-size:18px;color:var(--blue)">🔊</button>
                   </div>
                 </div>

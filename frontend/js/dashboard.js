@@ -1040,14 +1040,14 @@ function startPractice(mode) {
     correctAnswers = 0;
     wrongAnswers   = 0;
 
-    // Chỉ lấy từ vựng thực sự (bỏ qua paraphrase entries – chúng là bảng tham chiếu, không dùng để luyện)
-    const vocabOnly = currentUnit.words.filter(w => (w.type || 'vocab') === 'vocab');
-    if (!vocabOnly.length) { toast('Unit này chỉ chứa bảng paraphrase – không có từ vựng để luyện tập', 'info'); return; }
+    // Lấy tất cả từ (vocab + paraphrase); paraphrase dùng word/meaning giống vocab
+    const allPracticeWords = currentUnit.words.filter(w => w.word && w.meaning);
+    if (!allPracticeWords.length) { toast('Unit chưa có từ nào để luyện tập', 'info'); return; }
 
     if (mode === 'mixed') {
         // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
         const types = ['multipleChoice', 'listening', 'translation'];
-        const words = [...vocabOnly];
+        const words = [...allPracticeWords];
         shuffleArray(words);
         mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
         shuffleArray(mixedQueue);
@@ -1056,7 +1056,7 @@ function startPractice(mode) {
         return;
     }
 
-    practiceWords = [...vocabOnly];
+    practiceWords = [...allPracticeWords];
     shuffleArray(practiceWords);
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
@@ -1360,6 +1360,15 @@ function showFillBlankQuestion() {
     document.getElementById('fbMeaning').textContent  = currentWord.meaning;
     document.getElementById('fbWord').textContent     = currentWord.word;
     document.getElementById('fbPhonetic').textContent = currentWord.phonetic || '';
+
+    const isPara = currentWord.type === 'paraphrase';
+    const labelEl = document.getElementById('fcBackLabel');
+    if (labelEl) labelEl.textContent = isPara ? 'Text trong bài' : 'Từ tiếng Anh';
+    const paraEl = document.getElementById('fbParaphrase');
+    if (paraEl) {
+        paraEl.textContent = currentWord.paraphrase ? `→ Paraphrase: ${currentWord.paraphrase}` : '';
+        paraEl.style.display = currentWord.paraphrase ? '' : 'none';
+    }
 
     document.getElementById('flashcard').classList.remove('flipped');
     document.getElementById('fbInput').value    = '';
