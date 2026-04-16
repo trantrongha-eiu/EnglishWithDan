@@ -100,8 +100,9 @@ router.post('/admin/units', auth, teacherOnly, async (req, res) => {
 // Không cập nhật words ở đây – dùng word routes riêng
 router.put('/admin/units/:id', auth, teacherOnly, async (req, res) => {
   try {
-    const { title, description, level, isActive } = req.body;
+    const { unitNumber, title, description, level, isActive } = req.body;
     const update = {};
+    if (unitNumber  !== undefined) update.unitNumber  = unitNumber;
     if (title       !== undefined) update.title       = title;
     if (description !== undefined) update.description = description;
     if (level       !== undefined) update.level       = level;
@@ -125,15 +126,22 @@ router.delete('/admin/units/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PATCH /api/vocab/admin/units/reorder  – đổi thứ tự hiển thị
-// Body: [{ _id, sortOrder }, ...]
+// PATCH /api/vocab/admin/units/reorder  – đổi thứ tự + renumber unitNumber
+// Body: [{ _id }, ...] – thứ tự mới từ đầu đến cuối
 router.patch('/admin/units/reorder', auth, teacherOnly, async (req, res) => {
   try {
-    const items = req.body; // array of { _id, sortOrder }
+    const items = req.body;
     if (!Array.isArray(items)) return res.status(400).json({ success: false, message: 'Body phải là array' });
-    await Promise.all(items.map(({ _id, sortOrder }) =>
-      VocabUnit.findByIdAndUpdate(_id, { sortOrder })
+
+    // Bước 1: set unitNumber sang vùng tạm (10000+) để tránh unique conflict
+    await Promise.all(items.map(({ _id }, i) =>
+      VocabUnit.findByIdAndUpdate(_id, { sortOrder: i, unitNumber: 10000 + i })
     ));
+    // Bước 2: set unitNumber chính thức (1-based theo vị trí mới)
+    await Promise.all(items.map(({ _id }, i) =>
+      VocabUnit.findByIdAndUpdate(_id, { unitNumber: i + 1 })
+    ));
+
     res.json({ success: true, message: 'Đã cập nhật thứ tự' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

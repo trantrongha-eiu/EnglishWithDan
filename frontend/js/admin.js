@@ -1489,19 +1489,14 @@ function initUnitDragDrop(tbody) {
 }
 
 async function reorderUnits(tbody) {
-  const items = [...tbody.querySelectorAll('tr[data-id]')].map((r, i) => ({
-    _id: r.dataset.id, sortOrder: i
-  }));
+  const items = [...tbody.querySelectorAll('tr[data-id]')].map((r, i) => ({ _id: r.dataset.id }));
   try {
-    await fetch(`${API}/vocab/admin/units/reorder`, {
+    const data = await (await fetch(`${API}/vocab/admin/units/reorder`, {
       method: 'PATCH', headers: authH(), body: JSON.stringify(items)
-    });
-    // update local cache order silently
-    allVocabUnits = items.map(({ _id }, i) => {
-      const u = allVocabUnits.find(x => x._id === _id);
-      return u ? { ...u, sortOrder: i } : null;
-    }).filter(Boolean);
+    })).json();
+    if (!data.success) throw new Error(data.message);
     toast('Đã lưu thứ tự');
+    await loadVocabUnits(); // reload to show updated unitNumbers
   } catch { toast('Lỗi lưu thứ tự', 'error'); }
 }
 
