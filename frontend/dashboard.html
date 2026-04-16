@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -19,13 +19,13 @@
   <div class="header-right">
     <a href="profile.html" id="navUserLink" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:inherit;padding:5px 10px;border-radius:20px;border:1px solid var(--border);transition:background .15s;flex-shrink:0" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
       <div id="navAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;flex-shrink:0">?</div>
-      <span class="user-name" id="userName" style="font-size:13px;font-weight:500;">👋 Xin chào</span>
+      <span class="user-name" id="userName" style="font-size:13px;font-weight:500;">👋 Hello</span>
     </a>
-    <button class="hdr-nav-toggle" id="mainNavToggle" onclick="toggleMainNav()" title="Menu kỹ năng" aria-label="Mở menu kỹ năng">
+    <button class="hdr-nav-toggle" id="mainNavToggle" onclick="toggleMainNav()" title="Skill menu" aria-label="Open skill menu">
       <i class="fas fa-th-large"></i>
     </button>
-    <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
-    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="btn-logout-text">Đăng xuất</span></button>
+    <button onclick="toggleDark()" class="dark-toggle-btn" title="Dark / Light mode"><span class="dark-toggle-icon">🌙</span></button>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span class="btn-logout-text">Log out</span></button>
   </div>
 </header>
 
@@ -37,7 +37,7 @@
     <li><a href="writing.html"><i class="fas fa-pen"></i> Writing</a></li>
     <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking & Materials</a></li>
     <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
-    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Hồ sơ</a></li>
+    <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
   </ul>
 </nav>
 
@@ -46,16 +46,16 @@
   <!-- ── SIDEBAR (desktop only) ── -->
   <aside class="vocab-sidebar" id="vocabSidebar">
     <div class="sidebar-head">
-      Sổ của tôi
-      <button class="btn-add-book" onclick="openAddBookModal()" title="Thêm sổ mới">＋</button>
+      My Notebooks
+      <button class="btn-add-book" onclick="openAddBookModal()" title="Add new notebook">＋</button>
     </div>
-    <div id="book-list-sidebar"><!-- Render bởi JS --></div>
+    <div id="book-list-sidebar"><!-- Rendered by JS --></div>
     <div class="sidebar-divider"></div>
     <div class="unit-section">
-      <h4><i class="fas fa-book"></i> Học Unit</h4>
-      <select id="unitSelect"><option value="">-- Chọn Unit --</option></select>
+      <h4><i class="fas fa-book"></i> Study Unit</h4>
+      <select id="unitSelect"><option value="">-- Select Unit --</option></select>
       <button class="btn-start-unit" onclick="loadUnit()">
-        <i class="fas fa-play"></i> Bắt Đầu Học
+        <i class="fas fa-play"></i> Start Learning
       </button>
       <button class="btn-sound-toggle" onclick="toggleSound()" id="soundToggle">🔊 Sound: ON</button>
     </div>
@@ -70,12 +70,12 @@
       <div id="book-welcome" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
         <div style="text-align:center;color:var(--text3)">
           <div style="font-size:60px;margin-bottom:16px">📚</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Sổ từ vựng của bạn</h3>
-          <p style="font-size:14px">Chọn một sổ từ sidebar để xem từ vựng đã lưu</p>
-          <p style="font-size:13px;margin-top:6px;color:var(--text3)">hoặc làm bài Reading rồi double-click từ để lưu</p>
-          <!-- Hint cho mobile -->
+          <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Your Vocabulary Notebook</h3>
+          <p style="font-size:14px">Select a notebook from the sidebar to view your saved words</p>
+          <p style="font-size:13px;margin-top:6px;color:var(--text3)">or do a Reading exercise and double-click a word to save it</p>
+          <!-- Mobile hint -->
           <p style="font-size:13px;margin-top:14px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
-            <i class="fas fa-hand-pointer"></i> Bấm nút <strong>☰</strong> góc dưới để chọn sổ hoặc học Unit
+            <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> below to choose a notebook or study a Unit
           </p>
         </div>
       </div>
@@ -88,11 +88,11 @@
             <button class="btn-rename" onclick="renameBook()" title="Đổi tên"><i class="fas fa-pen"></i></button>
           </div>
           <div class="book-stats">
-            <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Đã thuộc</span>
-            <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> Nhớ sơ sơ</span>
-            <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Chưa thuộc</span>
+            <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Mastered</span>
+            <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
+            <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
             <span style="color:var(--text3);font-size:12px">·</span>
-            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> từ</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> words</span>
           </div>
         </div>
         <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
@@ -104,36 +104,36 @@
             <div class="mascot-streak-row">
               <span class="mascot-fire">🔥</span>
               <span class="mascot-streak-num" id="mascot-streak-num">0</span>
-              <span class="mascot-streak-label">ngày liên tiếp</span>
+              <span class="mascot-streak-label">day streak</span>
             </div>
-            <div class="mascot-msg" id="mascot-msg">Học đi bạn ơi, mình tin bạn! 💪</div>
+            <div class="mascot-msg" id="mascot-msg">Let's study! I believe in you! 💪</div>
           </div>
         </div>
 
         <div class="book-action-bar">
           <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()">
-            <i class="fas fa-layer-group"></i> Học với Flashcards
+            <i class="fas fa-layer-group"></i> Study with Flashcards
           </button>
           <button class="btn btn-ghost btn-sm" onclick="openPreviewMode()">
-            <i class="fas fa-eye"></i> Xem trước
+            <i class="fas fa-eye"></i> Preview
           </button>
           <button class="btn btn-ghost btn-sm" onclick="openAddWordManual()">
-            <i class="fas fa-plus"></i> Thêm từ
+            <i class="fas fa-plus"></i> Add word
           </button>
           <div class="bulk-bar" id="bulk-bar">
-            <span>Đã chọn <span class="bulk-count" id="bulk-count">0</span> từ</span>
+            <span>Selected <span class="bulk-count" id="bulk-count">0</span> words</span>
             <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
-              <option value="">Đổi trạng thái...</option>
-              <option value="chua-thuoc">Chưa thuộc</option>
-              <option value="nho-so-so">Nhớ sơ sơ</option>
-              <option value="da-thuoc">Đã thuộc</option>
+              <option value="">Change status...</option>
+              <option value="chua-thuoc">Not yet</option>
+              <option value="nho-so-so">So-so</option>
+              <option value="da-thuoc">Mastered</option>
             </select>
-            <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="fas fa-trash"></i> Xoá</button>
+            <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="fas fa-trash"></i> Delete</button>
           </div>
           <div class="book-search-wrap">
             <i class="fas fa-search"></i>
             <input class="book-search-input" id="book-search" type="search"
-              placeholder="Tìm từ trong sổ..."
+              placeholder="Search words..."
               oninput="filterWords(this.value)"
               autocomplete="off"/>
           </div>
@@ -143,16 +143,16 @@
             <thead>
               <tr>
                 <th style="width:36px"><input type="checkbox" id="check-all" onchange="toggleSelectAll(this)"/></th>
-                <th>Trạng thái</th>
-                <th>Từ vựng</th>
-                <th>Nghĩa</th>
-                <th>Ví dụ / Hiểu sâu</th>
-                <th>Ghi chú</th>
+                <th>Status</th>
+                <th>Word</th>
+                <th>Meaning</th>
+                <th>Example / Insight</th>
+                <th>Notes</th>
                 <th style="width:60px"></th>
               </tr>
             </thead>
             <tbody id="words-tbody">
-              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">Chưa có từ nào</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)">No words yet</td></tr>
             </tbody>
           </table>
         </div>
@@ -162,51 +162,51 @@
     <!-- VIEW: Unit learning -->
     <div id="view-unit">
       <div class="unit-header-bar">
-        <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Quay lại</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Back</button>
         <h3 id="unitTitle">Unit …</h3>
         <button class="btn btn-danger btn-sm" id="btnStopPractice" onclick="stopPractice()" style="display:none">
-          <i class="fas fa-stop-circle"></i> Dừng học
+          <i class="fas fa-stop-circle"></i> Stop
         </button>
       </div>
       <div class="mode-tabs" id="mode-tabs">
-        <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Học Từ</button>
-        <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Trắc Nghiệm</button>
+        <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Study</button>
+        <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Quiz</button>
         <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
-        <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Nghe</button>
-        <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Dịch</button>
-        <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Hỗn Hợp</button>
+        <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Listen</button>
+        <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Translate</button>
+        <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Mixed</button>
       </div>
       <div class="mode-body" id="mode-body">
         <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>
 
         <div id="multipleChoiceMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Trắc Nghiệm</h3><p>Chọn đáp án đúng</p></div>
+            <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Quiz</h3><p>Choose the correct answer</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div><div class="progress-text" id="mcProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="mcQuestionNumber"></div>
               <div class="question-text" id="mcQuestionText"></div>
               <div class="answer-options" id="mcAnswerOptions"></div>
-              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="mcBtnNext" onclick="nextQuestion('multipleChoice')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="fillBlankMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>Nhìn nghĩa → Nhớ từ → Lật thẻ</p></div>
+            <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>See meaning → Recall word → Flip card</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div><div class="progress-text" id="fbProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="fbQuestionNumber"></div>
               <div class="flashcard-wrap">
                 <div class="flashcard" id="flashcard" onclick="flipCard()">
                   <div class="fc-face fc-front">
-                    <div class="fc-label">Nghĩa tiếng Việt</div>
+                    <div class="fc-label">Vietnamese Meaning</div>
                     <div class="fc-main" id="fbMeaning"></div>
-                    <button class="btn-flip-hint">Nhấp để lật thẻ 🔄</button>
+                    <button class="btn-flip-hint">Click to flip 🔄</button>
                   </div>
                   <div class="fc-face fc-back">
-                    <div class="fc-label" id="fcBackLabel">Từ tiếng Anh</div>
+                    <div class="fc-label" id="fcBackLabel">English Word</div>
                     <div class="fc-main" id="fbWord"></div>
                     <div class="fc-sub" id="fbPhonetic"></div>
                     <div class="fc-sub" id="fbParaphrase" style="display:none;color:var(--orange,#f59e0b);font-style:italic;margin-top:4px;font-size:0.9em"></div>
@@ -215,54 +215,54 @@
                 </div>
               </div>
               <div class="quick-btns" id="quick-btns" style="display:none">
-                <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Đã nhớ</button>
-                <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Chưa nhớ</button>
+                <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Remembered</button>
+                <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Forgot</button>
               </div>
               <div style="margin-top:14px" id="fbInputArea" style="display:none">
                 <div class="fb-input-row">
-                  <input class="fb-input" id="fbInput" placeholder="Gõ từ để kiểm tra..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
+                  <input class="fb-input" id="fbInput" placeholder="Type the word to check..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
                   <button class="btn-hint-sm" onclick="showHint()"><i class="fas fa-lightbulb"></i></button>
-                  <button class="btn-check" onclick="checkFillBlank()">Kiểm tra</button>
+                  <button class="btn-check" onclick="checkFillBlank()">Check</button>
                 </div>
                 <div id="fbFeedback"></div>
               </div>
-              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="fbBtnNext" onclick="nextQuestion('fillBlank')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="listeningMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-headphones"></i> Luyện Nghe</h3><p>Nghe và viết lại từ vựng</p></div>
+            <div class="practice-header"><h3><i class="fas fa-headphones"></i> Listening Practice</h3><p>Listen and write the word</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div><div class="progress-text" id="listenProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
-              <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Phát Âm Thanh</button>
+              <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
               <div class="listen-hint" id="listenHint"></div>
               <div class="fb-input-row">
-                <input class="listen-input" id="listenInput" placeholder="Nhập từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkListening()"/>
-                <button class="btn-check" onclick="checkListening()">Kiểm Tra</button>
+                <input class="listen-input" id="listenInput" placeholder="Type what you hear..." onkeypress="if(event.key==='Enter')checkListening()"/>
+                <button class="btn-check" onclick="checkListening()">Check</button>
               </div>
               <div id="listenFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="listenBtnNext" onclick="nextQuestion('listening')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
 
         <div id="translationMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch Từ</h3><p>Dựa vào câu ví dụ, dịch từ được in đậm</p></div>
+            <div class="practice-header"><h3><i class="fas fa-language"></i> Translate</h3><p>Translate the highlighted word using the example sentence</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
               <div class="trans-example" id="transExample"></div>
               <div class="trans-word-highlight" id="transWordHighlight"></div>
               <div class="fb-input-row">
-                <input class="trans-input" id="transInput" placeholder="Nhập nghĩa tiếng Việt..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
-                <button class="btn-check" onclick="checkTranslation()">Kiểm Tra</button>
+                <input class="trans-input" id="transInput" placeholder="Enter the Vietnamese meaning..." onkeypress="if(event.key==='Enter')checkTranslation()"/>
+                <button class="btn-check" onclick="checkTranslation()">Check</button>
               </div>
               <div id="transFeedback" style="margin-top:10px"></div>
-              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">Câu tiếp <i class="fas fa-arrow-right"></i></button>
+              <button class="btn-next" id="transBtnNext" onclick="nextQuestion('translation')" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
             </div>
           </div>
         </div>
@@ -270,8 +270,8 @@
         <div id="mixedMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header">
-              <h3><i class="fas fa-random"></i> Hỗn Hợp</h3>
-              <p>Kết hợp Trắc Nghiệm · Nghe · Dịch – không thể đoán trước!</p>
+              <h3><i class="fas fa-random"></i> Mixed</h3>
+              <p>Combines Quiz · Listen · Translate – unpredictable!</p>
             </div>
             <div class="practice-progress">
               <div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div>
@@ -285,7 +285,7 @@
           <div class="results-wrap">
             <div class="results-card">
               <div class="trophy">🏆</div>
-              <h2>Kết Quả</h2>
+              <h2>Results</h2>
               <div id="resultModeTitle" style="font-size:13px;color:var(--text2);margin-bottom:8px"></div>
               <div class="score-ring-wrap">
                 <svg width="160" height="160" viewBox="0 0 160 160">
@@ -296,21 +296,21 @@
                 </svg>
                 <div class="score-ring-text">
                   <span class="score-pct" id="scorePercent">0%</span>
-                  <span class="score-lbl">Chính xác</span>
+                  <span class="score-lbl">Accuracy</span>
                 </div>
               </div>
               <div class="results-counts">
-                <span class="res-correct">✓ Đúng: <b id="correctCount">0</b></span>
-                <span class="res-wrong">✗ Sai: <b id="wrongCount">0</b></span>
+                <span class="res-correct">✓ Correct: <b id="correctCount">0</b></span>
+                <span class="res-wrong">✗ Wrong: <b id="wrongCount">0</b></span>
               </div>
               <div id="wrongRetryWrap" style="display:none;margin-bottom:10px;text-align:center">
                 <button class="btn btn-blue" onclick="retryWrongWords()" style="width:100%">
-                  <i class="fas fa-redo-alt"></i> Ôn lại <span id="wrongRetryCount">0</span> từ sai
+                  <i class="fas fa-redo-alt"></i> Retry <span id="wrongRetryCount">0</span> wrong words
                 </button>
               </div>
               <div class="results-btns">
-                <button class="btn btn-ghost" onclick="showMode('study')"><i class="fas fa-book"></i> Xem từ vựng</button>
-                <button class="btn btn-primary" onclick="restartPractice()"><i class="fas fa-redo"></i> Làm lại</button>
+                <button class="btn btn-ghost" onclick="showMode('study')"><i class="fas fa-book"></i> View words</button>
+                <button class="btn btn-primary" onclick="restartPractice()"><i class="fas fa-redo"></i> Restart</button>
               </div>
             </div>
           </div>
@@ -342,17 +342,17 @@
 
   <!-- Sheet header -->
   <div class="sheet-header">
-    <span class="sheet-title">📚 Từ vựng</span>
+    <span class="sheet-title">📚 Vocabulary</span>
     <button class="sheet-close" onclick="closeSheet()">✕</button>
   </div>
 
   <!-- Tabs: Sổ của tôi | Học Unit -->
   <div class="sheet-tabs">
     <button class="sheet-tab active" id="sheetTab0" onclick="switchSheetTab(0)">
-      <i class="fas fa-book"></i> Sổ của tôi
+      <i class="fas fa-book"></i> My Notebooks
     </button>
     <button class="sheet-tab" id="sheetTab1" onclick="switchSheetTab(1)">
-      <i class="fas fa-graduation-cap"></i> Học Unit
+      <i class="fas fa-graduation-cap"></i> Study Unit
     </button>
   </div>
 
@@ -365,24 +365,24 @@
         <!-- Render bởi JS (sync với sidebar) -->
         <div style="padding:30px;text-align:center;color:var(--text3)">
           <div style="font-size:32px;margin-bottom:8px">📭</div>
-          <div style="font-size:13px">Chưa có sổ nào</div>
+          <div style="font-size:13px">No notebooks yet</div>
         </div>
       </div>
       <div class="sheet-add-book-btn" onclick="openAddBookModal();closeSheet()">
-        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Tạo sổ từ vựng mới
+        <i class="fas fa-plus-circle" style="color:var(--brand)"></i> Create new notebook
       </div>
     </div>
 
     <!-- Panel 1: Học Unit -->
     <div class="sheet-panel" id="sheetPanel1">
       <div class="sheet-unit-section">
-        <h4><i class="fas fa-book-open"></i> Chọn Unit để học</h4>
+        <h4><i class="fas fa-book-open"></i> Select a Unit to study</h4>
         <select id="unitSelectMob">
-          <!-- Sync với #unitSelect bởi JS -->
-          <option value="">-- Chọn Unit --</option>
+          <!-- Synced with #unitSelect by JS -->
+          <option value="">-- Select Unit --</option>
         </select>
         <button class="sheet-start-btn" onclick="loadUnitFromSheet()">
-          <i class="fas fa-play"></i> Bắt Đầu Học
+          <i class="fas fa-play"></i> Start Learning
         </button>
         <button class="sheet-sound-btn" onclick="toggleSound()" id="soundToggleMob">
           🔊 Sound: ON
@@ -399,22 +399,22 @@
 <div class="modal-overlay hidden" id="modal-add-book">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>Tạo sổ từ vựng mới</h3>
+      <h3>Create new notebook</h3>
       <button class="modal-close" onclick="closeModal('modal-add-book')">×</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Tên sổ *</label>
-        <input class="form-input" id="new-book-name" placeholder="VD: IELTS Academic, Du lịch..."/>
+        <label>Notebook name *</label>
+        <input class="form-input" id="new-book-name" placeholder="e.g. IELTS Academic, Travel..."/>
       </div>
       <div class="form-group">
-        <label>Biểu tượng</label>
+        <label>Icon</label>
         <div class="emoji-picker" id="emoji-picker"></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-book')">Huỷ</button>
-      <button class="btn btn-primary" onclick="createBook()">Tạo sổ</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-book')">Cancel</button>
+      <button class="btn btn-primary" onclick="createBook()">Create</button>
     </div>
   </div>
 </div>
@@ -422,7 +422,7 @@
 <div class="modal-overlay hidden" id="modal-save-word">
   <div class="modal-box modal-md">
     <div class="modal-header">
-      <h3>Lưu từ vào sổ</h3>
+      <h3>Save word to notebook</h3>
       <button class="modal-close" onclick="closeModal('modal-save-word')">×</button>
     </div>
     <div class="modal-body">
@@ -436,17 +436,17 @@
         <div style="font-size:12px;font-style:italic;color:var(--text3);margin-top:4px" id="sw-example"></div>
       </div>
       <div class="form-group">
-        <label>Chọn sổ để lưu</label>
+        <label>Select a notebook</label>
         <div class="book-list-select" id="sw-book-list"></div>
       </div>
       <div class="form-group">
-        <label>Ghi chú cá nhân (tuỳ chọn)</label>
-        <input class="form-input" id="sw-note" placeholder="VD: gặp trong bài reading tháng 3..."/>
+        <label>Personal note (optional)</label>
+        <input class="form-input" id="sw-note" placeholder="e.g. found in March reading passage..."/>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Huỷ</button>
-      <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Lưu từ</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Save word</button>
     </div>
   </div>
 </div>
@@ -454,18 +454,18 @@
 <div class="modal-overlay hidden" id="modal-add-word">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>Thêm từ vựng</h3>
+      <h3>Add vocabulary</h3>
       <button class="modal-close" onclick="closeModal('modal-add-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>Từ tiếng Anh *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/></div>
-      <div class="form-group"><label>Nghĩa tiếng Việt</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/></div>
-      <div class="form-group"><label>Ví dụ</label><input class="form-input" id="aw-example" placeholder="She established a new company."/></div>
-      <div class="form-group"><label>Ghi chú</label><input class="form-input" id="aw-note" placeholder="Tuỳ chọn..."/></div>
+      <div class="form-group"><label>English word *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/></div>
+      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/></div>
+      <div class="form-group"><label>Example</label><input class="form-input" id="aw-example" placeholder="She established a new company."/></div>
+      <div class="form-group"><label>Notes</label><input class="form-input" id="aw-note" placeholder="Optional..."/></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Huỷ</button>
-      <button class="btn btn-primary" onclick="addWordManual()">Thêm từ</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Cancel</button>
+      <button class="btn btn-primary" onclick="addWordManual()">Add word</button>
     </div>
   </div>
 </div>
@@ -473,19 +473,19 @@
 <div class="modal-overlay hidden" id="modal-edit-word">
   <div class="modal-box modal-sm">
     <div class="modal-header">
-      <h3>✏️ Chỉnh sửa từ vựng</h3>
+      <h3>✏️ Edit vocabulary</h3>
       <button class="modal-close" onclick="closeModal('modal-edit-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>Từ tiếng Anh *</label><input class="form-input" id="ew-word" placeholder="establish"/></div>
-      <div class="form-group"><label>Phiên âm</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/"/></div>
-      <div class="form-group"><label>Nghĩa tiếng Việt</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập"/></div>
-      <div class="form-group"><label>Ví dụ</label><input class="form-input" id="ew-example" placeholder="She established a new company."/></div>
-      <div class="form-group"><label>Ghi chú</label><input class="form-input" id="ew-note" placeholder="Tuỳ chọn..."/></div>
+      <div class="form-group"><label>English word *</label><input class="form-input" id="ew-word" placeholder="establish"/></div>
+      <div class="form-group"><label>Phonetic</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/"/></div>
+      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập"/></div>
+      <div class="form-group"><label>Example</label><input class="form-input" id="ew-example" placeholder="She established a new company."/></div>
+      <div class="form-group"><label>Notes</label><input class="form-input" id="ew-note" placeholder="Optional..."/></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Huỷ</button>
-      <button class="btn btn-primary" onclick="saveEditWord()"><i class="fas fa-save"></i> Lưu thay đổi</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditWord()"><i class="fas fa-save"></i> Save changes</button>
     </div>
   </div>
 </div>
@@ -494,12 +494,12 @@
   <div class="modal-box modal-sm">
     <div class="modal-body" style="text-align:center;padding:28px 24px">
       <div class="danger-icon">⚠️</div>
-      <h3 id="confirm-title" style="margin-bottom:8px">Xác nhận</h3>
+      <h3 id="confirm-title" style="margin-bottom:8px">Confirm</h3>
       <p id="confirm-msg" style="color:var(--text2);font-size:14px"></p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Thoát</button>
-      <button class="btn btn-danger" id="btn-confirm-ok">Xác nhận xoá</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Cancel</button>
+      <button class="btn btn-danger" id="btn-confirm-ok">Confirm delete</button>
     </div>
   </div>
 </div>
@@ -667,7 +667,7 @@
 </script>
 <!-- ══ Keyboard shortcut hint panel ══ -->
 <div id="kbd-hint-panel" style="display:none;position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow-md);min-width:150px;pointer-events:none">
-  <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">⌨️ Phím tắt</div>
+  <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">⌨️ Shortcuts</div>
   <div id="kbd-hint-list"></div>
 </div>
 
@@ -681,9 +681,9 @@
     </div>
     <div class="quit-actions">
       <button class="quit-btn-continue" onclick="cancelQuit()">
-        <i class="fas fa-play-circle"></i> Tiếp tục học
+        <i class="fas fa-play-circle"></i> Keep studying
       </button>
-      <button class="quit-btn-leave" onclick="confirmQuit()">Thoát</button>
+      <button class="quit-btn-leave" onclick="confirmQuit()">Quit</button>
     </div>
   </div>
 </div>
