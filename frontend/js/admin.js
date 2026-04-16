@@ -1671,7 +1671,52 @@ function openImportJsonModal() {
   document.getElementById('import-json-text').value = '';
   document.getElementById('import-replace').checked = false;
   document.getElementById('import-result').classList.add('hidden');
+  switchGuideTab('vocab');
   openModal('modal-import-json');
+}
+
+function switchGuideTab(tab) {
+  const isVocab = tab === 'vocab';
+  document.getElementById('guide-panel-vocab').style.display = isVocab ? '' : 'none';
+  document.getElementById('guide-panel-para').style.display  = isVocab ? 'none' : '';
+  document.getElementById('guide-tab-vocab').style.background = isVocab ? 'var(--accent)' : 'var(--surface2)';
+  document.getElementById('guide-tab-vocab').style.color      = isVocab ? '#fff' : 'var(--text2)';
+  document.getElementById('guide-tab-para').style.background  = isVocab ? 'var(--surface2)' : '#f59e0b';
+  document.getElementById('guide-tab-para').style.color       = isVocab ? 'var(--text2)' : '#fff';
+}
+
+const _GUIDE_TEMPLATES = {
+  vocab: JSON.stringify([{
+    unitNumber: 1,
+    title: "Tên Unit",
+    level: "B1",
+    words: [
+      { word: "commute", meaning: "đi làm hàng ngày", example: "I commute by train.", phonetic: "/kəˈmjuːt/", partOfSpeech: "verb" },
+      { word: "habitat", meaning: "môi trường sống", example: "The rainforest is the natural habitat of many species.", partOfSpeech: "noun" }
+    ]
+  }], null, 2),
+  para: JSON.stringify([{
+    unitNumber: 5,
+    title: "Cambridge IELTS 15",
+    level: "IELTS",
+    words: [
+      { type: "paraphrase", word: "evergreen tree", paraphrase: "always green tree", meaning: "cây xanh quanh năm", explanation: "Paraphrase: 'evergreen' mang nghĩa là luôn xanh tươi, tương đương 'always green'" },
+      { type: "paraphrase", word: "native to Southeast Asia", paraphrase: "originally from Southeast Asia", meaning: "có nguồn gốc từ Đông Nam Á", explanation: "Paraphrase: 'native to' (bản địa) đồng nghĩa với 'originally from'" }
+    ]
+  }], null, 2)
+};
+
+function copyGuideTemplate(type) {
+  const text = type === 'full'
+    ? (document.getElementById('guide-full-example')?.textContent?.trim() || '')
+    : (_GUIDE_TEMPLATES[type] || '');
+  navigator.clipboard.writeText(text).then(() => toast('Đã copy template ✅'));
+}
+
+function pasteGuideToInput() {
+  const fullText = document.getElementById('guide-full-example')?.textContent?.trim() || '';
+  document.getElementById('import-json-text').value = fullText;
+  document.getElementById('import-json-text').focus();
 }
 
 async function importJsonUnits() {

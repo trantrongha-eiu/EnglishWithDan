@@ -1061,41 +1061,146 @@
 
   <!-- ══ MODAL: Import JSON ★ ══ -->
   <div class="modal-overlay hidden" id="modal-import-json">
-    <div class="modal-box modal-md">
+    <div class="modal-box" style="width:min(780px,97vw);max-height:92vh;display:flex;flex-direction:column">
       <div class="modal-header">
-        <h3>Import Units từ JSON</h3>
+        <h3>📂 Import Vocab Units từ JSON</h3>
         <button class="modal-close" onclick="closeModal('modal-import-json')">×</button>
       </div>
-      <div class="modal-body">
-        <p style="color:var(--text2);font-size:13px;margin-bottom:14px;line-height:1.6">
-          Paste nội dung JSON của <code
-            style="background:var(--surface2);padding:1px 6px;border-radius:4px;font-family:var(--mono)">vocabData.json</code>
-          vào đây.<br>
-          Chấp nhận <strong>array</strong> hoặc <strong>single object</strong>.
-        </p>
-        <div class="form-group">
-          <label>Nội dung JSON *</label>
-          <textarea class="form-textarea" id="import-json-text" rows="16"
-            placeholder='[
+      <div class="modal-body" style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px">
+
+        <!-- Hướng dẫn -->
+        <div style="background:rgba(61,139,255,.08);border:1px solid rgba(61,139,255,.25);border-radius:10px;padding:14px 16px">
+          <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">📖 Cấu trúc JSON tổng quát</div>
+          <pre style="font-family:var(--mono);font-size:12px;color:var(--text2);line-height:1.7;margin:0;white-space:pre-wrap">[
   {
-    "unitNumber": 1,
-    "title": "Daily Life",
-    "level": "B1",
+    "unitNumber": 1,          <span style="color:var(--text3)">// số thứ tự unit (bắt buộc, unique)</span>
+    "title": "Tên Unit",      <span style="color:var(--text3)">// tên hiển thị (bắt buộc)</span>
+    "level": "B1",            <span style="color:var(--text3)">// A1 A2 B1 B2 C1 IELTS (mặc định B1)</span>
+    "words": [ ... ]          <span style="color:var(--text3)">// mảng từ vựng / paraphrase</span>
+  }
+]</pre>
+        </div>
+
+        <!-- Tabs hướng dẫn 2 loại -->
+        <div>
+          <div style="display:flex;gap:4px;margin-bottom:10px">
+            <button id="guide-tab-vocab" onclick="switchGuideTab('vocab')"
+              style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:var(--accent);color:#fff">
+              📚 Loại 1: Vocab / Collocation
+            </button>
+            <button id="guide-tab-para" onclick="switchGuideTab('para')"
+              style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:var(--surface2);color:var(--text2)">
+              📊 Loại 2: Paraphrase
+            </button>
+          </div>
+
+          <!-- Guide: Vocab -->
+          <div id="guide-panel-vocab" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Cấu trúc mỗi từ vựng / collocation</div>
+              <button onclick="copyGuideTemplate('vocab')" style="font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">📋 Copy template</button>
+            </div>
+            <pre style="font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.8;margin:0;white-space:pre-wrap">{
+  "word":        "commute",              <span style="color:#f59e0b">// bắt buộc – từ / cụm từ tiếng Anh</span>
+  "meaning":     "đi làm hàng ngày",    <span style="color:#f59e0b">// bắt buộc – nghĩa tiếng Việt</span>
+  "example":     "I commute by train.",  <span style="color:var(--text3)">// tuỳ chọn – câu ví dụ</span>
+  "phonetic":    "/kəˈmjuːt/",           <span style="color:var(--text3)">// tuỳ chọn – phiên âm IPA</span>
+  "partOfSpeech":"verb",                 <span style="color:var(--text3)">// tuỳ chọn – verb / noun / adj / adv…</span>
+  "level":       "B1"                   <span style="color:var(--text3)">// tuỳ chọn – A1 A2 B1 B2 C1</span>
+}</pre>
+            <div style="margin-top:10px;padding:10px 12px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">
+              <strong style="color:#34d399">Lưu ý:</strong> Nếu không có field <code style="font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:3px">type</code> hoặc để <code style="font-family:var(--mono);background:var(--bg);padding:1px 5px;border-radius:3px">"type":"vocab"</code> thì hệ thống tự nhận dạng là từ vựng thông thường. Chỉ cần <strong>word</strong> + <strong>meaning</strong> là đủ để import.
+            </div>
+          </div>
+
+          <!-- Guide: Paraphrase -->
+          <div id="guide-panel-para" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Cấu trúc mỗi cặp paraphrase</div>
+              <button onclick="copyGuideTemplate('para')" style="font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">📋 Copy template</button>
+            </div>
+            <pre style="font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.8;margin:0;white-space:pre-wrap">{
+  "type":        "paraphrase",                          <span style="color:#f59e0b">// bắt buộc</span>
+  "word":        "evergreen tree",                      <span style="color:#f59e0b">// bắt buộc – text gốc trong bài đọc</span>
+  "paraphrase":  "always green tree",                   <span style="color:#f59e0b">// bắt buộc – paraphrase trong câu hỏi</span>
+  "meaning":     "cây xanh quanh năm",                  <span style="color:#f59e0b">// bắt buộc – nghĩa tiếng Việt</span>
+  "explanation": "Paraphrase: 'evergreen' mang nghĩa…"  <span style="color:var(--text3)">// tuỳ chọn – giải thích chi tiết</span>
+}</pre>
+            <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="padding:10px 12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">
+                <strong style="color:#f59e0b">word</strong> = Text trong bài đọc gốc<br>
+                <em style="color:var(--text3)">"species facing extinction"</em>
+              </div>
+              <div style="padding:10px 12px;background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.2);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">
+                <strong style="color:#a78bfa">paraphrase</strong> = Cách diễn đạt trong câu hỏi<br>
+                <em style="color:var(--text3)">"at high risk of extinction"</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full example -->
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Ví dụ JSON đầy đủ (kết hợp cả 2 loại)</div>
+            <button onclick="copyGuideTemplate('full')" style="font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer">📋 Copy</button>
+          </div>
+          <pre id="guide-full-example" style="font-family:var(--mono);font-size:11.5px;color:var(--text2);line-height:1.7;margin:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;white-space:pre-wrap;max-height:180px;overflow-y:auto">[
+  {
+    "unitNumber": 5,
+    "title": "Cambridge IELTS 15",
+    "level": "IELTS",
     "words": [
-      { "word": "commute", "meaning": "đi làm bằng phương tiện", "example": "I commute by train.", "phonetic": "/kəˈmjuːt/", "partOfSpeech": "verb" },
-      { "type": "paraphrase", "word": "byproduct of coal-burning", "paraphrase": "industrial processes create raw materials", "meaning": "sản phẩm phụ công nghiệp", "explanation": "\"byproduct\" = kết quả của quá trình CN → khái quát hoá thành \"industrial processes\"" }
+      {
+        "word": "habitat",
+        "meaning": "môi trường sống",
+        "example": "The rainforest is the natural habitat of many species.",
+        "phonetic": "/ˈhæbɪtæt/",
+        "partOfSpeech": "noun"
+      },
+      {
+        "word": "endanger",
+        "meaning": "gây nguy hiểm / đe doạ",
+        "example": "Pollution endangers marine life.",
+        "partOfSpeech": "verb"
+      },
+      {
+        "type": "paraphrase",
+        "word": "evergreen tree",
+        "paraphrase": "always green tree",
+        "meaning": "cây xanh quanh năm",
+        "explanation": "Paraphrase: 'evergreen' mang nghĩa là luôn xanh tươi, tương đương 'always green'"
+      },
+      {
+        "type": "paraphrase",
+        "word": "native to Southeast Asia",
+        "paraphrase": "originally from Southeast Asia",
+        "meaning": "có nguồn gốc từ Đông Nam Á",
+        "explanation": "Paraphrase: 'native to' (bản địa) đồng nghĩa với 'originally from'"
+      }
     ]
   }
-]'></textarea>
+]</pre>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:-6px">
+
+        <!-- JSON Input -->
+        <div class="form-group" style="margin:0">
+          <label style="display:flex;align-items:center;justify-content:space-between">
+            <span>Dán JSON vào đây *</span>
+            <button onclick="pasteGuideToInput()" style="font-size:12px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--accent);cursor:pointer">⬇ Dùng ví dụ trên</button>
+          </label>
+          <textarea class="form-textarea" id="import-json-text" rows="8" style="font-family:var(--mono);font-size:12px"
+            placeholder='Paste JSON ở đây – array [...] hoặc object {...}'></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;margin-top:-4px">
           <input type="checkbox" id="import-replace" style="width:16px;height:16px;accent-color:var(--accent)" />
           <label for="import-replace" style="font-size:13px;color:var(--text2);cursor:pointer">
-            Ghi đè words nếu unit đã tồn tại
+            Ghi đè words nếu unit đã tồn tại (xoá words cũ trước khi import)
           </label>
         </div>
         <div id="import-result" class="hidden"
-          style="margin-top:12px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6"></div>
+          style="padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('modal-import-json')">Đóng</button>
