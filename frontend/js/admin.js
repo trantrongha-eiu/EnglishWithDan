@@ -1427,9 +1427,14 @@ async function loadVocabUnits() {
 }
 
 function renderVocabUnitsTable(list) {
-  document.getElementById('vocab-units-tbody').innerHTML = list.length
-    ? list.map(u => `
-  <tr>
+  const tbody = document.getElementById('vocab-units-tbody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="table-empty">Chưa có Unit nào. Nhấn "+ Tạo Unit" hoặc "📂 Import JSON".</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(u => `
+  <tr draggable="true" data-id="${u._id}" data-sort="${u.sortOrder ?? u.unitNumber}">
+    <td class="drag-handle" title="Kéo để đổi vị trí" style="cursor:grab;color:var(--text3);font-size:16px;text-align:center;padding:0 6px">⠿</td>
     <td style="font-family:var(--mono);font-weight:700;color:var(--yellow)">${String(u.unitNumber).padStart(2, '0')}</td>
     <td><strong>${u.title}</strong></td>
     <td><span class="badge badge-blue">${u.level || 'B1'}</span></td>
@@ -1444,9 +1449,71 @@ function renderVocabUnitsTable(list) {
       <button class="btn btn-ghost btn-sm btn-icon" onclick="openUnitWordsModal('${u._id}')" title="Quản lý từ vựng">📝</button>
       <button class="btn btn-ghost btn-sm btn-icon" onclick="editUnit('${u._id}')" title="Chỉnh sửa">✏️</button>
       <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleUnitActive('${u._id}',${u.isActive})" title="${u.isActive ? 'Ẩn' : 'Hiện'}">${u.isActive ? '🙈' : '👁'}</button>
+      <button class="btn btn-sm btn-icon" onclick="deleteUnit('${u._id}','${escH(u.title)}')" title="Xoá unit" style="color:#ef4444;background:none;border:none;cursor:pointer;font-size:15px">🗑</button>
     </div></td>
-  </tr>`).join('')
-    : '<tr><td colspan="7" class="table-empty">Chưa có Unit nào. Nhấn "+ Tạo Unit" hoặc "📂 Import JSON".</td></tr>';
+  </tr>`).join('');
+  initUnitDragDrop(tbody);
+}
+
+let _dragSrcRow = null;
+function initUnitDragDrop(tbody) {
+  tbody.querySelectorAll('tr[draggable]').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      _dragSrcRow = row;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragend', () => {
+      _dragSrcRow = null;
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('dragging', 'drag-over'));
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (row === _dragSrcRow) return;
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!_dragSrcRow || _dragSrcRow === row) return;
+      const rows = [...tbody.querySelectorAll('tr')];
+      const srcIdx = rows.indexOf(_dragSrcRow);
+      const dstIdx = rows.indexOf(row);
+      if (srcIdx < dstIdx) row.after(_dragSrcRow);
+      else row.before(_dragSrcRow);
+      tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+      reorderUnits(tbody);
+    });
+  });
+}
+
+async function reorderUnits(tbody) {
+  const items = [...tbody.querySelectorAll('tr[data-id]')].map((r, i) => ({
+    _id: r.dataset.id, sortOrder: i
+  }));
+  try {
+    await fetch(`${API}/vocab/admin/units/reorder`, {
+      method: 'PATCH', headers: authH(), body: JSON.stringify(items)
+    });
+    // update local cache order silently
+    allVocabUnits = items.map(({ _id }, i) => {
+      const u = allVocabUnits.find(x => x._id === _id);
+      return u ? { ...u, sortOrder: i } : null;
+    }).filter(Boolean);
+    toast('Đã lưu thứ tự');
+  } catch { toast('Lỗi lưu thứ tự', 'error'); }
+}
+
+function deleteUnit(id, title) {
+  confirmAction(`Xoá hẳn Unit "${title}"? Hành động này không thể hoàn tác.`, async () => {
+    try {
+      const data = await (await fetch(`${API}/vocab/admin/units/${id}`, { method: 'DELETE', headers: authH() })).json();
+      if (!data.success) throw new Error(data.message);
+      toast(`Đã xoá "${title}"`);
+      await loadVocabUnits();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
 }
 
 function filterVocabUnits() {

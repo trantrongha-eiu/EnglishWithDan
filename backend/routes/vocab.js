@@ -48,13 +48,14 @@ router.get('/unit/:number', auth, async (req, res) => {
 router.get('/admin/units', auth, teacherOnly, async (req, res) => {
   try {
     const units = await VocabUnit.find()
-      .select('unitNumber title level isActive words createdAt')
-      .sort({ unitNumber: 1 });
+      .select('unitNumber sortOrder title level isActive words createdAt')
+      .sort({ sortOrder: 1, unitNumber: 1 });
 
     // Thêm wordCount vào mỗi unit
     const result = units.map(u => ({
       _id:        u._id,
       unitNumber: u.unitNumber,
+      sortOrder:  u.sortOrder,
       title:      u.title,
       level:      u.level,
       isActive:   u.isActive,
@@ -114,11 +115,26 @@ router.put('/admin/units/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/vocab/admin/units/:id  – xoá mềm (isActive = false)
+// DELETE /api/vocab/admin/units/:id  – xoá hẳn khỏi DB
 router.delete('/admin/units/:id', auth, teacherOnly, async (req, res) => {
   try {
-    await VocabUnit.findByIdAndUpdate(req.params.id, { isActive: false });
-    res.json({ success: true, message: 'Đã ẩn unit' });
+    await VocabUnit.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xoá unit' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PATCH /api/vocab/admin/units/reorder  – đổi thứ tự hiển thị
+// Body: [{ _id, sortOrder }, ...]
+router.patch('/admin/units/reorder', auth, teacherOnly, async (req, res) => {
+  try {
+    const items = req.body; // array of { _id, sortOrder }
+    if (!Array.isArray(items)) return res.status(400).json({ success: false, message: 'Body phải là array' });
+    await Promise.all(items.map(({ _id, sortOrder }) =>
+      VocabUnit.findByIdAndUpdate(_id, { sortOrder })
+    ));
+    res.json({ success: true, message: 'Đã cập nhật thứ tự' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

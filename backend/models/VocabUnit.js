@@ -25,6 +25,7 @@ const WordSchema = new mongoose.Schema({
 
 const VocabUnitSchema = new mongoose.Schema({
   unitNumber: { type: Number, required: true, unique: true },
+  sortOrder:  { type: Number, default: 0 },   // dùng để kéo thả đổi vị trí
   title:      { type: String, required: true },
   description:{ type: String, default: '' },
   level:      { type: String, default: 'B1' },

@@ -1186,3 +1186,10 @@
       .inner-tabs-nav { gap: 2px; padding: 3px; }
       .inner-tab { font-size: 12px; padding: 7px 10px; }
     }
+
+/* ── Vocab unit drag-and-drop ── */
+    #vocab-units-tbody tr[draggable] { transition: opacity .15s; }
+    #vocab-units-tbody tr.dragging   { opacity: .4; }
+    #vocab-units-tbody tr.drag-over  { box-shadow: inset 0 -2px 0 var(--accent); background: rgba(61,139,255,.07); }
+    #vocab-units-tbody .drag-handle  { user-select: none; }
+    #vocab-units-tbody .drag-handle:hover { color: var(--text) !important; }
