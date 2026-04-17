@@ -567,6 +567,21 @@ function renderRQGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
+  if (groupType === 'matching-headings') {
+    const headings = data?.headingsConfig?.headings?.length
+      ? data.headingsConfig.headings
+      : ROMAN.slice(0, 7).map(r => ({ numeral: r, text: '' }));
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('📌 <strong>Matching Headings:</strong> Nhập danh sách tiêu đề bên dưới (số La Mã + nội dung). Câu hỏi bên dưới: <strong>Nội dung câu hỏi</strong> = tên đoạn văn (VD: <em>Section A</em>), <strong>Đáp án đúng</strong> = số La Mã tương ứng (VD: <em>v</em>). Học sinh sẽ kéo-thả tiêu đề vào đúng đoạn văn.')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách tiêu đề (i, ii, iii…)</div>
+    <div id="rqghd-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${headings.map((h, i) => renderRQHeading(gIdx, i, h)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQHeading(${gIdx})">＋ Thêm tiêu đề</button>
+  </div>`;
+  }
+
   // plain – no extra config
   return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px">
