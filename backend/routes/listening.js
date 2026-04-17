@@ -421,9 +421,10 @@ router.post('/tests/:id/start', auth, async (req, res) => {
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
         summaryConfig: g.summaryConfig,        // ← THÊM
-        matchingOptions: g.matchingOptions,    // ← THÊM
-        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
-        endingsConfig: g.endingsConfig,        // ← THÊM
+        matchingOptions: g.matchingOptions,
+        matchingReuseAllowed: g.matchingReuseAllowed,
+        interchangeableAnswers: g.interchangeableAnswers,
+        endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
         questions: g.questions.map(q => ({
           _id: q._id,
@@ -468,53 +469,57 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const timeTaken = startTime ? Math.round((now - startTime) / 1000) : 0;
 
     let correct = 0, wrong = 0, skipped = 0;
-    const allQuestions = flattenQuestions(test.sections);
-    const total = allQuestions.length;
+    const total = flattenQuestions(test.sections).length;
+    const reviewed = [];
 
-    const reviewed = allQuestions.map(q => {
-      const num = q.questionNumber;
-      const ua = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
-      const ca = q.correctAnswer.trim();
+    for (const section of test.sections) {
+      for (const group of section.questionGroups) {
+        const qs = group.questions || [];
 
-      let isCorrect = false;
-      if (q.type === 'multi-answer-group') {
-        // Mỗi câu có 1 đáp án đúng riêng (VD: Q18="A", Q19="C", Q20="F")
-        // Học sinh chọn chung 1 mảng cho cả cluster: ["A","C","F"] theo thứ tự bất kỳ
-        // Câu này đúng khi chữ cái đáp án của câu nằm trong mảng học sinh chọn
-        try {
-          const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
-          isCorrect = uaArr.includes(ca.toUpperCase().trim());
-        } catch { isCorrect = false; }
-      } else if (q.type === 'checkbox') {
-        // Legacy checkbox: cả set phải khớp hoàn toàn mới tính 1 điểm (behavior cũ giữ nguyên)
-        try {
-          const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
-          const caArr = JSON.parse(ca).map(x => x.toLowerCase().trim()).sort();
-          isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
-        } catch { isCorrect = false; }
-      } else {
-        // Hỗ trợ nhiều đáp án đúng phân cách bằng "/" (VD: "answer1 / answer2")
-        const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
-        isCorrect = caVariants.includes(ua.toLowerCase());
+        if (group.interchangeableAnswers && qs.length > 0) {
+          // Pool matching: mỗi đáp án trong nhóm có thể hoán đổi thứ tự cho nhau
+          const correctPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
+          const remainingPool = [...correctPool];
+          for (const q of qs) {
+            const num = q.questionNumber;
+            const ua = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
+            const poolIdx = ua ? remainingPool.indexOf(ua.toLowerCase()) : -1;
+            const isCorrect = poolIdx !== -1;
+            if (isCorrect) remainingPool.splice(poolIdx, 1);
+            if (!ua) skipped++;
+            else if (isCorrect) correct++;
+            else wrong++;
+            reviewed.push({ questionNumber: num, userAnswer: ua, correctAnswer: q.correctAnswer.trim(), isCorrect, explanation: q.explanation, type: q.type, questionText: q.questionText, options: q.options, wordBank: q.wordBank, audioTimestamp: q.audioTimestamp });
+          }
+        } else {
+          for (const q of qs) {
+            const num = q.questionNumber;
+            const ua = userAnswers[num] !== undefined ? String(userAnswers[num]).trim() : '';
+            const ca = q.correctAnswer.trim();
+            let isCorrect = false;
+            if (q.type === 'multi-answer-group') {
+              try {
+                const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
+                isCorrect = uaArr.includes(ca.toUpperCase().trim());
+              } catch { isCorrect = false; }
+            } else if (q.type === 'checkbox') {
+              try {
+                const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
+                const caArr = JSON.parse(ca).map(x => x.toLowerCase().trim()).sort();
+                isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
+              } catch { isCorrect = false; }
+            } else {
+              const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
+              isCorrect = caVariants.includes(ua.toLowerCase());
+            }
+            if (!ua) skipped++;
+            else if (isCorrect) correct++;
+            else wrong++;
+            reviewed.push({ questionNumber: num, userAnswer: ua, correctAnswer: ca, isCorrect, explanation: q.explanation, type: q.type, questionText: q.questionText, options: q.options, wordBank: q.wordBank, audioTimestamp: q.audioTimestamp });
+          }
+        }
       }
-
-      if (!ua) skipped++;
-      else if (isCorrect) correct++;
-      else wrong++;
-
-      return {
-        questionNumber: num,
-        userAnswer: ua,
-        correctAnswer: ca,
-        isCorrect,
-        explanation: q.explanation,
-        type: q.type,
-        questionText: q.questionText,
-        options: q.options,
-        wordBank: q.wordBank,
-        audioTimestamp: q.audioTimestamp
-      };
-    });
+    }
 
     const bandScore = calcBandScore(correct);
 
@@ -555,10 +560,11 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
-        summaryConfig: g.summaryConfig,              // ← THÊM
-        matchingOptions: g.matchingOptions,          // ← THÊM
-        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
-        endingsConfig: g.endingsConfig,              // ← THÊM
+        summaryConfig: g.summaryConfig,
+        matchingOptions: g.matchingOptions,
+        matchingReuseAllowed: g.matchingReuseAllowed,
+        interchangeableAnswers: g.interchangeableAnswers,
+        endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
         questions: g.questions.map(q =>
           reviewMap[q.questionNumber] || { questionNumber: q.questionNumber }
@@ -653,10 +659,11 @@ router.get('/history/:attemptId', auth, async (req, res) => {
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
-        summaryConfig: g.summaryConfig,        // ← THÊM
-        matchingOptions: g.matchingOptions,      // ← THÊM
-        matchingReuseAllowed: g.matchingReuseAllowed, // ← THÊM
-        endingsConfig: g.endingsConfig,        // ← THÊM
+        summaryConfig: g.summaryConfig,
+        matchingOptions: g.matchingOptions,
+        matchingReuseAllowed: g.matchingReuseAllowed,
+        interchangeableAnswers: g.interchangeableAnswers,
+        endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
         questions: g.questions.map(q =>
           reviewMap2[q.questionNumber] || { questionNumber: q.questionNumber }
