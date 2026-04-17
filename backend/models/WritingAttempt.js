@@ -1,5 +1,20 @@
 const mongoose = require('mongoose');
 
+const taskGradeSubSchema = {
+  bandScore: { type: Number },
+  ta:  { score: { type: Number }, comment: { type: String, default: '' } },
+  cc:  { score: { type: Number }, comment: { type: String, default: '' } },
+  lr:  { score: { type: Number }, comment: { type: String, default: '' } },
+  gra: { score: { type: Number }, comment: { type: String, default: '' } },
+  overallFeedback: { type: String, default: '' },
+  corrections: [{
+    original:    { type: String, default: '' },
+    corrected:   { type: String, default: '' },
+    explanation: { type: String, default: '' }
+  }],
+  suggestions: [{ type: String }]
+};
+
 const WritingAttemptSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,13 +27,11 @@ const WritingAttemptSchema = new mongoose.Schema({
     ref: 'WritingExam',
     required: true
   },
-  examName: { type: String, default: '' },  // snapshot tên đề
+  examName: { type: String, default: '' },
 
-  // Task references (pool-based)
   task1Id: { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask1' },
   task2Id: { type: mongoose.Schema.Types.ObjectId, ref: 'WritingTask2' },
 
-  // Snapshots – lưu nội dung tại thời điểm thi để history luôn đúng
   task1Snapshot: {
     imageUrl:     { type: String, default: '' },
     instructions: { type: String, default: '' },
@@ -36,13 +49,35 @@ const WritingAttemptSchema = new mongoose.Schema({
 
   startTime:   { type: Date, default: Date.now },
   submittedAt: { type: Date, default: Date.now },
-  timeTaken:   { type: Number, default: 0 },   // giây
+  timeTaken:   { type: Number, default: 0 },
 
   status: {
     type: String,
     enum: ['completed', 'timeout'],
     default: 'completed'
+  },
+
+  gradingStatus: {
+    type: String,
+    enum: ['pending', 'ai_done', 'confirmed'],
+    default: 'pending'
+  },
+
+  aiGrading: {
+    task1: taskGradeSubSchema,
+    task2: taskGradeSubSchema,
+    generatedAt: { type: Date }
+  },
+
+  grading: {
+    task1: taskGradeSubSchema,
+    task2: taskGradeSubSchema,
+    overallBand:  { type: Number },
+    adminNote:    { type: String, default: '' },
+    confirmedAt:  { type: Date },
+    confirmedBy:  { type: String, default: '' }
   }
+
 }, { timestamps: true });
 
 WritingAttemptSchema.index({ userId: 1, submittedAt: -1 });

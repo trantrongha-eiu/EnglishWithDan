@@ -1104,6 +1104,119 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════
+// WRITING AI GRADING
+// ══════════════════════════════════════════════════
+
+async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
+  const systemPrompt = `You are an expert IELTS examiner with 20+ years of experience. Grade IELTS Writing essays strictly according to official IELTS Band Descriptors. Be specific, constructive, and accurate.`;
+
+  const userPrompt = `Grade this IELTS Writing Task ${taskType} essay.
+
+Question/Task: ${prompt}
+
+Student's Essay (${wordCount} words):
+${answer}
+
+Return ONLY valid JSON with this exact structure (no markdown, no explanation outside JSON):
+{
+  "bandScore": <overall band 0-9 rounded to nearest 0.5>,
+  "ta": { "score": <0-9>, "comment": "<specific feedback on Task ${taskType === 1 ? 'Achievement' : 'Response'}>" },
+  "cc": { "score": <0-9>, "comment": "<specific feedback on Coherence and Cohesion>" },
+  "lr": { "score": <0-9>, "comment": "<specific feedback on Lexical Resource>" },
+  "gra": { "score": <0-9>, "comment": "<specific feedback on Grammatical Range and Accuracy>" },
+  "overallFeedback": "<2-3 sentence overall feedback in Vietnamese>",
+  "corrections": [
+    { "original": "<exact short phrase from essay>", "corrected": "<corrected version>", "explanation": "<brief reason in Vietnamese>" }
+  ],
+  "suggestions": ["<actionable suggestion in Vietnamese>", "<actionable suggestion>", "<actionable suggestion>"]
+}
+
+Rules:
+- bandScore = average of (ta.score + cc.score + lr.score + gra.score) / 4, rounded to nearest 0.5
+- corrections: only the 3-5 most important errors
+- suggestions: exactly 3 actionable improvements
+- overallFeedback and all Vietnamese fields must be in Vietnamese`;
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': process.env.FRONTEND_URL || 'https://englishwithdan.com',
+      'X-Title': 'EnglishWithDan IELTS Grader'
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-sonnet-4-6',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: userPrompt }
+      ],
+      temperature: 0.3
+    })
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`AI API error: ${errText}`);
+  }
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content || '';
+  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
+  return JSON.parse(jsonMatch[0]);
+}
+
+// POST /api/admin/writing-attempts/:id/ai-grade
+router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, async (req, res) => {
+  try {
+    const attempt = await WritingAttempt.findById(req.params.id).lean();
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài nộp' });
+
+    const t1Prompt = attempt.task1Snapshot?.prompt || '';
+    const t2Prompt = attempt.task2Snapshot?.prompt || '';
+
+    const [task1Grade, task2Grade] = await Promise.all([
+      gradeTaskWithAI(1, t1Prompt, attempt.task1Answer || '', attempt.wordCount1 || 0),
+      gradeTaskWithAI(2, t2Prompt, attempt.task2Answer || '', attempt.wordCount2 || 0)
+    ]);
+
+    await WritingAttempt.findByIdAndUpdate(req.params.id, {
+      aiGrading: { task1: task1Grade, task2: task2Grade, generatedAt: new Date() },
+      gradingStatus: 'ai_done'
+    });
+
+    res.json({ success: true, task1: task1Grade, task2: task2Grade });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/writing-attempts/:id/confirm-grade
+router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req, res) => {
+  try {
+    const { task1, task2, overallBand, adminNote } = req.body;
+    const confirmedBy = req.user.username || req.user._id.toString();
+
+    await WritingAttempt.findByIdAndUpdate(req.params.id, {
+      grading: {
+        task1,
+        task2,
+        overallBand,
+        adminNote: adminNote || '',
+        confirmedAt: new Date(),
+        confirmedBy
+      },
+      gradingStatus: 'confirmed'
+    });
+
+    res.json({ success: true, message: 'Đã xác nhận điểm' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
 // VOCAB STUDENT ANALYTICS
 // ══════════════════════════════════════════════════
 

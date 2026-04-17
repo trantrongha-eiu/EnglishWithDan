@@ -494,8 +494,9 @@
                     <th>Đề thi</th>
                     <th>Task 1</th>
                     <th>Task 2</th>
+                    <th>Điểm</th>
                     <th>Ngày nộp</th>
-                    <th style="width:180px"></th>
+                    <th style="width:220px"></th>
                   </tr>
                 </thead>
                 <tbody id="writing-history-tbody">
@@ -1475,7 +1476,7 @@
 
   <!-- ══ MODAL: Xem bài Writing của học sinh ══ -->
   <div class="modal-overlay hidden" id="modal-writing-view">
-    <div class="modal-box modal-lg" style="width:min(860px,100%);max-height:90vh;display:flex;flex-direction:column">
+    <div class="modal-box modal-lg" style="width:min(920px,100%);max-height:92vh;display:flex;flex-direction:column">
       <div class="modal-header">
         <h3 id="writing-view-name">Xem bài Writing</h3>
         <button class="modal-close" onclick="closeModal('modal-writing-view')">×</button>
@@ -1483,8 +1484,10 @@
       <div class="modal-body" id="writing-view-body" style="overflow-y:auto;flex:1">
         <div style="color:var(--text3);text-align:center;padding:40px">Đang tải...</div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="flex-wrap:wrap;gap:8px">
         <button class="btn btn-ghost" id="btn-download-writing">⬇ Tải về (.txt)</button>
+        <button class="btn btn-primary" id="btn-ai-grade-writing" style="display:none" onclick="aiGradeWriting()">🤖 AI Chấm điểm</button>
+        <button class="btn btn-success" id="btn-confirm-grade" style="display:none" onclick="saveConfirmedGrade()">✓ Xác nhận &amp; Gửi học sinh</button>
         <button class="btn btn-ghost" onclick="closeModal('modal-writing-view')">Đóng</button>
       </div>
     </div>

@@ -440,11 +440,20 @@ async function loadHistory() {
       const date = new Date(a.submittedAt).toLocaleString('vi-VN');
       const mins = Math.floor((a.timeTaken || 0) / 60);
       const secs = (a.timeTaken || 0) % 60;
+      let scoreBadge;
+      if (a.gradingStatus === 'confirmed' && a.grading?.overallBand != null) {
+        scoreBadge = `<span style="background:#dcfce7;color:#15803d;border-radius:6px;padding:3px 10px;font-size:13px;font-weight:800">${a.grading.overallBand}</span>`;
+      } else if (a.gradingStatus === 'ai_done') {
+        scoreBadge = `<span style="background:#fef3c7;color:#d97706;border-radius:6px;padding:3px 10px;font-size:12px">Đang chờ GV</span>`;
+      } else {
+        scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
+      }
       return `
         <tr>
           <td>${escHtml(a.examName || '–')}</td>
           <td><span class="badge-wc">${a.wordCount1 || 0}</span></td>
           <td><span class="badge-wc">${a.wordCount2 || 0}</span></td>
+          <td>${scoreBadge}</td>
           <td>${date}</td>
           <td>${mins}:${String(secs).padStart(2,'0')}</td>
           <td>
@@ -462,6 +471,7 @@ async function loadHistory() {
             <th>Đề thi</th>
             <th>Task 1 (từ)</th>
             <th>Task 2 (từ)</th>
+            <th>Điểm Band</th>
             <th>Ngày nộp</th>
             <th>Thời gian</th>
             <th></th>
@@ -501,7 +511,12 @@ async function viewAttempt(id) {
     const t2Prompt = t2.prompt || '';
     const t1Img    = t1.imageUrl || '';
 
+    const feedbackHtml = (a.gradingStatus === 'confirmed' && a.grading)
+      ? _buildStudentFeedback(a.grading)
+      : '';
+
     document.getElementById('review-modal-body').innerHTML = `
+      ${feedbackHtml}
       <div class="review-task-section">
         <h4>Task 1 – ${a.wordCount1 || 0} từ</h4>
         ${t1Img ? `<img src="${escHtml(t1Img)}" style="max-width:100%;border-radius:6px;margin-bottom:8px" />` : ''}
@@ -525,6 +540,67 @@ async function viewAttempt(id) {
 function closeReviewModal() {
   document.getElementById('review-modal-overlay').classList.remove('open');
   _currentViewData = null;
+}
+
+function _buildStudentFeedback(g) {
+  function taskCard(label, td) {
+    if (!td) return '';
+    const criteria = [
+      { key: 'ta',  label: 'Task Achievement' },
+      { key: 'cc',  label: 'Coherence & Cohesion' },
+      { key: 'lr',  label: 'Lexical Resource' },
+      { key: 'gra', label: 'Grammar' }
+    ];
+    const bars = criteria.map(c => {
+      const score = td[c.key]?.score ?? 0;
+      const pct   = (score / 9 * 100).toFixed(0);
+      const color = score >= 7 ? '#16a34a' : score >= 5.5 ? '#2563eb' : score >= 4 ? '#d97706' : '#dc2626';
+      return `<div style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+          <span style="color:#374151">${escHtml(c.label)}</span>
+          <strong style="color:${color}">${score}</strong>
+        </div>
+        <div style="background:#e5e7eb;border-radius:99px;height:6px">
+          <div style="background:${color};width:${pct}%;height:6px;border-radius:99px;transition:width .4s"></div>
+        </div>
+        ${td[c.key]?.comment ? `<div style="font-size:11px;color:#6b7280;margin-top:3px;font-style:italic">${escHtml(td[c.key].comment)}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    const corrections = (td.corrections || []).map(c =>
+      `<div style="background:#fff7ed;border-left:3px solid #f97316;border-radius:4px;padding:6px 10px;margin-bottom:6px;font-size:12px">
+        <span style="color:#dc2626;text-decoration:line-through">${escHtml(c.original)}</span>
+        <span style="color:#6b7280;margin:0 6px">→</span>
+        <span style="color:#16a34a;font-weight:600">${escHtml(c.corrected)}</span>
+        ${c.explanation ? `<div style="color:#78350f;margin-top:3px">${escHtml(c.explanation)}</div>` : ''}
+      </div>`).join('');
+
+    const suggestions = (td.suggestions || []).map(s =>
+      `<li style="font-size:12px;color:#1e40af;margin-bottom:4px">${escHtml(s)}</li>`).join('');
+
+    return `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <span style="font-size:13px;font-weight:700;color:#1e40af">${label}</span>
+        <span style="font-size:22px;font-weight:800;color:#1e40af">${td.bandScore ?? '–'}</span>
+      </div>
+      ${bars}
+      ${td.overallFeedback ? `<div style="background:#eff6ff;border-radius:6px;padding:10px 12px;font-size:13px;color:#1e3a5f;margin-top:10px;line-height:1.6">${escHtml(td.overallFeedback)}</div>` : ''}
+      ${corrections ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Lỗi cần sửa</div>${corrections}</div>` : ''}
+      ${suggestions ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Gợi ý cải thiện</div><ul style="margin:0;padding-left:16px">${suggestions}</ul></div>` : ''}
+    </div>`;
+  }
+
+  return `<div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:2px solid #3b82f6;border-radius:12px;padding:16px;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <span style="font-size:15px;font-weight:800;color:#1e40af">📊 Kết quả chấm bài</span>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:2px">Overall Band</div>
+        <div style="font-size:32px;font-weight:900;color:#1e40af;line-height:1">${g.overallBand ?? '–'}</div>
+      </div>
+    </div>
+    ${taskCard('Task 1', g.task1)}
+    ${taskCard('Task 2', g.task2)}
+  </div>`;
 }
 
 // ──────────────────────────────────────────────────────

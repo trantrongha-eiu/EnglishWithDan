@@ -527,6 +527,16 @@
       background: rgba(229, 57, 53, .25);
     }
 
+    .btn-success {
+      background: rgba(22, 163, 74, .15);
+      color: #15803d;
+      border: 1px solid rgba(22, 163, 74, .3);
+    }
+
+    .btn-success:hover {
+      background: rgba(22, 163, 74, .25);
+    }
+
     .btn-sm {
       padding: 5px 11px;
       font-size: 12px;

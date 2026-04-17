@@ -3139,6 +3139,16 @@ function _wcBadge(wc, target) {
   return `<span style="background:${bg};color:${col};border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">${num} từ${warn}</span>`;
 }
 
+function _gradingBadge(a) {
+  if (a.gradingStatus === 'confirmed' && a.grading?.overallBand != null) {
+    return `<span style="background:#dcfce7;color:#15803d;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:700">${a.grading.overallBand}</span>`;
+  }
+  if (a.gradingStatus === 'ai_done') {
+    return `<span style="background:#fef3c7;color:#d97706;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:600">AI ⏳</span>`;
+  }
+  return `<span style="background:#f3f4f6;color:#9ca3af;border-radius:5px;padding:2px 8px;font-size:12px">Chờ</span>`;
+}
+
 function renderWritingHistory(list, q) {
   const filtered = q
     ? list.filter(a => {
@@ -3159,6 +3169,7 @@ function renderWritingHistory(list, q) {
           <td>${escH(a.examName || '–')}</td>
           <td>${_wcBadge(a.wordCount1, 150)}</td>
           <td>${_wcBadge(a.wordCount2, 250)}</td>
+          <td>${_gradingBadge(a)}</td>
           <td style="font-size:12px;color:var(--text3)">${date}</td>
           <td>
             <button class="btn btn-ghost btn-sm" onclick="viewWritingAttempt('${a._id}')">👁 Xem</button>
@@ -3167,7 +3178,7 @@ function renderWritingHistory(list, q) {
           </td>
         </tr>`;
       }).join('')
-    : '<tr><td colspan="6" class="table-empty">Không tìm thấy bài nộp nào</td></tr>';
+    : '<tr><td colspan="7" class="table-empty">Không tìm thấy bài nộp nào</td></tr>';
 }
 
 /* ── Task 1 Pool modals ── */
@@ -3329,43 +3340,242 @@ async function hardDeleteTask2(id) {
   });
 }
 
+let _currentWritingAttempt = null;
+
 async function viewWritingAttempt(id) {
   try {
     const res  = await fetch(`${API}/admin/writing-attempt/${id}`, { headers: authH() });
     const data = await res.json();
     if (!data.success) throw new Error(data.message);
-    const a = data.attempt;
-    const u = a.userId || {};
-    const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
-    // Use snapshots (new), fall back to old examId.task1/task2 for legacy attempts
-    const t1 = a.task1Snapshot || a.examId?.task1 || {};
-    const t2 = a.task2Snapshot || a.examId?.task2 || {};
-    const html = `
-      <div style="margin-bottom:14px">
-        <strong>${escH(a.examName || '')}</strong> – ${escH(name)}<br/>
-        <small style="color:var(--text3)">${formatDate(a.submittedAt)}</small>
-      </div>
-      <div style="margin-bottom:20px">
-        <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
-          TASK 1 – ${a.wordCount1 || 0} từ
-        </div>
-        ${t1.imageUrl ? `<img src="${escH(t1.imageUrl)}" style="max-width:100%;border-radius:6px;margin-bottom:8px">` : ''}
-        ${t1.prompt   ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(t1.prompt)}</div>` : ''}
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task1Answer || '(trống)')}</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">
-          TASK 2 – ${a.wordCount2 || 0} từ
-        </div>
-        ${t2.prompt ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(t2.prompt)}</div>` : ''}
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task2Answer || '(trống)')}</div>
-      </div>
-    `;
-    document.getElementById('writing-view-body').innerHTML = html;
-    document.getElementById('writing-view-name').textContent = `${name} – ${a.examName || ''}`;
-    document.getElementById('btn-download-writing').onclick = () => downloadWritingAttemptData(a);
+    _currentWritingAttempt = data.attempt;
+    _renderWritingModal(_currentWritingAttempt);
     openModal('modal-writing-view');
   } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+function _renderWritingModal(a) {
+  const u    = a.userId || {};
+  const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
+  const t1   = a.task1Snapshot || {};
+  const t2   = a.task2Snapshot || {};
+
+  const essayHtml = `
+    <div style="margin-bottom:14px">
+      <strong>${escH(a.examName || '')}</strong> – ${escH(name)}<br/>
+      <small style="color:var(--text3)">${formatDate(a.submittedAt)}</small>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">TASK 1 – ${a.wordCount1 || 0} từ</div>
+      ${t1.imageUrl ? `<img src="${escH(t1.imageUrl)}" style="max-width:100%;border-radius:6px;margin-bottom:8px">` : ''}
+      ${t1.prompt   ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(t1.prompt)}</div>` : ''}
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task1Answer || '(trống)')}</div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">TASK 2 – ${a.wordCount2 || 0} từ</div>
+      ${t2.prompt ? `<div style="background:var(--surface2);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;white-space:pre-wrap">${escH(t2.prompt)}</div>` : ''}
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;font-size:13px;line-height:1.75;white-space:pre-wrap">${escH(a.task2Answer || '(trống)')}</div>
+    </div>`;
+
+  const hasGrading = a.gradingStatus === 'ai_done' || a.gradingStatus === 'confirmed';
+  const sourceGrade = a.gradingStatus === 'confirmed' ? a.grading : a.aiGrading;
+
+  const gradingHtml = hasGrading && sourceGrade
+    ? _buildGradingForm(sourceGrade, a.gradingStatus === 'confirmed', a._id)
+    : `<div id="wg-grading-section" style="border-top:2px dashed var(--border);padding-top:16px;margin-top:4px;text-align:center;color:var(--text3);font-size:13px;padding-bottom:20px">
+        Bài thi chưa được chấm điểm AI.<br>Nhấn <strong>🤖 AI Chấm điểm</strong> để tự động chấm.
+      </div>`;
+
+  document.getElementById('writing-view-body').innerHTML = essayHtml + gradingHtml;
+  document.getElementById('writing-view-name').textContent = `${name} – ${a.examName || ''}`;
+  document.getElementById('btn-download-writing').onclick = () => downloadWritingAttemptData(a);
+
+  const btnAI      = document.getElementById('btn-ai-grade-writing');
+  const btnConfirm = document.getElementById('btn-confirm-grade');
+  btnAI.style.display      = (a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done') ? '' : 'none';
+  btnAI.textContent        = a.gradingStatus === 'ai_done' ? '🔄 Chấm lại AI' : '🤖 AI Chấm điểm';
+  btnConfirm.style.display = hasGrading ? '' : 'none';
+}
+
+function _buildGradingForm(g, isConfirmed, attemptId) {
+  const labelStyle = 'font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px';
+  const criteria = [
+    { key: 'ta',  label: 'Task Achievement/Response' },
+    { key: 'cc',  label: 'Coherence & Cohesion' },
+    { key: 'lr',  label: 'Lexical Resource' },
+    { key: 'gra', label: 'Grammatical Range & Accuracy' }
+  ];
+
+  function buildTaskForm(taskKey, taskLabel, taskData) {
+    const td = taskData || {};
+    const crit = criteria.map(c => `
+      <div style="display:grid;grid-template-columns:160px 60px 1fr;gap:8px;align-items:start;margin-bottom:10px">
+        <div style="${labelStyle};padding-top:6px">${c.label}</div>
+        <input type="number" id="wg-${taskKey}-${c.key}-score" value="${td[c.key]?.score ?? ''}"
+          min="0" max="9" step="0.5"
+          oninput="wgRecalcBand('${taskKey}')"
+          style="border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:13px;font-weight:700;text-align:center;width:100%">
+        <textarea id="wg-${taskKey}-${c.key}-comment" rows="2"
+          style="border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;resize:vertical;width:100%"
+          placeholder="Nhận xét...">${escH(td[c.key]?.comment || '')}</textarea>
+      </div>`).join('');
+
+    const corrections = (td.corrections || []).map(c =>
+      `<tr>
+        <td style="font-size:12px;color:#dc2626;padding:4px 8px">${escH(c.original)}</td>
+        <td style="font-size:12px;color:#16a34a;padding:4px 8px">${escH(c.corrected)}</td>
+        <td style="font-size:12px;color:var(--text2);padding:4px 8px">${escH(c.explanation)}</td>
+      </tr>`).join('');
+
+    const suggestions = (td.suggestions || []).map((s, i) =>
+      `<li style="font-size:12px;margin-bottom:4px">${escH(s)}</li>`).join('');
+
+    return `
+      <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <span style="font-size:13px;font-weight:700;color:var(--accent)">${taskLabel}</span>
+          <span style="font-size:11px;color:var(--text3)">Band:</span>
+          <span id="wg-${taskKey}-band" style="font-size:18px;font-weight:800;color:#2563eb">${td.bandScore ?? '–'}</span>
+        </div>
+        ${crit}
+        <div style="margin-top:10px">
+          <div style="${labelStyle};margin-bottom:4px">Nhận xét tổng thể (gửi cho học sinh)</div>
+          <textarea id="wg-${taskKey}-feedback" rows="3"
+            style="border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;resize:vertical;width:100%;box-sizing:border-box"
+            placeholder="Nhận xét tổng thể...">${escH(td.overallFeedback || '')}</textarea>
+        </div>
+        ${corrections ? `
+        <div style="margin-top:10px">
+          <div style="${labelStyle};margin-bottom:4px">Lỗi sửa (AI)</div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:var(--surface2)">
+              <th style="padding:4px 8px;text-align:left;font-size:11px">Lỗi</th>
+              <th style="padding:4px 8px;text-align:left;font-size:11px">Sửa thành</th>
+              <th style="padding:4px 8px;text-align:left;font-size:11px">Giải thích</th>
+            </tr></thead>
+            <tbody>${corrections}</tbody>
+          </table>
+        </div>` : ''}
+        ${suggestions ? `
+        <div style="margin-top:10px">
+          <div style="${labelStyle};margin-bottom:4px">Gợi ý cải thiện (AI)</div>
+          <ul style="margin:0;padding-left:18px">${suggestions}</ul>
+        </div>` : ''}
+      </div>`;
+  }
+
+  const t1Form = buildTaskForm('t1', 'TASK 1', g.task1);
+  const t2Form = buildTaskForm('t2', 'TASK 2', g.task2);
+
+  return `
+    <div id="wg-grading-section" style="border-top:2px solid var(--accent);padding-top:16px;margin-top:4px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="font-size:14px;font-weight:800">🤖 Chấm điểm IELTS</span>
+        ${isConfirmed ? `<span style="background:#dcfce7;color:#15803d;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700">✓ Đã xác nhận</span>` : `<span style="background:#fef3c7;color:#d97706;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700">Chờ xác nhận</span>`}
+        <span style="margin-left:auto;font-size:12px;color:var(--text3)">Overall Band: <strong id="wg-overall-band" style="font-size:18px;color:#2563eb">${g.overallBand ?? '–'}</strong></span>
+      </div>
+      ${t1Form}
+      ${t2Form}
+      <div style="margin-top:4px">
+        <div style="${labelStyle};margin-bottom:4px">Ghi chú của giáo viên (không hiện với học sinh)</div>
+        <textarea id="wg-admin-note" rows="2"
+          style="border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;resize:vertical;width:100%;box-sizing:border-box"
+          placeholder="Ghi chú nội bộ...">${escH(g.adminNote || '')}</textarea>
+      </div>
+    </div>`;
+}
+
+function wgRecalcBand(taskKey) {
+  const scores = ['ta','cc','lr','gra'].map(c =>
+    parseFloat(document.getElementById(`wg-${taskKey}-${c}-score`)?.value) || 0
+  );
+  const avg  = scores.reduce((a, b) => a + b, 0) / 4;
+  const band = Math.round(avg * 2) / 2;
+  const el   = document.getElementById(`wg-${taskKey}-band`);
+  if (el) el.textContent = band.toFixed(1);
+
+  const t1 = parseFloat(document.getElementById('wg-t1-band')?.textContent) || 0;
+  const t2 = parseFloat(document.getElementById('wg-t2-band')?.textContent) || 0;
+  const overall = Math.round((t1 + t2) / 2 * 2) / 2;
+  const oel = document.getElementById('wg-overall-band');
+  if (oel) oel.textContent = overall.toFixed(1);
+}
+
+async function aiGradeWriting() {
+  if (!_currentWritingAttempt) return;
+  const btn = document.getElementById('btn-ai-grade-writing');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang chấm...';
+  const section = document.getElementById('wg-grading-section');
+  if (section) section.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);font-size:13px">⏳ AI đang chấm bài, vui lòng chờ 15-30 giây...</div>';
+
+  try {
+    const res  = await fetch(`${API}/admin/writing-attempts/${_currentWritingAttempt._id}/ai-grade`, {
+      method: 'POST', headers: authH()
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+
+    _currentWritingAttempt.aiGrading   = { task1: data.task1, task2: data.task2, generatedAt: new Date() };
+    _currentWritingAttempt.gradingStatus = 'ai_done';
+
+    const gradingSection = document.getElementById('wg-grading-section');
+    gradingSection.outerHTML = _buildGradingForm({ task1: data.task1, task2: data.task2 }, false, _currentWritingAttempt._id);
+
+    btn.disabled  = false;
+    btn.textContent = '🔄 Chấm lại AI';
+    document.getElementById('btn-confirm-grade').style.display = '';
+    loadWritingHistory();
+    toast('AI đã chấm xong! Hãy kiểm tra và xác nhận điểm.');
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '🤖 AI Chấm điểm';
+    toast('Lỗi AI: ' + err.message, 'error');
+  }
+}
+
+function _collectTaskGrade(taskKey, sourceGrading) {
+  const src = sourceGrading || {};
+  return {
+    bandScore:       parseFloat(document.getElementById(`wg-${taskKey}-band`)?.textContent) || 0,
+    ta:  { score: parseFloat(document.getElementById(`wg-${taskKey}-ta-score`)?.value)  || 0, comment: document.getElementById(`wg-${taskKey}-ta-comment`)?.value  || '' },
+    cc:  { score: parseFloat(document.getElementById(`wg-${taskKey}-cc-score`)?.value)  || 0, comment: document.getElementById(`wg-${taskKey}-cc-comment`)?.value  || '' },
+    lr:  { score: parseFloat(document.getElementById(`wg-${taskKey}-lr-score`)?.value)  || 0, comment: document.getElementById(`wg-${taskKey}-lr-comment`)?.value  || '' },
+    gra: { score: parseFloat(document.getElementById(`wg-${taskKey}-gra-score`)?.value) || 0, comment: document.getElementById(`wg-${taskKey}-gra-comment`)?.value || '' },
+    overallFeedback: document.getElementById(`wg-${taskKey}-feedback`)?.value || '',
+    corrections:     src.corrections  || [],
+    suggestions:     src.suggestions  || []
+  };
+}
+
+async function saveConfirmedGrade() {
+  if (!_currentWritingAttempt) return;
+  const btn = document.getElementById('btn-confirm-grade');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang lưu...';
+
+  const aiSrc = _currentWritingAttempt.aiGrading || _currentWritingAttempt.grading || {};
+  const payload = {
+    task1:       _collectTaskGrade('t1', aiSrc.task1),
+    task2:       _collectTaskGrade('t2', aiSrc.task2),
+    overallBand: parseFloat(document.getElementById('wg-overall-band')?.textContent) || 0,
+    adminNote:   document.getElementById('wg-admin-note')?.value || ''
+  };
+
+  try {
+    const res  = await fetch(`${API}/admin/writing-attempts/${_currentWritingAttempt._id}/confirm-grade`, {
+      method: 'PUT', headers: authH(), body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    toast('Đã xác nhận! Học sinh có thể xem điểm và feedback.', 'success');
+    closeModal('modal-writing-view');
+    _currentWritingAttempt = null;
+    loadWritingHistory();
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '✓ Xác nhận & Gửi học sinh';
+    toast('Lỗi lưu: ' + err.message, 'error');
+  }
 }
 
 async function downloadWritingAttempt(id) {
