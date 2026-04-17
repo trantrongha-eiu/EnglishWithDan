@@ -7,10 +7,10 @@
     <title>IELTS Listening – EnglishWithDan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="listening.css" />
-  <link rel="stylesheet" href="css/mobile.css" />
-  <script src="js/theme.js"></script>
+    <link rel="stylesheet" href="css/mobile.css" />
+    <script src="js/theme.js"></script>
 </head>
 
 <body>
@@ -20,22 +20,29 @@
 ══════════════════════════════════════════════ -->
     <div id="screen-list" class="screen active">
 
-        <header style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60;gap:8px">
+        <header
+            style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60;gap:8px">
             <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0">
                 <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
             </div>
             <div style="display:flex;align-items:center;gap:8px;min-width:0">
-                <span class="hdr-username" id="userName" style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋 Hello</span>
-                <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng" aria-label="Mở menu kỹ năng">
+                <span class="hdr-username" id="userName"
+                    style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋
+                    Hello</span>
+                <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng"
+                    aria-label="Mở menu kỹ năng">
                     <i class="fas fa-th-large"></i>
                 </button>
-                <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng" aria-label="Đổi chế độ sáng tối">
+                <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"
+                    aria-label="Đổi chế độ sáng tối">
                     <span class="dark-toggle-icon">🌙</span>
                 </button>
-                <button onclick="showHistoryModal()" class="hdr-btn" style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                <button onclick="showHistoryModal()" class="hdr-btn"
+                    style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
                     📜 <span class="hdr-btn-text">Lịch sử</span>
                 </button>
-                <button onclick="logout()" class="hdr-btn" style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
+                <button onclick="logout()" class="hdr-btn"
+                    style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
                     🚪 <span class="hdr-btn-text">Đăng xuất</span>
                 </button>
             </div>
@@ -43,12 +50,12 @@
 
         <div class="skill-tabs-bar" id="skill-tabs-bar">
             <nav class="site-nav">
-                <a href="reading.html"   class="site-nav-link"><i class="fas fa-book-open"></i> Reading</a>
+                <a href="reading.html" class="site-nav-link"><i class="fas fa-book-open"></i> Reading</a>
                 <a href="listening.html" class="site-nav-link active"><i class="fas fa-headphones"></i> Listening</a>
-                <a href="writing.html"   class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
-                <a href="speaking.html"  class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
+                <a href="writing.html" class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
+                <a href="speaking.html" class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
                 <a href="dashboard.html" class="site-nav-link"><i class="fas fa-layer-group"></i> Vocab</a>
-                <a href="profile.html"   class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
+                <a href="profile.html" class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
             </nav>
         </div>
 
@@ -56,7 +63,8 @@
             <div class="list-header">
                 <div>
                     <h2>Practice <span class="tag-red">Listening Full Test</span></h2>
-                    <p class="list-subtitle">Complete IELTS Listening with 4 parts, audio player and transcript after submission.</p>
+                    <p class="list-subtitle">Complete IELTS Listening with 4 parts, audio player and transcript after
+                        submission.</p>
                 </div>
                 <div class="list-filter">
                     <button class="filter-btn active" onclick="filterTests('all', this)">All</button>
@@ -67,7 +75,8 @@
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
             <div id="resume-banner">
-                <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span id="resume-answered-count"></span></span>
+                <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span
+                        id="resume-answered-count"></span></span>
                 <button class="resume-btn-continue" onclick="resumeExam()">▶ Tiếp tục làm</button>
                 <button class="resume-btn-dismiss" onclick="dismissResume()">Bỏ qua</button>
             </div>
@@ -92,7 +101,8 @@
             <span class="exam-audio-status" id="exam-audio-status">🎧 Waiting</span>
             <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Play now</button>
             <div class="audio-seek-wrap" style="flex:1">
-                <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100" step="0.1" tabindex="-1" />
+                <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100"
+                    step="0.1" tabindex="-1" />
                 <div class="audio-time">
                     <span id="audio-current">00:00</span>
                     <span id="audio-total">00:00</span>
@@ -101,7 +111,8 @@
             <!-- Volume control -->
             <div class="volume-wrap">
                 <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()">🔊</span>
-                <input type="range" class="volume-seek" id="volume-seek-exam" value="100" min="0" max="100" step="1" oninput="setVolume(this.value, 'exam')" title="Volume" />
+                <input type="range" class="volume-seek" id="volume-seek-exam" value="100" min="0" max="100" step="1"
+                    oninput="setVolume(this.value, 'exam')" title="Volume" />
             </div>
             <!-- hidden play btn kept for JS parity with review -->
             <button id="play-btn" style="display:none" onclick="togglePlay()">▶</button>
@@ -112,8 +123,11 @@
         <div id="audio-start-overlay" class="audio-start-overlay hidden">
             <div class="aso-card">
                 <div class="aso-icon">🎧</div>
-                <p class="aso-text">The audio will be played <strong>once only</strong>.<br>You are <strong>not permitted to pause</strong> or <strong>rewind</strong> the audio while answering the questions.</p>
-                <p class="aso-sub">After clicking below, you have <strong>30 seconds</strong> to read the questions before the audio plays automatically.</p>
+                <p class="aso-text">The audio will be played <strong>once only</strong>.<br>You are <strong>not
+                        permitted to pause</strong> or <strong>rewind</strong> the audio while answering the questions.
+                </p>
+                <p class="aso-sub">After clicking below, you have <strong>30 seconds</strong> to read the questions
+                    before the audio plays automatically.</p>
                 <button class="aso-play-btn" onclick="startReadingTime()">📖 Understood — Start reading</button>
             </div>
         </div>
@@ -181,7 +195,8 @@
             <button class="audio-play-btn" id="play-btn-rv" onclick="togglePlay()">▶</button>
             <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
             <div class="audio-seek-wrap">
-                <input type="range" class="audio-seek" id="audio-seek-rv" value="0" min="0" max="100" step="0.1" oninput="onSeekInput(this.value)" />
+                <input type="range" class="audio-seek" id="audio-seek-rv" value="0" min="0" max="100" step="0.1"
+                    oninput="onSeekInput(this.value)" />
                 <div class="audio-time">
                     <span id="audio-current-rv">00:00</span>
                     <span id="audio-total-rv">00:00</span>
@@ -197,7 +212,8 @@
             <!-- Volume control -->
             <div class="volume-wrap">
                 <span class="volume-icon" id="vol-icon-rv" onclick="toggleMute()">🔊</span>
-                <input type="range" class="volume-seek" id="volume-seek-rv" value="100" min="0" max="100" step="1" oninput="setVolume(this.value, 'rv')" title="Volume" />
+                <input type="range" class="volume-seek" id="volume-seek-rv" value="100" min="0" max="100" step="1"
+                    oninput="setVolume(this.value, 'rv')" title="Volume" />
             </div>
         </div>
 
@@ -227,7 +243,8 @@
                 <span class="dict-word" id="dict-word"></span>
                 <span class="dict-phonetic" id="dict-phonetic"></span>
             </div>
-            <button onclick="closeDictPopup()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
+            <button onclick="closeDictPopup()"
+                style="background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
         </div>
         <div class="dict-pos" id="dict-pos"></div>
         <div class="dict-meaning" id="dict-meaning">Looking up...</div>
@@ -248,9 +265,8 @@
                 <h3>Enter access code</h3>
                 <p class="key-desc">You need a code from your teacher to start this test</p>
                 <div class="key-test-name" id="key-test-name"></div>
-                <input id="key-input" type="text" class="key-input ls-key-input"
-                    placeholder="VD: A3F9-B2C1" maxlength="9" autocomplete="off"
-                    oninput="formatKeyInput(this)"
+                <input id="key-input" type="text" class="key-input ls-key-input" placeholder="VD: A3F9-B2C1"
+                    maxlength="9" autocomplete="off" oninput="formatKeyInput(this)"
                     onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
                 <div id="key-msg" class="key-msg hidden"></div>
                 <div class="key-actions">
@@ -294,7 +310,8 @@
     <div class="modal-overlay hidden" id="modal-submit">
         <div class="modal-box modal-sm">
             <h3>Submit test?</h3>
-            <p>Are you sure you want to submit? You have answered <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> questions.</p>
+            <p>Are you sure you want to submit? You have answered <strong id="modal-answered">0</strong>/<strong
+                    id="modal-total">0</strong> questions.</p>
             <p id="modal-warning" style="color:#f59e0b;font-size:13px;margin-top:8px"></p>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModal('modal-submit')">Continue</button>
@@ -327,7 +344,8 @@
                 <!-- Buttons built dynamically by buildPartTabs() -->
             </div>
             <div class="snf-exam-controls" id="snf-exam-controls">
-                <div class="snf-answered">Answered: <strong id="footer-answered">0</strong> / <span id="footer-total">0</span></div>
+                <div class="snf-answered">Answered: <strong id="footer-answered">0</strong> / <span
+                        id="footer-total">0</span></div>
                 <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Submit</button>
             </div>
         </div>
@@ -338,11 +356,11 @@
     <script>
         // ── Skill nav toggle (mobile) ──────────────────────────────────
         function toggleSkillNav() {
-          const bar = document.getElementById('skill-tabs-bar');
-          const btn = document.getElementById('skillNavToggle');
-          if (!bar) return;
-          const open = bar.classList.toggle('nav-open');
-          btn.classList.toggle('active', open);
+            const bar = document.getElementById('skill-tabs-bar');
+            const btn = document.getElementById('skillNavToggle');
+            if (!bar) return;
+            const open = bar.classList.toggle('nav-open');
+            btn.classList.toggle('active', open);
         }
     </script>
 
@@ -368,7 +386,7 @@
         };
 
         /* Highlight cache – preserve <span class="hl"> spans across part switches */
-        const partHlCache   = {};  // exam mode  : { partIdx: questionsPanelHTML }
+        const partHlCache = {};  // exam mode  : { partIdx: questionsPanelHTML }
         const partHlCacheRv = {};  // review mode: { partIdx: { transcript, questions } }
 
         const audio = document.getElementById('audio-player');
@@ -376,21 +394,21 @@
         // ══════════════════════════════════════════════
         // LOCAL-STORAGE: AUTO-SAVE & RESUME
         // ══════════════════════════════════════════════
-        const _LS_KEY    = 'ews_listening_progress';
+        const _LS_KEY = 'ews_listening_progress';
         const _LS_MAX_MS = 2 * 60 * 60 * 1000; // expire after 2 hours
-        let   _saveInterval = null;
+        let _saveInterval = null;
 
         function saveExamToStorage() {
             if (!state.currentTestId || state.submitted) return;
             try {
                 localStorage.setItem(_LS_KEY, JSON.stringify({
                     currentTestId: state.currentTestId,
-                    currentTest:   state.currentTest,
-                    answers:       state.answers,
-                    partIdx:       state.partIdx,
-                    audioTime:     audio.currentTime,
-                    startTime:     state.startTime,
-                    savedAt:       Date.now()
+                    currentTest: state.currentTest,
+                    answers: state.answers,
+                    partIdx: state.partIdx,
+                    audioTime: audio.currentTime,
+                    startTime: state.startTime,
+                    savedAt: Date.now()
                 }));
             } catch { /* storage quota – ignore */ }
         }
@@ -413,8 +431,8 @@
                 const allQs = (data.currentTest.sections || [])
                     .flatMap(s => (s.questionGroups || []).flatMap(g => g.questions || []));
                 const answered = Object.keys(data.answers || {}).length;
-                const total    = data.currentTest.totalQuestions || allQs.length || '?';
-                document.getElementById('resume-test-name').textContent     = data.currentTest.name || 'bài thi';
+                const total = data.currentTest.totalQuestions || allQs.length || '?';
+                document.getElementById('resume-test-name').textContent = data.currentTest.name || 'bài thi';
                 document.getElementById('resume-answered-count').textContent = `${answered}/${total} câu đã trả lời`;
                 banner._resumeData = data;
                 banner.style.display = 'flex';
@@ -423,18 +441,18 @@
 
         function resumeExam() {
             const banner = document.getElementById('resume-banner');
-            const data   = banner?._resumeData;
+            const data = banner?._resumeData;
             if (!data) return;
             banner.style.display = 'none';
 
             const t = data.currentTest;
             state.currentTestId = data.currentTestId;
-            state.currentTest   = t;
-            state.answers       = data.answers   || {};
-            state.partIdx       = data.partIdx   || 0;
-            state.submitted     = false;
-            state.isReview      = false;
-            state.startTime     = data.startTime || new Date().toISOString();
+            state.currentTest = t;
+            state.answers = data.answers || {};
+            state.partIdx = data.partIdx || 0;
+            state.submitted = false;
+            state.isReview = false;
+            state.startTime = data.startTime || new Date().toISOString();
             for (const k in partHlCache) delete partHlCache[k];
 
             document.getElementById('exam-title').textContent = t.name;
@@ -551,8 +569,8 @@
             const dur = t.audioDuration ? `${Math.floor(t.audioDuration / 60)}:${pad(t.audioDuration % 60)} min` : '–';
             const done = !!t.lastAttempt;
             const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
-            const cor  = t.lastAttempt?.correctCount ?? '';
-            const tot  = t.lastAttempt?.totalQuestions ?? t.totalQuestions ?? '';
+            const cor = t.lastAttempt?.correctCount ?? '';
+            const tot = t.lastAttempt?.totalQuestions ?? t.totalQuestions ?? '';
             const safeName = (t.name || '').replace(/'/g, "\\'");
             return `
                 <div class="test-card" id="tcard-${t._id}" data-done="${done}">
@@ -577,7 +595,7 @@
             if (btn) btn.classList.add('active');
             document.querySelectorAll('.test-card').forEach(c => {
                 const done = c.dataset.done === 'true';
-                if (mode === 'all')  c.style.display = '';
+                if (mode === 'all') c.style.display = '';
                 else if (mode === 'done') c.style.display = done ? '' : 'none';
                 else c.style.display = !done ? '' : 'none';
             });
@@ -752,7 +770,7 @@
                 _prevVolume = audio.volume;
                 audio.volume = 0;
                 document.getElementById('volume-seek-exam').value = 0;
-                document.getElementById('volume-seek-rv').value   = 0;
+                document.getElementById('volume-seek-rv').value = 0;
                 ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.textContent = '🔇';
@@ -761,7 +779,7 @@
                 const restore = Math.round(_prevVolume * 100);
                 audio.volume = _prevVolume;
                 document.getElementById('volume-seek-exam').value = restore;
-                document.getElementById('volume-seek-rv').value   = restore;
+                document.getElementById('volume-seek-rv').value = restore;
                 const icon = _prevVolume < 0.4 ? '🔉' : '🔊';
                 ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
                     const el = document.getElementById(id);
@@ -809,7 +827,7 @@
             document.getElementById('audio-start-overlay').classList.add('hidden');
             const playNowBtn = document.getElementById('aso-play-now-btn');
             if (playNowBtn) playNowBtn.classList.add('hidden');
-            audio.play().catch(() => {});
+            audio.play().catch(() => { });
             updateExamAudioStatus(true);
         }
 
@@ -867,7 +885,14 @@
                     if (tb && rv) partHlCacheRv[prevIdx] = { transcript: tb.innerHTML, questions: rv.innerHTML };
                 } else {
                     const qp = document.getElementById('questions-panel');
-                    if (qp) partHlCache[prevIdx] = qp.innerHTML;
+
+                    if (qp) {
+                        // ✅ THÊM: flush input values vào DOM trước khi snapshot
+                        qp.querySelectorAll('input.fill-input, input.fill-input-inline').forEach(inp => {
+                            inp.setAttribute('value', inp.value);
+                        });
+                        partHlCache[prevIdx] = qp.innerHTML;
+                    }
                 }
             }
 
@@ -897,6 +922,10 @@
                     panel.innerHTML = partHlCache[idx];
                     setupDragDrop(panel);
                     setupDictionaryDouble('questions-panel');
+                    const section = getSortedSections(false)[idx];
+                    (section?.questionGroups || []).forEach(g =>
+                        g.questions.forEach(q => restoreAnswer(q))
+                    );
                 } else {
                     renderPartQuestions(idx);
                 }
@@ -932,7 +961,7 @@
 
         // ── Helpers ───────────────────────────────────────────────
         function escHtml(s) {
-            return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
         // ── Group dispatcher ──────────────────────────────────────
@@ -943,7 +972,7 @@
 
             let wordBankHtml = '';
             if (!isReview) {
-                const wbQs = group.questions.filter(q => ['sentence-completion','matching'].includes(q.type) && q.wordBank?.length);
+                const wbQs = group.questions.filter(q => ['sentence-completion', 'matching'].includes(q.type) && q.wordBank?.length);
                 if (wbQs.length) {
                     const allWords = [...new Set(wbQs.flatMap(q => q.wordBank))];
                     wordBankHtml = renderWordBankHtml(allWords, group.questions[0]?.questionNumber || gi);
@@ -952,14 +981,14 @@
 
             let contentHtml = '';
             switch (groupType) {
-                case 'table':              contentHtml = renderTableGroup(group, isReview);            break;
-                case 'note-form':          contentHtml = renderNoteFormGroup(group, isReview);         break;
-                case 'bullet-list':        contentHtml = renderBulletListGroup(group, isReview);       break;
-                case 'map':                contentHtml = renderMapGroup(group, isReview);              break;
+                case 'table': contentHtml = renderTableGroup(group, isReview); break;
+                case 'note-form': contentHtml = renderNoteFormGroup(group, isReview); break;
+                case 'bullet-list': contentHtml = renderBulletListGroup(group, isReview); break;
+                case 'map': contentHtml = renderMapGroup(group, isReview); break;
                 case 'matching-options':
-                case 'sentence-endings':   contentHtml = renderMatchingOptionsGroup(group, isReview);  break;
-                case 'summary-completion': contentHtml = renderSummaryCompletionGroup(group, isReview);break;
-                default:                   contentHtml = renderPlainGroup(group, isReview);            break;
+                case 'sentence-endings': contentHtml = renderMatchingOptionsGroup(group, isReview); break;
+                case 'summary-completion': contentHtml = renderSummaryCompletionGroup(group, isReview); break;
+                default: contentHtml = renderPlainGroup(group, isReview); break;
             }
 
             const summary = isReview ? renderGroupReviewSummary(group) : '';
@@ -1030,7 +1059,7 @@
             const optListHtml = matchingOptions.map((opt, i) => {
                 const letter = String.fromCharCode(65 + i);
                 const isUsed = !isReview && !matchingReuseAllowed &&
-                               questions.some(q => state.answers[q.questionNumber] === letter);
+                    questions.some(q => state.answers[q.questionNumber] === letter);
                 return `<div class="mo-opt-row${isUsed ? ' mo-opt-used' : ''}"
                     data-value="${letter}" data-groupid="${groupId}"
                     data-reuse="${matchingReuseAllowed ? 1 : 0}"
@@ -1158,10 +1187,10 @@
         // Render nhóm "Choose N letters A-G" gộp thành 1 UI chung
         // Hỗ trợ 2, 3, 4 letters (Q18-20 Choose THREE letters, etc.)
         function renderMultiAnswerCluster(cluster, isReview) {
-            const count    = cluster.length;   // = số đáp án cần chọn = số câu trong cluster
+            const count = cluster.length;   // = số đáp án cần chọn = số câu trong cluster
             const firstNum = cluster[0].questionNumber;
-            const lastNum  = cluster[cluster.length - 1].questionNumber;
-            const opts     = cluster[0].options || [];
+            const lastNum = cluster[cluster.length - 1].questionNumber;
+            const opts = cluster[0].options || [];
 
             // Đáp án đúng từng câu trong cluster (mảng chữ cái)
             const caLetters = cluster.map(q => (q.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
@@ -1174,7 +1203,7 @@
                 const rawUA = cluster[0].userAnswer || '';
                 try { uaArr = JSON.parse(rawUA).map(x => x.toUpperCase()); } catch { uaArr = []; }
             } else {
-                try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch {}
+                try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch { }
             }
 
             // Label range: "Questions 18, 19 and 20" hoặc "Questions 17 and 18"
@@ -1236,24 +1265,24 @@
 
         function renderStandaloneQuestion(q, isReview) {
             const num = q.questionNumber;
-            const ua  = isReview ? (q.userAnswer   || '') : (state.answers[num] || '');
-            const ca  = isReview ? (q.correctAnswer || '') : '';
-            const ok  = isReview ? !!q.isCorrect : false;
+            const ua = isReview ? (q.userAnswer || '') : (state.answers[num] || '');
+            const ca = isReview ? (q.correctAnswer || '') : '';
+            const ok = isReview ? !!q.isCorrect : false;
 
             let inputHtml = '';
             switch (q.type) {
-                case 'multiple-choice':     inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview); break;
-                case 'checkbox':            inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2); break;
-                case 'multi-answer-group':  inputHtml = renderMultiAnswerCluster([q], isReview); break;
+                case 'multiple-choice': inputHtml = renderRadioOpts(num, q.options || [], ua, ca, isReview); break;
+                case 'checkbox': inputHtml = renderCheckboxOpts(num, q.options || [], ua, ca, isReview, q.checkboxCount || 2); break;
+                case 'multi-answer-group': inputHtml = renderMultiAnswerCluster([q], isReview); break;
                 case 'fill-blank':
                 case 'map-labelling':
-                case 'matching-info':       inputHtml = renderFillBlank(num, ua, ca, isReview); break;
+                case 'matching-info': inputHtml = renderFillBlank(num, ua, ca, isReview); break;
                 case 'sentence-completion':
-                case 'matching':            inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview); break;
-                default:                    inputHtml = renderFillBlank(num, ua, ca, isReview);
+                case 'matching': inputHtml = renderInlineDrop(num, q.questionText, ua, ca, isReview); break;
+                default: inputHtml = renderFillBlank(num, ua, ca, isReview);
             }
 
-            const showText = !['sentence-completion','matching'].includes(q.type);
+            const showText = !['sentence-completion', 'matching'].includes(q.type);
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
                     ${ok ? '✓ Correct' : `✗ Incorrect — Answer: <strong>${ca}</strong>`}
@@ -1272,12 +1301,12 @@
         function resolvePlaceholders(template, questions, isReview) {
             return template.replace(/__Q(\d+)__/g, (match, numStr) => {
                 const num = parseInt(numStr);
-                const q   = questions.find(q => q.questionNumber === num);
+                const q = questions.find(q => q.questionNumber === num);
                 if (!q) return match;
-                const ua = isReview ? (q.userAnswer   || '') : (state.answers[num] || '');
+                const ua = isReview ? (q.userAnswer || '') : (state.answers[num] || '');
                 const ca = isReview ? (q.correctAnswer || '') : '';
                 if (isReview) {
-                    const ok  = !!q.isCorrect;
+                    const ok = !!q.isCorrect;
                     return `<span class="inline-answer-wrap" id="rv-q${num}" data-qnum="${num}">
                         <span class="q-badge-inline">${num}</span>
                         <span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}">${ua || '–'}</span>
@@ -1295,10 +1324,10 @@
 
         function renderGroupReviewSummary(group) {
             if (!group.questions?.length) return '';
-            const total   = group.questions.length;
+            const total = group.questions.length;
             const correct = group.questions.filter(q => q.isCorrect).length;
             return `<div class="group-review-summary">
-                Nhóm này: <strong style="color:${correct===total?'#16a34a':'#e53935'}">${correct}/${total}</strong> đúng
+                Nhóm này: <strong style="color:${correct === total ? '#16a34a' : '#e53935'}">${correct}/${total}</strong> đúng
             </div>`;
         }
 
@@ -1390,8 +1419,8 @@
 
         function renderCheckboxOpts(num, opts, ua, ca, isReview, count) {
             let uaArr = [], caArr = [];
-            try { uaArr = JSON.parse(ua || '[]'); } catch {}
-            try { caArr = JSON.parse(ca || '[]'); } catch {}
+            try { uaArr = JSON.parse(ua || '[]'); } catch { }
+            try { caArr = JSON.parse(ca || '[]'); } catch { }
             // Normalize to uppercase letters for comparison
             const normLetter = str => str ? str.trim().charAt(0).toUpperCase() : '';
             const caLetters = caArr.map(x => normLetter(x));
@@ -1399,20 +1428,20 @@
             return `
                 <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
                 <div class="checkbox-opts">${opts.map((opt, idx) => {
-                    const letters = ['A','B','C','D','E'];
-                    const letter = letters[idx] || normLetter(opt);
-                    let cls = '';
-                    if (isReview) {
-                        if (caLetters.includes(letter)) cls = 'correct-ans';
-                        else if (uaLetters.includes(letter) && !caLetters.includes(letter)) cls = 'wrong-ans';
-                    } else {
-                        if (uaLetters.includes(letter)) cls = 'selected';
-                    }
-                    const safeOpt = opt.replace(/'/g, "\\'");
-                    return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                const letter = letters[idx] || normLetter(opt);
+                let cls = '';
+                if (isReview) {
+                    if (caLetters.includes(letter)) cls = 'correct-ans';
+                    else if (uaLetters.includes(letter) && !caLetters.includes(letter)) cls = 'wrong-ans';
+                } else {
+                    if (uaLetters.includes(letter)) cls = 'selected';
+                }
+                const safeOpt = opt.replace(/'/g, "\\'");
+                return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
                         <span class="check-box"></span><label><strong>${letter}</strong> ${opt.replace(/^[A-Ea-e]\s+/, '')}</label>
                     </div>`;
-                }).join('')}</div>`;
+            }).join('')}</div>`;
         }
 
         function renderFillBlank(num, ua, ca, isReview) {
@@ -1453,7 +1482,7 @@
 
         function toggleCheckbox(qnum, value, maxCount) {
             let arr = [];
-            try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch {}
+            try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch { }
             if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
             else {
                 if (arr.length >= maxCount) { toast(`You can only select ${maxCount} answers`, 'info'); return; }
@@ -1470,7 +1499,7 @@
         // firstNum: số câu đầu cluster, lastNum: số câu cuối
         function toggleMultiAnswer(firstNum, letter, maxCount, lastNum) {
             let arr = [];
-            try { arr = JSON.parse(state.answers[firstNum] || '[]'); } catch {}
+            try { arr = JSON.parse(state.answers[firstNum] || '[]'); } catch { }
 
             if (arr.includes(letter)) {
                 arr = arr.filter(v => v !== letter);
@@ -1505,10 +1534,10 @@
             const num = q.questionNumber;
             const saved = state.answers[num];
             if (!saved) return;
-            if (['sentence-completion','matching'].includes(q.type)) {
+            if (['sentence-completion', 'matching'].includes(q.type)) {
                 const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
                 if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>`; }
-            } else if (['fill-blank','map-labelling','matching-info'].includes(q.type)) {
+            } else if (['fill-blank', 'map-labelling', 'matching-info'].includes(q.type)) {
                 const inp = document.getElementById(`fi-${num}`);
                 if (inp) inp.value = saved;
             }
@@ -1707,7 +1736,7 @@
 
         function renderQNav(gridId, isReview) {
             const allQs = getAllQuestions(isReview);
-            const grid  = document.getElementById(gridId);
+            const grid = document.getElementById(gridId);
             if (!grid) return;
             grid.innerHTML = allQs.map(q => {
                 const num = q.questionNumber;
@@ -1721,7 +1750,7 @@
         function isAnswered(qnum) {
             const val = state.answers[qnum];
             if (val) {
-                try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.length > 0 : !!val; } catch {}
+                try { const arr = JSON.parse(val); return Array.isArray(arr) ? arr.length > 0 : !!val; } catch { }
                 return !!val;
             }
             // Multi-answer-group: câu 2..N không có key riêng, answer lưu ở firstNum của cluster
@@ -1735,7 +1764,7 @@
                 const firstNum = parseInt(clusterEl.dataset.clusterStart);
                 const clusterVal = state.answers[firstNum];
                 if (clusterVal) {
-                    try { const arr = JSON.parse(clusterVal); return Array.isArray(arr) ? arr.length > 0 : !!clusterVal; } catch {}
+                    try { const arr = JSON.parse(clusterVal); return Array.isArray(arr) ? arr.length > 0 : !!clusterVal; } catch { }
                     return !!clusterVal;
                 }
             }
@@ -1777,7 +1806,7 @@
                     const fi = document.getElementById(`fi-${num}`);
                     if (fi) {
                         el = fi.closest('.note-line, .bullet-item, td') ||
-                             fi.closest('.group-note-form, .group-bullet-list, .group-table-wrap') || fi;
+                            fi.closest('.group-note-form, .group-bullet-list, .group-table-wrap') || fi;
                     }
                 }
                 if (!el) {
@@ -1798,10 +1827,10 @@
                 const panel = document.getElementById(panelId);
                 if (panel) {
                     const panelRect = panel.getBoundingClientRect();
-                    const elRect   = el.getBoundingClientRect();
+                    const elRect = el.getBoundingClientRect();
                     // Tính offset: 16px margin từ top của panel (trừ sticky nav trong review)
                     const stickyBar = panel.querySelector('.review-qnav-bar');
-                    const stickyH   = stickyBar ? stickyBar.offsetHeight + 8 : 16;
+                    const stickyH = stickyBar ? stickyBar.offsetHeight + 8 : 16;
                     panel.scrollTop += (elRect.top - panelRect.top) - stickyH;
                 } else {
                     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1821,13 +1850,13 @@
         }
 
         function updateFooter() {
-            const allQs   = getAllQuestions(false);
-            const total   = allQs.length;
+            const allQs = getAllQuestions(false);
+            const total = allQs.length;
             const answered = allQs.filter(q => isAnswered(q.questionNumber)).length;
             document.getElementById('footer-answered').textContent = answered;
-            document.getElementById('footer-total').textContent    = total;
-            document.getElementById('modal-answered').textContent  = answered;
-            document.getElementById('modal-total').textContent     = total;
+            document.getElementById('footer-total').textContent = total;
+            document.getElementById('modal-answered').textContent = answered;
+            document.getElementById('modal-total').textContent = total;
             const unanswered = total - answered;
             document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ You still have ${unanswered} unanswered question(s).` : '';
         }
@@ -1869,7 +1898,7 @@
             overlay.style.display = 'flex';
 
             try {
-                const res  = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
+                const res = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
                     method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
                 });
                 const data = await res.json();
@@ -1879,11 +1908,11 @@
                 overlay.style.display = 'none';
                 // refresh test list để cập nhật trạng thái đã làm
                 loadTestList();
-                document.getElementById('result-band').textContent  = r.bandScore.toFixed(1);
-                document.getElementById('r-correct').textContent    = r.correctCount;
-                document.getElementById('r-wrong').textContent      = r.wrongCount;
-                document.getElementById('r-skip').textContent       = r.skippedCount;
-                document.getElementById('result-msg').textContent   = getBandMsg(r.bandScore);
+                document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
+                document.getElementById('r-correct').textContent = r.correctCount;
+                document.getElementById('r-wrong').textContent = r.wrongCount;
+                document.getElementById('r-skip').textContent = r.skippedCount;
+                document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
                 document.getElementById('result-emoji').textContent = r.bandScore >= 7 ? '🎉' : r.bandScore >= 5.5 ? '💪' : '📚';
                 showScreen('result');
             } catch (err) {
@@ -1915,12 +1944,12 @@
                 const qp = document.getElementById('questions-panel');
                 const rv = document.getElementById('review-questions-inner');
                 const inTranscript = tb && tb.contains(range.commonAncestorContainer);
-                const inQPanel     = qp && qp.contains(range.commonAncestorContainer);
-                const inReviewQ    = rv && rv.contains(range.commonAncestorContainer);
+                const inQPanel = qp && qp.contains(range.commonAncestorContainer);
+                const inReviewQ = rv && rv.contains(range.commonAncestorContainer);
                 if (!inTranscript && !inQPanel && !inReviewQ) return;
                 const span = document.createElement('span');
                 span.className = 'hl';
-                try { range.surroundContents(span); } catch {}
+                try { range.surroundContents(span); } catch { }
                 sel.removeAllRanges();
             });
         }
@@ -1935,7 +1964,7 @@
             el._dictHandler = async e => {
                 if (state.tool !== 'dict') return;
                 if (!state.isReview) return;
-                const sel  = window.getSelection();
+                const sel = window.getSelection();
                 const word = sel?.toString().trim();
                 if (!word || word.includes(' ') || word.length < 2) return;
                 e.preventDefault();
@@ -1953,14 +1982,14 @@
             let top = 200, left = 200;
             if (sel?.rangeCount) {
                 const r = sel.getRangeAt(0).getBoundingClientRect();
-                top  = Math.min(r.bottom + 8, window.innerHeight - 300);
+                top = Math.min(r.bottom + 8, window.innerHeight - 300);
                 left = Math.min(r.left, window.innerWidth - 320);
-                top  = Math.max(top, 8); left = Math.max(left, 8);
+                top = Math.max(top, 8); left = Math.max(left, 8);
             }
             popup.style.top = top + 'px'; popup.style.left = left + 'px';
             popup.classList.remove('hidden');
             try {
-                const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
                 if (!res.ok) throw new Error('Not found');
                 const data = await res.json();
                 const entry = data[0]; const meaning = entry.meanings[0];
@@ -1986,7 +2015,7 @@
             if (!state.dictWord) return;
             closeDictPopup();
             try {
-                const res  = await fetch(`${API}/vocabbook`, { headers: authH() });
+                const res = await fetch(`${API}/vocabbook`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 openBookPicker(data.books);
@@ -1997,7 +2026,7 @@
             const existing = document.getElementById('book-picker-modal');
             if (existing) existing.remove();
             const modal = document.createElement('div');
-            modal.id    = 'book-picker-modal';
+            modal.id = 'book-picker-modal';
             modal.className = 'modal-overlay';
             modal.innerHTML = `
                 <div class="modal-box modal-sm">
@@ -2039,17 +2068,17 @@
 
         async function createBookAndSave() {
             const nameEl = document.getElementById('bp-new-name');
-            const name   = nameEl?.value.trim();
+            const name = nameEl?.value.trim();
             if (!name) { nameEl?.focus(); toast('Please enter a book name', 'info'); return; }
             try {
-                const res1  = await fetch(`${API}/vocabbook`, {
+                const res1 = await fetch(`${API}/vocabbook`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ name, emoji: '📖' })
                 });
                 const d1 = await res1.json();
                 if (!d1.success) throw new Error(d1.message);
                 const bookId = d1.book._id;
-                const res2  = await fetch(`${API}/vocabbook/${bookId}/words`, {
+                const res2 = await fetch(`${API}/vocabbook/${bookId}/words`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, source: 'listening' })
                 });
@@ -2063,7 +2092,7 @@
             document.querySelectorAll('[id^="bp-"]').forEach(e => { e.style.borderColor = '#e5e7eb'; e.style.background = '#fff'; });
             el.style.borderColor = '#e53935'; el.style.background = '#fef2f2';
             try {
-                const res  = await fetch(`${API}/vocabbook/${bookId}/words`, {
+                const res = await fetch(`${API}/vocabbook/${bookId}/words`, {
                     method: 'POST', headers: authH(),
                     body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, source: 'listening' })
                 });
@@ -2080,14 +2109,14 @@
             state.tool = tool;
             document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
             if (tool === 'highlight') document.getElementById('tool-hl-rv')?.classList.add('active');
-            if (tool === 'dict')      document.getElementById('tool-dict-rv')?.classList.add('active');
+            if (tool === 'dict') document.getElementById('tool-dict-rv')?.classList.add('active');
         }
 
         function setToolExam(tool) {
             state.tool = tool;
             document.querySelectorAll('#exam-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
             if (tool === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
-            if (tool === 'dict')      document.getElementById('tool-dict-exam')?.classList.add('active');
+            if (tool === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
         }
 
         // ══════════════════════════════════════════════
@@ -2097,7 +2126,7 @@
             closeModal('modal-history');
             toast('Loading result...', 'info');
             try {
-                const res  = await fetch(`${API}/listening/history/${attemptId}`, { headers: authH() });
+                const res = await fetch(`${API}/listening/history/${attemptId}`, { headers: authH() });
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 state.reviewResult = data.result;
@@ -2115,7 +2144,7 @@
             const tbody = document.getElementById('history-tbody');
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Loading...</td></tr>';
             try {
-                const res  = await fetch(`${API}/listening/history`, { headers: authH() });
+                const res = await fetch(`${API}/listening/history`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success || !data.attempts?.length) {
                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">No attempts yet.</td></tr>';
@@ -2123,7 +2152,7 @@
                 }
                 tbody.innerHTML = data.attempts.map(a => {
                     const date = new Date(a.submittedAt).toLocaleDateString('en-GB');
-                    const mins = a.timeTaken ? `${Math.floor(a.timeTaken/60)}:${pad(a.timeTaken%60)}` : '–';
+                    const mins = a.timeTaken ? `${Math.floor(a.timeTaken / 60)}:${pad(a.timeTaken % 60)}` : '–';
                     const bandCls = a.bandScore >= 7 ? 'color:#16a34a' : a.bandScore >= 5.5 ? 'color:#f59e0b' : 'color:#e53935';
                     const attemptId = a._id || '';
                     return `<tr>
@@ -2188,4 +2217,5 @@
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
     </script>
 </body>
+
 </html>
