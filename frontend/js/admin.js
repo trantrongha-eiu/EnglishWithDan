@@ -582,6 +582,43 @@ function renderRQGroupConfig(groupType, data, gIdx) {
   </div>`;
   }
 
+  if (groupType === 'bullet-list') {
+    const items = data?.bulletConfig?.items?.length ? data.bulletConfig.items : [''];
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('• <strong>Bullet List Completion:</strong> Nhập từng dòng nội dung — dùng <code>__Q6__</code> để đánh dấu chỗ trống câu hỏi. Câu hỏi bên dưới: loại <strong>fill-blank</strong>, đáp án là từ cần điền.')}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Danh sách dòng</div>
+    <div id="rqgbul-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${items.map(it => renderRQBulletItem(gIdx, it)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQBulletItem(${gIdx})">＋ Thêm dòng</button>
+  </div>`;
+  }
+
+  if (groupType === 'summary-completion') {
+    const sc = data?.summaryConfig || {};
+    const wb = sc.wordBank?.length ? sc.wordBank
+      : 'ABCDEFGH'.split('').map(l => ({ letter: l, word: '' }));
+    return `
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+    ${rqAdminGuide('📄 <strong>Summary Completion:</strong> Nhập đoạn tóm tắt với <code>__Q14__</code> cho chỗ trống. Word Bank bên dưới: học sinh kéo-thả chip chữ cái vào đúng ô. Câu hỏi bên dưới chỉ cần số câu + đáp án là chữ cái (A, B, C…).')}
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px">
+        Đoạn tóm tắt — dùng <code style="background:var(--bg);padding:1px 4px;border-radius:3px">__Q14__</code> cho chỗ trống
+      </label>
+      <textarea class="form-input rqg-summary-text"
+                style="font-size:12px;padding:8px 10px;min-height:100px;resize:vertical"
+                placeholder="The programme focuses on __Q14__ management and __Q15__ skills…"
+      >${sc.text || ''}</textarea>
+    </div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Word Bank (chữ cái → từ)</div>
+    <div id="rqgwb-${gIdx}" style="display:flex;flex-direction:column;gap:5px">
+      ${wb.map((w, i) => renderRQWordBankItem(gIdx, i, w)).join('')}
+    </div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:7px" onclick="addRQWordBankItem(${gIdx})">＋ Thêm từ</button>
+  </div>`;
+  }
+
   // plain – no extra config
   return `
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px">
@@ -672,6 +709,21 @@ function renderRQNoteLine(_gIdx, line) {
 function addRQNoteLine(gIdx) {
   const c = document.getElementById(`rqgnote-${gIdx}`);
   if (c) c.insertAdjacentHTML('beforeend', renderRQNoteLine(gIdx, ''));
+}
+
+// ── Bullet list item ────────────────────────────────────────────────────
+function renderRQBulletItem(_gIdx, item) {
+  return `<div style="display:flex;gap:5px;align-items:center">
+<span style="color:var(--text3);font-size:14px;flex-shrink:0">•</span>
+<input class="form-input rqg-bul-item" value="${(item || '').replace(/"/g, '&quot;')}"
+       style="flex:1;font-size:12px;padding:5px 9px"
+       placeholder="VD: located __Q6__ km from the city" />
+<button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:3px" onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+}
+function addRQBulletItem(gIdx) {
+  const c = document.getElementById(`rqgbul-${gIdx}`);
+  if (c) c.insertAdjacentHTML('beforeend', renderRQBulletItem(gIdx, ''));
 }
 
 // ── Matching option ────────────────────────────────────────────────────

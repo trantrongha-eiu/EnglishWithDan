@@ -467,21 +467,26 @@ function renderTableGroup(group, isReview, reviewMap) {
   return `<div class="rq-table-wrap"><table class="rq-table">${thead}<tbody>${tbody}</tbody></table></div>`;
 }
 
-/* ── NOTE FORM (cũng xử lý bullet-list backward compat) ──────────── */
+/* ── NOTE FORM / BULLET LIST ──────────────────────────────────────── */
 function renderNoteFormGroup(group, isReview, reviewMap) {
-  const { noteConfig = {}, bulletConfig, questions = [] } = group;
+  const { groupType, noteConfig = {}, bulletConfig, questions = [] } = group;
   const title = noteConfig.title || '';
-  // Backward compat: bullet-list lưu trong bulletConfig.items thay vì noteConfig.lines
   const lines = noteConfig.lines?.length ? noteConfig.lines : (bulletConfig?.items || []);
 
   const qMap = {};
   questions.forEach(q => { qMap[q.questionNumber] = q; });
 
+  if (groupType === 'bullet-list') {
+    const itemsHtml = lines.map(line =>
+      `<li class="rq-bullet-item">${resolvePlaceholders(line, qMap, isReview, reviewMap)}</li>`
+    ).join('');
+    return `<div class="rq-bullet-list"><ul>${itemsHtml}</ul></div>`;
+  }
+
   const titleHtml = title ? `<div class="rq-note-title">${escHtml(title)}</div>` : '';
   const linesHtml = lines.map(line =>
     `<div class="rq-note-line">${resolvePlaceholders(line, qMap, isReview, reviewMap)}</div>`
   ).join('');
-
   return `<div class="rq-note-form">${titleHtml}<div class="rq-note-body">${linesHtml}</div></div>`;
 }
 
