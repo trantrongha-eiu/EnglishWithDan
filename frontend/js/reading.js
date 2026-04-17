@@ -967,6 +967,8 @@ function refreshWordBankZone(qNum, word) {
 }
 function initDropZones() {
   document.querySelectorAll('.drop-zone').forEach(dz => {
+    // Skip new-style zones (MH, MO, SC, endings) – they manage their own ondrop inline
+    if (dz.hasAttribute('ondrop')) return;
     dz.addEventListener('dragover', e => e.preventDefault());
     dz.addEventListener('drop', e => {
       e.preventDefault();

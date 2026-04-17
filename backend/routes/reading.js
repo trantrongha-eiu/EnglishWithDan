@@ -235,16 +235,18 @@ router.post('/submit', auth, async (req, res) => {
         const qs = group.questions || [];
 
         if (group.interchangeableAnswers && qs.length > 0) {
-          // ── Interchangeable: so sánh tập hợp đáp án của cả nhóm ──
-          const userSet  = qs.map(q => (answers[q.questionNumber] || '').toString().trim().toLowerCase()).sort().join(',');
-          const correctSet = qs.map(q => (q.correctAnswer || '').trim().toLowerCase()).sort().join(',');
-          const anyUnanswered = qs.some(q => !(answers[q.questionNumber] || '').toString().trim());
-          const setCorrect = !anyUnanswered && userSet === correctSet;
+          // ── Interchangeable: pool matching – từng câu được kiểm tra riêng trong pool đáp án ──
+          const correctPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
+          const remainingPool = [...correctPool];
 
           for (const q of qs) {
             const rawUser = (answers[q.questionNumber] || '').toString().trim();
+            const userLower = rawUser.toLowerCase();
+            const poolIdx = rawUser !== '' ? remainingPool.indexOf(userLower) : -1;
             const answered = rawUser !== '';
-            const isCorrect = answered && setCorrect;
+            const isCorrect = poolIdx !== -1;
+            if (isCorrect) remainingPool.splice(poolIdx, 1);
+
             if (!answered) skippedCount++;
             else if (isCorrect) correctCount++;
             else wrongCount++;

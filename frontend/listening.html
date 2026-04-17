@@ -94,6 +94,9 @@
         <div class="exam-topbar">
             <button class="btn-ghost" onclick="confirmExit()">← Exit</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
+            <button id="btn-fullscreen" onclick="toggleFullscreen()" title="Fullscreen"
+                style="background:none;border:none;font-size:18px;cursor:pointer;color:#6b7280;padding:4px 8px;border-radius:6px;flex-shrink:0;line-height:1"
+                onmouseenter="this.style.background='#f3f4f6'" onmouseleave="this.style.background='none'">⛶</button>
             <button class="btn-primary" onclick="confirmSubmit()">📤 Submit</button>
         </div>
 
@@ -362,6 +365,35 @@
             const open = bar.classList.toggle('nav-open');
             btn.classList.toggle('active', open);
         }
+
+        // ── Fullscreen toggle ──────────────────────────────────────────
+        function toggleFullscreen() {
+            const el = document.getElementById('screen-exam');
+            if (!document.fullscreenElement) {
+                el.requestFullscreen && el.requestFullscreen();
+            } else {
+                document.exitFullscreen && document.exitFullscreen();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.getElementById('btn-fullscreen');
+            const fsEl = document.fullscreenElement;
+            const ids = ['dict-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed'];
+            if (fsEl) {
+                if (btn) btn.title = 'Exit fullscreen';
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && !fsEl.contains(el)) { el._fsPrev = el.parentNode; fsEl.appendChild(el); }
+                });
+            } else {
+                if (btn) btn.title = 'Fullscreen';
+                ids.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el._fsPrev) { el._fsPrev.appendChild(el); el._fsPrev = null; }
+                });
+            }
+        });
     </script>
 
     <script>

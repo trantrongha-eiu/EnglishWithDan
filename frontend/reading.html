@@ -389,17 +389,31 @@
     // ── Fullscreen toggle ───────────────────────────────────
     function toggleFullscreen() {
       const el = document.getElementById('screen-exam');
-      const btn = document.getElementById('btn-fullscreen');
       if (!document.fullscreenElement) {
         el.requestFullscreen && el.requestFullscreen();
-        btn.textContent = '⛶';
-        btn.title = 'Thoát toàn màn hình';
       } else {
         document.exitFullscreen && document.exitFullscreen();
-        btn.textContent = '⛶';
-        btn.title = 'Toàn màn hình';
       }
     }
+
+    document.addEventListener('fullscreenchange', () => {
+      const btn = document.getElementById('btn-fullscreen');
+      const fsEl = document.fullscreenElement;
+      const ids = ['dict-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast'];
+      if (fsEl) {
+        if (btn) btn.title = 'Thoát toàn màn hình';
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && !fsEl.contains(el)) { el._fsPrev = el.parentNode; fsEl.appendChild(el); }
+        });
+      } else {
+        if (btn) btn.title = 'Toàn màn hình';
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && el._fsPrev) { el._fsPrev.appendChild(el); el._fsPrev = null; }
+        });
+      }
+    });
 
     // ── Progress bar auto-update ────────────────────────────
     (function () {
