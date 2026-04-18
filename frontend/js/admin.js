@@ -1673,7 +1673,8 @@ function renderUnitWordsModal(unit) {
     <td>${col2}</td>
     <td>${col3}</td>
     <td>${col4}</td>
-    <td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-sm btn-icon" onclick="editWordInUnit(${i})" title="Sửa" style="background:rgba(59,130,246,.1);color:#3b82f6;border:1px solid rgba(59,130,246,.25);margin-right:4px">✏️</button>
       <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWordFromUnit(${i})" title="Xoá">✕</button>
     </td>
   </tr>`;
@@ -1712,12 +1713,71 @@ async function addWordToUnit() {
   }
 
   try {
-    const data = await (await fetch(`${API}/vocab/admin/units/${editingUnitObj._id}/words`, { method: 'POST', headers: authH(), body: JSON.stringify(body) })).json();
+    let url, method;
+    if (editingWordIdx !== null) {
+      url = `${API}/vocab/admin/units/${editingUnitObj._id}/words/${editingWordIdx}`;
+      method = 'PUT';
+    } else {
+      url = `${API}/vocab/admin/units/${editingUnitObj._id}/words`;
+      method = 'POST';
+    }
+    const data = await (await fetch(url, { method, headers: authH(), body: JSON.stringify(body) })).json();
     if (!data.success) { toast(data.message, 'error'); return; }
-    toast(data.message);
+    toast(editingWordIdx !== null ? 'Đã cập nhật từ' : data.message);
+    cancelWordEdit();
     await openUnitWordsModal(editingUnitObj._id);
     await loadVocabUnits();
   } catch (err) { toast(err.message, 'error'); }
+}
+
+let editingWordIdx = null;
+
+function editWordInUnit(idx) {
+  if (!editingUnitObj) return;
+  const w = editingUnitObj.words[idx];
+  if (!w) return;
+  editingWordIdx = idx;
+
+  const isP = w.type === 'paraphrase';
+  const radio = document.querySelector(`input[name="nw-type"][value="${isP ? 'paraphrase' : 'vocab'}"]`);
+  if (radio) { radio.checked = true; toggleWordTypeForm(); }
+
+  if (isP) {
+    document.getElementById('nw-para-original').value    = w.word || '';
+    document.getElementById('nw-para-paraphrase').value  = w.paraphrase || '';
+    document.getElementById('nw-para-meaning').value     = w.meaning || '';
+    document.getElementById('nw-para-explanation').value = w.explanation || '';
+  } else {
+    document.getElementById('nw-word').value     = w.word || '';
+    document.getElementById('nw-meaning').value  = w.meaning || '';
+    document.getElementById('nw-example').value  = w.example || '';
+    document.getElementById('nw-phonetic').value = w.phonetic || '';
+    document.getElementById('nw-pos').value      = w.partOfSpeech || '';
+    const lvl = document.getElementById('nw-level');
+    if (lvl) lvl.value = w.level || 'A2';
+  }
+
+  document.getElementById('nw-edit-banner').style.display = '';
+  document.getElementById('nw-edit-idx').textContent = idx + 1;
+
+  const bv = document.getElementById('btn-add-vocab-word');
+  const bp = document.getElementById('btn-add-para-word');
+  if (bv) { bv.textContent = '💾 Lưu sửa'; bv.style.background = '#f59e0b'; bv.style.borderColor = '#f59e0b'; }
+  if (bp) { bp.textContent = '💾 Lưu sửa'; }
+
+  document.getElementById('nw-edit-banner').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function cancelWordEdit() {
+  editingWordIdx = null;
+  document.getElementById('nw-edit-banner').style.display = 'none';
+  const bv = document.getElementById('btn-add-vocab-word');
+  const bp = document.getElementById('btn-add-para-word');
+  if (bv) { bv.textContent = '＋ Thêm'; bv.style.background = ''; bv.style.borderColor = ''; }
+  if (bp) { bp.textContent = '＋ Thêm'; }
+  ['nw-word','nw-meaning','nw-example','nw-phonetic','nw-pos',
+   'nw-para-original','nw-para-paraphrase','nw-para-meaning','nw-para-explanation']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 }
 
 function deleteWordFromUnit(idx) {

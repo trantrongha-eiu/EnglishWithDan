@@ -421,27 +421,5 @@ router.get('/history', auth, async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/reading/vocab/save  – lưu từ vựng (chỉ dùng khi review)
-// Body: { word, meaning, example }
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/vocab/save', auth, async (req, res) => {
-  try {
-    const { word, meaning, example } = req.body;
-    if (!word) return res.status(400).json({ success: false, message: 'Thiếu từ cần lưu' });
-
-    const User = require('../models/User');
-    await User.findByIdAndUpdate(req.user._id, {
-      $push: {
-        savedVocab: { word, meaning: meaning || '', example: example || '' }
-      }
-    });
-
-    res.json({ success: true, message: `Đã lưu từ "${word}"` });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
 
 module.exports = router;

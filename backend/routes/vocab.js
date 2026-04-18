@@ -179,8 +179,8 @@ router.put('/admin/units/:id/words/:wordIndex', auth, teacherOnly, async (req, r
       return res.status(400).json({ success: false, message: 'Index không hợp lệ' });
     }
 
-    // Merge fields
-    const fields = ['word', 'meaning', 'example', 'phonetic', 'partOfSpeech', 'level', 'difficulty', 'audioUrl'];
+    // Merge fields (vocab + paraphrase)
+    const fields = ['type', 'word', 'meaning', 'example', 'phonetic', 'partOfSpeech', 'level', 'difficulty', 'audioUrl', 'paraphrase', 'explanation'];
     fields.forEach(f => { if (req.body[f] !== undefined) unit.words[idx][f] = req.body[f]; });
     unit.markModified('words');
     await unit.save();

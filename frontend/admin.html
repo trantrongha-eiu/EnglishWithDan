@@ -986,8 +986,13 @@
       </div>
       <div class="modal-body" style="padding:16px 20px">
 
-        <!-- Form thêm từ mới -->
+        <!-- Form thêm / sửa từ -->
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+          <!-- Edit mode banner -->
+          <div id="nw-edit-banner" style="display:none;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#b45309">
+            ✏️ <strong>Đang sửa từ #<span id="nw-edit-idx"></span></strong> —
+            <button onclick="cancelWordEdit()" style="border:none;background:none;color:#b45309;cursor:pointer;font-weight:600;font-size:12px;padding:0 4px">✕ Huỷ sửa</button>
+          </div>
           <!-- Type toggle -->
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
             <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">Loại mục</span>
@@ -1013,7 +1018,7 @@
                 <option value="A1">A1</option><option value="A2" selected>A2</option>
                 <option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option>
               </select>
-              <button class="btn btn-primary btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px">＋ Thêm</button>
+              <button class="btn btn-primary btn-sm" id="btn-add-vocab-word" onclick="addWordToUnit()" style="white-space:nowrap;height:36px">＋ Thêm</button>
             </div>
           </div>
 
@@ -1027,7 +1032,7 @@
               <input class="form-input" id="nw-para-meaning" placeholder="Nghĩa tiếng Việt" style="font-size:13px;padding:8px 10px" />
               <textarea class="form-input" id="nw-para-explanation" placeholder="Giải thích chi tiết (ví dụ: &quot;byproduct&quot; = sản phẩm phụ → khái quát hoá thành &quot;industrial processes&quot;)"
                 style="font-size:12px;padding:8px 10px;resize:vertical;min-height:38px;line-height:1.4" rows="2"></textarea>
-              <button class="btn btn-sm" onclick="addWordToUnit()" style="white-space:nowrap;height:36px;background:#f59e0b;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">＋ Thêm</button>
+              <button class="btn btn-sm" id="btn-add-para-word" onclick="addWordToUnit()" style="white-space:nowrap;height:36px;background:#f59e0b;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">＋ Thêm</button>
             </div>
           </div>
         </div>
@@ -1042,7 +1047,7 @@
                 <th>Từ / Text gốc</th>
                 <th>Nghĩa / Paraphrase</th>
                 <th>Ví dụ / Giải thích</th>
-                <th style="width:44px"></th>
+                <th style="width:76px"></th>
               </tr>
             </thead>
             <tbody id="uw-words-tbody">
