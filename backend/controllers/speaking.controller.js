@@ -88,7 +88,7 @@ Rules: max 3 errors, max 2 tips, scores 1-9. Return ONLY the JSON.`;
           'X-Title': 'EnglishWithDan'
         },
         body: JSON.stringify({
-          model: 'openrouter/free',
+          model: 'mistralai/mistral-7b-instruct:free',
           messages: [
             { role: 'system', content: 'You are an IELTS examiner. Respond with valid JSON only.' },
             { role: 'user', content: prompt }
