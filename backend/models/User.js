@@ -39,17 +39,21 @@ const UserSchema = new mongoose.Schema({
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 
+// Trả về ngày theo giờ Việt Nam (UTC+7), lưu dưới dạng UTC midnight
+function getVNDay(date) {
+  const d = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+}
+
 // Cập nhật streak khi user hoạt động
 UserSchema.methods.updateStreak = function () {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = getVNDay(new Date());
   if (!this.lastActivityDate) {
     this.learningStreak = 1;
     this.lastActivityDate = today;
     return;
   }
-  const last = new Date(this.lastActivityDate);
-  const lastDay = new Date(last.getFullYear(), last.getMonth(), last.getDate());
+  const lastDay = getVNDay(new Date(this.lastActivityDate));
   const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
   if (diff === 0) return; // same day
   if (diff === 1) {
