@@ -1,6 +1,8 @@
 const express      = require('express');
 const router       = express.Router();
 const crypto       = require('crypto');
+
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 const multer       = require('multer');
 const cloudinary   = require('cloudinary').v2;
 
@@ -938,11 +940,12 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
     const { search, role, isBanned, page = 1, limit = 50 } = req.query;
     const filter = {};
     if (search) {
+      const re = escapeRegex(search);
       filter.$or = [
-        { username:  { $regex: search, $options: 'i' } },
-        { email:     { $regex: search, $options: 'i' } },
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName:  { $regex: search, $options: 'i' } }
+        { username:  { $regex: re, $options: 'i' } },
+        { email:     { $regex: re, $options: 'i' } },
+        { firstName: { $regex: re, $options: 'i' } },
+        { lastName:  { $regex: re, $options: 'i' } }
       ];
     }
     if (role)     filter.role = role;
@@ -1259,13 +1262,14 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
     const { search = '', sort = 'words-desc' } = req.query;
 
     // 1. Lấy tất cả user (không lọc role để admin/teacher cũng thấy – nhưng ưu tiên student)
-    const searchFilter = search
+    const re = search ? escapeRegex(search) : null;
+    const searchFilter = re
       ? {
           $or: [
-            { username:  { $regex: search, $options: 'i' } },
-            { email:     { $regex: search, $options: 'i' } },
-            { firstName: { $regex: search, $options: 'i' } },
-            { lastName:  { $regex: search, $options: 'i' } },
+            { username:  { $regex: re, $options: 'i' } },
+            { email:     { $regex: re, $options: 'i' } },
+            { firstName: { $regex: re, $options: 'i' } },
+            { lastName:  { $regex: re, $options: 'i' } },
           ],
         }
       : {};

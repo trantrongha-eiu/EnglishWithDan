@@ -3180,14 +3180,24 @@ async function loadWritingHistory() {
     const res  = await fetch(`${API}/admin/writing-history`, { headers: authH() });
     const data = await res.json();
     _writingAttempts = data.success ? data.attempts : [];
-    const q = (document.getElementById('writing-history-search')?.value || '').trim();
-    renderWritingHistory(_writingAttempts, q);
+    applyWritingFilters();
   } catch { toast('Lỗi load lịch sử writing', 'error'); }
 }
 
-function filterWritingHistory(q) {
-  renderWritingHistory(_writingAttempts, q.trim());
+function applyWritingFilters() {
+  const q      = (document.getElementById('writing-history-search')?.value || '').trim().toLowerCase();
+  const status = document.getElementById('writing-grading-filter')?.value || '';
+  const filtered = _writingAttempts.filter(a => {
+    const u    = a.userId || {};
+    const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
+    const matchQ = !q || name.toLowerCase().includes(q) || (a.examName || '').toLowerCase().includes(q);
+    const matchS = !status || a.gradingStatus === status;
+    return matchQ && matchS;
+  });
+  renderWritingHistory(filtered);
 }
+
+function filterWritingHistory(q) { applyWritingFilters(); }
 
 function _wcBadge(wc, target) {
   const num  = wc || 0;
@@ -3209,18 +3219,9 @@ function _gradingBadge(a) {
   return `<span style="background:#f3f4f6;color:#9ca3af;border-radius:5px;padding:2px 8px;font-size:12px">Chờ</span>`;
 }
 
-function renderWritingHistory(list, q) {
-  const filtered = q
-    ? list.filter(a => {
-        const u    = a.userId || {};
-        const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '');
-        return name.toLowerCase().includes(q.toLowerCase())
-            || (a.examName || '').toLowerCase().includes(q.toLowerCase());
-      })
-    : list;
-
-  document.getElementById('writing-history-tbody').innerHTML = filtered.length
-    ? filtered.map(a => {
+function renderWritingHistory(list) {
+  document.getElementById('writing-history-tbody').innerHTML = list.length
+    ? list.map(a => {
         const u    = a.userId || {};
         const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || '–');
         const date = formatDate(a.submittedAt);
@@ -3948,14 +3949,30 @@ function hardDeleteSpeakingMaterial(id) {
    USERS – Quản lý người dùng
 ══════════════════════════════════════════════ */
 let _allUsers = [];
+let _userPage  = 1;
+let _userTotal = 0;
+const _USER_LIMIT = 30;
 
-async function loadUsers() {
+async function loadUsers(page = 1) {
+  _userPage = page;
+  const search   = (document.getElementById('user-search')?.value || '').trim();
+  const role     = document.getElementById('user-filter-role')?.value || '';
+  const status   = document.getElementById('user-filter-status')?.value || '';
+
+  const params = new URLSearchParams({ page, limit: _USER_LIMIT });
+  if (search) params.set('search', search);
+  if (role)   params.set('role', role);
+  if (status === 'banned')  params.set('isBanned', 'true');
+  if (status === 'active')  params.set('isBanned', 'false');
+
   try {
-    const res  = await fetch(`${API}/admin/users`, { headers: authH() });
+    const res  = await fetch(`${API}/admin/users?${params}`, { headers: authH() });
     const data = await res.json();
     if (!data.success) { toast(data.message, 'error'); return; }
-    _allUsers = data.users;
+    _allUsers  = data.users;
+    _userTotal = data.total || 0;
     renderUsers(_allUsers);
+    renderUserPagination();
   } catch (err) { toast('Lỗi load người dùng: ' + err.message, 'error'); }
 }
 
@@ -3970,9 +3987,9 @@ function renderUsers(list) {
       const fullName = [u.firstName, u.lastName].filter(Boolean).join(' ') || '–';
       const banned   = u.isBanned;
       return `<tr style="${banned ? 'opacity:.55' : ''}">
-        <td><strong>${u.username}</strong></td>
-        <td style="font-size:12px;color:var(--text3)">${u.email}</td>
-        <td>${fullName}</td>
+        <td><strong>${escH(u.username)}</strong></td>
+        <td style="font-size:12px;color:var(--text3)">${escH(u.email)}</td>
+        <td>${escH(fullName)}</td>
         <td>${roleBadge(u.role)}</td>
         <td>${banned
           ? '<span class="badge badge-red">Bị cấm</span>'
@@ -3981,28 +3998,43 @@ function renderUsers(list) {
         <td style="display:flex;gap:6px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="openUserModal('${u._id}')">✏️ Sửa</button>
           <button class="btn btn-sm ${banned ? 'btn-primary' : 'btn-warning'}"
-            onclick="toggleBanUser('${u._id}','${u.username}',${banned})">
+            onclick="toggleBanUser('${u._id}','${escH(u.username)}',${banned})">
             ${banned ? '✅ Bỏ cấm' : '🚫 Cấm'}
           </button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u._id}','${u.username}')">🗑 Xóa</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser('${u._id}','${escH(u.username)}')">🗑 Xóa</button>
         </td>
       </tr>`;
     }).join('')
     : '<tr><td colspan="7" class="table-empty">Không có người dùng</td></tr>';
 }
 
+function renderUserPagination() {
+  const el = document.getElementById('users-pagination');
+  if (!el) return;
+  const totalPages = Math.ceil(_userTotal / _USER_LIMIT);
+  if (totalPages <= 1) { el.innerHTML = `<span style="font-size:12px;color:var(--text3)">${_userTotal} người dùng</span>`; return; }
+
+  const pages = [];
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || Math.abs(i - _userPage) <= 1) {
+      pages.push(i);
+    } else if (pages[pages.length - 1] !== '…') {
+      pages.push('…');
+    }
+  }
+
+  el.innerHTML = `
+    <span style="font-size:12px;color:var(--text3)">${_userTotal} người dùng</span>
+    <button class="btn btn-ghost btn-sm" onclick="loadUsers(${_userPage - 1})" ${_userPage <= 1 ? 'disabled' : ''}>‹</button>
+    ${pages.map(p => p === '…'
+      ? `<span style="padding:0 4px;color:var(--text3)">…</span>`
+      : `<button class="btn btn-sm ${p === _userPage ? 'btn-primary' : 'btn-ghost'}" onclick="loadUsers(${p})">${p}</button>`
+    ).join('')}
+    <button class="btn btn-ghost btn-sm" onclick="loadUsers(${_userPage + 1})" ${_userPage >= totalPages ? 'disabled' : ''}>›</button>`;
+}
+
 function filterUsers() {
-  const q      = (document.getElementById('user-search').value || '').toLowerCase();
-  const role   = document.getElementById('user-filter-role').value;
-  const status = document.getElementById('user-filter-status').value;
-  const filtered = _allUsers.filter(u => {
-    const matchQ = !q || u.username.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
-      || (u.firstName || '').toLowerCase().includes(q) || (u.lastName || '').toLowerCase().includes(q);
-    const matchRole   = !role   || u.role === role;
-    const matchStatus = !status || (status === 'banned' ? u.isBanned : !u.isBanned);
-    return matchQ && matchRole && matchStatus;
-  });
-  renderUsers(filtered);
+  loadUsers(1);
 }
 
 let _editingUserId = null;

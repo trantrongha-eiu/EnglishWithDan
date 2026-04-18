@@ -480,10 +480,18 @@
           <div id="writing-sub-history" class="inner-tab-panel">
             <div class="section-header">
               <span class="section-title">Lịch sử nộp bài Writing</span>
-              <div class="search-wrap">
-                <input id="writing-history-search" class="search-input"
-                  placeholder="Tìm học sinh hoặc đề thi…"
-                  oninput="filterWritingHistory(this.value)" />
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <select id="writing-grading-filter" class="form-select" onchange="applyWritingFilters()" style="width:160px">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="pending">⏳ Chờ chấm</option>
+                  <option value="ai_done">🤖 AI đã chấm</option>
+                  <option value="confirmed">✅ Đã xác nhận</option>
+                </select>
+                <div class="search-wrap">
+                  <input id="writing-history-search" class="search-input"
+                    placeholder="Tìm học sinh hoặc đề thi…"
+                    oninput="applyWritingFilters()" />
+                </div>
               </div>
             </div>
             <div class="table-wrap">
@@ -649,6 +657,7 @@
               </tbody>
             </table>
           </div>
+          <div id="users-pagination" style="display:flex;align-items:center;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap"></div>
         </div><!-- /tab-users -->
 
         <!-- ══ TAB: VOCAB STUDENTS ══ -->
