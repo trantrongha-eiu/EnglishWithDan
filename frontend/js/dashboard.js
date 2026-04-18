@@ -38,7 +38,7 @@ let selectedBookForSave = null;
 
 // ── Audio ──────────────────────────────────────
 const correctSound = new Audio('./sounds/correct.mp3');
-const wrongSound   = new Audio('./sounds/wrong.mp3');
+const wrongSound   = new Audio('./sounds/incorrect.mp3');
 correctSound.volume = 0.5;
 wrongSound.volume   = 0.5;
 
