@@ -818,9 +818,11 @@ body.eye-protection .split-questions {
 
 /* Highlight */
 .hl {
-  background: #fff176;
+  background: #fbbf24;
   border-radius: 2px;
+  cursor: pointer;
 }
+.hl:hover { background: #f59e0b; }
 
 /* ══════════════════════════════════════════════
    QUESTIONS
