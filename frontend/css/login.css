@@ -122,7 +122,7 @@
         }
 
         .daniel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -230,7 +230,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #f5576c;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
@@ -252,7 +252,7 @@
         }
 
         .toggle-password:hover .eye-icon {
-            color: #667eea;
+            color: #f5576c;
         }
 
         /* Form Options */
@@ -276,25 +276,25 @@
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #f5576c;
         }
 
         .forgot-password {
-            color: #667eea;
+            color: #f5576c;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
         }
 
         .forgot-password:hover {
-            color: #764ba2;
+            color: #d63651;
         }
 
         /* Login Button */
         .btn-login {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -411,14 +411,14 @@
         }
 
         .register-link {
-            color: #667eea;
+            color: #f5576c;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         .register-link:hover {
-            color: #764ba2;
+            color: #d63651;
             text-decoration: underline;
         }
 
@@ -518,7 +518,7 @@
             outline: none;
             transition: border-color .2s;
         }
-        .otp-input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,.15); }
+        .otp-input:focus { border-color: #f5576c; box-shadow: 0 0 0 3px rgba(245,87,108,.15); }
 
         /* Responsive */
         @media (max-width: 992px) {

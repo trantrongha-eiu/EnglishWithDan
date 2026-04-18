@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     min-height: 100vh;
     color: #1f2937;
 }
@@ -35,7 +35,7 @@ body {
 }
 
 .daniel {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -121,14 +121,14 @@ body {
 
 .unit-select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #f5576c;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .btn-primary {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border: none;
     border-radius: 10px;
@@ -182,7 +182,7 @@ body {
 }
 
 .stat-item strong {
-    color: #667eea;
+    color: #f5576c;
     font-size: 16px;
 }
 
@@ -210,7 +210,7 @@ body {
 
 .welcome-icon {
     font-size: 80px;
-    color: #667eea;
+    color: #f5576c;
     margin-bottom: 20px;
 }
 
@@ -244,7 +244,7 @@ body {
 
 .feature i {
     font-size: 24px;
-    color: #667eea;
+    color: #f5576c;
 }
 
 /* Learning Mode */
@@ -287,9 +287,9 @@ body {
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
-    border-color: #667eea;
+    border-color: #f5576c;
 }
 
 /* Vocab Grid */
@@ -311,7 +311,7 @@ body {
 .vocab-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-color: #667eea;
+    border-color: #f5576c;
 }
 
 .vocab-number {
@@ -320,7 +320,7 @@ body {
     right: 15px;
     width: 35px;
     height: 35px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border-radius: 50%;
     display: flex;
@@ -339,7 +339,7 @@ body {
 
 .vocab-meaning {
     font-size: 16px;
-    color: #667eea;
+    color: #f5576c;
     margin-bottom: 15px;
     font-weight: 500;
 }
@@ -374,14 +374,14 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     border-radius: 10px;
     transition: width 0.3s;
 }
 
 .practice-progress span {
     font-weight: 600;
-    color: #667eea;
+    color: #f5576c;
     min-width: 60px;
     text-align: right;
 }
@@ -396,7 +396,7 @@ body {
 
 .question-number {
     font-size: 14px;
-    color: #667eea;
+    color: #f5576c;
     font-weight: 600;
     margin-bottom: 15px;
 }
@@ -428,7 +428,7 @@ body {
 
 .answer-option:hover:not(:disabled) {
     background: #f9fafb;
-    border-color: #667eea;
+    border-color: #f5576c;
     transform: translateX(5px);
 }
 
@@ -451,7 +451,7 @@ body {
 .btn-next {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border: none;
     border-radius: 12px;

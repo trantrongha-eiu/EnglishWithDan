@@ -8,7 +8,7 @@
     .top-nav .nav-brand { font-size:18px; font-weight:700; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
     .top-nav .nav-links { display:flex; align-items:center; gap:4px; flex:1; margin:0 16px; }
     .top-nav .nav-links a { padding:7px 13px; border-radius:8px; color:var(--text-light); text-decoration:none; font-size:14px; font-weight:500; transition:var(--transition); white-space:nowrap; }
-    .top-nav .nav-links a:hover,.top-nav .nav-links a.active { background:rgba(102,126,234,.1); color:var(--primary); }
+    .top-nav .nav-links a:hover,.top-nav .nav-links a.active { background:rgba(245,87,108,.1); color:var(--primary); }
 
     /* Profile layout */
     .profile-layout { max-width: 900px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
@@ -45,7 +45,7 @@
     .profile-role {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600;
-      background: rgba(102,126,234,.1); color: var(--primary);
+      background: rgba(245,87,108,.1); color: var(--primary);
     }
     .profile-bio { font-size: 13px; color: var(--text-light); margin-top: 12px; line-height: 1.5; }
 
@@ -150,7 +150,7 @@
       border-radius: 12px; padding: 12px 8px; text-align: center;
       transition: var(--transition);
     }
-    .badge-item:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,.15); }
+    .badge-item:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,87,108,.15); }
     .badge-emoji { font-size: 28px; margin-bottom: 6px; }
     .badge-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
     .badge-desc { font-size: 10px; color: var(--text-light); line-height: 1.3; }

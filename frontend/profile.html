@@ -221,11 +221,11 @@
             <div class="form-group">
               <label class="form-label">Màu chủ đề cá nhân</label>
               <div class="accent-swatches" id="accentSwatches">
-                <div class="accent-swatch" data-primary="#667eea" data-dark="#5a67d8" style="background:#667eea" title="Tím (Mặc định)"></div>
+                <div class="accent-swatch" data-primary="#f5576c" data-dark="#d63651" style="background:linear-gradient(135deg,#f093fb,#f5576c)" title="Hồng (Mặc định)"></div>
+                <div class="accent-swatch" data-primary="#667eea" data-dark="#5a67d8" style="background:#667eea" title="Tím"></div>
                 <div class="accent-swatch" data-primary="#10b981" data-dark="#059669" style="background:#10b981" title="Xanh lá"></div>
                 <div class="accent-swatch" data-primary="#06b6d4" data-dark="#0891b2" style="background:#06b6d4" title="Xanh cyan"></div>
                 <div class="accent-swatch" data-primary="#f59e0b" data-dark="#d97706" style="background:#f59e0b" title="Vàng cam"></div>
-                <div class="accent-swatch" data-primary="#ec4899" data-dark="#db2777" style="background:#ec4899" title="Hồng"></div>
                 <div class="accent-swatch" data-primary="#3b82f6" data-dark="#2563eb" style="background:#3b82f6" title="Xanh dương"></div>
               </div>
               <small style="color:var(--text-light);font-size:12px;">Được lưu trên thiết bị này</small>
@@ -355,7 +355,7 @@
     function initAccentPicker() {
       const saved = JSON.parse(localStorage.getItem(ACCENT_KEY) || 'null');
       if (saved) applyAccent(saved.primary, saved.dark);
-      const currentPrimary = (saved?.primary || '#667eea').toLowerCase();
+      const currentPrimary = (saved?.primary || '#f5576c').toLowerCase();
       document.querySelectorAll('.accent-swatch').forEach(sw => {
         if (sw.dataset.primary.toLowerCase() === currentPrimary) sw.classList.add('active');
         sw.addEventListener('click', function() {
