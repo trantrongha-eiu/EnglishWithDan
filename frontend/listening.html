@@ -505,6 +505,32 @@
             updateFooter();
             setToolExam('highlight');
             showScreen('exam');
+
+            // Show overlay in resume mode — no 30s countdown, just direct play
+            const overlay = document.getElementById('audio-start-overlay');
+            const asoText = overlay.querySelector('.aso-text');
+            const asoSub  = overlay.querySelector('.aso-sub');
+            const asoBtn  = overlay.querySelector('.aso-play-btn');
+            const _origText  = asoText.innerHTML;
+            const _origSub   = asoSub.innerHTML;
+            const _origBtn   = asoBtn.innerHTML;
+            const _origClick = asoBtn.onclick;
+            const answeredCount = Object.keys(state.answers).length;
+            asoText.innerHTML = 'Bạn đang <strong>tiếp tục</strong> bài thi dở dang.<br>Audio sẽ phát từ vị trí đã lưu.';
+            asoSub.innerHTML  = `Đã trả lời: <strong>${answeredCount}/40</strong> câu. Nhấn bên dưới khi sẵn sàng.`;
+            asoBtn.innerHTML  = '▶ Tiếp tục nghe';
+            asoBtn.onclick = function () {
+                asoText.innerHTML = _origText;
+                asoSub.innerHTML  = _origSub;
+                asoBtn.innerHTML  = _origBtn;
+                asoBtn.onclick    = _origClick;
+                startAudioPlay();
+            };
+            const playNowBtn = document.getElementById('aso-play-now-btn');
+            if (playNowBtn) playNowBtn.classList.add('hidden');
+            overlay.classList.remove('hidden');
+            updateExamAudioStatus(false);
+
             // Start periodic auto-save
             clearInterval(_saveInterval);
             _saveInterval = setInterval(saveExamToStorage, 10000);
