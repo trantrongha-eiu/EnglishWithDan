@@ -295,6 +295,12 @@ router.post('/submit', auth, async (req, res) => {
 
     await attempt.save();
 
+    // Cập nhật streak khi hoàn thành bài thi
+    if (req.user.role === 'student') {
+      req.user.updateStreak();
+      req.user.save().catch(() => {});
+    }
+
     res.json({
       success: true,
       result: {

@@ -278,8 +278,10 @@ function checkResumeExam() {
     const banner = document.getElementById('resume-banner');
     if (!banner) return;
     document.getElementById('resume-test-name').textContent = data.testName || 'bài thi';
-    const m = Math.floor((data.secondsLeft || 0) / 60);
-    document.getElementById('resume-time-left').textContent = `còn khoảng ${m} phút`;
+    const totalSec = data.secondsLeft || 0;
+    const rm = Math.floor(totalSec / 60);
+    const rs = totalSec % 60;
+    document.getElementById('resume-time-left').textContent = rs > 0 ? `còn ${rm} phút ${rs} giây` : `còn ${rm} phút`;
     banner._resumeData = data;
     banner.style.display = 'flex';
   } catch { clearExamStorage(); }
@@ -1226,16 +1228,22 @@ async function submitExam() {
 
   const hideOverlay = () => { overlay.style.display = 'none'; };
 
+  const controller = new AbortController();
+  const submitTimeout = setTimeout(() => controller.abort(), 30000);
+
   try {
     const res = await apiFetch('/api/reading/submit', {
       method: 'POST',
-      body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers })
+      body: JSON.stringify({ attemptId: state.attemptId, answers: state.answers }),
+      signal: controller.signal
     });
+    clearTimeout(submitTimeout);
     hideOverlay();
     if (!res.success) { showVocabToast('Lỗi nộp bài: ' + res.message); return; }
     clearExamStorage();
     showResult(res.result);
   } catch (e) {
+    clearTimeout(submitTimeout);
     hideOverlay();
     // Server may have processed the request even if the network timed out
     openSubmitErrorModal();
