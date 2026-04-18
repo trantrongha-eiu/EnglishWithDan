@@ -312,13 +312,12 @@
     <!-- Modal: Submit -->
     <div class="modal-overlay hidden" id="modal-submit">
         <div class="modal-box modal-sm">
-            <h3>Submit test?</h3>
-            <p>Are you sure you want to submit? You have answered <strong id="modal-answered">0</strong>/<strong
-                    id="modal-total">0</strong> questions.</p>
+            <h3>Nộp bài?</h3>
+            <p>Bạn đã trả lời <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> câu hỏi.</p>
             <p id="modal-warning" style="color:#f59e0b;font-size:13px;margin-top:8px"></p>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModal('modal-submit')">Continue</button>
-                <button class="btn-primary" onclick="submitExam()">Submit</button>
+                <button class="btn-ghost" onclick="closeModal('modal-submit')">Tiếp tục làm</button>
+                <button class="btn-primary" onclick="submitExam()">Nộp bài</button>
             </div>
         </div>
     </div>
@@ -326,11 +325,11 @@
     <!-- Modal: Exit -->
     <div class="modal-overlay hidden" id="modal-exit">
         <div class="modal-box modal-sm">
-            <h3>Exit test?</h3>
-            <p>Your progress will not be saved.</p>
+            <h3>Thoát bài thi?</h3>
+            <p>Tiến trình làm bài sẽ được lưu lại để tiếp tục sau.</p>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModal('modal-exit')">Stay</button>
-                <button class="btn-danger" onclick="forceExit()">Exit</button>
+                <button class="btn-ghost" onclick="closeModal('modal-exit')">Ở lại</button>
+                <button class="btn-danger" onclick="forceExit()">Thoát</button>
             </div>
         </div>
     </div>
@@ -347,9 +346,9 @@
                 <!-- Buttons built dynamically by buildPartTabs() -->
             </div>
             <div class="snf-exam-controls" id="snf-exam-controls">
-                <div class="snf-answered">Answered: <strong id="footer-answered">0</strong> / <span
+                <div class="snf-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span
                         id="footer-total">0</span></div>
-                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Submit</button>
+                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Nộp bài</button>
             </div>
         </div>
     </div>
@@ -486,6 +485,10 @@
             state.isReview = false;
             state.startTime = data.startTime || new Date().toISOString();
             for (const k in partHlCache) delete partHlCache[k];
+            for (const k in partHlCacheRv) delete partHlCacheRv[k];
+            clearInterval(_asoTimer);
+            audio.playbackRate = 1;
+            document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
 
             document.getElementById('exam-title').textContent = t.name;
             audio.src = t.audioUrl || '';
@@ -743,6 +746,10 @@
                 state.isReview = false;
                 state.startTime = new Date().toISOString();
                 for (const k in partHlCache) delete partHlCache[k];
+                for (const k in partHlCacheRv) delete partHlCacheRv[k];
+                clearInterval(_asoTimer);
+                audio.playbackRate = 1;
+                document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
                 document.getElementById('exam-title').textContent = t.name;
                 audio.src = t.audioUrl || '';
                 audio.load();
@@ -1916,7 +1923,7 @@
             document.getElementById('modal-answered').textContent = answered;
             document.getElementById('modal-total').textContent = total;
             const unanswered = total - answered;
-            document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ You still have ${unanswered} unanswered question(s).` : '';
+            document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
         }
 
         // ══════════════════════════════════════════════
@@ -1955,10 +1962,15 @@
             }
             overlay.style.display = 'flex';
 
+            const controller = new AbortController();
+            const submitTimeout = setTimeout(() => controller.abort(), 30000);
             try {
                 const res = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
-                    method: 'POST', headers: authH(), body: JSON.stringify({ answers: state.answers, startTime: state.startTime })
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ answers: state.answers, startTime: state.startTime }),
+                    signal: controller.signal
                 });
+                clearTimeout(submitTimeout);
                 const data = await res.json();
                 if (!data.success) throw new Error(data.message);
                 const r = data.result;
@@ -1974,17 +1986,18 @@
                 document.getElementById('result-emoji').textContent = r.bandScore >= 7 ? '🎉' : r.bandScore >= 5.5 ? '💪' : '📚';
                 showScreen('result');
             } catch (err) {
+                clearTimeout(submitTimeout);
                 overlay.style.display = 'none';
-                toast('Submission error: ' + err.message, 'error');
+                toast('Lỗi nộp bài: ' + err.message, 'error');
                 state.submitted = false;
             }
         }
 
         function getBandMsg(band) {
-            if (band >= 7.5) return 'Excellent! Outstanding performance 🎉';
-            if (band >= 6.5) return 'Well done! Keep practising to reach a higher band 💪';
-            if (band >= 5.5) return 'Good effort! You\'re making clear progress 📚';
-            return 'Keep going – consistent practice will get you there! 🌱';
+            if (band >= 7.5) return 'Xuất sắc! Kết quả vượt trội 🎉';
+            if (band >= 6.5) return 'Tốt lắm! Tiếp tục luyện tập để đạt band cao hơn 💪';
+            if (band >= 5.5) return 'Cố gắng tốt! Bạn đang tiến bộ rõ rệt 📚';
+            return 'Hãy tiếp tục – luyện tập đều đặn sẽ giúp bạn tiến bộ! 🌱';
         }
 
         // ══════════════════════════════════════════════
@@ -2237,6 +2250,8 @@
             closeModal('modal-exit');
             clearInterval(_asoTimer);
             audio.pause();
+            audio.playbackRate = 1;
+            document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
             window.onbeforeunload = null;
             state.submitted = true;
             showScreen('list');
