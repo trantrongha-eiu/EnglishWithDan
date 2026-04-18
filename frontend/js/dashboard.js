@@ -37,8 +37,8 @@ let pendingSaveWord = null;
 let selectedBookForSave = null;
 
 // ── Audio ──────────────────────────────────────
-const correctSound = new Audio('./sounds/correct.mp3');
-const wrongSound   = new Audio('./sounds/incorect.mp3');
+const correctSound = new Audio('./sounds/quachuanluon.mp3');
+const wrongSound   = new Audio('./sounds/concainit.mp3');
 correctSound.volume = 0.5;
 wrongSound.volume   = 0.5;
 
