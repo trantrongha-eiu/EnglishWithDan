@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ sơ của tôi - EnglishWithDan</title>
+  <title>My profile - EnglishWithDan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/mobile.css">
@@ -52,6 +52,12 @@
         <div class="profile-username" id="profileUsername">@...</div>
         <div class="profile-role"><i class="fas fa-user"></i> <span id="profileRole">student</span></div>
         <div class="profile-bio" id="profileBio"></div>
+        <div class="profile-motto" id="profileMotto" style="display:none">
+          <i class="fas fa-quote-left"></i><span id="mottoText"></span>
+        </div>
+        <div class="profile-target" id="profileTarget" style="display:none">
+          🎯 Mục tiêu: Band <strong id="targetBandDisplay">-</strong>
+        </div>
       </div>
 
       <!-- Mini stats -->
@@ -103,6 +109,16 @@
 
       <!-- Overview Tab -->
       <div class="tab-content active" id="tab-overview">
+        <!-- Badges -->
+        <div class="card mb-16" id="badgesCard" style="display:none">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-medal"></i> Huy hiệu</span>
+          </div>
+          <div class="card-body">
+            <div class="badges-grid" id="badgesGrid"></div>
+          </div>
+        </div>
+
         <div class="card mb-16">
           <div class="card-header">
             <span style="font-weight:700;"><i class="fas fa-chart-line"></i> Band Score của tôi</span>
@@ -111,17 +127,26 @@
             <div class="band-history" id="bandHistory">
               <div class="band-item">
                 <span class="band-skill">Reading</span>
-                <div class="band-bar-wrap"><div class="band-bar-fill" id="barReading" style="width:0%"></div></div>
+                <div class="band-bar-wrap">
+                  <div class="band-bar-fill" id="barReading" style="width:0%"></div>
+                  <div class="band-bar-target" id="targetReading" style="display:none"></div>
+                </div>
                 <span class="band-score" id="scoreReading">-</span>
               </div>
               <div class="band-item">
                 <span class="band-skill">Listening</span>
-                <div class="band-bar-wrap"><div class="band-bar-fill" id="barListening" style="width:0%"></div></div>
+                <div class="band-bar-wrap">
+                  <div class="band-bar-fill" id="barListening" style="width:0%"></div>
+                  <div class="band-bar-target" id="targetListening" style="display:none"></div>
+                </div>
                 <span class="band-score" id="scoreListening">-</span>
               </div>
               <div class="band-item">
                 <span class="band-skill">Speaking</span>
-                <div class="band-bar-wrap"><div class="band-bar-fill" id="barSpeaking" style="width:0%"></div></div>
+                <div class="band-bar-wrap">
+                  <div class="band-bar-fill" id="barSpeaking" style="width:0%"></div>
+                  <div class="band-bar-target" id="targetSpeaking" style="display:none"></div>
+                </div>
                 <span class="band-score" id="scoreSpeaking">-</span>
               </div>
             </div>
@@ -169,6 +194,41 @@
               <label class="form-label">Giới thiệu bản thân</label>
               <textarea class="form-control" id="editBio" placeholder="Viết vài điều về bạn..." rows="3" maxlength="200"></textarea>
               <small style="color:var(--text-light);font-size:12px;"><span id="bioCount">0</span>/200 ký tự</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Motto học tập <span style="font-weight:400;opacity:.7;">(tối đa 80 ký tự)</span></label>
+              <input class="form-control" id="editMotto" placeholder="VD: Mỗi ngày một chút, thành công sẽ đến!" maxlength="80">
+              <small style="color:var(--text-light);font-size:12px;"><span id="mottoCount">0</span>/80 ký tự</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mục tiêu Band Score</label>
+              <select class="form-control" id="editTargetBand">
+                <option value="">-- Chưa đặt --</option>
+                <option value="4">Band 4.0</option>
+                <option value="4.5">Band 4.5</option>
+                <option value="5">Band 5.0</option>
+                <option value="5.5">Band 5.5</option>
+                <option value="6">Band 6.0</option>
+                <option value="6.5">Band 6.5</option>
+                <option value="7">Band 7.0</option>
+                <option value="7.5">Band 7.5</option>
+                <option value="8">Band 8.0</option>
+                <option value="8.5">Band 8.5</option>
+                <option value="9">Band 9.0</option>
+              </select>
+              <small style="color:var(--text-light);font-size:12px;">Hiện thị trên biểu đồ Band Score của bạn</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Màu chủ đề cá nhân</label>
+              <div class="accent-swatches" id="accentSwatches">
+                <div class="accent-swatch" data-primary="#667eea" data-dark="#5a67d8" style="background:#667eea" title="Tím (Mặc định)"></div>
+                <div class="accent-swatch" data-primary="#10b981" data-dark="#059669" style="background:#10b981" title="Xanh lá"></div>
+                <div class="accent-swatch" data-primary="#06b6d4" data-dark="#0891b2" style="background:#06b6d4" title="Xanh cyan"></div>
+                <div class="accent-swatch" data-primary="#f59e0b" data-dark="#d97706" style="background:#f59e0b" title="Vàng cam"></div>
+                <div class="accent-swatch" data-primary="#ec4899" data-dark="#db2777" style="background:#ec4899" title="Hồng"></div>
+                <div class="accent-swatch" data-primary="#3b82f6" data-dark="#2563eb" style="background:#3b82f6" title="Xanh dương"></div>
+              </div>
+              <small style="color:var(--text-light);font-size:12px;">Được lưu trên thiết bị này</small>
             </div>
             <div id="editMsg" style="display:none; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:12px;"></div>
             <button class="btn btn-primary" onclick="saveProfile()">
@@ -278,10 +338,55 @@
       event.currentTarget.classList.add('active');
     }
 
-    // ── Bio counter ───────────────────────────────────────────
+    // ── Bio / motto counters ──────────────────────────────────
     document.getElementById('editBio').addEventListener('input', function() {
       document.getElementById('bioCount').textContent = this.value.length;
     });
+    document.getElementById('editMotto').addEventListener('input', function() {
+      document.getElementById('mottoCount').textContent = this.value.length;
+    });
+
+    // ── Accent color picker ───────────────────────────────────
+    const ACCENT_KEY = 'profileAccent';
+    function applyAccent(primary, dark) {
+      document.documentElement.style.setProperty('--primary', primary);
+      document.documentElement.style.setProperty('--primary-dark', dark);
+    }
+    function initAccentPicker() {
+      const saved = JSON.parse(localStorage.getItem(ACCENT_KEY) || 'null');
+      if (saved) applyAccent(saved.primary, saved.dark);
+      const currentPrimary = (saved?.primary || '#667eea').toLowerCase();
+      document.querySelectorAll('.accent-swatch').forEach(sw => {
+        if (sw.dataset.primary.toLowerCase() === currentPrimary) sw.classList.add('active');
+        sw.addEventListener('click', function() {
+          document.querySelectorAll('.accent-swatch').forEach(s => s.classList.remove('active'));
+          this.classList.add('active');
+          applyAccent(this.dataset.primary, this.dataset.dark);
+          localStorage.setItem(ACCENT_KEY, JSON.stringify({ primary: this.dataset.primary, dark: this.dataset.dark }));
+          showToast('success', 'Đã đổi màu', 'Màu chủ đề đã được cập nhật');
+        });
+      });
+    }
+    initAccentPicker();
+
+    // ── Badges ────────────────────────────────────────────────
+    function computeBadges(s) {
+      const badges = [];
+      const total = s.reading.total + s.listening.total;
+      if (total >= 1) badges.push({ e:'🎯', name:'Tân binh', desc:'Hoàn thành bài test đầu tiên' });
+      if (s.streak >= 7)  badges.push({ e:'🔥', name:'Chăm chỉ', desc:`Streak ${s.streak} ngày liên tục` });
+      if (s.streak >= 30) badges.push({ e:'⚡', name:'Siêu cần cù', desc:'Streak 30+ ngày' });
+      if (s.reading.total >= 5) badges.push({ e:'📖', name:'Reading Fan', desc:`${s.reading.total} bài Reading` });
+      if (s.listening.total >= 5) badges.push({ e:'🎧', name:'Listening Fan', desc:`${s.listening.total} bài Listening` });
+      const maxBand = Math.max(parseFloat(s.reading.avgBand)||0, parseFloat(s.listening.avgBand)||0);
+      if (maxBand >= 8)       badges.push({ e:'🌟', name:'Band 8+', desc:'Điểm trung bình ≥ 8.0' });
+      else if (maxBand >= 7)  badges.push({ e:'🏆', name:'Band 7+', desc:'Điểm trung bình ≥ 7.0' });
+      if (s.speaking.total >= 3) badges.push({ e:'🎙️', name:'Diễn giả', desc:`${s.speaking.total} lần Speaking` });
+      if (s.writing.total >= 3)  badges.push({ e:'✍️', name:'Cây viết', desc:`${s.writing.total} bài Writing` });
+      if (s.reading.total > 0 && s.listening.total > 0 && s.speaking.total > 0 && s.writing.total > 0)
+        badges.push({ e:'💯', name:'All-rounder', desc:'Luyện đủ 4 kĩ năng' });
+      return badges;
+    }
 
     // ── Load profile & stats ──────────────────────────────────
     async function loadProfile() {
@@ -308,6 +413,16 @@
           document.getElementById('profileBio').textContent      = u.bio || '';
           document.getElementById('joinDate').textContent        = new Date(u.createdAt).toLocaleDateString('vi-VN');
 
+          // Motto
+          const mottoEl = document.getElementById('profileMotto');
+          if (u.studyMotto) { mottoEl.style.display = 'flex'; document.getElementById('mottoText').textContent = u.studyMotto; }
+          else mottoEl.style.display = 'none';
+
+          // Target band
+          const targetEl = document.getElementById('profileTarget');
+          if (u.targetBand) { targetEl.style.display = 'block'; document.getElementById('targetBandDisplay').textContent = u.targetBand; }
+          else targetEl.style.display = 'none';
+
           // Edit form
           document.getElementById('editFirstName').value = u.firstName || '';
           document.getElementById('editLastName').value  = u.lastName  || '';
@@ -315,6 +430,10 @@
           document.getElementById('editEmail').value     = u.email     || '';
           document.getElementById('editBio').value       = u.bio       || '';
           document.getElementById('bioCount').textContent = (u.bio||'').length;
+          document.getElementById('editMotto').value     = u.studyMotto || '';
+          document.getElementById('mottoCount').textContent = (u.studyMotto||'').length;
+          const tb = document.getElementById('editTargetBand');
+          tb.value = u.targetBand != null ? String(u.targetBand) : '';
 
           // Nav
           document.getElementById('navName').textContent = u.firstName || u.username;
@@ -341,6 +460,26 @@
           document.getElementById('barListening').style.width   = toPercent(s.listening.avgBand);
           document.getElementById('scoreReading').textContent   = s.reading.avgBand  || '-';
           document.getElementById('scoreListening').textContent = s.listening.avgBand || '-';
+
+          // Target band markers
+          const targetBand = pd.user?.targetBand;
+          if (targetBand) {
+            const pct = Math.min(100, (targetBand / 9) * 100) + '%';
+            ['targetReading','targetListening','targetSpeaking'].forEach(id => {
+              const el = document.getElementById(id);
+              el.style.display = 'block'; el.style.left = pct;
+              el.title = `Mục tiêu: Band ${targetBand}`;
+            });
+          }
+
+          // Badges
+          const badges = computeBadges(s);
+          if (badges.length) {
+            document.getElementById('badgesCard').style.display = 'block';
+            document.getElementById('badgesGrid').innerHTML = badges.map(b =>
+              `<div class="badge-item"><div class="badge-emoji">${b.e}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>`
+            ).join('');
+          }
 
           // Speaking band from history
           const spkBands = s.speaking.history.map(h => h.aiFeedback?.overallBand).filter(Boolean);
@@ -394,10 +533,13 @@
 
     // ── Save profile ──────────────────────────────────────────
     async function saveProfile() {
+      const tbVal = document.getElementById('editTargetBand').value;
       const body = {
-        firstName: document.getElementById('editFirstName').value.trim(),
-        lastName:  document.getElementById('editLastName').value.trim(),
-        bio:       document.getElementById('editBio').value.trim()
+        firstName:  document.getElementById('editFirstName').value.trim(),
+        lastName:   document.getElementById('editLastName').value.trim(),
+        bio:        document.getElementById('editBio').value.trim(),
+        studyMotto: document.getElementById('editMotto').value.trim(),
+        targetBand: tbVal === '' ? null : parseFloat(tbVal)
       };
       try {
         const res  = await fetch(API + '/api/user/profile', { method:'PUT', headers: headers(), body: JSON.stringify(body) });

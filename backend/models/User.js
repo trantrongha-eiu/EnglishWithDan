@@ -26,6 +26,9 @@ const UserSchema = new mongoose.Schema({
   googleId:       { type: String, default: '' },
   facebookId:     { type: String, default: '' },
   authProvider:   { type: String, enum: ['local', 'google', 'facebook'], default: 'local' },
+  // Profile customization
+  studyMotto:   { type: String, default: '', maxlength: 80 },
+  targetBand:   { type: Number, default: null, min: 4, max: 9 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
   lastActivityDate:     { type: Date, default: null },

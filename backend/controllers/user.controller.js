@@ -20,11 +20,13 @@ exports.getProfile = async (req, res) => {
 // ── PUT /api/user/profile ────────────────────────────────────
 exports.updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, bio } = req.body;
+    const { firstName, lastName, bio, studyMotto, targetBand } = req.body;
     const update = {};
-    if (firstName !== undefined) update.firstName = firstName.trim();
-    if (lastName  !== undefined) update.lastName  = lastName.trim();
-    if (bio       !== undefined) update.bio       = bio.trim().slice(0, 200);
+    if (firstName   !== undefined) update.firstName  = firstName.trim();
+    if (lastName    !== undefined) update.lastName   = lastName.trim();
+    if (bio         !== undefined) update.bio        = bio.trim().slice(0, 200);
+    if (studyMotto  !== undefined) update.studyMotto = studyMotto.trim().slice(0, 80);
+    if (targetBand  !== undefined) update.targetBand = targetBand === '' || targetBand === null ? null : Number(targetBand);
 
     const user = await User.findByIdAndUpdate(req.user._id, update, { new: true })
       .select('-password -resetOTP -resetOTPExpires');
