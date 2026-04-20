@@ -27,7 +27,7 @@ let allTests = [];
 
 /* Highlight cache – preserve <span class="hl"> spans across passage switches */
 const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
-const reviewHlCache  = {};   // review mode: { passageIdx: passageInnerHTML }
+const reviewHlCache = {};   // review mode: { passageIdx: passageInnerHTML }
 
 /* ══════════════════════════════════════════════════════════════════════
    INIT
@@ -252,13 +252,13 @@ function saveExamToStorage() {
   if (!state.attemptId || state.submitted) return;
   try {
     localStorage.setItem(_EXAM_KEY, JSON.stringify({
-      attemptId:   state.attemptId,
-      testId:      state.testId,
-      testName:    state.testName,
-      passages:    state.passages,      // full passage data (no correct answers)
-      answers:     state.answers,
+      attemptId: state.attemptId,
+      testId: state.testId,
+      testName: state.testName,
+      passages: state.passages,      // full passage data (no correct answers)
+      answers: state.answers,
       secondsLeft: state.secondsLeft,
-      savedAt:     Date.now()
+      savedAt: Date.now()
     }));
   } catch { /* quota exceeded – ignore */ }
 }
@@ -289,19 +289,19 @@ function checkResumeExam() {
 
 function resumeExam() {
   const banner = document.getElementById('resume-banner');
-  const data   = banner?._resumeData;
+  const data = banner?._resumeData;
   if (!data) return;
   banner.style.display = 'none';
 
-  state.passages         = data.passages;
-  state.attemptId        = data.attemptId;
-  state.testId           = data.testId;
-  state.testName         = data.testName;
-  state.answers          = data.answers || {};
-  state.secondsLeft      = data.secondsLeft || DURATION;
+  state.passages = data.passages;
+  state.attemptId = data.attemptId;
+  state.testId = data.testId;
+  state.testName = data.testName;
+  state.answers = data.answers || {};
+  state.secondsLeft = data.secondsLeft || DURATION;
   state.currentPassageIdx = 0;
-  state.isReview         = false;
-  state.submitted        = false;
+  state.isReview = false;
+  state.submitted = false;
 
   document.getElementById('exam-title').textContent = state.testName;
   renderPassageTabs('toolbar-passage-tabs', false);
@@ -352,13 +352,13 @@ function renderPassageTabs(containerId, isReview) {
 }
 
 function switchPassage(idx) {
-  const passageInner   = document.getElementById('passage-inner');
+  const passageInner = document.getElementById('passage-inner');
   const questionsInner = document.getElementById('questions-inner');
 
   // Save both panels' highlights before overwriting (skip on first load when idx === currentPassageIdx)
   if (state.currentPassageIdx !== idx) {
     passageHlCache[state.currentPassageIdx] = {
-      passage:   passageInner   ? passageInner.innerHTML   : null,
+      passage: passageInner ? passageInner.innerHTML : null,
       questions: questionsInner ? questionsInner.innerHTML : null,
     };
   }
@@ -370,7 +370,7 @@ function switchPassage(idx) {
   const cached = passageHlCache[idx];
   if (cached !== undefined) {
     // Restore both panels with saved highlights
-    if (passageInner)   passageInner.innerHTML   = cached.passage   ?? '';
+    if (passageInner) passageInner.innerHTML = cached.passage ?? '';
     if (questionsInner) questionsInner.innerHTML = cached.questions ?? '';
     restoreAnswers(false);
     initDropZones();
@@ -430,13 +430,13 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
 
   let bodyHtml = '';
   switch (groupType) {
-    case 'table':              bodyHtml = renderTableGroup(group, isReview, reviewMap); break;
+    case 'table': bodyHtml = renderTableGroup(group, isReview, reviewMap); break;
     case 'note-form':
-    case 'bullet-list':        bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
-    case 'map':                bodyHtml = renderMapGroup(group, isReview, reviewMap); break;
+    case 'bullet-list': bodyHtml = renderNoteFormGroup(group, isReview, reviewMap); break;
+    case 'map': bodyHtml = renderMapGroup(group, isReview, reviewMap); break;
     case 'matching-options':
-    case 'sentence-endings':   bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
-    case 'matching-headings':  bodyHtml = renderMatchingHeadingsGroup(group, isReview, reviewMap); break;
+    case 'sentence-endings': bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
+    case 'matching-headings': bodyHtml = renderMatchingHeadingsGroup(group, isReview, reviewMap); break;
     case 'summary-completion': bodyHtml = renderSummaryCompletionGroup(group, isReview, reviewMap); break;
     default: bodyHtml = renderPlainGroup(questions, isReview, reviewMap); break;
   }
@@ -520,7 +520,7 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
   const chipsHtml = matchingOptions.map((opt, i) => {
     const letter = optLetters[i];
     const isUsed = !isReview && !matchingReuseAllowed &&
-                   questions.some(q => state.answers[q.questionNumber] === letter);
+      questions.some(q => state.answers[q.questionNumber] === letter);
     const label = opt && opt.trim().length > 1 ? `. ${escHtml(opt)}` : '';
     return `<span class="drag-chip mo-chip${isUsed ? ' used' : ''}"
       data-value="${escHtml(letter)}" data-groupid="${groupId}"
@@ -853,13 +853,14 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
       const cls = isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
       const correctHint = !isCorrect && review?.correctAnswer
         ? `<span class="rq-ans-correct">(✓ ${escHtml(review.correctAnswer)})</span>` : '';
+      const expl = review?.explanation
+        ? `<span class="rq-inline-expl"><strong>Giải thích:</strong> ${escHtmlNl(review.explanation)}</span>` : '';
       return `<span class="rq-inline-wrap" id="q${qNum}" data-qnum="${qNum}">
-        <span class="rq-q-badge">${qNum}</span>
-        <span class="rq-inline-ans ${cls}">${escHtml(userAns || '–')}</span>
-        ${correctHint}
-      </span>`;
+    <span class="rq-q-badge">${qNum}</span>
+    <span class="rq-inline-ans ${cls}">${escHtml(userAns || '–')}</span>
+    ${correctHint}${expl}
+  </span>`;
     }
-
     const val = state.answers[qNum] || '';
     return `<span class="rq-inline-wrap" id="q${qNum}" data-qnum="${qNum}">
       <span class="rq-q-badge">${qNum}</span>
@@ -992,9 +993,9 @@ function clearDragDrop(qNum, groupId) {
   if (dz) {
     dz.classList.remove('filled');
     dz.innerHTML = dz.classList.contains('rq-heading-drop') ? 'Kéo tiêu đề vào đây'
-                 : dz.classList.contains('sc-drop')        ? 'Kéo từ vào'
-                 : dz.classList.contains('rq-mo-drop')     ? 'Kéo chữ cái vào đây'
-                 : 'Thả vào đây';
+      : dz.classList.contains('sc-drop') ? 'Kéo từ vào'
+        : dz.classList.contains('rq-mo-drop') ? 'Kéo chữ cái vào đây'
+          : 'Thả vào đây';
   }
   _refreshGroupChips(groupId);
   updateQNavBtn(qNum);
@@ -1184,7 +1185,7 @@ function startTimer() {
       const el = timerEl();
       if (el) {
         el.classList.toggle('danger', state.secondsLeft <= 300);
-        el.classList.toggle('warn',   state.secondsLeft > 300 && state.secondsLeft <= 600);
+        el.classList.toggle('warn', state.secondsLeft > 300 && state.secondsLeft <= 600);
       }
     }
   }, 1000);
@@ -1347,13 +1348,13 @@ function renderReview(attempt) {
 }
 
 function switchReviewPassage(idx) {
-  const rvPassageInner   = document.getElementById('review-passage-inner');
+  const rvPassageInner = document.getElementById('review-passage-inner');
   const rvQuestionsInner = document.getElementById('review-questions-inner');
 
   // Save both panels' highlights before overwriting
   if (state.currentPassageIdx !== idx) {
     reviewHlCache[state.currentPassageIdx] = {
-      passage:   rvPassageInner   ? rvPassageInner.innerHTML   : null,
+      passage: rvPassageInner ? rvPassageInner.innerHTML : null,
       questions: rvQuestionsInner ? rvQuestionsInner.innerHTML : null,
     };
   }
@@ -1365,7 +1366,7 @@ function switchReviewPassage(idx) {
 
   const cached = reviewHlCache[idx];
   if (cached !== undefined) {
-    if (rvPassageInner)   rvPassageInner.innerHTML   = cached.passage   ?? '';
+    if (rvPassageInner) rvPassageInner.innerHTML = cached.passage ?? '';
     if (rvQuestionsInner) rvQuestionsInner.innerHTML = cached.questions ?? '';
   } else {
     if (rvPassageInner) {
@@ -1591,7 +1592,7 @@ function setTool(tool) {
 
 document.addEventListener('mouseup', e => {
   if (state.tool !== 'highlight') return;
-  const inPassage   = e.target.closest('.split-passage')   || e.target.closest('.review-passage');
+  const inPassage = e.target.closest('.split-passage') || e.target.closest('.review-passage');
   const inQuestions = e.target.closest('.split-questions') || e.target.closest('.review-q-panel');
   if (!inPassage && !inQuestions) return;
   // Don't highlight when clicking on interactive inputs
