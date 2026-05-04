@@ -1112,71 +1112,16 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
 
 async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
   const task1Descriptors = `
-IELTS WRITING TASK 1 – OFFICIAL BAND DESCRIPTORS (calibration guide):
-
-TASK ACHIEVEMENT (TA):
-- Band 5: covers main features but may be inaccurate or incomplete; some irrelevant detail
-- Band 6: covers the requirements adequately; key features highlighted though some may be under/over-stated
-- Band 7: covers the key features sufficiently; presents, highlights and illustrates key features clearly
-- Band 8: covers the requirements of the task fully; key features are skilfully selected, highlighted and illustrated
-
-COHERENCE & COHESION (CC):
-- Band 5: presents information with some organisation but may lack overall progression; uses some basic cohesive devices
-- Band 6: arranges information coherently; uses cohesive devices but may be faulty or mechanical; has a clear overall progression
-- Band 7: logically organises information; uses a range of cohesive devices appropriately; clear central topic in each paragraph
-- Band 8: sequences information and ideas logically; manages paragraphing well
-
-LEXICAL RESOURCE (LR):
-- Band 5: uses a limited range of vocabulary; noticeable errors in spelling/word formation
-- Band 6: adequate range of vocabulary; some inaccuracies in word choice/spelling; meaning is clear
-- Band 7: uses sufficient range of vocabulary to allow flexibility; some errors but not impeding communication
-- Band 8: uses a wide range; rare errors; any errors do not impede communication
-
-GRAMMATICAL RANGE & ACCURACY (GRA):
-- Band 5: uses only a limited range; some complex sentences but frequent errors
-- Band 6: mix of simple and complex forms; some errors but they rarely reduce communication
-- Band 7: uses a variety of complex structures; frequent error-free sentences; errors are minor
-- Band 8: uses a wide range; majority of sentences are error-free; rare minor errors
-
-CALIBRATION NOTES:
-- Be fair and balanced. A competent student who addresses the task with reasonable vocabulary and grammar should score 6–7.
-- Isolated errors do NOT automatically drop a band. Judge the overall impression.
-- Give credit for good attempts. Do not penalise minor slips if the meaning is clear.
-- The average Vietnamese university student writing competently in English typically scores 5.5–6.5 on Task 1.`;
+Task 1 criteria (TA=Task Achievement, CC=Coherence&Cohesion, LR=Lexical Resource, GRA=Grammar):
+- Band 6: adequate coverage of key features, some inaccuracies OK; clear progression; adequate vocab with minor errors; mix of simple/complex sentences, errors rarely impede communication.
+- Band 7: key features clearly highlighted; logical organisation; flexible vocab; frequent error-free sentences.
+- Calibration: clear description of main trends with reasonable language = 6–7. Isolated errors do NOT drop a band. Give benefit of the doubt when meaning is clear.`;
 
   const task2Descriptors = `
-IELTS WRITING TASK 2 – OFFICIAL BAND DESCRIPTORS (calibration guide):
-
-TASK RESPONSE (TR):
-- Band 5: addresses the task only partially; may have limited ideas or not enough support; may not present a clear position
-- Band 6: addresses all parts of the task; presents relevant main ideas, some may be underdeveloped; has a position but conclusions may not be consistent
-- Band 7: addresses all parts of the task; presents a clear position throughout; presents, extends and supports main ideas well
-- Band 8: sufficiently addresses all parts of the task; presents a well-developed response; position is clear and consistent
-
-COHERENCE & COHESION (CC):
-- Band 5: presents information with some organisation; uses limited range of cohesive devices; may be repetitive
-- Band 6: arranges information coherently; uses cohesive devices effectively, though mechanical use occurs; paragraphing present but not always logical
-- Band 7: logically organises information; uses a range of cohesive devices appropriately; manages paragraph topics well
-- Band 8: sequences information and ideas logically; manages all aspects of cohesion well; paragraphing is used sufficiently and appropriately
-
-LEXICAL RESOURCE (LR):
-- Band 5: limited range; noticeable errors in spelling and word formation; may cause some difficulty for reader
-- Band 6: adequate range; use of less common vocabulary attempted; some inaccuracies but meaning is clear
-- Band 7: sufficient range; uses less common lexical items with awareness of style; occasional errors in word choice
-- Band 8: wide resource fluently and flexibly; rare errors; any errors do not impede communication
-
-GRAMMATICAL RANGE & ACCURACY (GRA):
-- Band 5: uses only limited range; attempts complex sentences but errors are frequent
-- Band 6: mix of simple and complex forms; errors occur but rarely impede communication
-- Band 7: variety of complex structures; frequently error-free; errors are minor and do not affect communication
-- Band 8: wide range of structures; majority of sentences error-free; rare minor errors
-
-CALIBRATION NOTES:
-- Be fair and balanced. A student who has a clear opinion, develops ideas with some support, uses reasonable grammar/vocabulary should score 6–6.5.
-- Do NOT be overly strict about minor grammar errors if the argument is clear.
-- Give credit for effort to use complex language even if imperfect.
-- Isolated errors do NOT drop a band automatically – judge the overall quality.
-- The average Vietnamese university student writing competently should score 5.5–6.5 on Task 2.`;
+Task 2 criteria (TR=Task Response, CC=Coherence&Cohesion, LR=Lexical Resource, GRA=Grammar):
+- Band 6: addresses all parts; relevant ideas (may be underdeveloped); position present; adequate vocab with minor errors; errors in grammar rarely impede communication.
+- Band 7: clear consistent position; ideas well-extended and supported; logically organised; sufficient vocab range; frequent error-free sentences.
+- Calibration: clear argument with some development and reasonable language = 6–6.5. Minor grammar slips do NOT automatically drop a band. Judge overall impression, not individual errors.`;
 
   const systemPrompt = `You are a fair and experienced IELTS examiner. Your job is to grade IELTS Writing essays accurately and fairly according to the official IELTS Band Descriptors. You are neither too strict nor too lenient – you give credit where it is due and penalise only genuine weaknesses that impact communication or task fulfilment. Always follow the band descriptors carefully.`;
 
@@ -1215,22 +1160,19 @@ Rules:
 - overallFeedback and all Vietnamese fields must be in Vietnamese
 - Be fair: if the essay communicates clearly and addresses the task, it deserves at least a 6`;
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': process.env.FRONTEND_URL || 'https://englishwithdan.com',
-      'X-Title': 'EnglishWithDan IELTS Grader'
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'anthropic/claude-sonnet-4-6',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: userPrompt }
-      ],
+      model: 'claude-sonnet-4-6',
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }],
       temperature: 0.3,
-      max_tokens: 2000
+      max_tokens: 4096
     })
   });
 
@@ -1240,7 +1182,7 @@ Rules:
   }
 
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content || '';
+  const content = data.content?.[0]?.text || '';
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
   return JSON.parse(jsonMatch[0]);
