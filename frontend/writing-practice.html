@@ -69,6 +69,7 @@
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
     <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
     <button onclick="logout()" class="wp-logout-btn">🚪</button>
   </div>
@@ -376,6 +377,28 @@
 //  CONFIG
 // ════════════════════════════════════════════════════════
 const API = 'https://englishwithdan.onrender.com';
+
+// ── Audio ────────────────────────────────────────────────
+const _wpCorrectSound = new Audio('./sounds/correct.mp3');
+const _wpWrongSound   = new Audio('./sounds/incorect.mp3');
+_wpCorrectSound.volume = 0.5;
+_wpWrongSound.volume   = 0.5;
+let _wpSoundEnabled = true;
+
+function playCorrectSound() {
+  if (!_wpSoundEnabled) return;
+  _wpCorrectSound.currentTime = 0;
+  _wpCorrectSound.play().catch(() => {});
+}
+function playWrongSound() {
+  if (!_wpSoundEnabled) return;
+  _wpWrongSound.currentTime = 0;
+  _wpWrongSound.play().catch(() => {});
+}
+function toggleWpSound() {
+  _wpSoundEnabled = !_wpSoundEnabled;
+  document.getElementById('wp-sound-toggle').textContent = _wpSoundEnabled ? '🔊' : '🔇';
+}
 
 function showToast(msg, type = 'warn', duration = 3000) {
   const el = document.getElementById('wp-toast');
@@ -710,9 +733,11 @@ function showFeedback(userAnswer, data) {
   } else if (isCorrect) {
     banner.className = 'wp-result-banner wp-result-correct';
     banner.textContent = '✅ Chính xác! Rất tốt!';
+    playCorrectSound();
   } else {
     banner.className = 'wp-result-banner wp-result-wrong';
     banner.textContent = '❌ Chưa đúng – xem đáp án gợi ý';
+    playWrongSound();
   }
   const stEl = document.getElementById('student-answer-display');
   stEl.textContent = userAnswer;
