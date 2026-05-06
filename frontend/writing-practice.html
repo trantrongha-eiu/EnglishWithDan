@@ -21,6 +21,40 @@
     #wp-toast.warn  { background: #e65100; }
     #wp-toast.error { background: #c62828; }
     #wp-toast.info  { background: #1565c0; }
+
+    /* ── Stop/Quit button ── */
+    .wp-stop-btn {
+      background: none; border: 1.5px solid #d1d5db; color: #9ca3af;
+      border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      transition: border-color .2s, color .2s;
+    }
+    .wp-stop-btn:hover { border-color: #e53935; color: #e53935; }
+
+    /* ── Quit confirm modal ── */
+    .wp-quit-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5);
+      display:flex; align-items:center; justify-content:center; z-index:10000; }
+    .wp-quit-overlay.hidden { display:none; }
+    .wp-quit-box { background:#fff; border-radius:16px; width:320px;
+      overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .wp-quit-top { background:linear-gradient(135deg,#fff7ed 0%,#fef3c7 100%);
+      padding:32px 24px 20px; text-align:center; }
+    .wp-quit-mascot { font-size:48px; line-height:1; }
+    .wp-quit-title { font-size:17px; font-weight:800; color:#92400e; margin:12px 0 6px; }
+    .wp-quit-sub { font-size:13px; color:#6b7280; line-height:1.5; min-height:18px; }
+    .wp-quit-actions { padding:20px 24px; display:flex; flex-direction:column; gap:10px; }
+    .wp-quit-continue { background:#16a34a; color:#fff; border:none; border-radius:10px;
+      padding:12px 20px; font-size:15px; font-weight:700; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px; }
+    .wp-quit-continue:hover { background:#15803d; }
+    .wp-quit-leave { background:none; color:#6b7280; border:1.5px solid #e5e7eb;
+      border-radius:10px; padding:10px 20px; font-size:14px; font-weight:600; cursor:pointer; }
+    .wp-quit-leave:hover { border-color:#e53935; color:#e53935; }
+    [data-theme="dark"] .wp-quit-box { background:#1e293b; }
+    [data-theme="dark"] .wp-quit-top { background:linear-gradient(135deg,#1c2618 0%,#2a3820 100%); }
+    [data-theme="dark"] .wp-quit-title { color:#fbbf24; }
+    [data-theme="dark"] .wp-quit-sub { color:#9ca3af; }
+    [data-theme="dark"] .wp-quit-leave { border-color:#374151; color:#9ca3af; }
   </style>
 </head>
 <body>
@@ -168,6 +202,9 @@
           <div class="wp-progress-bar" id="progress-bar"></div>
         </div>
         <div class="wp-exercise-meta">
+          <button class="wp-stop-btn" onclick="stopPracticeMode()" title="Dừng học">
+            <i class="fas fa-stop-circle"></i> Dừng
+          </button>
           <span class="wp-grammar-badge" id="grammar-badge"></span>
           <span class="wp-ex-counter" id="ex-counter">1 / 10</span>
           <span class="wp-type-tag" id="type-tag"></span>
@@ -266,6 +303,9 @@
           <div class="wp-progress-bar" id="test-progress-bar"></div>
         </div>
         <div class="wp-exercise-meta">
+          <button class="wp-stop-btn" onclick="stopTestMode()" title="Dừng thi">
+            <i class="fas fa-stop-circle"></i> Dừng
+          </button>
           <span class="wp-grammar-badge" id="test-grammar-badge"></span>
           <span class="wp-ex-counter" id="test-counter">1 / 10</span>
           <span class="wp-type-tag" id="test-type-tag"></span>
@@ -960,6 +1000,60 @@ function shuffle(arr) {
   }
   return a;
 }
+
+// ════════════════════════════════════════════════════════
+//  QUIT / STOP MODAL
+// ════════════════════════════════════════════════════════
+let _wpQuitCb = null;
+
+function askWpQuit(callback) {
+  _wpQuitCb = callback;
+  const sub = document.getElementById('wp-quit-sub');
+  if (sub) sub.textContent = sessionDone
+    ? `Bạn đã làm ${sessionDone} bài và kiếm được ${sessionXP} XP hôm nay.`
+    : 'Tiến độ hôm nay chưa được lưu.';
+  document.getElementById('wp-quit-overlay').classList.remove('hidden');
+}
+
+function cancelWpQuit() {
+  document.getElementById('wp-quit-overlay').classList.add('hidden');
+  _wpQuitCb = null;
+}
+
+function confirmWpQuit() {
+  document.getElementById('wp-quit-overlay').classList.add('hidden');
+  if (_wpQuitCb) { const cb = _wpQuitCb; _wpQuitCb = null; cb(); }
+}
+
+function stopPracticeMode() {
+  askWpQuit(() => loadExercises());
+}
+
+function stopTestMode() {
+  askWpQuit(() => {
+    testExercises = []; testAnswers = []; testIdx = 0;
+    document.getElementById('test-in-progress').style.display = 'none';
+    document.getElementById('test-results').style.display     = 'none';
+    document.getElementById('test-intro').style.display       = '';
+  });
+}
 </script>
+
+<!-- ── Quit confirm modal ── -->
+<div class="wp-quit-overlay hidden" id="wp-quit-overlay">
+  <div class="wp-quit-box">
+    <div class="wp-quit-top">
+      <div class="wp-quit-mascot">✏️</div>
+      <p class="wp-quit-title">Bạn muốn dừng học?</p>
+      <p class="wp-quit-sub" id="wp-quit-sub"></p>
+    </div>
+    <div class="wp-quit-actions">
+      <button class="wp-quit-continue" onclick="cancelWpQuit()">
+        <i class="fas fa-play-circle"></i> Tiếp tục học
+      </button>
+      <button class="wp-quit-leave" onclick="confirmWpQuit()">Dừng lại</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
