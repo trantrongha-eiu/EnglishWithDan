@@ -7,7 +7,62 @@ const WPLesson              = require('../models/WPLesson');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
 
 // ══════════════════════════════════════════════════════════════
-//  HELPER – AI feedback via Anthropic
+//  LOCAL CHECK – no AI, compare against sample + alternative answers
+// ══════════════════════════════════════════════════════════════
+const NUM_WORDS = { '1':'one','2':'two','3':'three','4':'four','5':'five',
+  '6':'six','7':'seven','8':'eight','9':'nine','10':'ten' };
+
+function normalize(str) {
+  return str
+    .toLowerCase().trim()
+    .replace(/[.,!?;:'"]/g, '')
+    .replace(/\b(\d+)\b/g, n => NUM_WORDS[n] || n)
+    .replace(/\bi'm\b/g,     'i am')
+    .replace(/\bdon't\b/g,   'do not')
+    .replace(/\bdoesn't\b/g, 'does not')
+    .replace(/\bcan't\b/g,   'cannot')
+    .replace(/\bwon't\b/g,   'will not')
+    .replace(/\bthey're\b/g, 'they are')
+    .replace(/\bwe're\b/g,   'we are')
+    .replace(/\bit's\b/g,    'it is')
+    .replace(/\s+/g, ' ');
+}
+
+function localCheck(exercise, userAnswer) {
+  // For expand type: can't check locally — just show sample
+  if (exercise.type === 'expand') {
+    return {
+      checkedBy: 'local',
+      isCorrect: null,  // null = "can't tell, just practice"
+      isAcceptable: true,
+      feedbackVi: 'Xem câu mẫu bên dưới để so sánh và học thêm nhé!',
+      corrections: [],
+      suggestedAnswer: exercise.sampleAnswer,
+      upgradeVersion: ''
+    };
+  }
+
+  const normUser = normalize(userAnswer);
+  const allAnswers = [exercise.sampleAnswer, ...(exercise.alternativeAnswers || [])];
+  const isCorrect  = allAnswers.some(a => normalize(a) === normUser);
+
+  return {
+    checkedBy: 'local',
+    isCorrect,
+    isAcceptable: isCorrect,
+    grammarScore: isCorrect ? 10 : null,
+    naturalScore: isCorrect ? 10 : null,
+    feedbackVi: isCorrect
+      ? 'Xuất sắc! Câu trả lời của bạn chính xác. Tiếp tục phát huy nhé! 🎉'
+      : 'Câu của bạn khác với đáp án gợi ý. Hãy đọc kỹ câu mẫu và ghi nhớ cấu trúc!',
+    corrections: [],
+    suggestedAnswer: exercise.sampleAnswer,
+    upgradeVersion: exercise.alternativeAnswers?.[0] || ''
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  AI CHECK – only for expand/intermediate
 // ══════════════════════════════════════════════════════════════
 async function checkWithAI(exercise, userAnswer) {
   const typeLabel = {
@@ -37,7 +92,6 @@ Reply ONLY with valid JSON (no markdown, no extra text):
 Rules:
 - corrections: empty array [] if no significant errors
 - grammarScore 10=perfect, 7=minor errors, 5=noticeable errors, 3=many errors
-- naturalScore: how native-like it sounds
 - upgradeVersion: always show a slightly better/more expressive version
 - feedbackVi: be encouraging, mention 1 specific thing to improve`;
 
@@ -52,7 +106,7 @@ Rules:
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 700,
       temperature: 0.2,
-      system: 'You are an encouraging English writing teacher for Vietnamese IELTS foundation students (band 4-5.5). Give precise, brief, student-friendly feedback. Always reply with valid JSON only.',
+      system: 'You are an encouraging English writing teacher for Vietnamese IELTS foundation students. Give precise, brief feedback. Always reply with valid JSON only.',
       messages: [{ role: 'user', content: userPrompt }]
     })
   });
@@ -61,26 +115,15 @@ Rules:
     const err = await response.text();
     throw new Error(`Anthropic API error: ${response.status} – ${err}`);
   }
-
   const data  = await response.json();
   const text  = data.content?.[0]?.text || '';
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('AI returned non-JSON: ' + text.slice(0, 200));
-  return JSON.parse(match[0]);
-}
-
-// Strip answer fields before sending exercise list to client
-function sanitize(doc) {
-  const obj = doc.toObject ? doc.toObject() : { ...doc };
-  delete obj.sampleAnswer;
-  delete obj.blankAnswer;
-  delete obj.alternativeAnswers;
-  return obj;
+  return { ...JSON.parse(match[0]), checkedBy: 'ai' };
 }
 
 // ══════════════════════════════════════════════════════════════
 //  GET /api/writing-practice/exercises
-//  Query: level, topic, type, limit, skip
 // ══════════════════════════════════════════════════════════════
 router.get('/exercises', async (req, res) => {
   try {
@@ -99,22 +142,37 @@ router.get('/exercises', async (req, res) => {
       WPExercise.countDocuments(query)
     ]);
 
-    // Strip answer fields
-    const safe = exercises.map(ex => {
-      const { sampleAnswer, blankAnswer, alternativeAnswers, ...rest } = ex;  // eslint-disable-line no-unused-vars
-      return rest;
-    });
-
+    const safe = exercises.map(({ sampleAnswer, blankAnswer, alternativeAnswers, ...rest }) => rest); // eslint-disable-line no-unused-vars
     res.json({ success: true, exercises: safe, total });
   } catch (err) {
-    console.error('[WritingPractice] GET /exercises error:', err);
+    console.error('[WP] GET /exercises:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  GET /api/writing-practice/test-questions
+//  Returns N random exercises for test mode (no answers)
+//  Query: level, count (default 10)
+// ══════════════════════════════════════════════════════════════
+router.get('/test-questions', async (req, res) => {
+  try {
+    const { level, count = 10 } = req.query;
+    const query = { isActive: true };
+    if (level && level !== 'all') query.level = level;
+
+    // Get all matching, then pick random N
+    const all = await WPExercise.find(query).lean();
+    const shuffled = all.sort(() => Math.random() - 0.5).slice(0, Number(count));
+    const safe = shuffled.map(({ sampleAnswer, blankAnswer, alternativeAnswers, ...rest }) => rest); // eslint-disable-line no-unused-vars
+    res.json({ success: true, exercises: safe, total: safe.length });
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
 // ══════════════════════════════════════════════════════════════
 //  GET /api/writing-practice/meta
-//  Returns topics, levels, counts, lessons for sidebar filters
 // ══════════════════════════════════════════════════════════════
 router.get('/meta', async (_req, res) => {
   try {
@@ -125,7 +183,6 @@ router.get('/meta', async (_req, res) => {
         { $group: { _id: { level: '$level', topicKey: '$topicKey' }, count: { $sum: 1 } } }
       ])
     ]);
-
     const levels = ['beginner', 'elementary', 'intermediate'];
     const counts = {};
     levels.forEach(l => {
@@ -138,12 +195,9 @@ router.get('/meta', async (_req, res) => {
         counts[_id.level]._total += count;
       }
     });
-
-    const totalExercises = agg.reduce((s, a) => s + a.count, 0);
-
-    res.json({ success: true, levels, topics, counts, totalExercises });
+    res.json({ success: true, levels, topics, counts,
+      totalExercises: agg.reduce((s, a) => s + a.count, 0) });
   } catch (err) {
-    console.error('[WritingPractice] GET /meta error:', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
@@ -161,25 +215,8 @@ router.get('/topics', async (_req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════
-//  GET /api/writing-practice/lessons
-//  Query: topicKey, level
-// ══════════════════════════════════════════════════════════════
-router.get('/lessons', async (req, res) => {
-  try {
-    const { topicKey, level } = req.query;
-    const query = { isActive: true };
-    if (topicKey) query.topicKey = topicKey;
-    if (level)    query.level    = level;
-    const lessons = await WPLesson.find(query).sort({ orderIndex: 1 }).lean();
-    res.json({ success: true, lessons });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// ══════════════════════════════════════════════════════════════
 //  POST /api/writing-practice/check
-//  Body: { exerciseId, userAnswer }
+//  Uses local check for all types except intermediate expand (→ AI)
 // ══════════════════════════════════════════════════════════════
 router.post('/check', async (req, res) => {
   const { exerciseId, userAnswer } = req.body;
@@ -191,10 +228,14 @@ router.post('/check', async (req, res) => {
     if (!exercise)
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
 
-    const feedback = await checkWithAI(exercise, userAnswer.trim());
+    // Use AI only for intermediate expand (paragraph writing)
+    const needsAI = exercise.type === 'expand' && exercise.level === 'intermediate';
+    const feedback = needsAI
+      ? await checkWithAI(exercise, userAnswer.trim())
+      : localCheck(exercise, userAnswer.trim());
 
     const avg = ((feedback.grammarScore || 5) + (feedback.naturalScore || 5)) / 2;
-    const xp  = avg >= 8 ? 20 : avg >= 6 ? 15 : avg >= 4 ? 10 : 5;
+    const xp  = feedback.isCorrect === true ? 15 : feedback.isCorrect === null ? 8 : 5;
 
     res.json({
       success: true,
@@ -204,8 +245,60 @@ router.post('/check', async (req, res) => {
       xpEarned: xp
     });
   } catch (err) {
-    console.error('[WritingPractice] AI check error:', err.message);
-    res.status(500).json({ success: false, message: 'AI tạm thời không khả dụng. Vui lòng thử lại.' });
+    console.error('[WP] check error:', err.message);
+    res.status(500).json({ success: false, message: 'Lỗi khi chấm bài. Vui lòng thử lại.' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+//  POST /api/writing-practice/check-test
+//  Grades a full test submission: array of { exerciseId, userAnswer }
+//  Returns results with correct answers revealed
+// ══════════════════════════════════════════════════════════════
+router.post('/check-test', async (req, res) => {
+  const { answers } = req.body; // [{ exerciseId, userAnswer }]
+  if (!Array.isArray(answers) || !answers.length)
+    return res.status(400).json({ success: false, message: 'Không có câu trả lời' });
+
+  try {
+    const results = [];
+    let correct = 0;
+
+    for (const { exerciseId, userAnswer } of answers) {
+      const exercise = await WPExercise.findById(exerciseId).lean();
+      if (!exercise) { results.push({ exerciseId, error: 'not found' }); continue; }
+
+      const check   = localCheck(exercise, (userAnswer || '').trim());
+      const isRight = check.isCorrect === true;
+      if (isRight) correct++;
+
+      results.push({
+        exerciseId,
+        question:     exercise.question,
+        baseText:     exercise.baseText,
+        sentences:    exercise.sentences,
+        type:         exercise.type,
+        level:        exercise.level,
+        topicKey:     exercise.topicKey,
+        grammarPoint: exercise.grammarPoint,
+        userAnswer:   userAnswer || '',
+        sampleAnswer: exercise.sampleAnswer,
+        alternativeAnswers: exercise.alternativeAnswers || [],
+        isCorrect:    isRight,
+        isExpand:     exercise.type === 'expand'
+      });
+    }
+
+    res.json({
+      success: true,
+      total:   results.length,
+      correct,
+      score:   Math.round((correct / results.length) * 100),
+      results
+    });
+  } catch (err) {
+    console.error('[WP] check-test error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -219,7 +312,7 @@ router.post('/save', auth, async (req, res) => {
     if (!exercise)
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
 
-    const attempt = new WritingPracticeAttempt({
+    await new WritingPracticeAttempt({
       studentId:  req.user._id,
       exerciseId: exerciseId.toString(),
       level:      exercise.level,
@@ -228,12 +321,11 @@ router.post('/save', auth, async (req, res) => {
       userAnswer,
       aiFeedback,
       xpEarned: xpEarned || 0
-    });
-    await attempt.save();
+    }).save();
 
-    res.json({ success: true, message: 'Đã lưu kết quả' });
+    res.json({ success: true });
   } catch (err) {
-    console.error('[WritingPractice] Save error:', err);
+    console.error('[WP] save error:', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
@@ -244,67 +336,48 @@ router.post('/save', auth, async (req, res) => {
 router.get('/my-stats', auth, async (req, res) => {
   try {
     const attempts = await WritingPracticeAttempt.find({ studentId: req.user._id }).lean();
-    const totalXP    = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
-    const totalDone  = attempts.length;
-    const byLevel    = {};
+    const totalXP   = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
+    const byLevel   = {};
     attempts.forEach(a => { byLevel[a.level] = (byLevel[a.level] || 0) + 1; });
     const avgGrammar = attempts.length
-      ? Math.round(attempts.reduce((s, a) => s + (a.aiFeedback?.grammarScore || 0), 0) / attempts.length * 10) / 10
-      : 0;
-    res.json({ success: true, totalXP, totalDone, byLevel, avgGrammar });
+      ? Math.round(attempts.reduce((s, a) => s + (a.aiFeedback?.grammarScore || 0), 0) / attempts.length * 10) / 10 : 0;
+    res.json({ success: true, totalXP, totalDone: attempts.length, byLevel, avgGrammar });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
 // ══════════════════════════════════════════════════════════════
-//  ADMIN – POST /api/writing-practice/admin/exercises
-//  Add exercises in bulk (admin auth handled via admin route)
-//  Body: { exercises: [...] }
+//  ADMIN – bulk add / soft delete
 // ══════════════════════════════════════════════════════════════
 router.post('/admin/exercises', auth, async (req, res) => {
   try {
-    if (!req.user.isAdmin)
-      return res.status(403).json({ success: false, message: 'Không có quyền' });
-
+    if (!req.user.isAdmin) return res.status(403).json({ success: false });
     const { exercises } = req.body;
-    if (!Array.isArray(exercises) || exercises.length === 0)
-      return res.status(400).json({ success: false, message: 'Danh sách bài tập trống' });
-
-    // For each exercise, find/create the lesson first
+    if (!Array.isArray(exercises) || !exercises.length)
+      return res.status(400).json({ success: false });
     const lessonCache = {};
     const created = [];
     for (const ex of exercises) {
       const lKey = `${ex.topicKey}:${ex.level}`;
       if (!lessonCache[lKey]) {
         let lesson = await WPLesson.findOne({ topicKey: ex.topicKey, level: ex.level });
-        if (!lesson) {
-          lesson = await WPLesson.create({
-            topicKey: ex.topicKey, level: ex.level,
-            title: `${ex.topicKey} – ${ex.level}`,
-            lessonType: ex.level === 'intermediate' ? 'paragraph' : 'sentence'
-          });
-        }
+        if (!lesson) lesson = await WPLesson.create({ topicKey: ex.topicKey, level: ex.level,
+          title: `${ex.topicKey} – ${ex.level}`, lessonType: ex.level === 'intermediate' ? 'paragraph' : 'sentence' });
         lessonCache[lKey] = lesson._id;
       }
       const doc = await WPExercise.create({ ...ex, lessonId: lessonCache[lKey] });
       created.push(doc._id);
     }
-
-    res.json({ success: true, created: created.length, ids: created });
+    res.json({ success: true, created: created.length });
   } catch (err) {
-    console.error('[WritingPractice] Admin create error:', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
-// ══════════════════════════════════════════════════════════════
-//  ADMIN – DELETE /api/writing-practice/admin/exercises/:id
-// ══════════════════════════════════════════════════════════════
 router.delete('/admin/exercises/:id', auth, async (req, res) => {
   try {
-    if (!req.user.isAdmin)
-      return res.status(403).json({ success: false, message: 'Không có quyền' });
+    if (!req.user.isAdmin) return res.status(403).json({ success: false });
     await WPExercise.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true });
   } catch (err) {
