@@ -3454,4 +3454,47 @@ const RAW_EXERCISES = [
     baseText:'Maintaining good health is everyone\'s responsibility.',
     hints:['For instance','not only...but also','In the long run'],
     sampleAnswer:'Maintaining good health is everyone\'s responsibility. For instance, we should not only eat a balanced diet but also exercise regularly and avoid unhealthy habits such as smoking or staying up too late. In the long run, taking care of our health will help us live a more productive and happy life.',
-    alternativeAnswers:[] }]
+    alternativeAnswers:[] }];
+
+// ──────────────────────────────────────────────────────────────
+//  CORE SEED – runs against already-connected mongoose
+// ──────────────────────────────────────────────────────────────
+async function runSeed() {
+  for (const t of TOPICS) {
+    await WPTopic.findOneAndUpdate({ key: t.key }, t, { upsert: true, new: true });
+  }
+  console.log(`[Seed] ✓ ${TOPICS.length} topics`);
+
+  const lessonMap = {};
+  for (const l of LESSONS) {
+    const doc = await WPLesson.findOneAndUpdate(
+      { topicKey: l.topicKey, level: l.level },
+      l,
+      { upsert: true, new: true }
+    );
+    lessonMap[`${l.topicKey}:${l.level}`] = doc._id;
+  }
+  console.log(`[Seed] ✓ ${LESSONS.length} lessons`);
+
+  let count = 0;
+  for (const ex of RAW_EXERCISES) {
+    const lessonId = lessonMap[`${ex.topicKey}:${ex.level}`];
+    await WPExercise.findOneAndUpdate(
+      { topicKey: ex.topicKey, level: ex.level, question: ex.question },
+      { ...ex, lessonId },
+      { upsert: true, new: true }
+    );
+    count++;
+  }
+  console.log(`[Seed] ✓ ${count} exercises`);
+}
+
+module.exports = { runSeed };
+
+// Run standalone: node backend/scripts/seedWritingPractice.js
+if (require.main === module) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => runSeed())
+    .then(() => { console.log('Seed complete!'); mongoose.disconnect(); })
+    .catch(err => { console.error('Seed failed:', err); process.exit(1); });
+}

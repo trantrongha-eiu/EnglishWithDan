@@ -52,8 +52,8 @@ mongoose.connect(process.env.MONGO_URI)
     try {
       const WPExercise = require('./models/WPExercise');
       const count = await WPExercise.countDocuments();
-      if (count === 0) {
-        console.log('[Seed] WPExercise collection empty – running seed...');
+      if (count < 450) {
+        console.log(`[Seed] WPExercise has ${count}/450 exercises – running seed...`);
         await require('./scripts/seedWritingPractice').runSeed();
         console.log('[Seed] Done ✓');
       } else {
