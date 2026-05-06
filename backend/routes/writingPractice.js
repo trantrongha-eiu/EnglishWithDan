@@ -15,8 +15,7 @@ const NUM_WORDS = { '1':'one','2':'two','3':'three','4':'four','5':'five',
 function normalize(str) {
   return str
     .toLowerCase().trim()
-    .replace(/[.,!?;:'"]/g, '')
-    .replace(/\b(\d+)\b/g, n => NUM_WORDS[n] || n)
+    // expand contractions before stripping apostrophes
     .replace(/\bi'm\b/g,     'i am')
     .replace(/\bdon't\b/g,   'do not')
     .replace(/\bdoesn't\b/g, 'does not')
@@ -25,6 +24,8 @@ function normalize(str) {
     .replace(/\bthey're\b/g, 'they are')
     .replace(/\bwe're\b/g,   'we are')
     .replace(/\bit's\b/g,    'it is')
+    .replace(/[.,!?;:'"]/g, '')
+    .replace(/\b(\d+)\b/g, n => NUM_WORDS[n] || n)
     .replace(/\s+/g, ' ');
 }
 
@@ -43,6 +44,25 @@ function localCheck(exercise, userAnswer) {
   }
 
   const normUser = normalize(userAnswer);
+
+  // For fill_blank: user submits only the blank word — compare against blankAnswer
+  if (exercise.type === 'fill_blank') {
+    const isCorrect = normalize(exercise.blankAnswer || '') === normUser;
+    return {
+      checkedBy: 'local',
+      isCorrect,
+      isAcceptable: isCorrect,
+      grammarScore: isCorrect ? 10 : null,
+      naturalScore: isCorrect ? 10 : null,
+      feedbackVi: isCorrect
+        ? 'Xuất sắc! Câu trả lời của bạn chính xác. Tiếp tục phát huy nhé! 🎉'
+        : 'Câu của bạn khác với đáp án gợi ý. Hãy đọc kỹ câu mẫu và ghi nhớ cấu trúc!',
+      corrections: [],
+      suggestedAnswer: exercise.sampleAnswer,
+      upgradeVersion: ''
+    };
+  }
+
   const allAnswers = [exercise.sampleAnswer, ...(exercise.alternativeAnswers || [])];
   const isCorrect  = allAnswers.some(a => normalize(a) === normUser);
 

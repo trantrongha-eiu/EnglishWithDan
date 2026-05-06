@@ -748,7 +748,9 @@ function showTestQuestion(idx) {
   document.getElementById('test-type-tag').textContent      = TYPE_LABELS[ex.type] || ex.type;
 
   const btnNext = document.getElementById('test-next-btn');
-  btnNext.textContent = idx === testExercises.length - 1 ? 'Nộp bài ✓' : 'Tiếp theo →';
+  btnNext.innerHTML = idx === testExercises.length - 1
+    ? 'Nộp bài <i class="fas fa-check"></i>'
+    : 'Tiếp theo <i class="fas fa-arrow-right"></i>';
 
   ['test-view-text','test-view-rearrange','test-view-fill'].forEach(id =>
     document.getElementById(id).classList.add('hidden'));
