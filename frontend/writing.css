@@ -647,3 +647,41 @@ body {
   margin: 40px auto;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════
+   DARK MODE – panels & containers
+══════════════════════════════════════════════ */
+[data-theme="dark"] body          { background: #111827; color: #f9fafb; }
+[data-theme="dark"] #screen-done.active { background: #111827; }
+[data-theme="dark"] .skill-tabs-bar { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .main-header  { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .header-right span { color: #9ca3af; }
+[data-theme="dark"] .key-card     { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .key-card h2  { color: #f9fafb; }
+[data-theme="dark"] .task-titlebar { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .task-titlebar strong { color: #f9fafb; }
+[data-theme="dark"] .task-titlebar p { color: #d1d5db; }
+[data-theme="dark"] .exam-left    { background: #1f2937; border-right-color: #374151; }
+[data-theme="dark"] .exam-right   { background: #1f2937; }
+[data-theme="dark"] .task-prompt  { color: #e5e7eb; }
+
+/* ══════════════════════════════════════════════
+   DARK MODE – input fields
+══════════════════════════════════════════════ */
+[data-theme="dark"] .key-input {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+[data-theme="dark"] .key-input:focus { border-color: #e53935; }
+
+[data-theme="dark"] .answer-textarea {
+  background: #1f2937;
+  color: #f9fafb;
+}
+
+[data-theme="dark"] .word-count-bar {
+  background: #111827;
+  border-top-color: #374151;
+  color: #9ca3af;
+}

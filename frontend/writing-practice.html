@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing Practice – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="writing-practice.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  <script src="js/theme.js"></script>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="wp-header">
+  <div class="wp-logo">
+    <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+  </div>
+  <div class="wp-header-right">
+    <div class="wp-xp-badge" id="xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
+    <div class="wp-streak-badge" id="streak-badge">🔥 <span id="header-streak">0</span></div>
+    <span class="wp-username" id="userName">👋 Xin chào</span>
+    <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
+    <button onclick="logout()" class="wp-logout-btn">🚪</button>
+  </div>
+</header>
+
+<!-- ── Nav ── -->
+<div class="skill-tabs-bar">
+  <nav class="site-nav">
+    <a href="reading.html"          class="site-nav-link"><i class="fas fa-book-open"></i> Reading</a>
+    <a href="listening.html"        class="site-nav-link"><i class="fas fa-headphones"></i> Listening</a>
+    <a href="writing.html"          class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
+    <a href="speaking.html"         class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
+    <a href="writing-practice.html" class="site-nav-link active"><i class="fas fa-pencil-alt"></i> Luyện viết</a>
+    <a href="dashboard.html"        class="site-nav-link"><i class="fas fa-layer-group"></i> Vocab</a>
+    <a href="profile.html"          class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
+  </nav>
+</div>
+
+<!-- ── Main layout ── -->
+<div class="wp-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="wp-sidebar" id="wp-sidebar">
+
+    <!-- Level selector -->
+    <div class="wp-sidebar-section">
+      <div class="wp-sidebar-title"><i class="fas fa-layer-group"></i> Cấp độ</div>
+      <div class="wp-level-list" id="level-list">
+        <button class="wp-level-btn active" data-level="beginner"     onclick="selectLevel('beginner')">🌱 Beginner</button>
+        <button class="wp-level-btn"        data-level="elementary"   onclick="selectLevel('elementary')">📘 Elementary</button>
+        <button class="wp-level-btn"        data-level="intermediate" onclick="selectLevel('intermediate')">📗 Intermediate</button>
+      </div>
+    </div>
+
+    <!-- Topic filter -->
+    <div class="wp-sidebar-section">
+      <div class="wp-sidebar-title"><i class="fas fa-tags"></i> Chủ đề</div>
+      <div class="wp-topic-list" id="topic-list">
+        <button class="wp-topic-btn active" data-topic="all" onclick="selectTopic('all')">🎯 Tất cả</button>
+        <button class="wp-topic-btn" data-topic="myself"      onclick="selectTopic('myself')">👤 Bản thân</button>
+        <button class="wp-topic-btn" data-topic="family"      onclick="selectTopic('family')">👨‍👩‍👧 Gia đình</button>
+        <button class="wp-topic-btn" data-topic="hobbies"     onclick="selectTopic('hobbies')">🎮 Sở thích</button>
+        <button class="wp-topic-btn" data-topic="school"      onclick="selectTopic('school')">🏫 Trường học</button>
+        <button class="wp-topic-btn" data-topic="friends"     onclick="selectTopic('friends')">👫 Bạn bè</button>
+        <button class="wp-topic-btn" data-topic="food"        onclick="selectTopic('food')">🍜 Ăn uống</button>
+        <button class="wp-topic-btn" data-topic="technology"  onclick="selectTopic('technology')">💻 Công nghệ</button>
+        <button class="wp-topic-btn" data-topic="travel"      onclick="selectTopic('travel')">✈️ Du lịch</button>
+        <button class="wp-topic-btn" data-topic="health"      onclick="selectTopic('health')">❤️ Sức khỏe</button>
+        <button class="wp-topic-btn" data-topic="environment" onclick="selectTopic('environment')">🌿 Môi trường</button>
+      </div>
+    </div>
+
+    <!-- Exercise type filter -->
+    <div class="wp-sidebar-section">
+      <div class="wp-sidebar-title"><i class="fas fa-tasks"></i> Dạng bài</div>
+      <div class="wp-type-list" id="type-list">
+        <button class="wp-type-btn active" data-type="all"         onclick="selectType('all')">Tất cả</button>
+        <button class="wp-type-btn"        data-type="translation" onclick="selectType('translation')">🔄 Dịch câu</button>
+        <button class="wp-type-btn"        data-type="rearrange"   onclick="selectType('rearrange')">🔀 Sắp xếp từ</button>
+        <button class="wp-type-btn"        data-type="fill_blank"  onclick="selectType('fill_blank')">✏️ Điền vào chỗ trống</button>
+        <button class="wp-type-btn"        data-type="expand"      onclick="selectType('expand')">🔡 Mở rộng câu</button>
+        <button class="wp-type-btn"        data-type="combine"     onclick="selectType('combine')">🔗 Nối câu</button>
+      </div>
+    </div>
+
+    <!-- Progress stats -->
+    <div class="wp-sidebar-section wp-stats-panel">
+      <div class="wp-sidebar-title"><i class="fas fa-chart-bar"></i> Hôm nay</div>
+      <div class="wp-stats-row">
+        <div class="wp-stat-box">
+          <div class="wp-stat-num" id="stat-done">0</div>
+          <div class="wp-stat-label">Bài làm</div>
+        </div>
+        <div class="wp-stat-box">
+          <div class="wp-stat-num" id="stat-xp">0</div>
+          <div class="wp-stat-label">XP kiếm được</div>
+        </div>
+        <div class="wp-stat-box">
+          <div class="wp-stat-num" id="stat-score">–</div>
+          <div class="wp-stat-label">Điểm TB</div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN PANEL ── -->
+  <main class="wp-main" id="wp-main">
+
+    <!-- Loading state -->
+    <div class="wp-state-loading" id="state-loading">
+      <div class="wp-spinner"></div>
+      <p>Đang tải bài tập...</p>
+    </div>
+
+    <!-- Empty state (no exercises match filter) -->
+    <div class="wp-state-empty hidden" id="state-empty">
+      <div style="font-size:48px;margin-bottom:12px">📭</div>
+      <h3>Chưa có bài tập</h3>
+      <p>Thử chọn cấp độ hoặc chủ đề khác.</p>
+    </div>
+
+    <!-- Exercise state -->
+    <div class="wp-state-exercise hidden" id="state-exercise">
+
+      <!-- Progress bar + counter -->
+      <div class="wp-progress-bar-wrap">
+        <div class="wp-progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="wp-exercise-meta">
+        <span class="wp-grammar-badge" id="grammar-badge">S + V + O</span>
+        <span class="wp-ex-counter" id="ex-counter">1 / 10</span>
+        <span class="wp-type-tag" id="type-tag">Dịch câu</span>
+      </div>
+
+      <!-- ── Exercise card ── -->
+      <div class="wp-card" id="exercise-card">
+
+        <!-- TRANSLATION / EXPAND type -->
+        <div id="view-translation" class="hidden">
+          <div class="wp-task-label" id="task-instruction">Dịch sang tiếng Anh:</div>
+          <div class="wp-question-text" id="question-text"></div>
+          <div class="wp-hints-row" id="hints-row"></div>
+          <textarea class="wp-answer-box" id="answer-box"
+            placeholder="Viết câu trả lời của bạn tại đây..."
+            rows="3"
+            onkeydown="handleKeydown(event)"></textarea>
+        </div>
+
+        <!-- REARRANGE type -->
+        <div id="view-rearrange" class="hidden">
+          <div class="wp-task-label">Sắp xếp các từ thành câu đúng:</div>
+          <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)"></div>
+          <div class="wp-rearrange-bank" id="rearrange-bank"></div>
+          <input type="hidden" id="rearrange-input" />
+        </div>
+
+        <!-- FILL BLANK type -->
+        <div id="view-fill-blank" class="hidden">
+          <div class="wp-task-label" id="fill-label">Điền vào chỗ trống:</div>
+          <div class="wp-fill-sentence" id="fill-sentence"></div>
+          <div class="wp-fill-options" id="fill-options"></div>
+          <input class="wp-fill-input" id="fill-input" type="text"
+            placeholder="Nhập câu trả lời..."
+            onkeydown="handleKeydown(event)" />
+        </div>
+
+        <!-- COMBINE type -->
+        <div id="view-combine" class="hidden">
+          <div class="wp-task-label" id="combine-label">Nối hai câu thành một:</div>
+          <div class="wp-combine-sentences" id="combine-sentences"></div>
+          <div class="wp-connector-hint" id="connector-hint"></div>
+          <textarea class="wp-answer-box" id="combine-answer-box"
+            placeholder="Viết câu đã nối..."
+            rows="2"
+            onkeydown="handleKeydown(event)"></textarea>
+        </div>
+
+        <!-- Submit button -->
+        <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()">
+          <i class="fas fa-check"></i> Kiểm tra
+        </button>
+      </div>
+
+      <!-- ── Feedback card (shown after submission) ── -->
+      <div class="wp-feedback-card hidden" id="feedback-card">
+
+        <!-- Score row -->
+        <div class="wp-score-row">
+          <div class="wp-score-chip" id="score-grammar">
+            <span class="wp-score-label">Ngữ pháp</span>
+            <span class="wp-score-num" id="grammar-score">–</span>
+          </div>
+          <div class="wp-score-chip" id="score-natural">
+            <span class="wp-score-label">Tự nhiên</span>
+            <span class="wp-score-num" id="natural-score">–</span>
+          </div>
+          <div class="wp-xp-chip" id="xp-chip">+<span id="xp-earned">0</span> XP 🌟</div>
+        </div>
+
+        <!-- Answer comparison -->
+        <div class="wp-comparison-box">
+          <div class="wp-cmp-row wp-cmp-student">
+            <span class="wp-cmp-label">📝 Câu của bạn:</span>
+            <span class="wp-cmp-text" id="student-answer-display"></span>
+          </div>
+          <div class="wp-cmp-row wp-cmp-sample">
+            <span class="wp-cmp-label">✅ Gợi ý:</span>
+            <span class="wp-cmp-text" id="sample-answer-display"></span>
+          </div>
+        </div>
+
+        <!-- Corrections -->
+        <div class="wp-corrections-box" id="corrections-box"></div>
+
+        <!-- Upgrade section -->
+        <div class="wp-upgrade-box" id="upgrade-box">
+          <div class="wp-upgrade-title"><i class="fas fa-arrow-up"></i> Nâng cấp câu</div>
+          <div class="wp-upgrade-row">
+            <span class="wp-upgrade-badge wp-badge-basic">Cơ bản</span>
+            <span class="wp-upgrade-text" id="basic-version"></span>
+          </div>
+          <div class="wp-upgrade-row">
+            <span class="wp-upgrade-badge wp-badge-advanced">Nâng cao</span>
+            <span class="wp-upgrade-text" id="upgrade-version"></span>
+          </div>
+        </div>
+
+        <!-- AI feedback text -->
+        <div class="wp-ai-feedback" id="ai-feedback-text"></div>
+
+        <!-- Next button -->
+        <button class="wp-next-btn" onclick="nextExercise()">
+          Câu tiếp theo <i class="fas fa-arrow-right"></i>
+        </button>
+
+      </div>
+
+      <!-- AI checking loader -->
+      <div class="wp-checking-loader hidden" id="checking-loader">
+        <div class="wp-spinner"></div>
+        <p>AI đang chấm bài...</p>
+      </div>
+
+    </div><!-- /state-exercise -->
+
+    <!-- Done state (finished all exercises in current filter) -->
+    <div class="wp-state-done hidden" id="state-done">
+      <div class="wp-done-icon">🎉</div>
+      <h2>Xuất sắc!</h2>
+      <p id="done-summary">Bạn đã hoàn thành tất cả bài tập.</p>
+      <div class="wp-done-stats" id="done-stats"></div>
+      <button class="wp-restart-btn" onclick="restartExercises()">
+        <i class="fas fa-redo"></i> Làm lại từ đầu
+      </button>
+      <button class="wp-more-btn" onclick="tryMoreTopics()">
+        <i class="fas fa-th"></i> Chọn chủ đề khác
+      </button>
+    </div>
+
+  </main>
+</div><!-- /wp-layout -->
+
+<script src="js/auth.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════
+const API = 'https://englishwithdan.onrender.com';
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let exercises    = [];
+let currentIdx   = 0;
+let currentLevel = 'beginner';
+let currentTopic = 'all';
+let currentType  = 'all';
+let sessionDone  = 0;
+let sessionXP    = 0;
+let sessionScores = [];
+let rearrangeWords = [];   // for rearrange type
+let rearrangeAnswer = [];  // words placed in answer area
+const TYPE_LABELS = {
+  translation: '🔄 Dịch câu',
+  rearrange:   '🔀 Sắp xếp từ',
+  fill_blank:  '✏️ Điền vào chỗ trống',
+  expand:      '🔡 Mở rộng câu',
+  combine:     '🔗 Nối câu'
+};
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initUser();
+  loadXPFromStorage();
+  loadExercises();
+});
+
+function initUser() {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const name = payload.name || payload.email || '';
+    if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  } catch {}
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  window.location.href = 'login.html';
+}
+
+function loadXPFromStorage() {
+  const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0,"lastDate":""}');
+  // Reset daily stats if new day
+  const today = new Date().toISOString().slice(0, 10);
+  if (stored.lastDate !== today) {
+    stored.todayXP  = 0;
+    stored.todayDone = 0;
+    stored.lastDate = today;
+    localStorage.setItem('wp_progress', JSON.stringify(stored));
+  }
+  document.getElementById('header-xp').textContent     = stored.xp || 0;
+  document.getElementById('header-streak').textContent = stored.streak || 0;
+}
+
+// ════════════════════════════════════════════════════════
+//  FILTER CONTROLS
+// ════════════════════════════════════════════════════════
+function selectLevel(level) {
+  currentLevel = level;
+  document.querySelectorAll('.wp-level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
+  loadExercises();
+}
+
+function selectTopic(topic) {
+  currentTopic = topic;
+  document.querySelectorAll('.wp-topic-btn').forEach(b => b.classList.toggle('active', b.dataset.topic === topic));
+  loadExercises();
+}
+
+function selectType(type) {
+  currentType = type;
+  document.querySelectorAll('.wp-type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  loadExercises();
+}
+
+// ════════════════════════════════════════════════════════
+//  LOAD EXERCISES
+// ════════════════════════════════════════════════════════
+async function loadExercises() {
+  showState('loading');
+  try {
+    const params = new URLSearchParams({ level: currentLevel, topic: currentTopic, type: currentType });
+    const res  = await fetch(`${API}/api/writing-practice/exercises?${params}`);
+    const data = await res.json();
+    if (!data.success || !data.exercises?.length) { showState('empty'); return; }
+
+    exercises   = shuffle(data.exercises);
+    currentIdx  = 0;
+    sessionDone = 0; sessionXP = 0; sessionScores = [];
+    updateSessionStats();
+    showExercise(0);
+    showState('exercise');
+  } catch (err) {
+    console.error(err);
+    showState('empty');
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ════════════════════════════════════════════════════════
+//  SHOW EXERCISE
+// ════════════════════════════════════════════════════════
+function showExercise(idx) {
+  const ex = exercises[idx];
+  if (!ex) { showState('done'); return; }
+
+  // Reset feedback
+  document.getElementById('feedback-card').classList.add('hidden');
+  document.getElementById('exercise-card').classList.remove('hidden');
+  document.getElementById('submit-btn').classList.remove('hidden');
+  document.getElementById('submit-btn').disabled = false;
+
+  // Meta
+  const pct = Math.round((idx / exercises.length) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('ex-counter').textContent   = `${idx + 1} / ${exercises.length}`;
+  document.getElementById('grammar-badge').textContent = ex.grammarPoint || '';
+  document.getElementById('type-tag').textContent     = TYPE_LABELS[ex.type] || ex.type;
+
+  // Hide all views
+  ['translation','rearrange','fill-blank','combine'].forEach(v =>
+    document.getElementById('view-' + v).classList.add('hidden'));
+
+  if (ex.type === 'translation' || ex.type === 'expand') {
+    showTranslationView(ex);
+  } else if (ex.type === 'rearrange') {
+    showRearrangeView(ex);
+  } else if (ex.type === 'fill_blank') {
+    showFillBlankView(ex);
+  } else if (ex.type === 'combine') {
+    showCombineView(ex);
+  }
+}
+
+function showTranslationView(ex) {
+  const view = document.getElementById('view-translation');
+  view.classList.remove('hidden');
+  document.getElementById('task-instruction').textContent = ex.instruction || 'Dịch sang tiếng Anh:';
+  document.getElementById('question-text').textContent    = ex.question || (ex.baseText || '');
+  document.getElementById('answer-box').value             = '';
+  document.getElementById('answer-box').focus();
+
+  const hintsRow = document.getElementById('hints-row');
+  hintsRow.innerHTML = '';
+  if (ex.hints?.length) {
+    const label = document.createElement('span');
+    label.className = 'wp-hint-label';
+    label.textContent = '💡';
+    hintsRow.appendChild(label);
+    ex.hints.forEach(h => {
+      const chip = document.createElement('span');
+      chip.className   = 'wp-hint-chip';
+      chip.textContent = h;
+      hintsRow.appendChild(chip);
+    });
+  }
+}
+
+function showRearrangeView(ex) {
+  const view = document.getElementById('view-rearrange');
+  view.classList.remove('hidden');
+  rearrangeWords  = shuffle([...(ex.baseWords || [])]);
+  rearrangeAnswer = [];
+
+  const bank = document.getElementById('rearrange-bank');
+  bank.innerHTML = '';
+  rearrangeWords.forEach((w, i) => {
+    const chip = document.createElement('span');
+    chip.className        = 'wp-word-chip';
+    chip.textContent      = w;
+    chip.dataset.index    = i;
+    chip.dataset.word     = w;
+    chip.dataset.used     = 'false';
+    chip.onclick          = () => selectWord(chip);
+    bank.appendChild(chip);
+  });
+
+  document.getElementById('rearrange-answer').innerHTML =
+    '<span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>';
+  document.getElementById('rearrange-input').value = '';
+}
+
+function selectWord(chip) {
+  if (chip.dataset.used === 'true') return;
+  chip.dataset.used = 'true';
+  chip.classList.add('wp-chip-used');
+  rearrangeAnswer.push(chip.dataset.word);
+  renderRearrangeAnswer();
+}
+
+function returnWord(e) {
+  if (!e.target.classList.contains('wp-answer-chip')) return;
+  const word = e.target.dataset.word;
+  const idx  = parseInt(e.target.dataset.idx);
+  rearrangeAnswer.splice(idx, 1);
+  // Re-enable in bank
+  const chips = document.querySelectorAll('#rearrange-bank .wp-word-chip');
+  chips.forEach(c => { if (c.dataset.word === word && c.dataset.used === 'true') { c.dataset.used = 'false'; c.classList.remove('wp-chip-used'); } });
+  renderRearrangeAnswer();
+}
+
+function renderRearrangeAnswer() {
+  const area = document.getElementById('rearrange-answer');
+  area.innerHTML = '';
+  if (!rearrangeAnswer.length) {
+    area.innerHTML = '<span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>';
+  } else {
+    rearrangeAnswer.forEach((w, i) => {
+      const chip = document.createElement('span');
+      chip.className       = 'wp-answer-chip';
+      chip.textContent     = w;
+      chip.dataset.word    = w;
+      chip.dataset.idx     = i;
+      chip.title           = 'Bấm để bỏ từ này';
+      area.appendChild(chip);
+    });
+  }
+  document.getElementById('rearrange-input').value = rearrangeAnswer.join(' ');
+}
+
+function showFillBlankView(ex) {
+  const view = document.getElementById('view-fill-blank');
+  view.classList.remove('hidden');
+  document.getElementById('fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
+
+  const sentence = ex.question || '';
+  const fillSentEl = document.getElementById('fill-sentence');
+  fillSentEl.innerHTML = sentence.replace('___', '<span class="wp-blank-underline">___</span>');
+
+  const optionsEl = document.getElementById('fill-options');
+  optionsEl.innerHTML = '';
+  if (ex.options?.length) {
+    ex.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className   = 'wp-option-btn';
+      btn.textContent = opt;
+      btn.onclick     = () => {
+        document.getElementById('fill-input').value = opt;
+        document.querySelectorAll('.wp-option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+      optionsEl.appendChild(btn);
+    });
+  }
+  document.getElementById('fill-input').value = '';
+  if (!ex.options?.length) document.getElementById('fill-input').focus();
+}
+
+function showCombineView(ex) {
+  const view = document.getElementById('view-combine');
+  view.classList.remove('hidden');
+  document.getElementById('combine-label').textContent = ex.instruction || 'Nối hai câu thành một:';
+
+  const sentencesEl = document.getElementById('combine-sentences');
+  sentencesEl.innerHTML = (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${s}"</div>`).join('');
+
+  const hintEl = document.getElementById('connector-hint');
+  hintEl.innerHTML = ex.connector
+    ? `<span class="wp-connector-badge">💡 Dùng: <strong>${ex.connector}</strong></span>` : '';
+
+  document.getElementById('combine-answer-box').value = '';
+  document.getElementById('combine-answer-box').focus();
+}
+
+// ════════════════════════════════════════════════════════
+//  SUBMIT
+// ════════════════════════════════════════════════════════
+function handleKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitAnswer(); }
+}
+
+function getUserAnswer() {
+  const ex = exercises[currentIdx];
+  if (!ex) return '';
+  if (ex.type === 'rearrange')   return document.getElementById('rearrange-input').value.trim();
+  if (ex.type === 'fill_blank')  return document.getElementById('fill-input').value.trim();
+  if (ex.type === 'combine')     return document.getElementById('combine-answer-box').value.trim();
+  return document.getElementById('answer-box').value.trim();
+}
+
+async function submitAnswer() {
+  const ex     = exercises[currentIdx];
+  const answer = getUserAnswer();
+  if (!answer) { alert('Vui lòng nhập câu trả lời!'); return; }
+
+  // Show loader
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('checking-loader').classList.remove('hidden');
+
+  try {
+    const res  = await fetch(`${API}/api/writing-practice/check`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ exerciseId: ex._id, userAnswer: answer })
+    });
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.message || 'Lỗi server');
+
+    showFeedback(answer, data);
+    updateProgress(data.xpEarned || 10, data.feedback);
+    autoSave(ex, answer, data);
+  } catch (err) {
+    console.error(err);
+    alert('Lỗi khi chấm bài: ' + err.message);
+    document.getElementById('submit-btn').disabled = false;
+  } finally {
+    document.getElementById('checking-loader').classList.add('hidden');
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  SHOW FEEDBACK
+// ════════════════════════════════════════════════════════
+function showFeedback(userAnswer, data) {
+  const { feedback, sampleAnswer, xpEarned } = data;
+
+  // Hide exercise card input area, show feedback
+  document.getElementById('submit-btn').classList.add('hidden');
+  document.getElementById('feedback-card').classList.remove('hidden');
+
+  // Scores
+  const gs = feedback.grammarScore || 0;
+  const ns = feedback.naturalScore  || 0;
+  document.getElementById('grammar-score').textContent = gs + '/10';
+  document.getElementById('natural-score').textContent = ns + '/10';
+  document.getElementById('xp-earned').textContent     = xpEarned || 10;
+
+  // Color score chips
+  const scoreColor = (s) => s >= 8 ? '#16a34a' : s >= 6 ? '#2563eb' : s >= 4 ? '#d97706' : '#dc2626';
+  document.getElementById('score-grammar').style.borderColor = scoreColor(gs);
+  document.getElementById('score-natural').style.borderColor = scoreColor(ns);
+
+  // Answer comparison
+  document.getElementById('student-answer-display').textContent = userAnswer;
+  document.getElementById('sample-answer-display').textContent  = sampleAnswer || '';
+
+  // Mark student answer
+  const studentEl = document.getElementById('student-answer-display');
+  if (feedback.isAcceptable) {
+    studentEl.classList.add('wp-answer-good');
+    studentEl.classList.remove('wp-answer-bad');
+  } else {
+    studentEl.classList.add('wp-answer-bad');
+    studentEl.classList.remove('wp-answer-good');
+  }
+
+  // Corrections
+  const corrBox = document.getElementById('corrections-box');
+  corrBox.innerHTML = '';
+  if (feedback.corrections?.length) {
+    feedback.corrections.forEach(c => {
+      corrBox.innerHTML += `
+        <div class="wp-correction-item">
+          <span class="wp-err-text">❌ "${c.error}"</span>
+          <span class="wp-arrow">→</span>
+          <span class="wp-fix-text">✅ "${c.fix}"</span>
+          <div class="wp-explain-text">${c.explainVi || ''}</div>
+        </div>`;
+    });
+  } else {
+    corrBox.innerHTML = '<div class="wp-no-errors">✅ Không có lỗi ngữ pháp đáng kể!</div>';
+  }
+
+  // Upgrade
+  const ex = exercises[currentIdx];
+  document.getElementById('basic-version').textContent   = sampleAnswer || ex?.sampleAnswer || '';
+  document.getElementById('upgrade-version').textContent = feedback.upgradeVersion || '';
+
+  // AI feedback text
+  document.getElementById('ai-feedback-text').textContent = feedback.feedbackVi || '';
+
+  // Scroll feedback into view
+  document.getElementById('feedback-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ════════════════════════════════════════════════════════
+//  PROGRESS
+// ════════════════════════════════════════════════════════
+function updateProgress(xpEarned, feedback) {
+  sessionDone++;
+  sessionXP += xpEarned;
+  const avg = ((feedback?.grammarScore || 5) + (feedback?.naturalScore || 5)) / 2;
+  sessionScores.push(avg);
+  updateSessionStats();
+
+  // Update localStorage
+  const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0}');
+  stored.xp       = (stored.xp || 0) + xpEarned;
+  stored.todayXP  = (stored.todayXP || 0) + xpEarned;
+  stored.todayDone = (stored.todayDone || 0) + 1;
+  stored.lastDate = new Date().toISOString().slice(0, 10);
+  localStorage.setItem('wp_progress', JSON.stringify(stored));
+
+  document.getElementById('header-xp').textContent = stored.xp;
+}
+
+function updateSessionStats() {
+  document.getElementById('stat-done').textContent = sessionDone;
+  document.getElementById('stat-xp').textContent   = sessionXP;
+  if (sessionScores.length) {
+    const avg = sessionScores.reduce((a, b) => a + b, 0) / sessionScores.length;
+    document.getElementById('stat-score').textContent = avg.toFixed(1);
+  }
+}
+
+function autoSave(ex, userAnswer, data) {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  fetch(`${API}/api/writing-practice/save`, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body:    JSON.stringify({ exerciseId: ex._id, userAnswer, aiFeedback: data.feedback, xpEarned: data.xpEarned })
+  }).catch(() => {});
+}
+
+// ════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════
+function nextExercise() {
+  currentIdx++;
+  if (currentIdx >= exercises.length) {
+    showState('done');
+    showDoneSummary();
+  } else {
+    showExercise(currentIdx);
+  }
+}
+
+function showDoneSummary() {
+  const avg = sessionScores.length
+    ? (sessionScores.reduce((a, b) => a + b, 0) / sessionScores.length).toFixed(1) : '–';
+  document.getElementById('done-summary').textContent =
+    `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
+  document.getElementById('done-stats').innerHTML =
+    `<span>🎯 Điểm TB: ${avg}/10</span><span>⭐ XP: ${sessionXP}</span><span>✅ Câu: ${sessionDone}</span>`;
+}
+
+function restartExercises() {
+  exercises  = shuffle(exercises);
+  currentIdx = 0;
+  sessionDone = 0; sessionXP = 0; sessionScores = [];
+  updateSessionStats();
+  showExercise(0);
+  showState('exercise');
+}
+
+function tryMoreTopics() {
+  document.getElementById('topic-list').scrollIntoView({ behavior: 'smooth' });
+  showState('exercise');
+  loadExercises();
+}
+
+// ════════════════════════════════════════════════════════
+//  UI HELPERS
+// ════════════════════════════════════════════════════════
+function showState(state) {
+  ['loading','empty','exercise','done'].forEach(s =>
+    document.getElementById('state-' + s).classList.toggle('hidden', s !== state));
+}
+</script>
+</body>
+</html>

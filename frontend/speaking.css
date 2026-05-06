@@ -391,3 +391,37 @@ body {
 }
 .no-speech-warning.visible { display: block; }
 
+/* ══════════════════════════════════════════════
+   DARK MODE – panels & containers
+══════════════════════════════════════════════ */
+[data-theme="dark"] body          { background: #111827; color: #f9fafb; }
+[data-theme="dark"] .skill-tabs-bar { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .sp-tabs      { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .sp-tab       { color: #9ca3af; }
+[data-theme="dark"] .sp-tab.active { color: #e53935; }
+[data-theme="dark"] .sp-select    { background: #1f2937; color: #f9fafb; border-color: #374151; }
+[data-theme="dark"] .btn-random   { background: #1f2937; border-color: #374151; color: #e5e7eb; }
+[data-theme="dark"] .btn-random:hover { background: #374151; }
+[data-theme="dark"] .question-card { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .question-card .q-text { color: #f9fafb; }
+[data-theme="dark"] .question-card .q-cue  { background: #111827; color: #d1d5db; }
+
+/* ══════════════════════════════════════════════
+   DARK MODE – input fields
+══════════════════════════════════════════════ */
+[data-theme="dark"] .transcript-textarea {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+[data-theme="dark"] .transcript-textarea:focus {
+  outline-color: #e53935;
+  border-color: transparent;
+}
+
+[data-theme="dark"] .no-speech-warning {
+  background: #1c1917;
+  border-color: #92400e;
+  color: #fcd34d;
+}
+

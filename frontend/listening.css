@@ -1448,3 +1448,45 @@ body {
   font-size: 13px; cursor: pointer; text-decoration: underline;
   padding: 0; white-space: nowrap;
 }
+
+/* ══════════════════════════════════════════════
+   DARK MODE – panels & containers
+══════════════════════════════════════════════ */
+[data-theme="dark"] body { background: #111827; color: #f9fafb; }
+[data-theme="dark"] .exam-topbar   { background: #1f2937; border-bottom-color: #374151; }
+[data-theme="dark"] .exam-title    { color: #f9fafb; }
+[data-theme="dark"] .sidebar-panel { background: #1f2937; border-left-color: #374151; }
+[data-theme="dark"] .transcript-panel { background: #1f2937; border-right-color: #374151; }
+[data-theme="dark"] .transcript-header { color: #f9fafb; border-bottom-color: #374151; }
+[data-theme="dark"] .transcript-body { color: #9ca3af; }
+[data-theme="dark"] .transcript-body .tw:hover  { background: #451a03; color: #f9fafb; }
+[data-theme="dark"] .transcript-body .tw.playing { background: #78350f; color: #fde68a; }
+[data-theme="dark"] .question-group { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .q-instruction  { background: #111827; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .qtype-header   { color: #93c5fd; border-bottom-color: #374151; }
+
+/* ══════════════════════════════════════════════
+   DARK MODE – input fields
+══════════════════════════════════════════════ */
+[data-theme="dark"] .fill-input {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+[data-theme="dark"] .fill-input:focus     { border-color: #60a5fa; }
+[data-theme="dark"] .fill-input.correct   { background: #14532d; border-color: #22c55e; color: #bbf7d0; }
+[data-theme="dark"] .fill-input.incorrect { background: #7f1d1d; border-color: #ef4444; color: #fecaca; }
+[data-theme="dark"] .fill-input[readonly] { background: #111827; color: #9ca3af; cursor: default; }
+
+[data-theme="dark"] .fill-input-inline {
+  color: #f9fafb;
+  border-bottom-color: #6b7280;
+}
+[data-theme="dark"] .fill-input-inline:focus { border-bottom-color: #60a5fa; }
+
+[data-theme="dark"] .key-input {
+  background: #1f2937;
+  color: #f9fafb;
+  border-color: #374151;
+}
+[data-theme="dark"] .key-input:focus { border-color: #3d8bff; }
