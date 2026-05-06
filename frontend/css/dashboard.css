@@ -941,3 +941,8 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 [data-theme="dark"] .para-row + .para-row { border-color: var(--border2); }
 [data-theme="dark"] .para-original-text { background: rgba(59,130,246,.15); color: #93c5fd; }
 [data-theme="dark"] .para-para-text     { background: rgba(245,158,11,.12); color: #fbbf24; }
+
+/* Hide keyboard shortcut panel on tablets and smaller (below 14-inch desktop) */
+@media (max-width: 1279px) {
+  #kbd-hint-panel { display: none !important; }
+}
