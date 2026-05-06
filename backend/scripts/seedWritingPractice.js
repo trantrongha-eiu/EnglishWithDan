@@ -4,7 +4,7 @@
  * (from repo root, with MONGO_URI in .env or environment)
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
-const mongoose = require('mongoose');
+const mongoose  = require('mongoose');
 const WPTopic   = require('../models/WPTopic');
 const WPLesson  = require('../models/WPLesson');
 const WPExercise = require('../models/WPExercise');
@@ -351,19 +351,14 @@ const RAW_EXERCISES = [
 ];
 
 // ──────────────────────────────────────────────────────────────
-//  SEED FUNCTION
+//  CORE SEED – runs against already-connected mongoose
 // ──────────────────────────────────────────────────────────────
-async function seed() {
-  await mongoose.connect(process.env.MONGO_URI);
-  console.log('MongoDB connected');
-
-  // 1. Upsert topics
+async function runSeed() {
   for (const t of TOPICS) {
     await WPTopic.findOneAndUpdate({ key: t.key }, t, { upsert: true, new: true });
   }
-  console.log(`✓ ${TOPICS.length} topics upserted`);
+  console.log(`[Seed] ✓ ${TOPICS.length} topics`);
 
-  // 2. Upsert lessons, collect {topicKey+level → lessonId} map
   const lessonMap = {};
   for (const l of LESSONS) {
     const doc = await WPLesson.findOneAndUpdate(
@@ -373,9 +368,8 @@ async function seed() {
     );
     lessonMap[`${l.topicKey}:${l.level}`] = doc._id;
   }
-  console.log(`✓ ${LESSONS.length} lessons upserted`);
+  console.log(`[Seed] ✓ ${LESSONS.length} lessons`);
 
-  // 3. Upsert exercises
   let count = 0;
   for (const ex of RAW_EXERCISES) {
     const lessonId = lessonMap[`${ex.topicKey}:${ex.level}`];
@@ -386,13 +380,15 @@ async function seed() {
     );
     count++;
   }
-  console.log(`✓ ${count} exercises upserted`);
-
-  console.log('\nSeed complete! Total:', count, 'exercises across', TOPICS.length, 'topics');
-  await mongoose.disconnect();
+  console.log(`[Seed] ✓ ${count} exercises`);
 }
 
-seed().catch(err => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+module.exports = { runSeed };
+
+// Run standalone: node backend/scripts/seedWritingPractice.js
+if (require.main === module) {
+  mongoose.connect(process.env.MONGO_URI)
+    .then(() => runSeed())
+    .then(() => { console.log('Seed complete!'); mongoose.disconnect(); })
+    .catch(err => { console.error('Seed failed:', err); process.exit(1); });
+}

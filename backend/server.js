@@ -43,11 +43,25 @@ if (process.env.GOOGLE_CLIENT_ID) {
 
 // ── DB ────────────────────────────────────────────────────────
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log('MongoDB Atlas connected');
     console.log('OpenRouter key:', process.env.OPENROUTER_API_KEY ? 'YES ✓' : 'MISSING ✗');
     console.log('Google OAuth:',   process.env.GOOGLE_CLIENT_ID    ? 'YES ✓' : 'disabled');
     console.log('Email:',          process.env.EMAIL_USER           ? 'YES ✓' : 'disabled');
+    // Auto-seed writing practice exercises if DB is empty
+    try {
+      const WPExercise = require('./models/WPExercise');
+      const count = await WPExercise.countDocuments();
+      if (count === 0) {
+        console.log('[Seed] WPExercise collection empty – running seed...');
+        await require('./scripts/seedWritingPractice').runSeed();
+        console.log('[Seed] Done ✓');
+      } else {
+        console.log(`[Seed] WPExercise already has ${count} exercises – skip`);
+      }
+    } catch (e) {
+      console.error('[Seed] Error:', e.message);
+    }
   })
   .catch(err => console.error('MongoDB error:', err));
 
