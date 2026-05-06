@@ -12,6 +12,17 @@ const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
 const NUM_WORDS = { '1':'one','2':'two','3':'three','4':'four','5':'five',
   '6':'six','7':'seven','8':'eight','9':'nine','10':'ten' };
 
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
 function normalize(str) {
   return str
     .toLowerCase().trim()
@@ -64,19 +75,42 @@ function localCheck(exercise, userAnswer) {
   }
 
   const allAnswers = [exercise.sampleAnswer, ...(exercise.alternativeAnswers || [])];
-  const isCorrect  = allAnswers.some(a => normalize(a) === normUser);
+  const isExact = allAnswers.some(a => normalize(a) === normUser);
+
+  if (isExact) {
+    return {
+      checkedBy: 'local', isCorrect: true, isAcceptable: true,
+      grammarScore: 10, naturalScore: 10,
+      feedbackVi: 'Xuất sắc! Câu trả lời của bạn chính xác. Tiếp tục phát huy nhé! 🎉',
+      corrections: [], suggestedAnswer: exercise.sampleAnswer,
+      upgradeVersion: exercise.alternativeAnswers?.[0] || ''
+    };
+  }
+
+  // Intermediate: accept answers with ≤ 4 character edits (≈ 1-2 typos/missing words)
+  if (exercise.level === 'intermediate') {
+    const isFuzzy = allAnswers.some(a => {
+      const normA = normalize(a);
+      const dist = levenshtein(normA, normUser);
+      const ratio = dist / Math.max(normA.length, normUser.length, 1);
+      return dist <= 4 && ratio < 0.12;
+    });
+    if (isFuzzy) {
+      return {
+        checkedBy: 'local', isCorrect: true, isAcceptable: true,
+        grammarScore: 9, naturalScore: 9,
+        feedbackVi: 'Gần đúng! Có 1-2 lỗi nhỏ nhưng cấu trúc câu rất tốt. Kiểm tra chính tả nhé! 👍',
+        corrections: [], suggestedAnswer: exercise.sampleAnswer,
+        upgradeVersion: exercise.alternativeAnswers?.[0] || ''
+      };
+    }
+  }
 
   return {
-    checkedBy: 'local',
-    isCorrect,
-    isAcceptable: isCorrect,
-    grammarScore: isCorrect ? 10 : null,
-    naturalScore: isCorrect ? 10 : null,
-    feedbackVi: isCorrect
-      ? 'Xuất sắc! Câu trả lời của bạn chính xác. Tiếp tục phát huy nhé! 🎉'
-      : 'Câu của bạn khác với đáp án gợi ý. Hãy đọc kỹ câu mẫu và ghi nhớ cấu trúc!',
-    corrections: [],
-    suggestedAnswer: exercise.sampleAnswer,
+    checkedBy: 'local', isCorrect: false, isAcceptable: false,
+    grammarScore: null, naturalScore: null,
+    feedbackVi: 'Câu của bạn khác với đáp án gợi ý. Hãy đọc kỹ câu mẫu và ghi nhớ cấu trúc!',
+    corrections: [], suggestedAnswer: exercise.sampleAnswer,
     upgradeVersion: exercise.alternativeAnswers?.[0] || ''
   };
 }

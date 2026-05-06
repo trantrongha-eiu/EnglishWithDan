@@ -10,8 +10,21 @@
   <link rel="stylesheet" href="writing-practice.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <script src="js/theme.js"></script>
+  <style>
+    #wp-toast {
+      position: fixed; top: 72px; left: 50%; transform: translateX(-50%);
+      padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      color: #fff; z-index: 9999; opacity: 0; pointer-events: none;
+      transition: opacity .25s, top .25s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.18);
+    }
+    #wp-toast.show { opacity: 1; top: 78px; }
+    #wp-toast.warn  { background: #e65100; }
+    #wp-toast.error { background: #c62828; }
+    #wp-toast.info  { background: #1565c0; }
+  </style>
 </head>
 <body>
+<div id="wp-toast"></div>
 
 <!-- ── Header ── -->
 <header class="wp-header">
@@ -308,6 +321,14 @@
 // ════════════════════════════════════════════════════════
 const API = 'https://englishwithdan.onrender.com';
 
+function showToast(msg, type = 'warn', duration = 3000) {
+  const el = document.getElementById('wp-toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = ''; }, duration);
+}
+
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
@@ -474,9 +495,12 @@ function showTranslationView(ex) {
     const lbl = document.createElement('span');
     lbl.className = 'wp-hint-label'; lbl.textContent = '💡';
     row.appendChild(lbl);
-    ex.hints.forEach(h => {
+    ex.hints.slice(0, 3).forEach(h => {
       const chip = document.createElement('span');
-      chip.className = 'wp-hint-chip'; chip.textContent = h;
+      chip.className = 'wp-hint-chip';
+      // Limit to first 2 words to avoid giving away full phrases
+      const words = h.split(/\s+/);
+      chip.textContent = words.length > 2 ? words.slice(0, 2).join(' ') : h;
       row.appendChild(chip);
     });
   }
@@ -585,7 +609,7 @@ function getUserAnswer() {
 async function submitAnswer() {
   const ex     = exercises[currentIdx];
   const answer = getUserAnswer();
-  if (!answer) { alert('Vui lòng nhập câu trả lời!'); return; }
+  if (!answer) { showToast('Vui lòng nhập câu trả lời!'); return; }
 
   document.getElementById('submit-btn').disabled = true;
   document.getElementById('checking-loader').classList.remove('hidden');
@@ -604,7 +628,7 @@ async function submitAnswer() {
     autoSave(ex, answer, data);
   } catch (err) {
     console.error(err);
-    alert('Lỗi khi chấm bài: ' + err.message);
+    showToast('Lỗi khi chấm bài: ' + err.message, 'error');
     document.getElementById('submit-btn').disabled = false;
   } finally {
     document.getElementById('checking-loader').classList.add('hidden');
@@ -720,7 +744,7 @@ async function startTest() {
     const res  = await fetch(`${API}/api/writing-practice/test-questions?${params}`);
     const data = await res.json();
     if (!data.success || !data.exercises?.length) {
-      alert('Không tải được câu hỏi. Vui lòng thử lại.');
+      showToast('Không tải được câu hỏi. Vui lòng thử lại.', 'error');
       document.getElementById('test-intro').style.display = '';
       document.getElementById('test-in-progress').style.display = 'none';
       return;
@@ -731,7 +755,7 @@ async function startTest() {
     showTestQuestion(0);
   } catch (err) {
     console.error(err);
-    alert('Lỗi tải câu hỏi: ' + err.message);
+    showToast('Lỗi tải câu hỏi: ' + err.message, 'error');
     document.getElementById('test-intro').style.display = '';
     document.getElementById('test-in-progress').style.display = 'none';
   }
@@ -885,7 +909,7 @@ async function submitTest() {
     showTestResults(data);
   } catch (err) {
     console.error(err);
-    alert('Lỗi khi nộp bài: ' + err.message);
+    showToast('Lỗi khi nộp bài: ' + err.message, 'error');
     document.getElementById('test-intro').style.display = '';
   }
 }
