@@ -62,67 +62,6 @@ function localCheck(exercise, userAnswer) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  AI CHECK – only for expand/intermediate
-// ══════════════════════════════════════════════════════════════
-async function checkWithAI(exercise, userAnswer) {
-  const typeLabel = {
-    translation: 'Translation (Vietnamese → English)',
-    rearrange:   'Word Rearranging',
-    fill_blank:  'Fill in the Blank',
-    expand:      'Sentence Expansion',
-    combine:     'Sentence Combining'
-  }[exercise.type] || exercise.type;
-
-  const questionContext = exercise.type === 'combine'
-    ? `Sentences to combine: "${(exercise.sentences || []).join('" and "')}" (connector hint: ${exercise.connector})`
-    : exercise.type === 'expand'
-    ? `Base sentence to expand: "${exercise.baseText}"`
-    : `Vietnamese/Original: "${exercise.question}"`;
-
-  const userPrompt =
-`Exercise type: ${typeLabel}
-Grammar focus: ${exercise.grammarPoint}
-${questionContext}
-Student's answer: "${userAnswer}"
-Sample answer: "${exercise.sampleAnswer}"
-
-Reply ONLY with valid JSON (no markdown, no extra text):
-{"grammarScore":<1-10>,"naturalScore":<1-10>,"isAcceptable":<true/false>,"corrections":[{"error":"<exact error text>","fix":"<corrected text>","explainVi":"<Vietnamese explanation>"}],"feedbackVi":"<2 sentences encouragement + tip in Vietnamese>","suggestedAnswer":"<best version>","upgradeVersion":"<more natural/advanced version>"}
-
-Rules:
-- corrections: empty array [] if no significant errors
-- grammarScore 10=perfect, 7=minor errors, 5=noticeable errors, 3=many errors
-- upgradeVersion: always show a slightly better/more expressive version
-- feedbackVi: be encouraging, mention 1 specific thing to improve`;
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 700,
-      temperature: 0.2,
-      system: 'You are an encouraging English writing teacher for Vietnamese IELTS foundation students. Give precise, brief feedback. Always reply with valid JSON only.',
-      messages: [{ role: 'user', content: userPrompt }]
-    })
-  });
-
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Anthropic API error: ${response.status} – ${err}`);
-  }
-  const data  = await response.json();
-  const text  = data.content?.[0]?.text || '';
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('AI returned non-JSON: ' + text.slice(0, 200));
-  return { ...JSON.parse(match[0]), checkedBy: 'ai' };
-}
-
-// ══════════════════════════════════════════════════════════════
 //  GET /api/writing-practice/exercises
 // ══════════════════════════════════════════════════════════════
 router.get('/exercises', async (req, res) => {
@@ -228,14 +167,8 @@ router.post('/check', async (req, res) => {
     if (!exercise)
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
 
-    // Use AI only for intermediate expand (paragraph writing)
-    const needsAI = exercise.type === 'expand' && exercise.level === 'intermediate';
-    const feedback = needsAI
-      ? await checkWithAI(exercise, userAnswer.trim())
-      : localCheck(exercise, userAnswer.trim());
-
-    const avg = ((feedback.grammarScore || 5) + (feedback.naturalScore || 5)) / 2;
-    const xp  = feedback.isCorrect === true ? 15 : feedback.isCorrect === null ? 8 : 5;
+    const feedback = localCheck(exercise, userAnswer.trim());
+    const xp = feedback.isCorrect === true ? 15 : feedback.isCorrect === null ? 8 : 5;
 
     res.json({
       success: true,
@@ -289,11 +222,13 @@ router.post('/check-test', async (req, res) => {
       });
     }
 
+    const countable = results.filter(r => r.type !== 'expand').length;
     res.json({
       success: true,
       total:   results.length,
       correct,
-      score:   Math.round((correct / results.length) * 100),
+      score:   countable > 0 ? Math.round((correct / countable) * 100) : 0,
+      countable,
       results
     });
   } catch (err) {
@@ -339,9 +274,7 @@ router.get('/my-stats', auth, async (req, res) => {
     const totalXP   = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
     const byLevel   = {};
     attempts.forEach(a => { byLevel[a.level] = (byLevel[a.level] || 0) + 1; });
-    const avgGrammar = attempts.length
-      ? Math.round(attempts.reduce((s, a) => s + (a.aiFeedback?.grammarScore || 0), 0) / attempts.length * 10) / 10 : 0;
-    res.json({ success: true, totalXP, totalDone: attempts.length, byLevel, avgGrammar });
+    res.json({ success: true, totalXP, totalDone: attempts.length, byLevel });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

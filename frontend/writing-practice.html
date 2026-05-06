@@ -201,54 +201,18 @@
 
         <!-- Feedback card -->
         <div class="wp-feedback-card hidden" id="feedback-card">
-
-          <!-- Simple result (local check) -->
-          <div id="feedback-simple">
-            <div class="wp-result-banner" id="result-banner"></div>
-            <div class="wp-comparison-box">
-              <div class="wp-cmp-row wp-cmp-student">
-                <span class="wp-cmp-label">📝 Câu của bạn:</span>
-                <span class="wp-cmp-text" id="student-answer-display"></span>
-              </div>
-              <div class="wp-cmp-row wp-cmp-sample">
-                <span class="wp-cmp-label">✅ Đáp án gợi ý:</span>
-                <span class="wp-cmp-text" id="sample-answer-display"></span>
-              </div>
+          <div class="wp-result-banner" id="result-banner"></div>
+          <div class="wp-comparison-box">
+            <div class="wp-cmp-row wp-cmp-student">
+              <span class="wp-cmp-label">📝 Câu của bạn:</span>
+              <span class="wp-cmp-text" id="student-answer-display"></span>
             </div>
-            <div class="wp-ai-feedback" id="ai-feedback-text"></div>
+            <div class="wp-cmp-row wp-cmp-sample">
+              <span class="wp-cmp-label">✅ Đáp án gợi ý:</span>
+              <span class="wp-cmp-text" id="sample-answer-display"></span>
+            </div>
           </div>
-
-          <!-- AI result (expand type) -->
-          <div id="feedback-ai" style="display:none">
-            <div class="wp-score-row">
-              <div class="wp-score-chip" id="score-grammar">
-                <span class="wp-score-label">Ngữ pháp</span>
-                <span class="wp-score-num" id="grammar-score">–</span>
-              </div>
-              <div class="wp-score-chip" id="score-natural">
-                <span class="wp-score-label">Tự nhiên</span>
-                <span class="wp-score-num" id="natural-score">–</span>
-              </div>
-              <div class="wp-xp-chip">+<span id="xp-earned">0</span> XP 🌟</div>
-            </div>
-            <div class="wp-comparison-box">
-              <div class="wp-cmp-row wp-cmp-student">
-                <span class="wp-cmp-label">📝 Câu của bạn:</span>
-                <span class="wp-cmp-text" id="ai-student-display"></span>
-              </div>
-              <div class="wp-cmp-row wp-cmp-sample">
-                <span class="wp-cmp-label">✅ Gợi ý:</span>
-                <span class="wp-cmp-text" id="ai-sample-display"></span>
-              </div>
-            </div>
-            <div class="wp-corrections-box" id="corrections-box"></div>
-            <div class="wp-upgrade-box" id="upgrade-box">
-              <div class="wp-upgrade-title"><i class="fas fa-arrow-up"></i> Câu nâng cao hơn</div>
-              <div class="wp-upgrade-text" id="upgrade-version"></div>
-            </div>
-            <div class="wp-ai-feedback" id="ai-feedback-text-ai"></div>
-          </div>
-
+          <div class="wp-ai-feedback" id="feedback-text"></div>
           <button class="wp-next-btn" onclick="nextExercise()">
             Câu tiếp theo <i class="fas fa-arrow-right"></i>
           </button>
@@ -546,9 +510,11 @@ function returnWord(e) {
   if (!e.target.classList.contains('wp-answer-chip')) return;
   const word = e.target.dataset.word;
   rearrangeAnswer.splice(parseInt(e.target.dataset.idx), 1);
+  let unmarked = false;
   document.querySelectorAll('#rearrange-bank .wp-word-chip').forEach(c => {
-    if (c.dataset.word === word && c.dataset.used === 'true') {
+    if (!unmarked && c.dataset.word === word && c.dataset.used === 'true') {
       c.dataset.used = 'false'; c.classList.remove('wp-chip-used');
+      unmarked = true;
     }
   });
   renderRearrangeAnswer();
@@ -646,60 +612,28 @@ async function submitAnswer() {
 }
 
 function showFeedback(userAnswer, data) {
-  const { feedback, sampleAnswer, xpEarned } = data;
+  const { feedback, sampleAnswer } = data;
   document.getElementById('submit-btn').classList.add('hidden');
   document.getElementById('feedback-card').classList.remove('hidden');
 
-  if (feedback.checkedBy === 'ai') {
-    // AI result (intermediate expand)
-    document.getElementById('feedback-simple').style.display = 'none';
-    document.getElementById('feedback-ai').style.display = '';
-    const gs = feedback.grammarScore || 0;
-    const ns = feedback.naturalScore  || 0;
-    document.getElementById('grammar-score').textContent = gs + '/10';
-    document.getElementById('natural-score').textContent = ns + '/10';
-    document.getElementById('xp-earned').textContent     = xpEarned || 8;
-    const scoreColor = s => s >= 8 ? '#16a34a' : s >= 6 ? '#2563eb' : s >= 4 ? '#d97706' : '#dc2626';
-    document.getElementById('score-grammar').style.borderColor = scoreColor(gs);
-    document.getElementById('score-natural').style.borderColor = scoreColor(ns);
-    document.getElementById('ai-student-display').textContent = userAnswer;
-    document.getElementById('ai-sample-display').textContent  = sampleAnswer || '';
-    const corrBox = document.getElementById('corrections-box');
-    corrBox.innerHTML = '';
-    if (feedback.corrections?.length) {
-      feedback.corrections.forEach(c => {
-        corrBox.innerHTML += `<div class="wp-correction-item"><span class="wp-err-text">❌ "${c.error}"</span><span class="wp-arrow">→</span><span class="wp-fix-text">✅ "${c.fix}"</span><div class="wp-explain-text">${c.explainVi || ''}</div></div>`;
-      });
-    } else {
-      corrBox.innerHTML = '<div class="wp-no-errors">✅ Không có lỗi đáng kể!</div>';
-    }
-    document.getElementById('upgrade-version').textContent    = feedback.upgradeVersion || '';
-    document.getElementById('upgrade-box').style.display      = feedback.upgradeVersion ? '' : 'none';
-    document.getElementById('ai-feedback-text-ai').textContent = feedback.feedbackVi || '';
-
+  const isExpand  = exercises[currentIdx]?.type === 'expand';
+  const isCorrect = feedback.isCorrect;
+  const banner = document.getElementById('result-banner');
+  if (isExpand) {
+    banner.className = 'wp-result-banner wp-result-info';
+    banner.textContent = '📖 Xem câu mẫu để so sánh';
+  } else if (isCorrect) {
+    banner.className = 'wp-result-banner wp-result-correct';
+    banner.textContent = '✅ Chính xác! Rất tốt!';
   } else {
-    // Local result
-    document.getElementById('feedback-simple').style.display = '';
-    document.getElementById('feedback-ai').style.display     = 'none';
-    const isExpand  = exercises[currentIdx]?.type === 'expand';
-    const isCorrect = feedback.isCorrect;
-    const banner = document.getElementById('result-banner');
-    if (isExpand) {
-      banner.className = 'wp-result-banner wp-result-info';
-      banner.textContent = '📖 Xem câu mẫu để so sánh';
-    } else if (isCorrect) {
-      banner.className = 'wp-result-banner wp-result-correct';
-      banner.textContent = '✅ Chính xác! Rất tốt!';
-    } else {
-      banner.className = 'wp-result-banner wp-result-wrong';
-      banner.textContent = '❌ Chưa đúng – xem đáp án gợi ý';
-    }
-    const stEl = document.getElementById('student-answer-display');
-    stEl.textContent = userAnswer;
-    stEl.className = 'wp-cmp-text ' + (isExpand ? '' : isCorrect ? 'wp-answer-good' : 'wp-answer-bad');
-    document.getElementById('sample-answer-display').textContent = sampleAnswer || '';
-    document.getElementById('ai-feedback-text').textContent      = feedback.feedbackVi || '';
+    banner.className = 'wp-result-banner wp-result-wrong';
+    banner.textContent = '❌ Chưa đúng – xem đáp án gợi ý';
   }
+  const stEl = document.getElementById('student-answer-display');
+  stEl.textContent = userAnswer;
+  stEl.className = 'wp-cmp-text ' + (isExpand ? '' : isCorrect ? 'wp-answer-good' : 'wp-answer-bad');
+  document.getElementById('sample-answer-display').textContent = sampleAnswer || '';
+  document.getElementById('feedback-text').textContent = feedback.feedbackVi || '';
 
   document.getElementById('feedback-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -870,9 +804,11 @@ function returnTestWord(e) {
   if (!e.target.classList.contains('wp-answer-chip')) return;
   const word = e.target.dataset.word;
   testRearrangeAnswer.splice(parseInt(e.target.dataset.idx), 1);
+  let unmarked = false;
   document.querySelectorAll('#test-rearrange-bank .wp-word-chip').forEach(c => {
-    if (c.dataset.word === word && c.dataset.used === 'true') {
+    if (!unmarked && c.dataset.word === word && c.dataset.used === 'true') {
       c.dataset.used = 'false'; c.classList.remove('wp-chip-used');
+      unmarked = true;
     }
   });
   renderTestRearrange();
@@ -954,12 +890,14 @@ async function submitTest() {
 
 function showTestResults(data) {
   document.getElementById('test-results').style.display = '';
-  const { correct, total, score, results } = data;
+  const { correct, score, countable, results } = data;
+  const expandCount = results.length - (countable || results.length);
   const emoji = score >= 80 ? '🏆' : score >= 60 ? '🎉' : score >= 40 ? '💪' : '📚';
   const msg   = score >= 80 ? 'Xuất sắc!' : score >= 60 ? 'Khá tốt!' : score >= 40 ? 'Cần luyện thêm!' : 'Hãy tiếp tục cố gắng!';
+  const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
   document.getElementById('test-score-header').innerHTML = `
     <div class="wp-test-big-score">${emoji} ${score}%</div>
-    <div class="wp-test-score-msg">${msg} Đúng ${correct}/${total} câu.</div>`;
+    <div class="wp-test-score-msg">${msg} Đúng ${correct}/${countable || results.length} câu${expandNote}.</div>`;
 
   const list = document.getElementById('test-review-list');
   list.innerHTML = '';
