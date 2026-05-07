@@ -276,7 +276,7 @@
             <div class="wp-task-label" id="fill-label">Điền vào chỗ trống:</div>
             <div class="wp-fill-sentence" id="fill-sentence"></div>
             <div class="wp-fill-options" id="fill-options"></div>
-            <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập câu trả lời..." onkeydown="handleKeydown(event)" />
+            <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền vào chỗ trống..." onkeydown="handleKeydown(event)" />
           </div>
 
           <!-- COMBINE -->
@@ -447,6 +447,7 @@ let currentType  = 'all';
 let sessionDone  = 0;
 let sessionXP    = 0;
 let sessionCorrect = 0;
+let _isSubmitting = false;
 // Test
 let testLevel   = 'beginner';
 let testCount   = 10;
@@ -502,7 +503,7 @@ function loadXPFromStorage() {
 function setMode(mode) {
   if (mode === currentMode) return;
   const needConfirm = (currentMode === 'practice' && sessionDone > 0)
-    || (currentMode === 'test' && testIdx > 0 && testExercises.length > 0);
+    || (currentMode === 'test' && testIdx > 0 && testIdx < testExercises.length);
   if (needConfirm) {
     askWpQuit(() => _doSetMode(mode), {
       title: 'Đổi chế độ học?',
@@ -649,12 +650,12 @@ function showTranslationView(ex) {
     const lbl = document.createElement('span');
     lbl.className = 'wp-hint-label'; lbl.textContent = '💡';
     row.appendChild(lbl);
-    ex.hints.slice(0, 3).forEach(h => {
+    const hintWordLimit = currentLevel === 'intermediate' ? 3 : 2;
+    ex.hints.slice(0, hintWordLimit).forEach(h => {
       const chip = document.createElement('span');
       chip.className = 'wp-hint-chip';
-      // Limit to first 2 words to avoid giving away full phrases
       const words = h.split(/\s+/);
-      chip.textContent = words.length > 2 ? words.slice(0, 2).join(' ') : h;
+      chip.textContent = words.length > hintWordLimit ? words.slice(0, hintWordLimit).join(' ') : h;
       row.appendChild(chip);
     });
   }
@@ -748,7 +749,12 @@ function showCombineView(ex) {
 //  PRACTICE – SUBMIT
 // ════════════════════════════════════════════════════════
 function handleKeydown(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitAnswer(); }
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const fc = document.getElementById('feedback-card');
+    if (fc && !fc.classList.contains('hidden')) { nextExercise(); }
+    else { submitAnswer(); }
+  }
 }
 
 function getUserAnswer() {
@@ -761,10 +767,12 @@ function getUserAnswer() {
 }
 
 async function submitAnswer() {
+  if (_isSubmitting) return;
   const ex     = exercises[currentIdx];
   const answer = getUserAnswer();
   if (!answer) { showToast('Vui lòng nhập câu trả lời!'); return; }
 
+  _isSubmitting = true;
   document.getElementById('submit-btn').disabled = true;
   document.getElementById('checking-loader').classList.remove('hidden');
 
@@ -786,6 +794,7 @@ async function submitAnswer() {
     document.getElementById('submit-btn').disabled = false;
   } finally {
     document.getElementById('checking-loader').classList.add('hidden');
+    _isSubmitting = false;
   }
 }
 
@@ -1049,7 +1058,12 @@ function getTestAnswer() {
 
 function testNextQuestion() {
   const answer = getTestAnswer();
-  testAnswers.push({ exerciseId: testExercises[testIdx]._id, userAnswer: answer });
+  const ex = testExercises[testIdx];
+  if (!answer && ex?.type !== 'expand') {
+    showToast('Vui lòng nhập câu trả lời!');
+    return;
+  }
+  testAnswers.push({ exerciseId: ex._id, userAnswer: answer });
   testIdx++;
   if (testIdx >= testExercises.length) { submitTest(); }
   else { showTestQuestion(testIdx); }
@@ -1104,6 +1118,7 @@ function showTestResults(data) {
 }
 
 function retakeTest() {
+  testIdx = 0; testExercises = []; testAnswers = [];
   document.getElementById('test-results').style.display     = 'none';
   document.getElementById('test-intro').style.display       = '';
 }
@@ -1199,16 +1214,29 @@ function confirmWpQuit() {
 }
 
 function stopPracticeMode() {
-  askWpQuit(() => loadExercises());
+  if (sessionDone > 0) {
+    askWpQuit(loadExercises);
+  } else {
+    loadExercises();
+  }
 }
 
 function stopTestMode() {
-  askWpQuit(() => {
+  const resetTest = () => {
     testExercises = []; testAnswers = []; testIdx = 0;
     document.getElementById('test-in-progress').style.display = 'none';
     document.getElementById('test-results').style.display     = 'none';
     document.getElementById('test-intro').style.display       = '';
-  });
+  };
+  if (testIdx > 0) {
+    askWpQuit(resetTest, {
+      title: 'Dừng bài thi?',
+      sub: `Câu ${testIdx + 1}/${testExercises.length} đang dở. Tiến độ sẽ bị mất.`,
+      confirmText: 'Dừng lại', continueText: 'Tiếp tục thi'
+    });
+  } else {
+    resetTest();
+  }
 }
 </script>
 
