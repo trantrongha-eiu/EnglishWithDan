@@ -11,7 +11,9 @@ import AccessCodes from './pages/AccessCodes';
 import Courses from './pages/Courses';
 import Passages from './pages/Passages';
 import ReadingTests from './pages/ReadingTests';
+import ReadingTestEdit from './pages/ReadingTestEdit';
 import ListeningTests from './pages/ListeningTests';
+import ListeningTestEdit from './pages/ListeningTestEdit';
 import WritingTests from './pages/WritingTests';
 import Speaking from './pages/Speaking';
 import Vocabulary from './pages/Vocabulary';
@@ -39,7 +41,9 @@ export default function App() {
                 <Route path="courses" element={<Courses />} />
                 <Route path="passages" element={<Passages />} />
                 <Route path="reading-tests" element={<ReadingTests />} />
+                <Route path="reading-tests/:id" element={<ReadingTestEdit />} />
                 <Route path="listening-tests" element={<ListeningTests />} />
+                <Route path="listening-tests/:id" element={<ListeningTestEdit />} />
                 <Route path="writing-tests" element={<WritingTests />} />
                 <Route path="speaking" element={<Speaking />} />
                 <Route path="vocabulary" element={<Vocabulary />} />
