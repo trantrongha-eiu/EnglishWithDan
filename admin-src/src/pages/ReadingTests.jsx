@@ -38,7 +38,7 @@ function TestModal({ test, onClose, onSaved }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 540 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{test?._id ? 'Sửa bộ đề' : 'Thêm bộ đề Reading'}</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
@@ -102,7 +102,7 @@ export default function ReadingTests() {
   return (
     <>
       {(showModal || editTest) && (
-        <TestModal test={editTest} onClose={() => { setShowModal(false); setEditTest(null); }} onSaved={load} />
+        <TestModal key={editTest?._id || 'new'} test={editTest} onClose={() => { setShowModal(false); setEditTest(null); }} onSaved={load} />
       )}
 
       <div className="section-header">

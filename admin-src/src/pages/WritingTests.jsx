@@ -150,6 +150,15 @@ export default function WritingTests() {
     apiFetch('/admin/writing-history').then(d => setHistory(d.attempts || [])).catch(() => {});
   }, []);
 
+  async function toggleActive(pool, id, isActive) {
+    const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;
+    try {
+      await apiFetch(endpoint, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
+      toast(isActive ? 'Đã ẩn' : 'Đã hiện');
+      if (pool === 'task1') loadT1(); else loadT2();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
   function del(pool, id, label) {
     const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;
     confirm(`Xóa prompt "${label}"?`, async () => {
@@ -190,18 +199,24 @@ export default function WritingTests() {
       {tab === 'task1' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
             <tbody>
               {task1.length === 0
-                ? <tr><td colSpan={4} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
+                ? <tr><td colSpan={5} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
                 : task1.map(p => (
                   <tr key={p._id}>
-                    <td style={{ maxWidth: 380 }}>{(p.prompt || '').slice(0, 110)}{(p.prompt || '').length > 110 ? '…' : ''}</td>
+                    <td style={{ maxWidth: 340 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
                     <td>{p.imageUrl ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
+                    <td>
+                      <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                        <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                      </span>
+                    </td>
                     <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
                         <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>
                       </div>
                     </td>
@@ -215,17 +230,23 @@ export default function WritingTests() {
       {tab === 'task2' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
             <tbody>
               {task2.length === 0
-                ? <tr><td colSpan={3} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
+                ? <tr><td colSpan={4} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
                 : task2.map(p => (
                   <tr key={p._id}>
-                    <td style={{ maxWidth: 460 }}>{(p.prompt || '').slice(0, 130)}{(p.prompt || '').length > 130 ? '…' : ''}</td>
+                    <td style={{ maxWidth: 400 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>
+                    <td>
+                      <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                        <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                      </span>
+                    </td>
                     <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
                         <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>
                       </div>
                     </td>
@@ -239,18 +260,35 @@ export default function WritingTests() {
       {tab === 'history' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>HỌC SINH</th><th>TASK</th><th>ĐIỂM</th><th>NGÀY NỘP</th></tr></thead>
+            <thead><tr><th>HỌC SINH</th><th>TASK</th><th>TỪ</th><th>ĐIỂM AI</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th></tr></thead>
             <tbody>
               {history.length === 0
-                ? <tr><td colSpan={4} className="table-empty">Chưa có bài nộp</td></tr>
-                : history.slice(0, 100).map(h => (
-                  <tr key={h._id}>
-                    <td><strong>{h.userId?.displayName || '–'}</strong></td>
-                    <td>{h.taskType || '–'}</td>
-                    <td>{h.bandScore != null ? <span style={{ color: 'var(--green)', fontWeight: 700 }}>{h.bandScore}</span> : <span style={{ color: 'var(--text3)' }}>Chờ chấm</span>}</td>
-                    <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
-                  </tr>
-                ))}
+                ? <tr><td colSpan={6} className="table-empty">Chưa có bài nộp</td></tr>
+                : history.slice(0, 100).map(h => {
+                  const name = h.userId
+                    ? [h.userId.firstName, h.userId.lastName].filter(Boolean).join(' ') || h.userId.username || '–'
+                    : '–';
+                  const taskLabel = h.task1Snapshot ? 'Task 1' : h.task2Snapshot ? 'Task 2' : '–';
+                  const wordCount = (h.wordCount1 || 0) + (h.wordCount2 || 0);
+                  const aiScore = h.aiGrading?.task1?.bandScore ?? h.aiGrading?.task2?.bandScore;
+                  const finalScore = h.grading?.overallBand;
+                  const statusMap = { pending: 'Chờ chấm', ai_done: 'AI đã chấm', confirmed: 'Đã xác nhận' };
+                  return (
+                    <tr key={h._id}>
+                      <td><strong>{name}</strong></td>
+                      <td>{taskLabel}</td>
+                      <td style={{ fontSize: 12 }}>{wordCount > 0 ? wordCount : '–'}</td>
+                      <td>{finalScore != null
+                        ? <span style={{ color: 'var(--green)', fontWeight: 700 }}>{finalScore}</span>
+                        : aiScore != null
+                          ? <span style={{ color: 'var(--blue)', fontWeight: 600 }}>{aiScore} (AI)</span>
+                          : <span style={{ color: 'var(--text3)' }}>–</span>}
+                      </td>
+                      <td><span style={{ fontSize: 12, color: 'var(--text3)' }}>{statusMap[h.gradingStatus] || '–'}</span></td>
+                      <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
