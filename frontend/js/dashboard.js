@@ -31,6 +31,7 @@ let wrongWordSet = new Set();   // word strings that were answered wrong this se
 let requeuedWords = new Set();  // prevent infinite requeue
 let mixedQueue = [];            // [{word, type}] for mixed mode
 let mixedIndex = 0;
+let _retryWordList = null;      // set by retryWrongWords, consumed by startPractice
 
 // ── Save-word pending ──────────────────────────
 let pendingSaveWord = null;
@@ -359,39 +360,42 @@ function renderBookSidebar() {
     if (typeof syncSheetBooks === 'function') syncSheetBooks();
 }
 
-async function openBook(bookId) {
-    currentBookId = bookId;
-    selectedWordIds.clear();
+function openBook(bookId) {
+    const doOpen = async () => {
+        currentBookId = bookId;
+        selectedWordIds.clear();
 
-    // Clear search when switching books
-    const searchEl = document.getElementById('book-search');
-    if (searchEl) searchEl.value = '';
+        // Clear search when switching books
+        const searchEl = document.getElementById('book-search');
+        if (searchEl) searchEl.value = '';
 
-    document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
-    const item = document.getElementById(`bi-${bookId}`);
-    if (item) item.classList.add('active');
+        document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
+        const item = document.getElementById(`bi-${bookId}`);
+        if (item) item.classList.add('active');
 
-    const content = document.getElementById('book-content');
-    document.getElementById('view-mybook').style.display  = 'flex';
-    document.getElementById('view-unit').style.display    = 'none';
-    document.getElementById('book-welcome').style.display = 'none';
-    content.style.display = 'flex';
+        const content = document.getElementById('book-content');
+        document.getElementById('view-mybook').style.display  = 'flex';
+        document.getElementById('view-unit').style.display    = 'none';
+        document.getElementById('book-welcome').style.display = 'none';
+        content.style.display = 'flex';
 
-    // Show skeleton while loading
-    document.getElementById('words-tbody').innerHTML = Array(5).fill(0).map(() => `
-      <tr>
-        <td></td>
-        <td><div class="skeleton-cell" style="width:80px"></div></td>
-        <td><div class="skeleton-cell" style="width:100px"></div></td>
-        <td><div class="skeleton-cell" style="width:140px"></div></td>
-        <td><div class="skeleton-cell" style="width:180px"></div></td>
-        <td></td><td></td>
-      </tr>`).join('');
-    content.classList.add('loading');
+        // Show skeleton while loading
+        document.getElementById('words-tbody').innerHTML = Array(5).fill(0).map(() => `
+          <tr>
+            <td></td>
+            <td><div class="skeleton-cell" style="width:80px"></div></td>
+            <td><div class="skeleton-cell" style="width:100px"></div></td>
+            <td><div class="skeleton-cell" style="width:140px"></div></td>
+            <td><div class="skeleton-cell" style="width:180px"></div></td>
+            <td></td><td></td>
+          </tr>`).join('');
+        content.classList.add('loading');
 
-    await refreshCurrentBook();
-    content.classList.remove('loading');
-    loadStreakAndUpdateMascot();
+        await refreshCurrentBook();
+        content.classList.remove('loading');
+        loadStreakAndUpdateMascot();
+    };
+    askQuitPractice(doOpen);
 }
 
 async function refreshCurrentBook() {
@@ -627,7 +631,7 @@ function toggleSelectAll(cb) {
         else selectedWordIds.delete(w._id);
     });
     updateBulkBar();
-    renderBookContent(currentBookData);
+    renderWordsTable(currentBookData.words);
 }
 function updateBulkBar() {
     const bar = document.getElementById('bulk-bar');
@@ -884,12 +888,16 @@ async function loadUnit() {
     const num = document.getElementById('unitSelect').value;
     if (!num) { toast('Please select a Unit first', 'error'); return; }
     try {
-        const res = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
-        currentUnit = await res.json();
-        document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
-        document.getElementById('view-mybook').style.display = 'none';
-        document.getElementById('view-unit').style.display   = 'flex';
-        showMode('study');
+        const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
+        const newUnit = await res.json();
+        // Assign currentUnit only after user confirms (or if not mid-practice)
+        askQuitPractice(() => {
+            currentUnit = newUnit;
+            document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
+            document.getElementById('view-mybook').style.display = 'none';
+            document.getElementById('view-unit').style.display   = 'flex';
+            _activateModeNow('study');
+        });
     } catch { toast('Unable to load Unit', 'error'); }
 }
 
@@ -915,16 +923,17 @@ function _activateModeNow(mode) {
 
 function showMode(mode) {
     if (!currentUnit) return;
-    // Nếu đang học dở (không phải study/results) và chuyển sang mode khác → hỏi xác nhận
-    const isPracticing = currentMode !== 'study' && currentQuestionIndex > 0 &&
-        !document.getElementById('resultsMode')?.style.display?.includes('block') &&
-        mode !== currentMode;
-    if (isPracticing) {
-        confirm2(
-            'Switch Learning Mode?',
-            'Your current progress will be lost. Do you want to switch?',
-            () => _activateModeNow(mode)
-        );
+    const inActiveSession = currentMode !== 'study' && currentQuestionIndex > 0 &&
+        !document.getElementById('resultsMode')?.style.display?.includes('block');
+    if (inActiveSession) {
+        if (mode !== currentMode) {
+            confirm2('Switch Learning Mode?', 'Your current progress will be lost. Do you want to switch?',
+                () => _activateModeNow(mode));
+        } else {
+            // Re-clicking the same active tab → confirm restart
+            confirm2('Restart Practice?', 'This will reset your current progress. Restart?',
+                () => _activateModeNow(mode));
+        }
         return;
     }
     _activateModeNow(mode);
@@ -1039,9 +1048,11 @@ function startPractice(mode) {
     currentQuestionIndex = 0;
     correctAnswers = 0;
     wrongAnswers   = 0;
+    answered = false;
 
-    // Lấy tất cả từ (vocab + paraphrase); paraphrase dùng word/meaning giống vocab
-    const allPracticeWords = currentUnit.words.filter(w => w.word && w.meaning);
+    // Lấy tất cả từ (vocab + paraphrase); _retryWordList is set by retryWrongWords
+    const allPracticeWords = (_retryWordList || currentUnit.words).filter(w => w.word && w.meaning);
+    _retryWordList = null;
     if (!allPracticeWords.length) { toast('No words in this unit to practice', 'info'); return; }
 
     if (mode === 'mixed') {
@@ -1174,6 +1185,7 @@ function stopPractice() {
 ══════════════════════════════════════════════ */
 function showMixedQuestion() {
     if (mixedIndex >= mixedQueue.length) { showResults('mixed'); return; }
+    answered = false;
     const item = mixedQueue[mixedIndex];
     currentWord = item.word;
     const type  = item.type;
@@ -1451,7 +1463,7 @@ function checkFillBlank() {
     if (answered || !isFlipped) return;
     const ua = document.getElementById('fbInput').value.trim().toLowerCase();
     const ca = currentWord.word.toLowerCase();
-    if (!ua) return;
+    if (!ua) { toast('Type a word first', 'error'); return; }
     answered = true;
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
@@ -1684,11 +1696,10 @@ document.addEventListener('keydown', e => {
 /* ── Retry wrong words ── */
 function retryWrongWords() {
     if (!wrongWordSet.size) return;
-    // Lấy các word objects từ currentUnit.words khớp với wrongWordSet
     const wordsToRetry = (currentUnit.words || []).filter(w => wrongWordSet.has(w.word));
     if (!wordsToRetry.length) { toast('No words found to retry', 'error'); return; }
-    // Tạo unit tạm thời từ những từ sai
-    currentUnit = { ...currentUnit, words: wordsToRetry };
+    // Use _retryWordList instead of mutating currentUnit so Restart still has the full word list
+    _retryWordList = wordsToRetry;
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
