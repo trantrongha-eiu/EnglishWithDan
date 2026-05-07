@@ -40,6 +40,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
 
+  // Restore tab from URL path (e.g. /admin/users → users tab)
+  const _slug = location.pathname.replace(/^\/admin\/?/, '').split('/')[0] || 'dashboard';
+  if (_VALID_TABS.has(_slug) && _slug !== 'dashboard') {
+    switchTab(_slug, null);
+  } else {
+    history.replaceState({ tab: 'dashboard' }, '', '/admin/');
+  }
+
+  // Browser back / forward
+  window.addEventListener('popstate', e => {
+    switchTab(e.state?.tab || 'dashboard', null);
+  });
+
   // Real-time polling: refresh stats + history every 30s
   setInterval(async () => {
     await Promise.all([loadStats(), loadHistory()]);
@@ -66,12 +79,18 @@ function confirm2(msg, onOk) {
   document.getElementById('btn-confirm-ok').onclick = () => { closeModal('modal-confirm'); onOk(); };
   openModal('modal-confirm');
 }
-// ★ SỬA: nhận event làm tham số thứ 2 để không phụ thuộc window.event
+const _VALID_TABS = new Set(['dashboard','users','keys','courses','passages','tests','listening','writing','speaking','vocab','wp','history','vocab-students']);
+
 function switchTab(tab, ev) {
   document.querySelectorAll('.tab-panels > div').forEach(d => d.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (ev) ev.currentTarget.classList.add('active');
+  if (ev) {
+    ev.currentTarget.classList.add('active');
+  } else {
+    const navItem = [...document.querySelectorAll('.nav-item')].find(n => n.getAttribute('onclick')?.includes(`'${tab}'`));
+    if (navItem) navItem.classList.add('active');
+  }
   if (window.innerWidth <= 1024) closeSidebar();
   const titles = {
     dashboard: 'Dashboard',
@@ -84,6 +103,9 @@ function switchTab(tab, ev) {
     wp: 'Luyện viết (Writing Practice)'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
+  // Update URL
+  const path = tab === 'dashboard' ? '/admin/' : `/admin/${tab}`;
+  if (location.pathname !== path) history.pushState({ tab }, '', path);
   // Load lazy khi chuyển tab
   if (tab === 'vocab') loadVocabUnits();
   if (tab === 'listening') loadListeningTests();
@@ -92,8 +114,8 @@ function switchTab(tab, ev) {
   if (tab === 'courses') loadCourses();
   if (tab === 'users') loadUsers();
   if (tab === 'vocab-students') loadVocabStudents();
-  if (tab === 'history') loadHistory();       // Luôn fetch mới khi vào tab lịch sử
-  if (tab === 'dashboard') loadHistory();     // Cập nhật bảng bài nộp gần nhất trên dashboard
+  if (tab === 'history') loadHistory();
+  if (tab === 'dashboard') loadHistory();
   if (tab === 'wp') { loadWPTopics(); loadWPExercises(); }
 }
 function toggleSidebar() {
