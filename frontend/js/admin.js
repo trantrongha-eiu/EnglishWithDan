@@ -4,6 +4,7 @@
 const API = 'https://englishwithdan.onrender.com/api';
 let allTests = [];
 let allPassages = [];
+let _filteredPassages = [];
 let allKeys = [];
 let allVocabUnits = [];
 let passagePage = 1;
@@ -223,8 +224,9 @@ async function loadPassages() {
     const data = await (await fetch(`${API}/admin/passages?limit=200`, { headers: authH() })).json();
     if (!data.success) return;
     allPassages = data.passages;
+    _filteredPassages = allPassages;
     document.getElementById('stat-passages').textContent = data.total;
-    renderPassagesTable(allPassages);
+    renderPassagesTable(_filteredPassages);
   } catch { }
 }
 function renderPassagesTable(list) {
@@ -251,12 +253,13 @@ function renderPassagesTable(list) {
   for (let i = 1; i <= pages; i++) html += `<button class="page-btn ${i === passagePage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>`;
   pg.innerHTML = html;
 }
-function goPage(p) { passagePage = p; filterPassages(); }
+function goPage(p) { passagePage = p; renderPassagesTable(_filteredPassages); }
 function filterPassages() {
   const q = document.getElementById('search-passages').value.toLowerCase();
   const cat = document.getElementById('filter-category').value;
   passagePage = 1;
-  renderPassagesTable(allPassages.filter(p => (!q || p.title.toLowerCase().includes(q)) && (!cat || p.category === cat)));
+  _filteredPassages = allPassages.filter(p => (!q || p.title.toLowerCase().includes(q)) && (!cat || p.category === cat));
+  renderPassagesTable(_filteredPassages);
 }
 async function editPassage(id) {
   const p = allPassages.find(x => x._id === id);
