@@ -5,7 +5,11 @@ import { useConfirm } from '../components/ConfirmDialog';
 import Pagination from '../components/Pagination';
 
 const PAGE = 15;
-const CATS = ['Academic', 'General', 'Mixed'];
+const CATS = [
+  { value: 'passage1', label: 'Passage 1' },
+  { value: 'passage2', label: 'Passage 2' },
+  { value: 'passage3', label: 'Passage 3' },
+];
 const DIFFS = ['easy', 'medium', 'hard'];
 
 const Q_TYPES_READING = [
@@ -237,13 +241,14 @@ function diffBadge(d) {
 }
 
 function catBadge(c) {
-  return <span className="badge badge-blue">{c}</span>;
+  const cat = CATS.find(x => x.value === c);
+  return <span className="badge badge-blue">{cat?.label || c}</span>;
 }
 
 function PassageModal({ passageId, onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({
-    title: '', category: 'Academic', content: '', difficulty: 'medium',
+    title: '', category: 'passage1', content: '', difficulty: 'medium',
     questionRange: { start: 1, end: 13 }, isActive: true
   });
   const [loading, setLoading] = useState(!!passageId);
@@ -301,7 +306,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
               <div className="form-group">
                 <label className="form-label">Category *</label>
                 <select className="form-input" value={form.category} onChange={set('category')}>
-                  {CATS.map(c => <option key={c}>{c}</option>)}
+                  {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
               <div className="form-group">
@@ -375,8 +380,8 @@ export default function Passages() {
   }
 
   async function del(id, title) {
-    confirm(`Xóa vĩnh viễn bài đọc "${title}"?`, async () => {
-      try { await apiFetch(`/admin/passages/${id}`, { method: 'DELETE' }); toast('Đã xóa'); load(); }
+    confirm(`Xóa vĩnh viễn bài đọc "${title}"? Không thể phục hồi.`, async () => {
+      try { await apiFetch(`/admin/passages/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
       catch (e) { toast(e.message, 'error'); }
     });
   }
@@ -402,7 +407,7 @@ export default function Passages() {
           onChange={e => setSearch(e.target.value)} style={{ maxWidth: 280 }} />
         <select className="form-input" value={cat} onChange={e => setCat(e.target.value)} style={{ width: 160 }}>
           <option value="">Tất cả category</option>
-          {CATS.map(c => <option key={c}>{c}</option>)}
+          {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
       </div>
 
@@ -417,7 +422,7 @@ export default function Passages() {
                   <td><strong>{p.title}</strong></td>
                   <td>{catBadge(p.category)}</td>
                   <td>{diffBadge(p.difficulty)}</td>
-                  <td>{p.questions?.length || 0}</td>
+                  <td>{p.questionRange ? (p.questionRange.end - p.questionRange.start + 1) : '–'}</td>
                   <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{p.questionRange?.start}–{p.questionRange?.end}</td>
                   <td>
                     <span className={`badge ${p.isActive ? 'badge-green' : 'badge-gray'}`}>

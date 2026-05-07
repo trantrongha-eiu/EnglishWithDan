@@ -9,9 +9,9 @@ const Q_TYPES = [
   { value: 'sentence-completion', label: 'Sentence completion' },
   { value: 'multiple-choice', label: 'Multiple choice' },
   { value: 'matching', label: 'Matching' },
+  { value: 'matching-info', label: 'Matching information' },
   { value: 'map-labelling', label: 'Map labelling' },
-  { value: 'true-false-ng', label: 'True / False / NG' },
-  { value: 'yes-no-ng', label: 'Yes / No / NG' },
+  { value: 'checkbox', label: 'Checkbox (chọn nhiều đáp án)' },
 ];
 
 const BLANK_Q = { questionNumber: 1, type: 'fill-blank', questionText: '', options: ['', '', '', ''], correctAnswer: '', explanation: '' };
@@ -168,9 +168,8 @@ export default function ListeningTestEdit() {
   const setQ = k => e => setQForm(f => ({ ...f, [k]: e.target.type === 'number' ? Number(e.target.value) : e.target.value }));
   const setOpt = (i, v) => setQForm(f => { const o = [...f.options]; o[i] = v; return { ...f, options: o }; });
 
-  const needsOptions = ['multiple-choice', 'matching'].includes(qForm.type);
-  const isTFNG = ['true-false-ng', 'yes-no-ng'].includes(qForm.type);
-  const tfOptions = qForm.type === 'true-false-ng' ? ['TRUE', 'FALSE', 'NOT GIVEN'] : ['YES', 'NO', 'NOT GIVEN'];
+  const needsOptions = ['multiple-choice', 'matching', 'matching-info'].includes(qForm.type);
+  const isCheckbox = qForm.type === 'checkbox';
 
   if (loading) return <div style={{ padding: 48, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>;
 
@@ -238,6 +237,13 @@ export default function ListeningTestEdit() {
             <label className="form-label">Đến số</label>
             <input className="form-input" type="number" value={sec.questionRange.end} onChange={e => updateRange(activePart, 'end', e.target.value)} min={1} />
           </div>
+        </div>
+
+        <div className="form-group" style={{ marginBottom: 12 }}>
+          <label className="form-label">Mô tả ngữ cảnh (context/situation, hiển thị trước câu hỏi)</label>
+          <textarea className="form-input" rows={2} value={sec.description || ''} onChange={e => updateSection(activePart, { description: e.target.value })}
+            placeholder={`VD: You will hear a conversation between two students discussing their assignment.`}
+            style={{ fontSize: 13 }} />
         </div>
 
         <div className="form-group" style={{ marginBottom: 16 }}>
@@ -325,15 +331,13 @@ export default function ListeningTestEdit() {
 
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Đáp án đúng *</label>
-                {isTFNG ? (
-                  <select className="form-input" value={qForm.correctAnswer} onChange={setQ('correctAnswer')}>
-                    <option value="">-- Chọn --</option>
-                    {tfOptions.map(a => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                ) : (
-                  <input className="form-input" value={qForm.correctAnswer} onChange={setQ('correctAnswer')}
-                    placeholder={qForm.type === 'multiple-choice' ? 'A (hoặc B, C, D)' : 'Đáp án chính xác'} />
-                )}
+                <input className="form-input" value={qForm.correctAnswer} onChange={setQ('correctAnswer')}
+                  placeholder={
+                    qForm.type === 'multiple-choice' ? 'A (hoặc B, C, D)' :
+                    qForm.type === 'checkbox' ? '["A","C"] — JSON array các đáp án đúng' :
+                    'Đáp án chính xác (dùng / để phân cách đáp án thay thế: cat/cats)'
+                  } />
+                {isCheckbox && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 3 }}>Format: ["A","C"] cho checkbox chọn nhiều</div>}
               </div>
 
               <div className="form-group" style={{ marginBottom: 0 }}>
