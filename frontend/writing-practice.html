@@ -466,6 +466,22 @@ function loadXPFromStorage() {
 //  MODE TOGGLE
 // ════════════════════════════════════════════════════════
 function setMode(mode) {
+  if (mode === currentMode) return;
+  const needConfirm = (currentMode === 'practice' && sessionDone > 0)
+    || (currentMode === 'test' && testIdx > 0 && testExercises.length > 0);
+  if (needConfirm) {
+    askWpQuit(() => _doSetMode(mode), {
+      title: 'Đổi chế độ học?',
+      sub: currentMode === 'practice'
+        ? `Bạn đã làm ${sessionDone} bài. Chuyển chế độ sẽ mất tiến độ hiện tại.`
+        : `Bài thi đang dở (câu ${testIdx + 1}/${testExercises.length}). Tiến độ sẽ bị mất.`,
+      confirmText: 'Đổi chế độ',
+      continueText: 'Giữ nguyên'
+    });
+  } else { _doSetMode(mode); }
+}
+
+function _doSetMode(mode) {
   currentMode = mode;
   document.getElementById('btn-mode-practice').classList.toggle('active', mode === 'practice');
   document.getElementById('btn-mode-test').classList.toggle('active', mode === 'test');
@@ -489,22 +505,52 @@ function setMode(mode) {
 //  PRACTICE – FILTERS
 // ════════════════════════════════════════════════════════
 function selectLevel(level) {
-  currentLevel = level;
-  document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
-    b.classList.toggle('active', b.dataset.level === level));
-  loadExercises();
+  if (level === currentLevel) return;
+  const doChange = () => {
+    currentLevel = level;
+    document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
+      b.classList.toggle('active', b.dataset.level === level));
+    loadExercises();
+  };
+  if (sessionDone > 0) {
+    askWpQuit(doChange, {
+      title: 'Đổi cấp độ?',
+      sub: 'Bắt đầu lại với bộ bài mới. Tiến độ hiện tại sẽ không được lưu.',
+      confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
+    });
+  } else { doChange(); }
 }
 function selectTopic(topic) {
-  currentTopic = topic;
-  document.querySelectorAll('.wp-topic-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.topic === topic));
-  loadExercises();
+  if (topic === currentTopic) return;
+  const doChange = () => {
+    currentTopic = topic;
+    document.querySelectorAll('.wp-topic-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.topic === topic));
+    loadExercises();
+  };
+  if (sessionDone > 0) {
+    askWpQuit(doChange, {
+      title: 'Đổi chủ đề?',
+      sub: 'Bắt đầu lại với chủ đề mới. Tiến độ hiện tại sẽ không được lưu.',
+      confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
+    });
+  } else { doChange(); }
 }
 function selectType(type) {
-  currentType = type;
-  document.querySelectorAll('.wp-type-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.type === type));
-  loadExercises();
+  if (type === currentType) return;
+  const doChange = () => {
+    currentType = type;
+    document.querySelectorAll('.wp-type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.type === type));
+    loadExercises();
+  };
+  if (sessionDone > 0) {
+    askWpQuit(doChange, {
+      title: 'Đổi dạng bài?',
+      sub: 'Bắt đầu lại với dạng bài mới. Tiến độ hiện tại sẽ không được lưu.',
+      confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
+    });
+  } else { doChange(); }
 }
 
 // ════════════════════════════════════════════════════════
@@ -1062,12 +1108,19 @@ function closeWpSheet() {
 // ════════════════════════════════════════════════════════
 let _wpQuitCb = null;
 
-function askWpQuit(callback) {
+function askWpQuit(callback, opts = {}) {
   _wpQuitCb = callback;
-  const sub = document.getElementById('wp-quit-sub');
-  if (sub) sub.textContent = sessionDone
-    ? `Bạn đã làm ${sessionDone} bài và kiếm được ${sessionXP} XP hôm nay.`
-    : 'Tiến độ hôm nay chưa được lưu.';
+  const titleEl  = document.getElementById('wp-quit-title');
+  const subEl    = document.getElementById('wp-quit-sub');
+  const leaveBtn = document.getElementById('wp-quit-leave-btn');
+  const contBtn  = document.getElementById('wp-quit-continue-btn');
+  if (titleEl)  titleEl.textContent  = opts.title       || 'Bạn muốn dừng học?';
+  if (leaveBtn) leaveBtn.textContent = opts.confirmText  || 'Dừng lại';
+  if (contBtn)  contBtn.innerHTML    = `<i class="fas fa-play-circle"></i> ${opts.continueText || 'Tiếp tục học'}`;
+  if (subEl)    subEl.textContent    = opts.sub !== undefined ? opts.sub
+    : sessionDone
+      ? `Bạn đã làm ${sessionDone} bài và kiếm được ${sessionXP} XP hôm nay.`
+      : 'Tiến độ hôm nay chưa được lưu.';
   document.getElementById('wp-quit-overlay').classList.remove('hidden');
 }
 
@@ -1188,14 +1241,14 @@ function stopTestMode() {
   <div class="wp-quit-box">
     <div class="wp-quit-top">
       <div class="wp-quit-mascot">✏️</div>
-      <p class="wp-quit-title">Bạn muốn dừng học?</p>
+      <p class="wp-quit-title" id="wp-quit-title">Bạn muốn dừng học?</p>
       <p class="wp-quit-sub" id="wp-quit-sub"></p>
     </div>
     <div class="wp-quit-actions">
-      <button class="wp-quit-continue" onclick="cancelWpQuit()">
+      <button class="wp-quit-continue" id="wp-quit-continue-btn" onclick="cancelWpQuit()">
         <i class="fas fa-play-circle"></i> Tiếp tục học
       </button>
-      <button class="wp-quit-leave" onclick="confirmWpQuit()">Dừng lại</button>
+      <button class="wp-quit-leave" id="wp-quit-leave-btn" onclick="confirmWpQuit()">Dừng lại</button>
     </div>
   </div>
 </div>
