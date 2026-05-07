@@ -55,6 +55,40 @@
     [data-theme="dark"] .wp-quit-title { color:#fbbf24; }
     [data-theme="dark"] .wp-quit-sub { color:#9ca3af; }
     [data-theme="dark"] .wp-quit-leave { border-color:#374151; color:#9ca3af; }
+
+    /* ── Session results inside quit dialog ── */
+    .wp-quit-results {
+      padding: 14px 24px 10px;
+      background: #f9fafb;
+      border-top: 1px solid #f3f4f6;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .wp-quit-results-title {
+      text-align: center; font-size: 12px; font-weight: 600;
+      color: #6b7280; margin-bottom: 10px; letter-spacing: .03em; text-transform: uppercase;
+    }
+    .wp-quit-ring-wrap {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px; width: 110px; height: 110px;
+    }
+    .wp-quit-ring-text {
+      position: absolute; display: flex; flex-direction: column; align-items: center;
+    }
+    .wp-quit-ring-pct { font-size: 22px; font-weight: 800; color: #111827; }
+    .wp-quit-ring-lbl { font-size: 11px; color: #6b7280; }
+    .wp-quit-stat-row {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      font-size: 13px; font-weight: 600;
+    }
+    .wp-quit-stat-row span { display:flex; align-items:center; gap:4px; padding:4px 8px; border-radius:20px; }
+    .wp-qs-correct { background:#dcfce7; color:#15803d; }
+    .wp-qs-wrong   { background:#fee2e2; color:#dc2626; }
+    .wp-qs-xp      { background:#fef3c7; color:#b45309; }
+    [data-theme="dark"] .wp-quit-results { background:#162032; border-color:#1e293b; }
+    [data-theme="dark"] .wp-quit-ring-pct { color:#f1f5f9; }
+    [data-theme="dark"] .wp-qs-correct { background:#14532d; color:#4ade80; }
+    [data-theme="dark"] .wp-qs-wrong   { background:#7f1d1d; color:#f87171; }
+    [data-theme="dark"] .wp-qs-xp      { background:#78350f; color:#fcd34d; }
   </style>
 </head>
 <body>
@@ -1117,10 +1151,40 @@ function askWpQuit(callback, opts = {}) {
   if (titleEl)  titleEl.textContent  = opts.title       || 'Bạn muốn dừng học?';
   if (leaveBtn) leaveBtn.textContent = opts.confirmText  || 'Dừng lại';
   if (contBtn)  contBtn.innerHTML    = `<i class="fas fa-play-circle"></i> ${opts.continueText || 'Tiếp tục học'}`;
-  if (subEl)    subEl.textContent    = opts.sub !== undefined ? opts.sub
-    : sessionDone
-      ? `Bạn đã làm ${sessionDone} bài và kiếm được ${sessionXP} XP hôm nay.`
-      : 'Tiến độ hôm nay chưa được lưu.';
+
+  const showResults = sessionDone > 0 && currentMode === 'practice';
+  const resultsEl = document.getElementById('wp-quit-results');
+  if (resultsEl) {
+    resultsEl.style.display = showResults ? '' : 'none';
+    if (showResults) {
+      const pct  = Math.round((sessionCorrect / sessionDone) * 100);
+      const wrong = sessionDone - sessionCorrect;
+      const circumference = 289.03; // 2 * π * 46
+      const offset = circumference - (pct / 100) * circumference;
+      const color  = pct >= 70 ? '#22c55e' : pct >= 40 ? '#f59e0b' : '#ef4444';
+      const circle = document.getElementById('wp-quit-score-circle');
+      if (circle) {
+        circle.setAttribute('stroke-dashoffset', offset.toFixed(2));
+        circle.setAttribute('stroke', color);
+      }
+      document.getElementById('wp-quit-ring-pct').textContent = pct + '%';
+      document.getElementById('wp-quit-correct').textContent  = sessionCorrect;
+      document.getElementById('wp-quit-wrong').textContent    = wrong;
+      document.getElementById('wp-quit-xp').textContent       = sessionXP;
+    }
+  }
+
+  if (subEl) {
+    if (showResults) {
+      subEl.textContent = opts.sub !== undefined ? opts.sub : 'Chuyển sẽ mất tiến độ hiện tại.';
+    } else {
+      subEl.textContent = opts.sub !== undefined ? opts.sub
+        : sessionDone
+          ? `Bạn đã làm ${sessionDone} bài và kiếm được ${sessionXP} XP hôm nay.`
+          : 'Tiến độ hôm nay chưa được lưu.';
+    }
+  }
+
   document.getElementById('wp-quit-overlay').classList.remove('hidden');
 }
 
@@ -1243,6 +1307,28 @@ function stopTestMode() {
       <div class="wp-quit-mascot">✏️</div>
       <p class="wp-quit-title" id="wp-quit-title">Bạn muốn dừng học?</p>
       <p class="wp-quit-sub" id="wp-quit-sub"></p>
+    </div>
+    <!-- Session progress results (shown when sessionDone > 0) -->
+    <div class="wp-quit-results" id="wp-quit-results" style="display:none">
+      <div class="wp-quit-results-title">Kết quả session</div>
+      <div class="wp-quit-ring-wrap">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="46" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+          <circle id="wp-quit-score-circle" cx="55" cy="55" r="46" fill="none" stroke="#22c55e"
+            stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="289.03" stroke-dashoffset="289.03"
+            transform="rotate(-90 55 55)"/>
+        </svg>
+        <div class="wp-quit-ring-text">
+          <span class="wp-quit-ring-pct" id="wp-quit-ring-pct">0%</span>
+          <span class="wp-quit-ring-lbl">Chính xác</span>
+        </div>
+      </div>
+      <div class="wp-quit-stat-row">
+        <span class="wp-qs-correct"><i class="fas fa-check"></i> Đúng: <b id="wp-quit-correct">0</b></span>
+        <span class="wp-qs-wrong"><i class="fas fa-times"></i> Sai: <b id="wp-quit-wrong">0</b></span>
+        <span class="wp-qs-xp"><i class="fas fa-star"></i> XP: <b id="wp-quit-xp">0</b></span>
+      </div>
     </div>
     <div class="wp-quit-actions">
       <button class="wp-quit-continue" id="wp-quit-continue-btn" onclick="cancelWpQuit()">
