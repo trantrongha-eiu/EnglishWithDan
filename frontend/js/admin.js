@@ -79,7 +79,8 @@ function switchTab(tab, ev) {
     history: 'Lịch sử làm bài',
     listening: 'Đề Listening', writing: 'Đề Writing', speaking: 'Speaking',
     courses: 'Khóa học', users: 'Người dùng',
-    'vocab-students': 'Hoạt động từ vựng'
+    'vocab-students': 'Hoạt động từ vựng',
+    wp: 'Luyện viết (Writing Practice)'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
   // Load lazy khi chuyển tab
@@ -92,6 +93,7 @@ function switchTab(tab, ev) {
   if (tab === 'vocab-students') loadVocabStudents();
   if (tab === 'history') loadHistory();       // Luôn fetch mới khi vào tab lịch sử
   if (tab === 'dashboard') loadHistory();     // Cập nhật bảng bài nộp gần nhất trên dashboard
+  if (tab === 'wp') { loadWPTopics(); loadWPExercises(); }
 }
 function toggleSidebar() {
   const open = document.getElementById('sidebar').classList.toggle('open');
@@ -4809,4 +4811,338 @@ function switchInnerTab(group, name, btn) {
   // Toggle trạng thái nút
   btn.closest('.inner-tabs-nav').querySelectorAll('.inner-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   WRITING PRACTICE (WP) – Admin Management
+══════════════════════════════════════════════ */
+let _allWPTopics   = [];
+let _allWPExercises = [];
+let _allWPAttempts  = [];
+let _wpEditTopicId    = null;
+let _wpEditExerciseId = null;
+const WP_EX_PAGE_SIZE = 20;
+let   _wpExPage = 1;
+
+// ── Badge helpers ─────────────────────────────────────────────────
+const wpLevelBadge = l => {
+  const m = { beginner: 'badge-green', elementary: 'badge-blue', intermediate: 'badge-yellow', advanced: 'badge-red' };
+  const label = { beginner: 'Beginner', elementary: 'Elementary', intermediate: 'Intermediate', advanced: 'Advanced' };
+  return `<span class="badge ${m[l] || 'badge-gray'}">${label[l] || l}</span>`;
+};
+const wpTypeBadge = t => {
+  const m = { translation: 'badge-blue', rearrange: 'badge-purple', fill_blank: 'badge-yellow', expand: 'badge-green', combine: 'badge-red' };
+  return `<span class="badge ${m[t] || 'badge-gray'}">${t}</span>`;
+};
+
+// ── Load Topics ───────────────────────────────────────────────────
+async function loadWPTopics() {
+  try {
+    const data = await fetch(`${API}/admin/wp-topics`, { headers: authH() }).then(r => r.json());
+    if (!data.success) return;
+    _allWPTopics = data.topics || [];
+    renderWPTopicsTable(_allWPTopics);
+    _populateWPTopicSelects(_allWPTopics);
+  } catch (err) { console.error('[WP] loadTopics:', err); }
+}
+
+function _populateWPTopicSelects(topics) {
+  // Populate filter dropdown in exercises sub-tab
+  const sel = document.getElementById('wp-filter-topic');
+  if (sel) {
+    const cur = sel.value;
+    sel.innerHTML = '<option value="all">Tất cả chủ đề</option>' +
+      topics.map(t => `<option value="${escH(t.key)}">${escH(t.title)}${t.titleVi ? ' – ' + escH(t.titleVi) : ''}</option>`).join('');
+    sel.value = cur || 'all';
+  }
+  // Populate topicKey dropdown in exercise edit modal
+  const mSel = document.getElementById('wpex-topicKey');
+  if (mSel) {
+    const curM = mSel.value;
+    mSel.innerHTML = '<option value="">-- Chọn chủ đề --</option>' +
+      topics.map(t => `<option value="${escH(t.key)}">${escH(t.title)}${t.titleVi ? ' – ' + escH(t.titleVi) : ''}</option>`).join('');
+    if (curM) mSel.value = curM;
+  }
+}
+
+function renderWPTopicsTable(list) {
+  const tb = document.getElementById('wp-topics-tbody');
+  if (!tb) return;
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="7" class="table-empty">Chưa có chủ đề nào</td></tr>'; return; }
+  tb.innerHTML = list.map(t => `<tr>
+    <td><code style="font-size:12px;color:var(--blue)">${escH(t.key)}</code></td>
+    <td><strong>${escH(t.title)}</strong></td>
+    <td style="color:var(--text3)">${escH(t.titleVi || '–')}</td>
+    <td>${escH(t.category || '–')}</td>
+    <td style="text-align:center">${t.orderIndex ?? 0}</td>
+    <td><span class="badge ${t.isActive ? 'badge-green' : 'badge-gray'}">${t.isActive ? 'Active' : 'Ẩn'}</span></td>
+    <td><div class="row-actions">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="openWPTopicModal('${t._id}')" title="Sửa">✏️</button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWPTopic('${t._id}','${escH(t.title.replace(/'/g,"\\'"))}')" title="Ẩn">🗑</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+// ── Load Exercises ────────────────────────────────────────────────
+async function loadWPExercises() {
+  const level  = document.getElementById('wp-filter-level')?.value  || 'all';
+  const type   = document.getElementById('wp-filter-type')?.value   || 'all';
+  const topic  = document.getElementById('wp-filter-topic')?.value  || 'all';
+  const active = document.getElementById('wp-filter-active')?.value || '';
+  const params = new URLSearchParams({ limit: 200 });
+  if (level !== 'all') params.set('level', level);
+  if (type  !== 'all') params.set('type',  type);
+  if (topic !== 'all') params.set('topic', topic);
+  if (active !== '')   params.set('active', active);
+
+  document.getElementById('wp-exercises-tbody').innerHTML =
+    '<tr><td colspan="8" class="table-empty">⏳ Đang tải...</td></tr>';
+
+  try {
+    const data = await fetch(`${API}/admin/wp-exercises?${params}`, { headers: authH() }).then(r => r.json());
+    if (!data.success) return;
+    _allWPExercises = data.exercises || [];
+    document.getElementById('wp-ex-stats').textContent =
+      `Tổng: ${data.total} bài tập${data.total !== _allWPExercises.length ? ` (hiển thị ${_allWPExercises.length})` : ''}`;
+    _wpExPage = 1;
+    _renderWPExercisesPage();
+  } catch (err) { console.error('[WP] loadExercises:', err); }
+}
+
+function filterWPExercisesLocal() {
+  _wpExPage = 1;
+  _renderWPExercisesPage();
+}
+
+function _renderWPExercisesPage() {
+  const q = (document.getElementById('wp-search-ex')?.value || '').toLowerCase();
+  const filtered = q
+    ? _allWPExercises.filter(e =>
+        (e.question || '').toLowerCase().includes(q) ||
+        (e.sampleAnswer || '').toLowerCase().includes(q) ||
+        (e.grammarPoint || '').toLowerCase().includes(q))
+    : _allWPExercises;
+
+  const start = (_wpExPage - 1) * WP_EX_PAGE_SIZE;
+  const page  = filtered.slice(start, start + WP_EX_PAGE_SIZE);
+  const tb    = document.getElementById('wp-exercises-tbody');
+  if (!tb) return;
+
+  if (!page.length) {
+    tb.innerHTML = '<tr><td colspan="8" class="table-empty">Không có bài tập nào</td></tr>';
+    document.getElementById('wp-ex-pagination').innerHTML = '';
+    return;
+  }
+
+  tb.innerHTML = page.map((e, i) => `<tr>
+    <td style="color:var(--text3);font-size:12px">${start + i + 1}</td>
+    <td style="max-width:260px;white-space:normal;font-size:13px">${escH((e.question || '').slice(0, 100))}${e.question?.length > 100 ? '…' : ''}</td>
+    <td>${wpTypeBadge(e.type)}</td>
+    <td>${wpLevelBadge(e.level)}</td>
+    <td style="font-size:12px;color:var(--text3)">${escH(e.topicKey || '–')}</td>
+    <td style="max-width:200px;white-space:normal;font-size:12px;color:var(--text2)">${escH((e.sampleAnswer || '').slice(0, 80))}${e.sampleAnswer?.length > 80 ? '…' : ''}</td>
+    <td><span class="badge ${e.isActive ? 'badge-green' : 'badge-gray'}">${e.isActive ? 'Active' : 'Ẩn'}</span></td>
+    <td><div class="row-actions">
+      <button class="btn btn-ghost btn-sm btn-icon" onclick="openWPExerciseModal('${e._id}')" title="Sửa">✏️</button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteWPExercise('${e._id}')" title="Ẩn">🗑</button>
+    </div></td>
+  </tr>`).join('');
+
+  // Pagination
+  const pg = document.getElementById('wp-ex-pagination');
+  const totalPages = Math.ceil(filtered.length / WP_EX_PAGE_SIZE);
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+  let html = `<span class="page-info">${start + 1}–${Math.min(start + WP_EX_PAGE_SIZE, filtered.length)} / ${filtered.length}</span>`;
+  for (let i = 1; i <= totalPages; i++)
+    html += `<button class="page-btn ${i === _wpExPage ? 'active' : ''}" onclick="_wpGoPage(${i})">${i}</button>`;
+  pg.innerHTML = html;
+}
+
+function _wpGoPage(p) { _wpExPage = p; _renderWPExercisesPage(); }
+
+// ── Load Attempts ─────────────────────────────────────────────────
+async function loadWPAttempts() {
+  document.getElementById('wp-attempts-tbody').innerHTML =
+    '<tr><td colspan="8" class="table-empty">⏳ Đang tải...</td></tr>';
+  try {
+    const data = await fetch(`${API}/admin/wp-attempts?limit=200`, { headers: authH() }).then(r => r.json());
+    if (!data.success) return;
+    _allWPAttempts = data.attempts || [];
+    filterWPAttempts();
+  } catch (err) { console.error('[WP] loadAttempts:', err); }
+}
+
+function filterWPAttempts() {
+  const q = (document.getElementById('wp-search-attempts')?.value || '').toLowerCase();
+  const list = q
+    ? _allWPAttempts.filter(a =>
+        (a.studentId?.username || '').toLowerCase().includes(q) ||
+        (a.studentId?.displayName || '').toLowerCase().includes(q) ||
+        (a.topic || '').toLowerCase().includes(q))
+    : _allWPAttempts;
+  const tb = document.getElementById('wp-attempts-tbody');
+  if (!tb) return;
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="8" class="table-empty">Không có dữ liệu</td></tr>'; return; }
+  tb.innerHTML = list.slice(0, 100).map(a => {
+    const name = a.studentId?.displayName || a.studentId?.username || '–';
+    return `<tr>
+      <td><strong>${escH(name)}</strong></td>
+      <td>${wpTypeBadge(a.type)}</td>
+      <td>${wpLevelBadge(a.level)}</td>
+      <td style="font-size:12px;color:var(--text3)">${escH(a.topic || '–')}</td>
+      <td style="max-width:240px;white-space:normal;font-size:12px">${escH((a.userAnswer || '').slice(0, 100))}${a.userAnswer?.length > 100 ? '…' : ''}</td>
+      <td style="text-align:center;font-weight:700;color:var(--green)">${a.xpEarned ?? 0}</td>
+      <td style="font-size:12px;color:var(--text3)">${formatDate(a.createdAt)}</td>
+      <td><button class="btn btn-danger btn-sm btn-icon" onclick="deleteWPAttempt('${a._id}','${escH(name.replace(/'/g,"\\'"))}')">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Topic Modal ───────────────────────────────────────────────────
+function openWPTopicModal(id = null) {
+  _wpEditTopicId = id;
+  const topic = id ? _allWPTopics.find(t => t._id === id) : null;
+  document.getElementById('wpt-modal-title').textContent = id ? 'Sửa chủ đề' : 'Thêm chủ đề mới';
+  document.getElementById('wpt-key').value         = topic?.key         || '';
+  document.getElementById('wpt-title').value       = topic?.title       || '';
+  document.getElementById('wpt-titleVi').value     = topic?.titleVi     || '';
+  document.getElementById('wpt-description').value = topic?.description || '';
+  document.getElementById('wpt-category').value    = topic?.category    || 'general';
+  document.getElementById('wpt-orderIndex').value  = topic?.orderIndex  ?? 0;
+  document.getElementById('wpt-isActive').checked  = topic ? topic.isActive !== false : true;
+  openModal('modal-wp-topic');
+}
+
+async function saveWPTopic() {
+  const key   = document.getElementById('wpt-key').value.trim();
+  const title = document.getElementById('wpt-title').value.trim();
+  if (!key || !title) { toast('Nhập đầy đủ Key và Tiêu đề', 'error'); return; }
+  const body = {
+    key,
+    title,
+    titleVi:     document.getElementById('wpt-titleVi').value.trim(),
+    description: document.getElementById('wpt-description').value.trim(),
+    category:    document.getElementById('wpt-category').value.trim() || 'general',
+    orderIndex:  Number(document.getElementById('wpt-orderIndex').value) || 0,
+    isActive:    document.getElementById('wpt-isActive').checked
+  };
+  try {
+    const url    = _wpEditTopicId ? `${API}/admin/wp-topics/${_wpEditTopicId}` : `${API}/admin/wp-topics`;
+    const method = _wpEditTopicId ? 'PUT' : 'POST';
+    const data   = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) }).then(r => r.json());
+    if (!data.success) throw new Error(data.message);
+    toast(_wpEditTopicId ? 'Đã cập nhật chủ đề' : 'Đã thêm chủ đề mới');
+    closeModal('modal-wp-topic');
+    await loadWPTopics();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+async function deleteWPTopic(id, title) {
+  confirmAction(`Ẩn chủ đề "${title}"?`, async () => {
+    try {
+      await fetch(`${API}/admin/wp-topics/${id}`, { method: 'DELETE', headers: authH() });
+      toast('Đã ẩn chủ đề'); await loadWPTopics();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+// ── Exercise Modal ────────────────────────────────────────────────
+function toggleWPExFields() {
+  const type = document.getElementById('wpex-type')?.value;
+  document.getElementById('wpex-basetext-wrap').style.display   = type === 'fill_blank' ? '' : 'none';
+  document.getElementById('wpex-basewords-wrap').style.display  = type === 'rearrange'  ? '' : 'none';
+  document.getElementById('wpex-sentences-wrap').style.display  = type === 'combine'    ? '' : 'none';
+  document.getElementById('wpex-blankanswer-wrap').style.display = type === 'fill_blank' ? '' : 'none';
+}
+
+function openWPExerciseModal(id = null) {
+  _wpEditExerciseId = id;
+  const ex = id ? _allWPExercises.find(e => e._id === id) : null;
+  document.getElementById('wpex-modal-title').textContent = id ? 'Sửa bài tập' : 'Thêm bài tập mới';
+  document.getElementById('wpex-level').value       = ex?.level       || 'beginner';
+  document.getElementById('wpex-type').value        = ex?.type        || 'translation';
+  document.getElementById('wpex-grammarPoint').value = ex?.grammarPoint || '';
+  document.getElementById('wpex-question').value    = ex?.question    || '';
+  document.getElementById('wpex-sampleAnswer').value = ex?.sampleAnswer || '';
+  document.getElementById('wpex-blankAnswer').value  = ex?.blankAnswer  || '';
+  document.getElementById('wpex-baseText').value    = ex?.baseText    || '';
+  document.getElementById('wpex-baseWords').value   = ex?.baseWords?.join(' | ') || '';
+  document.getElementById('wpex-sentences').value   = ex?.sentences?.join('\n') || '';
+  document.getElementById('wpex-altAnswers').value  = (ex?.alternativeAnswers || []).join('\n');
+  document.getElementById('wpex-explanation').value = ex?.explanation || '';
+  document.getElementById('wpex-orderIndex').value  = ex?.orderIndex  ?? 0;
+  document.getElementById('wpex-isActive').checked  = ex ? ex.isActive !== false : true;
+
+  // Populate topic key dropdown with current topics
+  _populateWPTopicSelects(_allWPTopics);
+  document.getElementById('wpex-topicKey').value = ex?.topicKey || '';
+
+  toggleWPExFields();
+  openModal('modal-wp-exercise');
+}
+
+async function saveWPExercise() {
+  const question    = document.getElementById('wpex-question').value.trim();
+  const sampleAnswer = document.getElementById('wpex-sampleAnswer').value.trim();
+  const topicKey    = document.getElementById('wpex-topicKey').value;
+  const type        = document.getElementById('wpex-type').value;
+
+  if (!question || !sampleAnswer || !topicKey) {
+    toast('Nhập đầy đủ Câu hỏi, Đáp án mẫu và Chủ đề', 'error'); return;
+  }
+  if (type === 'fill_blank' && !document.getElementById('wpex-blankAnswer').value.trim()) {
+    toast('Fill blank cần có Đáp án chỗ trống (blankAnswer)', 'error'); return;
+  }
+
+  const rawBaseWords = document.getElementById('wpex-baseWords').value.trim();
+  const rawSentences = document.getElementById('wpex-sentences').value.trim();
+  const rawAlt       = document.getElementById('wpex-altAnswers').value.trim();
+
+  const body = {
+    level:        document.getElementById('wpex-level').value,
+    type,
+    topicKey,
+    grammarPoint: document.getElementById('wpex-grammarPoint').value.trim(),
+    question,
+    sampleAnswer,
+    blankAnswer:  document.getElementById('wpex-blankAnswer').value.trim() || undefined,
+    baseText:     document.getElementById('wpex-baseText').value.trim()    || undefined,
+    baseWords:    rawBaseWords ? rawBaseWords.split('|').map(s => s.trim()).filter(Boolean) : [],
+    sentences:    rawSentences ? rawSentences.split('\n').map(s => s.trim()).filter(Boolean) : [],
+    alternativeAnswers: rawAlt ? rawAlt.split('\n').map(s => s.trim()).filter(Boolean) : [],
+    explanation:  document.getElementById('wpex-explanation').value.trim() || undefined,
+    orderIndex:   Number(document.getElementById('wpex-orderIndex').value) || 0,
+    isActive:     document.getElementById('wpex-isActive').checked
+  };
+
+  // Clean up undefined fields to avoid overwriting with null
+  Object.keys(body).forEach(k => body[k] === undefined && delete body[k]);
+
+  try {
+    const url    = _wpEditExerciseId ? `${API}/admin/wp-exercises/${_wpEditExerciseId}` : `${API}/admin/wp-exercises`;
+    const method = _wpEditExerciseId ? 'PUT' : 'POST';
+    const data   = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) }).then(r => r.json());
+    if (!data.success) throw new Error(data.message);
+    toast(_wpEditExerciseId ? 'Đã cập nhật bài tập' : 'Đã thêm bài tập mới');
+    closeModal('modal-wp-exercise');
+    await loadWPExercises();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+async function deleteWPExercise(id) {
+  confirmAction('Ẩn bài tập này?', async () => {
+    try {
+      await fetch(`${API}/admin/wp-exercises/${id}`, { method: 'DELETE', headers: authH() });
+      toast('Đã ẩn bài tập'); await loadWPExercises();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+async function deleteWPAttempt(id, name) {
+  confirmAction(`Xóa lần luyện tập của "${name}"?`, async () => {
+    try {
+      await fetch(`${API}/admin/wp-attempts/${id}`, { method: 'DELETE', headers: authH() });
+      toast('Đã xóa'); await loadWPAttempts();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
 }

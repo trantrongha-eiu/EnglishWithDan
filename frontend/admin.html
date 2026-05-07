@@ -54,6 +54,9 @@
     <a class="nav-item" onclick="switchTab('vocab',event)" href="#">
       <span class="nav-icon">📚</span> Từ vựng (Units)
     </a>
+    <a class="nav-item" onclick="switchTab('wp',event)" href="#">
+      <span class="nav-icon">✍️</span> Luyện viết
+    </a>
 
     <span class="nav-section-label">Học sinh</span>
     <a class="nav-item" onclick="switchTab('history',event)" href="#">
@@ -728,6 +731,127 @@
             </table>
           </div>
         </div><!-- /tab-vocab-students -->
+
+        <!-- ─── TAB: WRITING PRACTICE (LUYỆN VIẾT) ─── -->
+        <div id="tab-wp">
+
+          <div class="inner-tabs-nav">
+            <button class="inner-tab active" onclick="switchInnerTab('wp','exercises',this)">📝 Bài tập</button>
+            <button class="inner-tab" onclick="switchInnerTab('wp','topics',this)">🏷️ Chủ đề</button>
+            <button class="inner-tab" onclick="switchInnerTab('wp','attempts',this);loadWPAttempts()">📊 Lịch sử luyện</button>
+          </div>
+
+          <!-- Exercises -->
+          <div id="wp-sub-exercises" class="inner-tab-panel active">
+            <div class="section-header">
+              <span class="section-title">Bài tập luyện viết</span>
+              <div class="section-actions" style="flex-wrap:wrap;gap:6px">
+                <select class="filter-select" id="wp-filter-level" onchange="loadWPExercises()" style="width:140px">
+                  <option value="all">Tất cả cấp độ</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="elementary">Elementary</option>
+                  <option value="intermediate">Intermediate</option>
+                </select>
+                <select class="filter-select" id="wp-filter-type" onchange="loadWPExercises()" style="width:150px">
+                  <option value="all">Tất cả loại</option>
+                  <option value="translation">Translation</option>
+                  <option value="rearrange">Rearrange</option>
+                  <option value="fill_blank">Fill Blank</option>
+                  <option value="expand">Expand</option>
+                  <option value="combine">Combine</option>
+                </select>
+                <select class="filter-select" id="wp-filter-topic" onchange="loadWPExercises()" style="width:150px">
+                  <option value="all">Tất cả chủ đề</option>
+                </select>
+                <select class="filter-select" id="wp-filter-active" onchange="loadWPExercises()" style="width:150px">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="true">Đang hoạt động</option>
+                  <option value="false">Đã ẩn</option>
+                </select>
+                <div class="search-wrap"><input class="search-input" id="wp-search-ex" placeholder="Tìm câu hỏi..." oninput="filterWPExercisesLocal()" style="width:180px" /></div>
+                <button class="btn btn-primary btn-sm" onclick="openWPExerciseModal()">＋ Thêm bài tập</button>
+              </div>
+            </div>
+            <div id="wp-ex-stats" style="font-size:12px;color:var(--text3);margin-bottom:8px"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:36px">#</th>
+                    <th>Câu hỏi</th>
+                    <th>Loại</th>
+                    <th>Cấp độ</th>
+                    <th>Chủ đề</th>
+                    <th>Đáp án mẫu</th>
+                    <th>Trạng thái</th>
+                    <th style="width:120px"></th>
+                  </tr>
+                </thead>
+                <tbody id="wp-exercises-tbody">
+                  <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+              <div class="pagination" id="wp-ex-pagination"></div>
+            </div>
+          </div>
+
+          <!-- Topics -->
+          <div id="wp-sub-topics" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Chủ đề (Topics)</span>
+              <button class="btn btn-primary btn-sm" onclick="openWPTopicModal()">＋ Thêm chủ đề</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Tiêu đề (EN)</th>
+                    <th>Tiêu đề (VI)</th>
+                    <th>Danh mục</th>
+                    <th>Thứ tự</th>
+                    <th>Trạng thái</th>
+                    <th style="width:120px"></th>
+                  </tr>
+                </thead>
+                <tbody id="wp-topics-tbody">
+                  <tr><td colspan="7" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Attempts -->
+          <div id="wp-sub-attempts" class="inner-tab-panel">
+            <div class="section-header">
+              <span class="section-title">Lịch sử luyện viết</span>
+              <div class="section-actions">
+                <div class="search-wrap"><input class="search-input" id="wp-search-attempts" placeholder="Tìm học sinh, chủ đề..." oninput="filterWPAttempts()" /></div>
+                <button class="btn btn-ghost btn-sm" onclick="loadWPAttempts()">🔄 Làm mới</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Học sinh</th>
+                    <th>Loại</th>
+                    <th>Cấp độ</th>
+                    <th>Chủ đề</th>
+                    <th>Câu trả lời</th>
+                    <th>XP</th>
+                    <th>Ngày làm</th>
+                    <th style="width:60px"></th>
+                  </tr>
+                </thead>
+                <tbody id="wp-attempts-tbody">
+                  <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /tab-wp -->
 
       </div><!-- /tab-panels -->
     </div><!-- /content -->
@@ -1634,6 +1758,160 @@
       <div class="modal-footer">
         <button class="btn btn-ghost" onclick="closeModal('modal-user')">Huỷ</button>
         <button class="btn btn-primary" onclick="saveUser()">💾 Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: WP Topic ══ -->
+  <div class="modal-overlay hidden" id="modal-wp-topic">
+    <div class="modal-box" style="width:min(540px,100%)">
+      <div class="modal-header">
+        <h3 id="wpt-modal-title">Thêm chủ đề mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-wp-topic')">×</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="form-label">Key <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="wpt-key" placeholder="vd: daily_life" />
+          </div>
+          <div>
+            <label class="form-label">Danh mục</label>
+            <input class="form-input" id="wpt-category" placeholder="vd: general" value="general" />
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="form-label">Tiêu đề (EN) <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="wpt-title" placeholder="Daily Life" />
+          </div>
+          <div>
+            <label class="form-label">Tiêu đề (VI)</label>
+            <input class="form-input" id="wpt-titleVi" placeholder="Cuộc sống hàng ngày" />
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Mô tả</label>
+          <input class="form-input" id="wpt-description" placeholder="Mô tả ngắn về chủ đề..." />
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="form-label">Thứ tự hiển thị</label>
+            <input class="form-input" id="wpt-orderIndex" type="number" value="0" min="0" />
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding-top:20px">
+            <input type="checkbox" id="wpt-isActive" checked style="width:16px;height:16px" />
+            <label for="wpt-isActive" style="font-size:13px;cursor:pointer">Đang hoạt động</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-wp-topic')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveWPTopic()">💾 Lưu chủ đề</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MODAL: WP Exercise ══ -->
+  <div class="modal-overlay hidden" id="modal-wp-exercise">
+    <div class="modal-box" style="max-width:680px;width:95vw">
+      <div class="modal-header">
+        <h3 id="wpex-modal-title">Thêm bài tập mới</h3>
+        <button class="modal-close" onclick="closeModal('modal-wp-exercise')">×</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:12px">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div>
+            <label class="form-label">Cấp độ <span style="color:var(--red)">*</span></label>
+            <select class="form-select" id="wpex-level">
+              <option value="beginner">Beginner</option>
+              <option value="elementary">Elementary</option>
+              <option value="intermediate">Intermediate</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Loại bài <span style="color:var(--red)">*</span></label>
+            <select class="form-select" id="wpex-type" onchange="toggleWPExFields()">
+              <option value="translation">Translation (Dịch câu)</option>
+              <option value="rearrange">Rearrange (Sắp xếp)</option>
+              <option value="fill_blank">Fill Blank (Điền chỗ trống)</option>
+              <option value="expand">Expand (Mở rộng)</option>
+              <option value="combine">Combine (Kết hợp)</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Chủ đề <span style="color:var(--red)">*</span></label>
+            <select class="form-select" id="wpex-topicKey">
+              <option value="">-- Chọn chủ đề --</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label">Điểm ngữ pháp (Grammar Point)</label>
+          <input class="form-input" id="wpex-grammarPoint" placeholder="vd: Present Simple" />
+        </div>
+
+        <div>
+          <label class="form-label">Câu hỏi / Hướng dẫn <span style="color:var(--red)">*</span></label>
+          <textarea class="form-textarea" id="wpex-question" rows="2" placeholder="Nhập câu hỏi hoặc câu cần dịch/sắp xếp..."></textarea>
+        </div>
+
+        <!-- fill_blank: baseText -->
+        <div id="wpex-basetext-wrap" style="display:none">
+          <label class="form-label">Câu gốc (có _____ cho chỗ trống)</label>
+          <textarea class="form-textarea" id="wpex-baseText" rows="2" placeholder="vd: She _____ to school every day."></textarea>
+        </div>
+
+        <!-- rearrange: baseWords -->
+        <div id="wpex-basewords-wrap" style="display:none">
+          <label class="form-label">Các từ cần sắp xếp (mỗi từ 1 dòng hoặc cách nhau bởi "|")</label>
+          <textarea class="form-textarea" id="wpex-baseWords" rows="2" placeholder="goes | She | to school | every day"></textarea>
+        </div>
+
+        <!-- combine: sentences -->
+        <div id="wpex-sentences-wrap" style="display:none">
+          <label class="form-label">Các câu cần kết hợp (mỗi câu 1 dòng)</label>
+          <textarea class="form-textarea" id="wpex-sentences" rows="3" placeholder="She is tired.&#10;She goes to bed early."></textarea>
+        </div>
+
+        <div>
+          <label class="form-label">Đáp án mẫu <span style="color:var(--red)">*</span></label>
+          <textarea class="form-textarea" id="wpex-sampleAnswer" rows="2" placeholder="Đáp án chuẩn của bài tập..."></textarea>
+        </div>
+
+        <!-- fill_blank specific -->
+        <div id="wpex-blankanswer-wrap" style="display:none">
+          <label class="form-label">Đáp án chỗ trống (blankAnswer)</label>
+          <input class="form-input" id="wpex-blankAnswer" placeholder="vd: goes" />
+        </div>
+
+        <div>
+          <label class="form-label">Đáp án thay thế <span style="color:var(--text3);font-weight:400">(mỗi đáp án 1 dòng)</span></label>
+          <textarea class="form-textarea" id="wpex-altAnswers" rows="2" placeholder="She goes to school daily.&#10;She attends school every day."></textarea>
+        </div>
+
+        <div>
+          <label class="form-label">Giải thích (Explanation)</label>
+          <textarea class="form-textarea" id="wpex-explanation" rows="2" placeholder="Giải thích ngữ pháp hoặc cách dùng..."></textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label class="form-label">Thứ tự (orderIndex)</label>
+            <input class="form-input" id="wpex-orderIndex" type="number" value="0" min="0" />
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding-top:20px">
+            <input type="checkbox" id="wpex-isActive" checked style="width:16px;height:16px" />
+            <label for="wpex-isActive" style="font-size:13px;cursor:pointer">Đang hoạt động</label>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-wp-exercise')">Huỷ</button>
+        <button class="btn btn-primary" onclick="saveWPExercise()">💾 Lưu bài tập</button>
       </div>
     </div>
   </div>

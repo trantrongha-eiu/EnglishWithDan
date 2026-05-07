@@ -537,6 +537,16 @@
       background: rgba(22, 163, 74, .25);
     }
 
+    .btn-warning {
+      background: rgba(234, 179, 8, .15);
+      color: #a16207;
+      border: 1px solid rgba(234, 179, 8, .35);
+    }
+
+    .btn-warning:hover {
+      background: rgba(234, 179, 8, .28);
+    }
+
     .btn-sm {
       padding: 5px 11px;
       font-size: 12px;
@@ -698,7 +708,8 @@
       margin-bottom: 18px;
     }
 
-    .form-group label {
+    .form-group label,
+    .form-label {
       display: block;
       font-size: 12px;
       font-weight: 700;
