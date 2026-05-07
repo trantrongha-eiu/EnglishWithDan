@@ -711,6 +711,38 @@ body {
 .wp-more-btn:hover { background: #e5e7eb; }
 
 /* ══════════════════════════════════════════════
+   DESKTOP STATS WIDGET (fixed top-right)
+══════════════════════════════════════════════ */
+.wp-stats-widget {
+  position: fixed;
+  top: 57px;          /* flush below the 56px header */
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  border-right: none;
+  border-radius: 0 0 0 12px;
+  padding: 10px 16px 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  z-index: 55;
+  min-width: 176px;
+}
+.wp-stats-widget-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+[data-theme="dark"] .wp-stats-widget      { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .wp-stats-widget-title { color: #6b7280; }
+
+/* ══════════════════════════════════════════════
    MOBILE COMPONENTS
 ══════════════════════════════════════════════ */
 
@@ -827,8 +859,9 @@ body {
    RESPONSIVE
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .wp-sidebar      { display: none !important; }
-  .wp-layout       { padding-bottom: 80px; }
+  .wp-sidebar        { display: none !important; }
+  .wp-stats-widget   { display: none !important; }
+  .wp-layout         { padding-bottom: 80px; }
   .wp-main         { padding: 12px 14px; }
   .wp-card         { padding: 16px 14px; }
   .wp-question-text { font-size: 18px; }

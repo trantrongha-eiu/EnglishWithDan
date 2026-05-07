@@ -160,14 +160,6 @@
         </div>
       </div>
 
-      <div class="wp-sidebar-section wp-stats-panel">
-        <div class="wp-sidebar-title"><i class="fas fa-chart-bar"></i> Hôm nay</div>
-        <div class="wp-stats-row">
-          <div class="wp-stat-box"><div class="wp-stat-num" id="stat-done">0</div><div class="wp-stat-label">Bài làm</div></div>
-          <div class="wp-stat-box"><div class="wp-stat-num" id="stat-xp">0</div><div class="wp-stat-label">XP</div></div>
-          <div class="wp-stat-box"><div class="wp-stat-num" id="stat-correct">–</div><div class="wp-stat-label">Đúng</div></div>
-        </div>
-      </div>
     </div>
 
     <!-- Test setup (visible in test mode) -->
@@ -447,13 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initUser() {
-  const token = localStorage.getItem('token');
-  if (!token) return;
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const name = payload.name || payload.email || '';
-    if (name) document.getElementById('userName').textContent = '👋 ' + name;
-  } catch {}
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const name = user.firstName
+    ? `${user.firstName} ${user.lastName || ''}`.trim()
+    : user.username || '';
+  if (name) document.getElementById('userName').textContent = '👋 ' + name;
 }
 
 function logout() {
@@ -1104,6 +1094,16 @@ function stopTestMode() {
   });
 }
 </script>
+
+<!-- ── Desktop stats widget (top-right) ── -->
+<div class="wp-stats-widget" id="wp-stats-widget">
+  <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Hôm nay</div>
+  <div class="wp-stats-row">
+    <div class="wp-stat-box"><div class="wp-stat-num" id="stat-done">0</div><div class="wp-stat-label">Bài làm</div></div>
+    <div class="wp-stat-box"><div class="wp-stat-num" id="stat-xp">0</div><div class="wp-stat-label">XP</div></div>
+    <div class="wp-stat-box"><div class="wp-stat-num" id="stat-correct">–</div><div class="wp-stat-label">Đúng</div></div>
+  </div>
+</div>
 
 <!-- ── Mobile FAB ── -->
 <button class="wp-mob-fab" id="wp-mob-fab" onclick="openWpSheet()" aria-label="Bộ lọc & Cài đặt">
