@@ -18,6 +18,107 @@ function catBadge(c) {
   return <span className="badge badge-blue">{c}</span>;
 }
 
+function PassageModal({ passageId, onClose, onSaved }) {
+  const toast = useToast();
+  const [form, setForm] = useState({
+    title: '', category: 'Academic', content: '', difficulty: 'medium',
+    questionRange: { start: 1, end: 13 }, isActive: true
+  });
+  const [loading, setLoading] = useState(!!passageId);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!passageId) return;
+    apiFetch(`/admin/passages/${passageId}`)
+      .then(d => {
+        const p = d.passage;
+        setForm({
+          title: p.title || '',
+          category: p.category || 'Academic',
+          content: p.content || '',
+          difficulty: p.difficulty || 'medium',
+          questionRange: { start: p.questionRange?.start ?? 1, end: p.questionRange?.end ?? 13 },
+          isActive: p.isActive !== false
+        });
+      })
+      .catch(() => toast('Không tải được bài đọc', 'error'))
+      .finally(() => setLoading(false));
+  }, [passageId]);
+
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+  const setRange = k => e => setForm(f => ({ ...f, questionRange: { ...f.questionRange, [k]: Number(e.target.value) } }));
+
+  async function save(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (passageId) await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify(form) });
+      else await apiFetch('/admin/passages', { method: 'POST', body: JSON.stringify(form) });
+      toast(passageId ? 'Đã cập nhật bài đọc' : 'Đã thêm bài đọc');
+      onSaved(); onClose();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 680, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">{passageId ? 'Sửa bài đọc' : 'Thêm bài đọc mới'}</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        {loading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>
+        ) : (
+          <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto' }}>
+            <div className="form-group">
+              <label className="form-label">Tiêu đề *</label>
+              <input className="form-input" value={form.title} onChange={set('title')} required placeholder="The History of Coffee" />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="form-group">
+                <label className="form-label">Category *</label>
+                <select className="form-input" value={form.category} onChange={set('category')}>
+                  {CATS.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Độ khó</label>
+                <select className="form-input" value={form.difficulty} onChange={set('difficulty')}>
+                  {DIFFS.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="form-group">
+                <label className="form-label">Câu hỏi từ số</label>
+                <input className="form-input" type="number" value={form.questionRange.start} onChange={setRange('start')} min={1} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Đến số</label>
+                <input className="form-input" type="number" value={form.questionRange.end} onChange={setRange('end')} min={1} />
+              </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Nội dung bài đọc</label>
+              <textarea className="form-input" rows={12} value={form.content} onChange={set('content')}
+                style={{ fontFamily: 'inherit', fontSize: 13, lineHeight: 1.6 }}
+                placeholder="Paste the full reading passage here..." />
+            </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+              <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Hiển thị
+            </label>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
+              <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+              <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu'}</button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function Passages() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -26,8 +127,10 @@ export default function Passages() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [cat, setCat] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const load = () => apiFetch('/admin/passages?limit=200').then(d => { setAll(d.passages || []); }).catch(e => toast(e.message, 'error'));
+  const load = () => apiFetch('/admin/passages?limit=200').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
   useEffect(() => {
@@ -55,10 +158,17 @@ export default function Passages() {
     });
   }
 
+  function closeModal() { setShowModal(false); setEditId(null); }
+
   return (
     <>
+      {(showModal || editId) && (
+        <PassageModal passageId={editId} onClose={closeModal} onSaved={load} />
+      )}
+
       <div className="section-header">
         <h2 className="section-title">Bài đọc ({filtered.length})</h2>
+        <button className="btn btn-primary" onClick={() => { setEditId(null); setShowModal(true); }}>+ Thêm bài đọc</button>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
@@ -91,8 +201,9 @@ export default function Passages() {
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
                   <td>
                     <div className="row-actions">
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditId(p._id)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(p._id, p.isActive)} title={p.isActive ? 'Ẩn' : 'Hiện'}>{p.isActive ? '🙈' : '👁'}</button>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(p._id, p.title)} title="Xóa vĩnh viễn">🗑</button>
+                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(p._id, p.title)} title="Xóa">🗑</button>
                     </div>
                   </td>
                 </tr>
@@ -102,11 +213,6 @@ export default function Passages() {
       </div>
       <div style={{ marginTop: 12 }}>
         <Pagination page={page} total={filtered.length} pageSize={PAGE} onPage={setPage} />
-      </div>
-
-      <div style={{ marginTop: 20, padding: 16, background: 'var(--surface2)', borderRadius: 'var(--radius)', color: 'var(--text3)', fontSize: 13 }}>
-        💡 Để thêm/sửa bài đọc với đầy đủ tính năng (câu hỏi, range), dùng trang admin cũ:
-        <a href="/admin.html" style={{ color: 'var(--blue)', marginLeft: 6 }}>Mở admin cũ →</a>
       </div>
     </>
   );
