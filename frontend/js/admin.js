@@ -40,12 +40,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await Promise.all([loadStats(), loadPassages(), loadTests(), loadKeys(), loadHistory()]);
 
-  // Restore tab from URL path (e.g. /admin/users → users tab)
-  const _slug = location.pathname.replace(/^\/admin\/?/, '').split('/')[0] || 'dashboard';
+  // Restore tab from URL hash (e.g. /admin.html#users → users tab)
+  const _slug = location.hash.replace(/^#/, '') || 'dashboard';
   if (_VALID_TABS.has(_slug) && _slug !== 'dashboard') {
     switchTab(_slug, null);
   } else {
-    history.replaceState({ tab: 'dashboard' }, '', '/admin/');
+    history.replaceState({ tab: 'dashboard' }, '', location.pathname);
   }
 
   // Browser back / forward
@@ -103,9 +103,9 @@ function switchTab(tab, ev) {
     wp: 'Luyện viết (Writing Practice)'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
-  // Update URL
-  const path = tab === 'dashboard' ? '/admin/' : `/admin/${tab}`;
-  if (location.pathname !== path) history.pushState({ tab }, '', path);
+  // Update URL hash (stay on admin.html, no conflict with React admin)
+  const hash = tab === 'dashboard' ? '' : `#${tab}`;
+  history.pushState({ tab }, '', location.pathname + hash);
   // Load lazy khi chuyển tab
   if (tab === 'vocab') loadVocabUnits();
   if (tab === 'listening') loadListeningTests();
