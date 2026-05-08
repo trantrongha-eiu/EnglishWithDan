@@ -163,7 +163,9 @@ export default function WritingPractice() {
   const [levelFilter, setLevelFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [topicFilter, setTopicFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [exSearch, setExSearch] = useState('');
+  const [attemptSearch, setAttemptSearch] = useState('');
   const [editEx, setEditEx] = useState(null);
   const [showExModal, setShowExModal] = useState(false);
   const [editTopic, setEditTopic] = useState(null);
@@ -181,11 +183,13 @@ export default function WritingPractice() {
       if (levelFilter && ex.level !== levelFilter) return false;
       if (typeFilter && ex.type !== typeFilter) return false;
       if (topicFilter && ex.topicKey !== topicFilter) return false;
+      if (statusFilter === 'active' && ex.isActive === false) return false;
+      if (statusFilter === 'hidden' && ex.isActive !== false) return false;
       if (exSearch && !ex.question?.toLowerCase().includes(exSearch.toLowerCase())) return false;
       return true;
     }));
     setPage(1);
-  }, [exercises, levelFilter, typeFilter, topicFilter, exSearch]);
+  }, [exercises, levelFilter, typeFilter, topicFilter, statusFilter, exSearch]);
 
   async function delEx(id) {
     confirm('Xóa bài tập này?', async () => {
@@ -238,6 +242,11 @@ export default function WritingPractice() {
             <select className="form-input" value={topicFilter} onChange={e => setTopicFilter(e.target.value)} style={{ width: 160 }}>
               <option value="">Tất cả chủ đề</option>
               {topics.map(t => <option key={t.key} value={t.key}>{t.titleVi || t.title}</option>)}
+            </select>
+            <select className="form-input" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ width: 150 }}>
+              <option value="">Tất cả trạng thái</option>
+              <option value="active">Đang hiển thị</option>
+              <option value="hidden">Đang ẩn</option>
             </select>
             <button className="btn btn-primary btn-sm" onClick={() => { setEditEx(null); setShowExModal(true); }}>+ Thêm bài tập</button>
           </div>
@@ -305,13 +314,19 @@ export default function WritingPractice() {
       )}
 
       {tab === 'attempts' && (
-        <div className="table-wrap">
+        <>
+          <div style={{ display: 'flex', gap: 10, margin: '12px 0', alignItems: 'center', justifyContent: 'space-between' }}>
+            <input className="form-input search-input" placeholder="Tìm học sinh, chủ đề..." value={attemptSearch}
+              onChange={e => setAttemptSearch(e.target.value)} style={{ maxWidth: 280 }} />
+            <button className="btn btn-ghost btn-sm" onClick={loadAttempts}>🔄 Làm mới</button>
+          </div>
+          <div className="table-wrap">
           <table className="table">
             <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>LOẠI</th><th>CHỦ ĐỀ</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
             <tbody>
-              {attempts.length === 0
+              {attempts.filter(a => !attemptSearch || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase()) || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase())).length === 0
                 ? <tr><td colSpan={7} className="table-empty">Chưa có lịch sử</td></tr>
-                : attempts.map(a => (
+                : attempts.filter(a => !attemptSearch || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase()) || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase())).map(a => (
                   <tr key={a._id}>
                     <td><strong>{a.studentId?.username || '–'}</strong></td>
                     <td>{levelBadge(a.level)}</td>
@@ -331,7 +346,8 @@ export default function WritingPractice() {
                 ))}
             </tbody>
           </table>
-        </div>
+          </div>
+        </>
       )}
     </>
   );

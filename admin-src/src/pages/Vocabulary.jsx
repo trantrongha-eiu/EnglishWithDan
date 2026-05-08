@@ -213,6 +213,131 @@ function WordsModal({ unit, onClose }) {
   );
 }
 
+const FULL_EXAMPLE = `[
+  {
+    "unitNumber": 5,
+    "title": "Cambridge IELTS 15",
+    "level": "IELTS",
+    "words": [
+      {
+        "word": "habitat",
+        "meaning": "môi trường sống",
+        "example": "The rainforest is the natural habitat of many species.",
+        "phonetic": "/ˈhæbɪtæt/",
+        "partOfSpeech": "noun"
+      },
+      {
+        "type": "paraphrase",
+        "word": "evergreen tree",
+        "paraphrase": "always green tree",
+        "meaning": "cây xanh quanh năm",
+        "explanation": "Paraphrase: 'evergreen' mang nghĩa là luôn xanh tươi"
+      }
+    ]
+  }
+]`;
+
+function ImportJsonModal({ onClose, onImported }) {
+  const toast = useToast();
+  const [jsonText, setJsonText] = useState('');
+  const [replace, setReplace] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [result, setResult] = useState(null);
+
+  async function doImport() {
+    if (!jsonText.trim()) { toast('Vui lòng dán JSON vào', 'error'); return; }
+    let data;
+    try {
+      data = JSON.parse(jsonText.trim());
+    } catch {
+      toast('JSON không hợp lệ – kiểm tra cú pháp', 'error'); return;
+    }
+    if (!Array.isArray(data)) data = [data];
+    setImporting(true);
+    setResult(null);
+    try {
+      const d = await apiFetch(`/vocab/admin/import${replace ? '?replace=true' : ''}`, { method: 'POST', body: JSON.stringify(data) });
+      setResult({ ok: true, message: d.message, results: d.results || [] });
+      toast(d.message);
+      onImported();
+    } catch (err) {
+      setResult({ ok: false, message: err.message });
+      toast(err.message, 'error');
+    }
+    finally { setImporting(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 700, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">📂 Import Vocab Units từ JSON</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          {/* Cấu trúc JSON */}
+          <div style={{ background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 10, padding: '12px 14px' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>📖 Cấu trúc JSON</div>
+            <pre style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-wrap' }}>{`[
+  {
+    "unitNumber": 1,          // số thứ tự (bắt buộc, unique)
+    "title": "Tên Unit",      // bắt buộc
+    "level": "B1",            // A1 A2 B1 B2 C1 IELTS
+    "words": [ ... ]          // mảng từ vựng / paraphrase
+  }
+]`}</pre>
+          </div>
+
+          {/* Ví dụ đầy đủ */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', textTransform: 'uppercase', letterSpacing: '.05em' }}>Ví dụ JSON đầy đủ</span>
+              <button className="btn btn-ghost btn-sm" style={{ fontSize: 12 }} onClick={() => setJsonText(FULL_EXAMPLE)}>⬇ Dùng ví dụ</button>
+            </div>
+            <pre style={{ fontFamily: 'var(--mono)', fontSize: 11.5, color: 'var(--text2)', lineHeight: 1.7, margin: 0, background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, whiteSpace: 'pre-wrap', maxHeight: 160, overflowY: 'auto' }}>{FULL_EXAMPLE}</pre>
+          </div>
+
+          {/* JSON input */}
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Dán JSON vào đây *</label>
+            <textarea className="form-input" rows={8} value={jsonText} onChange={e => setJsonText(e.target.value)}
+              placeholder="Paste JSON ở đây – array [...] hoặc object {...}"
+              style={{ fontFamily: 'var(--mono)', fontSize: 12 }} />
+          </div>
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)', fontSize: 13 }}>
+            <input type="checkbox" checked={replace} onChange={e => setReplace(e.target.checked)} />
+            Ghi đè words nếu unit đã tồn tại (xóa words cũ trước khi import)
+          </label>
+
+          {result && (
+            <div style={{ padding: '12px 14px', borderRadius: 8, fontSize: 13, lineHeight: 1.6, background: result.ok ? 'rgba(52,211,153,.1)' : 'rgba(239,68,68,.1)', border: `1px solid ${result.ok ? 'rgba(52,211,153,.3)' : 'rgba(239,68,68,.3)'}`, color: result.ok ? 'var(--green)' : 'var(--red)' }}>
+              <strong>{result.ok ? '✓' : '✗'} {result.message}</strong>
+              {result.results?.length > 0 && (
+                <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 12 }}>
+                  {result.results.map((r, i) => (
+                    <li key={i} style={{ color: r.status === 'created' ? 'var(--green)' : r.status === 'updated' ? 'var(--blue)' : 'var(--text3)' }}>
+                      Unit {r.unitNumber}: {r.status} {r.wordCount != null ? `(${r.wordCount} từ)` : ''} {r.reason || ''}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div style={{ padding: '12px 24px', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+          <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
+          <button className="btn btn-primary" onClick={doImport} disabled={importing}>
+            {importing ? 'Đang import...' : '📥 Import'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Vocabulary() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -221,6 +346,7 @@ export default function Vocabulary() {
   const [editUnit, setEditUnit] = useState(null);
   const [showUnitModal, setShowUnitModal] = useState(false);
   const [wordsUnit, setWordsUnit] = useState(null);
+  const [showImport, setShowImport] = useState(false);
 
   const load = () => apiFetch('/vocab/admin/units').then(d => setUnits(d.units || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
@@ -252,10 +378,16 @@ export default function Vocabulary() {
       {wordsUnit && (
         <WordsModal unit={wordsUnit} onClose={() => { setWordsUnit(null); load(); }} />
       )}
+      {showImport && (
+        <ImportJsonModal onClose={() => setShowImport(false)} onImported={load} />
+      )}
 
       <div className="section-header">
         <h2 className="section-title">Từ vựng – Units ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => { setEditUnit(null); setShowUnitModal(true); }}>+ Thêm unit</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={() => setShowImport(true)}>📂 Import JSON</button>
+          <button className="btn btn-primary" onClick={() => { setEditUnit(null); setShowUnitModal(true); }}>+ Thêm unit</button>
+        </div>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16 }}>
