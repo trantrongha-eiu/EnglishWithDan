@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { apiFetch, formatDate } from '../utils/api';
+import { useEffect, useRef, useState } from 'react';
+import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 
@@ -9,6 +9,7 @@ function Tab({ label, active, onClick }) {
 
 const DEFAULT_T1 = 'You should spend about 20 minutes on this task. Write at least 150 words.';
 const DEFAULT_T2 = 'You should spend about 40 minutes on this task. Write at least 250 words.';
+const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2' };
 
 function bandBadge(b) {
   if (b == null) return null;
@@ -26,7 +27,7 @@ function Task1Modal({ task, onClose, onSaved }) {
       prompt: task.prompt || '',
       imageUrl: task.imageUrl || '',
       instructions: task.instructions || DEFAULT_T1,
-      isActive: task.isActive !== false
+      isActive: task.isActive !== false,
     });
   }, [task]);
 
@@ -92,7 +93,7 @@ function Task2Modal({ task, onClose, onSaved }) {
     if (task) setForm({
       prompt: task.prompt || '',
       instructions: task.instructions || DEFAULT_T2,
-      isActive: task.isActive !== false
+      isActive: task.isActive !== false,
     });
   }, [task]);
 
@@ -144,8 +145,10 @@ function BandInput({ label, value, onChange }) {
   return (
     <div className="form-group" style={{ marginBottom: 0 }}>
       <label className="form-label" style={{ fontSize: 11 }}>{label}</label>
-      <input className="form-input" type="number" min={0} max={9} step={0.5} value={value ?? ''} onChange={e => onChange(e.target.value === '' ? null : Number(e.target.value))}
-        style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0-9" />
+      <input className="form-input" type="number" min={0} max={9} step={0.5}
+        value={value ?? ''}
+        onChange={e => onChange(e.target.value === '' ? null : Number(e.target.value))}
+        style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
     </div>
   );
 }
@@ -154,7 +157,6 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   const toast = useToast();
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [aiGrading, setAiGrading] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [grade, setGrade] = useState({
     task1: { bandScore: null, taskAchievement: null, lexicalResource: null, grammaticalRange: null, coherenceCohesion: null },
@@ -168,25 +170,22 @@ function GradingModal({ attemptId, onClose, onGraded }) {
       .then(d => {
         const a = d.attempt;
         setAttempt(a);
-        // pre-fill from existing grading
-        if (a.grading?.overallBand != null || a.aiGrading) {
-          const src = a.grading || {};
-          const ai1 = a.aiGrading?.task1 || {};
-          const ai2 = a.aiGrading?.task2 || {};
+        if (a.grading?.overallBand != null) {
+          const src = a.grading;
           setGrade({
             task1: {
-              bandScore: src.task1?.bandScore ?? ai1.bandScore ?? null,
-              taskAchievement: src.task1?.taskAchievement ?? ai1.taskAchievement ?? null,
-              lexicalResource: src.task1?.lexicalResource ?? ai1.lexicalResource ?? null,
-              grammaticalRange: src.task1?.grammaticalRange ?? ai1.grammaticalRange ?? null,
-              coherenceCohesion: src.task1?.coherenceCohesion ?? ai1.coherenceCohesion ?? null,
+              bandScore: src.task1?.bandScore ?? null,
+              taskAchievement: src.task1?.taskAchievement ?? null,
+              lexicalResource: src.task1?.lexicalResource ?? null,
+              grammaticalRange: src.task1?.grammaticalRange ?? null,
+              coherenceCohesion: src.task1?.coherenceCohesion ?? null,
             },
             task2: {
-              bandScore: src.task2?.bandScore ?? ai2.bandScore ?? null,
-              taskAchievement: src.task2?.taskAchievement ?? ai2.taskAchievement ?? null,
-              lexicalResource: src.task2?.lexicalResource ?? ai2.lexicalResource ?? null,
-              grammaticalRange: src.task2?.grammaticalRange ?? ai2.grammaticalRange ?? null,
-              coherenceCohesion: src.task2?.coherenceCohesion ?? ai2.coherenceCohesion ?? null,
+              bandScore: src.task2?.bandScore ?? null,
+              taskAchievement: src.task2?.taskAchievement ?? null,
+              lexicalResource: src.task2?.lexicalResource ?? null,
+              grammaticalRange: src.task2?.grammaticalRange ?? null,
+              coherenceCohesion: src.task2?.coherenceCohesion ?? null,
             },
             overallBand: src.overallBand ?? null,
             adminNote: src.adminNote || '',
@@ -213,23 +212,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     }
   }
 
-  async function triggerAI() {
-    setAiGrading(true);
-    try {
-      const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, { method: 'POST' });
-      toast('AI đã chấm xong');
-      const ai1 = d.task1 || {};
-      const ai2 = d.task2 || {};
-      setGrade(g => ({
-        ...g,
-        task1: { ...g.task1, bandScore: ai1.bandScore ?? g.task1.bandScore, taskAchievement: ai1.taskAchievement ?? g.task1.taskAchievement, lexicalResource: ai1.lexicalResource ?? g.task1.lexicalResource, grammaticalRange: ai1.grammaticalRange ?? g.task1.grammaticalRange, coherenceCohesion: ai1.coherenceCohesion ?? g.task1.coherenceCohesion },
-        task2: { ...g.task2, bandScore: ai2.bandScore ?? g.task2.bandScore, taskAchievement: ai2.taskAchievement ?? g.task2.taskAchievement, lexicalResource: ai2.lexicalResource ?? g.task2.lexicalResource, grammaticalRange: ai2.grammaticalRange ?? g.task2.grammaticalRange, coherenceCohesion: ai2.coherenceCohesion ?? g.task2.coherenceCohesion },
-      }));
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setAiGrading(false); }
-  }
-
-  async function confirm() {
+  async function submitGrade() {
     if (grade.overallBand == null) { toast('Vui lòng nhập điểm tổng', 'error'); return; }
     setConfirming(true);
     try {
@@ -242,7 +225,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           adminNote: grade.adminNote,
         }),
       });
-      toast('Đã xác nhận điểm');
+      toast('Đã xác nhận điểm và gửi feedback cho học sinh');
       onGraded();
       onClose();
     } catch (err) { toast(err.message, 'error'); }
@@ -250,9 +233,9 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   }
 
   const CRITERIA = [
-    { key: 'taskAchievement', label: 'Task Achievement/Response' },
+    { key: 'taskAchievement', label: 'Task Achievement' },
     { key: 'lexicalResource', label: 'Lexical Resource' },
-    { key: 'grammaticalRange', label: 'Grammatical Range & Accuracy' },
+    { key: 'grammaticalRange', label: 'Grammatical Range' },
     { key: 'coherenceCohesion', label: 'Coherence & Cohesion' },
   ];
 
@@ -267,27 +250,25 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>
         ) : (
           <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Student info */}
             {attempt && (
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: 'var(--text2)', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
                 <span><strong>Học sinh:</strong> {attempt.userId ? [attempt.userId.firstName, attempt.userId.lastName].filter(Boolean).join(' ') || attempt.userId.username : '–'}</span>
-                <span><strong>Từ:</strong> {(attempt.wordCount1 || 0) + (attempt.wordCount2 || 0)}</span>
-                <span><strong>Trạng thái:</strong> {attempt.gradingStatus === 'confirmed' ? '✅ Đã xác nhận' : attempt.gradingStatus === 'ai_done' ? '🤖 AI đã chấm' : '⏳ Chờ chấm'}</span>
-                <button className="btn btn-ghost btn-sm" onClick={triggerAI} disabled={aiGrading} style={{ marginLeft: 'auto' }}>
-                  {aiGrading ? '🤖 AI đang chấm...' : '🤖 Nhờ AI chấm'}
-                </button>
+                <span><strong>Số từ:</strong> {(attempt.wordCount1 || 0) + (attempt.wordCount2 || 0)}</span>
+                <span><strong>Trạng thái:</strong> {attempt.gradingStatus === 'confirmed' ? '✅ Đã xác nhận' : '⏳ Chờ chấm'}</span>
               </div>
             )}
 
-            {/* Task 1 */}
             {attempt?.task1Answer && (
               <div>
                 <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 14 }}>Task 1</div>
                 {attempt.task1Snapshot?.imageUrl && (
-                  <img src={attempt.task1Snapshot.imageUrl} alt="task1" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
+                  <img src={attempt.task1Snapshot.imageUrl} alt="task1"
+                    style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
                 )}
                 <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>{attempt.task1Snapshot?.prompt}</div>
-                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 160, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>{attempt.task1Answer}</div>
+                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 160, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                  {attempt.task1Answer}
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
                   <BandInput label="Band Score" value={grade.task1.bandScore} onChange={v => setTask('task1', 'bandScore', v)} />
                   {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
@@ -295,12 +276,13 @@ function GradingModal({ attemptId, onClose, onGraded }) {
               </div>
             )}
 
-            {/* Task 2 */}
             {attempt?.task2Answer && (
               <div>
                 <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 14 }}>Task 2</div>
                 <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>{attempt.task2Snapshot?.prompt}</div>
-                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 180, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>{attempt.task2Answer}</div>
+                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 180, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                  {attempt.task2Answer}
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
                   <BandInput label="Band Score" value={grade.task2.bandScore} onChange={v => setTask('task2', 'bandScore', v)} />
                   {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
@@ -308,13 +290,13 @@ function GradingModal({ attemptId, onClose, onGraded }) {
               </div>
             )}
 
-            {/* Overall + note */}
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 14 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: 12, alignItems: 'start' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                     <label className="form-label" style={{ marginBottom: 0 }}>Điểm tổng (Band)</label>
-                    <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '2px 6px' }} onClick={autoOverall} title="Tự tính từ Task 1 + Task 2">Auto</button>
+                    <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '2px 6px' }}
+                      onClick={autoOverall} title="Tự tính từ Task 1 + Task 2">Auto</button>
                   </div>
                   <input className="form-input" type="number" min={0} max={9} step={0.5}
                     value={grade.overallBand ?? ''}
@@ -322,22 +304,143 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                     style={{ fontSize: 16, fontWeight: 700, textAlign: 'center' }} placeholder="6.5" />
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Ghi chú (tùy chọn)</label>
-                  <textarea className="form-input" rows={2} value={grade.adminNote}
+                  <label className="form-label">Feedback gửi cho học sinh</label>
+                  <textarea className="form-input" rows={3} value={grade.adminNote}
                     onChange={e => setGrade(g => ({ ...g, adminNote: e.target.value }))}
-                    placeholder="Nhận xét chung cho học sinh..." />
+                    placeholder="Nhận xét và góp ý cụ thể cho học sinh..." />
                 </div>
               </div>
             </div>
 
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
               <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
-              <button className="btn btn-primary" onClick={confirm} disabled={confirming}>
-                {confirming ? 'Đang lưu...' : '✅ Xác nhận điểm'}
+              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming}>
+                {confirming ? 'Đang lưu...' : '✅ Xác nhận & Gửi feedback'}
               </button>
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function WritingSampleModal({ sample, onClose, onSaved }) {
+  const toast = useToast();
+  const fileRef = useRef();
+  const [form, setForm] = useState({ title: '', quarter: '', topic: '', taskType: 'task2' });
+  const [saving, setSaving] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState('');
+
+  useEffect(() => {
+    if (sample) setForm({
+      title: sample.title || '',
+      quarter: sample.quarter || '',
+      topic: sample.topic || '',
+      taskType: sample.taskType || 'task2',
+    });
+  }, [sample]);
+
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  async function save(e) {
+    e.preventDefault();
+    const { title, quarter, topic, taskType } = form;
+    if (!title || !quarter || !topic) { toast('Điền đầy đủ thông tin', 'error'); return; }
+    setSaving(true);
+    setUploadStatus('');
+    try {
+      if (sample?._id) {
+        const file = fileRef.current?.files[0];
+        let body = { title, quarter, topic, taskType };
+        if (file) {
+          setUploadStatus('⬆️ Đang upload PDF mới...');
+          const fd = new FormData();
+          fd.append('pdf', file);
+          const r = await fetch(`${API}/admin/writing/samples/upload-pdf`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            body: fd,
+          });
+          const d = await r.json();
+          if (!d.success) throw new Error(d.message);
+          body.pdfUrl = d.url;
+        }
+        setUploadStatus('💾 Đang lưu...');
+        await apiFetch(`/admin/writing/samples/${sample._id}`, { method: 'PUT', body: JSON.stringify(body) });
+        toast('Đã cập nhật tài liệu');
+      } else {
+        const file = fileRef.current?.files[0];
+        if (!file) { toast('Chưa chọn file PDF', 'error'); setSaving(false); return; }
+        setUploadStatus('⬆️ Đang upload PDF lên Cloudinary...');
+        const fd = new FormData();
+        fd.append('pdf', file);
+        const r = await fetch(`${API}/admin/writing/samples/upload-pdf`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          body: fd,
+        });
+        const uploadData = await r.json();
+        if (!uploadData.success) throw new Error(uploadData.message);
+        setUploadStatus('💾 Đang lưu thông tin...');
+        await apiFetch('/admin/writing/samples', {
+          method: 'POST',
+          body: JSON.stringify({ title, quarter, topic, taskType, pdfUrl: uploadData.url }),
+        });
+        toast('Đã upload bài mẫu Writing');
+      }
+      onSaved();
+      onClose();
+    } catch (err) { toast(err.message, 'error'); setUploadStatus(''); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">{sample?._id ? 'Chỉnh sửa tài liệu' : 'Upload bài mẫu Writing'}</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="form-group">
+            <label className="form-label">Tiêu đề *</label>
+            <input className="form-input" value={form.title} onChange={set('title')} required
+              placeholder="Band 8.0 Task 2 – Advantages & Disadvantages" />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Quý / Kỳ *</label>
+              <input className="form-input" value={form.quarter} onChange={set('quarter')} required placeholder="Q1 2026" />
+            </div>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Loại *</label>
+              <select className="form-input" value={form.taskType} onChange={set('taskType')}>
+                <option value="task1">Task 1</option>
+                <option value="task2">Task 2</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Chủ đề *</label>
+            <input className="form-input" value={form.topic} onChange={set('topic')} required
+              placeholder="Advantages and disadvantages of..." />
+          </div>
+          <div className="form-group">
+            <label className="form-label">{sample?._id ? 'File PDF (để trống nếu không đổi)' : 'File PDF *'}</label>
+            <input ref={fileRef} type="file" className="form-input" accept=".pdf" style={{ padding: 8 }} />
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>PDF · Tối đa 20MB · Upload lên Cloudinary</div>
+          </div>
+          {uploadStatus && (
+            <div style={{ fontSize: 13, color: 'var(--blue)', background: 'var(--surface2)', borderRadius: 6, padding: '8px 12px' }}>
+              {uploadStatus}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+            <button type="button" className="btn btn-ghost" onClick={onClose} disabled={saving}>Huỷ</button>
+            <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang xử lý...' : 'Lưu'}</button>
+          </div>
+        </form>
       </div>
     </div>
   );
@@ -350,17 +453,21 @@ export default function WritingTests() {
   const [task1, setTask1] = useState([]);
   const [task2, setTask2] = useState([]);
   const [history, setHistory] = useState([]);
+  const [samples, setSamples] = useState([]);
   const [editTask1, setEditTask1] = useState(null);
   const [showT1Modal, setShowT1Modal] = useState(false);
   const [editTask2, setEditTask2] = useState(null);
   const [showT2Modal, setShowT2Modal] = useState(false);
   const [gradingId, setGradingId] = useState(null);
+  const [editSample, setEditSample] = useState(null);
+  const [showSampleModal, setShowSampleModal] = useState(false);
 
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
   const loadHistory = () => apiFetch('/admin/writing-history').then(d => setHistory(d.attempts || [])).catch(() => {});
+  const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(() => {});
 
-  useEffect(() => { loadT1(); loadT2(); loadHistory(); }, []);
+  useEffect(() => { loadT1(); loadT2(); loadHistory(); loadSamples(); }, []);
 
   async function toggleActive(pool, id, isActive) {
     const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;
@@ -393,6 +500,27 @@ export default function WritingTests() {
     });
   }
 
+  async function toggleSample(id, isActive) {
+    try {
+      await apiFetch(`/admin/writing/samples/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
+      toast(isActive ? 'Đã ẩn' : 'Đã hiện');
+      loadSamples();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  function delSample(id, title) {
+    confirm(`Xóa bài mẫu "${title}"?`, async () => {
+      try {
+        await apiFetch(`/admin/writing/samples/${id}`, { method: 'DELETE' });
+        toast('Đã xóa');
+        setSamples(a => a.filter(x => x._id !== id));
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
+  const STATUS_MAP = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã xác nhận' };
+  const STATUS_COLOR = { pending: 'var(--text3)', ai_done: 'var(--text3)', confirmed: 'var(--green)' };
+
   return (
     <>
       {(showT1Modal || editTask1) && (
@@ -404,21 +532,26 @@ export default function WritingTests() {
       {gradingId && (
         <GradingModal attemptId={gradingId} onClose={() => setGradingId(null)} onGraded={loadHistory} />
       )}
+      {(showSampleModal || editSample) && (
+        <WritingSampleModal
+          sample={editSample}
+          onClose={() => { setShowSampleModal(false); setEditSample(null); }}
+          onSaved={loadSamples}
+        />
+      )}
 
       <div className="section-header">
         <h2 className="section-title">Đề Writing</h2>
-        {tab === 'task1' && (
-          <button className="btn btn-primary" onClick={() => { setEditTask1(null); setShowT1Modal(true); }}>+ Thêm Task 1</button>
-        )}
-        {tab === 'task2' && (
-          <button className="btn btn-primary" onClick={() => { setEditTask2(null); setShowT2Modal(true); }}>+ Thêm Task 2</button>
-        )}
+        {tab === 'task1' && <button className="btn btn-primary" onClick={() => { setEditTask1(null); setShowT1Modal(true); }}>+ Thêm Task 1</button>}
+        {tab === 'task2' && <button className="btn btn-primary" onClick={() => { setEditTask2(null); setShowT2Modal(true); }}>+ Thêm Task 2</button>}
+        {tab === 'samples' && <button className="btn btn-primary" onClick={() => { setEditSample(null); setShowSampleModal(true); }}>+ Upload bài mẫu</button>}
       </div>
 
       <div className="inner-tabs-nav">
         <Tab label="📝 Task 1 Pool" active={tab === 'task1'} onClick={() => setTab('task1')} />
         <Tab label="📝 Task 2 Pool" active={tab === 'task2'} onClick={() => setTab('task2')} />
         <Tab label="📊 Lịch sử nộp bài" active={tab === 'history'} onClick={() => setTab('history')} />
+        <Tab label="📄 Bài mẫu" active={tab === 'samples'} onClick={() => setTab('samples')} />
       </div>
 
       {tab === 'task1' && (
@@ -485,36 +618,84 @@ export default function WritingTests() {
       {tab === 'history' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>HỌC SINH</th><th>TỪ</th><th>ĐIỂM AI</th><th>ĐIỂM CHÍNH THỨC</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr></thead>
+            <thead>
+              <tr><th>HỌC SINH</th><th>SỐ TỪ</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
+            </thead>
             <tbody>
               {history.length === 0
-                ? <tr><td colSpan={7} className="table-empty">Chưa có bài nộp</td></tr>
+                ? <tr><td colSpan={6} className="table-empty">Chưa có bài nộp</td></tr>
                 : history.slice(0, 150).map(h => {
                   const name = h.userId
                     ? [h.userId.firstName, h.userId.lastName].filter(Boolean).join(' ') || h.userId.username || '–'
                     : '–';
                   const wordCount = (h.wordCount1 || 0) + (h.wordCount2 || 0);
-                  const aiScore = h.aiGrading?.task1?.bandScore ?? h.aiGrading?.task2?.bandScore;
                   const finalScore = h.grading?.overallBand;
-                  const statusMap = { pending: '⏳ Chờ chấm', ai_done: '🤖 AI đã chấm', confirmed: '✅ Đã xác nhận' };
-                  const statusColor = { pending: 'var(--text3)', ai_done: 'var(--blue)', confirmed: 'var(--green)' };
                   return (
                     <tr key={h._id}>
                       <td><strong>{name}</strong></td>
                       <td style={{ fontSize: 12 }}>{wordCount > 0 ? wordCount : '–'}</td>
-                      <td>{aiScore != null ? bandBadge(aiScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
                       <td>{finalScore != null ? bandBadge(finalScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
-                      <td><span style={{ fontSize: 12, color: statusColor[h.gradingStatus] || 'var(--text3)' }}>{statusMap[h.gradingStatus] || '–'}</span></td>
+                      <td>
+                        <span style={{ fontSize: 12, color: STATUS_COLOR[h.gradingStatus] || 'var(--text3)' }}>
+                          {STATUS_MAP[h.gradingStatus] || '–'}
+                        </span>
+                      </td>
                       <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
                       <td>
                         <div className="row-actions">
-                          <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }} onClick={() => setGradingId(h._id)} title="Xem / Chấm bài">✏️ Chấm</button>
+                          <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }}
+                            onClick={() => setGradingId(h._id)}>✏️ Chấm</button>
                           <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>
                         </div>
                       </td>
                     </tr>
                   );
                 })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {tab === 'samples' && (
+        <div className="table-wrap">
+          <table className="table">
+            <thead>
+              <tr><th>TIÊU ĐỀ</th><th>KỲ</th><th>CHỦ ĐỀ</th><th>LOẠI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr>
+            </thead>
+            <tbody>
+              {samples.length === 0
+                ? <tr><td colSpan={7} className="table-empty">Chưa có bài mẫu nào</td></tr>
+                : samples.map(s => (
+                  <tr key={s._id}>
+                    <td><strong>{s.title}</strong></td>
+                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{s.quarter}</td>
+                    <td style={{ maxWidth: 200, fontSize: 13 }}>{(s.topic || '').slice(0, 60)}{(s.topic || '').length > 60 ? '…' : ''}</td>
+                    <td>
+                      <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 8, background: '#eff6ff', color: '#3d8bff' }}>
+                        {TASK_TYPE_LABEL[s.taskType] || s.taskType}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge ${s.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                        <span className="dot" />{s.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                      </span>
+                    </td>
+                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(s.createdAt).split(' ')[0]}</td>
+                    <td>
+                      <div className="row-actions">
+                        {s.pdfUrl && (
+                          <a href={s.pdfUrl} target="_blank" rel="noreferrer"
+                            className="btn btn-ghost btn-sm btn-icon" title="Xem PDF">📄</a>
+                        )}
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditSample(s)} title="Sửa">✏️</button>
+                        <button className="btn btn-ghost btn-sm btn-icon"
+                          onClick={() => toggleSample(s._id, s.isActive !== false)}
+                          title={s.isActive !== false ? 'Ẩn' : 'Hiện'}>{s.isActive !== false ? '🙈' : '👁'}</button>
+                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => delSample(s._id, s.title)}>🗑</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
