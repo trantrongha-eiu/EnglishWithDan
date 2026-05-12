@@ -185,7 +185,7 @@ export default function ListeningTestEdit() {
         />
 
         <div style={{ marginTop: 16, padding: 12, background: 'var(--surface2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text3)', lineHeight: 1.6 }}>
-          <strong>Ghi chú:</strong> Mỗi Part có thể có nhiều nhóm câu hỏi. Fill-blank: dùng <code>________</code> hoặc <code>(Q14)</code>. Đáp án không phân biệt hoa/thường. Multiple choice: đáp án là chữ cái A/B/C/D.
+          <strong>Ghi chú:</strong> Mỗi Part có thể có nhiều nhóm câu hỏi. Fill-blank trong câu hỏi: dùng <code>________</code>; trong bảng/note: dùng <code>__Q1__</code>. Đáp án không phân biệt hoa/thường. Multiple choice: đáp án là chữ cái A/B/C/D.
         </div>
       </div>
     </div>

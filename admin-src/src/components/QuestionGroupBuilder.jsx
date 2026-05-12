@@ -58,6 +58,19 @@ const GROUP_LABEL = {
   map:                 '🗺️ Map/Diagram',
 };
 
+const TYPE_LABEL = {
+  'true-false-ng':     'True/False/NG',
+  'yes-no-ng':         'Yes/No/NG',
+  'multiple-choice':   'Multiple Choice',
+  'checkbox':          'MC nhiều đáp án',
+  'fill-blank':        'Fill-blank',
+  'sentence-completion':'Sentence Completion',
+  'matching-headings': 'Matching Headings',
+  'matching-info':     'Matching Info',
+  'matching':          'Matching',
+  'map-labelling':     'Map Labelling',
+};
+
 const ANS_HINT = {
   'true-false-ng':     'TRUE / FALSE / NOT GIVEN',
   'yes-no-ng':         'YES / NO / NOT GIVEN',
@@ -581,7 +594,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                           {q.questionNumber}
                           {isDup(q.questionNumber) && <span title="Số câu trùng!" style={{ marginLeft: 2 }}>⚠</span>}
                         </td>
-                        <td><span className="badge badge-blue" style={{ fontSize: 10 }}>{q.type}</span></td>
+                        <td><span className="badge badge-blue" style={{ fontSize: 10 }}>{TYPE_LABEL[q.type] || q.type}</span></td>
                         <td style={{ maxWidth: 220, fontSize: 12 }}>{(q.questionText || '–').slice(0, 70)}{(q.questionText || '').length > 70 ? '…' : ''}</td>
                         <td style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--green)', fontWeight: 600 }}>{q.correctAnswer}</td>
                         <td>

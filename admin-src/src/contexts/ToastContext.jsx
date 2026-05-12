@@ -15,6 +15,7 @@ export function ToastProvider({ children }) {
       {children}
       {toast && (
         <div key={toast.id} className={`toast show ${toast.type}`}>
+          <div className="toast-dot" />
           <span id="toast-msg">{toast.msg}</span>
         </div>
       )}
