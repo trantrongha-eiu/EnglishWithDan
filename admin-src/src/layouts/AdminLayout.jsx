@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import { useAuth } from '../contexts/AuthContext';
 
 const TITLES = {
   '/admin/dashboard': 'Dashboard',
@@ -21,6 +22,7 @@ const TITLES = {
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  const { user } = useAuth();
   const title = TITLES[pathname] || 'Admin';
 
   return (
@@ -30,15 +32,22 @@ export default function AdminLayout() {
         <header className="topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button
-              className="btn btn-ghost btn-icon"
-              style={{ display: 'none' }}
-              id="sidebar-toggle"
+              className="btn btn-ghost btn-icon sidebar-toggle"
               onClick={() => setMobileOpen(o => !o)}
+              aria-label="Mở menu"
             >☰</button>
             <span className="topbar-title">{title}</span>
           </div>
           <div className="topbar-right">
-            <a href="/" className="btn btn-ghost btn-sm">← Trang chủ</a>
+            <a href="/" className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>← Trang chủ</a>
+            {user && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text2)' }}>
+                <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'linear-gradient(135deg,var(--accent),#ff8f00)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, color: '#fff', flexShrink: 0 }}>
+                  {(user.username || 'A')[0].toUpperCase()}
+                </div>
+                <span style={{ fontWeight: 600 }}>{user.username}</span>
+              </div>
+            )}
           </div>
         </header>
         <div className="content">

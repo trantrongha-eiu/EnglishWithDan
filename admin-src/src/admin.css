@@ -581,6 +581,19 @@
       backdrop-filter: blur(4px);
     }
 
+    /* .modal = inline-style variant used by React pages (maxWidth set via style prop) */
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      animation: modal-pop .18s ease;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
     .modal-box {
       background: var(--surface);
       border: 1px solid var(--border);
