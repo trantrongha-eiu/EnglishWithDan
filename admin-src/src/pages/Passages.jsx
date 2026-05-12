@@ -168,10 +168,15 @@ function PassageModal({ passageId, onClose, onSaved }) {
               <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>Dùng để lọc và tham chiếu — tuỳ chọn</div>
             </div>
             <div className="form-group">
-              <label className="form-label">Nội dung bài đọc</label>
+              <label className="form-label">Nội dung bài đọc <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(HTML)</span></label>
+              <div style={{ fontSize: 11, background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 7, padding: '8px 11px', marginBottom: 6, color: 'var(--text2)', lineHeight: 1.7 }}>
+                <strong>Định dạng HTML</strong> — frontend render trực tiếp bằng <code>innerHTML</code>.<br />
+                Các thẻ thường dùng: <code>&lt;p&gt;...&lt;/p&gt;</code> cho đoạn văn · <code>&lt;strong&gt;</code> in đậm · <code>&lt;em&gt;</code> in nghiêng · <code>&lt;br&gt;</code> xuống dòng.<br />
+                Ví dụ: <code>&lt;p&gt;The history of coffee dates back to...&lt;/p&gt;&lt;p&gt;Second paragraph here.&lt;/p&gt;</code>
+              </div>
               <textarea className="form-input" rows={12} value={form.content} onChange={set('content')}
-                style={{ fontFamily: 'inherit', fontSize: 13, lineHeight: 1.6 }}
-                placeholder="Paste the full reading passage here..." />
+                style={{ fontFamily: 'monospace', fontSize: 12, lineHeight: 1.6 }}
+                placeholder={'<p>Paragraph one of the reading passage...</p>\n<p>Paragraph two continues here...</p>'} />
             </div>
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
               <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Hiển thị
