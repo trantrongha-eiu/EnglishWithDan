@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from './ConfirmDialog';
+import { API } from '../utils/api';
 
 const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii'];
 
@@ -294,14 +296,53 @@ function SummaryConfig({ config, onChange }) {
   );
 }
 
-function MapConfig({ imageUrl, onChange }) {
+function MapConfig({ imageUrl, onChange, context }) {
+  const toast = useToast();
+  const fileRef = useRef();
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadMapImage() {
+    const file = fileRef.current?.files[0];
+    if (!file) { toast('Chọn ảnh trước', 'error'); return; }
+    setUploading(true);
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const endpoint = context === 'listening'
+        ? `${API}/listening/admin/upload-map-image`
+        : `${API}/admin/passages/upload-map-image`;
+      const r = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ imageBase64: dataUrl }),
+      });
+      const d = await r.json();
+      if (!d.success) throw new Error(d.message);
+      onChange(d.url);
+      toast('Upload ảnh thành công');
+    } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
+    finally { setUploading(false); }
+  }
+
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>🗺️ <strong>Map/Diagram Labelling:</strong> Paste URL hình ảnh sơ đồ. Câu hỏi: map-labelling, đáp án là nhãn điền vào sơ đồ.</InfoBox>
+      <InfoBox>🗺️ <strong>Map/Diagram Labelling:</strong> Upload hoặc paste URL hình ảnh sơ đồ. Câu hỏi: map-labelling, đáp án là nhãn điền vào sơ đồ.</InfoBox>
       <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
         <div style={{ flex: 1 }}>
           <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>URL hình ảnh sơ đồ</label>
           <input className="form-input" style={{ marginTop: 4, fontSize: 12 }} value={imageUrl || ''} onChange={e => onChange(e.target.value)} placeholder="https://res.cloudinary.com/..." />
+          <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
+            <input ref={fileRef} type="file" accept="image/*" className="form-input"
+              style={{ padding: 5, flex: 1, fontSize: 11 }} />
+            <button type="button" className="btn btn-ghost btn-sm" onClick={uploadMapImage}
+              disabled={uploading} style={{ flexShrink: 0, fontSize: 12 }}>
+              {uploading ? 'Đang upload...' : '📤 Upload'}
+            </button>
+          </div>
         </div>
         {imageUrl && (
           <div style={{ width: 120, height: 80, border: '1.5px dashed var(--border2)', borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
@@ -564,7 +605,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
             <SummaryConfig config={g.summaryConfig} onChange={cfg => updateGroup(gi, { summaryConfig: cfg })} />
           )}
           {g.groupType === 'map' && (
-            <MapConfig imageUrl={g.imageUrl} onChange={url => updateGroup(gi, { imageUrl: url })} />
+            <MapConfig imageUrl={g.imageUrl} onChange={url => updateGroup(gi, { imageUrl: url })} context={context} />
           )}
 
           {/* Questions in group */}

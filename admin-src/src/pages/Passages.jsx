@@ -94,7 +94,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
         const p = d.passage;
         setForm({
           title: p.title || '',
-          category: p.category || 'Academic',
+          category: p.category || 'passage1',
           content: p.content || '',
           difficulty: p.difficulty || 'medium',
           questionRange: { start: p.questionRange?.start ?? 1, end: p.questionRange?.end ?? 13 },

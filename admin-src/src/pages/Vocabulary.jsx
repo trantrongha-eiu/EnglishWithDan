@@ -92,6 +92,8 @@ function WordsModal({ unit, onClose }) {
     paraphrase: '', explanation: ''
   });
   const [saving, setSaving] = useState(false);
+  const [editingIdx, setEditingIdx] = useState(null);
+  const [editForm, setEditForm] = useState(null);
 
   useEffect(() => {
     apiFetch(`/vocab/admin/units/${unit._id}`)
@@ -126,6 +128,28 @@ function WordsModal({ unit, onClose }) {
         setWords(w => w.filter((_, i) => i !== idx));
       } catch (e) { toast(e.message, 'error'); }
     });
+  }
+
+  function startEdit(idx) {
+    setEditingIdx(idx);
+    setEditForm({ ...words[idx] });
+  }
+
+  function cancelEdit() {
+    setEditingIdx(null);
+    setEditForm(null);
+  }
+
+  async function saveEdit(idx) {
+    setSaving(true);
+    try {
+      await apiFetch(`/vocab/admin/units/${unit._id}/words/${idx}`, { method: 'PUT', body: JSON.stringify(editForm) });
+      toast(`Đã cập nhật "${editForm.word}"`);
+      setWords(w => w.map((x, i) => i === idx ? { ...editForm } : x));
+      setEditingIdx(null);
+      setEditForm(null);
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setSaving(false); }
   }
 
   return (
@@ -191,17 +215,51 @@ function WordsModal({ unit, onClose }) {
                   {words.length === 0
                     ? <tr><td colSpan={5} className="table-empty">Chưa có từ nào</td></tr>
                     : words.map((w, idx) => (
-                      <tr key={idx}>
-                        <td style={{ color: 'var(--text3)', fontSize: 12 }}>{idx + 1}</td>
-                        <td>
-                          <strong>{w.word}</strong>
-                          {w.phonetic && <span style={{ fontSize: 11, color: 'var(--text3)', marginLeft: 5 }}>{w.phonetic}</span>}
-                          {w.partOfSpeech && <span style={{ fontSize: 11, color: 'var(--blue)', marginLeft: 5 }}>{w.partOfSpeech}</span>}
-                        </td>
-                        <td style={{ fontSize: 13, color: 'var(--text2)', maxWidth: 220 }}>{w.meaning || w.paraphrase || '–'}</td>
-                        <td><span className={`badge ${w.type === 'paraphrase' ? 'badge-blue' : 'badge-green'}`}>{w.type}</span></td>
-                        <td><button className="btn btn-danger btn-sm btn-icon" onClick={() => delWord(idx, w.word)}>🗑</button></td>
-                      </tr>
+                      editingIdx === idx ? (
+                        <tr key={idx} style={{ background: 'var(--surface2)' }}>
+                          <td style={{ color: 'var(--text3)', fontSize: 12 }}>{idx + 1}</td>
+                          <td colSpan={2}>
+                            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                              <input className="form-input" style={{ fontSize: 12, padding: '4px 8px', width: 120 }}
+                                value={editForm.word} onChange={e => setEditForm(f => ({ ...f, word: e.target.value }))} placeholder="Từ" />
+                              <input className="form-input" style={{ fontSize: 12, padding: '4px 8px', flex: 1, minWidth: 100 }}
+                                value={editForm.meaning || ''} onChange={e => setEditForm(f => ({ ...f, meaning: e.target.value }))} placeholder="Nghĩa" />
+                              {w.type !== 'paraphrase' && (
+                                <input className="form-input" style={{ fontSize: 12, padding: '4px 8px', width: 80 }}
+                                  value={editForm.phonetic || ''} onChange={e => setEditForm(f => ({ ...f, phonetic: e.target.value }))} placeholder="Phiên âm" />
+                              )}
+                              {w.type === 'paraphrase' && (
+                                <input className="form-input" style={{ fontSize: 12, padding: '4px 8px', flex: 1, minWidth: 100 }}
+                                  value={editForm.paraphrase || ''} onChange={e => setEditForm(f => ({ ...f, paraphrase: e.target.value }))} placeholder="Paraphrase" />
+                              )}
+                            </div>
+                          </td>
+                          <td><span className={`badge ${w.type === 'paraphrase' ? 'badge-blue' : 'badge-green'}`}>{w.type}</span></td>
+                          <td>
+                            <div className="row-actions">
+                              <button className="btn btn-primary btn-sm" onClick={() => saveEdit(idx)} disabled={saving}>✓</button>
+                              <button className="btn btn-ghost btn-sm" onClick={cancelEdit}>✕</button>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : (
+                        <tr key={idx}>
+                          <td style={{ color: 'var(--text3)', fontSize: 12 }}>{idx + 1}</td>
+                          <td>
+                            <strong>{w.word}</strong>
+                            {w.phonetic && <span style={{ fontSize: 11, color: 'var(--text3)', marginLeft: 5 }}>{w.phonetic}</span>}
+                            {w.partOfSpeech && <span style={{ fontSize: 11, color: 'var(--blue)', marginLeft: 5 }}>{w.partOfSpeech}</span>}
+                          </td>
+                          <td style={{ fontSize: 13, color: 'var(--text2)', maxWidth: 220 }}>{w.meaning || w.paraphrase || '–'}</td>
+                          <td><span className={`badge ${w.type === 'paraphrase' ? 'badge-blue' : 'badge-green'}`}>{w.type}</span></td>
+                          <td>
+                            <div className="row-actions">
+                              <button className="btn btn-ghost btn-sm btn-icon" onClick={() => startEdit(idx)} title="Sửa">✏️</button>
+                              <button className="btn btn-danger btn-sm btn-icon" onClick={() => delWord(idx, w.word)}>🗑</button>
+                            </div>
+                          </td>
+                        </tr>
+                      )
                     ))}
                 </tbody>
               </table>

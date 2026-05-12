@@ -9,7 +9,7 @@ function Tab({ label, active, onClick }) {
 
 const DEFAULT_T1 = 'You should spend about 20 minutes on this task. Write at least 150 words.';
 const DEFAULT_T2 = 'You should spend about 40 minutes on this task. Write at least 250 words.';
-const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2' };
+const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' };
 
 function bandBadge(b) {
   if (b == null) return null;
@@ -205,6 +205,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirming, setConfirming] = useState(false);
+  const [aiGrading, setAiGrading] = useState(false);
   const [grade, setGrade] = useState({
     task1: { bandScore: null, taskAchievement: null, lexicalResource: null, grammaticalRange: null, coherenceCohesion: null },
     task2: { bandScore: null, taskAchievement: null, lexicalResource: null, grammaticalRange: null, coherenceCohesion: null },
@@ -257,6 +258,34 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     } else if (hasT1 || hasT2) {
       setGrade(g => ({ ...g, overallBand: hasT1 ? b1 : b2 }));
     }
+  }
+
+  async function runAiGrade() {
+    setAiGrading(true);
+    try {
+      const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, { method: 'POST' });
+      const t1 = d.task1 || {};
+      const t2 = d.task2 || {};
+      setGrade(g => ({
+        ...g,
+        task1: {
+          bandScore: t1.bandScore ?? g.task1.bandScore,
+          taskAchievement: t1.taskAchievement ?? g.task1.taskAchievement,
+          lexicalResource: t1.lexicalResource ?? g.task1.lexicalResource,
+          grammaticalRange: t1.grammaticalRange ?? g.task1.grammaticalRange,
+          coherenceCohesion: t1.coherenceCohesion ?? g.task1.coherenceCohesion,
+        },
+        task2: {
+          bandScore: t2.bandScore ?? g.task2.bandScore,
+          taskAchievement: t2.taskAchievement ?? g.task2.taskAchievement,
+          lexicalResource: t2.lexicalResource ?? g.task2.lexicalResource,
+          grammaticalRange: t2.grammaticalRange ?? g.task2.grammaticalRange,
+          coherenceCohesion: t2.coherenceCohesion ?? g.task2.coherenceCohesion,
+        },
+      }));
+      toast('AI đã chấm xong – kiểm tra và xác nhận điểm');
+    } catch (err) { toast('AI chấm thất bại: ' + err.message, 'error'); }
+    finally { setAiGrading(false); }
   }
 
   async function submitGrade() {
@@ -361,7 +390,11 @@ function GradingModal({ attemptId, onClose, onGraded }) {
 
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
               <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
-              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming}>
+              <button className="btn btn-ghost" onClick={runAiGrade} disabled={aiGrading || confirming}
+                title="Dùng AI để chấm sơ bộ – bạn vẫn có thể sửa trước khi xác nhận">
+                {aiGrading ? '🤖 Đang chấm...' : '🤖 AI Chấm'}
+              </button>
+              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming || aiGrading}>
                 {confirming ? 'Đang lưu...' : '✅ Xác nhận & Gửi feedback'}
               </button>
             </div>
@@ -465,6 +498,7 @@ function WritingSampleModal({ sample, onClose, onSaved }) {
               <select className="form-input" value={form.taskType} onChange={set('taskType')}>
                 <option value="task1">Task 1</option>
                 <option value="task2">Task 2</option>
+                <option value="both">Task 1 + Task 2</option>
               </select>
             </div>
           </div>
@@ -613,6 +647,64 @@ function WritingViewModal({ attemptId, onClose }) {
   );
 }
 
+function WritingExamModal({ exam, onClose, onSaved }) {
+  const toast = useToast();
+  const [form, setForm] = useState({ name: '', duration: 60, isActive: true });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (exam) setForm({ name: exam.name || '', duration: exam.duration || 60, isActive: exam.isActive !== false });
+  }, [exam]);
+
+  const set = k => e => setForm(f => ({
+    ...f,
+    [k]: e.target.type === 'checkbox' ? e.target.checked
+       : e.target.type === 'number' ? Number(e.target.value)
+       : e.target.value
+  }));
+
+  async function save(e) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (exam?._id) await apiFetch(`/admin/writing-exams/${exam._id}`, { method: 'PUT', body: JSON.stringify(form) });
+      else await apiFetch('/admin/writing-exams', { method: 'POST', body: JSON.stringify(form) });
+      toast(exam?._id ? 'Đã cập nhật đề' : 'Đã tạo đề Writing');
+      onSaved(); onClose();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">{exam?._id ? 'Sửa đề Writing' : 'Thêm đề Writing'}</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div className="form-group">
+            <label className="form-label">Tên đề *</label>
+            <input className="form-input" value={form.name} onChange={set('name')} required placeholder="Writing Test 1" />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Thời gian (phút)</label>
+            <input className="form-input" type="number" value={form.duration} onChange={set('duration')} min={10} max={180} />
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>Task 1: 20 phút · Task 2: 40 phút → mặc định 60 phút</div>
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+            <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Kích hoạt
+          </label>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
+            <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+            <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -621,6 +713,7 @@ export default function WritingTests() {
   const [task2, setTask2] = useState([]);
   const [history, setHistory] = useState([]);
   const [samples, setSamples] = useState([]);
+  const [exams, setExams] = useState([]);
   const [editTask1, setEditTask1] = useState(null);
   const [showT1Modal, setShowT1Modal] = useState(false);
   const [editTask2, setEditTask2] = useState(null);
@@ -629,6 +722,8 @@ export default function WritingTests() {
   const [viewAttemptId, setViewAttemptId] = useState(null);
   const [editSample, setEditSample] = useState(null);
   const [showSampleModal, setShowSampleModal] = useState(false);
+  const [editExam, setEditExam] = useState(null);
+  const [showExamModal, setShowExamModal] = useState(false);
   const [historyFilter, setHistoryFilter] = useState('');
   const [historySearch, setHistorySearch] = useState('');
 
@@ -636,8 +731,9 @@ export default function WritingTests() {
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
   const loadHistory = () => apiFetch('/admin/writing-history').then(d => setHistory(d.attempts || [])).catch(() => {});
   const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(() => {});
+  const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(() => {});
 
-  useEffect(() => { loadT1(); loadT2(); loadHistory(); loadSamples(); }, []);
+  useEffect(() => { loadT1(); loadT2(); loadHistory(); loadSamples(); loadExams(); }, []);
 
   async function toggleActive(pool, id, isActive) {
     const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;
@@ -688,6 +784,24 @@ export default function WritingTests() {
     });
   }
 
+  async function toggleExam(id, isActive) {
+    try {
+      await apiFetch(`/admin/writing-exams/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
+      toast(isActive ? 'Đã ẩn đề' : 'Đã kích hoạt đề');
+      loadExams();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  function delExam(id, name) {
+    confirm(`Ẩn đề "${name}"?`, async () => {
+      try {
+        await apiFetch(`/admin/writing-exams/${id}`, { method: 'DELETE' });
+        toast('Đã ẩn đề');
+        loadExams();
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   const STATUS_MAP = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã xác nhận' };
   const STATUS_COLOR = { pending: 'var(--text3)', ai_done: 'var(--text3)', confirmed: 'var(--green)' };
 
@@ -712,20 +826,66 @@ export default function WritingTests() {
           onSaved={loadSamples}
         />
       )}
+      {(showExamModal || editExam) && (
+        <WritingExamModal
+          exam={editExam}
+          onClose={() => { setShowExamModal(false); setEditExam(null); }}
+          onSaved={loadExams}
+        />
+      )}
 
       <div className="section-header">
         <h2 className="section-title">Đề Writing</h2>
         {tab === 'task1' && <button className="btn btn-primary" onClick={() => { setEditTask1(null); setShowT1Modal(true); }}>+ Thêm Task 1</button>}
         {tab === 'task2' && <button className="btn btn-primary" onClick={() => { setEditTask2(null); setShowT2Modal(true); }}>+ Thêm Task 2</button>}
         {tab === 'samples' && <button className="btn btn-primary" onClick={() => { setEditSample(null); setShowSampleModal(true); }}>+ Upload bài mẫu</button>}
+        {tab === 'exams' && <button className="btn btn-primary" onClick={() => { setEditExam(null); setShowExamModal(true); }}>+ Thêm đề thi</button>}
       </div>
 
       <div className="inner-tabs-nav">
+        <Tab label="🗂 Đề thi" active={tab === 'exams'} onClick={() => setTab('exams')} />
         <Tab label="📝 Task 1 Pool" active={tab === 'task1'} onClick={() => setTab('task1')} />
         <Tab label="📝 Task 2 Pool" active={tab === 'task2'} onClick={() => setTab('task2')} />
         <Tab label="📊 Lịch sử nộp bài" active={tab === 'history'} onClick={() => setTab('history')} />
         <Tab label="📄 Bài mẫu" active={tab === 'samples'} onClick={() => setTab('samples')} />
       </div>
+
+      {tab === 'exams' && (
+        <>
+          <div style={{ fontSize: 13, color: 'var(--text2)', background: 'var(--surface2)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, lineHeight: 1.6 }}>
+            <strong>Đề thi Writing</strong> là container gắn với access key. Mỗi lần thi, hệ thống tự ghép 1 prompt Task 1 + 1 prompt Task 2 ngẫu nhiên từ pool. Cần ít nhất 1 đề đang kích hoạt để học sinh có thể bắt đầu.
+          </div>
+          <div className="table-wrap">
+            <table className="table">
+              <thead><tr><th>TÊN ĐỀ</th><th>THỜI GIAN</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+              <tbody>
+                {exams.length === 0
+                  ? <tr><td colSpan={5} className="table-empty">Chưa có đề nào – nhấn "+ Thêm đề thi"</td></tr>
+                  : exams.map(ex => (
+                    <tr key={ex._id}>
+                      <td><strong>{ex.name}</strong></td>
+                      <td style={{ fontSize: 13 }}>{ex.duration} phút</td>
+                      <td>
+                        <span className={`badge ${ex.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                          <span className="dot" />{ex.isActive !== false ? 'Kích hoạt' : 'Ẩn'}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(ex.createdAt).split(' ')[0]}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditExam(ex)} title="Sửa">✏️</button>
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleExam(ex._id, ex.isActive !== false)}
+                            title={ex.isActive !== false ? 'Ẩn' : 'Kích hoạt'}>{ex.isActive !== false ? '🙈' : '👁'}</button>
+                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => delExam(ex._id, ex.name)}>🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       {tab === 'task1' && (
         <div className="table-wrap">
