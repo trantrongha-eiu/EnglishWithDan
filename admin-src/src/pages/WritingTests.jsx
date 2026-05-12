@@ -17,10 +17,25 @@ function bandBadge(b) {
   return <span className={`badge ${cls}`} style={{ fontWeight: 700 }}>{Number(b).toFixed(1)}</span>;
 }
 
+function wcBadge(count, target) {
+  const n = count || 0;
+  const met = n >= target;
+  const close = n >= target * 0.8;
+  const bg = met ? '#dcfce7' : close ? '#fef9c3' : '#fee2e2';
+  const col = met ? '#15803d' : close ? '#a16207' : '#b91c1c';
+  return (
+    <span style={{ background: bg, color: col, borderRadius: 5, padding: '2px 8px', fontSize: 12, fontWeight: 600 }}>
+      {n}w{!met ? ` ⚠<${target}` : ''}
+    </span>
+  );
+}
+
 function Task1Modal({ task, onClose, onSaved }) {
   const toast = useToast();
+  const imgFileRef = useRef();
   const [form, setForm] = useState({ prompt: '', imageUrl: '', instructions: DEFAULT_T1, isActive: true });
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (task) setForm({
@@ -32,6 +47,30 @@ function Task1Modal({ task, onClose, onSaved }) {
   }, [task]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  async function uploadImage() {
+    const file = imgFileRef.current?.files[0];
+    if (!file) { toast('Chọn ảnh trước', 'error'); return; }
+    setUploading(true);
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const r = await fetch(`${API}/admin/writing-task1/upload-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify({ imageBase64: dataUrl }),
+      });
+      const d = await r.json();
+      if (!d.success) throw new Error(d.message);
+      setForm(f => ({ ...f, imageUrl: d.url }));
+      toast('Upload ảnh thành công');
+    } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
+    finally { setUploading(false); }
+  }
 
   async function save(e) {
     e.preventDefault();
@@ -59,8 +98,16 @@ function Task1Modal({ task, onClose, onSaved }) {
               placeholder="The chart below shows the percentage of households in owned and rented accommodation..." />
           </div>
           <div className="form-group">
-            <label className="form-label">URL hình ảnh (nếu có)</label>
-            <input className="form-input" value={form.imageUrl} onChange={set('imageUrl')} placeholder="https://..." />
+            <label className="form-label">Hình ảnh</label>
+            <input className="form-input" value={form.imageUrl} onChange={set('imageUrl')} placeholder="https://... hoặc upload bên dưới" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+              <input ref={imgFileRef} type="file" accept="image/*" className="form-input"
+                style={{ padding: 6, flex: 1, fontSize: 12 }} />
+              <button type="button" className="btn btn-ghost btn-sm" onClick={uploadImage}
+                disabled={uploading} style={{ flexShrink: 0 }}>
+                {uploading ? 'Đang upload...' : '📤 Upload'}
+              </button>
+            </div>
             {form.imageUrl && (
               <div style={{ marginTop: 8, textAlign: 'center' }}>
                 <img src={form.imageUrl} alt="preview" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, border: '1px solid var(--border)' }} />
@@ -446,6 +493,126 @@ function WritingSampleModal({ sample, onClose, onSaved }) {
   );
 }
 
+function WritingViewModal({ attemptId, onClose }) {
+  const toast = useToast();
+  const [attempt, setAttempt] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiFetch(`/admin/writing-attempt/${attemptId}`)
+      .then(d => setAttempt(d.attempt))
+      .catch(() => toast('Không tải được bài nộp', 'error'))
+      .finally(() => setLoading(false));
+  }, [attemptId]);
+
+  function download() {
+    if (!attempt) return;
+    const u = attempt.userId || {};
+    const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || 'Student');
+    const t1 = attempt.task1Snapshot || {};
+    const t2 = attempt.task2Snapshot || {};
+    const text = [
+      `${name} — ${attempt.examName || 'Writing Test'}`,
+      `Ngày nộp: ${new Date(attempt.submittedAt || attempt.createdAt).toLocaleString('vi-VN')}`,
+      '',
+      '=== TASK 1 ===',
+      t1.prompt || '',
+      '',
+      attempt.task1Answer || '(trống)',
+      '',
+      '=== TASK 2 ===',
+      t2.prompt || '',
+      '',
+      attempt.task2Answer || '(trống)',
+    ].join('\n');
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const el = document.createElement('a');
+    el.href = url; el.download = `${name}_writing.txt`; el.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const u = attempt?.userId || {};
+  const studentName = attempt
+    ? ([u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–')
+    : '';
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 800, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">👁 Xem bài Writing{attempt ? ` — ${studentName}` : ''}</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        {loading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>
+        ) : !attempt ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Không tìm thấy bài nộp</div>
+        ) : (
+          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ fontSize: 13, color: 'var(--text2)', display: 'flex', gap: 16, flexWrap: 'wrap', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
+              <span><strong>Học sinh:</strong> {studentName}</span>
+              <span><strong>Bài thi:</strong> {attempt.examName || '–'}</span>
+              <span><strong>Ngày nộp:</strong> {formatDate(attempt.submittedAt || attempt.createdAt)}</span>
+            </div>
+
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                TASK 1 — {attempt.wordCount1 || 0} từ
+                {(attempt.wordCount1 || 0) < 150 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 150</span>}
+              </div>
+              {attempt.task1Snapshot?.imageUrl && (
+                <img src={attempt.task1Snapshot.imageUrl} alt="task1"
+                  style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
+              )}
+              {attempt.task1Snapshot?.prompt && (
+                <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
+                  {attempt.task1Snapshot.prompt}
+                </div>
+              )}
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 220, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                {attempt.task1Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
+              </div>
+            </div>
+
+            <div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                TASK 2 — {attempt.wordCount2 || 0} từ
+                {(attempt.wordCount2 || 0) < 250 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 250</span>}
+              </div>
+              {attempt.task2Snapshot?.prompt && (
+                <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
+                  {attempt.task2Snapshot.prompt}
+                </div>
+              )}
+              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 280, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                {attempt.task2Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
+              </div>
+            </div>
+
+            {attempt.grading?.overallBand != null && (
+              <div style={{ background: 'var(--surface2)', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
+                <strong>Điểm xác nhận:</strong>{' '}
+                <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--green)' }}>{attempt.grading.overallBand}</span>
+                {attempt.grading.adminNote && (
+                  <div style={{ marginTop: 8, color: 'var(--text2)', lineHeight: 1.6 }}>
+                    <strong>Feedback:</strong> {attempt.grading.adminNote}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
+              <button className="btn btn-ghost" onClick={download}>⬇ Tải về (.txt)</button>
+              <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -459,8 +626,11 @@ export default function WritingTests() {
   const [editTask2, setEditTask2] = useState(null);
   const [showT2Modal, setShowT2Modal] = useState(false);
   const [gradingId, setGradingId] = useState(null);
+  const [viewAttemptId, setViewAttemptId] = useState(null);
   const [editSample, setEditSample] = useState(null);
   const [showSampleModal, setShowSampleModal] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState('');
+  const [historySearch, setHistorySearch] = useState('');
 
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
@@ -531,6 +701,9 @@ export default function WritingTests() {
       )}
       {gradingId && (
         <GradingModal attemptId={gradingId} onClose={() => setGradingId(null)} onGraded={loadHistory} />
+      )}
+      {viewAttemptId && (
+        <WritingViewModal attemptId={viewAttemptId} onClose={() => setViewAttemptId(null)} />
       )}
       {(showSampleModal || editSample) && (
         <WritingSampleModal
@@ -615,46 +788,68 @@ export default function WritingTests() {
         </div>
       )}
 
-      {tab === 'history' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr><th>HỌC SINH</th><th>SỐ TỪ</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
-            </thead>
-            <tbody>
-              {history.length === 0
-                ? <tr><td colSpan={6} className="table-empty">Chưa có bài nộp</td></tr>
-                : history.slice(0, 150).map(h => {
-                  const name = h.userId
-                    ? [h.userId.firstName, h.userId.lastName].filter(Boolean).join(' ') || h.userId.username || '–'
-                    : '–';
-                  const wordCount = (h.wordCount1 || 0) + (h.wordCount2 || 0);
-                  const finalScore = h.grading?.overallBand;
-                  return (
-                    <tr key={h._id}>
-                      <td><strong>{name}</strong></td>
-                      <td style={{ fontSize: 12 }}>{wordCount > 0 ? wordCount : '–'}</td>
-                      <td>{finalScore != null ? bandBadge(finalScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
-                      <td>
-                        <span style={{ fontSize: 12, color: STATUS_COLOR[h.gradingStatus] || 'var(--text3)' }}>
-                          {STATUS_MAP[h.gradingStatus] || '–'}
-                        </span>
-                      </td>
-                      <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
-                      <td>
-                        <div className="row-actions">
-                          <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }}
-                            onClick={() => setGradingId(h._id)}>✏️ Chấm</button>
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
-      )}
+      {tab === 'history' && (() => {
+        const displayHistory = history.filter(h => {
+          const u = h.userId || {};
+          const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '';
+          const matchSearch = !historySearch || name.toLowerCase().includes(historySearch.toLowerCase()) || (h.examName || '').toLowerCase().includes(historySearch.toLowerCase());
+          const matchStatus = !historyFilter || h.gradingStatus === historyFilter;
+          return matchSearch && matchStatus;
+        });
+        return (
+          <>
+            <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+              <select className="form-input" value={historyFilter} onChange={e => setHistoryFilter(e.target.value)} style={{ width: 180 }}>
+                <option value="">Tất cả trạng thái</option>
+                <option value="pending">⏳ Chờ chấm</option>
+                <option value="ai_done">🤖 AI đã chấm</option>
+                <option value="confirmed">✅ Đã xác nhận</option>
+              </select>
+              <input className="form-input search-input" placeholder="Tìm học sinh, bài thi..."
+                value={historySearch} onChange={e => setHistorySearch(e.target.value)} style={{ maxWidth: 260 }} />
+            </div>
+            <div className="table-wrap">
+              <table className="table">
+                <thead>
+                  <tr><th>HỌC SINH</th><th>BÀI THI</th><th>T1 (≥150w)</th><th>T2 (≥250w)</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
+                </thead>
+                <tbody>
+                  {displayHistory.length === 0
+                    ? <tr><td colSpan={8} className="table-empty">Không tìm thấy bài nộp nào</td></tr>
+                    : displayHistory.slice(0, 200).map(h => {
+                      const u = h.userId || {};
+                      const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–';
+                      const finalScore = h.grading?.overallBand;
+                      return (
+                        <tr key={h._id}>
+                          <td><strong>{name}</strong></td>
+                          <td style={{ fontSize: 12, color: 'var(--text2)' }}>{h.examName || '–'}</td>
+                          <td>{wcBadge(h.wordCount1, 150)}</td>
+                          <td>{wcBadge(h.wordCount2, 250)}</td>
+                          <td>{finalScore != null ? bandBadge(finalScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
+                          <td>
+                            <span style={{ fontSize: 12, color: STATUS_COLOR[h.gradingStatus] || 'var(--text3)' }}>
+                              {STATUS_MAP[h.gradingStatus] || '–'}
+                            </span>
+                          </td>
+                          <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
+                          <td>
+                            <div className="row-actions">
+                              <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setViewAttemptId(h._id)} title="Xem bài">👁</button>
+                              <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }}
+                                onClick={() => setGradingId(h._id)}>✏️ Chấm</button>
+                              <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        );
+      })()}
 
       {tab === 'samples' && (
         <div className="table-wrap">

@@ -82,7 +82,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({
     title: '', category: 'passage1', content: '', difficulty: 'medium',
-    questionRange: { start: 1, end: 13 }, isActive: true
+    questionRange: { start: 1, end: 13 }, tags: '', isActive: true
   });
   const [loading, setLoading] = useState(!!passageId);
   const [saving, setSaving] = useState(false);
@@ -98,6 +98,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
           content: p.content || '',
           difficulty: p.difficulty || 'medium',
           questionRange: { start: p.questionRange?.start ?? 1, end: p.questionRange?.end ?? 13 },
+          tags: Array.isArray(p.tags) ? p.tags.join(', ') : (p.tags || ''),
           isActive: p.isActive !== false
         });
       })
@@ -111,9 +112,10 @@ function PassageModal({ passageId, onClose, onSaved }) {
   async function save(e) {
     e.preventDefault();
     setSaving(true);
+    const payload = { ...form, tags: form.tags.split(',').map(t => t.trim()).filter(Boolean) };
     try {
-      if (passageId) await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify(form) });
-      else await apiFetch('/admin/passages', { method: 'POST', body: JSON.stringify(form) });
+      if (passageId) await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify(payload) });
+      else await apiFetch('/admin/passages', { method: 'POST', body: JSON.stringify(payload) });
       toast(passageId ? 'Đã cập nhật bài đọc' : 'Đã thêm bài đọc');
       onSaved(); onClose();
     } catch (err) { toast(err.message, 'error'); }
@@ -158,6 +160,12 @@ function PassageModal({ passageId, onClose, onSaved }) {
                 <label className="form-label">Đến số</label>
                 <input className="form-input" type="number" value={form.questionRange.end} onChange={setRange('end')} min={1} />
               </div>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tags (phân cách bằng dấu phẩy)</label>
+              <input className="form-input" value={form.tags} onChange={set('tags')}
+                placeholder="VD: animals, environment, science, Cambridge 17" />
+              <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>Dùng để lọc và tham chiếu — tuỳ chọn</div>
             </div>
             <div className="form-group">
               <label className="form-label">Nội dung bài đọc</label>
