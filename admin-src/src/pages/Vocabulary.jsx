@@ -428,6 +428,19 @@ export default function Vocabulary() {
     });
   }
 
+  async function splitUnit(id, title, wordCount) {
+    confirm(
+      `Chia "${title}" (${wordCount} từ) thành nhiều phần, mỗi phần tối đa 100 từ?\nThao tác này không thể hoàn tác.`,
+      async () => {
+        try {
+          const d = await apiFetch(`/vocab/admin/units/${id}/split`, { method: 'POST', body: JSON.stringify({ chunkSize: 100 }) });
+          toast(d.message);
+          load();
+        } catch (e) { toast(e.message, 'error'); }
+      }
+    );
+  }
+
   return (
     <>
       {(showUnitModal || editUnit) && (
@@ -478,6 +491,9 @@ export default function Vocabulary() {
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '4px 8px' }} onClick={() => setWordsUnit(u)} title="Quản lý từ vựng">📋 Từ</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditUnit(u)} title="Sửa unit">✏️</button>
+                      {(u.wordCount ?? 0) > 100 && (
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => splitUnit(u._id, u.title, u.wordCount)} title="Chia thành phần ≤100 từ">✂️</button>
+                      )}
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(u._id, u.isActive !== false)}>{u.isActive !== false ? '🙈' : '👁'}</button>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(u._id, u.title)}>🗑</button>
                     </div>

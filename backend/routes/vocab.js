@@ -245,6 +245,66 @@ router.post('/admin/units/:id/words/bulk', auth, teacherOnly, async (req, res) =
   }
 });
 
+// POST /api/vocab/admin/units/:id/split  – chia unit > 100 từ thành nhiều phần nhỏ
+// Body: { chunkSize?: number }  (mặc định 100)
+router.post('/admin/units/:id/split', auth, teacherOnly, async (req, res) => {
+  try {
+    const { chunkSize = 100 } = req.body;
+    const unit = await VocabUnit.findById(req.params.id);
+    if (!unit) return res.status(404).json({ success: false, message: 'Không tìm thấy unit' });
+    if (unit.words.length <= chunkSize) {
+      return res.status(400).json({ success: false, message: `Unit chỉ có ${unit.words.length} từ, không cần chia` });
+    }
+
+    // Chia words thành các mảng con kích thước chunkSize
+    const chunks = [];
+    for (let i = 0; i < unit.words.length; i += chunkSize) {
+      chunks.push(unit.words.slice(i, i + chunkSize));
+    }
+    const n = chunks.length;
+
+    // Tìm unitNumber lớn nhất hiện tại để gán số mới
+    const maxDoc = await VocabUnit.findOne().sort({ unitNumber: -1 }).select('unitNumber').lean();
+    const maxNum = maxDoc ? maxDoc.unitNumber : 0;
+
+    // Đẩy sortOrder của các unit phía sau lên để chèn vào giữa
+    await VocabUnit.updateMany(
+      { _id: { $ne: unit._id }, sortOrder: { $gt: unit.sortOrder } },
+      { $inc: { sortOrder: n - 1 } }
+    );
+
+    // Xoá hậu tố "(x/y)" nếu đã có trước đó
+    const baseTitle = unit.title.replace(/\s*\(\d+\/\d+\)$/, '');
+
+    // Cập nhật unit gốc: giữ phần 1
+    unit.title = `${baseTitle} (1/${n})`;
+    unit.words = chunks[0];
+    unit.markModified('words');
+    await unit.save();
+
+    // Tạo các unit mới cho phần 2..n
+    for (let i = 1; i < n; i++) {
+      await VocabUnit.create({
+        unitNumber: maxNum + i,
+        sortOrder:  unit.sortOrder + i,
+        title:      `${baseTitle} (${i + 1}/${n})`,
+        description: unit.description,
+        level:      unit.level,
+        isActive:   unit.isActive,
+        words:      chunks[i]
+      });
+    }
+
+    res.json({
+      success: true,
+      message: `Đã chia "${baseTitle}" thành ${n} phần (tối đa ${chunkSize} từ/phần)`,
+      parts: n
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/vocab/admin/import  – import toàn bộ từ JSON (tạo/update nhiều units)
 // Body: Array<{ unitNumber, title, words: [...] }> hoặc single object
 router.post('/admin/import', auth, teacherOnly, async (req, res) => {
