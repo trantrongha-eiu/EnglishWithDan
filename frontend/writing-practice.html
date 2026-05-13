@@ -447,6 +447,7 @@ let currentType  = 'all';
 let sessionDone  = 0;
 let sessionXP    = 0;
 let sessionCorrect = 0;
+let sessionAttempts = []; // buffer – gửi lên admin khi hoàn thành toàn bộ bài
 let _isSubmitting = false;
 // Test
 let testLevel   = 'beginner';
@@ -601,7 +602,7 @@ async function loadExercises() {
 
     exercises = data.exercises; // keep original order from DB (orderIndex)
     currentIdx = 0;
-    sessionDone = 0; sessionXP = 0; sessionCorrect = 0;
+    sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
     updateSessionStats();
     showExercise(0);
     showState('exercise');
@@ -787,7 +788,8 @@ async function submitAnswer() {
 
     showFeedback(answer, data);
     updateProgress(data.xpEarned || 5, data.feedback?.isCorrect);
-    autoSave(ex, answer, data);
+    // Buffer – không gửi ngay, chờ hoàn thành toàn bộ buổi luyện
+    sessionAttempts.push({ exerciseId: ex._id, userAnswer: answer, aiFeedback: data.feedback, xpEarned: data.xpEarned || 5 });
   } catch (err) {
     console.error(err);
     showToast('Lỗi khi chấm bài: ' + err.message, 'error');
@@ -849,20 +851,24 @@ function updateSessionStats() {
   document.getElementById('mob-stat-correct').textContent = correctStr;
 }
 
-function autoSave(ex, userAnswer, data) {
+function saveBatch() {
   const token = localStorage.getItem('token');
-  if (!token) return;
-  fetch(`${API}/api/writing-practice/save`, {
+  if (!token || !sessionAttempts.length) return;
+  const attempts = [...sessionAttempts];
+  sessionAttempts = []; // xoá ngay để tránh gửi 2 lần
+  fetch(`${API}/api/writing-practice/save-batch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-    body: JSON.stringify({ exerciseId: ex._id, userAnswer, aiFeedback: data.feedback, xpEarned: data.xpEarned })
+    body: JSON.stringify({ attempts })
   }).catch(() => {});
 }
 
 function nextExercise() {
   currentIdx++;
-  if (currentIdx >= exercises.length) { showState('done'); showDoneSummary(); }
-  else showExercise(currentIdx);
+  if (currentIdx >= exercises.length) {
+    saveBatch(); // gửi toàn bộ kết quả lên admin sau khi học sinh hoàn thành hết bài
+    showState('done'); showDoneSummary();
+  } else showExercise(currentIdx);
 }
 
 function showDoneSummary() {
@@ -874,7 +880,7 @@ function showDoneSummary() {
 }
 
 function restartExercises() {
-  currentIdx = 0; sessionDone = 0; sessionXP = 0; sessionCorrect = 0;
+  currentIdx = 0; sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
   updateSessionStats(); showExercise(0); showState('exercise');
 }
 

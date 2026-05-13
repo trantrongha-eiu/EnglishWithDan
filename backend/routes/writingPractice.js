@@ -292,6 +292,46 @@ router.post('/check-test', async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════
+//  POST /api/writing-practice/save-batch  (auth required)
+//  Lưu toàn bộ kết quả của 1 buổi luyện tập khi hoàn thành hết bài
+//  Body: { attempts: [{ exerciseId, userAnswer, aiFeedback, xpEarned }] }
+// ══════════════════════════════════════════════════════════════
+router.post('/save-batch', auth, async (req, res) => {
+  try {
+    const { attempts } = req.body;
+    if (!Array.isArray(attempts) || !attempts.length)
+      return res.status(400).json({ success: false, message: 'Không có dữ liệu' });
+
+    const ids       = [...new Set(attempts.map(a => a.exerciseId).filter(Boolean))];
+    const exercises = await WPExercise.find({ _id: { $in: ids } }).lean();
+    const exMap     = Object.fromEntries(exercises.map(e => [e._id.toString(), e]));
+
+    const docs = attempts
+      .map(a => {
+        const ex = exMap[String(a.exerciseId)];
+        if (!ex) return null;
+        return {
+          studentId:  req.user._id,
+          exerciseId: a.exerciseId,
+          level:      ex.level,
+          type:       ex.type,
+          topic:      ex.topicKey,
+          userAnswer: a.userAnswer || '',
+          aiFeedback: a.aiFeedback || null,
+          xpEarned:   a.xpEarned  || 0
+        };
+      })
+      .filter(Boolean);
+
+    if (docs.length) await WritingPracticeAttempt.insertMany(docs);
+    res.json({ success: true, saved: docs.length });
+  } catch (err) {
+    console.error('[WP] save-batch error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
 //  POST /api/writing-practice/save  (auth required)
 // ══════════════════════════════════════════════════════════════
 router.post('/save', auth, async (req, res) => {
