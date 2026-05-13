@@ -64,4 +64,17 @@ UserSchema.methods.updateStreak = function () {
   this.lastActivityDate = today;
 };
 
+// Kiểm tra và reset streak nếu đã bỏ lỡ >= 2 ngày (dùng khi load trang)
+UserSchema.methods.resetIfStale = function () {
+  if (!this.lastActivityDate) return false;
+  const today = getVNDay(new Date());
+  const lastDay = getVNDay(new Date(this.lastActivityDate));
+  const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
+  if (diff >= 2) {
+    this.learningStreak = 1;
+    return true;
+  }
+  return false;
+};
+
 module.exports = mongoose.model('User', UserSchema);

@@ -117,6 +117,10 @@ exports.getStats = async (req, res) => {
       User.findById(userId).select('learningStreak lastActivityDate totalStudyMinutes')
     ]);
 
+    // Reset streak nếu học sinh bỏ lỡ >= 2 ngày, để hiển thị đúng khi mở trang
+    const wasReset = user.resetIfStale();
+    if (wasReset) user.save().catch(() => {});
+
     const avgReading = readingAttempts.length
       ? (readingAttempts.reduce((s, a) => s + a.bandScore, 0) / readingAttempts.length).toFixed(1)
       : null;

@@ -33,6 +33,10 @@ let mixedQueue = [];            // [{word, type}] for mixed mode
 let mixedIndex = 0;
 let _retryWordList = null;      // set by retryWrongWords, consumed by startPractice
 
+// ── Session streak tracking ────────────────────
+let sessionAnsweredCount = 0;
+let _streakReportedThisSession = false;
+
 // ── Save-word pending ──────────────────────────
 let pendingSaveWord = null;
 let selectedBookForSave = null;
@@ -890,6 +894,10 @@ async function loadUnit() {
     try {
         const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
         const newUnit = await res.json();
+        if (!res.ok || !newUnit.words) {
+            toast(newUnit.message || 'Unable to load Unit', 'error');
+            return;
+        }
         // Assign currentUnit only after user confirms (or if not mid-practice)
         askQuitPractice(() => {
             currentUnit = newUnit;
@@ -962,7 +970,7 @@ function renderStudyGrid() {
           ${w.phonetic ? `<div class="vocab-phonetic">${w.phonetic}</div>` : ''}
           <div class="vocab-meaning">${w.meaning || ''}</div>
           ${w.example ? `<div class="vocab-example">"${w.example}"</div>` : ''}
-          <button class="btn-save-to-book" onclick='openSaveWordFromUnit(${JSON.stringify(w)})'>
+          <button class="btn-save-to-book" onclick="openSaveWordFromUnit('${w._id}')">
             <i class="fas fa-bookmark"></i> Save to notebook
           </button>
         </div>`).join('');
@@ -1029,7 +1037,9 @@ function copyParaphraseTable() {
     navigator.clipboard.writeText(text).then(() => toast('Paraphrase table copied ✅'));
 }
 
-function openSaveWordFromUnit(w) {
+function openSaveWordFromUnit(wordId) {
+    const w = currentUnit?.words?.find(x => String(x._id) === wordId);
+    if (!w) return;
     window.openSaveWordModal({
         word: w.word, meaning: w.meaning, example: w.example || '',
         phonetic: w.phonetic || '', partOfSpeech: w.partOfSpeech || '',
@@ -1040,6 +1050,27 @@ function openSaveWordFromUnit(w) {
 /* ══════════════════════════════════════════════
    PRACTICE
 ══════════════════════════════════════════════ */
+async function _reportSessionStreak() {
+    if (_streakReportedThisSession) return;
+    if (sessionAnsweredCount < 5) return;
+    _streakReportedThisSession = true;
+    try {
+        const res = await fetch(`${API}/vocabbook/practice-complete`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ wordsAnswered: sessionAnsweredCount })
+        });
+        const d = await res.json();
+        if (d.success && d.streak) {
+            const numEl = document.getElementById('mascot-streak-num');
+            if (numEl) animateCount(numEl, d.streak, 500);
+            const msgEl = document.getElementById('mascot-msg');
+            if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
+            const pandaEl = document.getElementById('mascot-panda');
+            if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
+        }
+    } catch { /* silent */ }
+}
+
 function startPractice(mode) {
     wrongWordSet.clear();
     requeuedWords.clear();
@@ -1049,6 +1080,8 @@ function startPractice(mode) {
     correctAnswers = 0;
     wrongAnswers   = 0;
     answered = false;
+    sessionAnsweredCount = 0;
+    _streakReportedThisSession = false;
 
     // Lấy tất cả từ (vocab + paraphrase); _retryWordList is set by retryWrongWords
     const allPracticeWords = (_retryWordList || currentUnit.words).filter(w => w.word && w.meaning);
@@ -1167,6 +1200,7 @@ function askQuitPractice(onQuit) {
 
 function confirmQuit() {
     closeModal('modal-quit-practice');
+    _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ trước khi thoát
     if (_quitCallback) { const cb = _quitCallback; _quitCallback = null; cb(); }
 }
 
@@ -1264,6 +1298,7 @@ function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showM
 
 function checkMixedMC(btn, selected, correct) {
     answered = true;
+    sessionAnsweredCount++;
     document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1278,6 +1313,7 @@ function checkMixedMC(btn, selected, correct) {
 }
 
 function checkMixedListen() {
+    sessionAnsweredCount++;
     const ua = document.getElementById('mixListenInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixListenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -1297,6 +1333,7 @@ function checkMixedListen() {
 }
 
 function checkMixedTrans() {
+    sessionAnsweredCount++;
     const ua    = document.getElementById('mixTransInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixTransInput').disabled = true;
     const caRaw = currentWord.meaning.toLowerCase();
@@ -1350,6 +1387,7 @@ function generateOptions(cw) {
 }
 function checkMultipleChoice(btn, selected, correct) {
     if (answered) return; answered = true;
+    sessionAnsweredCount++;
     document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1415,6 +1453,7 @@ function flipCard() {
 function markAsRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
+    sessionAnsweredCount++;
     correctAnswers++; playCorrectSound();
     document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Great job! You remembered this word! 🎉</div>';
     disableFlashcardBtns();
@@ -1423,6 +1462,7 @@ function markAsRemembered() {
 function markAsNotRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
+    sessionAnsweredCount++;
     wrongAnswers++; playWrongSound();
     wrongWordSet.add(currentWord.word);
     requeueWrongWord(currentWord);
@@ -1465,6 +1505,7 @@ function checkFillBlank() {
     const ca = currentWord.word.toLowerCase();
     if (!ua) { toast('Type a word first', 'error'); return; }
     answered = true;
+    sessionAnsweredCount++;
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
     if (ua === ca) {
@@ -1494,6 +1535,7 @@ function showListeningQuestion() {
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
     if (answered) return; answered = true;
+    sessionAnsweredCount++;
     const ua = document.getElementById('listenInput').value.trim().toLowerCase();
     document.getElementById('listenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -1530,6 +1572,7 @@ function showTranslationQuestion() {
 }
 function checkTranslation() {
     if (answered) return; answered = true;
+    sessionAnsweredCount++;
     const ua     = document.getElementById('transInput').value.trim().toLowerCase();
     document.getElementById('transInput').disabled = true;
     const caRaw  = currentWord.meaning.toLowerCase();
@@ -1561,6 +1604,8 @@ function showResults(mode) {
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';
+
+    _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ
 
     const stopBtn = document.getElementById('btnStopPractice');
     if (stopBtn) stopBtn.style.display = 'none';

@@ -67,6 +67,27 @@ router.get('/', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════
+// POST /api/vocabbook/practice-complete
+// Ghi nhận hoàn thành buổi luyện tập (>= 5 từ) → cập nhật streak
+// Body: { wordsAnswered: Number }
+// ══════════════════════════════════════════════════════
+router.post('/practice-complete', auth, async (req, res) => {
+  try {
+    const { wordsAnswered = 0 } = req.body;
+    if (req.user.role !== 'student') return res.json({ success: true });
+    if (wordsAnswered < 5) return res.json({ success: false, message: 'Cần ít nhất 5 từ để tính streak' });
+
+    logActivity(req.user._id, { wordsStudied: wordsAnswered });
+    req.user.updateStreak();
+    await req.user.save();
+
+    res.json({ success: true, streak: req.user.learningStreak });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
 // GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
 // ══════════════════════════════════════════════════════
 router.get('/:id', auth, async (req, res) => {
