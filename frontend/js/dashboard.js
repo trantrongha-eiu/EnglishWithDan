@@ -1338,12 +1338,13 @@ function checkMixedTrans() {
     document.getElementById('mixTransInput').disabled = true;
     const caRaw = currentWord.meaning.toLowerCase();
     const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý]/gi, '').trim();
+    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
     const ok    = alts.some(alt => {
         const na = norm(alt), nu = norm(ua);
         if (nu === na) return true;
         const aw = na.split(/\s+/).filter(w => w.length > 1);
         const uw = nu.split(/\s+/).filter(w => w.length > 1);
+        if (aw.length === 0) return false;
         return aw.every(w => uw.some(u => u.includes(w) || w.includes(u)));
     });
     if (ok) {
@@ -1577,12 +1578,13 @@ function checkTranslation() {
     document.getElementById('transInput').disabled = true;
     const caRaw  = currentWord.meaning.toLowerCase();
     const alts   = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    const norm   = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý]/gi, '').trim();
+    const norm   = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
     const ok     = alts.some(alt => {
         const normAlt = norm(alt), normUa = norm(ua);
         if (normUa === normAlt) return true;
         const altWords = normAlt.split(/\s+/).filter(w => w.length > 1);
         const uaWords  = normUa.split(/\s+/).filter(w => w.length > 1);
+        if (altWords.length === 0) return false;
         return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
     });
     if (ok) {
