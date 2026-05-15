@@ -37,6 +37,13 @@ let _retryWordList = null;      // set by retryWrongWords, consumed by startPrac
 let sessionAnsweredCount = 0;
 let _streakReportedThisSession = false;
 
+function _countAnswer() {
+    sessionAnsweredCount++;
+    if (!_streakReportedThisSession && sessionAnsweredCount >= 5) {
+        _reportSessionStreak();
+    }
+}
+
 // ── Save-word pending ──────────────────────────
 let pendingSaveWord = null;
 let selectedBookForSave = null;
@@ -1297,8 +1304,8 @@ function showMixedQuestion() {
 function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showMixedQuestion(); }
 
 function checkMixedMC(btn, selected, correct) {
-    answered = true;
-    sessionAnsweredCount++;
+    if (answered) return; answered = true;
+    _countAnswer();
     document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1313,7 +1320,8 @@ function checkMixedMC(btn, selected, correct) {
 }
 
 function checkMixedListen() {
-    sessionAnsweredCount++;
+    if (answered) return; answered = true;
+    _countAnswer();
     const ua = document.getElementById('mixListenInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixListenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -1333,7 +1341,8 @@ function checkMixedListen() {
 }
 
 function checkMixedTrans() {
-    sessionAnsweredCount++;
+    if (answered) return; answered = true;
+    _countAnswer();
     const ua    = document.getElementById('mixTransInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixTransInput').disabled = true;
     const caRaw = currentWord.meaning.toLowerCase();
@@ -1388,7 +1397,7 @@ function generateOptions(cw) {
 }
 function checkMultipleChoice(btn, selected, correct) {
     if (answered) return; answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1454,7 +1463,7 @@ function flipCard() {
 function markAsRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     correctAnswers++; playCorrectSound();
     document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Great job! You remembered this word! 🎉</div>';
     disableFlashcardBtns();
@@ -1463,7 +1472,7 @@ function markAsRemembered() {
 function markAsNotRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     wrongAnswers++; playWrongSound();
     wrongWordSet.add(currentWord.word);
     requeueWrongWord(currentWord);
@@ -1506,7 +1515,7 @@ function checkFillBlank() {
     const ca = currentWord.word.toLowerCase();
     if (!ua) { toast('Type a word first', 'error'); return; }
     answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
     if (ua === ca) {
@@ -1536,7 +1545,7 @@ function showListeningQuestion() {
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
     if (answered) return; answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     const ua = document.getElementById('listenInput').value.trim().toLowerCase();
     document.getElementById('listenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -1573,7 +1582,7 @@ function showTranslationQuestion() {
 }
 function checkTranslation() {
     if (answered) return; answered = true;
-    sessionAnsweredCount++;
+    _countAnswer();
     const ua     = document.getElementById('transInput').value.trim().toLowerCase();
     document.getElementById('transInput').disabled = true;
     const caRaw  = currentWord.meaning.toLowerCase();
