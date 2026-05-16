@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 
 export default function ReadingTests() {
+  const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
   const [tests, setTests] = useState([]);
@@ -49,7 +51,7 @@ export default function ReadingTests() {
     <>
       <div className="section-header">
         <h2 className="section-title">Bộ đề Reading ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => window.open('/admin/reading-tests/new', '_blank')}>+ Thêm bộ đề</button>
+        <button className="btn btn-primary" onClick={() => navigate('/admin/reading-tests/new')}>+ Thêm bộ đề</button>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
@@ -82,7 +84,7 @@ export default function ReadingTests() {
                   <td>
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyLink(t._id)} title="Copy link chia sẻ">🔗</button>
-                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => window.open(`/admin/reading-tests/${t._id}`, '_blank')} title="Sửa">✏️</button>
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/admin/reading-tests/${t._id}`)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)} title="Xóa vĩnh viễn">🗑</button>
                     </div>

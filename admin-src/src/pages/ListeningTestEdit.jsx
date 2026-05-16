@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 
 function defaultSection(partNumber) {
   const ranges = { 1: { start: 1, end: 10 }, 2: { start: 11, end: 20 }, 3: { start: 21, end: 30 }, 4: { start: 31, end: 40 } };
-  return { partNumber, title: `Part ${partNumber}`, description: '', questionRange: ranges[partNumber], questionGroups: [] };
+  return { partNumber, title: `Part ${partNumber}`, description: '', transcript: '', questionRange: ranges[partNumber], questionGroups: [] };
 }
 
 function parseSections(rawSections = []) {
@@ -17,6 +17,7 @@ function parseSections(rawSections = []) {
       partNumber: partNum,
       title: sec.title || `Part ${partNum}`,
       description: sec.description || '',
+      transcript: sec.transcript || '',
       questionRange: sec.questionRange || { start: (partNum - 1) * 10 + 1, end: partNum * 10 },
       questionGroups: sec.questionGroups || [],
     };
@@ -28,6 +29,7 @@ function buildSections(sections) {
     partNumber: sec.partNumber,
     title: sec.title,
     description: sec.description || '',
+    transcript: sec.transcript || '',
     questionRange: sec.questionRange,
     questionGroups: sec.questionGroups || [],
   }));
@@ -35,8 +37,10 @@ function buildSections(sections) {
 
 export default function ListeningTestEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const isNew = id === 'new';
+  const goBack = () => navigate('/admin/listening-tests');
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -99,10 +103,10 @@ export default function ListeningTestEdit() {
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-        <button className="btn btn-ghost btn-sm" onClick={() => window.close()}>← Đóng</button>
+        <button className="btn btn-ghost btn-sm" onClick={() => goBack()}>← Đóng</button>
         <h2 style={{ margin: 0 }}>{isNew ? 'Thêm đề Listening' : (meta.name || 'Sửa đề Listening')}</h2>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
-          <button className="btn btn-ghost" onClick={() => window.close()}>Huỷ</button>
+          <button className="btn btn-ghost" onClick={() => goBack()}>Huỷ</button>
           <button className="btn btn-primary" onClick={saveAll} disabled={saving}>
             {saving ? 'Đang lưu...' : '💾 Lưu tất cả'}
           </button>
@@ -166,11 +170,22 @@ export default function ListeningTestEdit() {
           </div>
         </div>
 
-        <div className="form-group" style={{ marginBottom: 16 }}>
+        <div className="form-group" style={{ marginBottom: 12 }}>
           <label className="form-label">Mô tả ngữ cảnh (hiển thị trước câu hỏi)</label>
           <textarea className="form-input" rows={2} value={sec.description || ''} onChange={e => updateSection(activePart, { description: e.target.value })}
             placeholder="VD: You will hear a conversation between two students discussing their assignment."
             style={{ fontSize: 13 }} />
+        </div>
+
+        <div className="form-group" style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <label className="form-label" style={{ marginBottom: 0 }}>Transcript Part {sec.partNumber}</label>
+            <span style={{ fontSize: 11, color: 'var(--text3)', background: 'var(--surface2)', borderRadius: 4, padding: '2px 7px' }}>tùy chọn — dùng để review sau khi thi</span>
+          </div>
+          <textarea className="form-input" rows={4} value={sec.transcript || ''} onChange={e => updateSection(activePart, { transcript: e.target.value })}
+            placeholder={'[Dán toàn bộ script bài nghe tại đây]\n\nVD:\nFEMALE: Hi, I\'m looking for a room to rent...\nMALE: Sure, let me tell you about what we have available...'}
+            style={{ fontSize: 12, fontFamily: 'var(--mono)', lineHeight: 1.6 }} />
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 3 }}>Script được lưu kèm đề — không hiển thị cho học sinh trong lúc thi</div>
         </div>
 
         {/* Question groups for this Part */}
@@ -184,8 +199,17 @@ export default function ListeningTestEdit() {
           context="listening"
         />
 
-        <div style={{ marginTop: 16, padding: 12, background: 'var(--surface2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text3)', lineHeight: 1.6 }}>
-          <strong>Ghi chú:</strong> Mỗi Part có thể có nhiều nhóm câu hỏi. Fill-blank trong câu hỏi: dùng <code>________</code>; trong bảng/note: dùng <code>__Q1__</code>. Đáp án không phân biệt hoa/thường. Multiple choice: đáp án là chữ cái A/B/C/D.
+        <div style={{ marginTop: 16, padding: 14, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.75 }}>
+          <strong style={{ color: 'var(--blue)' }}>Hướng dẫn nhập câu hỏi Listening:</strong>
+          <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
+            <li><strong>Fill-blank trong câu:</strong> dùng <code>________</code> (8 gạch dưới). Đáp án: từ/cụm từ cần điền. Nhiều đáp án chấp nhận: dùng <code>word1 / word2</code></li>
+            <li><strong>Fill-blank trong bảng/note:</strong> dùng <code>__Q1__</code>, <code>__Q2__</code>… trong ô bảng hoặc dòng note. Đáp án câu Q1 điền vào vị trí tương ứng.</li>
+            <li><strong>Multiple choice (1 đáp án):</strong> đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
+            <li><strong>Multiple choice (nhiều đáp án):</strong> đáp án là JSON array, VD <code>["A","C"]</code>. Chọn số lượng đáp án đúng ở trường "Số đáp án cần chọn".</li>
+            <li><strong>Matching:</strong> đáp án là chữ cái của lựa chọn. VD: <code>B</code></li>
+            <li><strong>Map labelling:</strong> đáp án là nhãn điền vào sơ đồ, VD: <code>car park</code></li>
+          </ul>
+          <div style={{ marginTop: 6 }}>Đáp án <strong>không phân biệt hoa/thường</strong>. Nếu 2+ đáp án đúng cho fill-blank: dùng <code>/</code> ngăn cách, VD: <code>train / by train</code>.</div>
         </div>
       </div>
     </div>

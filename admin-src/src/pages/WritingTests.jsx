@@ -92,10 +92,22 @@ function Task1Modal({ task, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
+            <strong style={{ color: 'var(--blue)' }}>Các dạng Task 1:</strong>
+            <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>
+              <li><strong>Bar chart:</strong> "The bar chart below shows the number of..."</li>
+              <li><strong>Line graph:</strong> "The graph below shows changes in..."</li>
+              <li><strong>Pie chart:</strong> "The pie charts below compare..."</li>
+              <li><strong>Table:</strong> "The table below shows the percentage of..."</li>
+              <li><strong>Map:</strong> "The maps below show the town of X in 1990 and now."</li>
+              <li><strong>Process:</strong> "The diagram below shows how X is produced."</li>
+            </ul>
+            <div style={{ marginTop: 5 }}>Upload hình ảnh biểu đồ / sơ đồ bên dưới. Prompt thường kết thúc bằng: <em>"Summarise the information... Write at least 150 words."</em></div>
+          </div>
           <div className="form-group">
             <label className="form-label">Đề bài (prompt) *</label>
             <textarea className="form-input" rows={4} value={form.prompt} onChange={set('prompt')} required
-              placeholder="The chart below shows the percentage of households in owned and rented accommodation..." />
+              placeholder="The chart below shows the percentage of households in owned and rented accommodation in England and Wales between 1918 and 2011.&#10;&#10;Summarise the information by selecting and reporting the main features, and make comparisons where relevant." />
           </div>
           <div className="form-group">
             <label className="form-label">Hình ảnh</label>
@@ -166,10 +178,21 @@ function Task2Modal({ task, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
+            <strong style={{ color: 'var(--blue)' }}>Các dạng đề Task 2:</strong>
+            <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>
+              <li><strong>Opinion:</strong> "...To what extent do you agree or disagree?"</li>
+              <li><strong>Discussion:</strong> "Discuss both views and give your own opinion."</li>
+              <li><strong>Advantages/Disadvantages:</strong> "Do the advantages outweigh the disadvantages?"</li>
+              <li><strong>Problem/Solution:</strong> "What are the causes of this? What solutions can you suggest?"</li>
+              <li><strong>Two-part question:</strong> "Why is this? What can be done to...?"</li>
+            </ul>
+            <div style={{ marginTop: 5 }}>Prompt thường bắt đầu với một câu đặt vấn đề, tiếp theo là câu hỏi. Kết thúc bằng: <em>"Give reasons for your answer... Write at least 250 words."</em></div>
+          </div>
           <div className="form-group">
             <label className="form-label">Đề bài (prompt) *</label>
             <textarea className="form-input" rows={5} value={form.prompt} onChange={set('prompt')} required
-              placeholder="Some people think that... To what extent do you agree or disagree?" />
+              placeholder="Some people think that... To what extent do you agree or disagree?&#10;&#10;Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words." />
           </div>
           <div className="form-group">
             <label className="form-label">Hướng dẫn</label>

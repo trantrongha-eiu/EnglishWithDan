@@ -8,6 +8,72 @@ const PAGE = 20;
 const LEVELS = ['beginner', 'elementary', 'intermediate'];
 const TYPES = ['translation', 'rearrange', 'fill_blank', 'expand', 'combine'];
 
+const TYPE_GUIDE = {
+  translation: {
+    title: 'Dịch câu (Translation)',
+    desc: 'Học sinh đọc câu tiếng Việt và dịch sang tiếng Anh.',
+    fields: [
+      { name: 'question', hint: 'Câu tiếng Việt cần dịch. VD: Tôi đi học mỗi ngày.' },
+      { name: 'sampleAnswer', hint: 'Bản dịch mẫu. VD: I go to school every day.' },
+      { name: 'alternativeAnswers', hint: 'Các bản dịch chấp nhận được khác — mỗi dòng 1 đáp án.' },
+    ],
+  },
+  rearrange: {
+    title: 'Sắp xếp từ (Word Rearrangement)',
+    desc: 'Học sinh kéo-thả / sắp xếp các từ đã xáo trộn thành câu hoàn chỉnh.',
+    fields: [
+      { name: 'question', hint: 'Hướng dẫn ngắn. VD: Rearrange the words to make a correct sentence.' },
+      { name: 'baseText', hint: 'Câu hoàn chỉnh (câu gốc trước khi xáo). VD: She plays tennis every day.' },
+      { name: 'baseWords', hint: 'Các từ cách nhau bằng |. VD: She | plays | tennis | every | day' },
+      { name: 'sampleAnswer', hint: 'Giống baseText — câu đúng hoàn chỉnh.' },
+    ],
+  },
+  fill_blank: {
+    title: 'Điền vào chỗ trống (Fill in the Blank)',
+    desc: 'Câu có một chỗ trống, học sinh điền từ thích hợp.',
+    fields: [
+      { name: 'question', hint: 'Câu có dấu ___. VD: She ___ to school every day.' },
+      { name: 'baseText', hint: 'Câu gốc đầy đủ (để so sánh hiển thị). VD: She goes to school every day.' },
+      { name: 'blankAnswer', hint: 'Từ cần điền vào chỗ trống. VD: goes' },
+      { name: 'sampleAnswer', hint: 'Câu hoàn chỉnh sau khi điền. VD: She goes to school every day.' },
+    ],
+  },
+  expand: {
+    title: 'Mở rộng câu (Sentence Expansion)',
+    desc: 'Học sinh nhận một cụm từ/ý ngắn và viết thành câu hoàn chỉnh.',
+    fields: [
+      { name: 'question', hint: 'Cụm từ/gợi ý ngắn. VD: she / love / music / childhood' },
+      { name: 'sampleAnswer', hint: 'Câu mẫu hoàn chỉnh. VD: She has loved music since childhood.' },
+      { name: 'alternativeAnswers', hint: 'Các câu chấp nhận khác — mỗi dòng 1 đáp án.' },
+    ],
+  },
+  combine: {
+    title: 'Kết hợp câu (Sentence Combining)',
+    desc: 'Học sinh kết hợp hai câu đơn thành một câu phức/ghép.',
+    fields: [
+      { name: 'question', hint: 'Hướng dẫn. VD: Combine the sentences using a conjunction.' },
+      { name: 'sentences', hint: 'Các câu đầu vào — mỗi câu 1 dòng.\nVD:\nShe is tired.\nShe continues working.' },
+      { name: 'sampleAnswer', hint: 'Câu kết hợp mẫu. VD: Although she is tired, she continues working.' },
+      { name: 'alternativeAnswers', hint: 'Các cách kết hợp chấp nhận khác.' },
+    ],
+  },
+};
+
+function TypeGuide({ type }) {
+  const g = TYPE_GUIDE[type];
+  if (!g) return null;
+  return (
+    <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)', marginBottom: 4 }}>
+      <strong style={{ color: 'var(--blue)' }}>{g.title}</strong> — {g.desc}
+      <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
+        {g.fields.map(f => (
+          <li key={f.name}><strong>{f.name}:</strong> {f.hint}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function levelBadge(l) {
   const map = { beginner: 'badge-green', elementary: 'badge-blue', intermediate: 'badge-red' };
   return <span className={`badge ${map[l] || 'badge-gray'}`}>{l}</span>;
@@ -55,6 +121,7 @@ function ExerciseModal({ exercise, topics, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '75vh', overflowY: 'auto' }}>
+          <TypeGuide type={form.type} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             <div className="form-group">
               <label className="form-label">Level</label>

@@ -59,7 +59,23 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
           {loading ? (
             <div style={{ textAlign: 'center', padding: 32, color: 'var(--text3)' }}>Đang tải...</div>
           ) : (
-            <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" />
+            <>
+              <div style={{ marginBottom: 14, padding: 12, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, fontSize: 12, color: 'var(--text2)', lineHeight: 1.7 }}>
+                <strong style={{ color: 'var(--blue)' }}>Hướng dẫn nhập câu hỏi Reading:</strong>
+                <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
+                  <li><strong>True/False/NG:</strong> Nhóm "Câu hỏi thường". Câu hỏi là statement, đáp án: <code>TRUE</code> / <code>FALSE</code> / <code>NOT GIVEN</code></li>
+                  <li><strong>Yes/No/NG:</strong> Tương tự nhưng hỏi quan điểm tác giả. Đáp án: <code>YES</code> / <code>NO</code> / <code>NOT GIVEN</code></li>
+                  <li><strong>Multiple Choice:</strong> Đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
+                  <li><strong>Fill-blank:</strong> Dùng <code>________</code> trong câu. Đáp án: từ cần điền. Nhiều đáp án: <code>word1 / word2</code></li>
+                  <li><strong>Matching Headings:</strong> Nhóm "Matching Headings". Câu hỏi = tên đoạn (VD: <em>Section A</em>). Đáp án = số La Mã (VD: <em>iii</em>)</li>
+                  <li><strong>Summary Completion:</strong> Nhóm "Summary Completion". Dùng <code>__Q14__</code> trong đoạn tóm tắt. Word Bank A→J. Đáp án là chữ cái.</li>
+                  <li><strong>Table/Note:</strong> Dùng nhóm "Bảng" hoặc "Note Completion". Đặt <code>__Q1__</code> trong ô/dòng cần điền.</li>
+                  <li><strong>Sentence Endings:</strong> Nhóm "Matching / Sentence Endings" → chọn chế độ Sentence Endings. Câu hỏi = phần đầu câu, đáp án = chữ cái phần kết.</li>
+                </ul>
+                <div style={{ marginTop: 5, color: 'var(--text3)' }}>Mỗi nhóm câu hỏi lưu tự động khi thay đổi (thấy "✓ Đã lưu" ở tiêu đề).</div>
+              </div>
+              <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" />
+            </>
           )}
         </div>
       </div>
@@ -169,10 +185,13 @@ function PassageModal({ passageId, onClose, onSaved }) {
             </div>
             <div className="form-group">
               <label className="form-label">Nội dung bài đọc <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(HTML)</span></label>
-              <div style={{ fontSize: 11, background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 7, padding: '8px 11px', marginBottom: 6, color: 'var(--text2)', lineHeight: 1.7 }}>
+              <div style={{ fontSize: 11, background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 7, padding: '9px 12px', marginBottom: 6, color: 'var(--text2)', lineHeight: 1.75 }}>
                 <strong>Định dạng HTML</strong> — frontend render trực tiếp bằng <code>innerHTML</code>.<br />
-                Các thẻ thường dùng: <code>&lt;p&gt;...&lt;/p&gt;</code> cho đoạn văn · <code>&lt;strong&gt;</code> in đậm · <code>&lt;em&gt;</code> in nghiêng · <code>&lt;br&gt;</code> xuống dòng.<br />
-                Ví dụ: <code>&lt;p&gt;The history of coffee dates back to...&lt;/p&gt;&lt;p&gt;Second paragraph here.&lt;/p&gt;</code>
+                <strong>Thẻ thường dùng:</strong> <code>&lt;p&gt;...&lt;/p&gt;</code> đoạn văn · <code>&lt;strong&gt;</code> in đậm · <code>&lt;em&gt;</code> in nghiêng · <code>&lt;br&gt;</code> xuống dòng.<br />
+                <strong>Đoạn có ký tự (Matching Headings):</strong> Thêm ký tự A, B, C trước mỗi đoạn để học sinh ghép tiêu đề:<br />
+                <code>&lt;p&gt;&lt;strong&gt;A&lt;/strong&gt; The history of coffee dates back to Ethiopia...&lt;/p&gt;</code><br />
+                <code>&lt;p&gt;&lt;strong&gt;B&lt;/strong&gt; By the 17th century, coffee houses had spread...&lt;/p&gt;</code><br />
+                <strong>Tip:</strong> Copy text từ PDF → paste vào, bọc mỗi đoạn trong <code>&lt;p&gt;&lt;/p&gt;</code>.
               </div>
               <textarea className="form-input" rows={12} value={form.content} onChange={set('content')}
                 style={{ fontFamily: 'monospace', fontSize: 12, lineHeight: 1.6 }}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -73,6 +74,7 @@ function AudioUploadModal({ test, onClose, onUploaded }) {
 }
 
 export default function ListeningTests() {
+  const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
   const [tests, setTests] = useState([]);
@@ -129,7 +131,7 @@ export default function ListeningTests() {
 
       <div className="section-header">
         <h2 className="section-title">Đề Listening ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => window.open('/admin/listening-tests/new', '_blank')}>+ Thêm đề</button>
+        <button className="btn btn-primary" onClick={() => navigate('/admin/listening-tests/new')}>+ Thêm đề</button>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16 }}>
@@ -176,7 +178,7 @@ export default function ListeningTests() {
                   <td>
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyLink(t._id)} title="Copy link">🔗</button>
-                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => window.open(`/admin/listening-tests/${t._id}`, '_blank')} title="Sửa">✏️</button>
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/admin/listening-tests/${t._id}`)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setAudioTest(t)} title="Upload audio">🎵</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)}>🗑</button>

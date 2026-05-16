@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 
 export default function ReadingTestEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const toast = useToast();
   const isNew = id === 'new';
+  const goBack = () => navigate('/admin/reading-tests');
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -39,7 +41,7 @@ export default function ReadingTestEdit() {
       if (isNew) await apiFetch('/admin/tests', { method: 'POST', body: JSON.stringify(form) });
       else await apiFetch(`/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify(form) });
       toast(isNew ? 'Đã tạo bộ đề' : 'Đã cập nhật bộ đề');
-      setTimeout(() => window.close(), 600);
+      setTimeout(() => goBack(), 600);
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
@@ -49,7 +51,7 @@ export default function ReadingTestEdit() {
   return (
     <div style={{ maxWidth: 600, margin: '40px auto', padding: '0 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
-        <button className="btn btn-ghost" onClick={() => window.close()}>← Đóng</button>
+        <button className="btn btn-ghost" onClick={() => goBack()}>← Đóng</button>
         <h2 style={{ margin: 0, fontSize: 20 }}>{isNew ? 'Thêm bộ đề Reading' : 'Sửa bộ đề Reading'}</h2>
       </div>
 
@@ -73,7 +75,7 @@ export default function ReadingTestEdit() {
             <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Kích hoạt
           </label>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 8, borderTop: '1px solid var(--border)' }}>
-            <button type="button" className="btn btn-ghost" onClick={() => window.close()}>Huỷ</button>
+            <button type="button" className="btn btn-ghost" onClick={() => goBack()}>Huỷ</button>
             <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu'}</button>
           </div>
         </form>
