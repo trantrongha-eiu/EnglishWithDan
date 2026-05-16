@@ -28,7 +28,7 @@
             <div style="display:flex;align-items:center;gap:8px;min-width:0">
                 <span class="hdr-username" id="userName"
                     style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋
-                    Hello</span>
+                    Xin chào</span>
                 <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng"
                     aria-label="Mở menu kỹ năng">
                     <i class="fas fa-th-large"></i>
@@ -63,14 +63,13 @@
         <div class="list-container">
             <div class="list-header">
                 <div>
-                    <h2>Practice <span class="tag-red">Listening Full Test</span></h2>
-                    <p class="list-subtitle">Complete IELTS Listening with 4 parts, audio player and transcript after
-                        submission.</p>
+                    <h2>Luyện tập <span class="tag-red">Listening Full Đề</span></h2>
+                    <p class="list-subtitle">Làm bài Listening IELTS đầy đủ 4 parts, có audio player và transcript sau khi nộp bài.</p>
                 </div>
                 <div class="list-filter">
-                    <button class="filter-btn active" onclick="filterTests('all', this)">All</button>
-                    <button class="filter-btn" onclick="filterTests('done', this)">Attempted</button>
-                    <button class="filter-btn" onclick="filterTests('new', this)">Not attempted</button>
+                    <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
+                    <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
+                    <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
                 </div>
             </div>
 
@@ -83,7 +82,7 @@
             </div>
 
             <div id="tests-wrapper">
-                <div class="loading-spinner">Loading tests...</div>
+                <div class="loading-spinner">Đang tải đề thi...</div>
             </div>
         </div>
     </div>
@@ -93,17 +92,17 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
         <div class="exam-topbar">
-            <button class="btn-ghost" onclick="confirmExit()">← Exit</button>
+            <button class="btn-ghost" onclick="confirmExit()">← Thoát</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
             <button id="btn-fullscreen" onclick="toggleFullscreen()" title="Fullscreen"
                 style="background:none;border:none;font-size:18px;cursor:pointer;color:#6b7280;padding:4px 8px;border-radius:6px;flex-shrink:0;line-height:1"
                 onmouseenter="this.style.background='#f3f4f6'" onmouseleave="this.style.background='none'">⛶</button>
-            <button class="btn-primary" onclick="confirmSubmit()">📤 Submit</button>
+            <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
-            <span class="exam-audio-status" id="exam-audio-status">🎧 Waiting</span>
-            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Play now</button>
+            <span class="exam-audio-status" id="exam-audio-status">🎧 Chờ audio...</span>
+            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Phát ngay</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100"
                     step="0.1" tabindex="-1" />
@@ -127,19 +126,16 @@
         <div id="audio-start-overlay" class="audio-start-overlay hidden">
             <div class="aso-card">
                 <div class="aso-icon">🎧</div>
-                <p class="aso-text">The audio will be played <strong>once only</strong>.<br>You are <strong>not
-                        permitted to pause</strong> or <strong>rewind</strong> the audio while answering the questions.
-                </p>
-                <p class="aso-sub">After clicking below, you have <strong>30 seconds</strong> to read the questions
-                    before the audio plays automatically.</p>
-                <button class="aso-play-btn" onclick="startReadingTime()">📖 Understood — Start reading</button>
+                <p class="aso-text">Audio sẽ được phát <strong>một lần duy nhất</strong>.<br>Bạn <strong>không được tạm dừng</strong> hoặc <strong>tua lại</strong> trong khi làm bài.</p>
+                <p class="aso-sub">Sau khi nhấn bên dưới, bạn có <strong>30 giây</strong> để đọc câu hỏi trước khi audio tự phát.</p>
+                <button class="aso-play-btn" onclick="startReadingTime()">📖 Đã hiểu — Bắt đầu đọc đề</button>
             </div>
         </div>
 
         <!-- Exam toolbar: highlight + dict -->
         <div class="exam-toolbar" id="exam-toolbar">
             <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
-                🖊 <small>Highlight</small>
+                🖊 <small>Bôi màu (H)</small>
             </button>
         </div>
 
@@ -163,22 +159,22 @@
             <div class="result-stats">
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#16a34a" id="r-correct">0</div>
-                    <div class="result-stat-lab">Correct</div>
+                    <div class="result-stat-lab">Đúng</div>
                 </div>
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#e53935" id="r-wrong">0</div>
-                    <div class="result-stat-lab">Incorrect</div>
+                    <div class="result-stat-lab">Sai</div>
                 </div>
                 <div class="result-stat">
                     <div class="result-stat-val" style="color:#9ca3af" id="r-skip">0</div>
-                    <div class="result-stat-lab">Skipped</div>
+                    <div class="result-stat-lab">Bỏ qua</div>
                 </div>
             </div>
             <div class="result-msg-box" id="result-msg"></div>
             <div class="result-actions">
-                <button class="btn-primary" onclick="goToReview()">📋 View detailed answers</button>
-                <button class="btn-ghost" onclick="showHistoryModal()">📜 History</button>
-                <button class="btn-ghost" onclick="showScreen('list')">← Back to home</button>
+                <button class="btn-primary" onclick="goToReview()">📋 Xem giải thích chi tiết</button>
+                <button class="btn-ghost" onclick="showHistoryModal()">📜 Lịch sử</button>
+                <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
             </div>
         </div>
     </div>
@@ -188,11 +184,11 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-review">
         <div class="review-topbar">
-            <button class="btn-ghost" onclick="showScreen('list')">← Back to home</button>
-            <span class="exam-title" id="review-title" style="flex:1">Review</span>
+            <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+            <span class="exam-title" id="review-title" style="flex:1">Xem lại bài</span>
             <span class="review-band-badge" id="review-band-badge">Band –</span>
-            <button class="tool-btn-rv active" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Highlight</button>
-            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Dictionary</button>
+            <button class="tool-btn-rv active" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Bôi màu</button>
+            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
         </div>
 
         <div class="audio-bar" id="review-audio-bar">
@@ -225,14 +221,14 @@
             <div class="transcript-panel">
                 <div class="transcript-header">
                     <span>📜 Transcript</span>
-                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click to look up a word</span>
+                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click để tra từ</span>
                 </div>
                 <div class="transcript-body" id="transcript-body"></div>
             </div>
 
             <div class="review-questions-panel" id="review-questions-panel">
                 <div class="review-qnav-bar">
-                    <span class="review-qnav-label">Jump to question:</span>
+                    <span class="review-qnav-label">Chuyển đến câu:</span>
                     <div class="q-nav-grid-horizontal" id="q-nav-grid-rv"></div>
                 </div>
                 <div id="review-questions-inner"></div>
@@ -251,11 +247,11 @@
                 style="background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
         </div>
         <div class="dict-pos" id="dict-pos"></div>
-        <div class="dict-meaning" id="dict-meaning">Looking up...</div>
+        <div class="dict-meaning" id="dict-meaning">Đang tra...</div>
         <div class="dict-example" id="dict-example"></div>
         <div class="dict-actions">
-            <button class="dict-btn" onclick="speakDictWord()">🔊 Pronounce</button>
-            <button class="dict-btn primary" onclick="saveVocabWord()">💾 Save word</button>
+            <button class="dict-btn" onclick="speakDictWord()">🔊 Phát âm</button>
+            <button class="dict-btn primary" onclick="saveVocabWord()">💾 Lưu từ</button>
         </div>
     </div>
 
@@ -266,17 +262,17 @@
         <div class="key-overlay">
             <div class="key-card">
                 <div class="key-card-icon">🔑</div>
-                <h3>Enter access code</h3>
-                <p class="key-desc">You need a code from your teacher to start this test</p>
+                <h3>Nhập mã truy cập</h3>
+                <p class="key-desc">Bạn cần mã từ giáo viên để bắt đầu bài thi này</p>
                 <div class="key-test-name" id="key-test-name"></div>
                 <input id="key-input" type="text" class="key-input ls-key-input" placeholder="VD: A3F9-B2C1"
                     maxlength="9" autocomplete="off" oninput="formatKeyInput(this)"
                     onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
                 <div id="key-msg" class="key-msg hidden"></div>
                 <div class="key-actions">
-                    <button class="btn-ghost" onclick="showScreen('list')">← Back</button>
+                    <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
                     <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
-                        🎧 Start test
+                        🎧 Bắt đầu làm bài
                     </button>
                 </div>
             </div>
@@ -287,19 +283,19 @@
     <div class="modal-overlay hidden" id="modal-history">
         <div class="modal-box modal-lg">
             <div class="modal-header">
-                <h3>Attempt History – Listening</h3>
+                <h3>Lịch sử làm bài – Listening</h3>
                 <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
             </div>
             <div class="modal-body-scroll">
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>Test name</th>
-                            <th>Date submitted</th>
-                            <th>Duration</th>
-                            <th>Correct</th>
-                            <th>Incorrect</th>
-                            <th>Skipped</th>
+                            <th>Tên bài</th>
+                            <th>Ngày nộp</th>
+                            <th>Thời gian</th>
+                            <th>Đúng</th>
+                            <th>Sai</th>
+                            <th>Bỏ qua</th>
                             <th>Band</th>
                             <th></th>
                         </tr>
@@ -521,7 +517,7 @@
             const _origClick = asoBtn.onclick;
             const answeredCount = Object.keys(state.answers).length;
             asoText.innerHTML = 'Bạn đang <strong>tiếp tục</strong> bài thi dở dang.<br>Audio sẽ phát từ vị trí đã lưu.';
-            asoSub.innerHTML  = `Đã trả lời: <strong>${answeredCount}/40</strong> câu. Nhấn bên dưới khi sẵn sàng.`;
+            asoSub.innerHTML  = `Đã trả lời: <strong>${answeredCount}/${state.currentTest?.totalQuestions || 40}</strong> câu. Nhấn bên dưới khi sẵn sàng.`;
             asoBtn.innerHTML  = '▶ Tiếp tục nghe';
             asoBtn.onclick = function () {
                 asoText.innerHTML = _origText;
@@ -2049,7 +2045,7 @@
             const popup = document.getElementById('dict-popup');
             state.dictWord = word; state.dictMeaning = ''; state.dictExample = '';
             const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
-            set('dict-word', word); set('dict-phonetic', '...'); set('dict-pos', ''); set('dict-meaning', 'Looking up...'); set('dict-example', '');
+            set('dict-word', word); set('dict-phonetic', '…'); set('dict-pos', ''); set('dict-meaning', 'Đang tra...'); set('dict-example', '');
             const sel = window.getSelection();
             let top = 200, left = 200;
             if (sel?.rangeCount) {
@@ -2060,19 +2056,28 @@
             }
             popup.style.top = top + 'px'; popup.style.left = left + 'px';
             popup.classList.remove('hidden');
-            try {
-                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-                if (!res.ok) throw new Error('Not found');
-                const data = await res.json();
-                const entry = data[0]; const meaning = entry.meanings[0];
-                const def = meaning.definitions.find(d => d.example) || meaning.definitions[0];
-                set('dict-phonetic', entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '');
-                set('dict-pos', meaning.partOfSpeech);
-                set('dict-meaning', def.definition);
-                set('dict-example', def.example ? `"${def.example}"` : '');
-                state.dictMeaning = def.definition;
-                state.dictExample = def.example || '';
-            } catch { set('dict-meaning', 'Definition not found.'); }
+
+            const [dictRes, transRes] = await Promise.allSettled([
+                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then(r => r.ok ? r.json() : null),
+                fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`).then(r => r.json())
+            ]);
+
+            // Phonetics + POS + example từ dictionaryapi
+            if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
+                const entry = dictRes.value[0];
+                const meaning = entry?.meanings?.[0];
+                const def = meaning?.definitions?.find(d => d.example) || meaning?.definitions?.[0];
+                set('dict-phonetic', entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '');
+                set('dict-pos', meaning?.partOfSpeech || '');
+                const ex = def?.example || '';
+                set('dict-example', ex ? `"${ex}"` : '');
+                state.dictExample = ex;
+            }
+
+            // Nghĩa tiếng Việt từ Google Translate
+            const viMeaning = transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null;
+            set('dict-meaning', viMeaning || 'Không tìm thấy');
+            state.dictMeaning = viMeaning || '';
         }
 
         function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }

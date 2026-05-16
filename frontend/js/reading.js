@@ -1458,19 +1458,26 @@ async function lookupWord(word, x, y) {
   document.getElementById('dict-example').textContent = '';
   positionDictPopup(x, y);
   document.getElementById('dict-popup').classList.remove('hidden');
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    const data = await res.json();
-    const entry = data[0];
+
+  const [dictRes, transRes] = await Promise.allSettled([
+    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then(r => r.ok ? r.json() : null),
+    fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`).then(r => r.json())
+  ]);
+
+  // Phonetics + POS + example từ dictionaryapi (EN-EN, dùng làm ngữ cảnh)
+  if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
+    const entry = dictRes.value[0];
     const meaning = entry?.meanings?.[0];
-    const def = meaning?.definitions?.[0];
-    document.getElementById('dict-phonetic').textContent = entry?.phonetic || '';
+    const def = meaning?.definitions?.find(d => d.example) || meaning?.definitions?.[0];
+    document.getElementById('dict-phonetic').textContent =
+      entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
     document.getElementById('dict-pos').textContent = meaning?.partOfSpeech || '';
-    document.getElementById('dict-meaning').textContent = def?.definition || 'Không tìm thấy';
-    document.getElementById('dict-example').textContent = def?.example || '';
-  } catch {
-    document.getElementById('dict-meaning').textContent = 'Không tìm thấy';
+    document.getElementById('dict-example').textContent = def?.example ? `"${def.example}"` : '';
   }
+
+  // Nghĩa tiếng Việt từ Google Translate
+  const viMeaning = transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null;
+  document.getElementById('dict-meaning').textContent = viMeaning || 'Không tìm thấy';
 }
 
 function positionDictPopup(x, y) {
