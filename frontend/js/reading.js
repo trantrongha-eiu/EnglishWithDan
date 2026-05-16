@@ -740,9 +740,8 @@ function renderTFNG(qNum, isReview, review, labels = ['TRUE', 'FALSE', 'NOT GIVE
   if (isReview) {
     return `<div class="tfng-opts">${labels.map(l => {
       let cls = '';
-      if (l === chosen && review?.isCorrect) cls = 'correct-ans';
-      else if (l === chosen && !review?.isCorrect) cls = 'wrong-ans';
-      else if (l === review?.correctAnswer?.toUpperCase() && !review?.isCorrect) cls = 'correct-ans';
+      if (l === review?.correctAnswer?.toUpperCase()) cls = 'correct-ans';
+      else if (l === chosen) cls = 'wrong-ans';
       return `<div class="tfng-opt ${cls}">${l}</div>`;
     }).join('')}</div>`;
   }
@@ -760,9 +759,8 @@ function renderMC(qNum, options, isReview, review) {
     return `<div class="q-options">${options.map((opt, i) => {
       const l = letters[i];
       let cls = '';
-      if (l === chosen && review?.isCorrect) cls = 'correct-ans';
+      if (l === review?.correctAnswer) cls = 'correct-ans';
       else if (l === chosen) cls = 'wrong-ans';
-      else if (l === review?.correctAnswer) cls = 'correct-ans';
       return `<label class="radio-opt ${cls}">
         <span class="radio-dot"></span>
         <span class="radio-letter">${l}.</span>

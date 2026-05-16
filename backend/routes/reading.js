@@ -358,6 +358,7 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
       options: q.options,
       wordBank: q.wordBank,
       paragraphLabels: q.paragraphLabels,
+      imageUrl: q.imageUrl,
       correctAnswer: q.correctAnswer,
       explanation: q.explanation,
       userAnswer: answerMap[q.questionNumber]?.userAnswer || '',
