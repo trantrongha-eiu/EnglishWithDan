@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initDividerDrag('split-divider', 'split-passage', 'split-questions');
   initDividerDrag('review-divider', 'review-passage', 'review-questions');
+  initDividerDrag('retry-divider', 'retry-passage', 'retry-questions');
   document.addEventListener('keydown', handleKeyShortcuts);
 
   // Handle browser back/forward button
@@ -1412,6 +1413,160 @@ function jumpToReviewQuestion(qNum) {
     const el = document.getElementById(`q${qNum}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCREEN 6 – RETRY PASSAGE
+══════════════════════════════════════════════════════════════════════ */
+let _retryState = null;
+
+function retryCurrentPassage() {
+  if (!state.isReview) return;
+  const passageIdx = state.currentPassageIdx;
+  const passage = state.passages[passageIdx];
+  if (!passage) return;
+
+  // Capture correct answers before cloning (review data has them on each question)
+  const correctMap = {};
+  getAllQuestionsFromPassage(passage).forEach(q => {
+    correctMap[q.questionNumber] = q.correctAnswer;
+  });
+
+  // Deep-clone and strip student-specific fields so questions render in exam mode
+  const cleanPassage = JSON.parse(JSON.stringify(passage));
+  getAllQuestionsFromPassage(cleanPassage).forEach(q => {
+    delete q.userAnswer;
+    delete q.isCorrect;
+  });
+
+  // Stash full state for restoration
+  _retryState = {
+    passages: state.passages,
+    answers: state.answers,
+    isReview: state.isReview,
+    currentPassageIdx: passageIdx,
+    correctMap,
+  };
+
+  // Switch to retry state
+  state.passages = [cleanPassage];
+  state.answers = {};
+  state.isReview = false;
+  state.currentPassageIdx = 0;
+
+  const label = passage.title
+    || (passage.category?.replace('passage', 'Passage '))
+    || `Passage ${passageIdx + 1}`;
+  document.getElementById('retry-title').textContent = `Làm lại: ${label}`;
+
+  const badge = document.getElementById('retry-score-badge');
+  if (badge) badge.style.display = 'none';
+
+  document.getElementById('retry-footer-btns').innerHTML = `
+    <button class="btn-ghost" onclick="closeRetry()">← Về review</button>
+    <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
+
+  document.getElementById('retry-passage-inner').innerHTML =
+    `<div class="passage-title">${escHtml(cleanPassage.title)}</div>
+     <div class="passage-text">${cleanPassage.content || ''}</div>`;
+
+  document.getElementById('retry-questions-inner').innerHTML =
+    renderPassageQuestions(cleanPassage, false, {});
+
+  // Q-nav for retry
+  const nav = document.getElementById('retry-q-nav');
+  if (nav) {
+    nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
+      .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+      .join('');
+  }
+
+  initDropZones();
+  showScreen('retry');
+}
+
+function jumpToRetryQuestion(qNum) {
+  const el = document.getElementById(`q${qNum}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function closeRetry() {
+  if (_retryState) {
+    state.passages = _retryState.passages;
+    state.answers = _retryState.answers;
+    state.isReview = _retryState.isReview;
+    state.currentPassageIdx = _retryState.currentPassageIdx;
+    _retryState = null;
+  }
+  showScreen('review');
+}
+
+function submitRetry() {
+  if (!_retryState) return;
+  const passage = state.passages[0];
+  const allQ = getAllQuestionsFromPassage(passage);
+  const { correctMap } = _retryState;
+  let correct = 0, wrong = 0, skipped = 0;
+  const retryReviewMap = {};
+
+  allQ.forEach(q => {
+    const qNum = q.questionNumber;
+    const userAns = state.answers[qNum] || '';
+    const correctAns = correctMap[qNum] || '';
+    let isCorrect = false;
+
+    if (!userAns || userAns === '[]') {
+      skipped++;
+    } else if (q.type === 'checkbox') {
+      try {
+        const a = JSON.parse(userAns).sort();
+        const b = JSON.parse(correctAns || '[]').sort();
+        isCorrect = JSON.stringify(a) === JSON.stringify(b);
+      } catch { isCorrect = false; }
+      if (isCorrect) correct++; else wrong++;
+    } else {
+      isCorrect = userAns.trim().toLowerCase() === correctAns.trim().toLowerCase();
+      if (isCorrect) correct++; else wrong++;
+    }
+
+    retryReviewMap[qNum] = {
+      userAnswer: userAns,
+      correctAnswer: correctAns,
+      isCorrect,
+      explanation: q.explanation || '',
+    };
+  });
+
+  const total = allQ.length;
+  const pct = total ? Math.round(correct / total * 100) : 0;
+  const color = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
+  const bg    = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
+  const border= pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+
+  const qi = document.getElementById('retry-questions-inner');
+  if (qi) {
+    qi.innerHTML =
+      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color};display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
+        <span style="color:#16a34a">● Đúng: ${correct}</span>
+        <span style="color:#dc2626">● Sai: ${wrong}</span>
+        <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+      </div>`
+      + renderPassageQuestions(passage, true, retryReviewMap);
+  }
+
+  const badge = document.getElementById('retry-score-badge');
+  if (badge) { badge.textContent = `${correct}/${total} câu đúng`; badge.style.display = ''; }
+
+  document.getElementById('retry-footer-btns').innerHTML = `
+    <button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
+    <button class="btn-primary" onclick="retryReset()">🔁 Làm lại từ đầu</button>`;
+}
+
+function retryReset() {
+  if (!_retryState) return;
+  closeRetry();
+  retryCurrentPassage();
 }
 
 /* ══════════════════════════════════════════════════════════════════════

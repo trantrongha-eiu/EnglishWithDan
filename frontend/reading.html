@@ -274,6 +274,9 @@
       <button class="tool-btn" id="tool-dict" onclick="setTool('dict')">
         📖 <small>Tra từ (Double‑click)</small>
       </button>
+      <button class="tool-btn" id="tool-retry" onclick="retryCurrentPassage()" title="Làm lại passage đang xem">
+        🔁 <small>Làm lại</small>
+      </button>
       <div class="toolbar-passage-tabs" id="toolbar-passage-tabs-rv"></div>
     </div>
 
@@ -294,6 +297,47 @@
       <div class="exam-footer-btns">
         <button class="btn-ghost" onclick="showHistoryModal()">Xem lịch sử làm bài</button>
         <button class="btn-primary" onclick="loadTests(true)">Làm bài khác</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+     SCREEN 6 – LÀM LẠI PASSAGE
+     ════════════════════════════════════════════════════════ -->
+  <div id="screen-retry" class="screen hidden">
+
+    <div class="exam-bar">
+      <div class="exam-bar-left">
+        <button class="exam-exit-btn" onclick="closeRetry()">✕</button>
+        <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
+      </div>
+      <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
+      <div class="exam-bar-right"></div>
+    </div>
+
+    <div class="exam-toolbar">
+      <button class="tool-btn active" onclick="setTool('highlight')">
+        🖊 <small>Highlight (H)</small>
+      </button>
+    </div>
+
+    <div class="exam-split" id="retry-split">
+      <div class="split-passage" id="retry-passage">
+        <div class="passage-inner" id="retry-passage-inner"></div>
+      </div>
+      <div class="split-divider" id="retry-divider">
+        <div class="divider-handle"></div>
+      </div>
+      <div class="split-questions" id="retry-questions">
+        <div class="questions-inner" id="retry-questions-inner"></div>
+      </div>
+    </div>
+
+    <div class="exam-footer">
+      <div class="q-nav-scroll" id="retry-q-nav"></div>
+      <div class="exam-footer-btns" id="retry-footer-btns">
+        <button class="btn-ghost" onclick="closeRetry()">← Về review</button>
+        <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>
       </div>
     </div>
   </div>
