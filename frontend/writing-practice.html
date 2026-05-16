@@ -596,6 +596,13 @@ document.addEventListener('DOMContentLoaded', () => {
   loadXPFromStorage();
   loadExercises();
   window.addEventListener('beforeunload', () => saveBatch());
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    const quitOpen = !document.getElementById('wp-quit-overlay').classList.contains('hidden');
+    if (quitOpen) return;
+    const fc = document.getElementById('feedback-card');
+    if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextExercise(); }
+  });
 });
 
 function initUser() {
