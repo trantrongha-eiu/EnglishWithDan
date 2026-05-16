@@ -18,7 +18,7 @@ router.get('/tests', auth, async (req, res) => {
     const attempts = await TestAttempt.find({
       userId: req.user._id,
       status: 'completed'
-    }).select('testId bandScore correctCount wrongCount skippedCount endTime duration');
+    }).select('testId bandScore correctCount wrongCount skippedCount totalQuestions endTime duration');
 
     // Map: testId → attempt mới nhất
     const attemptMap = {};
@@ -136,7 +136,8 @@ router.post('/start', auth, async (req, res) => {
       questionText: q.questionText,
       options: q.options,
       wordBank: q.wordBank,
-      paragraphLabels: q.paragraphLabels
+      paragraphLabels: q.paragraphLabels,
+      imageUrl: q.imageUrl          // cần cho map-labelling per-question image
       // correctAnswer & explanation bị ẩn
     });
     const safePassages = passages.map(p => ({
@@ -222,7 +223,10 @@ router.post('/submit', auth, async (req, res) => {
           return su === sc;
         }
       } catch { /* fall through */ }
-      return rawUser.toLowerCase() === rawCorrect.toLowerCase();
+      // Hỗ trợ đáp án thay thế dạng "word1 / word2" (admin nhập nhiều đáp án chấp nhận)
+      const userLow = rawUser.toLowerCase();
+      const alts = rawCorrect.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
+      return alts.some(alt => alt === userLow);
     }
 
     for (const passage of passages) {

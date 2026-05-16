@@ -50,13 +50,42 @@ router.get('/passages', auth, teacherOnly, async (req, res) => {
   try {
     const { category, page = 1, limit = 20 } = req.query;
     const filter = category ? { category } : {};
-    const passages = await Passage.find(filter)
-      .select('title category difficulty tags isActive questionRange createdAt')
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+    const passages = await Passage.aggregate([
+      { $match: filter },
+      { $sort: { createdAt: -1 } },
+      { $skip: (Number(page) - 1) * Number(limit) },
+      { $limit: Number(limit) },
+      { $project: {
+        title: 1, category: 1, difficulty: 1, tags: 1, isActive: 1, questionRange: 1, createdAt: 1,
+        questionCount: {
+          $add: [
+            { $size: { $ifNull: ['$questions', []] } },
+            { $sum: { $map: {
+              input: { $ifNull: ['$questionGroups', []] },
+              as: 'g',
+              in: { $size: { $ifNull: ['$$g.questions', []] } }
+            }}}
+          ]
+        }
+      }}
+    ]);
     const total = await Passage.countDocuments(filter);
     res.json({ success: true, passages, total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/passages/stats – số lượng passage active theo từng category
+router.get('/passages/stats', auth, teacherOnly, async (req, res) => {
+  try {
+    const stats = await Passage.aggregate([
+      { $match: { isActive: true } },
+      { $group: { _id: '$category', count: { $sum: 1 } } }
+    ]);
+    const result = { passage1: 0, passage2: 0, passage3: 0 };
+    stats.forEach(s => { if (s._id in result) result[s._id] = s.count; });
+    res.json({ success: true, stats: result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

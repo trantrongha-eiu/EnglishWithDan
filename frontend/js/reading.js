@@ -1525,7 +1525,9 @@ function submitRetry() {
       } catch { isCorrect = false; }
       if (isCorrect) correct++; else wrong++;
     } else {
-      isCorrect = userAns.trim().toLowerCase() === correctAns.trim().toLowerCase();
+      const userLow = userAns.trim().toLowerCase();
+      const alts = correctAns.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
+      isCorrect = alts.length > 0 ? alts.some(a => a === userLow) : false;
       if (isCorrect) correct++; else wrong++;
     }
 

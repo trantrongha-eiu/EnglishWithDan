@@ -287,7 +287,7 @@ export default function Passages() {
                   <td><strong>{p.title}</strong></td>
                   <td>{catBadge(p.category)}</td>
                   <td>{diffBadge(p.difficulty)}</td>
-                  <td>{p.questionRange ? (p.questionRange.end - p.questionRange.start + 1) : '–'}</td>
+                  <td>{p.questionCount ?? (p.questionRange ? (p.questionRange.end - p.questionRange.start + 1) : '–')}</td>
                   <td style={{ fontFamily: 'var(--mono)', fontSize: 12 }}>{p.questionRange?.start}–{p.questionRange?.end}</td>
                   <td>
                     <span className={`badge ${p.isActive ? 'badge-green' : 'badge-gray'}`}>

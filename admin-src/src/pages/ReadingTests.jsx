@@ -11,9 +11,15 @@ export default function ReadingTests() {
   const [tests, setTests] = useState([]);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [passageStats, setPassageStats] = useState(null);
 
   const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    apiFetch('/admin/passages/stats')
+      .then(d => setPassageStats(d.stats))
+      .catch(() => {});
+  }, []);
 
   const filtered = tests.filter(t => {
     if (search && !t.name?.toLowerCase().includes(search.toLowerCase()) && !(t.seriesName || '').toLowerCase().includes(search.toLowerCase())) return false;
@@ -53,6 +59,27 @@ export default function ReadingTests() {
         <h2 className="section-title">Bộ đề Reading ({filtered.length})</h2>
         <button className="btn btn-primary" onClick={() => navigate('/admin/reading-tests/new')}>+ Thêm bộ đề</button>
       </div>
+
+      {passageStats && (
+        <div style={{ marginBottom: 16, padding: '10px 16px', background: 'var(--surface2)', borderRadius: 'var(--radius)', display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap', fontSize: 13 }}>
+          <span style={{ color: 'var(--text3)', fontWeight: 600 }}>Bài đọc hiện có:</span>
+          {[1, 2, 3].map(n => {
+            const key = `passage${n}`;
+            const count = passageStats[key] ?? 0;
+            return (
+              <span key={n} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ fontWeight: 600, color: count === 0 ? 'var(--red)' : 'var(--text1)' }}>
+                  {count === 0 ? '⚠️ ' : ''}Passage {n}:
+                </span>
+                <span className={`badge ${count === 0 ? 'badge-red' : count < 3 ? 'badge-blue' : 'badge-green'}`}>{count}</span>
+              </span>
+            );
+          })}
+          {[1,2,3].some(n => (passageStats[`passage${n}`] ?? 0) === 0) && (
+            <span style={{ color: 'var(--red)', fontSize: 12 }}>— Cần ít nhất 1 bài/category để học sinh có thể bắt đầu thi</span>
+          )}
+        </div>
+      )}
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
         <input className="form-input search-input" placeholder="Tìm bộ đề, series..." value={search}
