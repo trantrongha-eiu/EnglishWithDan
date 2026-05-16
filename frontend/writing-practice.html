@@ -89,6 +89,47 @@
     [data-theme="dark"] .wp-qs-correct { background:#14532d; color:#4ade80; }
     [data-theme="dark"] .wp-qs-wrong   { background:#7f1d1d; color:#f87171; }
     [data-theme="dark"] .wp-qs-xp      { background:#78350f; color:#fcd34d; }
+
+    /* ── Answer diff highlighting ── */
+    .wp-diff-ok  { color: #16a34a; font-weight: 600; }
+    .wp-diff-err { color: #dc2626; text-decoration: underline dotted; font-weight: 600; }
+    [data-theme="dark"] .wp-diff-ok  { color: #4ade80; }
+    [data-theme="dark"] .wp-diff-err { color: #f87171; }
+
+    /* ── XP float animation ── */
+    @keyframes wpXpFloat {
+      0%   { opacity:1; transform:translateY(0) scale(1); }
+      70%  { opacity:1; transform:translateY(-38px) scale(1.15); }
+      100% { opacity:0; transform:translateY(-56px) scale(.85); }
+    }
+    .wp-xp-float {
+      position:fixed; pointer-events:none; z-index:9998;
+      font-size:14px; font-weight:800; color:#b45309;
+      animation: wpXpFloat 1.3s ease-out forwards;
+    }
+
+    /* ── Combo streak badge ── */
+    .wp-combo-badge {
+      display:inline-flex; align-items:center; gap:4px;
+      background:#fff7ed; color:#c2410c; border:1.5px solid #fed7aa;
+      border-radius:20px; padding:3px 10px; font-size:12px; font-weight:700;
+      animation: comboAppear .3s ease;
+    }
+    .wp-combo-badge.hidden { display:none; }
+    @keyframes comboAppear { from{transform:scale(.6);opacity:0} to{transform:scale(1);opacity:1} }
+    [data-theme="dark"] .wp-combo-badge { background:#431407; border-color:#9a3412; color:#fdba74; }
+
+    /* ── Skip button ── */
+    .wp-skip-btn {
+      background:none; border:1.5px solid #d1d5db; color:#9ca3af;
+      border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600;
+      cursor:pointer; display:inline-flex; align-items:center; gap:5px;
+      transition:border-color .2s,color .2s;
+    }
+    .wp-skip-btn:hover { border-color:#f59e0b; color:#d97706; }
+    .wp-skip-btn.hidden { display:none; }
+    [data-theme="dark"] .wp-skip-btn { border-color:#374151; color:#6b7280; }
+    [data-theme="dark"] .wp-skip-btn:hover { border-color:#d97706; color:#f59e0b; }
   </style>
 </head>
 <body>
@@ -251,6 +292,7 @@
           <span class="wp-grammar-badge" id="grammar-badge"></span>
           <span class="wp-ex-counter" id="ex-counter">1 / 10</span>
           <span class="wp-type-tag" id="type-tag"></span>
+          <span class="wp-combo-badge hidden" id="combo-badge">🔥 ×3</span>
         </div>
 
         <div class="wp-card" id="exercise-card">
@@ -287,9 +329,14 @@
             <textarea class="wp-answer-box" id="combine-answer-box" placeholder="Viết câu đã nối..." rows="2" onkeydown="handleKeydown(event)"></textarea>
           </div>
 
-          <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()">
-            <i class="fas fa-check"></i> Kiểm tra
-          </button>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+            <button class="wp-skip-btn" id="skip-btn" onclick="skipExercise()" title="Bỏ qua – câu này sẽ xuất hiện lại ở cuối">
+              <i class="fas fa-forward"></i> Bỏ qua
+            </button>
+            <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()" style="flex:1">
+              <i class="fas fa-check"></i> Kiểm tra
+            </button>
+          </div>
         </div>
 
         <!-- Feedback card -->
@@ -449,6 +496,11 @@ let sessionXP    = 0;
 let sessionCorrect = 0;
 let sessionAttempts = []; // buffer – gửi lên admin khi hoàn thành toàn bộ bài
 let _isSubmitting = false;
+// Combo / timer / skip
+let comboStreak    = 0;
+let sessionStartTime = null;
+let _timerInterval   = null;
+let _skippedIds      = new Set();
 // Test
 let testLevel   = 'beginner';
 let testCount   = 10;
@@ -466,12 +518,84 @@ const TYPE_LABELS = {
 };
 
 // ════════════════════════════════════════════════════════
+//  SESSION TIMER
+// ════════════════════════════════════════════════════════
+function startSessionTimer() {
+  sessionStartTime = Date.now();
+  clearInterval(_timerInterval);
+  _timerInterval = setInterval(() => {
+    if (!sessionStartTime) return;
+    const s = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const m = Math.floor(s / 60), sec = s % 60;
+    const txt = m + ':' + String(sec).padStart(2,'0');
+    const el = document.getElementById('stat-timer');
+    if (el) el.textContent = txt;
+  }, 1000);
+}
+
+function stopSessionTimer() {
+  clearInterval(_timerInterval);
+  _timerInterval = null;
+}
+
+function getSessionElapsed() {
+  if (!sessionStartTime) return 0;
+  return Math.floor((Date.now() - sessionStartTime) / 1000);
+}
+
+// ════════════════════════════════════════════════════════
+//  ANSWER DIFF
+// ════════════════════════════════════════════════════════
+function buildAnswerDiff(userAnswer, sampleAnswer) {
+  const norm = s => s.toLowerCase().replace(/[.,!?;:'"]/g,'').trim();
+  const sampleSet = new Set(norm(sampleAnswer).split(/\s+/));
+  return userAnswer.split(/\s+/).map(word => {
+    const ok = sampleSet.has(norm(word));
+    return `<span class="${ok ? 'wp-diff-ok' : 'wp-diff-err'}">${word}</span>`;
+  }).join(' ');
+}
+
+// ════════════════════════════════════════════════════════
+//  XP FLOAT ANIMATION
+// ════════════════════════════════════════════════════════
+function floatXP(amount) {
+  const anchor = document.getElementById('stat-xp');
+  if (!anchor) return;
+  const rect = anchor.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'wp-xp-float';
+  el.textContent = '+' + amount + ' XP ⭐';
+  el.style.left = rect.left + 'px';
+  el.style.top  = rect.top  + 'px';
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ════════════════════════════════════════════════════════
+//  SKIP EXERCISE
+// ════════════════════════════════════════════════════════
+function skipExercise() {
+  const ex = exercises[currentIdx];
+  if (!ex) return;
+  if (_skippedIds.has(ex._id)) {
+    showToast('Câu này đã bỏ qua rồi – hãy trả lời nhé! 😊', 'warn');
+    return;
+  }
+  _skippedIds.add(ex._id);
+  exercises.splice(currentIdx, 1);
+  exercises.push(ex);
+  showToast('Đã bỏ qua – câu này sẽ xuất hiện lại ở cuối 👋', 'info', 2000);
+  showExercise(currentIdx);
+}
+
+// ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
   loadExercises();
+  window.addEventListener('beforeunload', () => saveBatch());
 });
 
 function initUser() {
@@ -506,7 +630,7 @@ function setMode(mode) {
   const needConfirm = (currentMode === 'practice' && sessionDone > 0)
     || (currentMode === 'test' && testIdx > 0 && testIdx < testExercises.length);
   if (needConfirm) {
-    askWpQuit(() => _doSetMode(mode), {
+    askWpQuit(() => { stopSessionTimer(); saveBatch(); _doSetMode(mode); }, {
       title: 'Đổi chế độ học?',
       sub: currentMode === 'practice'
         ? `Bạn đã làm ${sessionDone} bài. Chuyển chế độ sẽ mất tiến độ hiện tại.`
@@ -543,6 +667,7 @@ function _doSetMode(mode) {
 function selectLevel(level) {
   if (level === currentLevel) return;
   const doChange = () => {
+    stopSessionTimer(); saveBatch();
     currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
@@ -551,7 +676,7 @@ function selectLevel(level) {
   if (sessionDone > 0) {
     askWpQuit(doChange, {
       title: 'Đổi cấp độ?',
-      sub: 'Bắt đầu lại với bộ bài mới. Tiến độ hiện tại sẽ không được lưu.',
+      sub: 'Bắt đầu lại với bộ bài mới. Tiến độ hiện tại sẽ được lưu.',
       confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
     });
   } else { doChange(); }
@@ -559,6 +684,7 @@ function selectLevel(level) {
 function selectTopic(topic) {
   if (topic === currentTopic) return;
   const doChange = () => {
+    stopSessionTimer(); saveBatch();
     currentTopic = topic;
     document.querySelectorAll('.wp-topic-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.topic === topic));
@@ -567,7 +693,7 @@ function selectTopic(topic) {
   if (sessionDone > 0) {
     askWpQuit(doChange, {
       title: 'Đổi chủ đề?',
-      sub: 'Bắt đầu lại với chủ đề mới. Tiến độ hiện tại sẽ không được lưu.',
+      sub: 'Bắt đầu lại với chủ đề mới. Tiến độ hiện tại sẽ được lưu.',
       confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
     });
   } else { doChange(); }
@@ -575,6 +701,7 @@ function selectTopic(topic) {
 function selectType(type) {
   if (type === currentType) return;
   const doChange = () => {
+    stopSessionTimer(); saveBatch();
     currentType = type;
     document.querySelectorAll('.wp-type-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.type === type));
@@ -583,7 +710,7 @@ function selectType(type) {
   if (sessionDone > 0) {
     askWpQuit(doChange, {
       title: 'Đổi dạng bài?',
-      sub: 'Bắt đầu lại với dạng bài mới. Tiến độ hiện tại sẽ không được lưu.',
+      sub: 'Bắt đầu lại với dạng bài mới. Tiến độ hiện tại sẽ được lưu.',
       confirmText: 'Đổi ngay', continueText: 'Giữ nguyên'
     });
   } else { doChange(); }
@@ -603,9 +730,11 @@ async function loadExercises() {
     exercises = data.exercises; // keep original order from DB (orderIndex)
     currentIdx = 0;
     sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
+    comboStreak = 0; _skippedIds = new Set();
     updateSessionStats();
     showExercise(0);
     showState('exercise');
+    startSessionTimer();
   } catch (err) {
     console.error(err);
     showState('empty');
@@ -623,6 +752,8 @@ function showExercise(idx) {
   document.getElementById('exercise-card').classList.remove('hidden');
   document.getElementById('submit-btn').classList.remove('hidden');
   document.getElementById('submit-btn').disabled = false;
+  const skipBtn = document.getElementById('skip-btn');
+  if (skipBtn) skipBtn.classList.toggle('hidden', _skippedIds.has(exercises[idx]?._id));
 
   const pct = Math.round((idx / exercises.length) * 100);
   document.getElementById('progress-bar').style.width = pct + '%';
@@ -803,6 +934,8 @@ async function submitAnswer() {
 function showFeedback(userAnswer, data) {
   const { feedback, sampleAnswer } = data;
   document.getElementById('submit-btn').classList.add('hidden');
+  const skipBtn = document.getElementById('skip-btn');
+  if (skipBtn) skipBtn.classList.add('hidden');
   document.getElementById('feedback-card').classList.remove('hidden');
 
   const isExpand  = exercises[currentIdx]?.type === 'expand';
@@ -821,8 +954,12 @@ function showFeedback(userAnswer, data) {
     playWrongSound();
   }
   const stEl = document.getElementById('student-answer-display');
-  stEl.textContent = userAnswer;
   stEl.className = 'wp-cmp-text ' + (isExpand ? '' : isCorrect ? 'wp-answer-good' : 'wp-answer-bad');
+  if (!isExpand && !isCorrect && sampleAnswer) {
+    stEl.innerHTML = buildAnswerDiff(userAnswer, sampleAnswer);
+  } else {
+    stEl.textContent = userAnswer;
+  }
   document.getElementById('sample-answer-display').textContent = sampleAnswer || '';
   document.getElementById('feedback-text').textContent = feedback.feedbackVi || '';
 
@@ -832,7 +969,29 @@ function showFeedback(userAnswer, data) {
 function updateProgress(xpEarned, isCorrect) {
   sessionDone++;
   sessionXP += xpEarned;
-  if (isCorrect === true) sessionCorrect++;
+  if (isCorrect === true) {
+    sessionCorrect++;
+    comboStreak++;
+    // Combo milestone toasts
+    if      (comboStreak === 3)  showToast('🔥 3 đúng liên tiếp! Tuyệt vời!', 'info', 2500);
+    else if (comboStreak === 5)  showToast('🔥🔥 5 đúng liên tiếp! Xuất sắc!', 'info', 2500);
+    else if (comboStreak === 10) showToast('🏆 10 đúng liên tiếp! Bạn là thiên tài!', 'info', 3000);
+    // Update combo badge
+    const badge = document.getElementById('combo-badge');
+    if (badge) {
+      if (comboStreak >= 3) {
+        badge.textContent = '🔥 ×' + comboStreak;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+    floatXP(xpEarned);
+  } else if (isCorrect === false) {
+    comboStreak = 0;
+    const badge = document.getElementById('combo-badge');
+    if (badge) badge.classList.add('hidden');
+  }
   updateSessionStats();
   const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0}');
   stored.xp = (stored.xp || 0) + xpEarned;
@@ -866,22 +1025,30 @@ function saveBatch() {
 function nextExercise() {
   currentIdx++;
   if (currentIdx >= exercises.length) {
-    saveBatch(); // gửi toàn bộ kết quả lên admin sau khi học sinh hoàn thành hết bài
+    stopSessionTimer();
+    saveBatch();
     showState('done'); showDoneSummary();
   } else showExercise(currentIdx);
 }
 
 function showDoneSummary() {
   const pct = sessionDone ? Math.round((sessionCorrect / sessionDone) * 100) : 0;
+  const elapsed = getSessionElapsed();
+  const m = Math.floor(elapsed / 60), s = elapsed % 60;
+  const timeStr = elapsed > 0 ? ` · ⏱ ${m}:${String(s).padStart(2,'0')}` : '';
   document.getElementById('done-summary').textContent =
     `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
   document.getElementById('done-stats').innerHTML =
-    `<span>🎯 Đúng: ${sessionCorrect}/${sessionDone} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span>`;
+    `<span>🎯 Đúng: ${sessionCorrect}/${sessionDone} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
 }
 
 function restartExercises() {
   currentIdx = 0; sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
+  comboStreak = 0; _skippedIds = new Set();
+  const badge = document.getElementById('combo-badge');
+  if (badge) badge.classList.add('hidden');
   updateSessionStats(); showExercise(0); showState('exercise');
+  startSessionTimer();
 }
 
 function tryMoreTopics() {
@@ -1221,8 +1388,9 @@ function confirmWpQuit() {
 
 function stopPracticeMode() {
   if (sessionDone > 0) {
-    askWpQuit(loadExercises);
+    askWpQuit(() => { stopSessionTimer(); saveBatch(); loadExercises(); });
   } else {
+    stopSessionTimer();
     loadExercises();
   }
 }
@@ -1248,11 +1416,12 @@ function stopTestMode() {
 
 <!-- ── Desktop stats widget (top-right) ── -->
 <div class="wp-stats-widget" id="wp-stats-widget">
-  <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Hôm nay</div>
+  <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Phiên này</div>
   <div class="wp-stats-row">
     <div class="wp-stat-box"><div class="wp-stat-num" id="stat-done">0</div><div class="wp-stat-label">Bài làm</div></div>
     <div class="wp-stat-box"><div class="wp-stat-num" id="stat-xp">0</div><div class="wp-stat-label">XP</div></div>
     <div class="wp-stat-box"><div class="wp-stat-num" id="stat-correct">–</div><div class="wp-stat-label">Đúng</div></div>
+    <div class="wp-stat-box"><div class="wp-stat-num" id="stat-timer">0:00</div><div class="wp-stat-label">Thời gian</div></div>
   </div>
 </div>
 
