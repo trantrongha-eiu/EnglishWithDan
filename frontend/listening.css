@@ -1490,3 +1490,14 @@ body {
   border-color: #374151;
 }
 [data-theme="dark"] .key-input:focus { border-color: #3d8bff; }
+
+/* ── Fullscreen: convert fixed section-nav to flex child so clicks work ── */
+#screen-exam:fullscreen .section-nav-fixed,
+#screen-exam:-webkit-full-screen .section-nav-fixed {
+  position: relative;
+  flex-shrink: 0;
+}
+#screen-exam:fullscreen .exam-body,
+#screen-exam:-webkit-full-screen .exam-body {
+  min-height: 0;
+}
