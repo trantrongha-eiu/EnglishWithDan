@@ -73,6 +73,7 @@ UserSchema.methods.resetIfStale = function () {
   const lastDay = getVNDay(new Date(this.lastActivityDate));
   const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
   if (diff >= 2) {
+    if (this.learningStreak === 0) return false; // already reset, skip redundant save
     this.learningStreak = 0;
     return true;
   }

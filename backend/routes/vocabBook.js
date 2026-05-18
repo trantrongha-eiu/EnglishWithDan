@@ -186,7 +186,7 @@ router.post('/:id/words', auth, async (req, res) => {
     if (req.user.role === 'student') {
       logActivity(req.user._id, { wordsAdded: 1 });
       req.user.updateStreak();
-      req.user.save().catch(() => {});
+      await req.user.save();
     }
 
     res.status(201).json({
@@ -227,7 +227,7 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
     if (hadStatusChange && req.user.role === 'student') {
       logActivity(req.user._id, { wordsStudied: 1 });
       req.user.updateStreak();
-      req.user.save().catch(() => {});
+      await req.user.save();
     }
 
     res.json({ success: true, word: wordDoc });
