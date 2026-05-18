@@ -65,13 +65,15 @@ UserSchema.methods.updateStreak = function () {
 };
 
 // Kiểm tra và reset streak nếu đã bỏ lỡ >= 2 ngày (dùng khi load trang)
+// diff=1 = hôm qua có học, hôm nay chưa → giữ nguyên streak (vẫn còn cơ hội học hôm nay)
+// diff>=2 = bỏ lỡ ít nhất 1 ngày hoàn toàn → mất streak, về 0, phải học lại hôm nay mới thành 1
 UserSchema.methods.resetIfStale = function () {
   if (!this.lastActivityDate) return false;
   const today = getVNDay(new Date());
   const lastDay = getVNDay(new Date(this.lastActivityDate));
   const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
   if (diff >= 2) {
-    this.learningStreak = 1;
+    this.learningStreak = 0;
     return true;
   }
   return false;
