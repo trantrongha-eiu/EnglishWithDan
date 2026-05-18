@@ -1596,6 +1596,30 @@
             const num = q.questionNumber;
             const saved = state.answers[num];
             if (!saved) return;
+
+            // Radio (multiple-choice)
+            if (q.type === 'multiple-choice') {
+                const container = document.getElementById(`qi-${num}`);
+                if (container) {
+                    container.querySelectorAll('.radio-opt').forEach(o => {
+                        o.classList.toggle('selected', o.dataset.value === saved);
+                    });
+                }
+                return;
+            }
+
+            // Checkbox
+            if (q.type === 'checkbox') {
+                const container = document.getElementById(`qi-${num}`);
+                if (container) {
+                    let arr = []; try { arr = JSON.parse(saved); } catch {}
+                    container.querySelectorAll('.checkbox-opt').forEach(o => {
+                        o.classList.toggle('selected', arr.includes(o.dataset.value));
+                    });
+                }
+                return;
+            }
+
             if (['sentence-completion', 'matching'].includes(q.type)) {
                 const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
                 if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>`; }

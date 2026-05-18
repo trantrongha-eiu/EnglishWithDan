@@ -293,17 +293,17 @@ function GradingModal({ attemptId, onClose, onGraded }) {
         ...g,
         task1: {
           bandScore: t1.bandScore ?? g.task1.bandScore,
-          taskAchievement: t1.taskAchievement ?? g.task1.taskAchievement,
-          lexicalResource: t1.lexicalResource ?? g.task1.lexicalResource,
-          grammaticalRange: t1.grammaticalRange ?? g.task1.grammaticalRange,
-          coherenceCohesion: t1.coherenceCohesion ?? g.task1.coherenceCohesion,
+          taskAchievement: t1.ta?.score ?? g.task1.taskAchievement,
+          lexicalResource: t1.lr?.score ?? g.task1.lexicalResource,
+          grammaticalRange: t1.gra?.score ?? g.task1.grammaticalRange,
+          coherenceCohesion: t1.cc?.score ?? g.task1.coherenceCohesion,
         },
         task2: {
           bandScore: t2.bandScore ?? g.task2.bandScore,
-          taskAchievement: t2.taskAchievement ?? g.task2.taskAchievement,
-          lexicalResource: t2.lexicalResource ?? g.task2.lexicalResource,
-          grammaticalRange: t2.grammaticalRange ?? g.task2.grammaticalRange,
-          coherenceCohesion: t2.coherenceCohesion ?? g.task2.coherenceCohesion,
+          taskAchievement: t2.ta?.score ?? g.task2.taskAchievement,
+          lexicalResource: t2.lr?.score ?? g.task2.lexicalResource,
+          grammaticalRange: t2.gra?.score ?? g.task2.grammaticalRange,
+          coherenceCohesion: t2.cc?.score ?? g.task2.coherenceCohesion,
         },
       }));
       toast('AI đã chấm xong – kiểm tra và xác nhận điểm');

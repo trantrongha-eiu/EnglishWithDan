@@ -44,7 +44,10 @@ export default function StudentHistory() {
   async function del(id, skillName, name) {
     confirm(`Xóa bài làm của "${name}"?`, async () => {
       try {
-        await apiFetch(`/admin/${skillName}-attempts/${id}`, { method: 'DELETE' });
+        const endpoint = skillName === 'reading'
+          ? `/admin/attempts/${id}`
+          : `/admin/${skillName}-attempts/${id}`;
+        await apiFetch(endpoint, { method: 'DELETE' });
         toast('Đã xóa');
         setAll(a => a.filter(x => x._id !== id));
       } catch (e) { toast(e.message, 'error'); }

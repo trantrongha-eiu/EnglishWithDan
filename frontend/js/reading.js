@@ -1122,9 +1122,78 @@ function _refreshSCZone(qNum, groupId) {
 /* ── Restore saved answers back into DOM after re-render ──────────── */
 function restoreAnswers(isReview) {
   if (isReview) return;
-  Object.entries(state.answers).forEach(([qNum, val]) => {
-    const inp = document.querySelector(`[data-qnum="${qNum}"]`);
-    if (inp && (inp.tagName === 'INPUT' || inp.tagName === 'TEXTAREA')) inp.value = val;
+  const groupIdsRefreshed = new Set();
+  Object.entries(state.answers).forEach(([qNumStr, val]) => {
+    if (!val) return;
+    const qNum = parseInt(qNumStr);
+
+    // 1. Text inputs / textareas
+    const inp = document.querySelector(`input[data-qnum="${qNum}"], textarea[data-qnum="${qNum}"]`);
+    if (inp) { inp.value = val; return; }
+
+    // 2. Radio / TFNG / Checkbox inside question container
+    const container = document.getElementById(`q${qNum}`);
+    if (container) {
+      const radios = container.querySelectorAll('.radio-opt');
+      if (radios.length) {
+        radios.forEach(o => {
+          const letter = (o.querySelector('.radio-letter')?.textContent || '').trim().replace('.', '');
+          o.classList.toggle('selected', letter === val);
+        });
+        return;
+      }
+      const tfng = container.querySelectorAll('.tfng-opt');
+      if (tfng.length) {
+        const normVal = val.toUpperCase();
+        tfng.forEach(o => o.classList.toggle('selected', o.textContent.trim().toUpperCase() === normVal));
+        return;
+      }
+      const cbs = container.querySelectorAll('.checkbox-opt');
+      if (cbs.length) {
+        let arr = []; try { arr = JSON.parse(val); } catch {}
+        cbs.forEach(o => {
+          const letter = (o.querySelector('.cb-letter')?.textContent || '').trim().replace('.', '');
+          o.classList.toggle('selected', arr.includes(letter));
+        });
+        return;
+      }
+    }
+
+    // 3. Matching-options drop zone
+    const moDz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
+    if (moDz) {
+      const groupId = moDz.dataset.groupid;
+      _refreshMOZone(qNum, groupId);
+      if (!groupIdsRefreshed.has(groupId)) { groupIdsRefreshed.add(groupId); _refreshGroupChips(groupId); }
+      return;
+    }
+
+    // 4. Matching-headings drop zone
+    const mhDz = document.querySelector(`.rq-heading-drop[data-qnum="${qNum}"]`);
+    if (mhDz) {
+      const groupId = mhDz.dataset.groupid;
+      _refreshMHZone(qNum, groupId);
+      if (!groupIdsRefreshed.has(groupId)) { groupIdsRefreshed.add(groupId); _refreshGroupChips(groupId); }
+      return;
+    }
+
+    // 5. Summary-completion drop zone
+    const scDz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
+    if (scDz) {
+      const groupId = scDz.dataset.groupid;
+      _refreshSCZone(qNum, groupId);
+      if (!groupIdsRefreshed.has(groupId)) { groupIdsRefreshed.add(groupId); _refreshGroupChips(groupId); }
+      return;
+    }
+
+    // 6. Generic word-bank drop zone
+    const wbDz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
+    if (wbDz) {
+      wbDz.classList.add('filled');
+      wbDz.innerHTML = `${escHtml(val)}<span class="clear-drop" onclick="clearDrop(${qNum})">✕</span>`;
+      document.querySelectorAll('.word-chip').forEach(c =>
+        c.classList.toggle('used', c.textContent.trim() === val));
+    }
   });
 }
 

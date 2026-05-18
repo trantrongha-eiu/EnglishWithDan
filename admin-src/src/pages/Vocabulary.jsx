@@ -430,10 +430,39 @@ export default function Vocabulary() {
 
   async function splitUnit(id, title, wordCount) {
     confirm(
-      `Chia "${title}" (${wordCount} từ) thành nhiều phần, mỗi phần tối đa 100 từ?\nThao tác này không thể hoàn tác.`,
+      `Chia "${title}" (${wordCount} từ) thành nhiều phần, mỗi phần tối đa 120 từ?\nThao tác này không thể hoàn tác.`,
       async () => {
         try {
-          const d = await apiFetch(`/vocab/admin/units/${id}/split`, { method: 'POST', body: JSON.stringify({ chunkSize: 100 }) });
+          const d = await apiFetch(`/vocab/admin/units/${id}/split`, { method: 'POST', body: JSON.stringify({ chunkSize: 120 }) });
+          toast(d.message);
+          load();
+        } catch (e) { toast(e.message, 'error'); }
+      }
+    );
+  }
+
+  async function sortByName() {
+    const sorted = [...units].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+    );
+    try {
+      await apiFetch('/vocab/admin/units/reorder', {
+        method: 'PATCH',
+        body: JSON.stringify(sorted.map(u => ({ _id: u._id })))
+      });
+      toast('Đã sắp xếp và cập nhật số thứ tự');
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  async function splitAll() {
+    const large = units.filter(u => (u.wordCount ?? 0) > 120);
+    if (large.length === 0) { toast('Không có unit nào vượt quá 120 từ'); return; }
+    confirm(
+      `Tách tất cả ${large.length} unit có hơn 120 từ thành các phần ≤120 từ?\nThao tác này không thể hoàn tác.`,
+      async () => {
+        try {
+          const d = await apiFetch('/vocab/admin/split-all', { method: 'POST', body: JSON.stringify({ chunkSize: 120 }) });
           toast(d.message);
           load();
         } catch (e) { toast(e.message, 'error'); }
@@ -457,6 +486,10 @@ export default function Vocabulary() {
         <h2 className="section-title">Từ vựng – Units ({filtered.length})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => setShowImport(true)}>📂 Import JSON</button>
+          {units.some(u => (u.wordCount ?? 0) > 120) && (
+            <button className="btn btn-ghost" onClick={splitAll} title="Tách tất cả unit > 120 từ">✂️ Tách tất cả</button>
+          )}
+          <button className="btn btn-ghost" onClick={sortByName} title="Sắp xếp theo tên A-Z và cập nhật số thứ tự">↕ Sắp xếp</button>
           <button className="btn btn-primary" onClick={() => { setEditUnit(null); setShowUnitModal(true); }}>+ Thêm unit</button>
         </div>
       </div>
@@ -491,8 +524,8 @@ export default function Vocabulary() {
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '4px 8px' }} onClick={() => setWordsUnit(u)} title="Quản lý từ vựng">📋 Từ</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditUnit(u)} title="Sửa unit">✏️</button>
-                      {(u.wordCount ?? 0) > 100 && (
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => splitUnit(u._id, u.title, u.wordCount)} title="Chia thành phần ≤100 từ">✂️</button>
+                      {(u.wordCount ?? 0) > 120 && (
+                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => splitUnit(u._id, u.title, u.wordCount)} title="Chia thành phần ≤120 từ">✂️</button>
                       )}
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(u._id, u.isActive !== false)}>{u.isActive !== false ? '🙈' : '👁'}</button>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(u._id, u.title)}>🗑</button>

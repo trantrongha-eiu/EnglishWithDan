@@ -305,6 +305,79 @@ router.post('/admin/units/:id/split', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// POST /api/vocab/admin/split-all  – tách tất cả unit có > chunkSize từ thành các phần nhỏ
+// Body: { chunkSize?: number }  (mặc định 120)
+router.post('/admin/split-all', auth, teacherOnly, async (req, res) => {
+  try {
+    const { chunkSize = 120 } = req.body;
+    const allUnits = await VocabUnit.find({ isActive: true }).sort({ sortOrder: 1, unitNumber: 1 });
+    const largeUnits = allUnits.filter(u => u.words.length > chunkSize);
+
+    if (largeUnits.length === 0) {
+      return res.json({ success: true, message: `Không có unit nào vượt quá ${chunkSize} từ`, parts: 0 });
+    }
+
+    const maxDoc = await VocabUnit.findOne().sort({ unitNumber: -1 }).select('unitNumber').lean();
+    let maxNum = maxDoc ? maxDoc.unitNumber : 0;
+
+    let totalCreated = 0;
+    const results = [];
+
+    for (const unit of largeUnits) {
+      const chunks = [];
+      for (let i = 0; i < unit.words.length; i += chunkSize) {
+        chunks.push(unit.words.slice(i, i + chunkSize));
+      }
+      const n = chunks.length;
+
+      // Đẩy sortOrder của các unit phía sau lên
+      await VocabUnit.updateMany(
+        { _id: { $ne: unit._id }, sortOrder: { $gt: unit.sortOrder } },
+        { $inc: { sortOrder: n - 1 } }
+      );
+
+      const baseTitle = unit.title.replace(/\s*\(\d+\/\d+\)$/, '');
+      unit.title = `${baseTitle} (1/${n})`;
+      unit.words = chunks[0];
+      unit.markModified('words');
+      await unit.save();
+
+      for (let i = 1; i < n; i++) {
+        await VocabUnit.create({
+          unitNumber: maxNum + 1,
+          sortOrder:  unit.sortOrder + i,
+          title:      `${baseTitle} (${i + 1}/${n})`,
+          description: unit.description,
+          level:      unit.level,
+          isActive:   unit.isActive,
+          words:      chunks[i]
+        });
+        maxNum++;
+      }
+
+      totalCreated += n - 1;
+      results.push({ title: baseTitle, parts: n });
+    }
+
+    // Renumber toàn bộ unitNumber theo sortOrder
+    const sorted = await VocabUnit.find().sort({ sortOrder: 1, unitNumber: 1 }).select('_id');
+    await Promise.all(sorted.map(({ _id }, i) =>
+      VocabUnit.findByIdAndUpdate(_id, { unitNumber: 10000 + i })
+    ));
+    await Promise.all(sorted.map(({ _id }, i) =>
+      VocabUnit.findByIdAndUpdate(_id, { unitNumber: i + 1 })
+    ));
+
+    res.json({
+      success: true,
+      message: `Đã tách ${largeUnits.length} unit lớn thành ${largeUnits.length + totalCreated} unit (mỗi phần ≤${chunkSize} từ)`,
+      results
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/vocab/admin/import  – import toàn bộ từ JSON (tạo/update nhiều units)
 // Body: Array<{ unitNumber, title, words: [...] }> hoặc single object
 router.post('/admin/import', auth, teacherOnly, async (req, res) => {
