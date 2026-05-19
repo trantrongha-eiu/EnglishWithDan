@@ -130,6 +130,31 @@
     .wp-skip-btn.hidden { display:none; }
     [data-theme="dark"] .wp-skip-btn { border-color:#374151; color:#6b7280; }
     [data-theme="dark"] .wp-skip-btn:hover { border-color:#d97706; color:#f59e0b; }
+
+    /* ── Welcome / intro screen ── */
+    .wp-state-welcome { text-align:center; padding:28px 16px 20px; max-width:600px; margin:0 auto; }
+    .wp-welcome-icon  { font-size:52px; line-height:1; margin-bottom:10px; }
+    .wp-welcome-title { font-size:21px; font-weight:800; color:#111827; margin:0 0 8px; }
+    .wp-welcome-sub   { font-size:14px; color:#6b7280; line-height:1.6; margin:0 0 24px; }
+    .wp-welcome-cards { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; text-align:left; }
+    .wp-welcome-card  { background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:14px 16px; }
+    .wp-welcome-card-icon  { font-size:22px; margin-bottom:6px; }
+    .wp-welcome-card-title { font-size:13px; font-weight:700; color:#111827; margin-bottom:4px; }
+    .wp-welcome-card-desc  { font-size:12px; color:#6b7280; line-height:1.5; }
+    .wp-welcome-types { background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:12px 16px; margin-bottom:22px; }
+    .wp-welcome-types-lbl { font-size:12px; font-weight:700; color:#0369a1; margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; }
+    .wp-welcome-chips { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+    .wp-welcome-chips span { background:#fff; border:1px solid #bae6fd; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:500; color:#0369a1; }
+    .wp-welcome-start { background:linear-gradient(135deg,#f093fb,#f5576c); color:#fff; border:none; border-radius:12px; padding:14px 36px; font-size:15px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity .2s,transform .2s; box-shadow:0 4px 14px rgba(245,87,108,.35); }
+    .wp-welcome-start:hover { opacity:.9; transform:translateY(-1px); }
+    .wp-welcome-hint { font-size:12px; color:#9ca3af; margin-top:10px; }
+    @media (max-width:480px) { .wp-welcome-cards { grid-template-columns:1fr; } }
+    [data-theme="dark"] .wp-welcome-title { color:#f1f5f9; }
+    [data-theme="dark"] .wp-welcome-card  { background:#1e293b; border-color:#334155; }
+    [data-theme="dark"] .wp-welcome-card-title { color:#f1f5f9; }
+    [data-theme="dark"] .wp-welcome-types { background:#0c1e30; border-color:#1e4060; }
+    [data-theme="dark"] .wp-welcome-types-lbl { color:#7dd3fc; }
+    [data-theme="dark"] .wp-welcome-chips span { background:#0f2d45; border-color:#1e4060; color:#7dd3fc; }
   </style>
 </head>
 <body>
@@ -252,7 +277,52 @@
     <!-- ══ PRACTICE MODE ══ -->
     <div id="mode-practice">
 
-      <div class="wp-state-loading" id="state-loading">
+      <div class="wp-state-welcome" id="state-welcome">
+        <div class="wp-welcome-icon">✍️</div>
+        <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết!</h2>
+        <p class="wp-welcome-sub">Cải thiện kỹ năng viết tiếng Anh qua các bài tập tương tác có AI phản hồi tức thì. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
+
+        <div class="wp-welcome-cards">
+          <div class="wp-welcome-card">
+            <div class="wp-welcome-card-icon">✏️</div>
+            <div class="wp-welcome-card-title">Chế độ Luyện tập</div>
+            <div class="wp-welcome-card-desc">Làm từng câu, nhận phản hồi AI tức thì sau mỗi câu trả lời. Tích lũy XP và theo dõi combo liên tiếp.</div>
+          </div>
+          <div class="wp-welcome-card">
+            <div class="wp-welcome-card-icon">📋</div>
+            <div class="wp-welcome-card-title">Chế độ Thi thử</div>
+            <div class="wp-welcome-card-desc">Làm bộ đề ngẫu nhiên không có gợi ý — giống thi thật. Xem kết quả chi tiết và đáp án sau khi nộp bài.</div>
+          </div>
+          <div class="wp-welcome-card">
+            <div class="wp-welcome-card-icon">🎯</div>
+            <div class="wp-welcome-card-title">3 cấp độ học</div>
+            <div class="wp-welcome-card-desc">Beginner → Elementary → Intermediate. Bắt đầu từ cấp thấp và nâng dần khi bạn đã tự tin hơn.</div>
+          </div>
+          <div class="wp-welcome-card">
+            <div class="wp-welcome-card-icon">🔥</div>
+            <div class="wp-welcome-card-title">XP & Streak combo</div>
+            <div class="wp-welcome-card-desc">Đúng liên tiếp 3–10 câu sẽ kích hoạt combo thưởng. Duy trì thói quen học mỗi ngày để tăng streak.</div>
+          </div>
+        </div>
+
+        <div class="wp-welcome-types">
+          <div class="wp-welcome-types-lbl">5 dạng bài luyện tập</div>
+          <div class="wp-welcome-chips">
+            <span>🔄 Dịch câu</span>
+            <span>🔀 Sắp xếp từ</span>
+            <span>✏️ Điền chỗ trống</span>
+            <span>🔡 Mở rộng câu</span>
+            <span>🔗 Nối câu</span>
+          </div>
+        </div>
+
+        <button class="wp-welcome-start" onclick="startPractice()">
+          <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
+        </button>
+        <p class="wp-welcome-hint">Chọn cấp độ &amp; chủ đề ở thanh bên trái trước khi bắt đầu</p>
+      </div>
+
+      <div class="wp-state-loading hidden" id="state-loading">
         <div class="wp-spinner"></div>
         <p>Đang tải bài tập...</p>
       </div>
@@ -577,7 +647,7 @@ function skipExercise() {
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
-  loadExercises();
+  showState('welcome');
   window.addEventListener('beforeunload', () => saveBatch());
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || e.shiftKey) return;
@@ -1046,8 +1116,12 @@ function tryMoreTopics() {
 }
 
 function showState(state) {
-  ['loading','empty','exercise','done'].forEach(s =>
+  ['welcome','loading','empty','exercise','done'].forEach(s =>
     document.getElementById('state-' + s).classList.toggle('hidden', s !== state));
+}
+
+function startPractice() {
+  loadExercises();
 }
 
 // ════════════════════════════════════════════════════════
