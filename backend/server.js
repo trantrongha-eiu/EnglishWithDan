@@ -77,6 +77,21 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       console.error('[Task1Seed] Error:', e.message);
     }
+    // Auto-seed Task 2 topics
+    try {
+      const Task2Topic = require('./models/Task2Topic');
+      const { topics: t2data, runSeed: runTask2Seed } = require('./scripts/seedTask2Exercises');
+      const t2count = await Task2Topic.countDocuments();
+      if (t2count < t2data.length) {
+        console.log(`[Task2Seed] Has ${t2count}/${t2data.length} – seeding...`);
+        await runTask2Seed();
+        console.log('[Task2Seed] Done ✓');
+      } else {
+        console.log(`[Task2Seed] Already has ${t2count} topics – skip`);
+      }
+    } catch (e) {
+      console.error('[Task2Seed] Error:', e.message);
+    }
   })
   .catch(err => console.error('MongoDB error:', err));
 
@@ -98,6 +113,7 @@ app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/courses',         require('./routes/courses'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));
+app.use('/api/task2',           require('./routes/task2Practice'));
 
 // ── 404 handler ──────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route không tồn tại' }));
