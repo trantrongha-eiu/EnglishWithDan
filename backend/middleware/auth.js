@@ -25,6 +25,8 @@ module.exports = async (req, res, next) => {
     }
 
     req.user = user;
+    // Cập nhật lastSeen — fire-and-forget, không chặn request
+    User.updateOne({ _id: user._id }, { lastSeen: new Date() }).catch(() => {});
     next();
   } catch (err) {
     return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn' });

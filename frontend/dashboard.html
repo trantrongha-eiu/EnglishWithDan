@@ -38,9 +38,20 @@
     <li><a href="speaking.html"><i class="fas fa-microphone"></i> Speaking & Materials</a></li>
     <li><a href="writing-practice.html"><i class="fas fa-pencil-alt"></i> Luyện viết</a></li>
     <li><a href="dashboard.html" class="active"><i class="fas fa-layer-group"></i> Vocab</a></li>
+    <li><a href="inbox.html" id="navInboxLink"><i class="fas fa-envelope"></i> Hộp thư <span id="navInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:2px;vertical-align:middle"></span></a></li>
     <li><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
   </ul>
 </nav>
+<script>
+(function(){
+  const t = localStorage.getItem('token');
+  if (!t) return;
+  fetch('https://englishwithdan.onrender.com/api/user/messages/unread-count', { headers: { Authorization: 'Bearer ' + t } })
+    .then(r => r.json()).then(d => {
+      if (d.count > 0) { const b = document.getElementById('navInboxBadge'); if (b) { b.textContent = d.count; b.style.display = 'inline'; } }
+    }).catch(() => {});
+})();
+</script>
 
 <div class="app-layout">
 

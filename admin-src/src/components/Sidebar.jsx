@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useEffect, useState } from 'react';
+import { apiFetch } from '../utils/api';
 
 const NAV = [
   { section: 'TỔNG QUAN' },
@@ -18,10 +20,21 @@ const NAV = [
   { section: 'HỌC SINH' },
   { to: '/admin/history', icon: '📝', label: 'Lịch sử làm bài' },
   { to: '/admin/vocab-activity', icon: '📈', label: 'Hoạt động từ vựng' },
+  { to: '/admin/messages', icon: '✉️', label: 'Hộp thư' },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
+  const [onlineCount, setOnlineCount] = useState(0);
+
+  useEffect(() => {
+    function fetchOnline() {
+      apiFetch('/admin/online-users').then(d => setOnlineCount(d.count || 0)).catch(() => {});
+    }
+    fetchOnline();
+    const id = setInterval(fetchOnline, 60_000); // refresh every minute
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <>
@@ -32,6 +45,12 @@ export default function Sidebar({ mobileOpen, onClose }) {
         <div className="sidebar-logo">
           <div className="sidebar-logo-title">EnglishWithDan</div>
           <div className="sidebar-logo-sub">ADMIN PANEL</div>
+          {onlineCount > 0 && (
+            <div style={{ marginTop: 6, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center', color: '#22c55e', fontWeight: 600 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 5px #22c55e' }} />
+              {onlineCount} đang online
+            </div>
+          )}
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto' }}>

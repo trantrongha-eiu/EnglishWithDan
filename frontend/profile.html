@@ -23,6 +23,7 @@
       <a href="writing.html"><i class="fas fa-pen"></i> Writing</a>
       <a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
       <a href="writing-practice.html"><i class="fas fa-pencil-alt"></i> Luyện viết</a>
+      <a href="inbox.html"><i class="fas fa-envelope"></i> Hộp thư <span id="navInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:2px;vertical-align:middle"></span></a>
     </div>
     <div class="nav-actions" style="margin-left:auto; display:flex; align-items:center; gap:10px;">
       <button class="btn-dark-mode dark-toggle-icon" id="btnDark" title="Chế độ tối" onclick="toggleDark()">🌙</button>
@@ -35,6 +36,16 @@
       </button>
     </div>
   </nav>
+  <script>
+  (function(){
+    const t = localStorage.getItem('token');
+    if (!t) return;
+    fetch('https://englishwithdan.onrender.com/api/user/messages/unread-count', { headers: { Authorization: 'Bearer ' + t } })
+      .then(r => r.json()).then(d => {
+        if (d.count > 0) { const b = document.getElementById('navInboxBadge'); if (b) { b.textContent = d.count; b.style.display = 'inline'; } }
+      }).catch(() => {});
+  })();
+  </script>
 
   <!-- Main Content -->
   <div class="profile-layout">

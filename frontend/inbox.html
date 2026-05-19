@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hộp thư – EnglishWithDan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <script src="js/theme.js"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); padding-top: var(--nav-height, 64px); }
+
+    /* Nav */
+    .top-nav { position: fixed; top:0; left:0; right:0; height: var(--nav-height, 64px);
+      background: var(--card); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 20px; z-index: 1000; gap: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .nav-brand { font-size:18px; font-weight:800; background:linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
+    .nav-links { display:flex; align-items:center; gap:4px; flex:1; margin:0 16px; overflow-x:auto; }
+    .nav-links a { padding:7px 13px; border-radius:8px; color:var(--text2); text-decoration:none; font-size:14px; font-weight:500; transition:.15s; white-space:nowrap; }
+    .nav-links a:hover,.nav-links a.active { background:rgba(102,126,234,.1); color:#667eea; }
+    .nav-actions { display:flex; align-items:center; gap:10px; margin-left:auto; }
+    .btn-logout { background:none; border:1px solid var(--border); border-radius:8px; padding:7px 14px; cursor:pointer; color:var(--text2); font-size:13px; font-family:inherit; transition:.15s; }
+    .btn-logout:hover { background:var(--danger,#ef4444); color:#fff; border-color:transparent; }
+
+    /* Layout */
+    .inbox-layout { max-width: 960px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 300px 1fr; gap: 20px; min-height: calc(100vh - 64px); }
+    @media (max-width: 680px) { .inbox-layout { grid-template-columns: 1fr; } .msg-detail { display: none; } .msg-detail.active { display: flex; } }
+
+    /* Message list */
+    .msg-list-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+    .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .panel-head h3 { font-size: 15px; font-weight: 700; margin: 0; }
+    .badge-count { background: #ef4444; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .msg-list { flex: 1; overflow-y: auto; }
+    .msg-item { padding: 14px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: .15s; display: flex; flex-direction: column; gap: 4px; }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-item:hover { background: var(--surface2, rgba(0,0,0,.03)); }
+    .msg-item.selected { background: rgba(102,126,234,.08); }
+    .msg-item.unread .msg-sender { font-weight: 700; }
+    .msg-item.unread .msg-preview { font-weight: 600; color: var(--text); }
+    .msg-sender { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+    .msg-preview { font-size: 12px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .msg-subject { font-size: 12px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .msg-time { font-size: 11px; color: var(--text3); }
+    .dot-unread { width: 8px; height: 8px; border-radius: 50%; background: #667eea; flex-shrink: 0; }
+    .empty-state { padding: 40px 20px; text-align: center; color: var(--text3); }
+    .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; }
+
+    /* Detail panel */
+    .msg-detail { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+    .detail-placeholder { display: flex; align-items: center; justify-content: center; color: var(--text3); flex-direction: column; gap: 12px; }
+    .detail-placeholder i { font-size: 48px; }
+    .detail-head { border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    .detail-subject { font-size: 18px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
+    .detail-meta { font-size: 13px; color: var(--text3); display: flex; gap: 16px; flex-wrap: wrap; }
+    .detail-body { font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap; flex: 1; }
+    .detail-actions { display: flex; gap: 10px; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 18px; border-radius:10px; border:none; cursor:pointer; font-size:14px; font-weight:600; font-family:inherit; transition:.15s; }
+    .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text2); }
+    .btn-ghost:hover { background:var(--surface2,rgba(0,0,0,.05)); }
+    .btn-danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
+    .btn-danger:hover { background:#dc2626; color:#fff; }
+    .broadcast-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; background:rgba(102,126,234,.1); color:#667eea; border-radius:20px; font-size:12px; font-weight:600; }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+
+  <nav class="top-nav">
+    <a href="dashboard.html" class="nav-brand"><i class="fas fa-graduation-cap"></i> EnglishWithDan</a>
+    <div class="nav-links">
+      <a href="reading.html"><i class="fas fa-book-open"></i> Reading</a>
+      <a href="listening.html"><i class="fas fa-headphones"></i> Listening</a>
+      <a href="writing.html"><i class="fas fa-pen"></i> Writing</a>
+      <a href="speaking.html"><i class="fas fa-microphone"></i> Speaking</a>
+      <a href="writing-practice.html"><i class="fas fa-pencil-alt"></i> Luyện viết</a>
+      <a href="dashboard.html"><i class="fas fa-layer-group"></i> Vocab</a>
+      <a href="inbox.html" class="active"><i class="fas fa-envelope"></i> Hộp thư</a>
+      <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+    </div>
+    <div class="nav-actions">
+      <button onclick="toggleDark()" class="btn-logout" title="Chế độ tối"><span class="dark-toggle-icon">🌙</span></button>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+  </nav>
+
+  <div class="inbox-layout">
+    <!-- Message list -->
+    <div class="msg-list-panel">
+      <div class="panel-head">
+        <h3><i class="fas fa-inbox"></i> Hộp thư đến</h3>
+        <span id="unreadBadge" class="badge-count" style="display:none"></span>
+      </div>
+      <div class="msg-list" id="msgList">
+        <div class="empty-state"><i class="fas fa-envelope-open"></i><p>Đang tải...</p></div>
+      </div>
+    </div>
+
+    <!-- Detail panel -->
+    <div class="msg-detail" id="msgDetail">
+      <div class="detail-placeholder">
+        <i class="fas fa-envelope-open-text"></i>
+        <p>Chọn một tin nhắn để đọc</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/inbox.js"></script>
+</body>
+</html>

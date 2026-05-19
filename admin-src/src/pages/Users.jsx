@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -96,6 +97,7 @@ function UserModal({ userId, onClose, onSaved }) {
 export default function Users() {
   const toast = useToast();
   const confirm = useConfirm();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -103,7 +105,12 @@ export default function Users() {
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [editId, setEditId] = useState(null);
+  const [onlineIds, setOnlineIds] = useState(new Set());
   const timer = useRef(null);
+
+  useEffect(() => {
+    apiFetch('/admin/online-users').then(d => setOnlineIds(new Set((d.users || []).map(u => u._id)))).catch(() => {});
+  }, []);
 
   function load(p = page) {
     const params = new URLSearchParams({ page: p, limit: PAGE });
@@ -173,7 +180,14 @@ export default function Users() {
               ? <tr><td colSpan={7} className="table-empty">Không có người dùng</td></tr>
               : users.map(u => (
                 <tr key={u._id} style={{ opacity: u.isBanned ? 0.55 : 1 }}>
-                  <td><strong>{u.username}</strong></td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {onlineIds.has(u._id) && (
+                        <span title="Đang online" style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0, boxShadow: '0 0 4px #22c55e' }} />
+                      )}
+                      <strong>{u.username}</strong>
+                    </div>
+                  </td>
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{u.email}</td>
                   <td>{[u.firstName, u.lastName].filter(Boolean).join(' ') || '–'}</td>
                   <td>{roleBadge(u.role)}</td>
@@ -186,6 +200,7 @@ export default function Users() {
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/admin/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
                       <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
                         onClick={() => toggleBan(u._id, u.username, u.isBanned)}>
                         {u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm'}

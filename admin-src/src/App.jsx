@@ -20,6 +20,7 @@ import Vocabulary from './pages/Vocabulary';
 import WritingPractice from './pages/WritingPractice';
 import StudentHistory from './pages/StudentHistory';
 import VocabActivity from './pages/VocabActivity';
+import Messages from './pages/Messages';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -50,6 +51,7 @@ export default function App() {
                 <Route path="writing-practice" element={<WritingPractice />} />
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />
+                <Route path="messages" element={<Messages />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
