@@ -9,6 +9,7 @@
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing' },
     { href: 'speaking.html',         icon: 'fa-microphone',  label: 'Speaking' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết' },
+    { href: 'task1-practice.html',  icon: 'fa-chart-bar',   label: 'Task 1' },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
     { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true },
     { href: 'profile.html',          icon: 'fa-user-circle', label: 'Profile' },
