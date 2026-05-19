@@ -209,7 +209,7 @@ router.get('/topics', async (_req, res) => {
 
 // ══════════════════════════════════════════════════════════════
 //  POST /api/writing-practice/check
-//  Uses local check for all types except intermediate expand (→ AI)
+//  Uses local check for all exercise types
 // ══════════════════════════════════════════════════════════════
 router.post('/check', async (req, res) => {
   const { exerciseId, userAnswer } = req.body;
@@ -294,7 +294,7 @@ router.post('/check-test', async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 //  POST /api/writing-practice/save-batch  (auth required)
 //  Lưu toàn bộ kết quả của 1 buổi luyện tập khi hoàn thành hết bài
-//  Body: { attempts: [{ exerciseId, userAnswer, aiFeedback, xpEarned }] }
+//  Body: { attempts: [{ exerciseId, userAnswer, xpEarned }] }
 // ══════════════════════════════════════════════════════════════
 router.post('/save-batch', auth, async (req, res) => {
   try {
@@ -317,7 +317,6 @@ router.post('/save-batch', auth, async (req, res) => {
           type:       ex.type,
           topic:      ex.topicKey,
           userAnswer: a.userAnswer || '',
-          aiFeedback: a.aiFeedback || null,
           xpEarned:   a.xpEarned  || 0
         };
       })
@@ -336,7 +335,7 @@ router.post('/save-batch', auth, async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 router.post('/save', auth, async (req, res) => {
   try {
-    const { exerciseId, userAnswer, aiFeedback, xpEarned } = req.body;
+    const { exerciseId, userAnswer, xpEarned } = req.body;
     const exercise = await WPExercise.findById(exerciseId).lean();
     if (!exercise)
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
@@ -348,7 +347,6 @@ router.post('/save', auth, async (req, res) => {
       type:       exercise.type,
       topic:      exercise.topicKey,
       userAnswer,
-      aiFeedback,
       xpEarned: xpEarned || 0
     }).save();
 

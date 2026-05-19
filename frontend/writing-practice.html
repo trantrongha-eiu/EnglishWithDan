@@ -280,13 +280,13 @@
       <div class="wp-state-welcome" id="state-welcome">
         <div class="wp-welcome-icon">✍️</div>
         <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết!</h2>
-        <p class="wp-welcome-sub">Cải thiện kỹ năng viết tiếng Anh qua các bài tập tương tác có AI phản hồi tức thì. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
+        <p class="wp-welcome-sub">Cải thiện kỹ năng viết tiếng Anh qua các bài tập tương tác. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
 
         <div class="wp-welcome-cards">
           <div class="wp-welcome-card">
             <div class="wp-welcome-card-icon">✏️</div>
             <div class="wp-welcome-card-title">Chế độ Luyện tập</div>
-            <div class="wp-welcome-card-desc">Làm từng câu, nhận phản hồi AI tức thì sau mỗi câu trả lời. Tích lũy XP và theo dõi combo liên tiếp.</div>
+            <div class="wp-welcome-card-desc">Làm từng câu, nhận phản hồi tức thì sau mỗi câu trả lời. Tích lũy XP và theo dõi combo liên tiếp.</div>
           </div>
           <div class="wp-welcome-card">
             <div class="wp-welcome-card-icon">📋</div>
@@ -405,7 +405,7 @@
               <span class="wp-cmp-text" id="sample-answer-display"></span>
             </div>
           </div>
-          <div class="wp-ai-feedback" id="feedback-text"></div>
+          <div class="wp-feedback" id="feedback-text"></div>
           <button class="wp-next-btn" onclick="nextExercise()">
             Câu tiếp theo <i class="fas fa-arrow-right"></i>
           </button>
@@ -980,7 +980,7 @@ async function submitAnswer() {
     showFeedback(answer, data);
     updateProgress(data.xpEarned || 5, data.feedback?.isCorrect);
     // Buffer – không gửi ngay, chờ hoàn thành toàn bộ buổi luyện
-    sessionAttempts.push({ exerciseId: ex._id, userAnswer: answer, aiFeedback: data.feedback, xpEarned: data.xpEarned || 5 });
+    sessionAttempts.push({ exerciseId: ex._id, userAnswer: answer, xpEarned: data.xpEarned || 5 });
   } catch (err) {
     console.error(err);
     showToast('Lỗi khi chấm bài: ' + err.message, 'error');
