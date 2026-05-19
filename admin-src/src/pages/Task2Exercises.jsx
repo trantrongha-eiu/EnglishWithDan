@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -19,7 +19,7 @@ const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionTe
 function TopicModal({ topic, onClose, onSaved }) {
   const [form, setForm] = useState(topic || defaultTopic);
   const [saving, setSaving] = useState(false);
-  const { showToast } = useToast();
+  const showToast = useToast();
   const isEdit = !!topic?._id;
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })); }
@@ -123,7 +123,7 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
     fallbackKeywords: (question.fallbackKeywords || []).join('\n')
   } : defaultQ);
   const [saving, setSaving] = useState(false);
-  const { showToast } = useToast();
+  const showToast = useToast();
   const isChoice = ['essay_type_recognition','topic_sentence'].includes(form.type);
   const isRearrange = form.type === 'rearrange';
   const hasModel = ['translation','error_correction','short_writing','paraphrase','rearrange'].includes(form.type);
@@ -239,7 +239,7 @@ export default function Task2Exercises() {
   const [showQModal, setShowQModal]         = useState(false);
   const [editingQ, setEditingQ]             = useState(null);
 
-  const { showToast } = useToast();
+  const showToast = useToast();
   const confirm = useConfirm();
 
   const load = useCallback(async () => {
@@ -260,30 +260,27 @@ export default function Task2Exercises() {
 
   function forceReload() { setPage(1); setTick(t => t + 1); }
 
-  async function deleteTopic(t) {
-    const ok = await confirm({ title: 'Xóa topic?', message: `"${t.topicName}" và tất cả câu hỏi bên trong sẽ bị xóa vĩnh viễn.` });
-    if (!ok) return;
-    try {
-      await apiFetch(`/admin/task2/topics/${t._id}`, { method: 'DELETE' });
-      showToast('Đã xóa topic', 'success');
-      if (activeTopic?._id === t._id) setActiveTopic(null);
-      forceReload();
-    } catch (e) { showToast(e.message, 'error'); }
+  function deleteTopic(t) {
+    confirm(`Xóa topic "${t.topicName}" và tất cả câu hỏi bên trong? Không thể hoàn tác.`, async () => {
+      try {
+        await apiFetch(`/admin/task2/topics/${t._id}`, { method: 'DELETE' });
+        showToast('Đã xóa topic', 'success');
+        if (activeTopic?._id === t._id) setActiveTopic(null);
+        forceReload();
+      } catch (e) { showToast(e.message, 'error'); }
+    });
   }
 
-  async function deleteQuestion(qid) {
+  function deleteQuestion(qid) {
     if (!activeTopic) return;
-    const ok = await confirm({ title: 'Xóa câu hỏi?', message: 'Không thể hoàn tác.' });
-    if (!ok) return;
-    try {
-      await apiFetch(`/admin/task2/topics/${activeTopic._id}/questions/${qid}`, { method: 'DELETE' });
-      showToast('Đã xóa câu hỏi', 'success');
-      // refresh activeTopic
-      const data = await apiFetch(`/admin/task2/topics?search=${encodeURIComponent(activeTopic.topicName)}&limit=1`);
-      const fresh = data.topics?.find(t => t._id === activeTopic._id);
-      if (fresh) setActiveTopic(fresh);
-      else forceReload();
-    } catch (e) { showToast(e.message, 'error'); }
+    confirm('Xóa câu hỏi này? Không thể hoàn tác.', async () => {
+      try {
+        await apiFetch(`/admin/task2/topics/${activeTopic._id}/questions/${qid}`, { method: 'DELETE' });
+        showToast('Đã xóa câu hỏi', 'success');
+        setActiveTopic(t => t ? { ...t, questions: (t.questions || []).filter(q => q._id !== qid) } : t);
+        forceReload();
+      } catch (e) { showToast(e.message, 'error'); }
+    });
   }
 
   async function refreshActiveTopic() {
@@ -345,8 +342,8 @@ export default function Task2Exercises() {
                 <tr><td colSpan={6} style={{ textAlign:'center', color:'#9ca3af', padding:32 }}>Chưa có topic nào</td></tr>
               )}
               {topics.map(t => (
-                <>
-                  <tr key={t._id} style={{ background: activeTopic?._id === t._id ? 'var(--blue-50,#eff6ff)' : undefined }}>
+                <Fragment key={t._id}>
+                  <tr style={{ background: activeTopic?._id === t._id ? 'var(--blue-50,#eff6ff)' : undefined }}>
                     <td><span style={{ fontWeight:700, color:'#6366f1' }}>W{t.week}</span></td>
                     <td>
                       <div style={{ fontWeight:600 }}>{t.topicEmoji} {t.topicName}</div>
@@ -381,7 +378,7 @@ export default function Task2Exercises() {
                     </td>
                   </tr>
                   {activeTopic?._id === t._id && (
-                    <tr key={t._id + '_questions'}>
+                    <tr>
                       <td colSpan={6} style={{ padding:0 }}>
                         <div style={{ background:'#f8fafc', borderTop:'2px solid #6366f1', padding:'16px 20px' }}>
                           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
@@ -424,14 +421,14 @@ export default function Task2Exercises() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
         </div>
       )}
 
-      <Pagination page={page} totalPages={Math.ceil(total / LIMIT)} onPageChange={setPage} />
+      <Pagination page={page} total={total} pageSize={LIMIT} onPage={setPage} />
 
       {showTopicModal && (
         <TopicModal
