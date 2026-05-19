@@ -137,6 +137,24 @@
     .t2-done-stat-lbl{font-size:12px;color:#6b7280}
 
     @media(max-width:480px){.t2-week-grid{grid-template-columns:repeat(2,1fr)}}
+
+    /* ── Submit button disabled ── */
+    .wp-submit-btn:disabled{opacity:.45;cursor:not-allowed}
+    /* ── Writing textarea ── */
+    .t2-writing-area{min-height:120px;resize:vertical}
+    /* ── Practice context strip ── */
+    .t2-ctx-strip{display:flex;align-items:center;gap:8px;padding:7px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;font-size:12px}
+    [data-theme="dark"] .t2-ctx-strip{background:#1e293b;border-bottom-color:#334155}
+    .t2-ctx-week{font-weight:700;color:#6366f1;background:#ede9fe;padding:2px 10px;border-radius:20px}
+    [data-theme="dark"] .t2-ctx-week{background:#1e1b4b;color:#a5b4fc}
+    .t2-ctx-divider{color:#d1d5db}
+    .t2-ctx-name{font-weight:600;color:#374151;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    [data-theme="dark"] .t2-ctx-name{color:#cbd5e1}
+    .t2-ctx-level{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;text-transform:uppercase}
+    /* ── Model answer toggle ── */
+    .t2-toggle-model{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+    .t2-toggle-model:hover{border-color:#6366f1;color:#6366f1}
+    [data-theme="dark"] .t2-toggle-model{border-color:#334155;color:#94a3b8}
   </style>
 </head>
 <body>
@@ -429,9 +447,19 @@ function renderPractice() {
   if (!q) return renderDone();
   const topic = state.selectedTopic;
   const pct = Math.round((state.currentIdx / state.questions.length) * 100);
+  const lvlColor = LEVEL_COLORS[state.selectedLevel] || '#6b7280';
+  const lvlLabel = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', all:'Tất cả' }[state.selectedLevel] || state.selectedLevel;
   return `
-    <div class="t2-nav">
+    <div class="t2-nav" style="padding:8px 20px">
       <div class="t2-nav-crumb"><span onclick="quitPractice()">← Chọn topic khác</span></div>
+    </div>
+    <div class="t2-ctx-strip">
+      <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
+      <span class="t2-ctx-divider">›</span>
+      <span class="t2-ctx-name" title="${topic.topicName}">${topic.topicEmoji || ''} ${topic.topicName}</span>
+      <span class="t2-ctx-divider">·</span>
+      <span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>
+      <span class="t2-ctx-level" style="background:${lvlColor}22;color:${lvlColor}">${lvlLabel}</span>
     </div>
     <details class="t2-prompt-box">
       <summary>📋 Đề bài IELTS</summary>
@@ -446,7 +474,7 @@ function renderPractice() {
     <div class="wp-card" style="margin:0 20px" id="qcard">
       ${renderQuestion(q)}
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="wp-submit-btn" id="submit-btn" onclick="submitPractice()" style="flex:1">
+        <button class="wp-submit-btn" id="submit-btn" onclick="submitPractice()" style="flex:1" disabled>
           <i class="fas fa-check"></i> Kiểm tra
         </button>
       </div>
@@ -455,7 +483,8 @@ function renderPractice() {
       <div class="wp-result-banner" id="result-banner"></div>
       <div id="comparison-box">
         <div class="wp-cmp-row wp-cmp-student"><span class="wp-cmp-label">📝 Câu của bạn:</span><span id="student-answer-display" class="wp-cmp-text"></span></div>
-        <div class="wp-cmp-row wp-cmp-sample"><span class="wp-cmp-label">✅ Đáp án mẫu:</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
+        <div class="wp-cmp-row wp-cmp-sample hidden" id="model-answer-row"><span class="wp-cmp-label">✅ Đáp án mẫu:</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
+        <button class="t2-toggle-model" id="toggle-model-btn" onclick="toggleModelAnswer()"><i class="fas fa-eye"></i> Xem đáp án mẫu</button>
       </div>
       <div class="t2-explanation hidden" id="explanation-box">
         <div class="t2-exp-title">💡 Giải thích</div>
@@ -499,12 +528,12 @@ function renderQuestion(q) {
   }
   if (q.type === 'fill_blank') {
     return `<div class="wp-task-label">${q.questionText}</div>
-    <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)"/>`;
+    <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
   return `<div class="wp-task-label" style="white-space:pre-line">${q.questionText}</div>
-    <textarea class="wp-answer-box" id="answer-box" rows="${isLong ? 5 : 3}" placeholder="Nhập câu trả lời tại đây..." onkeydown="handleEnter(event)" oninput="updateWordCount(this)"></textarea>
+    <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
     ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
 }
 
@@ -539,6 +568,7 @@ function selectMC(idx, btn) {
   btn.classList.add('selected');
   document.getElementById('mc-selected').value = idx;
   state.mcSelected = idx;
+  checkSubmitEnabled();
 }
 
 function selectWord(chip) {
@@ -577,6 +607,7 @@ function renderRearrangeAnswer() {
   }
   const inp = document.getElementById('rearrange-input');
   if (inp) inp.value = state.rearrangeAnswer.join(' ');
+  checkSubmitEnabled();
 }
 
 function getUserAnswerPractice() {
@@ -855,6 +886,33 @@ async function savePracticeAttempt() {
       })
     });
   } catch {}
+}
+
+// ════════════════════════════════════════════════════════
+//  SUBMIT ENABLE / MODEL TOGGLE
+// ════════════════════════════════════════════════════════
+function checkSubmitEnabled() {
+  const btn = document.getElementById('submit-btn');
+  if (!btn) return;
+  const q = state.questions[state.currentIdx];
+  if (!q) return;
+  if (['essay_type_recognition','topic_sentence'].includes(q.type)) {
+    btn.disabled = (state.mcSelected === null || state.mcSelected === undefined);
+    return;
+  }
+  if (q.type === 'rearrange') { btn.disabled = state.rearrangeAnswer.length === 0; return; }
+  if (q.type === 'fill_blank') { btn.disabled = !(document.getElementById('fill-input')?.value?.trim()); return; }
+  btn.disabled = !(document.getElementById('answer-box')?.value?.trim());
+}
+
+function toggleModelAnswer() {
+  const row = document.getElementById('model-answer-row');
+  const btn = document.getElementById('toggle-model-btn');
+  if (!row || !btn) return;
+  row.classList.toggle('hidden');
+  btn.innerHTML = row.classList.contains('hidden')
+    ? '<i class="fas fa-eye"></i> Xem đáp án mẫu'
+    : '<i class="fas fa-eye-slash"></i> Ẩn đáp án';
 }
 
 // ════════════════════════════════════════════════════════
