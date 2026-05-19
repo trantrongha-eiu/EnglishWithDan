@@ -1037,12 +1037,16 @@ async function submitAnswer() {
     const earned = data.xpEarned || 5;
     sessionDone++;
     sessionXP += earned;
-    if (data.isCorrect) { sessionCorrect++; comboStreak++; playOk(); }
-    else { comboStreak = 0; playWrong(); }
-    if (comboStreak >= 3) {
-      const badge = document.getElementById('combo-badge');
-      badge.textContent = `🔥 ×${comboStreak}`;
-      badge.classList.remove('hidden');
+    if (data.isCorrect) {
+      sessionCorrect++; comboStreak++; playOk();
+      if (comboStreak >= 3) {
+        const badge = document.getElementById('combo-badge');
+        badge.textContent = `🔥 ×${comboStreak}`;
+        badge.classList.remove('hidden');
+      }
+    } else {
+      comboStreak = 0; playWrong();
+      document.getElementById('combo-badge').classList.add('hidden');
     }
     updateXPStorage(earned);
     floatXP(earned);
@@ -1095,10 +1099,8 @@ function showFeedback(userAnswer, data, ex) {
 }
 
 function nextExercise() {
-  comboStreak > 0 && comboStreak < 3 && document.getElementById('combo-badge').classList.add('hidden');
   currentIdx++;
   showExercise(currentIdx);
-  document.getElementById('feedback-card').classList.add('hidden');
 }
 
 function skipExercise() {

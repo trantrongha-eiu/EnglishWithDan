@@ -197,6 +197,8 @@ const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#
 // ════════════════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════════════════
+let _practiceKeyHandler = null;  // track listener to avoid accumulation
+
 let state = {
   view: 'weeks',  // weeks | topics | select | practice | exam | vocab | done
   selectedWeek: null,
@@ -480,8 +482,13 @@ function renderQuestion(q) {
     <input type="hidden" id="mc-selected" value=""/>`;
   }
   if (q.type === 'rearrange') {
-    const shuffled = shuffle([...(q.baseWords || q.questionText.replace('Sắp xếp:','').split(' ').filter(Boolean))]);
-    return `<div class="wp-task-label">${q.questionText}</div>
+    const words = (q.baseWords && q.baseWords.length)
+      ? q.baseWords
+      : q.questionText.replace(/\[.*\]/s, '').replace('Sắp xếp:','').split(/\s+/).filter(Boolean);
+    const shuffled = shuffle([...words]);
+    // strip [word list] from questionText for display
+    const displayText = q.questionText.replace(/\n?\[.*\]/s, '').trim();
+    return `<div class="wp-task-label" style="white-space:pre-line">${displayText}</div>
     <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)">
       <span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>
     </div>
@@ -505,11 +512,14 @@ function bindPractice() {
   state.rearrangeAnswer = [];
   state.rearrangeWords  = [];
   state.mcSelected      = null;
-  document.addEventListener('keydown', function onKey(e) {
+  // remove previous listener before adding a new one
+  if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
+  _practiceKeyHandler = function(e) {
     if (e.key !== 'Enter' || e.shiftKey) return;
     const fc = document.getElementById('feedback-card');
-    if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextPractice(); document.removeEventListener('keydown', onKey); }
-  }, { once: false });
+    if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextPractice(); }
+  };
+  document.addEventListener('keydown', _practiceKeyHandler);
 }
 
 function handleEnter(e) {
@@ -605,8 +615,12 @@ async function submitPractice() {
     const mc = ['essay_type_recognition','topic_sentence'].includes(q.type);
     if (mc) {
       const idx = parseInt(answer);
+      const correctText = data.modelAnswer || '';
       document.querySelectorAll('.t2-mc-option').forEach((btn, i) => {
+        const optText = btn.querySelector('span:last-child')?.textContent || '';
         if (i === idx) btn.classList.add(isOk ? 'correct' : 'wrong');
+        // highlight correct option when user was wrong
+        if (!isOk && correctText && optText === correctText) btn.classList.add('correct');
       });
       document.getElementById('comparison-box').style.display = 'none';
     } else {
@@ -649,6 +663,7 @@ function quitPractice() {
   if (state.sessionDone > 0) {
     if (!confirm(`Bạn đã làm ${state.sessionDone} câu. Dừng lại?`)) return;
   }
+  if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
   state.view = 'select'; render();
 }
 

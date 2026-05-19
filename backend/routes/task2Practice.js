@@ -10,6 +10,17 @@ function normalize(str) {
     .replace(/[.,!?;:'"]/g, '').replace(/\s+/g, ' ');
 }
 
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+  return dp[m][n];
+}
+
 function keywordMatch(userAnswer, fallbackKeywords, modelAnswer) {
   const lower = normalize(userAnswer);
   const keywords = fallbackKeywords && fallbackKeywords.length
@@ -47,10 +58,15 @@ function autoGrade(q, userAnswer) {
   }
 
   if (q.type === 'fill_blank') {
-    const isCorrect = norm === correct || norm.includes(correct);
+    const isExact = norm === correct;
+    const dist = levenshtein(norm, correct);
+    const isClose = !isExact && correct.length > 2 && dist <= 1;
+    const isCorrect = isExact || isClose;
     return {
-      isCorrect, score: isCorrect ? 100 : 0,
-      feedbackVi: isCorrect ? `✅ Chính xác! ${q.explanationVi || ''}` : `❌ Chưa đúng. Đáp án: "${q.correctAnswer}". ${q.explanationVi || ''}`
+      isCorrect, score: isCorrect ? (isExact ? 100 : 90) : 0,
+      feedbackVi: isCorrect
+        ? `✅ Chính xác! ${q.explanationVi || ''}`
+        : `❌ Chưa đúng. Đáp án: "${q.correctAnswer}". ${q.explanationVi || ''}`
     };
   }
 
@@ -111,8 +127,14 @@ router.get('/questions/topic/:topicId', async (req, res) => {
     if (level !== 'all') questions = questions.filter(q => q.level === level);
     questions = questions.sort((a, b) => a.orderIndex - b.orderIndex);
 
-    // strip answers before sending
-    const safe = questions.map(({ correctAnswer, fallbackKeywords, ...rest }) => rest); // eslint-disable-line no-unused-vars
+    // strip answers before sending; for rearrange, provide baseWords from correctAnswer if missing
+    const safe = questions.map(q => {
+      const { correctAnswer, fallbackKeywords, ...rest } = q; // eslint-disable-line no-unused-vars
+      if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
+        rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
+      }
+      return rest;
+    });
     res.json({ success: true, questions: safe, topicName: topic.topicName, topicEmoji: topic.topicEmoji, prompt: topic.prompt, essayType: topic.essayType });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
@@ -188,7 +210,13 @@ router.get('/exam', async (req, res) => {
       [allQ[i], allQ[j]] = [allQ[j], allQ[i]];
     }
     const selected = allQ.slice(0, parseInt(count));
-    const safe = selected.map(({ correctAnswer, fallbackKeywords, ...rest }) => rest); // eslint-disable-line no-unused-vars
+    const safe = selected.map(q => {
+      const { correctAnswer, fallbackKeywords, ...rest } = q; // eslint-disable-line no-unused-vars
+      if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
+        rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
+      }
+      return rest;
+    });
     res.json({ success: true, questions: safe, total: safe.length });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

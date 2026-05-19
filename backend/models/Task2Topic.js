@@ -6,10 +6,10 @@ const questionSchema = new mongoose.Schema({
   type:             { type: String, enum: ['essay_type_recognition', 'fill_blank', 'rearrange', 'translation', 'error_correction', 'topic_sentence', 'short_writing', 'paraphrase'], required: true },
   questionText:     { type: String, required: true },
   options:          [{ type: String }],
+  baseWords:        [{ type: String }],
   correctAnswer:    { type: String },
   explanationVi:    { type: String },
   explanationEn:    { type: String },
-  useAiGrading:     { type: Boolean, default: false },
   modelAnswer:      { type: String },
   fallbackKeywords: [{ type: String }],
   orderIndex:       { type: Number, default: 0 }

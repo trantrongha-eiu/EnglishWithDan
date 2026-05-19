@@ -27,17 +27,13 @@ const topics = [
         questionText: 'Đọc đề bài sau và cho biết đây là dạng essay nào?\n\n"Many schools now offer online learning as an alternative to in-person classes. What are the advantages and disadvantages of this trend?"',
         options: ['Agree or Disagree', 'Advantages & Disadvantages', 'Discuss Both Views', 'Cause & Solution'],
         correctAnswer: 'Advantages & Disadvantages',
-        explanationVi: 'Keyword "advantages and disadvantages" trong câu hỏi "What are the advantages and disadvantages" xác định ngay đây là dạng Advantages & Disadvantages. Dạng này yêu cầu phân tích cả hai mặt tích cực và tiêu cực một cách cân bằng.',
-        useAiGrading: false
-      },
+        explanationVi: 'Keyword "advantages and disadvantages" trong câu hỏi "What are the advantages and disadvantages" xác định ngay đây là dạng Advantages & Disadvantages. Dạng này yêu cầu phân tích cả hai mặt tích cực và tiêu cực một cách cân bằng.',      },
       {
         questionId: 'w1t1_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ còn thiếu để hoàn chỉnh câu mở bài:\n\n"In recent _____, online learning has become an increasingly prominent feature of modern life."',
         correctAnswer: 'years',
-        explanationVi: "Công thức mở bài chuẩn: 'In recent years...' — luôn dùng 'years' (số nhiều). Đây là cách bắt đầu essay học thuật rất phổ biến.",
-        useAiGrading: false
-      },
+        explanationVi: "Công thức mở bài chuẩn: 'In recent years...' — luôn dùng 'years' (số nhiều). Đây là cách bắt đầu essay học thuật rất phổ biến.",      },
       {
         questionId: 'w1t1_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -45,9 +41,7 @@ const topics = [
         correctAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
         modelAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
         fallbackKeywords: ['universities', 'online learning', 'students', 'anywhere', 'started'],
-        explanationVi: "Cấu trúc 'so that + mệnh đề mục đích' diễn tả kết quả mong muốn. 'have started + V-ing' dùng Present Perfect để nhấn mạnh sự thay đổi gần đây.",
-        useAiGrading: false
-      }
+        explanationVi: "Cấu trúc 'so that + mệnh đề mục đích' diễn tả kết quả mong muốn. 'have started + V-ing' dùng Present Perfect để nhấn mạnh sự thay đổi gần đây.",      }
     ]
   },
   {
@@ -69,9 +63,7 @@ const topics = [
         questionText: 'Đọc đề bài: "Do the advantages of this development outweigh the disadvantages?" — Đây là dạng essay nào?',
         options: ['Discuss Both Views', 'Advantages & Disadvantages', 'Cause & Effect', 'Agree or Disagree'],
         correctAnswer: 'Advantages & Disadvantages',
-        explanationVi: "Câu hỏi 'Do the advantages outweigh the disadvantages?' là biến thể của dạng Advantages & Disadvantages. Bạn cần so sánh hai mặt và đưa ra quan điểm rõ ràng về bên nào nổi trội hơn.",
-        useAiGrading: false
-      },
+        explanationVi: "Câu hỏi 'Do the advantages outweigh the disadvantages?' là biến thể của dạng Advantages & Disadvantages. Bạn cần so sánh hai mặt và đưa ra quan điểm rõ ràng về bên nào nổi trội hơn.",      },
       {
         questionId: 'w1t2_q02', level: 'elementary', orderIndex: 2,
         type: 'rearrange',
@@ -79,9 +71,7 @@ const topics = [
         correctAnswer: 'One of the most advantages of smartphones is their convenience.',
         modelAnswer: 'One of the most significant advantages of smartphones is their convenience.',
         fallbackKeywords: ['advantages', 'smartphones', 'convenience'],
-        explanationVi: "Cấu trúc 'One of the + most + adj + noun + of + noun' dùng để nêu một ưu điểm nổi bật nhất.",
-        useAiGrading: false
-      },
+        explanationVi: "Cấu trúc 'One of the + most + adj + noun + of + noun' dùng để nêu một ưu điểm nổi bật nhất.",      },
       {
         questionId: 'w1t2_q03', level: 'intermediate', orderIndex: 3,
         type: 'error_correction',
@@ -89,9 +79,7 @@ const topics = [
         correctAnswer: 'Although smartphones have many advantages, they also cause addiction and reduce face-to-face interaction.',
         modelAnswer: 'Although smartphones have many advantages, they also cause addiction and reduce face-to-face interaction.',
         fallbackKeywords: ['although', 'smartphones', 'advantages', 'addiction'],
-        explanationVi: "Lỗi: Không dùng 'Although' và 'but' cùng lúc trong một câu. Chọn một trong hai: 'Although...,' hoặc '..., but...'",
-        useAiGrading: false
-      }
+        explanationVi: "Lỗi: Không dùng 'Although' và 'but' cùng lúc trong một câu. Chọn một trong hai: 'Although...,' hoặc '..., but...'",      }
     ]
   },
   {
@@ -112,9 +100,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"Social media has become a _____ source of news for millions of people worldwide."',
         correctAnswer: 'major',
-        explanationVi: "'Major' nghĩa là 'chính, quan trọng'. Cụm 'a major source of' rất phổ biến trong IELTS Writing.",
-        useAiGrading: false
-      },
+        explanationVi: "'Major' nghĩa là 'chính, quan trọng'. Cụm 'a major source of' rất phổ biến trong IELTS Writing.",      },
       {
         questionId: 'w2t3_q02', level: 'elementary', orderIndex: 2,
         type: 'topic_sentence',
@@ -126,9 +112,7 @@ const topics = [
           'News can be found in many places.'
         ],
         correctAnswer: 'However, relying on social media for news has several significant drawbacks.',
-        explanationVi: "Topic sentence phải nêu rõ luận điểm (nhược điểm) và dùng linking word 'However' để tạo đối lập với đoạn ưu điểm trước. Các lựa chọn khác quá chung chung.",
-        useAiGrading: false
-      },
+        explanationVi: "Topic sentence phải nêu rõ luận điểm (nhược điểm) và dùng linking word 'However' để tạo đối lập với đoạn ưu điểm trước. Các lựa chọn khác quá chung chung.",      },
       {
         questionId: 'w2t3_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -136,9 +120,7 @@ const topics = [
         correctAnswer: 'One of the biggest disadvantages of social media is the spread of misinformation, which undermines the credibility of news sources.',
         modelAnswer: 'One of the biggest disadvantages of social media is the spread of misinformation, which undermines the credibility of news sources.',
         fallbackKeywords: ['disadvantages', 'social media', 'misinformation', 'credibility'],
-        explanationVi: "Mệnh đề quan hệ 'which undermines...' giải thích hệ quả của misinformation. 'Undermine' nghĩa là 'làm suy yếu, làm giảm'.",
-        useAiGrading: false
-      }
+        explanationVi: "Mệnh đề quan hệ 'which undermines...' giải thích hệ quả của misinformation. 'Undermine' nghĩa là 'làm suy yếu, làm giảm'.",      }
     ]
   },
 
@@ -162,17 +144,13 @@ const topics = [
         questionText: 'Đề bài: "What are the causes of this problem, and what effects does it have?" — Đây là dạng essay nào?',
         options: ['Agree or Disagree', 'Advantages & Disadvantages', 'Cause & Effect', 'Discuss Both Views'],
         correctAnswer: 'Cause & Effect',
-        explanationVi: "Keyword 'causes' và 'effects' trong cùng một câu hỏi xác định đây là dạng Cause & Effect. Bài luận cần phân tích nguyên nhân (causes) và kết quả (effects) riêng biệt.",
-        useAiGrading: false
-      },
+        explanationVi: "Keyword 'causes' và 'effects' trong cùng một câu hỏi xác định đây là dạng Cause & Effect. Bài luận cần phân tích nguyên nhân (causes) và kết quả (effects) riêng biệt.",      },
       {
         questionId: 'w3t4_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"One of the main _____ of low motivation in online learning is the lack of direct interaction with teachers and classmates."',
         correctAnswer: 'causes',
-        explanationVi: "'Causes' là danh từ số nhiều của 'cause' (nguyên nhân). Cấu trúc 'one of the main causes of + N' rất quan trọng khi viết đoạn cause.",
-        useAiGrading: false
-      },
+        explanationVi: "'Causes' là danh từ số nhiều của 'cause' (nguyên nhân). Cấu trúc 'one of the main causes of + N' rất quan trọng khi viết đoạn cause.",      },
       {
         questionId: 'w3t4_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -180,9 +158,7 @@ const topics = [
         correctAnswer: 'Distraction from social media is a major cause of poor academic performance among online students.',
         modelAnswer: 'Distraction from social media is a major cause of poor academic performance among online students.',
         fallbackKeywords: ['distraction', 'social media', 'cause', 'academic performance', 'online'],
-        explanationVi: "'Poor academic performance' là cụm danh từ chuẩn học thuật để nói về kết quả học kém. 'A major cause of' + danh từ diễn đạt nguyên nhân.",
-        useAiGrading: false
-      }
+        explanationVi: "'Poor academic performance' là cụm danh từ chuẩn học thuật để nói về kết quả học kém. 'A major cause of' + danh từ diễn đạt nguyên nhân.",      }
     ]
   },
   {
@@ -204,9 +180,7 @@ const topics = [
         questionText: 'Đề bài: "What are the causes of this pressure, and what can be done to reduce it?" — Đây là dạng essay nào?',
         options: ['Cause & Effect', 'Cause & Solution', 'Agree or Disagree', 'Advantages & Disadvantages'],
         correctAnswer: 'Cause & Solution',
-        explanationVi: "Keyword 'causes' kết hợp với 'what can be done' (giải pháp) cho thấy đây là dạng Cause & Solution. Không có từ 'effects' — thay vào đó là yêu cầu tìm giải pháp.",
-        useAiGrading: false
-      },
+        explanationVi: "Keyword 'causes' kết hợp với 'what can be done' (giải pháp) cho thấy đây là dạng Cause & Solution. Không có từ 'effects' — thay vào đó là yêu cầu tìm giải pháp.",      },
       {
         questionId: 'w3t5_q02', level: 'elementary', orderIndex: 2,
         type: 'rearrange',
@@ -214,9 +188,7 @@ const topics = [
         correctAnswer: 'School mental health counselling services can reduce academic pressure.',
         modelAnswer: 'School mental health counselling services can reduce academic pressure.',
         fallbackKeywords: ['school', 'mental health', 'counselling', 'reduce', 'academic pressure'],
-        explanationVi: "Cấu trúc 'N + can + V + O' dùng khi đề xuất giải pháp. 'Mental health counselling services' là cụm danh từ ghép.",
-        useAiGrading: false
-      },
+        explanationVi: "Cấu trúc 'N + can + V + O' dùng khi đề xuất giải pháp. 'Mental health counselling services' là cụm danh từ ghép.",      },
       {
         questionId: 'w3t5_q03', level: 'intermediate', orderIndex: 3,
         type: 'short_writing',
@@ -224,9 +196,7 @@ const topics = [
         modelAnswer: 'One effective solution is to reform the curriculum to reduce the number of compulsory exams. This would allow students to learn at their own pace without the constant fear of failure. For example, Finland has successfully adopted a student-centred approach with fewer standardised tests, resulting in lower stress levels and higher academic achievement among young people.',
         fallbackKeywords: ['solution', 'reform', 'curriculum', 'exams', 'students', 'stress', 'example'],
         explanationVi: "Cấu trúc PEEL: Point (giải pháp) → Explain (tại sao hiệu quả) → Example (ví dụ cụ thể). Mỗi paragraph chỉ nêu MỘT giải pháp duy nhất.",
-        useAiGrading: true,
-        useAiGrading: false
-      }
+        useAiGrading: true,      }
     ]
   },
   {
@@ -248,17 +218,13 @@ const topics = [
         questionText: 'Đề bài: "What effects does this trend have? What solutions can be implemented?" — Đây là dạng essay nào?',
         options: ['Cause & Effect', 'Effect & Solution', 'Discuss Both Views', 'Agree or Disagree'],
         correctAnswer: 'Effect & Solution',
-        explanationVi: "Đề hỏi 'effects' (hệ quả) và 'solutions' (giải pháp) — không hỏi causes. Đây là dạng Effect & Solution. Bài luận cần trình bày: hệ quả → giải pháp.",
-        useAiGrading: false
-      },
+        explanationVi: "Đề hỏi 'effects' (hệ quả) và 'solutions' (giải pháp) — không hỏi causes. Đây là dạng Effect & Solution. Bài luận cần trình bày: hệ quả → giải pháp.",      },
       {
         questionId: 'w4t6_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"One major _____ of declining reading habits is the weakening of critical thinking skills among young people."',
         correctAnswer: 'effect',
-        explanationVi: "'Effect' (danh từ) = hệ quả. So sánh: 'cause' vs 'effect'. Câu này dùng 'one major effect of + N' để mở đầu đoạn phân tích hệ quả.",
-        useAiGrading: false
-      },
+        explanationVi: "'Effect' (danh từ) = hệ quả. So sánh: 'cause' vs 'effect'. Câu này dùng 'one major effect of + N' để mở đầu đoạn phân tích hệ quả.",      },
       {
         questionId: 'w4t6_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -266,9 +232,7 @@ const topics = [
         correctAnswer: 'The government should implement national reading programmes to encourage reading habits from an early age.',
         modelAnswer: 'The government should implement national reading programmes to encourage reading habits from an early age.',
         fallbackKeywords: ['government', 'implement', 'reading', 'programme', 'encourage', 'early'],
-        explanationVi: "'Implement' + danh từ = 'thực hiện/áp dụng' chính sách. 'From an early age' = 'từ khi còn nhỏ'. Dùng 'should' để đề xuất giải pháp.",
-        useAiGrading: false
-      }
+        explanationVi: "'Implement' + danh từ = 'thực hiện/áp dụng' chính sách. 'From an early age' = 'từ khi còn nhỏ'. Dùng 'should' để đề xuất giải pháp.",      }
     ]
   },
   {
@@ -289,9 +253,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"The high cost of university tuition is one of the main _____ of the increasing dropout rate."',
         correctAnswer: 'causes',
-        explanationVi: "'Causes of + N' = nguyên nhân của. Đây là cấu trúc cơ bản để liệt kê nguyên nhân trong body paragraph.",
-        useAiGrading: false
-      },
+        explanationVi: "'Causes of + N' = nguyên nhân của. Đây là cấu trúc cơ bản để liệt kê nguyên nhân trong body paragraph.",      },
       {
         questionId: 'w4t7_q02', level: 'elementary', orderIndex: 2,
         type: 'error_correction',
@@ -299,9 +261,7 @@ const topics = [
         correctAnswer: 'Dropping out of university has many negative effects on both individuals and society.',
         modelAnswer: 'Dropping out of university has many negative effects on both individuals and society.',
         fallbackKeywords: ['dropping', 'university', 'has', 'negative', 'effects', 'individuals', 'society'],
-        explanationVi: "Lỗi: 'Dropping out' là danh động từ (gerund phrase) làm chủ ngữ → động từ phải là số ít: 'has' (không phải 'have').",
-        useAiGrading: false
-      },
+        explanationVi: "Lỗi: 'Dropping out' là danh động từ (gerund phrase) làm chủ ngữ → động từ phải là số ít: 'has' (không phải 'have').",      },
       {
         questionId: 'w4t7_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -309,9 +269,7 @@ const topics = [
         correctAnswer: 'The financial burden of university tuition fees is a major cause of the rising dropout rate.',
         modelAnswer: 'The financial burden of university tuition fees is a major cause of the rising dropout rate.',
         fallbackKeywords: ['financial burden', 'tuition', 'cause', 'dropout rate', 'rising'],
-        explanationVi: "'The rising + N' = 'sự gia tăng của'. 'Financial burden' là cụm danh từ học thuật quan trọng.",
-        useAiGrading: false
-      }
+        explanationVi: "'The rising + N' = 'sự gia tăng của'. 'Financial burden' là cụm danh từ học thuật quan trọng.",      }
     ]
   },
 
@@ -335,17 +293,13 @@ const topics = [
         questionText: 'Đề bài: "Do you agree or disagree?" — Đây là dạng essay nào?',
         options: ['Advantages & Disadvantages', 'Cause & Solution', 'Agree or Disagree', 'Discuss Both Views'],
         correctAnswer: 'Agree or Disagree',
-        explanationVi: "Câu hỏi 'Do you agree or disagree?' xác định rõ đây là dạng Opinion Essay (Agree/Disagree). Bạn PHẢI đưa ra quan điểm rõ ràng và nhất quán: hoàn toàn đồng ý, hoàn toàn không đồng ý, hoặc đồng ý một phần.",
-        useAiGrading: false
-      },
+        explanationVi: "Câu hỏi 'Do you agree or disagree?' xác định rõ đây là dạng Opinion Essay (Agree/Disagree). Bạn PHẢI đưa ra quan điểm rõ ràng và nhất quán: hoàn toàn đồng ý, hoàn toàn không đồng ý, hoặc đồng ý một phần.",      },
       {
         questionId: 'w5t8_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ để hoàn chỉnh thesis statement:\n\n"I strongly _____ that a shorter working week would benefit both employees and employers in the long run."',
         correctAnswer: 'believe',
-        explanationVi: "Trong Agree/Disagree essay, thesis statement cần thể hiện quan điểm cá nhân rõ ràng. 'I strongly believe/argue/contend that...' là các cụm từ chuẩn để mở đầu thesis.",
-        useAiGrading: false
-      },
+        explanationVi: "Trong Agree/Disagree essay, thesis statement cần thể hiện quan điểm cá nhân rõ ràng. 'I strongly believe/argue/contend that...' là các cụm từ chuẩn để mở đầu thesis.",      },
       {
         questionId: 'w5t8_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -353,9 +307,7 @@ const topics = [
         correctAnswer: 'A shorter working week can improve work-life balance, thereby increasing productivity.',
         modelAnswer: 'A shorter working week can improve work-life balance, thereby increasing productivity.',
         fallbackKeywords: ['shorter', 'working week', 'work-life balance', 'productivity', 'improve'],
-        explanationVi: "'Thereby + V-ing' = 'do đó, dẫn đến'. Đây là cách kết nối nguyên nhân - kết quả trong một câu ngắn gọn.",
-        useAiGrading: false
-      }
+        explanationVi: "'Thereby + V-ing' = 'do đó, dẫn đến'. Đây là cách kết nối nguyên nhân - kết quả trong một câu ngắn gọn.",      }
     ]
   },
   {
@@ -376,9 +328,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"In my opinion, remote work will _____ dominate the workplace within the next decade."',
         correctAnswer: 'certainly',
-        explanationVi: "'Certainly/undoubtedly/inevitably' là các trạng từ dùng để thể hiện sự chắc chắn khi đồng ý với một quan điểm. Đây là cách nhấn mạnh lập trường trong Agree/Disagree essay.",
-        useAiGrading: false
-      },
+        explanationVi: "'Certainly/undoubtedly/inevitably' là các trạng từ dùng để thể hiện sự chắc chắn khi đồng ý với một quan điểm. Đây là cách nhấn mạnh lập trường trong Agree/Disagree essay.",      },
       {
         questionId: 'w5t9_q02', level: 'elementary', orderIndex: 2,
         type: 'topic_sentence',
@@ -390,9 +340,7 @@ const topics = [
           'The future of work is uncertain.'
         ],
         correctAnswer: 'However, there are compelling reasons to believe that office-based work will remain essential.',
-        explanationVi: "Đây là topic sentence cho đoạn phản đối. 'Compelling reasons' = lý do thuyết phục. 'However' chuyển hướng lập luận. Câu phải nêu rõ vị trí: office work vẫn cần thiết.",
-        useAiGrading: false
-      },
+        explanationVi: "Đây là topic sentence cho đoạn phản đối. 'Compelling reasons' = lý do thuyết phục. 'However' chuyển hướng lập luận. Câu phải nêu rõ vị trí: office work vẫn cần thiết.",      },
       {
         questionId: 'w5t9_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -400,9 +348,7 @@ const topics = [
         correctAnswer: 'Although remote work offers flexibility, it is unlikely to fully replace in-person collaboration in the office.',
         modelAnswer: 'Although remote work offers flexibility, it is unlikely to fully replace in-person collaboration in the office.',
         fallbackKeywords: ['remote work', 'flexibility', 'replace', 'collaboration', 'office'],
-        explanationVi: "'It is unlikely to + V' = 'khó có thể'. 'In-person collaboration' = hợp tác trực tiếp. Cấu trúc Although... expresses contrast hiệu quả.",
-        useAiGrading: false
-      }
+        explanationVi: "'It is unlikely to + V' = 'khó có thể'. 'In-person collaboration' = hợp tác trực tiếp. Cấu trúc Although... expresses contrast hiệu quả.",      }
     ]
   },
   {
@@ -429,9 +375,7 @@ const topics = [
           'Giải thích nguyên nhân và tìm giải pháp'
         ],
         correctAnswer: 'Đưa ra quan điểm cá nhân rõ ràng và lập luận bảo vệ quan điểm đó',
-        explanationVi: "Agree/Disagree essay yêu cầu bạn chọn MỘT lập trường (đồng ý/không đồng ý/một phần đồng ý) và nhất quán bảo vệ trong suốt bài. Không viết 'một mặt... mặt khác...' như Discuss Both Views.",
-        useAiGrading: false
-      },
+        explanationVi: "Agree/Disagree essay yêu cầu bạn chọn MỘT lập trường (đồng ý/không đồng ý/một phần đồng ý) và nhất quán bảo vệ trong suốt bài. Không viết 'một mặt... mặt khác...' như Discuss Both Views.",      },
       {
         questionId: 'w6t10_q02', level: 'elementary', orderIndex: 2,
         type: 'rearrange',
@@ -439,9 +383,7 @@ const topics = [
         correctAnswer: 'Job satisfaction contributes more to good mental health.',
         modelAnswer: 'Job satisfaction contributes more to good mental health.',
         fallbackKeywords: ['job satisfaction', 'contributes', 'mental health'],
-        explanationVi: "'Contribute to + N' = góp phần vào. Đây là cách diễn đạt tác động tích cực. 'Mental health' là chủ đề quan trọng trong IELTS.",
-        useAiGrading: false
-      },
+        explanationVi: "'Contribute to + N' = góp phần vào. Đây là cách diễn đạt tác động tích cực. 'Mental health' là chủ đề quan trọng trong IELTS.",      },
       {
         questionId: 'w6t10_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -449,9 +391,7 @@ const topics = [
         correctAnswer: 'Job satisfaction fosters intrinsic motivation, which ultimately leads to higher work performance and a longer career.',
         modelAnswer: 'Job satisfaction fosters intrinsic motivation, which ultimately leads to higher work performance and a longer career.',
         fallbackKeywords: ['job satisfaction', 'intrinsic motivation', 'performance', 'career', 'ultimately'],
-        explanationVi: "'Foster' = nuôi dưỡng, thúc đẩy. 'Ultimately' = cuối cùng, rốt cuộc — rất tốt cho IELTS. Mệnh đề quan hệ 'which leads to' kết nối hệ quả.",
-        useAiGrading: false
-      }
+        explanationVi: "'Foster' = nuôi dưỡng, thúc đẩy. 'Ultimately' = cuối cùng, rốt cuộc — rất tốt cho IELTS. Mệnh đề quan hệ 'which leads to' kết nối hệ quả.",      }
     ]
   },
 
@@ -475,9 +415,7 @@ const topics = [
         questionText: 'Đề bài: "Discuss both views and give your own opinion." — Đây là dạng essay nào?',
         options: ['Agree or Disagree', 'Cause & Effect', 'Advantages & Disadvantages', 'Discuss Both Views'],
         correctAnswer: 'Discuss Both Views',
-        explanationVi: "Cụm 'Discuss both views' xác định rõ đây là dạng Balanced Opinion Essay. Bạn phải trình bày CẢ HAI quan điểm một cách công bằng trước khi đưa ra ý kiến riêng. Khác Agree/Disagree ở chỗ phải nêu cả hai phía.",
-        useAiGrading: false
-      },
+        explanationVi: "Cụm 'Discuss both views' xác định rõ đây là dạng Balanced Opinion Essay. Bạn phải trình bày CẢ HAI quan điểm một cách công bằng trước khi đưa ra ý kiến riêng. Khác Agree/Disagree ở chỗ phải nêu cả hai phía.",      },
       {
         questionId: 'w7t11_q02', level: 'elementary', orderIndex: 2,
         type: 'topic_sentence',
@@ -489,9 +427,7 @@ const topics = [
           'Governments should protect the environment.'
         ],
         correctAnswer: 'On the one hand, some argue that environmental problems are too vast for individuals to address effectively.',
-        explanationVi: "Trong Discuss Both Views, dùng 'On the one hand...' để mở đầu View 1. 'Some argue that...' cho thấy đây không phải ý kiến của bạn mà là quan điểm một nhóm người.",
-        useAiGrading: false
-      },
+        explanationVi: "Trong Discuss Both Views, dùng 'On the one hand...' để mở đầu View 1. 'Some argue that...' cho thấy đây không phải ý kiến của bạn mà là quan điểm một nhóm người.",      },
       {
         questionId: 'w7t11_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -499,9 +435,7 @@ const topics = [
         correctAnswer: 'While individual actions such as reducing carbon footprints are important, only collective action at the governmental level can address environmental problems on a global scale.',
         modelAnswer: 'While individual actions such as reducing carbon footprints are important, only collective action at the governmental level can address environmental problems on a global scale.',
         fallbackKeywords: ['individual', 'carbon footprint', 'collective action', 'government', 'global', 'environmental'],
-        explanationVi: "'Only + X + can...' = chỉ có X mới có thể. Cấu trúc 'While..., only...' tạo sự tương phản mạnh giữa cá nhân và chính phủ.",
-        useAiGrading: false
-      }
+        explanationVi: "'Only + X + can...' = chỉ có X mới có thể. Cấu trúc 'While..., only...' tạo sự tương phản mạnh giữa cá nhân và chính phủ.",      }
     ]
   },
   {
@@ -522,9 +456,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền linking word thích hợp:\n\n"_____ the other hand, others argue that long-term solutions such as electric vehicles are more effective."',
         correctAnswer: 'On',
-        explanationVi: "'On the other hand' là cụm linking phrase dùng để chuyển sang View 2 trong Discuss Both Views essay. Luôn dùng cặp: 'On the one hand... On the other hand...'",
-        useAiGrading: false
-      },
+        explanationVi: "'On the other hand' là cụm linking phrase dùng để chuyển sang View 2 trong Discuss Both Views essay. Luôn dùng cặp: 'On the one hand... On the other hand...'",      },
       {
         questionId: 'w7t12_q02', level: 'elementary', orderIndex: 2,
         type: 'rearrange',
@@ -532,9 +464,7 @@ const topics = [
         correctAnswer: 'Car-free days are effective in reducing air pollution in cities.',
         modelAnswer: 'Car-free days are effective in reducing air pollution in cities.',
         fallbackKeywords: ['car-free days', 'effective', 'reducing', 'air pollution', 'cities'],
-        explanationVi: "'Be effective in + V-ing' = hiệu quả trong việc. Đây là cách nêu ưu điểm của một giải pháp trong IELTS.",
-        useAiGrading: false
-      },
+        explanationVi: "'Be effective in + V-ing' = hiệu quả trong việc. Đây là cách nêu ưu điểm của một giải pháp trong IELTS.",      },
       {
         questionId: 'w7t12_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -542,9 +472,7 @@ const topics = [
         correctAnswer: 'Investing in public transport and electric vehicles is a more sustainable long-term solution to reduce emissions than car-free days.',
         modelAnswer: 'Investing in public transport and electric vehicles is a more sustainable long-term solution to reduce emissions than car-free days.',
         fallbackKeywords: ['public transport', 'electric vehicles', 'emissions', 'sustainable', 'long-term'],
-        explanationVi: "Dùng so sánh hơn 'more...than' để so sánh hai giải pháp. 'Investing in + N' là chủ ngữ (gerund phrase).",
-        useAiGrading: false
-      }
+        explanationVi: "Dùng so sánh hơn 'more...than' để so sánh hai giải pháp. 'Investing in + N' là chủ ngữ (gerund phrase).",      }
     ]
   },
   {
@@ -571,17 +499,13 @@ const topics = [
           'Intro → Ưu điểm → Nhược điểm → Kết luận'
         ],
         correctAnswer: 'Intro → View 1 → View 2 → Ý kiến riêng → Kết luận',
-        explanationVi: "Cấu trúc chuẩn: Para 1 = View 1 | Para 2 = View 2 | Para 3 = Your Opinion (hoặc tích hợp vào Conclusion). Tùy thầy cô, ý kiến riêng có thể ở cuối Para 2 hoặc Para riêng.",
-        useAiGrading: false
-      },
+        explanationVi: "Cấu trúc chuẩn: Para 1 = View 1 | Para 2 = View 2 | Para 3 = Your Opinion (hoặc tích hợp vào Conclusion). Tùy thầy cô, ý kiến riêng có thể ở cuối Para 2 hoặc Para riêng.",      },
       {
         questionId: 'w8t13_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"_____ proponents of economic growth argue that development creates jobs and reduces poverty, _____ critics warn that it comes at the cost of irreversible environmental damage."',
         correctAnswer: 'While',
-        explanationVi: "'While A, B' = Trong khi A, thì B. Cấu trúc này hiệu quả khi tóm tắt hai quan điểm đối lập trong thesis statement của Discuss Both Views essay.",
-        useAiGrading: false
-      },
+        explanationVi: "'While A, B' = Trong khi A, thì B. Cấu trúc này hiệu quả khi tóm tắt hai quan điểm đối lập trong thesis statement của Discuss Both Views essay.",      },
       {
         questionId: 'w8t13_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -589,9 +513,7 @@ const topics = [
         correctAnswer: 'If we do not prioritise environmental protection, consequences such as deforestation and climate change will become irreversible.',
         modelAnswer: 'If we do not prioritise environmental protection, consequences such as deforestation and climate change will become irreversible.',
         fallbackKeywords: ['prioritise', 'environmental protection', 'deforestation', 'climate change', 'irreversible'],
-        explanationVi: "Câu điều kiện loại 1: 'If + present simple, will + V'. 'Irreversible' = không thể đảo ngược — từ vựng học thuật quan trọng.",
-        useAiGrading: false
-      }
+        explanationVi: "Câu điều kiện loại 1: 'If + present simple, will + V'. 'Irreversible' = không thể đảo ngược — từ vựng học thuật quan trọng.",      }
     ]
   },
 
@@ -614,9 +536,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"Private healthcare, while offering superior quality, is often _____ for low-income individuals."',
         correctAnswer: 'unaffordable',
-        explanationVi: "'Unaffordable' = không thể chi trả được. Tiền tố 'un-' phủ định 'affordable' (có thể chi trả). Đây là từ quan trọng khi viết về nhược điểm của y tế tư nhân.",
-        useAiGrading: false
-      },
+        explanationVi: "'Unaffordable' = không thể chi trả được. Tiền tố 'un-' phủ định 'affordable' (có thể chi trả). Đây là từ quan trọng khi viết về nhược điểm của y tế tư nhân.",      },
       {
         questionId: 'w9t14_q02', level: 'elementary', orderIndex: 2,
         type: 'error_correction',
@@ -624,9 +544,7 @@ const topics = [
         correctAnswer: 'Private hospitals focus on profit rather than on patient welfare, which leads to unequal access to care.',
         modelAnswer: 'Private hospitals focus on profit rather than on patient welfare, which leads to unequal access to care.',
         fallbackKeywords: ['private hospitals', 'focus', 'profit', 'patient welfare', 'leads', 'unequal'],
-        explanationVi: "Lỗi 1: 'hospitals' (số nhiều) → động từ 'focus' (không có 's'). Lỗi 2: mệnh đề quan hệ 'which' có antecedent mệnh đề → dùng 'leads' (số ít).",
-        useAiGrading: false
-      },
+        explanationVi: "Lỗi 1: 'hospitals' (số nhiều) → động từ 'focus' (không có 's'). Lỗi 2: mệnh đề quan hệ 'which' có antecedent mệnh đề → dùng 'leads' (số ít).",      },
       {
         questionId: 'w9t14_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -634,9 +552,7 @@ const topics = [
         correctAnswer: 'Profit-making healthcare organisations tend to worsen social inequality by prioritising wealthier patients.',
         modelAnswer: 'Profit-making healthcare organisations tend to worsen social inequality by prioritising wealthier patients.',
         fallbackKeywords: ['profit-making', 'healthcare', 'inequality', 'prioritising', 'patients'],
-        explanationVi: "'Tend to + V' = có xu hướng. 'By + V-ing' = bằng cách. 'Worsen' = làm tệ hơn. Đây là 3 cấu trúc quan trọng trong IELTS.",
-        useAiGrading: false
-      }
+        explanationVi: "'Tend to + V' = có xu hướng. 'By + V-ing' = bằng cách. 'Worsen' = làm tệ hơn. Đây là 3 cấu trúc quan trọng trong IELTS.",      }
     ]
   },
   {
@@ -663,17 +579,13 @@ const topics = [
           'Effect & Solution — phân tích hệ quả và giải pháp'
         ],
         correctAnswer: 'Agree or Disagree — đưa ra quan điểm rõ ràng (tích cực/tiêu cực/cả hai)',
-        explanationVi: "'Is this positive or negative?' là dạng Agree/Disagree biến thể. Bạn có thể chọn: hoàn toàn tích cực, hoàn toàn tiêu cực, hoặc 'largely positive/negative' và giải thích.",
-        useAiGrading: false
-      },
+        explanationVi: "'Is this positive or negative?' là dạng Agree/Disagree biến thể. Bạn có thể chọn: hoàn toàn tích cực, hoàn toàn tiêu cực, hoặc 'largely positive/negative' và giải thích.",      },
       {
         questionId: 'w9t15_q02', level: 'elementary', orderIndex: 2,
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"While consumerism stimulates economic growth, it also _____ significant environmental damage through excessive waste and resource depletion."',
         correctAnswer: 'causes',
-        explanationVi: "'Cause + N' = gây ra. 'While A, B' = trong khi A, thì B (structure for balanced argument). 'Significant damage' = thiệt hại đáng kể.",
-        useAiGrading: false
-      },
+        explanationVi: "'Cause + N' = gây ra. 'While A, B' = trong khi A, thì B (structure for balanced argument). 'Significant damage' = thiệt hại đáng kể.",      },
       {
         questionId: 'w9t15_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -681,9 +593,7 @@ const topics = [
         correctAnswer: 'As disposable income rises, consumerism spreads, leading to increased waste and depletion of natural resources.',
         modelAnswer: 'As disposable income rises, consumerism spreads, leading to increased waste and depletion of natural resources.',
         fallbackKeywords: ['disposable income', 'consumerism', 'waste', 'depletion', 'natural resources'],
-        explanationVi: "'As + present simple' = khi (quan hệ thời gian/nhân quả). 'Leading to + N' = dẫn đến (participle phrase). 'Depletion' = sự cạn kiệt.",
-        useAiGrading: false
-      }
+        explanationVi: "'As + present simple' = khi (quan hệ thời gian/nhân quả). 'Leading to + N' = dẫn đến (participle phrase). 'Depletion' = sự cạn kiệt.",      }
     ]
   },
   {
@@ -704,9 +614,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền linking phrase:\n\n"_____ the one hand, arts funding preserves cultural heritage and promotes national identity."',
         correctAnswer: 'On',
-        explanationVi: "'On the one hand' + 'On the other hand' = cặp linking phrases chuẩn trong Discuss Both Views. Luôn dùng cặp này khi trình bày hai quan điểm.",
-        useAiGrading: false
-      },
+        explanationVi: "'On the one hand' + 'On the other hand' = cặp linking phrases chuẩn trong Discuss Both Views. Luôn dùng cặp này khi trình bày hai quan điểm.",      },
       {
         questionId: 'w10t16_q02', level: 'elementary', orderIndex: 2,
         type: 'topic_sentence',
@@ -718,9 +626,7 @@ const topics = [
           'Arts funding is controversial in many countries.'
         ],
         correctAnswer: 'On the other hand, critics argue that limited government funds should be directed towards essential services such as healthcare and education.',
-        explanationVi: "Topic sentence View 2 phải: (1) dùng 'On the other hand' chuyển hướng, (2) nêu rõ quan điểm đối lập, (3) dùng 'critics argue that' để cho biết đây là ý kiến của người khác.",
-        useAiGrading: false
-      },
+        explanationVi: "Topic sentence View 2 phải: (1) dùng 'On the other hand' chuyển hướng, (2) nêu rõ quan điểm đối lập, (3) dùng 'critics argue that' để cho biết đây là ý kiến của người khác.",      },
       {
         questionId: 'w10t16_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -728,9 +634,7 @@ const topics = [
         correctAnswer: 'While investing in cultural heritage is valuable, governments should prioritise infrastructure and healthcare when financial resources are limited.',
         modelAnswer: 'While investing in cultural heritage is valuable, governments should prioritise infrastructure and healthcare when financial resources are limited.',
         fallbackKeywords: ['cultural heritage', 'infrastructure', 'healthcare', 'prioritise', 'resources', 'limited'],
-        explanationVi: "'When + clause' = khi (điều kiện). 'Financial resources are limited' = nguồn lực tài chính bị hạn chế. 'Prioritise A over B' hoặc chỉ 'prioritise A'.",
-        useAiGrading: false
-      }
+        explanationVi: "'When + clause' = khi (điều kiện). 'Financial resources are limited' = nguồn lực tài chính bị hạn chế. 'Prioritise A over B' hoặc chỉ 'prioritise A'.",      }
     ]
   },
   {
@@ -752,9 +656,7 @@ const topics = [
         questionText: 'Đề bài: "What are the causes of this problem? How can it be solved?" — Đây là dạng essay nào?',
         options: ['Cause & Effect', 'Effect & Solution', 'Cause & Solution', 'Discuss Both Views'],
         correctAnswer: 'Cause & Solution',
-        explanationVi: "Keyword: 'causes' (nguyên nhân) + 'how can it be solved' (giải pháp). Dạng này yêu cầu phân tích nguyên nhân (causes) và đề xuất giải pháp (solutions) — không phân tích hệ quả.",
-        useAiGrading: false
-      },
+        explanationVi: "Keyword: 'causes' (nguyên nhân) + 'how can it be solved' (giải pháp). Dạng này yêu cầu phân tích nguyên nhân (causes) và đề xuất giải pháp (solutions) — không phân tích hệ quả.",      },
       {
         questionId: 'w10t17_q02', level: 'elementary', orderIndex: 2,
         type: 'rearrange',
@@ -762,9 +664,7 @@ const topics = [
         correctAnswer: 'Community rehabilitation programmes can reduce youth crime.',
         modelAnswer: 'Community rehabilitation programmes can reduce youth crime.',
         fallbackKeywords: ['rehabilitation', 'programmes', 'reduce', 'youth crime', 'community'],
-        explanationVi: "'Community rehabilitation programmes' = chương trình phục hồi cộng đồng. 'Can reduce' = có thể giảm. Đây là cách đề xuất giải pháp ngắn gọn, học thuật.",
-        useAiGrading: false
-      },
+        explanationVi: "'Community rehabilitation programmes' = chương trình phục hồi cộng đồng. 'Can reduce' = có thể giảm. Đây là cách đề xuất giải pháp ngắn gọn, học thuật.",      },
       {
         questionId: 'w10t17_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -772,9 +672,7 @@ const topics = [
         correctAnswer: 'Peer pressure is one of the main causes of juvenile delinquency, particularly in disadvantaged areas.',
         modelAnswer: 'Peer pressure is one of the main causes of juvenile delinquency, particularly in disadvantaged areas.',
         fallbackKeywords: ['peer pressure', 'causes', 'juvenile delinquency', 'particularly', 'areas'],
-        explanationVi: "'Particularly in + area' = đặc biệt ở. 'Disadvantaged areas' = khu vực bất lợi/nghèo. Cụm 'one of the main causes of' là cấu trúc chuẩn.",
-        useAiGrading: false
-      }
+        explanationVi: "'Particularly in + area' = đặc biệt ở. 'Disadvantaged areas' = khu vực bất lợi/nghèo. Cụm 'one of the main causes of' là cấu trúc chuẩn.",      }
     ]
   },
   {
@@ -795,9 +693,7 @@ const topics = [
         type: 'fill_blank',
         questionText: 'Điền từ thích hợp:\n\n"Proponents of longer sentences argue that imprisonment serves as a _____ to potential criminals."',
         correctAnswer: 'deterrence',
-        explanationVi: "'Deterrence' = sự răn đe — danh từ. 'Serve as a deterrence' = đóng vai trò là sự răn đe. Đây là lập luận chính của View 1 (ủng hộ án tù dài).",
-        useAiGrading: false
-      },
+        explanationVi: "'Deterrence' = sự răn đe — danh từ. 'Serve as a deterrence' = đóng vai trò là sự răn đe. Đây là lập luận chính của View 1 (ủng hộ án tù dài).",      },
       {
         questionId: 'w11t18_q02', level: 'elementary', orderIndex: 2,
         type: 'topic_sentence',
@@ -809,9 +705,7 @@ const topics = [
           'There are many types of crime in the world.'
         ],
         correctAnswer: 'On the other hand, many experts contend that rehabilitation and education programmes are far more effective at reducing reoffending.',
-        explanationVi: "'Many experts contend that' = nhiều chuyên gia cho rằng. 'Far more effective' = hiệu quả hơn nhiều. 'On the other hand' chuyển sang View 2. Câu nêu rõ lập luận và so sánh.",
-        useAiGrading: false
-      },
+        explanationVi: "'Many experts contend that' = nhiều chuyên gia cho rằng. 'Far more effective' = hiệu quả hơn nhiều. 'On the other hand' chuyển sang View 2. Câu nêu rõ lập luận và so sánh.",      },
       {
         questionId: 'w11t18_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
@@ -819,9 +713,7 @@ const topics = [
         correctAnswer: 'High recidivism rates suggest that imprisonment alone is insufficient — comprehensive reintegration programmes are needed to reduce crime in the long term.',
         modelAnswer: 'High recidivism rates suggest that imprisonment alone is insufficient — comprehensive reintegration programmes are needed to reduce crime in the long term.',
         fallbackKeywords: ['recidivism', 'imprisonment', 'insufficient', 'reintegration', 'programmes', 'reduce', 'crime'],
-        explanationVi: "'Suggest that + clause' = cho thấy rằng. 'Alone is insufficient' = một mình là không đủ. Dấu '—' (em dash) dùng để giải thích thêm.",
-        useAiGrading: false
-      }
+        explanationVi: "'Suggest that + clause' = cho thấy rằng. 'Alone is insufficient' = một mình là không đủ. Dấu '—' (em dash) dùng để giải thích thêm.",      }
     ]
   }
 ];

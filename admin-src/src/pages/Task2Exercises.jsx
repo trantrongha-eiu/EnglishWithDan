@@ -14,7 +14,7 @@ const LEVELS = ['beginner','elementary','intermediate'];
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
 const defaultTopic = { week: 1, block: 'advantages_disadvantages', topicName: '', topicEmoji: '📝', essayType: 'advantages_disadvantages', prompt: '', hintAdvantages: '', hintDisadvantages: '', isActive: true };
-const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0 };
+const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', baseWords: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0 };
 
 function TopicModal({ topic, onClose, onSaved }) {
   const [form, setForm] = useState(topic || defaultTopic);
@@ -119,11 +119,13 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
   const [form, setForm] = useState(question ? {
     ...question,
     options: (question.options || []).join('\n'),
+    baseWords: (question.baseWords || []).join(' '),
     fallbackKeywords: (question.fallbackKeywords || []).join('\n')
   } : defaultQ);
   const [saving, setSaving] = useState(false);
   const { showToast } = useToast();
   const isChoice = ['essay_type_recognition','topic_sentence'].includes(form.type);
+  const isRearrange = form.type === 'rearrange';
   const hasModel = ['translation','error_correction','short_writing','paraphrase','rearrange'].includes(form.type);
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })); }
@@ -135,6 +137,7 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
       const body = {
         ...form,
         options: typeof form.options === 'string' ? form.options.split('\n').map(s => s.trim()).filter(Boolean) : form.options,
+        baseWords: typeof form.baseWords === 'string' ? form.baseWords.split(/[\s,]+/).map(s => s.trim()).filter(Boolean) : form.baseWords,
         fallbackKeywords: typeof form.fallbackKeywords === 'string' ? form.fallbackKeywords.split('\n').map(s => s.trim()).filter(Boolean) : form.fallbackKeywords,
         orderIndex: parseInt(form.orderIndex) || 0
       };
@@ -184,6 +187,13 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
             <div>
               <label className="form-label">Các lựa chọn (mỗi dòng 1 đáp án)</label>
               <textarea className="form-input" rows={4} value={form.options} onChange={e => set('options', e.target.value)} placeholder="Agree or Disagree&#10;Advantages & Disadvantages&#10;Discuss Both Views&#10;Cause & Solution" />
+            </div>
+          )}
+          {isRearrange && (
+            <div>
+              <label className="form-label">Từ để sắp xếp — baseWords (cách nhau bởi dấu cách hoặc phẩy)</label>
+              <input className="form-input" value={form.baseWords || ''} onChange={e => set('baseWords', e.target.value)} placeholder="One of the most advantages of smartphones is their convenience" />
+              <div style={{ fontSize:11, color:'#9ca3af', marginTop:3 }}>Các từ này sẽ hiển thị dưới dạng chip để học sinh sắp xếp. Nếu để trống, hệ thống tự tạo từ Đáp án đúng.</div>
             </div>
           )}
           <div>
