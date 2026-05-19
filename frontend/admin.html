@@ -10,9 +10,47 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="css/admin.css">
+  <style>
+    /* ── Deprecated notice overlay ── */
+    #admin-deprecated-overlay {
+      position: fixed; inset: 0; z-index: 99999;
+      background: #0f172a;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #admin-deprecated-overlay .dep-card {
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 20px; padding: 48px 40px; max-width: 440px; width: 90%; text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    }
+    #admin-deprecated-overlay .dep-icon  { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+    #admin-deprecated-overlay h2         { font-size: 22px; font-weight: 800; color: #f1f5f9; margin: 0 0 10px; }
+    #admin-deprecated-overlay p          { font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 28px; }
+    #admin-deprecated-overlay .dep-btn   {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 13px 28px; font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: opacity .2s; text-decoration: none;
+    }
+    #admin-deprecated-overlay .dep-btn:hover { opacity: .85; }
+    #admin-deprecated-overlay .dep-sub   { font-size: 12px; color: #475569; margin-top: 16px; }
+  </style>
 </head>
 
 <body>
+
+<!-- ── Deprecated notice – admin đã chuyển sang React ── -->
+<div id="admin-deprecated-overlay">
+  <div class="dep-card">
+    <div class="dep-icon">🚀</div>
+    <h2>Admin đã được nâng cấp</h2>
+    <p>Toàn bộ tính năng quản trị đã chuyển sang hệ thống mới (React). Trang này chỉ còn được giữ lại để tham khảo code.</p>
+    <a class="dep-btn" href="index.html">
+      <i class="fas fa-home"></i> Về trang chủ
+    </a>
+    <p class="dep-sub">Nếu bạn là developer: nhấn F12 &gt; Console để tắt overlay này.</p>
+  </div>
+</div>
 
   <!-- ══════════════════════════════════════════ SIDEBAR ══════════════════════════════════════════ -->
   <nav class="sidebar" id="sidebar">
