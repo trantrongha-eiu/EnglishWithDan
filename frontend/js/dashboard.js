@@ -178,7 +178,7 @@ function _playAudioUrl(url) {
 document.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
-    if (name) document.getElementById('userName').textContent = `👋 ${name}`;
+    if (name) { const uEl = document.getElementById('userName'); if (uEl) uEl.textContent = `👋 ${name}`; }
     // Show avatar initial
     const navAv = document.getElementById('navAvatar');
     if (navAv && name) navAv.textContent = name[0].toUpperCase();

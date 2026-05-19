@@ -607,6 +607,17 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
   .top-nav .nav-brand .brand-sub { display: none; }
 }
 
+/* ── Global nav helpers ──────────────────────────────── */
+.has-global-nav { padding-top: var(--nav-height, 64px); }
+/* Sticky inner headers must sit below the fixed global nav */
+.has-global-nav .exam-bar   { top: var(--nav-height, 64px); }
+.has-global-nav .main-header { top: var(--nav-height, 64px); }
+/* In native browser fullscreen the global nav is hidden – reset sticky tops */
+:fullscreen .exam-bar,    :-webkit-full-screen .exam-bar    { top: 0 !important; }
+:fullscreen .main-header, :-webkit-full-screen .main-header { top: 0 !important; }
+/* Writing-practice stats bar becomes non-sticky when global nav is present */
+.has-global-nav .wp-header { position: relative; top: auto; z-index: 10; }
+
 /* ── Print styles ────────────────────────────────────── */
 @media print {
   .top-nav, .hamburger, .mobile-nav, .exam-topbar .btn { display: none !important; }

@@ -14,51 +14,13 @@
 </head>
 
 <body>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
 ══════════════════════════════════════════════ -->
     <div id="screen-list" class="screen active">
-
-        <header
-            style="background:#fff;border-bottom:1px solid #e5e7eb;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60;gap:8px">
-            <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0">
-                <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;min-width:0">
-                <span class="hdr-username" id="userName"
-                    style="font-size:13px;font-weight:600;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">👋
-                    Xin chào</span>
-                <button class="hdr-skill-toggle" id="skillNavToggle" onclick="toggleSkillNav()" title="Mở menu kỹ năng"
-                    aria-label="Mở menu kỹ năng">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                <button onclick="toggleDark()" class="dark-toggle-btn" title="Chế độ tối/sáng"
-                    aria-label="Đổi chế độ sáng tối">
-                    <span class="dark-toggle-icon">🌙</span>
-                </button>
-                <button onclick="showHistoryModal()" class="hdr-btn"
-                    style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
-                    📜 <span class="hdr-btn-text">Lịch sử</span>
-                </button>
-                <button onclick="logout()" class="hdr-btn"
-                    style="background:none;border:1px solid #e5e7eb;padding:6px 12px;border-radius:9px;font-size:13px;cursor:pointer;color:#6b7280;font-family:inherit;display:flex;align-items:center;gap:5px;flex-shrink:0">
-                    🚪 <span class="hdr-btn-text">Đăng xuất</span>
-                </button>
-            </div>
-        </header>
-
-        <div class="skill-tabs-bar" id="skill-tabs-bar">
-            <nav class="site-nav">
-                <a href="reading.html" class="site-nav-link"><i class="fas fa-book-open"></i> Reading</a>
-                <a href="listening.html" class="site-nav-link active"><i class="fas fa-headphones"></i> Listening</a>
-                <a href="writing.html" class="site-nav-link"><i class="fas fa-pen"></i> Writing</a>
-                <a href="speaking.html" class="site-nav-link"><i class="fas fa-microphone"></i> Speaking</a>
-                <a href="writing-practice.html" class="site-nav-link"><i class="fas fa-pencil-alt"></i> Luyện viết</a>
-                <a href="dashboard.html" class="site-nav-link"><i class="fas fa-layer-group"></i> Vocab</a>
-                <a href="profile.html" class="site-nav-link"><i class="fas fa-user-circle"></i> Hồ sơ</a>
-            </nav>
-        </div>
 
         <div class="list-container">
             <div class="list-header">
