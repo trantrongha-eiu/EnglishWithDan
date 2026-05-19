@@ -18,7 +18,17 @@ const topics = [
       { term: 'in-person classes', definitionVi: 'lớp học trực tiếp', example: 'Many students prefer in-person classes for better interaction.' },
       { term: 'flexible schedule', definitionVi: 'lịch học linh hoạt', example: 'A flexible schedule allows students to study at their own pace.' },
       { term: 'self-discipline', definitionVi: 'tính kỷ luật tự giác', example: 'Online learning requires strong self-discipline.' },
-      { term: 'social isolation', definitionVi: 'sự cô lập xã hội', example: 'Studying alone can lead to social isolation.' }
+      { term: 'social isolation', definitionVi: 'sự cô lập xã hội', example: 'Studying alone can lead to social isolation.' },
+      { term: 'face-to-face interaction', definitionVi: 'giao tiếp mặt đối mặt', example: 'Face-to-face interaction helps build stronger relationships between students and teachers.' },
+      { term: 'access to education', definitionVi: 'tiếp cận giáo dục', example: 'The internet expands access to education for people in remote areas.' },
+      { term: 'remote area', definitionVi: 'vùng sâu vùng xa', example: 'Students in remote areas benefit greatly from online learning.' },
+      { term: 'digital fatigue', definitionVi: 'mệt mỏi vì màn hình số', example: 'Spending too much time online can lead to digital fatigue.' },
+      { term: 'academic performance', definitionVi: 'kết quả học tập', example: 'Poor motivation negatively affects academic performance.' },
+      { term: 'working adults', definitionVi: 'người đi làm', example: 'Online learning is particularly beneficial for working adults.' },
+      { term: 'cost-effective', definitionVi: 'tiết kiệm chi phí', example: 'Online courses are generally more cost-effective than traditional classes.' },
+      { term: 'technical difficulties', definitionVi: 'sự cố kỹ thuật', example: 'Students in rural areas often face technical difficulties when studying online.' },
+      { term: 'digital literacy', definitionVi: 'hiểu biết về công nghệ số', example: 'Digital literacy is now an essential skill for modern students.' },
+      { term: 'interactive platform', definitionVi: 'nền tảng tương tác', example: 'Interactive platforms make online learning more engaging.' }
     ],
     questions: [
       {
@@ -27,21 +37,121 @@ const topics = [
         questionText: 'Đọc đề bài sau và cho biết đây là dạng essay nào?\n\n"Many schools now offer online learning as an alternative to in-person classes. What are the advantages and disadvantages of this trend?"',
         options: ['Agree or Disagree', 'Advantages & Disadvantages', 'Discuss Both Views', 'Cause & Solution'],
         correctAnswer: 'Advantages & Disadvantages',
-        explanationVi: 'Keyword "advantages and disadvantages" trong câu hỏi "What are the advantages and disadvantages" xác định ngay đây là dạng Advantages & Disadvantages. Dạng này yêu cầu phân tích cả hai mặt tích cực và tiêu cực một cách cân bằng.',      },
+        explanationVi: 'Keyword "advantages and disadvantages" trong câu hỏi xác định ngay đây là dạng Advantages & Disadvantages. Dạng này yêu cầu phân tích cả hai mặt tích cực và tiêu cực một cách cân bằng.'
+      },
       {
-        questionId: 'w1t1_q02', level: 'elementary', orderIndex: 2,
+        questionId: 'w1t1_q02', level: 'beginner', orderIndex: 2,
         type: 'fill_blank',
-        questionText: 'Điền từ còn thiếu để hoàn chỉnh câu mở bài:\n\n"In recent _____, online learning has become an increasingly prominent feature of modern life."',
+        questionText: 'Điền từ còn thiếu để hoàn chỉnh câu mở bài:\n\n"In recent _____, online learning has become an increasingly prominent feature of modern education."',
         correctAnswer: 'years',
-        explanationVi: "Công thức mở bài chuẩn: 'In recent years...' — luôn dùng 'years' (số nhiều). Đây là cách bắt đầu essay học thuật rất phổ biến.",      },
+        explanationVi: "Công thức mở bài chuẩn: 'In recent years...' — luôn dùng 'years' (số nhiều). Đây là cách bắt đầu essay học thuật rất phổ biến."
+      },
       {
-        questionId: 'w1t1_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w1t1_q03', level: 'beginner', orderIndex: 3,
+        type: 'topic_sentence',
+        questionText: 'Chọn Thesis Statement phù hợp nhất cho bài essay dạng Advantages & Disadvantages về online learning:',
+        options: [
+          'Online learning is better than in-person classes.',
+          'This essay will examine both the advantages and disadvantages of online learning.',
+          'I strongly agree that online learning should replace traditional schools.',
+          'The government should invest more in online education.'
+        ],
+        correctAnswer: 'This essay will examine both the advantages and disadvantages of online learning.',
+        explanationVi: "Thesis statement của Advantages & Disadvantages essay phải nêu rõ bài sẽ phân tích CẢ HAI mặt. Các lựa chọn khác thể hiện lập trường một chiều, không phù hợp với dạng bài này."
+      },
+      {
+        questionId: 'w1t1_q04', level: 'beginner', orderIndex: 4,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng từ "online learning"):\n\n"Nhiều trường đại học đã bắt đầu cung cấp khóa học trực tuyến để sinh viên có thể học ở bất cứ đâu."',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhiều trường đại học đã bắt đầu cung cấp khóa học trực tuyến để sinh viên có thể học ở bất cứ đâu."',
         correctAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
         modelAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
-        fallbackKeywords: ['universities', 'online learning', 'students', 'anywhere', 'started'],
-        explanationVi: "Cấu trúc 'so that + mệnh đề mục đích' diễn tả kết quả mong muốn. 'have started + V-ing' dùng Present Perfect để nhấn mạnh sự thay đổi gần đây.",      }
+        fallbackKeywords: ['universities', 'online learning', 'courses', 'students', 'anywhere'],
+        explanationVi: "Cấu trúc 'so that + mệnh đề mục đích' diễn tả kết quả mong muốn. 'have started + V-ing' dùng Present Perfect để nhấn mạnh sự thay đổi gần đây."
+      },
+      {
+        questionId: 'w1t1_q05', level: 'beginner', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học trực tuyến mang lại lịch học linh hoạt cho những người đi làm."',
+        correctAnswer: 'Online learning provides a flexible schedule for working adults.',
+        modelAnswer: 'Online learning provides a flexible schedule for working adults.',
+        fallbackKeywords: ['online learning', 'flexible schedule', 'working adults'],
+        explanationVi: "'Provide + N + for + N' là cấu trúc diễn tả lợi ích. 'Working adults' = những người vừa đi làm vừa học."
+      },
+      {
+        questionId: 'w1t1_q06', level: 'elementary', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học online có thể dẫn đến thiếu sự tương tác trực tiếp giữa học sinh và giáo viên."',
+        correctAnswer: 'Online learning can lead to a lack of face-to-face interaction between students and teachers.',
+        modelAnswer: 'Online learning can lead to a lack of face-to-face interaction between students and teachers.',
+        fallbackKeywords: ['online learning', 'face-to-face', 'interaction', 'students', 'teachers'],
+        explanationVi: "'Lead to + N' = dẫn đến. 'A lack of + N' = sự thiếu hụt của. Đây là cách diễn đạt nhược điểm rất chuẩn trong IELTS."
+      },
+      {
+        questionId: 'w1t1_q07', level: 'elementary', orderIndex: 7,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học online có thể gây ra sự cô lập xã hội vì học sinh có ít cơ hội giao lưu với bạn bè hơn."',
+        correctAnswer: 'Online learning may cause social isolation as students have fewer opportunities to interact with peers.',
+        modelAnswer: 'Online learning may cause social isolation as students have fewer opportunities to interact with peers.',
+        fallbackKeywords: ['social isolation', 'students', 'opportunities', 'peers', 'interact'],
+        explanationVi: "'As + mệnh đề' giải thích nguyên nhân. 'Fewer opportunities to + V' = ít cơ hội hơn để làm gì. 'Peers' = bạn cùng trang lứa."
+      },
+      {
+        questionId: 'w1t1_q08', level: 'elementary', orderIndex: 8,
+        type: 'rearrange',
+        questionText: 'Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[of online learning / significant / One / advantage / the / most / is / its flexibility]',
+        correctAnswer: 'One of the most significant advantages of online learning is its flexibility.',
+        modelAnswer: 'One of the most significant advantages of online learning is its flexibility.',
+        fallbackKeywords: ['significant', 'advantages', 'online learning', 'flexibility'],
+        explanationVi: "Cấu trúc 'One of the most + adj + N + of + N + is + N' dùng để nhấn mạnh một điểm nổi bật nhất. 'Significant' = đáng kể, quan trọng."
+      },
+      {
+        questionId: 'w1t1_q09', level: 'elementary', orderIndex: 9,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi ngữ pháp. Hãy sửa lại:\n\n"Although online learning has many advantages, but it also has some disadvantages."',
+        correctAnswer: 'Although online learning has many advantages, it also has some disadvantages.',
+        modelAnswer: 'Although online learning has many advantages, it also has some disadvantages.',
+        fallbackKeywords: ['although', 'online learning', 'advantages', 'disadvantages'],
+        explanationVi: "Lỗi: Không dùng 'Although' và 'but' cùng lúc trong một câu. Chọn một: 'Although..., [no but]' hoặc '..., but...' (xóa Although)."
+      },
+      {
+        questionId: 'w1t1_q10', level: 'elementary', orderIndex: 10,
+        type: 'topic_sentence',
+        questionText: 'Chọn topic sentence tốt nhất cho đoạn văn về ƯU ĐIỂM của online learning:',
+        options: [
+          'Online learning is very popular nowadays.',
+          'One of the main advantages of online learning is its flexibility and convenience.',
+          'Online learning has some disadvantages that cannot be ignored.',
+          'Many students prefer studying in traditional classrooms.'
+        ],
+        correctAnswer: 'One of the main advantages of online learning is its flexibility and convenience.',
+        explanationVi: "Topic sentence phải nêu rõ luận điểm chính của đoạn. 'One of the main advantages' giới thiệu trực tiếp nội dung sẽ phân tích. Các lựa chọn khác quá chung chung hoặc lạc đề."
+      },
+      {
+        questionId: 'w1t1_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Internet giúp mở rộng cơ hội tiếp cận giáo dục cho người dân ở vùng sâu vùng xa."',
+        correctAnswer: 'The Internet helps expand access to education for people in remote areas.',
+        modelAnswer: 'The Internet helps expand access to education for people in remote areas.',
+        fallbackKeywords: ['internet', 'access', 'education', 'remote areas'],
+        explanationVi: "'Expand access to + N' = mở rộng khả năng tiếp cận. 'Remote areas' = vùng sâu vùng xa. Đây là lập luận ủng hộ online learning rất thuyết phục."
+      },
+      {
+        questionId: 'w1t1_q12', level: 'intermediate', orderIndex: 12,
+        type: 'paraphrase',
+        questionText: 'Paraphrase câu sau (viết lại theo nghĩa tương đương):\n\n"Many schools now offer online learning as an alternative to in-person classes."',
+        correctAnswer: 'Nowadays, an increasing number of educational institutions are providing digital instruction as a substitute for traditional face-to-face teaching.',
+        modelAnswer: 'Nowadays, an increasing number of educational institutions are providing digital instruction as a substitute for traditional face-to-face teaching.',
+        fallbackKeywords: ['educational institutions', 'digital', 'substitute', 'traditional', 'teaching'],
+        explanationVi: "Paraphrase tốt thay 'schools' → 'educational institutions', 'offer' → 'providing', 'alternative' → 'substitute', 'in-person' → 'face-to-face'. Không được giữ nguyên quá nhiều từ gốc."
+      },
+      {
+        questionId: 'w1t1_q13', level: 'intermediate', orderIndex: 13,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về MỘT ƯU ĐIỂM của online learning.\n\nDùng cấu trúc: Topic Sentence → Explanation → Example → Result\nGợi ý: flexibility / working adults / self-paced learning',
+        modelAnswer: 'One of the most significant advantages of online learning is its flexibility, which particularly benefits working adults. Unlike traditional classroom settings, online platforms allow students to access lectures and complete assignments at their own pace, without being constrained by fixed timetables. For example, a full-time employee can study after work hours or during weekends, making it possible to pursue higher qualifications without sacrificing their career. As a result, online learning has opened up educational opportunities for millions of people who would otherwise be unable to attend conventional classes.',
+        fallbackKeywords: ['flexibility', 'online learning', 'working adults', 'own pace', 'access', 'educational opportunities'],
+        explanationVi: "Cấu trúc PEEL: Point (topic sentence) → Explain (giải thích tại sao) → Example (ví dụ cụ thể) → Link (kết nối lại chủ đề). Mỗi body paragraph chỉ nêu MỘT ý chính duy nhất."
+      }
     ]
   },
   {
@@ -53,33 +163,122 @@ const topics = [
     hintDisadvantages: ['addiction', 'reduced face-to-face interaction', 'health issues'],
     vocabularyList: [
       { term: 'widespread', definitionVi: 'phổ biến rộng rãi', example: 'The widespread use of technology has changed our lives.' },
-      { term: 'addiction', definitionVi: 'sự nghiện ngập', example: 'Smartphone addiction is a growing problem among teenagers.' },
-      { term: 'face-to-face interaction', definitionVi: 'giao tiếp trực tiếp', example: 'Face-to-face interaction is important for building relationships.' }
+      { term: 'digital addiction', definitionVi: 'nghiện công nghệ số', example: 'Digital addiction is a growing problem among teenagers.' },
+      { term: 'face-to-face interaction', definitionVi: 'giao tiếp trực tiếp', example: 'Face-to-face interaction is important for building relationships.' },
+      { term: 'interpersonal relationship', definitionVi: 'mối quan hệ giữa người với người', example: 'Overuse of smartphones can damage interpersonal relationships.' },
+      { term: 'screen time', definitionVi: 'thời gian sử dụng màn hình', example: 'Excessive screen time can harm children\'s mental health.' },
+      { term: 'instant communication', definitionVi: 'giao tiếp tức thì', example: 'Smartphones enable instant communication across the globe.' },
+      { term: 'proliferation', definitionVi: 'sự phổ biến rộng rãi', example: 'The proliferation of mobile devices has transformed daily life.' },
+      { term: 'overdependence', definitionVi: 'sự phụ thuộc quá mức', example: 'Overdependence on technology can reduce critical thinking skills.' },
+      { term: 'mental well-being', definitionVi: 'sức khỏe tâm thần', example: 'Excessive screen time can harm the mental well-being of children.' },
+      { term: 'mobile device', definitionVi: 'thiết bị di động', example: 'Mobile devices have become indispensable tools in modern life.' },
+      { term: 'communication pattern', definitionVi: 'mẫu giao tiếp', example: 'Smartphones have fundamentally altered communication patterns.' },
+      { term: 'social media platform', definitionVi: 'nền tảng mạng xã hội', example: 'Social media platforms allow users to connect worldwide.' },
+      { term: 'human interaction', definitionVi: 'sự tương tác giữa con người', example: 'Excessive phone use can diminish quality human interaction.' },
+      { term: 'connectivity', definitionVi: 'khả năng kết nối', example: 'Smartphones provide unparalleled connectivity to the internet.' },
+      { term: 'distraction', definitionVi: 'sự phân tâm', example: 'Smartphones are a major source of distraction in classrooms.' }
     ],
     questions: [
       {
         questionId: 'w1t2_q01', level: 'beginner', orderIndex: 1,
         type: 'essay_type_recognition',
-        questionText: 'Đọc đề bài: "Do the advantages of this development outweigh the disadvantages?" — Đây là dạng essay nào?',
-        options: ['Discuss Both Views', 'Advantages & Disadvantages', 'Cause & Effect', 'Agree or Disagree'],
-        correctAnswer: 'Advantages & Disadvantages',
-        explanationVi: "Câu hỏi 'Do the advantages outweigh the disadvantages?' là biến thể của dạng Advantages & Disadvantages. Bạn cần so sánh hai mặt và đưa ra quan điểm rõ ràng về bên nào nổi trội hơn.",      },
+        questionText: 'Đọc đề bài: "Do the advantages of this development outweigh the disadvantages?" — Đây là dạng essay nào và yêu cầu gì?',
+        options: [
+          'Bạn chỉ nêu ưu điểm',
+          'Bạn đưa ra ý kiến xem ưu điểm hay nhược điểm nhiều hơn',
+          'Bạn thảo luận cả hai quan điểm của người khác',
+          'Bạn nêu nguyên nhân và giải pháp'
+        ],
+        correctAnswer: 'Bạn đưa ra ý kiến xem ưu điểm hay nhược điểm nhiều hơn',
+        explanationVi: "Câu hỏi 'Do the advantages outweigh?' yêu cầu bạn so sánh hai mặt và đưa ra ý kiến rõ ràng về bên nào nổi trội hơn. Đây là biến thể của Advantages & Disadvantages essay có kèm lập trường cá nhân."
+      },
       {
-        questionId: 'w1t2_q02', level: 'elementary', orderIndex: 2,
+        questionId: 'w1t2_q02', level: 'beginner', orderIndex: 2,
+        type: 'fill_blank',
+        questionText: 'Điền từ còn thiếu:\n\n"The _____ use of smartphones has transformed the way people communicate with each other."',
+        correctAnswer: 'widespread',
+        explanationVi: "'Widespread' = phổ biến rộng rãi. Cụm 'the widespread use of + N' là collocation học thuật quan trọng trong IELTS. Lấy trực tiếp từ đề bài — hãy học thuộc."
+      },
+      {
+        questionId: 'w1t2_q03', level: 'beginner', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhờ có Internet, con người có thể giao tiếp tức thời dù ở bất kỳ đâu trên thế giới."',
+        correctAnswer: 'Thanks to the Internet, people can communicate instantly no matter where they are in the world.',
+        modelAnswer: 'Thanks to the Internet, people can communicate instantly no matter where they are in the world.',
+        fallbackKeywords: ['internet', 'communicate', 'instantly', 'world'],
+        explanationVi: "'Thanks to + N' = nhờ có. 'No matter where' = dù ở bất kỳ đâu. 'Instantly' = tức thì — adverb quan trọng để mô tả giao tiếp qua smartphone."
+      },
+      {
+        questionId: 'w1t2_q04', level: 'beginner', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Việc sử dụng điện thoại quá mức có thể dẫn đến nghiện công nghệ số."',
+        correctAnswer: 'Excessive use of smartphones can lead to digital addiction.',
+        modelAnswer: 'Excessive use of smartphones can lead to digital addiction.',
+        fallbackKeywords: ['excessive', 'smartphones', 'digital addiction'],
+        explanationVi: "'Excessive use of' = việc sử dụng quá mức. 'Lead to + N' = dẫn đến. 'Digital addiction' là thuật ngữ học thuật phù hợp hơn 'phone addiction'."
+      },
+      {
+        questionId: 'w1t2_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Việc lạm dụng điện thoại có thể ảnh hưởng tiêu cực đến các mối quan hệ giữa người với người."',
+        correctAnswer: 'Overuse of smartphones can negatively affect interpersonal relationships.',
+        modelAnswer: 'Overuse of smartphones can negatively affect interpersonal relationships.',
+        fallbackKeywords: ['overuse', 'smartphones', 'interpersonal relationships'],
+        explanationVi: "'Overuse' = lạm dụng (danh từ/động từ). 'Negatively affect' = ảnh hưởng tiêu cực đến. 'Interpersonal relationships' = mối quan hệ giữa người với người — cụm từ học thuật quan trọng."
+      },
+      {
+        questionId: 'w1t2_q06', level: 'elementary', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Thời gian sử dụng màn hình quá nhiều có thể gây hại cho sức khỏe tâm thần của trẻ em."',
+        correctAnswer: 'Excessive screen time can harm the mental well-being of children.',
+        modelAnswer: 'Excessive screen time can harm the mental well-being of children.',
+        fallbackKeywords: ['screen time', 'mental well-being', 'children', 'harm'],
+        explanationVi: "'Screen time' = thời gian dùng màn hình. 'Mental well-being' = sức khỏe tâm thần (academic hơn 'mental health'). 'Harm' = gây hại (verb mạnh hơn 'affect negatively')."
+      },
+      {
+        questionId: 'w1t2_q07', level: 'elementary', orderIndex: 7,
         type: 'rearrange',
-        questionText: 'Sắp xếp các từ sau thành câu hoàn chỉnh:\n[smartphones / of / One / most / the / advantages / is / convenience / their]',
-        correctAnswer: 'One of the most advantages of smartphones is their convenience.',
-        modelAnswer: 'One of the most significant advantages of smartphones is their convenience.',
-        fallbackKeywords: ['advantages', 'smartphones', 'convenience'],
-        explanationVi: "Cấu trúc 'One of the + most + adj + noun + of + noun' dùng để nêu một ưu điểm nổi bật nhất.",      },
+        questionText: 'Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[smartphones / Whilst / have / many advantages, / they / also / have / serious drawbacks]',
+        correctAnswer: 'Whilst smartphones have many advantages, they also have serious drawbacks.',
+        modelAnswer: 'Whilst smartphones have many advantages, they also have serious drawbacks.',
+        fallbackKeywords: ['smartphones', 'advantages', 'drawbacks'],
+        explanationVi: "'Whilst' = trong khi (formal hơn 'while'). 'Drawbacks' = nhược điểm (academic hơn 'disadvantages'). Cấu trúc 'Whilst X, Y' dùng để thể hiện sự tương phản."
+      },
       {
-        questionId: 'w1t2_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w1t2_q08', level: 'elementary', orderIndex: 8,
         type: 'error_correction',
-        questionText: 'Câu sau có lỗi ngữ pháp. Hãy sửa lại:\n\n"Although smartphones have many advantages, but they also cause addiction and reduce face-to-face interaction."',
-        correctAnswer: 'Although smartphones have many advantages, they also cause addiction and reduce face-to-face interaction.',
-        modelAnswer: 'Although smartphones have many advantages, they also cause addiction and reduce face-to-face interaction.',
-        fallbackKeywords: ['although', 'smartphones', 'advantages', 'addiction'],
-        explanationVi: "Lỗi: Không dùng 'Although' và 'but' cùng lúc trong một câu. Chọn một trong hai: 'Although...,' hoặc '..., but...'",      }
+        questionText: 'Câu sau có lỗi ngữ pháp. Hãy sửa lại:\n\n"Mobile technology makes people to communicate faster than before."',
+        correctAnswer: 'Mobile technology makes people communicate faster than before.',
+        modelAnswer: 'Mobile technology makes people communicate faster than before.',
+        fallbackKeywords: ['mobile technology', 'communicate', 'faster'],
+        explanationVi: "Lỗi: Sau 'make + object' dùng bare infinitive (động từ nguyên thể không 'to'). Cấu trúc: 'make + O + V (bare)'. Không dùng 'to' sau 'make' theo nghĩa causative."
+      },
+      {
+        questionId: 'w1t2_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Con người ngày càng phụ thuộc quá mức vào công nghệ trong cuộc sống hàng ngày."',
+        correctAnswer: 'People are increasingly showing overdependence on technology in their daily lives.',
+        modelAnswer: 'People are increasingly showing overdependence on technology in their daily lives.',
+        fallbackKeywords: ['overdependence', 'technology', 'daily lives', 'increasingly'],
+        explanationVi: "'Overdependence on + N' = sự phụ thuộc quá mức vào. 'Increasingly' = ngày càng (adverb nhấn mạnh xu hướng). Dùng Present Continuous nhấn mạnh xu hướng đang diễn ra."
+      },
+      {
+        questionId: 'w1t2_q10', level: 'intermediate', orderIndex: 10,
+        type: 'paraphrase',
+        questionText: 'Paraphrase câu sau:\n\n"The widespread use of smartphones and tablets has changed the way people communicate."',
+        correctAnswer: 'The proliferation of mobile devices has fundamentally transformed human interaction and communication patterns.',
+        modelAnswer: 'The proliferation of mobile devices has fundamentally transformed human interaction and communication patterns.',
+        fallbackKeywords: ['proliferation', 'mobile devices', 'transformed', 'communication', 'patterns'],
+        explanationVi: "'Proliferation' = sự phổ biến rộng rãi (thay 'widespread use'). 'Fundamentally transformed' = thay đổi căn bản (mạnh hơn 'changed'). 'Communication patterns' = mẫu giao tiếp."
+      },
+      {
+        questionId: 'w1t2_q11', level: 'intermediate', orderIndex: 11,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) lập luận rằng ưu điểm của smartphone VƯỢT TRỘI hơn nhược điểm.\n\nGợi ý: instant communication / remote work / access to information',
+        modelAnswer: 'On balance, the advantages of smartphones significantly outweigh their disadvantages. The most compelling benefit is that these devices enable instant communication across vast distances, allowing people to maintain relationships and collaborate professionally regardless of location. Furthermore, smartphones provide unprecedented access to information, education, and services, empowering individuals in both developed and developing nations. While concerns about addiction and reduced face-to-face interaction are valid, these can be managed through responsible usage habits. Overall, the transformative impact of smartphones on connectivity and productivity makes them an overwhelmingly positive development.',
+        fallbackKeywords: ['advantages', 'outweigh', 'communication', 'access', 'information', 'connectivity', 'productivity'],
+        explanationVi: "Dạng 'outweigh' essay cần nêu lập trường ngay ở topic sentence, sau đó trình bày lý do ủng hộ. Có thể nhắc nhược điểm nhưng phải phủ nhận hoặc giảm nhẹ chúng."
+      }
     ]
   },
   {
@@ -92,42 +291,121 @@ const topics = [
     vocabularyList: [
       { term: 'misinformation', definitionVi: 'thông tin sai lệch', example: 'Misinformation spread rapidly on social media during the pandemic.' },
       { term: 'credibility', definitionVi: 'độ tin cậy', example: 'The credibility of online news sources is often questioned.' },
-      { term: 'filter bubble', definitionVi: 'bong bóng thông tin', example: 'Social media algorithms create filter bubbles that limit our worldview.' }
+      { term: 'fake news', definitionVi: 'tin giả', example: 'Many people are easily deceived by fake news spreading on the internet.' },
+      { term: 'fact-checking', definitionVi: 'kiểm chứng thông tin', example: 'Fact-checking is very important before sharing any post online.' },
+      { term: 'echo chamber', definitionVi: 'buồng vọng / hiệu ứng buồng vọng', example: 'The echo chamber effect causes users to only see opinions similar to their own.' },
+      { term: 'breaking news', definitionVi: 'tin tức nóng hổi', example: 'Many people now read breaking news on social media instead of watching TV.' },
+      { term: 'public opinion', definitionVi: 'dư luận xã hội', example: 'Social media can be used to manipulate public opinion.' },
+      { term: 'democratization of information', definitionVi: 'dân chủ hóa thông tin', example: 'Social media contributes to the democratization of information.' },
+      { term: 'algorithm', definitionVi: 'thuật toán', example: 'Social media algorithms decide which news users see most often.' },
+      { term: 'media literacy', definitionVi: 'hiểu biết về truyền thông', example: 'Media literacy helps people identify fake news.' },
+      { term: 'primary channel', definitionVi: 'kênh chính', example: 'Social media has become a primary channel for news distribution.' },
+      { term: 'manipulation', definitionVi: 'sự thao túng', example: 'The manipulation of public opinion through fake news is a serious problem.' },
+      { term: 'viral content', definitionVi: 'nội dung lan truyền nhanh', example: 'Viral content is not always accurate or verified.' },
+      { term: 'current events', definitionVi: 'sự kiện thời sự', example: 'Social media keeps people informed about current events in real time.' },
+      { term: 'filter bubble', definitionVi: 'bong bóng thông tin', example: 'Filter bubbles limit exposure to diverse viewpoints.' }
     ],
     questions: [
       {
         questionId: 'w2t3_q01', level: 'beginner', orderIndex: 1,
-        type: 'fill_blank',
-        questionText: 'Điền từ thích hợp:\n\n"Social media has become a _____ source of news for millions of people worldwide."',
-        correctAnswer: 'major',
-        explanationVi: "'Major' nghĩa là 'chính, quan trọng'. Cụm 'a major source of' rất phổ biến trong IELTS Writing.",      },
-      {
-        questionId: 'w2t3_q02', level: 'elementary', orderIndex: 2,
-        type: 'topic_sentence',
-        questionText: 'Chọn topic sentence phù hợp nhất cho đoạn văn về NHƯỢC ĐIỂM của việc dùng mạng xã hội để đọc tin tức:',
+        type: 'essay_type_recognition',
+        questionText: 'Từ khóa nào trong đề bài xác định đây là dạng Advantages & Disadvantages?\n\n"Social media platforms have become a major source of news and information. What are the advantages and disadvantages of relying on social media for news?"',
         options: [
-          'Social media is very popular nowadays.',
-          'However, relying on social media for news has several significant drawbacks.',
-          'People use social media every day.',
-          'News can be found in many places.'
+          'social media platforms',
+          'major source of news',
+          'advantages and disadvantages',
+          'relying on social media'
         ],
-        correctAnswer: 'However, relying on social media for news has several significant drawbacks.',
-        explanationVi: "Topic sentence phải nêu rõ luận điểm (nhược điểm) và dùng linking word 'However' để tạo đối lập với đoạn ưu điểm trước. Các lựa chọn khác quá chung chung.",      },
+        correctAnswer: 'advantages and disadvantages',
+        explanationVi: "Keyword 'advantages and disadvantages' trực tiếp xác định dạng bài. Đây là dấu hiệu rõ ràng nhất — khi thấy cụm này, lập tức biết cần phân tích cả hai mặt cân bằng."
+      },
       {
-        questionId: 'w2t3_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w2t3_q02', level: 'beginner', orderIndex: 2,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "misinformation" và "credibility"):\n\n"Một trong những nhược điểm lớn nhất của mạng xã hội là sự lan truyền của thông tin sai lệch, làm giảm độ tin cậy của các nguồn tin tức."',
-        correctAnswer: 'One of the biggest disadvantages of social media is the spread of misinformation, which undermines the credibility of news sources.',
-        modelAnswer: 'One of the biggest disadvantages of social media is the spread of misinformation, which undermines the credibility of news sources.',
-        fallbackKeywords: ['disadvantages', 'social media', 'misinformation', 'credibility'],
-        explanationVi: "Mệnh đề quan hệ 'which undermines...' giải thích hệ quả của misinformation. 'Undermine' nghĩa là 'làm suy yếu, làm giảm'.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhiều người dễ bị lừa bởi tin giả đang lan truyền trên Internet."',
+        correctAnswer: 'Many people are easily deceived by fake news spreading on the Internet.',
+        modelAnswer: 'Many people are easily deceived by fake news spreading on the Internet.',
+        fallbackKeywords: ['fake news', 'deceived', 'internet', 'spreading'],
+        explanationVi: "'Be deceived by' = bị lừa bởi (passive voice). 'Spreading on the Internet' là participle phrase mô tả fake news. Câu này thể hiện nhược điểm quan trọng của mạng xã hội."
+      },
+      {
+        questionId: 'w2t3_q03', level: 'beginner', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhiều người hiện nay thường đọc tin tức nóng trên Facebook hoặc Twitter thay vì xem TV."',
+        correctAnswer: 'Many people now read breaking news on Facebook or Twitter instead of watching TV.',
+        modelAnswer: 'Many people now read breaking news on Facebook or Twitter instead of watching TV.',
+        fallbackKeywords: ['breaking news', 'facebook', 'twitter', 'television'],
+        explanationVi: "'Breaking news' = tin tức nóng hổi. 'Instead of + V-ing' = thay vì làm gì. Đây là ưu điểm của mạng xã hội: cập nhật tin tức nhanh chóng."
+      },
+      {
+        questionId: 'w2t3_q04', level: 'elementary', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Việc kiểm chứng thông tin là rất quan trọng trước khi chia sẻ bất kỳ bài đăng nào trên mạng."',
+        correctAnswer: 'Fact-checking is very important before sharing any post online.',
+        modelAnswer: 'Fact-checking is very important before sharing any post online.',
+        fallbackKeywords: ['fact-checking', 'important', 'sharing', 'online'],
+        explanationVi: "'Fact-checking' = kiểm chứng thông tin (danh động từ làm chủ ngữ). 'Before + V-ing' = trước khi làm gì. Đây là giải pháp cho vấn đề tin giả."
+      },
+      {
+        questionId: 'w2t3_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Hiệu ứng buồng vọng có thể khiến người dùng chỉ tiếp xúc với những quan điểm giống quan điểm của họ."',
+        correctAnswer: 'The echo chamber effect can cause users to only encounter opinions that mirror their own.',
+        modelAnswer: 'The echo chamber effect can cause users to only encounter opinions that mirror their own.',
+        fallbackKeywords: ['echo chamber', 'users', 'opinions', 'mirror'],
+        explanationVi: "'Cause + O + to + V' = khiến ai làm gì. 'Mirror their own' = phản chiếu quan điểm của chính họ. 'Echo chamber' là thuật ngữ học thuật về hiện tượng này."
+      },
+      {
+        questionId: 'w2t3_q06', level: 'elementary', orderIndex: 6,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"Social media has become one of the most popular source of news today."',
+        correctAnswer: 'Social media has become one of the most popular sources of news today.',
+        modelAnswer: 'Social media has become one of the most popular sources of news today.',
+        fallbackKeywords: ['social media', 'popular', 'sources', 'news'],
+        explanationVi: "Lỗi: Sau 'one of the most + adj' phải dùng danh từ số NHIỀU. 'Source' → 'sources'. Cấu trúc: 'one of the + superlative + plural noun'."
+      },
+      {
+        questionId: 'w2t3_q07', level: 'intermediate', orderIndex: 7,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Sự thao túng dư luận qua tin giả đang trở thành một vấn đề nghiêm trọng."',
+        correctAnswer: 'The manipulation of public opinion through fake news is becoming a serious problem.',
+        modelAnswer: 'The manipulation of public opinion through fake news is becoming a serious problem.',
+        fallbackKeywords: ['manipulation', 'public opinion', 'fake news', 'serious'],
+        explanationVi: "'The manipulation of + N' = sự thao túng của. Present Continuous 'is becoming' nhấn mạnh xu hướng đang gia tăng. 'Public opinion' = dư luận xã hội."
+      },
+      {
+        questionId: 'w2t3_q08', level: 'intermediate', orderIndex: 8,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Mạng xã hội góp phần vào dân chủ hóa thông tin, giúp mọi người dễ dàng chia sẻ quan điểm của mình."',
+        correctAnswer: 'Social media contributes to the democratization of information, enabling everyone to share their views easily.',
+        modelAnswer: 'Social media contributes to the democratization of information, enabling everyone to share their views easily.',
+        fallbackKeywords: ['democratization', 'information', 'share', 'views', 'easily'],
+        explanationVi: "'Contribute to + N' = góp phần vào. 'The democratization of information' = dân chủ hóa thông tin. Participle phrase 'enabling...' bổ nghĩa thêm hệ quả tích cực."
+      },
+      {
+        questionId: 'w2t3_q09', level: 'intermediate', orderIndex: 9,
+        type: 'paraphrase',
+        questionText: 'Paraphrase câu sau:\n\n"Social media platforms have become a major source of news and information."',
+        correctAnswer: 'Online networking sites have emerged as a primary channel through which the public accesses current events and knowledge.',
+        modelAnswer: 'Online networking sites have emerged as a primary channel through which the public accesses current events and knowledge.',
+        fallbackKeywords: ['networking sites', 'primary channel', 'public', 'current events', 'knowledge'],
+        explanationVi: "Thay 'social media platforms' → 'online networking sites', 'major source' → 'primary channel', 'news' → 'current events', 'information' → 'knowledge'. 'Have emerged as' = đã nổi lên thành."
+      },
+      {
+        questionId: 'w2t3_q10', level: 'intermediate', orderIndex: 10,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về MỘT NHƯỢC ĐIỂM của việc phụ thuộc vào mạng xã hội để đọc tin tức.\n\nGợi ý: misinformation / fake news / credibility / echo chamber',
+        modelAnswer: 'One significant disadvantage of relying on social media for news is the widespread circulation of misinformation. Unlike traditional media outlets, social media platforms lack rigorous editorial standards, allowing unverified or deliberately false content to spread rapidly among millions of users. The echo chamber effect further exacerbates this problem, as algorithms prioritise content that aligns with users\' existing beliefs, reinforcing biases rather than exposing them to balanced reporting. Consequently, public opinion can be easily manipulated, undermining the credibility of journalism and eroding informed democratic debate.',
+        fallbackKeywords: ['misinformation', 'social media', 'fake news', 'credibility', 'echo chamber', 'public opinion'],
+        explanationVi: "Đoạn văn tốt cần: topic sentence rõ ràng → giải thích vì sao → hệ quả cụ thể → linking word kết nối. Tránh chỉ liệt kê mà không giải thích."
+      }
     ]
   },
 
   // ─── BLOCK 2: Week 3-4 — Cause & Effect/Solution / Education ───
   {
     week: 3, block: 'cause_effect', orderIndex: 4,
-    topicName: 'Online Learning and Student Motivation', topicEmoji: '📉',
+    topicName: 'Online Learning and Student Motivation', topicEmoji: '📚',
     essayType: 'cause_effect',
     prompt: 'Many students find it difficult to stay motivated when studying online. What are the causes of this problem, and what effects does it have on students?',
     hintAdvantages: [],
@@ -135,104 +413,330 @@ const topics = [
     vocabularyList: [
       { term: 'motivation', definitionVi: 'động lực', example: 'Lack of motivation is one of the biggest challenges in online learning.' },
       { term: 'distraction', definitionVi: 'sự phân tâm', example: 'Social media is a major source of distraction for online students.' },
-      { term: 'procrastination', definitionVi: 'sự trì hoãn', example: 'Without deadlines, students tend to procrastinate.' }
+      { term: 'procrastination', definitionVi: 'sự trì hoãn', example: 'Without deadlines, students tend to procrastinate.' },
+      { term: 'academic burnout', definitionVi: 'kiệt sức học tập', example: 'Students may suffer from academic burnout if they study too much without rest.' },
+      { term: 'peer interaction', definitionVi: 'sự tương tác với bạn bè cùng trang lứa', example: 'The lack of peer interaction makes online studying less engaging.' },
+      { term: 'digital fatigue', definitionVi: 'mệt mỏi vì màn hình số', example: 'Sitting in front of a screen for too long can lead to digital fatigue.' },
+      { term: 'structured learning environment', definitionVi: 'môi trường học tập có cấu trúc', example: 'A structured learning environment helps students stay on task.' },
+      { term: 'intrinsic motivation', definitionVi: 'động lực nội tại', example: 'Intrinsic motivation helps students maintain enthusiasm for learning.' },
+      { term: 'academic performance', definitionVi: 'kết quả học tập', example: 'Low motivation directly impacts academic performance.' },
+      { term: 'dropout rate', definitionVi: 'tỷ lệ bỏ học', example: 'Poor motivation contributes to higher dropout rates in online courses.' },
+      { term: 'self-regulation', definitionVi: 'khả năng tự điều tiết', example: 'Online learning demands strong self-regulation from students.' },
+      { term: 'isolation', definitionVi: 'sự cô lập', example: 'Social isolation is a common effect of prolonged online study.' },
+      { term: 'engagement', definitionVi: 'sự gắn kết, tham gia tích cực', example: 'Low engagement in online classes leads to poor learning outcomes.' },
+      { term: 'flexible learning', definitionVi: 'học tập linh hoạt', example: 'Flexible learning can also lead to a lack of routine.' },
+      { term: 'long-term', definitionVi: 'dài hạn', example: 'Intrinsic motivation sustains learning over the long term.' }
     ],
     questions: [
       {
         questionId: 'w3t4_q01', level: 'beginner', orderIndex: 1,
         type: 'essay_type_recognition',
-        questionText: 'Đề bài: "What are the causes of this problem, and what effects does it have?" — Đây là dạng essay nào?',
-        options: ['Agree or Disagree', 'Advantages & Disadvantages', 'Cause & Effect', 'Discuss Both Views'],
-        correctAnswer: 'Cause & Effect',
-        explanationVi: "Keyword 'causes' và 'effects' trong cùng một câu hỏi xác định đây là dạng Cause & Effect. Bài luận cần phân tích nguyên nhân (causes) và kết quả (effects) riêng biệt.",      },
+        questionText: 'Đề bài hỏi: "What are the causes of this problem, and what effects does it have?" — Cấu trúc bài luận gồm mấy phần?',
+        options: [
+          '1 phần (chỉ nguyên nhân)',
+          '2 phần: một về nguyên nhân, một về hệ quả',
+          '2 phần: quan điểm ủng hộ và phản đối',
+          '3 phần: nguyên nhân, hệ quả, và giải pháp'
+        ],
+        correctAnswer: '2 phần: một về nguyên nhân, một về hệ quả',
+        explanationVi: "Đề hỏi 'causes' AND 'effects' → bài cần 2 body paragraphs riêng biệt: BP1 về nguyên nhân, BP2 về hệ quả. Không có 'solutions' nên không cần phần giải pháp."
+      },
       {
-        questionId: 'w3t4_q02', level: 'elementary', orderIndex: 2,
-        type: 'fill_blank',
-        questionText: 'Điền từ thích hợp:\n\n"One of the main _____ of low motivation in online learning is the lack of direct interaction with teachers and classmates."',
-        correctAnswer: 'causes',
-        explanationVi: "'Causes' là danh từ số nhiều của 'cause' (nguyên nhân). Cấu trúc 'one of the main causes of + N' rất quan trọng khi viết đoạn cause.",      },
+        questionId: 'w3t4_q02', level: 'beginner', orderIndex: 2,
+        type: 'essay_type_recognition',
+        questionText: 'Chọn từ đúng để hoàn chỉnh câu:\n\n"There are several _____ why students lack motivation when studying online."',
+        options: ['effects', 'solutions', 'reasons', 'advantages'],
+        correctAnswer: 'reasons',
+        explanationVi: "'Reasons why + clause' = lý do tại sao. Trong Cause & Effect essay, 'reasons' và 'causes' được dùng thay thế nhau. Tránh nhầm với 'effects' (hệ quả)."
+      },
       {
-        questionId: 'w3t4_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w3t4_q03', level: 'beginner', orderIndex: 3,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "distraction" và "academic performance"):\n\n"Sự phân tâm từ mạng xã hội là một nguyên nhân chính dẫn đến kết quả học tập kém của học sinh trực tuyến."',
-        correctAnswer: 'Distraction from social media is a major cause of poor academic performance among online students.',
-        modelAnswer: 'Distraction from social media is a major cause of poor academic performance among online students.',
-        fallbackKeywords: ['distraction', 'social media', 'cause', 'academic performance', 'online'],
-        explanationVi: "'Poor academic performance' là cụm danh từ chuẩn học thuật để nói về kết quả học kém. 'A major cause of' + danh từ diễn đạt nguyên nhân.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Ở nhà, có quá nhiều yếu tố gây xao nhãng khi học trực tuyến."',
+        correctAnswer: 'At home, there are too many distractions when studying online.',
+        modelAnswer: 'At home, there are too many distractions when studying online.',
+        fallbackKeywords: ['home', 'distractions', 'studying online'],
+        explanationVi: "'Distraction' (danh từ đếm được) = yếu tố gây phân tâm. 'Too many + countable noun plural' = quá nhiều. Câu này nêu một nguyên nhân phổ biến trong bài Cause & Effect."
+      },
+      {
+        questionId: 'w3t4_q04', level: 'beginner', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Sự thiếu tương tác với bạn học khiến việc học trở nên kém hấp dẫn hơn."',
+        correctAnswer: 'The lack of peer interaction makes studying less engaging.',
+        modelAnswer: 'The lack of peer interaction makes studying less engaging.',
+        fallbackKeywords: ['peer interaction', 'studying', 'engaging'],
+        explanationVi: "'The lack of + N' = sự thiếu hụt của. 'Make + O + adj' = khiến cho. 'Engaging' = hấp dẫn, thu hút. Cấu trúc này diễn đạt nguyên nhân rất gọn gàng."
+      },
+      {
+        questionId: 'w3t4_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học sinh có thể bị kiệt sức học tập nếu học quá nhiều mà không nghỉ ngơi đầy đủ."',
+        correctAnswer: 'Students may suffer from academic burnout if they study too much without adequate rest.',
+        modelAnswer: 'Students may suffer from academic burnout if they study too much without adequate rest.',
+        fallbackKeywords: ['academic burnout', 'students', 'study', 'rest'],
+        explanationVi: "'Suffer from + N' = chịu đựng, bị mắc phải. 'Academic burnout' = kiệt sức học tập. 'Adequate rest' = nghỉ ngơi đầy đủ (academic hơn 'enough rest')."
+      },
+      {
+        questionId: 'w3t4_q06', level: 'elementary', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Ngồi trước màn hình quá lâu có thể dẫn đến tình trạng mệt mỏi kỹ thuật số."',
+        correctAnswer: 'Sitting in front of a screen for too long can lead to digital fatigue.',
+        modelAnswer: 'Sitting in front of a screen for too long can lead to digital fatigue.',
+        fallbackKeywords: ['screen', 'digital fatigue', 'lead to'],
+        explanationVi: "Gerund 'Sitting in front of a screen' làm chủ ngữ. 'For too long' = trong thời gian quá lâu. 'Digital fatigue' = mệt mỏi kỹ thuật số — hệ quả quan trọng của học online."
+      },
+      {
+        questionId: 'w3t4_q07', level: 'elementary', orderIndex: 7,
+        type: 'rearrange',
+        questionText: 'Sắp xếp các cụm từ sau thành câu hoàn chỉnh:\n[lack of peer interaction / As a result of / , / many students / feel isolated / and lose motivation]',
+        correctAnswer: 'As a result of the lack of peer interaction, many students feel isolated and lose motivation.',
+        modelAnswer: 'As a result of the lack of peer interaction, many students feel isolated and lose motivation.',
+        fallbackKeywords: ['peer interaction', 'students', 'isolated', 'motivation'],
+        explanationVi: "'As a result of + N' = do kết quả của (nêu nguyên nhân). Dấu phẩy sau mệnh đề trạng ngữ đứng đầu câu là bắt buộc. 'Feel isolated' = cảm thấy bị cô lập."
+      },
+      {
+        questionId: 'w3t4_q08', level: 'elementary', orderIndex: 8,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"One of the main cause of low motivation is the absence of a structured learning environment."',
+        correctAnswer: 'One of the main causes of low motivation is the absence of a structured learning environment.',
+        modelAnswer: 'One of the main causes of low motivation is the absence of a structured learning environment.',
+        fallbackKeywords: ['causes', 'motivation', 'structured', 'learning environment'],
+        explanationVi: "Lỗi: 'one of the + superlative + plural noun' → 'cause' phải là 'causes'. Quy tắc: sau 'one of the' luôn dùng danh từ số nhiều."
+      },
+      {
+        questionId: 'w3t4_q09', level: 'elementary', orderIndex: 9,
+        type: 'topic_sentence',
+        questionText: 'Chọn linking word phù hợp để điền vào chỗ trống:\n\n"Students are easily distracted at home. _____, their academic performance tends to decline."',
+        options: ['However', 'In contrast', 'As a result', 'On the other hand'],
+        correctAnswer: 'As a result',
+        explanationVi: "'As a result' = do đó, kết quả là — linking word chỉ hệ quả. Câu sau là HỆ QUẢ của câu trước (dễ bị phân tâm → kết quả học tập giảm). 'However' chỉ sự tương phản, không phù hợp ở đây."
+      },
+      {
+        questionId: 'w3t4_q10', level: 'intermediate', orderIndex: 10,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Động lực nội tại giúp sinh viên duy trì hứng thú học tập trong thời gian dài."',
+        correctAnswer: 'Intrinsic motivation helps students maintain their enthusiasm for learning over the long term.',
+        modelAnswer: 'Intrinsic motivation helps students maintain their enthusiasm for learning over the long term.',
+        fallbackKeywords: ['intrinsic motivation', 'students', 'enthusiasm', 'learning', 'long term'],
+        explanationVi: "'Intrinsic motivation' = động lực nội tại (đến từ bên trong, không phải phần thưởng bên ngoài). 'Maintain enthusiasm for' = duy trì hứng thú với. 'Over the long term' = trong thời gian dài."
+      },
+      {
+        questionId: 'w3t4_q11', level: 'intermediate', orderIndex: 11,
+        type: 'short_writing',
+        questionText: 'Viết 1 topic sentence hoàn chỉnh cho đoạn Body về CÁC HỆ QUẢ của việc thiếu động lực học online. Sau đó giải thích ngắn gọn (2-3 câu).',
+        modelAnswer: 'As a result of this lack of motivation, students\' academic performance declines significantly, which can ultimately lead to higher dropout rates. When students fail to engage with course material, they fall behind in assignments and examinations, creating a cycle of underachievement. In severe cases, persistent demotivation causes students to abandon their studies entirely, wasting both personal time and educational resources.',
+        fallbackKeywords: ['academic performance', 'declines', 'dropout', 'motivation', 'underachievement'],
+        explanationVi: "Topic sentence của đoạn Effects phải bắt đầu bằng linking word chỉ hệ quả ('As a result', 'Consequently') và nêu rõ hệ quả chính."
+      },
+      {
+        questionId: 'w3t4_q12', level: 'intermediate', orderIndex: 12,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về CÁC NGUYÊN NHÂN khiến học sinh thiếu động lực khi học trực tuyến.',
+        modelAnswer: 'There are several key reasons why students struggle to stay motivated in an online learning environment. Firstly, the absence of a structured classroom setting means that students must rely entirely on self-discipline, which many find challenging. Secondly, the lack of face-to-face peer interaction removes the social element of learning, making it feel isolating and tedious. Additionally, the constant presence of distractions at home, such as social media and household noise, further diminishes students\' concentration, ultimately leading to declining engagement with their coursework.',
+        fallbackKeywords: ['structured', 'self-discipline', 'peer interaction', 'distractions', 'concentration', 'engagement'],
+        explanationVi: "Đoạn Causes cần dùng listing words: 'Firstly', 'Secondly', 'Additionally'. Mỗi nguyên nhân cần một câu giải thích ngắn. Kết thúc bằng hệ quả tổng quát để chuyển tiếp."
+      }
     ]
   },
   {
     week: 3, block: 'cause_solution', orderIndex: 5,
-    topicName: 'Academic Pressure on Teenagers', topicEmoji: '😓',
+    topicName: 'Academic Pressure on Teenagers', topicEmoji: '🏫',
     essayType: 'cause_solution',
     prompt: 'Students today face more academic pressure than ever before. What are the causes of this pressure, and what can be done to reduce it?',
     hintAdvantages: [],
     hintDisadvantages: [],
     vocabularyList: [
       { term: 'academic pressure', definitionVi: 'áp lực học tập', example: 'Academic pressure can lead to anxiety and depression.' },
-      { term: 'competitive', definitionVi: 'cạnh tranh', example: 'The highly competitive job market puts pressure on students.' },
-      { term: 'curriculum reform', definitionVi: 'cải cách chương trình học', example: 'Curriculum reform is needed to reduce student stress.' }
+      { term: 'exam-oriented', definitionVi: 'định hướng thi cử', example: 'An exam-oriented system places too much emphasis on test scores.' },
+      { term: 'counselling services', definitionVi: 'dịch vụ tư vấn tâm lý', example: 'Schools should provide counselling services for stressed students.' },
+      { term: 'coping strategies', definitionVi: 'chiến lược đối phó', example: 'Students need to learn coping strategies to manage stress effectively.' },
+      { term: 'mental health', definitionVi: 'sức khỏe tâm thần', example: 'Unrealistic expectations from parents can harm children\'s mental health.' },
+      { term: 'competitive', definitionVi: 'cạnh tranh', example: 'The highly competitive job market puts enormous pressure on students.' },
+      { term: 'test scores', definitionVi: 'điểm thi', example: 'Many parents judge their children\'s worth by their test scores.' },
+      { term: 'homework loads', definitionVi: 'khối lượng bài tập về nhà', example: 'Reducing homework loads can significantly decrease student stress.' },
+      { term: 'emotional support', definitionVi: 'hỗ trợ về mặt cảm xúc', example: 'Emotional support from teachers helps students cope with pressure.' },
+      { term: 'unrealistic expectations', definitionVi: 'kỳ vọng phi thực tế', example: 'Unrealistic expectations from parents can negatively impact children.' },
+      { term: 'curriculum reform', definitionVi: 'cải cách chương trình học', example: 'Curriculum reform is needed to reduce excessive academic demands.' },
+      { term: 'parental pressure', definitionVi: 'áp lực từ cha mẹ', example: 'Parental pressure is one of the leading causes of student anxiety.' },
+      { term: 'well-being', definitionVi: 'sức khỏe và hạnh phúc tổng thể', example: 'Schools should prioritise students\' well-being alongside academic results.' },
+      { term: 'standardised testing', definitionVi: 'kiểm tra chuẩn hóa', example: 'Standardised testing increases pressure on both students and teachers.' },
+      { term: 'extracurricular activities', definitionVi: 'hoạt động ngoại khóa', example: 'Extracurricular activities help students relieve academic stress.' }
     ],
     questions: [
       {
         questionId: 'w3t5_q01', level: 'beginner', orderIndex: 1,
         type: 'essay_type_recognition',
         questionText: 'Đề bài: "What are the causes of this pressure, and what can be done to reduce it?" — Đây là dạng essay nào?',
-        options: ['Cause & Effect', 'Cause & Solution', 'Agree or Disagree', 'Advantages & Disadvantages'],
+        options: ['Cause & Effect', 'Effect & Solution', 'Cause & Solution', 'Discuss Both Views'],
         correctAnswer: 'Cause & Solution',
-        explanationVi: "Keyword 'causes' kết hợp với 'what can be done' (giải pháp) cho thấy đây là dạng Cause & Solution. Không có từ 'effects' — thay vào đó là yêu cầu tìm giải pháp.",      },
+        explanationVi: "Keyword 'causes' kết hợp với 'what can be done' (giải pháp) xác định đây là dạng Cause & Solution. Không có 'effects' → không cần phân tích hệ quả."
+      },
       {
-        questionId: 'w3t5_q02', level: 'elementary', orderIndex: 2,
+        questionId: 'w3t5_q02', level: 'beginner', orderIndex: 2,
+        type: 'fill_blank',
+        questionText: 'Điền từ còn thiếu:\n\n"Firstly, _____ pressure from parents who expect their children to achieve top grades is a significant cause of student anxiety."',
+        correctAnswer: 'parental',
+        explanationVi: "'Parental pressure' = áp lực từ cha mẹ. Đây là collocation chuẩn. 'Parental' là adjective của 'parents'. Cụm này xuất hiện rất thường trong IELTS về giáo dục."
+      },
+      {
+        questionId: 'w3t5_q03', level: 'beginner', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Ngày nay, học sinh phải chịu áp lực học tập nhiều hơn bao giờ hết."',
+        correctAnswer: 'Nowadays, students face more academic pressure than ever before.',
+        modelAnswer: 'Nowadays, students face more academic pressure than ever before.',
+        fallbackKeywords: ['academic pressure', 'students', 'nowadays', 'ever before'],
+        explanationVi: "'More + N + than ever before' = nhiều hơn bao giờ hết — cụm nhấn mạnh mức độ. 'Nowadays' đứng đầu câu làm trạng ngữ thời gian. Lấy trực tiếp từ đề bài."
+      },
+      {
+        questionId: 'w3t5_q04', level: 'beginner', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nền giáo dục hiện nay quá chú trọng đến điểm số và kết quả thi cử."',
+        correctAnswer: 'The current exam-oriented education system places too much emphasis on grades and test scores.',
+        modelAnswer: 'The current exam-oriented education system places too much emphasis on grades and test scores.',
+        fallbackKeywords: ['exam-oriented', 'education', 'grades', 'test scores'],
+        explanationVi: "'Exam-oriented' = định hướng thi cử (hyphenated adjective). 'Place emphasis on' = chú trọng đến. 'Test scores' = điểm thi — quan trọng hơn 'scores' đơn thuần."
+      },
+      {
+        questionId: 'w3t5_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhà trường nên cung cấp dịch vụ tư vấn tâm lý cho những học sinh đang chịu căng thẳng."',
+        correctAnswer: 'Schools should provide counselling services for students who are under stress.',
+        modelAnswer: 'Schools should provide counselling services for students who are under stress.',
+        fallbackKeywords: ['counselling services', 'schools', 'students', 'stress'],
+        explanationVi: "'Counselling services' = dịch vụ tư vấn tâm lý. 'Under stress' = đang chịu căng thẳng (idiomatic). 'Should + V' dùng để đề xuất giải pháp trong Cause & Solution essay."
+      },
+      {
+        questionId: 'w3t5_q06', level: 'elementary', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học sinh cần được dạy các chiến lược đối phó để quản lý căng thẳng hiệu quả hơn."',
+        correctAnswer: 'Students need to be taught coping strategies to manage stress more effectively.',
+        modelAnswer: 'Students need to be taught coping strategies to manage stress more effectively.',
+        fallbackKeywords: ['coping strategies', 'students', 'stress', 'effectively'],
+        explanationVi: "'Need to be taught' = passive voice — học sinh là người được dạy. 'Coping strategies' = chiến lược đối phó. 'More effectively' = một cách hiệu quả hơn."
+      },
+      {
+        questionId: 'w3t5_q07', level: 'elementary', orderIndex: 7,
         type: 'rearrange',
-        questionText: 'Sắp xếp các từ thành câu về giải pháp:\n[pressure / reduce / school / academic / counselling / can / services / mental health]',
-        correctAnswer: 'School mental health counselling services can reduce academic pressure.',
-        modelAnswer: 'School mental health counselling services can reduce academic pressure.',
-        fallbackKeywords: ['school', 'mental health', 'counselling', 'reduce', 'academic pressure'],
-        explanationVi: "Cấu trúc 'N + can + V + O' dùng khi đề xuất giải pháp. 'Mental health counselling services' là cụm danh từ ghép.",      },
+        questionText: 'Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[could / Schools / by providing / reduce pressure / emotional support / and reducing homework loads]',
+        correctAnswer: 'Schools could reduce pressure by providing emotional support and reducing homework loads.',
+        modelAnswer: 'Schools could reduce pressure by providing emotional support and reducing homework loads.',
+        fallbackKeywords: ['schools', 'reduce pressure', 'emotional support', 'homework loads'],
+        explanationVi: "Cấu trúc: 'Subject + could + V + by + V-ing' diễn đạt giải pháp và cách thực hiện. 'Homework loads' = khối lượng bài tập. 'Emotional support' = hỗ trợ cảm xúc."
+      },
       {
-        questionId: 'w3t5_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w3t5_q08', level: 'elementary', orderIndex: 8,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"One solution is that schools should to offer more mental health support."',
+        correctAnswer: 'One solution is that schools should offer more mental health support.',
+        modelAnswer: 'One solution is that schools should offer more mental health support.',
+        fallbackKeywords: ['schools', 'mental health', 'support', 'solution'],
+        explanationVi: "Lỗi: Sau modal verb 'should' KHÔNG dùng 'to'. Cấu trúc: 'should + bare infinitive'. Xóa 'to' trước 'offer'."
+      },
+      {
+        questionId: 'w3t5_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Kỳ vọng phi thực tế từ cha mẹ có thể có tác động tiêu cực đến sức khỏe tâm thần của trẻ em."',
+        correctAnswer: 'Unrealistic expectations from parents can have a negative impact on children\'s mental health.',
+        modelAnswer: 'Unrealistic expectations from parents can have a negative impact on children\'s mental health.',
+        fallbackKeywords: ['unrealistic expectations', 'parents', 'negative impact', 'mental health'],
+        explanationVi: "'Have a negative impact on + N' = có tác động tiêu cực lên. Academic hơn 'affect negatively'. 'Unrealistic expectations' = kỳ vọng phi thực tế — collocation quan trọng."
+      },
+      {
+        questionId: 'w3t5_q10', level: 'intermediate', orderIndex: 10,
         type: 'short_writing',
-        questionText: 'Viết 1 body paragraph (~60-90 từ) về MỘT GIẢI PHÁP để giảm áp lực học tập cho học sinh.\n\nDùng cấu trúc: Topic Sentence → Explanation → Example\nGợi ý: cải cách chương trình học / hỗ trợ tâm lý / giảm thi cử',
-        modelAnswer: 'One effective solution is to reform the curriculum to reduce the number of compulsory exams. This would allow students to learn at their own pace without the constant fear of failure. For example, Finland has successfully adopted a student-centred approach with fewer standardised tests, resulting in lower stress levels and higher academic achievement among young people.',
-        fallbackKeywords: ['solution', 'reform', 'curriculum', 'exams', 'students', 'stress', 'example'],
-        explanationVi: "Cấu trúc PEEL: Point (giải pháp) → Explain (tại sao hiệu quả) → Example (ví dụ cụ thể). Mỗi paragraph chỉ nêu MỘT giải pháp duy nhất.",
-        useAiGrading: true,      }
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về CÁC NGUYÊN NHÂN gây ra áp lực học tập cho học sinh.\n\nGợi ý: exam-oriented system / parental pressure / competitive job market',
+        modelAnswer: 'There are two primary causes of the growing academic pressure experienced by students today. The first is the exam-oriented education system, which prioritises test scores over holistic development, compelling students to spend excessive hours memorising content rather than developing practical skills. The second cause is parental pressure; many parents, driven by a desire for their children\'s success in an increasingly competitive job market, impose unrealistic expectations that generate considerable anxiety. Together, these factors create an environment in which students feel perpetually stressed and unable to meet the demands placed upon them.',
+        fallbackKeywords: ['exam-oriented', 'parental pressure', 'competitive', 'unrealistic expectations', 'anxiety', 'test scores'],
+        explanationVi: "Đoạn Causes dùng 'The first... The second...' hoặc 'Firstly... Secondly...' để liệt kê. Mỗi nguyên nhân cần giải thích cơ chế tại sao nó gây ra áp lực."
+      }
     ]
   },
   {
     week: 4, block: 'effect_solution', orderIndex: 6,
-    topicName: 'Decline in Reading Habits', topicEmoji: '📚',
+    topicName: 'Decline in Reading Habits', topicEmoji: '📖',
     essayType: 'effect_solution',
     prompt: 'Young people are reading fewer books than in the past. What effects does this trend have on society, and what solutions can be implemented?',
     hintAdvantages: [],
     hintDisadvantages: [],
     vocabularyList: [
       { term: 'critical thinking', definitionVi: 'tư duy phản biện', example: 'Reading books enhances critical thinking skills.' },
-      { term: 'literacy rate', definitionVi: 'tỷ lệ biết đọc biết viết', example: 'Countries with high literacy rates tend to have stronger economies.' },
-      { term: 'implement', definitionVi: 'thực hiện, áp dụng', example: 'The government plans to implement a national reading programme.' }
+      { term: 'literacy rate', definitionVi: 'tỷ lệ biết đọc biết viết', example: 'Countries with high literacy rates have stronger economies.' },
+      { term: 'cognitive skills', definitionVi: 'kỹ năng nhận thức', example: 'The decline in reading may result in a deterioration of cognitive skills.' },
+      { term: 'broaden horizons', definitionVi: 'mở rộng tầm nhìn', example: 'Reading helps broaden horizons and nurture imagination.' },
+      { term: 'vocabulary range', definitionVi: 'vốn từ vựng', example: 'Declining reading habits lead to a reduced vocabulary range.' },
+      { term: 'promote reading', definitionVi: 'khuyến khích đọc sách', example: 'The government should organise campaigns to promote reading.' },
+      { term: 'imagination', definitionVi: 'trí tưởng tượng', example: 'Books nurture children\'s imagination in ways that screens cannot.' },
+      { term: 'deterioration', definitionVi: 'sự suy giảm, thoái hóa', example: 'A deterioration of reading habits weakens academic ability.' },
+      { term: 'implement', definitionVi: 'thực hiện, áp dụng', example: 'The government plans to implement a national reading programme.' },
+      { term: 'reading programme', definitionVi: 'chương trình đọc sách', example: 'A national reading programme could reverse declining literacy trends.' },
+      { term: 'digital entertainment', definitionVi: 'giải trí số', example: 'Digital entertainment has largely replaced reading among young people.' },
+      { term: 'nurture', definitionVi: 'nuôi dưỡng', example: 'Schools should nurture a love of reading from an early age.' },
+      { term: 'concentration', definitionVi: 'khả năng tập trung', example: 'Regular reading improves concentration and attention span.' },
+      { term: 'empathy', definitionVi: 'sự đồng cảm', example: 'Reading fiction develops empathy by exposing readers to different perspectives.' },
+      { term: 'academic ability', definitionVi: 'năng lực học thuật', example: 'Poor reading habits directly undermine academic ability.' }
     ],
     questions: [
       {
         questionId: 'w4t6_q01', level: 'beginner', orderIndex: 1,
         type: 'essay_type_recognition',
-        questionText: 'Đề bài: "What effects does this trend have? What solutions can be implemented?" — Đây là dạng essay nào?',
-        options: ['Cause & Effect', 'Effect & Solution', 'Discuss Both Views', 'Agree or Disagree'],
+        questionText: 'Đề bài: "What effects does this trend have on society, and what solutions can be implemented?" — Đây là dạng essay nào?',
+        options: ['Cause & Effect', 'Effect & Solution', 'Cause & Solution', 'Advantages & Disadvantages'],
         correctAnswer: 'Effect & Solution',
-        explanationVi: "Đề hỏi 'effects' (hệ quả) và 'solutions' (giải pháp) — không hỏi causes. Đây là dạng Effect & Solution. Bài luận cần trình bày: hệ quả → giải pháp.",      },
+        explanationVi: "Đề hỏi 'effects' (hệ quả) và 'solutions' (giải pháp) — không hỏi 'causes'. Đây là dạng Effect & Solution. BP1 phân tích hệ quả; BP2 đề xuất giải pháp."
+      },
       {
-        questionId: 'w4t6_q02', level: 'elementary', orderIndex: 2,
-        type: 'fill_blank',
-        questionText: 'Điền từ thích hợp:\n\n"One major _____ of declining reading habits is the weakening of critical thinking skills among young people."',
-        correctAnswer: 'effect',
-        explanationVi: "'Effect' (danh từ) = hệ quả. So sánh: 'cause' vs 'effect'. Câu này dùng 'one major effect of + N' để mở đầu đoạn phân tích hệ quả.",      },
-      {
-        questionId: 'w4t6_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w4t6_q02', level: 'beginner', orderIndex: 2,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "implement" và "reading programme"):\n\n"Chính phủ nên thực hiện các chương trình đọc sách quốc gia để khuyến khích thói quen đọc sách từ khi còn nhỏ."',
-        correctAnswer: 'The government should implement national reading programmes to encourage reading habits from an early age.',
-        modelAnswer: 'The government should implement national reading programmes to encourage reading habits from an early age.',
-        fallbackKeywords: ['government', 'implement', 'reading', 'programme', 'encourage', 'early'],
-        explanationVi: "'Implement' + danh từ = 'thực hiện/áp dụng' chính sách. 'From an early age' = 'từ khi còn nhỏ'. Dùng 'should' để đề xuất giải pháp.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Việc không đọc sách có thể làm giảm khả năng tư duy phản biện của học sinh."',
+        correctAnswer: 'Not reading books may reduce students\' ability to think critically.',
+        modelAnswer: 'Not reading books may reduce students\' ability to think critically.',
+        fallbackKeywords: ['reading', 'students', 'critical thinking', 'reduce'],
+        explanationVi: "'Ability to + V' = khả năng làm gì. 'Think critically' = tư duy phản biện (dùng adverb). 'May + V' biểu thị khả năng, phù hợp khi nêu hệ quả không chắc chắn."
+      },
+      {
+        questionId: 'w4t6_q03', level: 'elementary', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Chính phủ nên tổ chức các chiến dịch để khuyến khích đọc sách trong giới trẻ."',
+        correctAnswer: 'The government should organise campaigns to promote reading among young people.',
+        modelAnswer: 'The government should organise campaigns to promote reading among young people.',
+        fallbackKeywords: ['government', 'campaigns', 'promote reading', 'young people'],
+        explanationVi: "'Organise campaigns to + V' = tổ chức chiến dịch để làm gì. 'Promote reading' = khuyến khích đọc sách. 'Among young people' = trong giới trẻ. Đây là giải pháp cấp chính phủ."
+      },
+      {
+        questionId: 'w4t6_q04', level: 'elementary', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Đọc sách giúp mở rộng tầm nhìn và nuôi dưỡng trí tưởng tượng."',
+        correctAnswer: 'Reading helps broaden horizons and nurture imagination.',
+        modelAnswer: 'Reading helps broaden horizons and nurture imagination.',
+        fallbackKeywords: ['reading', 'broaden horizons', 'imagination', 'nurture'],
+        explanationVi: "'Broaden horizons' = mở rộng tầm nhìn (idiomatic expression). 'Nurture imagination' = nuôi dưỡng trí tưởng tượng. Cả hai là collocations quan trọng trong IELTS."
+      },
+      {
+        questionId: 'w4t6_q05', level: 'elementary', orderIndex: 5,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"One of the effect of declining reading habits is a decrease in vocabulary range."',
+        correctAnswer: 'One of the effects of declining reading habits is a decrease in vocabulary range.',
+        modelAnswer: 'One of the effects of declining reading habits is a decrease in vocabulary range.',
+        fallbackKeywords: ['effects', 'reading habits', 'vocabulary', 'decrease'],
+        explanationVi: "Lỗi: 'one of the + plural noun' → 'effect' phải là 'effects'. Quy tắc: sau 'one of the' luôn dùng số nhiều."
+      },
+      {
+        questionId: 'w4t6_q06', level: 'intermediate', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Sự suy giảm thói quen đọc sách có thể dẫn đến sự thoái hóa kỹ năng nhận thức ở người trẻ."',
+        correctAnswer: 'The decline in reading habits may result in a deterioration of cognitive skills among young people.',
+        modelAnswer: 'The decline in reading habits may result in a deterioration of cognitive skills among young people.',
+        fallbackKeywords: ['decline', 'reading habits', 'cognitive skills', 'young people'],
+        explanationVi: "'Result in + N' = dẫn đến (nhấn mạnh kết quả trực tiếp hơn 'lead to'). 'A deterioration of + N' = sự suy thoái của. 'Cognitive skills' = kỹ năng nhận thức — academic term quan trọng."
+      },
+      {
+        questionId: 'w4t6_q07', level: 'intermediate', orderIndex: 7,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về MỘT GIẢI PHÁP để cải thiện thói quen đọc sách trong giới trẻ.\n\nGợi ý: schools / reading programmes / libraries / curriculum',
+        modelAnswer: 'One effective solution is for schools to integrate regular reading sessions into the curriculum, making it a compulsory part of the school day. If students are exposed to a wide variety of books from an early age, they are more likely to develop a genuine love of reading that persists into adulthood. Furthermore, schools could establish well-stocked libraries and reading clubs that create an engaging social atmosphere around books. Evidence from countries such as Finland suggests that embedding reading culture within formal education significantly improves both literacy rates and overall academic performance.',
+        fallbackKeywords: ['schools', 'reading', 'curriculum', 'literacy', 'libraries', 'academic performance'],
+        explanationVi: "Giải pháp tốt cần: nêu giải pháp cụ thể → giải thích cơ chế → dẫn chứng hoặc ví dụ → liên kết lại kết quả kỳ vọng."
+      }
     ]
   },
   {
@@ -245,38 +749,98 @@ const topics = [
     vocabularyList: [
       { term: 'dropout rate', definitionVi: 'tỷ lệ bỏ học', example: 'The dropout rate has increased significantly in the past decade.' },
       { term: 'financial burden', definitionVi: 'gánh nặng tài chính', example: 'University fees are a heavy financial burden for many families.' },
-      { term: 'unemployment', definitionVi: 'thất nghiệp', example: 'High dropout rates contribute to youth unemployment.' }
+      { term: 'tuition fees', definitionVi: 'học phí', example: 'High tuition fees prevent many students from continuing their studies.' },
+      { term: 'unemployment', definitionVi: 'thất nghiệp', example: 'High dropout rates contribute to youth unemployment.' },
+      { term: 'social stability', definitionVi: 'sự ổn định xã hội', example: 'High dropout rates can undermine long-term social stability.' },
+      { term: 'career guidance', definitionVi: 'hướng nghiệp', example: 'Universities need to strengthen career guidance services.' },
+      { term: 'social resources', definitionVi: 'nguồn lực xã hội', example: 'High dropout rates represent a waste of social resources.' },
+      { term: 'mental health support', definitionVi: 'hỗ trợ sức khỏe tâm thần', example: 'Universities should provide better mental health support for struggling students.' },
+      { term: 'academic pressure', definitionVi: 'áp lực học tập', example: 'Academic pressure is a leading cause of university dropout.' },
+      { term: 'scholarship', definitionVi: 'học bổng', example: 'More scholarships could prevent financially disadvantaged students from dropping out.' },
+      { term: 'income inequality', definitionVi: 'bất bình đẳng thu nhập', example: 'Income inequality means poorer students are more likely to drop out.' },
+      { term: 'undermine', definitionVi: 'làm suy yếu, phá hoại', example: 'High dropout rates undermine investment in public education.' },
+      { term: 'higher education', definitionVi: 'giáo dục đại học', example: 'Access to quality higher education remains unequal in many countries.' },
+      { term: 'productivity', definitionVi: 'năng suất', example: 'Dropouts generally contribute less to national productivity.' },
+      { term: 'vocational training', definitionVi: 'đào tạo nghề', example: 'Vocational training provides an alternative pathway for students who leave university.' }
     ],
     questions: [
       {
         questionId: 'w4t7_q01', level: 'beginner', orderIndex: 1,
-        type: 'fill_blank',
-        questionText: 'Điền từ thích hợp:\n\n"The high cost of university tuition is one of the main _____ of the increasing dropout rate."',
-        correctAnswer: 'causes',
-        explanationVi: "'Causes of + N' = nguyên nhân của. Đây là cấu trúc cơ bản để liệt kê nguyên nhân trong body paragraph.",      },
+        type: 'essay_type_recognition',
+        questionText: 'Đề bài: "What are the causes of this problem, and what effects does it have on individuals and society?" — Đây là dạng essay nào?',
+        options: ['Cause & Solution', 'Cause & Effect', 'Effect & Solution', 'Opinion Essay'],
+        correctAnswer: 'Cause & Effect',
+        explanationVi: "Từ khóa 'causes' và 'effects' cùng xuất hiện → dạng Cause & Effect. Bài cần BP1 phân tích nguyên nhân, BP2 phân tích hệ quả với cá nhân VÀ xã hội."
+      },
       {
-        questionId: 'w4t7_q02', level: 'elementary', orderIndex: 2,
-        type: 'error_correction',
-        questionText: 'Câu sau có lỗi. Hãy sửa:\n\n"Dropping out of university have many negative effects on both individuals and society."',
-        correctAnswer: 'Dropping out of university has many negative effects on both individuals and society.',
-        modelAnswer: 'Dropping out of university has many negative effects on both individuals and society.',
-        fallbackKeywords: ['dropping', 'university', 'has', 'negative', 'effects', 'individuals', 'society'],
-        explanationVi: "Lỗi: 'Dropping out' là danh động từ (gerund phrase) làm chủ ngữ → động từ phải là số ít: 'has' (không phải 'have').",      },
-      {
-        questionId: 'w4t7_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w4t7_q02', level: 'beginner', orderIndex: 2,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "financial burden" và "dropout rate"):\n\n"Gánh nặng tài chính từ học phí đại học là nguyên nhân chính dẫn đến tỷ lệ bỏ học ngày càng tăng."',
-        correctAnswer: 'The financial burden of university tuition fees is a major cause of the rising dropout rate.',
-        modelAnswer: 'The financial burden of university tuition fees is a major cause of the rising dropout rate.',
-        fallbackKeywords: ['financial burden', 'tuition', 'cause', 'dropout rate', 'rising'],
-        explanationVi: "'The rising + N' = 'sự gia tăng của'. 'Financial burden' là cụm danh từ học thuật quan trọng.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Một trong những nguyên nhân chính là gánh nặng tài chính của giáo dục đại học."',
+        correctAnswer: 'One of the main causes is the financial burden of higher education.',
+        modelAnswer: 'One of the main causes is the financial burden of higher education.',
+        fallbackKeywords: ['financial burden', 'causes', 'higher education'],
+        explanationVi: "'One of the main causes is + N' — cấu trúc nêu nguyên nhân chuẩn trong IELTS. 'Financial burden' = gánh nặng tài chính — collocation quan trọng."
+      },
+      {
+        questionId: 'w4t7_q03', level: 'beginner', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Học phí cao ngăn cản nhiều sinh viên tiếp tục việc học."',
+        correctAnswer: 'High tuition fees prevent many students from continuing their studies.',
+        modelAnswer: 'High tuition fees prevent many students from continuing their studies.',
+        fallbackKeywords: ['tuition fees', 'students', 'continuing', 'studies'],
+        explanationVi: "'Prevent + O + from + V-ing' = ngăn cản ai làm gì. 'Tuition fees' = học phí. Cấu trúc này rất phổ biến trong IELTS Writing khi nêu trở ngại."
+      },
+      {
+        questionId: 'w4t7_q04', level: 'elementary', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Tỷ lệ bỏ học cao cũng đồng nghĩa với sự lãng phí đáng kể nguồn lực xã hội."',
+        correctAnswer: 'A high dropout rate also represents a significant waste of social resources.',
+        modelAnswer: 'A high dropout rate also represents a significant waste of social resources.',
+        fallbackKeywords: ['dropout rate', 'waste', 'social resources'],
+        explanationVi: "'Represent + N' = đại diện cho, đồng nghĩa với. 'A significant waste of' = sự lãng phí đáng kể của. Đây là hệ quả ở cấp độ xã hội."
+      },
+      {
+        questionId: 'w4t7_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Các trường đại học cần tăng cường dịch vụ hướng nghiệp cho sinh viên."',
+        correctAnswer: 'Universities need to strengthen career guidance for students.',
+        modelAnswer: 'Universities need to strengthen career guidance for students.',
+        fallbackKeywords: ['universities', 'career guidance', 'students'],
+        explanationVi: "'Strengthen + N' = tăng cường, củng cố. 'Career guidance' = hướng nghiệp — giải pháp phổ biến trong essay về dropout. Dùng 'need to + V' để đề xuất biện pháp cần thiết."
+      },
+      {
+        questionId: 'w4t7_q06', level: 'elementary', orderIndex: 6,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"Dropping out of university can leads to unemployment and low income."',
+        correctAnswer: 'Dropping out of university can lead to unemployment and low income.',
+        modelAnswer: 'Dropping out of university can lead to unemployment and low income.',
+        fallbackKeywords: ['dropping out', 'university', 'unemployment', 'income'],
+        explanationVi: "Lỗi: Sau modal verb 'can' phải dùng bare infinitive. 'leads' → 'lead' (bỏ -s). Quy tắc: 'can/could/will/would/should + V (nguyên thể không to)'."
+      },
+      {
+        questionId: 'w4t7_q07', level: 'intermediate', orderIndex: 7,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nếu không được giải quyết kịp thời, tỷ lệ bỏ học cao có thể làm suy yếu sự ổn định xã hội."',
+        correctAnswer: 'If not addressed promptly, high dropout rates could undermine social stability.',
+        modelAnswer: 'If not addressed promptly, high dropout rates could undermine social stability.',
+        fallbackKeywords: ['dropout rates', 'social stability', 'addressed', 'undermine'],
+        explanationVi: "'If not addressed promptly' = nếu không được giải quyết kịp thời (passive conditional). 'Undermine' = làm suy yếu, phá hoại ngầm. 'Could' = khả năng trong tương lai."
+      },
+      {
+        questionId: 'w4t7_q08', level: 'intermediate', orderIndex: 8,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) về HỆ QUẢ của tỷ lệ bỏ học cao đối với XÃ HỘI.\n\nGợi ý: unemployment / social resources / productivity / social stability',
+        modelAnswer: 'The rising dropout rate has several damaging consequences for society as a whole. Firstly, graduates who abandon their studies are more likely to face long-term unemployment, placing additional pressure on government welfare systems. Furthermore, public investment in higher education is essentially wasted when students fail to complete their degrees, representing a misallocation of social resources. Over time, a less educated workforce reduces national productivity and hampers economic growth. If these trends are not reversed, high dropout rates could ultimately undermine social stability and widen existing income inequalities.',
+        fallbackKeywords: ['unemployment', 'social resources', 'productivity', 'economic growth', 'social stability', 'dropout'],
+        explanationVi: "Đoạn Effects về xã hội cần bao gồm hệ quả kinh tế, xã hội, và dài hạn. Dùng 'Firstly... Furthermore... Over time...' để tổ chức mạch lạc."
+      }
     ]
   },
 
   // ─── BLOCK 3: Week 5-6 — Agree or Disagree / Work ───
   {
     week: 5, block: 'agree_disagree', orderIndex: 8,
-    topicName: 'Shorter Work Week', topicEmoji: '⏰',
+    topicName: 'Shorter Work Week', topicEmoji: '💼',
     essayType: 'agree_disagree',
     prompt: 'The working week should be shorter and workers should have a longer weekend. Do you agree or disagree?',
     hintAdvantages: ['reduces stress', 'increases productivity', 'better work-life balance'],
@@ -284,76 +848,212 @@ const topics = [
     vocabularyList: [
       { term: 'work-life balance', definitionVi: 'cân bằng công việc và cuộc sống', example: 'A shorter work week promotes a healthier work-life balance.' },
       { term: 'productivity', definitionVi: 'năng suất lao động', example: 'Studies show that well-rested workers have higher productivity.' },
-      { term: 'economic output', definitionVi: 'sản lượng kinh tế', example: 'Reducing working hours could lower economic output.' }
+      { term: 'economic output', definitionVi: 'sản lượng kinh tế', example: 'Reducing working hours could lower economic output.' },
+      { term: 'burnout', definitionVi: 'kiệt sức (do làm việc quá sức)', example: 'Overworking for an extended period can lead to burnout.' },
+      { term: 'employee well-being', definitionVi: 'sức khỏe và phúc lợi nhân viên', example: 'More rest time significantly improves employee well-being.' },
+      { term: 'labor productivity', definitionVi: 'năng suất lao động', example: 'Research suggests that reducing working hours can improve labor productivity.' },
+      { term: 'extended period', definitionVi: 'khoảng thời gian dài', example: 'Overworking for an extended period can damage physical health.' },
+      { term: 'economic growth', definitionVi: 'tăng trưởng kinh tế', example: 'Some argue a shorter working week may slow economic growth.' },
+      { term: 'leisure time', definitionVi: 'thời gian giải trí, nghỉ ngơi', example: 'Workers need sufficient leisure time to recharge.' },
+      { term: 'overworking', definitionVi: 'làm việc quá sức', example: 'Overworking is linked to serious health conditions.' },
+      { term: 'workforce', definitionVi: 'lực lượng lao động', example: 'A healthier workforce is more productive in the long run.' },
+      { term: 'morale', definitionVi: 'tinh thần làm việc', example: 'Shorter working hours can boost employee morale significantly.' },
+      { term: 'output', definitionVi: 'sản lượng đầu ra', example: 'Critics worry that less work time will reduce total output.' },
+      { term: 'recovery', definitionVi: 'sự phục hồi', example: 'Extended weekends allow workers adequate recovery time.' },
+      { term: 'stress-related illness', definitionVi: 'bệnh liên quan đến căng thẳng', example: 'Reducing hours could decrease stress-related illnesses in the workplace.' }
     ],
     questions: [
       {
         questionId: 'w5t8_q01', level: 'beginner', orderIndex: 1,
         type: 'essay_type_recognition',
-        questionText: 'Đề bài: "Do you agree or disagree?" — Đây là dạng essay nào?',
-        options: ['Advantages & Disadvantages', 'Cause & Solution', 'Agree or Disagree', 'Discuss Both Views'],
-        correctAnswer: 'Agree or Disagree',
-        explanationVi: "Câu hỏi 'Do you agree or disagree?' xác định rõ đây là dạng Opinion Essay (Agree/Disagree). Bạn PHẢI đưa ra quan điểm rõ ràng và nhất quán: hoàn toàn đồng ý, hoàn toàn không đồng ý, hoặc đồng ý một phần.",      },
+        questionText: 'Để đạt Band 6.5+ trong bài Agree/Disagree, cấu trúc bài luận nào là phù hợp nhất?',
+        options: [
+          'Viết 1 body đồng ý + 1 body không đồng ý (không rõ lập trường)',
+          'Viết rõ lập trường (đồng ý hoặc không đồng ý), duy trì nhất quán suốt bài',
+          'Không cần nêu ý kiến cá nhân trong Introduction',
+          'Kết luận không cần nhắc lại lập trường'
+        ],
+        correctAnswer: 'Viết rõ lập trường (đồng ý hoặc không đồng ý), duy trì nhất quán suốt bài',
+        explanationVi: "Band 6.5+ yêu cầu lập trường rõ ràng và nhất quán từ đầu đến cuối. Nếu viết 1 body đồng ý + 1 body không đồng ý mà không có lập trường chủ đạo, bài sẽ bị đánh giá 'unclear position' → giảm điểm Task Response."
+      },
       {
-        questionId: 'w5t8_q02', level: 'elementary', orderIndex: 2,
-        type: 'fill_blank',
-        questionText: 'Điền từ để hoàn chỉnh thesis statement:\n\n"I strongly _____ that a shorter working week would benefit both employees and employers in the long run."',
-        correctAnswer: 'believe',
-        explanationVi: "Trong Agree/Disagree essay, thesis statement cần thể hiện quan điểm cá nhân rõ ràng. 'I strongly believe/argue/contend that...' là các cụm từ chuẩn để mở đầu thesis.",      },
-      {
-        questionId: 'w5t8_q03', level: 'intermediate', orderIndex: 3,
+        questionId: 'w5t8_q02', level: 'beginner', orderIndex: 2,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "productivity" và "work-life balance"):\n\n"Tuần làm việc ngắn hơn có thể cải thiện cân bằng giữa công việc và cuộc sống, từ đó tăng năng suất lao động."',
-        correctAnswer: 'A shorter working week can improve work-life balance, thereby increasing productivity.',
-        modelAnswer: 'A shorter working week can improve work-life balance, thereby increasing productivity.',
-        fallbackKeywords: ['shorter', 'working week', 'work-life balance', 'productivity', 'improve'],
-        explanationVi: "'Thereby + V-ing' = 'do đó, dẫn đến'. Đây là cách kết nối nguyên nhân - kết quả trong một câu ngắn gọn.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Cân bằng giữa công việc và cuộc sống là yếu tố quan trọng để duy trì hạnh phúc tổng thể."',
+        correctAnswer: 'Work-life balance is a crucial factor in maintaining overall happiness.',
+        modelAnswer: 'Work-life balance is a crucial factor in maintaining overall happiness.',
+        fallbackKeywords: ['work-life balance', 'crucial', 'happiness', 'maintaining'],
+        explanationVi: "'A crucial factor in + V-ing' = yếu tố quan trọng trong việc. 'Maintaining overall happiness' = duy trì hạnh phúc tổng thể. 'Crucial' = quan trọng (mạnh hơn 'important')."
+      },
+      {
+        questionId: 'w5t8_q03', level: 'beginner', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Làm việc quá sức trong thời gian dài có thể dẫn đến kiệt sức."',
+        correctAnswer: 'Overworking for an extended period can lead to burnout.',
+        modelAnswer: 'Overworking for an extended period can lead to burnout.',
+        fallbackKeywords: ['overworking', 'extended period', 'burnout', 'lead to'],
+        explanationVi: "'Overworking' = làm việc quá sức (gerund làm chủ ngữ). 'For an extended period' = trong thời gian dài (formal hơn 'for a long time'). 'Burnout' = kiệt sức do công việc."
+      },
+      {
+        questionId: 'w5t8_q04', level: 'beginner', orderIndex: 4,
+        type: 'topic_sentence',
+        questionText: 'Chọn Thesis Statement tốt nhất cho bài essay ĐỒNG Ý với tuần làm việc ngắn hơn:',
+        options: [
+          'I will discuss both the advantages and disadvantages of a shorter working week.',
+          'I strongly agree that the working week should be shorter, as this would significantly benefit both employees and the economy.',
+          'Some people agree while others disagree with this idea.',
+          'A shorter working week is an interesting topic to discuss.'
+        ],
+        correctAnswer: 'I strongly agree that the working week should be shorter, as this would significantly benefit both employees and the economy.',
+        explanationVi: "'I strongly agree that...' nêu lập trường rõ ràng. 'As this would...' giải thích lý do ngay trong thesis — đây là kỹ thuật nâng cao. Lựa chọn 1 là Advantages & Disadvantages, không phải Agree/Disagree."
+      },
+      {
+        questionId: 'w5t8_q05', level: 'elementary', orderIndex: 5,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Khi được nghỉ ngơi nhiều hơn, sức khỏe và phúc lợi của nhân viên được cải thiện đáng kể."',
+        correctAnswer: 'When given more rest time, employee well-being improves significantly.',
+        modelAnswer: 'When given more rest time, employee well-being improves significantly.',
+        fallbackKeywords: ['employee well-being', 'rest', 'improves', 'significantly'],
+        explanationVi: "'When given + N' = khi được cho/nhận (passive participle clause). 'Employee well-being' = sức khỏe và phúc lợi nhân viên. 'Improves significantly' = cải thiện đáng kể."
+      },
+      {
+        questionId: 'w5t8_q06', level: 'elementary', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Một số người cho rằng tuần làm việc ngắn hơn có thể làm chậm tăng trưởng kinh tế."',
+        correctAnswer: 'Some people argue that a shorter working week may slow down economic growth.',
+        modelAnswer: 'Some people argue that a shorter working week may slow down economic growth.',
+        fallbackKeywords: ['shorter working week', 'economic growth', 'slow down', 'argue'],
+        explanationVi: "'Some people argue that...' = một số người cho rằng — cách trình bày quan điểm đối lập mà không mất lập trường cá nhân. 'Slow down' = làm chậm."
+      },
+      {
+        questionId: 'w5t8_q07', level: 'elementary', orderIndex: 7,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"I agree that working weeks should be shorter because workers need time to resting."',
+        correctAnswer: 'I agree that working weeks should be shorter because workers need time to rest.',
+        modelAnswer: 'I agree that working weeks should be shorter because workers need time to rest.',
+        fallbackKeywords: ['agree', 'working weeks', 'shorter', 'workers', 'rest'],
+        explanationVi: "Lỗi: Sau 'need + time + to' phải dùng bare infinitive. 'to resting' → 'to rest'. Cấu trúc: 'need time to + V (nguyên thể)'."
+      },
+      {
+        questionId: 'w5t8_q08', level: 'intermediate', orderIndex: 8,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nghiên cứu cho thấy việc giảm giờ làm thực ra có thể cải thiện năng suất lao động."',
+        correctAnswer: 'Research suggests that reducing working hours can actually improve labor productivity.',
+        modelAnswer: 'Research suggests that reducing working hours can actually improve labor productivity.',
+        fallbackKeywords: ['research', 'working hours', 'labor productivity', 'improve'],
+        explanationVi: "'Research suggests that...' = nghiên cứu cho thấy — cách dẫn chứng học thuật không cần trích nguồn cụ thể. 'Actually' nhấn mạnh điều ngược trực giác. 'Labor productivity' = năng suất lao động."
+      },
+      {
+        questionId: 'w5t8_q09', level: 'intermediate', orderIndex: 9,
+        type: 'paraphrase',
+        questionText: 'Paraphrase câu sau:\n\n"The working week should be shorter and workers should have a longer weekend."',
+        correctAnswer: 'Employees would benefit from a reduction in the number of days they work each week, allowing for extended periods of leisure and recovery.',
+        modelAnswer: 'Employees would benefit from a reduction in the number of days they work each week, allowing for extended periods of leisure and recovery.',
+        fallbackKeywords: ['employees', 'reduction', 'leisure', 'recovery', 'extended'],
+        explanationVi: "Thay 'workers' → 'employees', 'shorter' → 'reduction in', 'longer weekend' → 'extended periods of leisure and recovery'. 'Allowing for' = cho phép, tạo điều kiện cho."
+      },
+      {
+        questionId: 'w5t8_q10', level: 'intermediate', orderIndex: 10,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) ĐỒNG Ý rằng tuần làm việc nên ngắn hơn.\n\nGợi ý: productivity / burnout / work-life balance / employee well-being',
+        modelAnswer: 'I strongly believe that reducing the length of the working week would bring considerable benefits to both workers and employers. When employees are given adequate rest, they return to work with renewed energy and sharper focus, which research consistently shows leads to higher labor productivity. Moreover, a longer weekend provides valuable time for physical exercise, family activities, and personal development, all of which contribute to improved mental well-being. Countries such as Iceland have already trialled a four-day working week with overwhelmingly positive results, demonstrating that this approach is both practical and economically viable.',
+        fallbackKeywords: ['productivity', 'rest', 'well-being', 'work-life balance', 'four-day', 'employees'],
+        explanationVi: "Đoạn Agree cần: lập trường rõ → lý do 1 → lý do 2 → bằng chứng/ví dụ thực tế. Không nên nhắc nhược điểm trong đoạn này."
+      }
     ]
   },
   {
     week: 5, block: 'agree_disagree', orderIndex: 9,
-    topicName: 'Remote Work as the Future', topicEmoji: '🏠',
+    topicName: 'Remote Work as the Future', topicEmoji: '🧑‍💻',
     essayType: 'agree_disagree',
     prompt: 'Working from home will become the main way people work in the future. Do you agree or disagree?',
     hintAdvantages: ['flexibility', 'cost savings', 'no commute'],
     hintDisadvantages: ['isolation', 'difficulty monitoring', 'blurred boundaries'],
     vocabularyList: [
       { term: 'remote work', definitionVi: 'làm việc từ xa', example: 'Remote work has become increasingly common since 2020.' },
-      { term: 'commute', definitionVi: 'di chuyển đến nơi làm việc', example: 'Eliminating the daily commute saves both time and money.' },
-      { term: 'collaboration', definitionVi: 'sự hợp tác', example: 'In-person collaboration is difficult to replicate online.' }
+      { term: 'commuting time', definitionVi: 'thời gian đi lại', example: 'Employees can save commuting time by working from home.' },
+      { term: 'hybrid work model', definitionVi: 'mô hình làm việc kết hợp', example: 'Many companies have shifted to a hybrid work model.' },
+      { term: 'company culture', definitionVi: 'văn hóa doanh nghiệp', example: 'Working from home may negatively affect company culture.' },
+      { term: 'long-term sustainability', definitionVi: 'bền vững dài hạn', example: 'Some argue that remote work lacks long-term sustainability.' },
+      { term: 'prevalent', definitionVi: 'phổ biến', example: 'Remote work has become more prevalent since the pandemic.' },
+      { term: 'pandemic', definitionVi: 'đại dịch', example: 'The pandemic accelerated the shift to remote work globally.' },
+      { term: 'collaboration', definitionVi: 'sự hợp tác', example: 'In-person collaboration is difficult to replicate online.' },
+      { term: 'dominant', definitionVi: 'chiếm ưu thế, chủ đạo', example: 'Remote work is unlikely to become the dominant working style.' },
+      { term: 'flexibility', definitionVi: 'tính linh hoạt', example: 'Remote work offers greater flexibility to employees.' },
+      { term: 'isolation', definitionVi: 'sự cô lập', example: 'Prolonged remote work can lead to professional isolation.' },
+      { term: 'in-person', definitionVi: 'trực tiếp (gặp mặt)', example: 'In-person meetings remain essential for complex negotiations.' },
+      { term: 'office-based work', definitionVi: 'làm việc tại văn phòng', example: 'Office-based work remains necessary for many industries.' },
+      { term: 'productivity', definitionVi: 'năng suất làm việc', example: 'The impact of remote work on productivity varies by industry.' },
+      { term: 'blurred boundaries', definitionVi: 'ranh giới mờ nhạt', example: 'Remote work creates blurred boundaries between work and personal life.' }
     ],
     questions: [
       {
         questionId: 'w5t9_q01', level: 'beginner', orderIndex: 1,
-        type: 'fill_blank',
-        questionText: 'Điền từ thích hợp:\n\n"In my opinion, remote work will _____ dominate the workplace within the next decade."',
-        correctAnswer: 'certainly',
-        explanationVi: "'Certainly/undoubtedly/inevitably' là các trạng từ dùng để thể hiện sự chắc chắn khi đồng ý với một quan điểm. Đây là cách nhấn mạnh lập trường trong Agree/Disagree essay.",      },
-      {
-        questionId: 'w5t9_q02', level: 'elementary', orderIndex: 2,
-        type: 'topic_sentence',
-        questionText: 'Chọn topic sentence tốt nhất cho đoạn văn lập luận PHẢN ĐỐI (disagree) với ý kiến remote work sẽ thống trị tương lai:',
-        options: [
-          'Remote work is popular in many countries.',
-          'However, there are compelling reasons to believe that office-based work will remain essential.',
-          'Working from home has many benefits.',
-          'The future of work is uncertain.'
-        ],
-        correctAnswer: 'However, there are compelling reasons to believe that office-based work will remain essential.',
-        explanationVi: "Đây là topic sentence cho đoạn phản đối. 'Compelling reasons' = lý do thuyết phục. 'However' chuyển hướng lập luận. Câu phải nêu rõ vị trí: office work vẫn cần thiết.",      },
-      {
-        questionId: 'w5t9_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "collaboration" và "remote work"):\n\n"Mặc dù làm việc từ xa mang lại sự linh hoạt, nhưng nó khó có thể thay thế hoàn toàn sự hợp tác trực tiếp trong văn phòng."',
-        correctAnswer: 'Although remote work offers flexibility, it is unlikely to fully replace in-person collaboration in the office.',
-        modelAnswer: 'Although remote work offers flexibility, it is unlikely to fully replace in-person collaboration in the office.',
-        fallbackKeywords: ['remote work', 'flexibility', 'replace', 'collaboration', 'office'],
-        explanationVi: "'It is unlikely to + V' = 'khó có thể'. 'In-person collaboration' = hợp tác trực tiếp. Cấu trúc Although... expresses contrast hiệu quả.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Làm việc từ xa đã trở nên phổ biến hơn kể từ sau đại dịch."',
+        correctAnswer: 'Remote work has become more prevalent since the pandemic.',
+        modelAnswer: 'Remote work has become more prevalent since the pandemic.',
+        fallbackKeywords: ['remote work', 'prevalent', 'pandemic'],
+        explanationVi: "'Prevalent' = phổ biến, lan rộng (academic hơn 'popular' hoặc 'common'). 'Since + N' dùng với Present Perfect để diễn đạt thay đổi từ một điểm trong quá khứ đến nay."
+      },
+      {
+        questionId: 'w5t9_q02', level: 'beginner', orderIndex: 2,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhân viên có thể tiết kiệm thời gian đi lại bằng cách làm việc tại nhà mỗi ngày."',
+        correctAnswer: 'Employees can save commuting time by working from home every day.',
+        modelAnswer: 'Employees can save commuting time by working from home every day.',
+        fallbackKeywords: ['employees', 'commuting time', 'working from home'],
+        explanationVi: "'Save + N + by + V-ing' = tiết kiệm gì bằng cách làm gì. 'Commuting time' = thời gian đi lại (danh từ ghép). Đây là một lợi ích cụ thể của remote work."
+      },
+      {
+        questionId: 'w5t9_q03', level: 'elementary', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhiều công ty đã chuyển sang mô hình làm việc kết hợp, kết hợp cả làm ở nhà và tại văn phòng."',
+        correctAnswer: 'Many companies have shifted to a hybrid work model combining home-based and office work.',
+        modelAnswer: 'Many companies have shifted to a hybrid work model combining home-based and office work.',
+        fallbackKeywords: ['hybrid work model', 'companies', 'home-based', 'office'],
+        explanationVi: "'Shift to + N' = chuyển sang. 'Hybrid work model' = mô hình làm việc kết hợp. 'Combining...' là participle phrase bổ nghĩa. Present Perfect nhấn mạnh sự thay đổi đã xảy ra."
+      },
+      {
+        questionId: 'w5t9_q04', level: 'elementary', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Làm việc tại nhà có thể ảnh hưởng tiêu cực đến văn hóa doanh nghiệp."',
+        correctAnswer: 'Working from home may have a negative impact on company culture.',
+        modelAnswer: 'Working from home may have a negative impact on company culture.',
+        fallbackKeywords: ['company culture', 'negative impact', 'working from home'],
+        explanationVi: "'Have a negative impact on + N' = ảnh hưởng tiêu cực đến. 'Company culture' = văn hóa doanh nghiệp. Đây là một trong những nhược điểm chính của remote work."
+      },
+      {
+        questionId: 'w5t9_q05', level: 'elementary', orderIndex: 5,
+        type: 'rearrange',
+        questionText: 'Sắp xếp các từ/cụm từ sau thành câu hoàn chỉnh:\n[remote work / I / will / believe / the dominant / become / working style of the future]',
+        correctAnswer: 'I believe remote work will become the dominant working style of the future.',
+        modelAnswer: 'I believe remote work will become the dominant working style of the future.',
+        fallbackKeywords: ['remote work', 'dominant', 'working style', 'future'],
+        explanationVi: "Cấu trúc: 'I believe + (that) + S + will + V'. 'Dominant' = chiếm ưu thế. 'Working style of the future' = phong cách làm việc của tương lai."
+      },
+      {
+        questionId: 'w5t9_q06', level: 'intermediate', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Một số người cho rằng làm việc từ xa thiếu tính bền vững lâu dài."',
+        correctAnswer: 'Some people argue that remote work lacks long-term sustainability.',
+        modelAnswer: 'Some people argue that remote work lacks long-term sustainability.',
+        fallbackKeywords: ['remote work', 'long-term sustainability', 'argue'],
+        explanationVi: "'Lack + N' = thiếu, không có (verb, không cần 'lacks of'). 'Long-term sustainability' = tính bền vững lâu dài. 'Some people argue that' = cách trình bày quan điểm phản bác."
+      },
+      {
+        questionId: 'w5t9_q07', level: 'intermediate', orderIndex: 7,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) PHẢN ĐỐI ý kiến cho rằng làm việc từ xa sẽ là cách làm việc chính trong tương lai.\n\nGợi ý: company culture / collaboration / isolation / office-based work',
+        modelAnswer: 'Despite the growing popularity of remote work, I disagree that it will become the dominant working arrangement in the future. Many industries, including manufacturing, healthcare, and hospitality, require physical presence and therefore cannot transition fully to remote models. Furthermore, even in knowledge-based sectors, in-person collaboration remains crucial for innovation, team cohesion, and maintaining a strong company culture. Prolonged remote work has also been linked to professional isolation and blurred work-life boundaries, which ultimately diminish employee well-being and retention. A hybrid approach is far more sustainable than complete remote working.',
+        fallbackKeywords: ['company culture', 'collaboration', 'isolation', 'office', 'hybrid', 'dominant'],
+        explanationVi: "Đoạn Disagree cần nêu lập trường rõ ngay đầu, sau đó đưa ra 2-3 lý do phản đối với giải thích cụ thể. Kết bằng alternative solution (hybrid model) thuyết phục hơn."
+      }
     ]
   },
   {
     week: 6, block: 'agree_disagree', orderIndex: 10,
-    topicName: 'Job Satisfaction vs. Salary', topicEmoji: '💼',
+    topicName: 'Job Satisfaction vs. Salary', topicEmoji: '📈',
     essayType: 'agree_disagree',
     prompt: 'Job satisfaction is more important than a high salary. Do you agree or disagree?',
     hintAdvantages: ['long-term happiness', 'reduces stress', 'better performance'],
@@ -361,37 +1061,83 @@ const topics = [
     vocabularyList: [
       { term: 'job satisfaction', definitionVi: 'sự hài lòng với công việc', example: 'Job satisfaction leads to higher employee retention rates.' },
       { term: 'financial security', definitionVi: 'an toàn tài chính', example: 'A good salary provides financial security for the family.' },
-      { term: 'intrinsic motivation', definitionVi: 'động lực nội tại', example: 'Intrinsic motivation drives employees to perform at their best.' }
+      { term: 'intrinsic motivation', definitionVi: 'động lực nội tại', example: 'Intrinsic motivation drives employees to perform at their best.' },
+      { term: 'job burnout', definitionVi: 'kiệt sức vì công việc', example: 'Many people experience job burnout when doing work they dislike.' },
+      { term: 'sense of fulfillment', definitionVi: 'cảm giác mãn nguyện', example: 'A sense of fulfillment motivates people every single day.' },
+      { term: 'long-term happiness', definitionVi: 'hạnh phúc lâu dài', example: 'Pursuing job satisfaction ultimately leads to greater long-term happiness.' },
+      { term: 'performance', definitionVi: 'hiệu suất, kết quả làm việc', example: 'People who love their jobs often achieve higher performance.' },
+      { term: 'work motivation', definitionVi: 'động lực làm việc', example: 'Work motivation is closely linked to job satisfaction.' },
+      { term: 'employee retention', definitionVi: 'giữ chân nhân viên', example: 'High job satisfaction improves employee retention rates.' },
+      { term: 'pursue', definitionVi: 'theo đuổi', example: 'Many young people pursue careers that offer personal meaning over high pay.' },
+      { term: 'well-being', definitionVi: 'sức khỏe và hạnh phúc', example: 'Job satisfaction is a key factor in overall personal well-being.' },
+      { term: 'dislike', definitionVi: 'không thích', example: 'Working in a role you dislike can lead to chronic stress.' },
+      { term: 'ultimately', definitionVi: 'cuối cùng, rốt cuộc', example: 'Financial success without job satisfaction ultimately feels hollow.' },
+      { term: 'survive', definitionVi: 'tồn tại, sống sót', example: 'Without adequate income, people cannot survive comfortably.' },
+      { term: 'passion', definitionVi: 'đam mê', example: 'Following one\'s passion often leads to greater professional success.' }
     ],
     questions: [
       {
         questionId: 'w6t10_q01', level: 'beginner', orderIndex: 1,
-        type: 'essay_type_recognition',
-        questionText: 'Đề bài: "Job satisfaction is more important than a high salary. Do you agree or disagree?" — Bài luận dạng này yêu cầu gì?',
-        options: [
-          'Chỉ phân tích lợi ích và bất lợi',
-          'Đưa ra quan điểm cá nhân rõ ràng và lập luận bảo vệ quan điểm đó',
-          'Trình bày hai quan điểm đối lập một cách công bằng',
-          'Giải thích nguyên nhân và tìm giải pháp'
-        ],
-        correctAnswer: 'Đưa ra quan điểm cá nhân rõ ràng và lập luận bảo vệ quan điểm đó',
-        explanationVi: "Agree/Disagree essay yêu cầu bạn chọn MỘT lập trường (đồng ý/không đồng ý/một phần đồng ý) và nhất quán bảo vệ trong suốt bài. Không viết 'một mặt... mặt khác...' như Discuss Both Views.",      },
-      {
-        questionId: 'w6t10_q02', level: 'elementary', orderIndex: 2,
-        type: 'rearrange',
-        questionText: 'Sắp xếp các từ thành câu luận điểm:\n[satisfaction / job / more / health / mental / contributes / to / good]',
-        correctAnswer: 'Job satisfaction contributes more to good mental health.',
-        modelAnswer: 'Job satisfaction contributes more to good mental health.',
-        fallbackKeywords: ['job satisfaction', 'contributes', 'mental health'],
-        explanationVi: "'Contribute to + N' = góp phần vào. Đây là cách diễn đạt tác động tích cực. 'Mental health' là chủ đề quan trọng trong IELTS.",      },
-      {
-        questionId: 'w6t10_q03', level: 'intermediate', orderIndex: 3,
         type: 'translation',
-        questionText: 'Dịch câu sau sang tiếng Anh (dùng "job satisfaction" và "intrinsic motivation"):\n\n"Sự hài lòng với công việc nuôi dưỡng động lực nội tại, điều này cuối cùng dẫn đến hiệu suất công việc cao hơn và sự nghiệp lâu dài hơn."',
-        correctAnswer: 'Job satisfaction fosters intrinsic motivation, which ultimately leads to higher work performance and a longer career.',
-        modelAnswer: 'Job satisfaction fosters intrinsic motivation, which ultimately leads to higher work performance and a longer career.',
-        fallbackKeywords: ['job satisfaction', 'intrinsic motivation', 'performance', 'career', 'ultimately'],
-        explanationVi: "'Foster' = nuôi dưỡng, thúc đẩy. 'Ultimately' = cuối cùng, rốt cuộc — rất tốt cho IELTS. Mệnh đề quan hệ 'which leads to' kết nối hệ quả.",      }
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Mức lương cao giúp mang lại sự an toàn tài chính cho người lao động."',
+        correctAnswer: 'A high salary helps provide financial security for workers.',
+        modelAnswer: 'A high salary helps provide financial security for workers.',
+        fallbackKeywords: ['high salary', 'financial security', 'workers'],
+        explanationVi: "'Help + V (bare)' = giúp làm gì. 'Provide financial security' = mang lại sự an toàn tài chính. Đây là lập luận phản đối (disagree) — lương cao đáp ứng nhu cầu cơ bản."
+      },
+      {
+        questionId: 'w6t10_q02', level: 'beginner', orderIndex: 2,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Cảm giác mãn nguyện trong công việc tạo động lực cho con người mỗi ngày."',
+        correctAnswer: 'A sense of fulfillment in work motivates people every single day.',
+        modelAnswer: 'A sense of fulfillment in work motivates people every single day.',
+        fallbackKeywords: ['sense of fulfillment', 'motivates', 'people', 'work'],
+        explanationVi: "'A sense of fulfillment' = cảm giác mãn nguyện (noun phrase). 'Every single day' = mỗi ngày (nhấn mạnh hơn 'every day'). Đây là lập luận ủng hộ job satisfaction."
+      },
+      {
+        questionId: 'w6t10_q03', level: 'elementary', orderIndex: 3,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Những người yêu thích công việc của mình thường đạt hiệu suất cao hơn nhờ động lực nội tại mạnh mẽ."',
+        correctAnswer: 'People who love their jobs often achieve higher performance due to strong intrinsic motivation.',
+        modelAnswer: 'People who love their jobs often achieve higher performance due to strong intrinsic motivation.',
+        fallbackKeywords: ['intrinsic motivation', 'performance', 'love', 'jobs'],
+        explanationVi: "'Due to + N' = do, vì (chỉ nguyên nhân — formal). 'Achieve higher performance' = đạt hiệu suất cao hơn. Relative clause 'who love their jobs' xác định nhóm người cụ thể."
+      },
+      {
+        questionId: 'w6t10_q04', level: 'elementary', orderIndex: 4,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Nhiều người cảm thấy kiệt sức khi làm công việc họ không thích, dù lương có cao."',
+        correctAnswer: 'Many people experience job burnout when doing work they dislike, even if the salary is high.',
+        modelAnswer: 'Many people experience job burnout when doing work they dislike, even if the salary is high.',
+        fallbackKeywords: ['job burnout', 'dislike', 'salary', 'high'],
+        explanationVi: "'Experience job burnout' = trải qua kiệt sức vì công việc. 'Even if' = dù cho, ngay cả khi. 'Work they dislike' = relative clause không cần 'which/that' (object relative clause)."
+      },
+      {
+        questionId: 'w6t10_q05', level: 'elementary', orderIndex: 5,
+        type: 'error_correction',
+        questionText: 'Câu sau có lỗi. Hãy sửa lại:\n\n"I disagree that job satisfaction is more important than salary, because without money, peoples cannot survive."',
+        correctAnswer: 'I disagree that job satisfaction is more important than salary, because without money, people cannot survive.',
+        modelAnswer: 'I disagree that job satisfaction is more important than salary, because without money, people cannot survive.',
+        fallbackKeywords: ['job satisfaction', 'salary', 'people', 'survive'],
+        explanationVi: "Lỗi: 'peoples' không tồn tại. 'People' đã là số nhiều (uncountable collective noun). Không thêm 's' vào 'people'."
+      },
+      {
+        questionId: 'w6t10_q06', level: 'intermediate', orderIndex: 6,
+        type: 'translation',
+        questionText: 'Dịch câu sau sang tiếng Anh:\n\n"Dù đồng ý hay không, việc theo đuổi sự hài lòng trong công việc cuối cùng dẫn đến hạnh phúc lâu dài hơn."',
+        correctAnswer: 'Regardless of one\'s view, pursuing job satisfaction ultimately leads to greater long-term happiness.',
+        modelAnswer: 'Regardless of one\'s view, pursuing job satisfaction ultimately leads to greater long-term happiness.',
+        fallbackKeywords: ['job satisfaction', 'long-term happiness', 'pursuing', 'ultimately'],
+        explanationVi: "'Regardless of one\'s view' = bất kể quan điểm của ai (formal phrase). 'Pursuing + N' (gerund làm chủ ngữ). 'Ultimately' = cuối cùng, rốt cuộc — adverb học thuật quan trọng."
+      },
+      {
+        questionId: 'w6t10_q07', level: 'intermediate', orderIndex: 7,
+        type: 'short_writing',
+        questionText: 'Viết 1 đoạn body paragraph (~80-100 từ) ĐỒNG Ý rằng sự hài lòng trong công việc quan trọng hơn mức lương cao.\n\nGợi ý: intrinsic motivation / job burnout / performance / long-term happiness',
+        modelAnswer: 'I firmly agree that job satisfaction is more important than a high salary in the long run. When individuals are genuinely passionate about their work, they are driven by intrinsic motivation, which consistently produces higher levels of performance and creativity than financial incentives alone. In contrast, employees who pursue high salaries in roles they find unfulfilling are significantly more susceptible to job burnout, leading to disengagement, absenteeism, and ultimately career breakdown. Research indicates that long-term happiness is more strongly correlated with a sense of purpose at work than with financial compensation, making job satisfaction the more valuable priority.',
+        fallbackKeywords: ['job satisfaction', 'intrinsic motivation', 'burnout', 'performance', 'long-term happiness', 'purpose'],
+        explanationVi: "Bài Agree cần: thesis rõ → lý do ủng hộ có giải thích → contrast với lập trường đối lập → kết bằng dẫn chứng. Tránh đề cập lương quan trọng hơn vì sẽ mâu thuẫn lập trường."
+      }
     ]
   },
 
@@ -1132,19 +1878,12 @@ const topics = [
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
 
-  const existingNames = new Set(
-    (await Task2Topic.find({}, 'topicName').lean()).map(t => t.topicName)
-  );
+  const ops = topics.map(t => ({
+    replaceOne: { filter: { topicName: t.topicName }, replacement: t, upsert: true }
+  }));
 
-  const toInsert = topics.filter(t => !existingNames.has(t.topicName));
-
-  if (!toInsert.length) {
-    console.log(`[Task2Seed] All ${topics.length} topics already present – skip`);
-    return;
-  }
-
-  await Task2Topic.insertMany(toInsert);
-  console.log(`[Task2Seed] Seeded ${toInsert.length} new Task 2 topics (total target: ${topics.length})`);
+  const result = await Task2Topic.bulkWrite(ops);
+  console.log(`[Task2Seed] upserted ${result.upsertedCount}, modified ${result.modifiedCount} Task 2 topics`);
 }
 
 // Allow direct execution: node backend/scripts/seedTask2Exercises.js
