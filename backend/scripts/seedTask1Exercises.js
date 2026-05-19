@@ -495,16 +495,688 @@ const exercises = [
   }
 ];
 
+// ─── 50 CÂU MẪU IELTS TASK 1 ──────────────────────────────────────────────
+const sampleExercises = [
+  // ─── NOUN PHRASE ────────────────────────────────────────────────────────
+  {
+    skillType: 'noun_phrase', module: 1, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền từ thích hợp vào chỗ trống:',
+    sentenceWithBlanks: 'The ___ of CO₂ emitted by factories in 2010 was 500 tonnes.',
+    blanksCount: 1,
+    sampleAnswers: ['amount', 'quantity'],
+    primaryAnswer: 'amount',
+    grammarPoint: 'Uncountable noun: The amount/quantity of + uncountable noun (CO₂, water, energy)',
+    explanation: 'CO₂ là danh từ không đếm được → dùng "amount" hoặc "quantity", không dùng "number"',
+    hints: ['amount', 'quantity'],
+    orderIndex: 37, xpReward: 5
+  },
+  {
+    skillType: 'noun_phrase', module: 1, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn cụm từ ĐÚNG để mô tả dữ liệu:',
+    questionEn: 'Subject: students enrolled in university | Data: 45%',
+    options: [
+      'The number of students enrolled was 45%.',
+      'The proportion of students enrolled in university was 45%.',
+      'The amount of students enrolled was 45%.',
+      'The figure of enrolled students was 45%.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Percentage data → The proportion/percentage/rate of + noun',
+    explanation: 'Dữ liệu % dùng proportion/percentage/rate. "Number" và "amount" không dùng cho %.',
+    orderIndex: 38, xpReward: 5
+  },
+  {
+    skillType: 'noun_phrase', module: 1, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền từ thích hợp (number / amount / proportion):',
+    sentenceWithBlanks: 'The ___ of electricity consumed in Germany doubled between 2000 and 2020.',
+    blanksCount: 1,
+    sampleAnswers: ['amount', 'quantity'],
+    primaryAnswer: 'amount',
+    grammarPoint: 'Electricity = uncountable → amount of electricity',
+    explanation: 'Điện (electricity) không đếm được → "amount". Tương tự: water, oil, gas, food.',
+    hints: ['amount', 'quantity'],
+    orderIndex: 39, xpReward: 5
+  },
+  {
+    skillType: 'noun_phrase', module: 1, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu ĐÚNG ngữ pháp:',
+    questionEn: 'Chủ đề: tourists visiting Paris | Năm: 2019 | Số liệu: 38 million',
+    options: [
+      'The amount of tourists visiting Paris was 38 million in 2019.',
+      'The number of tourists visiting Paris stood at 38 million in 2019.',
+      'The percentage of tourists in Paris was 38 million.',
+      'There was 38 million tourists visiting Paris.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Countable noun (tourists) → The number of + plural noun + stood at',
+    explanation: '"tourists" đếm được → "number". "stood at" = cách hay thay cho "was/were".',
+    orderIndex: 40, xpReward: 5
+  },
+  {
+    skillType: 'noun_phrase', module: 1, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn cụm danh từ ĐÚNG cho dữ liệu sau:',
+    questionEn: 'Data: 60% of workers in the UK used public transport in 2015',
+    options: [
+      'The number of UK workers using public transport was 60%.',
+      'The rate of UK workers using public transport stood at 60% in 2015.',
+      'The amount of workers in the UK was 60% in 2015.',
+      '60% figures of UK workers used public transport.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Percentage → rate/proportion/percentage of + noun',
+    explanation: '"rate" = tỷ lệ, dùng khi nói đến hành vi/thói quen của nhóm người.',
+    orderIndex: 41, xpReward: 5
+  },
+
+  // ─── DATA DESCRIPTION ───────────────────────────────────────────────────
+  {
+    skillType: 'data_description', module: 1, level: 'beginner', type: 'translation',
+    instruction: 'Dịch sang tiếng Anh (dữ liệu ở cuối câu):',
+    questionVi: 'Số lượng sinh viên đại học ở Anh năm 2010 là 2,5 triệu người.',
+    sampleAnswers: [
+      'The number of university students in the UK was 2.5 million in 2010.',
+      'The number of university students in the UK stood at 2.5 million in 2010.',
+      'The quantity of university students in the UK was 2.5 million in 2010.'
+    ],
+    primaryAnswer: 'The number of university students in the UK was 2.5 million in 2010.',
+    grammarPoint: 'Structure 1: The number of + noun + was/stood at + figure + in [year]',
+    explanation: 'Cấu trúc cơ bản nhất: chủ ngữ là "The number of...", dữ liệu ở cuối.',
+    hints: ['The number of', 'university students', 'was/stood at', '2.5 million'],
+    orderIndex: 42, xpReward: 8
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'beginner', type: 'translation',
+    instruction: 'Dịch sang tiếng Anh (dữ liệu ở đầu câu):',
+    questionVi: '38% dân số Australia sử dụng phương tiện công cộng vào năm 2018.',
+    sampleAnswers: [
+      '38% of the Australian population used public transport in 2018.',
+      "38% of Australia's population travelled by public transport in 2018."
+    ],
+    primaryAnswer: '38% of the Australian population used public transport in 2018.',
+    grammarPoint: 'Structure 2: Figure% of + noun + verb (data at start of sentence)',
+    explanation: 'Khi % ở đầu câu: [X%] of [subject] + verb. Không cần "The percentage of".',
+    hints: ['38% of', 'the Australian population', 'used', 'in 2018'],
+    orderIndex: 43, xpReward: 8
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'beginner', type: 'rearrange',
+    instruction: 'Sắp xếp các từ thành câu đúng:',
+    questionEn: 'Japan renewable energy = 20% of total electricity (2020)',
+    baseWords: ['renewable', 'energy', 'accounted', 'for', '20%', 'of', "Japan's", 'total', 'electricity', 'in', '2020'],
+    sampleAnswers: ["Renewable energy accounted for 20% of Japan's total electricity in 2020."],
+    primaryAnswer: "Renewable energy accounted for 20% of Japan's total electricity in 2020.",
+    grammarPoint: 'Subject + accounted for + figure% + of + noun',
+    explanation: '"accounted for" = chiếm tỉ lệ, thường dùng khi % nằm sau động từ.',
+    orderIndex: 44, xpReward: 8
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'elementary', type: 'translation',
+    instruction: 'Dịch sang tiếng Anh dùng cấu trúc "There were":',
+    questionVi: 'Có khoảng 1,2 tỷ người sử dụng xe đạp trên toàn thế giới vào năm 2015.',
+    sampleAnswers: [
+      'There were approximately 1.2 billion people using bicycles worldwide in 2015.',
+      'There were around 1.2 billion bicycle users across the world in 2015.'
+    ],
+    primaryAnswer: 'There were approximately 1.2 billion people using bicycles worldwide in 2015.',
+    grammarPoint: 'Structure 3: There were + figure + noun + V-ing / prepositional phrase',
+    explanation: '"approximately/around" = khoảng, dùng khi số liệu không chính xác tuyệt đối.',
+    hints: ['There were', 'approximately', '1.2 billion people', 'using bicycles', 'worldwide'],
+    orderIndex: 45, xpReward: 8
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'elementary', type: 'rearrange',
+    instruction: 'Sắp xếp thành câu mô tả dữ liệu đúng:',
+    questionEn: 'Brazil coffee exports = $5 billion (2005)',
+    baseWords: ["Brazil's", 'coffee', 'exports', 'were', 'worth', '$5', 'billion', 'in', '2005'],
+    sampleAnswers: ["Brazil's coffee exports were worth $5 billion in 2005."],
+    primaryAnswer: "Brazil's coffee exports were worth $5 billion in 2005.",
+    grammarPoint: 'Subject + were worth + monetary figure (dùng cho dữ liệu tiền tệ)',
+    explanation: 'Dữ liệu tài chính dùng "were worth" thay vì "was/were + figure".',
+    orderIndex: 46, xpReward: 8
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu sau dùng cụm "constituted":',
+    questionVi: 'Lĩnh vực dịch vụ chiếm 72% GDP của Anh vào năm 2000.',
+    sampleAnswers: [
+      "The service sector constituted 72% of the UK's GDP in 2000.",
+      "The service sector made up 72% of the UK's GDP in 2000.",
+      'The service sector represented 72% of UK GDP in 2000.'
+    ],
+    primaryAnswer: "The service sector constituted 72% of the UK's GDP in 2000.",
+    grammarPoint: 'constitute / make up / represent = chiếm (% của tổng thể)',
+    explanation: '"constitute/make up/represent" là các từ học thuật thay thế "accounted for".',
+    orderIndex: 47, xpReward: 10
+  },
+
+  // ─── COMPARISON ─────────────────────────────────────────────────────────
+  {
+    skillType: 'comparison', module: 1, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền từ/cụm từ so sánh thích hợp:',
+    sentenceWithBlanks: 'The UK spent $50 billion on education, ___ only $30 billion in France.',
+    blanksCount: 1,
+    sampleAnswers: ['compared to', 'compared with', 'in comparison with'],
+    primaryAnswer: 'compared to',
+    grammarPoint: 'compared to/with | in comparison with — so sánh 2 giá trị',
+    explanation: '"compared to/with" dùng nối trực tiếp hai số liệu trong cùng câu.',
+    hints: ['compared to', 'compared with', 'in comparison with'],
+    orderIndex: 48, xpReward: 5
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'beginner', type: 'translation',
+    instruction: 'Dịch câu sau dùng "whereas":',
+    questionVi: 'Số người dùng ô tô là 10 triệu, trong khi số người đi xe buýt là 25 triệu.',
+    sampleAnswers: [
+      'The number of car users was 10 million, whereas the number of bus users was 25 million.',
+      'The figure for car users was 10 million, whereas the figure for bus users was 25 million.',
+      'There were 10 million car users, whereas there were 25 million bus users.'
+    ],
+    primaryAnswer: 'The number of car users was 10 million, whereas the number of bus users was 25 million.',
+    grammarPoint: 'whereas = while = trong khi (nối 2 mệnh đề tương phản)',
+    explanation: '"whereas" thường trang trọng hơn "while", cả hai đặt ở giữa câu.',
+    hints: ['The number of car users', 'was 10 million', 'whereas', 'the number of bus users', 'was 25 million'],
+    orderIndex: 49, xpReward: 10
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'elementary', type: 'translation',
+    instruction: 'Dịch câu sau dùng "respectively":',
+    questionVi: 'Tỷ lệ nam và nữ học đại học lần lượt là 55% và 45%.',
+    sampleAnswers: [
+      'The proportions of male and female university students were 55% and 45%, respectively.',
+      'The figures for male and female university students were 55% and 45%, respectively.'
+    ],
+    primaryAnswer: 'The proportions of male and female university students were 55% and 45%, respectively.',
+    grammarPoint: 'respectively — luôn đặt CUỐI câu, chỉ sự tương ứng theo thứ tự',
+    explanation: '"respectively" = lần lượt, phải đặt cuối câu sau dấu phẩy.',
+    hints: ['The proportions of', 'male and female', 'were 55% and 45%', 'respectively'],
+    orderIndex: 50, xpReward: 10
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'elementary', type: 'translation',
+    instruction: 'Dịch câu sau dùng "three times as many as":',
+    questionVi: 'Số người dùng điện thoại thông minh gấp ba lần số người dùng máy tính bảng.',
+    sampleAnswers: [
+      'The number of smartphone users was three times as many as that of tablet users.',
+      'The figure for smartphone users was three times as high as that for tablet users.',
+      'There were three times as many smartphone users as tablet users.'
+    ],
+    primaryAnswer: 'The number of smartphone users was three times as many as that of tablet users.',
+    grammarPoint: 'Multiplicative: X times as many/much as + "that of" (tránh lặp)',
+    explanation: '"that of" thay thế "the number of" để tránh lặp từ trong câu.',
+    hints: ['three times as many as', 'that of tablet users'],
+    orderIndex: 51, xpReward: 12
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu dùng "by contrast":',
+    questionVi: "Dân số đô thị của Trung Quốc tăng mạnh lên 60%. Ngược lại, dân số nông thôn giảm xuống còn 40%.",
+    sampleAnswers: [
+      "China's urban population rose significantly to 60%. By contrast, the rural population declined to 40%.",
+      'The urban population of China increased sharply to 60%. By contrast, the rural figure fell to just 40%.'
+    ],
+    primaryAnswer: "China's urban population rose significantly to 60%. By contrast, the rural population declined to 40%.",
+    grammarPoint: 'By contrast / In contrast — đặt đầu câu thứ hai, nối hai xu hướng trái chiều',
+    explanation: '"By contrast" thay thế "however", đặt đầu câu + dấu phẩy.',
+    orderIndex: 52, xpReward: 12
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'intermediate', type: 'multiple_choice',
+    instruction: 'Chọn câu SO SÁNH đúng nhất:',
+    questionEn: 'Germany: 80 million tonnes steel | France: 40 million tonnes steel (same year)',
+    options: [
+      'Germany produced as twice as much steel as France.',
+      'Germany produced twice as much steel as France.',
+      'Germany produced two times more steel as France.',
+      "Germany's steel was double than France."
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'twice as much as (không có "as" trước "twice", không có "more")',
+    explanation: '"twice as much as" là cấu trúc cố định. KHÔNG nói "as twice as" hay "double than".',
+    orderIndex: 53, xpReward: 8
+  },
+
+  // ─── TREND LANGUAGE ─────────────────────────────────────────────────────
+  {
+    skillType: 'trend_language', module: 2, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ mô tả xu hướng GIẢM phù hợp nhất:',
+    questionEn: 'The number of coal mines ___ sharply between 1980 and 2000.',
+    options: ['increased', 'declined', 'fluctuated', 'stabilised'],
+    correctOptionIndex: 1,
+    grammarPoint: 'Decline/fall/drop/decrease/plummet/plunge = xu hướng giảm',
+    explanation: 'Các từ chỉ giảm: fell, dropped, declined, decreased, plummeted, plunged.',
+    orderIndex: 54, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền giới từ đúng (to / by / at / of):',
+    sentenceWithBlanks: 'Oil prices fell ___ $30 per barrel in 2016.',
+    blanksCount: 1,
+    sampleAnswers: ['to'],
+    primaryAnswer: 'to',
+    grammarPoint: 'fell TO = giảm xuống tới mức (giá trị cuối)',
+    explanation: '"to" = điểm đến (giá trị sau khi thay đổi). "by" = mức thay đổi. Ví dụ: fell by $20 vs fell to $30.',
+    hints: ['to', 'by'],
+    orderIndex: 55, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền giới từ đúng:',
+    sentenceWithBlanks: 'House prices rose ___ 15% over the decade.',
+    blanksCount: 1,
+    sampleAnswers: ['by'],
+    primaryAnswer: 'by',
+    grammarPoint: 'rose BY = tăng thêm (mức tăng, không phải giá trị cuối)',
+    explanation: '"by 15%" = tăng THÊM 15%. Nếu ban đầu là 100, sau là 115.',
+    hints: ['by', 'to'],
+    orderIndex: 56, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'beginner', type: 'fill_blank',
+    instruction: 'Điền giới từ đúng:',
+    sentenceWithBlanks: 'Internet usage levelled off ___ around 70% from 2015 onwards.',
+    blanksCount: 1,
+    sampleAnswers: ['at'],
+    primaryAnswer: 'at',
+    grammarPoint: 'level off AT / stabilise AT / remain stable AT = ổn định ở mức',
+    explanation: 'Sau các từ chỉ trạng thái ổn định (level off, stabilise, plateau, remain) dùng "at".',
+    hints: ['at', 'to'],
+    orderIndex: 57, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu mô tả xu hướng HỌC THUẬT NHẤT:',
+    questionEn: 'Wind energy production: 2000 = 10 GW → 2020 = 200 GW (tăng rất mạnh)',
+    options: [
+      'Wind energy went up a lot from 2000 to 2020.',
+      'There was a dramatic increase in wind energy production, from 10 GW in 2000 to 200 GW in 2020.',
+      'Wind energy increased by 10 GW to 200 GW from 2000 dramatically.',
+      'Wind energy was 10 GW before and then 200 GW.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'There was a [adj] + noun + in [subject] + from X to Y = cấu trúc danh từ chuẩn',
+    explanation: 'Cấu trúc danh từ "There was a dramatic increase in..." rất học thuật và phổ biến trong Task 1.',
+    orderIndex: 58, xpReward: 8
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'elementary', type: 'translation',
+    instruction: 'Dịch sang tiếng Anh dùng cấu trúc "experienced":',
+    questionVi: 'Số lượng khách du lịch đến Thái Lan tăng đều đặn từ 20 triệu lên 40 triệu trong giai đoạn 2000-2019.',
+    sampleAnswers: [
+      'The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.',
+      'Tourism in Thailand experienced a gradual rise from 20 million to 40 million visitors between 2000 and 2019.'
+    ],
+    primaryAnswer: 'The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.',
+    grammarPoint: 'Subject + experienced a [adj] + noun + from X to Y + between A and B',
+    explanation: '"experienced" = "trải qua/ghi nhận", dùng chủ ngữ là chủ đề, không phải năm.',
+    hints: ['experienced', 'a steady increase', 'from 20 million', 'to 40 million', 'between 2000 and 2019'],
+    orderIndex: 59, xpReward: 12
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'elementary', type: 'fill_blank',
+    instruction: 'Điền từ chỉ xu hướng ổn định thích hợp:',
+    sentenceWithBlanks: 'The birth rate in Japan ___ at approximately 1.2% throughout the 2010s.',
+    blanksCount: 1,
+    sampleAnswers: ['remained stable', 'stayed constant', 'levelled off', 'plateaued'],
+    primaryAnswer: 'remained stable',
+    grammarPoint: 'Stable trend: remained stable / stayed constant / levelled off / plateaued',
+    explanation: 'Xu hướng không đổi: "remained stable/constant", "levelled off", "plateaued" đều được.',
+    orderIndex: 60, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'elementary', type: 'translation',
+    instruction: 'Dịch câu sau dùng "reached a peak":',
+    questionVi: 'Doanh số bán điện thoại thông minh đạt đỉnh ở mức 1,5 tỷ chiếc vào năm 2017 trước khi bắt đầu giảm.',
+    sampleAnswers: [
+      'Smartphone sales reached a peak of 1.5 billion units in 2017 before beginning to decline.',
+      'Smartphone sales peaked at 1.5 billion in 2017 before starting to fall.'
+    ],
+    primaryAnswer: 'Smartphone sales reached a peak of 1.5 billion units in 2017 before beginning to decline.',
+    grammarPoint: 'reached a peak of + figure / peaked at + figure — dùng "of" sau "peak", "at" sau "peaked"',
+    explanation: '"reached a peak OF 1.5 billion" (danh từ "peak" + "of"). "peaked AT 1.5 billion" (động từ "peaked" + "at").',
+    hints: ['reached a peak of', 'before beginning to decline'],
+    orderIndex: 61, xpReward: 10
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu sau dùng "witnessed":',
+    questionVi: 'Năm 2008 chứng kiến sự sụt giảm mạnh về giá bất động sản tại Mỹ, từ 300.000$ xuống còn 180.000$.',
+    sampleAnswers: [
+      'The year 2008 witnessed a sharp decline in US property prices, from $300,000 to $180,000.',
+      '2008 witnessed a dramatic fall in US house prices, dropping from $300,000 to $180,000.'
+    ],
+    primaryAnswer: 'The year 2008 witnessed a sharp decline in US property prices, from $300,000 to $180,000.',
+    grammarPoint: '[Year] witnessed/saw + a [adj] + noun + in [subject], from X to Y',
+    explanation: 'Đổi chủ ngữ thành năm để tránh lặp. "witnessed" = "saw" = "chứng kiến".',
+    orderIndex: 62, xpReward: 12
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'data_transform',
+    instruction: 'Viết lại câu bắt đầu bằng "There was":',
+    questionEn: 'Solar panel installations rose sharply from 5,000 to 80,000 units between 2010 and 2020.',
+    sampleAnswers: [
+      'There was a sharp rise in solar panel installations, from 5,000 to 80,000 units between 2010 and 2020.',
+      'There was a dramatic increase in the number of solar panel installations from 5,000 to 80,000 between 2010 and 2020.'
+    ],
+    primaryAnswer: 'There was a sharp rise in solar panel installations, from 5,000 to 80,000 units between 2010 and 2020.',
+    grammarPoint: 'Verb → Noun transformation: rose sharply → a sharp rise / increased dramatically → a dramatic increase',
+    explanation: 'Chuyển động từ + trạng từ → tính từ + danh từ để thay đổi cấu trúc câu.',
+    orderIndex: 63, xpReward: 12
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu dự đoán tương lai sang tiếng Anh:',
+    questionVi: "Dân số thế giới được dự báo sẽ đạt 10 tỷ người vào năm 2050.",
+    sampleAnswers: [
+      "The world's population is projected to reach 10 billion by 2050.",
+      'The global population is predicted to reach 10 billion by 2050.',
+      'The world population is expected to hit 10 billion by 2050.'
+    ],
+    primaryAnswer: "The world's population is projected to reach 10 billion by 2050.",
+    grammarPoint: 'is projected/predicted/expected/anticipated to + verb (dự đoán tương lai)',
+    explanation: 'Dữ liệu tương lai KHÔNG dùng thì quá khứ. Dùng "is projected/predicted/expected to".',
+    hints: ['is projected/predicted/expected to', 'reach', 'by 2050'],
+    orderIndex: 64, xpReward: 10
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'fill_blank',
+    instruction: 'Điền giới từ đúng vào tất cả chỗ trống:',
+    sentenceWithBlanks: '___ 2005 ___ 2015, the unemployment rate fluctuated ___ 5% and 9%, finally settling ___ around 6%.',
+    blanksCount: 4,
+    sampleAnswers: ['From 2005 to 2015, the unemployment rate fluctuated between 5% and 9%, finally settling at around 6%.'],
+    primaryAnswer: 'From 2005 to 2015, the unemployment rate fluctuated between 5% and 9%, finally settling at around 6%.',
+    grammarPoint: 'From...to... | fluctuate between...and... | settle at',
+    explanation: '"fluctuate between A and B" = dao động. "settle at" = ổn định ở mức cuối.',
+    orderIndex: 65, xpReward: 10
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'multiple_choice',
+    instruction: 'Chọn tính từ mô tả mức độ thay đổi ĐÚNG nhất:',
+    questionEn: 'Sales: Jan = 10,000 → Feb = 10,200 (thay đổi rất nhỏ)',
+    options: ['dramatically increased', 'sharply rose', 'slightly increased', 'significantly grew'],
+    correctOptionIndex: 2,
+    grammarPoint: 'Scale: dramatically > significantly > considerably > moderately > gradually > slightly',
+    explanation: 'Tăng 200 trên 10,000 (2%) = rất nhỏ → "slightly". Chọn adverb phù hợp với MỨC ĐỘ thay đổi.',
+    orderIndex: 66, xpReward: 8
+  },
+
+  // ─── PARAPHRASE ─────────────────────────────────────────────────────────
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn cách paraphrase TỐT NHẤT cho câu gốc:',
+    questionEn: 'ORIGINAL: "The chart below shows the number of overseas students studying in five English-speaking countries in 2012."',
+    options: [
+      'The chart below shows the number of overseas students studying in five English-speaking countries in 2012.',
+      'The bar chart illustrates how many international students studied in five countries where English is the primary language in 2012.',
+      'The chart shows overseas students in countries.',
+      'There is a chart about students in 2012.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Paraphrase: chart → bar chart | shows → illustrates | overseas → international | the number of → how many',
+    explanation: 'Đổi tên biểu đồ, đổi động từ, đổi tính từ/danh từ đồng nghĩa. KHÔNG sao chép nguyên văn.',
+    orderIndex: 67, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ thay thế ĐÚNG cho "between 2000 and 2020":',
+    questionEn: 'The graph shows changes in energy consumption ___ 2000 ___ 2020.',
+    options: [
+      'between...and... (giữ nguyên)',
+      'from...to...',
+      'during the period from...to...',
+      'Tất cả B và C đều đúng'
+    ],
+    correctOptionIndex: 3,
+    grammarPoint: '"between X and Y" = "from X to Y" = "during the period from X to Y" = "over the X-Y period"',
+    explanation: 'Tất cả đều đúng và có thể thay thế nhau khi paraphrase thời gian.',
+    orderIndex: 68, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'translation',
+    instruction: 'Viết câu mở bài (paraphrase) cho đề bài sau:',
+    questionEn: 'ORIGINAL: "The diagram below shows how solar panels work to produce electricity for home use."',
+    sampleAnswers: [
+      'The diagram illustrates the process by which solar panels generate electricity for domestic use.',
+      'The diagram depicts how electricity is produced from solar panels for use in homes.',
+      'The diagram shows the stages involved in generating electricity from solar panels for household purposes.'
+    ],
+    primaryAnswer: 'The diagram illustrates the process by which solar panels generate electricity for domestic use.',
+    grammarPoint: 'Process diagram paraphrase: shows how → illustrates the process by which | home → domestic/household',
+    explanation: 'Với process diagram: "illustrates the process by which..." hoặc "depicts how...". "home" → "domestic/household".',
+    hints: ['illustrates', 'the process by which', 'generate', 'domestic use'],
+    orderIndex: 69, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'translation',
+    instruction: 'Viết câu mở bài cho đề bài sau:',
+    questionEn: 'ORIGINAL: "The table below shows the percentage of the population who used the Internet in six countries in 2000 and 2010."',
+    sampleAnswers: [
+      'The table compares the proportions of internet users in six countries in 2000 and 2010.',
+      'The table illustrates the rates of internet usage among the populations of six different countries in 2000 and 2010.',
+      'The table provides data on the percentage of people who had access to the internet in six countries across two years, 2000 and 2010.'
+    ],
+    primaryAnswer: 'The table compares the proportions of internet users in six countries in 2000 and 2010.',
+    grammarPoint: 'percentage → proportion/rate | used the Internet → internet users/internet usage',
+    explanation: '"the percentage of people who used" → gộp lại thành "internet users" hoặc "internet usage" ngắn gọn hơn.',
+    orderIndex: 70, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'error_correction',
+    instruction: 'Tìm và sửa LỖI trong câu mở bài sau:',
+    questionEn: 'The pie chart compare the main reasons why people choose to work aboard in 2019.',
+    sampleAnswers: ['The pie chart compares the main reasons why people choose to work abroad in 2019.'],
+    primaryAnswer: 'The pie chart compares the main reasons why people choose to work abroad in 2019.',
+    grammarPoint: 'Subject-verb agreement (chart = singular → compares) + spelling (aboard → abroad)',
+    explanation: 'Lỗi 1: "compare" → "compares" (chủ ngữ số ít). Lỗi 2: "aboard" (trên tàu) → "abroad" (nước ngoài).',
+    orderIndex: 71, xpReward: 10
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'translation',
+    instruction: 'Viết câu mở bài cho đề bài sau (dùng cấu trúc "in terms of"):',
+    questionEn: 'ORIGINAL: "The charts below show the electricity generated in Germany and France from all sources and renewables in 2009."',
+    sampleAnswers: [
+      'The charts compare Germany and France in terms of their total electricity generation and the share produced from renewable sources in 2009.',
+      'The charts illustrate the total electricity output and the proportion from renewable energy in both Germany and France in 2009.'
+    ],
+    primaryAnswer: 'The charts compare Germany and France in terms of their total electricity generation and the share produced from renewable sources in 2009.',
+    grammarPoint: 'compare X and Y in terms of Z = so sánh X và Y về mặt Z',
+    explanation: '"in terms of" dùng để chỉ tiêu chí so sánh. "generated" → "generation/output". "renewables" → "renewable sources".',
+    orderIndex: 72, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'error_correction',
+    instruction: 'Sửa tất cả lỗi trong câu mở bài:',
+    questionEn: 'The line graph illustrate informations about how much money was spend on fast food in britain between 1970 and 1990.',
+    sampleAnswers: ['The line graph illustrates the amount of money spent on fast food in Britain between 1970 and 1990.'],
+    primaryAnswer: 'The line graph illustrates the amount of money spent on fast food in Britain between 1970 and 1990.',
+    grammarPoint: 'illustrate→illustrates | informations (uncountable) → information/the amount | spend→spent | britain→Britain',
+    explanation: '4 lỗi: subject-verb agreement, "informations" không tồn tại, "spend"→"spent", viết hoa Britain.',
+    orderIndex: 73, xpReward: 12
+  },
+
+  // ─── OVERVIEW ────────────────────────────────────────────────────────────
+  {
+    skillType: 'overview', module: 4, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu Overview TỐT NHẤT:',
+    questionEn: '[Biểu đồ cột: Chi tiêu giáo dục của 5 nước. UK cao nhất ~$8,000; Japan thấp nhất ~$3,000; các nước còn lại ở giữa]',
+    options: [
+      'Overall, the UK had the highest education spending at $8,000, while Japan had the lowest at $3,000.',
+      'It is clear that the UK spent the most on education, while Japan allocated the least. The other three countries all fell between these two extremes.',
+      'Overall, education spending varied across countries.',
+      "The UK's education budget was $8,000 in total."
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Overview: KHÔNG có số liệu cụ thể | Nêu 2 đặc điểm nổi bật | Dùng "It is clear that"',
+    explanation: 'Đáp án A có số liệu cụ thể ($8,000, $3,000) → SAI. B nêu xu hướng tổng quát không có số → ĐÚNG.',
+    orderIndex: 74, xpReward: 10
+  },
+  {
+    skillType: 'overview', module: 4, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Câu nào KHÔNG phù hợp để bắt đầu Overview?',
+    questionEn: 'Chọn cụm từ KHÔNG dùng để mở đầu Overview:',
+    options: [
+      'Overall, it is clear that...',
+      'In summary, the most noticeable trend is...',
+      'To begin with, the figure for...',
+      'It is also noticeable that...'
+    ],
+    correctOptionIndex: 2,
+    grammarPoint: 'Overview starters: Overall / In general / It is clear/noticeable that — KHÔNG dùng "To begin with" (dành cho body)',
+    explanation: '"To begin with" dùng để mở đầu đoạn body, không phải Overview. Overview dùng: Overall, In general, It is clear/noticeable that.',
+    orderIndex: 75, xpReward: 8
+  },
+  {
+    skillType: 'overview', module: 4, level: 'elementary', type: 'translation',
+    instruction: 'Viết 2 câu Overview cho biểu đồ sau (KHÔNG dùng số liệu):',
+    questionEn: '[Pie chart: Energy sources in the UK 2019. Coal = 5%, Gas = 40%, Nuclear = 20%, Renewables = 30%, Oil = 5%]',
+    sampleAnswers: [
+      'Overall, it is clear that gas was the dominant energy source in the UK, accounting for the largest share of total production. Additionally, renewable energy was the second most significant source, while coal and oil contributed the least.',
+      "In general, gas dominated the UK's energy mix, with renewables coming in second place. By contrast, coal and oil played only a minor role in electricity generation."
+    ],
+    primaryAnswer: 'Overall, it is clear that gas was the dominant energy source in the UK, accounting for the largest share of total production. Additionally, renewable energy was the second most significant source, while coal and oil contributed the least.',
+    grammarPoint: 'Overview formula: Câu 1 (đặc điểm nổi bật nhất) + Câu 2 (đặc điểm phụ/tương phản)',
+    explanation: 'Câu 1: nêu cái chiếm tỷ lệ lớn nhất. Câu 2: nêu cái ít nhất / tương phản. Không có con số.',
+    hints: ['it is clear that', 'dominant', 'Additionally', 'while', 'contributed the least'],
+    orderIndex: 76, xpReward: 20
+  },
+  {
+    skillType: 'overview', module: 4, level: 'elementary', type: 'translation',
+    instruction: 'Viết 2 câu Overview cho biểu đồ đường (KHÔNG dùng số liệu):',
+    questionEn: '[Line graph: 3 loại phương tiện giao thông tại UK 1970-2030. Car: tăng liên tục và cao nhất. Bus: giảm nhẹ. Train: tăng sau 2000, được dự đoán tăng mạnh đến 2030]',
+    sampleAnswers: [
+      'Overall, car travel was by far the most popular mode of transport throughout the period and is expected to continue rising. It is also noticeable that train usage is predicted to increase significantly towards 2030, while bus travel showed a gradual decline.',
+      'In general, the car remained the dominant form of transport over the entire period shown. Additionally, while bus usage saw a slight downward trend, train travel is projected to grow considerably in the coming years.'
+    ],
+    primaryAnswer: 'Overall, car travel was by far the most popular mode of transport throughout the period and is expected to continue rising. It is also noticeable that train usage is predicted to increase significantly towards 2030, while bus travel showed a gradual decline.',
+    grammarPoint: 'Mixed tense in overview: past tense (1970-present) + future prediction (is expected/predicted to)',
+    explanation: 'Dữ liệu quá khứ → past tense. Dữ liệu tương lai trong biểu đồ → is expected/projected to.',
+    orderIndex: 77, xpReward: 20
+  },
+  {
+    skillType: 'overview', module: 4, level: 'intermediate', type: 'error_correction',
+    instruction: 'Sửa lỗi trong câu Overview sau:',
+    questionEn: 'Overall, it is clear that the number of car ownership increased from 5 million to 15 million over the period, while bicycle usage fell from 8 million to 2 million.',
+    sampleAnswers: ['Overall, it is clear that car ownership increased significantly over the period, while bicycle usage experienced a notable decline.'],
+    primaryAnswer: 'Overall, it is clear that car ownership increased significantly over the period, while bicycle usage experienced a notable decline.',
+    grammarPoint: 'Overview lỗi: có số liệu cụ thể (5→15 million, 8→2 million) → phải bỏ hết',
+    explanation: 'Overview TUYỆT ĐỐI không có số liệu cụ thể. Chỉ nêu xu hướng, không nêu con số.',
+    orderIndex: 78, xpReward: 12
+  },
+  {
+    skillType: 'overview', module: 4, level: 'intermediate', type: 'translation',
+    instruction: 'Viết Overview cho biểu đồ MAP/PLAN (không dùng số liệu):',
+    questionEn: '[Map: A town in 1980 vs 2020. Thêm: shopping centre, hospital, residential area. Bỏ: farmland, forest. Đường xá mở rộng]',
+    sampleAnswers: [
+      'Overall, the town underwent significant development over the 40-year period, with the addition of several key facilities and a considerable expansion of residential and commercial areas. The most notable change was the replacement of natural land with urban infrastructure.',
+      'In general, the town became considerably more urbanised between 1980 and 2020, with natural areas giving way to new buildings and improved transport links.'
+    ],
+    primaryAnswer: 'Overall, the town underwent significant development over the 40-year period, with the addition of several key facilities and a considerable expansion of residential and commercial areas. The most notable change was the replacement of natural land with urban infrastructure.',
+    grammarPoint: 'Map Overview: general trend of change (urbanisation/development) + most notable feature',
+    explanation: 'Map overview nêu xu hướng tổng quát (đô thị hóa, phát triển) + thay đổi nổi bật nhất.',
+    orderIndex: 79, xpReward: 20
+  },
+
+  // ─── MIXED EXERCISES ────────────────────────────────────────────────────
+  {
+    skillType: 'trend_language', module: 2, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ mô tả xu hướng DAO ĐỘNG phù hợp nhất:',
+    questionEn: 'The price of oil ___ between $40 and $80 per barrel throughout the 2000s.',
+    options: ['increased', 'decreased', 'fluctuated', 'doubled'],
+    correctOptionIndex: 2,
+    grammarPoint: 'fluctuate = dao động lên xuống không ổn định (dùng "between...and...")',
+    explanation: '"fluctuate" = lúc tăng lúc giảm, không theo hướng rõ ràng. Luôn dùng kèm "between X and Y".',
+    orderIndex: 80, xpReward: 5
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'elementary', type: 'translation',
+    instruction: 'Dịch câu sau mô tả biểu đồ tròn (pie chart):',
+    questionVi: 'Giao thông cá nhân chiếm tỷ lệ lớn nhất với 45%, tiếp theo là xe buýt với 30% và tàu điện với 25%.',
+    sampleAnswers: [
+      'Private transport accounted for the largest share at 45%, followed by bus at 30% and tram at 25%.',
+      'Private vehicles constituted the highest proportion at 45%, with bus and tram making up 30% and 25% respectively.'
+    ],
+    primaryAnswer: 'Private transport accounted for the largest share at 45%, followed by bus at 30% and tram at 25%.',
+    grammarPoint: 'Pie chart language: accounted for the largest/smallest share | followed by | at [figure]',
+    explanation: '"followed by" = tiếp theo là, dùng sau khi nêu giá trị cao nhất. "at 45%" = đứng ở mức 45%.',
+    hints: ['accounted for the largest share', 'at 45%', 'followed by', 'at 30%', 'and...at 25%'],
+    orderIndex: 81, xpReward: 12
+  },
+  {
+    skillType: 'comparison', module: 1, level: 'elementary', type: 'rearrange',
+    instruction: 'Sắp xếp từ thành câu so sánh đúng:',
+    questionEn: 'Context: Spain tourism revenue > Germany tourism revenue (both in 2019)',
+    baseWords: ['Spain', 'earned', 'significantly', 'more', 'tourism', 'revenue', 'than', 'Germany', 'in', '2019'],
+    sampleAnswers: ['Spain earned significantly more tourism revenue than Germany in 2019.'],
+    primaryAnswer: 'Spain earned significantly more tourism revenue than Germany in 2019.',
+    grammarPoint: 'Comparative: more + noun + than (so sánh hơn với danh từ)',
+    explanation: '"more...than" = so sánh hơn. Trạng từ (significantly) đặt trước "more".',
+    orderIndex: 82, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ thay thế ĐÚNG và HỌC THUẬT cho "shows" trong Task 1:',
+    questionEn: 'The bar chart ___ the population growth in three Asian cities from 1990 to 2020.',
+    options: ['shows', 'illustrates', 'depicts', 'Cả B và C đều đúng'],
+    correctOptionIndex: 3,
+    grammarPoint: 'Paraphrase verbs: illustrates / depicts / compares / demonstrates / presents / gives information about',
+    explanation: 'Cả "illustrates" và "depicts" đều là thay thế học thuật tốt cho "shows".',
+    orderIndex: 83, xpReward: 5
+  },
+  {
+    skillType: 'data_description', module: 1, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu sau mô tả bảng số liệu (table) với nhiều dữ liệu:',
+    questionVi: 'Năm 2010, Mỹ dẫn đầu về chi tiêu quân sự với 690 tỷ đô, gấp gần ba lần chi tiêu của Trung Quốc là 240 tỷ đô.',
+    sampleAnswers: [
+      "In 2010, the USA led in military spending at $690 billion, which was almost three times as much as China's expenditure of $240 billion.",
+      'The USA topped military spending in 2010 at $690 billion, nearly three times the figure for China at $240 billion.'
+    ],
+    primaryAnswer: "In 2010, the USA led in military spending at $690 billion, which was almost three times as much as China's expenditure of $240 billion.",
+    grammarPoint: 'led in [category] at [figure] | almost/nearly three times as much as',
+    explanation: '"led in" = đứng đầu về. "at $690 billion" chỉ giá trị. "almost three times as much as" = gần gấp ba.',
+    orderIndex: 84, xpReward: 15
+  },
+  {
+    skillType: 'trend_language', module: 2, level: 'intermediate', type: 'translation',
+    instruction: 'Dịch câu sau mô tả xu hướng có ĐẢO CHIỀU:',
+    questionVi: 'Số lượng người hút thuốc lá ở Anh liên tục giảm từ 1990 đến 2010, tuy nhiên sau đó tăng nhẹ trở lại vào năm 2015.',
+    sampleAnswers: [
+      'The number of smokers in the UK declined continuously from 1990 to 2010; however, this figure experienced a slight recovery in 2015.',
+      'Smoking rates in the UK fell steadily between 1990 and 2010, before experiencing a modest increase in 2015.'
+    ],
+    primaryAnswer: 'The number of smokers in the UK declined continuously from 1990 to 2010; however, this figure experienced a slight recovery in 2015.',
+    grammarPoint: 'Contrasting trends: declined... however, experienced a slight recovery | fell... before experiencing an increase',
+    explanation: '"however" (dấu chấm phẩy trước) hoặc "before + V-ing" để nối xu hướng đảo chiều.',
+    orderIndex: 85, xpReward: 15
+  },
+  {
+    skillType: 'overview', module: 4, level: 'intermediate', type: 'translation',
+    instruction: 'Viết Overview cho biểu đồ cột so sánh (KHÔNG dùng số liệu cụ thể):',
+    questionEn: '[Bar chart: Household spending in 5 categories (UK 2020). Food = highest. Entertainment = second. Clothing, Transport, Other = roughly equal and lowest]',
+    sampleAnswers: [
+      'Overall, food was by far the largest expenditure category for UK households, followed by entertainment. The remaining three categories — clothing, transport and other — were all broadly similar in terms of spending levels.',
+      'In general, households allocated the greatest proportion of their budget to food, with entertainment coming in second place. By contrast, spending on clothing, transport, and other items was relatively low and fairly consistent across these categories.'
+    ],
+    primaryAnswer: 'Overall, food was by far the largest expenditure category for UK households, followed by entertainment. The remaining three categories — clothing, transport and other — were all broadly similar in terms of spending levels.',
+    grammarPoint: 'Overview cho bar chart so sánh: nêu cao nhất + thứ hai + nhóm thấp/tương đương',
+    explanation: 'Cấu trúc Overview 3 phần: (1) cao nhất, (2) thứ hai, (3) nhóm tương đương ở dưới.',
+    hints: ['by far the largest', 'followed by', 'broadly similar', 'in terms of'],
+    orderIndex: 86, xpReward: 20
+  }
+];
+
+const allExercises = [...exercises, ...sampleExercises];
+
 async function runSeed() {
   const Task1Exercise = require('../models/Task1Exercise');
-  const count = await Task1Exercise.countDocuments();
-  if (count >= exercises.length) {
-    console.log(`[Task1Seed] Already has ${count} exercises – skip`);
+  const existingIndexes = new Set(
+    (await Task1Exercise.find({}, 'orderIndex').lean()).map(e => e.orderIndex)
+  );
+  const toInsert = allExercises.filter(e => !existingIndexes.has(e.orderIndex));
+  if (toInsert.length === 0) {
+    console.log(`[Task1Seed] All ${allExercises.length} exercises already present – skip`);
     return;
   }
-  await Task1Exercise.deleteMany({});
-  await Task1Exercise.insertMany(exercises);
-  console.log(`[Task1Seed] Seeded ${exercises.length} Task 1 exercises`);
+  await Task1Exercise.insertMany(toInsert);
+  console.log(`[Task1Seed] Seeded ${toInsert.length} new Task 1 exercises (total target: ${allExercises.length})`);
 }
 
-module.exports = { runSeed, exercises };
+module.exports = { runSeed, exercises: allExercises };
