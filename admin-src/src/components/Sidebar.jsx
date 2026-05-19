@@ -25,14 +25,14 @@ const NAV = [
 
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
-  const [onlineCount, setOnlineCount] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     function fetchOnline() {
-      apiFetch('/admin/online-users').then(d => setOnlineCount(d.count || 0)).catch(() => {});
+      apiFetch('/admin/online-users').then(d => setOnlineUsers(d.users || [])).catch(() => {});
     }
     fetchOnline();
-    const id = setInterval(fetchOnline, 60_000); // refresh every minute
+    const id = setInterval(fetchOnline, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -45,10 +45,23 @@ export default function Sidebar({ mobileOpen, onClose }) {
         <div className="sidebar-logo">
           <div className="sidebar-logo-title">EnglishWithDan</div>
           <div className="sidebar-logo-sub">ADMIN PANEL</div>
-          {onlineCount > 0 && (
-            <div style={{ marginTop: 6, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center', color: '#22c55e', fontWeight: 600 }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 5px #22c55e' }} />
-              {onlineCount} đang online
+          {onlineUsers.length > 0 && (
+            <div style={{ marginTop: 8, padding: '8px 10px', background: 'rgba(34,197,94,.08)', borderRadius: 8, border: '1px solid rgba(34,197,94,.2)' }}>
+              <div style={{ fontSize: 11, display: 'flex', alignItems: 'center', gap: 5, color: '#22c55e', fontWeight: 700, marginBottom: 6 }}>
+                <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 5px #22c55e' }} />
+                {onlineUsers.length} đang online
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {onlineUsers.slice(0, 5).map(u => (
+                  <div key={u._id} style={{ fontSize: 11, color: '#16a34a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', flexShrink: 0 }} />
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.username}</span>
+                  </div>
+                ))}
+                {onlineUsers.length > 5 && (
+                  <div style={{ fontSize: 10, color: '#86efac', fontWeight: 600, paddingLeft: 10 }}>+{onlineUsers.length - 5} khác</div>
+                )}
+              </div>
             </div>
           )}
         </div>
