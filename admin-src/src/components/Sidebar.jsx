@@ -17,6 +17,7 @@ const NAV = [
   { to: '/admin/speaking', icon: '🎤', label: 'Speaking' },
   { to: '/admin/vocabulary', icon: '🟩', label: 'Từ vựng (Units)' },
   { to: '/admin/writing-practice', icon: '✍️', label: 'Luyện viết' },
+  { to: '/admin/task1-exercises', icon: '📊', label: 'Task 1 Grammar' },
   { section: 'HỌC SINH' },
   { to: '/admin/history', icon: '📝', label: 'Lịch sử làm bài' },
   { to: '/admin/vocab-activity', icon: '📈', label: 'Hoạt động từ vựng' },
