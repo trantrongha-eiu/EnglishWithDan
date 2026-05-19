@@ -1666,6 +1666,8 @@ async function showHistoryModal() {
    DICTIONARY (review only)
 ══════════════════════════════════════════════════════════════════════ */
 let _dictWord = '';
+const _dictCache = new Map(); // word.toLowerCase() → { phonetic, pos, example, viMeaning }
+
 document.addEventListener('dblclick', e => {
   if (state.tool !== 'dict' || !state.isReview) return;
   const sel = window.getSelection()?.toString().trim();
@@ -1674,34 +1676,53 @@ document.addEventListener('dblclick', e => {
 });
 
 async function lookupWord(word, x, y) {
+  const key = word.toLowerCase();
   _dictWord = word;
   document.getElementById('dict-word').textContent = word;
+  positionDictPopup(x, y);
+  document.getElementById('dict-popup').classList.remove('hidden');
+
+  // Cache hit — render instantly, no network
+  if (_dictCache.has(key)) {
+    const c = _dictCache.get(key);
+    document.getElementById('dict-phonetic').textContent = c.phonetic;
+    document.getElementById('dict-pos').textContent = c.pos;
+    document.getElementById('dict-meaning').textContent = c.viMeaning;
+    document.getElementById('dict-example').textContent = c.example;
+    return;
+  }
+
+  // Cache miss — show loading state then fetch
   document.getElementById('dict-phonetic').textContent = '…';
   document.getElementById('dict-pos').textContent = '';
   document.getElementById('dict-meaning').textContent = 'Đang tra...';
   document.getElementById('dict-example').textContent = '';
-  positionDictPopup(x, y);
-  document.getElementById('dict-popup').classList.remove('hidden');
 
   const [dictRes, transRes] = await Promise.allSettled([
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then(r => r.ok ? r.json() : null),
     fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`).then(r => r.json())
   ]);
 
-  // Phonetics + POS + example từ dictionaryapi (EN-EN, dùng làm ngữ cảnh)
+  let phonetic = '', pos = '', example = '';
   if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
     const entry = dictRes.value[0];
     const meaning = entry?.meanings?.[0];
     const def = meaning?.definitions?.find(d => d.example) || meaning?.definitions?.[0];
-    document.getElementById('dict-phonetic').textContent =
-      entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
-    document.getElementById('dict-pos').textContent = meaning?.partOfSpeech || '';
-    document.getElementById('dict-example').textContent = def?.example ? `"${def.example}"` : '';
+    phonetic = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
+    pos = meaning?.partOfSpeech || '';
+    example = def?.example ? `"${def.example}"` : '';
   }
+  const viMeaning = (transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null) || 'Không tìm thấy';
 
-  // Nghĩa tiếng Việt từ Google Translate
-  const viMeaning = transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null;
-  document.getElementById('dict-meaning').textContent = viMeaning || 'Không tìm thấy';
+  _dictCache.set(key, { phonetic, pos, example, viMeaning });
+
+  // Only update DOM if user hasn't moved to another word while fetching
+  if (_dictWord.toLowerCase() === key) {
+    document.getElementById('dict-phonetic').textContent = phonetic;
+    document.getElementById('dict-pos').textContent = pos;
+    document.getElementById('dict-meaning').textContent = viMeaning;
+    document.getElementById('dict-example').textContent = example;
+  }
 }
 
 function positionDictPopup(x, y) {
