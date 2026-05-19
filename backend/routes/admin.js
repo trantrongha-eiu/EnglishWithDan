@@ -3,6 +3,20 @@ const router       = express.Router();
 const crypto       = require('crypto');
 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+// Tính streak hiển thị đúng dựa trên lastActivityDate (không ghi DB)
+// Dùng múi giờ VN (UTC+7), cùng logic với User.resetIfStale
+function effectiveStreak(learningStreak, lastActivityDate) {
+  if (!lastActivityDate) return learningStreak || 0;
+  const toVNDay = d => {
+    const v = new Date(d.getTime() + 7 * 3600000);
+    return new Date(Date.UTC(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate()));
+  };
+  const today   = toVNDay(new Date());
+  const lastDay = toVNDay(new Date(lastActivityDate));
+  const diff    = Math.floor((today - lastDay) / 86400000);
+  return diff >= 2 ? 0 : (learningStreak || 0);
+}
 const multer       = require('multer');
 const cloudinary   = require('cloudinary').v2;
 
@@ -1379,7 +1393,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
         lastName:     u.lastName,
         createdAt:    u.createdAt,
         isBanned:     u.isBanned,
-        learningStreak: u.learningStreak || 0,
+        learningStreak: effectiveStreak(u.learningStreak, u.lastActivityDate),
         // Vocab book stats
         totalBooks:   b.totalBooks  || 0,
         totalWords:   b.totalWords  || 0,
