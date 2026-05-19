@@ -92,46 +92,6 @@ function localCheck(exercise, userAnswer) {
     feedbackVi: `❌ Chưa đúng. ${exercise.explanation || ''}` };
 }
 
-async function checkWithAI(userAnswer, exercise) {
-  const prompt = `You are an IELTS Task 1 writing teacher checking a student's answer.
-
-Exercise type: ${exercise.type}
-Grammar point: ${exercise.grammarPoint}
-Instruction: ${exercise.instruction}
-${exercise.questionVi ? `Vietnamese question: ${exercise.questionVi}` : ''}
-${exercise.questionEn ? `English context: ${exercise.questionEn}` : ''}
-Sample correct answers: ${(exercise.sampleAnswers || []).join(' | ')}
-
-Student's answer: "${userAnswer}"
-
-Evaluate if the student's answer demonstrates understanding of the grammar point.
-For translation tasks, accept answers that convey the same meaning correctly even if wording differs.
-For rearrangement tasks, words must be in correct grammatical order.
-
-Respond in JSON only:
-{"isCorrect":true/false,"score":0-100,"feedbackVi":"Brief feedback in Vietnamese (max 60 words)"}`;
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await response.json();
-    const text = data.content[0].text.replace(/```json|```/g, '').trim();
-    return JSON.parse(text);
-  } catch {
-    return localCheck(exercise, userAnswer);
-  }
-}
 
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task1/exercises
@@ -169,15 +129,7 @@ router.post('/check', async (req, res) => {
     if (!exercise)
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
 
-    let result;
-    const useAI = process.env.ANTHROPIC_API_KEY &&
-      ['translation', 'error_correction', 'data_transform'].includes(exercise.type);
-
-    if (useAI) {
-      result = await checkWithAI(userAnswer.trim(), exercise);
-    } else {
-      result = localCheck(exercise, userAnswer.trim());
-    }
+    const result = localCheck(exercise, userAnswer.trim());
 
     const xpEarned = result.isCorrect
       ? (exercise.xpReward || 5)

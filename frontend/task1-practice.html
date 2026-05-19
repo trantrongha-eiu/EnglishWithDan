@@ -153,10 +153,30 @@
     /* ── Module badge ── */
     .t1-module-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
     [data-theme="dark"] .t1-module-badge{background:#1e293b;color:#94a3b8}
+
+    /* ── Feature tab bar ── */
+    .wp-feature-tabs{display:flex;gap:0;padding:0 20px;background:var(--bg,#fff);border-bottom:2px solid #e5e7eb;position:sticky;top:60px;z-index:200}
+    .wp-feat-tab{padding:10px 20px;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-size:14px;font-weight:600;color:#6b7280;cursor:pointer;transition:color .15s,border-color .15s;display:inline-flex;align-items:center;gap:6px}
+    .wp-feat-tab.active{color:#6366f1;border-bottom-color:#6366f1}
+    .wp-feat-tab:hover{color:#6366f1}
+    [data-theme="dark"] .wp-feature-tabs{background:var(--bg-dark,#0f172a);border-bottom-color:#1e293b}
+    [data-theme="dark"] .wp-feat-tab{color:#64748b}
+    [data-theme="dark"] .wp-feat-tab.active{color:#a5b4fc;border-bottom-color:#a5b4fc}
   </style>
 </head>
 <body>
 <script src="js/nav.js"></script>
+
+<!-- ── Feature tab bar ── -->
+<div class="wp-feature-tabs">
+  <button class="wp-feat-tab" onclick="location.href='writing-practice.html'">
+    <i class="fas fa-pen"></i> Luyện viết
+  </button>
+  <button class="wp-feat-tab active" onclick="location.href='task1-practice.html'">
+    <i class="fas fa-chart-bar"></i> Task 1 Grammar
+  </button>
+</div>
+
 <div id="wp-toast"></div>
 
 <!-- Quit overlay -->
@@ -284,9 +304,9 @@
             <div class="wp-welcome-card-desc">Noun Phrase, Mô tả Data, So sánh, Xu hướng, Paraphrase, Overview — mỗi kỹ năng luyện riêng.</div>
           </div>
           <div class="wp-welcome-card">
-            <div class="wp-welcome-card-icon">🤖</div>
-            <div class="wp-welcome-card-title">Chấm bài thông minh</div>
-            <div class="wp-welcome-card-desc">Trắc nghiệm & điền chỗ trống chấm tự động. Câu dịch có AI hỗ trợ chấm linh hoạt.</div>
+            <div class="wp-welcome-card-icon">⚡</div>
+            <div class="wp-welcome-card-title">Chấm bài tức thì</div>
+            <div class="wp-welcome-card-desc">Tất cả dạng bài đều được chấm tự động ngay lập tức — không cần chờ đợi.</div>
           </div>
           <div class="wp-welcome-card">
             <div class="wp-welcome-card-icon">🎯</div>

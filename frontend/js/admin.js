@@ -100,7 +100,8 @@ function switchTab(tab, ev) {
     listening: 'Đề Listening', writing: 'Đề Writing', speaking: 'Speaking',
     courses: 'Khóa học', users: 'Người dùng',
     'vocab-students': 'Hoạt động từ vựng',
-    wp: 'Luyện viết (Writing Practice)'
+    wp: 'Luyện viết (Writing Practice)',
+    task1q: 'Task 1 Q&A'
   };
   document.getElementById('topbar-title').textContent = titles[tab] || tab;
   // Update URL hash (stay on admin.html, no conflict with React admin)
@@ -117,6 +118,7 @@ function switchTab(tab, ev) {
   if (tab === 'history') loadHistory();
   if (tab === 'dashboard') loadHistory();
   if (tab === 'wp') { loadWPTopics(); loadWPExercises(); }
+  if (tab === 'task1q') loadT1Questions();
 }
 function toggleSidebar() {
   const open = document.getElementById('sidebar').classList.toggle('open');
@@ -5168,6 +5170,165 @@ async function deleteWPAttempt(id, name) {
     try {
       await fetch(`${API}/admin/wp-attempts/${id}`, { method: 'DELETE', headers: authH() });
       toast('Đã xóa'); await loadWPAttempts();
+    } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   TASK 1 Q&A MANAGEMENT
+══════════════════════════════════════════════ */
+let _t1qPage = 1;
+let _t1qEditId = null;
+const T1Q_SKILL_LABELS = {
+  noun_phrase:'Noun Phrase', data_description:'Mô tả Data',
+  comparison:'So sánh', trend_language:'Xu hướng',
+  paraphrase:'Paraphrase', overview:'Overview'
+};
+const T1Q_TYPE_LABELS = {
+  fill_blank:'Điền chỗ trống', translation:'Dịch câu',
+  rearrange:'Sắp xếp từ', multiple_choice:'Trắc nghiệm',
+  error_correction:'Sửa lỗi', paraphrase_choose:'Chọn Paraphrase',
+  data_transform:'Viết lại câu'
+};
+
+async function loadT1Questions() {
+  const level    = document.getElementById('t1q-filter-level')?.value || 'all';
+  const skillType = document.getElementById('t1q-filter-skill')?.value || 'all';
+  const type     = document.getElementById('t1q-filter-type')?.value  || 'all';
+  const search   = document.getElementById('t1q-search')?.value       || '';
+  const params   = new URLSearchParams({ level, skillType, type, search, page: _t1qPage, limit: 20 });
+  try {
+    const data = await fetch(`${API}/admin/task1/exercises?${params}`, { headers: authH() }).then(r => r.json());
+    if (!data.success) throw new Error(data.message);
+    const tbody = document.getElementById('t1q-tbody');
+    if (!data.exercises.length) {
+      tbody.innerHTML = '<tr><td colspan="8" class="table-empty">Chưa có câu hỏi nào</td></tr>';
+      document.getElementById('t1q-stats').textContent = '';
+      document.getElementById('t1q-pagination').innerHTML = '';
+      return;
+    }
+    document.getElementById('t1q-stats').textContent = `Tổng: ${data.total} câu hỏi`;
+    tbody.innerHTML = data.exercises.map((ex, i) => `
+      <tr>
+        <td>${(_t1qPage - 1) * 20 + i + 1}</td>
+        <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${ex.instruction || ''}">${ex.instruction || '—'}</td>
+        <td><span class="badge badge-blue">${T1Q_TYPE_LABELS[ex.type] || ex.type}</span></td>
+        <td>${T1Q_SKILL_LABELS[ex.skillType] || ex.skillType}</td>
+        <td><span class="badge ${ex.level === 'beginner' ? 'badge-green' : ex.level === 'intermediate' ? 'badge-red' : 'badge-yellow'}">${ex.level}</span></td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ex.primaryAnswer || (ex.sampleAnswers?.[0]) || '—'}</td>
+        <td>${ex.isActive ? '<span class="badge badge-green">Hoạt động</span>' : '<span class="badge badge-red">Ẩn</span>'}</td>
+        <td>
+          <button class="btn btn-ghost btn-sm" onclick="editT1Question('${ex._id}')">✏️</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteT1Question('${ex._id}')">🗑️</button>
+        </td>
+      </tr>`).join('');
+
+    // Pagination
+    const totalPages = data.totalPages || 1;
+    let pHtml = '';
+    for (let p = 1; p <= totalPages; p++) {
+      pHtml += `<button class="page-btn ${p === _t1qPage ? 'active' : ''}" onclick="_t1qPage=${p};loadT1Questions()">${p}</button>`;
+    }
+    document.getElementById('t1q-pagination').innerHTML = pHtml;
+  } catch (err) {
+    document.getElementById('t1q-tbody').innerHTML = `<tr><td colspan="8" class="table-empty" style="color:red">Lỗi: ${err.message}</td></tr>`;
+  }
+}
+
+function t1qToggleFields() {
+  const type = document.getElementById('t1q-type')?.value;
+  const show = (id, visible) => { const el = document.getElementById(id); if (el) el.style.display = visible ? '' : 'none'; };
+  show('t1q-field-blanks',   ['fill_blank','error_correction'].includes(type));
+  show('t1q-field-basewords', type === 'rearrange');
+  show('t1q-field-options',  ['multiple_choice','paraphrase_choose'].includes(type));
+}
+
+function openT1QModal(ex = null) {
+  _t1qEditId = ex ? ex._id : null;
+  document.getElementById('t1q-modal-title').textContent = ex ? 'Chỉnh sửa câu hỏi Task 1' : 'Thêm câu hỏi Task 1';
+  document.getElementById('t1q-skillType').value         = ex?.skillType       || 'noun_phrase';
+  document.getElementById('t1q-level').value             = ex?.level           || 'beginner';
+  document.getElementById('t1q-type').value              = ex?.type            || 'fill_blank';
+  document.getElementById('t1q-instruction').value       = ex?.instruction     || '';
+  document.getElementById('t1q-questionVi').value        = ex?.questionVi      || '';
+  document.getElementById('t1q-questionEn').value        = ex?.questionEn      || '';
+  document.getElementById('t1q-sentenceWithBlanks').value = ex?.sentenceWithBlanks || '';
+  document.getElementById('t1q-baseWords').value         = ex?.baseWords?.join(', ') || '';
+  document.getElementById('t1q-options').value           = ex?.options?.join('\n')   || '';
+  document.getElementById('t1q-correctOptionIndex').value = ex?.correctOptionIndex ?? 0;
+  document.getElementById('t1q-sampleAnswers').value     = ex?.sampleAnswers?.join('\n') || '';
+  document.getElementById('t1q-grammarPoint').value      = ex?.grammarPoint    || '';
+  document.getElementById('t1q-explanation').value       = ex?.explanation     || '';
+  document.getElementById('t1q-hints').value             = ex?.hints?.join('\n') || '';
+  document.getElementById('t1q-xpReward').value          = ex?.xpReward        ?? 5;
+  document.getElementById('t1q-orderIndex').value        = ex?.orderIndex       ?? 0;
+  document.getElementById('t1q-isActive').checked        = ex?.isActive !== false;
+  t1qToggleFields();
+  document.getElementById('t1q-modal-overlay').classList.remove('hidden');
+}
+
+function closeT1QModal() {
+  document.getElementById('t1q-modal-overlay').classList.add('hidden');
+  _t1qEditId = null;
+}
+
+async function editT1Question(id) {
+  try {
+    const data = await fetch(`${API}/admin/task1/exercises?page=1&limit=200`, { headers: authH() }).then(r => r.json());
+    const ex = data.exercises?.find(e => e._id === id);
+    if (!ex) { toast('Không tìm thấy câu hỏi', 'error'); return; }
+    openT1QModal(ex);
+  } catch (err) { toast('Lỗi tải câu hỏi: ' + err.message, 'error'); }
+}
+
+async function saveT1Question() {
+  const sampleAnswersRaw = document.getElementById('t1q-sampleAnswers').value.trim();
+  const optionsRaw = document.getElementById('t1q-options').value.trim();
+  const baseWordsRaw = document.getElementById('t1q-baseWords').value.trim();
+
+  const body = {
+    skillType:          document.getElementById('t1q-skillType').value,
+    level:              document.getElementById('t1q-level').value,
+    type:               document.getElementById('t1q-type').value,
+    instruction:        document.getElementById('t1q-instruction').value.trim(),
+    questionVi:         document.getElementById('t1q-questionVi').value.trim(),
+    questionEn:         document.getElementById('t1q-questionEn').value.trim(),
+    sentenceWithBlanks: document.getElementById('t1q-sentenceWithBlanks').value.trim(),
+    baseWords:          baseWordsRaw ? baseWordsRaw.split(/[,\n]+/).map(s => s.trim()).filter(Boolean) : [],
+    options:            optionsRaw ? optionsRaw.split('\n').map(s => s.trim()).filter(Boolean) : [],
+    correctOptionIndex: parseInt(document.getElementById('t1q-correctOptionIndex').value) || 0,
+    sampleAnswers:      sampleAnswersRaw.split('\n').map(s => s.trim()).filter(Boolean),
+    grammarPoint:       document.getElementById('t1q-grammarPoint').value.trim(),
+    explanation:        document.getElementById('t1q-explanation').value.trim(),
+    hints:              document.getElementById('t1q-hints').value.trim().split('\n').map(s => s.trim()).filter(Boolean),
+    xpReward:           parseInt(document.getElementById('t1q-xpReward').value) || 5,
+    orderIndex:         parseInt(document.getElementById('t1q-orderIndex').value) || 0,
+    isActive:           document.getElementById('t1q-isActive').checked,
+    module:             1
+  };
+  body.primaryAnswer = body.sampleAnswers[0] || '';
+
+  if (!body.instruction) { toast('Vui lòng nhập câu lệnh (Instruction)', 'warn'); return; }
+  if (!body.sampleAnswers.length) { toast('Vui lòng nhập ít nhất một đáp án mẫu', 'warn'); return; }
+
+  try {
+    const url    = _t1qEditId ? `${API}/admin/task1/exercises/${_t1qEditId}` : `${API}/admin/task1/exercises`;
+    const method = _t1qEditId ? 'PUT' : 'POST';
+    const data   = await fetch(url, { method, headers: authH(), body: JSON.stringify(body) }).then(r => r.json());
+    if (!data.success) throw new Error(data.message);
+    toast(_t1qEditId ? 'Đã cập nhật câu hỏi' : 'Đã thêm câu hỏi mới');
+    closeT1QModal();
+    await loadT1Questions();
+  } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
+function deleteT1Question(id) {
+  confirmAction('Xóa câu hỏi Task 1 này?', async () => {
+    try {
+      const data = await fetch(`${API}/admin/task1/exercises/${id}`, { method: 'DELETE', headers: authH() }).then(r => r.json());
+      if (!data.success) throw new Error(data.message);
+      toast('Đã xóa câu hỏi');
+      await loadT1Questions();
     } catch (err) { toast('Lỗi: ' + err.message, 'error'); }
   });
 }

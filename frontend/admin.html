@@ -57,6 +57,9 @@
     <a class="nav-item" onclick="switchTab('wp',event)" href="#">
       <span class="nav-icon">✍️</span> Luyện viết
     </a>
+    <a class="nav-item" onclick="switchTab('task1q',event)" href="#">
+      <span class="nav-icon">📊</span> Task 1 Q&A
+    </a>
 
     <span class="nav-section-label">Học sinh</span>
     <a class="nav-item" onclick="switchTab('history',event)" href="#">
@@ -852,6 +855,184 @@
           </div>
 
         </div><!-- /tab-wp -->
+
+        <!-- ─── TAB: TASK 1 Q&A ─── -->
+        <div id="tab-task1q">
+          <div class="section-header">
+            <span class="section-title">Task 1 Grammar Questions</span>
+            <div class="section-actions" style="flex-wrap:wrap;gap:6px">
+              <select class="filter-select" id="t1q-filter-level" onchange="loadT1Questions()" style="width:140px">
+                <option value="all">Tất cả cấp độ</option>
+                <option value="beginner">Beginner</option>
+                <option value="elementary">Elementary</option>
+                <option value="intermediate">Intermediate</option>
+              </select>
+              <select class="filter-select" id="t1q-filter-skill" onchange="loadT1Questions()" style="width:160px">
+                <option value="all">Tất cả kỹ năng</option>
+                <option value="noun_phrase">Noun Phrase</option>
+                <option value="data_description">Mô tả Data</option>
+                <option value="comparison">So sánh</option>
+                <option value="trend_language">Xu hướng</option>
+                <option value="paraphrase">Paraphrase</option>
+                <option value="overview">Overview</option>
+              </select>
+              <select class="filter-select" id="t1q-filter-type" onchange="loadT1Questions()" style="width:160px">
+                <option value="all">Tất cả dạng</option>
+                <option value="fill_blank">Điền chỗ trống</option>
+                <option value="translation">Dịch câu</option>
+                <option value="rearrange">Sắp xếp từ</option>
+                <option value="multiple_choice">Trắc nghiệm</option>
+                <option value="error_correction">Sửa lỗi</option>
+                <option value="paraphrase_choose">Chọn Paraphrase</option>
+                <option value="data_transform">Viết lại câu</option>
+              </select>
+              <div class="search-wrap">
+                <input class="search-input" id="t1q-search" placeholder="Tìm câu hỏi..." oninput="loadT1Questions()" style="width:180px"/>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openT1QModal()">＋ Thêm câu hỏi</button>
+            </div>
+          </div>
+          <div id="t1q-stats" style="font-size:12px;color:var(--text3);margin-bottom:8px"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:36px">#</th>
+                  <th>Câu hỏi / Lệnh</th>
+                  <th>Dạng bài</th>
+                  <th>Kỹ năng</th>
+                  <th>Cấp độ</th>
+                  <th>Đáp án mẫu</th>
+                  <th>Trạng thái</th>
+                  <th style="width:120px"></th>
+                </tr>
+              </thead>
+              <tbody id="t1q-tbody">
+                <tr><td colspan="8" class="table-empty">Đang tải...</td></tr>
+              </tbody>
+            </table>
+            <div class="pagination" id="t1q-pagination"></div>
+          </div>
+        </div><!-- /tab-task1q -->
+
+        <!-- ─── MODAL: ADD/EDIT TASK1 QUESTION ─── -->
+        <div class="modal-overlay hidden" id="t1q-modal-overlay" onclick="if(event.target===this)closeT1QModal()">
+          <div class="modal-box" style="max-width:680px;max-height:90vh;overflow-y:auto">
+            <div class="modal-header">
+              <span id="t1q-modal-title">Thêm câu hỏi Task 1</span>
+              <button class="modal-close" onclick="closeT1QModal()">✕</button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+                <div>
+                  <label class="form-label">Kỹ năng *</label>
+                  <select class="form-input" id="t1q-skillType">
+                    <option value="noun_phrase">Noun Phrase</option>
+                    <option value="data_description">Mô tả Data</option>
+                    <option value="comparison">So sánh</option>
+                    <option value="trend_language">Xu hướng</option>
+                    <option value="paraphrase">Paraphrase</option>
+                    <option value="overview">Overview</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Cấp độ *</label>
+                  <select class="form-input" id="t1q-level">
+                    <option value="beginner">Beginner</option>
+                    <option value="elementary">Elementary</option>
+                    <option value="intermediate">Intermediate</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label">Dạng bài *</label>
+                  <select class="form-input" id="t1q-type" onchange="t1qToggleFields()">
+                    <option value="fill_blank">Điền chỗ trống</option>
+                    <option value="translation">Dịch câu</option>
+                    <option value="rearrange">Sắp xếp từ</option>
+                    <option value="multiple_choice">Trắc nghiệm</option>
+                    <option value="error_correction">Sửa lỗi</option>
+                    <option value="paraphrase_choose">Chọn Paraphrase</option>
+                    <option value="data_transform">Viết lại câu</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Lệnh / Instruction *</label>
+                <input class="form-input" id="t1q-instruction" placeholder="Ví dụ: Điền vào chỗ trống với dạng đúng của từ..." />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label class="form-label">Câu hỏi (Tiếng Việt)</label>
+                  <textarea class="form-input" id="t1q-questionVi" rows="2" placeholder="Câu hỏi bằng tiếng Việt..."></textarea>
+                </div>
+                <div>
+                  <label class="form-label">Câu hỏi / ngữ cảnh (Tiếng Anh)</label>
+                  <textarea class="form-input" id="t1q-questionEn" rows="2" placeholder="English context or question..."></textarea>
+                </div>
+              </div>
+
+              <!-- fill_blank & error_correction -->
+              <div id="t1q-field-blanks">
+                <label class="form-label">Câu có chỗ trống / câu có lỗi (dùng ___ cho chỗ trống)</label>
+                <input class="form-input" id="t1q-sentenceWithBlanks" placeholder="The chart ___ the changes over time." />
+              </div>
+
+              <!-- rearrange -->
+              <div id="t1q-field-basewords">
+                <label class="form-label">Từ để sắp xếp (mỗi từ một dòng hoặc dấu phẩy)</label>
+                <input class="form-input" id="t1q-baseWords" placeholder="shows, the, chart, a, decline" />
+              </div>
+
+              <!-- multiple_choice & paraphrase_choose -->
+              <div id="t1q-field-options">
+                <label class="form-label">Các đáp án (mỗi đáp án một dòng, tối đa 4)</label>
+                <textarea class="form-input" id="t1q-options" rows="4" placeholder="Option A&#10;Option B&#10;Option C&#10;Option D"></textarea>
+                <div style="margin-top:6px">
+                  <label class="form-label">Đáp án đúng (0=A, 1=B, 2=C, 3=D)</label>
+                  <input class="form-input" id="t1q-correctOptionIndex" type="number" min="0" max="3" value="0" style="width:80px" />
+                </div>
+              </div>
+
+              <div>
+                <label class="form-label">Đáp án mẫu (mỗi đáp án một dòng) *</label>
+                <textarea class="form-input" id="t1q-sampleAnswers" rows="3" placeholder="Đáp án mẫu 1&#10;Đáp án mẫu 2 (nếu có)"></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label class="form-label">Grammar Point</label>
+                  <input class="form-input" id="t1q-grammarPoint" placeholder="Ví dụ: Subject-Verb Agreement" />
+                </div>
+                <div>
+                  <label class="form-label">XP Reward</label>
+                  <input class="form-input" id="t1q-xpReward" type="number" value="5" min="1" max="20" />
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Giải thích (Explanation)</label>
+                <textarea class="form-input" id="t1q-explanation" rows="2" placeholder="Giải thích ngữ pháp bằng tiếng Việt..."></textarea>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div>
+                  <label class="form-label">Gợi ý (mỗi gợi ý một dòng)</label>
+                  <textarea class="form-input" id="t1q-hints" rows="2" placeholder="Gợi ý 1&#10;Gợi ý 2"></textarea>
+                </div>
+                <div>
+                  <label class="form-label">Order Index</label>
+                  <input class="form-input" id="t1q-orderIndex" type="number" value="0" min="0" />
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="t1q-isActive" checked style="width:16px;height:16px;cursor:pointer" />
+                <label for="t1q-isActive" class="form-label" style="margin:0;cursor:pointer">Đang hoạt động</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-ghost" onclick="closeT1QModal()">Hủy</button>
+              <button class="btn btn-primary" onclick="saveT1Question()">Lưu câu hỏi</button>
+            </div>
+          </div>
+        </div><!-- /t1q-modal -->
 
       </div><!-- /tab-panels -->
     </div><!-- /content -->
