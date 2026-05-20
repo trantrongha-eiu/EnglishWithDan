@@ -163,6 +163,25 @@
     .t2-toggle-model{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
     .t2-toggle-model:hover{border-color:#6366f1;color:#6366f1}
     [data-theme="dark"] .t2-toggle-model{border-color:#334155;color:#94a3b8}
+
+    /* ── Quit modal ── */
+    .t2-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(2px)}
+    .t2-quit-overlay.hidden{display:none}
+    .t2-quit-box{background:#fff;border-radius:18px;width:320px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.28);animation:t2QuitIn .2s ease}
+    @keyframes t2QuitIn{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+    .t2-quit-top{background:linear-gradient(135deg,#fff7ed,#fef3c7);padding:28px 24px 18px;text-align:center}
+    .t2-quit-mascot{font-size:44px;line-height:1}
+    .t2-quit-title{font-size:17px;font-weight:800;color:#92400e;margin:10px 0 5px}
+    .t2-quit-sub{font-size:13px;color:#6b7280;line-height:1.5}
+    .t2-quit-actions{padding:18px 24px;display:flex;flex-direction:column;gap:10px}
+    .t2-quit-continue{background:#6366f1;color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+    .t2-quit-continue:hover{background:#4f46e5}
+    .t2-quit-leave{background:none;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
+    .t2-quit-leave:hover{border-color:#e53935;color:#e53935}
+    [data-theme="dark"] .t2-quit-box{background:#1e293b}
+    [data-theme="dark"] .t2-quit-top{background:linear-gradient(135deg,#1e1b4b,#2e1b0e)}
+    [data-theme="dark"] .t2-quit-title{color:#fbbf24}
+    [data-theme="dark"] .t2-quit-leave{border-color:#374151;color:#9ca3af}
   </style>
 </head>
 <body>
@@ -182,6 +201,21 @@
 </div>
 
 <div id="wp-toast"></div>
+
+<!-- ── Quit modal ── -->
+<div class="t2-quit-overlay hidden" id="t2-quit-overlay">
+  <div class="t2-quit-box">
+    <div class="t2-quit-top">
+      <div class="t2-quit-mascot" id="t2-quit-mascot">✏️</div>
+      <div class="t2-quit-title" id="t2-quit-title">Dừng luyện tập?</div>
+      <div class="t2-quit-sub"   id="t2-quit-sub"></div>
+    </div>
+    <div class="t2-quit-actions">
+      <button class="t2-quit-continue" id="t2-quit-continue-btn"><i class="fas fa-arrow-left"></i> Tiếp tục học</button>
+      <button class="t2-quit-leave"    id="t2-quit-leave-btn">Dừng lại</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── Stats header ── -->
 <header class="wp-header">
@@ -251,6 +285,32 @@ let state = {
   // per-question status for progress dots
   questionStatus: []
 };
+
+// ════════════════════════════════════════════════════════
+//  QUIT MODAL
+// ════════════════════════════════════════════════════════
+let _t2QuitCb = null;
+function askT2Quit(cb, opts = {}) {
+  _t2QuitCb = cb;
+  document.getElementById('t2-quit-mascot').textContent   = opts.mascot      || '✏️';
+  document.getElementById('t2-quit-title').textContent    = opts.title        || 'Dừng luyện tập?';
+  document.getElementById('t2-quit-sub').textContent      = opts.sub          || '';
+  document.getElementById('t2-quit-continue-btn').innerHTML = `<i class="fas fa-arrow-left"></i> ${opts.continueText || 'Tiếp tục học'}`;
+  document.getElementById('t2-quit-leave-btn').textContent  = opts.confirmText  || 'Dừng lại';
+  document.getElementById('t2-quit-overlay').classList.remove('hidden');
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('t2-quit-continue-btn').onclick = () =>
+    document.getElementById('t2-quit-overlay').classList.add('hidden');
+  document.getElementById('t2-quit-leave-btn').onclick = () => {
+    document.getElementById('t2-quit-overlay').classList.add('hidden');
+    if (_t2QuitCb) { _t2QuitCb(); _t2QuitCb = null; }
+  };
+  // Close on backdrop click
+  document.getElementById('t2-quit-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) document.getElementById('t2-quit-overlay').classList.add('hidden');
+  });
+});
 
 // ════════════════════════════════════════════════════════
 //  INIT
@@ -759,16 +819,36 @@ function nextPractice() {
 }
 
 function quitPractice() {
+  const doQuit = () => {
+    if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
+    state.view = 'select'; render();
+  };
   if (state.sessionDone > 0) {
-    if (!confirm(`Bạn đã làm ${state.sessionDone} câu. Dừng lại?`)) return;
+    askT2Quit(doQuit, {
+      mascot: '✏️',
+      title: 'Dừng luyện tập?',
+      sub: `Bạn đã làm ${state.sessionDone} câu. Tiến độ sẽ không được lưu.`,
+      confirmText: 'Dừng lại',
+      continueText: 'Tiếp tục học'
+    });
+  } else {
+    doQuit();
   }
-  if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
-  state.view = 'select'; render();
 }
 
 // ════════════════════════════════════════════════════════
 //  EXAM MODE
 // ════════════════════════════════════════════════════════
+function quitExam() {
+  askT2Quit(() => { state.view = 'select'; render(); }, {
+    mascot: '📋',
+    title: 'Dừng bài thi?',
+    sub: `Câu ${state.examIdx + 1}/${state.examQuestions.length}. Kết quả sẽ bị mất.`,
+    confirmText: 'Dừng lại',
+    continueText: 'Tiếp tục thi'
+  });
+}
+
 async function startExam() {
   try {
     const level = state.selectedLevel === 'all' ? state.selectedLevel : state.selectedLevel;
@@ -790,7 +870,7 @@ function renderExam() {
   const pct = Math.round((state.examIdx / state.examQuestions.length) * 100);
   const isLast = state.examIdx === state.examQuestions.length - 1;
   return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><span onclick="if(confirm('Dừng bài thi?')){state.view='select';render();}">← Thoát thi</span></div></div>
+    <div class="t2-nav"><div class="t2-nav-crumb"><span onclick="quitExam()">← Thoát thi</span></div></div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>
