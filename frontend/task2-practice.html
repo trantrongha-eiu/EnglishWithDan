@@ -222,7 +222,7 @@ let state = {
   selectedWeek: null,
   selectedTopic: null,
   selectedLevel: 'beginner',
-  currentMode: 'practice',  // practice | exam | vocab
+  currentMode: 'practice',  // practice | exam | vocab | retry
   weeks: [],
   topics: [],
   questions: [],
@@ -237,7 +237,9 @@ let state = {
   mcSelected: null,
   // exam
   examQuestions: [], examAnswers: [], examIdx: 0, examLevel: 'beginner', examCount: 10,
-  _isSubmitting: false
+  _isSubmitting: false,
+  // wrong-question tracking (cross-session)
+  wrongQuestionIds: []
 };
 
 // ════════════════════════════════════════════════════════
@@ -363,6 +365,14 @@ function bindTopics() {
 async function selectTopic(id) {
   const topic = state.topics.find(t => t._id === id);
   state.selectedTopic = topic;
+  state.wrongQuestionIds = [];
+  // Fetch persisted wrong-question IDs if user is logged in
+  if (localStorage.getItem('token')) {
+    try {
+      const data = await apiFetch(`/api/task2/wrong-questions/${id}`);
+      state.wrongQuestionIds = data.wrongIds || [];
+    } catch {}
+  }
   state.view = 'select';
   render();
 }
@@ -395,6 +405,7 @@ function renderSelect() {
         <button class="t2-btn ${state.currentMode==='practice'?'active':''}" onclick="setMode2('practice')"><i class="fas fa-pencil-alt"></i> Luyện tập</button>
         <button class="t2-btn ${state.currentMode==='exam'?'active':''}" onclick="setMode2('exam')"><i class="fas fa-clipboard-check"></i> Thi thử</button>
         <button class="t2-btn ${state.currentMode==='vocab'?'active':''}" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Từ vựng</button>
+        ${state.wrongQuestionIds.length > 0 ? `<button class="t2-btn ${state.currentMode==='retry'?'active':''}" onclick="setMode2('retry')" style="border-color:#fbbf24;color:#92400e;${state.currentMode==='retry'?'background:#fef3c7;':''}"><i class="fas fa-exclamation-circle" style="color:#f59e0b"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
 
       ${state.currentMode === 'exam' ? `
@@ -421,6 +432,8 @@ async function startSession() {
     await loadVocab();
   } else if (state.currentMode === 'exam') {
     await startExam();
+  } else if (state.currentMode === 'retry') {
+    await startRetryWrong();
   } else {
     await startPractice();
   }
@@ -437,6 +450,24 @@ async function startPractice() {
     state.questions = data.questions;
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
+    state.mcSelected = null; state.rearrangeAnswer = [];
+    state.view = 'practice';
+    render();
+  } catch { showToast('Lỗi tải câu hỏi', 'error'); }
+}
+
+async function startRetryWrong() {
+  try {
+    const params = new URLSearchParams({ level: state.selectedLevel });
+    const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
+    if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
+    const wrongSet = new Set(state.wrongQuestionIds);
+    const wrongQuestions = data.questions.filter(q => wrongSet.has(q._id) || wrongSet.has(q.questionId));
+    if (!wrongQuestions.length) { showToast('Không có câu sai ở level này. Hãy thử chọn "Tất cả"!', 'info', 4000); return; }
+    state.questions = wrongQuestions;
+    state.currentIdx = 0;
+    state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
+    state.mcSelected = null; state.rearrangeAnswer = [];
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -460,6 +491,7 @@ function renderPractice() {
       <span class="t2-ctx-divider">·</span>
       <span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>
       <span class="t2-ctx-level" style="background:${lvlColor}22;color:${lvlColor}">${lvlLabel}</span>
+      ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>` : ''}
     </div>
     <details class="t2-prompt-box">
       <summary>📋 Đề bài IELTS</summary>
@@ -640,7 +672,16 @@ async function submitPractice() {
     isOk ? playOk() : playWrong();
     state.sessionDone++;
     if (isOk) state.sessionCorrect++;
-    state.sessionAttempts.push({ questionId: q._id || q.questionId, userAnswer: answer, isCorrect: isOk, score: data.score || 0 });
+    state.sessionAttempts.push({
+      questionId: q._id || q.questionId,
+      userAnswer: answer,
+      isCorrect: isOk,
+      score: data.score || 0,
+      modelAnswer: data.modelAnswer || '',
+      feedbackVi: data.feedbackVi || '',
+      questionText: q.questionText || '',
+      type: q.type
+    });
 
     // show feedback
     const mc = ['essay_type_recognition','topic_sentence'].includes(q.type);
@@ -842,21 +883,51 @@ function renderDone() {
   const pct = state.sessionDone > 0 ? Math.round((state.sessionCorrect / state.sessionDone) * 100) : 0;
   const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
   const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#ca8a04' : '#dc2626';
+  const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
+  const wrongCount = wrongAttempts.length;
+
+  const wrongReview = wrongAttempts.map((a, i) => `
+    <div class="t2-review-item" style="border-left-color:#dc2626;background:#fff1f2">
+      <div style="font-size:11px;font-weight:700;color:#b91c1c;margin-bottom:4px">❌ Câu ${i+1} — ${Q_LABELS[a.type] || a.type}</div>
+      <div style="font-size:12px;color:#374151;margin-bottom:6px;line-height:1.5;white-space:pre-line">${a.questionText || ''}</div>
+      <div style="font-size:12px;margin-bottom:2px"><span style="color:#6b7280">Bạn trả lời:</span> <span style="font-weight:600;color:#b91c1c">${a.userAnswer || '(bỏ trống)'}</span></div>
+      <div style="font-size:12px;margin-bottom:4px"><span style="color:#15803d">Đáp án đúng:</span> <span style="font-weight:600;color:#15803d">${a.modelAnswer || ''}</span></div>
+      ${a.feedbackVi ? `<div style="font-size:11px;color:#0369a1;padding:4px 8px;background:#f0f9ff;border-radius:6px">${a.feedbackVi}</div>` : ''}
+    </div>`).join('');
+
   return `
     <div class="t2-done">
       <div class="t2-done-icon">${emoji}</div>
       <div class="t2-done-score" style="color:${color}">${pct}%</div>
-      <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu</div>
+      <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${state.selectedTopic?.topicName || ''}</div>
       <div class="t2-done-stats">
         <div class="t2-done-stat"><div class="t2-done-stat-num" style="color:#16a34a">✅ ${state.sessionCorrect}</div><div class="t2-done-stat-lbl">Đúng</div></div>
-        <div class="t2-done-stat"><div class="t2-done-stat-num" style="color:#dc2626">❌ ${state.sessionDone - state.sessionCorrect}</div><div class="t2-done-stat-lbl">Sai</div></div>
+        <div class="t2-done-stat"><div class="t2-done-stat-num" style="color:#dc2626">❌ ${wrongCount}</div><div class="t2-done-stat-lbl">Sai</div></div>
         <div class="t2-done-stat"><div class="t2-done-stat-num">${state.sessionDone}</div><div class="t2-done-stat-lbl">Tổng</div></div>
       </div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="wp-restart-btn" onclick="startPractice()"><i class="fas fa-redo"></i> Làm lại</button>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        ${wrongCount > 0 ? `<button class="t2-start-btn" onclick="retryWrong()" style="font-size:13px;padding:10px 20px;margin-top:0"><i class="fas fa-redo-alt"></i> Ôn lại ${wrongCount} câu sai</button>` : ''}
+        <button class="wp-restart-btn" onclick="startPractice()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
         <button class="wp-more-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Chọn lại</button>
       </div>
-    </div>`;
+    </div>
+    ${wrongCount > 0 ? `
+    <div style="padding:0 20px 30px">
+      <h3 style="font-size:14px;font-weight:700;color:#374151;margin:0 0 10px">📋 Chi tiết câu sai (${wrongCount})</h3>
+      ${wrongReview}
+    </div>` : `<div style="text-align:center;padding:12px;color:#16a34a;font-weight:700;font-size:14px">🌟 Tuyệt vời! Không có câu nào sai!</div>`}`;
+}
+
+function retryWrong() {
+  const wrongIds = new Set(state.sessionAttempts.filter(a => !a.isCorrect).map(a => a.questionId));
+  const wrongQuestions = state.questions.filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId));
+  if (!wrongQuestions.length) { showToast('Không có câu nào sai!', 'info'); return; }
+  state.questions = wrongQuestions;
+  state.currentIdx = 0;
+  state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
+  state.mcSelected = null; state.rearrangeAnswer = [];
+  state.view = 'practice';
+  render();
 }
 
 // ════════════════════════════════════════════════════════
@@ -880,11 +951,23 @@ async function savePracticeAttempt() {
         topicId: state.selectedTopic?._id,
         topicName: state.selectedTopic?.topicName,
         level: state.selectedLevel,
-        questionsAttempted: state.sessionAttempts,
+        questionsAttempted: state.sessionAttempts.map(a => ({
+          questionId: a.questionId,
+          userAnswer: a.userAnswer,
+          isCorrect: a.isCorrect,
+          score: a.score
+        })),
         totalQuestions: state.sessionDone,
         correctCount: state.sessionCorrect
       })
     });
+    // Refresh wrong-question list after session saved
+    if (state.selectedTopic?._id) {
+      try {
+        const data = await apiFetch(`/api/task2/wrong-questions/${state.selectedTopic._id}`);
+        state.wrongQuestionIds = data.wrongIds || [];
+      } catch {}
+    }
   } catch {}
 }
 

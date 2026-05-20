@@ -5,7 +5,6 @@ const qAttemptSchema = new mongoose.Schema({
   userAnswer:       { type: String },
   isCorrect:        { type: Boolean },
   score:            { type: Number },
-  aiFeedback:       { type: String },
   timeSpentSeconds: { type: Number }
 }, { _id: false });
 

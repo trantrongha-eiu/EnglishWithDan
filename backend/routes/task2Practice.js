@@ -320,4 +320,34 @@ router.get('/progress', auth, async (req, res) => {
   }
 });
 
+// ══════════════════════════════════════════════════════════════════════
+//  GET /api/task2/wrong-questions/:topicId  (auth required)
+//  Returns questionIds that were most recently answered incorrectly
+// ══════════════════════════════════════════════════════════════════════
+router.get('/wrong-questions/:topicId', auth, async (req, res) => {
+  try {
+    const attempts = await Task2Attempt.find({
+      userId: req.user._id,
+      topicId: req.params.topicId
+    }).sort({ createdAt: 1 }).lean();
+
+    if (!attempts.length) return res.json({ success: true, wrongIds: [] });
+
+    // Track most-recent result per questionId (oldest→newest so last write wins)
+    const latestResult = {};
+    for (const attempt of attempts) {
+      for (const qa of (attempt.questionsAttempted || [])) {
+        if (qa.questionId) latestResult[qa.questionId] = qa.isCorrect;
+      }
+    }
+    const wrongIds = Object.entries(latestResult)
+      .filter(([, ok]) => !ok)
+      .map(([id]) => id);
+
+    res.json({ success: true, wrongIds });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 module.exports = router;
