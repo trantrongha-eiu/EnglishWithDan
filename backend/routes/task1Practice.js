@@ -189,8 +189,13 @@ router.post('/check-test', async (req, res) => {
     const results = [];
     let correct = 0;
 
+    // Batch-load all exercises in one query instead of N sequential findById calls
+    const ids = answers.map(a => a.exerciseId).filter(Boolean);
+    const exerciseList = await Task1Exercise.find({ _id: { $in: ids } }).lean();
+    const exMap = Object.fromEntries(exerciseList.map(e => [e._id.toString(), e]));
+
     for (const { exerciseId, userAnswer } of answers) {
-      const exercise = await Task1Exercise.findById(exerciseId).lean();
+      const exercise = exMap[String(exerciseId)];
       if (!exercise) { results.push({ exerciseId, error: 'not found' }); continue; }
 
       const check = localCheck(exercise, (userAnswer || '').trim());
@@ -204,13 +209,13 @@ router.post('/check-test', async (req, res) => {
         questionVi: exercise.questionVi,
         questionEn: exercise.questionEn,
         sentenceWithBlanks: exercise.sentenceWithBlanks,
-        options: exercise.options,
-        baseWords: exercise.baseWords,
         userAnswer: userAnswer || '',
         sampleAnswer: exercise.primaryAnswer,
         isCorrect: check.isCorrect,
+        score: check.score,
         grammarPoint: exercise.grammarPoint,
-        explanation: exercise.explanation
+        explanation: exercise.explanation,
+        feedbackVi: check.feedbackVi
       });
     }
 

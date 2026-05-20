@@ -142,6 +142,14 @@
     .wp-submit-btn:disabled{opacity:.45;cursor:not-allowed}
     /* ── Writing textarea ── */
     .t2-writing-area{min-height:120px;resize:vertical}
+    /* ── Question status dots ── */
+    .t2-q-dots{display:flex;gap:5px;padding:4px 20px 6px;justify-content:center;flex-wrap:wrap}
+    .t2-q-dot{width:9px;height:9px;border-radius:50%;background:#d1d5db;transition:background .25s,transform .2s;flex-shrink:0}
+    .t2-dot-ok{background:#16a34a}
+    .t2-dot-err{background:#dc2626}
+    .t2-dot-current{background:#6366f1;transform:scale(1.35);box-shadow:0 0 0 2px #c7d2fe}
+    [data-theme="dark"] .t2-q-dot{background:#334155}
+    [data-theme="dark"] .t2-dot-current{box-shadow:0 0 0 2px #3730a3}
     /* ── Practice context strip ── */
     .t2-ctx-strip{display:flex;align-items:center;gap:8px;padding:7px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;font-size:12px}
     [data-theme="dark"] .t2-ctx-strip{background:#1e293b;border-bottom-color:#334155}
@@ -239,7 +247,9 @@ let state = {
   examQuestions: [], examAnswers: [], examIdx: 0, examLevel: 'beginner', examCount: 10,
   _isSubmitting: false,
   // wrong-question tracking (cross-session)
-  wrongQuestionIds: []
+  wrongQuestionIds: [],
+  // per-question status for progress dots
+  questionStatus: []
 };
 
 // ════════════════════════════════════════════════════════
@@ -451,6 +461,7 @@ async function startPractice() {
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
+    state.questionStatus = new Array(data.questions.length).fill('pending');
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -468,6 +479,7 @@ async function startRetryWrong() {
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
+    state.questionStatus = new Array(wrongQuestions.length).fill('pending');
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -498,6 +510,12 @@ function renderPractice() {
       <p>${topic.prompt}</p>
     </details>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
+    <div class="t2-q-dots" id="q-dots">
+      ${state.questions.map((q, i) => {
+        const st = (state.questionStatus || [])[i] || 'pending';
+        return `<span class="t2-q-dot ${st === 'correct' ? 't2-dot-ok' : st === 'wrong' ? 't2-dot-err' : i === state.currentIdx ? 't2-dot-current' : ''}" data-qi="${i}" title="Câu ${i+1}"></span>`;
+      }).join('')}
+    </div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.currentIdx + 1} / ${state.questions.length}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
@@ -672,6 +690,15 @@ async function submitPractice() {
     isOk ? playOk() : playWrong();
     state.sessionDone++;
     if (isOk) state.sessionCorrect++;
+
+    // Update progress dot for current question
+    state.questionStatus[state.currentIdx] = isOk ? 'correct' : 'wrong';
+    const dot = document.querySelector(`#q-dots .t2-q-dot[data-qi="${state.currentIdx}"]`);
+    if (dot) {
+      dot.classList.remove('t2-dot-current');
+      dot.classList.add(isOk ? 't2-dot-ok' : 't2-dot-err');
+    }
+
     state.sessionAttempts.push({
       questionId: q._id || q.questionId,
       userAnswer: answer,
@@ -769,6 +796,7 @@ function renderExam() {
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
       <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
+      ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${q.topicName}">${q.topicName}</span>` : ''}
     </div>
     ${q.prompt ? `<details class="t2-prompt-box"><summary>📋 Đề bài</summary><p>${q.prompt}</p></details>` : ''}
     <div class="wp-card" style="margin:0 20px">
@@ -926,6 +954,8 @@ function retryWrong() {
   state.currentIdx = 0;
   state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
   state.mcSelected = null; state.rearrangeAnswer = [];
+  state.questionStatus = new Array(wrongQuestions.length).fill('pending');
+  state.currentMode = 'retry';
   state.view = 'practice';
   render();
 }
