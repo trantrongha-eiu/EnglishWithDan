@@ -14,7 +14,7 @@ const LEVELS = ['beginner','elementary','intermediate'];
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
 const defaultTopic = { week: 1, block: 'advantages_disadvantages', topicName: '', topicEmoji: '📝', essayType: 'advantages_disadvantages', prompt: '', hintAdvantages: '', hintDisadvantages: '', isActive: true };
-const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', baseWords: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0 };
+const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', baseWords: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0, isActive: true };
 
 function TopicModal({ topic, onClose, onSaved }) {
   const [form, setForm] = useState(topic || defaultTopic);
@@ -106,8 +106,8 @@ function TopicModal({ topic, onClose, onSaved }) {
           </div>
         </div>
         <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>Hủy</button>
-          <button className="btn-primary" onClick={save} disabled={saving}>{saving ? 'Đang lưu...' : (isEdit ? 'Cập nhật' : 'Thêm Topic')}</button>
+          <button className="btn btn-ghost" onClick={onClose}>Hủy</button>
+          <button className="btn btn-primary" onClick={save} disabled={saving}>{saving ? 'Đang lưu...' : (isEdit ? 'Cập nhật' : 'Thêm Topic')}</button>
         </div>
       </div>
     </div>
@@ -117,6 +117,7 @@ function TopicModal({ topic, onClose, onSaved }) {
 function QuestionModal({ topicId, question, onClose, onSaved }) {
   const isEdit = !!question?._id;
   const [form, setForm] = useState(question ? {
+    ...defaultQ,
     ...question,
     options: (question.options || []).join('\n'),
     baseWords: (question.baseWords || []).join(' '),
@@ -214,10 +215,14 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
             <label className="form-label">Từ khóa chấm bài fallback (mỗi dòng 1 từ/cụm)</label>
             <textarea className="form-input" rows={2} value={form.fallbackKeywords} onChange={e => set('fallbackKeywords', e.target.value)} placeholder="universities&#10;online learning&#10;students" />
           </div>
+          <label style={{ display:'flex', alignItems:'center', gap:8, cursor:'pointer', color:'var(--text2)' }}>
+            <input type="checkbox" checked={form.isActive !== false} onChange={e => set('isActive', e.target.checked)} />
+            Hiển thị câu hỏi
+          </label>
         </div>
         <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>Hủy</button>
-          <button className="btn-primary" onClick={save} disabled={saving}>{saving ? 'Đang lưu...' : (isEdit ? 'Cập nhật' : 'Thêm câu hỏi')}</button>
+          <button className="btn btn-ghost" onClick={onClose}>Hủy</button>
+          <button className="btn btn-primary" onClick={save} disabled={saving}>{saving ? 'Đang lưu...' : (isEdit ? 'Cập nhật' : 'Thêm câu hỏi')}</button>
         </div>
       </div>
     </div>
@@ -271,6 +276,14 @@ export default function Task2Exercises() {
     });
   }
 
+  async function toggleTopicActive(t) {
+    try {
+      await apiFetch(`/admin/task2/topics/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: !t.isActive }) });
+      showToast(t.isActive ? 'Đã ẩn topic' : 'Đã hiện topic', 'success');
+      forceReload();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
   function deleteQuestion(qid) {
     if (!activeTopic) return;
     confirm('Xóa câu hỏi này? Không thể hoàn tác.', async () => {
@@ -281,6 +294,15 @@ export default function Task2Exercises() {
         forceReload();
       } catch (e) { showToast(e.message, 'error'); }
     });
+  }
+
+  async function toggleQuestionActive(qid, currentActive) {
+    if (!activeTopic) return;
+    try {
+      await apiFetch(`/admin/task2/topics/${activeTopic._id}/questions/${qid}`, { method: 'PUT', body: JSON.stringify({ isActive: !currentActive }) });
+      showToast(currentActive ? 'Đã ẩn câu hỏi' : 'Đã hiện câu hỏi', 'success');
+      setActiveTopic(t => t ? { ...t, questions: (t.questions || []).map(q => q._id === qid ? { ...q, isActive: !currentActive } : q) } : t);
+    } catch (e) { showToast(e.message, 'error'); }
   }
 
   async function refreshActiveTopic() {
@@ -301,11 +323,11 @@ export default function Task2Exercises() {
           <h1 className="page-title">Task 2 Writing</h1>
           <p className="page-subtitle">{total} topic — quản lý câu hỏi luyện viết IELTS Task 2</p>
         </div>
-        <button className="btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
+        <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
       </div>
 
       {/* Filters */}
-      <div className="filter-bar" style={{ flexWrap:'wrap', gap:10 }}>
+      <div className="filter-bar" style={{ flexWrap:'wrap', gap:10, marginBottom:16 }}>
         <select className="filter-select" value={weekFilter} onChange={e => { setWeekFilter(e.target.value); setPage(1); }}>
           <option value="all">Tất cả tuần</option>
           {weeks.map(w => <option key={w} value={w}>Tuần {w}</option>)}
@@ -317,12 +339,12 @@ export default function Task2Exercises() {
         <input className="filter-search" placeholder="Tìm tên topic..." value={search}
           onChange={e => { setSearch(e.target.value); setPage(1); }}
           onKeyDown={e => e.key === 'Enter' && forceReload()} />
-        <button className="btn-secondary" onClick={forceReload}>Tìm</button>
+        <button className="btn btn-ghost" onClick={forceReload}>Tìm</button>
       </div>
 
       {/* Topics table */}
       {loading ? (
-        <div style={{ textAlign:'center', padding:40 }}>Đang tải...</div>
+        <div style={{ textAlign:'center', padding:40, color:'var(--text3)' }}>Đang tải...</div>
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -342,7 +364,7 @@ export default function Task2Exercises() {
               )}
               {topics.map(t => (
                 <Fragment key={t._id}>
-                  <tr style={{ background: activeTopic?._id === t._id ? 'var(--blue-50,#eff6ff)' : undefined }}>
+                  <tr style={{ background: activeTopic?._id === t._id ? 'rgba(99,102,241,.07)' : undefined, opacity: t.isActive ? 1 : 0.55 }}>
                     <td><span style={{ fontWeight:700, color:'#6366f1' }}>W{t.week}</span></td>
                     <td>
                       <div style={{ fontWeight:600 }}>{t.topicEmoji} {t.topicName}</div>
@@ -365,50 +387,67 @@ export default function Task2Exercises() {
                       <span style={{ color: t.isActive ? '#22c55e' : '#ef4444', fontWeight:700 }}>{t.isActive ? '✓ Active' : '✗ Ẩn'}</span>
                     </td>
                     <td style={{ textAlign:'right' }}>
-                      <div style={{ display:'flex', gap:6, justifyContent:'flex-end' }}>
-                        <button className="btn-icon" title="Quản lý câu hỏi"
+                      <div style={{ display:'flex', gap:5, justifyContent:'flex-end', flexWrap:'wrap' }}>
+                        <button className="btn btn-ghost btn-sm btn-icon" title="Quản lý câu hỏi"
                           onClick={() => setActiveTopic(activeTopic?._id === t._id ? null : t)}
-                          style={{ background: activeTopic?._id === t._id ? '#6366f1' : undefined, color: activeTopic?._id === t._id ? '#fff' : undefined }}>
+                          style={{ background: activeTopic?._id === t._id ? '#6366f1' : undefined, color: activeTopic?._id === t._id ? '#fff' : undefined, borderColor: activeTopic?._id === t._id ? '#6366f1' : undefined }}>
                           📋
                         </button>
-                        <button className="btn-icon" title="Sửa topic" onClick={() => { setEditingTopic(t); setShowTopicModal(true); }}>✏️</button>
-                        <button className="btn-icon btn-danger" title="Xóa topic" onClick={() => deleteTopic(t)}>🗑️</button>
+                        <button className={`btn btn-sm ${t.isActive ? 'btn-warning' : 'btn-success'}`}
+                          title={t.isActive ? 'Ẩn topic' : 'Hiện topic'}
+                          onClick={() => toggleTopicActive(t)}>
+                          {t.isActive ? '🙈 Ẩn' : '👁 Hiện'}
+                        </button>
+                        <button className="btn btn-ghost btn-sm btn-icon" title="Sửa topic" onClick={() => { setEditingTopic(t); setShowTopicModal(true); }}>✏️</button>
+                        <button className="btn btn-danger btn-sm btn-icon" title="Xóa topic" onClick={() => deleteTopic(t)}>🗑️</button>
                       </div>
                     </td>
                   </tr>
                   {activeTopic?._id === t._id && (
                     <tr>
                       <td colSpan={6} style={{ padding:0 }}>
-                        <div style={{ background:'#f8fafc', borderTop:'2px solid #6366f1', padding:'16px 20px' }}>
+                        <div style={{ background:'var(--surface2)', borderTop:'2px solid #6366f1', padding:'16px 20px' }}>
                           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
                             <div style={{ fontWeight:700, color:'#6366f1' }}>📋 Câu hỏi của: {t.topicEmoji} {t.topicName}</div>
-                            <button className="btn-primary" style={{ fontSize:13, padding:'6px 14px' }}
+                            <button className="btn btn-primary" style={{ fontSize:13, padding:'6px 14px' }}
                               onClick={() => { setEditingQ(null); setShowQModal(true); }}>+ Thêm câu hỏi</button>
                           </div>
                           {(activeTopic.questions||[]).length === 0 ? (
                             <div style={{ textAlign:'center', color:'#9ca3af', padding:'16px 0' }}>Chưa có câu hỏi nào. Nhấn "+ Thêm câu hỏi" để bắt đầu.</div>
                           ) : (
-                            <table className="data-table" style={{ background:'#fff' }}>
+                            <table className="data-table" style={{ background:'var(--surface)' }}>
                               <thead>
                                 <tr>
                                   <th>Level</th>
                                   <th>Loại</th>
                                   <th>Câu hỏi</th>
+                                  <th style={{ textAlign:'center' }}>Trạng thái</th>
                                   <th style={{ textAlign:'right' }}>Hành động</th>
                                 </tr>
                               </thead>
                               <tbody>
                                 {(activeTopic.questions||[]).sort((a,b) => a.orderIndex - b.orderIndex).map(q => (
-                                  <tr key={q._id}>
+                                  <tr key={q._id} style={{ opacity: q.isActive === false ? 0.5 : 1 }}>
                                     <td><span style={{ color: LEVEL_COLORS[q.level], fontWeight:700, fontSize:12 }}>{q.level}</span></td>
                                     <td><span style={{ fontSize:12, color:'#6b7280' }}>{Q_LABELS[q.type] || q.type}</span></td>
-                                    <td style={{ maxWidth:400 }}>
+                                    <td style={{ maxWidth:360 }}>
                                       <div style={{ fontSize:13, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{q.questionText}</div>
                                     </td>
+                                    <td style={{ textAlign:'center' }}>
+                                      <span style={{ color: q.isActive !== false ? '#22c55e' : '#9ca3af', fontSize:11, fontWeight:700 }}>
+                                        {q.isActive !== false ? '● Hiện' : '○ Ẩn'}
+                                      </span>
+                                    </td>
                                     <td style={{ textAlign:'right' }}>
-                                      <div style={{ display:'flex', gap:6, justifyContent:'flex-end' }}>
-                                        <button className="btn-icon" onClick={() => { setEditingQ(q); setShowQModal(true); }}>✏️</button>
-                                        <button className="btn-icon btn-danger" onClick={() => deleteQuestion(q._id)}>🗑️</button>
+                                      <div style={{ display:'flex', gap:5, justifyContent:'flex-end' }}>
+                                        <button
+                                          className={`btn btn-sm btn-icon ${q.isActive !== false ? 'btn-warning' : 'btn-success'}`}
+                                          title={q.isActive !== false ? 'Ẩn câu hỏi' : 'Hiện câu hỏi'}
+                                          onClick={() => toggleQuestionActive(q._id, q.isActive !== false)}>
+                                          {q.isActive !== false ? '🙈' : '👁'}
+                                        </button>
+                                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => { setEditingQ(q); setShowQModal(true); }}>✏️</button>
+                                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => deleteQuestion(q._id)}>🗑️</button>
                                       </div>
                                     </td>
                                   </tr>

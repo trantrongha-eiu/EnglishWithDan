@@ -334,6 +334,16 @@ export default function Task1Exercises() {
     });
   }
 
+  async function toggleActive(id, currentActive) {
+    try {
+      await apiFetch(`/admin/task1/exercises/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !currentActive }) });
+      toast(`Đã ${currentActive ? 'ẩn' : 'hiện'} câu hỏi`);
+      setExercises(xs => xs.map(x => x._id === id ? { ...x, isActive: !currentActive } : x));
+    } catch (e) {
+      toast(e.message, 'error');
+    }
+  }
+
   function closeModal() { setShowModal(false); setEditEx(null); }
   function forceReload() { setPage(1); setTick(t => t + 1); }
 
@@ -407,6 +417,12 @@ export default function Task1Exercises() {
                 </td>
                 <td>
                   <div className="row-actions">
+                    <button
+                      className={`btn btn-sm ${ex.isActive !== false ? 'btn-warning' : 'btn-success'}`}
+                      title={ex.isActive !== false ? 'Ẩn câu hỏi' : 'Hiện câu hỏi'}
+                      onClick={() => toggleActive(ex._id, ex.isActive !== false)}>
+                      {ex.isActive !== false ? '🙈 Ẩn' : '👁 Hiện'}
+                    </button>
                     <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditEx(ex)}>✏️</button>
                     <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(ex._id)}>🗑</button>
                   </div>
