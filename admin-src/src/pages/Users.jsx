@@ -127,7 +127,7 @@ export default function Users() {
   async function toggleBan(id, username, isBanned) {
     confirm(`${isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${username}"?`, async () => {
       try {
-        await apiFetch(`/admin/users/${id}/ban`, { method: 'POST', body: JSON.stringify({ isBanned: !isBanned }) });
+        await apiFetch(`/admin/users/${id}/ban`, { method: 'PUT', body: JSON.stringify({ isBanned: !isBanned }) });
         toast(isBanned ? 'Đã bỏ cấm' : 'Đã cấm tài khoản');
         load(page);
       } catch (e) { toast(e.message, 'error'); }
