@@ -1011,6 +1011,17 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/users/:id – lấy thông tin chi tiết 1 user
+router.get('/users/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password -savedVocab -resetOTP -resetOTPExpires');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/users – tạo tài khoản mới (chỉ admin/teacher)
 router.post('/users', auth, teacherOnly, async (req, res) => {
   try {
@@ -1033,10 +1044,11 @@ router.post('/users', auth, teacherOnly, async (req, res) => {
 // PUT /api/admin/users/:id – sửa thông tin user
 router.put('/users/:id', auth, teacherOnly, async (req, res) => {
   try {
-    const { username, email, firstName, lastName, role, password } = req.body;
+    const { username, email, firstName, lastName, role, isBanned, newPassword } = req.body;
     const update = { username, email, firstName, lastName, role };
-    if (password) {
-      update.password = await bcrypt.hash(password, 10);
+    if (isBanned !== undefined) update.isBanned = isBanned;
+    if (newPassword) {
+      update.password = await bcrypt.hash(newPassword, 10);
     }
     const user = await User.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
       .select('-password -savedVocab');
