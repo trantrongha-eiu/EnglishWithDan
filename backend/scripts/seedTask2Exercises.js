@@ -2185,6 +2185,97 @@ const topics = [
         modelAnswer: 'Those who argue that governments bear the primary responsibility for environmental protection point out that large-scale ecological problems such as greenhouse gas emissions and deforestation cannot be meaningfully addressed by individual action alone. Only governments possess the legislative authority to enforce environmental regulations, restrict the use of fossil fuels, and hold corporations accountable for pollution. For example, countries that have introduced strict carbon tax policies have seen measurable reductions in industrial emissions, demonstrating that systemic government intervention is far more impactful than the combined efforts of individual citizens.',
         fallbackKeywords: ['government', 'environmental', 'regulations', 'fossil fuels', 'emissions', 'corporations', 'policy'],
         explanationVi: "Cấu trúc PEEL: Point (topic sentence View 1) → Explain → Evidence → Link. Dùng 'On the one hand' để mở đầu View 1 trong Discuss Both Views."
+      },
+      // ── QT-4 Intermediate (W7T1) ──
+      {
+        questionId: 'w7t11_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "environmental protection"):\n\n"Bảo vệ môi trường là trách nhiệm của cả cá nhân và chính phủ."',
+        correctAnswer: 'Environmental protection is the responsibility of both individuals and the government.',
+        modelAnswer: 'Environmental protection is the responsibility of both individuals and the government.',
+        fallbackKeywords: ['environmental protection', 'responsibility', 'individuals', 'government'],
+        explanationVi: "'The responsibility of both A and B' = trách nhiệm của cả A lẫn B. 'Environmental protection' dùng làm chủ ngữ không cần mạo từ."
+      },
+      {
+        questionId: 'w7t11_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "make a difference"):\n\n"Một số người cho rằng hành động của mỗi cá nhân không thể tạo ra sự khác biệt lớn."',
+        correctAnswer: 'Some people argue that the actions of each individual cannot make a significant difference.',
+        modelAnswer: 'Some people argue that the actions of each individual cannot make a significant difference.',
+        fallbackKeywords: ['make a difference', 'individual', 'significant'],
+        explanationVi: "'Make a significant difference' = tạo ra sự khác biệt đáng kể. 'Argue that + clause' là cách trích dẫn quan điểm chuẩn trong IELTS."
+      },
+      {
+        questionId: 'w7t11_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "sustainable lifestyle"):\n\n"Lối sống bền vững có thể giúp giảm lượng khí thải carbon."',
+        correctAnswer: 'A sustainable lifestyle can help reduce one\'s carbon footprint.',
+        modelAnswer: 'A sustainable lifestyle can help reduce one\'s carbon footprint.',
+        fallbackKeywords: ['sustainable lifestyle', 'carbon', 'reduce'],
+        explanationVi: "'Carbon footprint' = lượng khí thải carbon cá nhân (tự nhiên hơn 'carbon emissions' trong bối cảnh cá nhân). 'One\'s' = của một người."
+      },
+      {
+        questionId: 'w7t11_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "renewable energy"):\n\n"Việc sử dụng năng lượng tái tạo là cách hiệu quả để chống lại biến đổi khí hậu."',
+        correctAnswer: 'Using renewable energy is an effective way to combat climate change.',
+        modelAnswer: 'Using renewable energy is an effective way to combat climate change.',
+        fallbackKeywords: ['renewable energy', 'effective', 'combat', 'climate change'],
+        explanationVi: "'An effective way to + V' = cách hiệu quả để làm gì. 'Combat' (= chống lại) mạnh và học thuật hơn 'fight' hay 'reduce'."
+      },
+      {
+        questionId: 'w7t11_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "public campaign"):\n\n"Nhiều chiến dịch cộng đồng được tổ chức để nâng cao nhận thức về môi trường."',
+        correctAnswer: 'Many public campaigns are organised to raise awareness about environmental issues.',
+        modelAnswer: 'Many public campaigns are organised to raise awareness about environmental issues.',
+        fallbackKeywords: ['public campaign', 'raise awareness', 'environmental'],
+        explanationVi: "'Are organised to + V' = bị động có mục đích. 'Raise awareness about' = nâng cao nhận thức về. Dùng 'environmental issues' tự nhiên hơn 'environment' thuần túy."
+      },
+      {
+        questionId: 'w7t11_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "government regulation"):\n\n"Chính phủ nên ban hành các quy định nghiêm ngặt về khí thải nhà kính."',
+        correctAnswer: 'The government should introduce strict regulations on greenhouse gas emissions.',
+        modelAnswer: 'The government should introduce strict regulations on greenhouse gas emissions.',
+        fallbackKeywords: ['government regulation', 'strict', 'greenhouse gas', 'emissions'],
+        explanationVi: "'Introduce regulations on' = ban hành quy định về. 'Greenhouse gas emissions' = khí thải nhà kính — cụm từ kỹ thuật không thể đổi."
+      },
+      {
+        questionId: 'w7t11_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "collective effort"):\n\n"Nếu mỗi người cùng hành động, nỗ lực chung sẽ tạo ra sự thay đổi lớn."',
+        correctAnswer: 'If everyone acts together, the collective effort will bring about significant change.',
+        modelAnswer: 'If everyone acts together, the collective effort will bring about significant change.',
+        fallbackKeywords: ['collective effort', 'together', 'significant change'],
+        explanationVi: "'Bring about + change' = tạo ra sự thay đổi. 'Collective effort' = nỗ lực tập thể/chung. Câu điều kiện loại 1: If + present, will + V."
+      },
+      {
+        questionId: 'w7t11_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "energy consumption"):\n\n"Ô nhiễm môi trường ngày càng nghiêm trọng do sự tiêu thụ năng lượng quá mức."',
+        correctAnswer: 'Environmental pollution is becoming increasingly severe due to excessive energy consumption.',
+        modelAnswer: 'Environmental pollution is becoming increasingly severe due to excessive energy consumption.',
+        fallbackKeywords: ['energy consumption', 'excessive', 'pollution', 'increasingly severe'],
+        explanationVi: "'Is becoming increasingly severe' = đang ngày càng nghiêm trọng (Present Continuous + adverb). 'Due to + N' = do/vì. 'Excessive' = quá mức."
+      },
+      {
+        questionId: 'w7t11_q22', level: 'intermediate', orderIndex: 22,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "environmental degradation"):\n\n"Mọi người cần nâng cao nhận thức về hậu quả của sự suy thoái môi trường."',
+        correctAnswer: 'People need to raise awareness about the consequences of environmental degradation.',
+        modelAnswer: 'People need to raise awareness about the consequences of environmental degradation.',
+        fallbackKeywords: ['environmental degradation', 'awareness', 'consequences'],
+        explanationVi: "'Raise awareness about' = nâng cao nhận thức về. 'Consequences of + N' = hậu quả của. 'Environmental degradation' = suy thoái môi trường."
+      },
+      {
+        questionId: 'w7t11_q23', level: 'intermediate', orderIndex: 23,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "reduce, reuse, recycle"):\n\n"Việc giảm, tái sử dụng và tái chế là thói quen mà ai cũng nên thực hiện."',
+        correctAnswer: 'The habit of reduce, reuse, and recycle is something everyone should practise.',
+        modelAnswer: 'The habit of reduce, reuse, and recycle is something everyone should practise.',
+        fallbackKeywords: ['reduce', 'reuse', 'recycle', 'habit', 'everyone'],
+        explanationVi: "'The habit of + V/N' = thói quen về. 'Something everyone should practise' = điều mà ai cũng nên thực hiện. 'Practise' (BrE) = luyện tập, thực hiện."
       }
     ]
   },
@@ -2310,6 +2401,97 @@ const topics = [
         modelAnswer: 'While car-free days can raise environmental awareness, they are essentially a temporary measure that fails to address the underlying causes of air pollution. A more sustainable solution would involve long-term government policy changes, such as investing in electric vehicles and expanding public transportation networks. Urban planning that prioritises cycling lanes and pedestrian zones can permanently reduce reliance on private vehicles. Countries like Norway, which have heavily subsidised electric vehicles through tax incentives, have demonstrated that such strategies produce measurable, lasting improvements in air quality — far exceeding the impact of a single car-free day.',
         fallbackKeywords: ['electric vehicles', 'public transportation', 'government policy', 'urban planning', 'sustainable', 'air quality'],
         explanationVi: "Cấu trúc PEEL: trình bày View 2, giải thích tại sao alternatives hiệu quả hơn, đưa ví dụ cụ thể (EV, urban planning), kết luận view."
+      },
+      // ── QT-4 Intermediate (W7T2) ──
+      {
+        questionId: 'w7t12_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "car-free day"):\n\n"Nhiều người tin rằng các ngày không ô tô giúp giảm lượng khí thải ra môi trường."',
+        correctAnswer: 'Many people believe that car-free days help reduce the amount of emissions released into the environment.',
+        modelAnswer: 'Many people believe that car-free days help reduce the amount of emissions released into the environment.',
+        fallbackKeywords: ['car-free day', 'reduce', 'emissions', 'environment'],
+        explanationVi: "'Help + V (bare infinitive)' = giúp làm gì. 'Emissions released into the environment' = khí thải thải ra môi trường — cụm danh từ mở rộng."
+      },
+      {
+        questionId: 'w7t12_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "exhaust fumes"):\n\n"Khí thải từ xe cộ là nguyên nhân chính gây ô nhiễm không khí."',
+        correctAnswer: 'Exhaust fumes from vehicles are the primary cause of air pollution.',
+        modelAnswer: 'Exhaust fumes from vehicles are the primary cause of air pollution.',
+        fallbackKeywords: ['exhaust fumes', 'vehicles', 'primary cause', 'air pollution'],
+        explanationVi: "'Exhaust fumes' là danh từ số nhiều, dùng 'are'. 'Primary cause' = nguyên nhân đầu tiên/chính (formal hơn 'main cause')."
+      },
+      {
+        questionId: 'w7t12_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "traffic congestion"):\n\n"Các thành phố lớn thường đối mặt với tình trạng tắc nghẽn giao thông nghiêm trọng."',
+        correctAnswer: 'Major cities frequently face severe traffic congestion.',
+        modelAnswer: 'Major cities frequently face severe traffic congestion.',
+        fallbackKeywords: ['traffic congestion', 'major cities', 'severe'],
+        explanationVi: "'Frequently face' = thường xuyên đối mặt ('frequently' học thuật hơn 'often'). 'Severe traffic congestion' = tắc nghẽn giao thông nghiêm trọng."
+      },
+      {
+        questionId: 'w7t12_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "electric vehicles"):\n\n"Xe điện đang trở thành lựa chọn thay thế thân thiện với môi trường hơn."',
+        correctAnswer: 'Electric vehicles are becoming a more environmentally friendly alternative.',
+        modelAnswer: 'Electric vehicles are becoming a more environmentally friendly alternative.',
+        fallbackKeywords: ['electric vehicles', 'environmentally friendly', 'alternative'],
+        explanationVi: "'Are becoming' = đang trở thành (Present Continuous nhấn mạnh xu hướng). 'Environmentally friendly alternative' = lựa chọn thân thiện với môi trường."
+      },
+      {
+        questionId: 'w7t12_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "environmental campaign"):\n\n"Chính phủ nên khuyến khích người dân tham gia các chiến dịch bảo vệ môi trường."',
+        correctAnswer: 'The government should encourage people to participate in environmental campaigns.',
+        modelAnswer: 'The government should encourage people to participate in environmental campaigns.',
+        fallbackKeywords: ['environmental campaign', 'encourage', 'participate'],
+        explanationVi: "'Encourage + O + to V' = khuyến khích ai làm gì. 'Participate in' = tham gia (formal hơn 'join')."
+      },
+      {
+        questionId: 'w7t12_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "vehicle restriction"):\n\n"Nhiều người cho rằng việc hạn chế phương tiện là cách hiệu quả để giảm ô nhiễm."',
+        correctAnswer: 'Many people argue that vehicle restriction is an effective way to reduce pollution.',
+        modelAnswer: 'Many people argue that vehicle restriction is an effective way to reduce pollution.',
+        fallbackKeywords: ['vehicle restriction', 'effective', 'reduce pollution'],
+        explanationVi: "'An effective way to + V' = cách hiệu quả để. 'Argue that' = cho rằng/lập luận rằng (chuẩn hơn 'think that' trong IELTS)."
+      },
+      {
+        questionId: 'w7t12_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "fuel consumption"):\n\n"Việc giảm tiêu thụ nhiên liệu góp phần làm giảm lượng khí thải nhà kính."',
+        correctAnswer: 'Reducing fuel consumption contributes to lowering greenhouse gas emissions.',
+        modelAnswer: 'Reducing fuel consumption contributes to lowering greenhouse gas emissions.',
+        fallbackKeywords: ['fuel consumption', 'reducing', 'greenhouse gas emissions'],
+        explanationVi: "'Contribute to + V-ing' = góp phần vào việc (to là giới từ → sau là V-ing). 'Greenhouse gas emissions' = khí thải nhà kính."
+      },
+      {
+        questionId: 'w7t12_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "awareness-raising activities"):\n\n"Các hoạt động nâng cao nhận thức giúp người dân hiểu rõ hơn về vấn đề môi trường."',
+        correctAnswer: 'Awareness-raising activities help people better understand environmental issues.',
+        modelAnswer: 'Awareness-raising activities help people better understand environmental issues.',
+        fallbackKeywords: ['awareness-raising activities', 'understand', 'environmental issues'],
+        explanationVi: "'Help + O + V (bare infinitive)' = giúp ai làm gì. 'Better understand' = hiểu rõ hơn. 'Awareness-raising' là tính từ ghép đứng trước danh từ."
+      },
+      {
+        questionId: 'w7t12_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "energy-efficient technology"):\n\n"Nhiều người cho rằng chính phủ nên tập trung vào công nghệ tiết kiệm năng lượng thay vì cấm ô tô."',
+        correctAnswer: 'Many people argue that the government should focus on developing energy-efficient technology rather than banning cars.',
+        modelAnswer: 'Many people argue that the government should focus on developing energy-efficient technology rather than banning cars.',
+        fallbackKeywords: ['energy-efficient technology', 'government', 'rather than', 'banning'],
+        explanationVi: "'Rather than + V-ing' = thay vì làm gì. 'Focus on + V-ing' = tập trung vào. 'Energy-efficient technology' là cụm tính từ ghép, gạch nối giữa 'energy' và 'efficient'."
+      },
+      {
+        questionId: 'w7t12_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "government policy"):\n\n"Chính sách của chính phủ đóng vai trò quan trọng trong việc kiểm soát ô nhiễm."',
+        correctAnswer: 'Government policy plays a crucial role in controlling pollution.',
+        modelAnswer: 'Government policy plays a crucial role in controlling pollution.',
+        fallbackKeywords: ['government policy', 'crucial role', 'controlling pollution'],
+        explanationVi: "'Play a crucial role in + V-ing' = đóng vai trò quan trọng trong việc. 'Crucial' = then chốt/quan trọng (stronger than 'important')."
       }
     ]
   },
@@ -2437,6 +2619,97 @@ const topics = [
         modelAnswer: 'Those who advocate prioritising environmental protection over economic growth argue that the long-term consequences of environmental degradation far outweigh any short-term economic benefits. Unchecked industrialization leads to deforestation, carbon emissions, and irreversible climate change, which ultimately threaten the natural resources upon which all economic activity depends. For instance, the destruction of rainforests not only reduces biodiversity but also eliminates the carbon sinks that regulate global temperatures. Without eco-friendly policies and sustainable development strategies, short-term economic gains will come at the cost of a habitable planet for future generations.',
         fallbackKeywords: ['environmental degradation', 'long-term', 'climate change', 'sustainable development', 'eco-friendly', 'economic growth'],
         explanationVi: "Cấu trúc PEEL cho View 2: topic sentence → hai ví dụ cụ thể (deforestation, emissions) → hệ quả → kết luận. 'Imperative' = cấp bách, bắt buộc."
+      },
+      // ── QT-4 Intermediate (W7T3) ──
+      {
+        questionId: 'w8t13_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "economic development" và "living standards"):\n\n"Nhiều quốc gia đang tập trung vào phát triển kinh tế để nâng cao mức sống của người dân."',
+        correctAnswer: 'Many countries are focusing on economic development to improve people\'s living standards.',
+        modelAnswer: 'Many countries are focusing on economic development to improve people\'s living standards.',
+        fallbackKeywords: ['economic development', 'improve', 'living standards'],
+        explanationVi: "'Are focusing on + N' = đang tập trung vào. 'To improve + N' = để nâng cao (cụm mục đích). 'Living standards' = mức sống (thường dùng số nhiều)."
+      },
+      {
+        questionId: 'w8t13_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "industrialization" và "environmental degradation"):\n\n"Sự phát triển công nghiệp quá nhanh có thể dẫn đến suy thoái môi trường."',
+        correctAnswer: 'Rapid industrialization may lead to serious environmental degradation.',
+        modelAnswer: 'Rapid industrialization may lead to serious environmental degradation.',
+        fallbackKeywords: ['industrialization', 'rapid', 'environmental degradation'],
+        explanationVi: "'Lead to + N/V-ing' = dẫn đến. 'Rapid industrialization' = công nghiệp hóa nhanh chóng. 'Environmental degradation' = suy thoái môi trường."
+      },
+      {
+        questionId: 'w8t13_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "climate change" và "deforestation"):\n\n"Biến đổi khí hậu và phá rừng là hai hậu quả nghiêm trọng của sự phát triển thiếu kiểm soát."',
+        correctAnswer: 'Climate change and deforestation are two serious consequences of uncontrolled development.',
+        modelAnswer: 'Climate change and deforestation are two serious consequences of uncontrolled development.',
+        fallbackKeywords: ['climate change', 'deforestation', 'uncontrolled development', 'consequences'],
+        explanationVi: "'Consequences of + N' = hậu quả của. 'Uncontrolled development' = sự phát triển thiếu kiểm soát. Hai chủ ngữ dùng 'are' (số nhiều)."
+      },
+      {
+        questionId: 'w8t13_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "economic growth" và "environmental pollution"):\n\n"Tăng trưởng kinh tế thường đi kèm với ô nhiễm môi trường."',
+        correctAnswer: 'Economic growth often goes hand in hand with environmental pollution.',
+        modelAnswer: 'Economic growth often goes hand in hand with environmental pollution.',
+        fallbackKeywords: ['economic growth', 'hand in hand', 'environmental pollution'],
+        explanationVi: "'Go hand in hand with' = đi đôi với/gắn liền với — thành ngữ học thuật. Chủ ngữ là 'Economic growth' (không đếm được) → động từ số ít 'goes'."
+      },
+      {
+        questionId: 'w8t13_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "poverty reduction" và "job creation"):\n\n"Một số người tin rằng giảm nghèo và tạo việc làm nên được ưu tiên hơn."',
+        correctAnswer: 'Some people believe that poverty reduction and job creation should be prioritized.',
+        modelAnswer: 'Some people believe that poverty reduction and job creation should be prioritized.',
+        fallbackKeywords: ['poverty reduction', 'job creation', 'prioritized'],
+        explanationVi: "'Should be prioritized' = bị động, nên được ưu tiên. 'Poverty reduction' = giảm nghèo, 'job creation' = tạo việc làm — danh từ hóa từ động từ."
+      },
+      {
+        questionId: 'w8t13_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "environmental protection"):\n\n"Trong khi đó, những người khác cho rằng bảo vệ môi trường là điều cần được đặt lên hàng đầu."',
+        correctAnswer: 'Meanwhile, others argue that environmental protection should come first.',
+        modelAnswer: 'Meanwhile, others argue that environmental protection should come first.',
+        fallbackKeywords: ['environmental protection', 'others argue', 'come first'],
+        explanationVi: "'Come first' = được ưu tiên/đặt lên hàng đầu. 'Meanwhile' = trong khi đó — transition word để đối lập quan điểm. 'Others argue that' = những người khác cho rằng."
+      },
+      {
+        questionId: 'w8t13_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "overexploitation" và "long-term consequences"):\n\n"Việc khai thác quá mức tài nguyên thiên nhiên gây ra những hậu quả lâu dài cho hành tinh."',
+        correctAnswer: 'The overexploitation of natural resources causes long-term consequences for the planet.',
+        modelAnswer: 'The overexploitation of natural resources causes long-term consequences for the planet.',
+        fallbackKeywords: ['overexploitation', 'natural resources', 'long-term consequences'],
+        explanationVi: "'The overexploitation of + N' = sự khai thác quá mức về. 'Long-term consequences for' = hậu quả lâu dài cho. 'Causes' (số ít) vì chủ ngữ là 'overexploitation'."
+      },
+      {
+        questionId: 'w8t13_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "short-term benefits" và "long-term consequences"):\n\n"Nhiều doanh nghiệp chỉ quan tâm đến lợi ích ngắn hạn mà bỏ qua hậu quả lâu dài."',
+        correctAnswer: 'Many businesses focus only on short-term benefits while ignoring long-term consequences.',
+        modelAnswer: 'Many businesses focus only on short-term benefits while ignoring long-term consequences.',
+        fallbackKeywords: ['short-term benefits', 'long-term consequences', 'ignoring'],
+        explanationVi: "'While + V-ing' = trong khi (đồng thời). 'Focus only on' = chỉ tập trung vào. 'Short-term' và 'long-term' là tính từ ghép có gạch nối."
+      },
+      {
+        questionId: 'w8t13_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "balance between economy and environment"):\n\n"Việc cân bằng giữa kinh tế và môi trường là điều cần thiết để phát triển lâu dài."',
+        correctAnswer: 'Maintaining a balance between economy and environment is essential for long-term development.',
+        modelAnswer: 'Maintaining a balance between economy and environment is essential for long-term development.',
+        fallbackKeywords: ['balance', 'economy', 'environment', 'essential', 'long-term'],
+        explanationVi: "'Maintaining + N + is essential for' = duy trì điều gì là thiết yếu cho. Chủ ngữ là danh động từ 'Maintaining' → động từ số ít 'is'."
+      },
+      {
+        questionId: 'w8t13_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "environmental awareness"):\n\n"Việc nâng cao nhận thức về môi trường có thể giúp người dân thay đổi hành vi tiêu dùng."',
+        correctAnswer: 'Raising environmental awareness can help people change their consumption behaviour.',
+        modelAnswer: 'Raising environmental awareness can help people change their consumption behaviour.',
+        fallbackKeywords: ['environmental awareness', 'raising', 'consumption behaviour'],
+        explanationVi: "'Raising + N + can help + O + V' = nâng cao điều gì có thể giúp ai thay đổi. 'Consumption behaviour' = hành vi tiêu dùng (BrE: behaviour)."
       }
     ]
   },
@@ -2564,6 +2837,97 @@ const topics = [
         modelAnswer: 'Despite the advantages of private healthcare, such as shorter waiting times and higher-quality equipment, its disadvantages are far more significant. The most critical concern is healthcare inequality: when medical services are run by profit-making companies, access becomes dependent on financial ability rather than medical need. This leaves low-income individuals without essential medical services, widening the gap between the wealthy and the poor. Moreover, profit-driven motives can compromise medical ethics, as providers may recommend unnecessary procedures to maximise revenue. For these reasons, the financial burden placed on ordinary patients makes the disadvantages of private healthcare outweigh its benefits.',
         fallbackKeywords: ['healthcare inequality', 'financial burden', 'profit-driven', 'access', 'medical ethics', 'patient'],
         explanationVi: "Đoạn 'outweigh' phải: nêu lập trường rõ ràng → lý do chính (profit over patients) → hệ quả cụ thể (inequality, denied access) → kết luận khẳng định."
+      },
+      // ── QT-4 Intermediate (W9T4) ──
+      {
+        questionId: 'w9t14_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "basic human right"):\n\n"Nhiều người tin rằng sức khỏe tốt là quyền cơ bản của con người."',
+        correctAnswer: 'Many people believe that good health is a basic human right.',
+        modelAnswer: 'Many people believe that good health is a basic human right.',
+        fallbackKeywords: ['basic human right', 'good health', 'believe'],
+        explanationVi: "'A basic human right' = quyền cơ bản của con người (có mạo từ 'a'). 'Believe that + clause' = tin rằng."
+      },
+      {
+        questionId: 'w9t14_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "free medical treatment"):\n\n"Chính phủ nên cung cấp dịch vụ y tế miễn phí cho tất cả công dân."',
+        correctAnswer: 'The government should provide free medical treatment for all citizens.',
+        modelAnswer: 'The government should provide free medical treatment for all citizens.',
+        fallbackKeywords: ['free medical treatment', 'government', 'all citizens'],
+        explanationVi: "'Provide + N + for + N' = cung cấp điều gì cho ai. 'All citizens' = tất cả công dân (không cần 'the')."
+      },
+      {
+        questionId: 'w9t14_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "private healthcare"):\n\n"Một số người cho rằng ngành y tế tư nhân có thể mang lại dịch vụ chất lượng cao hơn."',
+        correctAnswer: 'Some people argue that private healthcare can provide higher-quality services.',
+        modelAnswer: 'Some people argue that private healthcare can provide higher-quality services.',
+        fallbackKeywords: ['private healthcare', 'higher-quality', 'services'],
+        explanationVi: "'Higher-quality' là tính từ so sánh hơn ghép với gạch nối. 'Argue that' = lập luận rằng (academic hơn 'think that')."
+      },
+      {
+        questionId: 'w9t14_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "profit-making companies"):\n\n"Tuy nhiên, các công ty vì lợi nhuận thường đặt lợi ích tài chính lên trên bệnh nhân."',
+        correctAnswer: 'However, profit-making companies often put financial gain above patient welfare.',
+        modelAnswer: 'However, profit-making companies often put financial gain above patient welfare.',
+        fallbackKeywords: ['profit-making companies', 'financial gain', 'patient welfare'],
+        explanationVi: "'Put A above B' = đặt A lên trên B. 'Financial gain' = lợi ích tài chính. 'Patient welfare' = phúc lợi bệnh nhân. 'However' dùng dấu phẩy sau."
+      },
+      {
+        questionId: 'w9t14_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "public healthcare system"):\n\n"Hệ thống y tế công giúp đảm bảo mọi người đều có thể tiếp cận dịch vụ y tế cơ bản."',
+        correctAnswer: 'The public healthcare system helps ensure that everyone can access basic medical services.',
+        modelAnswer: 'The public healthcare system helps ensure that everyone can access basic medical services.',
+        fallbackKeywords: ['public healthcare system', 'ensure', 'access', 'basic medical services'],
+        explanationVi: "'Helps ensure that' = giúp đảm bảo rằng. 'Can access + N' = có thể tiếp cận. 'Basic medical services' = dịch vụ y tế cơ bản."
+      },
+      {
+        questionId: 'w9t14_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "medical expenses"):\n\n"Ở nhiều quốc gia, chi phí y tế quá cao khiến người nghèo không thể điều trị bệnh."',
+        correctAnswer: 'In many countries, excessively high medical expenses prevent poor people from receiving treatment.',
+        modelAnswer: 'In many countries, excessively high medical expenses prevent poor people from receiving treatment.',
+        fallbackKeywords: ['medical expenses', 'high', 'prevent', 'treatment'],
+        explanationVi: "'Prevent + O + from + V-ing' = ngăn ai làm gì. 'Excessively high' = quá cao. 'Receiving treatment' = được điều trị/nhận điều trị."
+      },
+      {
+        questionId: 'w9t14_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "privatization of healthcare"):\n\n"Tư nhân hóa ngành y tế có thể làm gia tăng bất bình đẳng giữa người giàu và người nghèo."',
+        correctAnswer: 'The privatization of healthcare may increase inequality between the rich and the poor.',
+        modelAnswer: 'The privatization of healthcare may increase inequality between the rich and the poor.',
+        fallbackKeywords: ['privatization of healthcare', 'inequality', 'rich', 'poor'],
+        explanationVi: "'The privatization of + N' = sự tư nhân hóa của. 'Between the rich and the poor' = giữa người giàu và người nghèo. 'May increase' = có thể làm tăng."
+      },
+      {
+        questionId: 'w9t14_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "government funding"):\n\n"Hệ thống y tế công cộng cần nhiều đầu tư của chính phủ để duy trì hoạt động hiệu quả."',
+        correctAnswer: 'The public healthcare system requires significant government funding to function effectively.',
+        modelAnswer: 'The public healthcare system requires significant government funding to function effectively.',
+        fallbackKeywords: ['government funding', 'public healthcare', 'function effectively'],
+        explanationVi: "'Require + N + to V' = cần điều gì để làm gì. 'Significant government funding' = đầu tư đáng kể từ chính phủ. 'Function effectively' = hoạt động hiệu quả."
+      },
+      {
+        questionId: 'w9t14_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "healthcare infrastructure" và "life expectancy"):\n\n"Cải thiện cơ sở hạ tầng y tế là yếu tố thiết yếu để nâng cao tuổi thọ."',
+        correctAnswer: 'Improving healthcare infrastructure is essential to increase life expectancy.',
+        modelAnswer: 'Improving healthcare infrastructure is essential to increase life expectancy.',
+        fallbackKeywords: ['healthcare infrastructure', 'essential', 'life expectancy'],
+        explanationVi: "'Improving + N + is essential to + V' = cải thiện điều gì là thiết yếu để. 'Life expectancy' = tuổi thọ trung bình — danh từ không đếm được."
+      },
+      {
+        questionId: 'w9t14_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "affordable healthcare"):\n\n"Đảm bảo dịch vụ y tế có chi phí hợp lý là cách để đạt được công bằng xã hội."',
+        correctAnswer: 'Ensuring affordable healthcare is a way to achieve social equality.',
+        modelAnswer: 'Ensuring affordable healthcare is a way to achieve social equality.',
+        fallbackKeywords: ['affordable healthcare', 'social equality', 'ensuring'],
+        explanationVi: "'Ensuring + N + is a way to + V' = đảm bảo điều gì là cách để. 'Affordable healthcare' = dịch vụ y tế có giá phải chăng. 'Social equality' = bình đẳng xã hội."
       }
     ]
   },
@@ -2689,6 +3053,97 @@ const topics = [
         modelAnswer: 'The rapid growth of consumerism is largely a negative development, primarily due to its devastating environmental impact. Mass production to meet ever-increasing demand contributes to overconsumption, generating enormous quantities of waste that overwhelm landfills and pollute natural ecosystems. The throwaway culture encouraged by affordable, disposable goods means that products are discarded long before the end of their useful life, further depleting natural resources. Moreover, impulsive buying fuelled by aggressive marketing strategies leads to personal financial debt. Unless governments actively promote sustainable consumption through stricter regulations and public awareness campaigns, this trend will continue to erode environmental sustainability.',
         fallbackKeywords: ['overconsumption', 'environmental impact', 'waste', 'throwaway culture', 'sustainable consumption', 'consumerism'],
         explanationVi: "Opinion essay cần: lập trường rõ ràng → lý do chính (environmental impact) → ví dụ (mass production, advertising) → kết luận kêu gọi hành động."
+      },
+      // ── QT-4 Intermediate (W9T5) ──
+      {
+        questionId: 'w9t15_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "consumer goods"):\n\n"Ngày nay, con người mua nhiều hàng hóa tiêu dùng hơn bao giờ hết."',
+        correctAnswer: 'People today are purchasing more consumer goods than ever before.',
+        modelAnswer: 'People today are purchasing more consumer goods than ever before.',
+        fallbackKeywords: ['consumer goods', 'purchasing', 'more than ever'],
+        explanationVi: "'More than ever before' = hơn bao giờ hết. 'Are purchasing' nhấn mạnh xu hướng hiện tại. 'Consumer goods' = hàng hóa tiêu dùng."
+      },
+      {
+        questionId: 'w9t15_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "disposable income"):\n\n"Mức sống được cải thiện dẫn đến thu nhập khả dụng cao hơn."',
+        correctAnswer: 'An improved standard of living leads to higher disposable income.',
+        modelAnswer: 'An improved standard of living leads to higher disposable income.',
+        fallbackKeywords: ['disposable income', 'standard of living', 'improved'],
+        explanationVi: "'Lead to + N' = dẫn đến. 'An improved standard of living' = mức sống được cải thiện (dùng 'An' vì 'improved' bắt đầu bằng nguyên âm). 'Disposable income' = thu nhập khả dụng."
+      },
+      {
+        questionId: 'w9t15_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "advertising campaigns"):\n\n"Chiến dịch quảng cáo mạnh mẽ khiến mọi người mua những thứ họ không thực sự cần."',
+        correctAnswer: 'Powerful advertising campaigns lead people to buy things they do not actually need.',
+        modelAnswer: 'Powerful advertising campaigns lead people to buy things they do not actually need.',
+        fallbackKeywords: ['advertising campaigns', 'powerful', 'do not need'],
+        explanationVi: "'Lead + O + to V' = khiến ai làm gì. 'Do not actually need' = không thực sự cần. 'Powerful advertising campaigns' = chiến dịch quảng cáo mạnh mẽ."
+      },
+      {
+        questionId: 'w9t15_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "online shopping"):\n\n"Mua sắm trực tuyến giúp việc tiêu dùng trở nên dễ dàng và nhanh chóng hơn."',
+        correctAnswer: 'Online shopping makes consumption easier and faster than ever.',
+        modelAnswer: 'Online shopping makes consumption easier and faster than ever.',
+        fallbackKeywords: ['online shopping', 'consumption', 'easier', 'faster'],
+        explanationVi: "'Make + N + adjective' = khiến điều gì trở nên... Hai tính từ so sánh 'easier and faster' song song. 'Than ever' = hơn bao giờ hết."
+      },
+      {
+        questionId: 'w9t15_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "overconsumption" và "environmental impact"):\n\n"Tuy nhiên, tiêu thụ quá mức có thể gây ra nhiều tác động tiêu cực đến môi trường."',
+        correctAnswer: 'However, overconsumption can cause significant negative environmental impact.',
+        modelAnswer: 'However, overconsumption can cause significant negative environmental impact.',
+        fallbackKeywords: ['overconsumption', 'environmental impact', 'negative'],
+        explanationVi: "'Cause + N' = gây ra. 'Significant negative environmental impact' = tác động tiêu cực đáng kể đến môi trường. Thứ tự tính từ: opinion → purpose noun."
+      },
+      {
+        questionId: 'w9t15_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "mass production" và "throwaway culture"):\n\n"Nhiều sản phẩm được sản xuất hàng loạt, tạo nên văn hóa vứt bỏ."',
+        correctAnswer: 'Many products are mass-produced, giving rise to a throwaway culture.',
+        modelAnswer: 'Many products are mass-produced, giving rise to a throwaway culture.',
+        fallbackKeywords: ['mass production', 'throwaway culture', 'giving rise to'],
+        explanationVi: "'Are mass-produced' = bị động. 'Giving rise to' = tạo ra/dẫn đến (participial phrase). 'Throwaway culture' = văn hóa tiêu dùng một lần rồi bỏ."
+      },
+      {
+        questionId: 'w9t15_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "impulsive buying" và "financial debt"):\n\n"Việc mua hàng bốc đồng dẫn đến nợ tài chính cá nhân."',
+        correctAnswer: 'Impulsive buying leads to personal financial debt.',
+        modelAnswer: 'Impulsive buying leads to personal financial debt.',
+        fallbackKeywords: ['impulsive buying', 'financial debt', 'personal'],
+        explanationVi: "'Lead to + N' = dẫn đến. 'Impulsive buying' = hành vi mua hàng bốc đồng. 'Personal financial debt' = nợ tài chính cá nhân."
+      },
+      {
+        questionId: 'w9t15_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "economic inequality"):\n\n"Tuy nhiên, việc tiêu dùng quá mức làm gia tăng bất bình đẳng kinh tế giữa người giàu và người nghèo."',
+        correctAnswer: 'However, overconsumption widens economic inequality between the rich and the poor.',
+        modelAnswer: 'However, overconsumption widens economic inequality between the rich and the poor.',
+        fallbackKeywords: ['economic inequality', 'overconsumption', 'widens'],
+        explanationVi: "'Widens + N' = làm rộng thêm/gia tăng (gap/inequality thường đi với 'widen'). 'Between the rich and the poor' = giữa người giàu và người nghèo."
+      },
+      {
+        questionId: 'w9t15_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "recycling programs" và "second-hand goods"):\n\n"Để giảm lãng phí, mọi người nên tham gia chương trình tái chế hoặc mua hàng đã qua sử dụng."',
+        correctAnswer: 'To reduce waste, people should participate in recycling programs or purchase second-hand goods.',
+        modelAnswer: 'To reduce waste, people should participate in recycling programs or purchase second-hand goods.',
+        fallbackKeywords: ['recycling programs', 'second-hand goods', 'reduce waste'],
+        explanationVi: "'To reduce waste' = infinitive of purpose đứng đầu câu. 'Participate in' = tham gia. 'Second-hand goods' = hàng đã qua sử dụng (có gạch nối)."
+      },
+      {
+        questionId: 'w9t15_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "waste generation"):\n\n"Nếu xu hướng tiêu dùng tiếp tục tăng, lượng rác thải toàn cầu sẽ vượt kiểm soát."',
+        correctAnswer: 'If consumption trends continue to rise, global waste generation will spiral out of control.',
+        modelAnswer: 'If consumption trends continue to rise, global waste generation will spiral out of control.',
+        fallbackKeywords: ['waste generation', 'consumption trends', 'spiral out of control'],
+        explanationVi: "'Spiral out of control' = mất kiểm soát/vượt tầm kiểm soát (idiom học thuật). Câu điều kiện loại 1: If + present, will + V."
       }
     ]
   },
@@ -2814,6 +3269,97 @@ const topics = [
         modelAnswer: 'Proponents of government funding for the arts argue that cultural investment yields both social and economic benefits that extend far beyond artistic expression. The arts play a vital role in preserving cultural heritage and strengthening national identity, fostering a sense of social cohesion that binds communities together. Furthermore, thriving arts industries attract tourists, boost local economies, and stimulate creativity across other sectors. Countries such as France and South Korea, which allocate significant portions of their national budgets to cultural development, demonstrate that investment in the arts generates considerable economic returns while enriching the lives of citizens at every level of society.',
         fallbackKeywords: ['cultural heritage', 'social cohesion', 'economic benefits', 'tourism', 'government funding', 'arts'],
         explanationVi: "Cấu trúc PEEL: topic sentence (View 1) → explanation (social + economic benefits) → example (France, South Korea) → conclusion."
+      },
+      // ── QT-4 Intermediate (W9T6) ──
+      {
+        questionId: 'w10t16_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "government funding" và "support the arts"):\n\n"Một số người cho rằng chính phủ nên chi tiền để hỗ trợ nghệ thuật."',
+        correctAnswer: 'Some people argue that the government should provide funding to support the arts.',
+        modelAnswer: 'Some people argue that the government should provide funding to support the arts.',
+        fallbackKeywords: ['government funding', 'support the arts', 'provide'],
+        explanationVi: "'Provide funding to + V' = cung cấp ngân sách để. 'The arts' (có mạo từ 'the') = nghệ thuật nói chung. 'Argue that' = cho rằng/lập luận rằng."
+      },
+      {
+        questionId: 'w10t16_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "healthcare" và "education"):\n\n"Những người khác tin rằng ngân sách này nên được dùng cho các lĩnh vực quan trọng hơn như y tế hoặc giáo dục."',
+        correctAnswer: 'Others believe that this budget should be spent on more important areas such as healthcare or education.',
+        modelAnswer: 'Others believe that this budget should be spent on more important areas such as healthcare or education.',
+        fallbackKeywords: ['healthcare', 'education', 'budget', 'more important'],
+        explanationVi: "'Should be spent on' = bị động, nên được chi vào. 'Such as' = chẳng hạn như. 'More important areas' = các lĩnh vực quan trọng hơn."
+      },
+      {
+        questionId: 'w10t16_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "public money" và "taxpayers"):\n\n"Tiền công từ người nộp thuế nên được sử dụng một cách khôn ngoan."',
+        correctAnswer: 'Public money from taxpayers should be used wisely.',
+        modelAnswer: 'Public money from taxpayers should be used wisely.',
+        fallbackKeywords: ['public money', 'taxpayers', 'wisely'],
+        explanationVi: "'Should be used + adverb' = bị động + trạng từ. 'Wisely' = một cách khôn ngoan. 'Public money from taxpayers' = tiền công từ người nộp thuế."
+      },
+      {
+        questionId: 'w10t16_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "cultural identity" và "preserve heritage"):\n\n"Một số người cho rằng nghệ thuật giúp duy trì bản sắc văn hóa và truyền thống dân tộc."',
+        correctAnswer: 'Some people argue that the arts help maintain cultural identity and preserve national heritage.',
+        modelAnswer: 'Some people argue that the arts help maintain cultural identity and preserve national heritage.',
+        fallbackKeywords: ['cultural identity', 'preserve heritage', 'national traditions'],
+        explanationVi: "'Help + V (bare infinitive)' = giúp làm gì (không cần 'to'). 'Maintain' và 'preserve' là hai động từ song song. 'National heritage' = di sản văn hóa dân tộc."
+      },
+      {
+        questionId: 'w10t16_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "art exhibitions", "performing arts", và "economic benefits"):\n\n"Các triển lãm nghệ thuật và biểu diễn có thể thu hút khách du lịch và mang lại lợi ích kinh tế."',
+        correctAnswer: 'Art exhibitions and performing arts can attract tourists and bring significant economic benefits.',
+        modelAnswer: 'Art exhibitions and performing arts can attract tourists and bring significant economic benefits.',
+        fallbackKeywords: ['art exhibitions', 'performing arts', 'economic benefits', 'tourists'],
+        explanationVi: "'Attract tourists' = thu hút khách du lịch. 'Bring significant economic benefits' = mang lại lợi ích kinh tế đáng kể. Hai vị ngữ song song: attract... and bring..."
+      },
+      {
+        questionId: 'w10t16_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "investment in the arts" và "stimulate creativity"):\n\n"Việc đầu tư vào nghệ thuật có thể kích thích sự sáng tạo trong xã hội."',
+        correctAnswer: 'Investment in the arts can stimulate creativity across society.',
+        modelAnswer: 'Investment in the arts can stimulate creativity across society.',
+        fallbackKeywords: ['investment in the arts', 'stimulate creativity', 'society'],
+        explanationVi: "'Stimulate creativity' = kích thích sự sáng tạo. 'Across society' = trên toàn xã hội/trong xã hội. 'Investment in the arts' = đầu tư vào nghệ thuật."
+      },
+      {
+        questionId: 'w10t16_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "budget constraints" và "financial burden"):\n\n"Tuy nhiên, trong thời kỳ khủng hoảng kinh tế, chính phủ phải đối mặt với hạn chế ngân sách."',
+        correctAnswer: 'However, during periods of economic crisis, governments face significant budget constraints and financial burdens.',
+        modelAnswer: 'However, during periods of economic crisis, governments face significant budget constraints and financial burdens.',
+        fallbackKeywords: ['budget constraints', 'financial burden', 'economic crisis'],
+        explanationVi: "'During periods of + N' = trong thời kỳ. 'Face + N' = đối mặt với. 'Budget constraints' = hạn chế ngân sách, 'financial burdens' = gánh nặng tài chính."
+      },
+      {
+        questionId: 'w10t16_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "social cohesion" và "national pride"):\n\n"Nghệ thuật có thể giúp tăng cường sự gắn kết xã hội và niềm tự hào dân tộc."',
+        correctAnswer: 'The arts can help strengthen social cohesion and foster a sense of national pride.',
+        modelAnswer: 'The arts can help strengthen social cohesion and foster a sense of national pride.',
+        fallbackKeywords: ['social cohesion', 'national pride', 'strengthen'],
+        explanationVi: "'Strengthen' = tăng cường. 'Foster a sense of' = nuôi dưỡng/tạo ra cảm giác. 'Social cohesion' = sự gắn kết xã hội; 'national pride' = niềm tự hào dân tộc."
+      },
+      {
+        questionId: 'w10t16_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "government responsibility" và "investment in the arts"):\n\n"Một số người tin rằng đầu tư vào nghệ thuật là một phần trách nhiệm của chính phủ."',
+        correctAnswer: 'Some people believe that investment in the arts is part of the government\'s responsibility.',
+        modelAnswer: 'Some people believe that investment in the arts is part of the government\'s responsibility.',
+        fallbackKeywords: ['government responsibility', 'investment in the arts', 'part of'],
+        explanationVi: "'Part of the government\'s responsibility' = một phần trách nhiệm của chính phủ. Dùng sở hữu cách 'government\'s' thay vì 'of the government'."
+      },
+      {
+        questionId: 'w10t16_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "long-term development" và "balance between economy and culture"):\n\n"Về lâu dài, cả phát triển kinh tế và văn hóa đều cần được quan tâm song song."',
+        correctAnswer: 'In the long term, both economic and cultural development need to be addressed simultaneously for balanced long-term development.',
+        modelAnswer: 'In the long term, both economic and cultural development need to be addressed simultaneously for balanced long-term development.',
+        fallbackKeywords: ['long-term development', 'economic', 'cultural', 'simultaneously'],
+        explanationVi: "'In the long term' = về lâu dài. 'Both A and B need to be addressed' = cả A lẫn B cần được giải quyết. 'Simultaneously' = đồng thời/song song."
       }
     ]
   },
@@ -2942,6 +3488,97 @@ const topics = [
         modelAnswer: 'Addressing youth crime requires a multi-faceted approach targeting both its immediate symptoms and root causes. One effective solution is the expansion of rehabilitation programs and counseling services, which provide young offenders with the psychological support and moral guidance needed to reform their behaviour and avoid reoffending. Additionally, governments should create job opportunities and vocational training schemes specifically tailored to at-risk youth, giving them legitimate pathways to financial stability. When young people have access to meaningful employment and community support, the appeal of criminal activity diminishes significantly, contributing to long-term crime prevention.',
         fallbackKeywords: ['rehabilitation programs', 'counseling', 'job opportunities', 'government', 'crime prevention', 'vocational training'],
         explanationVi: "Đoạn giải pháp phải nêu 2 giải pháp cụ thể, mỗi giải pháp có giải thích tại sao hiệu quả. Dùng 'One effective solution is...' và 'Additionally,...' để phân tách."
+      },
+      // ── QT-4 Intermediate (W9T7) ──
+      {
+        questionId: 'w10t17_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "youth crime"):\n\n"Tỷ lệ tội phạm trong giới trẻ đang gia tăng nhanh chóng."',
+        correctAnswer: 'The rate of youth crime is increasing rapidly.',
+        modelAnswer: 'The rate of youth crime is increasing rapidly.',
+        fallbackKeywords: ['youth crime', 'rate', 'increasing rapidly'],
+        explanationVi: "'The rate of + N + is increasing rapidly' = tỷ lệ đang tăng nhanh. Present Continuous nhấn mạnh xu hướng đang xảy ra. 'Rapidly' = một cách nhanh chóng."
+      },
+      {
+        questionId: 'w10t17_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "peer pressure" và "lack of parental supervision"):\n\n"Nguyên nhân chính của hiện tượng này là áp lực từ bạn bè và thiếu sự giám sát của cha mẹ."',
+        correctAnswer: 'The main causes of this phenomenon are peer pressure and a lack of parental supervision.',
+        modelAnswer: 'The main causes of this phenomenon are peer pressure and a lack of parental supervision.',
+        fallbackKeywords: ['peer pressure', 'lack of parental supervision', 'main causes'],
+        explanationVi: "'The main causes of this phenomenon are A and B' = liệt kê nguyên nhân theo cấu trúc song song. 'A lack of + N' = sự thiếu hụt về."
+      },
+      {
+        questionId: 'w10t17_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "juvenile delinquency" và "family breakdown"):\n\n"Nhiều thanh thiếu niên phạm tội vì đến từ những gia đình tan vỡ."',
+        correctAnswer: 'Many cases of juvenile delinquency stem from young people who come from families affected by breakdown.',
+        modelAnswer: 'Many cases of juvenile delinquency stem from young people who come from families affected by breakdown.',
+        fallbackKeywords: ['juvenile delinquency', 'family breakdown', 'stem from'],
+        explanationVi: "'Stem from' = xuất phát từ/có nguồn gốc từ. 'Juvenile delinquency' = tội phạm vị thành niên. 'Families affected by breakdown' = gia đình tan vỡ (mệnh đề quan hệ rút gọn)."
+      },
+      {
+        questionId: 'w10t17_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "poverty", "unemployment", và "youth crime"):\n\n"Nghèo đói và thất nghiệp là hai yếu tố quan trọng dẫn đến tội phạm vị thành niên."',
+        correctAnswer: 'Poverty and unemployment are two significant factors contributing to youth crime.',
+        modelAnswer: 'Poverty and unemployment are two significant factors contributing to youth crime.',
+        fallbackKeywords: ['poverty', 'unemployment', 'youth crime', 'contributing'],
+        explanationVi: "'Factors contributing to + N' = các yếu tố góp phần vào (participial phrase rút gọn mệnh đề quan hệ). 'Significant' = đáng kể/quan trọng."
+      },
+      {
+        questionId: 'w10t17_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "social media influence" và "exposure to violence"):\n\n"Một số người trẻ bị ảnh hưởng tiêu cực bởi mạng xã hội hoặc tiếp xúc với bạo lực."',
+        correctAnswer: 'Some young people are negatively influenced by social media or exposure to violence.',
+        modelAnswer: 'Some young people are negatively influenced by social media or exposure to violence.',
+        fallbackKeywords: ['social media influence', 'exposure to violence', 'negatively influenced'],
+        explanationVi: "'Are negatively influenced by' = bị ảnh hưởng tiêu cực bởi (bị động). 'Exposure to violence' = tiếp xúc với bạo lực — danh từ không đếm được."
+      },
+      {
+        questionId: 'w10t17_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "drug and alcohol abuse" và "aggressive behavior"):\n\n"Lạm dụng ma túy và rượu cũng góp phần làm gia tăng hành vi tội phạm."',
+        correctAnswer: 'Drug and alcohol abuse also contribute to the rise in aggressive behavior and criminal activity.',
+        modelAnswer: 'Drug and alcohol abuse also contribute to the rise in aggressive behavior and criminal activity.',
+        fallbackKeywords: ['drug and alcohol abuse', 'aggressive behavior', 'contribute'],
+        explanationVi: "'Contribute to the rise in + N' = góp phần vào sự gia tăng của. 'Drug and alcohol abuse' là chủ ngữ số nhiều → 'contribute' (không có 's')."
+      },
+      {
+        questionId: 'w10t17_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "crime prevention" và "improve education system"):\n\n"Để ngăn ngừa tội phạm trong giới trẻ, chính phủ cần tăng cường giáo dục và hướng nghiệp."',
+        correctAnswer: 'To ensure effective crime prevention among young people, the government needs to improve the education system and expand vocational guidance.',
+        modelAnswer: 'To ensure effective crime prevention among young people, the government needs to improve the education system and expand vocational guidance.',
+        fallbackKeywords: ['crime prevention', 'improve education system', 'vocational guidance'],
+        explanationVi: "'To ensure + N' = để đảm bảo. 'Needs to + V' = cần phải. 'Vocational guidance' = hướng nghiệp. Hai vị ngữ song song: improve... and expand..."
+      },
+      {
+        questionId: 'w10t17_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "family bonds" và "moral values"):\n\n"Gia đình cần dành thời gian cho con cái để củng cố mối quan hệ và định hướng đạo đức."',
+        correctAnswer: 'Families need to spend time with their children to strengthen family bonds and instil moral values.',
+        modelAnswer: 'Families need to spend time with their children to strengthen family bonds and instil moral values.',
+        fallbackKeywords: ['family bonds', 'moral values', 'strengthen', 'instil'],
+        explanationVi: "'Instil + N' = gieo trồng/định hướng (đặc biệt dùng cho giá trị đạo đức). 'Strengthen family bonds' = củng cố mối quan hệ gia đình. Hai V song song: strengthen... and instil..."
+      },
+      {
+        questionId: 'w10t17_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "stricter punishment" và "deter crime"):\n\n"Một số người tin rằng cần áp dụng hình phạt nghiêm khắc hơn để răn đe."',
+        correctAnswer: 'Some people believe that stricter punishment is needed to deter crime.',
+        modelAnswer: 'Some people believe that stricter punishment is needed to deter crime.',
+        fallbackKeywords: ['stricter punishment', 'deter crime', 'needed'],
+        explanationVi: "'Is needed to + V' = cần phải (bị động). 'Deter crime' = ngăn chặn/răn đe tội phạm. 'Stricter punishment' = hình phạt nghiêm khắc hơn (so sánh hơn)."
+      },
+      {
+        questionId: 'w10t17_q22', level: 'intermediate', orderIndex: 22,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "positive role models" và "peer pressure"):\n\n"Thanh thiếu niên cần những hình mẫu tích cực để noi theo thay vì bị ảnh hưởng bởi bạn bè xấu."',
+        correctAnswer: 'Young people need positive role models to look up to instead of being swayed by negative peer pressure.',
+        modelAnswer: 'Young people need positive role models to look up to instead of being swayed by negative peer pressure.',
+        fallbackKeywords: ['positive role models', 'peer pressure', 'instead of', 'negative'],
+        explanationVi: "'Look up to' = noi gương/ngưỡng mộ. 'Instead of + V-ing' = thay vì. 'Swayed by' = bị ảnh hưởng/bị lôi kéo bởi. 'Negative peer pressure' = ảnh hưởng xấu từ bạn bè."
       }
     ]
   },
@@ -3486,6 +4123,97 @@ const topics = [
         modelAnswer: 'Critics of lengthy imprisonment argue that extended incarceration fails to address the root causes of criminal behaviour, such as poverty, unemployment, and family breakdown. Without tackling these underlying social factors, offenders are likely to re-offend upon release, perpetuating a cycle of crime. A more effective approach involves rehabilitation programs that equip prisoners with vocational training and counseling, enabling them to reintegrate into society as productive members. Countries that have invested in rehabilitative justice, such as Norway, report significantly lower re-offending rates compared to those relying primarily on strict punishment, demonstrating that social support is a more sustainable crime-reduction strategy.',
         fallbackKeywords: ['rehabilitation', 'root causes', 'reintegrate', 'vocational training', 'crime', 'social support'],
         explanationVi: "Cấu trúc PEEL: topic sentence (View 2) → explanation (root causes not addressed by prison) → example (Norway) → conclusion. 'Perpetuating a cycle' = duy trì vòng lặp."
+      },
+      // ── QT-4 Intermediate (W9T8) ──
+      {
+        questionId: 'w11t18_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "crime rate"):\n\n"Tỷ lệ tội phạm đang tăng nhanh ở nhiều quốc gia."',
+        correctAnswer: 'The crime rate is rising rapidly in many countries.',
+        modelAnswer: 'The crime rate is rising rapidly in many countries.',
+        fallbackKeywords: ['crime rate', 'rising rapidly', 'countries'],
+        explanationVi: "'The crime rate is rising rapidly' = Present Continuous diễn tả xu hướng đang xảy ra. 'Rising' hoặc 'increasing' đều được chấp nhận."
+      },
+      {
+        questionId: 'w11t18_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "prison sentence" và "reduce crime"):\n\n"Một số người cho rằng cách tốt nhất để giảm tội phạm là áp dụng mức án tù dài hơn."',
+        correctAnswer: 'Some people argue that the best way to reduce crime is to impose longer prison sentences.',
+        modelAnswer: 'Some people argue that the best way to reduce crime is to impose longer prison sentences.',
+        fallbackKeywords: ['prison sentence', 'reduce crime', 'longer', 'impose'],
+        explanationVi: "'The best way to + V + is to + V' = cách tốt nhất để... là... 'Impose prison sentences' = áp dụng/tuyên án tù. 'Longer' = dài hơn (so sánh hơn)."
+      },
+      {
+        questionId: 'w11t18_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "strict punishment" và "deterrent"):\n\n"Hình phạt nghiêm khắc có thể là một biện pháp răn đe mạnh mẽ."',
+        correctAnswer: 'Strict punishment can serve as a powerful deterrent against criminal behaviour.',
+        modelAnswer: 'Strict punishment can serve as a powerful deterrent against criminal behaviour.',
+        fallbackKeywords: ['strict punishment', 'deterrent', 'powerful'],
+        explanationVi: "'Serve as + N' = đóng vai trò là/có tác dụng như. 'A powerful deterrent against' = biện pháp răn đe mạnh mẽ chống lại. 'Criminal behaviour' = hành vi tội phạm."
+      },
+      {
+        questionId: 'w11t18_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "repeat offender" và "public safety"):\n\n"Những người tái phạm có thể bị ngăn cản khỏi gây hại cho xã hội nếu bị giam lâu hơn."',
+        correctAnswer: 'Repeat offenders can be prevented from harming society and endangering public safety if imprisoned for longer periods.',
+        modelAnswer: 'Repeat offenders can be prevented from harming society and endangering public safety if imprisoned for longer periods.',
+        fallbackKeywords: ['repeat offender', 'public safety', 'imprisoned', 'longer'],
+        explanationVi: "'Be prevented from + V-ing' = bị ngăn cản làm gì. 'Repeat offenders' = những người tái phạm. 'Endangering public safety' = gây nguy hiểm cho an toàn cộng đồng."
+      },
+      {
+        questionId: 'w11t18_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "root causes" và "prison sentence"):\n\n"Mặt khác, nhiều người tin rằng tăng án tù không giải quyết nguyên nhân gốc rễ của tội phạm."',
+        correctAnswer: 'On the other hand, many people believe that longer prison sentences do not address the root causes of crime.',
+        modelAnswer: 'On the other hand, many people believe that longer prison sentences do not address the root causes of crime.',
+        fallbackKeywords: ['root causes', 'prison sentence', 'do not address'],
+        explanationVi: "'On the other hand' = mặt khác (connective để đối lập View 2). 'Do not address the root causes of' = không giải quyết nguyên nhân gốc rễ của."
+      },
+      {
+        questionId: 'w11t18_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "poverty", "unemployment", và "commit a crime"):\n\n"Nghèo đói và thất nghiệp là những nguyên nhân quan trọng dẫn đến tội phạm."',
+        correctAnswer: 'Poverty and unemployment are significant underlying causes that drive people to commit a crime.',
+        modelAnswer: 'Poverty and unemployment are significant underlying causes that drive people to commit a crime.',
+        fallbackKeywords: ['poverty', 'unemployment', 'commit a crime', 'underlying causes'],
+        explanationVi: "'Underlying causes' = nguyên nhân sâu xa. 'Drive + O + to + V' = thúc đẩy ai làm gì. 'Commit a crime' = phạm tội."
+      },
+      {
+        questionId: 'w11t18_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "rehabilitation" và "reintegrate into society"):\n\n"Các chương trình cải tạo giúp tù nhân hòa nhập lại xã hội và giảm tái phạm."',
+        correctAnswer: 'Rehabilitation programs help prisoners reintegrate into society and reduce the likelihood of re-offending.',
+        modelAnswer: 'Rehabilitation programs help prisoners reintegrate into society and reduce the likelihood of re-offending.',
+        fallbackKeywords: ['rehabilitation', 'reintegrate into society', 're-offending'],
+        explanationVi: "'Help + O + V (bare infinitive)' = giúp ai làm gì. 'Reintegrate into society' = tái hòa nhập xã hội. 'The likelihood of re-offending' = khả năng tái phạm."
+      },
+      {
+        questionId: 'w11t18_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "community service" và "alternative punishment"):\n\n"Một số người tin rằng lao động công ích là một hình phạt thay thế hiệu quả."',
+        correctAnswer: 'Some people believe that community service is an effective alternative punishment.',
+        modelAnswer: 'Some people believe that community service is an effective alternative punishment.',
+        fallbackKeywords: ['community service', 'alternative punishment', 'effective'],
+        explanationVi: "'An effective alternative punishment' = một hình phạt thay thế hiệu quả. 'Community service' = lao động công ích/phục vụ cộng đồng."
+      },
+      {
+        questionId: 'w11t18_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "law enforcement" và "prevent crime"):\n\n"Thực thi pháp luật hiệu quả là cần thiết để ngăn chặn tội phạm."',
+        correctAnswer: 'Effective law enforcement is essential to prevent crime.',
+        modelAnswer: 'Effective law enforcement is essential to prevent crime.',
+        fallbackKeywords: ['law enforcement', 'prevent crime', 'essential'],
+        explanationVi: "'Is essential to + V' = là thiết yếu để. 'Law enforcement' = thực thi pháp luật (danh từ không đếm được). 'Effective' đứng trước danh từ."
+      },
+      {
+        questionId: 'w11t18_q22', level: 'intermediate', orderIndex: 22,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "root causes" và "safer society"):\n\n"Giải quyết cả nguyên nhân gốc rễ và hậu quả của tội phạm sẽ giúp xã hội an toàn hơn."',
+        correctAnswer: 'Addressing both the root causes and consequences of crime will ultimately contribute to a safer society.',
+        modelAnswer: 'Addressing both the root causes and consequences of crime will ultimately contribute to a safer society.',
+        fallbackKeywords: ['root causes', 'safer society', 'addressing', 'consequences'],
+        explanationVi: "'Addressing both A and B' = giải quyết cả A lẫn B. 'Contribute to a safer society' = góp phần tạo ra xã hội an toàn hơn. 'Ultimately' = cuối cùng."
       }
     ]
   }
