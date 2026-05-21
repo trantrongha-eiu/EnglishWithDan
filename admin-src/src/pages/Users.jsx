@@ -13,6 +13,72 @@ function roleBadge(r) {
   return <span className={`badge ${map[r] || 'badge-gray'}`}>{label[r] || r}</span>;
 }
 
+function CreateUserModal({ onClose, onSaved }) {
+  const toast = useToast();
+  const [form, setForm] = useState({ username: '', email: '', password: '', role: 'student', firstName: '', lastName: '' });
+  const [loading, setLoading] = useState(false);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+  async function save(e) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await apiFetch('/admin/users', { method: 'POST', body: JSON.stringify(form) });
+      toast('Đã tạo tài khoản thành công');
+      onSaved();
+      onClose();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setLoading(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Tạo tài khoản mới</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="form-group">
+              <label className="form-label">Họ</label>
+              <input className="form-input" value={form.firstName} onChange={set('firstName')} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tên</label>
+              <input className="form-input" value={form.lastName} onChange={set('lastName')} />
+            </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Username <span style={{ color: 'var(--danger)' }}>*</span></label>
+            <input className="form-input" value={form.username} onChange={set('username')} required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email <span style={{ color: 'var(--danger)' }}>*</span></label>
+            <input className="form-input" type="email" value={form.email} onChange={set('email')} required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Mật khẩu <span style={{ color: 'var(--danger)' }}>*</span></label>
+            <input className="form-input" type="password" value={form.password} onChange={set('password')} required placeholder="Tối thiểu 6 ký tự" minLength={6} />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Vai trò</label>
+            <select className="form-input" value={form.role} onChange={set('role')}>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
+            <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Đang tạo...' : '+ Tạo tài khoản'}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function UserModal({ userId, onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', isBanned: false, newPassword: '' });
@@ -105,6 +171,7 @@ export default function Users() {
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [editId, setEditId] = useState(null);
+  const [showCreate, setShowCreate] = useState(false);
   const [onlineIds, setOnlineIds] = useState(new Set());
   const timer = useRef(null);
 
@@ -147,9 +214,11 @@ export default function Users() {
   return (
     <>
       {editId && <UserModal userId={editId} onClose={() => setEditId(null)} onSaved={() => load(page)} />}
+      {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} onSaved={() => load(page)} />}
 
       <div className="section-header">
         <h2 className="section-title">Người dùng ({total})</h2>
+        <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16 }}>

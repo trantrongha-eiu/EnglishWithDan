@@ -91,7 +91,7 @@
 
             <div class="register-prompt">
                 <p>Chưa có tài khoản?
-                    <a href="register.html" class="register-link">Đăng ký ngay</a>
+                    <a href="#" class="register-link" onclick="openConsultModal();return false;">Tư vấn ngay</a>
                 </p>
             </div>
         </div>
@@ -370,8 +370,10 @@
             } catch { showFmMsg('Không kết nối được server', true); }
         }
 
+        function openConsultModal(){} // overridden by consult-modal.js
+
         async function fmResetPassword() {
-            const newPass     = document.getElementById('fmNewPass').value;
+            const newPass = document.getElementById('fmNewPass').value;
             const confirmPass = document.getElementById('fmConfirmPass').value;
             if (newPass.length < 6) return showFmMsg('Mật khẩu phải có ít nhất 6 ký tự', true);
             if (newPass !== confirmPass) return showFmMsg('Mật khẩu xác nhận không khớp', true);
@@ -390,7 +392,7 @@
             } catch { showFmMsg('Không kết nối được server', true); }
         }
 </script>
-
+<script src="js/consult-modal.js"></script>
 
 </body>
 

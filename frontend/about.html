@@ -29,7 +29,7 @@
 
   <div class="nav-cta">
     <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
-    <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Đăng ký</a>
+    <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
   </div>
 
   <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
@@ -42,7 +42,7 @@
   <a href="about.html"    onclick="toggleMenu()" style="color:var(--blue)">👨‍🏫 Về chúng tôi</a>
   <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
   <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
-  <a href="register.html" onclick="toggleMenu()" style="color:var(--red)">→ Đăng ký học</a>
+  <a href="#" onclick="openConsultModal();return false;" style="color:var(--red)">→ Tư vấn ngay</a>
 </div>
 
 <!-- ════════════════════ PAGE HERO ════════════════════ -->
@@ -293,7 +293,7 @@
       <h4>Tài nguyên</h4>
       <ul>
         <li><a href="login.html">Đăng nhập học</a></li>
-        <li><a href="register.html">Đăng ký tài khoản</a></li>
+        <li><a href="#" onclick="openConsultModal();return false;">Tư vấn ngay</a></li>
         <li><a href="about.html">Về giáo viên</a></li>
         <li><a href="contact.html">Tư vấn miễn phí</a></li>
       </ul>
@@ -369,5 +369,6 @@ async function submitForm(e) {
   }
 }
 </script>
+<script src="js/consult-modal.js"></script>
 </body>
 </html>

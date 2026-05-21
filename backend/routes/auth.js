@@ -2,7 +2,9 @@ const router = require('express').Router();
 const authCtrl = require('../controllers/auth.controller');
 
 // ── Local auth ────────────────────────────────────────────────
-router.post('/register',        authCtrl.register);
+router.post('/register', (_req, res) => {
+  res.status(403).json({ success: false, message: 'Đăng ký tài khoản đã tạm dừng. Vui lòng liên hệ thầy Daniel Hà để được tạo tài khoản.' });
+});
 router.post('/login',           authCtrl.login);
 router.post('/forgot-password', authCtrl.forgotPassword);
 router.post('/verify-otp',      authCtrl.verifyOTP);

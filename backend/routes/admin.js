@@ -1011,6 +1011,25 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// POST /api/admin/users – tạo tài khoản mới (chỉ admin/teacher)
+router.post('/users', auth, teacherOnly, async (req, res) => {
+  try {
+    const { username, email, password, role = 'student', firstName = '', lastName = '' } = req.body;
+    if (!username || !email || !password)
+      return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ username, email và mật khẩu.' });
+    const existing = await User.findOne({ $or: [{ email }, { username }] });
+    if (existing)
+      return res.status(400).json({ success: false, message: 'Username hoặc email đã tồn tại.' });
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, email, password: hashed, role, firstName, lastName });
+    const safe = user.toObject();
+    delete safe.password;
+    res.json({ success: true, user: safe, message: 'Đã tạo tài khoản thành công.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // PUT /api/admin/users/:id – sửa thông tin user
 router.put('/users/:id', auth, teacherOnly, async (req, res) => {
   try {
