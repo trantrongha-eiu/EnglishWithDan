@@ -151,6 +151,96 @@ const topics = [
         modelAnswer: 'One of the most significant advantages of online learning is its flexibility, which particularly benefits working adults. Unlike traditional classroom settings, online platforms allow students to access lectures and complete assignments at their own pace, without being constrained by fixed timetables. For example, a full-time employee can study after work hours or during weekends, making it possible to pursue higher qualifications without sacrificing their career. As a result, online learning has opened up educational opportunities for millions of people who would otherwise be unable to attend conventional classes.',
         fallbackKeywords: ['flexibility', 'online learning', 'working adults', 'own pace', 'access', 'educational opportunities'],
         explanationVi: "Cấu trúc PEEL: Point (topic sentence) → Explain (giải thích tại sao) → Example (ví dụ cụ thể) → Link (kết nối lại chủ đề). Mỗi body paragraph chỉ nêu MỘT ý chính duy nhất."
+      },
+      {
+        questionId: 'w1t1_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "online learning"):\n\n"Nhiều trường đại học đã bắt đầu cung cấp khóa học trực tuyến để sinh viên có thể học ở bất cứ đâu."',
+        correctAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
+        modelAnswer: 'Many universities have started offering online learning courses so that students can study anywhere.',
+        fallbackKeywords: ['online learning', 'universities', 'offering', 'students', 'anywhere'],
+        explanationVi: "'Online learning' là danh từ ghép không cần mạo từ. Cấu trúc 'so that + clause' diễn đạt mục đích của hành động."
+      },
+      {
+        questionId: 'w1t1_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "in-person classes"):\n\n"Một số người cho rằng lớp học trực tiếp giúp học sinh tương tác hiệu quả hơn."',
+        correctAnswer: 'Some people argue that in-person classes help students interact more effectively.',
+        modelAnswer: 'Some people argue that in-person classes help students interact more effectively.',
+        fallbackKeywords: ['in-person classes', 'students', 'interact', 'effectively'],
+        explanationVi: "'In-person classes' = lớp học trực tiếp (đối lập với online). 'Argue that' = cho rằng, lập luận rằng — dùng khi trình bày quan điểm học thuật."
+      },
+      {
+        questionId: 'w1t1_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "virtual classroom"):\n\n"Trong lớp học ảo, giáo viên và học sinh giao tiếp thông qua các nền tảng trực tuyến."',
+        correctAnswer: 'In a virtual classroom, teachers and students communicate through online platforms.',
+        modelAnswer: 'In a virtual classroom, teachers and students communicate through online platforms.',
+        fallbackKeywords: ['virtual classroom', 'teachers', 'students', 'communicate', 'online platforms'],
+        explanationVi: "'Virtual classroom' = lớp học ảo. 'Communicate through' = giao tiếp thông qua — dùng 'through' thay cho 'via' trong văn phong học thuật."
+      },
+      {
+        questionId: 'w1t1_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "distance education"):\n\n"Giáo dục từ xa tạo cơ hội cho những người không thể đến trường."',
+        correctAnswer: 'Distance education creates opportunities for those who are unable to attend school in person.',
+        modelAnswer: 'Distance education creates opportunities for those who are unable to attend school in person.',
+        fallbackKeywords: ['distance education', 'opportunities', 'unable to attend', 'in person'],
+        explanationVi: "'Distance education' = giáo dục từ xa. 'Those who are unable to' = những người không thể — 'unable to' mang sắc thái chính thức hơn 'cannot'."
+      },
+      {
+        questionId: 'w1t1_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "blended learning"):\n\n"Học kết hợp giúp cân bằng giữa sự linh hoạt và tương tác trực tiếp."',
+        correctAnswer: 'Blended learning helps strike a balance between flexibility and face-to-face interaction.',
+        modelAnswer: 'Blended learning helps strike a balance between flexibility and face-to-face interaction.',
+        fallbackKeywords: ['blended learning', 'balance', 'flexibility', 'face-to-face interaction'],
+        explanationVi: "'Blended learning' = học kết hợp online và offline. 'Strike a balance between A and B' = cân bằng giữa hai yếu tố — collocation cố định quan trọng."
+      },
+      {
+        questionId: 'w1t1_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "digital literacy"):\n\n"Sinh viên cần có khả năng sử dụng công nghệ số để học hiệu quả."',
+        correctAnswer: 'Students need digital literacy skills to learn effectively in the modern era.',
+        modelAnswer: 'Students need digital literacy skills to learn effectively in the modern era.',
+        fallbackKeywords: ['digital literacy', 'students', 'skills', 'effectively'],
+        explanationVi: "'Digital literacy' = khả năng hiểu biết và sử dụng công nghệ số. 'In the modern era' = trong thời đại hiện đại — thêm vào cuối câu để nâng tính học thuật."
+      },
+      {
+        questionId: 'w1t1_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "technological advancement"):\n\n"Sự phát triển của công nghệ hiện đại đã thay đổi cách chúng ta học tập."',
+        correctAnswer: 'Technological advancement has transformed the way we learn.',
+        modelAnswer: 'Technological advancement has transformed the way we learn.',
+        fallbackKeywords: ['technological advancement', 'transformed', 'the way we learn'],
+        explanationVi: "'Technological advancement' = sự tiến bộ công nghệ (học thuật hơn 'development'). 'Transform' mạnh hơn 'change' — thể hiện sự thay đổi sâu sắc."
+      },
+      {
+        questionId: 'w1t1_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "self-discipline"):\n\n"Học online yêu cầu người học có tính kỷ luật tự giác cao."',
+        correctAnswer: 'Online learning requires learners to have a high level of self-discipline.',
+        modelAnswer: 'Online learning requires learners to have a high level of self-discipline.',
+        fallbackKeywords: ['self-discipline', 'online learning', 'requires', 'high level'],
+        explanationVi: "'Require + O + to V' = yêu cầu ai làm gì. 'A high level of self-discipline' = mức độ tự giác cao — 'level of + noun' là cấu trúc hay dùng trong IELTS."
+      },
+      {
+        questionId: 'w1t1_q22', level: 'intermediate', orderIndex: 22,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "time management skills"):\n\n"Học sinh cần rèn luyện kỹ năng quản lý thời gian để theo kịp tiến độ học."',
+        correctAnswer: 'Students need to develop time management skills to keep up with their studies.',
+        modelAnswer: 'Students need to develop time management skills to keep up with their studies.',
+        fallbackKeywords: ['time management skills', 'develop', 'keep up', 'studies'],
+        explanationVi: "'Time management skills' = kỹ năng quản lý thời gian. 'Keep up with' = theo kịp — phrasal verb quan trọng trong văn phong học thuật."
+      },
+      {
+        questionId: 'w1t1_q23', level: 'intermediate', orderIndex: 23,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "internet connectivity"):\n\n"Ở một số vùng nông thôn, kết nối Internet vẫn là một thách thức lớn."',
+        correctAnswer: 'In some rural areas, internet connectivity remains a significant challenge.',
+        modelAnswer: 'In some rural areas, internet connectivity remains a significant challenge.',
+        fallbackKeywords: ['internet connectivity', 'rural areas', 'remains', 'significant challenge'],
+        explanationVi: "'Internet connectivity' = khả năng kết nối Internet. 'Remains' thay cho 'is still' — lịch sự và học thuật hơn. 'Significant challenge' = thách thức đáng kể."
       }
     ]
   },
@@ -278,6 +368,96 @@ const topics = [
         modelAnswer: 'On balance, the advantages of smartphones significantly outweigh their disadvantages. The most compelling benefit is that these devices enable instant communication across vast distances, allowing people to maintain relationships and collaborate professionally regardless of location. Furthermore, smartphones provide unprecedented access to information, education, and services, empowering individuals in both developed and developing nations. While concerns about addiction and reduced face-to-face interaction are valid, these can be managed through responsible usage habits. Overall, the transformative impact of smartphones on connectivity and productivity makes them an overwhelmingly positive development.',
         fallbackKeywords: ['advantages', 'outweigh', 'communication', 'access', 'information', 'connectivity', 'productivity'],
         explanationVi: "Dạng 'outweigh' essay cần nêu lập trường ngay ở topic sentence, sau đó trình bày lý do ủng hộ. Có thể nhắc nhược điểm nhưng phải phủ nhận hoặc giảm nhẹ chúng."
+      },
+      {
+        questionId: 'w1t2_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "widespread use"):\n\n"Việc sử dụng rộng rãi điện thoại thông minh đã thay đổi cách con người giao tiếp."',
+        correctAnswer: 'The widespread use of smartphones has changed the way people communicate.',
+        modelAnswer: 'The widespread use of smartphones has changed the way people communicate.',
+        fallbackKeywords: ['widespread use', 'smartphones', 'communicate', 'the way'],
+        explanationVi: "'The widespread use of + N' = việc sử dụng rộng rãi của. Đây là cụm danh từ học thuật thường gặp trong mở bài IELTS."
+      },
+      {
+        questionId: 'w1t2_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "digital devices"):\n\n"Nhiều người dành quá nhiều thời gian cho thiết bị kỹ thuật số như điện thoại và máy tính bảng."',
+        correctAnswer: 'Many people spend too much time on digital devices such as smartphones and tablets.',
+        modelAnswer: 'Many people spend too much time on digital devices such as smartphones and tablets.',
+        fallbackKeywords: ['digital devices', 'smartphones', 'tablets', 'too much time'],
+        explanationVi: "'Digital devices' = thiết bị kỹ thuật số. 'Spend time on + N' = dành thời gian cho cái gì. 'Such as' = ví dụ như — liệt kê ví dụ cụ thể."
+      },
+      {
+        questionId: 'w1t2_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "mobile technology"):\n\n"Công nghệ di động đã giúp việc liên lạc trở nên nhanh chóng và thuận tiện hơn."',
+        correctAnswer: 'Mobile technology has made communication faster and more convenient.',
+        modelAnswer: 'Mobile technology has made communication faster and more convenient.',
+        fallbackKeywords: ['mobile technology', 'communication', 'faster', 'convenient'],
+        explanationVi: "'Make + O + adjective' = làm cho cái gì trở nên như thế nào. 'Faster and more convenient' = so sánh hơn kết hợp hai tính từ cùng lúc."
+      },
+      {
+        questionId: 'w1t2_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "social networking sites"):\n\n"Các trang mạng xã hội như Facebook hay Instagram kết nối hàng triệu người mỗi ngày."',
+        correctAnswer: 'Social networking sites such as Facebook and Instagram connect millions of people every day.',
+        modelAnswer: 'Social networking sites such as Facebook and Instagram connect millions of people every day.',
+        fallbackKeywords: ['social networking sites', 'Facebook', 'Instagram', 'connect', 'millions'],
+        explanationVi: "'Social networking sites' = trang mạng xã hội. 'Millions of people' = hàng triệu người — không dùng 'millions people'. 'Every day' ở cuối câu."
+      },
+      {
+        questionId: 'w1t2_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "virtual interaction"):\n\n"Nhiều người trẻ ngày nay thích tương tác ảo hơn là gặp gỡ ngoài đời thật."',
+        correctAnswer: 'Many young people today prefer virtual interaction to meeting in real life.',
+        modelAnswer: 'Many young people today prefer virtual interaction to meeting in real life.',
+        fallbackKeywords: ['virtual interaction', 'young people', 'prefer', 'real life'],
+        explanationVi: "'Prefer A to B' = thích A hơn B — không dùng 'prefer A than B'. 'Meeting in real life' dùng gerund làm tân ngữ sau giới từ 'to'."
+      },
+      {
+        questionId: 'w1t2_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "face-to-face communication"):\n\n"Tuy nhiên, giao tiếp trực tiếp vẫn quan trọng trong việc xây dựng mối quan hệ sâu sắc."',
+        correctAnswer: 'However, face-to-face communication remains important for building deeper relationships.',
+        modelAnswer: 'However, face-to-face communication remains important for building deeper relationships.',
+        fallbackKeywords: ['face-to-face communication', 'remains', 'important', 'relationships'],
+        explanationVi: "'Remains important' = vẫn còn quan trọng — 'remain' + adjective. 'For building' = mục đích, dùng gerund sau giới từ 'for'."
+      },
+      {
+        questionId: 'w1t2_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "digital addiction"):\n\n"Việc sử dụng điện thoại quá mức có thể dẫn đến nghiện công nghệ."',
+        correctAnswer: 'Excessive use of smartphones can lead to digital addiction.',
+        modelAnswer: 'Excessive use of smartphones can lead to digital addiction.',
+        fallbackKeywords: ['digital addiction', 'excessive use', 'smartphones', 'lead to'],
+        explanationVi: "'Excessive use of' = việc sử dụng quá mức (học thuật hơn 'too much use'). 'Lead to + N' = dẫn đến — không được dùng 'lead to + V-ing' cho danh từ."
+      },
+      {
+        questionId: 'w1t2_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "attention span"):\n\n"Việc sử dụng điện thoại thường xuyên có thể làm giảm khả năng tập trung."',
+        correctAnswer: "Frequent use of smartphones can reduce one's attention span.",
+        modelAnswer: "Frequent use of smartphones can reduce one's attention span.",
+        fallbackKeywords: ['attention span', 'frequent use', 'smartphones', 'reduce'],
+        explanationVi: "'Attention span' = khoảng thời gian tập trung. \"One's\" = của ai đó (đại từ sở hữu trung lập). 'Frequent use of' = việc sử dụng thường xuyên."
+      },
+      {
+        questionId: 'w1t2_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "interpersonal relationships"):\n\n"Việc lạm dụng điện thoại có thể ảnh hưởng tiêu cực đến các mối quan hệ giữa người với người."',
+        correctAnswer: 'Overuse of smartphones can negatively affect interpersonal relationships.',
+        modelAnswer: 'Overuse of smartphones can negatively affect interpersonal relationships.',
+        fallbackKeywords: ['interpersonal relationships', 'overuse', 'smartphones', 'negatively affect'],
+        explanationVi: "'Overuse of + N' = việc lạm dụng (tiền tố over- = quá mức). 'Negatively affect' = ảnh hưởng tiêu cực — adverb đặt trước động từ chính."
+      },
+      {
+        questionId: 'w1t2_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "emotional connection"):\n\n"Giao tiếp qua màn hình thường thiếu đi sự kết nối cảm xúc thật sự."',
+        correctAnswer: 'Communication through screens often lacks a genuine emotional connection.',
+        modelAnswer: 'Communication through screens often lacks a genuine emotional connection.',
+        fallbackKeywords: ['emotional connection', 'screens', 'lacks', 'genuine'],
+        explanationVi: "'Lacks + N' = thiếu cái gì (động từ, không phải 'lack of'). 'Genuine' = thật sự, chân thật — từ học thuật thể hiện mức độ sâu sắc của kết nối."
       }
     ]
   },
@@ -398,6 +578,96 @@ const topics = [
         modelAnswer: 'One significant disadvantage of relying on social media for news is the widespread circulation of misinformation. Unlike traditional media outlets, social media platforms lack rigorous editorial standards, allowing unverified or deliberately false content to spread rapidly among millions of users. The echo chamber effect further exacerbates this problem, as algorithms prioritise content that aligns with users\' existing beliefs, reinforcing biases rather than exposing them to balanced reporting. Consequently, public opinion can be easily manipulated, undermining the credibility of journalism and eroding informed democratic debate.',
         fallbackKeywords: ['misinformation', 'social media', 'fake news', 'credibility', 'echo chamber', 'public opinion'],
         explanationVi: "Đoạn văn tốt cần: topic sentence rõ ràng → giải thích vì sao → hệ quả cụ thể → linking word kết nối. Tránh chỉ liệt kê mà không giải thích."
+      },
+      {
+        questionId: 'w2t3_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "social media platforms"):\n\n"Ngày nay, các nền tảng mạng xã hội đã trở thành nguồn tin tức chính của nhiều người."',
+        correctAnswer: 'Nowadays, social media platforms have become the primary source of news for many people.',
+        modelAnswer: 'Nowadays, social media platforms have become the primary source of news for many people.',
+        fallbackKeywords: ['social media platforms', 'primary source', 'news', 'many people'],
+        explanationVi: "'Social media platforms' = nền tảng mạng xã hội. 'Have become' = Present Perfect nhấn mạnh sự thay đổi đến hiện tại. 'Primary source' = nguồn chính — formal hơn 'main source'."
+      },
+      {
+        questionId: 'w2t3_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "news consumption"):\n\n"Việc tiếp nhận tin tức qua mạng xã hội đang ngày càng phổ biến."',
+        correctAnswer: 'News consumption through social media is becoming increasingly common.',
+        modelAnswer: 'News consumption through social media is becoming increasingly common.',
+        fallbackKeywords: ['news consumption', 'social media', 'increasingly common'],
+        explanationVi: "'News consumption' = việc tiêu thụ/đọc tin tức. 'Is becoming increasingly' = đang ngày càng trở nên (Present Continuous + adverb)."
+      },
+      {
+        questionId: 'w2t3_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "reliable sources"):\n\n"Không phải tất cả thông tin trên mạng đều đến từ nguồn tin đáng tin cậy."',
+        correctAnswer: 'Not all information online comes from reliable sources.',
+        modelAnswer: 'Not all information online comes from reliable sources.',
+        fallbackKeywords: ['reliable sources', 'not all', 'information online'],
+        explanationVi: "'Reliable sources' = nguồn đáng tin cậy. 'Not all + N + V' = không phải tất cả đều... — cấu trúc phủ định từng phần quan trọng trong IELTS."
+      },
+      {
+        questionId: 'w2t3_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "misinformation"):\n\n"Một trong những vấn đề lớn nhất của mạng xã hội là sự lan truyền của thông tin sai lệch."',
+        correctAnswer: 'One of the biggest problems with social media is the spread of misinformation.',
+        modelAnswer: 'One of the biggest problems with social media is the spread of misinformation.',
+        fallbackKeywords: ['misinformation', 'social media', 'spread', 'biggest problems'],
+        explanationVi: "'Misinformation' = thông tin sai lệch (không cố ý). 'One of the biggest problems with X' = một trong những vấn đề lớn nhất của X — cấu trúc diễn đạt nhược điểm."
+      },
+      {
+        questionId: 'w2t3_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "media literacy"):\n\n"Học sinh cần được dạy kỹ năng hiểu biết truyền thông để phân biệt tin thật và tin giả."',
+        correctAnswer: 'Students need to be taught media literacy skills to distinguish real news from fake news.',
+        modelAnswer: 'Students need to be taught media literacy skills to distinguish real news from fake news.',
+        fallbackKeywords: ['media literacy', 'students', 'distinguish', 'fake news'],
+        explanationVi: "'Media literacy' = khả năng hiểu và đánh giá thông tin truyền thông. 'Need to be taught' = passive infinitive — nhấn mạnh hành động giảng dạy từ phía nhà trường."
+      },
+      {
+        questionId: 'w2t3_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "citizen journalism"):\n\n"Nhiều người dân hiện nay tham gia vào báo chí công dân bằng cách đăng video hoặc bài viết về sự kiện."',
+        correctAnswer: 'Many people now participate in citizen journalism by posting videos or articles about events.',
+        modelAnswer: 'Many people now participate in citizen journalism by posting videos or articles about events.',
+        fallbackKeywords: ['citizen journalism', 'participate', 'posting', 'videos', 'articles'],
+        explanationVi: "'Citizen journalism' = báo chí công dân. 'By + V-ing' = bằng cách làm gì — cấu trúc diễn đạt phương tiện/phương cách."
+      },
+      {
+        questionId: 'w2t3_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "information overload"):\n\n"Người dùng có thể bị choáng ngợp vì quá tải thông tin trên mạng xã hội."',
+        correctAnswer: 'Users can be overwhelmed by information overload on social media.',
+        modelAnswer: 'Users can be overwhelmed by information overload on social media.',
+        fallbackKeywords: ['information overload', 'overwhelmed', 'users', 'social media'],
+        explanationVi: "'Information overload' = quá tải thông tin (compound noun). 'Be overwhelmed by' = bị choáng ngợp bởi — passive voice nhấn mạnh trạng thái bị động của người dùng."
+      },
+      {
+        questionId: 'w2t3_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "credibility of news"):\n\n"Độ tin cậy của các bài đăng thường thấp hơn độ tin cậy của tin tức từ các hãng truyền thông lớn."',
+        correctAnswer: 'The credibility of social media posts is often lower than that of news from major media outlets.',
+        modelAnswer: 'The credibility of social media posts is often lower than that of news from major media outlets.',
+        fallbackKeywords: ['credibility', 'social media posts', 'media outlets', 'lower'],
+        explanationVi: "'That of' thay thế cho danh từ đã đề cập trước đó (the credibility of). 'Media outlets' = hãng truyền thông — học thuật hơn 'media companies'."
+      },
+      {
+        questionId: 'w2t3_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "algorithm-driven content"):\n\n"Các thuật toán điều hướng nội dung khiến người dùng chỉ thấy những gì họ muốn thấy."',
+        correctAnswer: 'Algorithm-driven content means users only see what they want to see, limiting their exposure to diverse perspectives.',
+        modelAnswer: 'Algorithm-driven content means users only see what they want to see, limiting their exposure to diverse perspectives.',
+        fallbackKeywords: ['algorithm-driven content', 'users', 'limiting', 'diverse perspectives'],
+        explanationVi: "'Algorithm-driven content' = nội dung được thuật toán điều hướng. Mệnh đề bổ nghĩa 'limiting their exposure...' = participle clause nêu hệ quả tiêu cực."
+      },
+      {
+        questionId: 'w2t3_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "echo chamber effect"):\n\n"Hiệu ứng buồng vọng có thể khiến người dùng chỉ nghe những ý kiến giống mình."',
+        correctAnswer: 'The echo chamber effect can cause users to only encounter opinions that mirror their own.',
+        modelAnswer: 'The echo chamber effect can cause users to only encounter opinions that mirror their own.',
+        fallbackKeywords: ['echo chamber effect', 'users', 'opinions', 'mirror'],
+        explanationVi: "'Echo chamber effect' = hiệu ứng buồng vọng. 'Mirror their own' = phản chiếu quan điểm của họ — 'mirror' dùng làm động từ."
       }
     ]
   },
@@ -535,6 +805,96 @@ const topics = [
         modelAnswer: 'There are several key reasons why students struggle to stay motivated in an online learning environment. Firstly, the absence of a structured classroom setting means that students must rely entirely on self-discipline, which many find challenging. Secondly, the lack of face-to-face peer interaction removes the social element of learning, making it feel isolating and tedious. Additionally, the constant presence of distractions at home, such as social media and household noise, further diminishes students\' concentration, ultimately leading to declining engagement with their coursework.',
         fallbackKeywords: ['structured', 'self-discipline', 'peer interaction', 'distractions', 'concentration', 'engagement'],
         explanationVi: "Đoạn Causes cần dùng listing words: 'Firstly', 'Secondly', 'Additionally'. Mỗi nguyên nhân cần một câu giải thích ngắn. Kết thúc bằng hệ quả tổng quát để chuyển tiếp."
+      },
+      {
+        questionId: 'w3t4_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "self-discipline"):\n\n"Học trực tuyến đòi hỏi sinh viên phải có tính tự giác cao."',
+        correctAnswer: 'Online learning demands that students possess a high level of self-discipline.',
+        modelAnswer: 'Online learning demands that students possess a high level of self-discipline.',
+        fallbackKeywords: ['self-discipline', 'online learning', 'demands', 'high level'],
+        explanationVi: "'Demands that + S + V' (bare infinitive) = đòi hỏi rằng — cấu trúc subjunctive mood trang trọng. 'Possess' = có, sở hữu — formal hơn 'have'."
+      },
+      {
+        questionId: 'w3t4_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "lack of motivation"):\n\n"Một trong những vấn đề lớn nhất là thiếu động lực học tập."',
+        correctAnswer: 'One of the biggest problems is a lack of motivation to study.',
+        modelAnswer: 'One of the biggest problems is a lack of motivation to study.',
+        fallbackKeywords: ['lack of motivation', 'biggest problems', 'study'],
+        explanationVi: "'A lack of + N' = sự thiếu hụt của (danh từ). 'Motivation to study' = động lực để học — 'to + V' là mệnh đề mục đích bổ nghĩa cho danh từ."
+      },
+      {
+        questionId: 'w3t4_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "time management skills"):\n\n"Nhiều sinh viên gặp khó khăn trong việc quản lý thời gian hiệu quả."',
+        correctAnswer: 'Many students struggle with managing their time effectively, lacking adequate time management skills.',
+        modelAnswer: 'Many students struggle with managing their time effectively, lacking adequate time management skills.',
+        fallbackKeywords: ['time management skills', 'students', 'struggle', 'effectively'],
+        explanationVi: "'Struggle with + V-ing' = gặp khó khăn trong việc. Mệnh đề bổ sung 'lacking adequate time management skills' = participle clause giải thích nguyên nhân."
+      },
+      {
+        questionId: 'w3t4_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "distraction"):\n\n"Ở nhà, có quá nhiều yếu tố gây xao nhãng khi học online."',
+        correctAnswer: 'At home, there are too many sources of distraction when studying online.',
+        modelAnswer: 'At home, there are too many sources of distraction when studying online.',
+        fallbackKeywords: ['distraction', 'home', 'too many', 'studying online'],
+        explanationVi: "'Sources of distraction' = các nguồn gây xao nhãng. 'When + V-ing' = khi đang làm gì — rút gọn mệnh đề thời gian khi chủ ngữ giống nhau."
+      },
+      {
+        questionId: 'w3t4_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "procrastination"):\n\n"Sự trì hoãn là nguyên nhân phổ biến khiến sinh viên không hoàn thành bài tập đúng hạn."',
+        correctAnswer: 'Procrastination is a common reason why students fail to complete assignments on time.',
+        modelAnswer: 'Procrastination is a common reason why students fail to complete assignments on time.',
+        fallbackKeywords: ['procrastination', 'students', 'assignments', 'on time'],
+        explanationVi: "'Procrastination' = sự trì hoãn (noun). 'Fail to + V' = không làm được, không hoàn thành — mang sắc thái kết quả tiêu cực."
+      },
+      {
+        questionId: 'w3t4_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic performance"):\n\n"Học sinh có xu hướng giảm kết quả học tập khi thiếu động lực."',
+        correctAnswer: 'Students tend to experience a decline in academic performance when they lack motivation.',
+        modelAnswer: 'Students tend to experience a decline in academic performance when they lack motivation.',
+        fallbackKeywords: ['academic performance', 'decline', 'lack motivation', 'tend to'],
+        explanationVi: "'Tend to + V' = có xu hướng làm gì. 'A decline in academic performance' = sự sụt giảm kết quả — dùng 'decline in + N' thay vì 'decrease of'."
+      },
+      {
+        questionId: 'w3t4_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "intrinsic motivation"):\n\n"Động lực nội tại giúp sinh viên duy trì hứng thú học tập lâu dài."',
+        correctAnswer: 'Intrinsic motivation helps students maintain long-term interest in learning.',
+        modelAnswer: 'Intrinsic motivation helps students maintain long-term interest in learning.',
+        fallbackKeywords: ['intrinsic motivation', 'students', 'long-term interest', 'maintain'],
+        explanationVi: "'Intrinsic motivation' = động lực nội tại (xuất phát từ bên trong). 'Maintain long-term interest in + N' = duy trì hứng thú lâu dài — collocation quan trọng."
+      },
+      {
+        questionId: 'w3t4_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "extrinsic motivation"):\n\n"Một số sinh viên chỉ học để được điểm cao, đó là động lực bên ngoài."',
+        correctAnswer: 'Some students study only to achieve high grades, which is a form of extrinsic motivation.',
+        modelAnswer: 'Some students study only to achieve high grades, which is a form of extrinsic motivation.',
+        fallbackKeywords: ['extrinsic motivation', 'high grades', 'form of'],
+        explanationVi: "'Extrinsic motivation' = động lực bên ngoài (điểm số, phần thưởng). 'A form of + N' = một dạng của — 'which is a form of' là mệnh đề quan hệ giải thích."
+      },
+      {
+        questionId: 'w3t4_q21', level: 'intermediate', orderIndex: 21,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "digital fatigue"):\n\n"Ngồi trước màn hình quá lâu có thể dẫn đến mệt mỏi kỹ thuật số."',
+        correctAnswer: 'Spending too long in front of a screen can lead to digital fatigue.',
+        modelAnswer: 'Spending too long in front of a screen can lead to digital fatigue.',
+        fallbackKeywords: ['digital fatigue', 'screen', 'lead to', 'spending'],
+        explanationVi: "'Digital fatigue' = mệt mỏi do sử dụng thiết bị số quá nhiều. 'Spending too long + doing' = dành quá nhiều thời gian — gerund làm chủ ngữ."
+      },
+      {
+        questionId: 'w3t4_q22', level: 'intermediate', orderIndex: 22,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "mental well-being"):\n\n"Áp lực học online trong thời gian dài ảnh hưởng đến sức khỏe tinh thần."',
+        correctAnswer: "Sustained pressure from online learning over a long period can affect students' mental well-being.",
+        modelAnswer: "Sustained pressure from online learning over a long period can affect students' mental well-being.",
+        fallbackKeywords: ['mental well-being', 'online learning', 'pressure', 'affect'],
+        explanationVi: "'Mental well-being' = sức khỏe tinh thần (học thuật hơn 'mental health'). 'Sustained pressure' = áp lực kéo dài — 'sustained' = liên tục, không giảm."
       }
     ]
   },
@@ -648,6 +1008,96 @@ const topics = [
         modelAnswer: 'There are two primary causes of the growing academic pressure experienced by students today. The first is the exam-oriented education system, which prioritises test scores over holistic development, compelling students to spend excessive hours memorising content rather than developing practical skills. The second cause is parental pressure; many parents, driven by a desire for their children\'s success in an increasingly competitive job market, impose unrealistic expectations that generate considerable anxiety. Together, these factors create an environment in which students feel perpetually stressed and unable to meet the demands placed upon them.',
         fallbackKeywords: ['exam-oriented', 'parental pressure', 'competitive', 'unrealistic expectations', 'anxiety', 'test scores'],
         explanationVi: "Đoạn Causes dùng 'The first... The second...' hoặc 'Firstly... Secondly...' để liệt kê. Mỗi nguyên nhân cần giải thích cơ chế tại sao nó gây ra áp lực."
+      },
+      {
+        questionId: 'w3t5_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic pressure"):\n\n"Ngày nay, học sinh phải chịu áp lực học tập lớn hơn bao giờ hết."',
+        correctAnswer: 'Today, students face greater academic pressure than ever before.',
+        modelAnswer: 'Today, students face greater academic pressure than ever before.',
+        fallbackKeywords: ['academic pressure', 'students', 'greater than ever'],
+        explanationVi: "'Than ever before' = hơn bao giờ hết — nhấn mạnh mức độ so sánh. 'Face + N' = phải đối mặt với, phải chịu đựng."
+      },
+      {
+        questionId: 'w3t5_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "parental pressure" + "high expectations"):\n\n"Cha mẹ thường đặt ra kỳ vọng cao đối với kết quả học tập của con cái."',
+        correctAnswer: "Parents often place high expectations on their children's academic results, creating significant parental pressure.",
+        modelAnswer: "Parents often place high expectations on their children's academic results, creating significant parental pressure.",
+        fallbackKeywords: ['parental pressure', 'high expectations', 'academic results', 'children'],
+        explanationVi: "'Place high expectations on' = đặt kỳ vọng cao vào (collocation: place/put expectations on). Participle clause 'creating...' = hậu quả trực tiếp."
+      },
+      {
+        questionId: 'w3t5_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "exam-oriented education"):\n\n"Nền giáo dục hiện nay quá chú trọng đến điểm số và kỳ thi."',
+        correctAnswer: 'Modern education places excessive emphasis on grades and exams, reflecting an exam-oriented education system.',
+        modelAnswer: 'Modern education places excessive emphasis on grades and exams, reflecting an exam-oriented education system.',
+        fallbackKeywords: ['exam-oriented education', 'grades', 'excessive emphasis'],
+        explanationVi: "'Exam-oriented' = định hướng theo kỳ thi (compound adjective). 'Place excessive emphasis on' = quá chú trọng đến — collocation học thuật."
+      },
+      {
+        questionId: 'w3t5_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "performance anxiety"):\n\n"Lo lắng về thành tích khiến nhiều học sinh không thể tập trung học."',
+        correctAnswer: 'Performance anxiety prevents many students from focusing on their studies.',
+        modelAnswer: 'Performance anxiety prevents many students from focusing on their studies.',
+        fallbackKeywords: ['performance anxiety', 'students', 'focusing', 'studies'],
+        explanationVi: "'Performance anxiety' = lo lắng về thành tích. 'Prevent + O + from + V-ing' = ngăn cản ai làm gì — cấu trúc quan trọng trong IELTS."
+      },
+      {
+        questionId: 'w3t5_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "perfectionism"):\n\n"Chủ nghĩa cầu toàn khiến học sinh sợ mắc lỗi trong học tập."',
+        correctAnswer: 'Perfectionism causes students to fear making mistakes in their academic work.',
+        modelAnswer: 'Perfectionism causes students to fear making mistakes in their academic work.',
+        fallbackKeywords: ['perfectionism', 'students', 'fear', 'mistakes'],
+        explanationVi: "'Perfectionism' = chủ nghĩa cầu toàn. 'Cause + O + to V' = khiến ai làm gì. 'Fear + V-ing' = sợ việc làm gì (gerund sau 'fear')."
+      },
+      {
+        questionId: 'w3t5_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "fear of failure"):\n\n"Nỗi sợ thất bại có thể khiến học sinh mất tự tin."',
+        correctAnswer: 'A fear of failure can cause students to lose self-confidence.',
+        modelAnswer: 'A fear of failure can cause students to lose self-confidence.',
+        fallbackKeywords: ['fear of failure', 'students', 'self-confidence', 'lose'],
+        explanationVi: "'A fear of failure' = nỗi sợ thất bại (danh từ + of + danh từ). 'Cause + O + to V' = khiến ai làm gì. 'Lose self-confidence' = mất tự tin."
+      },
+      {
+        questionId: 'w3t5_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "self-esteem"):\n\n"Áp lực học tập ảnh hưởng tiêu cực đến lòng tự trọng của học sinh."',
+        correctAnswer: "Academic pressure negatively affects students' self-esteem.",
+        modelAnswer: "Academic pressure negatively affects students' self-esteem.",
+        fallbackKeywords: ['self-esteem', 'academic pressure', 'negatively affects'],
+        explanationVi: "'Self-esteem' = lòng tự trọng/tự tin. 'Negatively affects' = ảnh hưởng tiêu cực — adverb đặt trước động từ. Không nhầm với 'self-confidence' (tự tin)."
+      },
+      {
+        questionId: 'w3t5_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic workload"):\n\n"Thiếu ngủ là hậu quả phổ biến của khối lượng học tập lớn."',
+        correctAnswer: 'Sleep deprivation is a common consequence of a heavy academic workload.',
+        modelAnswer: 'Sleep deprivation is a common consequence of a heavy academic workload.',
+        fallbackKeywords: ['academic workload', 'sleep deprivation', 'consequence'],
+        explanationVi: "'Sleep deprivation' = thiếu ngủ (formal, học thuật). 'A common consequence of' = hậu quả phổ biến của — 'consequence of + N' là collocation chuẩn IELTS."
+      },
+      {
+        questionId: 'w3t5_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "emotional support"):\n\n"Học sinh cần được hỗ trợ tinh thần từ cha mẹ và thầy cô."',
+        correctAnswer: 'Students need emotional support from their parents and teachers.',
+        modelAnswer: 'Students need emotional support from their parents and teachers.',
+        fallbackKeywords: ['emotional support', 'students', 'parents', 'teachers'],
+        explanationVi: "'Emotional support' = hỗ trợ về mặt tinh thần/cảm xúc. Câu đơn giản nhưng chính xác — 'need + N + from + N' không cần mệnh đề phức."
+      },
+      {
+        questionId: 'w3t5_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "coping strategies"):\n\n"Chiến lược đối phó giúp học sinh kiểm soát căng thẳng hiệu quả hơn."',
+        correctAnswer: 'Coping strategies help students manage stress more effectively.',
+        modelAnswer: 'Coping strategies help students manage stress more effectively.',
+        fallbackKeywords: ['coping strategies', 'students', 'manage stress', 'effectively'],
+        explanationVi: "'Coping strategies' = chiến lược đối phó (với căng thẳng). 'Help + O + V (bare infinitive)' = giúp ai làm gì. 'More effectively' = so sánh hơn của adverb."
       }
     ]
   },
@@ -736,6 +1186,96 @@ const topics = [
         modelAnswer: 'One effective solution is for schools to integrate regular reading sessions into the curriculum, making it a compulsory part of the school day. If students are exposed to a wide variety of books from an early age, they are more likely to develop a genuine love of reading that persists into adulthood. Furthermore, schools could establish well-stocked libraries and reading clubs that create an engaging social atmosphere around books. Evidence from countries such as Finland suggests that embedding reading culture within formal education significantly improves both literacy rates and overall academic performance.',
         fallbackKeywords: ['schools', 'reading', 'curriculum', 'literacy', 'libraries', 'academic performance'],
         explanationVi: "Giải pháp tốt cần: nêu giải pháp cụ thể → giải thích cơ chế → dẫn chứng hoặc ví dụ → liên kết lại kết quả kỳ vọng."
+      },
+      {
+        questionId: 'w4t6_q08', level: 'intermediate', orderIndex: 8,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic pressure"):\n\n"Ngày nay, học sinh phải chịu áp lực học tập lớn hơn bao giờ hết."',
+        correctAnswer: 'Students today face more academic pressure than ever before.',
+        modelAnswer: 'Students today face more academic pressure than ever before.',
+        fallbackKeywords: ['academic pressure', 'today', 'more than ever'],
+        explanationVi: "'More... than ever before' = nhiều hơn bao giờ hết. 'Students today' đặt 'today' sau danh từ — nhấn mạnh ngữ cảnh hiện tại."
+      },
+      {
+        questionId: 'w4t6_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "parental expectations"):\n\n"Cha mẹ thường đặt kỳ vọng rất cao vào con cái."',
+        correctAnswer: 'Parents often place extremely high parental expectations on their children.',
+        modelAnswer: 'Parents often place extremely high parental expectations on their children.',
+        fallbackKeywords: ['parental expectations', 'high', 'children', 'place'],
+        explanationVi: "'Parental expectations' = kỳ vọng của cha mẹ. 'Place expectations on' = đặt kỳ vọng vào — 'place' học thuật hơn 'put'. 'Extremely high' = cực kỳ cao."
+      },
+      {
+        questionId: 'w4t6_q10', level: 'intermediate', orderIndex: 10,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "comparison among students"):\n\n"Việc so sánh giữa học sinh với nhau khiến nhiều em cảm thấy tự ti."',
+        correctAnswer: 'Comparison among students makes many of them feel inferior.',
+        modelAnswer: 'Comparison among students makes many of them feel inferior.',
+        fallbackKeywords: ['comparison among students', 'inferior', 'feel', 'makes'],
+        explanationVi: "'Comparison among students' = sự so sánh giữa các học sinh. 'Make + O + feel + adj' = khiến ai cảm thấy thế nào. 'Inferior' = tự ti, kém cỏi hơn."
+      },
+      {
+        questionId: 'w4t6_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "heavy workload"):\n\n"Học sinh phải đối mặt với khối lượng bài tập khổng lồ mỗi ngày."',
+        correctAnswer: 'Students are faced with a heavy workload of assignments every single day.',
+        modelAnswer: 'Students are faced with a heavy workload of assignments every single day.',
+        fallbackKeywords: ['heavy workload', 'students', 'assignments', 'every day'],
+        explanationVi: "'Be faced with' = phải đối mặt với — passive idiom. 'Every single day' = mỗi ngày (nhấn mạnh hơn 'every day'). 'Heavy workload' = khối lượng công việc nặng nề."
+      },
+      {
+        questionId: 'w4t6_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "stress and burnout"):\n\n"Áp lực học tập có thể gây ra căng thẳng và kiệt sức."',
+        correctAnswer: 'Academic pressure can cause both stress and burnout in students.',
+        modelAnswer: 'Academic pressure can cause both stress and burnout in students.',
+        fallbackKeywords: ['stress', 'burnout', 'academic pressure', 'cause'],
+        explanationVi: "'Both... and...' = cả... lẫn... — nhấn mạnh hai hệ quả cùng lúc. 'Burnout' = kiệt sức về tinh thần (do căng thẳng kéo dài)."
+      },
+      {
+        questionId: 'w4t6_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "work–life balance"):\n\n"Một số học sinh mất cân bằng giữa học tập và nghỉ ngơi."',
+        correctAnswer: 'Some students lose their work–life balance between studying and resting.',
+        modelAnswer: 'Some students lose their work–life balance between studying and resting.',
+        fallbackKeywords: ['work-life balance', 'studying', 'resting', 'lose'],
+        explanationVi: "'Work–life balance' = cân bằng giữa công việc/học tập và cuộc sống. 'Between A and B' = giữa A và B — hai gerund song song."
+      },
+      {
+        questionId: 'w4t6_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "supportive learning environment"):\n\n"Giáo viên nên tạo môi trường học tập thoải mái và hỗ trợ hơn."',
+        correctAnswer: 'Teachers should create a more comfortable and supportive learning environment.',
+        modelAnswer: 'Teachers should create a more comfortable and supportive learning environment.',
+        fallbackKeywords: ['supportive learning environment', 'teachers', 'comfortable', 'create'],
+        explanationVi: "'Supportive learning environment' = môi trường học tập hỗ trợ. 'Should create' = nên tạo ra — modal verb diễn đạt đề xuất. 'More comfortable and supportive' = so sánh hơn song song."
+      },
+      {
+        questionId: 'w4t6_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "extracurricular activities" + "reduce stress"):\n\n"Việc tham gia hoạt động ngoại khóa có thể giúp giảm căng thẳng."',
+        correctAnswer: 'Participating in extracurricular activities can help students reduce stress.',
+        modelAnswer: 'Participating in extracurricular activities can help students reduce stress.',
+        fallbackKeywords: ['extracurricular activities', 'reduce stress', 'participating'],
+        explanationVi: "'Extracurricular activities' = hoạt động ngoại khóa. 'Participating in + N' = việc tham gia vào (gerund làm chủ ngữ). 'Help + O + V (bare infinitive)'."
+      },
+      {
+        questionId: 'w4t6_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "realistic academic goals"):\n\n"Học sinh nên học cách đặt mục tiêu học tập hợp lý."',
+        correctAnswer: 'Students should learn how to set realistic academic goals.',
+        modelAnswer: 'Students should learn how to set realistic academic goals.',
+        fallbackKeywords: ['realistic academic goals', 'students', 'set', 'learn how'],
+        explanationVi: "'Realistic academic goals' = mục tiêu học tập thực tế/hợp lý. 'Learn how to + V' = học cách làm gì — cấu trúc diễn đạt kỹ năng cần rèn luyện."
+      },
+      {
+        questionId: 'w4t6_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "grades are not the only measure of success"):\n\n"Xã hội cần thay đổi quan điểm rằng điểm số là thước đo duy nhất của thành công."',
+        correctAnswer: 'Society needs to change the mindset that grades are the only measure of success.',
+        modelAnswer: 'Society needs to change the mindset that grades are the only measure of success.',
+        fallbackKeywords: ['grades', 'only measure of success', 'mindset', 'change'],
+        explanationVi: "'Mindset' = quan điểm/tư duy (học thuật hơn 'thinking'). 'The only measure of success' = thước đo duy nhất của thành công — 'measure of' là collocation quan trọng."
       }
     ]
   },
@@ -833,6 +1373,96 @@ const topics = [
         modelAnswer: 'The rising dropout rate has several damaging consequences for society as a whole. Firstly, graduates who abandon their studies are more likely to face long-term unemployment, placing additional pressure on government welfare systems. Furthermore, public investment in higher education is essentially wasted when students fail to complete their degrees, representing a misallocation of social resources. Over time, a less educated workforce reduces national productivity and hampers economic growth. If these trends are not reversed, high dropout rates could ultimately undermine social stability and widen existing income inequalities.',
         fallbackKeywords: ['unemployment', 'social resources', 'productivity', 'economic growth', 'social stability', 'dropout'],
         explanationVi: "Đoạn Effects về xã hội cần bao gồm hệ quả kinh tế, xã hội, và dài hạn. Dùng 'Firstly... Furthermore... Over time...' để tổ chức mạch lạc."
+      },
+      {
+        questionId: 'w4t7_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "drop out of university"):\n\n"Ngày càng có nhiều sinh viên bỏ học đại học ở nhiều quốc gia."',
+        correctAnswer: 'An increasing number of students are choosing to drop out of university across many countries.',
+        modelAnswer: 'An increasing number of students are choosing to drop out of university across many countries.',
+        fallbackKeywords: ['drop out of university', 'increasing number', 'countries'],
+        explanationVi: "'An increasing number of + plural N' = ngày càng nhiều — trang trọng hơn 'more and more'. 'Across many countries' = ở nhiều quốc gia (across = khắp)."
+      },
+      {
+        questionId: 'w4t7_q10', level: 'intermediate', orderIndex: 10,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "university dropout rate"):\n\n"Tỉ lệ bỏ học đại học đang tăng nhanh trong thập kỷ qua."',
+        correctAnswer: 'The university dropout rate has been rising rapidly over the past decade.',
+        modelAnswer: 'The university dropout rate has been rising rapidly over the past decade.',
+        fallbackKeywords: ['university dropout rate', 'rising rapidly', 'past decade'],
+        explanationVi: "'Has been rising' = Present Perfect Continuous nhấn mạnh xu hướng liên tục. 'Over the past decade' = trong thập kỷ qua (decade = 10 năm)."
+      },
+      {
+        questionId: 'w4t7_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "financial burden"):\n\n"Một trong những nguyên nhân chính là gánh nặng tài chính."',
+        correctAnswer: 'One of the main causes is the financial burden placed on students and their families.',
+        modelAnswer: 'One of the main causes is the financial burden placed on students and their families.',
+        fallbackKeywords: ['financial burden', 'main causes', 'students'],
+        explanationVi: "'Financial burden' = gánh nặng tài chính. 'Placed on + N' = participle clause bổ nghĩa cho 'burden', chỉ rõ đối tượng chịu gánh nặng."
+      },
+      {
+        questionId: 'w4t7_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "tuition fees"):\n\n"Học phí cao khiến nhiều sinh viên không thể tiếp tục học."',
+        correctAnswer: 'High tuition fees prevent many students from continuing their education.',
+        modelAnswer: 'High tuition fees prevent many students from continuing their education.',
+        fallbackKeywords: ['tuition fees', 'high', 'prevent', 'continuing', 'education'],
+        explanationVi: "'Tuition fees' = học phí. 'Prevent + O + from + V-ing' = ngăn cản ai làm gì — cấu trúc IELTS Band 7+ quan trọng."
+      },
+      {
+        questionId: 'w4t7_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "student loan debt"):\n\n"Nhiều sinh viên phải gánh nợ vay lớn sau khi tốt nghiệp."',
+        correctAnswer: 'Many students are burdened with significant student loan debt after graduating.',
+        modelAnswer: 'Many students are burdened with significant student loan debt after graduating.',
+        fallbackKeywords: ['student loan debt', 'burdened', 'significant', 'graduating'],
+        explanationVi: "'Be burdened with' = bị gánh nặng bởi — passive idiom học thuật. 'After graduating' = rút gọn mệnh đề thời gian khi chủ ngữ giống nhau."
+      },
+      {
+        questionId: 'w4t7_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic failure"):\n\n"Một số sinh viên bỏ học vì thất bại trong học tập."',
+        correctAnswer: 'Some students drop out due to academic failure and an inability to meet course requirements.',
+        modelAnswer: 'Some students drop out due to academic failure and an inability to meet course requirements.',
+        fallbackKeywords: ['academic failure', 'drop out', 'course requirements'],
+        explanationVi: "'Due to + N' = do, vì — giới từ nguyên nhân (academic hơn 'because of'). 'An inability to + V' = sự không có khả năng — cấu trúc danh từ hóa trang trọng."
+      },
+      {
+        questionId: 'w4t7_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "mental health issues"):\n\n"Vấn đề sức khỏe tinh thần khiến sinh viên khó tiếp tục học."',
+        correctAnswer: 'Mental health issues make it difficult for students to continue their studies.',
+        modelAnswer: 'Mental health issues make it difficult for students to continue their studies.',
+        fallbackKeywords: ['mental health issues', 'students', 'continue', 'studies'],
+        explanationVi: "'Make it difficult for + O + to V' = khiến việc làm gì trở nên khó khăn — 'it' là dummy subject. Cấu trúc này phổ biến hơn 'make students difficult to'."
+      },
+      {
+        questionId: 'w4t7_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "low income" + "unemployment"):\n\n"Việc không có bằng đại học có thể dẫn đến thu nhập thấp và thất nghiệp."',
+        correctAnswer: 'Not having a university degree can lead to low income and unemployment.',
+        modelAnswer: 'Not having a university degree can lead to low income and unemployment.',
+        fallbackKeywords: ['low income', 'unemployment', 'university degree', 'lead to'],
+        explanationVi: "'Not having + N' = gerund phủ định làm chủ ngữ. 'Lead to + N' = dẫn đến (hai kết quả song song: low income and unemployment)."
+      },
+      {
+        questionId: 'w4t7_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "academic counseling"):\n\n"Chính phủ nên cung cấp nhiều chương trình tư vấn học tập hơn cho sinh viên."',
+        correctAnswer: 'The government should provide more academic counseling programmes to support students.',
+        modelAnswer: 'The government should provide more academic counseling programmes to support students.',
+        fallbackKeywords: ['academic counseling', 'government', 'programmes', 'support'],
+        explanationVi: "'Academic counseling' = tư vấn học tập/hướng nghiệp. 'Should provide' = should + V (đề xuất giải pháp). 'Programmes' = spelling British English."
+      },
+      {
+        questionId: 'w4t7_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "career guidance"):\n\n"Các trường đại học cần tăng cường hướng nghiệp cho sinh viên."',
+        correctAnswer: 'Universities need to strengthen career guidance services for their students.',
+        modelAnswer: 'Universities need to strengthen career guidance services for their students.',
+        fallbackKeywords: ['career guidance', 'universities', 'strengthen', 'students'],
+        explanationVi: "'Career guidance' = hướng dẫn nghề nghiệp. 'Strengthen' = tăng cường, củng cố — học thuật hơn 'improve' hay 'increase'. 'Services' nhấn mạnh đây là dịch vụ thể chế."
       }
     ]
   },
@@ -959,6 +1589,96 @@ const topics = [
         modelAnswer: 'I strongly believe that reducing the length of the working week would bring considerable benefits to both workers and employers. When employees are given adequate rest, they return to work with renewed energy and sharper focus, which research consistently shows leads to higher labor productivity. Moreover, a longer weekend provides valuable time for physical exercise, family activities, and personal development, all of which contribute to improved mental well-being. Countries such as Iceland have already trialled a four-day working week with overwhelmingly positive results, demonstrating that this approach is both practical and economically viable.',
         fallbackKeywords: ['productivity', 'rest', 'well-being', 'work-life balance', 'four-day', 'employees'],
         explanationVi: "Đoạn Agree cần: lập trường rõ → lý do 1 → lý do 2 → bằng chứng/ví dụ thực tế. Không nên nhắc nhược điểm trong đoạn này."
+      },
+      {
+        questionId: 'w5t8_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "working week"):\n\n"Nhiều người tin rằng tuần làm việc nên ngắn hơn để có nhiều thời gian nghỉ ngơi."',
+        correctAnswer: 'Many people believe that the working week should be shorter in order to allow more time for rest.',
+        modelAnswer: 'Many people believe that the working week should be shorter in order to allow more time for rest.',
+        fallbackKeywords: ['working week', 'shorter', 'rest', 'allow'],
+        explanationVi: "'In order to + V' = để (mục đích, trang trọng hơn 'to'). 'Allow + time for + N' = cho phép có thời gian cho — collocation học thuật."
+      },
+      {
+        questionId: 'w5t8_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "productivity" + "efficiency"):\n\n"Làm việc ít giờ hơn có thể giúp cải thiện năng suất và hiệu quả công việc."',
+        correctAnswer: 'Working fewer hours can help improve both productivity and overall efficiency.',
+        modelAnswer: 'Working fewer hours can help improve both productivity and overall efficiency.',
+        fallbackKeywords: ['productivity', 'efficiency', 'fewer hours', 'improve'],
+        explanationVi: "'Fewer hours' = ít giờ hơn (đếm được). 'Both A and B' = cả A lẫn B. 'Overall efficiency' = hiệu quả tổng thể — 'overall' nhấn mạnh phạm vi rộng."
+      },
+      {
+        questionId: 'w5t8_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "work–life balance"):\n\n"Cân bằng giữa công việc và cuộc sống là yếu tố quan trọng để duy trì hạnh phúc."',
+        correctAnswer: 'Work–life balance is a crucial factor in maintaining personal well-being and happiness.',
+        modelAnswer: 'Work–life balance is a crucial factor in maintaining personal well-being and happiness.',
+        fallbackKeywords: ['work-life balance', 'crucial', 'well-being', 'happiness'],
+        explanationVi: "'Crucial factor' = yếu tố then chốt (mạnh hơn 'important factor'). 'In maintaining' = trong việc duy trì — gerund sau giới từ."
+      },
+      {
+        questionId: 'w5t8_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "family bonding"):\n\n"Khi có nhiều thời gian rảnh, người lao động có thể dành thời gian cho gia đình."',
+        correctAnswer: 'With more free time, workers can dedicate time to family bonding.',
+        modelAnswer: 'With more free time, workers can dedicate time to family bonding.',
+        fallbackKeywords: ['family bonding', 'free time', 'workers', 'dedicate'],
+        explanationVi: "'Family bonding' = gắn kết gia đình. 'Dedicate time to + N/V-ing' = dành thời gian cho — formal hơn 'spend time with'."
+      },
+      {
+        questionId: 'w5t8_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "burnout"):\n\n"Việc làm việc quá nhiều giờ có thể gây ra căng thẳng và kiệt sức."',
+        correctAnswer: 'Working excessive hours can cause both stress and burnout.',
+        modelAnswer: 'Working excessive hours can cause both stress and burnout.',
+        fallbackKeywords: ['burnout', 'excessive hours', 'stress', 'cause'],
+        explanationVi: "'Burnout' = kiệt sức do làm việc quá độ. 'Excessive hours' = số giờ quá mức (excessive = formal hơn 'too many'). 'Both A and B' liệt kê hai kết quả."
+      },
+      {
+        questionId: 'w5t8_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "flexible schedule"):\n\n"Lịch làm việc linh hoạt giúp nhân viên kiểm soát tốt hơn thời gian của mình."',
+        correctAnswer: 'A flexible schedule gives employees greater control over their own time.',
+        modelAnswer: 'A flexible schedule gives employees greater control over their own time.',
+        fallbackKeywords: ['flexible schedule', 'employees', 'control', 'time'],
+        explanationVi: "'Control over + N' = quyền kiểm soát đối với — 'over' là giới từ đi với 'control'. 'Greater control' = so sánh hơn của danh từ."
+      },
+      {
+        questionId: 'w5t8_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "employee performance"):\n\n"Nhân viên có thời gian nghỉ ngơi hợp lý thường làm việc hiệu quả hơn."',
+        correctAnswer: 'Employees who have adequate rest time generally show better employee performance.',
+        modelAnswer: 'Employees who have adequate rest time generally show better employee performance.',
+        fallbackKeywords: ['employee performance', 'rest time', 'adequate', 'better'],
+        explanationVi: "'Adequate rest time' = thời gian nghỉ ngơi đầy đủ. 'Show better performance' = thể hiện/có hiệu suất tốt hơn — 'show' học thuật hơn 'have'."
+      },
+      {
+        questionId: 'w5t8_q18', level: 'intermediate', orderIndex: 18,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "job satisfaction" + "working environment"):\n\n"Một môi trường làm việc tốt giúp tăng sự hài lòng trong công việc."',
+        correctAnswer: 'A positive working environment helps increase job satisfaction among employees.',
+        modelAnswer: 'A positive working environment helps increase job satisfaction among employees.',
+        fallbackKeywords: ['job satisfaction', 'working environment', 'positive', 'increase'],
+        explanationVi: "'A positive working environment' = môi trường làm việc tích cực. 'Among employees' = trong số nhân viên — 'among' thay 'for' khi nói về nhóm người."
+      },
+      {
+        questionId: 'w5t8_q19', level: 'intermediate', orderIndex: 19,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "personal development"):\n\n"Việc có thêm thời gian nghỉ giúp họ phát triển kỹ năng cá nhân."',
+        correctAnswer: 'Having extra time off allows employees to invest in personal development.',
+        modelAnswer: 'Having extra time off allows employees to invest in personal development.',
+        fallbackKeywords: ['personal development', 'extra time off', 'invest', 'allows'],
+        explanationVi: "'Time off' = thời gian nghỉ (từ ghép). 'Allow + O + to V' = cho phép ai làm gì. 'Invest in personal development' = đầu tư vào phát triển cá nhân."
+      },
+      {
+        questionId: 'w5t8_q20', level: 'intermediate', orderIndex: 20,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "turnover rate"):\n\n"Giảm giờ làm việc có thể giúp giảm tỉ lệ nghỉ việc."',
+        correctAnswer: 'Reducing working hours may help lower the employee turnover rate.',
+        modelAnswer: 'Reducing working hours may help lower the employee turnover rate.',
+        fallbackKeywords: ['turnover rate', 'reducing working hours', 'lower'],
+        explanationVi: "'Turnover rate' = tỉ lệ nhân viên nghỉ việc và thay thế. 'May help lower' = có thể giúp giảm — 'may' nhẹ hơn 'can' (mức độ khả năng)."
       }
     ]
   },
@@ -1048,6 +1768,96 @@ const topics = [
         modelAnswer: 'Despite the growing popularity of remote work, I disagree that it will become the dominant working arrangement in the future. Many industries, including manufacturing, healthcare, and hospitality, require physical presence and therefore cannot transition fully to remote models. Furthermore, even in knowledge-based sectors, in-person collaboration remains crucial for innovation, team cohesion, and maintaining a strong company culture. Prolonged remote work has also been linked to professional isolation and blurred work-life boundaries, which ultimately diminish employee well-being and retention. A hybrid approach is far more sustainable than complete remote working.',
         fallbackKeywords: ['company culture', 'collaboration', 'isolation', 'office', 'hybrid', 'dominant'],
         explanationVi: "Đoạn Disagree cần nêu lập trường rõ ngay đầu, sau đó đưa ra 2-3 lý do phản đối với giải thích cụ thể. Kết bằng alternative solution (hybrid model) thuyết phục hơn."
+      },
+      {
+        questionId: 'w5t9_q08', level: 'intermediate', orderIndex: 8,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "remote work"):\n\n"Làm việc từ xa đã trở nên phổ biến hơn sau đại dịch."',
+        correctAnswer: 'Remote work has become far more widespread since the pandemic.',
+        modelAnswer: 'Remote work has become far more widespread since the pandemic.',
+        fallbackKeywords: ['remote work', 'widespread', 'pandemic'],
+        explanationVi: "'Far more widespread' = phổ biến hơn nhiều — 'far' tăng cường so sánh hơn. 'Since the pandemic' = kể từ đại dịch — Present Perfect đi với 'since'."
+      },
+      {
+        questionId: 'w5t9_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "work–life balance"):\n\n"Nhiều người thích làm việc tại nhà vì họ có thể cân bằng giữa công việc và cuộc sống tốt hơn."',
+        correctAnswer: 'Many people prefer working from home because it enables a better work–life balance.',
+        modelAnswer: 'Many people prefer working from home because it enables a better work–life balance.',
+        fallbackKeywords: ['work-life balance', 'working from home', 'better', 'enables'],
+        explanationVi: "'Prefer + V-ing' = thích làm gì hơn (khi không so sánh trực tiếp). 'Enable' = cho phép, tạo điều kiện cho — academic hơn 'allow' hay 'let'."
+      },
+      {
+        questionId: 'w5t9_q10', level: 'intermediate', orderIndex: 10,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "digital communication tools"):\n\n"Các công cụ giao tiếp kỹ thuật số giúp kết nối nhân viên dù họ ở xa nhau."',
+        correctAnswer: 'Digital communication tools help connect employees regardless of their physical location.',
+        modelAnswer: 'Digital communication tools help connect employees regardless of their physical location.',
+        fallbackKeywords: ['digital communication tools', 'connect', 'employees', 'location'],
+        explanationVi: "'Regardless of' = bất kể, không phụ thuộc vào — formal phrase thay cho 'no matter'. 'Physical location' = vị trí địa lý thực tế."
+      },
+      {
+        questionId: 'w5t9_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "social isolation"):\n\n"Một số người cảm thấy cô lập và ít tương tác xã hội khi làm việc ở nhà."',
+        correctAnswer: 'Some people feel a sense of social isolation and have fewer social interactions when working from home.',
+        modelAnswer: 'Some people feel a sense of social isolation and have fewer social interactions when working from home.',
+        fallbackKeywords: ['social isolation', 'working from home', 'interactions', 'fewer'],
+        explanationVi: "'A sense of social isolation' = cảm giác cô lập xã hội — 'a sense of' nhấn mạnh cảm nhận chủ quan. 'Fewer social interactions' = so sánh hơn với danh từ đếm được."
+      },
+      {
+        questionId: 'w5t9_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "hybrid model"):\n\n"Nhiều công ty chuyển sang mô hình làm việc kết hợp giữa ở nhà và tại văn phòng."',
+        correctAnswer: 'Many companies are shifting to a hybrid model that combines working from home and in the office.',
+        modelAnswer: 'Many companies are shifting to a hybrid model that combines working from home and in the office.',
+        fallbackKeywords: ['hybrid model', 'home', 'office', 'combining', 'shifting'],
+        explanationVi: "'Shift to' = chuyển sang (phrasal verb học thuật). 'A hybrid model that combines A and B' = mô hình kết hợp — mệnh đề quan hệ bổ nghĩa."
+      },
+      {
+        questionId: 'w5t9_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "technological advancement"):\n\n"Công nghệ hiện đại cho phép các nhóm làm việc hiệu quả dù ở xa nhau."',
+        correctAnswer: 'Modern technological advancement allows teams to work efficiently even at a distance.',
+        modelAnswer: 'Modern technological advancement allows teams to work efficiently even at a distance.',
+        fallbackKeywords: ['technological advancement', 'teams', 'efficiently', 'distance'],
+        explanationVi: "'At a distance' = từ xa, ở khoảng cách xa. 'Even at a distance' = ngay cả khi ở xa — 'even' nhấn mạnh tính bất thường hoặc ngạc nhiên."
+      },
+      {
+        questionId: 'w5t9_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "internet connectivity"):\n\n"Kết nối Internet yếu có thể ảnh hưởng đến hiệu suất làm việc."',
+        correctAnswer: 'Poor internet connectivity can negatively affect work performance and productivity.',
+        modelAnswer: 'Poor internet connectivity can negatively affect work performance and productivity.',
+        fallbackKeywords: ['internet connectivity', 'poor', 'work performance', 'productivity'],
+        explanationVi: "'Poor internet connectivity' = kết nối internet kém. 'Negatively affect' = ảnh hưởng tiêu cực. 'Work performance and productivity' = hai danh từ bổ nghĩa lẫn nhau."
+      },
+      {
+        questionId: 'w5t9_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "time management"):\n\n"Một số người gặp khó khăn trong việc quản lý thời gian khi làm việc tại nhà."',
+        correctAnswer: 'Some people struggle with time management when working from home.',
+        modelAnswer: 'Some people struggle with time management when working from home.',
+        fallbackKeywords: ['time management', 'struggle', 'working from home'],
+        explanationVi: "'Struggle with + N/V-ing' = gặp khó khăn với. 'When working from home' = rút gọn từ 'when they are working from home'."
+      },
+      {
+        questionId: 'w5t9_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "communication barrier"):\n\n"Thiếu giao tiếp trực tiếp có thể gây ra rào cản trong hợp tác nhóm."',
+        correctAnswer: 'A lack of direct interaction can create a communication barrier in team collaboration.',
+        modelAnswer: 'A lack of direct interaction can create a communication barrier in team collaboration.',
+        fallbackKeywords: ['communication barrier', 'direct interaction', 'team collaboration'],
+        explanationVi: "'Communication barrier' = rào cản giao tiếp. 'Create a barrier' = tạo ra rào cản — 'create' học thuật hơn 'cause'. 'Team collaboration' = hợp tác nhóm."
+      },
+      {
+        questionId: 'w5t9_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "corporate culture"):\n\n"Làm việc tại nhà có thể ảnh hưởng đến văn hóa doanh nghiệp."',
+        correctAnswer: 'Working from home can have a significant impact on corporate culture.',
+        modelAnswer: 'Working from home can have a significant impact on corporate culture.',
+        fallbackKeywords: ['corporate culture', 'working from home', 'significant impact'],
+        explanationVi: "'Corporate culture' = văn hóa doanh nghiệp/công ty. 'Have a significant impact on' = có tác động đáng kể lên — 'have an impact' là collocation cố định."
       }
     ]
   },
@@ -1137,6 +1947,96 @@ const topics = [
         modelAnswer: 'I firmly agree that job satisfaction is more important than a high salary in the long run. When individuals are genuinely passionate about their work, they are driven by intrinsic motivation, which consistently produces higher levels of performance and creativity than financial incentives alone. In contrast, employees who pursue high salaries in roles they find unfulfilling are significantly more susceptible to job burnout, leading to disengagement, absenteeism, and ultimately career breakdown. Research indicates that long-term happiness is more strongly correlated with a sense of purpose at work than with financial compensation, making job satisfaction the more valuable priority.',
         fallbackKeywords: ['job satisfaction', 'intrinsic motivation', 'burnout', 'performance', 'long-term happiness', 'purpose'],
         explanationVi: "Bài Agree cần: thesis rõ → lý do ủng hộ có giải thích → contrast với lập trường đối lập → kết bằng dẫn chứng. Tránh đề cập lương quan trọng hơn vì sẽ mâu thuẫn lập trường."
+      },
+      {
+        questionId: 'w6t10_q08', level: 'intermediate', orderIndex: 8,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "job satisfaction"):\n\n"Nhiều người tin rằng sự hài lòng trong công việc quan trọng hơn mức lương cao."',
+        correctAnswer: 'Many people believe that job satisfaction is more important than a high salary.',
+        modelAnswer: 'Many people believe that job satisfaction is more important than a high salary.',
+        fallbackKeywords: ['job satisfaction', 'important', 'high salary'],
+        explanationVi: "'Job satisfaction' = sự hài lòng trong công việc. So sánh hơn 'more important than' — không nhầm với 'more important as'. 'Believe that' = tin rằng (formal)."
+      },
+      {
+        questionId: 'w6t10_q09', level: 'intermediate', orderIndex: 9,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "financial security"):\n\n"Mức lương cao giúp mang lại sự an toàn tài chính cho người lao động."',
+        correctAnswer: 'A high salary helps provide financial security for workers.',
+        modelAnswer: 'A high salary helps provide financial security for workers.',
+        fallbackKeywords: ['financial security', 'high salary', 'workers', 'provide'],
+        explanationVi: "'Financial security' = sự an toàn/bảo đảm tài chính. 'Provide + N + for + N' = cung cấp cái gì cho ai. 'Help + V (bare infinitive)' = giúp làm gì."
+      },
+      {
+        questionId: 'w6t10_q10', level: 'intermediate', orderIndex: 10,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "working environment"):\n\n"Một môi trường làm việc tích cực giúp nhân viên cảm thấy hạnh phúc hơn."',
+        correctAnswer: 'A positive working environment makes employees feel happier and more motivated.',
+        modelAnswer: 'A positive working environment makes employees feel happier and more motivated.',
+        fallbackKeywords: ['working environment', 'positive', 'employees', 'happier', 'motivated'],
+        explanationVi: "'Make + O + feel + adj' = khiến ai cảm thấy thế nào. 'Happier and more motivated' = hai so sánh hơn song song cho hai loại tính từ khác nhau."
+      },
+      {
+        questionId: 'w6t10_q11', level: 'intermediate', orderIndex: 11,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "meaningful work"):\n\n"Nhiều người sẵn sàng nhận lương thấp hơn nếu họ yêu thích công việc của mình."',
+        correctAnswer: 'Many people are willing to accept a lower salary if they find their work meaningful.',
+        modelAnswer: 'Many people are willing to accept a lower salary if they find their work meaningful.',
+        fallbackKeywords: ['meaningful work', 'lower salary', 'willing', 'find'],
+        explanationVi: "'Be willing to + V' = sẵn sàng làm gì. 'Find + O + adj' = thấy cái gì như thế nào. 'Meaningful' = có ý nghĩa — 'find their work meaningful' tự nhiên hơn 'find their work is meaningful'."
+      },
+      {
+        questionId: 'w6t10_q12', level: 'intermediate', orderIndex: 12,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "work fulfillment"):\n\n"Cảm giác mãn nguyện khi làm việc khiến con người có động lực hơn mỗi ngày."',
+        correctAnswer: 'A sense of work fulfillment motivates people to perform better every day.',
+        modelAnswer: 'A sense of work fulfillment motivates people to perform better every day.',
+        fallbackKeywords: ['work fulfillment', 'motivates', 'perform better', 'every day'],
+        explanationVi: "'A sense of work fulfillment' = cảm giác mãn nguyện trong công việc. 'Motivate + O + to V' = thúc đẩy ai làm gì. 'Perform better' = làm việc tốt hơn."
+      },
+      {
+        questionId: 'w6t10_q13', level: 'intermediate', orderIndex: 13,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "career development"):\n\n"Sự phát triển nghề nghiệp giúp nhân viên cảm thấy họ đang tiến bộ."',
+        correctAnswer: 'Career development gives employees a sense that they are making progress.',
+        modelAnswer: 'Career development gives employees a sense that they are making progress.',
+        fallbackKeywords: ['career development', 'employees', 'progress', 'sense'],
+        explanationVi: "'Career development' = sự phát triển nghề nghiệp. 'A sense that + clause' = cảm giác rằng. 'Make progress' = tiến bộ — 'make' là collocating verb cố định."
+      },
+      {
+        questionId: 'w6t10_q14', level: 'intermediate', orderIndex: 14,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "mental well-being"):\n\n"Làm việc quá nhiều giờ có thể ảnh hưởng tiêu cực đến sức khỏe tinh thần."',
+        correctAnswer: "Working excessively long hours can negatively affect one's mental well-being.",
+        modelAnswer: "Working excessively long hours can negatively affect one's mental well-being.",
+        fallbackKeywords: ['mental well-being', 'excessively', 'negatively affect'],
+        explanationVi: "'Excessively long hours' = số giờ quá mức. \"One's mental well-being\" dùng đại từ sở hữu trung lập. 'Negatively affect' = ảnh hưởng tiêu cực."
+      },
+      {
+        questionId: 'w6t10_q15', level: 'intermediate', orderIndex: 15,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "employee retention"):\n\n"Nơi làm việc thân thiện giúp tăng khả năng giữ chân nhân viên."',
+        correctAnswer: 'A friendly workplace helps improve employee retention.',
+        modelAnswer: 'A friendly workplace helps improve employee retention.',
+        fallbackKeywords: ['employee retention', 'friendly workplace', 'improve'],
+        explanationVi: "'Employee retention' = việc giữ chân nhân viên (không phải 'keeping employees'). 'A friendly workplace' = môi trường làm việc thân thiện. 'Helps improve' = giúp cải thiện."
+      },
+      {
+        questionId: 'w6t10_q16', level: 'intermediate', orderIndex: 16,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "corporate culture"):\n\n"Văn hóa doanh nghiệp ảnh hưởng lớn đến mức độ hài lòng của nhân viên."',
+        correctAnswer: 'Corporate culture has a significant impact on employee satisfaction levels.',
+        modelAnswer: 'Corporate culture has a significant impact on employee satisfaction levels.',
+        fallbackKeywords: ['corporate culture', 'employee satisfaction', 'significant impact'],
+        explanationVi: "'Have a significant impact on' = có tác động đáng kể lên — collocation cố định quan trọng. 'Satisfaction levels' = mức độ hài lòng."
+      },
+      {
+        questionId: 'w6t10_q17', level: 'intermediate', orderIndex: 17,
+        type: 'translation',
+        questionText: 'Dịch sang tiếng Anh (dùng từ "sense of purpose"):\n\n"Cảm giác có mục đích trong công việc khiến cuộc sống trở nên ý nghĩa hơn."',
+        correctAnswer: "Having a sense of purpose in one's work makes life feel more meaningful.",
+        modelAnswer: "Having a sense of purpose in one's work makes life feel more meaningful.",
+        fallbackKeywords: ['sense of purpose', 'work', 'meaningful', 'makes life'],
+        explanationVi: "'A sense of purpose' = cảm giác có mục đích. 'Make + O + feel + adj' = khiến thứ gì đó cảm thấy như thế nào. 'More meaningful' = ý nghĩa hơn."
       }
     ]
   },
