@@ -350,7 +350,9 @@ async function apiFetch(path, opts = {}) {
   const token = localStorage.getItem('token');
   const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) };
   const res = await fetch(API + path, { ...opts, headers: { ...headers, ...opts.headers } });
-  return res.json();
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+  return data;
 }
 
 // ════════════════════════════════════════════════════════
@@ -851,7 +853,7 @@ function quitExam() {
 
 async function startExam() {
   try {
-    const level = state.selectedLevel === 'all' ? state.selectedLevel : state.selectedLevel;
+    const level = state.selectedLevel;
     const params = new URLSearchParams({ level, count: state.examCount });
     if (state.selectedTopic) params.set('week', state.selectedWeek);
     const data = await apiFetch(`/api/task2/exam?${params}`);

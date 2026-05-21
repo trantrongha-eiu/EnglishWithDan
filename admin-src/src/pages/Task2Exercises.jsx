@@ -286,9 +286,8 @@ export default function Task2Exercises() {
   async function refreshActiveTopic() {
     if (!activeTopic) return;
     try {
-      const data = await apiFetch(`/admin/task2/topics?search=${encodeURIComponent(activeTopic.topicName)}&limit=5`);
-      const fresh = data.topics?.find(t => t._id === activeTopic._id);
-      if (fresh) setActiveTopic(fresh);
+      const data = await apiFetch(`/admin/task2/topics/${activeTopic._id}`);
+      if (data.topic) setActiveTopic(data.topic);
     } catch {}
     forceReload();
   }

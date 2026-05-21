@@ -1820,6 +1820,17 @@ router.get('/task2/topics', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/task2/topics/:id
+router.get('/task2/topics/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const topic = await Task2Topic.findById(req.params.id).lean();
+    if (!topic) return res.status(404).json({ success: false, message: 'Không tìm thấy topic' });
+    res.json({ success: true, topic });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/task2/topics
 router.post('/task2/topics', auth, teacherOnly, async (req, res) => {
   try {
