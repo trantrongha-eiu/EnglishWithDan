@@ -150,6 +150,12 @@
     .t1-hint-chip{background:#fef3c7;border:1px solid #fde68a;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:#92400e;cursor:default}
     [data-theme="dark"] .t1-hint-chip{background:#451a03;border-color:#78350f;color:#fcd34d}
 
+    /* ── Grammar context note (shown before answer) ── */
+    .t1-ctx-note{background:#f0f9ff;border-left:3px solid #6366f1;border-radius:0 8px 8px 0;padding:7px 12px;margin:8px 0 10px;font-size:12px;color:#3730a3;line-height:1.5}
+    .t1-ctx-note-lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#6366f1;margin-bottom:2px}
+    [data-theme="dark"] .t1-ctx-note{background:#1e1b4b;border-color:#818cf8;color:#c7d2fe}
+    [data-theme="dark"] .t1-ctx-note-lbl{color:#a5b4fc}
+
     /* ── Module badge ── */
     .t1-module-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
     [data-theme="dark"] .t1-module-badge{background:#1e293b;color:#94a3b8}
@@ -356,6 +362,10 @@
           <!-- TRANSLATION / DATA_TRANSFORM / ERROR_CORRECTION -->
           <div id="view-translation" class="hidden">
             <div class="wp-task-label" id="task-instruction"></div>
+            <div class="t1-ctx-note hidden" id="trans-ctx-note">
+              <div class="t1-ctx-note-lbl">📚 Grammar Focus</div>
+              <div id="trans-ctx-content"></div>
+            </div>
             <div class="t1-data-ctx hidden" id="data-ctx-box">
               <div class="t1-data-ctx-label">📋 Ngữ cảnh dữ liệu</div>
               <div id="data-ctx-content"></div>
@@ -372,6 +382,10 @@
           <!-- REARRANGE -->
           <div id="view-rearrange" class="hidden">
             <div class="wp-task-label" id="rearrange-instruction"></div>
+            <div class="t1-ctx-note hidden" id="rearrange-ctx-note">
+              <div class="t1-ctx-note-lbl">📚 Grammar Focus</div>
+              <div id="rearrange-ctx-content"></div>
+            </div>
             <div class="wp-question-text" id="rearrange-context"></div>
             <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)"></div>
             <div class="wp-rearrange-bank"   id="rearrange-bank"></div>
@@ -381,13 +395,22 @@
           <!-- FILL BLANK -->
           <div id="view-fill-blank" class="hidden">
             <div class="wp-task-label" id="fill-label"></div>
+            <div class="t1-ctx-note hidden" id="fill-ctx-note">
+              <div class="t1-ctx-note-lbl">📚 Grammar Focus</div>
+              <div id="fill-ctx-content"></div>
+            </div>
             <div class="wp-fill-sentence" id="fill-sentence"></div>
-            <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền vào chỗ trống..." onkeydown="handleKeydown(event)"/>
+            <div class="t1-hints-row" id="fill-hints-row"></div>
+            <input class="wp-fill-input" id="fill-input" type="text" autocomplete="off" placeholder="Nhập từ cần điền vào chỗ trống..." onkeydown="handleKeydown(event)"/>
           </div>
 
           <!-- MULTIPLE CHOICE -->
           <div id="view-multiple-choice" class="hidden">
             <div class="wp-task-label" id="mc-instruction"></div>
+            <div class="t1-ctx-note hidden" id="mc-ctx-note">
+              <div class="t1-ctx-note-lbl">📚 Grammar Focus</div>
+              <div id="mc-ctx-content"></div>
+            </div>
             <div class="wp-question-text" id="mc-question"></div>
             <div class="t1-mc-options" id="mc-options"></div>
             <input type="hidden" id="mc-selected-index" value=""/>
@@ -495,7 +518,7 @@
           <div id="test-view-fill" class="hidden">
             <div class="wp-task-label" id="test-fill-label"></div>
             <div class="wp-fill-sentence" id="test-fill-sentence"></div>
-            <input class="wp-fill-input" id="test-fill-input" type="text" placeholder="Nhập câu trả lời..." onkeydown="handleTestKeydown(event)"/>
+            <input class="wp-fill-input" id="test-fill-input" type="text" autocomplete="off" placeholder="Nhập câu trả lời..." onkeydown="handleTestKeydown(event)"/>
           </div>
           <!-- multiple choice -->
           <div id="test-view-mc" class="hidden">
@@ -843,6 +866,13 @@ function showTranslationView(ex) {
   document.getElementById('view-translation').classList.remove('hidden');
   document.getElementById('task-instruction').textContent = ex.instruction || '';
 
+  // grammar focus (don't show for error_correction — the focus is obvious)
+  const transCtx = document.getElementById('trans-ctx-note');
+  if (ex.grammarPoint && ex.type !== 'error_correction') {
+    document.getElementById('trans-ctx-content').textContent = ex.grammarPoint;
+    transCtx.classList.remove('hidden');
+  } else transCtx.classList.add('hidden');
+
   // data context
   const ctxBox = document.getElementById('data-ctx-box');
   if (ex.dataContext?.subject) {
@@ -883,6 +913,14 @@ function showTranslationView(ex) {
 function showRearrangeView(ex) {
   document.getElementById('view-rearrange').classList.remove('hidden');
   document.getElementById('rearrange-instruction').textContent = ex.instruction || 'Sắp xếp các từ thành câu đúng:';
+
+  // Grammar focus
+  const ctxNote = document.getElementById('rearrange-ctx-note');
+  if (ex.grammarPoint) {
+    document.getElementById('rearrange-ctx-content').textContent = ex.grammarPoint;
+    ctxNote.classList.remove('hidden');
+  } else ctxNote.classList.add('hidden');
+
   document.getElementById('rearrange-context').textContent = ex.questionEn || ex.questionVi || '';
 
   rearrangeWords  = shuffle([...(ex.baseWords || [])]);
@@ -905,9 +943,33 @@ function showRearrangeView(ex) {
 function showFillBlankView(ex) {
   document.getElementById('view-fill-blank').classList.remove('hidden');
   document.getElementById('fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
+
+  // Grammar focus
+  const ctxNote = document.getElementById('fill-ctx-note');
+  if (ex.grammarPoint) {
+    document.getElementById('fill-ctx-content').textContent = ex.grammarPoint;
+    ctxNote.classList.remove('hidden');
+  } else ctxNote.classList.add('hidden');
+
+  // Sentence
   const sentence = ex.sentenceWithBlanks || ex.questionEn || '';
   document.getElementById('fill-sentence').innerHTML =
     sentence.replace(/___/g, '<span class="wp-blank-underline">___</span>');
+
+  // Hints
+  const hRow = document.getElementById('fill-hints-row');
+  hRow.innerHTML = '';
+  if (ex.hints?.length) {
+    const lbl = document.createElement('span');
+    lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
+    hRow.appendChild(lbl);
+    ex.hints.slice(0, 4).forEach(h => {
+      const chip = document.createElement('span');
+      chip.className = 't1-hint-chip'; chip.textContent = h;
+      hRow.appendChild(chip);
+    });
+  }
+
   const inp = document.getElementById('fill-input');
   inp.value = ''; inp.focus();
 }
@@ -915,6 +977,14 @@ function showFillBlankView(ex) {
 function showMultipleChoiceView(ex) {
   document.getElementById('view-multiple-choice').classList.remove('hidden');
   document.getElementById('mc-instruction').textContent = ex.instruction || '';
+
+  // Grammar focus
+  const ctxNote = document.getElementById('mc-ctx-note');
+  if (ex.grammarPoint) {
+    document.getElementById('mc-ctx-content').textContent = ex.grammarPoint;
+    ctxNote.classList.remove('hidden');
+  } else ctxNote.classList.add('hidden');
+
   document.getElementById('mc-question').textContent    = ex.questionEn || ex.questionVi || '';
   document.getElementById('mc-selected-index').value    = '';
 
