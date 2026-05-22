@@ -414,10 +414,15 @@
           const tb = document.getElementById('editTargetBand');
           tb.value = u.targetBand != null ? String(u.targetBand) : '';
 
-          // Nav
-          document.getElementById('navName').textContent = u.firstName || u.username;
+          // Nav avatar widget (update with fresh data from server)
           const navAv = document.getElementById('navAvatar');
-          if (navAv) navAv.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
+          if (navAv) {
+            if (u.avatar) {
+              navAv.innerHTML = '<img src="' + u.avatar + '" alt="avatar" style="width:34px;height:34px;object-fit:cover;display:block;">';
+            } else {
+              navAv.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
+            }
+          }
         }
 
         if (sd.success) {

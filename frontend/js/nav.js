@@ -11,7 +11,6 @@
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết' },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
     { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true },
-    { href: 'profile.html',          icon: 'fa-user-circle', label: 'Profile' },
   ];
 
   function mkDesktopLinks() {
@@ -43,6 +42,9 @@
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
       '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
+      '<a href="profile.html" id="navUserWidget" title="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
+        '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
+      '</a>' +
       '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>' +
       '<button class="hamburger" id="globalHamburger" aria-label="Mở menu"><span></span><span></span><span></span></button>' +
     '</div>';
@@ -50,6 +52,21 @@
 
   // ── Add padding class to body ─────────────────────────────
   document.body.classList.add('has-global-nav');
+
+  // ── Populate avatar widget from localStorage ──────────────
+  try {
+    var _u = JSON.parse(localStorage.getItem('user') || 'null');
+    if (_u) {
+      var _navAv = document.getElementById('navAvatar');
+      if (_navAv) {
+        if (_u.avatar) {
+          _navAv.innerHTML = '<img src="' + _u.avatar + '" alt="avatar" style="width:34px;height:34px;object-fit:cover;display:block;">';
+        } else {
+          _navAv.textContent = (_u.firstName || _u.username || '?')[0].toUpperCase();
+        }
+      }
+    }
+  } catch (e) {}
 
   // ── Inject mobile drawer ──────────────────────────────────
   var drawer = document.createElement('div');
