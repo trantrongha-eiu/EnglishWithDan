@@ -239,6 +239,17 @@ async function runFixEncoding(showToastFn) {
   }
 }
 
+async function runReseedWeek12(showToastFn) {
+  if (!window.confirm('Xóa toàn bộ topic tuần 12 hiện tại và re-insert 5 topic sạch từ seed?')) return;
+  try {
+    showToastFn('Đang re-seed tuần 12...', 'info');
+    const r = await apiFetch('/admin/reseed-task2-week12', { method: 'POST' });
+    showToastFn(r.message, 'success');
+  } catch (e) {
+    showToastFn(e.message, 'error');
+  }
+}
+
 export default function Task2Exercises() {
   const [topics, setTopics]           = useState([]);
   const [total, setTotal]             = useState(0);
@@ -335,6 +346,7 @@ export default function Task2Exercises() {
         </div>
         <div style={{ display:'flex', gap:8 }}>
           <button className="btn btn-ghost btn-sm" title="Sửa lỗi font tiếng Việt trong DB (chạy 1 lần)" onClick={() => runFixEncoding(showToast)}>🔧 Sửa encoding</button>
+          <button className="btn btn-warning btn-sm" title="Xóa duplicate tuần 12 + re-insert 5 topic sạch" onClick={() => runReseedWeek12(showToast)}>🗑️ Fix tuần 12</button>
           <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
         </div>
       </div>

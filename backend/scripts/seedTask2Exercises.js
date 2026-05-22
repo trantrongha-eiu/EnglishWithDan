@@ -4474,12 +4474,27 @@ const topics = [
 async function runSeed() {
   const Task2Topic = require('../models/Task2Topic');
 
+  // Use week+orderIndex as unique key (topicName encoding varies between environments)
   const ops = topics.map(t => ({
-    replaceOne: { filter: { topicName: t.topicName }, replacement: t, upsert: true }
+    replaceOne: { filter: { week: t.week, orderIndex: t.orderIndex }, replacement: t, upsert: true }
   }));
 
   const result = await Task2Topic.bulkWrite(ops);
   console.log(`[Task2Seed] upserted ${result.upsertedCount}, modified ${result.modifiedCount} Task 2 topics`);
+}
+
+// Re-seed only week 12: delete all week-12 docs then insert fresh from seed data
+async function reseedWeek12() {
+  const Task2Topic = require('../models/Task2Topic');
+  const week12Topics = topics.filter(t => t.week === 12);
+
+  // Delete all existing week 12 docs (including duplicates)
+  const del = await Task2Topic.deleteMany({ week: 12 });
+  console.log(`[Task2Seed] Deleted ${del.deletedCount} week-12 topics`);
+
+  // Insert fresh
+  const inserted = await Task2Topic.insertMany(week12Topics);
+  console.log(`[Task2Seed] Inserted ${inserted.length} fresh week-12 topics`);
 }
 
 // Allow direct execution: node backend/scripts/seedTask2Exercises.js
@@ -4495,4 +4510,4 @@ if (require.main === module) {
     .catch(err => { console.error(err); process.exit(1); });
 }
 
-module.exports = { runSeed, topics };
+module.exports = { runSeed, reseedWeek12, topics };

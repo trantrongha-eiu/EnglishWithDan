@@ -1914,6 +1914,17 @@ router.delete('/task2/topics/:topicId/questions/:qid', auth, teacherOnly, async 
   }
 });
 
+// POST /api/admin/reseed-task2-week12 — delete duplicates + re-insert fresh week-12 topics
+router.post('/reseed-task2-week12', auth, teacherOnly, async (req, res) => {
+  try {
+    const { reseedWeek12 } = require('../scripts/seedTask2Exercises');
+    await reseedWeek12();
+    res.json({ success: true, message: 'Đã xóa duplicate và re-seed 5 topics tuần 12 thành công.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/fix-encoding  — one-time migration to fix double-encoded Vietnamese
 router.post('/fix-encoding', auth, teacherOnly, async (req, res) => {
   try {
