@@ -365,6 +365,15 @@ export default function Task1Exercises() {
                 forceReload();
               } catch (e) { toast(e.message, 'error'); }
             }}>🔧 Sửa encoding</button>
+          <button className="btn btn-ghost btn-sm" title="Thêm ngữ cảnh dữ liệu cho câu hỏi by vs to (Q15/Q16)"
+            onClick={async () => {
+              try {
+                toast('Đang cập nhật ngữ cảnh...');
+                await apiFetch('/admin/fix-task1-context', { method: 'POST' });
+                toast('Đã thêm dataContext cho Q15 & Q16!');
+                forceReload();
+              } catch (e) { toast(e.message, 'error'); }
+            }}>📊 Fix by/to context</button>
           <button className="btn btn-primary btn-sm" onClick={() => { setEditEx(null); setShowModal(true); }}>
             + Thêm câu hỏi
           </button>

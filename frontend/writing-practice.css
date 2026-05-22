@@ -313,6 +313,7 @@ body {
   text-transform: uppercase;
   letter-spacing: .5px;
   margin-bottom: 12px;
+  white-space: pre-line;  /* allows \n in instruction to render as line breaks */
 }
 
 .wp-question-text {

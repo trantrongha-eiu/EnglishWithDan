@@ -1925,4 +1925,15 @@ router.post('/fix-encoding', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// POST /api/admin/fix-task1-context — add data context to ambiguous by/to questions
+router.post('/fix-task1-context', auth, teacherOnly, async (req, res) => {
+  try {
+    const { run } = require('../scripts/updateTask1Context');
+    await run();
+    res.json({ success: true, message: 'Updated task1 context for Q15 and Q16.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

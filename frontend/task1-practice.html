@@ -124,7 +124,9 @@
     /* ── Data context box ── */
     .t1-data-ctx{background:#fefce8;border:1.5px solid #fde047;border-radius:10px;padding:10px 14px;margin:8px 0;font-size:13px;color:#713f12}
     .t1-data-ctx-label{font-weight:700;font-size:11px;color:#92400e;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+    .t1-data-ctx-note{font-size:12px;color:#b45309;margin-top:5px;padding-top:5px;border-top:1px dashed #fde68a;font-weight:600}
     [data-theme="dark"] .t1-data-ctx{background:#1c1400;border-color:#854d0e;color:#fcd34d}
+    [data-theme="dark"] .t1-data-ctx-note{color:#fbbf24;border-color:#78350f}
 
     /* ── Error correction display ── */
     .t1-error-text{font-family:monospace;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.8;color:#92400e;margin:8px 0}
@@ -395,6 +397,11 @@
           <!-- FILL BLANK -->
           <div id="view-fill-blank" class="hidden">
             <div class="wp-task-label" id="fill-label"></div>
+            <div class="t1-data-ctx hidden" id="fill-data-ctx-box">
+              <div class="t1-data-ctx-label" id="fill-data-ctx-label">📊 Dữ liệu</div>
+              <div id="fill-data-ctx-content"></div>
+              <div class="t1-data-ctx-note hidden" id="fill-data-ctx-note"></div>
+            </div>
             <div class="t1-ctx-note hidden" id="fill-ctx-note">
               <div class="t1-ctx-note-lbl">📚 Grammar Focus</div>
               <div id="fill-ctx-content"></div>
@@ -943,6 +950,25 @@ function showRearrangeView(ex) {
 function showFillBlankView(ex) {
   document.getElementById('view-fill-blank').classList.remove('hidden');
   document.getElementById('fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
+
+  // Data context (from/to table — shown BEFORE the sentence so student has full context)
+  const fillDataCtx = document.getElementById('fill-data-ctx-box');
+  const dc = ex.dataContext;
+  if (dc && (dc.subject || dc.value)) {
+    const add = dc.additionalData || {};
+    // Main line: Subject | Year | From → To  unit
+    let mainLine = dc.subject || '';
+    if (dc.year) mainLine += ' · ' + dc.year;
+    if (dc.value) mainLine += ' · ' + dc.value + (dc.unit ? ' ' + dc.unit : '');
+    document.getElementById('fill-data-ctx-content').textContent = mainLine;
+    // Note line: highlight what the blank number means
+    const noteEl = document.getElementById('fill-data-ctx-note');
+    if (add.note) {
+      noteEl.textContent = '→ ' + add.note;
+      noteEl.classList.remove('hidden');
+    } else noteEl.classList.add('hidden');
+    fillDataCtx.classList.remove('hidden');
+  } else fillDataCtx.classList.add('hidden');
 
   // Grammar focus
   const ctxNote = document.getElementById('fill-ctx-note');
