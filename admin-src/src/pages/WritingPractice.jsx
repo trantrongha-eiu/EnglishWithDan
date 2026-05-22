@@ -240,7 +240,7 @@ export default function WritingPractice() {
 
   const loadEx = () => apiFetch('/admin/wp-exercises?limit=500').then(d => setExercises(d.exercises || [])).catch(e => toast(e.message, 'error'));
   const loadTopics = () => apiFetch('/admin/wp-topics').then(d => setTopics(d.topics || [])).catch(e => toast(e.message, 'error'));
-  const loadAttempts = () => apiFetch('/admin/wp-attempts?limit=200').then(d => setAttempts(d.attempts || [])).catch(e => toast(e.message, 'error'));
+  const loadAttempts = () => apiFetch('/admin/wp-attempts?limit=300').then(d => setAttempts((d.attempts || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))).catch(e => toast(e.message, 'error'));
 
   useEffect(() => { loadTopics(); loadEx(); }, []);
   useEffect(() => { if (tab === 'attempts' && attempts.length === 0) loadAttempts(); }, [tab]);
@@ -380,42 +380,60 @@ export default function WritingPractice() {
         </>
       )}
 
-      {tab === 'attempts' && (
-        <>
-          <div style={{ display: 'flex', gap: 10, margin: '12px 0', alignItems: 'center', justifyContent: 'space-between' }}>
-            <input className="form-input search-input" placeholder="Tìm học sinh, chủ đề..." value={attemptSearch}
-              onChange={e => setAttemptSearch(e.target.value)} style={{ maxWidth: 280 }} />
-            <button className="btn btn-ghost btn-sm" onClick={loadAttempts}>🔄 Làm mới</button>
-          </div>
-          <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>LOẠI</th><th>CHỦ ĐỀ</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
-            <tbody>
-              {attempts.filter(a => !attemptSearch || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase()) || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase())).length === 0
-                ? <tr><td colSpan={7} className="table-empty">Chưa có lịch sử</td></tr>
-                : attempts.filter(a => !attemptSearch || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase()) || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase())).map(a => (
-                  <tr key={a._id}>
-                    <td><strong>{a.studentId?.username || '–'}</strong></td>
-                    <td>{levelBadge(a.level)}</td>
-                    <td>{typeBadge(a.type)}</td>
-                    <td style={{ fontSize: 12 }}>{a.topic || '–'}</td>
-                    <td><span style={{ color: 'var(--yellow)', fontWeight: 700 }}>+{a.xpEarned || 0}</span></td>
-                    <td style={{ fontSize: 12 }}>{formatDate(a.createdAt).split(' ')[0]}</td>
-                    <td>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => {
-                        confirm('Xóa lịch sử này?', async () => {
-                          try { await apiFetch(`/admin/wp-attempts/${a._id}`, { method: 'DELETE' }); toast('Đã xóa'); setAttempts(x => x.filter(y => y._id !== a._id)); }
-                          catch (e) { toast(e.message, 'error'); }
-                        });
-                      }}>🗑</button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-          </div>
-        </>
-      )}
+      {tab === 'attempts' && (() => {
+        const filtAtt = attempts.filter(a => !attemptSearch
+          || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase())
+          || (a.studentId?.firstName || '').toLowerCase().includes(attemptSearch.toLowerCase())
+          || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase()));
+        const ATT_PAGE = 25;
+        const [attPage, setAttPage] = [page, setPage];
+        const attPages = Math.max(1, Math.ceil(filtAtt.length / ATT_PAGE));
+        const attRows  = filtAtt.slice((attPage - 1) * ATT_PAGE, attPage * ATT_PAGE);
+        return (
+          <>
+            <div style={{ display: 'flex', gap: 10, margin: '12px 0', alignItems: 'center', justifyContent: 'space-between' }}>
+              <input className="form-input search-input" placeholder="Tìm học sinh, chủ đề..." value={attemptSearch}
+                onChange={e => { setAttemptSearch(e.target.value); setPage(1); }} style={{ maxWidth: 280 }} />
+              <span style={{ fontSize: 12, color: 'var(--text3)' }}>{filtAtt.length} kết quả</span>
+              <button className="btn btn-ghost btn-sm" onClick={loadAttempts}>🔄 Làm mới</button>
+            </div>
+            <div className="table-wrap">
+              <table className="table">
+                <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>LOẠI</th><th>CHỦ ĐỀ</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
+                <tbody>
+                  {attRows.length === 0
+                    ? <tr><td colSpan={7} className="table-empty">Chưa có lịch sử</td></tr>
+                    : attRows.map(a => (
+                      <tr key={a._id}>
+                        <td><strong>{a.studentId?.username || '–'}</strong></td>
+                        <td>{levelBadge(a.level)}</td>
+                        <td>{typeBadge(a.type)}</td>
+                        <td style={{ fontSize: 12 }}>{a.topic || '–'}</td>
+                        <td><span style={{ color: 'var(--yellow)', fontWeight: 700 }}>+{a.xpEarned || 0}</span></td>
+                        <td style={{ fontSize: 12 }}>{formatDate(a.createdAt).split(' ')[0]}</td>
+                        <td>
+                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => {
+                            confirm('Xóa lịch sử này?', async () => {
+                              try { await apiFetch(`/admin/wp-attempts/${a._id}`, { method: 'DELETE' }); toast('Đã xóa'); setAttempts(x => x.filter(y => y._id !== a._id)); }
+                              catch (e) { toast(e.message, 'error'); }
+                            });
+                          }}>🗑</button>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            {attPages > 1 && (
+              <div className="pagination" style={{ marginTop: 12 }}>
+                <button className="btn btn-ghost btn-sm" disabled={attPage <= 1} onClick={() => setAttPage(p => p - 1)}>‹ Trước</button>
+                <span style={{ fontSize: 13, color: 'var(--text2)', padding: '0 12px' }}>Trang {attPage}/{attPages}</span>
+                <button className="btn btn-ghost btn-sm" disabled={attPage >= attPages} onClick={() => setAttPage(p => p + 1)}>Sau ›</button>
+              </div>
+            )}
+          </>
+        );
+      })()}
     </>
   );
 }

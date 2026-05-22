@@ -4,26 +4,32 @@ import Sidebar from '../components/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 
 const TITLES = {
-  '/admin/dashboard': 'Dashboard',
-  '/admin/users': 'Người dùng',
-  '/admin/access-codes': 'Mã truy cập',
-  '/admin/courses': 'Khóa học',
-  '/admin/passages': 'Bài đọc (Passages)',
-  '/admin/reading-tests': 'Bộ đề Reading',
-  '/admin/listening-tests': 'Đề Listening',
-  '/admin/writing-tests': 'Đề Writing',
-  '/admin/speaking': 'Speaking',
-  '/admin/vocabulary': 'Từ vựng (Units)',
-  '/admin/writing-practice': 'Luyện viết (Writing Practice)',
-  '/admin/history': 'Lịch sử làm bài',
-  '/admin/vocab-activity': 'Hoạt động từ vựng',
+  '/admin/dashboard':        'Dashboard',
+  '/admin/users':            'Người dùng',
+  '/admin/access-codes':     'Mã truy cập',
+  '/admin/courses':          'Khóa học',
+  '/admin/passages':         'Bài đọc (Passages)',
+  '/admin/reading-tests':    'Bộ đề Reading',
+  '/admin/listening-tests':  'Đề Listening',
+  '/admin/writing-tests':    'Đề Writing',
+  '/admin/speaking':         'Speaking',
+  '/admin/vocabulary':       'Từ vựng (Units)',
+  '/admin/writing-practice': 'Luyện viết',
+  '/admin/task1-exercises':  'Task 1 Grammar',
+  '/admin/task2-exercises':  'Task 2 Writing',
+  '/admin/history':          'Lịch sử làm bài',
+  '/admin/vocab-activity':   'Hoạt động từ vựng',
+  '/admin/messages':         'Hộp thư',
 };
 
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const title = TITLES[pathname] || 'Admin';
+  const title = TITLES[pathname]
+    || (pathname.startsWith('/admin/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
+    || (pathname.startsWith('/admin/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
+    || 'Admin';
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
