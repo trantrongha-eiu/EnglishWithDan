@@ -358,17 +358,66 @@ async function loadMyBooks() {
 
 function renderBookSidebar() {
     const wrap = document.getElementById('book-list-sidebar');
-    wrap.innerHTML = myBooks.map(b => `
+    wrap.innerHTML = myBooks.map((b, i) => `
     <div class="book-item ${b._id === currentBookId ? 'active' : ''}"
-         onclick="openBook('${b._id}')" id="bi-${b._id}">
+         draggable="true"
+         data-idx="${i}"
+         id="bi-${b._id}"
+         onclick="openBook('${b._id}')"
+         ondragstart="bookDragStart(event,${i})"
+         ondragover="bookDragOver(event)"
+         ondragleave="bookDragLeave(event)"
+         ondrop="bookDrop(event,${i})"
+         ondragend="bookDragEnd(event)">
+      <span class="book-drag-handle" title="Kéo để sắp xếp">⠿</span>
       <span class="book-emoji">${b.emoji}</span>
       <span class="book-name">${b.name}</span>
       <span class="book-count">${b.totalWords}</span>
       <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
     </div>
   `).join('');
-    // Sync mobile bottom sheet nếu hàm đã được khởi tạo
     if (typeof syncSheetBooks === 'function') syncSheetBooks();
+}
+
+// ── Drag & drop reorder ───────────────────────
+let _dragBookIdx = null;
+let _saveOrderTimer = null;
+
+function bookDragStart(e, idx) {
+    _dragBookIdx = idx;
+    e.dataTransfer.effectAllowed = 'move';
+    e.currentTarget.classList.add('dragging');
+}
+function bookDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+}
+function bookDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function bookDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    document.querySelectorAll('.book-item').forEach(el => el.classList.remove('drag-over'));
+}
+function bookDrop(e, targetIdx) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (_dragBookIdx === null || _dragBookIdx === targetIdx) return;
+    const moved = myBooks.splice(_dragBookIdx, 1)[0];
+    myBooks.splice(targetIdx, 0, moved);
+    _dragBookIdx = null;
+    renderBookSidebar();
+    // Debounce save to backend
+    clearTimeout(_saveOrderTimer);
+    _saveOrderTimer = setTimeout(saveBookOrder, 600);
+}
+async function saveBookOrder() {
+    try {
+        await fetch(`${API}/vocabbook/reorder`, {
+            method: 'PUT',
+            headers: authH(),
+            body: JSON.stringify({ order: myBooks.map((b, i) => ({ _id: b._id, sortOrder: i })) })
+        });
+    } catch (_) {}
 }
 
 function openBook(bookId) {

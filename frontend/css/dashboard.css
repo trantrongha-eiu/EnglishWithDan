@@ -121,7 +121,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   padding:10px 18px;cursor:pointer;
   font-size:13px;font-weight:500;color:var(--text2);
   border-left:3px solid transparent;
-  transition:all .15s;position:relative;
+  transition:background .15s,color .15s,opacity .15s,transform .12s,border-color .15s;
+  position:relative;
 }
 .book-item:hover{background:var(--surface2);color:var(--text)}
 .book-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
@@ -131,6 +132,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .book-item.active .book-count{background:#fce4e4;color:var(--brand)}
 .book-menu-btn{opacity:0;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;color:var(--text3);font-size:13px}
 .book-item:hover .book-menu-btn{opacity:1}
+
+/* Drag & drop */
+.book-drag-handle{font-size:13px;color:var(--text3);cursor:grab;padding:0 2px;user-select:none;flex-shrink:0;opacity:0;transition:opacity .15s;line-height:1}
+.book-item:hover .book-drag-handle{opacity:1}
+.book-item.dragging{opacity:.35;background:var(--surface2)}
+.book-item.drag-over{border-left-color:var(--brand);background:rgba(229,57,53,.07);transform:translateX(3px)}
 
 .sidebar-divider{height:1px;background:var(--border);margin:6px 18px}
 

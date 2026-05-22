@@ -31,7 +31,8 @@ const VocabBookSchema = new mongoose.Schema({
   color:    { type: String, default: '#e53935' },
   emoji:    { type: String, default: '📘' },
   words:    [SavedWordSchema],
-  isDefault:{ type: Boolean, default: false }   // 5 sổ mặc định
+  isDefault:{ type: Boolean, default: false },   // 5 sổ mặc định
+  sortOrder:{ type: Number, default: 0 }
 }, { timestamps: true });
 
 module.exports = mongoose.model('VocabBook', VocabBookSchema);

@@ -44,8 +44,8 @@ router.get('/', auth, async (req, res) => {
     if (req.user.role === 'student') logActivity(req.user._id, { viewCount: 1 });
 
     const books = await VocabBook.find({ userId: req.user._id })
-      .select('name color emoji isDefault createdAt words')
-      .sort({ createdAt: 1 });
+      .select('name color emoji isDefault createdAt sortOrder words')
+      .sort({ sortOrder: 1, createdAt: 1 });
 
     // Thêm thống kê nhỏ mà không load toàn bộ words
     const result = books.map(b => ({
@@ -61,6 +61,23 @@ router.get('/', auth, async (req, res) => {
     }));
 
     res.json({ success: true, books: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// PUT /api/vocabbook/reorder  – lưu thứ tự sổ sau khi kéo thả
+// Body: { order: [{ _id, sortOrder }] }
+// ══════════════════════════════════════════════════════
+router.put('/reorder', auth, async (req, res) => {
+  try {
+    const { order } = req.body;
+    if (!Array.isArray(order)) return res.status(400).json({ success: false, message: 'Invalid order' });
+    await Promise.all(order.map(({ _id, sortOrder }) =>
+      VocabBook.updateOne({ _id, userId: req.user._id }, { $set: { sortOrder } })
+    ));
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
