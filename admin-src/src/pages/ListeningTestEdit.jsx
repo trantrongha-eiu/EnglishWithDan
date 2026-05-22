@@ -46,16 +46,20 @@ export default function ListeningTestEdit() {
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState(isNew ? null : id);
   const [activePart, setActivePart] = useState(0);
+  const [isDirty, setIsDirty] = useState(false);
 
   const [meta, setMeta] = useState({ name: '', seriesName: '', testNumber: 1, audioUrl: '', isActive: true });
   const [sections, setSections] = useState([1, 2, 3, 4].map(defaultSection));
 
-  const setMetaField = k => e => setMeta(f => ({
-    ...f,
-    [k]: e.target.type === 'checkbox' ? e.target.checked
-       : e.target.type === 'number' ? Number(e.target.value)
-       : e.target.value
-  }));
+  const setMetaField = k => e => {
+    setIsDirty(true);
+    setMeta(f => ({
+      ...f,
+      [k]: e.target.type === 'checkbox' ? e.target.checked
+         : e.target.type === 'number' ? Number(e.target.value)
+         : e.target.value
+    }));
+  };
 
   useEffect(() => {
     if (!savedId) return;
@@ -66,7 +70,7 @@ export default function ListeningTestEdit() {
         setSections(parseSections(t.sections));
       })
       .catch(() => toast('Không tải được đề', 'error'))
-      .finally(() => setLoading(false));
+      .finally(() => { setLoading(false); setIsDirty(false); });
   }, [savedId]);
 
   async function saveAll() {
@@ -83,16 +87,26 @@ export default function ListeningTestEdit() {
         await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã lưu đề Listening');
       }
+      setIsDirty(false);
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
 
   function updateSection(i, changes) {
+    setIsDirty(true);
     setSections(prev => prev.map((s, idx) => idx === i ? { ...s, ...changes } : s));
   }
   function updateRange(i, key, val) {
+    setIsDirty(true);
     setSections(prev => prev.map((s, idx) => idx === i ? { ...s, questionRange: { ...s.questionRange, [key]: Number(val) } } : s));
   }
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = e => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [isDirty]);
 
   const sec = sections[activePart];
 
@@ -105,9 +119,11 @@ export default function ListeningTestEdit() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
         <button className="btn btn-ghost btn-sm" onClick={() => goBack()}>← Đóng</button>
         <h2 style={{ margin: 0 }}>{isNew ? 'Thêm đề Listening' : (meta.name || 'Sửa đề Listening')}</h2>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
+          {isDirty && <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>● Chưa lưu</span>}
           <button className="btn btn-ghost" onClick={() => goBack()}>Huỷ</button>
-          <button className="btn btn-primary" onClick={saveAll} disabled={saving}>
+          <button className="btn btn-primary" onClick={saveAll} disabled={saving}
+            style={isDirty ? { boxShadow: '0 0 0 2px #fde68a' } : {}}>
             {saving ? 'Đang lưu...' : '💾 Lưu tất cả'}
           </button>
         </div>

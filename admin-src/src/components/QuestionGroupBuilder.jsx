@@ -381,7 +381,14 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Loại câu *</label>
-              <select className="form-input" value={qForm.type} onChange={setF('type')}
+              <select className="form-input" value={qForm.type}
+                onChange={e => {
+                  const t = e.target.value;
+                  setQForm(f => ({
+                    ...f, type: t,
+                    correctAnswer: ['true-false-ng','yes-no-ng'].includes(f.type) && !['true-false-ng','yes-no-ng'].includes(t) ? '' : f.correctAnswer,
+                  }));
+                }}
                 style={types.length === 1 ? { opacity: 0.7, pointerEvents: 'none' } : {}}>
                 {types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
               </select>
@@ -447,6 +454,42 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                 <option value="">-- Chọn --</option>
                 {tfOpts.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
+            ) : qForm.type === 'multiple-choice' && (qForm.options || []).some(o => o?.trim()) ? (
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6 }}>
+                {(qForm.options || []).map((opt, i) => !opt?.trim() ? null : (
+                  <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', fontSize: 13 }}>
+                    <input type="radio" name="mc-ans" checked={qForm.correctAnswer === optLabels[i]}
+                      onChange={() => setQForm(f => ({ ...f, correctAnswer: optLabels[i] }))} />
+                    <span style={{ fontWeight: 700, color: 'var(--blue)' }}>{optLabels[i]}</span>
+                  </label>
+                ))}
+              </div>
+            ) : qForm.type === 'checkbox' && (qForm.options || []).some(o => o?.trim()) ? (
+              <div style={{ marginTop: 6, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6 }}>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
+                  {(qForm.options || []).map((opt, i) => {
+                    if (!opt?.trim()) return null;
+                    const letter = optLabels[i];
+                    let sel = false;
+                    try { sel = JSON.parse(qForm.correctAnswer || '[]').includes(letter); } catch {}
+                    return (
+                      <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', fontSize: 13 }}>
+                        <input type="checkbox" checked={sel} onChange={() => {
+                          try {
+                            const arr = JSON.parse(qForm.correctAnswer || '[]');
+                            const next = sel ? arr.filter(l => l !== letter) : [...arr, letter].sort();
+                            setQForm(f => ({ ...f, correctAnswer: JSON.stringify(next) }));
+                          } catch { setQForm(f => ({ ...f, correctAnswer: JSON.stringify([letter]) })); }
+                        }} />
+                        <span style={{ fontWeight: 700, color: 'var(--blue)' }}>{letter}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: 10, color: 'var(--text3)', marginBottom: 3 }}>JSON đáp án (tự cập nhật):</div>
+                <input className="form-input" style={{ fontSize: 11 }} value={qForm.correctAnswer}
+                  onChange={setF('correctAnswer')} placeholder='["A","C"]' />
+              </div>
             ) : (
               <input className="form-input" value={qForm.correctAnswer} onChange={setF('correctAnswer')}
                 placeholder={ANS_HINT[qForm.type] || 'Đáp án chính xác'} />
@@ -472,6 +515,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
 /* ── Main component ─────────────────────────────────────────────────────── */
 export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading' }) {
   const confirm = useConfirm();
+  const toast = useToast();
   const [showPicker, setShowPicker] = useState(false);
   const [showQForm, setShowQForm] = useState(false);
   const [activeGi, setActiveGi] = useState(null);
@@ -480,6 +524,36 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
 
   const allNums = groups.flatMap(g => (g.questions || []).map(q => q.questionNumber));
   const isDup = num => allNums.filter(n => n === num).length > 1;
+
+  function isDupModal(newNum) {
+    if (editQi !== null && activeGi !== null) {
+      const origNum = groups[activeGi]?.questions[editQi]?.questionNumber;
+      let removed = false;
+      const others = allNums.filter(n => {
+        if (!removed && n === origNum) { removed = true; return false; }
+        return true;
+      });
+      return others.filter(n => n === newNum).length > 0;
+    }
+    return allNums.filter(n => n === newNum).length > 0;
+  }
+
+  function moveGroup(gi, dir) {
+    const to = gi + dir;
+    if (to < 0 || to >= groups.length) return;
+    const next = [...groups];
+    [next[gi], next[to]] = [next[to], next[gi]];
+    onChange(next);
+  }
+
+  function duplicateGroup(gi) {
+    const copy = JSON.parse(JSON.stringify(groups[gi]));
+    copy.questions = [];
+    if (copy.groupTitle) copy.groupTitle += ' (bản sao)';
+    const next = [...groups];
+    next.splice(gi + 1, 0, copy);
+    onChange(next);
+  }
 
   function addGroup(type) {
     onChange([...groups, defaultGroup(type)]);
@@ -525,8 +599,14 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
   }
 
   function commitQ() {
+    if (!qForm.questionNumber || qForm.questionNumber < 1) {
+      toast('Số câu phải lớn hơn 0', 'error'); return;
+    }
+    if (isDupModal(qForm.questionNumber)) {
+      toast(`Số câu ${qForm.questionNumber} đã tồn tại trong đề`, 'error'); return;
+    }
     if (!qForm.correctAnswer.trim() && !['true-false-ng', 'yes-no-ng'].includes(qForm.type)) {
-      // allow save even without answer, but parent can validate
+      toast('Vui lòng nhập đáp án đúng', 'error'); return;
     }
     const q = {
       questionNumber: qForm.questionNumber,
@@ -557,6 +637,13 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
     });
   }
 
+  function qRange(questions) {
+    if (!questions?.length) return null;
+    const nums = questions.map(q => q.questionNumber).sort((a, b) => a - b);
+    if (nums.length === 1) return `Q${nums[0]}`;
+    return `Q${nums[0]}–${nums[nums.length - 1]}`;
+  }
+
   const totalQs = groups.reduce((n, g) => n + (g.questions?.length || 0), 0);
 
   return (
@@ -564,12 +651,22 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       {groups.map((g, gi) => (
         <div key={gi} style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 14, marginBottom: 14, background: 'var(--bg)' }}>
           {/* Group header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-            <span style={{ background: '#3d8bff', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
+            <span style={{ background: '#3d8bff', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, flexShrink: 0 }}>
               {GROUP_LABEL[g.groupType] || g.groupType}
             </span>
-            <span style={{ flex: 1, fontSize: 12, color: 'var(--text3)' }}>Nhóm {gi + 1}</span>
-            <button className="btn btn-danger btn-sm" style={{ padding: '3px 8px', fontSize: 11 }} onClick={() => removeGroup(gi)}>✕ Xoá nhóm</button>
+            <span style={{ fontSize: 12, color: 'var(--text3)' }}>Nhóm {gi + 1}</span>
+            {qRange(g.questions) && (
+              <span style={{ fontSize: 11, background: 'var(--surface2)', color: 'var(--text3)', padding: '2px 7px', borderRadius: 10, border: '1px solid var(--border)' }}>
+                {qRange(g.questions)}
+              </span>
+            )}
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 4, alignItems: 'center' }}>
+              <button className="btn btn-ghost btn-sm btn-icon" title="Di chuyển lên" onClick={() => moveGroup(gi, -1)} style={{ opacity: gi === 0 ? 0.3 : 1 }}>↑</button>
+              <button className="btn btn-ghost btn-sm btn-icon" title="Di chuyển xuống" onClick={() => moveGroup(gi, 1)} style={{ opacity: gi === groups.length - 1 ? 0.3 : 1 }}>↓</button>
+              <button className="btn btn-ghost btn-sm" style={{ padding: '3px 8px', fontSize: 11 }} title="Sao chép nhóm (không sao chép câu hỏi)" onClick={() => duplicateGroup(gi)}>📋 Sao chép</button>
+              <button className="btn btn-danger btn-sm" style={{ padding: '3px 8px', fontSize: 11 }} onClick={() => removeGroup(gi)}>✕ Xoá</button>
+            </div>
           </div>
 
           {/* Title + Instruction */}
@@ -582,9 +679,9 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
             </div>
             <div>
               <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>Hướng dẫn</label>
-              <input className="form-input" style={{ fontSize: 12, padding: '7px 10px' }}
+              <textarea className="form-input" rows={2} style={{ fontSize: 12, padding: '7px 10px', resize: 'vertical' }}
                 value={g.instruction || ''} onChange={e => updateGroup(gi, { instruction: e.target.value })}
-                placeholder="VD: Choose NO MORE THAN TWO WORDS for each answer." />
+                placeholder="VD: Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer." />
             </div>
           </div>
 
@@ -701,7 +798,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
           context={context}
           onSave={commitQ}
           onClose={() => setShowQForm(false)}
-          isDup={isDup(qForm.questionNumber) && editQi === null}
+          isDup={qForm ? isDupModal(qForm.questionNumber) : false}
         />
       )}
     </div>

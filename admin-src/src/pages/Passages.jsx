@@ -222,6 +222,7 @@ export default function Passages() {
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [qPassage, setQPassage] = useState(null);
+  const [diff, setDiff] = useState('');
 
   const load = () => apiFetch('/admin/passages?limit=200').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
@@ -229,10 +230,11 @@ export default function Passages() {
   useEffect(() => {
     setFiltered(all.filter(p =>
       (!search || p.title?.toLowerCase().includes(search.toLowerCase())) &&
-      (!cat || p.category === cat)
+      (!cat || p.category === cat) &&
+      (!diff || p.difficulty === diff)
     ));
     setPage(1);
-  }, [all, search, cat]);
+  }, [all, search, cat, diff]);
 
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
@@ -273,6 +275,12 @@ export default function Passages() {
         <select className="form-input" value={cat} onChange={e => setCat(e.target.value)} style={{ width: 160 }}>
           <option value="">Tất cả category</option>
           {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+        </select>
+        <select className="form-input" value={diff} onChange={e => setDiff(e.target.value)} style={{ width: 140 }}>
+          <option value="">Tất cả độ khó</option>
+          <option value="easy">Dễ</option>
+          <option value="medium">Trung bình</option>
+          <option value="hard">Khó</option>
         </select>
       </div>
 
