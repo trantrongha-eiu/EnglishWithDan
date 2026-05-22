@@ -222,7 +222,7 @@ router.post('/:id/words', auth, async (req, res) => {
 // ══════════════════════════════════════════════════════
 router.patch('/:id/words/:wordId', auth, async (req, res) => {
   try {
-    const { status, note, word, meaning, example, phonetic, partOfSpeech } = req.body;
+    const { status, note, word, meaning, example, phonetic, partOfSpeech, wrongCount } = req.body;
     const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
     if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
@@ -237,6 +237,7 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
     if (example     !== undefined) wordDoc.example     = example;
     if (phonetic    !== undefined) wordDoc.phonetic    = phonetic;
     if (partOfSpeech !== undefined) wordDoc.partOfSpeech = partOfSpeech;
+    if (wrongCount  !== undefined) wordDoc.wrongCount  = Math.max(0, Number(wrongCount) || 0);
 
     await book.save();
 

@@ -37,6 +37,9 @@ let _retryWordList = null;      // set by retryWrongWords, consumed by startPrac
 let sessionAnsweredCount = 0;
 let _streakReportedThisSession = false;
 
+// ── Vocab book practice tracking ───────────────
+let _isBookPractice = false; // true khi luyện từ sổ cá nhân, false khi luyện unit
+
 function _countAnswer() {
     sessionAnsweredCount++;
     if (!_streakReportedThisSession && sessionAnsweredCount >= 5) {
@@ -495,6 +498,14 @@ function renderBookContent(book) {
     });
 
     renderWordsTable(book.words);
+
+    // Cập nhật nút "Hard words"
+    const hardBtn = document.getElementById('btn-hard-words');
+    if (hardBtn) {
+        const hardCount = book.words.filter(w => (w.wrongCount || 0) >= 1).length;
+        hardBtn.style.display = hardCount > 0 ? '' : 'none';
+        if (hardCount > 0) hardBtn.innerHTML = `<i class="fas fa-fire"></i> Hard words (${hardCount})`;
+    }
 }
 
 function renderWordsTable(words) {
@@ -525,7 +536,14 @@ function renderWordsTable(words) {
         return;
     }
 
-    tbody.innerHTML = words.map((w, i) => `
+    tbody.innerHTML = words.map((w, i) => {
+        const wc = w.wrongCount || 0;
+        const diffBadge = wc >= 3
+            ? `<span class="diff-badge diff-hard" title="${wc}x wrong">🔥 ${wc}</span>`
+            : wc >= 1
+            ? `<span class="diff-badge diff-medium" title="${wc}x wrong">⚡ ${wc}</span>`
+            : '';
+        return `
     <tr class="word-row-anim ${selectedWordIds.has(w._id) ? 'selected' : ''}" id="row-${w._id}"
         style="animation-delay:${Math.min(i * 22, 380)}ms">
       <td class="cb-wrap"><input type="checkbox" ${selectedWordIds.has(w._id) ? 'checked' : ''}
@@ -538,8 +556,11 @@ function renderWordsTable(words) {
         </select>
       </td>
       <td>
-        <span class="word-chip-main">${w.word}</span>
-        <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+          <span class="word-chip-main">${w.word}</span>
+          ${diffBadge}
+          <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
+        </div>
         ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${w.phonetic}</div>` : ''}
       </td>
       <td style="color:var(--text2)">${w.meaning || '–'}</td>
@@ -551,8 +572,8 @@ function renderWordsTable(words) {
         <button class="btn btn-ghost btn-sm" onclick="openEditWordModal('${w._id}')" title="Edit word">✏️</button>
         <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Delete word">🗑</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+    }).join('');
 }
 
 /* ── Word search / filter ── */
@@ -898,6 +919,7 @@ async function confirmSaveWord() {
 ══════════════════════════════════════════════ */
 function openFlashcardMode() {
     if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
+    _isBookPractice = true;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
@@ -906,12 +928,27 @@ function openFlashcardMode() {
 }
 function openPreviewMode() {
     if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
+    _isBookPractice = true;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent     = `📘 ${currentBookData.name}`;
     showMode('study');
 }
+function practiceHardWords() {
+    if (!currentBookData?.words?.length) return;
+    const hardWords = currentBookData.words
+        .filter(w => (w.wrongCount || 0) >= 1)
+        .sort((a, b) => (b.wrongCount || 0) - (a.wrongCount || 0));
+    if (!hardWords.length) { toast('No hard words yet. Keep practicing!', 'info'); return; }
+    _isBookPractice = true;
+    currentUnit = { words: hardWords, title: currentBookData.name };
+    document.getElementById('view-mybook').style.display = 'none';
+    document.getElementById('view-unit').style.display   = 'flex';
+    document.getElementById('unitTitle').textContent = `🎯 Hard Words – ${hardWords.length} to review`;
+    showMode('mixed');
+}
+
 function closeUnitView() {
     const doClose = () => {
         document.getElementById('view-unit').style.display   = 'none';
@@ -921,6 +958,10 @@ function closeUnitView() {
         if (!currentBookId) {
             document.getElementById('book-welcome').style.display = 'flex';
             document.getElementById('book-content').style.display = 'none';
+        }
+        // Re-render word list to show updated wrongCount badges after book practice
+        if (_isBookPractice && currentBookId && currentBookData) {
+            renderBookContent(currentBookData);
         }
     };
     askQuitPractice(doClose);
@@ -956,6 +997,7 @@ async function loadUnit() {
         }
         // Assign currentUnit only after user confirms (or if not mid-practice)
         askQuitPractice(() => {
+            _isBookPractice = false;
             currentUnit = newUnit;
             document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
             document.getElementById('view-mybook').style.display = 'none';
@@ -1138,6 +1180,8 @@ function startPractice(mode) {
     answered = false;
     sessionAnsweredCount = 0;
     _streakReportedThisSession = false;
+    const wrongListEl = document.getElementById('wrong-words-list');
+    if (wrongListEl) wrongListEl.style.display = 'none';
 
     // Lấy tất cả từ (vocab + paraphrase); _retryWordList is set by retryWrongWords
     const allPracticeWords = (_retryWordList || currentUnit.words).filter(w => w.word && w.meaning);
@@ -1574,6 +1618,8 @@ function checkFillBlank() {
         document.getElementById('fbFeedback').innerHTML =
             `<div class="feedback-wrong">❌ Answer: <strong>${currentWord.word}</strong></div>`;
         wrongAnswers++; playWrongSound();
+        wrongWordSet.add(currentWord.word);
+        requeueWrongWord(currentWord);
     }
     document.getElementById('fbBtnNext').style.display = 'flex';
 }
@@ -1704,6 +1750,22 @@ function showResults(mode) {
         setTimeout(() => spawnConfetti(100), 400);
     }
     void total; // total used for reference only
+
+    // Hiện danh sách từ đã sai
+    const wrongListEl = document.getElementById('wrong-words-list');
+    if (wrongListEl) {
+        if (wrongWordSet.size > 0) {
+            const allWords = currentUnit?.words || [];
+            const wrongWords = [...wrongWordSet].map(ws => allWords.find(x => x.word === ws) || { word: ws, meaning: '' });
+            wrongListEl.innerHTML = `<div class="wl-title">Words to review (${wrongWords.length}):</div>` +
+                wrongWords.map(w => `<div class="wl-item"><span class="wl-word">${w.word}</span>${w.meaning ? `<span class="wl-meaning">${w.meaning}</span>` : ''}</div>`).join('');
+            wrongListEl.style.display = 'block';
+        } else {
+            wrongListEl.style.display = 'none';
+        }
+    }
+    // Ghi nhận số lần sai vào DB (chỉ áp dụng khi luyện từ sổ cá nhân)
+    if (_isBookPractice && wrongWordSet.size > 0) _persistWrongCounts();
 }
 
 /* ══════════════════════════════════════════════
@@ -1808,6 +1870,20 @@ function retryWrongWords() {
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
+/* ── Ghi nhận từ hay sai vào database (fire-and-forget) ── */
+async function _persistWrongCounts() {
+    if (!currentBookId || !currentBookData?.words) return;
+    wrongWordSet.forEach(wordStr => {
+        const w = currentBookData.words.find(x => x.word === wordStr);
+        if (!w) return;
+        w.wrongCount = (w.wrongCount || 0) + 1;
+        fetch(`${API}/vocabbook/${currentBookId}/words/${w._id}`, {
+            method: 'PATCH', headers: authH(),
+            body: JSON.stringify({ wrongCount: w.wrongCount })
+        }).catch(() => {});
+    });
+}
+
 /* ══════════════════════════════════════════════
    LOGOUT
 ══════════════════════════════════════════════ */
@@ -1868,3 +1944,4 @@ window.advanceMixed       = advanceMixed;
 window.checkMixedMC       = checkMixedMC;
 window.checkMixedListen   = checkMixedListen;
 window.checkMixedTrans    = checkMixedTrans;
+window.practiceHardWords  = practiceHardWords;

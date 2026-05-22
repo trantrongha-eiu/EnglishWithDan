@@ -16,7 +16,8 @@ const SavedWordSchema = new mongoose.Schema({
   note:        { type: String, default: '' },    // ghi chú cá nhân
   // Nguồn gốc: từ reading hay từ vocab unit
   source:      { type: String, default: '' },    // 'reading' | 'unit-5'
-  savedAt:     { type: Date, default: Date.now }
+  savedAt:     { type: Date, default: Date.now },
+  wrongCount:  { type: Number, default: 0 }      // số lần trả lời sai tích lũy
 }, { _id: true });
 
 // Mỗi "sổ" = 1 topic/chủ đề

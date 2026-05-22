@@ -94,6 +94,9 @@
           <button class="btn btn-ghost btn-sm" onclick="openAddWordManual()">
             <i class="fas fa-plus"></i> Add word
           </button>
+          <button class="btn btn-sm btn-hard-words" id="btn-hard-words" onclick="practiceHardWords()" style="display:none">
+            <i class="fas fa-fire"></i> Hard words
+          </button>
           <div class="bulk-bar" id="bulk-bar">
             <span>Selected <span class="bulk-count" id="bulk-count">0</span> words</span>
             <select class="btn btn-ghost btn-sm" id="bulk-status-sel" onchange="bulkChangeStatus(this.value)" style="cursor:pointer">
@@ -282,6 +285,7 @@
                   <i class="fas fa-redo-alt"></i> Retry <span id="wrongRetryCount">0</span> wrong words
                 </button>
               </div>
+              <div id="wrong-words-list" style="display:none;margin-bottom:10px"></div>
               <div class="results-btns">
                 <button class="btn btn-ghost" onclick="showMode('study')"><i class="fas fa-book"></i> View words</button>
                 <button class="btn btn-primary" onclick="restartPractice()"><i class="fas fa-redo"></i> Restart</button>

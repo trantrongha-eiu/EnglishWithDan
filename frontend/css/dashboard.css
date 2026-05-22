@@ -953,3 +953,27 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 @media (max-width: 1279px) {
   #kbd-hint-panel { display: none !important; }
 }
+
+/* ══════════════════════════════════════════
+   VOCAB LEARNING – DIFFICULTY & WRONG WORDS
+══════════════════════════════════════════ */
+
+/* ── Difficulty badges next to word in table ── */
+.diff-badge{display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;vertical-align:middle;line-height:1.4;flex-shrink:0;white-space:nowrap}
+.diff-badge.diff-hard{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.diff-badge.diff-medium{background:#fffbeb;color:#d97706;border:1px solid #fde68a}
+[data-theme="dark"] .diff-badge.diff-hard{background:rgba(220,38,38,.15);border-color:#f87171;color:#fca5a5}
+[data-theme="dark"] .diff-badge.diff-medium{background:rgba(217,119,6,.12);border-color:#fbbf24;color:#fde68a}
+
+/* ── Wrong words list in results screen ── */
+#wrong-words-list{border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;background:var(--surface2);text-align:left;max-height:160px;overflow-y:auto}
+.wl-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.wl-item{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px solid var(--border);font-size:13px}
+.wl-item:first-of-type{border-top:none;padding-top:0}
+.wl-word{font-weight:700;color:var(--text);min-width:80px;flex-shrink:0}
+.wl-meaning{color:var(--text2);font-size:12px;flex:1}
+
+/* ── Hard words button in action bar ── */
+.btn-hard-words{background:linear-gradient(135deg,#ff6b35,var(--brand));color:#fff !important;border:none !important;font-weight:600;font-size:13px}
+.btn-hard-words:hover{background:linear-gradient(135deg,#e85d2f,#c62828);transform:translateY(-1px)}
+[data-theme="dark"] .btn-hard-words{background:linear-gradient(135deg,rgba(255,107,53,.85),rgba(229,57,53,.85))}
