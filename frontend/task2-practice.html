@@ -173,6 +173,25 @@
     [data-theme="dark"] .t2-quit-top{background:linear-gradient(135deg,#1e1b4b,#2e1b0e)}
     [data-theme="dark"] .t2-quit-title{color:#fbbf24}
     [data-theme="dark"] .t2-quit-leave{border-color:#374151;color:#9ca3af}
+
+    /* ── Settings toggles ── */
+    .t2-settings-block{margin-top:6px;padding-top:10px;border-top:1px solid #f3f4f6}
+    [data-theme="dark"] .t2-settings-block{border-color:#1e293b}
+    .t2-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
+    .t2-toggle-row:hover .t2-toggle-label{color:#6366f1}
+    .t2-toggle-label{font-size:13px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
+    [data-theme="dark"] .t2-toggle-label{color:#94a3b8}
+    .t2-switch{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+    .t2-switch input{opacity:0;width:0;height:0}
+    .t2-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:18px;transition:.2s}
+    .t2-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .t2-switch input:checked+.t2-slider{background:#6366f1}
+    .t2-switch input:checked+.t2-slider:before{transform:translateX(16px)}
+    [data-theme="dark"] .t2-slider{background:#334155}
+
+    /* ── Auto-next countdown bar ── */
+    @keyframes t2CountdownBar{from{width:100%}to{width:0%}}
+    .t2-countdown-bar{height:3px;background:#6366f1;border-radius:2px;margin-top:6px;animation:t2CountdownBar var(--cd-dur,1.5s) linear forwards}
   </style>
 </head>
 <body>
@@ -284,8 +303,13 @@ let state = {
   // wrong-question tracking (cross-session)
   wrongQuestionIds: [],
   // per-question status for progress dots
-  questionStatus: []
+  questionStatus: [],
+  // settings toggles
+  autoNext: false,
+  shuffleMode: false
 };
+
+let _autoNextTimer = null;
 
 // ════════════════════════════════════════════════════════
 //  QUIT MODAL
@@ -519,6 +543,24 @@ function renderSelect() {
           <button class="t2-btn ${state.examCount===20?'active':''}" onclick="setExamCount(20)">20 câu</button>
         </div>` : ''}
 
+      <div class="t2-selector-label">Cài đặt</div>
+      <div class="t2-settings-block">
+        <label class="t2-toggle-row" title="Tự động chuyển câu tiếp theo sau khi trả lời đúng">
+          <span class="t2-toggle-label">⚡ Tự chuyển câu</span>
+          <label class="t2-switch">
+            <input type="checkbox" ${state.autoNext ? 'checked' : ''} onchange="setAutoNext(this.checked)">
+            <span class="t2-slider"></span>
+          </label>
+        </label>
+        <label class="t2-toggle-row" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">
+          <span class="t2-toggle-label">🔀 Xáo trộn câu</span>
+          <label class="t2-switch">
+            <input type="checkbox" ${state.shuffleMode ? 'checked' : ''} onchange="setShuffleMode(this.checked)">
+            <span class="t2-slider"></span>
+          </label>
+        </label>
+      </div>
+
       <br>
       <button class="t2-start-btn" onclick="startSession()">
         <i class="fas fa-play-circle"></i> Bắt đầu
@@ -529,6 +571,8 @@ function bindSelect() {}
 function setLevel(l) { state.selectedLevel = l; render(); }
 function setMode2(m) { state.currentMode = m; render(); }
 function setExamCount(n) { state.examCount = n; render(); }
+function setAutoNext(v) { state.autoNext = v; }
+function setShuffleMode(v) { state.shuffleMode = v; }
 
 async function startSession() {
   if (state.currentMode === 'vocab') {
@@ -551,10 +595,16 @@ async function startPractice() {
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
     state.questions = data.questions;
+    if (state.shuffleMode) {
+      for (let i = state.questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.questions[i], state.questions[j]] = [state.questions[j], state.questions[i]];
+      }
+    }
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
-    state.questionStatus = new Array(data.questions.length).fill('pending');
+    state.questionStatus = new Array(state.questions.length).fill('pending');
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
@@ -569,6 +619,12 @@ async function startRetryWrong() {
     const wrongQuestions = data.questions.filter(q => wrongSet.has(q._id) || wrongSet.has(q.questionId));
     if (!wrongQuestions.length) { showToast('Không có câu sai ở level này. Hãy thử chọn "Tất cả"!', 'info', 4000); return; }
     state.questions = wrongQuestions;
+    if (state.shuffleMode) {
+      for (let i = state.questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.questions[i], state.questions[j]] = [state.questions[j], state.questions[i]];
+      }
+    }
     state.currentIdx = 0;
     state.sessionDone = 0; state.sessionCorrect = 0; state.sessionAttempts = [];
     state.mcSelected = null; state.rearrangeAnswer = [];
@@ -634,7 +690,8 @@ function renderPractice() {
         <div class="t2-exp-body" id="explanation-text"></div>
       </div>
       <div class="wp-feedback" id="feedback-text"></div>
-      <button class="wp-next-btn" onclick="nextPractice()">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
+      <button class="wp-next-btn" id="t2-next-btn" onclick="nextPractice()">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
+      <div id="t2-countdown-bar" style="display:none"></div>
     </div>
     <div class="wp-checking-loader hidden" id="checking-loader" style="margin:0 20px">
       <div class="wp-spinner"></div><p>Đang chấm bài...</p>
@@ -834,6 +891,17 @@ async function submitPractice() {
 
     document.getElementById('qcard').classList.add('hidden');
     document.getElementById('feedback-card').classList.remove('hidden');
+
+    // auto-next on correct answer
+    clearTimeout(_autoNextTimer);
+    const cdBar = document.getElementById('t2-countdown-bar');
+    if (cdBar) cdBar.style.display = 'none';
+    if (state.autoNext && isOk && cdBar) {
+      const dur = 1500;
+      cdBar.innerHTML = `<div class="t2-countdown-bar" style="--cd-dur:${dur}ms"></div>`;
+      cdBar.style.display = 'block';
+      _autoNextTimer = setTimeout(nextPractice, dur);
+    }
   } catch (err) {
     showToast('Lỗi chấm bài: ' + err.message, 'error');
     document.getElementById('submit-btn').disabled = false;
@@ -844,6 +912,7 @@ async function submitPractice() {
 }
 
 function nextPractice() {
+  clearTimeout(_autoNextTimer);
   state.currentIdx++;
   if (state.currentIdx >= state.questions.length) {
     state.view = 'done'; render(); savePracticeAttempt(); return;
