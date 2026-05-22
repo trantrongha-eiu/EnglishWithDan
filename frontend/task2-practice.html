@@ -199,10 +199,28 @@
 <!-- ── Stats header ── -->
 <header class="wp-header">
   <div class="wp-header-right">
+    <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
+    <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
     <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
   </div>
 </header>
+
+<!-- ── Mobile stats bar ── -->
+<div class="wp-mobile-stats" id="wp-mobile-stats">
+  <div class="wp-mob-stat">
+    <div class="wp-mob-stat-num" id="mob-stat-done">0</div>
+    <div class="wp-mob-stat-lbl">Bài làm</div>
+  </div>
+  <div class="wp-mob-stat">
+    <div class="wp-mob-stat-num" id="mob-stat-xp">0</div>
+    <div class="wp-mob-stat-lbl">XP</div>
+  </div>
+  <div class="wp-mob-stat">
+    <div class="wp-mob-stat-num" id="mob-stat-correct">–</div>
+    <div class="wp-mob-stat-lbl">Đúng</div>
+  </div>
+</div>
 
 <!-- ── MAIN CONTENT ── -->
 <div id="app" style="max-width:900px;margin:0 auto;padding-bottom:40px"></div>
@@ -217,10 +235,14 @@ const API = 'https://englishwithdan.onrender.com';
 const _sndCorrect = new Audio('./sounds/correct.mp3');
 const _sndWrong   = new Audio('./sounds/incorrect.mp3');
 _sndCorrect.volume = 0.5; _sndWrong.volume = 0.5;
-let _soundEnabled = true;
+let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
 function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
 function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
-function toggleWpSound() { _soundEnabled = !_soundEnabled; document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇'; }
+function toggleWpSound() {
+  _soundEnabled = !_soundEnabled;
+  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
+  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+}
 
 function showToast(msg, type = 'warn', ms = 3000) {
   const el = document.getElementById('wp-toast');
@@ -303,6 +325,36 @@ function initUser() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
   if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  loadXPFromStorage();
+}
+
+function loadXPFromStorage() {
+  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  document.getElementById('header-xp').textContent     = stored.xp     || 0;
+  document.getElementById('header-streak').textContent = stored.streak  || 0;
+}
+
+function updateXPStorage(earned) {
+  const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
+  stored.xp    = (stored.xp || 0) + earned;
+  stored.streak = (stored.streak || 0) + 1;
+  localStorage.setItem('t2_progress', JSON.stringify(stored));
+  document.getElementById('header-xp').textContent     = stored.xp;
+  document.getElementById('header-streak').textContent = stored.streak;
+}
+
+function updateSessionStats() {
+  const el = document.getElementById('mob-stat-done');
+  const xpEl = document.getElementById('mob-stat-xp');
+  const okEl = document.getElementById('mob-stat-correct');
+  if (el) el.textContent = state.sessionDone;
+  if (okEl) okEl.textContent = state.sessionDone > 0
+    ? Math.round((state.sessionCorrect / state.sessionDone) * 100) + '%' : '–';
+  if (xpEl) {
+    const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0}');
+    xpEl.textContent = stored.xp || 0;
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -730,7 +782,8 @@ async function submitPractice() {
     const isOk = data.isCorrect;
     isOk ? playOk() : playWrong();
     state.sessionDone++;
-    if (isOk) state.sessionCorrect++;
+    if (isOk) { state.sessionCorrect++; updateXPStorage(5); }
+    updateSessionStats();
 
     // Update progress dot for current question
     state.questionStatus[state.currentIdx] = isOk ? 'correct' : 'wrong';

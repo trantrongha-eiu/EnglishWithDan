@@ -512,7 +512,7 @@ const _wpCorrectSound = new Audio('./sounds/correct.mp3');
 const _wpWrongSound   = new Audio('./sounds/incorrect.mp3');
 _wpCorrectSound.volume = 0.5;
 _wpWrongSound.volume   = 0.5;
-let _wpSoundEnabled = true;
+let _wpSoundEnabled = localStorage.getItem('wp_sound') !== 'off';
 
 function playCorrectSound() {
   if (!_wpSoundEnabled) return;
@@ -526,8 +526,12 @@ function playWrongSound() {
 }
 function toggleWpSound() {
   _wpSoundEnabled = !_wpSoundEnabled;
+  localStorage.setItem('wp_sound', _wpSoundEnabled ? 'on' : 'off');
   document.getElementById('wp-sound-toggle').textContent = _wpSoundEnabled ? '🔊' : '🔇';
 }
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('wp-sound-toggle').textContent = _wpSoundEnabled ? '🔊' : '🔇';
+});
 
 function showToast(msg, type = 'warn', duration = 3000) {
   const el = document.getElementById('wp-toast');

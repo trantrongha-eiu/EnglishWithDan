@@ -867,7 +867,13 @@ body {
   .wp-question-text { font-size: 18px; }
   .wp-username     { display: none; }
 
-  .wp-mobile-stats { display: flex !important; }
+  .wp-mobile-stats {
+    display: flex !important;
+    position: sticky;
+    top: var(--nav-height, 64px);
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
   .wp-mob-fab      { display: flex !important; }
   .wp-mob-backdrop { display: block; }
   .wp-mob-sheet    { display: flex; }

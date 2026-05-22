@@ -536,14 +536,18 @@ const _sndCorrect = new Audio('./sounds/correct.mp3');
 const _sndWrong   = new Audio('./sounds/incorrect.mp3');
 _sndCorrect.volume = 0.5;
 _sndWrong.volume   = 0.5;
-let _soundEnabled = true;
+let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
 
 function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
 function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
 function toggleWpSound() {
   _soundEnabled = !_soundEnabled;
+  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
   document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
 }
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+});
 
 function showToast(msg, type = 'warn', duration = 3000) {
   const el = document.getElementById('wp-toast');
