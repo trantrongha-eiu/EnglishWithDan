@@ -131,6 +131,21 @@
   document.getElementById('globalLogoutBtn').addEventListener('click', doLogout);
   document.getElementById('mobileLogoutBtn').addEventListener('click', doLogout);
 
+  // ── Dropdown hover management (delay prevents accidental close) ──
+  var ddItems = nav.querySelectorAll('.nav-dropdown');
+  ddItems.forEach(function (dd) {
+    var _t = null;
+    dd.addEventListener('mouseenter', function () {
+      clearTimeout(_t);
+      dd.classList.add('nav-dd-open');
+    });
+    dd.addEventListener('mouseleave', function () {
+      _t = setTimeout(function () {
+        dd.classList.remove('nav-dd-open');
+      }, 250);
+    });
+  });
+
   // ── Unread badge ──────────────────────────────────────────
   var token = localStorage.getItem('token');
   if (token) {

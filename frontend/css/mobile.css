@@ -104,14 +104,14 @@ img { max-width: 100%; height: auto; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding-bottom: 10px;  /* extend hover area downward to bridge the gap */
+  padding-bottom: 6px;
 }
 .nav-dd-arrow {
   font-size: 9px;
   opacity: .6;
   transition: transform .2s;
 }
-.nav-dropdown:hover .nav-dd-arrow {
+.nav-dropdown.nav-dd-open .nav-dd-arrow {
   transform: rotate(180deg);
 }
 .nav-dd-menu {
@@ -119,40 +119,31 @@ img { max-width: 100%; height: auto; }
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  top: 100%;            /* flush against button — no gap */
+  top: calc(100% - 2px);   /* slight overlap so no pixel gap */
   left: 50%;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateX(-50%) translateY(-6px);
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0,0,0,.13);
-  min-width: 180px;
+  min-width: 190px;
   padding: 6px;
-  padding-top: 14px;    /* invisible top padding keeps hover continuous */
+  padding-top: 10px;
   z-index: 500;
-  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+  transition: opacity .15s ease, transform .15s ease, visibility 0s linear .15s;
 }
-/* invisible bridge strip so mouse moving from button into menu keeps hover */
-.nav-dd-menu::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 10px;
-}
-.nav-dropdown:hover .nav-dd-menu {
+.nav-dropdown.nav-dd-open .nav-dd-menu {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
-  transition: opacity .18s ease, transform .18s ease, visibility 0s linear 0s;
+  transition: opacity .15s ease, transform .15s ease, visibility 0s linear 0s;
 }
 .nav-dd-menu a {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 9px 13px;
+  gap: 10px;
+  padding: 11px 15px;
   border-radius: 8px;
   color: var(--text-light);
   text-decoration: none;
