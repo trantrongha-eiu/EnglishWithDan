@@ -162,6 +162,25 @@
     .t1-module-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
     [data-theme="dark"] .t1-module-badge{background:#1e293b;color:#94a3b8}
 
+    /* ── Sidebar toggle switches ── */
+    .t1-settings-section{margin-top:4px;padding:10px 0 2px;border-top:1px solid #f3f4f6}
+    [data-theme="dark"] .t1-settings-section{border-color:#1e293b}
+    .t1-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
+    .t1-toggle-row:hover .t1-toggle-label{color:#6366f1}
+    .t1-toggle-label{font-size:12px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
+    [data-theme="dark"] .t1-toggle-label{color:#94a3b8}
+    .t1-switch{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+    .t1-switch input{opacity:0;width:0;height:0}
+    .t1-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:18px;transition:.2s}
+    .t1-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .t1-switch input:checked+.t1-slider{background:#6366f1}
+    .t1-switch input:checked+.t1-slider:before{transform:translateX(16px)}
+    [data-theme="dark"] .t1-slider{background:#334155}
+
+    /* ── Auto-next countdown bar ── */
+    @keyframes t1CountdownBar{from{width:100%}to{width:0%}}
+    .t1-countdown-bar{height:3px;background:#6366f1;border-radius:2px;margin-top:6px;animation:t1CountdownBar var(--cd-dur,1.5s) linear forwards}
+
   </style>
 </head>
 <body>
@@ -234,6 +253,7 @@
           <button class="wp-level-btn active" data-level="beginner"     onclick="selectLevel('beginner')">🌱 Beginner</button>
           <button class="wp-level-btn"        data-level="elementary"   onclick="selectLevel('elementary')">📘 Elementary</button>
           <button class="wp-level-btn"        data-level="intermediate" onclick="selectLevel('intermediate')">📗 Intermediate</button>
+          <button class="wp-level-btn"        data-level="all"          onclick="selectLevel('all')">🎯 Tất cả</button>
         </div>
       </div>
       <div class="wp-sidebar-section">
@@ -246,6 +266,22 @@
           <button class="t1-skill-tab"        data-skill="trend_language"   onclick="selectSkill('trend_language')">📈 Xu hướng</button>
           <button class="t1-skill-tab"        data-skill="paraphrase"       onclick="selectSkill('paraphrase')">✏️ Paraphrase</button>
           <button class="t1-skill-tab"        data-skill="overview"         onclick="selectSkill('overview')">🔭 Overview</button>
+        </div>
+        <div class="t1-settings-section">
+          <label class="t1-toggle-row" title="Tự động chuyển sang câu tiếp theo sau khi trả lời đúng">
+            <span class="t1-toggle-label">⚡ Tự chuyển câu</span>
+            <label class="t1-switch">
+              <input type="checkbox" id="toggle-autonext" onchange="autoNext=this.checked">
+              <span class="t1-slider"></span>
+            </label>
+          </label>
+          <label class="t1-toggle-row" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">
+            <span class="t1-toggle-label">🔀 Xáo trộn câu</span>
+            <label class="t1-switch">
+              <input type="checkbox" id="toggle-shuffle" onchange="shuffleMode=this.checked">
+              <span class="t1-slider"></span>
+            </label>
+          </label>
         </div>
       </div>
     </div>
@@ -451,9 +487,10 @@
             <div class="t1-exp-body" id="grammar-explanation-text"></div>
           </div>
           <div class="wp-feedback" id="feedback-text"></div>
-          <button class="wp-next-btn" onclick="nextExercise()">
+          <button class="wp-next-btn" id="next-btn-practice" onclick="nextExercise()">
             Câu tiếp theo <i class="fas fa-arrow-right"></i>
           </button>
+          <div id="t1-countdown-bar" style="display:none"><div class="t1-countdown-bar"></div></div>
         </div>
 
         <div class="wp-checking-loader hidden" id="checking-loader">
@@ -601,6 +638,9 @@ let sessionAttempts = [];
 let comboStreak  = 0;
 let _isSubmitting = false;
 let _skippedIds  = new Set();
+let autoNext     = false;
+let shuffleMode  = false;
+let _autoNextTimer = null;
 
 // rearrange
 let rearrangeWords  = [];
@@ -820,6 +860,12 @@ async function loadExercises() {
     const data = await res.json();
     if (!data.success || !data.exercises?.length) { showState('empty'); return; }
     exercises    = data.exercises;
+    if (shuffleMode) {
+      for (let i = exercises.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [exercises[i], exercises[j]] = [exercises[j], exercises[i]];
+      }
+    }
     currentIdx   = 0;
     sessionDone  = 0; sessionXP = 0; sessionCorrect = 0;
     sessionAttempts = []; comboStreak = 0; _skippedIds = new Set();
@@ -841,6 +887,9 @@ function showExercise(idx) {
   const ex = exercises[idx];
   if (!ex) { showDoneSummary(); showState('done'); return; }
 
+  clearTimeout(_autoNextTimer);
+  document.getElementById('t1-countdown-bar').style.display = 'none';
+  document.getElementById('next-btn-practice').innerHTML = 'Câu tiếp theo <i class="fas fa-arrow-right"></i>';
   document.getElementById('feedback-card').classList.add('hidden');
   document.getElementById('exercise-card').classList.remove('hidden');
   document.getElementById('submit-btn').disabled = false;
@@ -1199,9 +1248,21 @@ function showFeedback(userAnswer, data, ex) {
 
   document.getElementById('exercise-card').classList.add('hidden');
   document.getElementById('feedback-card').classList.remove('hidden');
+
+  // auto-next on correct answer
+  clearTimeout(_autoNextTimer);
+  const cdBar = document.getElementById('t1-countdown-bar');
+  cdBar.style.display = 'none';
+  if (autoNext && isOk) {
+    const dur = 1500;
+    cdBar.innerHTML = `<div class="t1-countdown-bar" style="--cd-dur:${dur}ms"></div>`;
+    cdBar.style.display = 'block';
+    _autoNextTimer = setTimeout(nextExercise, dur);
+  }
 }
 
 function nextExercise() {
+  clearTimeout(_autoNextTimer);
   currentIdx++;
   showExercise(currentIdx);
 }
