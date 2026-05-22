@@ -356,6 +356,14 @@ body.eye-protection .split-questions {
   background: #c62828;
 }
 
+.test-card-random-note {
+  font-size: 10px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
 .btn-redo-test {
   width: 100%;
   padding: 9px 0;
@@ -2509,6 +2517,7 @@ body.eye-protection .split-questions {
 [data-theme="dark"] .test-card-name { color: #f9fafb; }
 [data-theme="dark"] .test-card-meta { color: #6b7280; }
 [data-theme="dark"] .test-card-last { background: #374151; color: #9ca3af; }
+[data-theme="dark"] .test-card-random-note { color: #6b7280; }
 [data-theme="dark"] .list-header h2 { color: #f9fafb; }
 [data-theme="dark"] .list-subtitle { color: #9ca3af; }
 [data-theme="dark"] .filter-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }

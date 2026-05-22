@@ -174,8 +174,9 @@ function testCard(t) {
       <div class="test-card-meta">40 câu · 60 phút</div>
       ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu</div>` : ''}
       <button class="btn-do-test" onclick="goToKey('${t._id}','${escHtml(t.name)}')">
-        ${done ? 'Làm lại' : 'Bắt đầu'}
+        ${done ? 'Làm test mới' : 'Bắt đầu'}
       </button>
+      <div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>
       ${done ? `<button class="btn-redo-test" onclick="loadReviewByTest('${t._id}')">Xem lại kết quả</button>` : ''}
     </div>
   </div>`;
