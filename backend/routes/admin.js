@@ -1914,4 +1914,15 @@ router.delete('/task2/topics/:topicId/questions/:qid', auth, teacherOnly, async 
   }
 });
 
+// POST /api/admin/fix-encoding  — one-time migration to fix double-encoded Vietnamese
+router.post('/fix-encoding', auth, teacherOnly, async (req, res) => {
+  try {
+    const { runFix } = require('../scripts/fixTaskEncoding');
+    const result = await runFix();
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

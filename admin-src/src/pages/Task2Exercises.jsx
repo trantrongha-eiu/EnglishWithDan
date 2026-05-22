@@ -229,6 +229,16 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
   );
 }
 
+async function runFixEncoding(showToastFn) {
+  try {
+    showToastFn('Đang sửa encoding...', 'info');
+    const r = await apiFetch('/admin/fix-encoding', { method: 'POST' });
+    showToastFn(`Đã sửa: Task1 ${r.t1Fixed}/${r.t1Checked}, Task2 ${r.t2Fixed} topics / ${r.t2Qs} câu hỏi`, 'success');
+  } catch (e) {
+    showToastFn(e.message, 'error');
+  }
+}
+
 export default function Task2Exercises() {
   const [topics, setTopics]           = useState([]);
   const [total, setTotal]             = useState(0);
@@ -323,7 +333,10 @@ export default function Task2Exercises() {
           <h1 className="page-title">Task 2 Writing</h1>
           <p className="page-subtitle">{total} topic — quản lý câu hỏi luyện viết IELTS Task 2</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
+        <div style={{ display:'flex', gap:8 }}>
+          <button className="btn btn-ghost btn-sm" title="Sửa lỗi font tiếng Việt trong DB (chạy 1 lần)" onClick={() => runFixEncoding(showToast)}>🔧 Sửa encoding</button>
+          <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
+        </div>
       </div>
 
       {/* Filters */}
