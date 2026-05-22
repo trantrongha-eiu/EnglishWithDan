@@ -715,7 +715,7 @@ body {
 ══════════════════════════════════════════════ */
 .wp-stats-widget {
   position: fixed;
-  top: calc(var(--nav-height, 64px) + 44px); /* below global nav + feature tabs */
+  top: var(--nav-height, 64px);
   right: 0;
   background: #fff;
   border: 1px solid #e5e7eb;

@@ -12,12 +12,12 @@
   <script src="js/theme.js"></script>
   <style>
     #wp-toast {
-      position: fixed; top: calc(var(--nav-height,64px) + 48px); left: 50%; transform: translateX(-50%);
+      position: fixed; top: calc(var(--nav-height,64px) + 8px); left: 50%; transform: translateX(-50%);
       padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 500;
       color: #fff; z-index: 9999; opacity: 0; pointer-events: none;
       transition: opacity .25s, top .25s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.18);
     }
-    #wp-toast.show { opacity: 1; top: calc(var(--nav-height,64px) + 54px); }
+    #wp-toast.show { opacity: 1; top: calc(var(--nav-height,64px) + 14px); }
     #wp-toast.warn  { background: #e65100; }
     #wp-toast.error { background: #c62828; }
     #wp-toast.info  { background: #1565c0; }
@@ -156,31 +156,11 @@
     [data-theme="dark"] .wp-welcome-types-lbl { color:#7dd3fc; }
     [data-theme="dark"] .wp-welcome-chips span { background:#0f2d45; border-color:#1e4060; color:#7dd3fc; }
 
-    /* ── Feature tab bar ── */
-    .wp-feature-tabs { display:flex; gap:0; padding:0 20px; background:var(--card,#fff); border-bottom:2px solid #e5e7eb; position:sticky; top:var(--nav-height,64px); z-index:200; }
-    .wp-feat-tab { padding:10px 20px; border:none; background:none; border-bottom:3px solid transparent; margin-bottom:-2px; font-size:14px; font-weight:600; color:#6b7280; cursor:pointer; transition:color .15s,border-color .15s; display:inline-flex; align-items:center; gap:6px; }
-    .wp-feat-tab.active { color:#6366f1; border-bottom-color:#6366f1; }
-    .wp-feat-tab:hover { color:#6366f1; }
-    [data-theme="dark"] .wp-feature-tabs { background:var(--bg-dark,#0f172a); border-bottom-color:#1e293b; }
-    [data-theme="dark"] .wp-feat-tab { color:#64748b; }
-    [data-theme="dark"] .wp-feat-tab.active { color:#a5b4fc; border-bottom-color:#a5b4fc; }
   </style>
 </head>
 <body>
 <script src="js/nav.js"></script>
 
-<!-- ── Feature tab bar ── -->
-<div class="wp-feature-tabs">
-  <button class="wp-feat-tab active" onclick="location.href='writing-practice.html'">
-    <i class="fas fa-pen"></i> Luyện viết
-  </button>
-  <button class="wp-feat-tab" onclick="location.href='task1-practice.html'">
-    <i class="fas fa-chart-bar"></i> Task 1 Grammar
-  </button>
-  <button class="wp-feat-tab" onclick="location.href='task2-practice.html'">
-    <i class="fas fa-edit"></i> Task 2 Writing
-  </button>
-</div>
 
 <div id="wp-toast"></div>
 

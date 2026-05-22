@@ -7,29 +7,52 @@
     { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading' },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening' },
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing' },
-    { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết' },
+    { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
+      children: [
+        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Trang chủ' },
+        { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
+        { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing' },
+      ]
+    },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
     { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true },
   ];
 
   function mkDesktopLinks() {
     return LINKS.map(function (l) {
-      var cls = page === l.href ? ' class="active"' : '';
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
+      var cls = isActive ? ' class="active"' : '';
       var badge = l.badge
         ? '<span id="navInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle"></span>'
         : '';
+      if (l.children) {
+        var items = l.children.map(function (c) {
+          var cc = page === c.href ? ' class="active"' : '';
+          return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + '</a>';
+        }).join('');
+        return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
+      }
       return '<a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + '</a>';
     }).join('');
   }
 
   function mkMobileLinks() {
-    return LINKS.map(function (l) {
-      var active = page === l.href ? ' active' : '';
+    var out = [];
+    LINKS.forEach(function (l) {
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
+      var active = isActive ? ' active' : '';
       var badge = l.badge
         ? '<span id="mobileInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle"></span>'
         : '';
-      return '<a href="' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>';
-    }).join('');
+      out.push('<a href="' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
+      if (l.children) {
+        l.children.forEach(function (c) {
+          var ca = page === c.href ? ' active' : '';
+          out.push('<a href="' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + '</a>');
+        });
+      }
+    });
+    return out.join('');
   }
 
   // ── Inject top nav ────────────────────────────────────────
