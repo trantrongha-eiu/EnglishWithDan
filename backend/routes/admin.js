@@ -1919,7 +1919,10 @@ router.post('/reseed-task2-week12', auth, teacherOnly, async (req, res) => {
   try {
     const { reseedWeek12 } = require('../scripts/seedTask2Exercises');
     await reseedWeek12();
-    res.json({ success: true, message: 'Đã xóa duplicate và re-seed 5 topics tuần 12 thành công.' });
+    // Fix encoding immediately so Vietnamese text & emojis render correctly
+    const { runFix } = require('../scripts/fixTaskEncoding');
+    const fixResult = await runFix();
+    res.json({ success: true, message: `Đã re-seed 5 topics tuần 12 và sửa encoding (${fixResult.t2Fixed} topic fixed).` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
