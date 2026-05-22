@@ -899,14 +899,16 @@ function showTranslationView(ex) {
   const qEl = document.getElementById('question-text');
   qEl.textContent = ex.questionVi || ex.questionEn || '';
 
-  // hints
+  // hints — 2 chips for short answers (≤6 words), 3 for longer
   const row = document.getElementById('hints-row');
   row.innerHTML = '';
   if (ex.hints?.length && ex.type !== 'error_correction') {
+    const ansWords = (ex.primaryAnswer || ex.sampleAnswers?.[0] || '').trim().split(/\s+/).length;
+    const hintCount = ansWords <= 6 ? 2 : 3;
     const lbl = document.createElement('span');
     lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
     row.appendChild(lbl);
-    ex.hints.slice(0, 4).forEach(h => {
+    ex.hints.slice(0, hintCount).forEach(h => {
       const chip = document.createElement('span');
       chip.className = 't1-hint-chip'; chip.textContent = h;
       row.appendChild(chip);
@@ -982,14 +984,16 @@ function showFillBlankView(ex) {
   document.getElementById('fill-sentence').innerHTML =
     sentence.replace(/___/g, '<span class="wp-blank-underline">___</span>');
 
-  // Hints
+  // Hints — 2 chips for short answers (≤6 words), 3 for longer
   const hRow = document.getElementById('fill-hints-row');
   hRow.innerHTML = '';
   if (ex.hints?.length) {
+    const ansWords = (ex.primaryAnswer || ex.sampleAnswers?.[0] || '').trim().split(/\s+/).length;
+    const hintCount = ansWords <= 6 ? 2 : 3;
     const lbl = document.createElement('span');
     lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
     hRow.appendChild(lbl);
-    ex.hints.slice(0, 4).forEach(h => {
+    ex.hints.slice(0, hintCount).forEach(h => {
       const chip = document.createElement('span');
       chip.className = 't1-hint-chip'; chip.textContent = h;
       hRow.appendChild(chip);
