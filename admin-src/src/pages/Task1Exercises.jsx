@@ -356,24 +356,6 @@ export default function Task1Exercises() {
       <div className="section-header">
         <h2 className="section-title">Task 1 Grammar Exercises</h2>
         <div style={{ display:'flex', gap:8 }}>
-          <button className="btn btn-ghost btn-sm" title="Sửa lỗi font tiếng Việt trong DB (chạy 1 lần)"
-            onClick={async () => {
-              try {
-                toast('Đang sửa encoding...');
-                const r = await apiFetch('/admin/fix-encoding', { method: 'POST' });
-                toast(`Đã sửa: Task1 ${r.t1Fixed}/${r.t1Checked}, Task2 ${r.t2Fixed} topics / ${r.t2Qs} câu hỏi`);
-                forceReload();
-              } catch (e) { toast(e.message, 'error'); }
-            }}>🔧 Sửa encoding</button>
-          <button className="btn btn-ghost btn-sm" title="Thêm ngữ cảnh dữ liệu cho câu hỏi by vs to (Q15/Q16)"
-            onClick={async () => {
-              try {
-                toast('Đang cập nhật ngữ cảnh...');
-                await apiFetch('/admin/fix-task1-context', { method: 'POST' });
-                toast('Đã thêm dataContext cho Q15 & Q16!');
-                forceReload();
-              } catch (e) { toast(e.message, 'error'); }
-            }}>📊 Fix by/to context</button>
           <button className="btn btn-primary btn-sm" onClick={() => { setEditEx(null); setShowModal(true); }}>
             + Thêm câu hỏi
           </button>

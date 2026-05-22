@@ -229,26 +229,6 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
   );
 }
 
-async function runFixEncoding(showToastFn) {
-  try {
-    showToastFn('Đang sửa encoding...', 'info');
-    const r = await apiFetch('/admin/fix-encoding', { method: 'POST' });
-    showToastFn(`Đã sửa: Task1 ${r.t1Fixed}/${r.t1Checked}, Task2 ${r.t2Fixed} topics / ${r.t2Qs} câu hỏi`, 'success');
-  } catch (e) {
-    showToastFn(e.message, 'error');
-  }
-}
-
-async function runReseedWeek12(showToastFn) {
-  if (!window.confirm('Xóa toàn bộ topic tuần 12 hiện tại và re-insert 5 topic sạch từ seed?')) return;
-  try {
-    showToastFn('Đang re-seed tuần 12...', 'info');
-    const r = await apiFetch('/admin/reseed-task2-week12', { method: 'POST' });
-    showToastFn(r.message, 'success');
-  } catch (e) {
-    showToastFn(e.message, 'error');
-  }
-}
 
 export default function Task2Exercises() {
   const [topics, setTopics]           = useState([]);
@@ -345,8 +325,6 @@ export default function Task2Exercises() {
           <p className="page-subtitle">{total} topic — quản lý câu hỏi luyện viết IELTS Task 2</p>
         </div>
         <div style={{ display:'flex', gap:8 }}>
-          <button className="btn btn-ghost btn-sm" title="Sửa lỗi font tiếng Việt trong DB (chạy 1 lần)" onClick={() => runFixEncoding(showToast)}>🔧 Sửa encoding</button>
-          <button className="btn btn-warning btn-sm" title="Xóa duplicate tuần 12 + re-insert 5 topic sạch" onClick={() => runReseedWeek12(showToast)}>🗑️ Fix tuần 12</button>
           <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
         </div>
       </div>
