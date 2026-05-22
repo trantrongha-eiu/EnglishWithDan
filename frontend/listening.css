@@ -1614,3 +1614,126 @@ body {
 #screen-exam:-webkit-full-screen .exam-body {
   min-height: 0;
 }
+
+/* ══════════════════════════════════════════════
+   SETTINGS PANEL & RELATED UI
+══════════════════════════════════════════════ */
+
+/* Make screen-exam a positioning context for the settings panel */
+#screen-exam { position: relative; }
+
+/* Progress pill transition */
+#exam-progress-pill { transition: background .3s, color .3s, border-color .3s; }
+
+/* Autosave indicator */
+.exam-autosave-lbl {
+  font-size: 11px;
+  color: rgba(107,114,128,.4);
+  padding: 4px 6px;
+  cursor: default;
+  user-select: none;
+  transition: color .4s;
+  flex-shrink: 0;
+}
+.exam-autosave-lbl.saved { color: #43a047; }
+[data-theme="dark"] .exam-autosave-lbl { color: rgba(156,163,175,.3); }
+[data-theme="dark"] .exam-autosave-lbl.saved { color: #22c55e; }
+
+/* Settings icon button */
+.btn-icon-sm {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #6b7280;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.btn-icon-sm:hover { background: #f3f4f6; }
+[data-theme="dark"] .btn-icon-sm { color: #9ca3af; }
+[data-theme="dark"] .btn-icon-sm:hover { background: #374151; }
+
+/* Settings dropdown panel */
+.settings-panel {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  padding: 14px 18px;
+  z-index: 200;
+  min-width: 230px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 24px;
+}
+.settings-row + .settings-row { border-top: 1px solid #f3f4f6; }
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-knob {
+  position: absolute;
+  inset: 0;
+  background: #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.toggle-knob::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  left: 3px; top: 3px;
+  transition: transform .2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.toggle-switch input:checked + .toggle-knob { background: #43a047; }
+.toggle-switch input:checked + .toggle-knob::before { transform: translateX(20px); }
+
+/* Font size buttons */
+.fs-group { display: flex; gap: 6px; }
+.fs-btn {
+  width: 32px; height: 32px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 600; font-size: 13px;
+  cursor: pointer; transition: all .15s;
+}
+.fs-btn.active, .fs-btn:hover { background: #1565c0; color: #fff; border-color: #1565c0; }
+
+/* CSS variable for question font size */
+:root { --ls-font-size: 15px; }
+.questions-panel, .transcript-body { font-size: var(--ls-font-size, 15px); }
+
+/* Eye protection mode */
+body.eye-protection { background: #f5f0e8 !important; }
+body.eye-protection .questions-panel,
+body.eye-protection .transcript-body { background: #faf8f3 !important; }
+
+/* Dark mode: settings */
+[data-theme="dark"] .settings-panel { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .settings-row { color: #e5e7eb; }
+[data-theme="dark"] .settings-row + .settings-row { border-top-color: #374151; }
+[data-theme="dark"] .toggle-knob { background: #374151; }
+[data-theme="dark"] .fs-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .fs-btn.active,
+[data-theme="dark"] .fs-btn:hover { background: #1565c0; color: #fff; border-color: #1565c0; }

@@ -59,10 +59,32 @@
         <div class="exam-topbar">
             <button class="btn-ghost" onclick="confirmExit()">← Thoát</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
-            <button id="btn-fullscreen" onclick="toggleFullscreen()" title="Fullscreen"
-                style="background:none;border:none;font-size:18px;cursor:pointer;color:#6b7280;padding:4px 8px;border-radius:6px;flex-shrink:0;line-height:1"
-                onmouseenter="this.style.background='#f3f4f6'" onmouseleave="this.style.background='none'">⛶</button>
+            <div id="exam-progress-pill" style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;flex-shrink:0">
+                <span id="prog-answered">0</span>/<span id="prog-total">40</span>
+            </div>
+            <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu">💾</span>
+            <button id="btn-fullscreen" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+            <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
             <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
+        </div>
+
+        <!-- Settings dropdown -->
+        <div id="settings-panel" class="settings-panel hidden">
+            <div class="settings-row">
+                <span>👁️ Chế độ bảo vệ mắt</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
+                    <span class="toggle-knob"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <span>Tᴛ Kích cỡ chữ</span>
+                <div class="fs-group">
+                    <button class="fs-btn" onclick="setFontSize('S')">S</button>
+                    <button class="fs-btn active" onclick="setFontSize('M')">M</button>
+                    <button class="fs-btn" onclick="setFontSize('L')">L</button>
+                </div>
+            </div>
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
@@ -288,7 +310,7 @@
     <div class="modal-overlay hidden" id="modal-exit">
         <div class="modal-box modal-sm">
             <h3>Thoát bài thi?</h3>
-            <p>Tiến trình làm bài sẽ được lưu lại để tiếp tục sau.</p>
+            <p>Tiến trình làm bài đã được <strong>tự động lưu</strong>. Bạn có thể nhập lại mã và tiếp tục sau.</p>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModal('modal-exit')">Ở lại</button>
                 <button class="btn-danger" onclick="forceExit()">Thoát</button>
@@ -403,6 +425,8 @@
                     startTime: state.startTime,
                     savedAt: Date.now()
                 }));
+                const lbl = document.getElementById('exam-autosave');
+                if (lbl) { lbl.classList.add('saved'); clearTimeout(lbl._t); lbl._t = setTimeout(() => lbl.classList.remove('saved'), 1500); }
             } catch { /* storage quota – ignore */ }
         }
 
@@ -621,6 +645,10 @@
                 if (mode === 'all') c.style.display = '';
                 else if (mode === 'done') c.style.display = done ? '' : 'none';
                 else c.style.display = !done ? '' : 'none';
+            });
+            document.querySelectorAll('.test-group').forEach(g => {
+                const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');
+                g.style.display = hasVisible ? '' : 'none';
             });
         }
 
@@ -1910,6 +1938,17 @@
             document.getElementById('modal-total').textContent = total;
             const unanswered = total - answered;
             document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
+            const progAns = document.getElementById('prog-answered');
+            const progTot = document.getElementById('prog-total');
+            if (progAns) progAns.textContent = answered;
+            if (progTot) progTot.textContent = total;
+            const pill = document.getElementById('exam-progress-pill');
+            if (pill) {
+                const pct = total > 0 ? (answered / total) * 100 : 0;
+                if (pct === 100) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; pill.style.borderColor = '#6ee7b7'; }
+                else if (pct > 50) { pill.style.background = '#fffbeb'; pill.style.color = '#92400e'; pill.style.borderColor = '#fde68a'; }
+                else { pill.style.background = ''; pill.style.color = ''; pill.style.borderColor = ''; }
+            }
         }
 
         // ══════════════════════════════════════════════
@@ -2243,6 +2282,7 @@
         function confirmExit() { openModal('modal-exit'); }
         function forceExit() {
             closeModal('modal-exit');
+            clearExamStorage();
             clearInterval(_asoTimer);
             audio.pause();
             audio.playbackRate = 1;
@@ -2251,6 +2291,48 @@
             state.submitted = true;
             showScreen('list');
         }
+
+        // ══════════════════════════════════════════════
+        // SETTINGS
+        // ══════════════════════════════════════════════
+        function toggleSettings() {
+            document.getElementById('settings-panel').classList.toggle('hidden');
+        }
+        function toggleEyeProtection() {
+            document.body.classList.toggle('eye-protection', document.getElementById('toggle-eye').checked);
+        }
+        function setFontSize(s) {
+            const map = { S: '13px', M: '15px', L: '17px' };
+            document.documentElement.style.setProperty('--ls-font-size', map[s]);
+            document.querySelectorAll('.fs-btn').forEach(b => b.classList.toggle('active', b.textContent === s));
+        }
+
+        // ── Keyboard shortcuts ─────────────────────────────────────
+        document.addEventListener('keydown', e => {
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            const onExam = document.getElementById('screen-exam')?.classList.contains('active');
+            const onReview = document.getElementById('screen-review')?.classList.contains('active');
+            if (!onExam && !onReview) return;
+            if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                if (state.isReview) setTool('highlight');
+                else setToolExam('highlight');
+            }
+            if (['1', '2', '3', '4'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                const idx = parseInt(e.key) - 1;
+                const sections = getSortedSections(state.isReview);
+                if (sections[idx]) switchPart(idx, state.isReview);
+            }
+        });
+
+        // ── Click-outside to close settings ───────────────────────
+        document.addEventListener('click', e => {
+            const panel = document.getElementById('settings-panel');
+            if (!panel || panel.classList.contains('hidden')) return;
+            const btn = document.getElementById('btn-settings');
+            if (!e.target.closest('#settings-panel') && !btn?.contains(e.target) && e.target !== btn) {
+                panel.classList.add('hidden');
+            }
+        });
 
         // ══════════════════════════════════════════════
         // UTILS
@@ -2283,6 +2365,7 @@
         window.reviewFromHistory = reviewFromHistory;
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
+        window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
     </script>
 </body>
 
