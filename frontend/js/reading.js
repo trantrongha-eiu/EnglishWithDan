@@ -192,6 +192,10 @@ function filterTests(filter, btn) {
     else if (filter === 'done') c.style.display = done ? '' : 'none';
     else c.style.display = !done ? '' : 'none';
   });
+  document.querySelectorAll('.test-group').forEach(g => {
+    const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');
+    g.style.display = hasVisible ? '' : 'none';
+  });
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -212,6 +216,7 @@ function _openKeyScreen(testId, testName) {
   const msg = document.getElementById('key-msg');
   msg.textContent = ''; msg.className = 'key-msg hidden';
   showScreen('key');
+  setTimeout(() => document.getElementById('key-input')?.focus(), 50);
 }
 
 function formatKeyInput(inp) {
@@ -262,6 +267,8 @@ function saveExamToStorage() {
       secondsLeft: state.secondsLeft,
       savedAt: Date.now()
     }));
+    const lbl = document.getElementById('exam-autosave');
+    if (lbl) { lbl.classList.add('saved'); clearTimeout(lbl._t); lbl._t = setTimeout(() => lbl.classList.remove('saved'), 1500); }
   } catch { /* quota exceeded – ignore */ }
 }
 
@@ -311,6 +318,7 @@ function resumeExam() {
   buildQNavFooter();
   startTimer();
   showScreen('exam');
+  window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
 }
 
 function dismissResume() {
@@ -341,6 +349,7 @@ function startExam(data) {
   startTimer();
   showScreen('exam');
   saveExamToStorage();         // Save initial state immediately
+  window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
 }
 
 function renderPassageTabs(containerId, isReview) {
@@ -1272,12 +1281,19 @@ function updateTimerDisplay() {
 /* ══════════════════════════════════════════════════════════════════════
    SUBMIT
 ══════════════════════════════════════════════════════════════════════ */
-function confirmSubmit() { openModal('modal-submit'); }
+function confirmSubmit() {
+  const allQ = state.passages.flatMap(p => getAllQuestionsFromPassage(p));
+  const unanswered = allQ.filter(q => { const a = state.answers[q.questionNumber]; return !a || a === '' || a === '[]'; }).length;
+  const warn = document.getElementById('submit-unanswered-warn');
+  if (warn) warn.textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
+  openModal('modal-submit');
+}
 
 async function submitExam() {
   closeModal('modal-submit');
   clearInterval(state.timer);
   state.submitted = true;
+  window.onbeforeunload = null;
 
   // Show loading overlay
   let overlay = document.getElementById('submit-loading-overlay');
@@ -1882,13 +1898,18 @@ function handleKeyShortcuts(e) {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'h' || e.key === 'H') setTool('highlight');
   if (e.key === 'd' || e.key === 'D') setTool('dict');
+  if (['1', '2', '3'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    const idx = parseInt(e.key) - 1;
+    if (state.isReview && state.passages[idx]) switchReviewPassage(idx);
+    else if (!state.isReview && state.passages[idx]) switchPassage(idx);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
    CONFIRM / EXIT MODALS
 ══════════════════════════════════════════════════════════════════════ */
 function confirmExit() { openModal('modal-exit'); }
-function forceExit() { closeModal('modal-exit'); clearInterval(state.timer); loadTests(true); }
+function forceExit() { closeModal('modal-exit'); clearInterval(state.timer); window.onbeforeunload = null; loadTests(true); }
 
 /* ══════════════════════════════════════════════════════════════════════
    RESIZABLE DIVIDER
@@ -1968,3 +1989,13 @@ function fmtDuration(s) {
   const m = Math.floor(s / 60), sec = s % 60;
   return `${m}:${String(sec).padStart(2, '0')}`;
 }
+
+/* ── Click outside to close settings panel ──────────────────────────── */
+document.addEventListener('click', e => {
+  const panel = document.getElementById('settings-panel');
+  if (!panel || panel.classList.contains('hidden')) return;
+  const btn = document.getElementById('btn-settings');
+  if (!e.target.closest('#settings-panel') && !btn?.contains(e.target) && e.target !== btn) {
+    panel.classList.add('hidden');
+  }
+});

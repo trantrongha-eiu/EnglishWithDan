@@ -2246,11 +2246,9 @@ body.eye-protection .split-questions {
 .mo-chip strong { font-weight: 700; color: #1565c0; min-width: 16px; display: inline-block; }
 
 /* ── Matching Headings ────────────────────────────────────────────── */
-.rq-mh-group { }
 .rq-mh-questions { display: flex; flex-direction: column; gap: 8px; }
 
 /* ── Summary Completion ───────────────────────────────────────────── */
-.rq-summary-group { }
 .rq-summary-text {
   line-height: 2.1;
   font-size: 14px;
@@ -2532,3 +2530,17 @@ body.eye-protection .split-questions {
 
 /* ── Dark mode: divider handle ── */
 [data-theme="dark"] .divider-handle { background: #4b5563; }
+
+/* ── Autosave indicator ── */
+.exam-autosave-lbl {
+  font-size: 11px;
+  color: rgba(107,114,128,.4);
+  padding: 4px 6px;
+  cursor: default;
+  user-select: none;
+  transition: color .4s;
+  flex-shrink: 0;
+}
+.exam-autosave-lbl.saved { color: #43a047; }
+[data-theme="dark"] .exam-autosave-lbl { color: rgba(156,163,175,.3); }
+[data-theme="dark"] .exam-autosave-lbl.saved { color: #22c55e; }

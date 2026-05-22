@@ -67,7 +67,7 @@
         <div class="key-test-name" id="key-test-name"></div>
 
         <input id="key-input" type="text" class="key-input" placeholder="VD: A3F9-B2C1" maxlength="9" autocomplete="off"
-          oninput="formatKeyInput(this)" />
+          oninput="formatKeyInput(this)" onkeydown="if(event.key==='Enter') verifyAndStart()" />
         <div id="key-msg" class="key-msg hidden"></div>
 
         <div class="key-actions">
@@ -100,8 +100,9 @@
           style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;">
           <span id="prog-answered">0</span>/<span id="prog-total">40</span>
         </div>
+        <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu">💾</span>
         <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen">⛶</button>
-        <button class="btn-icon-sm" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
+        <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
       </div>
     </div>
 
@@ -164,6 +165,7 @@
         <p>
           Bạn có chắc chắn muốn nộp phần bài tập đã làm chưa?
           Nếu chắc chắn với các đáp án đã làm hãy bấm nút <strong>hoàn thành</strong>.
+          <span id="submit-unanswered-warn" style="display:block;margin-top:8px;color:#e53935;font-weight:600;font-size:13px;"></span>
         </p>
         <div class="modal-actions">
           <button class="btn-ghost" onclick="closeModal('modal-submit')">Quay lại</button>
@@ -176,7 +178,7 @@
     <div id="modal-exit" class="modal-overlay hidden" style="position:absolute;z-index:9999;">
       <div class="modal-box modal-sm">
         <h3>Thoát khỏi bài thi?</h3>
-        <p>Tiến trình làm bài của bạn sẽ bị mất nếu thoát.</p>
+        <p>Tiến trình làm bài đã được <strong>tự động lưu</strong>. Bạn có thể nhập lại mã và tiếp tục sau.</p>
         <div class="modal-actions">
           <button class="btn-ghost" onclick="closeModal('modal-exit')">Tiếp tục làm bài</button>
           <button class="btn-danger" onclick="forceExit()">Thoát</button>
@@ -449,6 +451,7 @@
         if (pill) {
           if (pct === 100) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; pill.style.borderColor = '#6ee7b7'; }
           else if (pct > 50) { pill.style.background = '#fffbeb'; pill.style.color = '#92400e'; pill.style.borderColor = '#fde68a'; }
+          else { pill.style.background = ''; pill.style.color = ''; pill.style.borderColor = ''; }
         }
       }
       const examEl = document.getElementById('screen-exam');
