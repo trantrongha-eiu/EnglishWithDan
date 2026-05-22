@@ -685,3 +685,75 @@ body {
   border-top-color: #374151;
   color: #9ca3af;
 }
+
+/* ══════════════════════════════════════════════
+   KEY SCREEN – sync với reading/listening
+══════════════════════════════════════════════ */
+.key-card p.key-desc { font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+
+.key-msg {
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 8px 0 6px;
+  text-align: left;
+}
+.key-msg.hidden { display: none; }
+.key-msg.error   { background: #fce4e4; color: #c62828; }
+.key-msg.success { background: #e8f5e9; color: #2e7d32; }
+
+.key-start-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.key-start-btn:disabled { opacity: .65; cursor: not-allowed; }
+
+[data-theme="dark"] .key-msg.error   { background: rgba(220,38,38,.18); color: #fca5a5; }
+[data-theme="dark"] .key-msg.success { background: rgba(34,197,94,.15); color: #86efac; }
+
+/* ══════════════════════════════════════════════
+   EXAM TOPBAR – exit + fullscreen + autosave
+══════════════════════════════════════════════ */
+.exam-exit-btn {
+  margin-right: 8px;
+  letter-spacing: 0;
+}
+
+.exam-autosave-label {
+  font-size: 11px;
+  color: rgba(209,213,219,.65);
+  padding: 4px 6px;
+  cursor: default;
+  user-select: none;
+  flex-shrink: 0;
+}
+.exam-autosave-label.saved { color: #6ee7b7; }
+
+/* ══════════════════════════════════════════════
+   WORD COUNT PROGRESS BAR
+══════════════════════════════════════════════ */
+.wc-progress-wrap {
+  flex: 1;
+  margin-left: 12px;
+  height: 5px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.wc-progress-bar {
+  height: 100%;
+  background: #9ca3af;
+  border-radius: 3px;
+  width: 0%;
+  transition: width .3s, background .3s;
+}
+.wc-progress-bar.near { background: #f59e0b; }
+.wc-progress-bar.met  { background: #16a34a; }
+
+[data-theme="dark"] .wc-progress-wrap { background: #374151; }
+[data-theme="dark"] .wc-progress-bar  { background: #6b7280; }
+[data-theme="dark"] .wc-progress-bar.near { background: #d97706; }
+[data-theme="dark"] .wc-progress-bar.met  { background: #16a34a; }

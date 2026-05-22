@@ -95,15 +95,24 @@ function showScreen(id) {
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 
   checkRestoreBanner();
+  // Focus key input on load
+  setTimeout(() => { const ki = document.getElementById('key-input'); if (ki) ki.focus(); }, 150);
 })();
 
 // ──────────────────────────────────────────────────────
-// Format key input  (XXXX-XXXX)
+// Format key input  (XXXX-XXXX) — đồng bộ với reading/listening
 // ──────────────────────────────────────────────────────
-function formatKey(input) {
+function formatKeyInput(input) {
   let v = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
   if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
   input.value = v;
+}
+
+function showKeyMsg(text, type) {
+  const el = document.getElementById('key-msg');
+  if (!el) return;
+  el.textContent = text;
+  el.className = `key-msg ${type}`;
 }
 
 // ──────────────────────────────────────────────────────
@@ -111,11 +120,10 @@ function formatKey(input) {
 // ──────────────────────────────────────────────────────
 async function startExam() {
   const key = document.getElementById('key-input').value.trim();
-  const errEl = document.getElementById('key-error');
-  errEl.textContent = '';
+  showKeyMsg('', 'hidden');
 
   if (!key || key.replace('-', '').length < 8) {
-    errEl.textContent = 'Vui lòng nhập mã truy cập (8 ký tự)';
+    showKeyMsg('Vui lòng nhập mã truy cập (8 ký tự)', 'error');
     return;
   }
 
@@ -130,7 +138,7 @@ async function startExam() {
     });
 
     if (!data.success) {
-      errEl.textContent = data.message || 'Mã không hợp lệ';
+      showKeyMsg(data.message || 'Mã không hợp lệ', 'error');
       return;
     }
 
@@ -138,15 +146,14 @@ async function startExam() {
     state.answers = { 1: '', 2: '' };
     state.flags   = { 1: false, 2: false };
     state.currentTask = 1;
-    // Reset timer for fresh exam
     state.secondsLeft = 0;
 
     launchExam();
   } catch (e) {
-    errEl.textContent = e.message;
+    showKeyMsg(e.message, 'error');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Bắt đầu →';
+    btn.textContent = '✏️ Bắt đầu làm bài';
   }
 }
 
@@ -179,6 +186,7 @@ function launchExam() {
   switchTask(1);
 
   showScreen('screen-exam');
+  window.onbeforeunload = e => { if (state.exam) { e.preventDefault(); e.returnValue = ''; } };
 }
 
 // ──────────────────────────────────────────────────────
@@ -293,19 +301,22 @@ function updateWordCount(text) {
   const target = _WC_TARGETS[state.currentTask] || 150;
   const pct    = wc / target;
 
-  // Color coding
   let color;
-  if (wc >= target)       color = '#16a34a'; // green – met
-  else if (pct >= 0.8)    color = '#f59e0b'; // amber – close
-  else                    color = '#6b7280'; // gray – not yet
+  if (wc >= target)       color = '#16a34a';
+  else if (pct >= 0.8)    color = '#f59e0b';
+  else                    color = '#6b7280';
 
   const wcEl = document.getElementById('word-count');
   if (wcEl) { wcEl.textContent = wc; wcEl.style.color = color; }
 
   const targetEl = document.getElementById('word-count-target');
-  if (targetEl) {
-    targetEl.textContent = `/ ${target} từ`;
-    targetEl.style.color = color;
+  if (targetEl) { targetEl.textContent = `/ ${target} từ`; targetEl.style.color = color; }
+
+  // Progress bar
+  const bar = document.getElementById('wc-progress-bar');
+  if (bar) {
+    bar.style.width = Math.min(pct * 100, 100).toFixed(1) + '%';
+    bar.className = 'wc-progress-bar' + (wc >= target ? ' met' : pct >= 0.8 ? ' near' : '');
   }
 
   updateFooterWcSummary();
@@ -358,6 +369,7 @@ function closeConfirmModal() {
 async function submitExam(statusOverride) {
   closeConfirmModal();
   clearInterval(state.timerInterval);
+  window.onbeforeunload = null;
 
   const status = statusOverride || 'completed';
   const wc1 = countWords(state.answers[1]);
@@ -793,7 +805,71 @@ function saveToStorage() {
       secondsLeft: state.secondsLeft,
       savedAt:     Date.now()
     }));
+    const lbl = document.getElementById('btn-autosave');
+    if (lbl) {
+      lbl.title = 'Đã lưu lúc ' + new Date().toLocaleTimeString('vi-VN');
+      lbl.classList.add('saved');
+      clearTimeout(lbl._t);
+      lbl._t = setTimeout(() => lbl.classList.remove('saved'), 2000);
+    }
   } catch (_) {}
+}
+
+// ──────────────────────────────────────────────────────
+// Fullscreen  (đồng bộ với reading/listening)
+// ──────────────────────────────────────────────────────
+function toggleFullscreen() {
+  const el = document.getElementById('screen-exam');
+  if (!document.fullscreenElement) {
+    el.requestFullscreen && el.requestFullscreen();
+  } else {
+    document.exitFullscreen && document.exitFullscreen();
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('btn-fullscreen');
+  if (btn) btn.title = document.fullscreenElement ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+  // Đưa modals vào trong fullscreen element khi cần
+  const fsEl = document.fullscreenElement;
+  const ids = ['confirm-modal-overlay', 'exit-modal-overlay', 'review-modal-overlay'];
+  if (fsEl) {
+    ids.forEach(id => {
+      const m = document.getElementById(id);
+      if (m && !fsEl.contains(m)) { m._fsPrev = m.parentNode; fsEl.appendChild(m); }
+    });
+  } else {
+    ids.forEach(id => {
+      const m = document.getElementById(id);
+      if (m && m._fsPrev) { m._fsPrev.appendChild(m); m._fsPrev = null; }
+    });
+  }
+});
+
+// ──────────────────────────────────────────────────────
+// Exit exam  (giữ nguyên autosave, về screen-key)
+// ──────────────────────────────────────────────────────
+function confirmExit() {
+  saveToStorage();
+  document.getElementById('exit-modal-overlay').classList.add('open');
+}
+
+function closeExitModal() {
+  document.getElementById('exit-modal-overlay').classList.remove('open');
+}
+
+function forceExit() {
+  clearInterval(state.timerInterval);
+  window.onbeforeunload = null;
+  closeExitModal();
+  // Thoát fullscreen nếu đang bật
+  if (document.fullscreenElement) document.exitFullscreen();
+  // Reset state (giữ autosave để restore sau)
+  state.exam = null;
+  showScreen('screen-key');
+  const ki = document.getElementById('key-input');
+  if (ki) { ki.value = ''; ki.focus(); }
+  showKeyMsg('', 'hidden');
 }
 
 function loadFromStorage() {
