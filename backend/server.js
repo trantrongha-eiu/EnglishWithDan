@@ -1,8 +1,6 @@
-const express       = require('express');
-const mongoose      = require('mongoose');
-const cors          = require('cors');
-const helmet        = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
+const express  = require('express');
+const mongoose = require('mongoose');
+const cors     = require('cors');
 require('dotenv').config();
 
 // Cloudinary config
@@ -14,13 +12,6 @@ cloudinary.config({
 });
 
 const app = express();
-
-// ── Security ──────────────────────────────────────────────────
-// trust proxy so express-rate-limit reads real client IP behind Render/Nginx
-app.set('trust proxy', 1);
-// helmet: disable crossOriginResourcePolicy so cross-origin API calls from frontend domain are allowed
-app.use(helmet({ crossOriginResourcePolicy: false }));
-app.use(mongoSanitize());
 
 // ── Middleware ────────────────────────────────────────────────
 const allowedOrigins = process.env.FRONTEND_URL
