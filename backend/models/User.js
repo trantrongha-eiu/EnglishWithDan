@@ -36,12 +36,6 @@ const UserSchema = new mongoose.Schema({
   // Password reset OTP
   resetOTP:           { type: String, default: '' },
   resetOTPExpires:    { type: Date, default: null },
-  // OTP brute force protection
-  otpAttempts:        { type: Number, default: 0 },
-  otpLockedUntil:     { type: Date, default: null },
-  // Login brute force protection
-  loginAttempts:      { type: Number, default: 0 },
-  loginLockedUntil:   { type: Date, default: null },
   lastSeen:           { type: Date, default: null },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
