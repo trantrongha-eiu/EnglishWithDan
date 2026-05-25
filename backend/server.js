@@ -16,7 +16,10 @@ cloudinary.config({
 const app = express();
 
 // ── Security ──────────────────────────────────────────────────
-app.use(helmet());
+// trust proxy so express-rate-limit reads real client IP behind Render/Nginx
+app.set('trust proxy', 1);
+// helmet: disable crossOriginResourcePolicy so cross-origin API calls from frontend domain are allowed
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(mongoSanitize());
 
 // ── Middleware ────────────────────────────────────────────────
