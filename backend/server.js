@@ -46,6 +46,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     console.log('MongoDB Atlas connected');
     console.log('OpenRouter key:', process.env.OPENROUTER_API_KEY ? 'YES ✓' : 'MISSING ✗');
+    console.log('Anthropic key:', process.env.ANTHROPIC_API_KEY  ? 'YES ✓' : 'MISSING ✗ (AI grading disabled)');
     console.log('Google OAuth:',   process.env.GOOGLE_CLIENT_ID    ? 'YES ✓' : 'disabled');
     console.log('Email:',          process.env.EMAIL_USER           ? 'YES ✓' : 'disabled');
     // Auto-seed writing practice exercises if DB is empty

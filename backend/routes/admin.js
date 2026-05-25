@@ -268,7 +268,9 @@ router.get('/keys', auth, teacherOnly, async (req, res) => {
       const obj = k.toObject({ virtuals: true });
       if (k.testId) {
         try {
-          const Model = k.testType === 'listening' ? ListeningTest : ReadingTest;
+          const Model = k.testType === 'listening' ? ListeningTest
+                      : k.testType === 'writing'   ? WritingExam
+                      : ReadingTest;
           const test  = await Model.findById(k.testId).select('name');
           obj.testId = test ? { _id: test._id, name: test.name } : null;
         } catch {
@@ -483,7 +485,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         testName: h.examName || h.testName || '–',
         userId: normUser(h.userId),
         date: h.submittedAt || h.createdAt,
-        bandScore: h.bandScore || null,
+        bandScore: h.grading?.overallBand ?? null,
         correctCount: null,
         totalQuestions: null,
         duration: null
@@ -603,7 +605,7 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
       .populate('userId', 'username firstName lastName')
       .sort({ submittedAt: -1 })
       .limit(200)
-      .select('-task1Answer -task2Answer');
+      .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot');
     res.json({ success: true, attempts });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
