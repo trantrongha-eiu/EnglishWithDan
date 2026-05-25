@@ -1,14 +1,40 @@
-const router = require('express').Router();
-const authCtrl = require('../controllers/auth.controller');
+const router    = require('express').Router();
+const rateLimit = require('express-rate-limit');
+const authCtrl  = require('../controllers/auth.controller');
+
+// ── Rate limiters ─────────────────────────────────────────────
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau 15 phút.' }
+});
+
+const forgotLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 giờ.' }
+});
+
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Quá nhiều lần thử. Vui lòng thử lại sau 15 phút.' }
+});
 
 // ── Local auth ────────────────────────────────────────────────
 router.post('/register', (_req, res) => {
   res.status(403).json({ success: false, message: 'Đăng ký tài khoản đã tạm dừng. Vui lòng liên hệ thầy Daniel Hà để được tạo tài khoản.' });
 });
-router.post('/login',           authCtrl.login);
-router.post('/forgot-password', authCtrl.forgotPassword);
-router.post('/verify-otp',      authCtrl.verifyOTP);
-router.post('/reset-password',  authCtrl.resetPassword);
+router.post('/login',           loginLimiter,  authCtrl.login);
+router.post('/forgot-password', forgotLimiter, authCtrl.forgotPassword);
+router.post('/verify-otp',      otpLimiter,    authCtrl.verifyOTP);
+router.post('/reset-password',  otpLimiter,    authCtrl.resetPassword);
 
 // ── Google OAuth (requires passport-google-oauth20 to be installed) ──
 // Enabled only when GOOGLE_CLIENT_ID is configured in .env

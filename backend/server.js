@@ -1,6 +1,8 @@
-const express  = require('express');
-const mongoose = require('mongoose');
-const cors     = require('cors');
+const express       = require('express');
+const mongoose      = require('mongoose');
+const cors          = require('cors');
+const helmet        = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 // Cloudinary config
@@ -12,6 +14,10 @@ cloudinary.config({
 });
 
 const app = express();
+
+// ── Security ──────────────────────────────────────────────────
+app.use(helmet());
+app.use(mongoSanitize());
 
 // ── Middleware ────────────────────────────────────────────────
 const allowedOrigins = process.env.FRONTEND_URL

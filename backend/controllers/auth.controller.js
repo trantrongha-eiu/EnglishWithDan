@@ -1,7 +1,6 @@
 const User   = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
-const crypto = require('crypto');
 
 // ── Helpers ────────────────────────────────────────────────
 function signToken(userId) {
@@ -20,6 +19,16 @@ function userPayload(user) {
   };
 }
 
+// Minimum 8 chars, at least one letter and one number
+function isStrongPassword(pw) {
+  return pw && pw.length >= 8 && /[a-zA-Z]/.test(pw) && /[0-9]/.test(pw);
+}
+
+const LOGIN_MAX_ATTEMPTS  = 5;
+const LOGIN_LOCK_MS       = 15 * 60 * 1000;  // 15 minutes
+const OTP_MAX_ATTEMPTS    = 5;
+const OTP_LOCK_MS         = 30 * 60 * 1000;  // 30 minutes
+
 // ── POST /api/auth/register ─────────────────────────────────
 exports.register = async (req, res) => {
   try {
@@ -28,12 +37,19 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
     }
 
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mật khẩu phải có ít nhất 8 ký tự, gồm chữ cái và số'
+      });
+    }
+
     const existing = await User.findOne({ $or: [{ email }, { username }] });
     if (existing) {
       return res.status(400).json({ success: false, message: 'Email hoặc Username đã tồn tại' });
     }
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password, 12);
     const user = new User({ firstName, lastName, username, email, password: hashed });
     await user.save();
 
@@ -49,11 +65,24 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ thông tin' });
+    }
+
     const user = await User.findOne({
       $or: [{ email }, { username: email }]
     });
 
     if (!user) return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại' });
+
+    // Check login lockout
+    if (user.loginLockedUntil && user.loginLockedUntil > new Date()) {
+      const remaining = Math.ceil((user.loginLockedUntil - Date.now()) / 60000);
+      return res.status(429).json({
+        success: false,
+        message: `Tài khoản bị tạm khóa do nhập sai quá nhiều lần. Thử lại sau ${remaining} phút.`
+      });
+    }
 
     // Social-only accounts have no password
     if (!user.password) {
@@ -61,15 +90,40 @@ exports.login = async (req, res) => {
     }
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ success: false, message: 'Sai mật khẩu' });
+    if (!valid) {
+      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      if (user.loginAttempts >= LOGIN_MAX_ATTEMPTS) {
+        user.loginLockedUntil = new Date(Date.now() + LOGIN_LOCK_MS);
+        user.loginAttempts = 0;
+        await user.save();
+        return res.status(429).json({
+          success: false,
+          message: `Sai mật khẩu quá ${LOGIN_MAX_ATTEMPTS} lần. Tài khoản bị tạm khóa 15 phút.`
+        });
+      }
+      const left = LOGIN_MAX_ATTEMPTS - user.loginAttempts;
+      await user.save();
+      return res.status(401).json({
+        success: false,
+        message: `Sai mật khẩu. Còn ${left} lần thử trước khi bị khóa.`
+      });
+    }
+
+    // Reset lockout on success
+    if (user.loginAttempts > 0 || user.loginLockedUntil) {
+      user.loginAttempts = 0;
+      user.loginLockedUntil = null;
+    }
 
     if (user.isBanned) {
+      await user.save();
       return res.status(403).json({
         success: false,
         message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.'
       });
     }
 
+    await user.save();
     const token = signToken(user._id);
     res.json({ success: true, token, user: userPayload(user) });
   } catch (err) {
@@ -92,6 +146,9 @@ exports.forgotPassword = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetOTP = otp;
     user.resetOTPExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    // Reset OTP attempt counter when new OTP is issued
+    user.otpAttempts = 0;
+    user.otpLockedUntil = null;
     await user.save();
 
     // Send email if nodemailer is configured
@@ -121,10 +178,8 @@ exports.forgotPassword = async (req, res) => {
         });
       } catch (mailErr) {
         console.error('[Auth] Email error:', mailErr.message);
-        // Still return success but log the error
       }
     } else {
-      // Dev mode: log OTP to console
       console.log(`[Auth] OTP for ${email}: ${otp}`);
     }
 
@@ -139,17 +194,49 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    const user = await User.findOne({
-      email,
-      resetOTP: otp,
-      resetOTPExpires: { $gt: new Date() }
-    });
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Thiếu thông tin xác thực' });
+    }
 
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ success: false, message: 'Mã không hợp lệ hoặc đã hết hạn' });
     }
 
-    // Issue a short-lived reset token
+    // Check OTP lockout
+    if (user.otpLockedUntil && user.otpLockedUntil > new Date()) {
+      const remaining = Math.ceil((user.otpLockedUntil - Date.now()) / 60000);
+      return res.status(429).json({
+        success: false,
+        message: `Nhập sai quá nhiều lần. Thử lại sau ${remaining} phút.`
+      });
+    }
+
+    const otpValid = user.resetOTP === otp && user.resetOTPExpires > new Date();
+    if (!otpValid) {
+      user.otpAttempts = (user.otpAttempts || 0) + 1;
+      if (user.otpAttempts >= OTP_MAX_ATTEMPTS) {
+        user.otpLockedUntil = new Date(Date.now() + OTP_LOCK_MS);
+        user.otpAttempts = 0;
+        await user.save();
+        return res.status(429).json({
+          success: false,
+          message: `Nhập sai ${OTP_MAX_ATTEMPTS} lần. Vui lòng yêu cầu mã mới sau 30 phút.`
+        });
+      }
+      const left = OTP_MAX_ATTEMPTS - user.otpAttempts;
+      await user.save();
+      return res.status(400).json({
+        success: false,
+        message: `Mã không hợp lệ hoặc đã hết hạn. Còn ${left} lần thử.`
+      });
+    }
+
+    // OTP correct — reset attempt counter, issue reset token
+    user.otpAttempts = 0;
+    user.otpLockedUntil = null;
+    await user.save();
+
     const resetToken = jwt.sign(
       { id: user._id, purpose: 'reset' },
       process.env.JWT_SECRET,
@@ -167,8 +254,11 @@ exports.verifyOTP = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { resetToken, newPassword } = req.body;
-    if (!newPassword || newPassword.length < 6) {
-      return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự' });
+    if (!isStrongPassword(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mật khẩu phải có ít nhất 8 ký tự, gồm chữ cái và số'
+      });
     }
 
     let decoded;
@@ -185,7 +275,7 @@ exports.resetPassword = async (req, res) => {
     const user = await User.findById(decoded.id);
     if (!user) return res.status(404).json({ success: false, message: 'Tài khoản không tồn tại' });
 
-    user.password = await bcrypt.hash(newPassword, 10);
+    user.password = await bcrypt.hash(newPassword, 12);
     user.resetOTP = '';
     user.resetOTPExpires = null;
     await user.save();
