@@ -4,6 +4,107 @@ import { apiFetch, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 
+function AssembleModal({ sections, onClose, onSuccess }) {
+  const toast = useToast();
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: '', seriesName: '', testNumber: 1 });
+  const [picks, setPicks] = useState({ 1: '', 2: '', 3: '', 4: '' });
+
+  // Group sections by partNumber
+  const byPart = { 1: [], 2: [], 3: [], 4: [] };
+  sections.forEach(s => { if (byPart[s.partNumber]) byPart[s.partNumber].push(s); });
+
+  async function submit() {
+    if (!form.name.trim()) { toast('Nhập tên đề', 'error'); return; }
+    if (!Object.values(picks).some(v => v)) { toast('Chọn ít nhất 1 section', 'error'); return; }
+    setSaving(true);
+    try {
+      const d = await apiFetch('/listening/admin/assemble', {
+        method: 'POST',
+        body: JSON.stringify({ ...form, sectionIds: picks }),
+      });
+      toast(`✓ ${d.message || 'Đã tạo đề Listening'}`, 'success');
+      onSuccess(d.test._id);
+      onClose();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Tạo Full Test từ Bài lẻ</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+          {/* Test info */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: 10 }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Tên đề *</label>
+              <input className="form-input" value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                placeholder="VD: Cambridge 17 – Test 1" autoFocus />
+            </div>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Số đề</label>
+              <input className="form-input" type="number" value={form.testNumber} min={1}
+                onChange={e => setForm(f => ({ ...f, testNumber: Number(e.target.value) }))} />
+            </div>
+          </div>
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Series (tùy chọn)</label>
+            <input className="form-input" value={form.seriesName}
+              onChange={e => setForm(f => ({ ...f, seriesName: e.target.value }))}
+              placeholder="VD: Cambridge 17" />
+          </div>
+
+          {/* Section selectors */}
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 10, color: 'var(--text2)' }}>
+              Chọn bài lẻ cho từng Part (bỏ trống = phần câu hỏi trống)
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[1, 2, 3, 4].map(part => {
+                const pc = { 1: '#1d4ed8', 2: '#15803d', 3: '#b45309', 4: '#6d28d9' }[part];
+                return (
+                  <div key={part} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ minWidth: 76, fontSize: 12, fontWeight: 700, color: pc }}>
+                      Section {part}
+                    </span>
+                    <select className="form-input" style={{ flex: 1 }}
+                      value={picks[part]}
+                      onChange={e => setPicks(p => ({ ...p, [part]: e.target.value }))}>
+                      <option value="">(Để trống – không có câu hỏi)</option>
+                      {byPart[part].map(s => (
+                        <option key={s._id} value={s._id}>
+                          {s.title} {s.questionRange ? `(câu ${s.questionRange.start}–${s.questionRange.end})` : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: 'var(--text2)' }}>
+            💡 Sau khi tạo xong, vào <strong>Đề Listening</strong> để upload 1 file audio dài cho toàn bộ đề.
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button className="btn btn-ghost" onClick={onClose} disabled={saving}>Huỷ</button>
+            <button className="btn btn-primary" onClick={submit} disabled={saving}>
+              {saving ? 'Đang tạo...' : '🎧 Tạo Full Test'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const PART_LABEL = { 1: 'Section 1', 2: 'Section 2', 3: 'Section 3', 4: 'Section 4' };
 const PART_COLOR = {
   1: { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' },
@@ -86,6 +187,7 @@ export default function ListeningSections() {
   const [search, setSearch] = useState('');
   const [partFilter, setPartFilter] = useState('all');
   const [audioSection, setAudioSection] = useState(null);
+  const [showAssemble, setShowAssemble] = useState(false);
 
   const load = () =>
     apiFetch('/listening/admin/sections')
@@ -134,12 +236,20 @@ export default function ListeningSections() {
       {audioSection && (
         <AudioUploadModal section={audioSection} onClose={() => setAudioSection(null)} onUploaded={load} />
       )}
+      {showAssemble && (
+        <AssembleModal
+          sections={sections}
+          onClose={() => setShowAssemble(false)}
+          onSuccess={testId => navigate(`/admin/listening-tests/${testId}`)}
+        />
+      )}
 
       <div className="section-header">
         <h2 className="section-title">Bài lẻ Listening ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/admin/listening-sections/new')}>
-          + Thêm section
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={() => setShowAssemble(true)}>🎧 Tạo Full Test</button>
+          <button className="btn btn-primary" onClick={() => navigate('/admin/listening-sections/new')}>+ Thêm section</button>
+        </div>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>

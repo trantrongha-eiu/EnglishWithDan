@@ -431,6 +431,78 @@ router.post('/admin/sections/:id/audio', auth, teacherOnly, upload.single('audio
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
+// POST /api/listening/admin/assemble – tạo ListeningTest từ 4 ListeningSection
+// Body: { name, seriesName, testNumber, sectionIds: { "1": id, "2": id, "3": id, "4": id } }
+router.post('/admin/assemble', auth, teacherOnly, async (req, res) => {
+  try {
+    const { name, seriesName, testNumber, sectionIds } = req.body;
+    if (!name) return res.status(400).json({ success: false, message: 'Tên đề không được để trống' });
+
+    const idMap = sectionIds || {};
+    const parts = [1, 2, 3, 4];
+
+    // Fetch tất cả sections được chọn
+    const fetched = {};
+    for (const part of parts) {
+      const sid = idMap[String(part)];
+      if (sid) {
+        const s = await ListeningSection.findById(sid).lean();
+        if (!s) return res.status(404).json({ success: false, message: `Không tìm thấy section Part ${part}` });
+        fetched[part] = s;
+      }
+    }
+    if (Object.keys(fetched).length === 0) {
+      return res.status(400).json({ success: false, message: 'Chọn ít nhất 1 section' });
+    }
+
+    // Xây dựng sections cho ListeningTest
+    const defaultRanges = { 1: { start: 1, end: 10 }, 2: { start: 11, end: 20 }, 3: { start: 21, end: 30 }, 4: { start: 31, end: 40 } };
+    const builtSections = parts.map(part => {
+      const src = fetched[part];
+      if (!src) {
+        return {
+          partNumber: part,
+          title: `Part ${part}`,
+          description: '',
+          transcript: '',
+          questionRange: defaultRanges[part],
+          questionGroups: [],
+        };
+      }
+      return {
+        partNumber:    src.partNumber,
+        title:         src.title,
+        description:   src.description || '',
+        transcript:    src.transcript || '',
+        questionRange: src.questionRange || defaultRanges[part],
+        questionGroups: (src.questionGroups || []).map(g => {
+          const { _id, ...rest } = g;
+          return {
+            ...rest,
+            questions: (g.questions || []).map(q => {
+              const { _id: _qid, ...qRest } = q;
+              return qRest;
+            }),
+          };
+        }),
+      };
+    });
+
+    const test = new ListeningTest({
+      name,
+      seriesName: seriesName || '',
+      testNumber: testNumber || 1,
+      audioUrl:   '',
+      sections:   builtSections,
+      isActive:   true,
+    });
+    await test.save();
+    res.json({ success: true, test, message: 'Đã tạo đề Listening từ bài lẻ. Upload audio tại trang Đề Listening.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
