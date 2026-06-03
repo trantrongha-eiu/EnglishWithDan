@@ -33,7 +33,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
 
   useEffect(() => {
     function fetchOnline() {
-      apiFetch('/admin/online-users').then(d => setOnlineUsers(d.users || [])).catch(() => {});
+      apiFetch('/admin/online-users').then(d => setOnlineUsers((d.users || []).filter(u => u.role !== 'admin'))).catch(() => {});
     }
     fetchOnline();
     const id = setInterval(fetchOnline, 60_000);

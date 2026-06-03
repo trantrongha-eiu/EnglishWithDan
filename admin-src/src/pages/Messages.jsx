@@ -54,7 +54,7 @@ export default function Messages() {
   async function loadOnline() {
     try {
       const d = await apiFetch('/admin/online-users');
-      setOnlineIds(new Set((d.users || []).map(u => u._id)));
+      setOnlineIds(new Set((d.users || []).filter(u => u.role !== 'admin').map(u => u._id)));
     } catch { /* ignore */ }
   }
 
@@ -215,7 +215,7 @@ function OnlinePanel({ onlineIds, students, onRefresh }) {
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#22c55e', display: 'inline-block', boxShadow: '0 0 6px #22c55e' }} />
-        <strong style={{ fontSize: 14 }}>{onlineIds.size} đang online</strong>
+        <strong style={{ fontSize: 14 }}>{onlineStudents.length} đang online</strong>
       </div>
       <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {onlineStudents.length === 0
