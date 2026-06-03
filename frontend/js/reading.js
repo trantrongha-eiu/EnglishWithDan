@@ -27,9 +27,95 @@ let allTests = [];
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 
+/* ── Practice stopwatch ─────────────────────────────────────────────── */
+let _practiceTimer     = null;
+let _practiceStartTime = 0;
+let _practiceElapsedSec = 0;
+
 /* Highlight cache – preserve <span class="hl"> spans across passage switches */
 const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
 const reviewHlCache = {};   // review mode: { passageIdx: passageInnerHTML }
+
+/* ── Stopwatch helpers ──────────────────────────────────────────────── */
+function _startPracticeTimer(totalQ) {
+  _practiceStartTime = Date.now();
+  _practiceElapsedSec = 0;
+  _clearPracticeTimer();
+
+  const swEl   = document.getElementById('practice-stopwatch');
+  const txtEl  = document.getElementById('practice-progress-txt');
+  const barWrap = document.getElementById('practice-prog-bar');
+  const barFill = document.getElementById('practice-prog-fill');
+
+  if (swEl)   { swEl.textContent = '00:00'; swEl.className = 'practice-stopwatch'; swEl.style.display = ''; }
+  if (txtEl)  { txtEl.textContent = `0 / ${totalQ} câu`; txtEl.style.display = ''; }
+  if (barWrap){ barWrap.style.display = ''; }
+  if (barFill){ barFill.style.width = '0%'; barFill.className = 'practice-prog-fill'; }
+
+  _practiceTimer = setInterval(() => {
+    const secs = Math.floor((Date.now() - _practiceStartTime) / 1000);
+    _practiceElapsedSec = secs;
+    const m = String(Math.floor(secs / 60)).padStart(2, '0');
+    const s = String(secs % 60).padStart(2, '0');
+    if (swEl) {
+      swEl.textContent = `${m}:${s}`;
+      swEl.className = secs >= 1200 ? 'practice-stopwatch sw-slow'
+                     : secs >= 600  ? 'practice-stopwatch sw-medium'
+                     : 'practice-stopwatch';
+    }
+  }, 1000);
+}
+
+function _stopPracticeTimer() {
+  _clearPracticeTimer();
+  const swEl = document.getElementById('practice-stopwatch');
+  if (swEl) swEl.classList.add('sw-stopped');
+  return _practiceElapsedSec;
+}
+
+function _clearPracticeTimer() {
+  if (_practiceTimer) { clearInterval(_practiceTimer); _practiceTimer = null; }
+}
+
+function _hidePracticeHUD() {
+  ['practice-stopwatch', 'practice-progress-txt', 'practice-prog-bar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+function _updatePracticeProgress() {
+  if (!_practiceTimer) return; // only while timer is running (before submit)
+  const passage = state.passages[0];
+  if (!passage) return;
+  const allQ   = getAllQuestionsFromPassage(passage);
+  const total  = allQ.length;
+  const answered = allQ.filter(q => {
+    const a = state.answers[q.questionNumber];
+    return a && a !== '[]';
+  }).length;
+
+  const txtEl  = document.getElementById('practice-progress-txt');
+  const barFill = document.getElementById('practice-prog-fill');
+  const pct    = total ? Math.round(answered / total * 100) : 0;
+
+  if (txtEl)  txtEl.textContent = `${answered} / ${total} câu`;
+  if (barFill) {
+    barFill.style.width = `${pct}%`;
+    barFill.className = answered === total ? 'practice-prog-fill fill-done'
+                      : pct >= 50          ? 'practice-prog-fill fill-half'
+                      : 'practice-prog-fill';
+  }
+
+  // Highlight answered q-nav buttons
+  document.querySelectorAll('#retry-q-nav .q-nav-btn').forEach(btn => {
+    const m = (btn.getAttribute('onclick') || '').match(/\d+/);
+    if (m) {
+      const a = state.answers[+m[0]];
+      btn.classList.toggle('q-nav-answered', !!(a && a !== '[]'));
+    }
+  });
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    INIT
@@ -532,6 +618,18 @@ function _enterPracticeScreen(passage, category, passageId) {
   setTool('highlight');
   initDropZones();
   showScreen('retry');
+
+  // Start stopwatch + progress HUD (practice mode only)
+  const totalQ = getAllQuestionsFromPassage(cleanPassage).length;
+  _startPracticeTimer(totalQ);
+
+  // Listen for answer changes to update progress live
+  const qi = document.getElementById('retry-questions-inner');
+  if (qi) {
+    const onAnswer = () => setTimeout(_updatePracticeProgress, 40);
+    qi.addEventListener('click', onAnswer);
+    qi.addEventListener('input', onAnswer);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1783,6 +1881,8 @@ function jumpToRetryQuestion(qNum) {
 
 function closeRetry() {
   const fromPractice = _retryState?.isPractice || _practiceMode;
+  _clearPracticeTimer();
+  _hidePracticeHUD();
   if (_retryState) {
     if (!fromPractice) {
       state.passages = _retryState.passages;
@@ -1848,14 +1948,36 @@ function submitRetry() {
   const bg    = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
   const border= pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
 
+  // Stop stopwatch, build time display for practice mode
+  const fromPractice = _retryState?.isPractice;
+  let timeLine = '';
+  if (fromPractice) {
+    const elapsed = _stopPracticeTimer();
+    const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const ts = String(elapsed % 60).padStart(2, '0');
+    const perQ = total ? Math.round(elapsed / total) : 0;
+    const encourage = pct >= 80 ? 'Xuất sắc! Tiếp tục phát huy nhé!'
+                    : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
+                    : pct >= 40 ? 'Cần luyện tập thêm một chút!'
+                    : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
+    const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 75 ? 'Ổn' : 'Cần tăng tốc';
+    timeLine = `<div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span>⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong></span>
+      <span>${speed} · ${perQ}s/câu</span>
+      <span style="color:${color};font-style:italic">${encourage}</span>
+    </div>`;
+  }
+
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
     qi.innerHTML =
-      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color};display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
-        <span style="color:#16a34a">● Đúng: ${correct}</span>
-        <span style="color:#dc2626">● Sai: ${wrong}</span>
-        <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
+          <span style="color:#16a34a">● Đúng: ${correct}</span>
+          <span style="color:#dc2626">● Sai: ${wrong}</span>
+          <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+        </div>${timeLine}
       </div>`
       + renderPassageQuestions(passage, true, retryReviewMap);
   }
@@ -1863,7 +1985,6 @@ function submitRetry() {
   const badge = document.getElementById('retry-score-badge');
   if (badge) { badge.textContent = `${correct}/${total} câu đúng`; badge.style.display = ''; }
 
-  const fromPractice = _retryState?.isPractice;
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
     ? `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
        <button class="btn-primary" onclick="retryReset()">🔁 Làm lại bài này</button>`

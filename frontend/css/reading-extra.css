@@ -343,3 +343,72 @@
       background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
       background-size: 200% 100%;
     }
+
+    /* ── Practice stopwatch ─────────────────────────────────────────── */
+    .practice-stopwatch {
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: #374151;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 4px 10px;
+      letter-spacing: 1px;
+      transition: color .4s, background .4s, border-color .4s;
+      font-family: 'Courier New', monospace;
+    }
+    .practice-stopwatch::before { content: '⏱ '; font-size: 12px; }
+    .practice-stopwatch.sw-medium {
+      color: #92400e;
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    .practice-stopwatch.sw-slow {
+      color: #991b1b;
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+    .practice-stopwatch.sw-stopped {
+      opacity: .7;
+    }
+
+    /* ── Progress text ──────────────────────────────────────────────── */
+    .practice-progress-txt {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    /* ── Thin progress bar under exam-bar ───────────────────────────── */
+    .practice-prog-bar {
+      height: 3px;
+      background: #e5e7eb;
+      width: 100%;
+      overflow: hidden;
+    }
+    .practice-prog-fill {
+      height: 100%;
+      width: 0%;
+      background: #3d8bff;
+      border-radius: 0 2px 2px 0;
+      transition: width .3s ease, background .3s;
+    }
+    .practice-prog-fill.fill-half { background: #10b981; }
+    .practice-prog-fill.fill-done {
+      background: #16a34a;
+      box-shadow: 0 0 6px rgba(22,163,74,.4);
+    }
+
+    /* ── Q-nav answered state ───────────────────────────────────────── */
+    .q-nav-btn.q-nav-answered {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+      font-weight: 700;
+    }
