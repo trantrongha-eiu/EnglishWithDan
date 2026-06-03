@@ -1367,17 +1367,17 @@ function _refreshMOZone(qNum, groupId) {
   const allGroups = getAllGroupsFromPassage(passage);
   let desc = '';
   for (const g of allGroups) {
-    if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
-      let opt = '';
-      if (g.groupType === 'sentence-endings' && g.endingsConfig?.endings?.length) {
-        // Tra cứu theo letter field (không phải vị trí) để đúng kể cả khi admin xóa/đổi thứ tự
-        opt = g.endingsConfig.endings.find(e => e.letter === letter)?.text || '';
-      } else {
-        const idx = letter.charCodeAt(0) - 65;
-        opt = (g.matchingOptions || [])[idx] || '';
-      }
-      if (opt.length > 1) { desc = opt; break; }
+    if (g.groupType !== 'matching-options' && g.groupType !== 'sentence-endings') continue;
+    // Match by groupId to avoid cross-group description contamination
+    const gId = 'mog-' + (g.questions || []).map(q => q.questionNumber).join('-');
+    if (gId !== groupId) continue;
+    if (g.groupType === 'sentence-endings' && g.endingsConfig?.endings?.length) {
+      desc = g.endingsConfig.endings.find(e => e.letter === letter)?.text || '';
+    } else {
+      const idx = letter.charCodeAt(0) - 65;
+      desc = (g.matchingOptions || [])[idx] || '';
     }
+    break;
   }
   const short = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
   dz.classList.add('filled');
