@@ -25,10 +25,10 @@
         <div class="list-container">
             <div class="list-header">
                 <div>
-                    <h2>Luyện tập <span class="tag-red">Listening Full Đề</span></h2>
-                    <p class="list-subtitle">Làm bài Listening IELTS đầy đủ 4 parts, có audio player và transcript sau khi nộp bài.</p>
+                    <h2 id="ls-mode-title">Luyện tập <span class="tag-red">Listening Full đề</span></h2>
+                    <p class="list-subtitle" id="ls-mode-subtitle">Làm bài Listening IELTS đầy đủ 4 parts, có audio player và transcript sau khi nộp bài.</p>
                 </div>
-                <div class="list-filter">
+                <div class="list-filter" id="ls-filter-bar">
                     <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
                     <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
                     <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
@@ -36,6 +36,12 @@
                         📜 Lịch sử
                     </button>
                 </div>
+            </div>
+
+            <!-- Mode tabs: Full đề / Bài lẻ -->
+            <div class="rmode-tabs-bar">
+                <button id="ls-mode-full" class="rmode-tab rmode-active" onclick="setListeningMode('full')">🎧 Full đề</button>
+                <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')">🎵 Bài lẻ</button>
             </div>
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
@@ -48,6 +54,25 @@
 
             <div id="tests-wrapper">
                 <div class="loading-spinner">Đang tải đề thi...</div>
+            </div>
+
+            <!-- Bài lẻ section picker (hidden initially) -->
+            <div id="lele-picker-lt" class="hidden">
+                <div class="plele-cat-tabs">
+                    <button class="plele-tab plele-active" data-part="1" onclick="loadPracticeSections(1, this)">
+                        <span class="plele-badge p1">S1</span> Section 1 <span class="plele-range">câu 1–10</span>
+                    </button>
+                    <button class="plele-tab" data-part="2" onclick="loadPracticeSections(2, this)">
+                        <span class="plele-badge p2">S2</span> Section 2 <span class="plele-range">câu 11–20</span>
+                    </button>
+                    <button class="plele-tab" data-part="3" onclick="loadPracticeSections(3, this)">
+                        <span class="plele-badge p3">S3</span> Section 3 <span class="plele-range">câu 21–30</span>
+                    </button>
+                    <button class="plele-tab" data-part="4" onclick="loadPracticeSections(4, this)">
+                        <span class="plele-badge p4">S4</span> Section 4 <span class="plele-range">câu 31–40</span>
+                    </button>
+                </div>
+                <div id="lt-section-list"></div>
             </div>
         </div>
     </div>
@@ -219,6 +244,62 @@
                     <div class="q-nav-grid-horizontal" id="q-nav-grid-rv"></div>
                 </div>
                 <div id="review-questions-inner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+     SCREEN: PRACTICE (Bài lẻ Listening)
+══════════════════════════════════════════════ -->
+    <div id="screen-practice" class="screen">
+        <!-- Topbar -->
+        <div class="exam-topbar">
+            <button class="btn-ghost" onclick="closeLTPractice()">← Thoát</button>
+            <span class="exam-title" id="lt-practice-title" style="flex:1">Luyện tập Listening</span>
+            <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
+            <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+        </div>
+        <!-- Progress bar -->
+        <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
+            <div id="lt-practice-prog-fill" class="practice-prog-fill"></div>
+        </div>
+        <!-- Audio bar -->
+        <div class="audio-bar" id="practice-audio-bar">
+            <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()">▶</button>
+            <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
+            <div class="audio-seek-wrap">
+                <input type="range" class="audio-seek" id="audio-seek-pr" value="0" min="0" max="100" step="0.1"
+                    oninput="onSeekInput(this.value)" />
+                <div class="audio-time">
+                    <span id="audio-current-pr">00:00</span>
+                    <span id="audio-total-pr">00:00</span>
+                </div>
+            </div>
+            <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
+            <div class="speed-btns">
+                <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
+                <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
+                <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
+                <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
+            </div>
+            <div class="volume-wrap">
+                <span class="volume-icon" id="vol-icon-pr" onclick="toggleMute()">🔊</span>
+                <input type="range" class="volume-seek" id="volume-seek-pr" value="100" min="0" max="100" step="1"
+                    oninput="setVolume(this.value, 'pr')" title="Volume" />
+            </div>
+        </div>
+        <!-- Body -->
+        <div class="lt-practice-body">
+            <div id="lt-practice-questions" class="lt-practice-questions-panel">
+                <div id="lt-practice-questions-inner"></div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="exam-footer">
+            <div class="q-nav-scroll" id="lt-practice-q-nav"></div>
+            <div class="exam-footer-btns" id="lt-practice-footer-btns">
+                <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
+                <button class="btn-primary" onclick="submitLTPractice()">Kiểm tra đáp án</button>
             </div>
         </div>
     </div>
@@ -567,11 +648,7 @@
             // Show/hide fixed section nav bar only on exam and review screens
             const navBar = document.getElementById('section-nav-fixed');
             if (navBar) {
-                if (name === 'exam' || name === 'review') {
-                    navBar.classList.remove('hidden');
-                } else {
-                    navBar.classList.add('hidden');
-                }
+                navBar.classList.toggle('hidden', name !== 'exam' && name !== 'review');
             }
         }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -770,17 +847,24 @@
                 const dur = audio.duration || 0;
                 setTimeDisplay('audio-current', 0); setTimeDisplay('audio-total', dur);
                 setTimeDisplay('audio-current-rv', 0); setTimeDisplay('audio-total-rv', dur);
+                setTimeDisplay('audio-current-pr', 0); setTimeDisplay('audio-total-pr', dur);
                 document.getElementById('audio-seek').max = dur;
                 document.getElementById('audio-seek-rv').max = dur;
+                const prSeek = document.getElementById('audio-seek-pr');
+                if (prSeek) { prSeek.max = dur; prSeek.value = 0; }
             });
             audio.addEventListener('play', () => {
-                document.getElementById('play-btn').textContent = '⏸';
-                document.getElementById('play-btn-rv').textContent = '⏸';
+                ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '⏸';
+                });
                 if (!state.isReview) updateExamAudioStatus(true);
             });
             audio.addEventListener('pause', () => {
-                document.getElementById('play-btn').textContent = '▶';
-                document.getElementById('play-btn-rv').textContent = '▶';
+                ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '▶';
+                });
                 if (!state.isReview) updateExamAudioStatus(false);
             });
             audio.addEventListener('ended', () => {
@@ -790,9 +874,13 @@
 
         function onTimeUpdate() {
             const t = audio.currentTime;
-            setTimeDisplay('audio-current', t); setTimeDisplay('audio-current-rv', t);
+            setTimeDisplay('audio-current', t);
+            setTimeDisplay('audio-current-rv', t);
+            setTimeDisplay('audio-current-pr', t);
             document.getElementById('audio-seek').value = t;
             document.getElementById('audio-seek-rv').value = t;
+            const prSeek = document.getElementById('audio-seek-pr');
+            if (prSeek) prSeek.value = t;
         }
 
         function setTimeDisplay(id, secs) {
@@ -804,16 +892,20 @@
         function onSeekInput(val) { audio.currentTime = parseFloat(val); }
         let _prevVolume = 1;
 
+        const _allVolSliders = ['volume-seek-exam', 'volume-seek-rv', 'volume-seek-pr'];
+        const _allVolIcons   = ['vol-icon-exam', 'vol-icon-rv', 'vol-icon-pr'];
+
         function setVolume(val, source) {
             const v = parseInt(val) / 100;
             audio.volume = v;
-            // Sync the other slider
-            const otherId = source === 'exam' ? 'volume-seek-rv' : 'volume-seek-exam';
-            const other = document.getElementById(otherId);
-            if (other) other.value = val;
-            // Update icons on both bars
+            _allVolSliders.forEach(id => {
+                if (id !== `volume-seek-${source}`) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                }
+            });
             const icon = v === 0 ? '🔇' : v < 0.4 ? '🔉' : '🔊';
-            ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
+            _allVolIcons.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = icon;
             });
@@ -824,22 +916,14 @@
             if (audio.volume > 0) {
                 _prevVolume = audio.volume;
                 audio.volume = 0;
-                document.getElementById('volume-seek-exam').value = 0;
-                document.getElementById('volume-seek-rv').value = 0;
-                ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = '🔇';
-                });
+                _allVolSliders.forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
+                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '🔇'; });
             } else {
                 const restore = Math.round(_prevVolume * 100);
                 audio.volume = _prevVolume;
-                document.getElementById('volume-seek-exam').value = restore;
-                document.getElementById('volume-seek-rv').value = restore;
+                _allVolSliders.forEach(id => { const el = document.getElementById(id); if (el) el.value = restore; });
                 const icon = _prevVolume < 0.4 ? '🔉' : '🔊';
-                ['vol-icon-exam', 'vol-icon-rv'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = icon;
-                });
+                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = icon; });
             }
         }
 
@@ -2366,6 +2450,447 @@
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
         window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
+        // Bài lẻ Listening
+        window.setListeningMode = setListeningMode;
+        window.loadPracticeSections = loadPracticeSections;
+        window.startPracticeSection = startPracticeSection;
+        window.submitLTPractice = submitLTPractice;
+        window.closeLTPractice = closeLTPractice;
+        window.retryLTPractice = retryLTPractice;
+        window.ltScrollToQ = ltScrollToQ;
+    </script>
+
+    <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
+    <script>
+    'use strict';
+
+    /* ── State ─────────────────────────────────────────────────────────── */
+    let _ltOrigSection      = null;  // full section with correctAnswer
+    let _ltCleanSection     = null;  // stripped (no correctAnswer) for display
+    let _ltPracticePartNum  = null;
+    let _ltPracticeSectionId= null;
+    let _ltPracticeBackup   = null;  // saves state.answers etc. when entering practice
+    let _ltPracticeTimer    = null;
+    let _ltPracticeStartTime= 0;
+    let _ltPracticeElapsed  = 0;
+
+    /* ── Helper ──────────────────────────────────────────────────────────── */
+    function _ltGetAllQs(section) {
+        return (section?.questionGroups || []).flatMap(g => g.questions || []);
+    }
+
+    /* ── Stopwatch ───────────────────────────────────────────────────────── */
+    function _startLTPracticeTimer(totalQ) {
+        _ltPracticeStartTime = Date.now();
+        _ltPracticeElapsed   = 0;
+        _clearLTPracticeTimer();
+        const swEl   = document.getElementById('lt-practice-stopwatch');
+        const txtEl  = document.getElementById('lt-practice-progress-txt');
+        const barWrap= document.getElementById('lt-practice-prog-bar');
+        const barFill= document.getElementById('lt-practice-prog-fill');
+        if (swEl)    { swEl.textContent = '00:00'; swEl.className = 'practice-stopwatch'; swEl.style.display = ''; }
+        if (txtEl)   { txtEl.textContent = `0 / ${totalQ} câu`; txtEl.style.display = ''; }
+        if (barWrap) barWrap.style.display = '';
+        if (barFill) { barFill.style.width = '0%'; barFill.className = 'practice-prog-fill'; }
+        _ltPracticeTimer = setInterval(() => {
+            const secs = Math.floor((Date.now() - _ltPracticeStartTime) / 1000);
+            _ltPracticeElapsed = secs;
+            const m = String(Math.floor(secs / 60)).padStart(2, '0');
+            const s = String(secs % 60).padStart(2, '0');
+            if (swEl) {
+                swEl.textContent = `${m}:${s}`;
+                swEl.className = secs >= 1200 ? 'practice-stopwatch sw-slow'
+                               : secs >= 600  ? 'practice-stopwatch sw-medium'
+                               : 'practice-stopwatch';
+            }
+        }, 1000);
+    }
+
+    function _stopLTPracticeTimer() {
+        _clearLTPracticeTimer();
+        const swEl = document.getElementById('lt-practice-stopwatch');
+        if (swEl) swEl.classList.add('sw-stopped');
+        return _ltPracticeElapsed;
+    }
+
+    function _clearLTPracticeTimer() {
+        if (_ltPracticeTimer) { clearInterval(_ltPracticeTimer); _ltPracticeTimer = null; }
+    }
+
+    function _hideLTPracticeHUD() {
+        ['lt-practice-stopwatch', 'lt-practice-progress-txt', 'lt-practice-prog-bar'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function _updateLTPracticeProgress() {
+        if (!_ltPracticeTimer) return;
+        const allQ   = _ltGetAllQs(_ltCleanSection);
+        const total  = allQ.length;
+        const answered = allQ.filter(q => {
+            const a = state.answers[q.questionNumber];
+            return a && a !== '[]';
+        }).length;
+        const txtEl  = document.getElementById('lt-practice-progress-txt');
+        const barFill= document.getElementById('lt-practice-prog-fill');
+        const pct    = total ? Math.round(answered / total * 100) : 0;
+        if (txtEl)   txtEl.textContent = `${answered} / ${total} câu`;
+        if (barFill) {
+            barFill.style.width = `${pct}%`;
+            barFill.className = answered === total ? 'practice-prog-fill fill-done'
+                              : pct >= 50          ? 'practice-prog-fill fill-half'
+                              : 'practice-prog-fill';
+        }
+        // Highlight answered q-nav buttons
+        document.querySelectorAll('#lt-practice-q-nav .q-nav-btn').forEach(btn => {
+            const m = (btn.getAttribute('onclick') || '').match(/\d+/);
+            if (m) {
+                const a = state.answers[+m[0]];
+                btn.classList.toggle('q-nav-answered', !!(a && a !== '[]'));
+            }
+        });
+    }
+
+    /* ── Mode switch (Full đề ↔ Bài lẻ) ─────────────────────────────────── */
+    function setListeningMode(mode) {
+        const isLele = mode === 'lele';
+        document.getElementById('ls-mode-full')?.classList.toggle('rmode-active', !isLele);
+        document.getElementById('ls-mode-lele')?.classList.toggle('rmode-active', isLele);
+
+        const picker   = document.getElementById('lele-picker-lt');
+        const wrapper  = document.getElementById('tests-wrapper');
+        const banner   = document.getElementById('resume-banner');
+        const filterBar= document.getElementById('ls-filter-bar');
+        const subtitle = document.getElementById('ls-mode-subtitle');
+        const title    = document.getElementById('ls-mode-title');
+
+        if (picker)    picker.classList.toggle('hidden', !isLele);
+        if (wrapper)   wrapper.style.display    = isLele ? 'none' : '';
+        if (banner)    banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+        if (filterBar) filterBar.style.display  = isLele ? 'none' : '';
+        if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
+        if (title) {
+            title.innerHTML = isLele
+                ? 'Luyện tập <span class="tag-red" style="background:#10b981">Listening Bài lẻ</span>'
+                : 'Luyện tập <span class="tag-red">Listening Full đề</span>';
+        }
+        if (isLele) {
+            const listEl = document.getElementById('lt-section-list');
+            if (listEl && !listEl.children.length) {
+                const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
+                const part = parseInt(activeTab?.dataset.part) || 1;
+                loadPracticeSections(part);
+            }
+        }
+    }
+
+    /* ── Load section list for a part ───────────────────────────────────── */
+    async function loadPracticeSections(partNum, tabEl) {
+        document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(b => b.classList.remove('plele-active'));
+        const tab = tabEl || document.querySelector(`#lele-picker-lt .plele-tab[data-part="${partNum}"]`);
+        if (tab) tab.classList.add('plele-active');
+
+        const listEl = document.getElementById('lt-section-list');
+        if (!listEl) return;
+
+        const clsMap  = { 1:'p1', 2:'p2', 3:'p3', 4:'p4' };
+        const cls     = clsMap[partNum] || 'p1';
+        const typeLabel = {
+            'multiple-choice':'Multiple Choice', 'fill-blank':'Gap Filling',
+            'sentence-completion':'Sentence Completion', 'matching':'Matching',
+            'map-labelling':'Map Labelling', 'checkbox':'Multiple Choice',
+            'multi-answer-group':'Multiple Choice', 'matching-info':'Matching Info',
+            'table':'Form/Table', 'note-form':'Note Form', 'bullet-list':'Bullet List',
+            'plain':'Short Answer', 'map':'Map Labelling',
+            'matching-options':'Matching', 'summary-completion':'Summary',
+            'sentence-endings':'Sentence Endings'
+        };
+
+        // Skeleton
+        listEl.innerHTML = `<div class="practice-card-grid">${Array(3).fill(0).map(() => `
+            <div class="practice-card practice-card-sk">
+                <div class="practice-card-cover"></div>
+                <div class="practice-card-body">
+                    <div class="sk-line" style="height:14px;width:85%"></div>
+                    <div class="sk-line" style="height:12px;width:60%"></div>
+                    <div class="sk-line" style="height:32px;width:100%;margin-top:8px;border-radius:7px"></div>
+                </div>
+            </div>`).join('')}</div>`;
+
+        try {
+            const res = await fetch(`${API}/listening/practice/list?part=${partNum}`, { headers: authH() });
+            const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+            if (!data.success) throw new Error(data.message);
+            const sections = data.sections || [];
+            if (!sections.length) {
+                listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#9ca3af">
+                    <div style="font-size:32px;margin-bottom:8px">🎧</div>
+                    <div>Chưa có bài lẻ nào cho Section ${partNum}</div>
+                </div>`;
+                return;
+            }
+            listEl.innerHTML = `<div class="practice-card-grid">${sections.map(s => {
+                const qtypes = [...new Set((s.questionGroups || []).flatMap(g =>
+                    (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
+                ))].slice(0, 3);
+                const dur = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} min` : '';
+                return `<div class="practice-card" onclick="startPracticeSection('${s._id}',${partNum})">
+                    <div class="practice-card-cover">
+                        <div class="practice-cover-logo"><span>D</span>aniel</div>
+                        <span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>
+                    </div>
+                    <div class="practice-card-body">
+                        <div class="practice-card-title">${escHtml(s.title)}</div>
+                        <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small style="color:#9ca3af">🎵 ${dur}</small>` : ''}</div>
+                        <button class="practice-card-btn ${cls}"
+                            onclick="event.stopPropagation();startPracticeSection('${s._id}',${partNum})">
+                            Làm bài · ${s.questionCount} câu
+                        </button>
+                    </div>
+                </div>`;
+            }).join('')}</div>`;
+        } catch(e) {
+            listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#e53935">
+                Lỗi tải danh sách: ${e.message}
+                <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections(${partNum})">Thử lại</button>
+            </div>`;
+        }
+    }
+
+    /* ── Start practice for one section ─────────────────────────────────── */
+    async function startPracticeSection(sectionId, partNum) {
+        const cards = document.querySelectorAll('#lt-section-list .practice-card');
+        cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+        try {
+            const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
+            const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+            if (!data.success || !data.section) { toast('Không tải được bài luyện tập', 'error'); return; }
+            _enterLTPracticeScreen(data.section, partNum, sectionId);
+        } catch(e) { toast('Lỗi kết nối server', 'error'); }
+        finally { cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; }); }
+    }
+
+    /* ── Enter practice screen ───────────────────────────────────────────── */
+    function _enterLTPracticeScreen(section, partNum, sectionId) {
+        _ltOrigSection       = section;
+        _ltPracticePartNum   = partNum;
+        _ltPracticeSectionId = sectionId;
+
+        // Backup exam state so we can restore on close
+        _ltPracticeBackup = { answers: state.answers, currentTestId: state.currentTestId,
+                              currentTest: state.currentTest, partIdx: state.partIdx, isReview: state.isReview };
+
+        // Swap answers to a fresh object (all existing answer funcs write here)
+        state.answers = {};
+        state.isReview = false;
+
+        // Clean section: strip correctAnswer (keep explanation for after submit)
+        _ltCleanSection = JSON.parse(JSON.stringify(section));
+        _ltGetAllQs(_ltCleanSection).forEach(q => {
+            delete q.correctAnswer;
+            delete q.userAnswer;
+            delete q.isCorrect;
+        });
+
+        // Render header + questions
+        const inner = document.getElementById('lt-practice-questions-inner');
+        let html = `<div class="section-header-card">
+            <div class="section-part-label">Section ${partNum}</div>
+            <div class="section-title-text">${escHtml(section.title || '')}</div>
+            ${section.description ? `<div class="section-desc">${escHtml(section.description)}</div>` : ''}
+            <div class="section-range">Questions ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
+        </div>`;
+        (_ltCleanSection.questionGroups || []).forEach((group, gi) => {
+            html += renderQuestionGroup(group, gi, false);
+        });
+        inner.innerHTML = html;
+        _ltGetAllQs(_ltCleanSection).forEach(q => restoreAnswer(q));
+        setupDragDrop(inner);
+        setupDictionaryDouble('lt-practice-questions');
+
+        // Q-nav
+        const nav = document.getElementById('lt-practice-q-nav');
+        if (nav) {
+            nav.innerHTML = _ltGetAllQs(_ltCleanSection)
+                .map(q => `<button class="q-nav-btn" id="lt-qnb-${q.questionNumber}" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`)
+                .join('');
+        }
+
+        // Audio
+        audio.pause();
+        audio.src = section.audioUrl || '';
+        audio.load();
+        const prBtn = document.getElementById('play-btn-pr');
+        if (prBtn) prBtn.textContent = '▶';
+
+        // Title + footer
+        document.getElementById('lt-practice-title').textContent = `🎧 Luyện: ${section.title || `Section ${partNum}`}`;
+        document.getElementById('lt-practice-footer-btns').innerHTML = `
+            <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
+            <button class="btn-primary" onclick="submitLTPractice()">Kiểm tra đáp án</button>`;
+
+        // Stopwatch + progress
+        _startLTPracticeTimer(_ltGetAllQs(_ltCleanSection).length);
+
+        // Listen for answer changes
+        const qi = document.getElementById('lt-practice-questions-inner');
+        if (qi) {
+            const onAnswer = () => setTimeout(_updateLTPracticeProgress, 40);
+            qi.addEventListener('click', onAnswer);
+            qi.addEventListener('input', onAnswer);
+        }
+
+        showScreen('practice');
+    }
+
+    /* ── Submit + grade ──────────────────────────────────────────────────── */
+    function submitLTPractice() {
+        if (!_ltCleanSection || !_ltOrigSection) return;
+
+        const elapsed = _stopLTPracticeTimer();
+        const allQ    = _ltGetAllQs(_ltOrigSection);
+        const total   = allQ.length;
+        let correct = 0, wrong = 0, skipped = 0;
+
+        // Build reviewed groups: merge user answers + correctAnswer + isCorrect
+        const reviewSection = JSON.parse(JSON.stringify(_ltOrigSection));
+        _ltGetAllQs(reviewSection).forEach(q => {
+            const qNum      = q.questionNumber;
+            const userAns   = state.answers[qNum] || '';
+            const correctAns= q.correctAnswer || '';
+            let isCorrect   = false;
+            if (!userAns || userAns === '[]') {
+                skipped++;
+            } else if (q.type === 'checkbox' || q.type === 'multi-answer-group') {
+                try {
+                    const a = JSON.parse(userAns).sort();
+                    const b = JSON.parse(correctAns || '[]').sort();
+                    isCorrect = JSON.stringify(a) === JSON.stringify(b);
+                } catch { isCorrect = false; }
+                if (isCorrect) correct++; else wrong++;
+            } else {
+                const userLow = userAns.trim().toLowerCase();
+                const alts    = correctAns.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
+                isCorrect     = alts.length > 0 ? alts.some(a => a === userLow) : false;
+                if (isCorrect) correct++; else wrong++;
+            }
+            q.userAnswer = userAns;
+            q.isCorrect  = isCorrect;
+        });
+
+        const pct    = total ? Math.round(correct / total * 100) : 0;
+        const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
+        const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
+        const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+
+        // Time line
+        const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+        const ts = String(elapsed % 60).padStart(2, '0');
+        const perQ = total ? Math.round(elapsed / total) : 0;
+        const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 80 ? 'Ổn' : 'Cần tăng tốc';
+        const encourage = pct >= 80 ? 'Xuất sắc! Tiếp tục phát huy!'
+                        : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
+                        : pct >= 40 ? 'Cần luyện tập thêm một chút!'
+                        : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
+        const timeLine = `<div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <span>⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong></span>
+            <span>${speed} · ${perQ}s/câu</span>
+            <span style="color:${color};font-style:italic">${encourage}</span>
+        </div>`;
+
+        // Re-render with review data
+        const inner = document.getElementById('lt-practice-questions-inner');
+        let html = `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+            <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+                <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
+                <span style="color:#16a34a">● Đúng: ${correct}</span>
+                <span style="color:#dc2626">● Sai: ${wrong}</span>
+                <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+            </div>${timeLine}
+        </div>
+        <div class="section-header-card">
+            <div class="section-part-label">Section ${_ltPracticePartNum}</div>
+            <div class="section-title-text">${escHtml(_ltOrigSection.title || '')}</div>
+        </div>`;
+        (reviewSection.questionGroups || []).forEach((group, gi) => {
+            html += renderQuestionGroup(group, gi, true);
+        });
+        inner.innerHTML = html;
+        inner.scrollTop = 0;
+
+        // Update footer
+        document.getElementById('lt-practice-footer-btns').innerHTML = `
+            <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
+            <button class="btn-primary" onclick="retryLTPractice()">🔁 Làm lại bài này</button>`;
+    }
+
+    /* ── Close practice → back to section list ───────────────────────────── */
+    function closeLTPractice() {
+        _clearLTPracticeTimer();
+        _hideLTPracticeHUD();
+        audio.pause();
+        audio.src = '';
+
+        // Restore exam state
+        if (_ltPracticeBackup) {
+            state.answers      = _ltPracticeBackup.answers;
+            state.currentTestId= _ltPracticeBackup.currentTestId;
+            state.currentTest  = _ltPracticeBackup.currentTest;
+            state.partIdx      = _ltPracticeBackup.partIdx;
+            state.isReview     = _ltPracticeBackup.isReview;
+            _ltPracticeBackup  = null;
+        }
+        _ltOrigSection = _ltCleanSection = null;
+
+        // Clear list so it reloads fresh
+        const listEl = document.getElementById('lt-section-list');
+        if (listEl) listEl.innerHTML = '';
+        loadTestList();
+        setTimeout(() => setListeningMode('lele'), 100);
+    }
+
+    /* ── Retry same section ───────────────────────────────────────────────── */
+    function retryLTPractice() {
+        if (!_ltPracticeSectionId || !_ltPracticePartNum) return;
+        const sectionId = _ltPracticeSectionId;
+        const partNum   = _ltPracticePartNum;
+        // Restore backup so _enterLTPracticeScreen can re-save it
+        if (_ltPracticeBackup) {
+            state.answers      = _ltPracticeBackup.answers;
+            state.currentTestId= _ltPracticeBackup.currentTestId;
+            state.currentTest  = _ltPracticeBackup.currentTest;
+            _ltPracticeBackup  = null;
+        }
+        startPracticeSection(sectionId, partNum);
+    }
+
+    /* ── Q-nav scroll for practice ───────────────────────────────────────── */
+    function ltScrollToQ(num) {
+        let el = document.getElementById(`qi-${num}`)
+               || document.getElementById(`fi-${num}`)
+               || document.getElementById(`q${num}`);
+        if (!el) {
+            document.querySelectorAll('[data-cluster-start]').forEach(c => {
+                const s = parseInt(c.dataset.clusterStart);
+                const e = parseInt(c.dataset.clusterEnd);
+                if (num >= s && num <= e) el = c;
+            });
+        }
+        if (!el) return;
+        const panel = document.getElementById('lt-practice-questions');
+        if (panel) {
+            const pr = panel.getBoundingClientRect();
+            const er = el.getBoundingClientRect();
+            panel.scrollTop += (er.top - pr.top) - 16;
+        } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        el.classList.remove('q-scroll-flash');
+        void el.offsetWidth;
+        el.classList.add('q-scroll-flash');
+        setTimeout(() => el.classList.remove('q-scroll-flash'), 950);
+    }
     </script>
 </body>
 

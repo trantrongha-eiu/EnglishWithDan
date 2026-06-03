@@ -193,3 +193,37 @@
         .rq-ans-correct { font-size:11px;color:#16a34a; }
         .clear-drop { cursor:pointer;font-size:11px;color:#9ca3af;margin-left:4px; }
         .clear-drop:hover { color:#ef4444; }
+
+        /* ── Section 4 badge colour ──────────────────────────────────────── */
+        .plele-badge.p4 { background: #8b5cf6; }
+        .plele-tab[data-part="4"].plele-active { border-color: #8b5cf6; color: #6d28d9; background: #f5f3ff; }
+        .plele-tab[data-part="4"].plele-active .plele-range { color: #c4b5fd; }
+        .practice-card-cat-badge.p4 { background: #8b5cf6; }
+        .practice-card-btn.p4 { background: #8b5cf6; }
+
+        /* ── Practice screen layout ──────────────────────────────────────── */
+        .lt-practice-body {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+        }
+        .lt-practice-questions-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 24px;
+        }
+        #screen-practice {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #screen-practice .exam-footer {
+            border-top: 1px solid #e5e7eb;
+        }
+
+        /* ── Mobile: practice screen ─────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .lt-practice-questions-panel { padding: 12px 12px 20px; }
+            #screen-practice .audio-bar { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
+            #screen-practice .audio-seek-wrap { min-width: 0; flex: 1 1 100%; order: -1; }
+        }

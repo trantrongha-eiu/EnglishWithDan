@@ -7,10 +7,11 @@ const router = express.Router();
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const ListeningTest = require('../models/ListeningTest');
+const ListeningTest    = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
-const AccessKey = require('../models/AccessKey');
-const auth = require('../middleware/auth');
+const ListeningSection = require('../models/ListeningSection');
+const AccessKey        = require('../models/AccessKey');
+const auth             = require('../middleware/auth');
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -332,6 +333,104 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Danh sách đề (kèm lịch sử làm bài của user)
+// ══════════════════════════════════════════════════════════════════════════════
+// STUDENT – Bài lẻ practice
+// ══════════════════════════════════════════════════════════════════════════════
+
+// GET /api/listening/practice/list?part=1|2|3|4
+router.get('/practice/list', auth, async (req, res) => {
+  try {
+    const part = parseInt(req.query.part);
+    if (![1, 2, 3, 4].includes(part))
+      return res.status(400).json({ success: false, message: 'Part không hợp lệ (1–4)' });
+    const sections = await ListeningSection.find({ partNumber: part, isActive: true })
+      .select('_id partNumber title description audioDuration questionRange questionGroups')
+      .sort({ createdAt: -1 })
+      .lean();
+    const safe = sections.map(s => ({
+      _id:          s._id,
+      partNumber:   s.partNumber,
+      title:        s.title,
+      description:  s.description,
+      audioDuration:s.audioDuration,
+      questionRange:s.questionRange,
+      questionCount:(s.questionGroups || []).reduce((sum, g) => sum + (g.questions?.length || 0), 0),
+      questionGroups:(s.questionGroups || []).map(g => ({
+        groupType: g.groupType,
+        questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
+      }))
+    }));
+    res.json({ success: true, sections: safe });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// GET /api/listening/practice/by-id/:id
+router.get('/practice/by-id/:id', auth, async (req, res) => {
+  try {
+    const section = await ListeningSection.findOne({ _id: req.params.id, isActive: true }).lean();
+    if (!section) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, section });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// ── Admin CRUD cho practice sections ──────────────────────────────────────────
+router.get('/admin/sections', auth, teacherOnly, async (req, res) => {
+  try {
+    const sections = await ListeningSection.find().sort({ partNumber: 1, createdAt: -1 });
+    res.json({ success: true, sections });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+router.get('/admin/sections/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const s = await ListeningSection.findById(req.params.id);
+    if (!s) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    res.json({ success: true, section: s });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+router.post('/admin/sections', auth, teacherOnly, async (req, res) => {
+  try {
+    const s = new ListeningSection(req.body);
+    await s.save();
+    res.json({ success: true, section: s });
+  } catch (err) { res.status(400).json({ success: false, message: err.message }); }
+});
+
+router.put('/admin/sections/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const s = await ListeningSection.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    res.json({ success: true, section: s });
+  } catch (err) { res.status(400).json({ success: false, message: err.message }); }
+});
+
+router.delete('/admin/sections/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await ListeningSection.findByIdAndUpdate(req.params.id, { isActive: false });
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// POST /api/listening/admin/sections/:id/audio
+router.post('/admin/sections/:id/audio', auth, teacherOnly, upload.single('audio'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: 'Không có file audio' });
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: 'video', folder: 'listening-sections', use_filename: true },
+        (err, r) => err ? reject(err) : resolve(r)
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
+    const s = await ListeningSection.findByIdAndUpdate(req.params.id, {
+      audioUrl:      result.secure_url,
+      audioFileName: req.file.originalname,
+      audioDuration: Math.round(result.duration || 0)
+    }, { new: true });
+    res.json({ success: true, audioUrl: result.secure_url, duration: Math.round(result.duration || 0), section: s });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
