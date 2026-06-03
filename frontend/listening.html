@@ -2624,9 +2624,10 @@
             if (!data.success) throw new Error(data.message);
             const sections = data.sections || [];
             if (!sections.length) {
-                listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#9ca3af">
-                    <div style="font-size:32px;margin-bottom:8px">🎧</div>
-                    <div>Chưa có bài lẻ nào cho Section ${partNum}</div>
+                listEl.innerHTML = `<div style="text-align:center;padding:56px 24px;color:#9ca3af;max-width:420px;margin:0 auto">
+                    <div style="font-size:48px;margin-bottom:16px">🎵</div>
+                    <div style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài lẻ nào</div>
+                    <div style="font-size:14px;line-height:1.6">Section ${partNum} chưa có bài luyện tập.<br>Admin sẽ thêm bài sớm nhé!</div>
                 </div>`;
                 return;
             }
