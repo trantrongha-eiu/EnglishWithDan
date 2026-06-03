@@ -161,6 +161,71 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════
+// POST /api/vocabbook/:id/merge  – gộp nhiều sổ vào sổ này
+// Body: { sourceIds: [id1, id2, ...] }  (chỉ sổ không phải default)
+// ══════════════════════════════════════════════════════
+router.post('/:id/merge', auth, async (req, res) => {
+  try {
+    const { sourceIds = [] } = req.body;
+    if (!sourceIds.length) {
+      return res.status(400).json({ success: false, message: 'Chưa chọn sổ nào để gộp' });
+    }
+
+    const dest = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!dest) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ đích' });
+
+    // Chỉ lấy sổ nguồn không phải default và thuộc user
+    const sources = await VocabBook.find({
+      _id: { $in: sourceIds },
+      userId: req.user._id,
+      isDefault: false
+    });
+    if (!sources.length) {
+      return res.status(400).json({ success: false, message: 'Không có sổ hợp lệ để gộp' });
+    }
+
+    // Build set từ đã có trong sổ đích (chống trùng)
+    const existingWords = new Set(dest.words.map(w => w.word.toLowerCase().trim()));
+
+    let addedCount = 0;
+    for (const src of sources) {
+      for (const w of src.words) {
+        const key = w.word.toLowerCase().trim();
+        if (!existingWords.has(key)) {
+          dest.words.push({
+            word:         w.word,
+            meaning:      w.meaning,
+            example:      w.example,
+            phonetic:     w.phonetic,
+            partOfSpeech: w.partOfSpeech,
+            status:       w.status,
+            note:         w.note,
+            source:       w.source,
+            wrongCount:   w.wrongCount,
+            savedAt:      w.savedAt
+          });
+          existingWords.add(key);
+          addedCount++;
+        }
+      }
+    }
+
+    await dest.save();
+
+    // Xóa các sổ nguồn (chỉ xóa sổ không phải default)
+    await VocabBook.deleteMany({
+      _id: { $in: sources.map(s => s._id) },
+      userId: req.user._id,
+      isDefault: false
+    });
+
+    res.json({ success: true, addedCount, mergedCount: sources.length, book: dest });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
 // DELETE /api/vocabbook/:id  – xoá sổ (không xoá sổ default)
 // ══════════════════════════════════════════════════════
 router.delete('/:id', auth, async (req, res) => {

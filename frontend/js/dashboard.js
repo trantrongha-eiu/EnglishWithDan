@@ -38,7 +38,8 @@ let sessionAnsweredCount = 0;
 let _streakReportedThisSession = false;
 
 // ── Vocab book practice tracking ───────────────
-let _isBookPractice = false; // true khi luyện từ sổ cá nhân, false khi luyện unit
+let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
+let _isDifficultPractice = false; // true khi ôn từ hay sai
 
 function _countAnswer() {
     sessionAnsweredCount++;
@@ -199,6 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupEmojiPicker();
     await Promise.all([loadMyBooks(), loadUnits()]);
     loadStreakAndUpdateMascot();
+    updateDifficultBadge();
 });
 
 /* ══════════════════════════════════════════════
@@ -762,28 +764,127 @@ async function renameBook() {
     } catch { toast('Error renaming', 'error'); }
 }
 
-/* ── Book menu – FIX: dùng modal thay window.confirm ── */
+/* ── Book menu – action sheet ── */
+let _menuBookId = null; // book currently open in action sheet
+
 function openBookMenu(bookId) {
     const book = myBooks.find(b => b._id === bookId);
     if (!book) return;
-    if (book.isDefault) {
-        toast('Cannot delete default notebook', 'error');
-        return;
-    }
+    _menuBookId = bookId;
+
+    document.getElementById('book-actions-title').textContent = `${book.emoji} ${book.name}`;
+
+    // Default books: chỉ cho đổi tên, ẩn gộp/xóa
+    const isDefault = !!book.isDefault;
+    document.getElementById('btn-merge-from-menu').style.display  = isDefault ? 'none' : 'flex';
+    document.getElementById('btn-delete-from-menu').style.display = isDefault ? 'none' : 'flex';
+
+    openModal('modal-book-actions');
+}
+
+function startRenameFromMenu() {
+    closeModal('modal-book-actions');
+    // Focus vào input tên sổ đang mở; nếu sổ chưa mở thì mở trước
+    if (_menuBookId && currentBookId !== _menuBookId) openBook(_menuBookId);
+    setTimeout(() => {
+        const inp = document.getElementById('book-editable-name');
+        if (inp) { inp.focus(); inp.select(); }
+    }, 200);
+}
+
+function deleteBookFromMenu() {
+    closeModal('modal-book-actions');
+    const book = myBooks.find(b => b._id === _menuBookId);
+    if (!book) return;
     confirm2(
-        'Delete Notebook',
-        `Delete notebook "${book.name}"? All words in it will be lost.`,
+        'Xóa sổ',
+        `Xóa sổ "${book.name}"? Tất cả từ trong sổ sẽ bị mất.`,
         async () => {
-            await fetch(`${API}/vocabbook/${bookId}`, { method: 'DELETE', headers: authH() });
-            if (currentBookId === bookId) {
+            await fetch(`${API}/vocabbook/${_menuBookId}`, { method: 'DELETE', headers: authH() });
+            if (currentBookId === _menuBookId) {
                 currentBookId = null;
                 document.getElementById('book-content').style.display  = 'none';
                 document.getElementById('book-welcome').style.display  = 'flex';
             }
-            toast('Notebook deleted');
+            toast('Đã xóa sổ');
             await loadMyBooks();
         }
     );
+}
+
+/* ── Merge books ── */
+function openMergeModal() {
+    closeModal('modal-book-actions');
+    const destBook = myBooks.find(b => b._id === _menuBookId);
+    if (!destBook) return;
+
+    document.getElementById('merge-modal-title').textContent = `Gộp sổ vào "${destBook.name}"`;
+    document.getElementById('merge-dest-name').textContent   = `"${destBook.name}"`;
+
+    // Chỉ hiển thị sổ không phải default và không phải sổ đích
+    const candidates = myBooks.filter(b => !b.isDefault && b._id !== _menuBookId);
+    const list = document.getElementById('merge-book-list');
+
+    if (!candidates.length) {
+        list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">
+            Không có sổ nào khác để gộp.<br>
+            <span style="font-size:12px">(Chỉ có thể gộp sổ do bạn tự tạo, không phải 5 sổ mặc định.)</span>
+        </div>`;
+        document.getElementById('btn-confirm-merge').style.display = 'none';
+    } else {
+        document.getElementById('btn-confirm-merge').style.display = '';
+        list.innerHTML = candidates.map(b => `
+            <label class="merge-book-item" id="merge-item-${b._id}">
+                <input type="checkbox" value="${b._id}" onchange="toggleMergeItem('${b._id}', this.checked)">
+                <span style="font-size:18px">${b.emoji}</span>
+                <span style="font-size:13px;font-weight:600">${b.name}</span>
+                <span class="merge-book-meta">${b.totalWords} từ</span>
+            </label>`).join('');
+    }
+
+    openModal('modal-merge-books');
+}
+
+function toggleMergeItem(bookId, checked) {
+    const item = document.getElementById(`merge-item-${bookId}`);
+    if (item) item.classList.toggle('selected', checked);
+}
+
+async function confirmMerge() {
+    const checkedIds = [...document.querySelectorAll('#merge-book-list input[type=checkbox]:checked')]
+        .map(cb => cb.value);
+    if (!checkedIds.length) { toast('Vui lòng chọn ít nhất 1 sổ', 'error'); return; }
+
+    const destBook = myBooks.find(b => b._id === _menuBookId);
+    const btn = document.getElementById('btn-confirm-merge');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gộp...';
+
+    try {
+        const res  = await fetch(`${API}/vocabbook/${_menuBookId}/merge`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ sourceIds: checkedIds })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+
+        closeModal('modal-merge-books');
+
+        // Nếu đang xem một trong các sổ bị xóa → chuyển về sổ đích
+        if (checkedIds.includes(currentBookId)) {
+            currentBookId = _menuBookId;
+        }
+
+        await loadMyBooks();
+        if (currentBookId === _menuBookId) await openBook(_menuBookId);
+
+        toast(`Đã gộp ${data.mergedCount} sổ · thêm ${data.addedCount} từ mới vào "${destBook?.name}"`, 'success');
+    } catch (err) {
+        toast(err.message || 'Lỗi khi gộp sổ', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-object-group"></i> Xác nhận gộp';
+    }
 }
 
 /* ── Add book modal ── */
@@ -1172,6 +1273,7 @@ async function _reportSessionStreak() {
 function startPractice(mode) {
     wrongWordSet.clear();
     requeuedWords.clear();
+    _isDifficultPractice = false;
     mixedQueue = [];
     mixedIndex = 0;
     currentQuestionIndex = 0;
@@ -1764,8 +1866,9 @@ function showResults(mode) {
             wrongListEl.style.display = 'none';
         }
     }
-    // Ghi nhận số lần sai vào DB (chỉ áp dụng khi luyện từ sổ cá nhân)
+    // Ghi nhận số lần sai vào DB
     if (_isBookPractice && wrongWordSet.size > 0) _persistWrongCounts();
+    if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
 }
 
 /* ══════════════════════════════════════════════
@@ -1885,6 +1988,183 @@ async function _persistWrongCounts() {
 }
 
 /* ══════════════════════════════════════════════
+   DIFFICULT WORDS TRACKER
+══════════════════════════════════════════════ */
+
+/* Report wrong words from any session → server accumulates wrongCount */
+async function _reportDifficultWords() {
+    if (!wrongWordSet.size) return;
+    const allWords = currentUnit?.words || [];
+    const words = [...wrongWordSet].map(ws => {
+        const found = allWords.find(x => x.word === ws);
+        return found
+            ? { word: found.word, meaning: found.meaning || '', phonetic: found.phonetic || '', partOfSpeech: found.partOfSpeech || '', example: found.example || '' }
+            : { word: ws, meaning: '' };
+    });
+    const source = _isBookPractice
+        ? (currentBookData?.name || 'Sổ cá nhân')
+        : `Unit ${currentUnit?.unitNumber || ''}`;
+    try {
+        await fetch(`${API}/difficult-words/report`, {
+            method: 'POST', headers: authH(),
+            body: JSON.stringify({ words, source })
+        });
+        updateDifficultBadge();
+    } catch {}
+}
+
+/* Update badge count on the sidebar button */
+async function updateDifficultBadge() {
+    try {
+        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => r.json());
+        const count = (data.words || []).length;
+        ['difficultCountBadge', 'difficultCountBadgeMob'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = count;
+            el.style.display = count > 0 ? 'flex' : 'none';
+        });
+    } catch {}
+}
+
+/* Open the modal and load words */
+async function openDifficultWordsModal() {
+    openModal('modal-difficult-words');
+    const body = document.getElementById('difficult-words-body');
+    body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+    document.getElementById('btn-practice-difficult').style.display = 'none';
+    try {
+        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => r.json());
+        _renderDifficultWords(data.words || []);
+    } catch {
+        body.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)">Không thể tải danh sách. Vui lòng thử lại.</div>';
+    }
+}
+
+function closeDifficultWordsModal() { closeModal('modal-difficult-words'); }
+
+/* Render word list inside modal */
+function _renderDifficultWords(words) {
+    document.getElementById('difficult-words-count').textContent = words.length ? `(${words.length} từ)` : '';
+    const body = document.getElementById('difficult-words-body');
+    const practiceBtn = document.getElementById('btn-practice-difficult');
+
+    if (!words.length) {
+        body.innerHTML = `
+            <div style="text-align:center;padding:40px 20px;color:var(--text3)">
+                <div style="font-size:48px;margin-bottom:12px">🎉</div>
+                <p style="font-size:14px;font-weight:600;color:var(--text2)">Chưa có từ nào trong danh sách!</p>
+                <p style="font-size:13px;margin-top:6px;line-height:1.6">Từ sẽ được thêm tự động khi bạn trả lời sai từ đó<br>từ 3 lần trở lên trong bất kỳ session luyện tập nào.</p>
+            </div>`;
+        practiceBtn.style.display = 'none';
+        return;
+    }
+
+    practiceBtn.style.display = 'flex';
+    window._difficultWordsList = words;
+
+    body.innerHTML = words.map(w => `
+        <div class="dw-item" id="dw-item-${w._id}">
+            <div class="dw-item-header">
+                <div style="min-width:0">
+                    <span class="dw-word">${w.word}</span>
+                    ${w.phonetic    ? `<span class="dw-phonetic"> ${w.phonetic}</span>` : ''}
+                    ${w.partOfSpeech ? `<span class="dw-pos"> · ${w.partOfSpeech}</span>` : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                    <span class="dw-wrong-badge">🔥 ${w.wrongCount} lần</span>
+                    <div class="dw-actions">
+                        <button class="dw-btn-edit" onclick="startEditDifficultWord('${w._id}')" title="Chỉnh sửa nghĩa"><i class="fas fa-pen"></i></button>
+                        <button class="dw-btn-del"  onclick="deleteDifficultWord('${w._id}')"    title="Xóa khỏi danh sách"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="dw-meaning" id="dw-meaning-${w._id}">${w.meaning || '<em style="color:var(--text3)">Chưa có nghĩa</em>'}</div>
+            ${w.example ? `<div class="dw-example">${w.example}</div>` : ''}
+            ${w.source  ? `<div class="dw-source"><i class="fas fa-tag" style="font-size:10px"></i> ${w.source}</div>` : ''}
+            <div class="dw-edit-form" id="dw-edit-${w._id}" style="display:none">
+                <input class="dw-edit-input" id="dw-edit-meaning-${w._id}" value="${(w.meaning || '').replace(/"/g,'&quot;')}" placeholder="Nhập nghĩa của từ...">
+                <div style="display:flex;gap:6px;margin-top:8px">
+                    <button class="btn-primary" style="font-size:12px;padding:5px 14px" onclick="saveDifficultWordEdit('${w._id}')">Lưu</button>
+                    <button class="btn-outline" style="font-size:12px;padding:5px 14px" onclick="cancelDifficultWordEdit('${w._id}')">Hủy</button>
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+function startEditDifficultWord(id) {
+    document.getElementById(`dw-edit-${id}`).style.display = 'block';
+    document.getElementById(`dw-edit-meaning-${id}`).focus();
+}
+
+function cancelDifficultWordEdit(id) {
+    document.getElementById(`dw-edit-${id}`).style.display = 'none';
+}
+
+async function saveDifficultWordEdit(id) {
+    const meaning = document.getElementById(`dw-edit-meaning-${id}`).value.trim();
+    try {
+        await fetch(`${API}/difficult-words/${id}`, {
+            method: 'PATCH', headers: authH(),
+            body: JSON.stringify({ meaning })
+        });
+        const el = document.getElementById(`dw-meaning-${id}`);
+        el.innerHTML = meaning || '<em style="color:var(--text3)">Chưa có nghĩa</em>';
+        document.getElementById(`dw-edit-${id}`).style.display = 'none';
+        if (window._difficultWordsList) {
+            const w = window._difficultWordsList.find(x => x._id === id);
+            if (w) w.meaning = meaning;
+        }
+        toast('Đã cập nhật', 'success');
+    } catch { toast('Lỗi khi lưu', 'error'); }
+}
+
+async function deleteDifficultWord(id) {
+    confirm2('Xóa khỏi danh sách', 'Bạn đã nhớ từ này rồi và muốn xóa khỏi danh sách hay sai?', async () => {
+        try {
+            await fetch(`${API}/difficult-words/${id}`, { method: 'DELETE', headers: authH() });
+            document.getElementById(`dw-item-${id}`)?.remove();
+            window._difficultWordsList = (window._difficultWordsList || []).filter(w => w._id !== id);
+            const remaining = window._difficultWordsList.length;
+            if (remaining === 0) {
+                _renderDifficultWords([]);
+            } else {
+                document.getElementById('difficult-words-count').textContent = `(${remaining} từ)`;
+            }
+            updateDifficultBadge();
+            toast('Đã xóa', 'success');
+        } catch { toast('Lỗi khi xóa', 'error'); }
+    });
+}
+
+/* Start a practice session using the difficult words list */
+function startDifficultWordsPractice() {
+    const words = window._difficultWordsList;
+    if (!words?.length) return;
+
+    closeDifficultWordsModal();
+
+    const practiceWordsList = words.map(w => ({
+        word:         w.word,
+        meaning:      w.meaning      || '',
+        phonetic:     w.phonetic     || '',
+        partOfSpeech: w.partOfSpeech || '',
+        example:      w.example      || '',
+        type: 'vocab'
+    }));
+
+    _isBookPractice      = false;
+    _isDifficultPractice = true;
+    currentUnit = { title: 'Từ hay sai', unitNumber: null, words: practiceWordsList };
+
+    document.getElementById('view-mybook').style.display = 'none';
+    document.getElementById('view-unit').style.display   = 'flex';
+    document.getElementById('unitTitle').textContent     = '🔥 Ôn lại từ hay sai';
+
+    showMode('mixed');
+}
+
+/* ══════════════════════════════════════════════
    LOGOUT
 ══════════════════════════════════════════════ */
 function logout() {
@@ -1904,8 +2184,13 @@ window.toggleSound        = toggleSound;
 window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;
 window.openBook           = openBook;
-window.openBookMenu       = openBookMenu;
-window.renameBook         = renameBook;
+window.openBookMenu          = openBookMenu;
+window.startRenameFromMenu   = startRenameFromMenu;
+window.deleteBookFromMenu    = deleteBookFromMenu;
+window.openMergeModal        = openMergeModal;
+window.toggleMergeItem       = toggleMergeItem;
+window.confirmMerge          = confirmMerge;
+window.renameBook            = renameBook;
 window.deleteWord         = deleteWord;
 window.updateWordStatus   = updateWordStatus;
 window.toggleSelect       = toggleSelect;
@@ -1944,4 +2229,12 @@ window.advanceMixed       = advanceMixed;
 window.checkMixedMC       = checkMixedMC;
 window.checkMixedListen   = checkMixedListen;
 window.checkMixedTrans    = checkMixedTrans;
-window.practiceHardWords  = practiceHardWords;
+window.practiceHardWords         = practiceHardWords;
+window.openDifficultWordsModal   = openDifficultWordsModal;
+window.closeDifficultWordsModal  = closeDifficultWordsModal;
+window.startDifficultWordsPractice = startDifficultWordsPractice;
+window.deleteDifficultWord       = deleteDifficultWord;
+window.startEditDifficultWord    = startEditDifficultWord;
+window.cancelDifficultWordEdit   = cancelDifficultWordEdit;
+window.saveDifficultWordEdit     = saveDifficultWordEdit;
+window.updateDifficultBadge      = updateDifficultBadge;
