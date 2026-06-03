@@ -12,6 +12,11 @@ const CATS = [
   { value: 'passage3', label: 'Passage 3' },
 ];
 const DIFFS = ['easy', 'medium', 'hard'];
+const PASSAGE_RANGES = {
+  passage1: { start: 1, end: 13 },
+  passage2: { start: 14, end: 26 },
+  passage3: { start: 27, end: 40 },
+};
 
 
 function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
@@ -124,6 +129,10 @@ function PassageModal({ passageId, onClose, onSaved }) {
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const setRange = k => e => setForm(f => ({ ...f, questionRange: { ...f.questionRange, [k]: Number(e.target.value) } }));
+  const handleCategoryChange = e => {
+    const cat = e.target.value;
+    setForm(f => ({ ...f, category: cat, questionRange: PASSAGE_RANGES[cat] || f.questionRange }));
+  };
 
   async function save(e) {
     e.preventDefault();
@@ -156,7 +165,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div className="form-group">
                 <label className="form-label">Category *</label>
-                <select className="form-input" value={form.category} onChange={set('category')}>
+                <select className="form-input" value={form.category} onChange={handleCategoryChange}>
                   {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
