@@ -1,8 +1,115 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { apiFetch } from '../utils/api';
+import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
+
+function AudioUploader({ audioUrl, onUploaded }) {
+  const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [fileName, setFileName] = useState('');
+  const [replacing, setReplacing] = useState(false);
+  const inputRef = useRef();
+
+  async function uploadFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('audio/') && file.type !== 'video/mp4') {
+      alert('Chỉ chấp nhận file audio (mp3, m4a, wav, mp4...)');
+      return;
+    }
+    setUploading(true);
+    setProgress(0);
+    setFileName(file.name);
+    try {
+      const formData = new FormData();
+      formData.append('audio', file);
+      const res = await fetch(`${API}/listening/admin/upload-audio`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Upload thất bại');
+      onUploaded(data.audioUrl, data.audioDuration, file.name);
+      setReplacing(false);
+    } catch (err) {
+      alert('Upload lỗi: ' + err.message);
+    } finally {
+      setUploading(false);
+      setProgress(0);
+    }
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+  }
+
+  const showDropZone = !audioUrl || replacing;
+
+  return (
+    <div className="form-group" style={{ marginBottom: 10 }}>
+      <label className="form-label">Audio</label>
+
+      {audioUrl && !replacing && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px', background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 8 }}>
+          <audio controls src={audioUrl} style={{ width: '100%', height: 36 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--text3)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {audioUrl.split('/').pop()}
+            </span>
+            <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 11 }} onClick={() => setReplacing(true)}>
+              🔄 Thay thế
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showDropZone && (
+        <div
+          onDragOver={e => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          onDrop={onDrop}
+          onClick={() => !uploading && inputRef.current.click()}
+          style={{
+            border: `2px dashed ${dragging ? 'var(--blue)' : 'rgba(255,255,255,.18)'}`,
+            borderRadius: 8,
+            padding: '28px 20px',
+            textAlign: 'center',
+            cursor: uploading ? 'default' : 'pointer',
+            background: dragging ? 'rgba(61,139,255,.08)' : 'var(--surface2)',
+            transition: 'all .15s',
+            color: 'var(--text3)',
+          }}
+        >
+          {uploading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <div style={{ fontSize: 13, color: 'var(--text2)' }}>⏳ Đang upload <strong>{fileName}</strong>…</div>
+              <div style={{ width: '100%', maxWidth: 280, height: 4, background: 'var(--surface3)', borderRadius: 2 }}>
+                <div style={{ width: '60%', height: '100%', background: 'var(--blue)', borderRadius: 2, animation: 'pulse 1.2s infinite' }} />
+              </div>
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: 28, marginBottom: 6 }}>🎵</div>
+              <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 4 }}>Kéo thả file audio vào đây</div>
+              <div style={{ fontSize: 11 }}>hoặc click để chọn — mp3, m4a, wav, mp4 (tối đa 200 MB)</div>
+              {replacing && (
+                <button type="button" style={{ marginTop: 10, fontSize: 11, background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', textDecoration: 'underline' }} onClick={e => { e.stopPropagation(); setReplacing(false); }}>
+                  Huỷ thay thế
+                </button>
+              )}
+            </>
+          )}
+          <input ref={inputRef} type="file" accept="audio/*,video/mp4" style={{ display: 'none' }} onChange={e => { const f = e.target.files[0]; if (f) uploadFile(f); e.target.value = ''; }} />
+        </div>
+      )}
+    </div>
+  );
+}
 
 function defaultSection(partNumber) {
   const ranges = { 1: { start: 1, end: 10 }, 2: { start: 11, end: 20 }, 3: { start: 21, end: 30 }, 4: { start: 31, end: 40 } };
@@ -146,10 +253,13 @@ export default function ListeningTestEdit() {
             <input className="form-input" type="number" value={meta.testNumber} onChange={setMetaField('testNumber')} min={1} />
           </div>
         </div>
-        <div className="form-group" style={{ marginBottom: 10 }}>
-          <label className="form-label">URL Audio (Cloudinary)</label>
-          <input className="form-input" value={meta.audioUrl} onChange={setMetaField('audioUrl')} placeholder="https://res.cloudinary.com/..." />
-        </div>
+        <AudioUploader
+          audioUrl={meta.audioUrl}
+          onUploaded={(url, duration) => {
+            setIsDirty(true);
+            setMeta(f => ({ ...f, audioUrl: url, audioDuration: duration }));
+          }}
+        />
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
           <input type="checkbox" checked={meta.isActive} onChange={setMetaField('isActive')} /> Kích hoạt
         </label>

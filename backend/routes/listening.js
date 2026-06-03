@@ -158,6 +158,30 @@ router.post('/admin/tests/:id/audio', auth, teacherOnly, upload.single('audio'),
   }
 });
 
+// POST /api/listening/admin/upload-audio  (standalone – no test ID required)
+router.post('/admin/upload-audio', auth, teacherOnly, upload.single('audio'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success: false, message: 'Không có file audio' });
+
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: 'video', folder: 'listening', public_id: `listening_tmp_${Date.now()}` },
+        (err, result) => err ? reject(err) : resolve(result)
+      );
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
+
+    res.json({
+      success: true,
+      audioUrl: uploadResult.secure_url,
+      audioDuration: Math.round(uploadResult.duration || 0),
+      originalName: req.file.originalname,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Upload thất bại: ' + err.message });
+  }
+});
+
 // ══════════════════════════════════════════════════════════════════════════════
 // ADMIN – Upload Map/Diagram Image
 // ══════════════════════════════════════════════════════════════════════════════
