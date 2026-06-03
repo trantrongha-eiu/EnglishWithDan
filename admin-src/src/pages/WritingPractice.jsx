@@ -227,6 +227,7 @@ export default function WritingPractice() {
   const [topics, setTopics] = useState([]);
   const [attempts, setAttempts] = useState([]);
   const [page, setPage] = useState(1);
+  const [attPage, setAttPage] = useState(1);
   const [levelFilter, setLevelFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [topicFilter, setTopicFilter] = useState('');
@@ -386,14 +387,13 @@ export default function WritingPractice() {
           || (a.studentId?.firstName || '').toLowerCase().includes(attemptSearch.toLowerCase())
           || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase()));
         const ATT_PAGE = 25;
-        const [attPage, setAttPage] = [page, setPage];
         const attPages = Math.max(1, Math.ceil(filtAtt.length / ATT_PAGE));
         const attRows  = filtAtt.slice((attPage - 1) * ATT_PAGE, attPage * ATT_PAGE);
         return (
           <>
             <div style={{ display: 'flex', gap: 10, margin: '12px 0', alignItems: 'center', justifyContent: 'space-between' }}>
               <input className="form-input search-input" placeholder="Tìm học sinh, chủ đề..." value={attemptSearch}
-                onChange={e => { setAttemptSearch(e.target.value); setPage(1); }} style={{ maxWidth: 280 }} />
+                onChange={e => { setAttemptSearch(e.target.value); setAttPage(1); }} style={{ maxWidth: 280 }} />
               <span style={{ fontSize: 12, color: 'var(--text3)' }}>{filtAtt.length} kết quả</span>
               <button className="btn btn-ghost btn-sm" onClick={loadAttempts}>🔄 Làm mới</button>
             </div>

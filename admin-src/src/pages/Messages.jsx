@@ -93,7 +93,7 @@ export default function Messages() {
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
   const filteredStudents = students.filter(s =>
-    !studentSearch || s.username.toLowerCase().includes(studentSearch.toLowerCase()) ||
+    !studentSearch || (s.username || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
     (s.email || '').toLowerCase().includes(studentSearch.toLowerCase())
   );
 
