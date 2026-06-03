@@ -922,20 +922,24 @@ function nextPractice() {
 }
 
 function quitPractice() {
-  const doQuit = () => {
+  const cleanup = () => {
     if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
-    state.view = 'select'; render();
   };
   if (state.sessionDone > 0) {
-    askT2Quit(doQuit, {
+    askT2Quit(() => {
+      cleanup();
+      savePracticeAttempt();
+      state.view = 'done'; render();
+    }, {
       mascot: '✏️',
       title: 'Dừng luyện tập?',
-      sub: `Bạn đã làm ${state.sessionDone} câu. Tiến độ sẽ không được lưu.`,
-      confirmText: 'Dừng lại',
+      sub: `Bạn đã làm ${state.sessionDone} câu. Xem tổng kết phiên học nhé!`,
+      confirmText: 'Xem kết quả',
       continueText: 'Tiếp tục học'
     });
   } else {
-    doQuit();
+    cleanup();
+    state.view = 'select'; render();
   }
 }
 

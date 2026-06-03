@@ -1305,10 +1305,11 @@ function skipExercise() {
 }
 
 function stopPracticeMode() {
-  askWpQuit(() => { saveBatch(); showState('welcome'); sessionDone = 0; }, {
+  if (sessionDone === 0) { showState('welcome'); return; }
+  askWpQuit(() => { saveBatch(); showDoneSummary(); showState('done'); }, {
     title: 'Dừng luyện tập?',
-    sub: sessionDone > 0 ? `Bạn đã làm ${sessionDone} câu.` : '',
-    confirmText: 'Dừng lại', continueText: 'Tiếp tục học'
+    sub: `Bạn đã làm ${sessionDone} câu. Xem tổng kết nhé!`,
+    confirmText: 'Xem kết quả', continueText: 'Tiếp tục học'
   });
 }
 

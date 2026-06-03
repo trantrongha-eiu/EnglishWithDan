@@ -429,6 +429,7 @@
         <button class="wp-restart-btn" onclick="restartExercises()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
         <button class="wp-more-btn"    onclick="tryMoreTopics()"><i class="fas fa-th"></i> Chọn chủ đề khác</button>
       </div>
+      <div id="done-wrong-review" style="width:100%;text-align:left;margin-top:8px"></div>
 
     </div><!-- /mode-practice -->
 
@@ -987,7 +988,14 @@ async function submitAnswer() {
     showFeedback(answer, data);
     updateProgress(data.xpEarned || 5, data.feedback?.isCorrect);
     // Buffer – không gửi ngay, chờ hoàn thành toàn bộ buổi luyện
-    sessionAttempts.push({ exerciseId: ex._id, userAnswer: answer, xpEarned: data.xpEarned || 5 });
+    sessionAttempts.push({
+      exerciseId: ex._id, userAnswer: answer, xpEarned: data.xpEarned || 5,
+      isCorrect: data.feedback?.isCorrect ?? null,
+      sampleAnswer: data.sampleAnswer || '',
+      question: ex.type === 'combine' ? (ex.sentences || []).join(' + ') : (ex.question || ''),
+      type: ex.type,
+      grammarPoint: ex.grammarPoint || ''
+    });
   } catch (err) {
     console.error(err);
     showToast('Lỗi khi chấm bài: ' + err.message, 'error');
@@ -1102,11 +1110,29 @@ function showDoneSummary() {
   const pct = sessionDone ? Math.round((sessionCorrect / sessionDone) * 100) : 0;
   const elapsed = getSessionElapsed();
   const m = Math.floor(elapsed / 60), s = elapsed % 60;
-  const timeStr = elapsed > 0 ? ` · ⏱ ${m}:${String(s).padStart(2,'0')}` : '';
   document.getElementById('done-summary').textContent =
     `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
   document.getElementById('done-stats').innerHTML =
     `<span>🎯 Đúng: ${sessionCorrect}/${sessionDone} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
+
+  const wrongAttempts = sessionAttempts.filter(a => a.isCorrect === false);
+  const wrongCount = wrongAttempts.length;
+  const reviewDiv = document.getElementById('done-wrong-review');
+  if (!reviewDiv) return;
+  if (wrongCount > 0) {
+    reviewDiv.innerHTML = `
+      <h3 style="font-size:14px;font-weight:700;color:#374151;margin:8px 0 10px">📋 Chi tiết câu sai (${wrongCount})</h3>
+      ${wrongAttempts.map((a, i) => `
+        <div style="border-radius:10px;padding:12px 16px;margin-bottom:10px;border-left:4px solid #dc2626;background:#fff1f2">
+          <div style="font-size:11px;font-weight:700;color:#b91c1c;margin-bottom:4px">❌ Câu ${i+1} — ${TYPE_LABELS[a.type] || a.type}</div>
+          <div style="font-size:12px;color:#374151;margin-bottom:6px;line-height:1.5">${a.question || ''}</div>
+          <div style="font-size:12px;margin-bottom:2px"><span style="color:#6b7280">Bạn:</span> <span style="font-weight:600;color:#b91c1c">${a.userAnswer || '(bỏ trống)'}</span></div>
+          <div style="font-size:12px"><span style="color:#15803d">Đáp án:</span> <span style="font-weight:600;color:#15803d">${a.sampleAnswer || ''}</span></div>
+          ${a.grammarPoint ? `<div style="font-size:11px;color:#0369a1;margin-top:4px;padding:4px 8px;background:#f0f9ff;border-radius:6px">📌 ${a.grammarPoint}</div>` : ''}
+        </div>`).join('')}`;
+  } else if (sessionDone > 0) {
+    reviewDiv.innerHTML = `<div style="text-align:center;color:#16a34a;font-weight:700;font-size:14px;margin-top:8px">🌟 Không có câu nào sai!</div>`;
+  }
 }
 
 function restartExercises() {
@@ -1459,10 +1485,10 @@ function confirmWpQuit() {
 
 function stopPracticeMode() {
   if (sessionDone > 0) {
-    askWpQuit(() => { stopSessionTimer(); saveBatch(); loadExercises(); });
+    askWpQuit(() => { stopSessionTimer(); saveBatch(); showDoneSummary(); showState('done'); });
   } else {
     stopSessionTimer();
-    loadExercises();
+    showState('welcome');
   }
 }
 
