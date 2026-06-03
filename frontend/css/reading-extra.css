@@ -163,3 +163,183 @@
     .exam-bar .profile-link:hover {
       background: #f3f4f6;
     }
+
+    /* ── Reading mode tabs (Full đề / Bài lẻ) ──────────────────── */
+    .rmode-tabs-bar {
+      display: flex;
+      gap: 4px;
+      margin: 14px 0 0;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0;
+    }
+    .rmode-tab {
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      color: #6b7280;
+      border-radius: 0;
+      font-family: inherit;
+      transition: color .15s;
+    }
+    .rmode-tab.rmode-active {
+      border-bottom-color: #3d8bff;
+      color: #3d8bff;
+    }
+    .rmode-tab:hover:not(.rmode-active) {
+      color: #374151;
+    }
+
+    /* ── Bài lẻ category sub-tabs ──────────────────────────────── */
+    .plele-cat-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 0 12px;
+      border-bottom: 1px solid #f3f4f6;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .plele-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 2px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      color: #6b7280;
+      transition: all .15s;
+    }
+    .plele-tab:hover { border-color: #d1d5db; color: #374151; }
+    .plele-tab.plele-active { border-color: #3d8bff; color: #1d4ed8; background: #eff6ff; }
+    .plele-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .plele-badge.p1 { background: #3d8bff; }
+    .plele-badge.p2 { background: #10b981; }
+    .plele-badge.p3 { background: #f59e0b; }
+    .plele-range {
+      font-size: 11px;
+      color: #9ca3af;
+      font-weight: 400;
+    }
+    .plele-tab.plele-active .plele-range { color: #93c5fd; }
+
+    /* ── Practice passage cards ─────────────────────────────────── */
+    .practice-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      padding-bottom: 24px;
+    }
+    .practice-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow .2s, transform .15s, border-color .15s;
+    }
+    .practice-card:hover {
+      box-shadow: 0 6px 20px rgba(0,0,0,.1);
+      transform: translateY(-2px);
+      border-color: #d1d5db;
+    }
+    .practice-card-cover {
+      height: 110px;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5986 60%, #1e40af 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .practice-cover-logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: rgba(255,255,255,.85);
+      letter-spacing: 1px;
+      font-style: italic;
+    }
+    .practice-cover-logo span {
+      color: #60a5fa;
+    }
+    .practice-card-cat-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+    .practice-card-cat-badge.p1 { background: #3d8bff; }
+    .practice-card-cat-badge.p2 { background: #10b981; }
+    .practice-card-cat-badge.p3 { background: #f59e0b; }
+    .practice-card-body {
+      padding: 12px;
+    }
+    .practice-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 6px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+    }
+    .practice-card-qtypes {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 10px;
+      min-height: 28px;
+      line-height: 1.6;
+    }
+    .practice-card-btn {
+      display: block;
+      width: 100%;
+      padding: 7px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity .15s;
+    }
+    .practice-card-btn:hover { opacity: .88; }
+    .practice-card-btn.p1 { background: #3d8bff; }
+    .practice-card-btn.p2 { background: #10b981; }
+    .practice-card-btn.p3 { background: #f59e0b; }
+
+    /* Skeleton for passage cards */
+    .practice-card-sk .practice-card-cover { background: #f3f4f6; }
+    .practice-card-sk .sk-line {
+      background: #e5e7eb;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      animation: sk-shimmer 1.4s ease infinite;
+      background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+      background-size: 200% 100%;
+    }

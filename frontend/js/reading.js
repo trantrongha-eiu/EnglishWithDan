@@ -334,34 +334,124 @@ function dismissResume() {
 ══════════════════════════════════════════════════════════════════════ */
 function setReadingMode(mode) {
   const isLele = mode === 'lele';
-  const btnFull = document.getElementById('rmode-full');
-  const btnLele = document.getElementById('rmode-lele');
+  document.getElementById('rmode-full')?.classList.toggle('rmode-active', !isLele);
+  document.getElementById('rmode-lele')?.classList.toggle('rmode-active', isLele);
+
   const picker  = document.getElementById('practice-picker');
   const wrapper = document.getElementById('tests-wrapper');
   const banner  = document.getElementById('resume-banner');
 
-  const activeStyle  = 'border-bottom-color:#3d8bff;color:#3d8bff';
-  const inactiveStyle = 'border-bottom-color:transparent;color:#6b7280';
-  if (btnFull) btnFull.style.cssText = btnFull.style.cssText.replace(/border-bottom-color:[^;]+;color:[^;]+/, isLele ? inactiveStyle : activeStyle);
-  if (btnLele) btnLele.style.cssText = btnLele.style.cssText.replace(/border-bottom-color:[^;]+;color:[^;]+/, isLele ? activeStyle : inactiveStyle);
-
   if (picker)  picker.classList.toggle('hidden', !isLele);
   if (wrapper) wrapper.style.display = isLele ? 'none' : '';
   if (banner)  banner.style.display  = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+
+  if (isLele) {
+    const listEl = document.getElementById('practice-passage-list');
+    if (listEl && !listEl.children.length) {
+      const activeTab = document.querySelector('.plele-tab.plele-active');
+      const cat = activeTab?.dataset.category || 'passage1';
+      loadPracticePassages(cat);
+    }
+  }
 }
 
-async function startPractice(category) {
-  _practiceCategory = category;
-  const catLabel = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
+async function loadPracticePassages(category, tabEl) {
+  // Update active tab
+  document.querySelectorAll('.plele-tab').forEach(b => b.classList.remove('plele-active'));
+  const tab = tabEl || document.querySelector(`.plele-tab[data-category="${category}"]`);
+  if (tab) tab.classList.add('plele-active');
 
-  // Show loading on the clicked card button
-  const cards = document.querySelectorAll('#practice-picker [onclick]');
-  cards.forEach(c => { c.style.opacity = '0.6'; c.style.pointerEvents = 'none'; });
+  const listEl = document.getElementById('practice-passage-list');
+  if (!listEl) return;
+
+  const cls = { passage1: 'p1', passage2: 'p2', passage3: 'p3' }[category] || 'p1';
+  const pNum = { passage1: '1', passage2: '2', passage3: '3' }[category] || '1';
+
+  // Skeleton
+  listEl.innerHTML = `<div class="practice-card-grid">${Array(4).fill(0).map(() => `
+    <div class="practice-card practice-card-sk">
+      <div class="practice-card-cover"></div>
+      <div class="practice-card-body">
+        <div class="sk-line sk-shimmer" style="height:13px;width:90%;margin-bottom:6px;border-radius:4px"></div>
+        <div class="sk-line sk-shimmer" style="height:13px;width:65%;margin-bottom:10px;border-radius:4px"></div>
+        <div class="sk-line sk-shimmer" style="height:28px;border-radius:7px"></div>
+      </div>
+    </div>`).join('')}</div>`;
 
   try {
-    const res = await apiFetch(`/api/reading/practice/${category}`);
+    const res = await apiFetch(`/api/reading/practice/list?category=${category}`);
+    const passages = res.passages || [];
+
+    if (!passages.length) {
+      listEl.innerHTML = `<div style="text-align:center;padding:48px 0;color:#9ca3af">
+        <div style="font-size:32px;margin-bottom:10px">📭</div>
+        <div style="font-weight:600;margin-bottom:4px">Chưa có bài đọc nào</div>
+        <div style="font-size:13px">Category này chưa có passage được thêm vào</div>
+      </div>`;
+      return;
+    }
+
+    const typeLabel = {
+      'true-false-ng': 'True / False / Not Given',
+      'yes-no-ng': 'Yes / No / Not Given',
+      'multiple-choice': 'Multiple Choice',
+      'fill-blank': 'Gap Filling',
+      'sentence-completion': 'Sentence Completion',
+      'matching-headings': 'Matching Headings',
+      'matching-info': 'Matching Information',
+      'matching-options': 'Matching Features',
+      'map': 'Map / Diagram',
+      'table': 'Table Completion',
+      'note-form': 'Note Completion',
+      'bullet-list': 'Bullet List',
+      'summary-completion': 'Summary Completion',
+      'sentence-endings': 'Sentence Endings',
+    };
+
+    listEl.innerHTML = `<div class="practice-card-grid">${passages.map(p => {
+      const qtypes = [...new Set(
+        (p.questionGroups || []).flatMap(g =>
+          g.questions?.map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType) || []
+        )
+      )].slice(0, 3);
+      const qCount = p.questionCount || 0;
+
+      return `<div class="practice-card" onclick="startPractice('${p._id}','${category}')">
+        <div class="practice-card-cover">
+          <div class="practice-cover-logo"><span>D</span>aniel</div>
+          <span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>
+        </div>
+        <div class="practice-card-body">
+          <div class="practice-card-title">${escHtml(p.title)}</div>
+          <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
+          <button class="practice-card-btn ${cls}"
+            onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
+            Làm bài · ${qCount} câu
+          </button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch (e) {
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
+      <div style="color:#e53935;margin-bottom:12px">Lỗi tải danh sách bài đọc</div>
+      <button onclick="loadPracticePassages('${category}')"
+        style="background:#3d8bff;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit">
+        ↺ Thử lại
+      </button>
+    </div>`;
+  }
+}
+
+async function startPractice(passageId, category) {
+  _practiceCategory = category;
+
+  const cards = document.querySelectorAll('#practice-passage-list .practice-card');
+  cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+
+  try {
+    const res = await apiFetch(`/api/reading/practice/by-id/${passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
-    _enterPracticeScreen(res.passage, category);
+    _enterPracticeScreen(res.passage, category, passageId);
   } catch (e) {
     showVocabToast('Lỗi kết nối server');
   } finally {
@@ -369,7 +459,7 @@ async function startPractice(category) {
   }
 }
 
-function _enterPracticeScreen(passage, category) {
+function _enterPracticeScreen(passage, category, passageId) {
   _practiceMode = true;
 
   // Build correctMap từ passage (backend trả đầy đủ đáp án)
@@ -396,6 +486,7 @@ function _enterPracticeScreen(passage, category) {
     correctMap,
     isPractice: true,
     practiceCategory: category,
+    practicePassageId: passageId || passage._id,
   };
 
   state.passages = [cleanPassage];
@@ -411,7 +502,7 @@ function _enterPracticeScreen(passage, category) {
   if (badge) badge.style.display = 'none';
 
   document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="closeRetry()">← Về danh sách</button>
+    <button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
     <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
@@ -1693,8 +1784,10 @@ function closeRetry() {
   }
   _practiceMode = false;
   if (fromPractice) {
+    // Clear list so setReadingMode reloads it fresh
+    const listEl = document.getElementById('practice-passage-list');
+    if (listEl) listEl.innerHTML = '';
     loadTests(true);
-    // Restore "Bài lẻ" tab after list loads
     setTimeout(() => setReadingMode('lele'), 100);
   } else {
     showScreen('review');
@@ -1762,8 +1855,8 @@ function submitRetry() {
 
   const fromPractice = _retryState?.isPractice;
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
-    ? `<button class="btn-ghost" onclick="closeRetry()">← Về danh sách</button>
-       <button class="btn-primary" onclick="retryReset()">🔁 Làm passage mới</button>`
+    ? `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
+       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại bài này</button>`
     : `<button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()">🔁 Làm lại từ đầu</button>`;
 }
@@ -1771,12 +1864,12 @@ function submitRetry() {
 function retryReset() {
   if (!_retryState) return;
   const isPractice = _retryState.isPractice;
-  const practiceCategory = _retryState.practiceCategory;
+  const practicePassageId = _retryState.practicePassageId;
+  const practiceCategory  = _retryState.practiceCategory;
   if (isPractice) {
-    // Practice mode: fetch một passage mới cùng category
     _retryState = null;
     _practiceMode = false;
-    startPractice(practiceCategory);
+    startPractice(practicePassageId, practiceCategory);
   } else {
     closeRetry();
     retryCurrentPassage();

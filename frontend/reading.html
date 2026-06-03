@@ -43,52 +43,32 @@
       </div>
 
       <!-- Mode tabs: Full đề / Bài lẻ -->
-      <div style="display:flex;gap:6px;margin:14px 0 0;border-bottom:2px solid #e5e7eb;padding-bottom:0">
-        <button id="rmode-full" onclick="setReadingMode('full')"
-          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid #3d8bff;margin-bottom:-2px;color:#3d8bff;border-radius:0;font-family:inherit">
+      <div class="rmode-tabs-bar">
+        <button id="rmode-full" class="rmode-tab rmode-active" onclick="setReadingMode('full')">
           📋 Full đề
         </button>
-        <button id="rmode-lele" onclick="setReadingMode('lele')"
-          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:#6b7280;border-radius:0;font-family:inherit">
+        <button id="rmode-lele" class="rmode-tab" onclick="setReadingMode('lele')">
           📖 Bài lẻ
         </button>
       </div>
 
       <!-- Practice picker (Bài lẻ mode) -->
-      <div id="practice-picker" class="hidden" style="padding:28px 0">
-        <div style="text-align:center;margin-bottom:24px">
-          <div style="font-size:15px;font-weight:600;color:#1f2937;margin-bottom:6px">Chọn loại passage muốn luyện</div>
-          <div style="font-size:13px;color:#9ca3af">Highlight và tra từ được bật sẵn trong chế độ luyện</div>
+      <div id="practice-picker" class="hidden">
+        <div class="plele-cat-tabs">
+          <button class="plele-tab plele-active" data-category="passage1" onclick="loadPracticePassages('passage1', this)">
+            <span class="plele-badge p1">P1</span> Passage 1
+            <span class="plele-range">câu 1–13</span>
+          </button>
+          <button class="plele-tab" data-category="passage2" onclick="loadPracticePassages('passage2', this)">
+            <span class="plele-badge p2">P2</span> Passage 2
+            <span class="plele-range">câu 14–26</span>
+          </button>
+          <button class="plele-tab" data-category="passage3" onclick="loadPracticePassages('passage3', this)">
+            <span class="plele-badge p3">P3</span> Passage 3
+            <span class="plele-range">câu 27–40</span>
+          </button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:620px;margin:0 auto">
-          <div onclick="startPractice('passage1')" style="background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06)"
-            onmouseover="this.style.borderColor='#3d8bff';this.style.boxShadow='0 4px 16px rgba(61,139,255,.15)'"
-            onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='0 1px 4px rgba(0,0,0,.06)'">
-            <div style="width:44px;height:44px;background:linear-gradient(135deg,#3d8bff,#7c3aed);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:800;color:#fff">P1</div>
-            <div style="font-size:15px;font-weight:700;color:#1f2937;margin-bottom:4px">Passage 1</div>
-            <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Câu 1 – 13</div>
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:14px">13 câu hỏi</div>
-            <div style="background:#3d8bff;color:#fff;border-radius:8px;padding:7px 0;font-size:13px;font-weight:600">Bắt đầu luyện</div>
-          </div>
-          <div onclick="startPractice('passage2')" style="background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06)"
-            onmouseover="this.style.borderColor='#10b981';this.style.boxShadow='0 4px 16px rgba(16,185,129,.15)'"
-            onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='0 1px 4px rgba(0,0,0,.06)'">
-            <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:800;color:#fff">P2</div>
-            <div style="font-size:15px;font-weight:700;color:#1f2937;margin-bottom:4px">Passage 2</div>
-            <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Câu 14 – 26</div>
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:14px">13 câu hỏi</div>
-            <div style="background:#10b981;color:#fff;border-radius:8px;padding:7px 0;font-size:13px;font-weight:600">Bắt đầu luyện</div>
-          </div>
-          <div onclick="startPractice('passage3')" style="background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06)"
-            onmouseover="this.style.borderColor='#f59e0b';this.style.boxShadow='0 4px 16px rgba(245,158,11,.15)'"
-            onmouseout="this.style.borderColor='#e5e7eb';this.style.boxShadow='0 1px 4px rgba(0,0,0,.06)'">
-            <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:18px;font-weight:800;color:#fff">P3</div>
-            <div style="font-size:15px;font-weight:700;color:#1f2937;margin-bottom:4px">Passage 3</div>
-            <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Câu 27 – 40</div>
-            <div style="font-size:11px;color:#9ca3af;margin-bottom:14px">14 câu hỏi</div>
-            <div style="background:#f59e0b;color:#fff;border-radius:8px;padding:7px 0;font-size:13px;font-weight:600">Bắt đầu luyện</div>
-          </div>
-        </div>
+        <div id="practice-passage-list"></div>
       </div>
 
       <!-- Resume banner -->

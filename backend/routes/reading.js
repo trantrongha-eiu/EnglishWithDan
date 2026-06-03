@@ -434,6 +434,58 @@ router.get('/history', auth, async (req, res) => {
 
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GET /api/reading/practice/list?category=passage1
+// Danh sách tất cả passage theo category (không có đáp án, để học sinh chọn)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/list', auth, async (req, res) => {
+  const { category } = req.query;
+  if (!['passage1', 'passage2', 'passage3'].includes(category)) {
+    return res.status(400).json({ success: false, message: 'Category không hợp lệ' });
+  }
+  try {
+    const passages = await Passage.find({ category, isActive: true })
+      .select('_id title category questionRange questionGroups questions')
+      .lean();
+    const safePassages = passages.map(p => ({
+      _id: p._id,
+      title: p.title,
+      category: p.category,
+      questionRange: p.questionRange,
+      questionCount: (p.questionGroups || []).reduce((s, g) => s + (g.questions?.length || 0), 0)
+        || (p.questions?.length || 0),
+      questionGroups: (p.questionGroups || []).map(g => ({
+        groupType: g.groupType,
+        questions: (g.questions || []).map(q => ({
+          questionNumber: q.questionNumber,
+          type: q.type,
+        }))
+      }))
+    }));
+    res.json({ success: true, passages: safePassages });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/reading/practice/by-id/:id
+// Lấy 1 passage cụ thể theo ID (đầy đủ đáp án, để grade client-side)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/by-id/:id', auth, async (req, res) => {
+  try {
+    const passage = await Passage.findOne({ _id: req.params.id, isActive: true }).lean();
+    if (!passage) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy bài đọc' });
+    }
+    res.json({ success: true, passage });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/reading/practice/:category
 // Lấy 1 passage ngẫu nhiên để luyện riêng lẻ (không cần key, grade client-side)
 // ─────────────────────────────────────────────────────────────────────────────
