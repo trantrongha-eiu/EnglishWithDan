@@ -276,7 +276,7 @@ function SummaryConfig({ config, onChange }) {
   const removeWB = i => onChange({ ...config, wordBank: wordBank.filter((_, j) => j !== i) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>🧩 <strong>Summary Completion:</strong> Đoạn tóm tắt với <code>__Q14__</code> cho chỗ trống. Word Bank: học sinh kéo-thả chữ cái. Câu hỏi chỉ cần số câu + đáp án là chữ cái (A, B…).</InfoBox>
+      <InfoBox>🧩 <strong>Summary Completion:</strong> Đoạn tóm tắt với <code>__Q14__</code> cho chỗ trống. Học sinh kéo-thả <strong>từ</strong> từ Word Bank. Câu hỏi: số câu + <strong>đáp án là từ thực tế</strong> (VD: <em>popular</em>, không phải chữ cái). Nhiều đáp án chấp nhận: <code>word1 / word2</code>.</InfoBox>
       <div style={{ marginBottom: 8 }}>
         <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Đoạn tóm tắt (dùng __Q14__ cho chỗ trống)</label>
         <textarea className="form-input" rows={4} style={{ marginTop: 4, fontSize: 12, resize: 'vertical' }} value={text} onChange={e => onChange({ ...config, text: e.target.value })} placeholder="The programme focuses on __Q14__ management and __Q15__ skills…" />

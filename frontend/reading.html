@@ -470,15 +470,17 @@
       const origSetInterval = window.setInterval;
       let _progInterval = null;
       function updateProgress() {
-        const inputs = document.querySelectorAll('#questions-inner input, #questions-inner select, #questions-inner textarea');
-        if (!inputs.length) return;
-        let answered = 0;
-        inputs.forEach(inp => {
-          if (inp.type === 'checkbox' || inp.type === 'radio') { if (inp.checked) answered++; }
-          else if (inp.value && inp.value.trim()) answered++;
-        });
-        const total = inputs.length;
-        const pct = total ? Math.round((answered / total) * 100) : 0;
+        // Dùng state.answers (không đếm DOM inputs) để TFNG/MC/drag-drop đều được tính đúng
+        if (!window.state || !window.getAllQuestionsFromPassage) return;
+        if (!state.passages?.length) return;
+        const allQ = state.passages.flatMap(p => getAllQuestionsFromPassage(p));
+        const total = allQ.length;
+        if (!total) return;
+        const answered = allQ.filter(q => {
+          const a = state.answers[q.questionNumber];
+          return a !== undefined && a !== '' && a !== '[]';
+        }).length;
+        const pct = Math.round((answered / total) * 100);
         const bar = document.getElementById('exam-progress-bar');
         const pill = document.getElementById('exam-progress-pill');
         const progAns = document.getElementById('prog-answered');

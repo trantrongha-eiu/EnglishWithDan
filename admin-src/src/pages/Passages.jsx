@@ -242,8 +242,12 @@ export default function Passages() {
       (!cat || p.category === cat) &&
       (!diff || p.difficulty === diff)
     ));
-    setPage(1);
   }, [all, search, cat, diff]);
+
+  // Chỉ reset trang khi filter thay đổi, không reset khi data reload (ẩn/hiện bài đọc)
+  useEffect(() => {
+    setPage(1);
+  }, [search, cat, diff]);
 
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 

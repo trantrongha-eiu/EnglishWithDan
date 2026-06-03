@@ -624,11 +624,13 @@ function _enterPracticeScreen(passage, category, passageId) {
   _startPracticeTimer(totalQ);
 
   // Listen for answer changes to update progress live
+  // 'drop' is needed because drag-drop events don't bubble as click/input
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
     const onAnswer = () => setTimeout(_updatePracticeProgress, 40);
     qi.addEventListener('click', onAnswer);
     qi.addEventListener('input', onAnswer);
+    qi.addEventListener('drop', onAnswer);
   }
 }
 
@@ -825,7 +827,11 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
   const matchingOptions = group.matchingOptions?.length
     ? group.matchingOptions
     : (group.endingsConfig?.endings || []).map(e => e.text || '');
-  const optLetters = matchingOptions.map((_, i) => String.fromCharCode(65 + i));
+  // sentence-endings: dùng letter lưu trong DB (admin có thể xóa/đổi thứ tự)
+  // matching-options: dùng vị trí A=0, B=1, C=2...
+  const optLetters = (group.groupType === 'sentence-endings' && group.endingsConfig?.endings?.length)
+    ? group.endingsConfig.endings.map((e, i) => e.letter || String.fromCharCode(65 + i))
+    : matchingOptions.map((_, i) => String.fromCharCode(65 + i));
   const groupId = 'mog-' + questions.map(q => q.questionNumber).join('-');
 
   // NB note (before chip bank)
@@ -1356,12 +1362,14 @@ function _refreshMOZone(qNum, groupId) {
   let desc = '';
   for (const g of allGroups) {
     if (g.groupType === 'matching-options' || g.groupType === 'sentence-endings') {
-      const idx = letter.charCodeAt(0) - 65;
-      // matchingOptions for new data, endingsConfig.endings for old sentence-endings data
-      const opts = g.matchingOptions?.length
-        ? g.matchingOptions
-        : (g.endingsConfig?.endings || []).map(e => e.text || '');
-      const opt = opts[idx] || '';
+      let opt = '';
+      if (g.groupType === 'sentence-endings' && g.endingsConfig?.endings?.length) {
+        // Tra cứu theo letter field (không phải vị trí) để đúng kể cả khi admin xóa/đổi thứ tự
+        opt = g.endingsConfig.endings.find(e => e.letter === letter)?.text || '';
+      } else {
+        const idx = letter.charCodeAt(0) - 65;
+        opt = (g.matchingOptions || [])[idx] || '';
+      }
       if (opt.length > 1) { desc = opt; break; }
     }
   }
