@@ -2224,7 +2224,7 @@ function setTool(tool) {
     const td = document.getElementById(id);
     if (td) td.classList.toggle('active', tool === 'dict');
   });
-  document.body.style.cursor = tool === 'highlight' ? 'crosshair' : '';
+  document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
 }
 
 document.addEventListener('mouseup', e => {

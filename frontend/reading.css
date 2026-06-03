@@ -2155,6 +2155,7 @@ body.eye-protection .split-questions {
   padding: 2px 6px;
   color: #111827;
   outline: none;
+  cursor: text;
   transition: border-color .15s;
 }
 
