@@ -12,7 +12,7 @@ function getToken() { return localStorage.getItem('token'); }
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  window.location.href = 'index.html';
+  window.location.href = 'login.html';
 }
 
 async function apiFetch(path, opts = {}) {
@@ -30,7 +30,7 @@ async function apiFetch(path, opts = {}) {
   if (text.trimStart().startsWith('<')) {
     throw new Error('Server không phản hồi đúng. Vui lòng thử lại.');
   }
-  return JSON.parse(text);
+  try { return JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
 }
 
 // ──────────────────────────────────────────────────────
@@ -84,7 +84,7 @@ function showScreen(id) {
 // ──────────────────────────────────────────────────────
 (function init() {
   const token = getToken();
-  if (!token) { window.location.href = 'index.html'; return; }
+  if (!token) { window.location.href = 'login.html'; return; }
 
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const displayName = user.firstName
@@ -629,7 +629,7 @@ async function downloadAttemptById(id) {
     if (!data.success) throw new Error(data.message);
     doDownload(data.attempt);
   } catch (e) {
-    alert('Lỗi: ' + e.message);
+    showToast('Lỗi tải bài: ' + e.message);
   }
 }
 

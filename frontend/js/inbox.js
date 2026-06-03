@@ -120,7 +120,13 @@ async function deleteMsg(id) {
         <i class="fas fa-envelope-open-text"></i>
         <p>Chọn một tin nhắn để đọc</p>
       </div>`;
-  } catch (e) { alert(e.message); }
+  } catch (e) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#ef4444;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.2)';
+    t.textContent = 'Lỗi: ' + e.message;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
 }
 
 // Expose for onclick

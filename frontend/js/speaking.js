@@ -40,7 +40,11 @@ function getToken() {
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  window.location.href = 'index.html';
+  window.location.href = 'login.html';
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 async function apiFetch(path, opts = {}) {
@@ -59,7 +63,7 @@ async function apiFetch(path, opts = {}) {
   }
   const text = await res.text();
   if (text.trimStart().startsWith('<')) throw new Error('Server không phản hồi đúng.');
-  return JSON.parse(text);
+  try { return JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
 }
 
 // ──────────────────────────────────────────────────────
@@ -78,7 +82,7 @@ const state = {
 (function init() {
   const token = getToken();
   if (!token) {
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
     return;
   }
 
@@ -149,6 +153,7 @@ async function loadTopics() {
     });
   } catch (e) {
     console.error('loadTopics:', e);
+    showToast('Không thể tải danh sách chủ đề. Vui lòng thử lại.', 'error');
   }
   await loadQuestions();
 }
@@ -177,6 +182,7 @@ async function loadQuestions() {
     });
   } catch (e) {
     console.error('loadQuestions:', e);
+    showToast('Không thể tải câu hỏi. Vui lòng thử lại.', 'error');
   }
 }
 
@@ -455,10 +461,10 @@ async function analyzeTranscript() {
           const d = document.createElement('div');
           d.className = 'error-item';
           d.innerHTML = `
-            <span class="error-wrong">${err.wrong}</span>
+            <span class="error-wrong">${escHtml(err.wrong)}</span>
             <span class="error-arrow">→</span>
-            <span class="error-right">${err.right}</span>
-            <span class="error-tip">${err.tip || ''}</span>`;
+            <span class="error-right">${escHtml(err.right)}</span>
+            <span class="error-tip">${escHtml(err.tip || '')}</span>`;
           errEl.appendChild(d);
         });
       }

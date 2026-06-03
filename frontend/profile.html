@@ -370,12 +370,12 @@
     // ── Load profile & stats ──────────────────────────────────
     async function loadProfile() {
       try {
-        const [profileRes, statsRes] = await Promise.all([
-          fetch(API + '/api/user/profile', { headers: headers() }),
-          fetch(API + '/api/user/stats',   { headers: headers() })
+        const [profileResult, statsResult] = await Promise.allSettled([
+          fetch(API + '/api/user/profile', { headers: headers() }).then(r => r.json()),
+          fetch(API + '/api/user/stats',   { headers: headers() }).then(r => r.json())
         ]);
-        const pd = await profileRes.json();
-        const sd = await statsRes.json();
+        const pd = profileResult.status === 'fulfilled' ? profileResult.value : {};
+        const sd = statsResult.status === 'fulfilled' ? statsResult.value : {};
 
         if (pd.success) {
           const u = pd.user;
