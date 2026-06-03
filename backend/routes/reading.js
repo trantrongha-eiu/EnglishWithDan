@@ -433,4 +433,28 @@ router.get('/history', auth, async (req, res) => {
 });
 
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/reading/practice/:category
+// Lấy 1 passage ngẫu nhiên để luyện riêng lẻ (không cần key, grade client-side)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/:category', auth, async (req, res) => {
+  const { category } = req.params;
+  if (!['passage1', 'passage2', 'passage3'].includes(category)) {
+    return res.status(400).json({ success: false, message: 'Category không hợp lệ' });
+  }
+  try {
+    const arr = await Passage.aggregate([
+      { $match: { category, isActive: true } },
+      { $sample: { size: 1 } }
+    ]);
+    if (!arr[0]) {
+      return res.status(404).json({ success: false, message: 'Chưa có bài đọc cho loại này' });
+    }
+    res.json({ success: true, passage: arr[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 module.exports = router;

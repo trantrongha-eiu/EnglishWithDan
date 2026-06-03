@@ -24,6 +24,8 @@ const state = {
 };
 
 let allTests = [];
+let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
+let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 
 /* Highlight cache – preserve <span class="hl"> spans across passage switches */
 const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
@@ -325,6 +327,110 @@ function dismissResume() {
   const banner = document.getElementById('resume-banner');
   if (banner) banner.style.display = 'none';
   clearExamStorage();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MODE SWITCH: Full đề / Bài lẻ
+══════════════════════════════════════════════════════════════════════ */
+function setReadingMode(mode) {
+  const isLele = mode === 'lele';
+  const btnFull = document.getElementById('rmode-full');
+  const btnLele = document.getElementById('rmode-lele');
+  const picker  = document.getElementById('practice-picker');
+  const wrapper = document.getElementById('tests-wrapper');
+  const banner  = document.getElementById('resume-banner');
+
+  const activeStyle  = 'border-bottom-color:#3d8bff;color:#3d8bff';
+  const inactiveStyle = 'border-bottom-color:transparent;color:#6b7280';
+  if (btnFull) btnFull.style.cssText = btnFull.style.cssText.replace(/border-bottom-color:[^;]+;color:[^;]+/, isLele ? inactiveStyle : activeStyle);
+  if (btnLele) btnLele.style.cssText = btnLele.style.cssText.replace(/border-bottom-color:[^;]+;color:[^;]+/, isLele ? activeStyle : inactiveStyle);
+
+  if (picker)  picker.classList.toggle('hidden', !isLele);
+  if (wrapper) wrapper.style.display = isLele ? 'none' : '';
+  if (banner)  banner.style.display  = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+}
+
+async function startPractice(category) {
+  _practiceCategory = category;
+  const catLabel = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
+
+  // Show loading on the clicked card button
+  const cards = document.querySelectorAll('#practice-picker [onclick]');
+  cards.forEach(c => { c.style.opacity = '0.6'; c.style.pointerEvents = 'none'; });
+
+  try {
+    const res = await apiFetch(`/api/reading/practice/${category}`);
+    if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
+    _enterPracticeScreen(res.passage, category);
+  } catch (e) {
+    showVocabToast('Lỗi kết nối server');
+  } finally {
+    cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; });
+  }
+}
+
+function _enterPracticeScreen(passage, category) {
+  _practiceMode = true;
+
+  // Build correctMap từ passage (backend trả đầy đủ đáp án)
+  const correctMap = {};
+  getAllQuestionsFromPassage(passage).forEach(q => {
+    if (q.correctAnswer !== undefined) correctMap[q.questionNumber] = q.correctAnswer;
+  });
+
+  // Deep-clone và xóa đáp án trước khi render (giống retryCurrentPassage)
+  const cleanPassage = JSON.parse(JSON.stringify(passage));
+  getAllQuestionsFromPassage(cleanPassage).forEach(q => {
+    delete q.correctAnswer;
+    delete q.explanation;
+    delete q.userAnswer;
+    delete q.isCorrect;
+  });
+
+  // Lưu _retryState với flag isPractice để submitRetry/closeRetry dùng đúng
+  _retryState = {
+    passages: state.passages,
+    answers: state.answers,
+    isReview: state.isReview,
+    currentPassageIdx: state.currentPassageIdx,
+    correctMap,
+    isPractice: true,
+    practiceCategory: category,
+  };
+
+  state.passages = [cleanPassage];
+  state.answers = {};
+  state.isReview = false;
+  state.currentPassageIdx = 0;
+
+  const catLabel = { passage1: 'Passage 1', passage2: 'Passage 2', passage3: 'Passage 3' };
+  const label = passage.title || catLabel[category] || 'Passage';
+  document.getElementById('retry-title').textContent = `🎯 Luyện: ${label}`;
+
+  const badge = document.getElementById('retry-score-badge');
+  if (badge) badge.style.display = 'none';
+
+  document.getElementById('retry-footer-btns').innerHTML = `
+    <button class="btn-ghost" onclick="closeRetry()">← Về danh sách</button>
+    <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
+
+  document.getElementById('retry-passage-inner').innerHTML =
+    `<div class="passage-title">${escHtml(passage.title)}</div>
+     <div class="passage-text">${passage.content || ''}</div>`;
+
+  document.getElementById('retry-questions-inner').innerHTML =
+    renderPassageQuestions(cleanPassage, false, {});
+
+  const nav = document.getElementById('retry-q-nav');
+  if (nav) {
+    nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
+      .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+      .join('');
+  }
+
+  setTool('highlight');
+  initDropZones();
+  showScreen('retry');
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1575,14 +1681,24 @@ function jumpToRetryQuestion(qNum) {
 }
 
 function closeRetry() {
+  const fromPractice = _retryState?.isPractice || _practiceMode;
   if (_retryState) {
-    state.passages = _retryState.passages;
-    state.answers = _retryState.answers;
-    state.isReview = _retryState.isReview;
-    state.currentPassageIdx = _retryState.currentPassageIdx;
+    if (!fromPractice) {
+      state.passages = _retryState.passages;
+      state.answers = _retryState.answers;
+      state.isReview = _retryState.isReview;
+      state.currentPassageIdx = _retryState.currentPassageIdx;
+    }
     _retryState = null;
   }
-  showScreen('review');
+  _practiceMode = false;
+  if (fromPractice) {
+    loadTests(true);
+    // Restore "Bài lẻ" tab after list loads
+    setTimeout(() => setReadingMode('lele'), 100);
+  } else {
+    showScreen('review');
+  }
 }
 
 function submitRetry() {
@@ -1644,15 +1760,27 @@ function submitRetry() {
   const badge = document.getElementById('retry-score-badge');
   if (badge) { badge.textContent = `${correct}/${total} câu đúng`; badge.style.display = ''; }
 
-  document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
-    <button class="btn-primary" onclick="retryReset()">🔁 Làm lại từ đầu</button>`;
+  const fromPractice = _retryState?.isPractice;
+  document.getElementById('retry-footer-btns').innerHTML = fromPractice
+    ? `<button class="btn-ghost" onclick="closeRetry()">← Về danh sách</button>
+       <button class="btn-primary" onclick="retryReset()">🔁 Làm passage mới</button>`
+    : `<button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
+       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại từ đầu</button>`;
 }
 
 function retryReset() {
   if (!_retryState) return;
-  closeRetry();
-  retryCurrentPassage();
+  const isPractice = _retryState.isPractice;
+  const practiceCategory = _retryState.practiceCategory;
+  if (isPractice) {
+    // Practice mode: fetch một passage mới cùng category
+    _retryState = null;
+    _practiceMode = false;
+    startPractice(practiceCategory);
+  } else {
+    closeRetry();
+    retryCurrentPassage();
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1686,7 +1814,7 @@ let _dictWord = '';
 const _dictCache = new Map(); // word.toLowerCase() → { phonetic, pos, example, viMeaning }
 
 document.addEventListener('dblclick', e => {
-  if (state.tool !== 'dict' || !state.isReview) return;
+  if (state.tool !== 'dict' || (!state.isReview && !_practiceMode)) return;
   const sel = window.getSelection()?.toString().trim();
   if (!sel || sel.split(' ').length > 3) return;
   lookupWord(sel, e.clientX, e.clientY);
@@ -1850,12 +1978,14 @@ function showVocabToast(msg, type = 'success') {
 ══════════════════════════════════════════════════════════════════════ */
 function setTool(tool) {
   state.tool = tool;
-  ['tool-hl', 'tool-hl-rv'].forEach(id => {
+  ['tool-hl', 'tool-hl-rv', 'tool-hl-rt'].forEach(id => {
     const b = document.getElementById(id);
     if (b) b.classList.toggle('active', tool === 'highlight');
   });
-  const td = document.getElementById('tool-dict');
-  if (td) td.classList.toggle('active', tool === 'dict');
+  ['tool-dict', 'tool-dict-rt'].forEach(id => {
+    const td = document.getElementById(id);
+    if (td) td.classList.toggle('active', tool === 'dict');
+  });
   document.body.style.cursor = tool === 'highlight' ? 'crosshair' : '';
 }
 
