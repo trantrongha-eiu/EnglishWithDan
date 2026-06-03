@@ -478,13 +478,13 @@ function _enterPracticeScreen(passage, category, passageId) {
     if (q.correctAnswer !== undefined) correctMap[q.questionNumber] = q.correctAnswer;
   });
 
-  // Deep-clone và xóa đáp án trước khi render (giống retryCurrentPassage)
+  // Deep-clone và xóa đáp án trước khi render
   const cleanPassage = JSON.parse(JSON.stringify(passage));
   getAllQuestionsFromPassage(cleanPassage).forEach(q => {
-    delete q.correctAnswer;
-    delete q.explanation;
+    delete q.correctAnswer;  // ẩn đáp án trong lúc làm bài
     delete q.userAnswer;
     delete q.isCorrect;
+    // giữ lại q.explanation để submitRetry() dùng khi hiện kết quả
   });
 
   // Lưu _retryState với flag isPractice để submitRetry/closeRetry dùng đúng
