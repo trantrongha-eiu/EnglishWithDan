@@ -284,7 +284,10 @@ function confirm2(title, msg, onOk) {
 function pad(n) { return String(n).padStart(2, '0'); }
 function toggleSound() {
     soundEnabled = !soundEnabled;
-    document.getElementById('soundToggle').textContent = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+    const text = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+    document.getElementById('soundToggle').textContent = text;
+    const mob = document.getElementById('soundToggleMob');
+    if (mob) mob.textContent = text;
 }
 function playCorrectSound() { if (soundEnabled) { correctSound.currentTime = 0; correctSound.play().catch(()=>{}); } }
 function playWrongSound()   { if (soundEnabled) { wrongSound.currentTime   = 0; wrongSound.play().catch(()=>{}); } }
@@ -1239,10 +1242,13 @@ function copyParaphraseTable() {
 function openSaveWordFromUnit(wordId) {
     const w = currentUnit?.words?.find(x => String(x._id) === wordId);
     if (!w) return;
+    const src = currentUnit.unitNumber
+        ? `Unit ${currentUnit.unitNumber}`
+        : (currentUnit.title || '');
     window.openSaveWordModal({
         word: w.word, meaning: w.meaning, example: w.example || '',
         phonetic: w.phonetic || '', partOfSpeech: w.partOfSpeech || '',
-        source: `Unit ${currentUnit.unitNumber || ''}`
+        source: src
     });
 }
 
@@ -1451,6 +1457,7 @@ function showMixedQuestion() {
             </div>
             <div class="question-text" style="font-size:18px;font-weight:700;margin-bottom:20px">
               What does "<strong>${currentWord.word}</strong>" mean?
+              <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>
             </div>
             <div class="answer-options" id="mixAnswerOptions">
               ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${o}</button>`).join('')}
@@ -1475,7 +1482,7 @@ function showMixedQuestion() {
           </div>`;
     } else {
         const ex = currentWord.example || `The word is: ${currentWord.word}`;
-        const exHtml = ex.replace(new RegExp(`\\b${currentWord.word}\\b`, 'gi'),
+        const exHtml = ex.replace(new RegExp(`\\b${escR(currentWord.word)}\\b`, 'gi'),
             `<strong class="highlight-word">${currentWord.word}</strong>`);
         wrap.innerHTML = `
           <div class="question-card">
@@ -1484,7 +1491,7 @@ function showMixedQuestion() {
               <i class="fas fa-language"></i> Translation
             </div>
             <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Translate: <strong>${currentWord.word}</strong></div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Translate: <strong>${currentWord.word}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
             <div class="fb-input-row">
               <input class="trans-input" id="mixTransInput" placeholder="Enter the meaning..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
@@ -1571,7 +1578,8 @@ function showMultipleChoiceQuestion() {
     updateProgress('mc');
     document.getElementById('mcQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('mcQuestionText').innerHTML =
-        `What does "<strong>${currentWord.word}</strong>" mean?`;
+        `What does "<strong>${currentWord.word}</strong>" mean?
+        <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     const opts      = generateOptions(currentWord);
     const container = document.getElementById('mcAnswerOptions');
     container.innerHTML = opts.map(o =>
@@ -1606,6 +1614,7 @@ function checkMultipleChoice(btn, selected, correct) {
     document.getElementById('mcBtnNext').style.display = 'flex';
 }
 function escH(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 /* ── Flashcard ── */
 function showFillBlankQuestion() {
@@ -1768,9 +1777,9 @@ function showTranslationQuestion() {
     document.getElementById('transQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
     const ex = currentWord.example || `The word is: ${currentWord.word}`;
     document.getElementById('transExample').innerHTML =
-        ex.replace(new RegExp(`\\b${currentWord.word}\\b`, 'gi'),
+        ex.replace(new RegExp(`\\b${escR(currentWord.word)}\\b`, 'gi'),
             `<strong class="highlight-word">${currentWord.word}</strong>`);
-    document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${currentWord.word}</strong>`;
+    document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${currentWord.word}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
@@ -2003,7 +2012,7 @@ async function _reportDifficultWords() {
     });
     const source = _isBookPractice
         ? (currentBookData?.name || 'Sổ cá nhân')
-        : `Unit ${currentUnit?.unitNumber || ''}`;
+        : (_isDifficultPractice ? 'Từ hay sai' : `Unit ${currentUnit?.unitNumber || ''}`);
     try {
         await fetch(`${API}/difficult-words/report`, {
             method: 'POST', headers: authH(),
