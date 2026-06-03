@@ -1161,10 +1161,16 @@ function renderWordBank(qNum, wordBank, isReview, review) {
 
 /* ── PLACEHOLDERS in table/note/bullet cells ──────────────────────── */
 function resolvePlaceholders(text, qMap, isReview, reviewMap) {
+  const sortedQNums = Object.keys(qMap).map(Number).sort((a, b) => a - b);
   return text.replace(/__Q(\d+)__/g, (_, numStr) => {
-    const qNum = parseInt(numStr);
-    const q = qMap[qNum];
-    if (!q) return `[Q${qNum}]`;
+    const idx = parseInt(numStr);
+    // Exact match first; fall back to 1-based position within group (admin convenience)
+    let q = qMap[idx];
+    if (!q && idx >= 1 && idx <= sortedQNums.length) {
+      q = qMap[sortedQNums[idx - 1]];
+    }
+    if (!q) return `[Q${idx}]`;
+    const qNum = q.questionNumber;
 
     if (isReview) {
       const review = reviewMap[qNum];
