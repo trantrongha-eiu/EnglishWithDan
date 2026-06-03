@@ -244,11 +244,6 @@ export default function Passages() {
     ));
   }, [all, search, cat, diff]);
 
-  // Chỉ reset trang khi filter thay đổi, không reset khi data reload (ẩn/hiện bài đọc)
-  useEffect(() => {
-    setPage(1);
-  }, [search, cat, diff]);
-
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {
@@ -284,12 +279,12 @@ export default function Passages() {
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
         <input className="form-input search-input" placeholder="Tìm bài đọc..." value={search}
-          onChange={e => setSearch(e.target.value)} style={{ maxWidth: 280 }} />
-        <select className="form-input" value={cat} onChange={e => setCat(e.target.value)} style={{ width: 160 }}>
+          onChange={e => { setSearch(e.target.value); setPage(1); }} style={{ maxWidth: 280 }} />
+        <select className="form-input" value={cat} onChange={e => { setCat(e.target.value); setPage(1); }} style={{ width: 160 }}>
           <option value="">Tất cả category</option>
           {CATS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
-        <select className="form-input" value={diff} onChange={e => setDiff(e.target.value)} style={{ width: 140 }}>
+        <select className="form-input" value={diff} onChange={e => { setDiff(e.target.value); setPage(1); }} style={{ width: 140 }}>
           <option value="">Tất cả độ khó</option>
           <option value="easy">Dễ</option>
           <option value="medium">Trung bình</option>
