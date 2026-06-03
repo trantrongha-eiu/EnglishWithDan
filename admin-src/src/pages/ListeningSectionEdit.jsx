@@ -143,14 +143,15 @@ export default function ListeningSectionEdit() {
     setMeta(f => ({ ...f, [k]: v }));
   };
 
-  // Auto-fill questionRange when partNumber changes (only for new sections)
+  // Auto-fill questionRange khi đổi partNumber, nhưng chỉ khi là section mới
   function onPartChange(part) {
     setIsDirty(true);
     const pn = Number(part);
     setMeta(f => ({
       ...f,
       partNumber: pn,
-      questionRange: DEFAULT_RANGES[pn] || f.questionRange,
+      // Chỉ reset range nếu chưa có section trong DB (savedId = null)
+      questionRange: !savedId ? (DEFAULT_RANGES[pn] || f.questionRange) : f.questionRange,
     }));
   }
 
