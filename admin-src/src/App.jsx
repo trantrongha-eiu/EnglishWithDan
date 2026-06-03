@@ -14,6 +14,8 @@ import ReadingTests from './pages/ReadingTests';
 import ReadingTestEdit from './pages/ReadingTestEdit';
 import ListeningTests from './pages/ListeningTests';
 import ListeningTestEdit from './pages/ListeningTestEdit';
+import ListeningSections from './pages/ListeningSections';
+import ListeningSectionEdit from './pages/ListeningSectionEdit';
 import WritingTests from './pages/WritingTests';
 import Speaking from './pages/Speaking';
 import Vocabulary from './pages/Vocabulary';
@@ -47,6 +49,8 @@ export default function App() {
                 <Route path="reading-tests/:id" element={<ReadingTestEdit />} />
                 <Route path="listening-tests" element={<ListeningTests />} />
                 <Route path="listening-tests/:id" element={<ListeningTestEdit />} />
+                <Route path="listening-sections" element={<ListeningSections />} />
+                <Route path="listening-sections/:id" element={<ListeningSectionEdit />} />
                 <Route path="writing-tests" element={<WritingTests />} />
                 <Route path="speaking" element={<Speaking />} />
                 <Route path="vocabulary" element={<Vocabulary />} />
