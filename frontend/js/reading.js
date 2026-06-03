@@ -337,13 +337,23 @@ function setReadingMode(mode) {
   document.getElementById('rmode-full')?.classList.toggle('rmode-active', !isLele);
   document.getElementById('rmode-lele')?.classList.toggle('rmode-active', isLele);
 
-  const picker  = document.getElementById('practice-picker');
-  const wrapper = document.getElementById('tests-wrapper');
-  const banner  = document.getElementById('resume-banner');
+  const picker    = document.getElementById('practice-picker');
+  const wrapper   = document.getElementById('tests-wrapper');
+  const banner    = document.getElementById('resume-banner');
+  const filterBar = document.getElementById('list-filter-bar');
+  const subtitle  = document.getElementById('list-mode-subtitle');
+  const title     = document.getElementById('list-mode-title');
 
-  if (picker)  picker.classList.toggle('hidden', !isLele);
-  if (wrapper) wrapper.style.display = isLele ? 'none' : '';
-  if (banner)  banner.style.display  = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+  if (picker)    picker.classList.toggle('hidden', !isLele);
+  if (wrapper)   wrapper.style.display   = isLele ? 'none' : '';
+  if (banner)    banner.style.display    = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+  if (filterBar) filterBar.style.display = isLele ? 'none' : '';
+  if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
+  if (title) {
+    title.innerHTML = isLele
+      ? 'Luyện tập <span class="tag-red" style="background:#10b981">Reading Bài lẻ</span>'
+      : 'Luyện tập <span class="tag-red">Reading Full đề</span>';
+  }
 
   if (isLele) {
     const listEl = document.getElementById('practice-passage-list');
