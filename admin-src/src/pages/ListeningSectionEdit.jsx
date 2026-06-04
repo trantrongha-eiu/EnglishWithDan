@@ -124,6 +124,8 @@ export default function ListeningSectionEdit() {
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState(isNew ? null : id);
   const [isDirty, setIsDirty] = useState(false);
+  const [autoSaveMsg, setAutoSaveMsg] = useState('');
+  const autoSaveTimer = useRef(null);
 
   const [meta, setMeta] = useState({
     partNumber: 1,
@@ -184,6 +186,25 @@ export default function ListeningSectionEdit() {
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty]);
 
+  // Auto-save 2s after last change (only when section already exists)
+  useEffect(() => {
+    if (!isDirty || !savedId) return;
+    clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(async () => {
+      setAutoSaveMsg('Đang lưu...');
+      try {
+        const payload = { ...meta, questionGroups };
+        await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        setIsDirty(false);
+        setAutoSaveMsg('Đã lưu ✓');
+        setTimeout(() => setAutoSaveMsg(''), 2000);
+      } catch {
+        setAutoSaveMsg('');
+      }
+    }, 2000);
+    return () => clearTimeout(autoSaveTimer.current);
+  }, [isDirty, meta, questionGroups, savedId]);
+
   async function saveAll() {
     if (!meta.title.trim()) { toast('Vui lòng nhập tên section', 'error'); return; }
     setSaving(true);
@@ -214,7 +235,9 @@ export default function ListeningSectionEdit() {
         <button className="btn btn-ghost btn-sm" onClick={goBack}>← Đóng</button>
         <h2 style={{ margin: 0 }}>{isNew ? 'Thêm Bài lẻ Listening' : (meta.title || 'Sửa section')}</h2>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
-          {isDirty && <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>● Chưa lưu</span>}
+          {autoSaveMsg
+            ? <span style={{ fontSize: 12, color: autoSaveMsg === 'Đã lưu ✓' ? '#16a34a' : '#6b7280', fontWeight: 600 }}>{autoSaveMsg}</span>
+            : isDirty && <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>● Chưa lưu</span>}
           <button className="btn btn-ghost" onClick={goBack}>Huỷ</button>
           <button className="btn btn-primary" onClick={saveAll} disabled={saving}
             style={isDirty ? { boxShadow: '0 0 0 2px #fde68a' } : {}}>

@@ -263,6 +263,15 @@
         <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
             <div id="lt-practice-prog-fill" class="practice-prog-fill"></div>
         </div>
+        <!-- Practice toolbar (visible after submission) -->
+        <div id="lt-practice-toolbar" class="exam-toolbar" style="display:none">
+            <button class="tool-btn-rv" id="tool-hl-pr" onclick="setTool('highlight')">
+                ✏️ <small>Bôi màu</small>
+            </button>
+            <button class="tool-btn-rv" id="tool-dict-pr" onclick="setTool('dict')">
+                🔍 <small>Tra từ</small>
+            </button>
+        </div>
         <!-- Audio bar -->
         <div class="audio-bar" id="practice-audio-bar">
             <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()">▶</button>
@@ -2113,10 +2122,12 @@
                 const tb = document.getElementById('transcript-body');
                 const qp = document.getElementById('questions-panel');
                 const rv = document.getElementById('review-questions-inner');
+                const pq = document.getElementById('lt-practice-questions-inner');
                 const inTranscript = tb && tb.contains(range.commonAncestorContainer);
                 const inQPanel = qp && qp.contains(range.commonAncestorContainer);
                 const inReviewQ = rv && rv.contains(range.commonAncestorContainer);
-                if (!inTranscript && !inQPanel && !inReviewQ) return;
+                const inPracticeQ = pq && pq.contains(range.commonAncestorContainer);
+                if (!inTranscript && !inQPanel && !inReviewQ && !inPracticeQ) return;
                 const span = document.createElement('span');
                 span.className = 'hl';
                 try { range.surroundContents(span); } catch { }
@@ -2133,7 +2144,7 @@
             if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
             el._dictHandler = async e => {
                 if (state.tool !== 'dict') return;
-                if (!state.isReview) return;
+                if (!state.isReview && !_ltPracticeSubmitted) return;
                 const sel = window.getSelection();
                 const word = sel?.toString().trim();
                 if (!word || word.includes(' ') || word.length < 2) return;
@@ -2360,6 +2371,7 @@
             closeModal('modal-exit');
             // Save current position so resume banner appears on list screen
             saveExamToStorage();
+            setToolExam('none'); // reset cursor before leaving exam
             clearInterval(_asoTimer);
             clearInterval(_saveInterval);
             _saveInterval = null;
@@ -2468,6 +2480,7 @@
     let _ltPracticeTimer    = null;
     let _ltPracticeStartTime= 0;
     let _ltPracticeElapsed  = 0;
+    let _ltPracticeSubmitted= false; // true after submitLTPractice() so dict/highlight work in result view
 
     /* ── Helper ──────────────────────────────────────────────────────────── */
     function _ltGetAllQs(section) {
@@ -2672,6 +2685,10 @@
         _ltOrigSection       = section;
         _ltPracticePartNum   = partNum;
         _ltPracticeSectionId = sectionId;
+        _ltPracticeSubmitted = false;
+        const toolbar = document.getElementById('lt-practice-toolbar');
+        if (toolbar) toolbar.style.display = 'none';
+        setTool('none');
 
         // Backup exam state so we can restore on close
         _ltPracticeBackup = { answers: state.answers, currentTestId: state.currentTestId,
@@ -2815,6 +2832,12 @@
         inner.innerHTML = html;
         inner.scrollTop = 0;
 
+        // Show dict/highlight toolbar now that results are visible
+        _ltPracticeSubmitted = true;
+        const toolbar = document.getElementById('lt-practice-toolbar');
+        if (toolbar) toolbar.style.display = '';
+        setTool('none');
+
         // Update footer
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
@@ -2825,6 +2848,10 @@
     function closeLTPractice() {
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
+        _ltPracticeSubmitted = false;
+        const toolbar = document.getElementById('lt-practice-toolbar');
+        if (toolbar) toolbar.style.display = 'none';
+        setTool('none');
         audio.pause();
         audio.src = '';
 
