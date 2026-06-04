@@ -31,6 +31,15 @@
     }
     .wp-stop-btn:hover { border-color: #e53935; color: #e53935; }
 
+    /* ── Test countdown timer ── */
+    .wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
+    .wp-test-timer.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .wp-test-timer.danger{background:#fff1f2;border-color:#fecaca;color:#dc2626;animation:timerPulse .8s ease-in-out infinite}
+    @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.5}}
+    [data-theme="dark"] .wp-test-timer{background:#14532d;border-color:#166534;color:#86efac}
+    [data-theme="dark"] .wp-test-timer.warn{background:#431407;border-color:#9a3412;color:#fdba74}
+    [data-theme="dark"] .wp-test-timer.danger{background:#450a0a;border-color:#7f1d1d;color:#fca5a5}
+
     /* ── Quit confirm modal ── */
     .wp-quit-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5);
       display:flex; align-items:center; justify-content:center; z-index:10000; }
@@ -453,6 +462,7 @@
           <button class="wp-stop-btn" onclick="stopTestMode()" title="Dừng thi">
             <i class="fas fa-stop-circle"></i> Dừng
           </button>
+          <span class="wp-test-timer" id="test-timer">⏱ --:--</span>
           <span class="wp-grammar-badge" id="test-grammar-badge"></span>
           <span class="wp-ex-counter" id="test-counter">1 / 10</span>
           <span class="wp-type-tag" id="test-type-tag"></span>
@@ -569,6 +579,9 @@ let testExercises = [];
 let testAnswers   = [];   // { exerciseId, userAnswer }
 let testIdx       = 0;
 let testRearrangeAnswer = [];
+let testTimerInterval = null;
+let testTimeLeft      = 0;
+let testTotalTime     = 0;
 // Rearrange
 let rearrangeWords  = [];
 let rearrangeAnswer = [];
@@ -698,7 +711,7 @@ function setMode(mode) {
   const needConfirm = (currentMode === 'practice' && sessionDone > 0)
     || (currentMode === 'test' && testIdx > 0 && testIdx < testExercises.length);
   if (needConfirm) {
-    askWpQuit(() => { stopSessionTimer(); saveBatch(); _doSetMode(mode); }, {
+    askWpQuit(() => { stopTestTimer(); stopSessionTimer(); saveBatch(); _doSetMode(mode); }, {
       title: 'Đổi chế độ học?',
       sub: currentMode === 'practice'
         ? `Bạn đã làm ${sessionDone} bài. Chuyển chế độ sẽ mất tiến độ hiện tại.`
@@ -1172,6 +1185,40 @@ function selectTestCount(n) {
     b.classList.toggle('active', parseInt(b.dataset.tcount) === n));
 }
 
+// ════════════════════════════════════════════════════════
+//  TEST TIMER
+// ════════════════════════════════════════════════════════
+function startTestTimer(totalSeconds) {
+  stopTestTimer();
+  testTotalTime = totalSeconds;
+  testTimeLeft  = totalSeconds;
+  function tick() {
+    const el = document.getElementById('test-timer');
+    if (!el) return;
+    const m = Math.floor(testTimeLeft / 60);
+    const s = testTimeLeft % 60;
+    el.textContent = '⏱ ' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    const pct = testTotalTime > 0 ? testTimeLeft / testTotalTime : 1;
+    el.className = 'wp-test-timer' + (pct <= 0.1 ? ' danger' : pct <= 0.25 ? ' warn' : '');
+    if (testTimeLeft <= 0) {
+      stopTestTimer();
+      showToast('Hết giờ! Tự động nộp bài.', 'warn', 4000);
+      submitTest();
+      return;
+    }
+    testTimeLeft--;
+  }
+  tick();
+  testTimerInterval = setInterval(tick, 1000);
+}
+
+function stopTestTimer() {
+  clearInterval(testTimerInterval);
+  testTimerInterval = null;
+  const el = document.getElementById('test-timer');
+  if (el) { el.textContent = '⏱ --:--'; el.className = 'wp-test-timer'; }
+}
+
 async function startTest() {
   document.getElementById('test-intro').style.display       = 'none';
   document.getElementById('test-in-progress').style.display = '';
@@ -1191,6 +1238,7 @@ async function startTest() {
     testAnswers   = [];
     testIdx       = 0;
     showTestQuestion(0);
+    startTestTimer(testExercises.length * 90);
   } catch (err) {
     console.error(err);
     showToast('Lỗi tải câu hỏi: ' + err.message, 'error');
@@ -1340,6 +1388,7 @@ function testNextQuestion() {
 }
 
 async function submitTest() {
+  stopTestTimer();
   document.getElementById('test-in-progress').style.display = 'none';
   try {
     const res  = await fetch(`${API}/api/writing-practice/check-test`, {
@@ -1388,6 +1437,7 @@ function showTestResults(data) {
 }
 
 function retakeTest() {
+  stopTestTimer();
   testIdx = 0; testExercises = []; testAnswers = [];
   document.getElementById('test-results').style.display     = 'none';
   document.getElementById('test-intro').style.display       = '';
@@ -1494,6 +1544,7 @@ function stopPracticeMode() {
 
 function stopTestMode() {
   const resetTest = () => {
+    stopTestTimer();
     testExercises = []; testAnswers = []; testIdx = 0;
     document.getElementById('test-in-progress').style.display = 'none';
     document.getElementById('test-results').style.display     = 'none';

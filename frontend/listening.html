@@ -146,7 +146,7 @@
 
         <!-- Exam toolbar: highlight + dict -->
         <div class="exam-toolbar" id="exam-toolbar">
-            <button class="tool-btn active" id="tool-hl-exam" onclick="setToolExam('highlight')">
+            <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
                 🖊 <small>Bôi màu (H)</small>
             </button>
         </div>
@@ -199,7 +199,7 @@
             <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
             <span class="exam-title" id="review-title" style="flex:1">Xem lại bài</span>
             <span class="review-band-badge" id="review-band-badge">Band –</span>
-            <button class="tool-btn-rv active" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Bôi màu</button>
+            <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Bôi màu</button>
             <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
         </div>
 
@@ -475,7 +475,7 @@
             partIdx: 0,
             isReview: false,
             reviewResult: null,
-            tool: 'highlight',
+            tool: 'none',
             dictWord: '', dictMeaning: '', dictExample: '',
             submitted: false,
             startTime: null
@@ -573,7 +573,7 @@
             renderPartQuestions(data.partIdx || 0);
             renderQNav('q-nav-grid', false);
             updateFooter();
-            setToolExam('highlight');
+            setToolExam('none');
             showScreen('exam');
 
             // Show overlay in resume mode — no 30s countdown, just direct play
@@ -824,7 +824,7 @@
                 renderPartQuestions(0);
                 renderQNav('q-nav-grid', false);
                 updateFooter();
-                setToolExam('highlight');
+                setToolExam('none');
                 showScreen('exam');
                 // Show overlay — học sinh đọc cảnh báo rồi tự bấm để bắt đầu đếm ngược
                 document.getElementById('audio-start-overlay').classList.remove('hidden');
@@ -1491,7 +1491,7 @@
             renderQNav('q-nav-grid-rv', true);
             setupDictionaryDouble('transcript-body');
             setupDictionaryDouble('review-questions-inner');
-            setTool('highlight');
+            setTool('none');
             showScreen('review');
         }
 
@@ -2299,6 +2299,7 @@
             document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
             if (tool === 'highlight') document.getElementById('tool-hl-rv')?.classList.add('active');
             if (tool === 'dict') document.getElementById('tool-dict-rv')?.classList.add('active');
+            document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
         }
 
         function setToolExam(tool) {
@@ -2306,6 +2307,7 @@
             document.querySelectorAll('#exam-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
             if (tool === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
             if (tool === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
+            document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
         }
 
         // ══════════════════════════════════════════════

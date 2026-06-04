@@ -17,7 +17,7 @@ const state = {
   timer: null,
   secondsLeft: DURATION,
   currentPassageIdx: 0,
-  tool: 'highlight',     // 'highlight' | 'dict'
+  tool: 'none',          // 'none' | 'highlight' | 'dict'
   isReview: false,
   submitted: false,
   reviewData: null,
@@ -615,7 +615,7 @@ function _enterPracticeScreen(passage, category, passageId) {
       .join('');
   }
 
-  setTool('highlight');
+  setTool('none');
   initDropZones();
   showScreen('retry');
 

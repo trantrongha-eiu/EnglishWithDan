@@ -174,6 +174,15 @@
     [data-theme="dark"] .t2-quit-title{color:#fbbf24}
     [data-theme="dark"] .t2-quit-leave{border-color:#374151;color:#9ca3af}
 
+    /* ── Test countdown timer ── */
+    .wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
+    .wp-test-timer.warn{background:#fff7ed;border-color:#fed7aa;color:#c2410c}
+    .wp-test-timer.danger{background:#fff1f2;border-color:#fecaca;color:#dc2626;animation:timerPulse .8s ease-in-out infinite}
+    @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.5}}
+    [data-theme="dark"] .wp-test-timer{background:#14532d;border-color:#166534;color:#86efac}
+    [data-theme="dark"] .wp-test-timer.warn{background:#431407;border-color:#9a3412;color:#fdba74}
+    [data-theme="dark"] .wp-test-timer.danger{background:#450a0a;border-color:#7f1d1d;color:#fca5a5}
+
     /* ── Settings toggles ── */
     .t2-settings-block{margin-top:6px;padding-top:10px;border-top:1px solid #f3f4f6}
     [data-theme="dark"] .t2-settings-block{border-color:#1e293b}
@@ -300,6 +309,7 @@ let state = {
   mcSelected: null,
   // exam
   examQuestions: [], examAnswers: [], examIdx: 0, examLevel: 'beginner', examCount: 10,
+  examTimerInterval: null, examTimeLeft: 0, examTotalTime: 0,
   _isSubmitting: false,
   // wrong-question tracking (cross-session)
   wrongQuestionIds: [],
@@ -948,8 +958,39 @@ function quitPractice() {
 // ════════════════════════════════════════════════════════
 //  EXAM MODE
 // ════════════════════════════════════════════════════════
+function _fmtExamTime(s) {
+  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+
+function startExamTimer(totalSeconds) {
+  stopExamTimer();
+  state.examTotalTime = totalSeconds;
+  state.examTimeLeft  = totalSeconds;
+  function tick() {
+    const el = document.getElementById('exam-timer');
+    if (!el) return;
+    el.textContent = '⏱ ' + _fmtExamTime(state.examTimeLeft);
+    const pct = state.examTotalTime > 0 ? state.examTimeLeft / state.examTotalTime : 1;
+    el.className = 'wp-test-timer' + (pct <= 0.1 ? ' danger' : pct <= 0.25 ? ' warn' : '');
+    if (state.examTimeLeft <= 0) {
+      stopExamTimer();
+      showToast('Hết giờ! Tự động nộp bài.', 'warn', 4000);
+      submitExam();
+      return;
+    }
+    state.examTimeLeft--;
+  }
+  tick();
+  state.examTimerInterval = setInterval(tick, 1000);
+}
+
+function stopExamTimer() {
+  clearInterval(state.examTimerInterval);
+  state.examTimerInterval = null;
+}
+
 function quitExam() {
-  askT2Quit(() => { state.view = 'select'; render(); }, {
+  askT2Quit(() => { stopExamTimer(); state.view = 'select'; render(); }, {
     mascot: '📋',
     title: 'Dừng bài thi?',
     sub: `Câu ${state.examIdx + 1}/${state.examQuestions.length}. Kết quả sẽ bị mất.`,
@@ -970,6 +1011,7 @@ async function startExam() {
     state.examIdx       = 0;
     state.rearrangeAnswer = []; state.mcSelected = null;
     state.view = 'exam'; render();
+    startExamTimer(state.examQuestions.length * 120);
   } catch { showToast('Lỗi tải đề thi', 'error'); }
 }
 
@@ -978,11 +1020,15 @@ function renderExam() {
   if (!q) return '';
   const pct = Math.round((state.examIdx / state.examQuestions.length) * 100);
   const isLast = state.examIdx === state.examQuestions.length - 1;
+  const timerPct = state.examTotalTime > 0 ? state.examTimeLeft / state.examTotalTime : 1;
+  const timerCls = timerPct <= 0.1 ? 'wp-test-timer danger' : timerPct <= 0.25 ? 'wp-test-timer warn' : 'wp-test-timer';
+  const timerTxt = state.examTimeLeft > 0 ? _fmtExamTime(state.examTimeLeft) : '--:--';
   return `
     <div class="t2-nav"><div class="t2-nav-crumb"><span onclick="quitExam()">← Thoát thi</span></div></div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>
+      <span class="${timerCls}" id="exam-timer">⏱ ${timerTxt}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
       <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
       ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${q.topicName}">${q.topicName}</span>` : ''}
@@ -1027,6 +1073,7 @@ async function examNext() {
 }
 
 async function submitExam() {
+  stopExamTimer();
   const app = document.getElementById('app');
   app.innerHTML = '<div style="text-align:center;padding:40px"><div class="wp-spinner"></div><p>Đang chấm bài...</p></div>';
   try {
