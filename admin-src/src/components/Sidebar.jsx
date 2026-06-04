@@ -21,6 +21,7 @@ const NAV = [
   { to: '/admin/writing-practice', icon: '🖊️', label: 'Writing Practice' },
   { to: '/admin/task1-exercises',  icon: '📉', label: 'Task 1 Grammar' },
   { to: '/admin/task2-exercises',  icon: '📝', label: 'Task 2 Writing' },
+  { to: '/admin/task2-templates', icon: '📄', label: 'Task 2 Templates' },
   { section: 'HỌC SINH' },
   { to: '/admin/history',         icon: '🕓', label: 'Lịch sử làm bài' },
   { to: '/admin/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },

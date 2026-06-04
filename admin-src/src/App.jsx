@@ -22,6 +22,7 @@ import Vocabulary from './pages/Vocabulary';
 import WritingPractice from './pages/WritingPractice';
 import Task1Exercises from './pages/Task1Exercises';
 import Task2Exercises from './pages/Task2Exercises';
+import Task2Templates from './pages/Task2Templates';
 import StudentHistory from './pages/StudentHistory';
 import VocabActivity from './pages/VocabActivity';
 import Messages from './pages/Messages';
@@ -57,6 +58,7 @@ export default function App() {
                 <Route path="writing-practice" element={<WritingPractice />} />
                 <Route path="task1-exercises" element={<Task1Exercises />} />
                 <Route path="task2-exercises" element={<Task2Exercises />} />
+                <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />
                 <Route path="messages" element={<Messages />} />

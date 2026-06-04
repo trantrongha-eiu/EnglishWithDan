@@ -244,8 +244,8 @@ function initUser() {
   loadXPFromStorage();
 }
 
-// ── Template data ────────────────────────────────────────────
-const TPL_TYPES = [
+// ── Template data (hardcoded fallback — overridden by API if DB has data) ──
+let TPL_TYPES = [
   { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv' },
   { id: 'type02', label: 'Type 02', sub: 'Discuss Both' },
   { id: 'type03', label: 'Type 03', sub: 'Cause–Solution' },
@@ -254,7 +254,7 @@ const TPL_TYPES = [
   { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree' },
 ];
 
-const TPL_DATA = {
+let TPL_DATA = {
   type01: {
     name: 'Advantages & Disadvantages',
     sections: [
@@ -445,12 +445,28 @@ function saveTplScores() {
 }
 
 // ── Init ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initUser();
   try {
     const saved = localStorage.getItem('tpl_scores');
     if (saved) _tplScores = JSON.parse(saved);
   } catch(e) {}
+
+  // Try to load templates from DB (fallback to hardcoded if empty/error)
+  try {
+    const res = await fetch(`${API}/task2/templates`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.templates && data.templates.length > 0) {
+        TPL_TYPES = data.templates.map(t => ({ id: t.typeId, label: t.label, sub: t.sub }));
+        TPL_DATA  = {};
+        data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
+        // Keep active type valid
+        if (!TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
+      }
+    }
+  } catch(e) { /* silently fallback to hardcoded */ }
+
   renderTabs();
   renderTplContent();
   updateOverallBadge();

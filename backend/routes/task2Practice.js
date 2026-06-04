@@ -1,8 +1,21 @@
-const express      = require('express');
-const router       = express.Router();
-const auth         = require('../middleware/auth');
-const Task2Topic   = require('../models/Task2Topic');
-const Task2Attempt = require('../models/Task2Attempt');
+const express        = require('express');
+const router         = express.Router();
+const auth           = require('../middleware/auth');
+const Task2Topic     = require('../models/Task2Topic');
+const Task2Attempt   = require('../models/Task2Attempt');
+const Task2Template  = require('../models/Task2Template');
+
+// ══════════════════════════════════════════════════════════════════════
+//  GET /api/task2/templates  (public – cho task2-template.html)
+// ══════════════════════════════════════════════════════════════════════
+router.get('/templates', async (req, res) => {
+  try {
+    const templates = await Task2Template.find({ isActive: true }).sort({ orderIndex: 1 }).lean();
+    res.json({ success: true, templates });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
 
 // ── Helpers ────────────────────────────────────────────────────────────
 function normalize(str) {
