@@ -9,7 +9,7 @@
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
       children: [
-        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Trang chủ' },
+        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
         { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
         { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing' },
         { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
