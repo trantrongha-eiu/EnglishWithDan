@@ -503,10 +503,12 @@ function renderTplContent() {
         </div>
         <div class="t2-cloze-vi ${_tplShowVi ? 'vis' : ''}" id="vi-${key}">${escHtml(item.vi)}</div>
         <div class="t2-cloze-actions">
+          ${scoreState !== 'ok' ? `
           <button class="t2-cloze-check" onclick="checkCloze('${key}','${escAttr(item.answer)}')">Kiểm tra</button>
           <button class="t2-cloze-hint" onclick="showClozeHint('${key}','${escAttr(item.answer)}')">Gợi ý</button>
+          ` : ''}
           <span class="t2-cloze-fb ${scoreState === 'ok' ? 'ok' : scoreState === 'err' ? 'err' : ''}"
-                id="fb-${key}">${scoreState === 'ok' ? '✅ Đúng!' : scoreState === 'err' ? '❌ Sai' : ''}</span>
+                id="fb-${key}">${scoreState === 'ok' ? '✅ Đúng!' : scoreState === 'err' ? `❌ Đáp án: "${escHtml(item.answer)}"` : ''}</span>
         </div>
       </div>`;
     }).join('');
