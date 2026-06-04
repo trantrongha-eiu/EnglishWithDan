@@ -41,6 +41,12 @@ let _streakReportedThisSession = false;
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
 let _isDifficultPractice = false; // true khi ôn từ hay sai
 
+// ── Flashcard auto-advance timer ──────────────
+let _autoNextTimer = null;
+function _clearAutoNext() {
+    if (_autoNextTimer !== null) { clearTimeout(_autoNextTimer); _autoNextTimer = null; }
+}
+
 function _countAnswer() {
     sessionAnsweredCount++;
     if (!_streakReportedThisSession && sessionAnsweredCount >= 5) {
@@ -660,6 +666,8 @@ function updateStats(book) {
 function deleteWord(wordId) {
     confirm2('Delete Word', 'Are you sure you want to delete this word?', async () => {
         await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
+        selectedWordIds.delete(wordId);
+        updateBulkBar();
         toast('Word deleted');
         await Promise.all([refreshCurrentBook(), loadMyBooks()]);
     });
@@ -726,6 +734,8 @@ function updateBulkBar() {
         document.getElementById('bulk-count').textContent = selectedWordIds.size;
     } else {
         bar.classList.remove('show');
+        const allCb = document.getElementById('check-all');
+        if (allCb) allCb.checked = false;
     }
 }
 async function bulkChangeStatus(status) {
@@ -1115,6 +1125,7 @@ async function loadUnit() {
    MODE SWITCHING
 ══════════════════════════════════════════════ */
 function _activateModeNow(mode) {
+    _clearAutoNext();
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode']
         .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1691,12 +1702,13 @@ function markAsNotRemembered() {
     if (btnNext) btnNext.style.display = 'flex';
 
     // Tự động chuyển sau 15 giây nếu học sinh không bấm
-    const _autoNext = setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 15000);
+    _clearAutoNext();
+    _autoNextTimer = setTimeout(() => { _autoNextTimer = null; currentQuestionIndex++; showQuestion('fillBlank'); }, 15000);
 
     // Nếu học sinh bấm nút Tiếp theo → huỷ timer tự động
     if (btnNext) {
         btnNext.onclick = function() {
-            clearTimeout(_autoNext);
+            _clearAutoNext();
             currentQuestionIndex++; showQuestion('fillBlank');
         };
     }
@@ -1818,6 +1830,7 @@ function checkTranslation() {
 
 /* ── Results ── */
 function showResults(mode) {
+    _clearAutoNext();
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';

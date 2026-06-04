@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vocab – EnglishWithDan</title>
+  <title>Vocabulary – EnglishWithDan</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-<script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
 
 <div class="app-layout">
@@ -459,7 +458,7 @@
     <div class="modal-body">
       <div class="form-group">
         <label>Notebook name *</label>
-        <input class="form-input" id="new-book-name" placeholder="e.g. IELTS Academic, Travel..."/>
+        <input class="form-input" id="new-book-name" placeholder="e.g. IELTS Academic, Travel..." onkeypress="if(event.key==='Enter')createBook()"/>
       </div>
       <div class="form-group">
         <label>Icon</label>
@@ -512,10 +511,10 @@
       <button class="modal-close" onclick="closeModal('modal-add-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>English word *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)"/></div>
-      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập"/></div>
-      <div class="form-group"><label>Example</label><input class="form-input" id="aw-example" placeholder="She established a new company."/></div>
-      <div class="form-group"><label>Notes</label><input class="form-input" id="aw-note" placeholder="Optional..."/></div>
+      <div class="form-group"><label>English word *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)" onkeypress="if(event.key==='Enter')document.getElementById('aw-meaning').focus()"/></div>
+      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('aw-example').focus()"/></div>
+      <div class="form-group"><label>Example</label><input class="form-input" id="aw-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('aw-note').focus()"/></div>
+      <div class="form-group"><label>Notes</label><input class="form-input" id="aw-note" placeholder="Optional..." onkeypress="if(event.key==='Enter')addWordManual()"/></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-add-word')">Cancel</button>
@@ -531,11 +530,11 @@
       <button class="modal-close" onclick="closeModal('modal-edit-word')">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group"><label>English word *</label><input class="form-input" id="ew-word" placeholder="establish"/></div>
-      <div class="form-group"><label>Phonetic</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/"/></div>
-      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập"/></div>
-      <div class="form-group"><label>Example</label><input class="form-input" id="ew-example" placeholder="She established a new company."/></div>
-      <div class="form-group"><label>Notes</label><input class="form-input" id="ew-note" placeholder="Optional..."/></div>
+      <div class="form-group"><label>English word *</label><input class="form-input" id="ew-word" placeholder="establish" onkeypress="if(event.key==='Enter')document.getElementById('ew-phonetic').focus()"/></div>
+      <div class="form-group"><label>Phonetic</label><input class="form-input" id="ew-phonetic" placeholder="/ɪˈstæblɪʃ/" onkeypress="if(event.key==='Enter')document.getElementById('ew-meaning').focus()"/></div>
+      <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="ew-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('ew-example').focus()"/></div>
+      <div class="form-group"><label>Example</label><input class="form-input" id="ew-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('ew-note').focus()"/></div>
+      <div class="form-group"><label>Notes</label><input class="form-input" id="ew-note" placeholder="Optional..." onkeypress="if(event.key==='Enter')saveEditWord()"/></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Cancel</button>
@@ -643,18 +642,9 @@
     var mob = document.getElementById('unitSelectMob');
     var src = document.getElementById('unitSelect');
     if(mob && src) src.value = mob.value;
+    if(!mob || !mob.value){ loadUnit(); return; } // hiện error toast, không đóng sheet
     loadUnit();
     closeSheet();
-  };
-
-  // ── Sound toggle sync ────────────────────────────
-  var origToggleSound = window.toggleSound;
-  window.toggleSound = function(){
-    if(origToggleSound) origToggleSound();
-    // sync label trên cả 2 nút
-    var main = document.getElementById('soundToggle');
-    var mob  = document.getElementById('soundToggleMob');
-    if(main && mob) mob.textContent = main.textContent;
   };
 
   // ── Hiện hint trên welcome screen mobile ────────
