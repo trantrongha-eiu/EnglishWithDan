@@ -1604,6 +1604,16 @@ body {
 [data-theme="dark"] .q-correct-ans.wrong { background: #7f1d1d; color: #fca5a5; }
 [data-theme="dark"] .q-explanation { background: #1c1917; border-left-color: #92400e; color: #d6d3d1; }
 
+/* ── Fullscreen: explicit background so browser backdrop doesn't show through ── */
+#screen-exam:fullscreen,
+#screen-exam:-webkit-full-screen {
+  background: #fff;
+  overflow-y: auto;
+}
+[data-theme="dark"] #screen-exam:fullscreen,
+[data-theme="dark"] #screen-exam:-webkit-full-screen {
+  background: #111827;
+}
 /* ── Fullscreen: convert fixed section-nav to flex child so clicks work ── */
 #screen-exam:fullscreen .section-nav-fixed,
 #screen-exam:-webkit-full-screen .section-nav-fixed {

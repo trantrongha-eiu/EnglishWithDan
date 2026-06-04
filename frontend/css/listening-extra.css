@@ -378,8 +378,50 @@
             height: 100vh;
         }
         #screen-practice .exam-footer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #fff;
+            min-height: 52px;
+            flex-shrink: 0;
             border-top: 1px solid #e5e7eb;
         }
+        #screen-practice .q-nav-scroll {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 4px;
+            overflow-x: auto;
+            flex: 1;
+            align-items: center;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+        #screen-practice .q-nav-scroll::-webkit-scrollbar { display: none; }
+        #screen-practice .exam-footer-btns {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        #screen-practice .q-nav-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .12s;
+        }
+        #screen-practice .q-nav-btn:hover { border-color: #3d8bff; color: #3d8bff; }
+        #screen-practice .q-nav-btn.q-nav-answered { background: #dbeafe; border-color: #3d8bff; color: #1d4ed8; }
 
         /* ── Mobile: practice screen ─────────────────────────────────────── */
         @media (max-width: 768px) {

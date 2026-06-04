@@ -391,10 +391,10 @@
     <div class="modal-overlay hidden" id="modal-exit">
         <div class="modal-box modal-sm">
             <h3>Thoát bài thi?</h3>
-            <p>Tiến trình làm bài đã được <strong>tự động lưu</strong>. Bạn có thể nhập lại mã và tiếp tục sau.</p>
+            <p>Tiến trình và vị trí audio sẽ được <strong>lưu lại</strong>. Bạn có thể quay lại tiếp tục từ màn hình danh sách.</p>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModal('modal-exit')">Ở lại</button>
-                <button class="btn-danger" onclick="forceExit()">Thoát</button>
+                <button class="btn-danger" onclick="forceExit()">Thoát &amp; lưu</button>
             </div>
         </div>
     </div>
@@ -576,30 +576,20 @@
             setToolExam('none');
             showScreen('exam');
 
-            // Show overlay in resume mode — no 30s countdown, just direct play
-            const overlay = document.getElementById('audio-start-overlay');
-            const asoText = overlay.querySelector('.aso-text');
-            const asoSub  = overlay.querySelector('.aso-sub');
-            const asoBtn  = overlay.querySelector('.aso-play-btn');
-            const _origText  = asoText.innerHTML;
-            const _origSub   = asoSub.innerHTML;
-            const _origBtn   = asoBtn.innerHTML;
-            const _origClick = asoBtn.onclick;
-            const answeredCount = Object.keys(state.answers).length;
-            asoText.innerHTML = 'Bạn đang <strong>tiếp tục</strong> bài thi dở dang.<br>Audio sẽ phát từ vị trí đã lưu.';
-            asoSub.innerHTML  = `Đã trả lời: <strong>${answeredCount}/${state.currentTest?.totalQuestions || 40}</strong> câu. Nhấn bên dưới khi sẵn sàng.`;
-            asoBtn.innerHTML  = '▶ Tiếp tục nghe';
-            asoBtn.onclick = function () {
-                asoText.innerHTML = _origText;
-                asoSub.innerHTML  = _origSub;
-                asoBtn.innerHTML  = _origBtn;
-                asoBtn.onclick    = _origClick;
-                startAudioPlay();
-            };
-            const playNowBtn = document.getElementById('aso-play-now-btn');
-            if (playNowBtn) playNowBtn.classList.add('hidden');
-            overlay.classList.remove('hidden');
-            updateExamAudioStatus(false);
+            // Resume mode: skip overlay, auto-play after 5s countdown
+            document.getElementById('audio-start-overlay').classList.add('hidden');
+            let _rCount = 5;
+            updateExamAudioStatus(false, _rCount);
+            clearInterval(_asoTimer);
+            _asoTimer = setInterval(() => {
+                _rCount--;
+                if (_rCount <= 0) {
+                    clearInterval(_asoTimer);
+                    startAudioPlay();
+                } else {
+                    updateExamAudioStatus(false, _rCount);
+                }
+            }, 1000);
 
             // Start periodic auto-save
             clearInterval(_saveInterval);
@@ -2368,14 +2358,17 @@
         function confirmExit() { openModal('modal-exit'); }
         function forceExit() {
             closeModal('modal-exit');
-            clearExamStorage();
+            // Save current position so resume banner appears on list screen
+            saveExamToStorage();
             clearInterval(_asoTimer);
+            clearInterval(_saveInterval);
+            _saveInterval = null;
             audio.pause();
             audio.playbackRate = 1;
             document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', b.textContent.trim() === '×1'));
             window.onbeforeunload = null;
-            state.submitted = true;
             showScreen('list');
+            checkResumeExam();
         }
 
         // ══════════════════════════════════════════════
