@@ -112,7 +112,6 @@ app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/listening',require('./routes/listening'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
-app.use('/api/history',  require('./routes/history'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/courses',         require('./routes/courses'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));

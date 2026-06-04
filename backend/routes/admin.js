@@ -1921,21 +1921,7 @@ router.post('/reseed-task2-week12', auth, teacherOnly, async (req, res) => {
   try {
     const { reseedWeek12 } = require('../scripts/seedTask2Exercises');
     await reseedWeek12();
-    // Fix encoding immediately so Vietnamese text & emojis render correctly
-    const { runFix } = require('../scripts/fixTaskEncoding');
-    const fixResult = await runFix();
-    res.json({ success: true, message: `Đã re-seed 5 topics tuần 12 và sửa encoding (${fixResult.t2Fixed} topic fixed).` });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
-
-// POST /api/admin/fix-encoding  — one-time migration to fix double-encoded Vietnamese
-router.post('/fix-encoding', auth, teacherOnly, async (req, res) => {
-  try {
-    const { runFix } = require('../scripts/fixTaskEncoding');
-    const result = await runFix();
-    res.json({ success: true, ...result });
+    res.json({ success: true, message: 'Đã re-seed 5 topics tuần 12.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

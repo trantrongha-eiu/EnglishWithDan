@@ -15,7 +15,6 @@ const NAV = [
   { to: '/listening-tests',    icon: '🎧', label: 'Đề Listening' },
   { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening' },
   { to: '/writing-tests',   icon: '✏️', label: 'Đề Writing' },
-  { to: '/speaking',        icon: '🎤', label: 'Speaking' },
   { to: '/vocabulary',      icon: '🟩', label: 'Từ vựng (Units)' },
   { section: 'LUYỆN VIẾT' },
   { to: '/writing-practice', icon: '🖊️', label: 'Writing Practice' },

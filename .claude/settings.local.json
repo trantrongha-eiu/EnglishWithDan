@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E '\\\\.\\(html|css\\)$')",
+      "Bash(grep -l \"Home\" \"c:\\\\Users\\\\ASUS\\\\Desktop\\\\EnglishWithDan\\\\frontend\"/*.html)",
+      "Bash(del \"c:\\\\Users\\\\ASUS\\\\Desktop\\\\EnglishWithDan\\\\frontend\\\\vocab.html\")",
+      "Bash(node --check \"c:\\\\Users\\\\ASUS\\\\Desktop\\\\EnglishWithDan\\\\frontend\\\\js\\\\admin.js\")",
+      "Bash(ls -lh c:/Users/ASUS/Desktop/EnglishWithDan/frontend/*.html)",
+      "Read(//c/Users/ASUS/Desktop/EnglishWithDan/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(grep -r \"WebSocket\\\\|socket\\\\|SSE\\\\|EventSource\" /c/Users/ASUS/Desktop/EnglishWithDan/backend/*.js /c/Users/ASUS/Desktop/EnglishWithDan/backend/routes/*.js)",
+      "Bash(git push *)"
+    ]
+  }
+}
