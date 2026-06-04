@@ -165,6 +165,27 @@
     [data-theme="dark"] .wp-welcome-types-lbl { color:#7dd3fc; }
     [data-theme="dark"] .wp-welcome-chips span { background:#0f2d45; border-color:#1e4060; color:#7dd3fc; }
 
+    /* ── Option toggles ── */
+    .wp-option-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 0; border-bottom: 1px solid #f3f4f6;
+    }
+    .wp-option-row:last-child { border-bottom: none; }
+    .wp-option-label { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; color: #374151; }
+    .wp-toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; cursor: pointer; }
+    .wp-toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .wp-toggle-slider {
+      position: absolute; inset: 0; background: #d1d5db; border-radius: 20px; transition: background .2s;
+    }
+    .wp-toggle-slider::before {
+      content: ''; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px;
+      background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    }
+    .wp-toggle-switch input:checked + .wp-toggle-slider { background: #6366f1; }
+    .wp-toggle-switch input:checked + .wp-toggle-slider::before { transform: translateX(16px); }
+    [data-theme="dark"] .wp-option-label { color: #cbd5e1; }
+    [data-theme="dark"] .wp-option-row { border-bottom-color: #1e293b; }
+
   </style>
 </head>
 <body>
@@ -252,6 +273,24 @@
           <button class="wp-type-btn"        data-type="fill_blank"  onclick="selectType('fill_blank')">✏️ Điền chỗ trống</button>
           <button class="wp-type-btn"        data-type="expand"      onclick="selectType('expand')">🔡 Mở rộng câu</button>
           <button class="wp-type-btn"        data-type="combine"     onclick="selectType('combine')">🔗 Nối câu</button>
+        </div>
+      </div>
+
+      <div class="wp-sidebar-section">
+        <div class="wp-sidebar-title"><i class="fas fa-sliders-h"></i> Tùy chọn</div>
+        <div class="wp-option-row">
+          <span class="wp-option-label"><span>⚡</span> Tự chuyển câu</span>
+          <label class="wp-toggle-switch">
+            <input type="checkbox" id="toggle-auto-advance" onchange="setAutoAdvance(this.checked)">
+            <span class="wp-toggle-slider"></span>
+          </label>
+        </div>
+        <div class="wp-option-row">
+          <span class="wp-option-label"><span>🔀</span> Xáo trộn câu</span>
+          <label class="wp-toggle-switch">
+            <input type="checkbox" id="toggle-shuffle" onchange="setShuffleSentences(this.checked)">
+            <span class="wp-toggle-slider"></span>
+          </label>
         </div>
       </div>
 
@@ -585,6 +624,10 @@ let testTotalTime     = 0;
 // Rearrange
 let rearrangeWords  = [];
 let rearrangeAnswer = [];
+// Feature toggles
+let _wpAutoAdvance   = localStorage.getItem('wp_auto_advance') === 'on';
+let _wpShuffle       = localStorage.getItem('wp_shuffle') === 'on';
+let _autoAdvanceTick = null;
 
 const TYPE_LABELS = {
   translation:'🔄 Dịch câu', rearrange:'🔀 Sắp xếp từ',
@@ -665,10 +708,36 @@ function skipExercise() {
 // ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
+function setAutoAdvance(val) {
+  _wpAutoAdvance = val;
+  localStorage.setItem('wp_auto_advance', val ? 'on' : 'off');
+  document.getElementById('toggle-auto-advance').checked       = val;
+  document.getElementById('sheet-toggle-auto-advance').checked = val;
+}
+
+function setShuffleSentences(val) {
+  _wpShuffle = val;
+  localStorage.setItem('wp_shuffle', val ? 'on' : 'off');
+  document.getElementById('toggle-shuffle').checked       = val;
+  document.getElementById('sheet-toggle-shuffle').checked = val;
+}
+
+function _clearAutoAdvance() {
+  clearInterval(_autoAdvanceTick);
+  _autoAdvanceTick = null;
+  const btn = document.querySelector('#feedback-card .wp-next-btn');
+  if (btn) btn.innerHTML = 'Câu tiếp theo <i class="fas fa-arrow-right"></i>';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
   showState('welcome');
+  // Init toggles from saved prefs
+  document.getElementById('toggle-auto-advance').checked       = _wpAutoAdvance;
+  document.getElementById('sheet-toggle-auto-advance').checked = _wpAutoAdvance;
+  document.getElementById('toggle-shuffle').checked            = _wpShuffle;
+  document.getElementById('sheet-toggle-shuffle').checked      = _wpShuffle;
   window.addEventListener('beforeunload', () => saveBatch());
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || e.shiftKey) return;
@@ -808,7 +877,7 @@ async function loadExercises() {
     const data = await res.json();
     if (!data.success || !data.exercises?.length) { showState('empty'); return; }
 
-    exercises = data.exercises; // keep original order from DB (orderIndex)
+    exercises = _wpShuffle ? shuffle(data.exercises) : data.exercises;
     currentIdx = 0;
     sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
     comboStreak = 0; _skippedIds = new Set();
@@ -1052,6 +1121,26 @@ function showFeedback(userAnswer, data) {
   document.getElementById('feedback-text').textContent = feedback.feedbackVi || '';
 
   document.getElementById('feedback-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Auto-advance countdown
+  _clearAutoAdvance();
+  if (_wpAutoAdvance) {
+    let countdown = 2;
+    const btn = document.querySelector('#feedback-card .wp-next-btn');
+    function tick() {
+      if (countdown <= 0) {
+        clearInterval(_autoAdvanceTick);
+        _autoAdvanceTick = null;
+        if (btn) btn.innerHTML = 'Câu tiếp theo <i class="fas fa-arrow-right"></i>';
+        nextExercise();
+        return;
+      }
+      if (btn) btn.innerHTML = `Câu tiếp theo <i class="fas fa-arrow-right"></i> <small style="font-weight:400;opacity:.65">(${countdown}s)</small>`;
+      countdown--;
+    }
+    tick();
+    _autoAdvanceTick = setInterval(tick, 1000);
+  }
 }
 
 function updateProgress(xpEarned, isCorrect) {
@@ -1111,6 +1200,7 @@ function saveBatch() {
 }
 
 function nextExercise() {
+  _clearAutoAdvance();
   currentIdx++;
   if (currentIdx >= exercises.length) {
     stopSessionTimer();
@@ -1149,6 +1239,8 @@ function showDoneSummary() {
 }
 
 function restartExercises() {
+  _clearAutoAdvance();
+  if (_wpShuffle) exercises = shuffle(exercises);
   currentIdx = 0; sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
   comboStreak = 0; _skippedIds = new Set();
   const badge = document.getElementById('combo-badge');
@@ -1534,6 +1626,7 @@ function confirmWpQuit() {
 }
 
 function stopPracticeMode() {
+  _clearAutoAdvance();
   if (sessionDone > 0) {
     askWpQuit(() => { stopSessionTimer(); showDoneSummary(); showState('done'); saveBatch(); });
   } else {
@@ -1627,6 +1720,23 @@ function stopTestMode() {
         <button class="wp-type-btn"        data-type="expand"      onclick="selectType('expand');closeWpSheet()">🔡 Mở rộng câu</button>
         <button class="wp-type-btn"        data-type="combine"     onclick="selectType('combine');closeWpSheet()">🔗 Nối câu</button>
       </div></div>
+      <div class="wp-sheet-section-title"><i class="fas fa-sliders-h"></i> Tùy chọn</div>
+      <div style="padding:0 0 4px">
+        <div class="wp-option-row">
+          <span class="wp-option-label"><span>⚡</span> Tự chuyển câu</span>
+          <label class="wp-toggle-switch">
+            <input type="checkbox" id="sheet-toggle-auto-advance" onchange="setAutoAdvance(this.checked)">
+            <span class="wp-toggle-slider"></span>
+          </label>
+        </div>
+        <div class="wp-option-row">
+          <span class="wp-option-label"><span>🔀</span> Xáo trộn câu</span>
+          <label class="wp-toggle-switch">
+            <input type="checkbox" id="sheet-toggle-shuffle" onchange="setShuffleSentences(this.checked)">
+            <span class="wp-toggle-slider"></span>
+          </label>
+        </div>
+      </div>
     </div>
 
     <!-- Test setup -->
