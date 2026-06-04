@@ -303,6 +303,25 @@
   </div>
 </div>
 
+<!-- ── Type switch confirm modal ── -->
+<div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
+  <div class="t2-quit-box">
+    <div class="t2-quit-top" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe)">
+      <div class="t2-quit-mascot">🔀</div>
+      <div class="t2-quit-title" style="color:#4c1d95">Chuyển template?</div>
+      <div class="t2-quit-sub" id="tpl-switch-sub"></div>
+    </div>
+    <div class="t2-quit-actions">
+      <button class="t2-quit-continue" onclick="cancelTypeSwitch()">
+        <i class="fas fa-arrow-left"></i> Ở lại làm tiếp
+      </button>
+      <button class="t2-quit-leave" id="tpl-switch-confirm-btn" onclick="confirmTypeSwitch()">
+        Chuyển sang type mới
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Stats header ── -->
 <header class="wp-header">
   <div class="wp-header-right">
@@ -1692,7 +1711,45 @@ function resetTplType() {
   renderTplContent();
 }
 
+let _pendingTypeId = null;
+
 function switchTplType(typeId) {
+  if (typeId === _tplActiveType) return;
+  const type = TPL_DATA[_tplActiveType];
+  const hasProgress = type && type.sections.some((sec, si) =>
+    sec.items.some((item, ii) => !!_tplScores[`${_tplActiveType}-${si}-${ii}`])
+  );
+  if (hasProgress) {
+    _pendingTypeId = typeId;
+    const fromMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
+    const toMeta   = TPL_TYPES.find(t => t.id === typeId);
+    let done = 0, total = 0;
+    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+      total++;
+      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+    }));
+    document.getElementById('tpl-switch-sub').innerHTML =
+      `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${fromMeta ? fromMeta.label : _tplActiveType}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
+    const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
+    if (confirmBtn && toMeta) confirmBtn.textContent = `Chuyển → ${toMeta.label} · ${TPL_DATA[typeId].name}`;
+    document.getElementById('tpl-switch-overlay').classList.remove('hidden');
+  } else {
+    doSwitchType(typeId);
+  }
+}
+
+function confirmTypeSwitch() {
+  document.getElementById('tpl-switch-overlay').classList.add('hidden');
+  if (_pendingTypeId) doSwitchType(_pendingTypeId);
+  _pendingTypeId = null;
+}
+
+function cancelTypeSwitch() {
+  document.getElementById('tpl-switch-overlay').classList.add('hidden');
+  _pendingTypeId = null;
+}
+
+function doSwitchType(typeId) {
   _tplActiveType = typeId;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === typeId);
