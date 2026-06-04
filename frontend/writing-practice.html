@@ -1114,8 +1114,8 @@ function nextExercise() {
   currentIdx++;
   if (currentIdx >= exercises.length) {
     stopSessionTimer();
-    saveBatch();
     showState('done'); showDoneSummary();
+    saveBatch();
   } else showExercise(currentIdx);
 }
 
@@ -1535,7 +1535,7 @@ function confirmWpQuit() {
 
 function stopPracticeMode() {
   if (sessionDone > 0) {
-    askWpQuit(() => { stopSessionTimer(); saveBatch(); showDoneSummary(); showState('done'); });
+    askWpQuit(() => { stopSessionTimer(); showDoneSummary(); showState('done'); saveBatch(); });
   } else {
     stopSessionTimer();
     showState('welcome');

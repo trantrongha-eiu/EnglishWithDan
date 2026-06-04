@@ -1319,7 +1319,7 @@ function skipExercise() {
 
 function stopPracticeMode() {
   if (sessionDone === 0) { showState('welcome'); return; }
-  askWpQuit(() => { saveBatch(); showDoneSummary(); showState('done'); }, {
+  askWpQuit(() => { showDoneSummary(); showState('done'); }, {
     title: 'Dừng luyện tập?',
     sub: `Bạn đã làm ${sessionDone} câu. Xem tổng kết nhé!`,
     confirmText: 'Xem kết quả', continueText: 'Tiếp tục học'
