@@ -35,12 +35,12 @@ export default function App() {
         <ToastProvider>
           <ConfirmProvider>
             <Routes>
-              <Route path="/admin" element={
+              <Route path="/" element={
                 <ProtectedRoute>
                   <AdminLayout />
                 </ProtectedRoute>
               }>
-                <Route index element={<Navigate to="/admin/dashboard" replace />} />
+                <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="users" element={<Users />} />
                 <Route path="access-codes" element={<AccessCodes />} />
@@ -64,7 +64,7 @@ export default function App() {
                 <Route path="messages" element={<Messages />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
-              <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </ConfirmProvider>
         </ToastProvider>
