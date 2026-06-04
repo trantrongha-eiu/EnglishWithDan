@@ -12,6 +12,7 @@
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Trang chủ' },
         { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
         { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing' },
+        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
       ]
     },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
