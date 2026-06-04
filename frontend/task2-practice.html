@@ -442,6 +442,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('t2-quit-overlay').addEventListener('click', e => {
     if (e.target === e.currentTarget) document.getElementById('t2-quit-overlay').classList.add('hidden');
   });
+  document.getElementById('tpl-switch-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) cancelTypeSwitch();
+  });
 });
 
 // ════════════════════════════════════════════════════════
@@ -466,10 +469,10 @@ function loadXPFromStorage() {
   document.getElementById('header-streak').textContent = stored.streak  || 0;
 }
 
-function updateXPStorage(earned) {
+function updateXPStorage(earned, incrementStreak = false) {
   const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
   stored.xp    = (stored.xp || 0) + earned;
-  stored.streak = (stored.streak || 0) + 1;
+  if (incrementStreak) stored.streak = (stored.streak || 0) + 1;
   localStorage.setItem('t2_progress', JSON.stringify(stored));
   document.getElementById('header-xp').textContent     = stored.xp;
   document.getElementById('header-streak').textContent = stored.streak;
@@ -948,7 +951,7 @@ async function submitPractice() {
     const isOk = data.isCorrect;
     isOk ? playOk() : playWrong();
     state.sessionDone++;
-    if (isOk) { state.sessionCorrect++; updateXPStorage(5); }
+    if (isOk) { state.sessionCorrect++; updateXPStorage(5, true); }
     updateSessionStats();
 
     // Update progress dot for current question
@@ -1119,6 +1122,10 @@ function getExamAnswer() {
 async function examNext() {
   const q = state.examQuestions[state.examIdx];
   const answer = getExamAnswer();
+  if (!answer && answer !== '0') {
+    showToast('Vui lòng trả lời câu hỏi trước khi tiếp tục!', 'warn', 2500);
+    return;
+  }
   state.examAnswers.push({ topicId: q.topicId || state.selectedTopic._id, questionId: q._id, userAnswer: answer });
   state.examIdx++;
   if (state.examIdx >= state.examQuestions.length) {
@@ -1657,13 +1664,12 @@ function showClozeHint(key, answer) {
 }
 
 function resetClozeCard(key) {
-  if (_tplScores[key]) {
-    _tplScores[key] = '';
+  // Only reset the visual state; keep _tplScores[key] = 'err' so wasNew stays false on retry
+  if (_tplScores[key] === 'err') {
     const card = document.getElementById('cloze-' + key);
     const fb   = document.getElementById('fb-'    + key);
     if (card) card.className = 't2-cloze-card';
     if (fb)   { fb.className = 't2-cloze-fb'; fb.textContent = ''; }
-    updateTplScore();
   }
 }
 
@@ -1777,7 +1783,7 @@ function awardTplXP(card) {
   const pop = document.createElement('div');
   pop.className = 't2-tpl-xp-pop';
   pop.textContent = '+3 XP ⭐';
-  pop.style.cssText = `left:${rect.left + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 10}px;`;
+  pop.style.cssText = `left:${rect.left + window.scrollX + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 10}px;`;
   document.body.appendChild(pop);
   setTimeout(() => pop.remove(), 900);
 }
