@@ -202,9 +202,16 @@
     .t2-tpl-toggle-badge{background:rgba(255,255,255,.22);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700}
     .t2-tpl-body{display:none}
     .t2-tpl-body.open{display:block}
-    .t2-type-tabs-wrap{display:flex;overflow-x:auto;gap:0;border-bottom:2px solid #e5e7eb;padding:0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:#fafafa}
+    .t2-type-tabs-outer{display:flex;align-items:stretch;border-bottom:2px solid #e5e7eb;background:#fafafa}
+    [data-theme="dark"] .t2-type-tabs-outer{border-color:#334155;background:#0f172a}
+    .t2-type-tabs-wrap{display:flex;overflow-x:auto;flex:1;gap:0;border-bottom:none;padding:0 0 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:transparent}
     .t2-type-tabs-wrap::-webkit-scrollbar{display:none}
-    [data-theme="dark"] .t2-type-tabs-wrap{border-color:#334155;background:#0f172a}
+    [data-theme="dark"] .t2-type-tabs-wrap{background:transparent}
+    .t2-tpl-vi-btn-tab{flex-shrink:0;border:none;border-left:1px solid #e5e7eb;background:none;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s}
+    .t2-tpl-vi-btn-tab:hover{background:#f0f0ff;color:#6366f1}
+    .t2-tpl-vi-btn-tab.active{background:#ede9fe;color:#4338ca}
+    [data-theme="dark"] .t2-tpl-vi-btn-tab{border-color:#1e293b;color:#64748b}
+    [data-theme="dark"] .t2-tpl-vi-btn-tab:hover,.t2-tpl-vi-btn-tab.active{background:#1e1b4b;color:#a5b4fc}
     .t2-type-tab-btn{padding:11px 14px;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-size:12px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;flex-shrink:0}
     .t2-type-tab-btn.active{color:#6366f1;border-bottom-color:#6366f1}
     .t2-type-tab-btn:hover{color:#6366f1}
@@ -1554,12 +1561,17 @@ function renderTemplateSection() {
       <i class="fas fa-chevron-down" id="tpl-chevron" style="transition:transform .3s"></i>
     </button>
     <div class="t2-tpl-body ${_tplOpen ? 'open' : ''}" id="tpl-body">
-      <div class="t2-type-tabs-wrap" id="tpl-type-tabs">
-        ${TPL_TYPES.map(t => `
-          <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
-            onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}">
-            ${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
-          </button>`).join('')}
+      <div class="t2-type-tabs-outer">
+        <div class="t2-type-tabs-wrap" id="tpl-type-tabs">
+          ${TPL_TYPES.map(t => `
+            <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
+              onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}">
+              ${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
+            </button>`).join('')}
+        </div>
+        <button class="t2-tpl-vi-btn-tab ${_tplShowVi ? 'active' : ''}" id="tpl-vi-btn" onclick="toggleTplVi()">
+          🇻🇳 <span id="tpl-vi-label">${_tplShowVi ? 'Ẩn TV' : 'Tiếng Việt'}</span>
+        </button>
       </div>
       <div class="t2-type-progress-wrap"><div class="t2-type-progress-fill" id="tpl-progress-fill" style="width:0%"></div></div>
       <div id="tpl-content-area"></div>
@@ -1619,10 +1631,7 @@ function renderTplContent() {
     </div>
     <div class="t2-tpl-footer">
       <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
-      <span style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="t2-tpl-vi-toggle" onclick="toggleTplVi()">${_tplShowVi ? '🙈 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt'}</button>
-        <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
-      </span>
+      <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
     </div>`;
   const fill = document.getElementById('tpl-progress-fill');
   if (fill) fill.style.width = pct + '%';
@@ -1702,8 +1711,10 @@ function toggleTplVi() {
   document.querySelectorAll('.t2-cloze-vi').forEach(el => {
     el.classList.toggle('vis', _tplShowVi);
   });
-  const btn = document.querySelector('.t2-tpl-vi-toggle');
-  if (btn) btn.textContent = _tplShowVi ? '🙈 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
+  const tabBtn = document.getElementById('tpl-vi-btn');
+  const label  = document.getElementById('tpl-vi-label');
+  if (tabBtn) tabBtn.classList.toggle('active', _tplShowVi);
+  if (label)  label.textContent = _tplShowVi ? 'Ẩn TV' : 'Tiếng Việt';
 }
 
 function resetTplType() {
