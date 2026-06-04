@@ -1093,6 +1093,222 @@ const sampleExercises = [
     orderIndex: 79, xpReward: 20
   },
 
+  // ─── PARAPHRASE: NOUN PHRASES (3 kỹ thuật) ──────────────────────────────
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ ĐỒNG NGHĨA (synonym) thay thế cho từ in đậm:',
+    questionEn: 'ORIGINAL: "The bar chart shows the **amount** of water used for agriculture in Australia in 2015."',
+    options: [
+      'number',
+      'quantity',
+      'percentage',
+      'figure'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Synonym – Cách 1: amount → quantity (danh từ không đếm được)',
+    explanation: '"amount" và "quantity" đều dùng cho danh từ không đếm được (water). "number" dùng cho danh từ đếm được. "figure" thay cho số liệu, không thay cho "amount" trực tiếp.',
+    orderIndex: 87, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn từ ĐỒNG NGHĨA thay thế cho "number" (danh từ đếm được):',
+    questionEn: 'ORIGINAL: "The graph shows the **number** of tourists visiting coastal cities between 2000 and 2010."',
+    options: [
+      'amount',
+      'quantity',
+      'figure',
+      'Cả B và C đều đúng'
+    ],
+    correctOptionIndex: 2,
+    grammarPoint: 'Synonym – Cách 1: number → figure (chỉ số liệu đếm được)',
+    explanation: '"figure" = con số, có thể thay cho "number" trong ngữ cảnh học thuật. "amount/quantity" không dùng cho danh từ đếm được (tourists).',
+    orderIndex: 88, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn cặp synonym ĐÚNG để paraphrase các từ được gạch dưới:',
+    questionEn: 'ORIGINAL: "The table shows the number of cars **produced** in different **countries** in 2020."',
+    options: [
+      'produced → made | countries → nations',
+      'produced → consumed | countries → cities',
+      'produced → exported | countries → regions',
+      'produced → used | countries → areas'
+    ],
+    correctOptionIndex: 0,
+    grammarPoint: 'Synonym pairs: produce → make | country → nation | use → utilize | number → figure',
+    explanation: '"produced → made" và "countries → nations" là cặp synonym phổ biến và chính xác nhất. "made" tương đương "produced" trong ngữ cảnh sản xuất.',
+    orderIndex: 89, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'fill_blank',
+    instruction: 'Điền dạng DANH TỪ phù hợp (word form – Cách 2):',
+    sentenceWithBlanks: 'ORIGINAL: "The amount of water **consumed** in households." → PARAPHRASE: "Water ___ in households."',
+    blanksCount: 1,
+    sampleAnswers: ['consumption'],
+    primaryAnswer: 'consumption',
+    grammarPoint: 'Word form – Cách 2: consumed (verb) → consumption (noun)',
+    explanation: '"consumed" là động từ → biến đổi thành danh từ "consumption". Cấu trúc: [Subject] + [noun form] + [prepositional phrase].',
+    hints: ['consumption', 'consuming'],
+    orderIndex: 90, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'fill_blank',
+    instruction: 'Điền dạng DANH TỪ phù hợp (word form – Cách 2):',
+    sentenceWithBlanks: 'ORIGINAL: "The number of cars **sold** in Asia." → PARAPHRASE: "Car ___ in Asia."',
+    blanksCount: 1,
+    sampleAnswers: ['sales'],
+    primaryAnswer: 'sales',
+    grammarPoint: 'Word form – Cách 2: sold (verb) → sales (noun)',
+    explanation: '"sold" là động từ quá khứ của "sell" → danh từ là "sales". Ví dụ tương tự: export → exports, import → imports.',
+    hints: ['sales', 'selling'],
+    orderIndex: 91, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu paraphrase dùng WORD FORM đúng (Cách 2):',
+    questionEn: 'ORIGINAL: "The amount of money **spent** on education in five countries in 2018."',
+    options: [
+      'The money spending on education in five countries in 2018.',
+      'Education expenditure in five countries in 2018.',
+      'The amount of money expenditure on education in five countries in 2018.',
+      'The spending money on education in five countries in 2018.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Word form: spent (verb) → expenditure / spending (noun)',
+    explanation: '"spent" → "expenditure" (học thuật hơn) hoặc "spending". Cấu trúc: [Subject] + [noun form] + [location/context]. KHÔNG ghép "amount of" với "expenditure".',
+    orderIndex: 92, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu ĐÚNG dùng cấu trúc "The + Noun + of + Noun" (Cách 3 – đổi trật tự từ):',
+    questionEn: 'ORIGINAL: "Electricity consumption in Germany between 2000 and 2020."',
+    options: [
+      'The electricity of consumption in Germany between 2000 and 2020.',
+      'The consumption of electricity in Germany between 2000 and 2020.',
+      'The consuming of electricity in Germany between 2000 and 2020.',
+      'Electricity of the consumption in Germany between 2000 and 2020.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Word order – Cách 3: [Noun₁] + [Noun₂] → The + [Noun₂] + of + [Noun₁]',
+    explanation: '"Electricity consumption" → "The consumption of electricity". Luôn dùng danh từ đúng, không dùng V-ing.',
+    orderIndex: 93, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'multiple_choice',
+    instruction: 'Chọn câu áp dụng ĐÚNG cả 3 cách paraphrase:',
+    questionEn: 'ORIGINAL: "The graph shows the number of cars sold in Asia from 2015 to 2020."',
+    options: [
+      'The line graph illustrates car sales in Asia during the period 2015 to 2020.',
+      'The graph shows car selling in Asian countries in 2015 and 2020.',
+      'The graph illustrates how much cars were sold in Asia from 2015 to 2020.',
+      'The graph illustrates the numbers of sold cars in Asian from 2015 to 2020.'
+    ],
+    correctOptionIndex: 0,
+    grammarPoint: 'Combine 3 methods: shows→illustrates (synonym) | the number of cars sold→car sales (word form) | from...to...→during the period (synonym)',
+    explanation: 'Đáp án A: dùng đủ 3 kỹ thuật. B: sai ("car selling" không tự nhiên). C: "how much" sai (cars đếm được → "how many"). D: "numbers of sold" không đúng cấu trúc.',
+    orderIndex: 94, xpReward: 10
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'translation',
+    instruction: 'Paraphrase câu sau theo Cách 1 (synonym) — thay ít nhất 3 từ:',
+    questionEn: 'ORIGINAL: "The graph below shows the number of tourists visiting coastal cities between 2000 and 2010."',
+    sampleAnswers: [
+      'The line graph illustrates the figure for tourists travelling to seaside cities from 2000 to 2010.',
+      'The chart depicts how many visitors came to coastal towns during the period from 2000 to 2010.',
+      'The graph presents the figure for people visiting coastal cities over the 2000–2010 period.'
+    ],
+    primaryAnswer: 'The line graph illustrates the figure for tourists travelling to seaside cities from 2000 to 2010.',
+    grammarPoint: 'Synonym: graph→line graph | shows→illustrates | number→figure | visiting→travelling to | between...and...→from...to...',
+    explanation: 'Thay ít nhất 3 từ: động từ (shows→illustrates), danh từ (number→figure), tính từ/danh từ (coastal→seaside), giới từ thời gian (between...and...→from...to...).',
+    hints: ['illustrates/depicts', 'figure for', 'travelling to / coming to', 'from ... to ...'],
+    orderIndex: 95, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'data_transform',
+    instruction: 'Viết lại câu dùng WORD FORM (Cách 2) — bắt đầu bằng từ gợi ý:',
+    questionEn: 'ORIGINAL: "The amount of money spent on education in five countries in 2018."\nViết lại bắt đầu bằng: "Education ___"',
+    sampleAnswers: [
+      'Education expenditure in five countries in 2018.',
+      'Education spending in five countries in 2018.'
+    ],
+    primaryAnswer: 'Education expenditure in five countries in 2018.',
+    grammarPoint: 'Word form: the amount of money spent → expenditure/spending (bỏ "the amount of money")',
+    explanation: '"spent" → "expenditure/spending". Bỏ "the amount of money" đi, chỉ cần "Education expenditure/spending". Đây là cách rút gọn rất phổ biến trong Task 1.',
+    hints: ['Education expenditure', 'Education spending'],
+    orderIndex: 96, xpReward: 12
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'data_transform',
+    instruction: 'Viết lại câu dùng CẤU TRÚC "The + Noun + of + Noun" (Cách 3):',
+    questionEn: 'ORIGINAL: "Car sales in Asia from 2015 to 2020."\nViết lại bắt đầu bằng: "The ___ of ___"',
+    sampleAnswers: [
+      'The sales of cars in Asia from 2015 to 2020.',
+      'The sale of cars in Asia from 2015 to 2020.'
+    ],
+    primaryAnswer: 'The sales of cars in Asia from 2015 to 2020.',
+    grammarPoint: 'Word order: [Noun₁ + Noun₂] → The + [Noun₂] + of + [Noun₁]',
+    explanation: '"Car sales" → "The sales of cars". Cấu trúc này áp dụng được cho: water consumption → the consumption of water, electricity use → the use of electricity, student enrolment → the enrolment of students.',
+    hints: ['The sales of cars'],
+    orderIndex: 97, xpReward: 12
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'translation',
+    instruction: 'Paraphrase câu sau theo CẢ 3 CÁCH (viết 3 câu riêng biệt):',
+    questionEn: 'ORIGINAL: "The percentage of students who participated in sports activities in 2022."',
+    sampleAnswers: [
+      'Cách 1 (synonym): The proportion of learners who took part in athletic activities in 2022.',
+      'Cách 2 (word form): Student participation in sports activities in 2022.',
+      'Cách 3 (word order): The participation of students in sports activities in 2022.'
+    ],
+    primaryAnswer: 'The proportion of learners who took part in athletic activities in 2022.',
+    grammarPoint: 'Apply all 3 methods: percentage→proportion (synonym) | participated→participation (word form) | student participation→the participation of students (word order)',
+    explanation: 'Cách 1: percentage→proportion, students→learners, participated→took part in. Cách 2: bỏ "The percentage of...who", dùng "Student participation". Cách 3: "Student participation" → "The participation of students".',
+    hints: ['proportion of', 'learners/pupils', 'took part in / engaged in', 'student participation', 'the participation of students'],
+    orderIndex: 98, xpReward: 20
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'translation',
+    instruction: 'Paraphrase câu mở bài Task 1 sau dùng ÍT NHẤT 2 trong 3 kỹ thuật:',
+    questionEn: 'ORIGINAL: "The bar chart below shows the amount of water used for agriculture in Australia in 2015."',
+    sampleAnswers: [
+      'The bar chart illustrates the quantity of water utilized for farming in Australia in 2015.',
+      'The bar chart depicts agricultural water use in Australia in 2015.',
+      'The bar chart presents the use of water for agricultural purposes in Australia in 2015.'
+    ],
+    primaryAnswer: 'The bar chart illustrates the quantity of water utilized for farming in Australia in 2015.',
+    grammarPoint: 'Cách 1: shows→illustrates, amount→quantity, used→utilized, agriculture→farming. Cách 2: water used→water use. Cách 3: water use→the use of water',
+    explanation: 'Đáp án mẫu 1: dùng Cách 1 (synonym). Đáp án 2: dùng Cách 2 (word form: used→use). Đáp án 3: dùng Cách 3 (word order). Tất cả đều chấp nhận được.',
+    hints: ['illustrates/depicts', 'quantity/volume', 'utilized/employed', 'farming/agricultural purposes'],
+    orderIndex: 99, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'error_correction',
+    instruction: 'Tìm và sửa LỖI trong câu paraphrase sau:',
+    questionEn: 'ORIGINAL: "The graph shows the number of people who used public transport in major cities in 2010."\nPARAPHRASE: "The chart illustrate how much people travelled by public transport in large city in 2010."',
+    sampleAnswers: [
+      'The chart illustrates how many people travelled by public transport in large cities in 2010.'
+    ],
+    primaryAnswer: 'The chart illustrates how many people travelled by public transport in large cities in 2010.',
+    grammarPoint: 'Errors: illustrate→illustrates (subject-verb) | how much→how many (countable noun: people) | large city→large cities (plural)',
+    explanation: '3 lỗi: (1) "illustrate" → "illustrates" (chủ ngữ số ít). (2) "how much" → "how many" (people = đếm được). (3) "large city" → "large cities" (số nhiều, tương ứng "major cities" trong gốc).',
+    orderIndex: 100, xpReward: 12
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'translation',
+    instruction: 'Viết câu mở bài Task 1 hoàn chỉnh cho đề bài sau (dùng ít nhất 2 kỹ thuật paraphrase):',
+    questionEn: 'ORIGINAL: "The pie chart below shows the percentage of people who used different types of energy in Australia in 2020."',
+    sampleAnswers: [
+      'The pie chart illustrates the proportion of Australians who utilized various types of energy in 2020.',
+      'The pie chart depicts energy usage among different types by the Australian population in 2020.',
+      'The pie chart compares the rates of energy use across different sources in Australia in 2020.'
+    ],
+    primaryAnswer: 'The pie chart illustrates the proportion of Australians who utilized various types of energy in 2020.',
+    grammarPoint: 'Paraphrase checklist: shows→illustrates | percentage→proportion | people→Australians | used→utilized | different→various',
+    explanation: 'Đổi: động từ (shows→illustrates/depicts/compares), danh từ (percentage→proportion/rate), tính từ (different→various), danh từ chỉ người (people in Australia→Australians). Không cần giữ "below" trong câu mở bài.',
+    hints: ['illustrates/depicts/compares', 'proportion/rate', 'utilized/employed', 'various/different types of', 'Australians/the Australian population'],
+    orderIndex: 101, xpReward: 20
+  },
+
   // ─── MIXED EXERCISES ────────────────────────────────────────────────────
   {
     skillType: 'trend_language', module: 2, level: 'beginner', type: 'multiple_choice',
