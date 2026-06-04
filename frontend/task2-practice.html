@@ -461,7 +461,6 @@ function bindWeeks() {
   document.querySelectorAll('.t2-week-card:not(.locked)').forEach(el => {
     el.addEventListener('click', () => selectWeek(parseInt(el.dataset.week)));
   });
-  bindTemplateSection();
 }
 async function selectWeek(w) {
   state.selectedWeek = w;
