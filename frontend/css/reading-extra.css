@@ -255,6 +255,8 @@
       overflow: hidden;
       cursor: pointer;
       transition: box-shadow .2s, transform .15s, border-color .15s;
+      display: flex;
+      flex-direction: column;
     }
     .practice-card:hover {
       box-shadow: 0 6px 20px rgba(0,0,0,.1);
@@ -294,6 +296,9 @@
     .practice-card-cat-badge.p3 { background: #f59e0b; }
     .practice-card-body {
       padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
     .practice-card-title {
       font-size: 13px;
@@ -327,6 +332,7 @@
       cursor: pointer;
       font-family: inherit;
       transition: opacity .15s;
+      margin-top: auto;
     }
     .practice-card-btn:hover { opacity: .88; }
     .practice-card-btn.p1 { background: #3d8bff; }
