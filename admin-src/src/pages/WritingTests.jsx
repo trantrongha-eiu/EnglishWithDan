@@ -230,11 +230,12 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   const [confirming, setConfirming] = useState(false);
   const [aiGrading, setAiGrading] = useState(false);
   const [grade, setGrade] = useState({
-    task1: { bandScore: null, taskAchievement: null, lexicalResource: null, grammaticalRange: null, coherenceCohesion: null },
-    task2: { bandScore: null, taskAchievement: null, lexicalResource: null, grammaticalRange: null, coherenceCohesion: null },
+    task1: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
+    task2: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
     overallBand: null,
     adminNote: '',
   });
+  const [aiRaw, setAiRaw] = useState({ task1: null, task2: null });
 
   useEffect(() => {
     apiFetch(`/admin/writing-attempt/${attemptId}`)
@@ -246,21 +247,22 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           setGrade({
             task1: {
               bandScore: src.task1?.bandScore ?? null,
-              taskAchievement: src.task1?.taskAchievement ?? null,
-              lexicalResource: src.task1?.lexicalResource ?? null,
-              grammaticalRange: src.task1?.grammaticalRange ?? null,
-              coherenceCohesion: src.task1?.coherenceCohesion ?? null,
+              ta:  src.task1?.ta?.score  ?? null,
+              cc:  src.task1?.cc?.score  ?? null,
+              lr:  src.task1?.lr?.score  ?? null,
+              gra: src.task1?.gra?.score ?? null,
             },
             task2: {
               bandScore: src.task2?.bandScore ?? null,
-              taskAchievement: src.task2?.taskAchievement ?? null,
-              lexicalResource: src.task2?.lexicalResource ?? null,
-              grammaticalRange: src.task2?.grammaticalRange ?? null,
-              coherenceCohesion: src.task2?.coherenceCohesion ?? null,
+              ta:  src.task2?.ta?.score  ?? null,
+              cc:  src.task2?.cc?.score  ?? null,
+              lr:  src.task2?.lr?.score  ?? null,
+              gra: src.task2?.gra?.score ?? null,
             },
             overallBand: src.overallBand ?? null,
             adminNote: src.adminNote || '',
           });
+          setAiRaw({ task1: src.task1, task2: src.task2 });
         }
       })
       .catch(() => toast('Không tải được bài nộp', 'error'))
@@ -289,21 +291,22 @@ function GradingModal({ attemptId, onClose, onGraded }) {
       const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, { method: 'POST' });
       const t1 = d.task1 || {};
       const t2 = d.task2 || {};
+      setAiRaw({ task1: t1, task2: t2 });
       setGrade(g => ({
         ...g,
         task1: {
           bandScore: t1.bandScore ?? g.task1.bandScore,
-          taskAchievement: t1.ta?.score ?? g.task1.taskAchievement,
-          lexicalResource: t1.lr?.score ?? g.task1.lexicalResource,
-          grammaticalRange: t1.gra?.score ?? g.task1.grammaticalRange,
-          coherenceCohesion: t1.cc?.score ?? g.task1.coherenceCohesion,
+          ta:  t1.ta?.score  ?? g.task1.ta,
+          cc:  t1.cc?.score  ?? g.task1.cc,
+          lr:  t1.lr?.score  ?? g.task1.lr,
+          gra: t1.gra?.score ?? g.task1.gra,
         },
         task2: {
           bandScore: t2.bandScore ?? g.task2.bandScore,
-          taskAchievement: t2.ta?.score ?? g.task2.taskAchievement,
-          lexicalResource: t2.lr?.score ?? g.task2.lexicalResource,
-          grammaticalRange: t2.gra?.score ?? g.task2.grammaticalRange,
-          coherenceCohesion: t2.cc?.score ?? g.task2.coherenceCohesion,
+          ta:  t2.ta?.score  ?? g.task2.ta,
+          cc:  t2.cc?.score  ?? g.task2.cc,
+          lr:  t2.lr?.score  ?? g.task2.lr,
+          gra: t2.gra?.score ?? g.task2.gra,
         },
       }));
       toast('AI đã chấm xong – kiểm tra và xác nhận điểm');
@@ -315,13 +318,25 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     if (grade.overallBand == null) { toast('Vui lòng nhập điểm tổng', 'error'); return; }
     setConfirming(true);
     try {
+      function buildTask(g, ai) {
+        return {
+          bandScore:       g.bandScore,
+          ta:  { score: g.ta,  comment: ai?.ta?.comment  || '' },
+          cc:  { score: g.cc,  comment: ai?.cc?.comment  || '' },
+          lr:  { score: g.lr,  comment: ai?.lr?.comment  || '' },
+          gra: { score: g.gra, comment: ai?.gra?.comment || '' },
+          overallFeedback: ai?.overallFeedback || '',
+          corrections:     ai?.corrections    || [],
+          suggestions:     ai?.suggestions    || [],
+        };
+      }
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
         method: 'PUT',
         body: JSON.stringify({
-          task1: grade.task1,
-          task2: grade.task2,
+          task1:       buildTask(grade.task1, aiRaw.task1),
+          task2:       buildTask(grade.task2, aiRaw.task2),
           overallBand: grade.overallBand,
-          adminNote: grade.adminNote,
+          adminNote:   grade.adminNote,
         }),
       });
       toast('Đã xác nhận điểm và gửi feedback cho học sinh');
@@ -332,10 +347,10 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   }
 
   const CRITERIA = [
-    { key: 'taskAchievement', label: 'Task Achievement' },
-    { key: 'lexicalResource', label: 'Lexical Resource' },
-    { key: 'grammaticalRange', label: 'Grammatical Range' },
-    { key: 'coherenceCohesion', label: 'Coherence & Cohesion' },
+    { key: 'ta',  label: 'Task Achievement' },
+    { key: 'lr',  label: 'Lexical Resource' },
+    { key: 'gra', label: 'Grammatical Range' },
+    { key: 'cc',  label: 'Coherence & Cohesion' },
   ];
 
   return (

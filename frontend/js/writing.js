@@ -91,7 +91,7 @@ function showScreen(id) {
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : (user.username || '');
 
-  document.querySelectorAll('#user-name-key, #user-name-done, #user-name-history, #user-name-samples')
+  document.querySelectorAll('#user-name-done, #user-name-history, #user-name-samples')
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 
   checkRestoreBanner();
@@ -287,11 +287,13 @@ function countWords(text) {
   return text.trim().split(/\s+/).filter(w => w.length > 0).length;
 }
 
+let _saveDebounce = null;
 function onAnswerInput() {
   const text = document.getElementById('answer-textarea').value;
   state.answers[state.currentTask] = text;
   updateWordCount(text);
-  saveToStorage();
+  clearTimeout(_saveDebounce);
+  _saveDebounce = setTimeout(saveToStorage, 800);
 }
 
 const _WC_TARGETS = { 1: 150, 2: 250 };
