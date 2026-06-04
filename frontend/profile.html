@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My profile - EnglishWithDan</title>
+  <title>Hồ sơ – EnglishWithDan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/mobile.css">
@@ -56,7 +56,7 @@
           </div>
           <div class="mini-stat">
             <div class="mini-stat-val" id="statSpeaking">0</div>
-            <div class="mini-stat-label">Speaking</div>
+            <div class="mini-stat-label">Bài Speaking</div>
           </div>
         </div>
       </div>
@@ -80,10 +80,10 @@
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('overview')"><i class="fas fa-chart-bar"></i> Tổng quan</button>
-        <button class="tab-btn" onclick="switchTab('edit')"><i class="fas fa-edit"></i> Chỉnh sửa</button>
-        <button class="tab-btn" onclick="switchTab('security')"><i class="fas fa-lock"></i> Bảo mật</button>
-        <button class="tab-btn" onclick="switchTab('history')"><i class="fas fa-history"></i> Lịch sử</button>
+        <button class="tab-btn active" onclick="switchTab('overview', this)"><i class="fas fa-chart-bar"></i> Tổng quan</button>
+        <button class="tab-btn" onclick="switchTab('edit', this)"><i class="fas fa-edit"></i> Chỉnh sửa</button>
+        <button class="tab-btn" onclick="switchTab('security', this)"><i class="fas fa-lock"></i> Bảo mật</button>
+        <button class="tab-btn" onclick="switchTab('history', this)"><i class="fas fa-history"></i> Lịch sử</button>
       </div>
 
       <!-- Overview Tab -->
@@ -156,7 +156,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Tên</label>
-                <input class="form-control" id="editLastName" placeholder="Văn A">
+                <input class="form-control" id="editLastName" placeholder="Văn A" onkeypress="if(event.key==='Enter')saveProfile()">
               </div>
             </div>
             <div class="form-group">
@@ -226,15 +226,15 @@
           <div class="card-body">
             <div class="form-group">
               <label class="form-label">Mật khẩu hiện tại</label>
-              <input class="form-control" type="password" id="secCurrentPass" placeholder="Nhập mật khẩu hiện tại">
+              <input class="form-control" type="password" id="secCurrentPass" placeholder="Nhập mật khẩu hiện tại" onkeypress="if(event.key==='Enter')document.getElementById('secNewPass').focus()">
             </div>
             <div class="form-group">
               <label class="form-label">Mật khẩu mới</label>
-              <input class="form-control" type="password" id="secNewPass" placeholder="Ít nhất 6 ký tự">
+              <input class="form-control" type="password" id="secNewPass" placeholder="Ít nhất 6 ký tự" onkeypress="if(event.key==='Enter')document.getElementById('secConfirmPass').focus()">
             </div>
             <div class="form-group">
               <label class="form-label">Xác nhận mật khẩu mới</label>
-              <input class="form-control" type="password" id="secConfirmPass" placeholder="Nhập lại mật khẩu mới">
+              <input class="form-control" type="password" id="secConfirmPass" placeholder="Nhập lại mật khẩu mới" onkeypress="if(event.key==='Enter')changePassword()">
             </div>
             <div id="secMsg" style="display:none; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:12px;"></div>
             <button class="btn btn-primary" onclick="changePassword()">
@@ -271,7 +271,7 @@
             </table>
           </div>
         </div>
-        <div class="card">
+        <div class="card mb-16">
           <div class="card-header">
             <span style="font-weight:700;"><i class="fas fa-headphones"></i> Lịch sử Listening</span>
           </div>
@@ -279,6 +279,28 @@
             <table class="responsive-table">
               <thead><tr><th>#</th><th>Ngày</th><th>Band Score</th></tr></thead>
               <tbody id="listeningHistory"><tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-16">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-pen"></i> Lịch sử Writing</span>
+          </div>
+          <div class="table-wrap">
+            <table class="responsive-table">
+              <thead><tr><th>#</th><th>Ngày</th><th>Task 1 (số từ)</th><th>Task 2 (số từ)</th></tr></thead>
+              <tbody id="writingHistory"><tr><td colspan="4" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span style="font-weight:700;"><i class="fas fa-microphone"></i> Lịch sử Speaking</span>
+          </div>
+          <div class="table-wrap">
+            <table class="responsive-table">
+              <thead><tr><th>#</th><th>Ngày</th><th>Band Score (AI)</th></tr></thead>
+              <tbody id="speakingHistory"><tr><td colspan="3" style="text-align:center;color:var(--text-light);padding:20px;">Chưa có dữ liệu</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -310,11 +332,11 @@
 
 
     // ── Tabs ──────────────────────────────────────────────────
-    function switchTab(name) {
+    function switchTab(name, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById('tab-' + name).classList.add('active');
-      event.currentTarget.classList.add('active');
+      if (btn) btn.classList.add('active');
     }
 
     // ── Bio / motto counters ──────────────────────────────────
@@ -479,7 +501,11 @@
           const activities = [];
           s.reading.history.slice(0,3).forEach(a => activities.push({ icon:'📖', color:'rgba(102,126,234,.1)', text: `Reading test – Band <strong>${a.bandScore}</strong>`, date: a.createdAt }));
           s.listening.history.slice(0,3).forEach(a => activities.push({ icon:'🎧', color:'rgba(16,185,129,.1)', text: `Listening test – Band <strong>${a.bandScore}</strong>`, date: a.createdAt }));
-          s.speaking.history.slice(0,3).forEach(a => activities.push({ icon:'🎤', color:'rgba(245,158,11,.1)', text: `Speaking practice`, date: a.createdAt }));
+          s.speaking.history.slice(0,3).forEach(a => {
+            const band = a.aiFeedback?.overallBand;
+            activities.push({ icon:'🎤', color:'rgba(245,158,11,.1)', text: band ? `Speaking – Band <strong>${band}</strong>` : 'Speaking practice', date: a.createdAt });
+          });
+          s.writing.history.slice(0,3).forEach(a => activities.push({ icon:'✍️', color:'rgba(139,92,246,.1)', text: 'Writing practice', date: a.createdAt }));
           activities.sort((a,b) => new Date(b.date)-new Date(a.date));
 
           if (activities.length) {
@@ -508,6 +534,23 @@
                 <td><span class="badge badge-success">Band ${a.bandScore}</span></td>
               </tr>`).join('');
           }
+          if (s.writing.history.length) {
+            document.getElementById('writingHistory').innerHTML = s.writing.history.map((a,i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
+                <td>${a.wordCount1 != null ? a.wordCount1 + ' từ' : '-'}</td>
+                <td>${a.wordCount2 != null ? a.wordCount2 + ' từ' : '-'}</td>
+              </tr>`).join('');
+          }
+          if (s.speaking.history.length) {
+            document.getElementById('speakingHistory').innerHTML = s.speaking.history.map((a,i) => `
+              <tr>
+                <td>${i+1}</td>
+                <td>${new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
+                <td>${a.aiFeedback?.overallBand ? '<span class="badge badge-warning">Band ' + a.aiFeedback.overallBand + '</span>' : '-'}</td>
+              </tr>`).join('');
+          }
         }
       } catch (err) {
         console.error(err);
@@ -533,6 +576,7 @@
           msgEl.style.display = 'block';
           msgEl.style.background = '#ecfdf5'; msgEl.style.color = '#065f46'; msgEl.style.border = '1px solid #6ee7b7';
           msgEl.textContent = 'Đã lưu thay đổi thành công!';
+          setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
           showToast('success', 'Thành công', 'Thông tin đã được cập nhật');
           loadProfile();
         } else {
@@ -559,6 +603,7 @@
         if (data.success) {
           msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
           msgEl.textContent = data.message;
+          setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
           showToast('success', 'Thành công', 'Mật khẩu đã được đổi');
           document.getElementById('secCurrentPass').value = '';
           document.getElementById('secNewPass').value = '';
