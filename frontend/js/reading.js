@@ -1825,6 +1825,7 @@ let _retryState = null;
 
 function retryCurrentPassage() {
   if (!state.isReview) return;
+  setTool('none');   // reset highlight/dict cursor before entering retry mode
   const passageIdx = state.currentPassageIdx;
   const passage = state.passages[passageIdx];
   if (!passage) return;
@@ -2052,7 +2053,7 @@ let _dictWord = '';
 const _dictCache = new Map(); // word.toLowerCase() → { phonetic, pos, example, viMeaning }
 
 document.addEventListener('dblclick', e => {
-  if (state.tool !== 'dict' || (!state.isReview && !_practiceMode)) return;
+  if (state.tool !== 'dict' || (!state.isReview && !_practiceMode && !_retryState)) return;
   const sel = window.getSelection()?.toString().trim();
   if (!sel || sel.split(' ').length > 3) return;
   lookupWord(sel, e.clientX, e.clientY);
@@ -2277,7 +2278,13 @@ function handleKeyShortcuts(e) {
    CONFIRM / EXIT MODALS
 ══════════════════════════════════════════════════════════════════════ */
 function confirmExit() { openModal('modal-exit'); }
-function forceExit() { closeModal('modal-exit'); clearInterval(state.timer); window.onbeforeunload = null; loadTests(true); }
+function forceExit() {
+  closeModal('modal-exit');
+  saveExamToStorage();   // flush latest answers before leaving
+  clearInterval(state.timer);
+  window.onbeforeunload = null;
+  loadTests(true);
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    RESIZABLE DIVIDER
