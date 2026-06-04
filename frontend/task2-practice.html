@@ -245,6 +245,41 @@
     .t2-tpl-vi-toggle{border:1.5px solid #d1d5db;background:none;border-radius:7px;padding:4px 12px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer}
     .t2-tpl-vi-toggle:hover{border-color:#6366f1;color:#6366f1}
     [data-theme="dark"] .t2-tpl-vi-toggle{border-color:#334155;color:#94a3b8}
+
+    /* ── Template: progress bar ── */
+    .t2-type-progress-wrap{height:4px;background:#e5e7eb;overflow:hidden}
+    [data-theme="dark"] .t2-type-progress-wrap{background:#334155}
+    .t2-type-progress-fill{height:4px;background:linear-gradient(90deg,#667eea,#764ba2);width:0%;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+    /* ── Template: XP floating pop ── */
+    .t2-tpl-xp-pop{position:absolute;font-size:16px;font-weight:900;color:#f59e0b;text-shadow:0 1px 6px rgba(0,0,0,.18);pointer-events:none;z-index:9999;animation:tplXpPop .85s ease forwards;white-space:nowrap}
+    @keyframes tplXpPop{0%{opacity:1;transform:translateY(0) scale(.9)}60%{opacity:1;transform:translateY(-44px) scale(1.15)}100%{opacity:0;transform:translateY(-72px) scale(1)}}
+
+    /* ── Template: completion banner ── */
+    .t2-tpl-all-done-banner{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #34d399;border-radius:10px;padding:12px 16px;margin:12px 16px 4px;text-align:center;font-weight:700;color:#065f46;font-size:13px;display:none;line-height:1.5}
+    .t2-tpl-all-done-banner.vis{display:block;animation:t2QuitIn .3s ease}
+    [data-theme="dark"] .t2-tpl-all-done-banner{background:linear-gradient(135deg,#052e16,#064e3b);color:#6ee7b7;border-color:#065f46}
+
+    /* ── Template: footer pct ── */
+    .t2-tpl-pct{font-size:11px;color:#9ca3af;margin-left:4px;font-weight:600}
+
+    /* ── Template: mobile responsive ── */
+    @media(max-width:600px){
+      .t2-tpl-section-wrap{margin:0 8px 20px}
+      .t2-tpl-toggle{padding:12px 14px;font-size:13px;gap:6px}
+      .t2-tpl-toggle-badge{font-size:10px;padding:2px 7px}
+      .t2-cloze-input{width:88px;font-size:12px;padding:3px 6px}
+      .t2-cloze-en{font-size:12px;line-height:1.75;word-break:break-word}
+      .t2-cloze-card{padding:10px 11px;margin-bottom:8px}
+      .t2-cloze-actions{gap:6px;margin-top:7px}
+      .t2-cloze-check{padding:5px 10px;font-size:11px}
+      .t2-cloze-hint{padding:4px 8px;font-size:10px}
+      .t2-tpl-footer{flex-direction:column;align-items:flex-start;gap:10px;padding:10px 12px}
+      .t2-tpl-sub-section{padding:11px 11px 4px}
+      .t2-tpl-sub-title{font-size:10px}
+      .t2-type-tab-btn{padding:9px 10px;font-size:11px}
+      .t2-tpl-all-done-banner{margin:10px 11px 2px;font-size:12px}
+    }
   </style>
 </head>
 <body>
@@ -1480,13 +1515,15 @@ let _tplScores = {};  // { 'type01-0-2': 'ok'|'err' }
 
 function renderTemplateSection() {
   const totalItems = Object.values(TPL_DATA).reduce((s, t) => s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+  const doneAll = Object.values(_tplScores).filter(v => v === 'ok').length;
+  const badgeLabel = doneAll ? `${doneAll} / ${totalItems} mẫu câu` : `${totalItems} mẫu câu`;
   return `
   <div class="t2-tpl-section-wrap" id="tpl-wrap">
     <button class="t2-tpl-toggle" onclick="toggleTplSection()">
       <span class="t2-tpl-toggle-left">
         <i class="fas fa-book-open"></i>
         📚 Template Task 2 Writing – Luyện Cloze
-        <span class="t2-tpl-toggle-badge">${totalItems} mẫu câu</span>
+        <span class="t2-tpl-toggle-badge" id="tpl-main-badge">${badgeLabel}</span>
       </span>
       <i class="fas fa-chevron-down" id="tpl-chevron" style="transition:transform .3s"></i>
     </button>
@@ -1498,6 +1535,7 @@ function renderTemplateSection() {
             ${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
           </button>`).join('')}
       </div>
+      <div class="t2-type-progress-wrap"><div class="t2-type-progress-fill" id="tpl-progress-fill" style="width:0%"></div></div>
       <div id="tpl-content-area"></div>
     </div>
   </div>`;
@@ -1547,15 +1585,21 @@ function renderTplContent() {
     </div>`;
   }).join('');
 
+  const pct = total ? Math.round(done / total * 100) : 0;
   area.innerHTML = `
     <div class="t2-tpl-content">${sectionsHtml}</div>
+    <div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
+      🎉 Xuất sắc! Bạn đã hoàn thành <b>${escHtml(TPL_DATA[_tplActiveType].name)}</b>! Nhấn "Làm lại" để ôn tiếp.
+    </div>
     <div class="t2-tpl-footer">
-      <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span></span>
-      <span style="display:flex;gap:8px">
+      <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
+      <span style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="t2-tpl-vi-toggle" onclick="toggleTplVi()">${_tplShowVi ? '🙈 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt'}</button>
         <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
       </span>
     </div>`;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = pct + '%';
 }
 
 function checkCloze(key, answer) {
@@ -1566,13 +1610,22 @@ function checkCloze(key, answer) {
   const userVal = inp.value.trim().toLowerCase();
   const correctVal = answer.toLowerCase();
   if (!userVal) { showToast('Vui lòng nhập từ cần điền!', 'warn', 2000); return; }
+  const wasNew = !_tplScores[key];
   const isOk = userVal === correctVal;
   _tplScores[key] = isOk ? 'ok' : 'err';
   card.className = 't2-cloze-card ' + (isOk ? 'tpl-correct' : 'tpl-wrong');
   fb.className   = 't2-cloze-fb ' + (isOk ? 'ok' : 'err');
   fb.textContent = isOk ? '✅ Đúng!' : `❌ Đáp án: "${answer}"`;
   inp.disabled   = isOk;
+  if (isOk) {
+    playOk();
+    if (wasNew) awardTplXP(card);
+    setTimeout(() => scrollToNextCloze(key), 450);
+  } else {
+    playWrong();
+  }
   updateTplScore();
+  checkTypeComplete();
 }
 
 function showClozeHint(key, answer) {
@@ -1608,6 +1661,15 @@ function updateTplScore() {
   });
   const scoreEl = document.querySelector('.t2-tpl-score');
   if (scoreEl) scoreEl.textContent = `${done} / ${total}`;
+  const pctEl = document.querySelector('.t2-tpl-pct');
+  if (pctEl) pctEl.textContent = total ? Math.round(done / total * 100) + '%' : '0%';
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = total ? (done / total * 100) + '%' : '0%';
+  // Update overall badge on toggle button
+  const totalAll = Object.values(TPL_DATA).reduce((s, t) => s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+  const doneAll = Object.values(_tplScores).filter(v => v === 'ok').length;
+  const badge = document.getElementById('tpl-main-badge');
+  if (badge) badge.textContent = doneAll ? `${doneAll} / ${totalAll} mẫu câu` : `${totalAll} mẫu câu`;
 }
 
 function toggleTplVi() {
@@ -1650,6 +1712,59 @@ function toggleTplSection() {
 
 function bindTemplateSection() {
   if (_tplOpen) renderTplContent();
+}
+
+function awardTplXP(card) {
+  updateXPStorage(3);
+  const rect = card.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 't2-tpl-xp-pop';
+  pop.textContent = '+3 XP ⭐';
+  pop.style.cssText = `left:${rect.left + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 10}px;`;
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+function scrollToNextCloze(currentKey) {
+  const type = TPL_DATA[_tplActiveType];
+  if (!type) return;
+  let found = false;
+  for (let si = 0; si < type.sections.length; si++) {
+    const sec = type.sections[si];
+    for (let ii = 0; ii < sec.items.length; ii++) {
+      const k = `${_tplActiveType}-${si}-${ii}`;
+      if (k === currentKey) { found = true; continue; }
+      if (found && (!_tplScores[k] || _tplScores[k] === 'err')) {
+        const nextCard = document.getElementById('cloze-' + k);
+        if (nextCard) {
+          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inp = document.getElementById('inp-' + k);
+          if (inp && !inp.disabled) setTimeout(() => inp.focus(), 380);
+        }
+        return;
+      }
+    }
+  }
+}
+
+function checkTypeComplete() {
+  const type = TPL_DATA[_tplActiveType];
+  if (!type) return;
+  let done = 0, total = 0;
+  type.sections.forEach((sec, si) => {
+    sec.items.forEach((item, ii) => {
+      total++;
+      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+    });
+  });
+  if (done < total) return;
+  const banner = document.getElementById('tpl-done-banner');
+  if (banner && !banner.classList.contains('vis')) {
+    banner.classList.add('vis');
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    showToast(`🏆 Hoàn thành ${TPL_DATA[_tplActiveType].name}! +10 XP bonus!`, 'success', 3500);
+    updateXPStorage(10);
+  }
 }
 
 function escHtml(str) {
