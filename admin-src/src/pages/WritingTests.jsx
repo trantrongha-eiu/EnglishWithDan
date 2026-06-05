@@ -778,6 +778,7 @@ export default function WritingTests() {
   const [showExamModal, setShowExamModal] = useState(false);
   const [historyFilter, setHistoryFilter] = useState('');
   const [historySearch, setHistorySearch] = useState('');
+  const [historyTypeFilter, setHistoryTypeFilter] = useState('');
 
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
@@ -1001,13 +1002,12 @@ export default function WritingTests() {
       )}
 
       {tab === 'history' && (() => {
-        const [typeFilter, setTypeFilter] = useState('');
         const displayHistory = history.filter(h => {
           const u = h.userId || {};
           const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '';
           const matchSearch = !historySearch || name.toLowerCase().includes(historySearch.toLowerCase()) || (h.examName || '').toLowerCase().includes(historySearch.toLowerCase());
           const matchStatus = !historyFilter || h.gradingStatus === historyFilter;
-          const matchType = !typeFilter || (h.submissionType || 'exam') === typeFilter;
+          const matchType = !historyTypeFilter || (h.submissionType || 'exam') === historyTypeFilter;
           return matchSearch && matchStatus && matchType;
         });
         return (
@@ -1019,7 +1019,7 @@ export default function WritingTests() {
                 <option value="ai_done">🤖 AI đã chấm</option>
                 <option value="confirmed">✅ Đã xác nhận</option>
               </select>
-              <select className="form-input" value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ width: 160 }}>
+              <select className="form-input" value={historyTypeFilter} onChange={e => setHistoryTypeFilter(e.target.value)} style={{ width: 160 }}>
                 <option value="">Tất cả loại</option>
                 <option value="exam">🏆 Bài thi</option>
                 <option value="practice">✏️ Luyện tập</option>
