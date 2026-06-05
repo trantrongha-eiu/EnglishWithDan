@@ -242,29 +242,37 @@ function GradingModal({ attemptId, onClose, onGraded }) {
       .then(d => {
         const a = d.attempt;
         setAttempt(a);
+
+        function buildGradeFromAi(t) {
+          return t ? {
+            bandScore: t.bandScore ?? null,
+            ta:  t.ta?.score  ?? null,
+            cc:  t.cc?.score  ?? null,
+            lr:  t.lr?.score  ?? null,
+            gra: t.gra?.score ?? null,
+            feedback: t.overallFeedback || '',
+          } : { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' };
+        }
+
         if (a.grading?.overallBand != null) {
+          // Load confirmed grade
           const src = a.grading;
           setGrade({
-            task1: {
-              bandScore: src.task1?.bandScore ?? null,
-              ta:  src.task1?.ta?.score  ?? null,
-              cc:  src.task1?.cc?.score  ?? null,
-              lr:  src.task1?.lr?.score  ?? null,
-              gra: src.task1?.gra?.score ?? null,
-              feedback: src.task1?.overallFeedback || '',
-            },
-            task2: {
-              bandScore: src.task2?.bandScore ?? null,
-              ta:  src.task2?.ta?.score  ?? null,
-              cc:  src.task2?.cc?.score  ?? null,
-              lr:  src.task2?.lr?.score  ?? null,
-              gra: src.task2?.gra?.score ?? null,
-              feedback: src.task2?.overallFeedback || '',
-            },
+            task1: buildGradeFromAi(src.task1),
+            task2: buildGradeFromAi(src.task2),
             overallBand: src.overallBand ?? null,
             adminNote: src.adminNote || '',
           });
           setAiRaw({ task1: src.task1, task2: src.task2 });
+        } else if (a.aiGrading?.task1 || a.aiGrading?.task2) {
+          // Load previously run AI results that haven't been confirmed yet
+          const ai = a.aiGrading;
+          setAiRaw({ task1: ai.task1 || null, task2: ai.task2 || null });
+          setGrade(g => ({
+            ...g,
+            task1: ai.task1 ? buildGradeFromAi(ai.task1) : g.task1,
+            task2: ai.task2 ? buildGradeFromAi(ai.task2) : g.task2,
+          }));
         }
       })
       .catch(() => toast('Không tải được bài nộp', 'error'))
@@ -453,13 +461,13 @@ function GradingModal({ attemptId, onClose, onGraded }) {
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
               <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
               <button className="btn btn-ghost" onClick={() => runAiGrade(1)}
-                disabled={aiGrading.t1 || aiGrading.t2 || confirming}
-                title="AI chấm Task 1 – bạn vẫn có thể sửa trước khi xác nhận">
+                disabled={aiGrading.t1 || aiGrading.t2 || confirming || !attempt?.task1Answer}
+                title={attempt?.task1Answer ? 'AI chấm Task 1 – bạn vẫn có thể sửa trước khi xác nhận' : 'Không có bài Task 1'}>
                 {aiGrading.t1 ? '⏳ Task 1...' : '🤖 AI T1'}
               </button>
               <button className="btn btn-ghost" onClick={() => runAiGrade(2)}
-                disabled={aiGrading.t1 || aiGrading.t2 || confirming}
-                title="AI chấm Task 2 – bạn vẫn có thể sửa trước khi xác nhận">
+                disabled={aiGrading.t1 || aiGrading.t2 || confirming || !attempt?.task2Answer}
+                title={attempt?.task2Answer ? 'AI chấm Task 2 – bạn vẫn có thể sửa trước khi xác nhận' : 'Không có bài Task 2'}>
                 {aiGrading.t2 ? '⏳ Task 2...' : '🤖 AI T2'}
               </button>
               <button className="btn btn-primary" onClick={submitGrade} disabled={confirming || aiGrading.t1 || aiGrading.t2}>
@@ -1068,6 +1076,9 @@ export default function WritingTests() {
                       const u = h.userId || {};
                       const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–';
                       const finalScore = h.grading?.overallBand;
+                      const isPracticeT1 = h.submissionType === 'practice' && (h.examName || '').includes('Task 1');
+                      const isPracticeT2 = h.submissionType === 'practice' && (h.examName || '').includes('Task 2');
+                      const dash = <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>;
                       return (
                         <tr key={h._id}>
                           <td><strong>{name}</strong></td>
@@ -1077,8 +1088,8 @@ export default function WritingTests() {
                               : <span className="badge badge-gray" style={{ fontSize: 11 }}>🏆 Thi</span>}
                           </td>
                           <td style={{ fontSize: 12, color: 'var(--text2)' }}>{h.examName || '–'}</td>
-                          <td>{wcBadge(h.wordCount1, 150)}</td>
-                          <td>{wcBadge(h.wordCount2, 250)}</td>
+                          <td>{isPracticeT2 ? dash : wcBadge(h.wordCount1, 150)}</td>
+                          <td>{isPracticeT1 ? dash : wcBadge(h.wordCount2, 250)}</td>
                           <td>{finalScore != null ? bandBadge(finalScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
                           <td>
                             <span style={{ fontSize: 12, color: STATUS_COLOR[h.gradingStatus] || 'var(--text3)' }}>

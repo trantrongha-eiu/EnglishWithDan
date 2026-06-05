@@ -157,7 +157,7 @@ router.get('/practice/tasks', auth, async (req, res) => {
     if (taskType !== 1 && taskType !== 2)
       return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
     const Model = taskType === 1 ? WritingTask1 : WritingTask2;
-    const tasks = await Model.find({ isActive: true }).lean();
+    const tasks = await Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
     res.json({ success: true, tasks, taskType });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

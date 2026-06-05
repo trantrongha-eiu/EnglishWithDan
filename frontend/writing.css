@@ -865,7 +865,7 @@ body {
 }
 .fb-crit-label   { color: #374151; }
 .fb-crit-track   { background: #e5e7eb; border-radius: 99px; height: 6px; }
-.fb-crit-comment { font-size: 11px; color: #6b7280; margin-top: 3px; font-style: italic; }
+.fb-crit-comment { font-size: 11px; color: #6b7280; margin-top: 3px; font-style: italic; white-space: pre-wrap; }
 
 .fb-overall-txt {
   background: #eff6ff;
@@ -875,6 +875,7 @@ body {
   color: #1e3a5f;
   margin-top: 10px;
   line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 .fb-section     { margin-top: 10px; }

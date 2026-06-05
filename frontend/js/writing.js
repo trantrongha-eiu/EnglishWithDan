@@ -635,7 +635,7 @@ function _buildStudentFeedback(g) {
         </div>`;
       }).join('');
       sfHtml = `<div class="fb-section">
-        <div class="fb-section-lbl" style="color:#1e40af;border-color:#bfdbfe;background:#eff6ff">📝 Phân tích từng câu</div>
+        <div class="fb-section-lbl" style="color:#1e40af;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:3px 8px;display:inline-block">📝 Phân tích từng câu</div>
         <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
       </div>`;
     }
@@ -1016,12 +1016,98 @@ const practiceState = {
   hasPending: false
 };
 
+// ── Practice Auto-save (localStorage) ─────────────────
+const _PRACTICE_SAVE_KEY = 'ews_practice_autosave';
+const _PRACTICE_MAX_AGE  = 24 * 60 * 60 * 1000; // 24h
+
+function savePracticeToStorage() {
+  if (!practiceState.task) return;
+  const ta = document.getElementById('pw-textarea');
+  try {
+    localStorage.setItem(_PRACTICE_SAVE_KEY, JSON.stringify({
+      taskType:  practiceState.taskType,
+      task:      practiceState.task,
+      answer:    ta?.value || '',
+      wordCount: practiceState.wordCount,
+      seconds:   practiceState.seconds,
+      savedAt:   Date.now()
+    }));
+  } catch (_) {}
+}
+
+function loadPracticeFromStorage() {
+  try {
+    const raw = localStorage.getItem(_PRACTICE_SAVE_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw);
+    if (!saved?.task) return null;
+    if (Date.now() - saved.savedAt > _PRACTICE_MAX_AGE) {
+      localStorage.removeItem(_PRACTICE_SAVE_KEY);
+      return null;
+    }
+    return saved;
+  } catch (_) { return null; }
+}
+
+function clearPracticeAutoSave() {
+  localStorage.removeItem(_PRACTICE_SAVE_KEY);
+}
+
+function checkPracticeRestoreBanner() {
+  const saved   = loadPracticeFromStorage();
+  const banner  = document.getElementById('practice-restore-banner');
+  const descEl  = document.getElementById('practice-restore-desc');
+  if (!banner) return;
+  if (!saved) { banner.style.display = 'none'; return; }
+
+  const wc = saved.wordCount || 0;
+  const m  = String(Math.floor(saved.seconds / 60)).padStart(2, '0');
+  const s  = String(saved.seconds % 60).padStart(2, '0');
+  if (descEl) descEl.textContent = `Task ${saved.taskType} – ${wc} từ – đã viết ${m}:${s}`;
+  banner.style.display = 'block';
+}
+
+function restorePracticeWrite() {
+  if (practiceState.hasPending) {
+    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài.', 'info');
+    return;
+  }
+  const saved = loadPracticeFromStorage();
+  if (!saved) return;
+
+  practiceState.taskType  = saved.taskType;
+  practiceState.task      = saved.task;
+  practiceState.tasks     = [saved.task];
+  practiceState.wordCount = saved.wordCount || 0;
+  practiceState.seconds   = saved.seconds   || 0;
+
+  const banner = document.getElementById('practice-restore-banner');
+  if (banner) banner.style.display = 'none';
+
+  renderPracticeWriteScreen(saved.taskType, saved.task);
+  const ta = document.getElementById('pw-textarea');
+  if (ta) { ta.value = saved.answer || ''; onPracticeInput(); setTimeout(() => ta.focus(), 100); }
+
+  showScreen('screen-practice-write');
+  startPracticeStopwatch(saved.seconds || 0);
+
+  window.onbeforeunload = e => {
+    if (practiceState.task) { e.preventDefault(); e.returnValue = ''; }
+  };
+}
+
+function discardPracticeAutoSave() {
+  clearPracticeAutoSave();
+  const banner = document.getElementById('practice-restore-banner');
+  if (banner) banner.style.display = 'none';
+}
+
 function showPracticeMode() {
-  // Reset task list state before showing screen
-  const list = document.getElementById('practice-task-list');
+  const list  = document.getElementById('practice-task-list');
   const cards = document.getElementById('practice-task-select');
-  if (list) list.style.display = 'none';
+  if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
+  checkPracticeRestoreBanner();
   showScreen('screen-practice');
   loadPracticeHistory();
 }
@@ -1040,7 +1126,10 @@ async function loadPracticeHistory() {
     if (pending) {
       practiceState.hasPending = true;
       noticeEl.style.display = '';
-      const taskLabel = pending.wordCount1 > 0 ? 'Task 1' : 'Task 2';
+      // Hide restore banner (draft is outdated if there's a pending submission)
+      const restoreBanner = document.getElementById('practice-restore-banner');
+      if (restoreBanner) restoreBanner.style.display = 'none';
+      const taskLabel = (pending.examName || '').includes('Task 1') ? 'Task 1' : 'Task 2';
       const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
       descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} đang chờ chấm. Giáo viên sẽ sớm trả bài cho bạn.`;
       ['btn-practice-t1', 'btn-practice-t2'].forEach(id => {
@@ -1150,9 +1239,13 @@ function startPracticeTask(taskType, taskId) {
   practiceState.wordCount = 0;
   practiceState.seconds   = 0;
 
+  clearPracticeAutoSave(); // Clear any stale draft when starting fresh
   renderPracticeWriteScreen(taskType, task);
   showScreen('screen-practice-write');
-  startPracticeStopwatch();
+  startPracticeStopwatch(0);
+  window.onbeforeunload = e => {
+    if (practiceState.task) { e.preventDefault(); e.returnValue = ''; }
+  };
   setTimeout(() => { const ta = document.getElementById('pw-textarea'); if (ta) ta.focus(); }, 100);
 }
 
@@ -1175,10 +1268,11 @@ function renderPracticeWriteScreen(taskType, task) {
   leftPanel.innerHTML = html;
 }
 
+let _practiceSaveDebounce = null;
 function onPracticeInput() {
   const ta = document.getElementById('pw-textarea');
   if (!ta) return;
-  const words = ta.value.trim() === '' ? 0 : ta.value.trim().split(/\s+/).length;
+  const words = ta.value.trim() === '' ? 0 : ta.value.trim().split(/\s+/).filter(w => w.length > 0).length;
   practiceState.wordCount = words;
   const minWords = practiceState.taskType === 1 ? 150 : 250;
   const pct = Math.min(100, (words / minWords) * 100);
@@ -1188,17 +1282,26 @@ function onPracticeInput() {
     bar.style.width = pct + '%';
     bar.style.background = words >= minWords ? '#22c55e' : words >= minWords * 0.8 ? '#f59e0b' : '#3d8bff';
   }
+  // Debounced auto-save
+  clearTimeout(_practiceSaveDebounce);
+  _practiceSaveDebounce = setTimeout(savePracticeToStorage, 800);
 }
 
-function startPracticeStopwatch() {
+function startPracticeStopwatch(startSeconds = 0) {
   clearInterval(practiceState.stopwatchInterval);
-  practiceState.seconds = 0;
+  practiceState.seconds = startSeconds;
+  // Render immediately
+  const el = document.getElementById('pw-stopwatch');
+  if (el) el.textContent = `${String(Math.floor(practiceState.seconds / 60)).padStart(2,'0')}:${String(practiceState.seconds % 60).padStart(2,'0')}`;
+
   practiceState.stopwatchInterval = setInterval(() => {
     practiceState.seconds++;
     const m = String(Math.floor(practiceState.seconds / 60)).padStart(2, '0');
     const s = String(practiceState.seconds % 60).padStart(2, '0');
     const el = document.getElementById('pw-stopwatch');
     if (el) el.textContent = `${m}:${s}`;
+    // Auto-save every 30 seconds
+    if (practiceState.seconds % 30 === 0) savePracticeToStorage();
   }, 1000);
 }
 
@@ -1218,12 +1321,16 @@ function confirmExitPractice() {
 function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
   stopPracticeStopwatch();
+  // Save draft before exiting so student can resume
+  savePracticeToStorage();
+  window.onbeforeunload = null;
   // Reset task list state
-  const list = document.getElementById('practice-task-list');
+  const list  = document.getElementById('practice-task-list');
   const cards = document.getElementById('practice-task-select');
-  if (list) list.style.display = 'none';
+  if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
   showScreen('screen-practice');
+  checkPracticeRestoreBanner(); // Show restore banner since draft was saved
 }
 
 function confirmSubmitPractice() {
@@ -1257,6 +1364,8 @@ async function submitPractice() {
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
     stopPracticeStopwatch();
+    clearPracticeAutoSave(); // Draft submitted – clear saved state
+    window.onbeforeunload = null;
     document.getElementById('practice-submit-modal').classList.remove('open');
     const label = `Task ${practiceState.taskType} (${practiceState.wordCount} từ)`;
     document.getElementById('pw-done-label').textContent = `Đã nộp ${label}`;

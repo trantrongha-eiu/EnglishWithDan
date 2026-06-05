@@ -267,6 +267,16 @@
       <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
     </div>
 
+    <!-- Restore banner (shown when có draft luyện tập chưa nộp) -->
+    <div id="practice-restore-banner" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:left">
+      <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 8px">📝 Bạn có bài luyện tập chưa nộp</p>
+      <p id="practice-restore-desc" style="font-size:12px;color:#78350f;margin:0 0 10px"></p>
+      <div style="display:flex;gap:8px">
+        <button onclick="restorePracticeWrite()" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer">▶ Tiếp tục viết</button>
+        <button onclick="discardPracticeAutoSave()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer">Bỏ qua</button>
+      </div>
+    </div>
+
     <!-- Pending notice -->
     <div id="practice-pending-notice" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:20px">
       <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 4px">⏳ Bạn đang có bài chờ chấm</p>
