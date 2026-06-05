@@ -912,6 +912,10 @@ function setupEmojiPicker() {
 }
 function selectEmoji(emoji) { selectedEmoji = emoji; setupEmojiPicker(); }
 function openAddBookModal() {
+    if (myBooks.length >= 15) {
+        toast('Bạn đã đạt giới hạn 15 sổ. Hãy xóa hoặc gộp bớt sổ cũ trước khi tạo mới.', 'error');
+        return;
+    }
     document.getElementById('new-book-name').value = '';
     openModal('modal-add-book');
     setTimeout(() => document.getElementById('new-book-name').focus(), 100);
@@ -935,6 +939,11 @@ async function createBook() {
 
 /* ── Add word manual ── */
 function openAddWordManual() {
+    const wordCount = currentBookData?.words?.length ?? 0;
+    if (wordCount >= 200) {
+        toast('Sổ này đã đạt giới hạn 200 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.', 'error');
+        return;
+    }
     ['aw-word','aw-meaning','aw-example','aw-note'].forEach(id => { document.getElementById(id).value = ''; });
     openModal('modal-add-word');
     setTimeout(() => document.getElementById('aw-word').focus(), 100);
