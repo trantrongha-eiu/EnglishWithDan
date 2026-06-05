@@ -1239,29 +1239,29 @@ Rules:
 - overallFeedback and all Vietnamese fields must be in Vietnamese
 - Be fair: if the essay communicates clearly and addresses the task, it deserves at least a 6`;
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
-      temperature: 0.3,
-      max_tokens: 4096
-    })
-  });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
+      })
+    }
+  );
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`AI API error: ${errText}`);
+    throw new Error(`Gemini API error: ${errText}`);
   }
 
   const data = await response.json();
-  const content = data.content?.[0]?.text || '';
+  const content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
   return JSON.parse(jsonMatch[0]);
