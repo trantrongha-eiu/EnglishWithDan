@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="css/mobile.css"/>
   <script src="js/theme.js"></script>
   <style>
-    /* ── Toast ── */
     #wp-toast{position:fixed;top:calc(var(--nav-height,64px) + 8px);left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,top .25s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
     #wp-toast.show{opacity:1;top:calc(var(--nav-height,64px) + 14px)}
     #wp-toast.warn{background:#e65100}
@@ -19,7 +18,6 @@
     #wp-toast.info{background:#1565c0}
     #wp-toast.success{background:#15803d}
 
-    /* ── Quit / confirm modal ── */
     .t2-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(2px)}
     .t2-quit-overlay.hidden{display:none}
     .t2-quit-box{background:#fff;border-radius:18px;width:320px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.28);animation:t2QuitIn .2s ease}
@@ -38,18 +36,15 @@
     [data-theme="dark"] .t2-quit-title{color:#c4b5fd}
     [data-theme="dark"] .t2-quit-leave{border-color:#374151;color:#9ca3af}
 
-    /* ── Page hero ── */
     .tpl-page-hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px 24px 0;color:#fff}
     .tpl-page-hero-inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .tpl-page-title{font-size:20px;font-weight:900;margin:0 0 3px}
     .tpl-page-sub{font-size:13px;opacity:.85;margin:0}
     .tpl-overall-badge{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
 
-    /* ── Tab bar outer ── */
     .tpl-tabs-wrap{max-width:900px;margin:0 auto;background:#fff}
     [data-theme="dark"] .tpl-tabs-wrap{background:#1e293b}
 
-    /* ── Template UI ── */
     .t2-type-tabs-outer{display:flex;align-items:stretch;border-bottom:2px solid #e5e7eb;background:#fafafa}
     [data-theme="dark"] .t2-type-tabs-outer{border-color:#334155;background:#0f172a}
     .t2-type-tabs-wrap{display:flex;overflow-x:auto;flex:1;gap:0;border-bottom:none;padding:0 0 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:transparent}
@@ -65,18 +60,39 @@
     [data-theme="dark"] .t2-type-tab-btn{color:#64748b}
     [data-theme="dark"] .t2-type-tab-btn.active{color:#a5b4fc;border-bottom-color:#a5b4fc}
 
-    /* ── Progress bar ── */
+    /* Exam button in tab bar */
+    .t2-tpl-exam-btn-tab{flex-shrink:0;border:none;border-left:1px solid #e5e7eb;background:none;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s}
+    .t2-tpl-exam-btn-tab:hover{background:#fff7ed;color:#ea580c}
+    .t2-tpl-exam-btn-tab.active{background:#fff7ed;color:#ea580c}
+    [data-theme="dark"] .t2-tpl-exam-btn-tab{border-color:#1e293b;color:#64748b}
+    [data-theme="dark"] .t2-tpl-exam-btn-tab:hover,[data-theme="dark"] .t2-tpl-exam-btn-tab.active{background:#431407;color:#fb923c}
+
     .t2-type-progress-wrap{height:4px;background:#e5e7eb;overflow:hidden}
     [data-theme="dark"] .t2-type-progress-wrap{background:#334155}
     .t2-type-progress-fill{height:4px;background:linear-gradient(90deg,#667eea,#764ba2);width:0%;transition:width .5s cubic-bezier(.4,0,.2,1)}
 
-    /* ── Content wrapper ── */
     .tpl-content-outer{max-width:900px;margin:0 auto;background:#fff;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb}
     [data-theme="dark"] .tpl-content-outer{background:#1e293b;border-color:#334155}
 
-    /* ── Cloze cards ── */
-    .t2-tpl-sub-section{padding:14px 16px 6px;border-bottom:1px solid #f3f4f6}
-    [data-theme="dark"] .t2-tpl-sub-section{border-color:#1e293b}
+    /* Exam bar */
+    .t2-exam-bar{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:#fff7ed;border-bottom:2px solid #fed7aa;font-size:12px;font-weight:700;color:#c2410c;gap:8px;position:sticky;top:var(--nav-height,64px);z-index:50;flex-wrap:wrap}
+    [data-theme="dark"] .t2-exam-bar{background:#431407;border-color:#7c2d12;color:#fb923c}
+    .t2-exam-timer{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.5px;min-width:52px}
+    .t2-exam-timer.warn{color:#dc2626 !important}
+    .t2-exam-label{font-size:11px;color:#9a3412;font-weight:600;flex:1;text-align:center}
+    [data-theme="dark"] .t2-exam-label{color:#fdba74}
+    .t2-exam-exit-btn{border:1.5px solid #fb923c;background:none;color:#ea580c;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
+    .t2-exam-exit-btn:hover{background:#fff7ed}
+    .t2-exam-submit-btn{background:#ea580c;color:#fff;border:none;border-radius:8px;padding:7px 20px;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px}
+    .t2-exam-submit-btn:hover{background:#c2410c}
+
+    /* Cloze cards */
+    .t2-tpl-sub-section{padding:14px 16px 6px;border-bottom:1px solid #f3f4f6;border-left:3px solid transparent}
+    [data-theme="dark"] .t2-tpl-sub-section{border-bottom-color:#1e293b}
+    .t2-tpl-sub-section[data-sec="0"]{border-left-color:#3b82f6}
+    .t2-tpl-sub-section[data-sec="1"]{border-left-color:#10b981}
+    .t2-tpl-sub-section[data-sec="2"]{border-left-color:#f59e0b}
+    .t2-tpl-sub-section[data-sec="3"]{border-left-color:#8b5cf6}
     .t2-tpl-sub-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;margin-bottom:10px;display:flex;align-items:center;gap:6px}
     .t2-cloze-card{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 14px;margin-bottom:10px;transition:border-color .2s,background .2s}
     [data-theme="dark"] .t2-cloze-card{background:#0f172a;border-color:#1e293b}
@@ -84,11 +100,14 @@
     .t2-cloze-card.tpl-wrong{border-color:#dc2626;background:#fff1f2}
     [data-theme="dark"] .t2-cloze-card.tpl-correct{background:#052e16;border-color:#16a34a}
     [data-theme="dark"] .t2-cloze-card.tpl-wrong{background:#1c0505;border-color:#dc2626}
-    .t2-cloze-en{font-size:13px;color:#111827;line-height:1.8;margin-bottom:5px}
+    .t2-multi-badge{display:inline-flex;align-items:center;gap:3px;background:#fef3c7;border:1px solid #fcd34d;border-radius:5px;padding:1px 6px;font-size:10px;font-weight:700;color:#92400e;margin-bottom:5px}
+    [data-theme="dark"] .t2-multi-badge{background:#451a03;border-color:#92400e;color:#fcd34d}
+    .t2-cloze-en{font-size:13px;color:#111827;line-height:1.9;margin-bottom:5px}
     [data-theme="dark"] .t2-cloze-en{color:#e2e8f0}
-    .t2-cloze-input{border:1.5px solid #6366f1;border-radius:6px;padding:3px 8px;font-size:13px;width:130px;outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s;background:#fff;color:#111827;vertical-align:middle}
+    .t2-cloze-input{border:1.5px solid #6366f1;border-radius:6px;padding:3px 8px;font-size:13px;width:130px;outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s;background:#fff;color:#111827;vertical-align:middle;margin:0 2px}
     .t2-cloze-input:focus{box-shadow:0 0 0 3px #e0e7ff}
     [data-theme="dark"] .t2-cloze-input{background:#1e293b;border-color:#818cf8;color:#f1f5f9}
+    .t2-blank-num{font-size:10px;font-weight:700;color:#6366f1;vertical-align:middle;margin-right:1px}
     .t2-cloze-vi{font-size:11.5px;color:#6b7280;margin-top:5px;font-style:italic;display:none;line-height:1.5}
     .t2-cloze-vi.vis{display:block}
     .t2-cloze-actions{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
@@ -101,7 +120,6 @@
     .t2-cloze-fb.ok{display:inline;color:#16a34a;background:#dcfce7}
     .t2-cloze-fb.err{display:inline;color:#dc2626;background:#fee2e2}
 
-    /* ── Footer ── */
     .t2-tpl-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:12px;color:#6b7280;flex-wrap:wrap;gap:8px}
     [data-theme="dark"] .t2-tpl-footer{background:#0f172a;border-color:#334155}
     .t2-tpl-score{font-weight:800;color:#6366f1;background:#ede9fe;border-radius:20px;padding:2px 10px}
@@ -110,16 +128,25 @@
     .t2-tpl-reset-btn:hover{border-color:#6366f1;color:#6366f1}
     [data-theme="dark"] .t2-tpl-reset-btn{border-color:#334155;color:#94a3b8}
 
-    /* ── Completion banner ── */
     .t2-tpl-all-done-banner{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:2px solid #34d399;border-radius:10px;padding:12px 16px;margin:12px 16px 4px;text-align:center;font-weight:700;color:#065f46;font-size:13px;display:none;line-height:1.5}
     .t2-tpl-all-done-banner.vis{display:block;animation:t2QuitIn .3s ease}
     [data-theme="dark"] .t2-tpl-all-done-banner{background:linear-gradient(135deg,#052e16,#064e3b);color:#6ee7b7;border-color:#065f46}
 
-    /* ── XP floating pop ── */
     .t2-tpl-xp-pop{position:absolute;font-size:16px;font-weight:900;color:#f59e0b;text-shadow:0 1px 6px rgba(0,0,0,.18);pointer-events:none;z-index:9999;animation:tplXpPop .85s ease forwards;white-space:nowrap}
     @keyframes tplXpPop{0%{opacity:1;transform:translateY(0) scale(.9)}60%{opacity:1;transform:translateY(-44px) scale(1.15)}100%{opacity:0;transform:translateY(-72px) scale(1)}}
 
-    /* ── Mobile ── */
+    /* Type info card */
+    .t2-type-info-card{margin:14px 16px 2px;border-radius:12px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1.5px solid #c4b5fd;background:linear-gradient(135deg,#ede9fe,#e0e7ff)}
+    [data-theme="dark"] .t2-type-info-card{background:linear-gradient(135deg,#1e1b4b,#1e293b);border-color:#3730a3}
+    .t2-type-info-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .t2-type-info-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
+    .t2-type-info-name{font-size:14px;font-weight:800;color:#3730a3;line-height:1.2}
+    [data-theme="dark"] .t2-type-info-name{color:#a5b4fc}
+    .t2-type-info-desc{font-size:11.5px;color:#6b7280;margin-top:3px;line-height:1.4}
+    [data-theme="dark"] .t2-type-info-desc{color:#94a3b8}
+    .t2-type-structure{font-size:11px;font-weight:600;color:#6366f1;background:rgba(99,102,241,.1);border-radius:8px;padding:5px 10px;white-space:nowrap}
+    [data-theme="dark"] .t2-type-structure{color:#a5b4fc;background:rgba(99,102,241,.15)}
+
     @media(max-width:600px){
       .tpl-page-hero{padding:14px 14px 0}
       .tpl-page-title{font-size:16px}
@@ -136,26 +163,9 @@
       .t2-tpl-all-done-banner{margin:10px 11px 2px;font-size:12px}
       .t2-type-info-card{margin:10px 11px 0;padding:10px 12px}
       .t2-type-structure{display:none}
+      .t2-exam-bar{padding:8px 12px}
+      .t2-exam-timer{font-size:16px}
     }
-
-    /* ── Type info card ── */
-    .t2-type-info-card{margin:14px 16px 2px;border-radius:12px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1.5px solid #c4b5fd;background:linear-gradient(135deg,#ede9fe,#e0e7ff)}
-    [data-theme="dark"] .t2-type-info-card{background:linear-gradient(135deg,#1e1b4b,#1e293b);border-color:#3730a3}
-    .t2-type-info-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
-    .t2-type-info-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
-    .t2-type-info-name{font-size:14px;font-weight:800;color:#3730a3;line-height:1.2}
-    [data-theme="dark"] .t2-type-info-name{color:#a5b4fc}
-    .t2-type-info-desc{font-size:11.5px;color:#6b7280;margin-top:3px;line-height:1.4}
-    [data-theme="dark"] .t2-type-info-desc{color:#94a3b8}
-    .t2-type-structure{font-size:11px;font-weight:600;color:#6366f1;background:rgba(99,102,241,.1);border-radius:8px;padding:5px 10px;white-space:nowrap}
-    [data-theme="dark"] .t2-type-structure{color:#a5b4fc;background:rgba(99,102,241,.15)}
-
-    /* ── Section accent borders ── */
-    .t2-tpl-sub-section{border-left:3px solid transparent}
-    .t2-tpl-sub-section[data-sec="0"]{border-left-color:#3b82f6}
-    .t2-tpl-sub-section[data-sec="1"]{border-left-color:#10b981}
-    .t2-tpl-sub-section[data-sec="2"]{border-left-color:#f59e0b}
-    .t2-tpl-sub-section[data-sec="3"]{border-left-color:#8b5cf6}
   </style>
 </head>
 <body>
@@ -163,7 +173,7 @@
 
 <div id="wp-toast"></div>
 
-<!-- ── Type switch confirm modal ── -->
+<!-- Type switch confirm modal -->
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
   <div class="t2-quit-box">
     <div class="t2-quit-top">
@@ -182,7 +192,7 @@
   </div>
 </div>
 
-<!-- ── Stats header ── -->
+<!-- Stats header -->
 <header class="wp-header">
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
@@ -192,19 +202,21 @@
   </div>
 </header>
 
-<!-- ── Page hero ── -->
+<!-- Page hero -->
 <div class="tpl-page-hero">
   <div class="tpl-page-hero-inner">
     <div>
       <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
-      <p class="tpl-page-sub">Điền từ 118 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+      <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
     </div>
-    <span class="tpl-overall-badge" id="tpl-main-badge">0 / 99 mẫu câu</span>
+    <span class="tpl-overall-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
   </div>
-  <!-- Tab bar sits flush at bottom of hero -->
   <div class="tpl-tabs-wrap">
     <div class="t2-type-tabs-outer">
       <div class="t2-type-tabs-wrap" id="tpl-type-tabs"></div>
+      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
+        ⏱ <span id="tpl-exam-label">Thi thử</span>
+      </button>
       <button class="t2-tpl-vi-btn-tab" id="tpl-vi-btn" onclick="toggleTplVi()">
         🇻🇳 <span id="tpl-vi-label">Tiếng Việt</span>
       </button>
@@ -215,7 +227,7 @@
   </div>
 </div>
 
-<!-- ── Content ── -->
+<!-- Content -->
 <div class="tpl-content-outer">
   <div id="tpl-content-area"></div>
 </div>
@@ -242,13 +254,11 @@ function showToast(msg, type = 'warn', ms = 3000) {
   clearTimeout(el._t); el._t = setTimeout(() => { el.className = ''; }, ms);
 }
 
-// ── XP / Streak ──────────────────────────────────────────────
 function loadXPFromStorage() {
   const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
   document.getElementById('header-xp').textContent     = stored.xp     || 0;
   document.getElementById('header-streak').textContent = stored.streak  || 0;
 }
-
 function updateXPStorage(earned) {
   const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
   stored.xp = (stored.xp || 0) + earned;
@@ -256,7 +266,6 @@ function updateXPStorage(earned) {
   document.getElementById('header-xp').textContent     = stored.xp;
   document.getElementById('header-streak').textContent = stored.streak || 0;
 }
-
 function initUser() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
@@ -265,24 +274,24 @@ function initUser() {
   loadXPFromStorage();
 }
 
-// ── Template data (hardcoded fallback — overridden by API if DB has data) ──
+// ── Template data ──────────────────────────────────────────────
 let TPL_TYPES = [
-  { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv',    icon: 'fa-scale-balanced',    color: '#2563eb',
+  { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv',    icon: 'fa-scale-balanced',     color: '#2563eb',
     desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.',
     structure: 'Intro → Advantages → Disadvantages → Conclusion' },
-  { id: 'type02', label: 'Type 02', sub: 'Discuss Both',    icon: 'fa-comments',          color: '#7c3aed',
+  { id: 'type02', label: 'Type 02', sub: 'Discuss Both',    icon: 'fa-comments',           color: '#7c3aed',
     desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.',
     structure: 'Intro → View 1 → View 2 → Conclusion' },
-  { id: 'type03', label: 'Type 03', sub: 'Cause–Solution',  icon: 'fa-lightbulb',         color: '#0891b2',
+  { id: 'type03', label: 'Type 03', sub: 'Cause–Solution',  icon: 'fa-lightbulb',          color: '#0891b2',
     desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.',
     structure: 'Intro → Causes → Solutions → Conclusion' },
-  { id: 'type04', label: 'Type 04', sub: 'Effect–Solution', icon: 'fa-gears',             color: '#dc2626',
+  { id: 'type04', label: 'Type 04', sub: 'Effect–Solution', icon: 'fa-gears',              color: '#dc2626',
     desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.',
     structure: 'Intro → Effects → Solutions → Conclusion' },
-  { id: 'type05', label: 'Type 05', sub: 'Cause–Effect',    icon: 'fa-arrow-trend-up',    color: '#d97706',
+  { id: 'type05', label: 'Type 05', sub: 'Cause–Effect',    icon: 'fa-arrow-trend-up',     color: '#d97706',
     desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.',
     structure: 'Intro → Causes → Effects → Conclusion' },
-  { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree',  icon: 'fa-check-double',      color: '#16a34a',
+  { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree',  icon: 'fa-check-double',       color: '#16a34a',
     desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.',
     structure: 'Intro → Main Argument → Counter-argument → Conclusion' },
   { id: 'type07', label: 'Type 07', sub: 'Pos/Neg Dev',     icon: 'fa-circle-half-stroke', color: '#db2777',
@@ -305,9 +314,10 @@ let TPL_DATA = {
         { en: 'One of the most significant ___ of (noun phrase) is that (clause).', answer: 'advantages', vi: '→ Một trong những lợi ích quan trọng nhất của ... là ...' },
         { en: 'A key benefit of (noun phrase) ___ in its ability to (verb).', answer: 'lies', vi: '→ Một lợi ích chính của ... nằm ở khả năng ...' },
         { en: 'To begin with, (noun phrase) ___ individuals to (verb), thereby improving (noun phrase).', answer: 'enables', vi: '→ Trước hết, ... cho phép con người ..., từ đó cải thiện ...' },
-        { en: 'In addition, the adoption of (noun phrase) can contribute to (noun phrase), which plays a ___ role in (verb+ing).', answer: 'crucial', vi: '→ Thêm vào đó, việc áp dụng ... có thể góp phần vào ..., điều này đóng vai trò quan trọng trong việc ...' },
+        { en: 'In addition, the adoption of (noun phrase) can contribute to (noun phrase), which plays a ___ role in (verb+ing).', answer: 'crucial', vi: '→ Thêm vào đó, việc áp dụng ... có thể góp phần vào ..., điều này đóng vai trò quan trọng.' },
         { en: 'Furthermore, (noun phrase) often leads to greater efficiency and ___.', answer: 'productivity', vi: '→ Ngoài ra, ... thường dẫn đến hiệu quả và năng suất cao hơn.' },
-        { en: 'For example, recent studies have shown that (fact/statistic). A clear ___ of this can be seen in (specific example), where (positive outcome) occurred.', answer: 'illustration', vi: '→ Ví dụ, các nghiên cứu gần đây cho thấy rằng ... Một minh chứng rõ ràng có thể thấy ở (ví dụ cụ thể), nơi (kết quả tích cực) đã xảy ra.' },
+        { en: 'For example, recent studies have shown that (fact/statistic). A clear ___ of this can be seen in (specific example).', answer: 'illustration', vi: '→ Ví dụ, các nghiên cứu gần đây cho thấy ... Một minh chứng rõ ràng có thể thấy ở (ví dụ cụ thể).' },
+        { en: '(Noun phrase) not only ___ individuals to reach their full potential, but also ___ a more equitable and inclusive society.', answers: ['enables', 'fosters'], vi: '→ ... không chỉ giúp cá nhân phát huy tiềm năng mà còn thúc đẩy một xã hội công bằng và bao dung hơn.' },
       ]},
       { title: '③ Body 2 – Disadvantages · Hạn chế', items: [
         { en: 'Despite its advantages, (noun phrase) is not without its ___.', answer: 'limitations', vi: '→ Mặc dù có nhiều lợi ích, ... không phải là không có hạn chế.' },
@@ -316,9 +326,10 @@ let TPL_DATA = {
         { en: 'Additionally, dependence on (noun phrase) could result in (noun phrase), thereby ___ (noun phrase).', answer: 'undermining', vi: '→ Thêm vào đó, sự phụ thuộc vào ... có thể dẫn đến ..., từ đó làm suy yếu ...' },
         { en: 'Another potential ___ involves (noun phrase), which might contribute to (undesirable outcome).', answer: 'drawback', vi: '→ Một hạn chế tiềm ẩn khác liên quan đến ..., điều này có thể góp phần gây ra kết quả không mong muốn.' },
         { en: 'For instance, research has ___ that (fact/statistic).', answer: 'indicated', vi: '→ Chẳng hạn, nghiên cứu đã chỉ ra rằng (sự thật/thống kê).' },
+        { en: 'Without proper ___, the ___ of (noun phrase) could have far-reaching negative consequences for future generations.', answers: ['regulation', 'proliferation'], vi: '→ Nếu không có sự quản lý phù hợp, sự phổ biến tràn lan của ... có thể gây ra hậu quả tiêu cực sâu rộng cho các thế hệ tương lai.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, although (noun phrase) offers clear benefits such as (advantage 1) and (advantage 2), it also ___ notable disadvantages, including (disadvantage 1) and (disadvantage 2).', answer: 'entails', vi: '→ Tóm lại, mặc dù ... mang lại những lợi ích rõ ràng như (lợi ích 1) và (lợi ích 2), nó cũng tồn tại những hạn chế đáng kể như (hạn chế 1) và (hạn chế 2).' },
+        { en: 'In conclusion, although (noun phrase) offers clear benefits such as (advantage 1) and (advantage 2), it also ___ notable disadvantages, including (disadvantage 1) and (disadvantage 2).', answer: 'entails', vi: '→ Tóm lại, mặc dù ... mang lại những lợi ích rõ ràng, nó cũng tồn tại những hạn chế đáng kể.' },
         { en: 'On ___, it can be argued that the advantages of (noun phrase) outweigh its drawbacks.', answer: 'balance', vi: '→ Xét tổng thể, có thể lập luận rằng lợi ích của ... vượt trội hơn hạn chế.' },
         { en: 'Nevertheless, careful management and ___ are essential to minimize its negative effects.', answer: 'regulation', vi: '→ Tuy nhiên, việc quản lý và điều chỉnh cẩn thận là cần thiết để giảm thiểu tác động tiêu cực.' },
       ]},
@@ -330,7 +341,7 @@ let TPL_DATA = {
       { title: '① Introduction – Mở bài', items: [
         { en: 'In recent decades, the issue of (noun phrase) has ___ increasing public attention.', answer: 'attracted', vi: '→ Trong vài thập kỷ gần đây, vấn đề ... đã thu hút sự quan tâm ngày càng lớn của công chúng.' },
         { en: 'There has been an ongoing ___ about whether (clause).', answer: 'debate', vi: '→ Đã có một cuộc tranh luận kéo dài về việc liệu ...' },
-        { en: 'With the rapid development of (noun phrase), ___ opinions have emerged regarding its impact.', answer: 'differing', vi: '→ Với sự phát triển nhanh chóng của ..., nhiều quan điểm trái chiều đã xuất hiện về tác động của nó.' },
+        { en: 'With the rapid development of (noun phrase), ___ opinions have emerged regarding its impact.', answer: 'differing', vi: '→ Với sự phát triển nhanh chóng của ..., nhiều quan điểm trái chiều đã xuất hiện.' },
         { en: 'While some people argue that (clause), ___ believe that (clause).', answer: 'others', vi: '→ Trong khi một số người cho rằng ..., những người khác lại tin rằng ...' },
         { en: 'This essay will discuss both ___ before presenting my own viewpoint.', answer: 'perspectives', vi: '→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi đưa ra ý kiến cá nhân.' },
         { en: 'The following discussion will examine the arguments on both sides and offer a ___ conclusion.', answer: 'balanced', vi: '→ Bài viết sau sẽ xem xét lập luận của cả hai phía và đưa ra kết luận cân bằng.' },
@@ -338,10 +349,11 @@ let TPL_DATA = {
       { title: '② Body 1 – First View · Quan điểm 1', items: [
         { en: 'There are several convincing reasons why some people ___ (noun/gerund).', answer: 'support', vi: '→ Có nhiều lý do thuyết phục khiến một số người ủng hộ ...' },
         { en: 'One major reason for this view is that (clause). This is largely because (reason). As a ___, (consequence).', answer: 'result', vi: '→ Điều này chủ yếu là do ... Kết quả là ...' },
-        { en: 'Unlike in the past, when (past situation), ___ (current trend).', answer: 'nowadays', vi: '→ Không giống như trước đây, khi (tình huống quá khứ), ngày nay (xu hướng hiện tại).' },
+        { en: 'Unlike in the past, when (past situation), ___ (current trend).', answer: 'nowadays', vi: '→ Không giống như trước đây, ngày nay (xu hướng hiện tại).' },
         { en: 'For instance, research has shown that (fact/statistic). This ___ that (implication).', answer: 'suggests', vi: '→ Ví dụ, nghiên cứu đã chỉ ra rằng ... Điều này cho thấy rằng (hàm ý).' },
         { en: 'Furthermore, another important factor to ___ is (noun phrase).', answer: 'consider', vi: '→ Hơn nữa, một yếu tố quan trọng khác cần xem xét là ...' },
         { en: 'In addition, many experts ___ that (clause).', answer: 'believe', vi: '→ Ngoài ra, nhiều chuyên gia tin rằng ...' },
+        { en: 'Advocates of this perspective ___ that such a policy would ___ significant long-term benefits for society as a whole.', answers: ['contend', 'yield'], vi: '→ Những người ủng hộ quan điểm này cho rằng chính sách như vậy sẽ mang lại lợi ích lâu dài đáng kể cho xã hội.' },
       ]},
       { title: '③ Body 2 – Opposing View · Quan điểm đối lập', items: [
         { en: 'On the other ___, critics argue that (clause).', answer: 'hand', vi: '→ Mặt khác, những người phản đối cho rằng ...' },
@@ -349,10 +361,11 @@ let TPL_DATA = {
         { en: 'One key concern is that (clause). This may ___ to (negative consequence).', answer: 'lead', vi: '→ Một mối lo ngại chính là ... Điều này có thể dẫn đến (hệ quả tiêu cực).' },
         { en: 'If (condition), it could result in (outcome). Such a situation is often ___ by (factor).', answer: 'driven', vi: '→ Nếu (điều kiện), nó có thể dẫn đến (kết quả). Tình huống này thường được thúc đẩy bởi (yếu tố).' },
         { en: 'This highlights the potential risks ___ with (noun/gerund).', answer: 'associated', vi: '→ Điều này làm nổi bật những rủi ro tiềm ẩn liên quan đến ...' },
+        { en: 'This view, while ___, tends to ___ the broader social context in which the issue is embedded.', answers: ['understandable', 'overlook'], vi: '→ Quan điểm này, tuy có thể hiểu được, nhưng có xu hướng bỏ qua bối cảnh xã hội rộng lớn hơn của vấn đề.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, both ___ offer valid arguments regarding (noun/gerund).', answer: 'perspectives', vi: '→ Tóm lại, cả hai quan điểm đều đưa ra những lập luận hợp lý về ...' },
-        { en: 'Personally, I believe that (stance) because (main reason). Moving forward, ___ should consider (action) to address these concerns.', answer: 'policymakers', vi: '→ Cá nhân tôi tin rằng (lập trường) vì (lý do chính). Trong tương lai, các nhà hoạch định chính sách nên xem xét (hành động) để giải quyết những vấn đề này.' },
+        { en: 'Personally, I believe that (stance) because (main reason). Moving forward, ___ should consider (action) to address these concerns.', answer: 'policymakers', vi: '→ Cá nhân tôi tin rằng (lập trường) vì (lý do chính). Trong tương lai, các nhà hoạch định chính sách nên xem xét (hành động).' },
       ]},
     ]
   },
@@ -370,6 +383,7 @@ let TPL_DATA = {
         { en: 'For instance, (specific example). This ___ that (implication).', answer: 'suggests', vi: '→ Ví dụ, (ví dụ cụ thể). Điều này cho thấy rằng (hàm ý).' },
         { en: 'Another ___ contributor is (cause). Unlike in the past, when (past situation), today (current trend).', answer: 'significant', vi: '→ Một yếu tố quan trọng khác là ... Không giống như trước đây, ngày nay ...' },
         { en: 'If this trend continues, it could ___ to (negative consequence).', answer: 'lead', vi: '→ Nếu xu hướng này tiếp diễn, nó có thể dẫn đến (hệ quả tiêu cực).' },
+        { en: 'The ___ of this problem can be ___ to a combination of structural, economic, and policy-related failures.', answers: ['persistence', 'attributed'], vi: '→ Sự dai dẳng của vấn đề này có thể được quy cho sự kết hợp của các thất bại về cấu trúc, kinh tế và chính sách.' },
       ]},
       { title: '③ Body 2 – Solutions · Giải pháp', items: [
         { en: 'Nevertheless, several practical ___ can be taken to address this issue effectively.', answer: 'measures', vi: '→ Tuy nhiên, có thể thực hiện một số biện pháp thiết thực để giải quyết vấn đề này hiệu quả.' },
@@ -378,6 +392,7 @@ let TPL_DATA = {
         { en: 'Not only would this help (effect 1), but it would ___ (effect 2).', answer: 'also', vi: '→ Giải pháp này không chỉ giúp ... mà còn ...' },
         { en: 'Another viable approach ___ (verb+ing). If widely implemented, this could serve as a long-term solution.', answer: 'involves', vi: '→ Một cách tiếp cận khả thi khác là ... Nếu được triển khai rộng rãi, biện pháp này có thể trở thành giải pháp lâu dài.' },
         { en: 'Research has shown that (evidence/statistic), ___ the effectiveness of this strategy.', answer: 'reinforcing', vi: '→ Nghiên cứu đã chỉ ra rằng ..., củng cố tính hiệu quả của chiến lược này.' },
+        { en: 'Governments must ___ substantial resources and ___ coherent long-term strategies to address this issue effectively.', answers: ['allocate', 'implement'], vi: '→ Chính phủ phải phân bổ đủ nguồn lực và thực hiện các chiến lược dài hạn để giải quyết vấn đề này hiệu quả.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, (noun phrase) remains a ___ issue that requires immediate and coordinated action.', answer: 'complex', vi: '→ Kết luận lại, ... vẫn là một vấn đề phức tạp cần hành động khẩn cấp và đồng bộ.' },
@@ -397,14 +412,16 @@ let TPL_DATA = {
       ]},
       { title: '② Body 1 – Effects · Hậu quả', items: [
         { en: 'Two particularly ___ effects of this issue are (effect 1) and (effect 2).', answer: 'alarming', vi: '→ Hai hậu quả đáng lo ngại nhất của vấn đề này là ... và ...' },
-        { en: 'To begin with, (effect 1) is a major concern. This is largely because (reason/explanation). If this situation continues, it may ___ to (long-term consequence).', answer: 'lead', vi: '→ Trước hết, ... là một mối lo ngại lớn. Nếu tình trạng này tiếp diễn, nó có thể dẫn đến (hậu quả lâu dài).' },
+        { en: 'To begin with, (effect 1) is a major concern. If this situation continues, it may ___ to (long-term consequence).', answer: 'lead', vi: '→ Trước hết, ... là một mối lo ngại lớn. Nếu tình trạng này tiếp diễn, nó có thể dẫn đến (hậu quả lâu dài).' },
         { en: 'Another ___ impact is (effect 2). As a result, (consequence).', answer: 'significant', vi: '→ Một tác động đáng kể khác là ... Do đó, (hệ quả).' },
         { en: 'Over time, this can place considerable ___ on (group/system/society).', answer: 'pressure', vi: '→ Theo thời gian, điều này có thể tạo áp lực lớn lên (nhóm/hệ thống/xã hội).' },
+        { en: 'Unless ___ action is taken at both the individual and governmental level, these effects could ___ far beyond what current models predict.', answers: ['immediate', 'extend'], vi: '→ Trừ khi có hành động ngay lập tức ở cả cấp độ cá nhân và chính phủ, những tác động này có thể lan rộng hơn so với dự đoán hiện tại.' },
       ]},
       { title: '③ Body 2 – Solutions · Giải pháp', items: [
         { en: 'Despite these challenges, several effective ___ can be taken to address this issue.', answer: 'measures', vi: '→ Mặc dù có những thách thức này, vẫn có thể thực hiện một số biện pháp hiệu quả để giải quyết vấn đề.' },
         { en: 'The most ___ solution is to (verb). This approach would not only (benefit 1) but also (benefit 2).', answer: 'practical', vi: '→ Giải pháp thiết thực nhất là ... Cách tiếp cận này không chỉ giúp ... mà còn ...' },
         { en: 'Another ___ strategy is to (verb). If implemented on a large scale, this measure could bring about long-term improvements.', answer: 'viable', vi: '→ Một chiến lược khả thi khác là ... Nếu được triển khai trên diện rộng, biện pháp này có thể mang lại cải thiện lâu dài.' },
+        { en: 'Both ___ and non-governmental bodies must ___ closely to design countermeasures that are both effective and sustainable.', answers: ['governmental', 'collaborate'], vi: '→ Cả các cơ quan chính phủ và phi chính phủ cần hợp tác chặt chẽ để thiết kế các biện pháp đối phó vừa hiệu quả vừa bền vững.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, (noun phrase) continues to ___ serious challenges due to its significant consequences.', answer: 'pose', vi: '→ Tóm lại, ... vẫn gây ra những thách thức nghiêm trọng do những hậu quả đáng kể của nó.' },
@@ -424,16 +441,18 @@ let TPL_DATA = {
       ]},
       { title: '② Body 1 – Causes · Nguyên nhân', items: [
         { en: 'The causes of (noun phrase) are both complex and ___. Several key factors can be identified as contributing to this phenomenon.', answer: 'multifaceted', vi: '→ Nguyên nhân của ... vừa phức tạp vừa đa chiều. Có thể xác định một số yếu tố chính góp phần vào hiện tượng này.' },
-        { en: 'One primary factor is (cause), which significantly contributes to this issue. It is widely ___ that (clause), making it a central driver of this trend.', answer: 'acknowledged', vi: '→ Một yếu tố chính là ..., điều này góp phần đáng kể vào vấn đề. Nhiều người thừa nhận rằng ..., khiến nó trở thành động lực chính của xu hướng này.' },
+        { en: 'One primary factor is (cause), which significantly contributes to this issue. It is widely ___ that (clause), making it a central driver of this trend.', answer: 'acknowledged', vi: '→ Một yếu tố chính là ..., điều này góp phần đáng kể vào vấn đề. Nhiều người thừa nhận rằng ...' },
         { en: 'For example, (specific example) clearly ___ how this cause leads to wider consequences.', answer: 'demonstrates', vi: '→ Ví dụ, (ví dụ cụ thể) cho thấy rõ cách nguyên nhân này dẫn đến hậu quả rộng hơn.' },
         { en: 'This can largely be ___ to (cause), which in turn results in (effect).', answer: 'attributed', vi: '→ Điều này phần lớn là do ..., từ đó dẫn đến ...' },
         { en: 'Not only does (cause) trigger (effect), but it also creates a ___ effect across society.', answer: 'ripple', vi: '→ ... không chỉ gây ra ... mà còn tạo hiệu ứng lan tỏa trong xã hội.' },
+        { en: 'This ___ is further ___ by the rapid pace of globalisation and advances in digital technology.', answers: ['trend', 'accelerated'], vi: '→ Xu hướng này càng được đẩy nhanh hơn bởi tốc độ toàn cầu hóa và những tiến bộ trong công nghệ kỹ thuật số.' },
       ]},
       { title: '③ Body 2 – Effects · Hậu quả', items: [
         { en: 'The effects of (noun phrase) are both immediate and long-term. This issue brings about several serious ___.', answer: 'consequences', vi: '→ Tác động của ... vừa mang tính tức thời vừa lâu dài. Vấn đề này kéo theo nhiều hậu quả nghiêm trọng.' },
         { en: 'One significant consequence is (effect). Research has ___ shown that (clause).', answer: 'consistently', vi: '→ Một hậu quả đáng kể là ... Nghiên cứu đã liên tục chỉ ra rằng ...' },
         { en: 'Furthermore, this phenomenon ___ leads to (noun phrase). More alarmingly, the long-term implications may include (serious effect).', answer: 'inevitably', vi: '→ Hơn nữa, hiện tượng này tất yếu dẫn đến ... Đáng lo ngại hơn, tác động lâu dài có thể bao gồm ...' },
         { en: 'Over time, these effects may ___, placing substantial pressure on (group/society).', answer: 'accumulate', vi: '→ Theo thời gian, những tác động này có thể tích tụ và gây áp lực lớn lên ...' },
+        { en: 'Without ___ intervention, these effects could ___ lasting damage to both social cohesion and environmental stability.', answers: ['timely', 'inflict'], vi: '→ Nếu không có sự can thiệp kịp thời, những tác động này có thể gây ra thiệt hại lâu dài cho cả sự gắn kết xã hội lẫn ổn định môi trường.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, (noun phrase) stems from a range of ___ factors and results in significant consequences.', answer: 'interconnected', vi: '→ Tóm lại, ... bắt nguồn từ nhiều yếu tố liên quan lẫn nhau và gây ra hậu quả đáng kể.' },
@@ -457,10 +476,12 @@ let TPL_DATA = {
         { en: 'It is ___ that (key point) plays a crucial role in (related aspect).', answer: 'undeniable', vi: '→ Không thể phủ nhận rằng ... đóng vai trò quan trọng trong ...' },
         { en: 'This can be attributed to the fact that (explanation). For instance, (specific example), which clearly ___ that (analysis).', answer: 'illustrates', vi: '→ Điều này có thể là do thực tế rằng ... Ví dụ, ..., điều này minh chứng rõ ràng rằng ...' },
         { en: 'Research has consistently shown that (finding), thereby ___ the view that (argument).', answer: 'reinforcing', vi: '→ Nghiên cứu đã liên tục chỉ ra rằng ..., từ đó củng cố quan điểm rằng ...' },
+        { en: '(Noun phrase) is fundamentally ___ for sustainable progress, as it ___ individuals and communities to drive meaningful change.', answers: ['essential', 'empowers'], vi: '→ ... là điều căn bản thiết yếu cho sự tiến bộ bền vững, vì nó trao quyền cho cá nhân và cộng đồng thúc đẩy sự thay đổi có ý nghĩa.' },
       ]},
       { title: '③ Body 2 – Counter-argument · Phản biện (Band 7.5+)', items: [
         { en: 'While some may argue that (opposing view), this perspective fails to ___ that (counterargument).', answer: 'consider', vi: '→ Mặc dù một số người có thể cho rằng ..., quan điểm này bỏ sót việc ...' },
         { en: 'Admittedly, (concession); ___, the overall impact remains predominantly positive/negative.', answer: 'nevertheless', vi: '→ Thừa nhận rằng ...; tuy nhiên, tác động tổng thể vẫn chủ yếu là tích cực/tiêu cực.' },
+        { en: 'While critics ___ that this approach carries risks, such concerns are largely ___ when the full body of evidence is considered.', answers: ['claim', 'outweighed'], vi: '→ Mặc dù những người chỉ trích cho rằng cách tiếp cận này mang theo rủi ro, những lo ngại đó phần lớn bị lấn át khi xem xét toàn bộ bằng chứng.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, having examined the arguments presented, I ___ that (restate position).', answer: 'maintain', vi: '→ Tóm lại, sau khi xem xét các lập luận đã trình bày, tôi duy trì rằng ...' },
@@ -473,46 +494,54 @@ let TPL_DATA = {
     sections: [
       { title: '① Introduction – Mở bài', items: [
         { en: 'In recent years, (noun phrase) has emerged as one of the most ___ trends in contemporary society, sparking widespread debate.', answer: 'controversial', vi: '→ Trong những năm gần đây, ... đã nổi lên là một trong những xu hướng gây tranh cãi nhất trong xã hội hiện đại.' },
-        { en: 'Views on this development remain deeply ___, with some welcoming it as progress and others raising serious concerns.', answer: 'divided', vi: '→ Quan điểm về sự phát triển này vẫn còn rất phân cực, với một số người hoan nghênh nó như tiến bộ và những người khác bày tỏ lo ngại.' },
+        { en: 'Views on this development remain deeply ___, with some welcoming it as progress and others raising serious concerns.', answer: 'divided', vi: '→ Quan điểm về sự phát triển này vẫn còn rất phân cực, với một số người hoan nghênh nó và những người khác bày tỏ lo ngại.' },
         { en: 'While (noun phrase) undoubtedly brings certain ___, it also carries the potential for significant drawbacks.', answer: 'benefits', vi: '→ Mặc dù ... chắc chắn mang lại một số lợi ích, nó cũng tiềm ẩn những hạn chế đáng kể.' },
-        { en: 'I firmly ___ that, on balance, this constitutes a predominantly positive/negative development for the reasons outlined below.', answer: 'believe', vi: '→ Tôi kiên định cho rằng, xét tổng thể, đây là một sự phát triển phần lớn tích cực/tiêu cực vì những lý do nêu dưới đây.' },
+        { en: 'I firmly ___ that, on balance, this constitutes a predominantly positive/negative development for the reasons outlined below.', answer: 'believe', vi: '→ Tôi kiên định cho rằng, xét tổng thể, đây là một sự phát triển phần lớn tích cực/tiêu cực.' },
         { en: 'This essay will ___ both dimensions of this issue before arriving at a well-supported conclusion.', answer: 'examine', vi: '→ Bài viết này sẽ xem xét cả hai khía cạnh của vấn đề trước khi đưa ra kết luận có căn cứ.' },
       ]},
       { title: '② Body 1 – Main Case · Lập luận chính', items: [
         { en: 'There are several ___ reasons to view (noun phrase) as a positive/negative development.', answer: 'compelling', vi: '→ Có một số lý do thuyết phục để coi ... là một sự phát triển tích cực/tiêu cực.' },
-        { en: 'One of the most notable aspects is that (noun phrase) has ___ contributed to (outcome), benefiting/harming a large portion of society.', answer: 'considerably', vi: '→ Một trong những khía cạnh đáng chú ý nhất là ... đã đóng góp đáng kể vào (kết quả), mang lại lợi ích/gây hại cho một bộ phận lớn của xã hội.' },
+        { en: 'One of the most notable aspects is that (noun phrase) has ___ contributed to (outcome), benefiting/harming a large portion of society.', answer: 'considerably', vi: '→ Một trong những khía cạnh đáng chú ý nhất là ... đã đóng góp đáng kể vào (kết quả).' },
         { en: 'This is primarily because (reason), which has a ___ and far-reaching effect on (group/society/economy).', answer: 'profound', vi: '→ Nguyên nhân chính là ..., điều này có tác động sâu sắc và rộng khắp đến (nhóm người/xã hội/nền kinh tế).' },
         { en: 'To illustrate, (specific example) clearly ___ the magnitude of this trend\'s impact on everyday life.', answer: 'demonstrates', vi: '→ Để minh họa, (ví dụ cụ thể) cho thấy rõ mức độ tác động của xu hướng này đối với cuộc sống hàng ngày.' },
         { en: 'Furthermore, the influence of (noun phrase) ___ well beyond the individual, reshaping communities and institutions alike.', answer: 'extends', vi: '→ Hơn nữa, sức ảnh hưởng của ... vươn xa hơn cá nhân, định hình lại cả các cộng đồng lẫn tổ chức.' },
-        { en: 'Research has consistently ___ that (fact/statistic), providing strong evidence that this development is largely beneficial/harmful.', answer: 'confirmed', vi: '→ Nghiên cứu đã liên tục xác nhận rằng (thực tế/thống kê), cung cấp bằng chứng rõ ràng rằng sự phát triển này phần lớn có lợi/có hại.' },
+        { en: 'Research has consistently ___ that (fact/statistic), providing strong evidence that this development is largely beneficial/harmful.', answer: 'confirmed', vi: '→ Nghiên cứu đã liên tục xác nhận rằng (thực tế/thống kê), cung cấp bằng chứng rõ ràng về sự phát triển này.' },
+        { en: 'This is a ___ that is likely to ___ as societal conditions and technological capabilities continue to evolve.', answers: ['pattern', 'intensify'], vi: '→ Đây là một xu hướng có khả năng ngày càng mạnh mẽ hơn khi các điều kiện xã hội và năng lực công nghệ tiếp tục phát triển.' },
       ]},
       { title: '③ Body 2 – Acknowledge & Reinforce · Nhìn nhận đa chiều (Band 7+)', items: [
-        { en: 'Admittedly, (noun phrase) is not without its shortcomings, and critics have raised ___ concerns about (specific issue).', answer: 'legitimate', vi: '→ Thừa nhận rằng, ... không phải là không có thiếu sót, và các nhà phê bình đã đặt ra những lo ngại chính đáng về (vấn đề cụ thể).' },
-        { en: 'However, these concerns, while not entirely ___, do not fundamentally alter the overall trajectory of this development.', answer: 'unfounded', vi: '→ Tuy nhiên, những lo ngại này, dù không hoàn toàn vô căn cứ, nhưng không thay đổi cơ bản xu hướng tổng thể của sự phát triển này.' },
-        { en: 'When considered in a broader context, the positive/negative aspects of (noun phrase) clearly ___ its drawbacks/merits.', answer: 'outweigh', vi: '→ Khi xem xét trong bối cảnh rộng hơn, các khía cạnh tích cực/tiêu cực của ... rõ ràng vượt trội hơn hạn chế/ưu điểm của nó.' },
-        { en: 'Moreover, any potential risks can be effectively ___ through appropriate governance, public awareness, and informed policy decisions.', answer: 'mitigated', vi: '→ Hơn nữa, bất kỳ rủi ro tiềm ẩn nào cũng có thể được giảm thiểu hiệu quả thông qua quản trị phù hợp, nhận thức cộng đồng và quyết định chính sách sáng suốt.' },
-        { en: 'Ultimately, the ___ benefits of this development far outweigh the associated risks, making a strong case for this position.', answer: 'cumulative', vi: '→ Cuối cùng, những lợi ích tích lũy của sự phát triển này vượt xa so với những rủi ro liên quan, tạo ra lập luận mạnh mẽ cho quan điểm này.' },
+        { en: 'Admittedly, (noun phrase) is not without its shortcomings, and critics have raised ___ concerns about (specific issue).', answer: 'legitimate', vi: '→ Thừa nhận rằng, ... không phải là không có thiếu sót, và các nhà phê bình đã đặt ra những lo ngại chính đáng.' },
+        { en: 'However, these concerns, while not entirely ___, do not fundamentally alter the overall trajectory of this development.', answer: 'unfounded', vi: '→ Tuy nhiên, những lo ngại này, dù không hoàn toàn vô căn cứ, nhưng không thay đổi cơ bản xu hướng tổng thể.' },
+        { en: 'When considered in a broader context, the positive/negative aspects of (noun phrase) clearly ___ its drawbacks/merits.', answer: 'outweigh', vi: '→ Khi xem xét trong bối cảnh rộng hơn, các khía cạnh tích cực/tiêu cực của ... rõ ràng vượt trội hơn.' },
+        { en: 'Moreover, any potential risks can be effectively ___ through appropriate governance, public awareness, and informed policy decisions.', answer: 'mitigated', vi: '→ Hơn nữa, bất kỳ rủi ro tiềm ẩn nào cũng có thể được giảm thiểu thông qua quản trị phù hợp và quyết định chính sách sáng suốt.' },
+        { en: 'Ultimately, the ___ benefits of this development far outweigh the associated risks, making a strong case for this position.', answer: 'cumulative', vi: '→ Cuối cùng, những lợi ích tích lũy của sự phát triển này vượt xa so với những rủi ro liên quan.' },
+        { en: 'A ___ reading of the available evidence ___ that the positive outcomes significantly outweigh the concerns raised by critics.', answers: ['careful', 'reveals'], vi: '→ Việc đọc cẩn thận các bằng chứng hiện có cho thấy rằng các kết quả tích cực vượt trội đáng kể so với những lo ngại của nhà phê bình.' },
       ]},
       { title: '④ Conclusion – Kết bài', items: [
         { en: 'In conclusion, having examined this issue from multiple ___, I maintain that this is fundamentally a positive/negative development.', answer: 'angles', vi: '→ Tóm lại, sau khi xem xét vấn đề này từ nhiều góc độ, tôi duy trì rằng đây về cơ bản là một sự phát triển tích cực/tiêu cực.' },
-        { en: 'The evidence ___ suggests that the advantages/disadvantages of (noun phrase) far exceed the drawbacks/merits, warranting a clear position on this matter.', answer: 'overwhelmingly', vi: '→ Bằng chứng áp đảo cho thấy lợi ích/tác hại của ... vượt xa so với hạn chế/ưu điểm, đòi hỏi một lập trường rõ ràng về vấn đề này.' },
-        { en: 'Going forward, it is ___ that individuals, communities, and policymakers take a proactive approach to maximise the gains and minimise the risks of this trend.', answer: 'essential', vi: '→ Trong tương lai, điều thiết yếu là các cá nhân, cộng đồng và nhà hoạch định chính sách cần có cách tiếp cận chủ động để tối đa hóa lợi ích và giảm thiểu rủi ro của xu hướng này.' },
+        { en: 'The evidence ___ suggests that the advantages/disadvantages of (noun phrase) far exceed the drawbacks/merits, warranting a clear position.', answer: 'overwhelmingly', vi: '→ Bằng chứng áp đảo cho thấy lợi ích/tác hại của ... vượt xa so với hạn chế/ưu điểm.' },
+        { en: 'Going forward, it is ___ that individuals, communities, and policymakers take a proactive approach to maximise the gains and minimise the risks of this trend.', answer: 'essential', vi: '→ Trong tương lai, điều thiết yếu là các cá nhân, cộng đồng và nhà hoạch định chính sách cần có cách tiếp cận chủ động.' },
       ]},
     ]
   },
 };
 
-// ── State ────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────
 let _tplActiveType = 'type01';
 let _tplShowVi     = false;
-let _tplScores     = {};  // persisted in localStorage 'tpl_scores'
+let _tplScores     = {};
 let _pendingTypeId = null;
+
+// Exam mode state
+let _examMode          = false;
+let _examTimerInterval = null;
+let _examTimeLeft      = 1800;
+let _examStartTime     = null;
 
 function saveTplScores() {
   localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
 }
 
-// ── Init ─────────────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initUser();
   try {
@@ -520,20 +549,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (saved) _tplScores = JSON.parse(saved);
   } catch(e) {}
 
-  // Try to load templates from DB (fallback to hardcoded if empty/error)
   try {
     const res = await fetch(`${API}/task2/templates`);
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.templates && data.templates.length > 0) {
-        TPL_TYPES = data.templates.map(t => ({ id: t.typeId, label: t.label, sub: t.sub }));
-        TPL_DATA  = {};
+        // Preserve local metadata (icon, color, desc, structure) not stored in DB
+        const localMeta = [...TPL_TYPES];
+        TPL_TYPES = data.templates.map(t => {
+          const lm = localMeta.find(lt => lt.id === t.typeId) || {};
+          return { id: t.typeId, label: t.label, sub: t.sub,
+            icon: lm.icon, color: lm.color, desc: lm.desc, structure: lm.structure };
+        });
+        TPL_DATA = {};
         data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
-        // Keep active type valid
         if (!TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
       }
     }
-  } catch(e) { /* silently fallback to hardcoded */ }
+  } catch(e) {}
 
   renderTabs();
   renderTplContent();
@@ -543,30 +576,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-// ── Render tabs ───────────────────────────────────────────────
+// ── Render tabs ────────────────────────────────────────────────
 function renderTabs() {
   const wrap = document.getElementById('tpl-type-tabs');
   if (!wrap) return;
   wrap.innerHTML = TPL_TYPES.map(t => `
     <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
       onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}">
-      ${t.icon ? `<i class="fas ${t.icon}" style="font-size:9px;opacity:.65;margin-right:2px"></i>` : ''}${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
+      ${t.icon ? `<i class="fas ${t.icon}" style="font-size:9px;opacity:.65;margin-right:2px"></i>` : ''}${t.label}<br>
+      <span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
     </button>`).join('');
 }
 
-// ── Render content ────────────────────────────────────────────
+// ── Render content ─────────────────────────────────────────────
 function renderTplContent() {
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
   const area = document.getElementById('tpl-content-area');
   if (!area) return;
+
   let done = 0, total = 0;
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      total++;
-      if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+  if (!_examMode) {
+    type.sections.forEach((sec, si) => {
+      sec.items.forEach((item, ii) => {
+        total++;
+        if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
+      });
     });
-  });
+  }
 
   const typeMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
   const infoCard = typeMeta && typeMeta.icon ? `
@@ -584,31 +621,60 @@ function renderTplContent() {
   const sectionsHtml = type.sections.map((sec, si) => {
     const itemsHtml = sec.items.map((item, ii) => {
       const key = `${_tplActiveType}-${si}-${ii}`;
-      const scoreState = _tplScores[key] || '';
-      const [before, after] = item.en.split('___');
+      const scoreState = _examMode ? '' : (_tplScores[key] || '');
+      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+      const answersStr = escAttr(answers.join('||'));
+      const isMulti = answers.length > 1;
+      const parts = item.en.split('___');
+
+      // Build English text with input(s)
+      let enHtml = '';
+      parts.forEach((part, pi) => {
+        enHtml += escHtml(part);
+        if (pi < answers.length) {
+          const inpId = isMulti ? `inp-${key}-b${pi}` : `inp-${key}`;
+          const isLocked = !_examMode && scoreState === 'ok';
+          enHtml += `<input class="t2-cloze-input" id="${inpId}" type="text"
+            placeholder="…" autocomplete="off" spellcheck="false"
+            ${isLocked ? 'disabled' : ''}
+            onkeydown="if(!_examMode && event.key==='Enter'){event.preventDefault();checkCloze('${key}','${answersStr}')}"
+            oninput="resetClozeCard('${key}')"
+            value="${isLocked ? escAttr(answers[pi]) : ''}"
+          />`;
+        }
+      });
+
+      const errDisplay = answers.map(a => `"${escHtml(a)}"`).join(', ');
+      const multiBadge = isMulti ? `<div class="t2-multi-badge"><i class="fas fa-pen-to-square" style="font-size:9px"></i> ${answers.length} từ cần điền</div>` : '';
+
+      if (_examMode) {
+        return `
+        <div class="t2-cloze-card" id="cloze-${key}">
+          ${multiBadge}
+          <div class="t2-cloze-en">${enHtml}</div>
+          <div class="t2-cloze-actions">
+            <span class="t2-cloze-fb" id="fb-${key}"></span>
+          </div>
+        </div>`;
+      }
+
       return `
       <div class="t2-cloze-card ${scoreState === 'ok' ? 'tpl-correct' : scoreState === 'err' ? 'tpl-wrong' : ''}"
            id="cloze-${key}">
-        <div class="t2-cloze-en">
-          ${escHtml(before)}<input class="t2-cloze-input" id="inp-${key}" type="text"
-            placeholder="…" autocomplete="off" spellcheck="false"
-            ${scoreState === 'ok' ? 'disabled' : ''}
-            onkeydown="if(event.key==='Enter'){event.preventDefault();checkCloze('${key}','${escAttr(item.answer)}')}"
-            oninput="resetClozeCard('${key}')"
-            value="${scoreState === 'ok' ? escAttr(item.answer) : ''}"
-          />${escHtml(after || '')}
-        </div>
+        ${multiBadge}
+        <div class="t2-cloze-en">${enHtml}</div>
         <div class="t2-cloze-vi ${_tplShowVi ? 'vis' : ''}" id="vi-${key}">${escHtml(item.vi)}</div>
         <div class="t2-cloze-actions">
           ${scoreState !== 'ok' ? `
-          <button class="t2-cloze-check" onclick="checkCloze('${key}','${escAttr(item.answer)}')">Kiểm tra</button>
-          <button class="t2-cloze-hint" onclick="showClozeHint('${key}','${escAttr(item.answer)}')">Gợi ý</button>
+          <button class="t2-cloze-check" onclick="checkCloze('${key}','${answersStr}')">Kiểm tra</button>
+          <button class="t2-cloze-hint" onclick="showClozeHint('${key}','${answersStr}')">Gợi ý</button>
           ` : ''}
           <span class="t2-cloze-fb ${scoreState === 'ok' ? 'ok' : scoreState === 'err' ? 'err' : ''}"
-                id="fb-${key}">${scoreState === 'ok' ? '✅ Đúng!' : scoreState === 'err' ? `❌ Đáp án: "${escHtml(item.answer)}"` : ''}</span>
+                id="fb-${key}">${scoreState === 'ok' ? '✅ Đúng!' : scoreState === 'err' ? `❌ Đáp án: ${errDisplay}` : ''}</span>
         </div>
       </div>`;
     }).join('');
+
     return `<div class="t2-tpl-sub-section" data-sec="${si}">
       <div class="t2-tpl-sub-title"><i class="fas fa-layer-group"></i> ${sec.title}</div>
       ${itemsHtml}
@@ -616,55 +682,102 @@ function renderTplContent() {
   }).join('');
 
   const pct = total ? Math.round(done / total * 100) : 0;
+
+  const examBar = _examMode ? `
+    <div class="t2-exam-bar" id="exam-bar">
+      <span class="t2-exam-timer" id="exam-time-display">${fmtTime(_examTimeLeft)}</span>
+      <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${escHtml(type.name)} · Chế độ thi thử</span>
+      <button class="t2-exam-exit-btn" onclick="exitExamMode()">✕ Thoát</button>
+    </div>` : '';
+
+  const footerHtml = _examMode
+    ? `<div class="t2-tpl-footer">
+        <span style="font-size:12px;color:#6b7280">Điền tất cả rồi nhấn nộp bài</span>
+        <button class="t2-exam-submit-btn" onclick="submitExam()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
+       </div>`
+    : `<div class="t2-tpl-footer">
+        <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
+        <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
+       </div>`;
+
   area.innerHTML = `
+    ${examBar}
     <div class="t2-tpl-content">${infoCard}${sectionsHtml}</div>
-    <div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
+    ${_examMode ? '' : `<div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
       🎉 Xuất sắc! Bạn đã hoàn thành <b>${escHtml(type.name)}</b>! Nhấn "Làm lại" để ôn tiếp.
-    </div>
-    <div class="t2-tpl-footer">
-      <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
-      <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
-    </div>`;
+    </div>`}
+    ${footerHtml}`;
+
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = pct + '%';
+  if (fill) fill.style.width = _examMode ? '0%' : (pct + '%');
 }
 
-// ── Check / feedback ──────────────────────────────────────────
-function checkCloze(key, answer) {
-  const inp  = document.getElementById('inp-'   + key);
-  const fb   = document.getElementById('fb-'    + key);
+// ── Check / feedback ───────────────────────────────────────────
+function checkCloze(key, answersStr) {
+  const answers = answersStr.split('||');
   const card = document.getElementById('cloze-' + key);
-  if (!inp || !fb || !card) return;
-  const userVal    = inp.value.trim().toLowerCase();
-  const correctVal = answer.toLowerCase();
-  if (!userVal) { showToast('Vui lòng nhập từ cần điền!', 'warn', 2000); return; }
+  const fb   = document.getElementById('fb-'    + key);
+  if (!card || !fb) return;
+
+  let anyEmpty = false;
+  answers.forEach((ans, bi) => {
+    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+    const inp = document.getElementById(inpId);
+    if (inp && !inp.value.trim()) anyEmpty = true;
+  });
+  if (anyEmpty) { showToast('Vui lòng điền đầy đủ trước khi kiểm tra!', 'warn', 2000); return; }
+
   const wasNew = !_tplScores[key];
-  const isOk   = userVal === correctVal;
-  _tplScores[key] = isOk ? 'ok' : 'err';
+  let allOk = true;
+  answers.forEach((ans, bi) => {
+    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+    const inp = document.getElementById(inpId);
+    if (!inp) return;
+    if (inp.value.trim().toLowerCase() !== ans.toLowerCase()) allOk = false;
+  });
+
+  _tplScores[key] = allOk ? 'ok' : 'err';
   saveTplScores();
-  card.className = 't2-cloze-card ' + (isOk ? 'tpl-correct' : 'tpl-wrong');
-  fb.className   = 't2-cloze-fb '   + (isOk ? 'ok' : 'err');
-  fb.textContent = isOk ? '✅ Đúng!' : `❌ Đáp án: "${answer}"`;
-  inp.disabled   = isOk;
-  if (isOk) {
+  card.className = 't2-cloze-card ' + (allOk ? 'tpl-correct' : 'tpl-wrong');
+  fb.className   = 't2-cloze-fb '   + (allOk ? 'ok' : 'err');
+
+  if (allOk) {
+    fb.textContent = '✅ Đúng!';
+    answers.forEach((ans, bi) => {
+      const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+      const inp = document.getElementById(inpId);
+      if (inp) inp.disabled = true;
+    });
     playOk();
     if (wasNew) awardTplXP(card);
     setTimeout(() => scrollToNextCloze(key), 450);
   } else {
+    const wrongParts = answers.map((ans, bi) => {
+      const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+      const inp = document.getElementById(inpId);
+      const uv = inp ? inp.value.trim().toLowerCase() : '';
+      return uv !== ans.toLowerCase() ? `"${ans}"` : null;
+    }).filter(Boolean);
+    fb.textContent = `❌ Đáp án: ${wrongParts.join(', ')}`;
     playWrong();
   }
+
   updateTplScore();
   updateOverallBadge();
   checkTypeComplete();
 }
 
-function showClozeHint(key, answer) {
-  const inp = document.getElementById('inp-' + key);
-  if (!inp || inp.disabled) return;
-  const half = answer.slice(0, Math.ceil(answer.length / 2));
-  inp.value = half;
-  inp.focus();
-  showToast('💡 Gợi ý: "' + half + '…"', 'info', 2000);
+function showClozeHint(key, answersStr) {
+  const answers = answersStr.split('||');
+  answers.forEach((ans, bi) => {
+    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+    const inp = document.getElementById(inpId);
+    if (!inp || inp.disabled) return;
+    inp.value = ans.slice(0, Math.ceil(ans.length / 2));
+    inp.focus();
+  });
+  const hints = answers.map(a => `"${a.slice(0, Math.ceil(a.length/2))}…"`).join(', ');
+  showToast('💡 Gợi ý: ' + hints, 'info', 2000);
 }
 
 function resetClozeCard(key) {
@@ -673,10 +786,11 @@ function resetClozeCard(key) {
     const fb   = document.getElementById('fb-'    + key);
     if (card) card.className = 't2-cloze-card';
     if (fb)   { fb.className = 't2-cloze-fb'; fb.textContent = ''; }
+    delete _tplScores[key];
   }
 }
 
-// ── Score display ─────────────────────────────────────────────
+// ── Score display ──────────────────────────────────────────────
 function updateTplScore() {
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
@@ -692,18 +806,20 @@ function updateTplScore() {
   const pctEl = document.querySelector('.t2-tpl-pct');
   if (pctEl) pctEl.textContent = total ? Math.round(done / total * 100) + '%' : '0%';
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = total ? (done / total * 100) + '%' : '0%';
+  if (fill && !_examMode) fill.style.width = total ? (done / total * 100) + '%' : '0%';
 }
 
 function updateOverallBadge() {
-  const totalAll = Object.values(TPL_DATA).reduce((s, t) => s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-  const doneAll  = Object.values(_tplScores).filter(v => v === 'ok').length;
+  const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
+    s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
+  const doneAll = Object.keys(_tplScores).filter(k => _tplScores[k] === 'ok').length;
   const badge = document.getElementById('tpl-main-badge');
   if (badge) badge.textContent = `${doneAll} / ${totalAll} mẫu câu`;
 }
 
-// ── Vietnamese toggle ─────────────────────────────────────────
+// ── Vietnamese toggle ──────────────────────────────────────────
 function toggleTplVi() {
+  if (_examMode) { showToast('Không dùng dịch trong chế độ thi thử!', 'warn', 2000); return; }
   _tplShowVi = !_tplShowVi;
   document.querySelectorAll('.t2-cloze-vi').forEach(el => el.classList.toggle('vis', _tplShowVi));
   const tabBtn = document.getElementById('tpl-vi-btn');
@@ -712,7 +828,7 @@ function toggleTplVi() {
   if (label)  label.textContent = _tplShowVi ? 'Ẩn TV' : 'Tiếng Việt';
 }
 
-// ── Reset current type ────────────────────────────────────────
+// ── Reset current type ─────────────────────────────────────────
 function resetTplType() {
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
@@ -726,9 +842,15 @@ function resetTplType() {
   renderTplContent();
 }
 
-// ── Type switch ───────────────────────────────────────────────
+// ── Type switch ────────────────────────────────────────────────
 function switchTplType(typeId) {
   if (typeId === _tplActiveType) return;
+  if (_examMode) {
+    if (!confirm('Chuyển type sẽ thoát khỏi chế độ thi thử. Tiếp tục?')) return;
+    exitExamMode();
+    doSwitchType(typeId);
+    return;
+  }
   const type = TPL_DATA[_tplActiveType];
   const hasProgress = type && type.sections.some((sec, si) =>
     sec.items.some((item, ii) => !!_tplScores[`${_tplActiveType}-${si}-${ii}`])
@@ -745,7 +867,7 @@ function switchTplType(typeId) {
     document.getElementById('tpl-switch-sub').innerHTML =
       `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${fromMeta ? fromMeta.label : _tplActiveType}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
     const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn && toMeta) confirmBtn.textContent = `Chuyển → ${toMeta.label} · ${TPL_DATA[typeId].name}`;
+    if (confirmBtn && toMeta) confirmBtn.textContent = `Chuyển → ${toMeta.label} · ${TPL_DATA[typeId]?.name || ''}`;
     document.getElementById('tpl-switch-overlay').classList.remove('hidden');
   } else {
     doSwitchType(typeId);
@@ -772,7 +894,135 @@ function doSwitchType(typeId) {
   updateTplScore();
 }
 
-// ── XP pop ────────────────────────────────────────────────────
+// ── Exam mode ──────────────────────────────────────────────────
+function toggleExamMode() {
+  if (_examMode) exitExamMode();
+  else enterExamMode();
+}
+
+function enterExamMode() {
+  if (_tplShowVi) {
+    _tplShowVi = false;
+    const btn = document.getElementById('tpl-vi-btn');
+    const lbl = document.getElementById('tpl-vi-label');
+    if (btn) btn.classList.remove('active');
+    if (lbl) lbl.textContent = 'Tiếng Việt';
+  }
+  _examMode     = true;
+  _examTimeLeft = 1800;
+  _examStartTime = Date.now();
+  renderTplContent();
+  _examTimerInterval = setInterval(tickExamTimer, 1000);
+  updateExamBtn();
+  showToast('⏱ Bắt đầu thi thử! Không có gợi ý – nộp bài khi xong.', 'info', 3000);
+}
+
+function exitExamMode() {
+  clearInterval(_examTimerInterval);
+  _examTimerInterval = null;
+  _examMode      = false;
+  _examStartTime = null;
+  renderTplContent();
+  updateExamBtn();
+}
+
+function updateExamBtn() {
+  const btn = document.getElementById('tpl-exam-btn');
+  const lbl = document.getElementById('tpl-exam-label');
+  if (!btn || !lbl) return;
+  btn.classList.toggle('active', _examMode);
+  lbl.textContent = _examMode ? 'Đang thi' : 'Thi thử';
+}
+
+function tickExamTimer() {
+  _examTimeLeft = Math.max(0, _examTimeLeft - 1);
+  const disp = document.getElementById('exam-time-display');
+  if (disp) {
+    disp.textContent = fmtTime(_examTimeLeft);
+    disp.className = 't2-exam-timer' + (_examTimeLeft <= 60 ? ' warn' : '');
+  }
+  if (_examTimeLeft <= 0) {
+    clearInterval(_examTimerInterval);
+    _examTimerInterval = null;
+    showToast('⏰ Hết giờ! Bài đang được chấm tự động...', 'warn', 3000);
+    setTimeout(submitExam, 1000);
+  }
+}
+
+function submitExam() {
+  clearInterval(_examTimerInterval);
+  _examTimerInterval = null;
+
+  const type = TPL_DATA[_tplActiveType];
+  if (!type) return;
+
+  let correct = 0, total = 0;
+  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
+
+  type.sections.forEach((sec, si) => {
+    sec.items.forEach((item, ii) => {
+      const key = `${_tplActiveType}-${si}-${ii}`;
+      const card = document.getElementById('cloze-' + key);
+      const fb   = document.getElementById('fb-'    + key);
+      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+      total++;
+
+      let allOk = true;
+      const wrongAnswers = [];
+      answers.forEach((ans, bi) => {
+        const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+        const inp = document.getElementById(inpId);
+        const uv  = inp ? inp.value.trim().toLowerCase() : '';
+        if (uv !== ans.toLowerCase()) { allOk = false; wrongAnswers.push(`"${ans}"`); }
+        if (inp) inp.disabled = true;
+      });
+
+      if (allOk) {
+        correct++;
+        if (card) card.className = 't2-cloze-card tpl-correct';
+        if (fb)   { fb.className = 't2-cloze-fb ok'; fb.textContent = '✅ Đúng!'; }
+      } else {
+        if (card) card.className = 't2-cloze-card tpl-wrong';
+        if (fb)   { fb.className = 't2-cloze-fb err'; fb.textContent = `❌ Đáp án: ${wrongAnswers.join(', ')}`; }
+      }
+    });
+  });
+
+  // Update exam bar with results
+  const bar = document.getElementById('exam-bar');
+  if (bar) {
+    const pct  = Math.round(correct / total * 100);
+    const rank = pct >= 80 ? '🏆 Xuất sắc!' : pct >= 60 ? '👍 Khá tốt!' : '💪 Cần ôn thêm!';
+    bar.innerHTML = `
+      <span style="font-size:13px;font-weight:800">📋 ${correct}/${total} đúng (${pct}%)</span>
+      <span class="t2-exam-label">${rank} · ⏱ ${fmtTime(timeTaken)}</span>
+      <button class="t2-exam-exit-btn" onclick="exitExamMode()">✕ Thoát thi</button>`;
+  }
+
+  // Update footer
+  const footerEl = document.querySelector('.t2-tpl-footer');
+  if (footerEl) {
+    footerEl.innerHTML = `
+      <span>Đúng: <span class="t2-tpl-score">${correct} / ${total}</span></span>
+      <button class="t2-tpl-reset-btn" onclick="exitExamMode()">✕ Thoát thi thử</button>`;
+  }
+
+  _examMode = false;
+  updateExamBtn();
+
+  const pct = Math.round(correct / total * 100);
+  showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
+    pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
+  if (pct >= 80) updateXPStorage(20);
+}
+
+function fmtTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+// ── XP pop ─────────────────────────────────────────────────────
 function awardTplXP(card) {
   updateXPStorage(3);
   const rect = card.getBoundingClientRect();
@@ -784,7 +1034,7 @@ function awardTplXP(card) {
   setTimeout(() => pop.remove(), 900);
 }
 
-// ── Auto-scroll to next unanswered ───────────────────────────
+// ── Auto-scroll to next unanswered ─────────────────────────────
 function scrollToNextCloze(currentKey) {
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
@@ -798,8 +1048,9 @@ function scrollToNextCloze(currentKey) {
         const nextCard = document.getElementById('cloze-' + k);
         if (nextCard) {
           nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          const inp = document.getElementById('inp-' + k);
-          if (inp && !inp.disabled) setTimeout(() => inp.focus(), 380);
+          // Focus first input of next card
+          const nextInp = nextCard.querySelector('.t2-cloze-input:not([disabled])');
+          if (nextInp) setTimeout(() => nextInp.focus(), 380);
         }
         return;
       }
@@ -807,7 +1058,7 @@ function scrollToNextCloze(currentKey) {
   }
 }
 
-// ── Completion check ──────────────────────────────────────────
+// ── Completion check ───────────────────────────────────────────
 function checkTypeComplete() {
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
@@ -829,7 +1080,7 @@ function checkTypeComplete() {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
