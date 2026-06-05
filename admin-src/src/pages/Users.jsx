@@ -7,6 +7,19 @@ import Pagination from '../components/Pagination';
 
 const PAGE = 30;
 
+function formatLastSeen(date) {
+  if (!date) return { text: 'Chưa có', color: 'var(--text3)' };
+  const diff = Date.now() - new Date(date).getTime();
+  const mins  = Math.floor(diff / 60_000);
+  const hours = Math.floor(diff / 3_600_000);
+  const days  = Math.floor(diff / 86_400_000);
+  if (mins < 2)   return { text: 'Vừa online', color: '#22c55e' };
+  if (mins < 60)  return { text: `${mins} phút trước`, color: '#4ade80' };
+  if (hours < 24) return { text: `${hours} giờ trước`, color: '#fbbf24' };
+  if (days < 7)   return { text: `${days} ngày trước`, color: 'var(--text2)' };
+  return { text: formatDate(date).split(' ')[0], color: 'var(--text3)' };
+}
+
 function roleBadge(r) {
   const map = { admin: 'badge-red', teacher: 'badge-blue', student: 'badge-green' };
   const label = { admin: 'Admin', teacher: 'Teacher', student: 'Student' };
@@ -241,13 +254,15 @@ export default function Users() {
         <table className="table">
           <thead>
             <tr>
-              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>ROLE</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>THAO TÁC</th>
+              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>ROLE</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
             </tr>
           </thead>
           <tbody>
             {users.length === 0
-              ? <tr><td colSpan={7} className="table-empty">Không có người dùng</td></tr>
-              : users.map(u => (
+              ? <tr><td colSpan={8} className="table-empty">Không có người dùng</td></tr>
+              : users.map(u => {
+                const ls = formatLastSeen(u.lastSeen);
+                return (
                 <tr key={u._id} style={{ opacity: u.isBanned ? 0.55 : 1 }}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -266,6 +281,7 @@ export default function Users() {
                       : <span className="badge badge-green">Hoạt động</span>}
                   </td>
                   <td style={{ fontSize: 12 }}>{formatDate(u.createdAt)}</td>
+                  <td style={{ fontSize: 12, color: ls.color, whiteSpace: 'nowrap' }}>{ls.text}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>
@@ -278,7 +294,8 @@ export default function Users() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
           </tbody>
         </table>
       </div>
