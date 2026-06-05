@@ -1116,20 +1116,21 @@ async function showPracticeTaskList(taskType) {
       return;
     }
     practiceState.tasks = d.tasks;
-    itemsEl.innerHTML = d.tasks.map((t, i) => `
-      <div style="border:1.5px solid #e5e7eb;border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;background:#fff;cursor:pointer;transition:border-color .15s"
+    const cards = d.tasks.map((t, i) => `
+      <div style="border:1.5px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:10px"
         onclick="startPracticeTask(${taskType},'${t._id}')"
         onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f8fbff'"
         onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'"
       >
-        <div style="min-width:28px;height:28px;border-radius:50%;background:#f0f7ff;color:#2563eb;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i + 1}</div>
-        <div style="flex:1;min-width:0">
-          ${taskType === 1 && t.imageUrl ? `<img src="${escHtml(t.imageUrl)}" alt="" style="max-width:100%;max-height:110px;object-fit:cover;border-radius:6px;margin-bottom:8px;border:1px solid #e5e7eb" />` : ''}
-          <div style="font-size:13px;color:#374151;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${escHtml((t.prompt || '').slice(0, 220))}${(t.prompt || '').length > 220 ? '…' : ''}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="min-width:24px;height:24px;border-radius:50%;background:#f0f7ff;color:#2563eb;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i + 1}</div>
+          <button class="btn-primary" style="margin-left:auto;flex-shrink:0;font-size:12px;padding:5px 12px;white-space:nowrap" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">Làm bài</button>
         </div>
-        <button class="btn-primary" style="flex-shrink:0;font-size:12px;padding:6px 14px;white-space:nowrap" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">Làm bài</button>
+        ${taskType === 1 && t.imageUrl ? `<img src="${escHtml(t.imageUrl)}" alt="" style="width:100%;max-height:130px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb" />` : ''}
+        <div style="font-size:12px;color:#374151;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden">${escHtml((t.prompt || '').slice(0, 180))}${(t.prompt || '').length > 180 ? '…' : ''}</div>
       </div>
     `).join('');
+    itemsEl.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${cards}</div>`;
   } catch (e) {
     itemsEl.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">Lỗi tải đề: ${escHtml(e.message)}</p>`;
   }
