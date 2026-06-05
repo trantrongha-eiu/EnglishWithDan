@@ -2457,14 +2457,6 @@
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
         window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
-        // Bài lẻ Listening
-        window.setListeningMode = setListeningMode;
-        window.loadPracticeSections = loadPracticeSections;
-        window.startPracticeSection = startPracticeSection;
-        window.submitLTPractice = submitLTPractice;
-        window.closeLTPractice = closeLTPractice;
-        window.retryLTPractice = retryLTPractice;
-        window.ltScrollToQ = ltScrollToQ;
     </script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
@@ -2914,6 +2906,15 @@
         el.classList.add('q-scroll-flash');
         setTimeout(() => el.classList.remove('q-scroll-flash'), 950);
     }
+
+    // Expose bài lẻ functions after they are defined
+    window.setListeningMode = setListeningMode;
+    window.loadPracticeSections = loadPracticeSections;
+    window.startPracticeSection = startPracticeSection;
+    window.submitLTPractice = submitLTPractice;
+    window.closeLTPractice = closeLTPractice;
+    window.retryLTPractice = retryLTPractice;
+    window.ltScrollToQ = ltScrollToQ;
     </script>
 </body>
 
