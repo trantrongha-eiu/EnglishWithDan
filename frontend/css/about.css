@@ -15,7 +15,8 @@ section{padding:72px 80px}
 .teacher-img{position:relative}
 .teacher-img img{
   width:100%;border-radius:20px;
-  object-fit:cover;aspect-ratio:3/4;
+  object-fit:contain;aspect-ratio:auto;
+  background:linear-gradient(135deg,#eff6ff,#f0fdf4);
   box-shadow:var(--shadow-lg);
 }
 .teacher-badge-wrap{

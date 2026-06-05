@@ -321,8 +321,9 @@
       width: 100%;
       border-radius: 20px;
       box-shadow: var(--shadow-lg);
-      object-fit: cover;
-      aspect-ratio: 4/5;
+      object-fit: contain;
+      aspect-ratio: auto;
+      background: linear-gradient(135deg, #dbeafe, #fce4e4);
     }
 
     .hero-float-card {
@@ -586,8 +587,9 @@
     .teacher-img img {
       width: 100%;
       border-radius: 20px;
-      object-fit: cover;
-      aspect-ratio: 3/4;
+      object-fit: contain;
+      aspect-ratio: auto;
+      background: linear-gradient(135deg, #eff6ff, #f0fdf4);
       box-shadow: var(--shadow-lg);
     }
 
