@@ -194,7 +194,7 @@ router.post('/:id/merge', auth, async (req, res) => {
     let addedCount = 0;
     for (const src of sources) {
       for (const w of src.words) {
-        if (dest.words.length >= 200) break;
+        if (dest.words.length >= 300) break;
         const key = w.word.toLowerCase().trim();
         if (!existingWords.has(key)) {
           dest.words.push({
@@ -261,8 +261,8 @@ router.post('/:id/words', auth, async (req, res) => {
     const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
     if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
 
-    if (book.words.length >= 200) {
-      return res.status(400).json({ success: false, message: `Sổ "${book.name}" đã đạt giới hạn 200 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.` });
+    if (book.words.length >= 300) {
+      return res.status(400).json({ success: false, message: `Sổ "${book.name}" đã đạt giới hạn 300 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.` });
     }
 
     // Tránh trùng lặp trong cùng sổ

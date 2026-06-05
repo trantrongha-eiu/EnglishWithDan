@@ -940,8 +940,8 @@ async function createBook() {
 /* ── Add word manual ── */
 function openAddWordManual() {
     const wordCount = currentBookData?.words?.length ?? 0;
-    if (wordCount >= 200) {
-        toast('Sổ này đã đạt giới hạn 200 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.', 'error');
+    if (wordCount >= 300) {
+        toast('Sổ này đã đạt giới hạn 300 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.', 'error');
         return;
     }
     ['aw-word','aw-meaning','aw-example','aw-note'].forEach(id => { document.getElementById(id).value = ''; });
