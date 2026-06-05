@@ -986,28 +986,75 @@ function openAddWordManual() {
     _lookupPhonetic = '';
     _lookupPartOfSpeech = '';
     ['aw-word','aw-meaning','aw-example','aw-note'].forEach(id => { document.getElementById(id).value = ''; });
+    const sg = document.getElementById('aw-example-suggestions');
+    if (sg) sg.innerHTML = '';
     openModal('modal-add-word');
     setTimeout(() => document.getElementById('aw-word').focus(), 100);
 }
 async function lookupNewWord(word) {
-    if (!word || word.length < 2) return;
+    const suggestWrap = document.getElementById('aw-example-suggestions');
+    if (!word || word.length < 2) {
+        _lookupPhonetic = '';
+        _lookupPartOfSpeech = '';
+        if (suggestWrap) suggestWrap.innerHTML = '';
+        return;
+    }
     _lookupPhonetic = '';
     _lookupPartOfSpeech = '';
     clearTimeout(lookupNewWord._t);
     lookupNewWord._t = setTimeout(async () => {
         try {
             const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-            if (!res.ok) return;
+            if (!res.ok) { if (suggestWrap) suggestWrap.innerHTML = ''; return; }
             const data = await res.json();
             _lookupPhonetic     = data[0]?.phonetics?.find(p => p.text)?.text || '';
             _lookupPartOfSpeech = data[0]?.meanings?.[0]?.partOfSpeech || '';
-            const def = data[0]?.meanings[0]?.definitions[0];
-            if (def && !document.getElementById('aw-example').value) {
-                document.getElementById('aw-example').value = def.example || '';
+
+            // Thu thập tối đa 5 ví dụ duy nhất từ mọi meanings/definitions
+            const examples = [];
+            for (const entry of data) {
+                for (const meaning of entry.meanings || []) {
+                    for (const def of meaning.definitions || []) {
+                        if (def.example && !examples.includes(def.example)) {
+                            examples.push(def.example);
+                        }
+                    }
+                }
+                if (examples.length >= 5) break;
             }
-        } catch { }
+
+            // Auto-fill ô example nếu còn trống
+            if (examples.length && !document.getElementById('aw-example').value) {
+                document.getElementById('aw-example').value = examples[0];
+            }
+
+            // Hiện danh sách gợi ý
+            if (suggestWrap) {
+                if (!examples.length) { suggestWrap.innerHTML = ''; return; }
+                suggestWrap.innerHTML =
+                    '<div class="example-suggestion-label">💡 Ví dụ phổ biến — bấm để chọn:</div>' +
+                    examples.map(ex => {
+                        const attr = ex.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                        const html = ex.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                        return `<button class="example-suggestion" data-ex="${attr}" onclick="selectExampleSuggestion(this)">${html}</button>`;
+                    }).join('');
+                // Highlight first suggestion nếu đã auto-fill
+                const firstBtn = suggestWrap.querySelector('.example-suggestion');
+                if (firstBtn && !document.getElementById('aw-example').dataset.userEdited) {
+                    firstBtn.classList.add('selected');
+                }
+            }
+        } catch { if (suggestWrap) suggestWrap.innerHTML = ''; }
     }, 700);
 }
+
+window.selectExampleSuggestion = function(btn) {
+    const ex = btn.dataset.ex;
+    const inp = document.getElementById('aw-example');
+    if (inp) inp.value = ex;
+    btn.closest('.example-suggestions-wrap')?.querySelectorAll('.example-suggestion')
+        .forEach(b => b.classList.toggle('selected', b === btn));
+};
 async function addWordManual() {
     const word    = document.getElementById('aw-word').value.trim();
     const meaning = document.getElementById('aw-meaning').value.trim();

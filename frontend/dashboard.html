@@ -515,7 +515,11 @@
     <div class="modal-body">
       <div class="form-group"><label>English word *</label><input class="form-input" id="aw-word" placeholder="establish" oninput="lookupNewWord(this.value)" onkeypress="if(event.key==='Enter')document.getElementById('aw-meaning').focus()"/></div>
       <div class="form-group"><label>Vietnamese meaning</label><input class="form-input" id="aw-meaning" placeholder="thiết lập, thành lập" onkeypress="if(event.key==='Enter')document.getElementById('aw-example').focus()"/></div>
-      <div class="form-group"><label>Example</label><input class="form-input" id="aw-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('aw-note').focus()"/></div>
+      <div class="form-group">
+        <label>Example</label>
+        <input class="form-input" id="aw-example" placeholder="She established a new company." onkeypress="if(event.key==='Enter')document.getElementById('aw-note').focus()"/>
+        <div id="aw-example-suggestions" class="example-suggestions-wrap"></div>
+      </div>
       <div class="form-group"><label>Notes</label><input class="form-input" id="aw-note" placeholder="Optional..." onkeypress="if(event.key==='Enter')addWordManual()"/></div>
     </div>
     <div class="modal-footer">

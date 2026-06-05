@@ -1090,3 +1090,22 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .btn-hard-words{background:linear-gradient(135deg,#ff6b35,var(--brand));color:#fff !important;border:none !important;font-weight:600;font-size:13px}
 .btn-hard-words:hover{background:linear-gradient(135deg,#e85d2f,#c62828);transform:translateY(-1px)}
 [data-theme="dark"] .btn-hard-words{background:linear-gradient(135deg,rgba(255,107,53,.85),rgba(229,57,53,.85))}
+
+/* ── Example sentence suggestions (add-word modal) ── */
+.example-suggestions-wrap{margin-top:8px}
+.example-suggestion-label{
+  display:block;font-size:10px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;
+}
+.example-suggestion{
+  display:block;width:100%;text-align:left;
+  padding:7px 11px;font-size:12px;color:var(--text2);font-style:italic;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;
+  margin-bottom:5px;transition:all .15s;font-family:inherit;line-height:1.5;
+}
+.example-suggestion:hover{background:#eff6ff;border-color:var(--blue);color:var(--text);font-style:normal}
+.example-suggestion.selected{background:#f0fdf4;border-color:var(--green);color:#166534;font-style:normal}
+[data-theme="dark"] .example-suggestion{background:var(--surface2);border-color:var(--border)}
+[data-theme="dark"] .example-suggestion:hover{background:rgba(61,139,255,.12);border-color:var(--blue);color:var(--text)}
+[data-theme="dark"] .example-suggestion.selected{background:rgba(34,197,94,.12);border-color:var(--green);color:#4ade80}
