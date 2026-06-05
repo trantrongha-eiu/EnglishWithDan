@@ -1254,24 +1254,31 @@ Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded 0.5; corrections=3 most impactful e
 }
 
 // POST /api/admin/writing-attempts/:id/ai-grade
+// Body: { taskNum: 1 | 2 }  — grade only one task at a time to avoid rate limit
 router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, async (req, res) => {
   try {
     const attempt = await WritingAttempt.findById(req.params.id).lean();
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài nộp' });
 
-    const t1Prompt = attempt.task1Snapshot?.prompt || '';
-    const t2Prompt = attempt.task2Snapshot?.prompt || '';
+    const taskNum = Number(req.body.taskNum);
+    if (taskNum !== 1 && taskNum !== 2)
+      return res.status(400).json({ success: false, message: 'taskNum phải là 1 hoặc 2' });
 
-    // Sequential (not parallel) to avoid hitting Gemini free-tier per-minute rate limit
-    const task1Grade = await gradeTaskWithAI(1, t1Prompt, attempt.task1Answer || '', attempt.wordCount1 || 0);
-    const task2Grade = await gradeTaskWithAI(2, t2Prompt, attempt.task2Answer || '', attempt.wordCount2 || 0);
+    const isTask1 = taskNum === 1;
+    const taskPrompt = isTask1
+      ? (attempt.task1Snapshot?.prompt || '')
+      : (attempt.task2Snapshot?.prompt || '');
+    const taskAnswer = isTask1 ? (attempt.task1Answer || '') : (attempt.task2Answer || '');
+    const wordCount  = isTask1 ? (attempt.wordCount1 || 0) : (attempt.wordCount2 || 0);
 
+    const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount);
+
+    const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
     await WritingAttempt.findByIdAndUpdate(req.params.id, {
-      aiGrading: { task1: task1Grade, task2: task2Grade, generatedAt: new Date() },
-      gradingStatus: 'ai_done'
+      $set: { [field]: gradeResult, 'aiGrading.generatedAt': new Date(), gradingStatus: 'ai_done' }
     });
 
-    res.json({ success: true, task1: task1Grade, task2: task2Grade });
+    res.json({ success: true, taskNum, result: gradeResult });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

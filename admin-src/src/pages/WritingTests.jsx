@@ -228,7 +228,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   const [attempt, setAttempt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirming, setConfirming] = useState(false);
-  const [aiGrading, setAiGrading] = useState(false);
+  const [aiGrading, setAiGrading] = useState({ t1: false, t2: false });
   const [grade, setGrade] = useState({
     task1: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
     task2: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
@@ -285,33 +285,30 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     }
   }
 
-  async function runAiGrade() {
-    setAiGrading(true);
+  async function runAiGrade(taskNum) {
+    const key = taskNum === 1 ? 't1' : 't2';
+    const taskKey = taskNum === 1 ? 'task1' : 'task2';
+    setAiGrading(s => ({ ...s, [key]: true }));
     try {
-      const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, { method: 'POST' });
-      const t1 = d.task1 || {};
-      const t2 = d.task2 || {};
-      setAiRaw({ task1: t1, task2: t2 });
+      const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, {
+        method: 'POST',
+        body: JSON.stringify({ taskNum }),
+      });
+      const r = d.result || {};
+      setAiRaw(prev => ({ ...prev, [taskKey]: r }));
       setGrade(g => ({
         ...g,
-        task1: {
-          bandScore: t1.bandScore ?? g.task1.bandScore,
-          ta:  t1.ta?.score  ?? g.task1.ta,
-          cc:  t1.cc?.score  ?? g.task1.cc,
-          lr:  t1.lr?.score  ?? g.task1.lr,
-          gra: t1.gra?.score ?? g.task1.gra,
-        },
-        task2: {
-          bandScore: t2.bandScore ?? g.task2.bandScore,
-          ta:  t2.ta?.score  ?? g.task2.ta,
-          cc:  t2.cc?.score  ?? g.task2.cc,
-          lr:  t2.lr?.score  ?? g.task2.lr,
-          gra: t2.gra?.score ?? g.task2.gra,
+        [taskKey]: {
+          bandScore: r.bandScore ?? g[taskKey].bandScore,
+          ta:  r.ta?.score  ?? g[taskKey].ta,
+          cc:  r.cc?.score  ?? g[taskKey].cc,
+          lr:  r.lr?.score  ?? g[taskKey].lr,
+          gra: r.gra?.score ?? g[taskKey].gra,
         },
       }));
-      toast('AI đã chấm xong – kiểm tra và xác nhận điểm');
+      toast(`AI đã chấm xong Task ${taskNum} – kiểm tra và xác nhận điểm`);
     } catch (err) { toast('AI chấm thất bại: ' + err.message, 'error'); }
-    finally { setAiGrading(false); }
+    finally { setAiGrading(s => ({ ...s, [key]: false })); }
   }
 
   async function submitGrade() {
@@ -428,11 +425,17 @@ function GradingModal({ attemptId, onClose, onGraded }) {
 
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
               <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
-              <button className="btn btn-ghost" onClick={runAiGrade} disabled={aiGrading || confirming}
-                title="Dùng AI để chấm sơ bộ – bạn vẫn có thể sửa trước khi xác nhận">
-                {aiGrading ? '🤖 Đang chấm...' : '🤖 AI Chấm'}
+              <button className="btn btn-ghost" onClick={() => runAiGrade(1)}
+                disabled={aiGrading.t1 || aiGrading.t2 || confirming}
+                title="AI chấm Task 1 – bạn vẫn có thể sửa trước khi xác nhận">
+                {aiGrading.t1 ? '⏳ Task 1...' : '🤖 AI T1'}
               </button>
-              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming || aiGrading}>
+              <button className="btn btn-ghost" onClick={() => runAiGrade(2)}
+                disabled={aiGrading.t1 || aiGrading.t2 || confirming}
+                title="AI chấm Task 2 – bạn vẫn có thể sửa trước khi xác nhận">
+                {aiGrading.t2 ? '⏳ Task 2...' : '🤖 AI T2'}
+              </button>
+              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming || aiGrading.t1 || aiGrading.t2}>
                 {confirming ? 'Đang lưu...' : '✅ Xác nhận & Gửi feedback'}
               </button>
             </div>
