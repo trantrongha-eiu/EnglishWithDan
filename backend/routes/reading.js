@@ -1,10 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const AccessKey = require('../models/AccessKey');
 const auth = require('../middleware/auth');
+
+// Chặn brute-force key: tối đa 10 lần start / 15 phút / user
+const startLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  handler: (req, res) => res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, thử lại sau 15 phút.' }),
+  skip: req => req.user?.role === 'admin'
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/reading/tests
@@ -79,7 +89,7 @@ router.post('/verify-key', auth, async (req, res) => {
 // Bắt đầu thi: random 3 passages + tạo TestAttempt + tăng lượt dùng key
 // Body: { key, testId }
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/start', auth, async (req, res) => {
+router.post('/start', auth, startLimiter, async (req, res) => {
   try {
     const { key, testId } = req.body;
 
@@ -285,7 +295,7 @@ router.post('/submit', auth, async (req, res) => {
     }
 
     const endTime = new Date();
-    const duration = Math.floor((endTime - attempt.startTime) / 1000);
+    const duration = Math.max(0, Math.floor((endTime - attempt.startTime) / 1000));
 
     attempt.answers = gradedAnswers;
     attempt.correctCount = correctCount;

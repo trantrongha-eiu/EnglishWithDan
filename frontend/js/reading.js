@@ -673,6 +673,11 @@ function switchPassage(idx) {
   const passageInner = document.getElementById('passage-inner');
   const questionsInner = document.getElementById('questions-inner');
 
+  // Guard: same tab click should not re-render (would erase highlights)
+  if (idx === state.currentPassageIdx && passageInner?.innerHTML?.trim()) {
+    return;
+  }
+
   // Save both panels' highlights before overwriting (skip on first load when idx === currentPassageIdx)
   if (state.currentPassageIdx !== idx) {
     passageHlCache[state.currentPassageIdx] = {
@@ -703,6 +708,12 @@ function switchPassage(idx) {
     restoreAnswers(false);
     initDropZones();
   }
+
+  // Scroll both panels to top when switching to a new passage
+  const splitPassage = document.getElementById('split-passage');
+  const splitQuestions = document.getElementById('split-questions');
+  if (splitPassage) splitPassage.scrollTop = 0;
+  if (splitQuestions) splitQuestions.scrollTop = 0;
 
   updateQNavFooter();
   renderPassageTabs('toolbar-passage-tabs', false);
@@ -1755,6 +1766,11 @@ function switchReviewPassage(idx) {
   const rvPassageInner = document.getElementById('review-passage-inner');
   const rvQuestionsInner = document.getElementById('review-questions-inner');
 
+  // Guard: same tab click should not re-render (would erase highlights)
+  if (idx === state.currentPassageIdx && rvPassageInner?.innerHTML?.trim()) {
+    return;
+  }
+
   // Save both panels' highlights before overwriting
   if (state.currentPassageIdx !== idx) {
     reviewHlCache[state.currentPassageIdx] = {
@@ -1780,6 +1796,12 @@ function switchReviewPassage(idx) {
     }
     if (rvQuestionsInner) rvQuestionsInner.innerHTML = renderPassageQuestions(p, true, reviewMap);
   }
+
+  // Scroll both panels to top when switching to a new passage
+  const rvPassagePanel = document.getElementById('review-passage');
+  const rvQPanel = document.getElementById('review-questions');
+  if (rvPassagePanel) rvPassagePanel.scrollTop = 0;
+  if (rvQPanel) rvQPanel.scrollTop = 0;
 
   renderPassageTabs('toolbar-passage-tabs-rv', true);
 }
@@ -2264,6 +2286,13 @@ function setFontSize(s) {
    KEYBOARD SHORTCUTS
 ══════════════════════════════════════════════════════════════════════ */
 function handleKeyShortcuts(e) {
+  if (e.key === 'Escape') {
+    closeDictPopup();
+    closeModal('modal-vocab-picker');
+    const sp = document.getElementById('settings-panel');
+    if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
+    return;
+  }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'h' || e.key === 'H') setTool('highlight');
   if (e.key === 'd' || e.key === 'D') setTool('dict');

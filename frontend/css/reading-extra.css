@@ -418,3 +418,51 @@
       border-color: #86efac;
       font-weight: 700;
     }
+
+    /* ══════════════════════════════════════════════
+       DARK MODE – practice / bài lẻ components
+    ══════════════════════════════════════════════ */
+    [data-theme="dark"] .rmode-tab { color: #9ca3af; }
+    [data-theme="dark"] .rmode-tab.rmode-active { border-bottom-color: #60a5fa; color: #60a5fa; }
+    [data-theme="dark"] .rmode-tab:hover:not(.rmode-active) { color: #d1d5db; }
+    [data-theme="dark"] .rmode-tabs-bar { border-bottom-color: #374151; }
+
+    [data-theme="dark"] .plele-tab { background: #1f2937; border-color: #374151; color: #9ca3af; }
+    [data-theme="dark"] .plele-tab:hover { border-color: #4b5563; color: #d1d5db; }
+    [data-theme="dark"] .plele-tab.plele-active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
+    [data-theme="dark"] .plele-tab.plele-active .plele-range { color: #60a5fa; }
+    [data-theme="dark"] .plele-range { color: #6b7280; }
+    [data-theme="dark"] .plele-cat-tabs { border-bottom-color: #374151; }
+
+    [data-theme="dark"] .practice-card { background: #1f2937; border-color: #374151; }
+    [data-theme="dark"] .practice-card:hover { border-color: #4b5563; }
+    [data-theme="dark"] .practice-card-title { color: #f9fafb; }
+    [data-theme="dark"] .practice-card-qtypes { color: #9ca3af; }
+
+    [data-theme="dark"] .practice-stopwatch {
+      background: #1f2937;
+      border-color: #374151;
+      color: #d1d5db;
+    }
+    [data-theme="dark"] .practice-stopwatch.sw-medium {
+      background: #1c1917;
+      border-color: #78350f;
+      color: #fde68a;
+    }
+    [data-theme="dark"] .practice-stopwatch.sw-slow {
+      background: #1f0f0f;
+      border-color: #991b1b;
+      color: #fca5a5;
+    }
+
+    [data-theme="dark"] .practice-progress-txt {
+      background: #1f2937;
+      border-color: #374151;
+      color: #9ca3af;
+    }
+
+    [data-theme="dark"] .q-nav-btn.q-nav-answered {
+      background: #166534;
+      color: #fff;
+      border-color: #22c55e;
+    }

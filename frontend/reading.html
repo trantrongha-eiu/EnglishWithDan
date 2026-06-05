@@ -141,25 +141,6 @@
         style="height:100%;background:linear-gradient(90deg,#3d8bff,#7c3aed);width:0%;transition:width .3s ease;"></div>
     </div>
 
-    <!-- Settings dropdown -->
-    <div id="settings-panel" class="settings-panel hidden">
-      <div class="settings-row">
-        <span>👁️ Chế độ bảo vệ mắt</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
-          <span class="toggle-knob"></span>
-        </label>
-      </div>
-      <div class="settings-row">
-        <span>Tᴛ Kích cỡ chữ</span>
-        <div class="fs-group">
-          <button class="fs-btn" onclick="setFontSize('S')">S</button>
-          <button class="fs-btn active" onclick="setFontSize('M')">M</button>
-          <button class="fs-btn" onclick="setFontSize('L')">L</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Toolbar -->
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl" onclick="setTool('highlight')">
@@ -418,6 +399,25 @@
     </div>
   </div>
 
+  <!-- Settings panel – outside all screens so it's accessible from exam/review/retry -->
+  <div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-row">
+      <span>👁️ Chế độ bảo vệ mắt</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
+        <span class="toggle-knob"></span>
+      </label>
+    </div>
+    <div class="settings-row">
+      <span>Tᴛ Kích cỡ chữ</span>
+      <div class="fs-group">
+        <button class="fs-btn" onclick="setFontSize('S')">S</button>
+        <button class="fs-btn active" onclick="setFontSize('M')">M</button>
+        <button class="fs-btn" onclick="setFontSize('L')">L</button>
+      </div>
+    </div>
+  </div>
+
   <div id="vocab-toast" class="vocab-toast"></div>
 
   <link rel="stylesheet" href="css/reading-extra.css">
@@ -448,7 +448,7 @@
     document.addEventListener('fullscreenchange', () => {
       const btn = document.getElementById('btn-fullscreen');
       const fsEl = document.fullscreenElement;
-      const ids = ['dict-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast'];
+      const ids = ['dict-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel'];
       if (fsEl) {
         if (btn) btn.title = 'Thoát toàn màn hình';
         ids.forEach(id => {
