@@ -196,6 +196,7 @@
 
 <!-- ── Stats bar ── -->
 <header class="wp-header">
+  <button class="exam-exit-btn" onclick="exitWpPractice()" title="Thoát">✕</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -1623,6 +1624,16 @@ function cancelWpQuit() {
 function confirmWpQuit() {
   document.getElementById('wp-quit-overlay').classList.add('hidden');
   if (_wpQuitCb) { const cb = _wpQuitCb; _wpQuitCb = null; cb(); }
+}
+
+function exitWpPractice() {
+  askWpQuit(() => { window.location.href = 'dashboard.html'; }, {
+    mascot: '🚪',
+    title: 'Rời luyện tập?',
+    sub: 'Bạn có chắc muốn thoát không?',
+    confirmText: 'Thoát',
+    continueText: 'Tiếp tục học'
+  });
 }
 
 function stopPracticeMode() {

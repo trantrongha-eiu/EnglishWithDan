@@ -82,7 +82,7 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
         <div class="exam-topbar">
-            <button class="btn-ghost" onclick="confirmExit()">← Thoát</button>
+            <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát">✕</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
             <div id="exam-progress-pill" style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;flex-shrink:0">
                 <span id="prog-answered">0</span>/<span id="prog-total">40</span>
@@ -254,7 +254,7 @@
     <div id="screen-practice" class="screen">
         <!-- Topbar -->
         <div class="exam-topbar">
-            <button class="btn-ghost" onclick="closeLTPractice()">← Thoát</button>
+            <button class="exam-exit-btn" onclick="confirmCloseLTPractice()" title="Thoát">✕</button>
             <span class="exam-title" id="lt-practice-title" style="flex:1">Luyện tập Listening</span>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
             <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
@@ -392,6 +392,18 @@
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModal('modal-submit')">Tiếp tục làm</button>
                 <button class="btn-primary" onclick="submitExam()">Nộp bài</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Exit Practice (Bài lẻ) -->
+    <div class="modal-overlay hidden" id="modal-lt-practice-exit">
+        <div class="modal-box modal-sm">
+            <h3>Thoát luyện tập?</h3>
+            <p>Bạn có chắc muốn thoát bài luyện tập này không?</p>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModal('modal-lt-practice-exit')">Ở lại</button>
+                <button class="btn-danger" onclick="closeModal('modal-lt-practice-exit'); closeLTPractice()">Thoát</button>
             </div>
         </div>
     </div>
@@ -2907,7 +2919,10 @@
         setTimeout(() => el.classList.remove('q-scroll-flash'), 950);
     }
 
+    function confirmCloseLTPractice() { openModal('modal-lt-practice-exit'); }
+
     // Expose bài lẻ functions after they are defined
+    window.confirmCloseLTPractice = confirmCloseLTPractice;
     window.setListeningMode = setListeningMode;
     window.loadPracticeSections = loadPracticeSections;
     window.startPracticeSection = startPracticeSection;

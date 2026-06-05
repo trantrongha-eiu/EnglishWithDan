@@ -89,6 +89,13 @@ body {
   color: #6b7280;
 }
 
+.exam-exit-btn {
+  background: none; border: none; font-size: 18px;
+  cursor: pointer; color: #6b7280; padding: 4px 8px;
+  border-radius: 6px; transition: background .15s; line-height: 1;
+}
+.exam-exit-btn:hover { background: #f3f4f6; }
+
 /* ══════════════════════════════════════════════
    NAV TABS (skill-tabs-bar)
 ══════════════════════════════════════════════ */
@@ -898,6 +905,8 @@ body {
 [data-theme="dark"] .wp-username      { color: #9ca3af; }
 [data-theme="dark"] .dark-toggle-btn,
 [data-theme="dark"] .wp-logout-btn    { border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .exam-exit-btn   { color: #9ca3af; }
+[data-theme="dark"] .exam-exit-btn:hover { background: #374151; }
 
 [data-theme="dark"] .skill-tabs-bar   { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .site-nav-link    { color: #9ca3af; }

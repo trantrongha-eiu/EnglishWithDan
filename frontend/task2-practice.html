@@ -654,7 +654,7 @@ function renderPractice() {
   const lvlLabel = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', all:'Tất cả' }[state.selectedLevel] || state.selectedLevel;
   return `
     <div class="t2-nav" style="padding:8px 20px">
-      <div class="t2-nav-crumb"><span onclick="quitPractice()">← Chọn topic khác</span></div>
+      <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát">✕</button></div>
     </div>
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
@@ -1023,7 +1023,7 @@ function renderExam() {
   const timerCls = timerPct <= 0.1 ? 'wp-test-timer danger' : timerPct <= 0.25 ? 'wp-test-timer warn' : 'wp-test-timer';
   const timerTxt = state.examTimeLeft > 0 ? _fmtExamTime(state.examTimeLeft) : '--:--';
   return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><span onclick="quitExam()">← Thoát thi</span></div></div>
+    <div class="t2-nav"><div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitExam()" title="Thoát thi">✕</button></div></div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>

@@ -219,6 +219,7 @@
 
 <!-- ── Stats header ── -->
 <header class="wp-header">
+  <button class="exam-exit-btn" onclick="exitT1Practice()" title="Thoát">✕</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -706,6 +707,16 @@ document.getElementById('quit-leave-btn').onclick = () => {
   document.getElementById('wp-quit-overlay').classList.add('hidden');
   if (_quitCb) { _quitCb(); _quitCb = null; }
 };
+
+function exitT1Practice() {
+  askWpQuit(() => { window.location.href = 'dashboard.html'; }, {
+    mascot: '🚪',
+    title: 'Rời luyện tập?',
+    sub: 'Bạn có chắc muốn thoát không?',
+    confirmText: 'Thoát',
+    continueText: 'Tiếp tục học'
+  });
+}
 
 // ════════════════════════════════════════════════════════
 //  XP FLOAT
