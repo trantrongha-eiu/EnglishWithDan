@@ -454,6 +454,12 @@ async function loadHistory() {
       const date = new Date(a.submittedAt).toLocaleString('vi-VN');
       const mins = Math.floor((a.timeTaken || 0) / 60);
       const secs = (a.timeTaken || 0) % 60;
+      const isPractice = a.submissionType === 'practice';
+      const typeBadge = isPractice
+        ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">✏️ Luyện</span>`
+        : '';
+      const t1badge = isPractice && (a.wordCount1 || 0) === 0 ? '–' : `<span class="badge-wc">${a.wordCount1 || 0}</span>`;
+      const t2badge = isPractice && (a.wordCount2 || 0) === 0 ? '–' : `<span class="badge-wc">${a.wordCount2 || 0}</span>`;
       let scoreBadge;
       if (a.gradingStatus === 'confirmed' && a.grading?.overallBand != null) {
         scoreBadge = `<span style="background:#dcfce7;color:#15803d;border-radius:6px;padding:3px 10px;font-size:13px;font-weight:800">${a.grading.overallBand}</span>`;
@@ -464,9 +470,9 @@ async function loadHistory() {
       }
       return `
         <tr>
-          <td>${escHtml(a.examName || '–')}</td>
-          <td><span class="badge-wc">${a.wordCount1 || 0}</span></td>
-          <td><span class="badge-wc">${a.wordCount2 || 0}</span></td>
+          <td>${typeBadge}${escHtml(a.examName || '–')}</td>
+          <td>${t1badge}</td>
+          <td>${t2badge}</td>
           <td>${scoreBadge}</td>
           <td>${date}</td>
           <td>${mins}:${String(secs).padStart(2,'0')}</td>
@@ -544,21 +550,25 @@ async function viewAttempt(id) {
       ? _buildStudentFeedback(a.grading)
       : '';
 
+    const isPractice = a.submissionType === 'practice';
+    const showT1Section = !isPractice || (a.wordCount1 > 0) || (a.task1Answer && a.task1Answer.trim());
+    const showT2Section = !isPractice || (a.wordCount2 > 0) || (a.task2Answer && a.task2Answer.trim());
+
     document.getElementById('review-modal-body').innerHTML = `
       ${feedbackHtml}
-      <div class="review-task-section">
+      ${showT1Section ? `<div class="review-task-section">
         <h4>Task 1 – ${a.wordCount1 || 0} từ</h4>
         ${t1Img ? `<img src="${escHtml(t1Img)}" style="max-width:100%;border-radius:6px;margin-bottom:8px" />` : ''}
         ${t1Prompt ? `<div class="review-task-prompt">${escHtml(t1Prompt)}</div>` : ''}
         <div class="review-answer">${escHtml(a.task1Answer || '(Không có bài làm)')}</div>
         <div class="review-wc">Số từ: ${a.wordCount1 || 0}</div>
-      </div>
-      <div class="review-task-section">
+      </div>` : ''}
+      ${showT2Section ? `<div class="review-task-section">
         <h4>Task 2 – ${a.wordCount2 || 0} từ</h4>
         ${t2Prompt ? `<div class="review-task-prompt">${escHtml(t2Prompt)}</div>` : ''}
         <div class="review-answer">${escHtml(a.task2Answer || '(Không có bài làm)')}</div>
         <div class="review-wc">Số từ: ${a.wordCount2 || 0}</div>
-      </div>
+      </div>` : ''}
     `;
   } catch (e) {
     document.getElementById('review-modal-body').innerHTML =
@@ -574,6 +584,7 @@ function closeReviewModal() {
 function _buildStudentFeedback(g) {
   function taskCard(label, td) {
     if (!td) return '';
+    if (td.bandScore == null && !td.overallFeedback && !(td.sentenceFeedback?.length)) return '';
     const isT1 = label.includes('1');
     const criteria = [
       { key: 'ta',  label: isT1 ? 'Task Achievement' : 'Task Response' },
@@ -1006,6 +1017,11 @@ const practiceState = {
 };
 
 function showPracticeMode() {
+  // Reset task list state before showing screen
+  const list = document.getElementById('practice-task-list');
+  const cards = document.getElementById('practice-task-select');
+  if (list) list.style.display = 'none';
+  if (cards) cards.style.display = '';
   showScreen('screen-practice');
   loadPracticeHistory();
 }
@@ -1054,7 +1070,7 @@ async function loadPracticeHistory() {
       </tr></thead>
       <tbody>
       ${attempts.map(a => {
-        const isT1 = (a.wordCount1 || 0) > 0 || (a.task1Id);
+        const isT1 = (a.examName || '').includes('Task 1') || (a.wordCount1 || 0) > 0;
         const taskLabel = isT1 ? 'Task 1' : 'Task 2';
         const wc = isT1 ? (a.wordCount1 || 0) : (a.wordCount2 || 0);
         const band = a.grading?.overallBand;
@@ -1077,7 +1093,10 @@ async function loadPracticeHistory() {
 }
 
 async function showPracticeTaskList(taskType) {
-  if (practiceState.hasPending) return;
+  if (practiceState.hasPending) {
+    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài.', 'info');
+    return;
+  }
 
   practiceState.taskType = taskType;
   const listPanel  = document.getElementById('practice-task-list');
@@ -1198,6 +1217,11 @@ function confirmExitPractice() {
 function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
   stopPracticeStopwatch();
+  // Reset task list state
+  const list = document.getElementById('practice-task-list');
+  const cards = document.getElementById('practice-task-select');
+  if (list) list.style.display = 'none';
+  if (cards) cards.style.display = '';
   showScreen('screen-practice');
 }
 

@@ -278,8 +278,16 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   function autoOverall() {
     const b1 = grade.task1.bandScore;
     const b2 = grade.task2.bandScore;
-    const hasT1 = b1 != null, hasT2 = b2 != null;
-    if (hasT1 && hasT2) {
+    const hasT1 = b1 != null;
+    const hasT2 = b2 != null;
+    const isPractice = attempt?.submissionType === 'practice';
+    const onlyT1 = isPractice && attempt?.task1Answer && !attempt?.task2Answer;
+    const onlyT2 = isPractice && attempt?.task2Answer && !attempt?.task1Answer;
+    if (onlyT1 && hasT1) {
+      setGrade(g => ({ ...g, overallBand: b1 }));
+    } else if (onlyT2 && hasT2) {
+      setGrade(g => ({ ...g, overallBand: b2 }));
+    } else if (hasT1 && hasT2) {
       const avg = Math.round(((b1 / 3) + (b2 * 2 / 3)) * 2) / 2;
       setGrade(g => ({ ...g, overallBand: avg }));
     } else if (hasT1 || hasT2) {
@@ -347,11 +355,17 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     finally { setConfirming(false); }
   }
 
-  const CRITERIA = [
+  const CRITERIA_T1 = [
     { key: 'ta',  label: 'Task Achievement' },
+    { key: 'cc',  label: 'Coherence & Cohesion' },
     { key: 'lr',  label: 'Lexical Resource' },
     { key: 'gra', label: 'Grammatical Range' },
+  ];
+  const CRITERIA_T2 = [
+    { key: 'ta',  label: 'Task Response' },
     { key: 'cc',  label: 'Coherence & Cohesion' },
+    { key: 'lr',  label: 'Lexical Resource' },
+    { key: 'gra', label: 'Grammatical Range' },
   ];
 
   return (
@@ -368,7 +382,8 @@ function GradingModal({ attemptId, onClose, onGraded }) {
             {attempt && (
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: 'var(--text2)', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
                 <span><strong>Học sinh:</strong> {attempt.userId ? [attempt.userId.firstName, attempt.userId.lastName].filter(Boolean).join(' ') || attempt.userId.username : '–'}</span>
-                <span><strong>Số từ:</strong> {(attempt.wordCount1 || 0) + (attempt.wordCount2 || 0)}</span>
+                <span><strong>Loại:</strong> {attempt.submissionType === 'practice' ? '✏️ Luyện' : '🏆 Thi'}</span>
+                <span><strong>Số từ:</strong> T1: {attempt.wordCount1 || 0}w / T2: {attempt.wordCount2 || 0}w</span>
                 <span><strong>Trạng thái:</strong> {attempt.gradingStatus === 'confirmed' ? '✅ Đã xác nhận' : '⏳ Chờ chấm'}</span>
               </div>
             )}
@@ -386,7 +401,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
                   <BandInput label="Band Score" value={grade.task1.bandScore} onChange={v => setTask('task1', 'bandScore', v)} />
-                  {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
+                  {CRITERIA_T1.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
                 </div>
                 <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
                   value={grade.task1.feedback}
@@ -404,7 +419,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
                   <BandInput label="Band Score" value={grade.task2.bandScore} onChange={v => setTask('task2', 'bandScore', v)} />
-                  {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
+                  {CRITERIA_T2.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
                 </div>
                 <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
                   value={grade.task2.feedback}
@@ -637,45 +652,58 @@ function WritingViewModal({ attemptId, onClose }) {
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Không tìm thấy bài nộp</div>
         ) : (
           <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ fontSize: 13, color: 'var(--text2)', display: 'flex', gap: 16, flexWrap: 'wrap', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
-              <span><strong>Học sinh:</strong> {studentName}</span>
-              <span><strong>Bài thi:</strong> {attempt.examName || '–'}</span>
-              <span><strong>Ngày nộp:</strong> {formatDate(attempt.submittedAt || attempt.createdAt)}</span>
-            </div>
+            {(() => {
+              const showT1 = attempt.submissionType !== 'practice' || !!(attempt.task1Answer) || (attempt.wordCount1 || 0) > 0;
+              const showT2 = attempt.submissionType !== 'practice' || !!(attempt.task2Answer) || (attempt.wordCount2 || 0) > 0;
+              return (
+                <>
+                  <div style={{ fontSize: 13, color: 'var(--text2)', display: 'flex', gap: 16, flexWrap: 'wrap', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
+                    <span><strong>Học sinh:</strong> {studentName}</span>
+                    <span><strong>Bài thi:</strong> {attempt.examName || '–'}</span>
+                    <span><strong>Loại:</strong> {attempt.submissionType === 'practice' ? '✏️ Luyện tập' : '🏆 Thi'}</span>
+                    <span><strong>Ngày nộp:</strong> {formatDate(attempt.submittedAt || attempt.createdAt)}</span>
+                  </div>
 
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                TASK 1 — {attempt.wordCount1 || 0} từ
-                {(attempt.wordCount1 || 0) < 150 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 150</span>}
-              </div>
-              {attempt.task1Snapshot?.imageUrl && (
-                <img src={attempt.task1Snapshot.imageUrl} alt="task1"
-                  style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
-              )}
-              {attempt.task1Snapshot?.prompt && (
-                <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
-                  {attempt.task1Snapshot.prompt}
-                </div>
-              )}
-              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 220, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                {attempt.task1Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
-              </div>
-            </div>
+                  {showT1 && (
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                        TASK 1 — {attempt.wordCount1 || 0} từ
+                        {(attempt.wordCount1 || 0) < 150 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 150</span>}
+                      </div>
+                      {attempt.task1Snapshot?.imageUrl && (
+                        <img src={attempt.task1Snapshot.imageUrl} alt="task1"
+                          style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
+                      )}
+                      {attempt.task1Snapshot?.prompt && (
+                        <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
+                          {attempt.task1Snapshot.prompt}
+                        </div>
+                      )}
+                      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 220, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                        {attempt.task1Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
+                      </div>
+                    </div>
+                  )}
 
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                TASK 2 — {attempt.wordCount2 || 0} từ
-                {(attempt.wordCount2 || 0) < 250 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 250</span>}
-              </div>
-              {attempt.task2Snapshot?.prompt && (
-                <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
-                  {attempt.task2Snapshot.prompt}
-                </div>
-              )}
-              <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 280, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                {attempt.task2Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
-              </div>
-            </div>
+                  {showT2 && (
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+                        TASK 2 — {attempt.wordCount2 || 0} từ
+                        {(attempt.wordCount2 || 0) < 250 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 250</span>}
+                      </div>
+                      {attempt.task2Snapshot?.prompt && (
+                        <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
+                          {attempt.task2Snapshot.prompt}
+                        </div>
+                      )}
+                      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 280, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
+                        {attempt.task2Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             {attempt.grading?.overallBand != null && (
               <div style={{ background: 'var(--surface2)', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
@@ -1035,7 +1063,7 @@ export default function WritingTests() {
                 </thead>
                 <tbody>
                   {displayHistory.length === 0
-                    ? <tr><td colSpan={8} className="table-empty">Không tìm thấy bài nộp nào</td></tr>
+                    ? <tr><td colSpan={9} className="table-empty">Không tìm thấy bài nộp nào</td></tr>
                     : displayHistory.slice(0, 200).map(h => {
                       const u = h.userId || {};
                       const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–';

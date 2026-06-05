@@ -1322,7 +1322,8 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
 
     const attempt = await WritingAttempt.findByIdAndUpdate(req.params.id, {
       grading: { task1, task2, overallBand, adminNote: adminNote || '', confirmedAt, confirmedBy },
-      gradingStatus: 'confirmed'
+      gradingStatus: 'confirmed',
+      feedbackRead: false
     }, { new: false }); // get the original to read userId + examName
 
     res.json({ success: true, message: 'Đã xác nhận điểm' });
