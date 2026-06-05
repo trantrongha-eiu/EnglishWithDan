@@ -101,6 +101,12 @@
       line-height: 1
     }
 
+    .nav-logo-img { height: 46px; width: auto; display: block; }
+    .footer-logo-img {
+      height: 54px; width: auto; display: block; margin-bottom: 12px;
+      background: rgba(255,255,255,.08); border-radius: 10px; padding: 6px 10px;
+    }
+
     .nav-links {
       display: flex;
       align-items: center;

@@ -59,7 +59,7 @@
   nav.className = 'top-nav';
   nav.id = 'globalTopNav';
   nav.innerHTML =
-    '<a href="dashboard.html" class="nav-brand"><i class="fas fa-graduation-cap"></i> EnglishWithDan</a>' +
+    '<a href="dashboard.html" class="nav-brand"><img src="img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
       '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +

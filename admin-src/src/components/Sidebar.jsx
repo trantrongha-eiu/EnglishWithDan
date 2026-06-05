@@ -47,7 +47,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
       )}
       <nav className={`sidebar${mobileOpen ? ' open' : ''}`}>
         <div className="sidebar-logo">
-          <div className="sidebar-logo-title">EnglishWithDan</div>
+          <img src="/img/big_logo.png" alt="Daniel Hà English Education" style={{ height: 52, width: 'auto', display: 'block', borderRadius: 8, background: 'rgba(255,255,255,.92)', padding: '4px 10px', marginBottom: 6 }} />
           <div className="sidebar-logo-sub">ADMIN PANEL</div>
           {onlineUsers.length > 0 && (
             <div style={{ marginTop: 8, padding: '8px 10px', background: 'rgba(34,197,94,.08)', borderRadius: 8, border: '1px solid rgba(34,197,94,.2)' }}>
