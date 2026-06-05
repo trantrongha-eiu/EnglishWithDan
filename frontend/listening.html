@@ -2597,8 +2597,13 @@
         }
     }
 
+    let _ltLoadingPart = 0; // race-condition lock
+
     /* ── Load section list for a part ───────────────────────────────────── */
     async function loadPracticeSections(partNum, tabEl) {
+        if (_ltLoadingPart === partNum) return; // đang load part này rồi, bỏ qua
+        _ltLoadingPart = partNum;
+
         document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(b => b.classList.remove('plele-active'));
         const tab = tabEl || document.querySelector(`#lele-picker-lt .plele-tab[data-part="${partNum}"]`);
         if (tab) tab.classList.add('plele-active');
@@ -2668,6 +2673,8 @@
                 Lỗi tải danh sách: ${e.message}
                 <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections(${partNum})">Thử lại</button>
             </div>`;
+        } finally {
+            _ltLoadingPart = 0; // mở lock khi xong
         }
     }
 
@@ -2740,6 +2747,7 @@
         audio.load();
         const prBtn = document.getElementById('play-btn-pr');
         if (prBtn) prBtn.textContent = '▶';
+        audio.onended = () => toast('🎵 Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
 
         // Title + footer
         document.getElementById('lt-practice-title').textContent = `🎧 Luyện: ${section.title || `Section ${partNum}`}`;
@@ -2779,10 +2787,16 @@
             let isCorrect   = false;
             if (!userAns || userAns === '[]') {
                 skipped++;
-            } else if (q.type === 'checkbox' || q.type === 'multi-answer-group') {
+            } else if (q.type === 'multi-answer-group') {
                 try {
-                    const a = JSON.parse(userAns).sort();
-                    const b = JSON.parse(correctAns || '[]').sort();
+                    const uaArr = JSON.parse(userAns || '[]').map(x => x.toUpperCase().trim());
+                    isCorrect = uaArr.includes(correctAns.toUpperCase().trim());
+                } catch { isCorrect = false; }
+                if (isCorrect) correct++; else wrong++;
+            } else if (q.type === 'checkbox') {
+                try {
+                    const a = JSON.parse(userAns).map(x => x.toLowerCase().trim()).sort();
+                    const b = JSON.parse(correctAns || '[]').map(x => x.toLowerCase().trim()).sort();
                     isCorrect = JSON.stringify(a) === JSON.stringify(b);
                 } catch { isCorrect = false; }
                 if (isCorrect) correct++; else wrong++;
@@ -2833,6 +2847,21 @@
         (reviewSection.questionGroups || []).forEach((group, gi) => {
             html += renderQuestionGroup(group, gi, true);
         });
+
+        // Hiển thị transcript nếu có
+        if (_ltOrigSection.transcript) {
+            html += `<div style="margin-top:24px;border-top:1px solid #e5e7eb;padding-top:16px">
+                <details>
+                    <summary style="cursor:pointer;font-weight:700;font-size:14px;color:#374151;user-select:none;padding:4px 0">
+                        📝 Transcript
+                    </summary>
+                    <div class="transcript-body" style="margin-top:12px;padding:16px;background:#f9fafb;border-radius:8px;font-size:14px;line-height:1.75;border:1px solid #e5e7eb">
+                        ${_ltOrigSection.transcript.split('\n').map(l => l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>').join('')}
+                    </div>
+                </details>
+            </div>`;
+        }
+
         inner.innerHTML = html;
         inner.scrollTop = 0;
 
@@ -2853,9 +2882,11 @@
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;
+        _ltLoadingPart = 0;
         const toolbar = document.getElementById('lt-practice-toolbar');
         if (toolbar) toolbar.style.display = 'none';
         setTool('none');
+        audio.onended = null;
         audio.pause();
         audio.src = '';
 

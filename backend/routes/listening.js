@@ -4,6 +4,7 @@
  */
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
@@ -12,6 +13,14 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
 const AccessKey        = require('../models/AccessKey');
 const auth             = require('../middleware/auth');
+
+const verifyKeyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Quá nhiều lần thử, vui lòng đợi 15 phút' }
+});
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -547,7 +556,7 @@ router.get('/tests', auth, async (req, res) => {
 // POST /api/listening/verify-key
 // Body: { key, testId }
 // ══════════════════════════════════════════════════════════════════════════════
-router.post('/verify-key', auth, async (req, res) => {
+router.post('/verify-key', auth, verifyKeyLimiter, async (req, res) => {
   try {
     const { key, testId } = req.body;
     if (!key) return res.json({ success: false, message: 'Vui lòng nhập key' });
@@ -661,7 +670,7 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const userAnswers = req.body.answers || {};
     const startTime = req.body.startTime ? new Date(req.body.startTime) : null;
     const now = new Date();
-    const timeTaken = startTime ? Math.round((now - startTime) / 1000) : 0;
+    const timeTaken = startTime ? Math.max(0, Math.round((now - startTime) / 1000)) : 0;
 
     let correct = 0, wrong = 0, skipped = 0;
     const total = flattenQuestions(test.sections).length;

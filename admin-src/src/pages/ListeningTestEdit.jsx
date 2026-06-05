@@ -4,7 +4,12 @@ import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 
-function AudioUploader({ audioUrl, onUploaded }) {
+function fmtDuration(sec) {
+  if (!sec) return '';
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+}
+
+function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -60,6 +65,7 @@ function AudioUploader({ audioUrl, onUploaded }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 11, color: 'var(--text3)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {audioUrl.split('/').pop()}
+              {audioDuration ? <span style={{ marginLeft: 8, color: 'var(--green)', fontWeight: 600 }}>⏱ {fmtDuration(audioDuration)}</span> : null}
             </span>
             <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 11 }} onClick={() => setReplacing(true)}>
               🔄 Thay thế
@@ -157,7 +163,7 @@ export default function ListeningTestEdit() {
   const [autoSaveMsg, setAutoSaveMsg] = useState('');
   const autoSaveTimer = useRef(null);
 
-  const [meta, setMeta] = useState({ name: '', seriesName: '', testNumber: 1, audioUrl: '', isActive: true });
+  const [meta, setMeta] = useState({ name: '', seriesName: '', testNumber: 1, audioUrl: '', audioDuration: 0, isActive: true });
   const [sections, setSections] = useState([1, 2, 3, 4].map(defaultSection));
 
   const setMetaField = k => e => {
@@ -175,7 +181,7 @@ export default function ListeningTestEdit() {
     apiFetch(`/listening/admin/tests/${savedId}`)
       .then(d => {
         const t = d.test;
-        setMeta({ name: t.name || '', seriesName: t.seriesName || '', testNumber: t.testNumber || 1, audioUrl: t.audioUrl || '', isActive: t.isActive !== false });
+        setMeta({ name: t.name || '', seriesName: t.seriesName || '', testNumber: t.testNumber || 1, audioUrl: t.audioUrl || '', audioDuration: t.audioDuration || 0, isActive: t.isActive !== false });
         setSections(parseSections(t.sections));
       })
       .catch(() => toast('Không tải được đề', 'error'))
@@ -278,6 +284,7 @@ export default function ListeningTestEdit() {
         </div>
         <AudioUploader
           audioUrl={meta.audioUrl}
+          audioDuration={meta.audioDuration}
           onUploaded={(url, duration) => {
             setIsDirty(true);
             setMeta(f => ({ ...f, audioUrl: url, audioDuration: duration }));
