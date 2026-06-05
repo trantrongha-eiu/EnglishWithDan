@@ -1297,20 +1297,68 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
   try {
     const { task1, task2, overallBand, adminNote } = req.body;
     const confirmedBy = req.user.username || req.user._id.toString();
+    const confirmedAt = new Date();
 
-    await WritingAttempt.findByIdAndUpdate(req.params.id, {
-      grading: {
-        task1,
-        task2,
-        overallBand,
-        adminNote: adminNote || '',
-        confirmedAt: new Date(),
-        confirmedBy
-      },
+    const attempt = await WritingAttempt.findByIdAndUpdate(req.params.id, {
+      grading: { task1, task2, overallBand, adminNote: adminNote || '', confirmedAt, confirmedBy },
       gradingStatus: 'confirmed'
-    });
+    }, { new: false }); // get the original to read userId + examName
 
     res.json({ success: true, message: 'Đã xác nhận điểm' });
+
+    // Send email notification (fire-and-forget, không block response)
+    if (attempt && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      try {
+        const student = await User.findById(attempt.userId).select('email firstName username').lean();
+        if (student?.email) {
+          const nodemailer = require('nodemailer');
+          const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+          });
+          const displayName = student.firstName || student.username || 'bạn';
+          const bandColor = overallBand >= 7 ? '#16a34a' : overallBand >= 5.5 ? '#2563eb' : '#d97706';
+          await transporter.sendMail({
+            from: `"EnglishWithDan" <${process.env.EMAIL_USER}>`,
+            to: student.email,
+            subject: `✅ Bài Writing "${attempt.examName || 'của bạn'}" đã được chấm – Band ${overallBand}`,
+            html: `
+<div style="font-family:Inter,Arial,sans-serif;max-width:560px;margin:0 auto;background:#f8f9fb;padding:32px 24px;border-radius:12px">
+  <div style="text-align:center;margin-bottom:24px">
+    <div style="font-size:22px;font-weight:800;letter-spacing:-.5px">
+      <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+    </div>
+  </div>
+  <div style="background:#fff;border-radius:12px;padding:28px 24px;border:1px solid #e5e7eb">
+    <p style="font-size:16px;font-weight:700;color:#111;margin:0 0 8px">Xin chào ${displayName}! 👋</p>
+    <p style="font-size:14px;color:#6b7280;margin:0 0 20px;line-height:1.6">Bài thi Writing <strong style="color:#111">"${attempt.examName || ''}"</strong> của bạn đã được giáo viên chấm xong.</p>
+
+    <div style="text-align:center;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:2px solid #3b82f6;border-radius:12px;padding:20px;margin-bottom:20px">
+      <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Overall Band Score</div>
+      <div style="font-size:52px;font-weight:900;color:${bandColor};line-height:1">${overallBand ?? '–'}</div>
+    </div>
+
+    ${adminNote ? `
+    <div style="background:#ecfdf5;border-left:4px solid #10b981;border-radius:8px;padding:12px 16px;margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:#059669;margin-bottom:4px">💬 Nhận xét từ giáo viên</div>
+      <div style="font-size:14px;color:#065f46;line-height:1.65">${adminNote}</div>
+    </div>` : ''}
+
+    <div style="text-align:center;margin-top:8px">
+      <a href="https://englishwithdan.onrender.com/writing.html"
+        style="display:inline-block;background:#e53935;color:#fff;text-decoration:none;padding:12px 32px;border-radius:10px;font-size:14px;font-weight:700">
+        📋 Xem bài làm & Feedback chi tiết
+      </a>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:11px;color:#9ca3af;margin-top:16px">EnglishWithDan · Đây là email tự động, vui lòng không trả lời.</p>
+</div>`
+          });
+        }
+      } catch (mailErr) {
+        console.error('[Writing] Grade email error:', mailErr.message);
+      }
+    }
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

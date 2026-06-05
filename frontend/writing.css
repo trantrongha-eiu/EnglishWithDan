@@ -807,6 +807,126 @@ body {
 [data-theme="dark"] .review-modal-footer      { border-top-color: #374151; }
 
 /* ══════════════════════════════════════════════
+   STUDENT FEEDBACK COMPONENTS
+══════════════════════════════════════════════ */
+.fb-wrap {
+  background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.fb-wrap-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.fb-wrap-title  { font-size: 15px; font-weight: 800; color: #1e40af; }
+.fb-wrap-right  { text-align: right; }
+.fb-wrap-band-lbl { font-size: 11px; color: #6b7280; margin-bottom: 2px; }
+.fb-wrap-band-num { font-size: 32px; font-weight: 900; color: #1e40af; line-height: 1; }
+
+.fb-admin-note {
+  background: #ecfdf5;
+  border-left: 4px solid #10b981;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #065f46;
+  margin-bottom: 14px;
+}
+.fb-admin-note-lbl { font-weight: 700; color: #059669; }
+
+.fb-task-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.fb-task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.fb-task-label { font-size: 13px; font-weight: 700; color: #1e40af; }
+.fb-task-band  { font-size: 22px; font-weight: 800; color: #1e40af; }
+
+.fb-crit-row   { margin-bottom: 8px; }
+.fb-crit-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.fb-crit-label   { color: #374151; }
+.fb-crit-track   { background: #e5e7eb; border-radius: 99px; height: 6px; }
+.fb-crit-comment { font-size: 11px; color: #6b7280; margin-top: 3px; font-style: italic; }
+
+.fb-overall-txt {
+  background: #eff6ff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #1e3a5f;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.fb-section     { margin-top: 10px; }
+.fb-section-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  margin-bottom: 6px;
+}
+.fb-section-corr { color: #92400e; }
+.fb-section-sugg { color: #1e40af; }
+
+.fb-correction {
+  background: #fff7ed;
+  border-left: 3px solid #f97316;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+.fb-corr-orig  { color: #dc2626; text-decoration: line-through; }
+.fb-corr-arrow { color: #6b7280; margin: 0 6px; }
+.fb-corr-fixed { color: #16a34a; font-weight: 600; }
+.fb-corr-expl  { color: #78350f; margin-top: 3px; }
+
+.fb-sugg-list  { margin: 0; padding-left: 16px; }
+.fb-suggestion { font-size: 12px; color: #1e40af; margin-bottom: 4px; }
+
+/* ── Feedback dark mode ── */
+[data-theme="dark"] .fb-wrap        { background: linear-gradient(135deg, #0f2133, #0f1a10); border-color: #3b82f6; }
+[data-theme="dark"] .fb-wrap-title  { color: #93c5fd; }
+[data-theme="dark"] .fb-wrap-band-lbl { color: #9ca3af; }
+[data-theme="dark"] .fb-wrap-band-num { color: #93c5fd; }
+[data-theme="dark"] .fb-admin-note  { background: #022c22; border-left-color: #059669; color: #a7f3d0; }
+[data-theme="dark"] .fb-admin-note-lbl { color: #34d399; }
+[data-theme="dark"] .fb-task-card   { background: #1e293b; border-color: #334155; }
+[data-theme="dark"] .fb-task-label  { color: #93c5fd; }
+[data-theme="dark"] .fb-task-band   { color: #93c5fd; }
+[data-theme="dark"] .fb-crit-label  { color: #d1d5db; }
+[data-theme="dark"] .fb-crit-track  { background: #374151; }
+[data-theme="dark"] .fb-crit-comment { color: #9ca3af; }
+[data-theme="dark"] .fb-overall-txt { background: #1e293b; color: #bfdbfe; }
+[data-theme="dark"] .fb-section-corr { color: #fbbf24; }
+[data-theme="dark"] .fb-section-sugg { color: #93c5fd; }
+[data-theme="dark"] .fb-correction  { background: #1c0f00; border-left-color: #c2410c; }
+[data-theme="dark"] .fb-corr-orig   { color: #f87171; }
+[data-theme="dark"] .fb-corr-arrow  { color: #9ca3af; }
+[data-theme="dark"] .fb-corr-fixed  { color: #4ade80; }
+[data-theme="dark"] .fb-corr-expl   { color: #fcd34d; }
+[data-theme="dark"] .fb-suggestion  { color: #93c5fd; }
+
+/* ══════════════════════════════════════════════
    DARK MODE – shared buttons & misc
 ══════════════════════════════════════════════ */
 [data-theme="dark"] .btn-secondary       { border-color: #374151; color: #d1d5db; }

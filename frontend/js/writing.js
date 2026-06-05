@@ -569,49 +569,54 @@ function _buildStudentFeedback(g) {
       const score = td[c.key]?.score ?? 0;
       const pct   = (score / 9 * 100).toFixed(0);
       const color = score >= 7 ? '#16a34a' : score >= 5.5 ? '#2563eb' : score >= 4 ? '#d97706' : '#dc2626';
-      return `<div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
-          <span style="color:#374151">${escHtml(c.label)}</span>
+      return `<div class="fb-crit-row">
+        <div class="fb-crit-header">
+          <span class="fb-crit-label">${escHtml(c.label)}</span>
           <strong style="color:${color}">${score}</strong>
         </div>
-        <div style="background:#e5e7eb;border-radius:99px;height:6px">
-          <div style="background:${color};width:${pct}%;height:6px;border-radius:99px;transition:width .4s"></div>
+        <div class="fb-crit-track">
+          <div style="background:${color};width:${pct}%;height:100%;border-radius:99px;transition:width .4s"></div>
         </div>
-        ${td[c.key]?.comment ? `<div style="font-size:11px;color:#6b7280;margin-top:3px;font-style:italic">${escHtml(td[c.key].comment)}</div>` : ''}
+        ${td[c.key]?.comment ? `<div class="fb-crit-comment">${escHtml(td[c.key].comment)}</div>` : ''}
       </div>`;
     }).join('');
 
     const corrections = (td.corrections || []).map(c =>
-      `<div style="background:#fff7ed;border-left:3px solid #f97316;border-radius:4px;padding:6px 10px;margin-bottom:6px;font-size:12px">
-        <span style="color:#dc2626;text-decoration:line-through">${escHtml(c.original)}</span>
-        <span style="color:#6b7280;margin:0 6px">→</span>
-        <span style="color:#16a34a;font-weight:600">${escHtml(c.corrected)}</span>
-        ${c.explanation ? `<div style="color:#78350f;margin-top:3px">${escHtml(c.explanation)}</div>` : ''}
+      `<div class="fb-correction">
+        <span class="fb-corr-orig">${escHtml(c.original)}</span>
+        <span class="fb-corr-arrow">→</span>
+        <span class="fb-corr-fixed">${escHtml(c.corrected)}</span>
+        ${c.explanation ? `<div class="fb-corr-expl">${escHtml(c.explanation)}</div>` : ''}
       </div>`).join('');
 
     const suggestions = (td.suggestions || []).map(s =>
-      `<li style="font-size:12px;color:#1e40af;margin-bottom:4px">${escHtml(s)}</li>`).join('');
+      `<li class="fb-suggestion">${escHtml(s)}</li>`).join('');
 
-    return `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <span style="font-size:13px;font-weight:700;color:#1e40af">${label}</span>
-        <span style="font-size:22px;font-weight:800;color:#1e40af">${td.bandScore ?? '–'}</span>
+    return `<div class="fb-task-card">
+      <div class="fb-task-header">
+        <span class="fb-task-label">${label}</span>
+        <span class="fb-task-band">${td.bandScore ?? '–'}</span>
       </div>
       ${bars}
-      ${td.overallFeedback ? `<div style="background:#eff6ff;border-radius:6px;padding:10px 12px;font-size:13px;color:#1e3a5f;margin-top:10px;line-height:1.6">${escHtml(td.overallFeedback)}</div>` : ''}
-      ${corrections ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Lỗi cần sửa</div>${corrections}</div>` : ''}
-      ${suggestions ? `<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Gợi ý cải thiện</div><ul style="margin:0;padding-left:16px">${suggestions}</ul></div>` : ''}
+      ${td.overallFeedback ? `<div class="fb-overall-txt">${escHtml(td.overallFeedback)}</div>` : ''}
+      ${corrections ? `<div class="fb-section"><div class="fb-section-lbl fb-section-corr">Lỗi cần sửa</div>${corrections}</div>` : ''}
+      ${suggestions ? `<div class="fb-section"><div class="fb-section-lbl fb-section-sugg">Gợi ý cải thiện</div><ul class="fb-sugg-list">${suggestions}</ul></div>` : ''}
     </div>`;
   }
 
-  return `<div style="background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:2px solid #3b82f6;border-radius:12px;padding:16px;margin-bottom:20px">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <span style="font-size:15px;font-weight:800;color:#1e40af">📊 Kết quả chấm bài</span>
-      <div style="text-align:center">
-        <div style="font-size:11px;color:#6b7280;margin-bottom:2px">Overall Band</div>
-        <div style="font-size:32px;font-weight:900;color:#1e40af;line-height:1">${g.overallBand ?? '–'}</div>
+  const dateStr = g.confirmedAt
+    ? new Date(g.confirmedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : '';
+
+  return `<div class="fb-wrap">
+    <div class="fb-wrap-header">
+      <span class="fb-wrap-title">📊 Kết quả chấm bài</span>
+      <div class="fb-wrap-right">
+        <div class="fb-wrap-band-lbl">Overall Band${dateStr ? ' · ' + dateStr : ''}</div>
+        <div class="fb-wrap-band-num">${g.overallBand ?? '–'}</div>
       </div>
     </div>
+    ${g.adminNote ? `<div class="fb-admin-note"><span class="fb-admin-note-lbl">💬 Nhận xét từ giáo viên:</span> ${escHtml(g.adminNote)}</div>` : ''}
     ${taskCard('Task 1', g.task1)}
     ${taskCard('Task 2', g.task2)}
   </div>`;
