@@ -2201,6 +2201,37 @@ const SEED_TEMPLATES = [
       { en:'Ultimately, striking a ___ between (aspect 1) and (aspect 2) may represent the most pragmatic approach.', answer:'balance', vi:'→ Cuối cùng, tìm kiếm sự cân bằng giữa ... và ... có thể là cách tiếp cận thực tế nhất.' },
     ]},
   ]},
+  { typeId:'type07', label:'Type 07', sub:'Pos/Neg Dev', name:'Positive or Negative Development', orderIndex:6, isActive:true, sections:[
+    { title:'① Introduction – Mở bài', items:[
+      { en:'In recent years, (noun phrase) has emerged as one of the most ___ trends in contemporary society, sparking widespread debate.', answer:'controversial', vi:'→ Trong những năm gần đây, ... đã nổi lên là một trong những xu hướng gây tranh cãi nhất trong xã hội hiện đại.' },
+      { en:'Views on this development remain deeply ___, with some welcoming it as progress and others raising serious concerns.', answer:'divided', vi:'→ Quan điểm về sự phát triển này vẫn còn rất phân cực, với một số người hoan nghênh nó và những người khác bày tỏ lo ngại.' },
+      { en:'While (noun phrase) undoubtedly brings certain ___, it also carries the potential for significant drawbacks.', answer:'benefits', vi:'→ Mặc dù ... chắc chắn mang lại một số lợi ích, nó cũng tiềm ẩn những hạn chế đáng kể.' },
+      { en:'I firmly ___ that, on balance, this constitutes a predominantly positive/negative development for the reasons outlined below.', answer:'believe', vi:'→ Tôi kiên định cho rằng, xét tổng thể, đây là một sự phát triển phần lớn tích cực/tiêu cực.' },
+      { en:'This essay will ___ both dimensions of this issue before arriving at a well-supported conclusion.', answer:'examine', vi:'→ Bài viết này sẽ xem xét cả hai khía cạnh của vấn đề trước khi đưa ra kết luận có căn cứ.' },
+    ]},
+    { title:'② Body 1 – Main Case · Lập luận chính', items:[
+      { en:'There are several ___ reasons to view (noun phrase) as a positive/negative development.', answer:'compelling', vi:'→ Có một số lý do thuyết phục để coi ... là một sự phát triển tích cực/tiêu cực.' },
+      { en:'One of the most notable aspects is that (noun phrase) has ___ contributed to (outcome), benefiting/harming a large portion of society.', answer:'considerably', vi:'→ Một trong những khía cạnh đáng chú ý nhất là ... đã đóng góp đáng kể vào (kết quả).' },
+      { en:'This is primarily because (reason), which has a ___ and far-reaching effect on (group/society/economy).', answer:'profound', vi:'→ Nguyên nhân chính là ..., điều này có tác động sâu sắc và rộng khắp đến (nhóm người/xã hội/nền kinh tế).' },
+      { en:'To illustrate, (specific example) clearly ___ the magnitude of this trend\'s impact on everyday life.', answer:'demonstrates', vi:'→ Để minh họa, (ví dụ cụ thể) cho thấy rõ mức độ tác động của xu hướng này đối với cuộc sống hàng ngày.' },
+      { en:'Furthermore, the influence of (noun phrase) ___ well beyond the individual, reshaping communities and institutions alike.', answer:'extends', vi:'→ Hơn nữa, sức ảnh hưởng của ... vươn xa hơn cá nhân, định hình lại cả các cộng đồng lẫn tổ chức.' },
+      { en:'Research has consistently ___ that (fact/statistic), providing strong evidence that this development is largely beneficial/harmful.', answer:'confirmed', vi:'→ Nghiên cứu đã liên tục xác nhận rằng (thực tế/thống kê), cung cấp bằng chứng rõ ràng về sự phát triển này.' },
+      { en:'This is a ___ that is likely to ___ as societal conditions and technological capabilities continue to evolve.', answers:['pattern','intensify'], vi:'→ Đây là một xu hướng có khả năng ngày càng mạnh mẽ hơn khi các điều kiện xã hội và năng lực công nghệ tiếp tục phát triển.' },
+    ]},
+    { title:'③ Body 2 – Acknowledge & Reinforce · Nhìn nhận đa chiều (Band 7+)', items:[
+      { en:'Admittedly, (noun phrase) is not without its shortcomings, and critics have raised ___ concerns about (specific issue).', answer:'legitimate', vi:'→ Thừa nhận rằng, ... không phải là không có thiếu sót, và các nhà phê bình đã đặt ra những lo ngại chính đáng.' },
+      { en:'However, these concerns, while not entirely ___, do not fundamentally alter the overall trajectory of this development.', answer:'unfounded', vi:'→ Tuy nhiên, những lo ngại này, dù không hoàn toàn vô căn cứ, nhưng không thay đổi cơ bản xu hướng tổng thể.' },
+      { en:'When considered in a broader context, the positive/negative aspects of (noun phrase) clearly ___ its drawbacks/merits.', answer:'outweigh', vi:'→ Khi xem xét trong bối cảnh rộng hơn, các khía cạnh tích cực/tiêu cực của ... rõ ràng vượt trội hơn.' },
+      { en:'Moreover, any potential risks can be effectively ___ through appropriate governance, public awareness, and informed policy decisions.', answer:'mitigated', vi:'→ Hơn nữa, bất kỳ rủi ro tiềm ẩn nào cũng có thể được giảm thiểu thông qua quản trị phù hợp và quyết định chính sách sáng suốt.' },
+      { en:'Ultimately, the ___ benefits of this development far outweigh the associated risks, making a strong case for this position.', answer:'cumulative', vi:'→ Cuối cùng, những lợi ích tích lũy của sự phát triển này vượt xa so với những rủi ro liên quan.' },
+      { en:'A ___ reading of the available evidence ___ that the positive outcomes significantly outweigh the concerns raised by critics.', answers:['careful','reveals'], vi:'→ Việc đọc cẩn thận các bằng chứng hiện có cho thấy rằng các kết quả tích cực vượt trội đáng kể so với những lo ngại của nhà phê bình.' },
+    ]},
+    { title:'④ Conclusion – Kết bài', items:[
+      { en:'In conclusion, having examined this issue from multiple ___, I maintain that this is fundamentally a positive/negative development.', answer:'angles', vi:'→ Tóm lại, sau khi xem xét vấn đề này từ nhiều góc độ, tôi duy trì rằng đây về cơ bản là một sự phát triển tích cực/tiêu cực.' },
+      { en:'The evidence ___ suggests that the advantages/disadvantages of (noun phrase) far exceed the drawbacks/merits, warranting a clear position.', answer:'overwhelmingly', vi:'→ Bằng chứng áp đảo cho thấy lợi ích/tác hại của ... vượt xa so với hạn chế/ưu điểm.' },
+      { en:'Going forward, it is ___ that individuals, communities, and policymakers take a proactive approach to maximise the gains and minimise the risks of this trend.', answer:'essential', vi:'→ Trong tương lai, điều thiết yếu là các cá nhân, cộng đồng và nhà hoạch định chính sách cần có cách tiếp cận chủ động.' },
+    ]},
+  ]},
 ];
 
 // GET /api/admin/task2/templates

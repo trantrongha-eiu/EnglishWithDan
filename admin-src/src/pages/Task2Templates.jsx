@@ -350,7 +350,7 @@ export default function Task2Templates() {
           <p className="page-subtitle">{templates.length} template — câu luyện điền từ theo dạng bài IELTS Task 2</p>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => confirm('Seed lại toàn bộ 6 template mặc định? Dữ liệu hiện tại sẽ bị ghi đè.', () => seedTemplates(true))}>
+          <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => confirm('Seed lại toàn bộ 7 template mặc định? Dữ liệu hiện tại sẽ bị ghi đè.', () => seedTemplates(true))}>
             🔄 Seed lại
           </button>
           <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => seedTemplates(false)}>
@@ -388,7 +388,7 @@ export default function Task2Templates() {
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>
                     Chưa có template nào.{' '}
-                    <button className="btn btn-primary" style={{ marginLeft: 8 }} onClick={() => seedTemplates(false)}>📥 Seed 6 template mặc định</button>
+                    <button className="btn btn-primary" style={{ marginLeft: 8 }} onClick={() => seedTemplates(false)}>📥 Seed 7 template mặc định</button>
                   </td>
                 </tr>
               )}
