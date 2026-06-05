@@ -230,8 +230,8 @@ function GradingModal({ attemptId, onClose, onGraded }) {
   const [confirming, setConfirming] = useState(false);
   const [aiGrading, setAiGrading] = useState({ t1: false, t2: false });
   const [grade, setGrade] = useState({
-    task1: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
-    task2: { bandScore: null, ta: null, cc: null, lr: null, gra: null },
+    task1: { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' },
+    task2: { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' },
     overallBand: null,
     adminNote: '',
   });
@@ -251,6 +251,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
               cc:  src.task1?.cc?.score  ?? null,
               lr:  src.task1?.lr?.score  ?? null,
               gra: src.task1?.gra?.score ?? null,
+              feedback: src.task1?.overallFeedback || '',
             },
             task2: {
               bandScore: src.task2?.bandScore ?? null,
@@ -258,6 +259,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
               cc:  src.task2?.cc?.score  ?? null,
               lr:  src.task2?.lr?.score  ?? null,
               gra: src.task2?.gra?.score ?? null,
+              feedback: src.task2?.overallFeedback || '',
             },
             overallBand: src.overallBand ?? null,
             adminNote: src.adminNote || '',
@@ -304,6 +306,7 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           cc:  r.cc?.score  ?? g[taskKey].cc,
           lr:  r.lr?.score  ?? g[taskKey].lr,
           gra: r.gra?.score ?? g[taskKey].gra,
+          feedback: r.overallFeedback || g[taskKey].feedback,
         },
       }));
       toast(`AI đã chấm xong Task ${taskNum} – kiểm tra và xác nhận điểm`);
@@ -322,9 +325,9 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           cc:  { score: g.cc,  comment: ai?.cc?.comment  || '' },
           lr:  { score: g.lr,  comment: ai?.lr?.comment  || '' },
           gra: { score: g.gra, comment: ai?.gra?.comment || '' },
-          overallFeedback: ai?.overallFeedback || '',
-          corrections:     ai?.corrections    || [],
-          suggestions:     ai?.suggestions    || [],
+          overallFeedback: g.feedback || ai?.overallFeedback || '',
+          corrections:     ai?.corrections || [],
+          suggestions:     ai?.suggestions || [],
         };
       }
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
@@ -384,6 +387,10 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   <BandInput label="Band Score" value={grade.task1.bandScore} onChange={v => setTask('task1', 'bandScore', v)} />
                   {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
                 </div>
+                <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
+                  value={grade.task1.feedback}
+                  onChange={e => setTask('task1', 'feedback', e.target.value)}
+                  placeholder="Nhận xét Task 1 (AI tự điền sau khi chấm, bạn có thể chỉnh)..." />
               </div>
             )}
 
@@ -398,6 +405,10 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   <BandInput label="Band Score" value={grade.task2.bandScore} onChange={v => setTask('task2', 'bandScore', v)} />
                   {CRITERIA.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
                 </div>
+                <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
+                  value={grade.task2.feedback}
+                  onChange={e => setTask('task2', 'feedback', e.target.value)}
+                  placeholder="Nhận xét Task 2 (AI tự điền sau khi chấm, bạn có thể chỉnh)..." />
               </div>
             )}
 
