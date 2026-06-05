@@ -1262,10 +1262,9 @@ router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, async (req, res
     const t1Prompt = attempt.task1Snapshot?.prompt || '';
     const t2Prompt = attempt.task2Snapshot?.prompt || '';
 
-    const [task1Grade, task2Grade] = await Promise.all([
-      gradeTaskWithAI(1, t1Prompt, attempt.task1Answer || '', attempt.wordCount1 || 0),
-      gradeTaskWithAI(2, t2Prompt, attempt.task2Answer || '', attempt.wordCount2 || 0)
-    ]);
+    // Sequential (not parallel) to avoid hitting Gemini free-tier per-minute rate limit
+    const task1Grade = await gradeTaskWithAI(1, t1Prompt, attempt.task1Answer || '', attempt.wordCount1 || 0);
+    const task2Grade = await gradeTaskWithAI(2, t2Prompt, attempt.task2Answer || '', attempt.wordCount2 || 0);
 
     await WritingAttempt.findByIdAndUpdate(req.params.id, {
       aiGrading: { task1: task1Grade, task2: task2Grade, generatedAt: new Date() },
