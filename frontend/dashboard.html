@@ -64,6 +64,7 @@
             <span class="book-top-emoji" id="book-top-emoji">📘</span>
             <input class="book-editable-name" id="book-editable-name" value="Sổ 1" title="Click để đổi tên"/>
             <button class="btn-rename" onclick="renameBook()" title="Đổi tên"><i class="fas fa-pen"></i></button>
+            <button class="btn-book-options" onclick="openCurrentBookMenu()" title="Tùy chọn sổ">⋯</button>
           </div>
           <div class="book-stats">
             <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Mastered</span>
@@ -622,9 +623,10 @@
     list.innerHTML = myBooks.map(function(b){
       var active = (b._id === currentBookId) ? 'active' : '';
       return '<div class="sheet-book-item '+active+'" onclick="openBook(\''+b._id+'\');closeSheet()">'
-        +'<span style="font-size:18px">'+b.emoji+'</span>'
-        +'<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">'+b.name+'</span>'
+        +'<span style="font-size:18px;flex-shrink:0">'+b.emoji+'</span>'
+        +'<span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600">'+b.name+'</span>'
         +'<span class="sheet-book-count">'+b.totalWords+'</span>'
+        +'<button class="sheet-book-menu-btn" onclick="event.stopPropagation();openBookMenu(\''+b._id+'\')" title="Tùy chọn sổ">⋯</button>'
         +'</div>';
     }).join('');
   };

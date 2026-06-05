@@ -452,6 +452,7 @@ function openBook(bookId) {
         document.getElementById('view-unit').style.display    = 'none';
         document.getElementById('book-welcome').style.display = 'none';
         content.style.display = 'flex';
+        if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
 
         // Show skeleton while loading
         document.getElementById('words-tbody').innerHTML = Array(5).fill(0).map(() => `
@@ -1038,6 +1039,7 @@ function openFlashcardMode() {
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent     = `📘 ${currentBookData.name}`;
+    if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
     showMode('fillBlank');
 }
 function openPreviewMode() {
@@ -1047,6 +1049,7 @@ function openPreviewMode() {
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent     = `📘 ${currentBookData.name}`;
+    if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
     showMode('study');
 }
 function practiceHardWords() {
@@ -1060,6 +1063,7 @@ function practiceHardWords() {
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent = `🎯 Hard Words – ${hardWords.length} to review`;
+    if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
     showMode('mixed');
 }
 
@@ -1073,6 +1077,7 @@ function closeUnitView() {
             document.getElementById('book-welcome').style.display = 'flex';
             document.getElementById('book-content').style.display = 'none';
         }
+        if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
         // Re-render word list to show updated wrongCount badges after book practice
         if (_isBookPractice && currentBookId && currentBookData) {
             renderBookContent(currentBookData);
@@ -1116,6 +1121,7 @@ async function loadUnit() {
             document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
             document.getElementById('view-mybook').style.display = 'none';
             document.getElementById('view-unit').style.display   = 'flex';
+            if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
             _activateModeNow('study');
         });
     } catch { toast('Unable to load Unit', 'error'); }
@@ -2260,3 +2266,10 @@ window.startEditDifficultWord    = startEditDifficultWord;
 window.cancelDifficultWordEdit   = cancelDifficultWordEdit;
 window.saveDifficultWordEdit     = saveDifficultWordEdit;
 window.updateDifficultBadge      = updateDifficultBadge;
+
+/* ── Mobile helpers ── */
+window.openCurrentBookMenu = function() {
+    if (currentBookId) openBookMenu(currentBookId);
+};
+window.filterWords = filterWords;
+window.openEditWordModal = openEditWordModal;

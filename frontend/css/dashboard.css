@@ -274,6 +274,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 }
 .book-editable-name:focus{background:var(--surface2)}
 .btn-rename{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;font-size:13px}
+.btn-book-options{display:none;background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 8px;font-size:20px;line-height:1;border-radius:6px;transition:background .12s}
+.btn-book-options:hover{background:var(--surface2);color:var(--text)}
 
 .book-stats{display:flex;gap:16px;font-size:12px;flex-wrap:wrap}
 .stat-dot{display:flex;align-items:center;gap:5px;font-weight:600}
@@ -704,8 +706,14 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .sheet-book-item:hover{background:var(--surface2)}
 .sheet-book-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
-.sheet-book-count{font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:10px;margin-left:auto}
+.sheet-book-count{font-size:11px;color:var(--text3);background:var(--surface2);padding:2px 8px;border-radius:10px;flex-shrink:0}
 .sheet-book-item.active .sheet-book-count{background:#fce4e4;color:var(--brand)}
+.sheet-book-menu-btn{
+  flex-shrink:0;background:none;border:none;cursor:pointer;
+  color:var(--text3);padding:4px 7px;font-size:20px;line-height:1;
+  border-radius:6px;transition:background .12s,color .12s;
+}
+.sheet-book-menu-btn:hover,.sheet-book-menu-btn:active{background:var(--surface2);color:var(--text)}
 
 .sheet-add-book-btn{
   display:flex;align-items:center;gap:10px;
@@ -788,7 +796,24 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   .book-topbar{padding:12px 16px;gap:8px}
   .book-stats{gap:10px}
   .book-action-bar{padding:8px 12px}
-  .words-table-wrap{padding:0 12px 20px}
+
+  /* Show book options ⋯ button on mobile */
+  .btn-book-options{display:flex;align-items:center}
+
+  /* Word table: hide checkbox + example + notes columns; enable h-scroll */
+  .words-table-wrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .words-table{min-width:380px}
+  .words-table .cb-wrap,
+  .words-table thead th:first-child{display:none}
+  .words-table tbody td:nth-child(5),
+  .words-table thead th:nth-child(5),
+  .words-table tbody td:nth-child(6),
+  .words-table thead th:nth-child(6){display:none}
+  /* Hide bulk ops bar (depends on checkboxes that are hidden) */
+  .bulk-bar{display:none !important}
+  /* Tighter cell padding on mobile */
+  .words-table thead th{padding:8px 10px}
+  .words-table tbody td{padding:10px 10px}
 
   /* Vocab grid 1 col */
   .vocab-grid{grid-template-columns:1fr}
