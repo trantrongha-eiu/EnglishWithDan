@@ -1190,30 +1190,49 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════
 
 async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
-  const task1Descriptors = `Task 1 Band Descriptors (TA/CC/LR/GRA):
-3: few key features, unclear org, very limited vocab, numerous errors impede meaning.
-4: some features covered but incomplete; limited vocab/grammar; errors frequent.
-5: main features covered but lacks detail/accuracy; some progression; limited range.
-6: adequate key features; clear progression; adequate vocab; mix of structures; minor errors OK.
-7: key features clearly highlighted; logical org; flexible vocab; mostly error-free.
-8: all features well-covered; well-organised; wide vocab; wide grammar range; rare errors.`;
+  const minWords = taskType === 1 ? 150 : 250;
+  const isUnderLength = wordCount < minWords;
+  const isIncomplete = answer.trim().length > 0 && !answer.trim().match(/[.!?]["']?\s*$/);
 
-  const task2Descriptors = `Task 2 Band Descriptors (TR/CC/LR/GRA):
-3: barely addresses task; very limited ideas; minimal cohesion; numerous errors.
-4: responds inadequately; ideas barely developed; limited vocab/grammar; frequent errors.
-5: addresses task but parts weak; some development; position sometimes unclear; limited range.
-6: addresses all parts; ideas developed; position present; adequate vocab; errors rarely impede.
-7: clear consistent position; ideas well-extended; logically organised; varied vocab; mostly error-free.
-8: fully developed position; well-organised; wide vocab; wide grammar range; minor errors only.`;
+  const task1TA = `Task Achievement (TA) – Task 1:
+3: does not address requirements; key features largely irrelevant; limited info presented.
+4: few key features selected; features may be irrelevant/repetitive/inaccurate; format may be inappropriate.
+5: key features NOT adequately covered; recounting mainly mechanical; may be no data to support description; limited extension.
+6: key features covered and highlighted; overview attempted; some irrelevant/inaccurate detail; some details missing or excessive.
+7: covers requirements with few omissions; clear overview; data categorised; main trends/differences identified.
+8: all requirements covered appropriately, relevantly, sufficiently; key features skilfully selected, highlighted and illustrated.
+CAPS: essay cut off/incomplete → TA ≤ 4; under 150 words → TA ≤ 5; no overview → TA ≤ 5.`;
 
-  const systemPrompt = `You are an IELTS examiner. Grade essays accurately using the Band Descriptors. Be fair: give credit where due; penalise only genuine weaknesses that impede communication or task fulfilment.`;
+  const task2TR = `Task Response (TR) – Task 2:
+3: no part adequately addressed or misunderstood; no relevant position; few ideas, may be irrelevant.
+4: prompt tackled minimally or tangentially; position discernible but hard to find; main ideas difficult to identify; large parts repetitive.
+5: main parts INCOMPLETELY addressed; position expressed but development not always clear; ideas limited and not sufficiently developed.
+6: main parts addressed; position relevant but conclusions may be unclear/unjustified; main ideas relevant but some insufficiently developed.
+7: main parts appropriately addressed; clear developed position; ideas extended and supported (may over-generalise).
+8: prompt appropriately and sufficiently addressed; clear well-developed position; ideas well extended and supported.
+CAPS: essay cut off/incomplete → TR ≤ 4; under 250 words → TR ≤ 5; no identifiable position → TR ≤ 4.`;
 
-  const descriptors = taskType === 1 ? task1Descriptors : task2Descriptors;
+  const sharedDescriptors = `CC: 4=ideas not arranged coherently/no progression; 5=organisation evident but not wholly logical; 6=generally coherent, clear overall progression, some faulty cohesion; 7=logically organised, clear progression, cohesive devices used flexibly; 8=logically sequenced, cohesion well managed.
+LR: 4=basic vocab, repetitive, errors may impede meaning; 5=limited range, frequent lapses in word choice; 6=generally adequate, meaning clear despite restricted range; 7=sufficient flexibility/precision, some less-common items; 8=wide resource, precise meanings, skilful use of idiomatic items.
+GRA: 4=very limited structures, grammatical errors frequent, may impede meaning; 5=limited repetitive structures, complex attempts tend to be faulty; 6=mix of simple/complex, limited flexibility, errors rarely impede; 7=variety of complex structures, generally well controlled; 8=wide range, majority of sentences error-free.`;
+
   const taLabel = taskType === 1 ? 'Task Achievement' : 'Task Response';
+  const taskDescriptor = taskType === 1 ? task1TA : task2TR;
 
-  const userPrompt = `Grade this IELTS Writing Task ${taskType} (${wordCount} words).
+  const systemPrompt = `You are a strict IELTS examiner following the official IELTS Band Descriptors (IDP/BC, May 2023). Apply all band caps for incomplete essays, under-length responses, and missing overview/position. Do not give credit for what is missing.`;
 
-${descriptors}
+  const wordCountNote = isUnderLength
+    ? `\nWARNING: Essay is ${wordCount} words (minimum ${minWords}). Apply under-length cap to TA/TR score.`
+    : '';
+  const incompleteNote = isIncomplete
+    ? `\nWARNING: Essay appears to be cut off (does not end with a complete sentence). Apply incomplete-essay cap: TA/TR ≤ 4.`
+    : '';
+
+  const userPrompt = `Grade this IELTS Writing Task ${taskType} (${wordCount} words).${wordCountNote}${incompleteNote}
+
+${taskDescriptor}
+
+${sharedDescriptors}
 
 Question: ${prompt}
 
@@ -1221,9 +1240,9 @@ Essay:
 ${answer}
 
 Return ONLY valid JSON (no markdown):
-{"bandScore":<0-9 nearest 0.5>,"ta":{"score":<0-9>,"comment":"<${taLabel} in Vietnamese>"},"cc":{"score":<0-9>,"comment":"<Coherence in Vietnamese>"},"lr":{"score":<0-9>,"comment":"<Lexical in Vietnamese>"},"gra":{"score":<0-9>,"comment":"<Grammar in Vietnamese>"},"overallFeedback":"<1-2 sentences Vietnamese: main strength + main weakness>","corrections":[{"original":"<phrase>","corrected":"<fix>","explanation":"<reason Vietnamese>"}],"suggestions":["<tip Vietnamese>","<tip>","<tip>"]}
+{"bandScore":<0-9 nearest 0.5>,"ta":{"score":<0-9>,"comment":"<${taLabel} feedback in Vietnamese – explicitly mention if essay is incomplete or under word count>"},"cc":{"score":<0-9>,"comment":"<CC feedback in Vietnamese>"},"lr":{"score":<0-9>,"comment":"<LR feedback in Vietnamese>"},"gra":{"score":<0-9>,"comment":"<GRA feedback in Vietnamese>"},"overallFeedback":"<1-2 sentences Vietnamese: main strength + main weakness>","corrections":[{"original":"<exact phrase>","corrected":"<fix>","explanation":"<reason Vietnamese>"}],"suggestions":["<tip Vietnamese>","<tip>","<tip>"]}
 
-Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded 0.5; corrections=3 most impactful errors only; suggestions=exactly 3; all text Vietnamese.`;
+Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded to nearest 0.5; corrections=3 most impactful errors only; suggestions=exactly 3; all comment/feedback text in Vietnamese.`;
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
