@@ -1190,54 +1190,40 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════
 
 async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
-  const task1Descriptors = `
-Task 1 criteria (TA=Task Achievement, CC=Coherence&Cohesion, LR=Lexical Resource, GRA=Grammar):
-- Band 6: adequate coverage of key features, some inaccuracies OK; clear progression; adequate vocab with minor errors; mix of simple/complex sentences, errors rarely impede communication.
-- Band 7: key features clearly highlighted; logical organisation; flexible vocab; frequent error-free sentences.
-- Calibration: clear description of main trends with reasonable language = 6–7. Isolated errors do NOT drop a band. Give benefit of the doubt when meaning is clear.`;
+  const task1Descriptors = `Task 1 Band Descriptors (TA/CC/LR/GRA):
+3: few key features, unclear org, very limited vocab, numerous errors impede meaning.
+4: some features covered but incomplete; limited vocab/grammar; errors frequent.
+5: main features covered but lacks detail/accuracy; some progression; limited range.
+6: adequate key features; clear progression; adequate vocab; mix of structures; minor errors OK.
+7: key features clearly highlighted; logical org; flexible vocab; mostly error-free.
+8: all features well-covered; well-organised; wide vocab; wide grammar range; rare errors.`;
 
-  const task2Descriptors = `
-Task 2 criteria (TR=Task Response, CC=Coherence&Cohesion, LR=Lexical Resource, GRA=Grammar):
-- Band 6: addresses all parts; relevant ideas (may be underdeveloped); position present; adequate vocab with minor errors; errors in grammar rarely impede communication.
-- Band 7: clear consistent position; ideas well-extended and supported; logically organised; sufficient vocab range; frequent error-free sentences.
-- Calibration: clear argument with some development and reasonable language = 6–6.5. Minor grammar slips do NOT automatically drop a band. Judge overall impression, not individual errors.`;
+  const task2Descriptors = `Task 2 Band Descriptors (TR/CC/LR/GRA):
+3: barely addresses task; very limited ideas; minimal cohesion; numerous errors.
+4: responds inadequately; ideas barely developed; limited vocab/grammar; frequent errors.
+5: addresses task but parts weak; some development; position sometimes unclear; limited range.
+6: addresses all parts; ideas developed; position present; adequate vocab; errors rarely impede.
+7: clear consistent position; ideas well-extended; logically organised; varied vocab; mostly error-free.
+8: fully developed position; well-organised; wide vocab; wide grammar range; minor errors only.`;
 
-  const systemPrompt = `You are a fair and experienced IELTS examiner. Your job is to grade IELTS Writing essays accurately and fairly according to the official IELTS Band Descriptors. You are neither too strict nor too lenient – you give credit where it is due and penalise only genuine weaknesses that impact communication or task fulfilment. Always follow the band descriptors carefully.`;
+  const systemPrompt = `You are an IELTS examiner. Grade essays accurately using the Band Descriptors. Be fair: give credit where due; penalise only genuine weaknesses that impede communication or task fulfilment.`;
 
   const descriptors = taskType === 1 ? task1Descriptors : task2Descriptors;
   const taLabel = taskType === 1 ? 'Task Achievement' : 'Task Response';
 
-  const userPrompt = `Grade this IELTS Writing Task ${taskType} essay using the band descriptors below.
+  const userPrompt = `Grade this IELTS Writing Task ${taskType} (${wordCount} words).
 
 ${descriptors}
 
----
-Question/Task: ${prompt}
+Question: ${prompt}
 
-Student's Essay (${wordCount} words):
+Essay:
 ${answer}
----
 
-Return ONLY valid JSON with this exact structure (no markdown, no explanation outside JSON):
-{
-  "bandScore": <overall band 0-9 rounded to nearest 0.5>,
-  "ta": { "score": <0-9>, "comment": "<specific feedback on ${taLabel}>" },
-  "cc": { "score": <0-9>, "comment": "<specific feedback on Coherence and Cohesion>" },
-  "lr": { "score": <0-9>, "comment": "<specific feedback on Lexical Resource>" },
-  "gra": { "score": <0-9>, "comment": "<specific feedback on Grammatical Range and Accuracy>" },
-  "overallFeedback": "<2-3 sentence overall feedback in Vietnamese, highlight what was done well and what to improve>",
-  "corrections": [
-    { "original": "<exact short phrase from essay>", "corrected": "<corrected version>", "explanation": "<brief reason in Vietnamese>" }
-  ],
-  "suggestions": ["<actionable suggestion in Vietnamese>", "<actionable suggestion>", "<actionable suggestion>"]
-}
+Return ONLY valid JSON (no markdown):
+{"bandScore":<0-9 nearest 0.5>,"ta":{"score":<0-9>,"comment":"<${taLabel} in Vietnamese>"},"cc":{"score":<0-9>,"comment":"<Coherence in Vietnamese>"},"lr":{"score":<0-9>,"comment":"<Lexical in Vietnamese>"},"gra":{"score":<0-9>,"comment":"<Grammar in Vietnamese>"},"overallFeedback":"<1-2 sentences Vietnamese: main strength + main weakness>","corrections":[{"original":"<phrase>","corrected":"<fix>","explanation":"<reason Vietnamese>"}],"suggestions":["<tip Vietnamese>","<tip>","<tip>"]}
 
-Rules:
-- bandScore = average of (ta.score + cc.score + lr.score + gra.score) / 4, rounded to nearest 0.5
-- corrections: only the 3-5 most impactful errors (skip minor punctuation issues)
-- suggestions: exactly 3 constructive, actionable improvements
-- overallFeedback and all Vietnamese fields must be in Vietnamese
-- Be fair: if the essay communicates clearly and addresses the task, it deserves at least a 6`;
+Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded 0.5; corrections=3 most impactful errors only; suggestions=exactly 3; all text Vietnamese.`;
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
