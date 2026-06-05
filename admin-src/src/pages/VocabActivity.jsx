@@ -400,9 +400,6 @@ export default function VocabActivity() {
                       <span style={{ fontWeight: 700, color: 'var(--yellow)' }}>
                         {(s.totalViews || 0).toLocaleString('vi-VN')}
                       </span>
-                      {(s.activeDays || 0) > 0 && (
-                        <div style={{ fontSize: 10, color: 'var(--text3)' }}>{s.activeDays} ngày</div>
-                      )}
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       {(s.activeDays || 0) > 0

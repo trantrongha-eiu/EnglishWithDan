@@ -390,6 +390,18 @@ function renderBookSidebar() {
       <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
     </div>
   `).join('');
+
+    // Update book count badge & add button state
+    const badge = document.getElementById('book-count-badge');
+    if (badge) badge.textContent = `${myBooks.length}/15`;
+    const addBtn = document.getElementById('btn-add-book');
+    if (addBtn) {
+        const atLimit = myBooks.length >= 15;
+        addBtn.title  = atLimit ? 'Đã đạt giới hạn 15 sổ' : 'Add new notebook';
+        addBtn.style.opacity = atLimit ? '0.4' : '';
+        addBtn.style.cursor  = atLimit ? 'not-allowed' : '';
+    }
+
     if (typeof syncSheetBooks === 'function') syncSheetBooks();
 }
 
@@ -509,7 +521,20 @@ function renderBookContent(book) {
         document.getElementById('book-progress-fill').style.width = pct + '%';
     });
 
-    renderWordsTable(book.words);
+    // Re-apply active search filter, otherwise render full list
+    const searchEl = document.getElementById('book-search');
+    const q = searchEl?.value.trim().toLowerCase();
+    if (q) {
+        const filtered = book.words.filter(w =>
+            w.word.toLowerCase().includes(q) ||
+            (w.meaning || '').toLowerCase().includes(q) ||
+            (w.note || '').toLowerCase().includes(q));
+        renderWordsTable(filtered);
+        const totalEl = document.getElementById('stat-total');
+        if (totalEl) totalEl.textContent = `${filtered.length}/${book.words.length}`;
+    } else {
+        renderWordsTable(book.words);
+    }
 
     // Cập nhật nút "Hard words"
     const hardBtn = document.getElementById('btn-hard-words');
@@ -611,14 +636,13 @@ function filterWords(q) {
 
 /* ── Status update ── */
 async function updateWordStatus(wordId, status, selectEl) {
+    const w = currentBookData?.words?.find(x => x._id === wordId);
+    const prevStatus = w?.status;
     try {
         selectEl.className = `status-select ${status}`;
-        // Optimistic local update — no full reload needed
-        const w = currentBookData?.words?.find(w => w._id === wordId);
         if (w) {
             w.status = status;
             updateStats(currentBookData);
-            // Flash the row green when marking as mastered
             if (status === 'da-thuoc') {
                 const row = document.getElementById(`row-${wordId}`);
                 if (row) {
@@ -628,11 +652,19 @@ async function updateWordStatus(wordId, status, selectEl) {
                 checkBookCompletion();
             }
         }
-        await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
+        const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ status })
         });
-    } catch { toast('Update error', 'error'); }
+        if (!res.ok) throw new Error('Server error');
+    } catch {
+        toast('Update error', 'error');
+        if (w && prevStatus !== undefined) {
+            w.status = prevStatus;
+            selectEl.className = `status-select ${prevStatus}`;
+            updateStats(currentBookData);
+        }
+    }
 }
 
 function updateStats(book) {
@@ -773,6 +805,10 @@ async function renameBook() {
         await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
         });
+        // Update local state so flashcard/practice titles reflect new name immediately
+        if (currentBookData) currentBookData.name = name;
+        const bEntry = myBooks.find(x => x._id === currentBookId);
+        if (bEntry) bEntry.name = name;
         toast('Notebook renamed');
         await loadMyBooks();
     } catch { toast('Error renaming', 'error'); }
@@ -938,24 +974,33 @@ async function createBook() {
 }
 
 /* ── Add word manual ── */
+let _lookupPhonetic = '';
+let _lookupPartOfSpeech = '';
+
 function openAddWordManual() {
     const wordCount = currentBookData?.words?.length ?? 0;
     if (wordCount >= 300) {
         toast('Sổ này đã đạt giới hạn 300 từ. Hãy tạo sổ mới hoặc xóa bớt từ cũ.', 'error');
         return;
     }
+    _lookupPhonetic = '';
+    _lookupPartOfSpeech = '';
     ['aw-word','aw-meaning','aw-example','aw-note'].forEach(id => { document.getElementById(id).value = ''; });
     openModal('modal-add-word');
     setTimeout(() => document.getElementById('aw-word').focus(), 100);
 }
 async function lookupNewWord(word) {
     if (!word || word.length < 2) return;
+    _lookupPhonetic = '';
+    _lookupPartOfSpeech = '';
     clearTimeout(lookupNewWord._t);
     lookupNewWord._t = setTimeout(async () => {
         try {
             const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
             if (!res.ok) return;
             const data = await res.json();
+            _lookupPhonetic     = data[0]?.phonetics?.find(p => p.text)?.text || '';
+            _lookupPartOfSpeech = data[0]?.meanings?.[0]?.partOfSpeech || '';
             const def = data[0]?.meanings[0]?.definitions[0];
             if (def && !document.getElementById('aw-example').value) {
                 document.getElementById('aw-example').value = def.example || '';
@@ -973,7 +1018,7 @@ async function addWordManual() {
     try {
         const res  = await fetch(`${API}/vocabbook/${currentBookId}/words`, {
             method: 'POST', headers: authH(),
-            body: JSON.stringify({ word, meaning, example, note, source: 'manual' })
+            body: JSON.stringify({ word, meaning, example, note, source: 'manual', phonetic: _lookupPhonetic, partOfSpeech: _lookupPartOfSpeech })
         });
         const data = await res.json();
         if (!data.success) { toast(data.message, 'error'); return; }
@@ -998,15 +1043,32 @@ window.openSaveWordModal = async function (wordObj) {
 
     if (!myBooks.length) await loadMyBooks();
     const list = document.getElementById('sw-book-list');
-    list.innerHTML = myBooks.map(b => `
-    <div class="book-opt" onclick="selectBookForSave('${b._id}',this)" id="bopt-${b._id}">
-      <span class="book-opt-emoji">${b.emoji}</span>
-      <div class="book-opt-info">
-        <div class="book-opt-name">${b.name}</div>
-        <div class="book-opt-count">${b.totalWords} words</div>
-      </div>
-    </div>
-  `).join('');
+    list.innerHTML = myBooks.map(b => {
+        const isFull = b.totalWords >= 300;
+        const isNear = b.totalWords >= 250 && !isFull;
+        const countColor = isFull ? '#ef4444' : isNear ? '#f59e0b' : 'var(--text3)';
+        const countLabel = isFull ? `${b.totalWords} / 300 (đầy)` : isNear ? `${b.totalWords} / 300` : `${b.totalWords} từ`;
+        return `<div class="book-opt" id="bopt-${b._id}"
+            onclick="${isFull ? '' : `selectBookForSave('${b._id}',this)`}"
+            style="${isFull ? 'opacity:.45;cursor:not-allowed;pointer-events:none' : ''}">
+          <span class="book-opt-emoji">${b.emoji}</span>
+          <div class="book-opt-info">
+            <div class="book-opt-name">${b.name}</div>
+            <div class="book-opt-count" style="color:${countColor}">${countLabel}</div>
+          </div>
+          ${isFull ? '<span style="font-size:10px;color:#ef4444;font-weight:700;flex-shrink:0;padding:2px 6px;border:1px solid #fca5a5;border-radius:4px">FULL</span>' : ''}
+        </div>`;
+    }).join('');
+
+    // Auto-select currently open book (if not full)
+    if (currentBookId) {
+        const curBook = myBooks.find(b => b._id === currentBookId);
+        if (curBook && curBook.totalWords < 300) {
+            selectedBookForSave = currentBookId;
+            const opt = document.getElementById(`bopt-${currentBookId}`);
+            if (opt) opt.classList.add('selected');
+        }
+    }
 
     openModal('modal-save-word');
 };
@@ -1101,7 +1163,9 @@ function closeUnitView() {
 async function loadUnits() {
     try {
         const res   = await fetch(`${API}/vocab/units`, { headers: authH() });
+        if (!res.ok) return;
         const units = await res.json();
+        if (!Array.isArray(units)) return;
         const sel   = document.getElementById('unitSelect');
         sel.innerHTML = '<option value="">-- Select Unit --</option>';
         units.forEach(u => {

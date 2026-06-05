@@ -20,8 +20,8 @@
   <!-- ── SIDEBAR (desktop only) ── -->
   <aside class="vocab-sidebar" id="vocabSidebar">
     <div class="sidebar-head">
-      My Notebooks
-      <button class="btn-add-book" onclick="openAddBookModal()" title="Add new notebook">＋</button>
+      <span>My Notebooks <span id="book-count-badge" style="font-size:10px;font-weight:500;opacity:.7;letter-spacing:0;text-transform:none"></span></span>
+      <button class="btn-add-book" id="btn-add-book" onclick="openAddBookModal()" title="Add new notebook">＋</button>
     </div>
     <div id="book-list-sidebar"><!-- Rendered by JS --></div>
     <div class="sidebar-divider"></div>
@@ -62,7 +62,7 @@
         <div class="book-topbar">
           <div class="book-top-title">
             <span class="book-top-emoji" id="book-top-emoji">📘</span>
-            <input class="book-editable-name" id="book-editable-name" value="Sổ 1" title="Click để đổi tên"/>
+            <input class="book-editable-name" id="book-editable-name" value="Sổ 1" title="Click để đổi tên" onkeypress="if(event.key==='Enter')renameBook()"/>
             <button class="btn-rename" onclick="renameBook()" title="Đổi tên"><i class="fas fa-pen"></i></button>
             <button class="btn-book-options" onclick="openCurrentBookMenu()" title="Tùy chọn sổ">⋯</button>
           </div>
@@ -71,7 +71,7 @@
             <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
             <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
             <span style="color:var(--text3);font-size:12px">·</span>
-            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> words</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> / 300 words</span>
           </div>
         </div>
         <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
@@ -200,7 +200,7 @@
                 <button class="btn-remembered" onclick="markAsRemembered()"><i class="fas fa-check-circle"></i> Remembered</button>
                 <button class="btn-not-remembered" onclick="markAsNotRemembered()"><i class="fas fa-times-circle"></i> Forgot</button>
               </div>
-              <div style="margin-top:14px" id="fbInputArea" style="display:none">
+              <div id="fbInputArea" style="margin-top:14px;display:none">
                 <div class="fb-input-row">
                   <input class="fb-input" id="fbInput" placeholder="Type the word to check..." onkeypress="if(event.key==='Enter')checkFillBlank()"/>
                   <button class="btn-hint-sm" onclick="showHint()"><i class="fas fa-lightbulb"></i></button>
