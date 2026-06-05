@@ -321,9 +321,8 @@
       width: 100%;
       border-radius: 20px;
       box-shadow: var(--shadow-lg);
-      object-fit: contain;
-      aspect-ratio: auto;
-      background: linear-gradient(135deg, #dbeafe, #fce4e4);
+      object-fit: cover;
+      aspect-ratio: 4/5;
     }
 
     .hero-float-card {
