@@ -1212,9 +1212,11 @@ CAPS: essay cut off/incomplete → TA ≤ 4; under 150 words → TA ≤ 5; no ov
 8: prompt appropriately and sufficiently addressed; clear well-developed position; ideas well extended and supported.
 CAPS: essay cut off/incomplete → TR ≤ 4; under 250 words → TR ≤ 5; no identifiable position → TR ≤ 4.`;
 
-  const sharedDescriptors = `CC: 4=ideas not arranged coherently/no progression; 5=organisation evident but not wholly logical; 6=generally coherent, clear overall progression, some faulty cohesion; 7=logically organised, clear progression, cohesive devices used flexibly; 8=logically sequenced, cohesion well managed.
-LR: 4=basic vocab, repetitive, errors may impede meaning; 5=limited range, frequent lapses in word choice; 6=generally adequate, meaning clear despite restricted range; 7=sufficient flexibility/precision, some less-common items; 8=wide resource, precise meanings, skilful use of idiomatic items.
-GRA: 4=very limited structures, grammatical errors frequent, may impede meaning; 5=limited repetitive structures, complex attempts tend to be faulty; 6=mix of simple/complex, limited flexibility, errors rarely impede; 7=variety of complex structures, generally well controlled; 8=wide range, majority of sentences error-free.`;
+  const sharedDescriptors = `CC: 4=ideas not arranged coherently/no progression; 5=organisation evident but not wholly logical; 6=generally coherent, clear overall progression, some faulty cohesion; 7=logically organised, clear progression, cohesive devices used flexibly; 8=logically sequenced, cohesion well managed; 9=seamlessly integrated, completely natural.
+LR: 4=basic vocab, repetitive, errors may impede meaning; 5=limited range, frequent lapses in word choice; 6=generally adequate, meaning clear despite restricted range; 7=sufficient flexibility/precision, some less-common items; 8=wide resource, precise meanings, skilful use of idiomatic items; 9=full flexibility, precise and sophisticated, rare minor slips.
+GRA: 4=very limited structures, grammatical errors frequent, may impede meaning; 5=limited repetitive structures, complex attempts tend to be faulty; 6=mix of simple/complex, limited flexibility, errors rarely impede; 7=variety of complex structures, generally well controlled; 8=wide range, majority of sentences error-free; 9=wide range, virtually all sentences error-free.
+
+CALIBRATION: Band 4 = communication is SERIOUSLY and FREQUENTLY impeded. Band 5 = limited but the reader can understand the message. Band 6 = mostly effective with noticeable weaknesses. Band 7 = good writing with minor issues. Most EFL learners who make a genuine effort score 5–6.5. Do NOT give Band 4 unless the criterion is clearly met by the descriptor above.`;
 
   const taLabel = taskType === 1 ? 'Task Achievement' : 'Task Response';
   const taskDescriptor = taskType === 1 ? task1TA : task2TR;
@@ -1226,7 +1228,7 @@ GRA: 4=very limited structures, grammatical errors frequent, may impede meaning;
     ? `\nCẢNH BÁO: Bài viết bị cắt đứt giữa chừng (không kết thúc bằng câu hoàn chỉnh). Áp dụng cap: ${taLabel} ≤ 4.`
     : '';
 
-  const systemPrompt = `You are a strict IELTS examiner. Apply official IDP/BC May 2023 Band Descriptors exactly. Enforce all band caps for incomplete essays, under-length responses, missing overview (Task 1) or missing position (Task 2). Respond ONLY in valid JSON. IMPORTANT: You MUST include sentenceFeedback covering EVERY sentence of the student essay — this is mandatory.`;
+  const systemPrompt = `You are an experienced, calibrated IELTS examiner (IDP/British Council certified). Apply the May 2023 Band Descriptors accurately — score exactly what the evidence shows, neither inflating nor deflating. Remember: most non-native learners who write a complete, coherent essay score 5–6.5. Reserve Band 4 ONLY when the descriptor explicitly matches (serious, frequent problems). Enforce band caps only when the stated condition is genuinely met. Respond ONLY in valid JSON. IMPORTANT: You MUST include sentenceFeedback covering EVERY sentence of the student essay — this is mandatory.`;
 
   const userPrompt = `Grade this IELTS Academic Writing Task ${taskType} (${wordCount} từ).${wordCountNote}${incompleteNote}
 
@@ -1241,7 +1243,7 @@ ${sharedDescriptors}
 **Bài làm của học sinh:**
 ${answer}
 
-STEP 1 – SCORES: Score each criterion 3–8. For each criterion write 1–2 sentences Vietnamese justification using descriptor language, addressing the student as "em".
+STEP 1 – SCORES: Score each criterion 4–9. Match the score to the band descriptor above — pick the band whose description best fits the essay, not the lowest band that has any overlap. For each criterion write 1–2 sentences Vietnamese justification using descriptor language, addressing the student as "em".
 
 STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY): Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
 - Mark as "issue" ONLY if the sentence has a CLEAR, OBJECTIVE problem: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement. The criterion badge must directly match the problem.
@@ -1249,7 +1251,7 @@ STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY): Go through EVERY single se
 - When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure as much as possible.
 
 Return ONLY valid JSON (no markdown, no explanation outside JSON):
-{"bandScore":<number>,"ta":{"score":<3-8>,"comment":"<Vietnamese 1-2 sentences>"},"cc":{"score":<3-8>,"comment":"<Vietnamese>"},"lr":{"score":<3-8>,"comment":"<Vietnamese>"},"gra":{"score":<3-8>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 1-2 sentences: strengths + main weaknesses, address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<improved English sentence>"},{"type":"ok","original":"<exact sentence>"}]}
+{"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese 1-2 sentences>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 1-2 sentences: strengths + main weaknesses, address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<improved English sentence>"},{"type":"ok","original":"<exact sentence>"}]}
 
 CRITICAL RULES:
 - bandScore field in JSON is for reference only — the server will recalculate it from (ta+cc+lr+gra)/4 rounded to nearest 0.5
@@ -1272,7 +1274,7 @@ CRITICAL RULES:
         { role: 'system', content: systemPrompt },
         { role: 'user',   content: userPrompt }
       ],
-      temperature: 0.3,
+      temperature: 0.4,
       max_tokens: 8192,
       response_format: { type: 'json_object' }
     })

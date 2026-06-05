@@ -167,9 +167,14 @@
 ═══════════════════════════════════════════ -->
 <div id="screen-history" class="screen">
   <div class="history-body">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <h2 class="history-title" style="margin-bottom:0">📋 Lịch sử làm bài Writing</h2>
       <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <button class="btn-hist-filter active" id="hf-all"  onclick="setHistoryFilter('all',this)">Tất cả</button>
+      <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)">🏆 Thi</button>
+      <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)">✏️ Luyện</button>
     </div>
     <div id="history-content">
       <div class="spinner"></div>
@@ -381,7 +386,7 @@
       <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">×</button>
     </div>
     <div class="review-modal-body" style="padding:20px">
-      <p style="font-size:14px;line-height:1.7;color:#444">Bài viết chưa được nộp sẽ <strong>không được lưu</strong>. Bạn có muốn thoát không?</p>
+      <p style="font-size:14px;line-height:1.7;color:#444">Bài viết chưa nộp sẽ được <strong>lưu nháp tự động</strong>. Bạn có thể vào lại để tiếp tục viết sau.</p>
     </div>
     <div class="review-modal-footer">
       <button class="btn-secondary" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">Tiếp tục viết</button>

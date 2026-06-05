@@ -283,6 +283,16 @@ function GradingModal({ attemptId, onClose, onGraded }) {
     setGrade(g => ({ ...g, [taskKey]: { ...g[taskKey], [field]: val } }));
   }
 
+  function autoTaskBand(taskKey) {
+    setGrade(g => {
+      const t = g[taskKey];
+      const scores = [t.ta, t.cc, t.lr, t.gra].map(Number).filter(s => !isNaN(s) && s > 0);
+      if (scores.length < 4) return g;
+      const band = Math.round((scores.reduce((a, b) => a + b, 0) / 4) * 2) / 2;
+      return { ...g, [taskKey]: { ...t, bandScore: band } };
+    });
+  }
+
   function autoOverall() {
     const b1 = grade.task1.bandScore;
     const b2 = grade.task2.bandScore;
@@ -408,7 +418,17 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   {attempt.task1Answer}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
-                  <BandInput label="Band Score" value={grade.task1.bandScore} onChange={v => setTask('task1', 'bandScore', v)} />
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
+                      <label className="form-label" style={{ fontSize: 11, marginBottom: 0 }}>Band Score</label>
+                      <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 10, padding: '1px 5px' }}
+                        onClick={() => autoTaskBand('task1')} title="Tính từ 4 tiêu chí">Auto</button>
+                    </div>
+                    <input className="form-input" type="number" min={0} max={9} step={0.5}
+                      value={grade.task1.bandScore ?? ''}
+                      onChange={e => setTask('task1', 'bandScore', e.target.value === '' ? null : Number(e.target.value))}
+                      style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
+                  </div>
                   {CRITERIA_T1.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
                 </div>
                 {aiRaw.task1 && (
@@ -436,7 +456,17 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   {attempt.task2Answer}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
-                  <BandInput label="Band Score" value={grade.task2.bandScore} onChange={v => setTask('task2', 'bandScore', v)} />
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
+                      <label className="form-label" style={{ fontSize: 11, marginBottom: 0 }}>Band Score</label>
+                      <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 10, padding: '1px 5px' }}
+                        onClick={() => autoTaskBand('task2')} title="Tính từ 4 tiêu chí">Auto</button>
+                    </div>
+                    <input className="form-input" type="number" min={0} max={9} step={0.5}
+                      value={grade.task2.bandScore ?? ''}
+                      onChange={e => setTask('task2', 'bandScore', e.target.value === '' ? null : Number(e.target.value))}
+                      style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
+                  </div>
                   {CRITERIA_T2.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
                 </div>
                 {aiRaw.task2 && (
@@ -966,7 +996,13 @@ export default function WritingTests() {
         <Tab label="🗂 Đề thi" active={tab === 'exams'} onClick={() => setTab('exams')} />
         <Tab label="📝 Task 1 Pool" active={tab === 'task1'} onClick={() => setTab('task1')} />
         <Tab label="📝 Task 2 Pool" active={tab === 'task2'} onClick={() => setTab('task2')} />
-        <Tab label="📊 Lịch sử nộp bài" active={tab === 'history'} onClick={() => setTab('history')} />
+        <Tab
+          label={(() => {
+            const n = history.filter(h => h.gradingStatus === 'pending' || h.gradingStatus === 'ai_done').length;
+            return n > 0 ? `📊 Lịch sử (${n} chờ chấm)` : '📊 Lịch sử nộp bài';
+          })()}
+          active={tab === 'history'} onClick={() => setTab('history')}
+        />
         <Tab label="📄 Bài mẫu" active={tab === 'samples'} onClick={() => setTab('samples')} />
       </div>
 

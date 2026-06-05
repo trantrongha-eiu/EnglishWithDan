@@ -439,67 +439,91 @@ async function submitExam(statusOverride) {
 // ──────────────────────────────────────────────────────
 // History
 // ──────────────────────────────────────────────────────
+let _allAttempts = [];
+let _historyFilter = 'all';
+
+function setHistoryFilter(type, btn) {
+  _historyFilter = type;
+  document.querySelectorAll('.btn-hist-filter').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  _renderHistory();
+}
+
+function _renderHistory() {
+  const container = document.getElementById('history-content');
+  const filtered = _historyFilter === 'all'
+    ? _allAttempts
+    : _allAttempts.filter(a => (a.submissionType || 'exam') === _historyFilter);
+
+  if (!filtered.length) {
+    container.innerHTML = '<p style="color:#6b7280;font-size:14px;text-align:center;padding:40px">Chưa có bài nộp nào.</p>';
+    return;
+  }
+
+  const rows = filtered.map(a => {
+    const date = new Date(a.submittedAt).toLocaleString('vi-VN');
+    const isPractice = a.submissionType === 'practice';
+    const timeStr = (!isPractice && (a.timeTaken || 0) > 0)
+      ? `${String(Math.floor(a.timeTaken / 60)).padStart(2,'0')}:${String(a.timeTaken % 60).padStart(2,'0')}`
+      : '–';
+    const typeBadge = isPractice
+      ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">✏️ Luyện</span>`
+      : `<span style="background:#f0fdf4;color:#15803d;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">🏆 Thi</span>`;
+    const t1badge = isPractice && (a.wordCount1 || 0) === 0 ? '<span style="color:#9ca3af">–</span>' : `<span class="badge-wc">${a.wordCount1 || 0}</span>`;
+    const t2badge = isPractice && (a.wordCount2 || 0) === 0 ? '<span style="color:#9ca3af">–</span>' : `<span class="badge-wc">${a.wordCount2 || 0}</span>`;
+    let scoreBadge;
+    if (a.gradingStatus === 'confirmed' && a.grading?.overallBand != null) {
+      const b = a.grading.overallBand;
+      const col = b >= 7 ? '#15803d' : b >= 5.5 ? '#1d4ed8' : b >= 4 ? '#d97706' : '#dc2626';
+      const bg  = b >= 7 ? '#dcfce7' : b >= 5.5 ? '#dbeafe' : b >= 4 ? '#fef3c7' : '#fee2e2';
+      scoreBadge = `<span style="background:${bg};color:${col};border-radius:6px;padding:3px 10px;font-size:13px;font-weight:800">${b}</span>`;
+    } else if (a.gradingStatus === 'ai_done') {
+      scoreBadge = `<span style="background:#fef3c7;color:#d97706;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600">Chờ GV</span>`;
+    } else {
+      scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
+    }
+    return `
+      <tr>
+        <td>${typeBadge}${escHtml(a.examName || '–')}</td>
+        <td>${t1badge}</td>
+        <td>${t2badge}</td>
+        <td>${scoreBadge}</td>
+        <td style="font-size:12px;color:#6b7280">${date}</td>
+        <td style="font-size:12px;color:#6b7280;text-align:center">${timeStr}</td>
+        <td>
+          <button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">👁 Xem</button>
+          <button class="btn-view-attempt" onclick="downloadAttemptById('${a._id}')" style="margin-left:4px">⬇ Tải</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>Đề thi</th>
+          <th>Task 1</th>
+          <th>Task 2</th>
+          <th>Band</th>
+          <th>Ngày nộp</th>
+          <th>TG</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
 async function loadHistory() {
   const container = document.getElementById('history-content');
   container.innerHTML = '<div class="spinner"></div>';
-
   try {
     const data = await apiFetch('/api/writing/my-history');
-    if (!data.success || !data.attempts.length) {
-      container.innerHTML = '<p style="color:#6b7280;font-size:14px;text-align:center;padding:40px">Chưa có bài nộp nào.</p>';
-      return;
-    }
-
-    const rows = data.attempts.map(a => {
-      const date = new Date(a.submittedAt).toLocaleString('vi-VN');
-      const mins = Math.floor((a.timeTaken || 0) / 60);
-      const secs = (a.timeTaken || 0) % 60;
-      const isPractice = a.submissionType === 'practice';
-      const typeBadge = isPractice
-        ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">✏️ Luyện</span>`
-        : '';
-      const t1badge = isPractice && (a.wordCount1 || 0) === 0 ? '–' : `<span class="badge-wc">${a.wordCount1 || 0}</span>`;
-      const t2badge = isPractice && (a.wordCount2 || 0) === 0 ? '–' : `<span class="badge-wc">${a.wordCount2 || 0}</span>`;
-      let scoreBadge;
-      if (a.gradingStatus === 'confirmed' && a.grading?.overallBand != null) {
-        scoreBadge = `<span style="background:#dcfce7;color:#15803d;border-radius:6px;padding:3px 10px;font-size:13px;font-weight:800">${a.grading.overallBand}</span>`;
-      } else if (a.gradingStatus === 'ai_done') {
-        scoreBadge = `<span style="background:#fef3c7;color:#d97706;border-radius:6px;padding:3px 10px;font-size:12px">Đang chờ GV</span>`;
-      } else {
-        scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
-      }
-      return `
-        <tr>
-          <td>${typeBadge}${escHtml(a.examName || '–')}</td>
-          <td>${t1badge}</td>
-          <td>${t2badge}</td>
-          <td>${scoreBadge}</td>
-          <td>${date}</td>
-          <td>${mins}:${String(secs).padStart(2,'0')}</td>
-          <td>
-            <button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">👁 Xem</button>
-            <button class="btn-view-attempt" onclick="downloadAttemptById('${a._id}')" style="margin-left:4px">⬇ Tải</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
-
-    container.innerHTML = `
-      <table class="history-table">
-        <thead>
-          <tr>
-            <th>Đề thi</th>
-            <th>Task 1 (từ)</th>
-            <th>Task 2 (từ)</th>
-            <th>Điểm Band</th>
-            <th>Ngày nộp</th>
-            <th>Thời gian</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    `;
+    if (!data.success) throw new Error(data.message || 'Lỗi tải lịch sử');
+    _allAttempts = data.attempts || [];
+    _renderHistory();
   } catch (e) {
     container.innerHTML = `<p style="color:#e53935;font-size:14px;text-align:center;padding:40px">${e.message}</p>`;
   }
@@ -550,11 +574,20 @@ async function viewAttempt(id) {
       ? _buildStudentFeedback(a.grading)
       : '';
 
+    const statusBannerHtml = (a.gradingStatus !== 'confirmed')
+      ? `<div style="background:${a.gradingStatus === 'ai_done' ? '#fef9c3' : '#f0f7ff'};border:1.5px solid ${a.gradingStatus === 'ai_done' ? '#f59e0b' : '#bfdbfe'};border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:${a.gradingStatus === 'ai_done' ? '#78350f' : '#1e40af'}">
+          ${a.gradingStatus === 'ai_done'
+            ? '🤖 AI đã chấm xong – đang chờ giáo viên xác nhận và gửi feedback.'
+            : '⏳ Bài đang chờ chấm – feedback sẽ xuất hiện ở đây sau khi giáo viên trả bài.'}
+        </div>`
+      : '';
+
     const isPractice = a.submissionType === 'practice';
     const showT1Section = !isPractice || (a.wordCount1 > 0) || (a.task1Answer && a.task1Answer.trim());
     const showT2Section = !isPractice || (a.wordCount2 > 0) || (a.task2Answer && a.task2Answer.trim());
 
     document.getElementById('review-modal-body').innerHTML = `
+      ${statusBannerHtml}
       ${feedbackHtml}
       ${showT1Section ? `<div class="review-task-section">
         <h4>Task 1 – ${a.wordCount1 || 0} từ</h4>
@@ -704,30 +737,44 @@ function doDownload(a) {
   const t1   = a.task1Snapshot || a.examId?.task1 || {};
   const t2   = a.task2Snapshot || a.examId?.task2 || {};
   const date = new Date(a.submittedAt).toLocaleString('vi-VN');
+  const isPractice = a.submissionType === 'practice';
+  const hasT1 = !isPractice || (a.wordCount1 || 0) > 0 || !!(a.task1Answer?.trim());
+  const hasT2 = !isPractice || (a.wordCount2 || 0) > 0 || !!(a.task2Answer?.trim());
 
   const lines = [
     `ENGLISH WITH DAN – WRITING SUBMISSION`,
     `========================================`,
     `Đề: ${a.examName || ''}`,
+    `Loại: ${isPractice ? 'Luyện tập' : 'Thi'}`,
     `Ngày nộp: ${date}`,
-    `Task 1: ${a.wordCount1 || 0} từ   |   Task 2: ${a.wordCount2 || 0} từ`,
+    hasT1 ? `Task 1: ${a.wordCount1 || 0} từ` : '',
+    hasT2 ? `Task 2: ${a.wordCount2 || 0} từ` : '',
     ``,
-    `────────────────────────────────────────`,
-    `TASK 1`,
-    `────────────────────────────────────────`,
-    t1.prompt || '',
-    ``,
-    a.task1Answer || '',
-    ``,
-    `────────────────────────────────────────`,
-    `TASK 2`,
-    `────────────────────────────────────────`,
-    t2.prompt || '',
-    ``,
-    a.task2Answer || '',
   ];
 
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+  if (hasT1) {
+    lines.push(
+      `────────────────────────────────────────`,
+      `TASK 1`,
+      `────────────────────────────────────────`,
+      t1.prompt || '',
+      ``,
+      a.task1Answer || '',
+      ``
+    );
+  }
+  if (hasT2) {
+    lines.push(
+      `────────────────────────────────────────`,
+      `TASK 2`,
+      `────────────────────────────────────────`,
+      t2.prompt || '',
+      ``,
+      a.task2Answer || '',
+    );
+  }
+
+  const blob = new Blob([lines.filter(l => l !== '').concat(['']) .join('\n')], { type: 'text/plain;charset=utf-8' });
   const url  = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href     = url;
@@ -1179,8 +1226,8 @@ async function loadPracticeHistory() {
           <td style="font-size:13px;color:#6b7280">${date}</td>
           <td><span class="badge-wc">${wc}w</span></td>
           <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>
-          <td style="font-weight:700;color:${band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : '#d97706'}">${band != null ? band : '–'}</td>
-          <td>${status === 'confirmed' ? `<button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">Xem</button>` : ''}</td>
+          <td style="font-weight:700;color:${band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : band != null ? '#d97706' : '#9ca3af'}">${band != null ? band : '–'}</td>
+          <td><button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">${status === 'confirmed' ? '👁 Xem' : '📄 Bài nộp'}</button></td>
         </tr>`;
       }).join('')}
       </tbody>
