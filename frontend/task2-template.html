@@ -529,7 +529,8 @@ let TPL_DATA = {
 let _tplActiveType = 'type01';
 let _tplShowVi     = false;
 let _tplScores     = {};
-let _pendingTypeId = null;
+let _pendingTypeId   = null;
+let _pendingExamSwitch = false;
 
 // Exam mode state
 let _examMode          = false;
@@ -846,9 +847,14 @@ function resetTplType() {
 function switchTplType(typeId) {
   if (typeId === _tplActiveType) return;
   if (_examMode) {
-    if (!confirm('Chuyển type sẽ thoát khỏi chế độ thi thử. Tiếp tục?')) return;
-    exitExamMode();
-    doSwitchType(typeId);
+    _pendingTypeId     = typeId;
+    _pendingExamSwitch = true;
+    const toMeta = TPL_TYPES.find(t => t.id === typeId);
+    document.getElementById('tpl-switch-sub').innerHTML =
+      `⏱️ Bạn đang ở <b>chế độ thi thử</b>.<br>Chuyển type sẽ <b>thoát khỏi chế độ thi thử</b>. Tiếp tục?`;
+    const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
+    if (confirmBtn) confirmBtn.textContent = toMeta ? `Chuyển → ${toMeta.label}` : 'Chuyển type';
+    document.getElementById('tpl-switch-overlay').classList.remove('hidden');
     return;
   }
   const type = TPL_DATA[_tplActiveType];
@@ -876,13 +882,19 @@ function switchTplType(typeId) {
 
 function confirmTypeSwitch() {
   document.getElementById('tpl-switch-overlay').classList.add('hidden');
-  if (_pendingTypeId) doSwitchType(_pendingTypeId);
-  _pendingTypeId = null;
+  const typeId = _pendingTypeId;
+  const wasExam = _pendingExamSwitch;
+  _pendingTypeId     = null;
+  _pendingExamSwitch = false;
+  if (!typeId) return;
+  if (wasExam) exitExamMode();
+  doSwitchType(typeId);
 }
 
 function cancelTypeSwitch() {
   document.getElementById('tpl-switch-overlay').classList.add('hidden');
-  _pendingTypeId = null;
+  _pendingTypeId     = null;
+  _pendingExamSwitch = false;
 }
 
 function doSwitchType(typeId) {
