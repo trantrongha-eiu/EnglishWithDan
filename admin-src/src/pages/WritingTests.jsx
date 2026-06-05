@@ -411,6 +411,16 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   <BandInput label="Band Score" value={grade.task1.bandScore} onChange={v => setTask('task1', 'bandScore', v)} />
                   {CRITERIA_T1.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
                 </div>
+                {aiRaw.task1 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginTop: 6 }}>
+                    {CRITERIA_T1.map(c => aiRaw.task1?.[c.key]?.comment ? (
+                      <div key={c.key} style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5, padding: '5px 7px', background: 'var(--surface2)', borderRadius: 6, borderLeft: '2px solid var(--border)' }}>
+                        <div style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', color: 'var(--text3)', marginBottom: 2 }}>{c.label}</div>
+                        {aiRaw.task1[c.key].comment}
+                      </div>
+                    ) : null)}
+                  </div>
+                )}
                 <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
                   value={grade.task1.feedback}
                   onChange={e => setTask('task1', 'feedback', e.target.value)}
@@ -429,6 +439,16 @@ function GradingModal({ attemptId, onClose, onGraded }) {
                   <BandInput label="Band Score" value={grade.task2.bandScore} onChange={v => setTask('task2', 'bandScore', v)} />
                   {CRITERIA_T2.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
                 </div>
+                {aiRaw.task2 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginTop: 6 }}>
+                    {CRITERIA_T2.map(c => aiRaw.task2?.[c.key]?.comment ? (
+                      <div key={c.key} style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5, padding: '5px 7px', background: 'var(--surface2)', borderRadius: 6, borderLeft: '2px solid var(--border)' }}>
+                        <div style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', color: 'var(--text3)', marginBottom: 2 }}>{c.label}</div>
+                        {aiRaw.task2[c.key].comment}
+                      </div>
+                    ) : null)}
+                  </div>
+                )}
                 <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
                   value={grade.task2.feedback}
                   onChange={e => setTask('task2', 'feedback', e.target.value)}
@@ -902,8 +922,8 @@ export default function WritingTests() {
     });
   }
 
-  const STATUS_MAP = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã xác nhận' };
-  const STATUS_COLOR = { pending: 'var(--text3)', ai_done: 'var(--text3)', confirmed: 'var(--green)' };
+  const STATUS_MAP = { pending: '⏳ Chờ chấm', ai_done: '🤖 Chờ xác nhận', confirmed: '✅ Đã xác nhận' };
+  const STATUS_COLOR = { pending: 'var(--text3)', ai_done: '#d97706', confirmed: 'var(--green)' };
 
   return (
     <>

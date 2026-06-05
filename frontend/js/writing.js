@@ -1129,12 +1129,17 @@ async function loadPracticeHistory() {
       // Hide restore banner (draft is outdated if there's a pending submission)
       const restoreBanner = document.getElementById('practice-restore-banner');
       if (restoreBanner) restoreBanner.style.display = 'none';
-      const taskLabel = (pending.examName || '').includes('Task 1') ? 'Task 1' : 'Task 2';
+      const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
+      const gradingLabel = pending.gradingStatus === 'ai_done' ? 'AI đã chấm, đang chờ giáo viên xác nhận' : 'đang chờ chấm';
       const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
-      descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} đang chờ chấm. Giáo viên sẽ sớm trả bài cho bạn.`;
+      descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} ${gradingLabel}. Kết quả sẽ hiện trong lịch sử sau khi được xác nhận.`;
       ['btn-practice-t1', 'btn-practice-t2'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang chờ chấm'; }
+      });
+      ['pcard-t1', 'pcard-t2'].forEach(id => {
+        const card = document.getElementById(id);
+        if (card) { card.style.cursor = 'not-allowed'; card.style.opacity = '0.6'; }
       });
     } else {
       practiceState.hasPending = false;
@@ -1143,6 +1148,10 @@ async function loadPracticeHistory() {
       const b2 = document.getElementById('btn-practice-t2');
       if (b1) { b1.disabled = false; b1.textContent = 'Chọn đề Task 1'; }
       if (b2) { b2.disabled = false; b2.textContent = 'Chọn đề Task 2'; }
+      ['pcard-t1', 'pcard-t2'].forEach(id => {
+        const card = document.getElementById(id);
+        if (card) { card.style.cursor = 'pointer'; card.style.opacity = '1'; }
+      });
     }
 
     if (!attempts.length) {

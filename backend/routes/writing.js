@@ -305,6 +305,7 @@ router.get('/my-history', auth, async (req, res) => {
   try {
     const attempts = await WritingAttempt.find({ userId: req.user._id })
       .sort({ submittedAt: -1 })
+      .limit(50)
       .select('-task1Answer -task2Answer');
     res.json({ success: true, attempts });
   } catch (err) {
