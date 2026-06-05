@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
-  en:     { type: String, required: true },
-  answer: { type: String, required: true },
-  vi:     { type: String, default: '' }
+  en:      { type: String, required: true },
+  answer:  { type: String, default: '' },
+  answers: { type: [String], default: undefined },
+  vi:      { type: String, default: '' }
 }, { _id: false });
 
 const sectionSchema = new mongoose.Schema({
