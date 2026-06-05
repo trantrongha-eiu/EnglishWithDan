@@ -6,7 +6,7 @@
   var LINKS = [
     { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading' },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening' },
-    { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing' },
+    { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
       children: [
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
@@ -16,16 +16,16 @@
       ]
     },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
-    { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true },
+    { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true, badgeId: 'navInboxBadge' },
   ];
+
+  var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
 
   function mkDesktopLinks() {
     return LINKS.map(function (l) {
       var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
       var cls = isActive ? ' class="active"' : '';
-      var badge = l.badge
-        ? '<span id="navInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle"></span>'
-        : '';
+      var badge = l.badgeId ? '<span id="' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       if (l.children) {
         var items = l.children.map(function (c) {
           var cc = page === c.href ? ' class="active"' : '';
@@ -42,9 +42,7 @@
     LINKS.forEach(function (l) {
       var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
       var active = isActive ? ' active' : '';
-      var badge = l.badge
-        ? '<span id="mobileInboxBadge" style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle"></span>'
-        : '';
+      var badge = l.badgeId ? '<span id="mob_' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       out.push('<a href="' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
       if (l.children) {
         l.children.forEach(function (c) {
@@ -147,19 +145,26 @@
     });
   });
 
-  // ── Unread badge ──────────────────────────────────────────
+  // ── Unread badges ─────────────────────────────────────────
+  function showBadge(badgeId, count) {
+    [badgeId, 'mob_' + badgeId].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) { b.textContent = count; b.style.display = count > 0 ? 'inline' : 'none'; }
+    });
+  }
+
   var token = localStorage.getItem('token');
   if (token) {
-    fetch(API + '/user/messages/unread-count', { headers: { Authorization: 'Bearer ' + token } })
+    var headers = { Authorization: 'Bearer ' + token };
+
+    fetch(API + '/user/messages/unread-count', { headers: headers })
       .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (d.count > 0) {
-          ['navInboxBadge', 'mobileInboxBadge'].forEach(function (id) {
-            var b = document.getElementById(id);
-            if (b) { b.textContent = d.count; b.style.display = 'inline'; }
-          });
-        }
-      })
+      .then(function (d) { if (d.count > 0) showBadge('navInboxBadge', d.count); })
+      .catch(function () {});
+
+    fetch(API + '/writing/unread-feedback-count', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d.count > 0) showBadge('navWritingBadge', d.count); })
       .catch(function () {});
   }
 })();

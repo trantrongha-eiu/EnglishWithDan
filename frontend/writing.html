@@ -261,12 +261,6 @@
      SCREEN 6 – CHỌN ĐỀ LUYỆN TẬP
 ═══════════════════════════════════════════ -->
 <div id="screen-practice" class="screen">
-  <header class="main-header">
-    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
-    <div class="header-right">
-      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
-    </div>
-  </header>
   <div class="history-body">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
       <h2 class="history-title" style="margin-bottom:0">✏️ Luyện tập Writing</h2>
@@ -279,28 +273,37 @@
       <p id="practice-pending-desc" style="font-size:12px;color:#78350f;margin:0">Vui lòng đợi giáo viên chấm xong bài hiện tại trước khi nộp bài mới.</p>
     </div>
 
-    <!-- Task selection -->
+    <!-- Task type cards -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px" id="practice-task-select">
       <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t1"
-        onclick="startPracticeTask(1)"
+        onclick="showPracticeTaskList(1)"
         onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
         onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
       >
         <div style="font-size:36px;margin-bottom:10px">📊</div>
         <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 1</div>
         <div style="font-size:12px;color:#6b7280">Graph / Chart / Table / Map<br/>Tối thiểu <strong>150 từ</strong></div>
-        <button id="btn-practice-t1" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();startPracticeTask(1)">Lấy đề Task 1</button>
+        <button id="btn-practice-t1" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();showPracticeTaskList(1)">Chọn đề Task 1</button>
       </div>
       <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t2"
-        onclick="startPracticeTask(2)"
+        onclick="showPracticeTaskList(2)"
         onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
         onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
       >
         <div style="font-size:36px;margin-bottom:10px">📝</div>
         <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 2</div>
         <div style="font-size:12px;color:#6b7280">Essay / Discussion / Opinion<br/>Tối thiểu <strong>250 từ</strong></div>
-        <button id="btn-practice-t2" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();startPracticeTask(2)">Lấy đề Task 2</button>
+        <button id="btn-practice-t2" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();showPracticeTaskList(2)">Chọn đề Task 2</button>
       </div>
+    </div>
+
+    <!-- Task list panel (shown after clicking T1/T2 card) -->
+    <div id="practice-task-list" style="display:none;margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <button class="btn-secondary" onclick="hidePracticeTaskList()">← Quay lại</button>
+        <h3 id="practice-list-title" style="font-size:15px;font-weight:700;margin:0">Chọn đề Task 1</h3>
+      </div>
+      <div id="practice-task-items"><div class="spinner"></div></div>
     </div>
 
     <!-- Practice history -->
@@ -363,12 +366,6 @@
      SCREEN 8 – ĐÃ NỘP BÀI LUYỆN TẬP
 ═══════════════════════════════════════════ -->
 <div id="screen-practice-done" class="screen">
-  <header class="main-header">
-    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
-    <div class="header-right">
-      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
-    </div>
-  </header>
   <div class="done-body">
     <div class="done-card">
       <div class="done-icon">📬</div>

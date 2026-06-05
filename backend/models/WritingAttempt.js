@@ -81,7 +81,9 @@ const WritingAttemptSchema = new mongoose.Schema({
     adminNote:    { type: String, default: '' },
     confirmedAt:  { type: Date },
     confirmedBy:  { type: String, default: '' }
-  }
+  },
+
+  feedbackRead: { type: Boolean, default: false, index: true }
 
 }, { timestamps: true });
 
