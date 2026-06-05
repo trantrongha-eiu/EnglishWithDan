@@ -1226,7 +1226,7 @@ GRA: 4=very limited structures, grammatical errors frequent, may impede meaning;
     ? `\nCẢNH BÁO: Bài viết bị cắt đứt giữa chừng (không kết thúc bằng câu hoàn chỉnh). Áp dụng cap: ${taLabel} ≤ 4.`
     : '';
 
-  const systemPrompt = `You are a strict IELTS examiner. Apply official IDP/BC May 2023 Band Descriptors exactly. Enforce all band caps for incomplete essays, under-length responses, missing overview (Task 1) or missing position (Task 2). Respond ONLY in valid JSON.`;
+  const systemPrompt = `You are a strict IELTS examiner. Apply official IDP/BC May 2023 Band Descriptors exactly. Enforce all band caps for incomplete essays, under-length responses, missing overview (Task 1) or missing position (Task 2). Respond ONLY in valid JSON. IMPORTANT: You MUST include sentenceFeedback covering EVERY sentence of the student essay — this is mandatory.`;
 
   const userPrompt = `Grade this IELTS Academic Writing Task ${taskType} (${wordCount} từ).${wordCountNote}${incompleteNote}
 
@@ -1241,13 +1241,20 @@ ${sharedDescriptors}
 **Bài làm của học sinh:**
 ${answer}
 
-STEP 1 – SCORES: Score each criterion 3–8, write 1–2 sentences Vietnamese justification per criterion (dùng ngôn ngữ của band descriptor, xưng hô "em" với học sinh).
-STEP 2 – SENTENCE FEEDBACK: Go through EVERY sentence. For each sentence with errors or room for improvement: mark as "issue". For sentences with no significant problems: mark as "ok".
+STEP 1 – SCORES: Score each criterion 3–8. For each criterion write 1–2 sentences Vietnamese justification using descriptor language, addressing the student as "em".
+
+STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY): Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
+- For sentences with errors or room for improvement: type "issue", state which criterion is affected (TA/CC/LR/GRA), explain the issue in Vietnamese, and provide an improved English version.
+- For sentences that are acceptable (no significant problem): type "ok".
 
 Return ONLY valid JSON (no markdown, no explanation outside JSON):
-{"bandScore":<avg 4 scores nearest 0.5>,"ta":{"score":<3-8>,"comment":"<Vietnamese justification 1-2 sentences>"},"cc":{"score":<3-8>,"comment":"<Vietnamese>"},"lr":{"score":<3-8>,"comment":"<Vietnamese>"},"gra":{"score":<3-8>,"comment":"<Vietnamese>"},"overallFeedback":"<1-2 câu Vietnamese: điểm mạnh + điểm yếu chính, xưng 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA/CC/LR/GRA>","issue":"<Vietnamese brief explanation>","better":"<corrected English version>"},{"type":"ok","original":"<exact sentence>"}]}
+{"bandScore":<number>,"ta":{"score":<3-8>,"comment":"<Vietnamese 1-2 sentences>"},"cc":{"score":<3-8>,"comment":"<Vietnamese>"},"lr":{"score":<3-8>,"comment":"<Vietnamese>"},"gra":{"score":<3-8>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 1-2 sentences: strengths + main weaknesses, address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<improved English sentence>"},{"type":"ok","original":"<exact sentence>"}]}
 
-Rules: bandScore = average(ta+cc+lr+gra)/4 rounded to nearest 0.5; sentenceFeedback must cover every sentence in order; all comment/feedback text in Vietnamese except "better" field which is English.`;
+CRITICAL RULES:
+- bandScore field in JSON is for reference only — the server will recalculate it from (ta+cc+lr+gra)/4 rounded to nearest 0.5
+- sentenceFeedback array MUST cover every sentence of the student essay in the original order
+- All comment/issue/overallFeedback text must be in Vietnamese; "better" field must be in English
+- Use teacher tone in Vietnamese, address student as "em"`;
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
@@ -1265,7 +1272,7 @@ Rules: bandScore = average(ta+cc+lr+gra)/4 rounded to nearest 0.5; sentenceFeedb
         { role: 'user',   content: userPrompt }
       ],
       temperature: 0.3,
-      max_tokens: 4096,
+      max_tokens: 8192,
       response_format: { type: 'json_object' }
     })
   });
@@ -1279,7 +1286,15 @@ Rules: bandScore = average(ta+cc+lr+gra)/4 rounded to nearest 0.5; sentenceFeedb
   const content = data.choices?.[0]?.message?.content || '';
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
-  return JSON.parse(jsonMatch[0]);
+
+  const result = JSON.parse(jsonMatch[0]);
+  // Recalculate bandScore from individual criterion scores to override AI's calculation
+  const scores = [result.ta?.score, result.cc?.score, result.lr?.score, result.gra?.score]
+    .map(Number).filter(s => !isNaN(s) && s > 0);
+  if (scores.length === 4) {
+    result.bandScore = Math.round((scores.reduce((a, b) => a + b, 0) / 4) * 2) / 2;
+  }
+  return result;
 }
 
 // POST /api/admin/writing-attempts/:id/ai-grade
