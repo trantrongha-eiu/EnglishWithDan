@@ -1001,12 +1001,14 @@ export default function WritingTests() {
       )}
 
       {tab === 'history' && (() => {
+        const [typeFilter, setTypeFilter] = useState('');
         const displayHistory = history.filter(h => {
           const u = h.userId || {};
           const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '';
           const matchSearch = !historySearch || name.toLowerCase().includes(historySearch.toLowerCase()) || (h.examName || '').toLowerCase().includes(historySearch.toLowerCase());
           const matchStatus = !historyFilter || h.gradingStatus === historyFilter;
-          return matchSearch && matchStatus;
+          const matchType = !typeFilter || (h.submissionType || 'exam') === typeFilter;
+          return matchSearch && matchStatus && matchType;
         });
         return (
           <>
@@ -1017,13 +1019,18 @@ export default function WritingTests() {
                 <option value="ai_done">🤖 AI đã chấm</option>
                 <option value="confirmed">✅ Đã xác nhận</option>
               </select>
+              <select className="form-input" value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ width: 160 }}>
+                <option value="">Tất cả loại</option>
+                <option value="exam">🏆 Bài thi</option>
+                <option value="practice">✏️ Luyện tập</option>
+              </select>
               <input className="form-input search-input" placeholder="Tìm học sinh, bài thi..."
                 value={historySearch} onChange={e => setHistorySearch(e.target.value)} style={{ maxWidth: 260 }} />
             </div>
             <div className="table-wrap">
               <table className="table">
                 <thead>
-                  <tr><th>HỌC SINH</th><th>BÀI THI</th><th>T1 (≥150w)</th><th>T2 (≥250w)</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
+                  <tr><th>HỌC SINH</th><th>LOẠI</th><th>BÀI THI</th><th>T1 (≥150w)</th><th>T2 (≥250w)</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
                 </thead>
                 <tbody>
                   {displayHistory.length === 0
@@ -1035,6 +1042,11 @@ export default function WritingTests() {
                       return (
                         <tr key={h._id}>
                           <td><strong>{name}</strong></td>
+                          <td>
+                            {h.submissionType === 'practice'
+                              ? <span className="badge badge-blue" style={{ fontSize: 11 }}>✏️ Luyện</span>
+                              : <span className="badge badge-gray" style={{ fontSize: 11 }}>🏆 Thi</span>}
+                          </td>
                           <td style={{ fontSize: 12, color: 'var(--text2)' }}>{h.examName || '–'}</td>
                           <td>{wcBadge(h.wordCount1, 150)}</td>
                           <td>{wcBadge(h.wordCount2, 250)}</td>

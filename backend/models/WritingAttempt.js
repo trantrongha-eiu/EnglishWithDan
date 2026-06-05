@@ -22,10 +22,15 @@ const WritingAttemptSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  submissionType: {
+    type: String,
+    enum: ['exam', 'practice'],
+    default: 'exam',
+    index: true
+  },
   examId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'WritingExam',
-    required: true
+    ref: 'WritingExam'
   },
   examName: { type: String, default: '' },
 

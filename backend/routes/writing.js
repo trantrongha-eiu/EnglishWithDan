@@ -146,6 +146,108 @@ router.post('/submit', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════
+// PRACTICE MODE – luyện Task 1 / Task 2 lẻ
+// ══════════════════════════════════════════════════
+
+// GET /api/writing/practice/task?taskType=1|2
+// Kiểm tra pending trước khi phát đề (anti-spam)
+router.get('/practice/task', auth, async (req, res) => {
+  try {
+    const taskType = parseInt(req.query.taskType);
+    if (taskType !== 1 && taskType !== 2)
+      return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
+
+    const pending = await WritingAttempt.findOne({
+      userId: req.user._id,
+      submissionType: 'practice',
+      gradingStatus: { $in: ['pending', 'ai_done'] }
+    }).select('_id submittedAt').lean();
+
+    if (pending)
+      return res.status(429).json({
+        success: false,
+        pendingId: pending._id,
+        message: 'Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên chấm xong trước khi nộp bài mới.'
+      });
+
+    const Model = taskType === 1 ? WritingTask1 : WritingTask2;
+    const task = await randomDoc(Model);
+    if (!task)
+      return res.status(404).json({ success: false, message: 'Chưa có đề bài. Vui lòng liên hệ giáo viên.' });
+
+    res.json({ success: true, task, taskType });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/writing/practice/submit
+// Body: { taskType, taskId, answer, wordCount }
+router.post('/practice/submit', auth, async (req, res) => {
+  try {
+    const { taskType, taskId, answer = '', wordCount = 0 } = req.body;
+    const tNum = parseInt(taskType);
+
+    if (tNum !== 1 && tNum !== 2)
+      return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
+    if (!answer.trim())
+      return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
+
+    // Anti-spam: block nếu còn bài pending
+    const pending = await WritingAttempt.findOne({
+      userId: req.user._id,
+      submissionType: 'practice',
+      gradingStatus: { $in: ['pending', 'ai_done'] }
+    });
+    if (pending)
+      return res.status(429).json({ success: false, message: 'Bạn còn bài đang chờ chấm.' });
+
+    const Model = tNum === 1 ? WritingTask1 : WritingTask2;
+    const task = taskId ? await Model.findById(taskId).lean() : null;
+
+    const attempt = new WritingAttempt({
+      userId: req.user._id,
+      submissionType: 'practice',
+      examName: `Luyện Task ${tNum}`,
+      ...(tNum === 1 ? {
+        task1Id:       taskId || undefined,
+        task1Snapshot: task ? { imageUrl: task.imageUrl || '', instructions: task.instructions || '', prompt: task.prompt || '' } : {},
+        task1Answer:   answer,
+        wordCount1:    Math.max(0, Math.floor(Number(wordCount))),
+      } : {
+        task2Id:       taskId || undefined,
+        task2Snapshot: task ? { instructions: task.instructions || '', prompt: task.prompt || '' } : {},
+        task2Answer:   answer,
+        wordCount2:    Math.max(0, Math.floor(Number(wordCount))),
+      }),
+      submittedAt: new Date(),
+      status: 'completed'
+    });
+    await attempt.save();
+
+    res.status(201).json({ success: true, attemptId: attempt._id });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/writing/practice/history
+router.get('/practice/history', auth, async (req, res) => {
+  try {
+    const attempts = await WritingAttempt.find({
+      userId: req.user._id,
+      submissionType: 'practice'
+    })
+      .sort({ submittedAt: -1 })
+      .limit(20)
+      .select('-task1Answer -task2Answer');
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
 // GET /api/writing/my-history
 // ══════════════════════════════════════════════════
 router.get('/my-history', auth, async (req, res) => {

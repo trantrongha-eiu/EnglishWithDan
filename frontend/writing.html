@@ -50,8 +50,11 @@
       <div id="key-msg" class="key-msg hidden"></div>
       <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()">✏️ Bắt đầu làm bài</button>
       <div style="margin-top:16px;border-top:1px solid #f0f0f0;padding-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-secondary" style="font-size:13px" onclick="showPracticeMode()">
+          ✏️ Luyện tập lẻ
+        </button>
         <button class="btn-secondary" style="font-size:13px" onclick="showScreen('screen-history');loadHistory()">
-          📋 Xem lịch sử làm bài
+          📋 Xem lịch sử
         </button>
         <button class="btn-secondary" style="font-size:13px" onclick="loadWritingSamples()">
           📄 Tài liệu mẫu
@@ -251,6 +254,173 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 6 – CHỌN ĐỀ LUYỆN TẬP
+═══════════════════════════════════════════ -->
+<div id="screen-practice" class="screen">
+  <header class="main-header">
+    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
+    <div class="header-right">
+      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+    </div>
+  </header>
+  <div class="history-body">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h2 class="history-title" style="margin-bottom:0">✏️ Luyện tập Writing</h2>
+      <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+    </div>
+
+    <!-- Pending notice -->
+    <div id="practice-pending-notice" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:20px">
+      <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 4px">⏳ Bạn đang có bài chờ chấm</p>
+      <p id="practice-pending-desc" style="font-size:12px;color:#78350f;margin:0">Vui lòng đợi giáo viên chấm xong bài hiện tại trước khi nộp bài mới.</p>
+    </div>
+
+    <!-- Task selection -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px" id="practice-task-select">
+      <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t1"
+        onclick="startPracticeTask(1)"
+        onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
+        onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
+      >
+        <div style="font-size:36px;margin-bottom:10px">📊</div>
+        <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 1</div>
+        <div style="font-size:12px;color:#6b7280">Graph / Chart / Table / Map<br/>Tối thiểu <strong>150 từ</strong></div>
+        <button id="btn-practice-t1" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();startPracticeTask(1)">Lấy đề Task 1</button>
+      </div>
+      <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t2"
+        onclick="startPracticeTask(2)"
+        onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
+        onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
+      >
+        <div style="font-size:36px;margin-bottom:10px">📝</div>
+        <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 2</div>
+        <div style="font-size:12px;color:#6b7280">Essay / Discussion / Opinion<br/>Tối thiểu <strong>250 từ</strong></div>
+        <button id="btn-practice-t2" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();startPracticeTask(2)">Lấy đề Task 2</button>
+      </div>
+    </div>
+
+    <!-- Practice history -->
+    <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">📋 Lịch sử luyện tập</h3>
+    <div id="practice-history-list"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 7 – VIẾT BÀI LUYỆN TẬP
+═══════════════════════════════════════════ -->
+<div id="screen-practice-write" class="screen">
+  <!-- Topbar -->
+  <div class="exam-topbar">
+    <div class="exam-topbar-left">
+      <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExitPractice()">← Thoát</button>
+      <span id="pw-task-label" style="font-weight:600;font-size:14px;color:var(--text2,#555)">Task 1 – Luyện tập</span>
+    </div>
+    <div class="exam-topbar-center">
+      <span style="font-size:13px;color:var(--text3,#888)">⏱ <span id="pw-stopwatch">00:00</span></span>
+    </div>
+    <div class="exam-topbar-right">
+      <button class="exam-topbar-btn" onclick="confirmSubmitPractice()">Nộp bài ✓</button>
+    </div>
+  </div>
+
+  <!-- Task title bar -->
+  <div class="task-titlebar">
+    <strong id="pw-title-label">Task 1 – Luyện tập</strong>
+    <p id="pw-instructions-label" style="font-size:12px;color:#777;margin:0"></p>
+  </div>
+
+  <!-- Split body -->
+  <div class="exam-body">
+    <div class="exam-left" id="pw-left-panel"></div>
+    <div class="exam-right">
+      <textarea
+        class="answer-textarea"
+        id="pw-textarea"
+        placeholder="Write your answer here..."
+        spellcheck="true"
+        oninput="onPracticeInput()"
+      ></textarea>
+      <div class="word-count-bar">
+        Word Count: <strong id="pw-wc" style="margin-left:4px">0</strong>
+        <span id="pw-wc-target" style="margin-left:6px;font-size:12px;color:#6b7280"></span>
+        <div class="wc-progress-wrap"><div class="wc-progress-bar" id="pw-progress-bar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="exam-footer" style="justify-content:flex-end;gap:12px">
+    <button class="btn-secondary" onclick="confirmExitPractice()">Thoát</button>
+    <button class="btn-submit-exam" onclick="confirmSubmitPractice()">📤 Nộp bài</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 8 – ĐÃ NỘP BÀI LUYỆN TẬP
+═══════════════════════════════════════════ -->
+<div id="screen-practice-done" class="screen">
+  <header class="main-header">
+    <div class="logo"><span class="logo-blue">Daniel</span><span class="logo-red">Hà</span></div>
+    <div class="header-right">
+      <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+    </div>
+  </header>
+  <div class="done-body">
+    <div class="done-card">
+      <div class="done-icon">📬</div>
+      <h2>Đã nộp bài!</h2>
+      <p id="pw-done-label" style="font-weight:600;color:#111;margin-bottom:4px"></p>
+      <p style="color:#6b7280;font-size:14px">Bài của bạn đã được gửi đến giáo viên.<br/>Bạn sẽ nhận được email khi bài được chấm.</p>
+      <div style="margin:18px 0;padding:14px 18px;background:#f0f7ff;border-radius:10px;border:1.5px solid #bfdbfe;text-align:left">
+        <p style="font-size:13px;font-weight:600;color:#1e40af;margin:0 0 4px">⚠️ Lưu ý</p>
+        <p style="font-size:12px;color:#1d4ed8;margin:0">Mỗi lần chỉ được nộp <strong>1 bài</strong>. Bài tiếp theo chỉ được nộp sau khi giáo viên đã chấm và trả bài.</p>
+      </div>
+      <div class="done-actions">
+        <button class="btn-secondary" onclick="showPracticeMode()">✏️ Xem lịch sử luyện tập</button>
+        <button class="btn-primary"   onclick="showScreen('screen-key')">🏠 Trang chủ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm exit practice modal -->
+<div class="modal-overlay" id="practice-exit-modal">
+  <div class="review-modal" style="max-width:420px">
+    <div class="review-modal-header">
+      <h3>Thoát bài luyện?</h3>
+      <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">×</button>
+    </div>
+    <div class="review-modal-body" style="padding:20px">
+      <p style="font-size:14px;line-height:1.7;color:#444">Bài viết chưa được nộp sẽ <strong>không được lưu</strong>. Bạn có muốn thoát không?</p>
+    </div>
+    <div class="review-modal-footer">
+      <button class="btn-secondary" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">Tiếp tục viết</button>
+      <button class="btn-primary" onclick="exitPracticeWrite()">Thoát</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm submit practice modal -->
+<div class="modal-overlay" id="practice-submit-modal">
+  <div class="review-modal" style="max-width:420px">
+    <div class="review-modal-header">
+      <h3>Nộp bài luyện tập?</h3>
+      <button class="review-modal-close" onclick="document.getElementById('practice-submit-modal').classList.remove('open')">×</button>
+    </div>
+    <div class="review-modal-body" style="padding:20px">
+      <p style="font-size:14px;line-height:1.7;color:#444">
+        Số từ: <strong id="ps-wc-confirm">0</strong><br/>
+        Sau khi nộp, bạn sẽ <strong>không thể nộp thêm bài</strong> cho đến khi giáo viên chấm xong.
+      </p>
+    </div>
+    <div class="review-modal-footer">
+      <button class="btn-secondary" onclick="document.getElementById('practice-submit-modal').classList.remove('open')">Tiếp tục viết</button>
+      <button class="btn-primary" id="btn-confirm-submit-practice" onclick="submitPractice()">Nộp bài</button>
+    </div>
   </div>
 </div>
 

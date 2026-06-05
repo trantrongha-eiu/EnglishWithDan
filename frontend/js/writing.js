@@ -935,9 +935,225 @@ function discardSaved() {
 // ──────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  const overlay = ['exit-modal-overlay', 'confirm-modal-overlay', 'review-modal-overlay'];
+  const overlay = ['exit-modal-overlay', 'confirm-modal-overlay', 'review-modal-overlay',
+                   'practice-exit-modal', 'practice-submit-modal'];
   for (const id of overlay) {
     const el = document.getElementById(id);
     if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }
   }
 });
+
+// ══════════════════════════════════════════════════════
+// PRACTICE MODE – Luyện Task 1 / Task 2 lẻ
+// ══════════════════════════════════════════════════════
+const practiceState = {
+  taskType: null,
+  task: null,
+  wordCount: 0,
+  stopwatchInterval: null,
+  seconds: 0
+};
+
+function showPracticeMode() {
+  showScreen('screen-practice');
+  loadPracticeHistory();
+}
+
+async function loadPracticeHistory() {
+  const listEl = document.getElementById('practice-history-list');
+  const noticeEl = document.getElementById('practice-pending-notice');
+  const descEl   = document.getElementById('practice-pending-desc');
+  listEl.innerHTML = '<div class="spinner"></div>';
+  try {
+    const d = await apiFetch('/writing/practice/history');
+    const attempts = d.attempts || [];
+
+    // Check if any pending
+    const pending = attempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
+    if (pending) {
+      noticeEl.style.display = '';
+      const taskLabel = pending.wordCount1 > 0 ? 'Task 1' : 'Task 2';
+      const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
+      descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} đang chờ chấm. Giáo viên sẽ sớm trả bài cho bạn.`;
+      // Disable task buttons
+      ['btn-practice-t1', 'btn-practice-t2'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang chờ chấm'; }
+      });
+    } else {
+      noticeEl.style.display = 'none';
+      const b1 = document.getElementById('btn-practice-t1');
+      const b2 = document.getElementById('btn-practice-t2');
+      if (b1) { b1.disabled = false; b1.textContent = 'Lấy đề Task 1'; }
+      if (b2) { b2.disabled = false; b2.textContent = 'Lấy đề Task 2'; }
+    }
+
+    if (!attempts.length) {
+      listEl.innerHTML = '<p style="color:#9ca3af;font-size:14px;text-align:center;padding:24px 0">Chưa có bài luyện tập nào.</p>';
+      return;
+    }
+
+    const STATUS = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã chấm' };
+    const STATUS_COL = { pending: '#f59e0b', ai_done: '#f59e0b', confirmed: '#16a34a' };
+
+    listEl.innerHTML = `<table class="history-table" style="width:100%">
+      <thead><tr>
+        <th>Task</th><th>Ngày nộp</th><th>Số từ</th><th>Trạng thái</th><th>Band</th><th></th>
+      </tr></thead>
+      <tbody>
+      ${attempts.map(a => {
+        const isT1 = (a.wordCount1 || 0) > 0 || (a.task1Id);
+        const taskLabel = isT1 ? 'Task 1' : 'Task 2';
+        const wc = isT1 ? (a.wordCount1 || 0) : (a.wordCount2 || 0);
+        const band = a.grading?.overallBand;
+        const status = a.gradingStatus || 'pending';
+        const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
+        return `<tr>
+          <td><span class="badge-wc">${taskLabel}</span></td>
+          <td style="font-size:13px;color:#6b7280">${date}</td>
+          <td><span class="badge-wc">${wc}w</span></td>
+          <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>
+          <td style="font-weight:700;color:${band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : '#d97706'}">${band != null ? band : '–'}</td>
+          <td>${status === 'confirmed' ? `<button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">Xem</button>` : ''}</td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table>`;
+  } catch (e) {
+    listEl.innerHTML = '<p style="color:#ef4444;font-size:13px">Không tải được lịch sử.</p>';
+  }
+}
+
+async function startPracticeTask(taskType) {
+  const btnId = taskType === 1 ? 'btn-practice-t1' : 'btn-practice-t2';
+  const btn = document.getElementById(btnId);
+  const origText = btn?.textContent || '';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang tải...'; }
+
+  try {
+    const d = await apiFetch(`/writing/practice/task?taskType=${taskType}`);
+    if (!d.success) {
+      showToast(d.message || 'Không lấy được đề', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = origText; }
+      return;
+    }
+    practiceState.taskType = taskType;
+    practiceState.task = d.task;
+    practiceState.wordCount = 0;
+    practiceState.seconds = 0;
+    renderPracticeWriteScreen(taskType, d.task);
+    showScreen('screen-practice-write');
+    startPracticeStopwatch();
+    setTimeout(() => { const ta = document.getElementById('pw-textarea'); if (ta) ta.focus(); }, 100);
+  } catch (e) {
+    showToast(e.message || 'Lỗi kết nối', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = origText; }
+  }
+}
+
+function renderPracticeWriteScreen(taskType, task) {
+  const minWords = taskType === 1 ? 150 : 250;
+  document.getElementById('pw-task-label').textContent = `Task ${taskType} – Luyện tập`;
+  document.getElementById('pw-title-label').textContent = `Task ${taskType} – Luyện tập`;
+  document.getElementById('pw-instructions-label').textContent = task.instructions || '';
+  document.getElementById('pw-wc-target').textContent = `/ ${minWords}w`;
+  document.getElementById('pw-wc').textContent = '0';
+  document.getElementById('pw-progress-bar').style.width = '0%';
+  document.getElementById('pw-textarea').value = '';
+
+  const leftPanel = document.getElementById('pw-left-panel');
+  let html = '';
+  if (taskType === 1 && task.imageUrl) {
+    html += `<img src="${task.imageUrl}" alt="Task 1 image" style="max-width:100%;border-radius:8px;margin-bottom:12px;border:1px solid #e5e7eb" />`;
+  }
+  html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
+  leftPanel.innerHTML = html;
+}
+
+function onPracticeInput() {
+  const ta = document.getElementById('pw-textarea');
+  if (!ta) return;
+  const words = ta.value.trim() === '' ? 0 : ta.value.trim().split(/\s+/).length;
+  practiceState.wordCount = words;
+  const minWords = practiceState.taskType === 1 ? 150 : 250;
+  const pct = Math.min(100, (words / minWords) * 100);
+  document.getElementById('pw-wc').textContent = words;
+  const bar = document.getElementById('pw-progress-bar');
+  if (bar) {
+    bar.style.width = pct + '%';
+    bar.style.background = words >= minWords ? '#22c55e' : words >= minWords * 0.8 ? '#f59e0b' : '#3d8bff';
+  }
+}
+
+function startPracticeStopwatch() {
+  clearInterval(practiceState.stopwatchInterval);
+  practiceState.seconds = 0;
+  practiceState.stopwatchInterval = setInterval(() => {
+    practiceState.seconds++;
+    const m = String(Math.floor(practiceState.seconds / 60)).padStart(2, '0');
+    const s = String(practiceState.seconds % 60).padStart(2, '0');
+    const el = document.getElementById('pw-stopwatch');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function stopPracticeStopwatch() {
+  clearInterval(practiceState.stopwatchInterval);
+}
+
+function confirmExitPractice() {
+  const ta = document.getElementById('pw-textarea');
+  if (ta && ta.value.trim()) {
+    document.getElementById('practice-exit-modal').classList.add('open');
+  } else {
+    exitPracticeWrite();
+  }
+}
+
+function exitPracticeWrite() {
+  document.getElementById('practice-exit-modal').classList.remove('open');
+  stopPracticeStopwatch();
+  showScreen('screen-practice');
+}
+
+function confirmSubmitPractice() {
+  const ta = document.getElementById('pw-textarea');
+  if (!ta || !ta.value.trim()) {
+    showToast('Vui lòng viết bài trước khi nộp', 'error');
+    return;
+  }
+  document.getElementById('ps-wc-confirm').textContent = practiceState.wordCount;
+  document.getElementById('practice-submit-modal').classList.add('open');
+}
+
+async function submitPractice() {
+  const ta = document.getElementById('pw-textarea');
+  const answer = ta?.value.trim() || '';
+  if (!answer) return;
+
+  const btn = document.getElementById('btn-confirm-submit-practice');
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang nộp...'; }
+
+  try {
+    const d = await apiFetch('/writing/practice/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        taskType: practiceState.taskType,
+        taskId: practiceState.task?._id,
+        answer,
+        wordCount: practiceState.wordCount
+      })
+    });
+    if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
+
+    stopPracticeStopwatch();
+    document.getElementById('practice-submit-modal').classList.remove('open');
+    const label = `Task ${practiceState.taskType} (${practiceState.wordCount} từ)`;
+    document.getElementById('pw-done-label').textContent = `Đã nộp ${label}`;
+    showScreen('screen-practice-done');
+  } catch (e) {
+    showToast(e.message || 'Nộp bài thất bại', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Nộp bài'; }
+  }
+}
