@@ -1219,30 +1219,35 @@ GRA: 4=very limited structures, grammatical errors frequent, may impede meaning;
   const taLabel = taskType === 1 ? 'Task Achievement' : 'Task Response';
   const taskDescriptor = taskType === 1 ? task1TA : task2TR;
 
-  const systemPrompt = `You are a strict IELTS examiner following the official IELTS Band Descriptors (IDP/BC, May 2023). Apply all band caps for incomplete essays, under-length responses, and missing overview/position. Do not give credit for what is missing.`;
-
   const wordCountNote = isUnderLength
-    ? `\nWARNING: Essay is ${wordCount} words (minimum ${minWords}). Apply under-length cap to TA/TR score.`
+    ? `\nCẢNH BÁO: Bài viết chỉ có ${wordCount} từ (tối thiểu ${minWords} từ). Áp dụng cap điểm ${taLabel}.`
     : '';
   const incompleteNote = isIncomplete
-    ? `\nWARNING: Essay appears to be cut off (does not end with a complete sentence). Apply incomplete-essay cap: TA/TR ≤ 4.`
+    ? `\nCẢNH BÁO: Bài viết bị cắt đứt giữa chừng (không kết thúc bằng câu hoàn chỉnh). Áp dụng cap: ${taLabel} ≤ 4.`
     : '';
 
-  const userPrompt = `Grade this IELTS Writing Task ${taskType} (${wordCount} words).${wordCountNote}${incompleteNote}
+  const systemPrompt = `You are a strict IELTS examiner. Apply official IDP/BC May 2023 Band Descriptors exactly. Enforce all band caps for incomplete essays, under-length responses, missing overview (Task 1) or missing position (Task 2). Respond ONLY in valid JSON.`;
 
+  const userPrompt = `Grade this IELTS Academic Writing Task ${taskType} (${wordCount} từ).${wordCountNote}${incompleteNote}
+
+BAND DESCRIPTORS – ${taLabel}:
 ${taskDescriptor}
 
+BAND DESCRIPTORS – CC / LR / GRA:
 ${sharedDescriptors}
 
-Question: ${prompt}
+**Đề bài:** ${prompt}
 
-Essay:
+**Bài làm của học sinh:**
 ${answer}
 
-Return ONLY valid JSON (no markdown):
-{"bandScore":<0-9 nearest 0.5>,"ta":{"score":<0-9>,"comment":"<${taLabel} feedback in Vietnamese – explicitly mention if essay is incomplete or under word count>"},"cc":{"score":<0-9>,"comment":"<CC feedback in Vietnamese>"},"lr":{"score":<0-9>,"comment":"<LR feedback in Vietnamese>"},"gra":{"score":<0-9>,"comment":"<GRA feedback in Vietnamese>"},"overallFeedback":"<1-2 sentences Vietnamese: main strength + main weakness>","corrections":[{"original":"<exact phrase>","corrected":"<fix>","explanation":"<reason Vietnamese>"}],"suggestions":["<tip Vietnamese>","<tip>","<tip>"]}
+STEP 1 – SCORES: Score each criterion 3–8, write 1–2 sentences Vietnamese justification per criterion (dùng ngôn ngữ của band descriptor, xưng hô "em" với học sinh).
+STEP 2 – SENTENCE FEEDBACK: Go through EVERY sentence. For each sentence with errors or room for improvement: mark as "issue". For sentences with no significant problems: mark as "ok".
 
-Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded to nearest 0.5; corrections=3 most impactful errors only; suggestions=exactly 3; all comment/feedback text in Vietnamese.`;
+Return ONLY valid JSON (no markdown, no explanation outside JSON):
+{"bandScore":<avg 4 scores nearest 0.5>,"ta":{"score":<3-8>,"comment":"<Vietnamese justification 1-2 sentences>"},"cc":{"score":<3-8>,"comment":"<Vietnamese>"},"lr":{"score":<3-8>,"comment":"<Vietnamese>"},"gra":{"score":<3-8>,"comment":"<Vietnamese>"},"overallFeedback":"<1-2 câu Vietnamese: điểm mạnh + điểm yếu chính, xưng 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA/CC/LR/GRA>","issue":"<Vietnamese brief explanation>","better":"<corrected English version>"},{"type":"ok","original":"<exact sentence>"}]}
+
+Rules: bandScore = average(ta+cc+lr+gra)/4 rounded to nearest 0.5; sentenceFeedback must cover every sentence in order; all comment/feedback text in Vietnamese except "better" field which is English.`;
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
@@ -1260,7 +1265,7 @@ Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded to nearest 0.5; corrections=3 most 
         { role: 'user',   content: userPrompt }
       ],
       temperature: 0.3,
-      max_tokens: 2048,
+      max_tokens: 4096,
       response_format: { type: 'json_object' }
     })
   });

@@ -325,9 +325,10 @@ function GradingModal({ attemptId, onClose, onGraded }) {
           cc:  { score: g.cc,  comment: ai?.cc?.comment  || '' },
           lr:  { score: g.lr,  comment: ai?.lr?.comment  || '' },
           gra: { score: g.gra, comment: ai?.gra?.comment || '' },
-          overallFeedback: g.feedback || ai?.overallFeedback || '',
-          corrections:     ai?.corrections || [],
-          suggestions:     ai?.suggestions || [],
+          overallFeedback:  g.feedback || ai?.overallFeedback || '',
+          sentenceFeedback: ai?.sentenceFeedback || [],
+          corrections:      ai?.corrections || [],
+          suggestions:      ai?.suggestions || [],
         };
       }
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {

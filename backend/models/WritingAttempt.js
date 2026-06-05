@@ -7,6 +7,8 @@ const taskGradeSubSchema = {
   lr:  { score: { type: Number }, comment: { type: String, default: '' } },
   gra: { score: { type: Number }, comment: { type: String, default: '' } },
   overallFeedback: { type: String, default: '' },
+  sentenceFeedback: [{ type: mongoose.Schema.Types.Mixed }],
+  // legacy fields kept for backward compat
   corrections: [{
     original:    { type: String, default: '' },
     corrected:   { type: String, default: '' },

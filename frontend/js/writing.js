@@ -574,11 +574,12 @@ function closeReviewModal() {
 function _buildStudentFeedback(g) {
   function taskCard(label, td) {
     if (!td) return '';
+    const isT1 = label.includes('1');
     const criteria = [
-      { key: 'ta',  label: 'Task Achievement' },
+      { key: 'ta',  label: isT1 ? 'Task Achievement' : 'Task Response' },
       { key: 'cc',  label: 'Coherence & Cohesion' },
       { key: 'lr',  label: 'Lexical Resource' },
-      { key: 'gra', label: 'Grammar' }
+      { key: 'gra', label: 'Grammatical Range & Accuracy' }
     ];
     const bars = criteria.map(c => {
       const score = td[c.key]?.score ?? 0;
@@ -587,7 +588,7 @@ function _buildStudentFeedback(g) {
       return `<div class="fb-crit-row">
         <div class="fb-crit-header">
           <span class="fb-crit-label">${escHtml(c.label)}</span>
-          <strong style="color:${color}">${score}</strong>
+          <strong style="color:${color};font-size:15px">${score}</strong>
         </div>
         <div class="fb-crit-track">
           <div style="background:${color};width:${pct}%;height:100%;border-radius:99px;transition:width .4s"></div>
@@ -596,6 +597,39 @@ function _buildStudentFeedback(g) {
       </div>`;
     }).join('');
 
+    // Sentence-by-sentence feedback (new format)
+    const sfItems = (td.sentenceFeedback || []);
+    let sfHtml = '';
+    if (sfItems.length > 0) {
+      const rows = sfItems.map(s => {
+        if (s.type === 'ok') {
+          return `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#f0fdf4;border-radius:8px;border-left:3px solid #22c55e">
+            <span style="font-size:15px;flex-shrink:0">✔️</span>
+            <span style="font-size:13px;color:#166534;line-height:1.6">${escHtml(s.original)}</span>
+          </div>`;
+        }
+        // type === 'issue'
+        const critColor = s.criterion === 'GRA' ? '#7c3aed' : s.criterion === 'LR' ? '#0369a1' : s.criterion === 'CC' ? '#b45309' : '#dc2626';
+        return `<div style="background:#fff7f7;border-radius:8px;border-left:3px solid #ef4444;padding:10px 12px">
+          <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px">
+            <span style="font-size:15px;flex-shrink:0">❌</span>
+            <span style="font-size:13px;color:#7f1d1d;text-decoration:line-through;line-height:1.6">${escHtml(s.original)}</span>
+          </div>
+          ${s.criterion ? `<span style="display:inline-block;background:${critColor};color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px;margin-bottom:5px">${escHtml(s.criterion)}</span>` : ''}
+          ${s.issue ? `<div style="font-size:12px;color:#6b7280;margin-bottom:6px;padding-left:4px">🔍 ${escHtml(s.issue)}</div>` : ''}
+          ${s.better ? `<div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="font-size:15px;flex-shrink:0">✅</span>
+            <span style="font-size:13px;color:#14532d;font-weight:500;line-height:1.6">${escHtml(s.better)}</span>
+          </div>` : ''}
+        </div>`;
+      }).join('');
+      sfHtml = `<div class="fb-section">
+        <div class="fb-section-lbl" style="color:#1e40af;border-color:#bfdbfe;background:#eff6ff">📝 Phân tích từng câu</div>
+        <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
+      </div>`;
+    }
+
+    // Legacy: corrections (for older graded attempts)
     const corrections = (td.corrections || []).map(c =>
       `<div class="fb-correction">
         <span class="fb-corr-orig">${escHtml(c.original)}</span>
@@ -603,7 +637,6 @@ function _buildStudentFeedback(g) {
         <span class="fb-corr-fixed">${escHtml(c.corrected)}</span>
         ${c.explanation ? `<div class="fb-corr-expl">${escHtml(c.explanation)}</div>` : ''}
       </div>`).join('');
-
     const suggestions = (td.suggestions || []).map(s =>
       `<li class="fb-suggestion">${escHtml(s)}</li>`).join('');
 
@@ -614,8 +647,9 @@ function _buildStudentFeedback(g) {
       </div>
       ${bars}
       ${td.overallFeedback ? `<div class="fb-overall-txt">${escHtml(td.overallFeedback)}</div>` : ''}
-      ${corrections ? `<div class="fb-section"><div class="fb-section-lbl fb-section-corr">Lỗi cần sửa</div>${corrections}</div>` : ''}
-      ${suggestions ? `<div class="fb-section"><div class="fb-section-lbl fb-section-sugg">Gợi ý cải thiện</div><ul class="fb-sugg-list">${suggestions}</ul></div>` : ''}
+      ${sfHtml}
+      ${!sfItems.length && corrections ? `<div class="fb-section"><div class="fb-section-lbl fb-section-corr">Lỗi cần sửa</div>${corrections}</div>` : ''}
+      ${!sfItems.length && suggestions ? `<div class="fb-section"><div class="fb-section-lbl fb-section-sugg">Gợi ý cải thiện</div><ul class="fb-sugg-list">${suggestions}</ul></div>` : ''}
     </div>`;
   }
 
@@ -982,7 +1016,7 @@ async function loadPracticeHistory() {
   const descEl   = document.getElementById('practice-pending-desc');
   listEl.innerHTML = '<div class="spinner"></div>';
   try {
-    const d = await apiFetch('/writing/practice/history');
+    const d = await apiFetch('/api/writing/practice/history');
     const attempts = d.attempts || [];
 
     // Check if any pending
@@ -1057,7 +1091,7 @@ async function showPracticeTaskList(taskType) {
   itemsEl.innerHTML = '<div class="spinner"></div>';
 
   try {
-    const d = await apiFetch(`/writing/practice/tasks?taskType=${taskType}`);
+    const d = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
     if (!d.success || !d.tasks || !d.tasks.length) {
       itemsEl.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px">Chưa có đề bài nào. Vui lòng liên hệ giáo viên.</p>';
       return;
@@ -1186,7 +1220,7 @@ async function submitPractice() {
   if (btn) { btn.disabled = true; btn.textContent = 'Đang nộp...'; }
 
   try {
-    const d = await apiFetch('/writing/practice/submit', {
+    const d = await apiFetch('/api/writing/practice/submit', {
       method: 'POST',
       body: JSON.stringify({
         taskType: practiceState.taskType,
