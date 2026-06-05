@@ -134,7 +134,28 @@
       .t2-tpl-sub-title{font-size:10px}
       .t2-type-tab-btn{padding:9px 10px;font-size:11px}
       .t2-tpl-all-done-banner{margin:10px 11px 2px;font-size:12px}
+      .t2-type-info-card{margin:10px 11px 0;padding:10px 12px}
+      .t2-type-structure{display:none}
     }
+
+    /* ── Type info card ── */
+    .t2-type-info-card{margin:14px 16px 2px;border-radius:12px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1.5px solid #c4b5fd;background:linear-gradient(135deg,#ede9fe,#e0e7ff)}
+    [data-theme="dark"] .t2-type-info-card{background:linear-gradient(135deg,#1e1b4b,#1e293b);border-color:#3730a3}
+    .t2-type-info-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .t2-type-info-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
+    .t2-type-info-name{font-size:14px;font-weight:800;color:#3730a3;line-height:1.2}
+    [data-theme="dark"] .t2-type-info-name{color:#a5b4fc}
+    .t2-type-info-desc{font-size:11.5px;color:#6b7280;margin-top:3px;line-height:1.4}
+    [data-theme="dark"] .t2-type-info-desc{color:#94a3b8}
+    .t2-type-structure{font-size:11px;font-weight:600;color:#6366f1;background:rgba(99,102,241,.1);border-radius:8px;padding:5px 10px;white-space:nowrap}
+    [data-theme="dark"] .t2-type-structure{color:#a5b4fc;background:rgba(99,102,241,.15)}
+
+    /* ── Section accent borders ── */
+    .t2-tpl-sub-section{border-left:3px solid transparent}
+    .t2-tpl-sub-section[data-sec="0"]{border-left-color:#3b82f6}
+    .t2-tpl-sub-section[data-sec="1"]{border-left-color:#10b981}
+    .t2-tpl-sub-section[data-sec="2"]{border-left-color:#f59e0b}
+    .t2-tpl-sub-section[data-sec="3"]{border-left-color:#8b5cf6}
   </style>
 </head>
 <body>
@@ -176,7 +197,7 @@
   <div class="tpl-page-hero-inner">
     <div>
       <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
-      <p class="tpl-page-sub">Điền từ 99 mẫu câu theo 6 dạng bài IELTS Task 2</p>
+      <p class="tpl-page-sub">Điền từ 118 mẫu câu theo 7 dạng bài IELTS Task 2</p>
     </div>
     <span class="tpl-overall-badge" id="tpl-main-badge">0 / 99 mẫu câu</span>
   </div>
@@ -246,12 +267,27 @@ function initUser() {
 
 // ── Template data (hardcoded fallback — overridden by API if DB has data) ──
 let TPL_TYPES = [
-  { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv' },
-  { id: 'type02', label: 'Type 02', sub: 'Discuss Both' },
-  { id: 'type03', label: 'Type 03', sub: 'Cause–Solution' },
-  { id: 'type04', label: 'Type 04', sub: 'Effect–Solution' },
-  { id: 'type05', label: 'Type 05', sub: 'Cause–Effect' },
-  { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree' },
+  { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv',    icon: 'fa-scale-balanced',    color: '#2563eb',
+    desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.',
+    structure: 'Intro → Advantages → Disadvantages → Conclusion' },
+  { id: 'type02', label: 'Type 02', sub: 'Discuss Both',    icon: 'fa-comments',          color: '#7c3aed',
+    desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.',
+    structure: 'Intro → View 1 → View 2 → Conclusion' },
+  { id: 'type03', label: 'Type 03', sub: 'Cause–Solution',  icon: 'fa-lightbulb',         color: '#0891b2',
+    desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.',
+    structure: 'Intro → Causes → Solutions → Conclusion' },
+  { id: 'type04', label: 'Type 04', sub: 'Effect–Solution', icon: 'fa-gears',             color: '#dc2626',
+    desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.',
+    structure: 'Intro → Effects → Solutions → Conclusion' },
+  { id: 'type05', label: 'Type 05', sub: 'Cause–Effect',    icon: 'fa-arrow-trend-up',    color: '#d97706',
+    desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.',
+    structure: 'Intro → Causes → Effects → Conclusion' },
+  { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree',  icon: 'fa-check-double',      color: '#16a34a',
+    desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.',
+    structure: 'Intro → Main Argument → Counter-argument → Conclusion' },
+  { id: 'type07', label: 'Type 07', sub: 'Pos/Neg Dev',     icon: 'fa-circle-half-stroke', color: '#db2777',
+    desc: 'Đánh giá xem một xu hướng là phát triển tích cực hay tiêu cực.',
+    structure: 'Intro → Main Case → Acknowledge & Reinforce → Conclusion' },
 ];
 
 let TPL_DATA = {
@@ -432,6 +468,38 @@ let TPL_DATA = {
       ]},
     ]
   },
+  type07: {
+    name: 'Positive or Negative Development',
+    sections: [
+      { title: '① Introduction – Mở bài', items: [
+        { en: 'In recent years, (noun phrase) has emerged as one of the most ___ trends in contemporary society, sparking widespread debate.', answer: 'controversial', vi: '→ Trong những năm gần đây, ... đã nổi lên là một trong những xu hướng gây tranh cãi nhất trong xã hội hiện đại.' },
+        { en: 'Views on this development remain deeply ___, with some welcoming it as progress and others raising serious concerns.', answer: 'divided', vi: '→ Quan điểm về sự phát triển này vẫn còn rất phân cực, với một số người hoan nghênh nó như tiến bộ và những người khác bày tỏ lo ngại.' },
+        { en: 'While (noun phrase) undoubtedly brings certain ___, it also carries the potential for significant drawbacks.', answer: 'benefits', vi: '→ Mặc dù ... chắc chắn mang lại một số lợi ích, nó cũng tiềm ẩn những hạn chế đáng kể.' },
+        { en: 'I firmly ___ that, on balance, this constitutes a predominantly positive/negative development for the reasons outlined below.', answer: 'believe', vi: '→ Tôi kiên định cho rằng, xét tổng thể, đây là một sự phát triển phần lớn tích cực/tiêu cực vì những lý do nêu dưới đây.' },
+        { en: 'This essay will ___ both dimensions of this issue before arriving at a well-supported conclusion.', answer: 'examine', vi: '→ Bài viết này sẽ xem xét cả hai khía cạnh của vấn đề trước khi đưa ra kết luận có căn cứ.' },
+      ]},
+      { title: '② Body 1 – Main Case · Lập luận chính', items: [
+        { en: 'There are several ___ reasons to view (noun phrase) as a positive/negative development.', answer: 'compelling', vi: '→ Có một số lý do thuyết phục để coi ... là một sự phát triển tích cực/tiêu cực.' },
+        { en: 'One of the most notable aspects is that (noun phrase) has ___ contributed to (outcome), benefiting/harming a large portion of society.', answer: 'considerably', vi: '→ Một trong những khía cạnh đáng chú ý nhất là ... đã đóng góp đáng kể vào (kết quả), mang lại lợi ích/gây hại cho một bộ phận lớn của xã hội.' },
+        { en: 'This is primarily because (reason), which has a ___ and far-reaching effect on (group/society/economy).', answer: 'profound', vi: '→ Nguyên nhân chính là ..., điều này có tác động sâu sắc và rộng khắp đến (nhóm người/xã hội/nền kinh tế).' },
+        { en: 'To illustrate, (specific example) clearly ___ the magnitude of this trend\'s impact on everyday life.', answer: 'demonstrates', vi: '→ Để minh họa, (ví dụ cụ thể) cho thấy rõ mức độ tác động của xu hướng này đối với cuộc sống hàng ngày.' },
+        { en: 'Furthermore, the influence of (noun phrase) ___ well beyond the individual, reshaping communities and institutions alike.', answer: 'extends', vi: '→ Hơn nữa, sức ảnh hưởng của ... vươn xa hơn cá nhân, định hình lại cả các cộng đồng lẫn tổ chức.' },
+        { en: 'Research has consistently ___ that (fact/statistic), providing strong evidence that this development is largely beneficial/harmful.', answer: 'confirmed', vi: '→ Nghiên cứu đã liên tục xác nhận rằng (thực tế/thống kê), cung cấp bằng chứng rõ ràng rằng sự phát triển này phần lớn có lợi/có hại.' },
+      ]},
+      { title: '③ Body 2 – Acknowledge & Reinforce · Nhìn nhận đa chiều (Band 7+)', items: [
+        { en: 'Admittedly, (noun phrase) is not without its shortcomings, and critics have raised ___ concerns about (specific issue).', answer: 'legitimate', vi: '→ Thừa nhận rằng, ... không phải là không có thiếu sót, và các nhà phê bình đã đặt ra những lo ngại chính đáng về (vấn đề cụ thể).' },
+        { en: 'However, these concerns, while not entirely ___, do not fundamentally alter the overall trajectory of this development.', answer: 'unfounded', vi: '→ Tuy nhiên, những lo ngại này, dù không hoàn toàn vô căn cứ, nhưng không thay đổi cơ bản xu hướng tổng thể của sự phát triển này.' },
+        { en: 'When considered in a broader context, the positive/negative aspects of (noun phrase) clearly ___ its drawbacks/merits.', answer: 'outweigh', vi: '→ Khi xem xét trong bối cảnh rộng hơn, các khía cạnh tích cực/tiêu cực của ... rõ ràng vượt trội hơn hạn chế/ưu điểm của nó.' },
+        { en: 'Moreover, any potential risks can be effectively ___ through appropriate governance, public awareness, and informed policy decisions.', answer: 'mitigated', vi: '→ Hơn nữa, bất kỳ rủi ro tiềm ẩn nào cũng có thể được giảm thiểu hiệu quả thông qua quản trị phù hợp, nhận thức cộng đồng và quyết định chính sách sáng suốt.' },
+        { en: 'Ultimately, the ___ benefits of this development far outweigh the associated risks, making a strong case for this position.', answer: 'cumulative', vi: '→ Cuối cùng, những lợi ích tích lũy của sự phát triển này vượt xa so với những rủi ro liên quan, tạo ra lập luận mạnh mẽ cho quan điểm này.' },
+      ]},
+      { title: '④ Conclusion – Kết bài', items: [
+        { en: 'In conclusion, having examined this issue from multiple ___, I maintain that this is fundamentally a positive/negative development.', answer: 'angles', vi: '→ Tóm lại, sau khi xem xét vấn đề này từ nhiều góc độ, tôi duy trì rằng đây về cơ bản là một sự phát triển tích cực/tiêu cực.' },
+        { en: 'The evidence ___ suggests that the advantages/disadvantages of (noun phrase) far exceed the drawbacks/merits, warranting a clear position on this matter.', answer: 'overwhelmingly', vi: '→ Bằng chứng áp đảo cho thấy lợi ích/tác hại của ... vượt xa so với hạn chế/ưu điểm, đòi hỏi một lập trường rõ ràng về vấn đề này.' },
+        { en: 'Going forward, it is ___ that individuals, communities, and policymakers take a proactive approach to maximise the gains and minimise the risks of this trend.', answer: 'essential', vi: '→ Trong tương lai, điều thiết yếu là các cá nhân, cộng đồng và nhà hoạch định chính sách cần có cách tiếp cận chủ động để tối đa hóa lợi ích và giảm thiểu rủi ro của xu hướng này.' },
+      ]},
+    ]
+  },
 };
 
 // ── State ────────────────────────────────────────────────────
@@ -482,7 +550,7 @@ function renderTabs() {
   wrap.innerHTML = TPL_TYPES.map(t => `
     <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
       onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}">
-      ${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
+      ${t.icon ? `<i class="fas ${t.icon}" style="font-size:9px;opacity:.65;margin-right:2px"></i>` : ''}${t.label}<br><span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
     </button>`).join('');
 }
 
@@ -499,6 +567,19 @@ function renderTplContent() {
       if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
     });
   });
+
+  const typeMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
+  const infoCard = typeMeta && typeMeta.icon ? `
+    <div class="t2-type-info-card">
+      <div class="t2-type-info-left">
+        <div class="t2-type-info-icon" style="background:${typeMeta.color||'#6366f1'}"><i class="fas ${typeMeta.icon}"></i></div>
+        <div>
+          <div class="t2-type-info-name">${escHtml(type.name)}</div>
+          ${typeMeta.desc ? `<div class="t2-type-info-desc">${escHtml(typeMeta.desc)}</div>` : ''}
+        </div>
+      </div>
+      ${typeMeta.structure ? `<div class="t2-type-structure"><i class="fas fa-route" style="margin-right:4px;font-size:10px;opacity:.7"></i>${escHtml(typeMeta.structure)}</div>` : ''}
+    </div>` : '';
 
   const sectionsHtml = type.sections.map((sec, si) => {
     const itemsHtml = sec.items.map((item, ii) => {
@@ -528,7 +609,7 @@ function renderTplContent() {
         </div>
       </div>`;
     }).join('');
-    return `<div class="t2-tpl-sub-section">
+    return `<div class="t2-tpl-sub-section" data-sec="${si}">
       <div class="t2-tpl-sub-title"><i class="fas fa-layer-group"></i> ${sec.title}</div>
       ${itemsHtml}
     </div>`;
@@ -536,7 +617,7 @@ function renderTplContent() {
 
   const pct = total ? Math.round(done / total * 100) : 0;
   area.innerHTML = `
-    <div class="t2-tpl-content">${sectionsHtml}</div>
+    <div class="t2-tpl-content">${infoCard}${sectionsHtml}</div>
     <div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
       🎉 Xuất sắc! Bạn đã hoàn thành <b>${escHtml(type.name)}</b>! Nhấn "Làm lại" để ôn tiếp.
     </div>
