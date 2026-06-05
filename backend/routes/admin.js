@@ -1244,8 +1244,9 @@ ${answer}
 STEP 1 – SCORES: Score each criterion 3–8. For each criterion write 1–2 sentences Vietnamese justification using descriptor language, addressing the student as "em".
 
 STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY): Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
-- For sentences with errors or room for improvement: type "issue", state which criterion is affected (TA/CC/LR/GRA), explain the issue in Vietnamese, and provide an improved English version.
-- For sentences that are acceptable (no significant problem): type "ok".
+- Mark as "issue" ONLY if the sentence has a CLEAR, OBJECTIVE problem: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement. The criterion badge must directly match the problem.
+- Mark as "ok" if the sentence is grammatically correct and fulfils its purpose — even if it is simple or you could personally phrase it differently. Do NOT mark "issue" just because a fancier version exists. Do NOT rewrite a correct sentence into a completely different idea.
+- When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure as much as possible.
 
 Return ONLY valid JSON (no markdown, no explanation outside JSON):
 {"bandScore":<number>,"ta":{"score":<3-8>,"comment":"<Vietnamese 1-2 sentences>"},"cc":{"score":<3-8>,"comment":"<Vietnamese>"},"lr":{"score":<3-8>,"comment":"<Vietnamese>"},"gra":{"score":<3-8>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 1-2 sentences: strengths + main weaknesses, address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<improved English sentence>"},{"type":"ok","original":"<exact sentence>"}]}
