@@ -458,6 +458,16 @@ function GradingModal({ attemptId, onClose, onGraded }) {
               </div>
             </div>
 
+            {/* Warning: confirmed but missing sentence feedback */}
+            {attempt?.gradingStatus === 'confirmed' &&
+              !attempt?.grading?.task1?.sentenceFeedback?.length &&
+              !attempt?.grading?.task2?.sentenceFeedback?.length && (
+              <div style={{ background: '#fffbeb', border: '1px solid #f59e0b', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#92400e', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <span style={{ flexShrink: 0 }}>⚠️</span>
+                <span>Bài này <strong>chưa có phân tích câu chi tiết</strong> (chấm lúc cũ). Nhấn lại <strong>🤖 AI T1 / AI T2</strong> rồi bấm Xác nhận để học sinh nhận được phần sửa lỗi từng câu.</span>
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
               <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
               <button className="btn btn-ghost" onClick={() => runAiGrade(1)}
