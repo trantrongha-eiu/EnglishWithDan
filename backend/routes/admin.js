@@ -1189,7 +1189,7 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
 // WRITING AI GRADING
 // ══════════════════════════════════════════════════
 
-async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
+async function gradeTaskWithAI(taskType, prompt, answer, wordCount, _attempt = 0) {
   const minWords = taskType === 1 ? 150 : 250;
   const isUnderLength = wordCount < minWords;
   const isIncomplete = answer.trim().length > 0 && !answer.trim().match(/[.!?]["']?\s*$/);
@@ -1276,6 +1276,18 @@ CRITICAL RULES:
       response_format: { type: 'json_object' }
     })
   });
+
+  if (response.status === 429 && _attempt < 2) {
+    // Rate limit: parse retry-after from Groq error message and wait
+    let waitMs = 35000;
+    try {
+      const errData = await response.json();
+      const match = (errData?.error?.message || '').match(/try again in ([\d.]+)s/i);
+      if (match) waitMs = Math.ceil(parseFloat(match[1]) * 1000) + 1000;
+    } catch (_) {}
+    await new Promise(r => setTimeout(r, waitMs));
+    return gradeTaskWithAI(taskType, prompt, answer, wordCount, _attempt + 1);
+  }
 
   if (!response.ok) {
     const errText = await response.text();
