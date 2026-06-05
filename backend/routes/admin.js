@@ -1225,29 +1225,34 @@ Return ONLY valid JSON (no markdown):
 
 Rules: bandScore=avg(ta+cc+lr+gra)/4 rounded 0.5; corrections=3 most impactful errors only; suggestions=exactly 3; all text Vietnamese.`;
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-        generationConfig: { temperature: 0.3, maxOutputTokens: 4096 }
-      })
-    }
-  );
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: userPrompt }
+      ],
+      temperature: 0.3,
+      max_tokens: 2048,
+      response_format: { type: 'json_object' }
+    })
+  });
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`Gemini API error: ${errText}`);
+    throw new Error(`Groq API error: ${errText}`);
   }
 
   const data = await response.json();
-  const content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const content = data.choices?.[0]?.message?.content || '';
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
   return JSON.parse(jsonMatch[0]);
