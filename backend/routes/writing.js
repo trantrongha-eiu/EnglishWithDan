@@ -1,5 +1,6 @@
 const express        = require('express');
 const router         = express.Router();
+const rateLimit      = require('express-rate-limit');
 const auth           = require('../middleware/auth');
 const AccessKey      = require('../models/AccessKey');
 const WritingExam    = require('../models/WritingExam');
@@ -7,6 +8,14 @@ const WritingTask1   = require('../models/WritingTask1');
 const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample  = require('../models/WritingSample');
+
+const verifyKeyLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  handler: (req, res) => res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, thử lại sau 15 phút.' }),
+  skip: req => req.user?.role === 'admin'
+});
 
 // helper – random document from a collection
 async function randomDoc(Model) {
@@ -20,7 +29,7 @@ async function randomDoc(Model) {
 // Body: { key }
 // Returns exam + random task1 + random task2
 // ══════════════════════════════════════════════════
-router.post('/verify-key', auth, async (req, res) => {
+router.post('/verify-key', auth, verifyKeyLimiter, async (req, res) => {
   try {
     const { key } = req.body;
     if (!key) return res.status(400).json({ success: false, message: 'Thiếu mã truy cập' });
@@ -124,7 +133,7 @@ router.post('/submit', auth, async (req, res) => {
       task2Answer,
       wordCount1: Number(wordCount1),
       wordCount2: Number(wordCount2),
-      timeTaken:  Number(timeTaken),
+      timeTaken:  Math.max(0, Math.floor(Number(timeTaken))),
       submittedAt: new Date(),
       status
     });

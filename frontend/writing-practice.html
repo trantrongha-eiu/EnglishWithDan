@@ -677,7 +677,8 @@ function buildAnswerDiff(userAnswer, sampleAnswer) {
 //  XP FLOAT ANIMATION
 // ════════════════════════════════════════════════════════
 function floatXP(amount) {
-  const anchor = document.getElementById('stat-xp');
+  // Prefer the always-visible header XP badge; fall back to stats widget
+  const anchor = document.getElementById('header-xp') || document.getElementById('stat-xp');
   if (!anchor) return;
   const rect = anchor.getBoundingClientRect();
   const el = document.createElement('div');
@@ -1313,9 +1314,16 @@ function stopTestTimer() {
 }
 
 async function startTest() {
+  const startBtn = document.querySelector('.wp-start-test-btn');
+  if (startBtn) { startBtn.disabled = true; startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
+
   document.getElementById('test-intro').style.display       = 'none';
   document.getElementById('test-in-progress').style.display = '';
   document.getElementById('test-results').style.display     = 'none';
+
+  const restoreStartBtn = () => {
+    if (startBtn) { startBtn.disabled = false; startBtn.innerHTML = '<i class="fas fa-play"></i> Bắt đầu thi'; }
+  };
 
   try {
     const params = new URLSearchParams({ level: testLevel, count: testCount });
@@ -1325,11 +1333,13 @@ async function startTest() {
       showToast('Không tải được câu hỏi. Vui lòng thử lại.', 'error');
       document.getElementById('test-intro').style.display = '';
       document.getElementById('test-in-progress').style.display = 'none';
+      restoreStartBtn();
       return;
     }
     testExercises = data.exercises;
     testAnswers   = [];
     testIdx       = 0;
+    restoreStartBtn();
     showTestQuestion(0);
     startTestTimer(testExercises.length * 90);
   } catch (err) {
@@ -1337,6 +1347,7 @@ async function startTest() {
     showToast('Lỗi tải câu hỏi: ' + err.message, 'error');
     document.getElementById('test-intro').style.display = '';
     document.getElementById('test-in-progress').style.display = 'none';
+    restoreStartBtn();
   }
 }
 
@@ -1627,7 +1638,7 @@ function confirmWpQuit() {
 }
 
 function exitWpPractice() {
-  askWpQuit(() => { window.location.href = 'dashboard.html'; }, {
+  askWpQuit(() => { saveBatch(); window.location.href = 'dashboard.html'; }, {
     mascot: '🚪',
     title: 'Rời luyện tập?',
     sub: 'Bạn có chắc muốn thoát không?',

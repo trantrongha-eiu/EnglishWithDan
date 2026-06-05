@@ -122,7 +122,7 @@ async function startExam() {
   const key = document.getElementById('key-input').value.trim();
   showKeyMsg('', 'hidden');
 
-  if (!key || key.replace('-', '').length < 8) {
+  if (!key || key.replace(/-/g, '').length < 8) {
     showKeyMsg('Vui lòng nhập mã truy cập (8 ký tự)', 'error');
     return;
   }
@@ -376,7 +376,7 @@ async function submitExam(statusOverride) {
   const status = statusOverride || 'completed';
   const wc1 = countWords(state.answers[1]);
   const wc2 = countWords(state.answers[2]);
-  const timeTaken = state.totalSeconds - state.secondsLeft;
+  const timeTaken = Math.max(0, state.totalSeconds - state.secondsLeft);
 
   // Show loading overlay
   let overlay = document.getElementById('submit-loading-overlay');
@@ -924,3 +924,15 @@ function discardSaved() {
   clearAutoSave();
   document.getElementById('restore-banner').style.display = 'none';
 }
+
+// ──────────────────────────────────────────────────────
+// Keyboard shortcuts
+// ──────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const overlay = ['exit-modal-overlay', 'confirm-modal-overlay', 'review-modal-overlay'];
+  for (const id of overlay) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }
+  }
+});
