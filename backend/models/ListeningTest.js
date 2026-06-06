@@ -32,6 +32,9 @@ const QuestionGroupSchema = new mongoose.Schema({
     default: 'plain'
   },
 
+  // Tiêu đề nhóm (VD: "Questions 1-5", "Questions 18-20")
+  groupTitle: { type: String, default: '' },
+
   // Hướng dẫn hiển thị trên đầu group
   // VD: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer."
   instruction: { type: String, default: '' },

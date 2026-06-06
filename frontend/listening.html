@@ -1118,6 +1118,8 @@
         // ── Group dispatcher ──────────────────────────────────────
         function renderQuestionGroup(group, gi, isReview) {
             const groupType = group.groupType || 'plain';
+            const titleHtml = group.groupTitle
+                ? `<div class="group-title">${escHtml(group.groupTitle)}</div>` : '';
             const instruction = group.instruction
                 ? `<div class="group-instruction">${group.instruction}</div>` : '';
 
@@ -1143,7 +1145,7 @@
             }
 
             const summary = isReview ? renderGroupReviewSummary(group) : '';
-            return `<div class="question-group" data-type="${groupType}">${instruction}${wordBankHtml}${contentHtml}${summary}</div>`;
+            return `<div class="question-group" data-type="${groupType}">${titleHtml}${instruction}${wordBankHtml}${contentHtml}${summary}</div>`;
         }
 
         function renderTableGroup(group, isReview) {
@@ -1312,6 +1314,7 @@
             // Gom các câu multi-answer-group liên tiếp có chung options thành 1 cluster UI
             // Cũng hỗ trợ legacy 'checkbox' type (backward-compatible)
             const isMAGType = t => t === 'multi-answer-group';
+            const normOpts = opts => JSON.stringify((opts || []).map(o => (o || '').trim().toLowerCase()));
             const items = [];
             let i = 0;
             while (i < group.questions.length) {
@@ -1321,7 +1324,7 @@
                     while (
                         i + 1 < group.questions.length &&
                         isMAGType(group.questions[i + 1].type) &&
-                        JSON.stringify(group.questions[i + 1].options) === JSON.stringify(q.options)
+                        normOpts(group.questions[i + 1].options) === normOpts(q.options)
                     ) {
                         i++;
                         cluster.push(group.questions[i]);

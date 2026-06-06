@@ -28,6 +28,7 @@ const LSGroupSchema = new mongoose.Schema({
            'matching-options', 'summary-completion', 'sentence-endings'],
     default: 'plain'
   },
+  groupTitle:  { type: String, default: '' },
   instruction: { type: String, default: '' },
   tableConfig: { headers: [String], rows: [[String]] },
   noteConfig:  { title: { type: String, default: '' }, lines: [String] },

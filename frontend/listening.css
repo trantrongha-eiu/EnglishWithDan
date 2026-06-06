@@ -923,6 +923,10 @@ body {
   margin-bottom: 14px;
   line-height: 1.5;
 }
+.group-title {
+  font-size: 13px; font-weight: 700; color: #374151;
+  margin-bottom: 6px;
+}
 
 /* ══════════════════════════════════════════════
    TABLE GROUP
@@ -1525,6 +1529,7 @@ body {
 
 /* ── Dark mode: group instruction ── */
 [data-theme="dark"] .group-instruction { background: #1a2a3f; border-left-color: #3d8bff; color: #93c5fd; }
+[data-theme="dark"] .group-title { color: #d1d5db; }
 
 /* ── Dark mode: table group ── */
 [data-theme="dark"] .group-table-wrap { border-color: #374151; }

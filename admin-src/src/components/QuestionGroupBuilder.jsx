@@ -668,7 +668,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       correctAnswer: qForm.correctAnswer.trim(),
       explanation: (qForm.explanation || '').trim(),
     };
-    if (['multiple-choice', 'checkbox', 'multi-answer-group'].includes(qForm.type)) q.options = (qForm.options || []).filter(o => o.trim());
+    if (['multiple-choice', 'checkbox', 'multi-answer-group'].includes(qForm.type)) q.options = (qForm.options || []).map(o => (o || '').trim()).filter(Boolean);
     if (qForm.type === 'checkbox') q.checkboxCount = qForm.checkboxCount || 2;
     if (qForm.type === 'sentence-completion') q.wordBank = qForm.wordBank || [];
     if (qForm.type === 'map-labelling') q.imageUrl = qForm.imageUrl || '';
