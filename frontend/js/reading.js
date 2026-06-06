@@ -437,7 +437,7 @@ function setReadingMode(mode) {
   if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
   if (title) {
     title.innerHTML = isLele
-      ? 'Luyện tập <span class="tag-red" style="background:#10b981">Reading Bài lẻ</span>'
+      ? 'Luyện tập <span style="background:#3d8bff;color:#fff;padding:2px 10px;border-radius:6px;font-size:14px">Reading Bài lẻ</span>'
       : 'Luyện tập <span class="tag-red">Reading Full đề</span>';
   }
 
