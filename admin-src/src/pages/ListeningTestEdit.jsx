@@ -196,13 +196,13 @@ export default function ListeningTestEdit() {
       if (!savedId) {
         const d = await apiFetch('/listening/admin/tests', { method: 'POST', body: JSON.stringify(payload) });
         setSavedId(d.test._id);
-        window.history.replaceState(null, '', `/admin/listening-tests/${d.test._id}`);
         toast('Đã tạo đề Listening');
       } else {
         await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã lưu đề Listening');
       }
       setIsDirty(false);
+      navigate('/listening-tests');
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }

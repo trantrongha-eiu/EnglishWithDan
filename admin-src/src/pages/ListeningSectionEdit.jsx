@@ -213,13 +213,13 @@ export default function ListeningSectionEdit() {
       if (!savedId) {
         const d = await apiFetch('/listening/admin/sections', { method: 'POST', body: JSON.stringify(payload) });
         setSavedId(d.section._id);
-        window.history.replaceState(null, '', `/admin/listening-sections/${d.section._id}`);
         toast('Đã tạo section Listening ✓');
       } else {
         await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã lưu section ✓');
       }
       setIsDirty(false);
+      navigate('/listening-sections');
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
