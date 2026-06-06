@@ -286,14 +286,14 @@
           <label class="t1-toggle-row" title="Tự động chuyển sang câu tiếp theo sau khi trả lời đúng">
             <span class="t1-toggle-label">⚡ Tự chuyển câu</span>
             <label class="t1-switch">
-              <input type="checkbox" id="toggle-autonext" onchange="autoNext=this.checked">
+              <input type="checkbox" id="toggle-autonext" onchange="setAutoNext(this.checked)">
               <span class="t1-slider"></span>
             </label>
           </label>
           <label class="t1-toggle-row" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">
             <span class="t1-toggle-label">🔀 Xáo trộn câu</span>
             <label class="t1-switch">
-              <input type="checkbox" id="toggle-shuffle" onchange="shuffleMode=this.checked">
+              <input type="checkbox" id="toggle-shuffle" onchange="setShuffleMode(this.checked)">
               <span class="t1-slider"></span>
             </label>
           </label>
@@ -654,8 +654,8 @@ let sessionAttempts = [];
 let comboStreak  = 0;
 let _isSubmitting = false;
 let _skippedIds  = new Set();
-let autoNext     = false;
-let shuffleMode  = false;
+let autoNext     = localStorage.getItem('t1_autonext') === 'on';
+let shuffleMode  = localStorage.getItem('t1_shuffle') === 'on';
 let _autoNextTimer = null;
 
 // rearrange
@@ -664,6 +664,7 @@ let rearrangeAnswer = [];
 
 // retry-wrong support
 let _originalExercises = null;
+let _wrongAttemptCache = []; // lưu wrong attempts trước khi saveBatch() xóa sessionAttempts
 
 // test
 let testLevel     = 'beginner';
@@ -747,10 +748,29 @@ function buildAnswerDiff(userAnswer, sampleAnswer) {
 // ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
+function setAutoNext(val) {
+  autoNext = val;
+  localStorage.setItem('t1_autonext', val ? 'on' : 'off');
+  document.getElementById('toggle-autonext').checked       = val;
+  document.getElementById('sheet-toggle-autonext').checked = val;
+}
+
+function setShuffleMode(val) {
+  shuffleMode = val;
+  localStorage.setItem('t1_shuffle', val ? 'on' : 'off');
+  document.getElementById('toggle-shuffle').checked       = val;
+  document.getElementById('sheet-toggle-shuffle').checked = val;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
   showState('welcome');
+  // Restore toggle states
+  document.getElementById('toggle-autonext').checked       = autoNext;
+  document.getElementById('sheet-toggle-autonext').checked = autoNext;
+  document.getElementById('toggle-shuffle').checked        = shuffleMode;
+  document.getElementById('sheet-toggle-shuffle').checked  = shuffleMode;
   window.addEventListener('beforeunload', () => saveBatch());
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter' || e.shiftKey) return;
@@ -770,23 +790,22 @@ function initUser() {
 }
 
 function loadXPFromStorage() {
-  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"streak":0,"lastDate":""}');
+  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"lastDate":""}');
   const today  = new Date().toISOString().slice(0, 10);
   if (stored.lastDate !== today) {
-    stored.todayXP = 0; stored.todayDone = 0; stored.lastDate = today;
+    stored.lastDate = today;
     localStorage.setItem('t1_progress', JSON.stringify(stored));
   }
-  document.getElementById('header-xp').textContent     = stored.xp     || 0;
-  document.getElementById('header-streak').textContent = stored.streak  || 0;
+  document.getElementById('header-xp').textContent     = stored.xp || 0;
+  document.getElementById('header-streak').textContent = 0; // combo streak bắt đầu từ 0
 }
 
 function updateXPStorage(earned) {
-  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"streak":0,"lastDate":""}');
-  stored.xp    = (stored.xp || 0) + earned;
-  stored.streak = (stored.streak || 0) + 1;
+  const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"lastDate":""}');
+  stored.xp = (stored.xp || 0) + earned;
   localStorage.setItem('t1_progress', JSON.stringify(stored));
-  document.getElementById('header-xp').textContent     = stored.xp;
-  document.getElementById('header-streak').textContent = stored.streak;
+  document.getElementById('header-xp').textContent = stored.xp;
+  document.getElementById('header-streak').textContent = comboStreak;
 }
 
 function showState(state) {
@@ -1349,6 +1368,9 @@ function showDoneSummary() {
   document.getElementById('done-stats').innerHTML =
     `<span>✅ Đúng: ${sessionCorrect}</span><span>❌ Sai: ${wrongCount}</span><span>⭐ XP: +${sessionXP}</span>`;
 
+  // Lưu cache TRƯỚC khi saveBatch() xóa sessionAttempts
+  _wrongAttemptCache = wrongAttempts;
+
   const retryBtn = document.getElementById('done-retry-wrong-btn');
   if (wrongCount > 0) {
     document.getElementById('done-retry-count').textContent = `Làm lại ${wrongCount} câu sai`;
@@ -1380,8 +1402,8 @@ function showDoneSummary() {
 }
 
 function restartExercises() {
-  // Restore original exercise set if we were in retry-wrong mode
   if (_originalExercises) { exercises = _originalExercises; _originalExercises = null; }
+  _wrongAttemptCache = [];
   currentIdx = 0; sessionDone = 0; sessionXP = 0;
   sessionCorrect = 0; sessionAttempts = []; comboStreak = 0; _skippedIds = new Set();
   updateSessionStats();
@@ -1390,8 +1412,8 @@ function restartExercises() {
 }
 
 function retryWrongT1() {
-  const wrongIds = new Set(sessionAttempts.filter(a => !a.isCorrect).map(a => a.exerciseId));
-  const wrongExercises = exercises.filter(ex => wrongIds.has(ex._id));
+  const wrongIds = new Set(_wrongAttemptCache.map(a => a.exerciseId));
+  const wrongExercises = exercises.filter(ex => wrongIds.has(String(ex._id)));
   if (!wrongExercises.length) { showToast('Không còn câu sai!', 'info'); return; }
   _originalExercises = exercises;
   exercises = wrongExercises;
@@ -1611,6 +1633,9 @@ function getTestAnswer() {
 function testNextQuestion() {
   const ex     = testExercises[testIdx];
   const answer = getTestAnswer();
+  if (!answer && answer !== 0) {
+    showToast('Vui lòng nhập/chọn câu trả lời trước khi tiếp tục!', 'warn'); return;
+  }
   testAnswers.push({ exerciseId: ex._id, userAnswer: answer });
   testIdx++;
   if (testIdx < testExercises.length) {
@@ -1740,16 +1765,14 @@ function stopTestMode() {
         <label class="t1-toggle-row" title="Tự động chuyển sang câu tiếp theo sau khi trả lời đúng">
           <span class="t1-toggle-label">⚡ Tự chuyển câu</span>
           <label class="t1-switch">
-            <input type="checkbox" id="sheet-toggle-autonext"
-              onchange="autoNext=this.checked;document.getElementById('toggle-autonext').checked=this.checked">
+            <input type="checkbox" id="sheet-toggle-autonext" onchange="setAutoNext(this.checked)">
             <span class="t1-slider"></span>
           </label>
         </label>
         <label class="t1-toggle-row" title="Xáo trộn thứ tự câu hỏi ngẫu nhiên">
           <span class="t1-toggle-label">🔀 Xáo trộn câu</span>
           <label class="t1-switch">
-            <input type="checkbox" id="sheet-toggle-shuffle"
-              onchange="shuffleMode=this.checked;document.getElementById('toggle-shuffle').checked=this.checked">
+            <input type="checkbox" id="sheet-toggle-shuffle" onchange="setShuffleMode(this.checked)">
             <span class="t1-slider"></span>
           </label>
         </label>

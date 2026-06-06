@@ -38,9 +38,7 @@ function localCheck(exercise, userAnswer) {
     const isCorrect = idx === exercise.correctOptionIndex;
     return {
       isCorrect, score: isCorrect ? 100 : 0,
-      feedbackVi: isCorrect
-        ? `✅ Chính xác! ${exercise.explanation || ''}`
-        : `❌ Chưa đúng. ${exercise.explanation || ''}`
+      feedbackVi: isCorrect ? '✅ Chính xác!' : '❌ Chưa đúng — xem đáp án mẫu bên dưới.'
     };
   }
 
@@ -53,9 +51,7 @@ function localCheck(exercise, userAnswer) {
     });
     return {
       isCorrect, score: isCorrect ? 100 : 0,
-      feedbackVi: isCorrect
-        ? `✅ Chính xác! ${exercise.explanation || ''}`
-        : `❌ Chưa đúng. ${exercise.explanation || ''}`
+      feedbackVi: isCorrect ? '✅ Chính xác!' : '❌ Chưa đúng — xem đáp án mẫu bên dưới.'
     };
   }
 
@@ -65,16 +61,14 @@ function localCheck(exercise, userAnswer) {
     const isCorrect = accepted.some(a => a === normUser);
     return {
       isCorrect, score: isCorrect ? 100 : 0,
-      feedbackVi: isCorrect
-        ? `✅ Chính xác! ${exercise.explanation || ''}`
-        : `❌ Thứ tự chưa đúng. ${exercise.explanation || ''}`
+      feedbackVi: isCorrect ? '✅ Chính xác!' : '❌ Thứ tự chưa đúng — xem đáp án mẫu bên dưới.'
     };
   }
 
   // translation / error_correction / data_transform: keyword-based fallback
   const allAnswers = exercise.sampleAnswers || [];
   const isExact = allAnswers.some(a => normalize(a) === normUser);
-  if (isExact) return { isCorrect: true, score: 100, feedbackVi: `✅ Chính xác! ${exercise.explanation || ''}` };
+  if (isExact) return { isCorrect: true, score: 100, feedbackVi: '✅ Chính xác!' };
 
   // fuzzy check: most key words present
   const bestMatch = allAnswers.some(a => {
@@ -84,12 +78,10 @@ function localCheck(exercise, userAnswer) {
   });
 
   if (bestMatch) {
-    return { isCorrect: true, score: 80,
-      feedbackVi: `✅ Gần đúng! Kiểm tra lại chính tả. ${exercise.explanation || ''}` };
+    return { isCorrect: true, score: 80, feedbackVi: '✅ Gần đúng! Kiểm tra lại chính tả nhé.' };
   }
 
-  return { isCorrect: false, score: 0,
-    feedbackVi: `❌ Chưa đúng. ${exercise.explanation || ''}` };
+  return { isCorrect: false, score: 0, feedbackVi: '❌ Chưa đúng — xem đáp án mẫu bên dưới.' };
 }
 
 
