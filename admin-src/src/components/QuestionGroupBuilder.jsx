@@ -684,6 +684,16 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
     setShowQForm(false);
   }
 
+  function duplicateQ(gi, qi) {
+    const q = JSON.parse(JSON.stringify(groups[gi].questions[qi]));
+    const allNums = groups.flatMap(g => (g.questions || []).map(q => q.questionNumber));
+    q.questionNumber = Math.max(...allNums) + 1;
+    onChange(groups.map((g, i) => i !== gi ? g : {
+      ...g,
+      questions: [...g.questions, q].sort((a, b) => a.questionNumber - b.questionNumber),
+    }));
+  }
+
   function deleteQ(gi, qi) {
     confirm('Xóa câu hỏi này?', () => {
       onChange(groups.map((g, i) => i !== gi ? g : { ...g, questions: g.questions.filter((_, j) => j !== qi) }));
@@ -790,6 +800,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                         <td style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--green)', fontWeight: 600 }}>{q.correctAnswer}</td>
                         <td>
                           <div className="row-actions">
+                            <button className="btn btn-ghost btn-sm btn-icon" title="Sao chép câu hỏi" onClick={() => duplicateQ(gi, qi)}>📋</button>
                             <button className="btn btn-ghost btn-sm btn-icon" onClick={() => openEditQ(gi, qi)}>✏️</button>
                             <button className="btn btn-danger btn-sm btn-icon" onClick={() => deleteQ(gi, qi)}>🗑</button>
                           </div>
