@@ -20,7 +20,8 @@ const Q_TYPES = {
     { value: 'true-false-ng',       label: 'True / False / Not Given' },
     { value: 'yes-no-ng',           label: 'Yes / No / Not Given' },
     { value: 'multiple-choice',     label: 'Multiple Choice (1 đáp án)' },
-    { value: 'checkbox',            label: 'Multiple Choice (nhiều đáp án)' },
+    { value: 'multi-answer-group',  label: 'Choose TWO/THREE Letters A-G ✦' },
+    { value: 'checkbox',            label: 'Multiple Choice (nhiều đáp án) [legacy]' },
     { value: 'fill-blank',          label: 'Fill in the blank' },
     { value: 'sentence-completion', label: 'Sentence Completion (kéo-thả)' },
     { value: 'matching-headings',   label: 'Matching Headings' },
@@ -31,7 +32,8 @@ const Q_TYPES = {
     { value: 'fill-blank',          label: 'Fill in the blank' },
     { value: 'sentence-completion', label: 'Sentence Completion' },
     { value: 'multiple-choice',     label: 'Multiple Choice (1 đáp án)' },
-    { value: 'checkbox',            label: 'Multiple Choice (nhiều đáp án)' },
+    { value: 'multi-answer-group',  label: 'Choose TWO/THREE Letters A-G ✦' },
+    { value: 'checkbox',            label: 'Multiple Choice (nhiều đáp án) [legacy]' },
     { value: 'matching',            label: 'Matching' },
     { value: 'matching-info',       label: 'Matching Information' },
     { value: 'map-labelling',       label: 'Map Labelling' },
@@ -64,6 +66,7 @@ const TYPE_LABEL = {
   'true-false-ng':     'True/False/NG',
   'yes-no-ng':         'Yes/No/NG',
   'multiple-choice':   'Multiple Choice',
+  'multi-answer-group':'Choose Letters ✦',
   'checkbox':          'MC nhiều đáp án',
   'fill-blank':        'Fill-blank',
   'sentence-completion':'Sentence Completion',
@@ -77,6 +80,7 @@ const ANS_HINT = {
   'true-false-ng':     'TRUE / FALSE / NOT GIVEN',
   'yes-no-ng':         'YES / NO / NOT GIVEN',
   'multiple-choice':   'Chữ cái: A, B, C hoặc D',
+  'multi-answer-group':'Chữ cái: A, B, C… (1 đáp án/câu — tạo nhiều câu cùng options)',
   'checkbox':          '["A","C"] — mảng JSON đáp án đúng',
   'fill-blank':        'Từ/cụm từ cần điền. Nhiều đáp án: word1 / word2',
   'sentence-completion':'Từ trong Word Bank',
@@ -362,8 +366,9 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
   const setOpt = (i, v) => setQForm(f => { const o = [...(f.options || [])]; o[i] = v; return { ...f, options: o }; });
   const isTFNG = ['true-false-ng', 'yes-no-ng'].includes(qForm.type);
   const tfOpts = qForm.type === 'true-false-ng' ? ['TRUE', 'FALSE', 'NOT GIVEN'] : ['YES', 'NO', 'NOT GIVEN'];
-  const needsOpts = ['multiple-choice', 'checkbox'].includes(qForm.type);
-  const optLabels = qForm.type === 'checkbox'
+  const isMultiOpt = t => ['checkbox', 'multi-answer-group'].includes(t);
+  const needsOpts = ['multiple-choice', 'checkbox', 'multi-answer-group'].includes(qForm.type);
+  const optLabels = isMultiOpt(qForm.type)
     ? Array.from({ length: (qForm.options || []).length }, (_, i) => String.fromCharCode(65 + i))
     : ['A','B','C','D'];
   return (
@@ -389,7 +394,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                   setQForm(f => {
                     const opts = f.options || [];
                     let newOpts = opts;
-                    if (t === 'checkbox' && opts.length < 5) newOpts = [...opts, ...Array(5 - opts.length).fill('')];
+                    if (isMultiOpt(t) && opts.length < 5) newOpts = [...opts, ...Array(5 - opts.length).fill('')];
                     else if (t === 'multiple-choice' && opts.length > 4) newOpts = opts.slice(0, 4);
                     return {
                       ...f, type: t, options: newOpts,
@@ -404,6 +409,13 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
             </div>
           </div>
 
+          {qForm.type === 'multi-answer-group' && (
+            <InfoBox>
+              ✦ <strong>Choose TWO/THREE Letters A-G:</strong> Tạo <strong>từng câu riêng biệt</strong> với cùng danh sách options.<br/>
+              Ví dụ Q18-20 "Choose THREE letters A-G": tạo <strong>3 câu</strong> (Q18, Q19, Q20), mỗi câu cùng type này, cùng options A-G, đáp án mỗi câu = <strong>1 chữ cái</strong> (A / B / C...). Hệ thống tự gộp thành 1 UI chung cho học sinh. <strong>Copy-paste options</strong> sang Q19, Q20 để tiết kiệm thời gian.
+            </InfoBox>
+          )}
+
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">
               {qForm.type === 'fill-blank' ? 'Văn bản có chỗ trống (dùng ________ hoặc __Q1__)' : 'Nội dung câu hỏi'}
@@ -415,9 +427,9 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
           {needsOpts && (
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">
-                Các đáp án {qForm.type === 'checkbox' ? `A–${optLabels[optLabels.length - 1] || 'E'}` : 'A-D'}
+                Các đáp án {isMultiOpt(qForm.type) ? `A–${optLabels[optLabels.length - 1] || 'E'}` : 'A-D'}
               </label>
-              {qForm.type === 'checkbox' ? (
+              {isMultiOpt(qForm.type) ? (
                 <div style={{ marginTop: 4 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                     {optLabels.map((l, i) => (
@@ -428,7 +440,11 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                         {optLabels.length > 2 && (
                           <button type="button"
                             style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 13, padding: '2px 4px', flexShrink: 0 }}
-                            onClick={() => setQForm(f => ({ ...f, options: f.options.filter((_, j) => j !== i), correctAnswer: '[]' }))}>
+                            onClick={() => setQForm(f => ({
+                              ...f,
+                              options: f.options.filter((_, j) => j !== i),
+                              correctAnswer: qForm.type === 'multi-answer-group' ? '' : '[]',
+                            }))}>
                             ✕
                           </button>
                         )}
@@ -441,13 +457,15 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                       ＋ Thêm đáp án
                     </button>
                   )}
-                  <div style={{ marginTop: 7, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <label style={{ fontSize: 11, color: 'var(--text3)', whiteSpace: 'nowrap' }}>Số đáp án cần chọn:</label>
-                    <input className="form-input" type="number" min={1} max={7}
-                      value={qForm.checkboxCount || 2}
-                      onChange={e => setQForm(f => ({ ...f, checkboxCount: Number(e.target.value) }))}
-                      style={{ width: 55, fontSize: 12, padding: '5px 8px' }} />
-                  </div>
+                  {qForm.type === 'checkbox' && (
+                    <div style={{ marginTop: 7, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <label style={{ fontSize: 11, color: 'var(--text3)', whiteSpace: 'nowrap' }}>Số đáp án cần chọn:</label>
+                      <input className="form-input" type="number" min={1} max={7}
+                        value={qForm.checkboxCount || 2}
+                        onChange={e => setQForm(f => ({ ...f, checkboxCount: Number(e.target.value) }))}
+                        style={{ width: 55, fontSize: 12, padding: '5px 8px' }} />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5, marginTop: 4 }}>
@@ -489,7 +507,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                 <option value="">-- Chọn --</option>
                 {tfOpts.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
-            ) : qForm.type === 'multiple-choice' && (qForm.options || []).some(o => o?.trim()) ? (
+            ) : ['multiple-choice', 'multi-answer-group'].includes(qForm.type) && (qForm.options || []).some(o => o?.trim()) ? (
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6 }}>
                 {(qForm.options || []).map((opt, i) => !opt?.trim() ? null : (
                   <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', fontSize: 13 }}>
@@ -548,7 +566,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
 }
 
 /* ── Main component ─────────────────────────────────────────────────────── */
-export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading' }) {
+export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading', questionFrom = 1 }) {
   const confirm = useConfirm();
   const toast = useToast();
   const [showPicker, setShowPicker] = useState(false);
@@ -608,7 +626,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
   function openAddQ(gi) {
     const g = groups[gi];
     const defaultType = autoQType(g.groupType || 'plain', context);
-    const nextNum = allNums.length > 0 ? Math.max(...allNums) + 1 : 1;
+    const nextNum = allNums.length > 0 ? Math.max(...allNums) + 1 : questionFrom;
     setQForm({ questionNumber: nextNum, type: defaultType, questionText: '', options: ['', '', '', ''], correctAnswer: '', explanation: '', checkboxCount: 2, wordBank: [], imageUrl: '' });
     setActiveGi(gi);
     setEditQi(null);
@@ -621,7 +639,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       questionNumber: q.questionNumber,
       type: q.type,
       questionText: q.questionText || '',
-      options: q.type === 'checkbox'
+      options: ['checkbox', 'multi-answer-group'].includes(q.type)
         ? (q.options?.length ? [...q.options] : ['', '', '', '', ''])
         : (q.options?.length ? [...q.options, '', '', '', ''].slice(0, 4) : ['', '', '', '']),
       correctAnswer: q.correctAnswer || '',
@@ -652,7 +670,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       correctAnswer: qForm.correctAnswer.trim(),
       explanation: (qForm.explanation || '').trim(),
     };
-    if (['multiple-choice', 'checkbox'].includes(qForm.type)) q.options = (qForm.options || []).filter(o => o.trim());
+    if (['multiple-choice', 'checkbox', 'multi-answer-group'].includes(qForm.type)) q.options = (qForm.options || []).filter(o => o.trim());
     if (qForm.type === 'checkbox') q.checkboxCount = qForm.checkboxCount || 2;
     if (qForm.type === 'sentence-completion') q.wordBank = qForm.wordBank || [];
     if (qForm.type === 'map-labelling') q.imageUrl = qForm.imageUrl || '';

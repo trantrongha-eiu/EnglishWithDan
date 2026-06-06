@@ -1579,8 +1579,7 @@
             return `
                 <div class="checkbox-hint">Chọn <strong>${count}</strong> đáp án đúng</div>
                 <div class="checkbox-opts">${opts.map((opt, idx) => {
-                const letters = ['A', 'B', 'C', 'D', 'E'];
-                const letter = letters[idx] || normLetter(opt);
+                const letter = String.fromCharCode(65 + idx);
                 let cls = '';
                 if (isReview) {
                     if (caLetters.includes(letter)) cls = 'correct-ans';
@@ -1590,7 +1589,7 @@
                 }
                 const safeOpt = opt.replace(/'/g, "\\'");
                 return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
-                        <span class="check-box"></span><label><strong>${letter}</strong> ${opt.replace(/^[A-Ea-e]\s+/, '')}</label>
+                        <span class="check-box"></span><label><strong>${letter}</strong> ${opt.replace(/^[A-Ga-g]\s+/, '')}</label>
                     </div>`;
             }).join('')}</div>`;
         }

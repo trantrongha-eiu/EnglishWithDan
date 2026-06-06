@@ -334,6 +334,7 @@ export default function ListeningSectionEdit() {
           groups={questionGroups}
           onChange={groups => { setIsDirty(true); setQuestionGroups(groups); }}
           context="listening"
+          questionFrom={meta.questionRange.start || 1}
         />
 
         <div style={{ marginTop: 16, padding: 14, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.75 }}>
@@ -342,7 +343,7 @@ export default function ListeningSectionEdit() {
             <li><strong>Fill-blank trong câu:</strong> dùng <code>________</code> (8 gạch dưới). Đáp án: từ/cụm từ cần điền. Nhiều đáp án: dùng <code>word1 / word2</code></li>
             <li><strong>Fill-blank trong bảng/note:</strong> dùng <code>__Q1__</code>, <code>__Q2__</code>… trong ô bảng hoặc dòng note.</li>
             <li><strong>Multiple choice (1 đáp án):</strong> đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
-            <li><strong>Multiple choice (nhiều đáp án):</strong> đáp án là JSON array, VD <code>["A","C"]</code></li>
+            <li><strong>✦ Choose TWO/THREE Letters A-G (Q18-20):</strong> Chọn loại <strong>"Choose TWO/THREE Letters A-G ✦"</strong>. Tạo <strong>từng câu riêng biệt</strong> (Q18, Q19, Q20) với cùng danh sách options A-G. Đáp án mỗi câu = 1 chữ cái. Hệ thống tự gộp thành 1 UI chung.</li>
             <li><strong>Matching:</strong> đáp án là chữ cái của lựa chọn. VD: <code>B</code></li>
             <li><strong>Map labelling:</strong> đáp án là nhãn điền vào sơ đồ, VD: <code>car park</code></li>
           </ul>
