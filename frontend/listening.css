@@ -20,7 +20,11 @@ body {
 
 #screen-list.active  { display: block; }
 #screen-exam.active,
-#screen-review.active { display: flex; flex-direction: column; }
+#screen-review.active,
+#screen-practice.active { display: flex; flex-direction: column; }
+
+.lt-practice-body { display: flex; flex: 1; overflow: hidden; }
+.lt-practice-questions-panel { flex: 1; overflow-y: auto; padding: 24px 24px 90px; }
 
 #screen-result.active {
   display: flex;

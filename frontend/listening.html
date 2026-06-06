@@ -300,6 +300,13 @@
         </div>
         <!-- Body -->
         <div class="lt-practice-body">
+            <div class="transcript-panel" id="lt-practice-transcript-panel" style="display:none">
+                <div class="transcript-header">
+                    <span>📜 Transcript</span>
+                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click để tra từ</span>
+                </div>
+                <div class="transcript-body" id="lt-practice-transcript-body"></div>
+            </div>
             <div id="lt-practice-questions" class="lt-practice-questions-panel">
                 <div id="lt-practice-questions-inner"></div>
             </div>
@@ -2702,6 +2709,8 @@
         _ltPracticeSubmitted = false;
         const toolbar = document.getElementById('lt-practice-toolbar');
         if (toolbar) toolbar.style.display = 'none';
+        const tpEnter = document.getElementById('lt-practice-transcript-panel');
+        if (tpEnter) tpEnter.style.display = 'none';
         setTool('none');
 
         // Backup exam state so we can restore on close
@@ -2851,22 +2860,23 @@
             html += renderQuestionGroup(group, gi, true);
         });
 
-        // Hiển thị transcript nếu có
-        if (_ltOrigSection.transcript) {
-            html += `<div style="margin-top:24px;border-top:1px solid #e5e7eb;padding-top:16px">
-                <details>
-                    <summary style="cursor:pointer;font-weight:700;font-size:14px;color:#374151;user-select:none;padding:4px 0">
-                        📝 Transcript
-                    </summary>
-                    <div class="transcript-body" style="margin-top:12px;padding:16px;background:#f9fafb;border-radius:8px;font-size:14px;line-height:1.75;border:1px solid #e5e7eb">
-                        ${_ltOrigSection.transcript.split('\n').map(l => l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>').join('')}
-                    </div>
-                </details>
-            </div>`;
-        }
-
         inner.innerHTML = html;
         inner.scrollTop = 0;
+
+        // Show transcript panel (left side, like full-test review)
+        const tp = document.getElementById('lt-practice-transcript-panel');
+        const tb = document.getElementById('lt-practice-transcript-body');
+        if (tp && tb) {
+            if (_ltOrigSection.transcript) {
+                tb.innerHTML = _ltOrigSection.transcript.split('\n').map(l =>
+                    l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
+                ).join('');
+                tp.style.display = '';
+                setupDictionaryDouble('lt-practice-transcript-body');
+            } else {
+                tp.style.display = 'none';
+            }
+        }
 
         // Show dict/highlight toolbar now that results are visible
         _ltPracticeSubmitted = true;
@@ -2888,6 +2898,8 @@
         _ltLoadingPart = 0;
         const toolbar = document.getElementById('lt-practice-toolbar');
         if (toolbar) toolbar.style.display = 'none';
+        const tpClose = document.getElementById('lt-practice-transcript-panel');
+        if (tpClose) tpClose.style.display = 'none';
         setTool('none');
         audio.onended = null;
         audio.pause();
