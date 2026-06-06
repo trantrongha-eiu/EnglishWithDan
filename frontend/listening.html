@@ -2904,8 +2904,8 @@
         // Clear list so it reloads fresh
         const listEl = document.getElementById('lt-section-list');
         if (listEl) listEl.innerHTML = '';
-        loadTestList();
-        setTimeout(() => setListeningMode('lele'), 100);
+        showScreen('list');
+        setListeningMode('lele');
     }
 
     /* ── Retry same section ───────────────────────────────────────────────── */
