@@ -363,7 +363,9 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
   const isTFNG = ['true-false-ng', 'yes-no-ng'].includes(qForm.type);
   const tfOpts = qForm.type === 'true-false-ng' ? ['TRUE', 'FALSE', 'NOT GIVEN'] : ['YES', 'NO', 'NOT GIVEN'];
   const needsOpts = ['multiple-choice', 'checkbox'].includes(qForm.type);
-  const optLabels = qForm.type === 'checkbox' ? ['A','B','C','D','E'] : ['A','B','C','D'];
+  const optLabels = qForm.type === 'checkbox'
+    ? Array.from({ length: (qForm.options || []).length }, (_, i) => String.fromCharCode(65 + i))
+    : ['A','B','C','D'];
   return (
     <div className="modal-overlay" style={{ zIndex: 1200 }} onClick={onClose}>
       <div className="modal" style={{ maxWidth: 560, maxHeight: '90vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
@@ -384,10 +386,16 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
               <select className="form-input" value={qForm.type}
                 onChange={e => {
                   const t = e.target.value;
-                  setQForm(f => ({
-                    ...f, type: t,
-                    correctAnswer: ['true-false-ng','yes-no-ng'].includes(f.type) && !['true-false-ng','yes-no-ng'].includes(t) ? '' : f.correctAnswer,
-                  }));
+                  setQForm(f => {
+                    const opts = f.options || [];
+                    let newOpts = opts;
+                    if (t === 'checkbox' && opts.length < 5) newOpts = [...opts, ...Array(5 - opts.length).fill('')];
+                    else if (t === 'multiple-choice' && opts.length > 4) newOpts = opts.slice(0, 4);
+                    return {
+                      ...f, type: t, options: newOpts,
+                      correctAnswer: ['true-false-ng','yes-no-ng'].includes(f.type) && !['true-false-ng','yes-no-ng'].includes(t) ? '' : f.correctAnswer,
+                    };
+                  });
                 }}
                 style={types.length === 1 ? { opacity: 0.7, pointerEvents: 'none' } : {}}>
                 {types.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
@@ -406,23 +414,50 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
 
           {needsOpts && (
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Các đáp án {qForm.type === 'checkbox' ? 'A-E' : 'A-D'}</label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5, marginTop: 4 }}>
-                {optLabels.map((l, i) => (
-                  <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <span style={{ fontWeight: 700, color: 'var(--blue)', width: 14, fontSize: 12 }}>{l}.</span>
-                    <input className="form-input" style={{ fontSize: 12, padding: '5px 8px' }}
-                      value={qForm.options?.[i] || ''} onChange={e => setOpt(i, e.target.value)} placeholder={l} />
+              <label className="form-label">
+                Các đáp án {qForm.type === 'checkbox' ? `A–${optLabels[optLabels.length - 1] || 'E'}` : 'A-D'}
+              </label>
+              {qForm.type === 'checkbox' ? (
+                <div style={{ marginTop: 4 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                    {optLabels.map((l, i) => (
+                      <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <span style={{ fontWeight: 700, color: 'var(--blue)', width: 18, fontSize: 12, flexShrink: 0 }}>{l}.</span>
+                        <input className="form-input" style={{ flex: 1, fontSize: 12, padding: '5px 8px' }}
+                          value={qForm.options?.[i] || ''} onChange={e => setOpt(i, e.target.value)} placeholder={l} />
+                        {optLabels.length > 2 && (
+                          <button type="button"
+                            style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 13, padding: '2px 4px', flexShrink: 0 }}
+                            onClick={() => setQForm(f => ({ ...f, options: f.options.filter((_, j) => j !== i), correctAnswer: '[]' }))}>
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              {qForm.type === 'checkbox' && (
-                <div style={{ marginTop: 7, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <label style={{ fontSize: 11, color: 'var(--text3)', whiteSpace: 'nowrap' }}>Số đáp án cần chọn:</label>
-                  <input className="form-input" type="number" min={1} max={5}
-                    value={qForm.checkboxCount || 2}
-                    onChange={e => setQForm(f => ({ ...f, checkboxCount: Number(e.target.value) }))}
-                    style={{ width: 55, fontSize: 12, padding: '5px 8px' }} />
+                  {optLabels.length < 7 && (
+                    <button type="button" className="btn btn-ghost btn-sm" style={{ marginTop: 6 }}
+                      onClick={() => setQForm(f => ({ ...f, options: [...(f.options || []), ''] }))}>
+                      ＋ Thêm đáp án
+                    </button>
+                  )}
+                  <div style={{ marginTop: 7, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <label style={{ fontSize: 11, color: 'var(--text3)', whiteSpace: 'nowrap' }}>Số đáp án cần chọn:</label>
+                    <input className="form-input" type="number" min={1} max={7}
+                      value={qForm.checkboxCount || 2}
+                      onChange={e => setQForm(f => ({ ...f, checkboxCount: Number(e.target.value) }))}
+                      style={{ width: 55, fontSize: 12, padding: '5px 8px' }} />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5, marginTop: 4 }}>
+                  {optLabels.map((l, i) => (
+                    <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--blue)', width: 14, fontSize: 12 }}>{l}.</span>
+                      <input className="form-input" style={{ fontSize: 12, padding: '5px 8px' }}
+                        value={qForm.options?.[i] || ''} onChange={e => setOpt(i, e.target.value)} placeholder={l} />
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -586,7 +621,9 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       questionNumber: q.questionNumber,
       type: q.type,
       questionText: q.questionText || '',
-      options: q.options?.length ? [...q.options, '', '', '', ''].slice(0, Math.max(4, q.options.length)) : ['', '', '', ''],
+      options: q.type === 'checkbox'
+        ? (q.options?.length ? [...q.options] : ['', '', '', '', ''])
+        : (q.options?.length ? [...q.options, '', '', '', ''].slice(0, 4) : ['', '', '', '']),
       correctAnswer: q.correctAnswer || '',
       explanation: q.explanation || '',
       checkboxCount: q.checkboxCount || 2,
