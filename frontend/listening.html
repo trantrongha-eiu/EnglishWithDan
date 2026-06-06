@@ -264,8 +264,8 @@
         <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
             <div id="lt-practice-prog-fill" class="practice-prog-fill"></div>
         </div>
-        <!-- Practice toolbar (visible after submission) -->
-        <div id="lt-practice-toolbar" class="exam-toolbar" style="display:none">
+        <!-- Practice toolbar (always visible while in practice screen) -->
+        <div id="lt-practice-toolbar" class="exam-toolbar">
             <button class="tool-btn-rv" id="tool-hl-pr" onclick="setTool('highlight')">
                 ✏️ <small>Bôi màu</small>
             </button>
@@ -2707,8 +2707,6 @@
         _ltPracticePartNum   = partNum;
         _ltPracticeSectionId = sectionId;
         _ltPracticeSubmitted = false;
-        const toolbar = document.getElementById('lt-practice-toolbar');
-        if (toolbar) toolbar.style.display = 'none';
         const tpEnter = document.getElementById('lt-practice-transcript-panel');
         if (tpEnter) tpEnter.style.display = 'none';
         setTool('none');
@@ -2878,10 +2876,7 @@
             }
         }
 
-        // Show dict/highlight toolbar now that results are visible
         _ltPracticeSubmitted = true;
-        const toolbar = document.getElementById('lt-practice-toolbar');
-        if (toolbar) toolbar.style.display = '';
         setTool('none');
 
         // Update footer
@@ -2896,8 +2891,6 @@
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;
         _ltLoadingPart = 0;
-        const toolbar = document.getElementById('lt-practice-toolbar');
-        if (toolbar) toolbar.style.display = 'none';
         const tpClose = document.getElementById('lt-practice-transcript-panel');
         if (tpClose) tpClose.style.display = 'none';
         setTool('none');
