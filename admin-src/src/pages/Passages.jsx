@@ -71,6 +71,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
                   <li><strong>True/False/NG:</strong> Nhóm "Câu hỏi thường". Câu hỏi là statement, đáp án: <code>TRUE</code> / <code>FALSE</code> / <code>NOT GIVEN</code></li>
                   <li><strong>Yes/No/NG:</strong> Tương tự nhưng hỏi quan điểm tác giả. Đáp án: <code>YES</code> / <code>NO</code> / <code>NOT GIVEN</code></li>
                   <li><strong>Multiple Choice:</strong> Đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
+                  <li><strong>Choose TWO/THREE Letters A-G ✦:</strong> Tạo nhiều câu riêng (VD: Q14, Q15) cùng options — mỗi câu đáp án 1 chữ cái. Dùng khi đề hỏi "Choose TWO answers".</li>
                   <li><strong>Fill-blank:</strong> Dùng <code>________</code> trong câu. Đáp án: từ cần điền. Nhiều đáp án: <code>word1 / word2</code></li>
                   <li><strong>Matching Headings:</strong> Nhóm "Matching Headings". Câu hỏi = tên đoạn (VD: <em>Section A</em>). Đáp án = số La Mã (VD: <em>iii</em>)</li>
                   <li><strong>Summary Completion:</strong> Nhóm "Summary Completion". Dùng <code>__Q14__</code> trong đoạn tóm tắt. Word Bank A→J. Đáp án là chữ cái.</li>
@@ -79,7 +80,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
                 </ul>
                 <div style={{ marginTop: 5, color: 'var(--text3)' }}>Mỗi nhóm câu hỏi lưu tự động khi thay đổi (thấy "✓ Đã lưu" ở tiêu đề).</div>
               </div>
-              <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" />
+              <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" questionFrom={passageData?.questionRange?.start || 1} />
             </>
           )}
         </div>

@@ -1033,7 +1033,7 @@ function renderSingleQuestion(q, isReview, reviewMap) {
     inputHtml = renderTFNG(qNum, isReview, review, ['TRUE', 'FALSE', 'NOT GIVEN']);
   } else if (type === 'yes-no-ng') {
     inputHtml = renderTFNG(qNum, isReview, review, ['YES', 'NO', 'NOT GIVEN']);
-  } else if (type === 'multiple-choice') {
+  } else if (type === 'multiple-choice' || type === 'multi-answer-group') {
     inputHtml = renderMC(qNum, options, isReview, review);
   } else if (type === 'checkbox') {
     inputHtml = renderCheckbox(q, isReview, review);
@@ -1086,10 +1086,9 @@ function renderTFNG(qNum, isReview, review, labels = ['TRUE', 'FALSE', 'NOT GIVE
 /* ── Multiple Choice ──────────────────────────────────────────────── */
 function renderMC(qNum, options, isReview, review) {
   const chosen = review ? review.userAnswer : (state.answers[qNum] || '');
-  const letters = ['A', 'B', 'C', 'D', 'E'];
   if (isReview) {
     return `<div class="q-options">${options.map((opt, i) => {
-      const l = letters[i];
+      const l = String.fromCharCode(65 + i);
       let cls = '';
       if (l === review?.correctAnswer) cls = 'correct-ans';
       else if (l === chosen) cls = 'wrong-ans';
@@ -1101,7 +1100,7 @@ function renderMC(qNum, options, isReview, review) {
     }).join('')}</div>`;
   }
   return `<div class="q-options">${options.map((opt, i) => {
-    const l = letters[i];
+    const l = String.fromCharCode(65 + i);
     return `<label class="radio-opt ${chosen === l ? 'selected' : ''}"
                    onclick="pickMC(${qNum},'${l}',this)">
       <span class="radio-dot"></span>
@@ -1118,10 +1117,9 @@ function renderCheckbox(q, isReview, review) {
   let chosen = [];
   try { chosen = JSON.parse(rawAns); } catch { if (rawAns) chosen = [rawAns]; }
   const correctArr = (() => { try { return JSON.parse(review?.correctAnswer || '[]'); } catch { return []; } })();
-  const letters = ['A', 'B', 'C', 'D', 'E'];
   const hint = !isReview ? `<div class="checkbox-hint">Chọn ${checkboxCount} đáp án</div>` : '';
   return `${hint}<div class="checkbox-opts">${options.map((opt, i) => {
-    const l = letters[i];
+    const l = String.fromCharCode(65 + i);
     const sel = chosen.includes(l);
     let cls = sel ? 'selected' : '';
     if (isReview) {

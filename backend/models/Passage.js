@@ -8,6 +8,7 @@ const QuestionSchema = new mongoose.Schema({
       'true-false-ng',
       'yes-no-ng',
       'multiple-choice',
+      'multi-answer-group',
       'fill-blank',
       'sentence-completion',
       'matching-headings',
