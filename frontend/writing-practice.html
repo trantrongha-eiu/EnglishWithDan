@@ -166,6 +166,31 @@
     [data-theme="dark"] .wp-welcome-types-lbl { color:#7dd3fc; }
     [data-theme="dark"] .wp-welcome-chips span { background:#0f2d45; border-color:#1e4060; color:#7dd3fc; }
 
+    /* ── Grammar explanation box ── */
+    .wp-explanation-box {
+      background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px;
+      padding: 10px 14px; margin-top: 10px; font-size: 13px; line-height: 1.6;
+      color: #0369a1;
+    }
+    .wp-explanation-box::before { content: '📌 '; font-style: normal; }
+    [data-theme="dark"] .wp-explanation-box { background: #0c1e30; border-color: #1e4060; color: #7dd3fc; }
+
+    /* ── Level/topic count badge ── */
+    .wp-lc-badge {
+      display: inline-block; background: rgba(0,0,0,.08); color: inherit;
+      border-radius: 20px; padding: 0 6px; font-size: 10px; font-weight: 700;
+      margin-left: 4px; vertical-align: middle; line-height: 16px;
+    }
+    .wp-level-btn.active .wp-lc-badge, .wp-topic-btn.active .wp-lc-badge {
+      background: rgba(255,255,255,.25);
+    }
+
+    /* ── Keyboard hint ── */
+    .wp-key-hint {
+      font-size: 11px; color: #9ca3af; text-align: center; margin-top: 4px;
+    }
+    [data-theme="dark"] .wp-key-hint { color: #4b5563; }
+
     /* ── Option toggles ── */
     .wp-option-row {
       display: flex; align-items: center; justify-content: space-between;
@@ -443,6 +468,7 @@
               <i class="fas fa-check"></i> Kiểm tra
             </button>
           </div>
+          <div class="wp-key-hint">Enter ↵ để kiểm tra &nbsp;·&nbsp; Shift+Enter để xuống dòng</div>
         </div>
 
         <!-- Feedback card -->
@@ -459,6 +485,7 @@
             </div>
           </div>
           <div class="wp-feedback" id="feedback-text"></div>
+          <div class="wp-explanation-box hidden" id="explanation-box"></div>
           <button class="wp-next-btn" onclick="nextExercise()">
             Câu tiếp theo <i class="fas fa-arrow-right"></i>
           </button>
@@ -709,6 +736,48 @@ function skipExercise() {
 }
 
 // ════════════════════════════════════════════════════════
+//  META – exercise counts per level / topic
+// ════════════════════════════════════════════════════════
+let _wpMeta = null;
+
+async function loadMeta() {
+  try {
+    const res  = await fetch(`${API}/api/writing-practice/meta`);
+    const data = await res.json();
+    if (!data.success) return;
+    _wpMeta = data;
+    updateLevelCounts();
+    updateTopicCounts();
+  } catch (e) { /* silent */ }
+}
+
+function updateLevelCounts() {
+  if (!_wpMeta) return;
+  ['beginner', 'elementary', 'intermediate'].forEach(lvl => {
+    const count = _wpMeta.counts?.[lvl]?._total || 0;
+    if (!count) return;
+    document.querySelectorAll(`.wp-level-btn[data-level="${lvl}"]`).forEach(btn => {
+      let badge = btn.querySelector('.wp-lc-badge');
+      if (!badge) { badge = document.createElement('span'); badge.className = 'wp-lc-badge'; btn.appendChild(badge); }
+      badge.textContent = count;
+    });
+  });
+}
+
+function updateTopicCounts() {
+  if (!_wpMeta) return;
+  const levelData = _wpMeta.counts?.[currentLevel] || {};
+  document.querySelectorAll('.wp-topic-btn[data-topic]').forEach(btn => {
+    const topic = btn.dataset.topic;
+    const count = topic === 'all' ? (levelData._total || 0) : (levelData[topic] || 0);
+    let badge = btn.querySelector('.wp-lc-badge');
+    if (!badge) { badge = document.createElement('span'); badge.className = 'wp-lc-badge'; btn.appendChild(badge); }
+    badge.textContent = count || '';
+    btn.style.opacity = (count || topic === 'all') ? '' : '0.5';
+  });
+}
+
+// ════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════
 function setAutoAdvance(val) {
@@ -735,6 +804,7 @@ function _clearAutoAdvance() {
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
+  loadMeta();
   showState('welcome');
   // Init toggles from saved prefs
   document.getElementById('toggle-auto-advance').checked       = _wpAutoAdvance;
@@ -824,6 +894,7 @@ function selectLevel(level) {
     currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
+    updateTopicCounts();
     loadExercises();
   };
   if (sessionDone > 0) {
@@ -1122,6 +1193,17 @@ function showFeedback(userAnswer, data) {
   }
   document.getElementById('sample-answer-display').textContent = sampleAnswer || '';
   document.getElementById('feedback-text').textContent = feedback.feedbackVi || '';
+
+  const exNow = exercises[currentIdx];
+  const expEl = document.getElementById('explanation-box');
+  if (expEl) {
+    if (exNow?.explanation) {
+      expEl.textContent = exNow.explanation;
+      expEl.classList.remove('hidden');
+    } else {
+      expEl.classList.add('hidden');
+    }
+  }
 
   document.getElementById('feedback-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
@@ -1536,6 +1618,7 @@ function showTestResults(data) {
           <div class="wp-review-your">📝 Bạn: <em>${r.userAnswer || '(bỏ qua)'}</em></div>
           <div class="wp-review-ans">✅ Đáp án: <strong>${r.sampleAnswer}</strong></div>
           ${r.grammarPoint ? `<div class="wp-review-gp">📌 ${r.grammarPoint}</div>` : ''}
+          ${r.explanation ? `<div class="wp-review-gp" style="background:#f0f9ff;color:#0369a1;border-left-color:#7dd3fc">💡 ${r.explanation}</div>` : ''}
         </div>
       </div>`;
   });

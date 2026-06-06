@@ -268,6 +268,7 @@ router.post('/check-test', async (req, res) => {
         level:        exercise.level,
         topicKey:     exercise.topicKey,
         grammarPoint: exercise.grammarPoint,
+        explanation:  exercise.explanation || '',
         userAnswer:   userAnswer || '',
         sampleAnswer: exercise.sampleAnswer,
         alternativeAnswers: exercise.alternativeAnswers || [],
