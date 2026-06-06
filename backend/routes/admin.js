@@ -1248,6 +1248,7 @@ STEP 1 – SCORES: Score each criterion 4–9. Match the score to the band descr
 STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY): Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
 - Mark as "issue" ONLY if the sentence has a CLEAR, OBJECTIVE problem: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement. The criterion badge must directly match the problem.
 - Mark as "ok" if the sentence is grammatically correct and fulfils its purpose — even if it is simple or you could personally phrase it differently. Do NOT mark "issue" just because a fancier version exists. Do NOT rewrite a correct sentence into a completely different idea.
+- NEVER flag a sentence as a CC issue for "lacking a linking/cohesive device" if the sentence ALREADY begins with a recognised cohesive device such as: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc. Sentences that already open with such devices clearly demonstrate cohesion — do NOT suggest replacing them with another linking word.
 - When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure as much as possible.
 
 Return ONLY valid JSON (no markdown, no explanation outside JSON):
