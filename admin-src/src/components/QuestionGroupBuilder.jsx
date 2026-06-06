@@ -5,14 +5,22 @@ import { API } from '../utils/api';
 
 const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii'];
 
-const GROUP_TYPES = [
-  { value: 'plain',              icon: '💬', label: 'Câu hỏi thường',           desc: 'True/False/NG, Multiple choice, Fill-blank riêng lẻ' },
-  { value: 'table',              icon: '📋', label: 'Bảng (Table/Note)',         desc: 'Fill-blank trong ô bảng – dùng __Q1__ cho ô trống' },
-  { value: 'note-form',          icon: '📝', label: 'Note / Bullet Completion',  desc: 'Điền vào biểu mẫu ghi chú – dùng __Q6__' },
-  { value: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings', desc: 'Ghép chữ cái – Matching Features, Sentence Endings, Choose Letters' },
-  { value: 'matching-headings',  icon: '📌', label: 'Matching Headings',         desc: 'Tiêu đề i,ii,iii – ghép vào đoạn văn A,B,C' },
-  { value: 'summary-completion', icon: '🧩', label: 'Summary Completion',        desc: 'Đoạn tóm tắt + Word Bank chữ cái A-J (kéo-thả)' },
-  { value: 'map',                icon: '🗺️', label: 'Map / Diagram',             desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
+const GROUP_TYPES_READING = [
+  { value: 'plain',              icon: '💬', label: 'Câu hỏi thường',            desc: 'True/False/NG, Multiple choice, Fill-blank riêng lẻ' },
+  { value: 'table',              icon: '📋', label: 'Bảng (Table/Note)',          desc: 'Fill-blank trong ô bảng – dùng __Q1__ cho ô trống' },
+  { value: 'note-form',          icon: '📝', label: 'Note / Bullet Completion',   desc: 'Điền vào biểu mẫu ghi chú – dùng __Q6__' },
+  { value: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings',desc: 'Ghép chữ cái – Matching Features, Sentence Endings, Choose Letters' },
+  { value: 'matching-headings',  icon: '📌', label: 'Matching Headings',          desc: 'Tiêu đề i,ii,iii – ghép vào đoạn văn A,B,C' },
+  { value: 'summary-completion', icon: '🧩', label: 'Summary Completion',         desc: 'Đoạn tóm tắt + Word Bank chữ cái A-J (kéo-thả)' },
+  { value: 'map',                icon: '🗺️', label: 'Map / Diagram',              desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
+];
+
+const GROUP_TYPES_LISTENING = [
+  { value: 'plain',            icon: '💬', label: 'Câu hỏi thường',              desc: 'Multiple Choice, Short-answer, Sentence Completion riêng lẻ' },
+  { value: 'table',            icon: '📋', label: 'Table Completion',             desc: 'Điền vào ô bảng – dùng __Q1__ cho ô trống' },
+  { value: 'note-form',        icon: '📝', label: 'Form / Note / Flow-chart',     desc: 'Điền vào biểu mẫu, ghi chú, lưu đồ – dùng __Q6__ cho chỗ trống' },
+  { value: 'matching-options', icon: '🔗', label: 'Matching',                     desc: 'Nối thông tin – ghép chữ cái A-H (Part 2 / Part 3)' },
+  { value: 'map',              icon: '🗺️', label: 'Map / Plan / Diagram',         desc: 'Dán nhãn bản đồ, sơ đồ – có hình ảnh chung cho nhóm' },
 ];
 
 const Q_TYPES = {
@@ -836,7 +844,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
               <button className="modal-close" onClick={() => setShowPicker(false)}>✕</button>
             </div>
             <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-              {GROUP_TYPES.map(gt => (
+              {(context === 'listening' ? GROUP_TYPES_LISTENING : GROUP_TYPES_READING).map(gt => (
                 <div key={gt.value}
                   onClick={() => addGroup(gt.value)}
                   style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 12, cursor: 'pointer', transition: 'all .15s' }}
