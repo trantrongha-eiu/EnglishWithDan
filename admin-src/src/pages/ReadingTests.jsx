@@ -57,7 +57,7 @@ export default function ReadingTests() {
     <>
       <div className="section-header">
         <h2 className="section-title">Bộ đề Reading ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/admin/reading-tests/new')}>+ Thêm bộ đề</button>
+        <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new')}>+ Thêm bộ đề</button>
       </div>
 
       {passageStats && (
@@ -111,7 +111,7 @@ export default function ReadingTests() {
                   <td>
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyLink(t._id)} title="Copy link chia sẻ">🔗</button>
-                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/admin/reading-tests/${t._id}`)} title="Sửa">✏️</button>
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/reading-tests/${t._id}`)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)} title="Xóa vĩnh viễn">🗑</button>
                     </div>

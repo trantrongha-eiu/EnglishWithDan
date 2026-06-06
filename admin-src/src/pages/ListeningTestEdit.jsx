@@ -153,7 +153,7 @@ export default function ListeningTestEdit() {
   const navigate = useNavigate();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/admin/listening-tests');
+  const goBack = () => navigate('/listening-tests');
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);

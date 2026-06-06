@@ -118,7 +118,7 @@ export default function ListeningSectionEdit() {
   const navigate = useNavigate();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/admin/listening-sections');
+  const goBack = () => navigate('/listening-sections');
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);

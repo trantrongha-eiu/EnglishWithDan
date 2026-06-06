@@ -285,7 +285,7 @@ export default function Users() {
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>
-                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/admin/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
                       <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
                         onClick={() => toggleBan(u._id, u.username, u.isBanned)}>
                         {u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm'}

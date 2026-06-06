@@ -8,7 +8,7 @@ export default function ReadingTestEdit() {
   const navigate = useNavigate();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/admin/reading-tests');
+  const goBack = () => navigate('/reading-tests');
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);

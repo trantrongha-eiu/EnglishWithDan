@@ -240,7 +240,7 @@ export default function ListeningSections() {
         <AssembleModal
           sections={sections}
           onClose={() => setShowAssemble(false)}
-          onSuccess={testId => navigate(`/admin/listening-tests/${testId}`)}
+          onSuccess={testId => navigate(`/listening-tests/${testId}`)}
         />
       )}
 
@@ -248,7 +248,7 @@ export default function ListeningSections() {
         <h2 className="section-title">Bài lẻ Listening ({filtered.length})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => setShowAssemble(true)}>🎧 Tạo Full Test</button>
-          <button className="btn btn-primary" onClick={() => navigate('/admin/listening-sections/new')}>+ Thêm section</button>
+          <button className="btn btn-primary" onClick={() => navigate('/listening-sections/new')}>+ Thêm section</button>
         </div>
       </div>
 
@@ -322,7 +322,7 @@ export default function ListeningSections() {
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon"
-                          onClick={() => navigate(`/admin/listening-sections/${s._id}`)} title="Sửa">✏️</button>
+                          onClick={() => navigate(`/listening-sections/${s._id}`)} title="Sửa">✏️</button>
                         <button className="btn btn-ghost btn-sm btn-icon"
                           onClick={() => setAudioSection(s)} title="Upload audio">🎵</button>
                         <button className="btn btn-ghost btn-sm btn-icon"
