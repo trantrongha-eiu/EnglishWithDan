@@ -37,11 +37,10 @@ const Q_TYPES = {
   ],
   listening: [
     { value: 'fill-blank',          label: 'Fill in the blank' },
-    { value: 'sentence-completion', label: 'Sentence Completion' },
+    { value: 'sentence-completion', label: 'Sentence Completion (kéo-thả từ Word Bank)' },
     { value: 'multiple-choice',     label: 'Multiple Choice (1 đáp án)' },
     { value: 'multi-answer-group',  label: 'Choose TWO/THREE Letters A-G ✦' },
-    { value: 'matching',            label: 'Matching' },
-    { value: 'matching-info',       label: 'Matching Information' },
+    { value: 'matching-info',       label: 'Matching – gõ chữ cái A/B/C vào ô' },
     { value: 'map-labelling',       label: 'Map Labelling' },
   ],
 };
