@@ -315,7 +315,7 @@ export default function ListeningSectionEdit() {
           placeholder={'Dán toàn bộ script bài nghe tại đây...\n\nVD:\nOFFICER: Good morning, how can I help you?\nSTUDENT: Hi, I\'d like to enquire about on-campus accommodation...'}
           style={{ fontSize: 12, fontFamily: 'var(--mono)', lineHeight: 1.6 }} />
         <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>
-          Script không hiển thị trong lúc làm bài — chỉ dùng cho mục đích quản trị
+          Script được hiển thị cho học sinh sau khi nộp bài (bên trái màn hình kết quả)
         </div>
       </div>
 

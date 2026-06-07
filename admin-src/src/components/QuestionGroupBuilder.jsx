@@ -49,8 +49,8 @@ const ALLOWED = {
   plain:               null,
   table:               ['fill-blank', 'sentence-completion'],
   'note-form':         ['fill-blank', 'sentence-completion'],
-  'matching-options':  ['matching-info', 'matching'],
-  'sentence-endings':  ['matching-info', 'matching'],
+  'matching-options':  ['matching-info'],
+  'sentence-endings':  ['matching-info'],
   'matching-headings': ['matching-headings'],
   'summary-completion':['fill-blank'],
   map:                 ['map-labelling', 'fill-blank'],
@@ -77,7 +77,6 @@ const TYPE_LABEL = {
   'sentence-completion':'Sentence Completion',
   'matching-headings': 'Matching Headings',
   'matching-info':     'Matching Info',
-  'matching':          'Matching',
   'map-labelling':     'Map Labelling',
 };
 
@@ -91,7 +90,6 @@ const ANS_HINT = {
   'sentence-completion':'Từ trong Word Bank',
   'matching-headings': 'Số La Mã: i, ii, iii…',
   'matching-info':     'Chữ cái: A, B, C…',
-  'matching':          'Chữ cái: A, B, C…',
   'map-labelling':     'Nhãn điền vào sơ đồ',
 };
 

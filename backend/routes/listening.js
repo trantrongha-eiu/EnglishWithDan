@@ -709,7 +709,7 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
             } else if (q.type === 'checkbox') {
               try {
                 const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
-                const caArr = JSON.parse(ca).map(x => x.toLowerCase().trim()).sort();
+                const caArr = JSON.parse(ca || '[]').map(x => x.toLowerCase().trim()).sort();
                 isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
               } catch { isCorrect = false; }
             } else {

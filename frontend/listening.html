@@ -2790,35 +2790,54 @@
 
         // Build reviewed groups: merge user answers + correctAnswer + isCorrect
         const reviewSection = JSON.parse(JSON.stringify(_ltOrigSection));
-        _ltGetAllQs(reviewSection).forEach(q => {
-            const qNum      = q.questionNumber;
-            const userAns   = state.answers[qNum] || '';
-            const correctAns= q.correctAnswer || '';
-            let isCorrect   = false;
-            if (!userAns || userAns === '[]') {
-                skipped++;
-            } else if (q.type === 'multi-answer-group') {
-                try {
-                    const uaArr = JSON.parse(userAns || '[]').map(x => x.toUpperCase().trim());
-                    isCorrect = uaArr.includes(correctAns.toUpperCase().trim());
-                } catch { isCorrect = false; }
-                if (isCorrect) correct++; else wrong++;
-            } else if (q.type === 'checkbox') {
-                try {
-                    const a = JSON.parse(userAns).map(x => x.toLowerCase().trim()).sort();
-                    const b = JSON.parse(correctAns || '[]').map(x => x.toLowerCase().trim()).sort();
-                    isCorrect = JSON.stringify(a) === JSON.stringify(b);
-                } catch { isCorrect = false; }
-                if (isCorrect) correct++; else wrong++;
+        for (const group of reviewSection.questionGroups || []) {
+            const qs = group.questions || [];
+            if (group.interchangeableAnswers && qs.length > 0) {
+                // Pool matching: đáp án trong nhóm có thể hoán đổi thứ tự (như backend)
+                const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
+                for (const q of qs) {
+                    const userAns = state.answers[q.questionNumber] || '';
+                    const poolIdx = userAns ? remainingPool.indexOf(userAns.trim().toLowerCase()) : -1;
+                    const isCorrect = poolIdx !== -1;
+                    if (isCorrect) remainingPool.splice(poolIdx, 1);
+                    if (!userAns || userAns === '[]') skipped++;
+                    else if (isCorrect) correct++;
+                    else wrong++;
+                    q.userAnswer = userAns;
+                    q.isCorrect  = isCorrect;
+                }
             } else {
-                const userLow = userAns.trim().toLowerCase();
-                const alts    = correctAns.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
-                isCorrect     = alts.length > 0 ? alts.some(a => a === userLow) : false;
-                if (isCorrect) correct++; else wrong++;
+                for (const q of qs) {
+                    const qNum      = q.questionNumber;
+                    const userAns   = state.answers[qNum] || '';
+                    const correctAns= q.correctAnswer || '';
+                    let isCorrect   = false;
+                    if (!userAns || userAns === '[]') {
+                        skipped++;
+                    } else if (q.type === 'multi-answer-group') {
+                        try {
+                            const uaArr = JSON.parse(userAns || '[]').map(x => x.toUpperCase().trim());
+                            isCorrect = uaArr.includes(correctAns.toUpperCase().trim());
+                        } catch { isCorrect = false; }
+                        if (isCorrect) correct++; else wrong++;
+                    } else if (q.type === 'checkbox') {
+                        try {
+                            const a = JSON.parse(userAns).map(x => x.toLowerCase().trim()).sort();
+                            const b = JSON.parse(correctAns || '[]').map(x => x.toLowerCase().trim()).sort();
+                            isCorrect = JSON.stringify(a) === JSON.stringify(b);
+                        } catch { isCorrect = false; }
+                        if (isCorrect) correct++; else wrong++;
+                    } else {
+                        const userLow = userAns.trim().toLowerCase();
+                        const alts    = correctAns.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
+                        isCorrect     = alts.length > 0 ? alts.some(a => a === userLow) : false;
+                        if (isCorrect) correct++; else wrong++;
+                    }
+                    q.userAnswer = userAns;
+                    q.isCorrect  = isCorrect;
+                }
             }
-            q.userAnswer = userAns;
-            q.isCorrect  = isCorrect;
-        });
+        }
 
         const pct    = total ? Math.round(correct / total * 100) : 0;
         const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
