@@ -1935,8 +1935,8 @@ function checkTranslation() {
     const ok     = alts.some(alt => {
         const normAlt = norm(alt), normUa = norm(ua);
         if (normUa === normAlt) return true;
-        const altWords = normAlt.split(/\s+/).filter(w => w.length > 1);
-        const uaWords  = normUa.split(/\s+/).filter(w => w.length > 1);
+        const altWords = normAlt.split(/\s+/).filter(Boolean);
+        const uaWords  = normUa.split(/\s+/).filter(Boolean);
         if (altWords.length === 0) return false;
         return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
     });
