@@ -321,6 +321,8 @@
       <span style="font-size:13px;color:var(--text3,#888)">⏱ <span id="pw-stopwatch">00:00</span></span>
     </div>
     <div class="exam-topbar-right">
+      <span id="pw-save-status" style="font-size:11px;font-weight:500;color:#9ca3af;margin-right:2px"></span>
+      <button class="exam-topbar-btn" onclick="saveDraftManual()" title="Lưu nháp để tiếp tục sau">💾 Lưu nháp</button>
       <button class="exam-topbar-btn" onclick="confirmSubmitPractice()">Nộp bài ✓</button>
     </div>
   </div>
@@ -353,6 +355,7 @@
   <!-- Footer -->
   <div class="exam-footer" style="justify-content:flex-end;gap:12px">
     <button class="btn-secondary" onclick="confirmExitPractice()">Thoát</button>
+    <button class="btn-secondary" onclick="saveDraftManual()">💾 Lưu nháp</button>
     <button class="btn-submit-exam" onclick="confirmSubmitPractice()">📤 Nộp bài</button>
   </div>
 </div>

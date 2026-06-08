@@ -1079,7 +1079,24 @@ function savePracticeToStorage() {
       seconds:   practiceState.seconds,
       savedAt:   Date.now()
     }));
+    _updateSaveIndicator(Date.now());
   } catch (_) {}
+}
+
+function _updateSaveIndicator(ts) {
+  const el = document.getElementById('pw-save-status');
+  if (!el) return;
+  const d  = new Date(ts);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  el.textContent = `✓ Đã lưu ${hh}:${mm}`;
+  el.style.color  = '#16a34a';
+}
+
+function saveDraftManual() {
+  if (!practiceState.task) return;
+  savePracticeToStorage();
+  showToast('Đã lưu nháp ✓ — bạn có thể thoát và tiếp tục sau', 'success', 3000);
 }
 
 function loadPracticeFromStorage() {
@@ -1134,6 +1151,8 @@ function restorePracticeWrite() {
   renderPracticeWriteScreen(saved.taskType, saved.task);
   const ta = document.getElementById('pw-textarea');
   if (ta) { ta.value = saved.answer || ''; onPracticeInput(); setTimeout(() => ta.focus(), 100); }
+  // Restore save indicator with the time the draft was last saved
+  if (saved.savedAt) _updateSaveIndicator(saved.savedAt);
 
   showScreen('screen-practice-write');
   startPracticeStopwatch(saved.seconds || 0);
@@ -1314,6 +1333,8 @@ function renderPracticeWriteScreen(taskType, task) {
   document.getElementById('pw-wc').textContent = '0';
   document.getElementById('pw-progress-bar').style.width = '0%';
   document.getElementById('pw-textarea').value = '';
+  const si = document.getElementById('pw-save-status');
+  if (si) { si.textContent = ''; }
 
   const leftPanel = document.getElementById('pw-left-panel');
   let html = '';
@@ -1338,6 +1359,9 @@ function onPracticeInput() {
     bar.style.width = pct + '%';
     bar.style.background = words >= minWords ? '#22c55e' : words >= minWords * 0.8 ? '#f59e0b' : '#3d8bff';
   }
+  // Show unsaved indicator immediately
+  const si = document.getElementById('pw-save-status');
+  if (si) { si.textContent = '● Chưa lưu'; si.style.color = '#f59e0b'; }
   // Debounced auto-save
   clearTimeout(_practiceSaveDebounce);
   _practiceSaveDebounce = setTimeout(savePracticeToStorage, 800);
