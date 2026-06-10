@@ -650,6 +650,7 @@ let testRearrangeAnswer = [];
 let testTimerInterval = null;
 let testTimeLeft      = 0;
 let testTotalTime     = 0;
+let _isSubmittingTest = false;
 // Rearrange
 let rearrangeWords  = [];
 let rearrangeAnswer = [];
@@ -692,12 +693,15 @@ function getSessionElapsed() {
 // ════════════════════════════════════════════════════════
 //  ANSWER DIFF
 // ════════════════════════════════════════════════════════
+function _escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 function buildAnswerDiff(userAnswer, sampleAnswer) {
   const norm = s => s.toLowerCase().replace(/[.,!?;:'"]/g,'').trim();
   const sampleSet = new Set(norm(sampleAnswer).split(/\s+/));
   return userAnswer.split(/\s+/).map(word => {
     const ok = sampleSet.has(norm(word));
-    return `<span class="${ok ? 'wp-diff-ok' : 'wp-diff-err'}">${word}</span>`;
+    return `<span class="${ok ? 'wp-diff-ok' : 'wp-diff-err'}">${_escHtml(word)}</span>`;
   }).join(' ');
 }
 
@@ -756,7 +760,8 @@ function updateLevelCounts() {
   ['beginner', 'elementary', 'intermediate'].forEach(lvl => {
     const count = _wpMeta.counts?.[lvl]?._total || 0;
     if (!count) return;
-    document.querySelectorAll(`.wp-level-btn[data-level="${lvl}"]`).forEach(btn => {
+    // Update both practice [data-level] and test [data-tlevel] buttons
+    document.querySelectorAll(`.wp-level-btn[data-level="${lvl}"], .wp-level-btn[data-tlevel="${lvl}"]`).forEach(btn => {
       let badge = btn.querySelector('.wp-lc-badge');
       if (!badge) { badge = document.createElement('span'); badge.className = 'wp-lc-badge'; btn.appendChild(badge); }
       badge.textContent = count;
@@ -1256,8 +1261,21 @@ function updateProgress(xpEarned, isCorrect) {
   }
   updateSessionStats();
   const stored = JSON.parse(localStorage.getItem('wp_progress') || '{"xp":0,"streak":0}');
+  const today     = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  // First exercise of this calendar day → update streak
+  if (!stored.todayDone) {
+    if (stored.lastPracticeDate === yesterday) {
+      stored.streak = (stored.streak || 0) + 1;  // consecutive day
+    } else if (stored.lastPracticeDate !== today) {
+      stored.streak = 1;                          // gap — restart
+    }
+    document.getElementById('header-streak').textContent = stored.streak || 1;
+  }
+  stored.todayDone = (stored.todayDone || 0) + 1;
+  stored.lastPracticeDate = today;
   stored.xp = (stored.xp || 0) + xpEarned;
-  stored.lastDate = new Date().toISOString().slice(0, 10);
+  stored.lastDate = today;
   localStorage.setItem('wp_progress', JSON.stringify(stored));
   document.getElementById('header-xp').textContent = stored.xp;
 }
@@ -1295,13 +1313,16 @@ function nextExercise() {
 }
 
 function showDoneSummary() {
-  const pct = sessionDone ? Math.round((sessionCorrect / sessionDone) * 100) : 0;
+  const gradable = sessionAttempts.filter(a => a.type !== 'expand').length;
+  const expandCount = sessionDone - gradable;
+  const pct = gradable ? Math.round((sessionCorrect / gradable) * 100) : (sessionDone ? 100 : 0);
   const elapsed = getSessionElapsed();
   const m = Math.floor(elapsed / 60), s = elapsed % 60;
+  const expandNote = expandCount > 0 ? ` (+${expandCount} mở rộng)` : '';
   document.getElementById('done-summary').textContent =
     `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
   document.getElementById('done-stats').innerHTML =
-    `<span>🎯 Đúng: ${sessionCorrect}/${sessionDone} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
+    `<span>🎯 Đúng: ${sessionCorrect}/${gradable}${expandNote} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
 
   const wrongAttempts = sessionAttempts.filter(a => a.isCorrect === false);
   const wrongCount = wrongAttempts.length;
@@ -1397,15 +1418,16 @@ function stopTestTimer() {
 }
 
 async function startTest() {
-  const startBtn = document.querySelector('.wp-start-test-btn');
-  if (startBtn) { startBtn.disabled = true; startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
+  // Disable ALL start-test buttons (desktop sidebar + mobile sheet)
+  const allStartBtns = document.querySelectorAll('.wp-start-test-btn');
+  allStartBtns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; });
 
   document.getElementById('test-intro').style.display       = 'none';
   document.getElementById('test-in-progress').style.display = '';
   document.getElementById('test-results').style.display     = 'none';
 
   const restoreStartBtn = () => {
-    if (startBtn) { startBtn.disabled = false; startBtn.innerHTML = '<i class="fas fa-play"></i> Bắt đầu thi'; }
+    allStartBtns.forEach(b => { b.disabled = false; b.innerHTML = '<i class="fas fa-play"></i> Bắt đầu thi'; });
   };
 
   try {
@@ -1575,6 +1597,8 @@ function testNextQuestion() {
 }
 
 async function submitTest() {
+  if (_isSubmittingTest) return;
+  _isSubmittingTest = true;
   stopTestTimer();
   document.getElementById('test-in-progress').style.display = 'none';
   try {
@@ -1590,6 +1614,8 @@ async function submitTest() {
     console.error(err);
     showToast('Lỗi khi nộp bài: ' + err.message, 'error');
     document.getElementById('test-intro').style.display = '';
+  } finally {
+    _isSubmittingTest = false;
   }
 }
 
