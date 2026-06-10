@@ -594,17 +594,17 @@ function renderWordsTable(words) {
       </td>
       <td>
         <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-          <span class="word-chip-main">${w.word}</span>
+          <span class="word-chip-main">${_esc(w.word)}</span>
           ${diffBadge}
           <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
         </div>
         ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${w.phonetic}</div>` : ''}
       </td>
-      <td style="color:var(--text2)">${w.meaning || '–'}</td>
+      <td style="color:var(--text2)">${_esc(w.meaning || '–')}</td>
       <td style="max-width:240px">
-        ${w.example ? `<div style="font-size:12px;font-style:italic;color:var(--text2)">${w.example}</div>` : ''}
+        ${w.example ? `<div style="font-size:12px;font-style:italic;color:var(--text2)">${_esc(w.example)}</div>` : ''}
       </td>
-      <td style="color:var(--text3);font-size:12px">${w.note || ''}</td>
+      <td style="color:var(--text3);font-size:12px">${_esc(w.note || '')}</td>
       <td style="display:flex;gap:4px">
         <button class="btn btn-ghost btn-sm" onclick="openEditWordModal('${w._id}')" title="Edit word">✏️</button>
         <button class="btn btn-ghost btn-sm" onclick="deleteWord('${w._id}')" title="Delete word">🗑</button>
@@ -698,11 +698,14 @@ function updateStats(book) {
 /* ── Delete word ── */
 function deleteWord(wordId) {
     confirm2('Delete Word', 'Are you sure you want to delete this word?', async () => {
-        await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
-        selectedWordIds.delete(wordId);
-        updateBulkBar();
-        toast('Word deleted');
-        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+        try {
+            const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
+            if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Delete failed', 'error'); return; }
+            selectedWordIds.delete(wordId);
+            updateBulkBar();
+            toast('Word deleted');
+            await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+        } catch { toast('Delete failed', 'error'); }
     });
 }
 
@@ -773,34 +776,41 @@ function updateBulkBar() {
 }
 async function bulkChangeStatus(status) {
     if (!status || !selectedWordIds.size) return;
-    await Promise.all([...selectedWordIds].map(wid =>
-        fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
-            method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
-        })
-    ));
-    selectedWordIds.clear();
-    document.getElementById('bulk-status-sel').value = '';
-    toast('Status updated');
-    await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+    try {
+        const results = await Promise.all([...selectedWordIds].map(wid =>
+            fetch(`${API}/vocabbook/${currentBookId}/words/${wid}`, {
+                method: 'PATCH', headers: authH(), body: JSON.stringify({ status })
+            })
+        ));
+        const allOk = results.every(r => r.ok);
+        selectedWordIds.clear();
+        document.getElementById('bulk-status-sel').value = '';
+        toast(allOk ? 'Status updated' : 'Some updates failed', allOk ? 'success' : 'error');
+        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+    } catch { toast('Update failed', 'error'); }
 }
 async function bulkDelete() {
     if (!selectedWordIds.size) return;
     confirm2('Delete Words', `Delete ${selectedWordIds.size} selected words?`, async () => {
-        await fetch(`${API}/vocabbook/${currentBookId}/words`, {
-            method: 'DELETE', headers: authH(),
-            body: JSON.stringify({ wordIds: [...selectedWordIds] })
-        });
-        selectedWordIds.clear();
-        updateBulkBar();
-        toast('Deleted');
-        await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+        try {
+            const res = await fetch(`${API}/vocabbook/${currentBookId}/words`, {
+                method: 'DELETE', headers: authH(),
+                body: JSON.stringify({ wordIds: [...selectedWordIds] })
+            });
+            if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Delete failed', 'error'); return; }
+            selectedWordIds.clear();
+            updateBulkBar();
+            toast('Deleted');
+            await Promise.all([refreshCurrentBook(), loadMyBooks()]);
+        } catch { toast('Delete failed', 'error'); }
     });
 }
 
 /* ── Rename book ── */
 async function renameBook() {
     const name = document.getElementById('book-editable-name').value.trim();
-    if (!name || !currentBookId) return;
+    if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
+    if (!currentBookId) return;
     try {
         await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
@@ -850,14 +860,17 @@ function deleteBookFromMenu() {
         'Xóa sổ',
         `Xóa sổ "${book.name}"? Tất cả từ trong sổ sẽ bị mất.`,
         async () => {
-            await fetch(`${API}/vocabbook/${_menuBookId}`, { method: 'DELETE', headers: authH() });
-            if (currentBookId === _menuBookId) {
-                currentBookId = null;
-                document.getElementById('book-content').style.display  = 'none';
-                document.getElementById('book-welcome').style.display  = 'flex';
-            }
-            toast('Đã xóa sổ');
-            await loadMyBooks();
+            try {
+                const res = await fetch(`${API}/vocabbook/${_menuBookId}`, { method: 'DELETE', headers: authH() });
+                if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Xóa thất bại', 'error'); return; }
+                if (currentBookId === _menuBookId) {
+                    currentBookId = null;
+                    document.getElementById('book-content').style.display  = 'none';
+                    document.getElementById('book-welcome').style.display  = 'flex';
+                }
+                toast('Đã xóa sổ');
+                await loadMyBooks();
+            } catch { toast('Xóa thất bại', 'error'); }
         }
     );
 }
@@ -1302,14 +1315,14 @@ function renderStudyGrid() {
         <div class="vocab-card">
           <div class="vocab-card-top">
             <span class="vocab-num">${i + 1}</span>
-            <span class="vocab-word-big">${w.word}</span>
+            <span class="vocab-word-big">${_esc(w.word)}</span>
             <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
-            ${w.partOfSpeech ? `<span class="vocab-pos">${w.partOfSpeech}</span>` : ''}
+            ${w.partOfSpeech ? `<span class="vocab-pos">${_esc(w.partOfSpeech)}</span>` : ''}
           </div>
-          ${w.phonetic ? `<div class="vocab-phonetic">${w.phonetic}</div>` : ''}
-          <div class="vocab-meaning">${w.meaning || ''}</div>
-          ${w.example ? `<div class="vocab-example">"${w.example}"</div>` : ''}
-          <button class="btn-save-to-book" onclick="openSaveWordFromUnit('${w._id}')">
+          ${w.phonetic ? `<div class="vocab-phonetic">${_esc(w.phonetic)}</div>` : ''}
+          <div class="vocab-meaning">${_esc(w.meaning || '')}</div>
+          ${w.example ? `<div class="vocab-example">"${_esc(w.example)}"</div>` : ''}
+          <button class="btn-save-to-book" onclick="openSaveWordFromUnit('${escH(w.word)}')">
             <i class="fas fa-bookmark"></i> Save to notebook
           </button>
         </div>`).join('');
@@ -1334,13 +1347,13 @@ function renderParaphraseTable(words, title) {
     const rows = words.map(w => `
         <tr class="para-row">
             <td class="para-cell-original">
-                <span class="para-original-text">${w.word}</span>
+                <span class="para-original-text">${_esc(w.word)}</span>
             </td>
             <td class="para-cell-paraphrase">
-                <span class="para-para-text">${w.paraphrase || '–'}</span>
+                <span class="para-para-text">${_esc(w.paraphrase || '–')}</span>
             </td>
-            <td class="para-cell-meaning">${w.meaning || '–'}</td>
-            <td class="para-cell-explain">${w.explanation || ''}</td>
+            <td class="para-cell-meaning">${_esc(w.meaning || '–')}</td>
+            <td class="para-cell-explain">${_esc(w.explanation || '')}</td>
         </tr>`).join('');
 
     return `
@@ -1376,8 +1389,8 @@ function copyParaphraseTable() {
     navigator.clipboard.writeText(text).then(() => toast('Paraphrase table copied ✅'));
 }
 
-function openSaveWordFromUnit(wordId) {
-    const w = currentUnit?.words?.find(x => String(x._id) === wordId);
+function openSaveWordFromUnit(wordText) {
+    const w = currentUnit?.words?.find(x => x.word === wordText);
     if (!w) return;
     const src = currentUnit.unitNumber
         ? `Unit ${currentUnit.unitNumber}`
@@ -1750,8 +1763,9 @@ function checkMultipleChoice(btn, selected, correct) {
     }
     document.getElementById('mcBtnNext').style.display = 'flex';
 }
-function escH(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function _esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 /* ── Flashcard ── */
 function showFillBlankQuestion() {
