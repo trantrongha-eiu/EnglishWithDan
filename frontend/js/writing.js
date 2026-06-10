@@ -77,6 +77,10 @@ const state = {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (typeof window.hideTopNav === 'function') {
+    const NAV_SCREENS = ['screen-key', 'screen-history'];
+    NAV_SCREENS.includes(id) ? window.showTopNav() : window.hideTopNav();
+  }
 }
 
 // ──────────────────────────────────────────────────────

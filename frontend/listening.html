@@ -666,6 +666,9 @@
             if (navBar) {
                 navBar.classList.toggle('hidden', name !== 'exam' && name !== 'review');
             }
+            if (typeof window.hideTopNav === 'function') {
+                name === 'list' ? window.showTopNav() : window.hideTopNav();
+            }
         }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }

@@ -102,6 +102,30 @@
     '</div>';
   document.body.appendChild(drawer);
 
+  // ── Nav visibility helpers ────────────────────────────────
+  window.hideTopNav = function () {
+    var n = document.getElementById('globalTopNav');
+    var d = document.getElementById('globalMobileNav');
+    if (n) n.style.display = 'none';
+    if (d) d.style.display = 'none';
+    document.body.classList.remove('has-global-nav');
+    document.documentElement.style.setProperty('--nav-height', '0px');
+  };
+  window.showTopNav = function () {
+    var n = document.getElementById('globalTopNav');
+    var d = document.getElementById('globalMobileNav');
+    if (n) n.style.display = '';
+    if (d) d.style.display = '';
+    document.body.classList.add('has-global-nav');
+    document.documentElement.style.removeProperty('--nav-height');
+  };
+
+  // Auto-hide on standalone practice pages
+  var PRACTICE_ONLY_PAGES = ['writing-practice.html', 'task1-practice.html', 'task2-practice.html', 'task2-template.html'];
+  if (PRACTICE_ONLY_PAGES.indexOf(page) !== -1) {
+    window.hideTopNav();
+  }
+
   // ── Hamburger toggle ──────────────────────────────────────
   var ham = document.getElementById('globalHamburger');
   ham.addEventListener('click', function () {

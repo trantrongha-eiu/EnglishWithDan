@@ -176,6 +176,9 @@ function showScreen(name) {
   });
   const el = document.getElementById(`screen-${name}`);
   if (el) { el.classList.remove('hidden'); el.classList.add('active'); }
+  if (typeof window.hideTopNav === 'function') {
+    name === 'list' ? window.showTopNav() : window.hideTopNav();
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
