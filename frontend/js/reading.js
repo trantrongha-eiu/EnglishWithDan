@@ -346,7 +346,8 @@ function showMsg(el, text, type) {
 /* ══════════════════════════════════════════════════════════════════════
    LOCAL-STORAGE: AUTO-SAVE & RESUME
 ══════════════════════════════════════════════════════════════════════ */
-const _EXAM_KEY = 'ews_reading_progress';
+const _EXAM_KEY     = 'ews_reading_progress';
+const _PRACTICE_KEY = 'ews_reading_practice';
 
 function saveExamToStorage() {
   if (!state.attemptId || state.submitted) return;
@@ -421,6 +422,104 @@ function dismissResume() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   LOCAL-STORAGE: PRACTICE MODE AUTO-SAVE
+══════════════════════════════════════════════════════════════════════ */
+function savePracticeToStorage() {
+  if (!_practiceMode || !_retryState) return;
+  try {
+    const passage = state.passages[0];
+    if (!passage) return;
+    localStorage.setItem(_PRACTICE_KEY, JSON.stringify({
+      passageId: _retryState.practicePassageId,
+      category:  _retryState.practiceCategory,
+      title:     passage.title || '',
+      answers:   state.answers,
+      savedAt:   Date.now()
+    }));
+  } catch { /* quota – ignore */ }
+}
+
+function clearPracticeStorage() {
+  localStorage.removeItem(_PRACTICE_KEY);
+}
+
+function _fmtTimeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'vừa xong';
+  if (s < 3600) return `${Math.floor(s / 60)} phút trước`;
+  return `${Math.floor(s / 3600)} giờ trước`;
+}
+
+function checkResumePractice() {
+  try {
+    const raw = localStorage.getItem(_PRACTICE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!data.passageId || !data.category) { clearPracticeStorage(); return; }
+    if (Date.now() - data.savedAt > 4 * 60 * 60 * 1000) { clearPracticeStorage(); return; }
+    const picker = document.getElementById('practice-picker');
+    if (!picker) return;
+    let banner = document.getElementById('practice-resume-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'practice-resume-banner';
+      banner.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;flex-wrap:wrap';
+      picker.prepend(banner);
+    }
+    const answered = Object.keys(data.answers || {}).length;
+    const timeAgo  = _fmtTimeAgo(data.savedAt);
+    banner.innerHTML = `
+      <span style="flex:1;min-width:180px">
+        📖 Bài dở dang: <strong>${escHtml(data.title || 'Không tên')}</strong>
+        — đã trả lời <strong>${answered}</strong> câu
+        <span style="color:#6b7280">(${timeAgo})</span>
+      </span>
+      <button onclick="resumePractice()"
+        style="background:#3d8bff;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+        Tiếp tục
+      </button>
+      <button onclick="dismissPracticeResume()"
+        style="background:none;border:1px solid #d1d5db;color:#6b7280;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">
+        Bỏ qua
+      </button>`;
+    banner._resumeData = data;
+    banner.style.display = 'flex';
+  } catch { clearPracticeStorage(); }
+}
+
+async function resumePractice() {
+  const banner = document.getElementById('practice-resume-banner');
+  const data = banner?._resumeData;
+  if (!data) return;
+  if (banner) banner.style.display = 'none';
+  showVocabToast('Đang tải bài...', 'info');
+  try {
+    const res = await apiFetch(`/api/reading/practice/by-id/${data.passageId}`);
+    if (!res.success || !res.passage) { showVocabToast('Không thể tiếp tục bài cũ', 'error'); return; }
+    _enterPracticeScreen(res.passage, data.category, data.passageId);
+    const savedAnswers = data.answers || {};
+    if (Object.keys(savedAnswers).length > 0) {
+      state.answers = savedAnswers;
+      const cleanPassage = state.passages[0];
+      document.getElementById('retry-questions-inner').innerHTML =
+        renderPassageQuestions(cleanPassage, false, {});
+      initDropZones();
+      savePracticeToStorage();
+      const n = Object.keys(savedAnswers).length;
+      showVocabToast(`Đã khôi phục ${n} câu trả lời`, 'success');
+    }
+  } catch {
+    showVocabToast('Không thể tiếp tục bài cũ', 'error');
+  }
+}
+
+function dismissPracticeResume() {
+  const banner = document.getElementById('practice-resume-banner');
+  if (banner) banner.style.display = 'none';
+  clearPracticeStorage();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
    MODE SWITCH: Full đề / Bài lẻ
 ══════════════════════════════════════════════════════════════════════ */
 function setReadingMode(mode) {
@@ -453,6 +552,7 @@ function setReadingMode(mode) {
       const cat = activeTab?.dataset.category || 'passage1';
       loadPracticePassages(cat);
     }
+    checkResumePractice();
   }
 }
 
@@ -628,11 +728,18 @@ function _enterPracticeScreen(passage, category, passageId) {
   const totalQ = getAllQuestionsFromPassage(cleanPassage).length;
   _startPracticeTimer(totalQ);
 
-  // Listen for answer changes to update progress live
-  // 'drop' is needed because drag-drop events don't bubble as click/input
+  // Save initial state immediately and guard against accidental navigation
+  savePracticeToStorage();
+  window.onbeforeunload = e => {
+    savePracticeToStorage();
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  // Listen for answer changes to update progress live and auto-save
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
-    const onAnswer = () => setTimeout(_updatePracticeProgress, 40);
+    const onAnswer = () => { setTimeout(_updatePracticeProgress, 40); savePracticeToStorage(); };
     qi.addEventListener('click', onAnswer);
     qi.addEventListener('input', onAnswer);
     qi.addEventListener('drop', onAnswer);
@@ -1935,6 +2042,8 @@ function closeRetry() {
   const fromPractice = _retryState?.isPractice || _practiceMode;
   _clearPracticeTimer();
   _hidePracticeHUD();
+  if (fromPractice) clearPracticeStorage();
+  window.onbeforeunload = null;
   if (_retryState) {
     if (!fromPractice) {
       state.passages = _retryState.passages;
@@ -2002,6 +2111,7 @@ function submitRetry() {
 
   // Stop stopwatch, build time display for practice mode
   const fromPractice = _retryState?.isPractice;
+  if (fromPractice) { clearPracticeStorage(); window.onbeforeunload = null; }
   let timeLine = '';
   if (fromPractice) {
     const elapsed = _stopPracticeTimer();
