@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 
@@ -224,6 +225,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
 export default function Passages() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [all, setAll] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [page, setPage] = useState(1);
@@ -317,7 +319,7 @@ export default function Passages() {
                       <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '4px 8px' }} onClick={() => setQPassage(p)} title="Quản lý câu hỏi">📝 Câu hỏi</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditId(p._id)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(p._id, p.isActive)} title={p.isActive ? 'Ẩn' : 'Hiện'}>{p.isActive ? '🙈' : '👁'}</button>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(p._id, p.title)} title="Xóa">🗑</button>
+                      {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(p._id, p.title)} title="Xóa">🗑</button>}
                     </div>
                   </td>
                 </tr>

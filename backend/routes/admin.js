@@ -53,6 +53,18 @@ const teacherOnly = (req, res, next) => {
   if (!['teacher', 'admin'].includes(req.user.role)) {
     return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
   }
+  // Teacher không được xóa nội dung
+  if (req.user.role === 'teacher' && req.method === 'DELETE') {
+    return res.status(403).json({ success: false, message: 'Giáo viên không có quyền xóa nội dung' });
+  }
+  next();
+};
+
+// Chỉ admin mới dùng được (quản lý user, v.v.)
+const adminOnly = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Chỉ admin mới có quyền thực hiện thao tác này' });
+  }
   next();
 };
 
@@ -334,9 +346,15 @@ router.post('/keys/generate', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/keys/:id
-router.delete('/keys/:id', auth, teacherOnly, async (req, res) => {
+// DELETE /api/admin/keys/:id – teacher chỉ được vô hiệu hoá key do chính mình tạo
+router.delete('/keys/:id', auth, async (req, res) => {
   try {
+    if (!['teacher', 'admin'].includes(req.user.role))
+      return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
+    const key = await AccessKey.findById(req.params.id);
+    if (!key) return res.status(404).json({ success: false, message: 'Không tìm thấy key' });
+    if (req.user.role === 'teacher' && key.createdBy?.toString() !== req.user._id.toString())
+      return res.status(403).json({ success: false, message: 'Chỉ có thể vô hiệu hoá key do bạn tạo' });
     await AccessKey.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: 'Đã vô hiệu hoá key' });
   } catch (err) {
@@ -1024,8 +1042,8 @@ router.get('/users/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/users – tạo tài khoản mới (chỉ admin/teacher)
-router.post('/users', auth, teacherOnly, async (req, res) => {
+// POST /api/admin/users – tạo tài khoản mới (chỉ admin)
+router.post('/users', auth, adminOnly, async (req, res) => {
   try {
     const { username, email, password, role = 'student', firstName = '', lastName = '' } = req.body;
     if (!username || !email || !password)
@@ -1043,8 +1061,8 @@ router.post('/users', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id – sửa thông tin user
-router.put('/users/:id', auth, teacherOnly, async (req, res) => {
+// PUT /api/admin/users/:id – sửa thông tin user (chỉ admin)
+router.put('/users/:id', auth, adminOnly, async (req, res) => {
   try {
     const { username, email, firstName, lastName, role, isBanned, newPassword } = req.body;
     const update = { username, email, firstName, lastName, role };
@@ -1061,8 +1079,8 @@ router.put('/users/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// PUT /api/admin/users/:id/ban – cấm / bỏ cấm user (có lý do)
-router.put('/users/:id/ban', auth, teacherOnly, async (req, res) => {
+// PUT /api/admin/users/:id/ban – cấm / bỏ cấm user (chỉ admin)
+router.put('/users/:id/ban', auth, adminOnly, async (req, res) => {
   try {
     const { isBanned, banReason = '' } = req.body;
     const update = { isBanned };
@@ -1078,8 +1096,8 @@ router.put('/users/:id/ban', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/users/:id – xóa vĩnh viễn user
-router.delete('/users/:id', auth, teacherOnly, async (req, res) => {
+// DELETE /api/admin/users/:id – xóa vĩnh viễn user (chỉ admin)
+router.delete('/users/:id', auth, adminOnly, async (req, res) => {
   try {
     // Không cho phép tự xóa chính mình
     if (req.params.id === req.user._id.toString()) {

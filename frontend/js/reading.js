@@ -2070,7 +2070,8 @@ async function showHistoryModal() {
    DICTIONARY (review only)
 ══════════════════════════════════════════════════════════════════════ */
 let _dictWord = '';
-const _dictCache = new Map(); // word.toLowerCase() → { phonetic, pos, example, viMeaning }
+let _dictCurrentData = null;
+const _dictCache = new Map(); // word.toLowerCase() → { phonetic, meanings: [{partOfSpeech, definitions:[{viMeaning,enDefinition,example}]}] }
 
 document.addEventListener('dblclick', e => {
   if (state.tool !== 'dict' || (!state.isReview && !_practiceMode && !_retryState)) return;
@@ -2083,56 +2084,90 @@ async function lookupWord(word, x, y) {
   const key = word.toLowerCase();
   _dictWord = word;
   document.getElementById('dict-word').textContent = word;
+  document.getElementById('dict-phonetic').textContent = '';
   positionDictPopup(x, y);
   document.getElementById('dict-popup').classList.remove('hidden');
 
-  // Cache hit — render instantly, no network
   if (_dictCache.has(key)) {
-    const c = _dictCache.get(key);
-    document.getElementById('dict-phonetic').textContent = c.phonetic;
-    document.getElementById('dict-pos').textContent = c.pos;
-    document.getElementById('dict-meaning').textContent = c.viMeaning;
-    document.getElementById('dict-example').textContent = c.example;
+    renderDictPopup(_dictCache.get(key));
     return;
   }
 
-  // Cache miss — show loading state then fetch
-  document.getElementById('dict-phonetic').textContent = '…';
-  document.getElementById('dict-pos').textContent = '';
-  document.getElementById('dict-meaning').textContent = 'Đang tra...';
-  document.getElementById('dict-example').textContent = '';
+  document.getElementById('dict-body').innerHTML = '<div class="dict-loading">Đang tra...</div>';
 
   const [dictRes, transRes] = await Promise.allSettled([
     fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then(r => r.ok ? r.json() : null),
     fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`).then(r => r.json())
   ]);
 
-  let phonetic = '', pos = '', example = '';
+  let phonetic = '';
+  let meanings = [];
+
   if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
     const entry = dictRes.value[0];
-    const meaning = entry?.meanings?.[0];
-    const def = meaning?.definitions?.find(d => d.example) || meaning?.definitions?.[0];
     phonetic = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
-    pos = meaning?.partOfSpeech || '';
-    example = def?.example ? `"${def.example}"` : '';
+    let defCount = 0;
+    for (const m of (entry?.meanings || [])) {
+      if (defCount >= 4) break;
+      const defs = [];
+      for (const d of (m.definitions || [])) {
+        if (defCount >= 4) break;
+        defs.push({ enDefinition: d.definition || '', example: d.example ? `"${d.example}"` : '' });
+        defCount++;
+      }
+      if (defs.length) meanings.push({ partOfSpeech: m.partOfSpeech || '', definitions: defs });
+    }
   }
-  const viMeaning = (transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null) || 'Không tìm thấy';
 
-  _dictCache.set(key, { phonetic, pos, example, viMeaning });
-
-  // Only update DOM if user hasn't moved to another word while fetching
-  if (_dictWord.toLowerCase() === key) {
-    document.getElementById('dict-phonetic').textContent = phonetic;
-    document.getElementById('dict-pos').textContent = pos;
-    document.getElementById('dict-meaning').textContent = viMeaning;
-    document.getElementById('dict-example').textContent = example;
+  // Translate each definition to Vietnamese in parallel
+  const allDefs = meanings.flatMap(m => m.definitions);
+  if (allDefs.length) {
+    const viResults = await Promise.all(allDefs.map(d =>
+      fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(d.enDefinition)}`)
+        .then(r => r.json()).then(j => j?.[0]?.[0]?.[0] || d.enDefinition).catch(() => d.enDefinition)
+    ));
+    let i = 0;
+    for (const m of meanings) for (const d of m.definitions) d.viMeaning = viResults[i++];
   }
+
+  // Fallback to word-level translation when dictionary API has no results
+  if (!meanings.length) {
+    const viWord = (transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null) || 'Không tìm thấy';
+    meanings = [{ partOfSpeech: '', definitions: [{ viMeaning: viWord, enDefinition: '', example: '' }] }];
+  }
+
+  const cached = { phonetic, meanings };
+  _dictCache.set(key, cached);
+
+  if (_dictWord.toLowerCase() === key) renderDictPopup(cached);
+}
+
+function renderDictPopup(data) {
+  _dictCurrentData = data;
+  document.getElementById('dict-phonetic').textContent = data.phonetic;
+  const body = document.getElementById('dict-body');
+  let html = '';
+  let defIdx = 0;
+  for (let mi = 0; mi < data.meanings.length; mi++) {
+    const m = data.meanings[mi];
+    if (m.partOfSpeech) html += `<div class="dict-pos-label">${escHtml(m.partOfSpeech)}</div>`;
+    for (let di = 0; di < m.definitions.length; di++) {
+      const d = m.definitions[di];
+      defIdx++;
+      html += `<div class="dict-def-item">
+        <div class="dict-def-vi"><span class="dict-def-num">${defIdx}.</span> ${escHtml(d.viMeaning)}</div>
+        ${d.example ? `<div class="dict-def-example">${escHtml(d.example)}</div>` : ''}
+        <button class="btn-save-def" onclick="saveVocab(${mi},${di})">＋ Lưu từ</button>
+      </div>`;
+    }
+  }
+  body.innerHTML = html;
 }
 
 function positionDictPopup(x, y) {
   const popup = document.getElementById('dict-popup');
   popup.style.left = Math.min(x, window.innerWidth - 320) + 'px';
-  popup.style.top = Math.min(y + 12, window.innerHeight - 300) + 'px';
+  popup.style.top = Math.min(y + 12, window.innerHeight - 380) + 'px';
 }
 
 function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
@@ -2146,13 +2181,18 @@ function speakDictWord() {
   }
 }
 
-async function saveVocab() {
-  const word = _dictWord;
-  const meaning = document.getElementById('dict-meaning').textContent;
-  const example = document.getElementById('dict-example').textContent;
-  const phonetic = document.getElementById('dict-phonetic').textContent;
-  const pos = document.getElementById('dict-pos').textContent;
-  openVocabBookPicker({ word, meaning, example, phonetic, partOfSpeech: pos, source: 'reading' });
+async function saveVocab(mi, di) {
+  if (!_dictCurrentData) return;
+  const m = _dictCurrentData.meanings[mi];
+  const d = m.definitions[di];
+  openVocabBookPicker({
+    word: _dictWord,
+    meaning: d.viMeaning,
+    example: d.example,
+    phonetic: _dictCurrentData.phonetic,
+    partOfSpeech: m.partOfSpeech,
+    source: 'reading'
+  });
 }
 
 /* ── Vocab Book Picker Modal ─────────────────────────────────────── */

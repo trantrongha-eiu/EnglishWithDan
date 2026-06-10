@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, Fragment } from 'react';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function totalItems(tpl) {
@@ -204,6 +205,7 @@ export default function Task2Templates() {
 
   const showToast = useToast();
   const confirm   = useConfirm();
+  const { isAdmin } = useAuth();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -423,7 +425,7 @@ export default function Task2Templates() {
                         </button>
                         <button className="btn btn-ghost btn-sm btn-icon" title="Sửa thông tin"
                           onClick={() => { setEditingMeta(tpl); setShowTplMeta(true); }}>✏️</button>
-                        <button className="btn btn-danger btn-sm btn-icon" title="Xóa" onClick={() => deleteTpl(tpl)}>🗑️</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" title="Xóa" onClick={() => deleteTpl(tpl)}>🗑️</button>}
                       </div>
                     </td>
                   </tr>
@@ -464,8 +466,8 @@ export default function Task2Templates() {
                                 </button>
                                 <button className="btn btn-ghost btn-sm btn-icon" title="Sửa tiêu đề"
                                   onClick={() => { setEditingSecIdx(si); setShowSection(true); }}>✏️</button>
-                                <button className="btn btn-danger btn-sm btn-icon" title="Xóa section"
-                                  onClick={() => handleDeleteSection(si)}>🗑️</button>
+                                {isAdmin && <button className="btn btn-danger btn-sm btn-icon" title="Xóa section"
+                                  onClick={() => handleDeleteSection(si)}>🗑️</button>}
                               </div>
 
                               {/* Items table */}
@@ -498,8 +500,8 @@ export default function Task2Templates() {
                                           <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
                                             <button className="btn btn-ghost btn-sm btn-icon"
                                               onClick={() => { setEditingItem({ secIdx: si, itemIdx: ii, item }); setShowItem(true); }}>✏️</button>
-                                            <button className="btn btn-danger btn-sm btn-icon"
-                                              onClick={() => confirm('Xóa câu này?', () => handleDeleteItem(si, ii))}>🗑️</button>
+                                            {isAdmin && <button className="btn btn-danger btn-sm btn-icon"
+                                              onClick={() => confirm('Xóa câu này?', () => handleDeleteItem(si, ii))}>🗑️</button>}
                                           </div>
                                         </td>
                                       </tr>

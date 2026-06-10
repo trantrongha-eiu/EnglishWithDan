@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 const PARTS = [1, 2, 3];
 
@@ -188,6 +189,7 @@ function MaterialModal({ material, onClose, onSaved }) {
 export default function Speaking() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [tab, setTab] = useState('questions');
   const [questions, setQuestions] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -281,7 +283,7 @@ export default function Speaking() {
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditQuestion(q)} title="Sửa">✏️</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => delQ(q._id, q.question)}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delQ(q._id, q.question)}>🗑</button>}
                       </div>
                     </td>
                   </tr>
@@ -310,7 +312,7 @@ export default function Speaking() {
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditMaterial(m)} title="Sửa">✏️</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => delM(m._id, m.title)}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delM(m._id, m.title)}>🗑</button>}
                       </div>
                     </td>
                   </tr>

@@ -1617,6 +1617,89 @@ body.eye-protection .split-questions {
   background: #283593;
 }
 
+.dict-body {
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.dict-loading {
+  text-align: center;
+  padding: 16px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.dict-pos-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #e53935;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-style: italic;
+  margin: 8px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.dict-pos-label:first-child {
+  margin-top: 0;
+}
+
+.dict-def-item {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.dict-def-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.dict-def-vi {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.dict-def-num {
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 400;
+  margin-right: 3px;
+}
+
+.dict-def-example {
+  font-size: 12px;
+  font-style: italic;
+  color: #6b7280;
+  border-left: 3px solid #e53935;
+  padding-left: 7px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.btn-save-def {
+  width: 100%;
+  padding: 6px 8px;
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.btn-save-def:hover {
+  background: #283593;
+}
+
 .dict-speak {
   background: none;
   border: none;
@@ -2566,6 +2649,13 @@ body.eye-protection .split-questions {
   border-color: #1e40af;
 }
 [data-theme="dark"] .btn-save-vocab:hover { background: #1e40af; }
+[data-theme="dark"] .dict-pos-label { color: #f87171; border-bottom-color: #374151; }
+[data-theme="dark"] .dict-def-item { border-bottom-color: #374151; }
+[data-theme="dark"] .dict-def-vi { color: #e5e7eb; }
+[data-theme="dark"] .dict-def-num { color: #6b7280; }
+[data-theme="dark"] .dict-def-example { color: #9ca3af; border-left-color: #e53935; }
+[data-theme="dark"] .btn-save-def { background: #1e3a8a; color: #93c5fd; }
+[data-theme="dark"] .btn-save-def:hover { background: #1e40af; }
 
 /* ══════════════════════════════════════════════
    DARK MODE – history table

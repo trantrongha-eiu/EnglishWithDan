@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const LIMIT = 20;
@@ -281,6 +282,7 @@ function ExModal({ exercise, onClose, onSaved }) {
 export default function Task1Exercises() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [exercises, setExercises] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -426,7 +428,7 @@ export default function Task1Exercises() {
                       {ex.isActive !== false ? '🙈 Ẩn' : '👁 Hiện'}
                     </button>
                     <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditEx(ex)}>✏️</button>
-                    <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(ex._id)}>🗑</button>
+                    {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(ex._id)}>🗑</button>}
                   </div>
                 </td>
               </tr>

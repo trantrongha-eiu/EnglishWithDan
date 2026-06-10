@@ -378,7 +378,7 @@ router.get('/my-stats', auth, async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 router.post('/admin/exercises', auth, async (req, res) => {
   try {
-    if (!req.user.isAdmin) return res.status(403).json({ success: false });
+    if (!['teacher', 'admin'].includes(req.user.role)) return res.status(403).json({ success: false });
     const { exercises } = req.body;
     if (!Array.isArray(exercises) || !exercises.length)
       return res.status(400).json({ success: false });
@@ -403,7 +403,7 @@ router.post('/admin/exercises', auth, async (req, res) => {
 
 router.delete('/admin/exercises/:id', auth, async (req, res) => {
   try {
-    if (!req.user.isAdmin) return res.status(403).json({ success: false });
+    if (req.user.role !== 'admin') return res.status(403).json({ success: false });
     await WPExercise.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true });
   } catch (err) {

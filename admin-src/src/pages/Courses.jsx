@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 const CATEGORIES = [
   { value: 'ielts', label: 'Luyện thi IELTS' },
@@ -159,6 +160,7 @@ const LEVEL_COLOR_MAP = { red: '#ef4444', blue: '#3d8bff', green: '#34d399', pur
 export default function Courses() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [courses, setCourses] = useState([]);
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState('');
@@ -243,7 +245,7 @@ export default function Courses() {
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditCourse(c)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(c._id, c.isActive !== false)} title={c.isActive !== false ? 'Ẩn' : 'Hiện'}>{c.isActive !== false ? '🙈' : '👁'}</button>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(c._id, c.title)} title="Xóa">🗑</button>
+                      {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(c._id, c.title)} title="Xóa">🗑</button>}
                     </div>
                   </td>
                 </tr>

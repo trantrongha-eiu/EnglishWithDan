@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const PAGE = 20;
@@ -221,6 +222,7 @@ function TopicModal({ topic, onClose, onSaved }) {
 export default function WritingPractice() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [tab, setTab] = useState('exercises');
   const [exercises, setExercises] = useState([]);
   const [filteredEx, setFilteredEx] = useState([]);
@@ -335,7 +337,7 @@ export default function WritingPractice() {
                       <td>
                         <div className="row-actions">
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => { setEditEx(ex); }}>✏️</button>
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => delEx(ex._id)}>🗑</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delEx(ex._id)}>🗑</button>}
                         </div>
                       </td>
                     </tr>
@@ -370,7 +372,7 @@ export default function WritingPractice() {
                       <td>
                         <div className="row-actions">
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTopic(t)}>✏️</button>
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => delTopic(t._id, t.titleVi || t.title)}>🗑</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delTopic(t._id, t.titleVi || t.title)}>🗑</button>}
                         </div>
                       </td>
                     </tr>
@@ -412,12 +414,12 @@ export default function WritingPractice() {
                         <td><span style={{ color: 'var(--yellow)', fontWeight: 700 }}>+{a.xpEarned || 0}</span></td>
                         <td style={{ fontSize: 12 }}>{formatDate(a.createdAt).split(' ')[0]}</td>
                         <td>
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => {
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => {
                             confirm('Xóa lịch sử này?', async () => {
                               try { await apiFetch(`/admin/wp-attempts/${a._id}`, { method: 'DELETE' }); toast('Đã xóa'); setAttempts(x => x.filter(y => y._id !== a._id)); }
                               catch (e) { toast(e.message, 'error'); }
                             });
-                          }}>🗑</button>
+                          }}>🗑</button>}
                         </td>
                       </tr>
                     ))}

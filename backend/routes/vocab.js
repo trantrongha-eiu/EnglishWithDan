@@ -7,6 +7,9 @@ const teacherOnly = (req, res, next) => {
   if (!['teacher', 'admin'].includes(req.user.role)) {
     return res.status(403).json({ success: false, message: 'Không có quyền' });
   }
+  if (req.user.role === 'teacher' && req.method === 'DELETE') {
+    return res.status(403).json({ success: false, message: 'Giáo viên không có quyền xóa nội dung' });
+  }
   next();
 };
 

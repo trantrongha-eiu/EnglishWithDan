@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 function Tab({ label, active, onClick }) {
   return <button className={`inner-tab${active ? ' active' : ''}`} onClick={onClick}>{label}</button>;
@@ -857,6 +858,7 @@ function WritingExamModal({ exam, onClose, onSaved }) {
 export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [tab, setTab] = useState('task1');
   const [task1, setTask1] = useState([]);
   const [task2, setTask2] = useState([]);
@@ -1032,7 +1034,7 @@ export default function WritingTests() {
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditExam(ex)} title="Sửa">✏️</button>
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleExam(ex._id, ex.isActive !== false)}
                             title={ex.isActive !== false ? 'Ẩn' : 'Kích hoạt'}>{ex.isActive !== false ? '🙈' : '👁'}</button>
-                          <button className="btn btn-danger btn-sm btn-icon" onClick={() => delExam(ex._id, ex.name)}>🗑</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delExam(ex._id, ex.name)}>🗑</button>}
                         </div>
                       </td>
                     </tr>
@@ -1064,7 +1066,7 @@ export default function WritingTests() {
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
                       </div>
                     </td>
                   </tr>
@@ -1094,7 +1096,7 @@ export default function WritingTests() {
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
                       </div>
                     </td>
                   </tr>
@@ -1168,7 +1170,7 @@ export default function WritingTests() {
                               <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setViewAttemptId(h._id)} title="Xem bài">👁</button>
                               <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }}
                                 onClick={() => setGradingId(h._id)}>✏️ Chấm</button>
-                              <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>
+                              {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>}
                             </div>
                           </td>
                         </tr>
@@ -1216,7 +1218,7 @@ export default function WritingTests() {
                         <button className="btn btn-ghost btn-sm btn-icon"
                           onClick={() => toggleSample(s._id, s.isActive !== false)}
                           title={s.isActive !== false ? 'Ẩn' : 'Hiện'}>{s.isActive !== false ? '🙈' : '👁'}</button>
-                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => delSample(s._id, s.title)}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delSample(s._id, s.title)}>🗑</button>}
                       </div>
                     </td>
                   </tr>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 function AssembleModal({ sections, onClose, onSuccess }) {
   const toast = useToast();
@@ -183,6 +184,7 @@ export default function ListeningSections() {
   const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [sections, setSections] = useState([]);
   const [search, setSearch] = useState('');
   const [partFilter, setPartFilter] = useState('all');
@@ -330,8 +332,8 @@ export default function ListeningSections() {
                           title={s.isActive !== false ? 'Ẩn' : 'Hiện'}>
                           {s.isActive !== false ? '🙈' : '👁'}
                         </button>
-                        <button className="btn btn-danger btn-sm btn-icon"
-                          onClick={() => del(s._id, s.title)}>🗑</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon"
+                          onClick={() => del(s._id, s.title)}>🗑</button>}
                       </div>
                     </td>
                   </tr>

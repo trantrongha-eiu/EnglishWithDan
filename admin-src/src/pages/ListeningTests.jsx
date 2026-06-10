@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 function AudioUploadModal({ test, onClose, onUploaded }) {
   const toast = useToast();
@@ -77,6 +78,7 @@ export default function ListeningTests() {
   const navigate = useNavigate();
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [tests, setTests] = useState([]);
   const [search, setSearch] = useState('');
   const [audioTest, setAudioTest] = useState(null);
@@ -181,7 +183,7 @@ export default function ListeningTests() {
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/listening-tests/${t._id}`)} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setAudioTest(t)} title="Upload audio">🎵</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)}>🗑</button>
+                      {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)}>🗑</button>}
                     </div>
                   </td>
                 </tr>

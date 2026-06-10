@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
@@ -83,6 +84,7 @@ function UnitModal({ unit, onClose, onSaved }) {
 function WordsModal({ unit, onClose }) {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wordType, setWordType] = useState('vocab');
@@ -255,7 +257,7 @@ function WordsModal({ unit, onClose }) {
                           <td>
                             <div className="row-actions">
                               <button className="btn btn-ghost btn-sm btn-icon" onClick={() => startEdit(idx)} title="Sửa">✏️</button>
-                              <button className="btn btn-danger btn-sm btn-icon" onClick={() => delWord(idx, w.word)}>🗑</button>
+                              {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delWord(idx, w.word)}>🗑</button>}
                             </div>
                           </td>
                         </tr>
@@ -399,6 +401,7 @@ function ImportJsonModal({ onClose, onImported }) {
 export default function Vocabulary() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [units, setUnits] = useState([]);
   const [search, setSearch] = useState('');
   const [editUnit, setEditUnit] = useState(null);
@@ -528,7 +531,7 @@ export default function Vocabulary() {
                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => splitUnit(u._id, u.title, u.wordCount)} title="Chia thành phần ≤120 từ">✂️</button>
                       )}
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(u._id, u.isActive !== false)}>{u.isActive !== false ? '🙈' : '👁'}</button>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(u._id, u.title)}>🗑</button>
+                      {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(u._id, u.title)}>🗑</button>}
                     </div>
                   </td>
                 </tr>

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, Fragment } from 'react';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const LIMIT = 15;
@@ -247,6 +248,7 @@ export default function Task2Exercises() {
 
   const showToast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -402,7 +404,7 @@ export default function Task2Exercises() {
                           {t.isActive ? '🙈 Ẩn' : '👁 Hiện'}
                         </button>
                         <button className="btn btn-ghost btn-sm btn-icon" title="Sửa topic" onClick={() => { setEditingTopic(t); setShowTopicModal(true); }}>✏️</button>
-                        <button className="btn btn-danger btn-sm btn-icon" title="Xóa topic" onClick={() => deleteTopic(t)}>🗑️</button>
+                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" title="Xóa topic" onClick={() => deleteTopic(t)}>🗑️</button>}
                       </div>
                     </td>
                   </tr>
@@ -450,7 +452,7 @@ export default function Task2Exercises() {
                                           {q.isActive !== false ? '🙈' : '👁'}
                                         </button>
                                         <button className="btn btn-ghost btn-sm btn-icon" onClick={() => { setEditingQ(q); setShowQModal(true); }}>✏️</button>
-                                        <button className="btn btn-danger btn-sm btn-icon" onClick={() => deleteQuestion(q._id)}>🗑️</button>
+                                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => deleteQuestion(q._id)}>🗑️</button>}
                                       </div>
                                     </td>
                                   </tr>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const PAGE = 30;
@@ -94,6 +95,7 @@ function CreateUserModal({ onClose, onSaved }) {
 
 function UserModal({ userId, onClose, onSaved }) {
   const toast = useToast();
+  const { isAdmin } = useAuth();
   const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', isBanned: false, newPassword: '' });
   const [loading, setLoading] = useState(false);
 
@@ -147,22 +149,28 @@ function UserModal({ userId, onClose, onSaved }) {
               <input className="form-input" value={form.lastName} onChange={set('lastName')} />
             </div>
           </div>
-          <div className="form-group">
-            <label className="form-label">Vai trò</label>
-            <select className="form-input" value={form.role} onChange={set('role')}>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">Mật khẩu mới (để trống = giữ nguyên)</label>
-            <input className="form-input" type="password" value={form.newPassword} onChange={set('newPassword')} placeholder="••••••••" />
-          </div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
-            <input type="checkbox" checked={form.isBanned} onChange={set('isBanned')} />
-            Tài khoản bị cấm
-          </label>
+          {isAdmin && (
+            <div className="form-group">
+              <label className="form-label">Vai trò</label>
+              <select className="form-input" value={form.role} onChange={set('role')}>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          )}
+          {isAdmin && (
+            <div className="form-group">
+              <label className="form-label">Mật khẩu mới (để trống = giữ nguyên)</label>
+              <input className="form-input" type="password" value={form.newPassword} onChange={set('newPassword')} placeholder="••••••••" />
+            </div>
+          )}
+          {isAdmin && (
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+              <input type="checkbox" checked={form.isBanned} onChange={set('isBanned')} />
+              Tài khoản bị cấm
+            </label>
+          )}
           <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
             <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
             <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Đang lưu...' : 'Lưu'}</button>
@@ -176,6 +184,7 @@ function UserModal({ userId, onClose, onSaved }) {
 export default function Users() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
@@ -231,7 +240,7 @@ export default function Users() {
 
       <div className="section-header">
         <h2 className="section-title">Người dùng ({total})</h2>
-        <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>
+        {isAdmin && <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>}
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16 }}>
@@ -284,13 +293,15 @@ export default function Users() {
                   <td style={{ fontSize: 12, color: ls.color, whiteSpace: 'nowrap' }}>{ls.text}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>
+                      {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
                       <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
-                      <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
-                        onClick={() => toggleBan(u._id, u.username, u.isBanned)}>
-                        {u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm'}
-                      </button>
-                      <button className="btn btn-danger btn-sm" onClick={() => deleteUser(u._id, u.username)}>🗑 Xóa</button>
+                      {isAdmin && (
+                        <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
+                          onClick={() => toggleBan(u._id, u.username, u.isBanned)}>
+                          {u.isBanned ? '✅ Bỏ cấm' : '🚫 Cấm'}
+                        </button>
+                      )}
+                      {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteUser(u._id, u.username)}>🗑 Xóa</button>}
                     </div>
                   </td>
                 </tr>

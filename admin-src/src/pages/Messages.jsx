@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const PAGE = 20;
@@ -10,6 +11,7 @@ const PAGE = 20;
 export default function Messages() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [searchParams] = useSearchParams();
 
   // Compose state
@@ -195,7 +197,7 @@ export default function Messages() {
                   </td>
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
                   <td>
-                    <button className="btn btn-danger btn-sm" onClick={() => deleteMsg(m._id)}>🗑</button>
+                    {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteMsg(m._id)}>🗑</button>}
                   </td>
                 </tr>
               ))}
