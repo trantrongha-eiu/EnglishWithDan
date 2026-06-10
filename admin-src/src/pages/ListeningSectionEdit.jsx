@@ -186,15 +186,22 @@ export default function ListeningSectionEdit() {
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty]);
 
-  // Auto-save 2s after last change (only when section already exists)
+  // Auto-save 2s after last change; auto-creates new section if title is present
   useEffect(() => {
-    if (!isDirty || !savedId) return;
+    if (!isDirty) return;
+    if (!savedId && !meta.title.trim()) return;
     clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(async () => {
       setAutoSaveMsg('Đang lưu...');
       try {
         const payload = { ...meta, questionGroups };
-        await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        if (!savedId) {
+          const d = await apiFetch('/listening/admin/sections', { method: 'POST', body: JSON.stringify(payload) });
+          setSavedId(d.section._id);
+          navigate(`/listening-sections/${d.section._id}`, { replace: true });
+        } else {
+          await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        }
         setIsDirty(false);
         setAutoSaveMsg('Đã lưu ✓');
         setTimeout(() => setAutoSaveMsg(''), 2000);

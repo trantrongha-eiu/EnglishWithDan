@@ -223,15 +223,22 @@ export default function ListeningTestEdit() {
     return () => window.removeEventListener('beforeunload', handler);
   }, [isDirty]);
 
-  // Auto-save 2s after last change (only when test already exists)
+  // Auto-save 2s after last change; auto-creates new test if name is present
   useEffect(() => {
-    if (!isDirty || !savedId) return;
+    if (!isDirty) return;
+    if (!savedId && !meta.name.trim()) return;
     clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(async () => {
       setAutoSaveMsg('Đang lưu...');
       try {
         const payload = { ...meta, sections: buildSections(sections) };
-        await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        if (!savedId) {
+          const d = await apiFetch('/listening/admin/tests', { method: 'POST', body: JSON.stringify(payload) });
+          setSavedId(d.test._id);
+          navigate(`/listening-tests/${d.test._id}`, { replace: true });
+        } else {
+          await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        }
         setIsDirty(false);
         setAutoSaveMsg('Đã lưu ✓');
         setTimeout(() => setAutoSaveMsg(''), 2000);
