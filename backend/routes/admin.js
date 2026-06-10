@@ -272,7 +272,9 @@ router.get('/listening-tests', auth, teacherOnly, async (req, res) => {
 // GET  /api/admin/keys
 router.get('/keys', auth, teacherOnly, async (req, res) => {
   try {
-    const keys = await AccessKey.find({ createdBy: req.user._id })
+    const filter = req.user.role === 'admin' ? {} : { createdBy: req.user._id };
+    const keys = await AccessKey.find(filter)
+      .populate('createdBy', 'username')
       .sort({ createdAt: -1 });
 
     // Populate thủ công vì refPath cần virtual (mongoose không tự resolve virtual refPath)

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 const TEST_TYPES = [
   { value: '', label: 'Tất cả kỹ năng' },
@@ -27,6 +28,7 @@ function typeLabel(t) {
 export default function AccessCodes() {
   const toast = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [keys, setKeys] = useState([]);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -177,7 +179,7 @@ export default function AccessCodes() {
       <div className="table-wrap">
         <table className="table">
           <thead>
-            <tr><th>MÃ</th><th>KỸ NĂNG / ĐỀ THI</th><th>LƯỢT DÙNG</th><th>TRẠNG THÁI</th><th>HẠN DÙNG</th><th>NGÀY TẠO</th><th></th></tr>
+            <tr><th>MÃ</th><th>KỸ NĂNG / ĐỀ THI</th><th>LƯỢT DÙNG</th><th>TRẠNG THÁI</th><th>HẠN DÙNG</th><th>NGÀY TẠO</th>{isAdmin && <th>TẠO BỞI</th>}<th></th></tr>
           </thead>
           <tbody>
             {filtered.length === 0
@@ -212,6 +214,7 @@ export default function AccessCodes() {
                     </td>
                     <td style={{ fontSize: 12 }}>{k.expiresAt ? formatDate(k.expiresAt).split(' ')[0] : '–'}</td>
                     <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(k.createdAt).split(' ')[0]}</td>
+                    {isAdmin && <td style={{ fontSize: 12, color: 'var(--text3)' }}>{k.createdBy?.username || '–'}</td>}
                     <td>
                       <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(k._id, k.key)} title="Vô hiệu hoá">🗑</button>
                     </td>

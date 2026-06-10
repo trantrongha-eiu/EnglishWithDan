@@ -36,6 +36,14 @@
       display: flex;
       font-size: 14px;
       line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    #root {
+      width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ── SIDEBAR ── */
@@ -187,6 +195,7 @@
     .main {
       margin-left: 220px;
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -1069,8 +1078,8 @@
       }
       .sidebar.open { transform: translateX(0); }
 
-      /* Main full width */
-      .main { margin-left: 0; }
+      /* Main full width – min-width:0 prevents flex overflow */
+      .main { margin-left: 0; min-width: 0; width: 100%; }
 
       /* Show hamburger */
       .sidebar-toggle { display: flex !important; }
@@ -1078,6 +1087,9 @@
       /* Topbar compact */
       .topbar { padding: 0 14px; gap: 10px; }
       .topbar-title { font-size: 14px; }
+
+      /* Topbar-right: hide username text, keep avatar only */
+      .topbar-right .topbar-username { display: none; }
     }
 
     @media (max-width: 768px) {
@@ -1102,10 +1114,10 @@
         grid-template-columns: 1fr !important;
       }
 
-      /* Modal full width on mobile */
-      .modal-box { max-height: 95vh; border-radius: 12px 12px 0 0; }
+      /* Modal bottom-sheet on mobile */
       .modal-overlay { align-items: flex-end; padding: 0; }
-      .modal-lg, .modal-xl { width: 100%; }
+      .modal-box, .modal { max-height: 95vh; border-radius: 12px 12px 0 0; overflow-y: auto; }
+      .modal-lg, .modal-xl, .modal { width: 100%; }
 
       /* Buttons compact */
       .btn-sm { font-size: 12px; padding: 5px 10px; }
