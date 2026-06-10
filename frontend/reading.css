@@ -2658,6 +2658,80 @@ body.eye-protection .split-questions {
 [data-theme="dark"] .btn-save-def:hover { background: #1e40af; }
 
 /* ══════════════════════════════════════════════
+   TRANSLATE POPUP
+══════════════════════════════════════════════ */
+.translate-popup {
+  position: fixed;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, .18);
+  padding: 14px 16px;
+  width: 350px;
+  max-width: calc(100vw - 16px);
+  z-index: 301;
+  border: 1px solid #e5e7eb;
+  animation: modal-pop .15s ease;
+}
+.translate-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.translate-popup-lang {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.translate-popup-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+.translate-src {
+  font-size: 13px;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  font-style: italic;
+  word-break: break-word;
+  line-height: 1.5;
+  max-height: 72px;
+  overflow-y: auto;
+}
+.translate-result {
+  font-size: 15px;
+  color: #1a237e;
+  font-weight: 600;
+  line-height: 1.6;
+  word-break: break-word;
+  max-height: 110px;
+  overflow-y: auto;
+}
+.translate-loading {
+  color: #9ca3af;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+}
+[data-theme="dark"] .translate-popup {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 10px 36px rgba(0,0,0,.5);
+}
+[data-theme="dark"] .translate-popup-lang { color: #9ca3af; }
+[data-theme="dark"] .translate-popup-close { color: #6b7280; }
+[data-theme="dark"] .translate-src { color: #d1d5db; border-bottom-color: #374151; }
+[data-theme="dark"] .translate-result { color: #93c5fd; }
+
+/* ══════════════════════════════════════════════
    DARK MODE – history table
 ══════════════════════════════════════════════ */
 [data-theme="dark"] .history-table th {

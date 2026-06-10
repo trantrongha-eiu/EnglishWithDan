@@ -179,6 +179,8 @@ function showScreen(name) {
   if (typeof window.hideTopNav === 'function') {
     name === 'list' ? window.showTopNav() : window.hideTopNav();
   }
+  closeDictPopup();
+  closeTranslatePopup();
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -2175,6 +2177,73 @@ function positionDictPopup(x, y) {
 
 function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
 
+/* ══════════════════════════════════════════════════════════════════════
+   TRANSLATE POPUP  (T key / toolbar button)
+   Toolbar buttons use onmousedown=preventDefault to keep selection alive
+   so window.getSelection() works the same for both code paths.
+══════════════════════════════════════════════════════════════════════ */
+async function translateSelected() {
+  if (!state.isReview && !_practiceMode && !_retryState) return;
+
+  const sel = window.getSelection();
+  const text = sel ? sel.toString().trim() : '';
+  if (!text) return;
+
+  // Position popup: below selection when there's space, else above
+  const PW = 350, PH = 180;
+  let lx = window.innerWidth / 2 - PW / 2;
+  let ly = 200;
+  try {
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    lx = rect.left + rect.width / 2 - PW / 2;
+    // rect coords are viewport-relative; popup is position:fixed — no scrollY offset needed
+    ly = (window.innerHeight - rect.bottom >= PH + 16)
+      ? rect.bottom + 10
+      : rect.top - PH - 10;
+  } catch (e) {}
+
+  const srcEl = document.getElementById('translate-src');
+  const resEl = document.getElementById('translate-result');
+  srcEl.textContent = text;
+  resEl.innerHTML = '<span class="translate-loading">Đang dịch...</span>';
+  positionTranslatePopup(lx, ly);
+  document.getElementById('translate-popup').classList.remove('hidden');
+
+  // Google Translate free endpoint — limit query to 500 chars to avoid URL overflow
+  const query = text.length > 500 ? text.slice(0, 500) : text;
+  try {
+    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    const translated = data?.[0]?.map(s => s?.[0]).filter(Boolean).join('') || 'Không dịch được';
+    resEl.textContent = translated;
+  } catch (e) {
+    resEl.textContent = 'Lỗi kết nối';
+  }
+}
+
+function positionTranslatePopup(x, y) {
+  const popup = document.getElementById('translate-popup');
+  const PW = 350;
+  popup.style.left = Math.max(8, Math.min(x, window.innerWidth - PW - 8)) + 'px';
+  popup.style.top = Math.max(8, y) + 'px';
+}
+
+function closeTranslatePopup() { document.getElementById('translate-popup').classList.add('hidden'); }
+
+// Close translate popup when clicking outside it (but not on the toolbar buttons)
+document.addEventListener('mousedown', e => {
+  const popup = document.getElementById('translate-popup');
+  if (popup && !popup.classList.contains('hidden')) {
+    if (!popup.contains(e.target) &&
+        e.target.id !== 'tool-translate-rv' &&
+        e.target.id !== 'tool-translate-rt' &&
+        !e.target.closest('#tool-translate-rv') &&
+        !e.target.closest('#tool-translate-rt')) {
+      closeTranslatePopup();
+    }
+  }
+});
+
 function speakDictWord() {
   const w = document.getElementById('dict-word').textContent;
   if (w && window.speechSynthesis) {
@@ -2329,6 +2398,7 @@ function setFontSize(s) {
 function handleKeyShortcuts(e) {
   if (e.key === 'Escape') {
     closeDictPopup();
+    closeTranslatePopup();
     closeModal('modal-vocab-picker');
     const sp = document.getElementById('settings-panel');
     if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
@@ -2337,6 +2407,7 @@ function handleKeyShortcuts(e) {
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
   if (e.key === 'h' || e.key === 'H') setTool('highlight');
   if (e.key === 'd' || e.key === 'D') setTool('dict');
+  if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) translateSelected();
   if (['1', '2', '3'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
     const idx = parseInt(e.key) - 1;
     if (state.isReview && state.passages[idx]) switchReviewPassage(idx);

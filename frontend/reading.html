@@ -252,6 +252,9 @@
       <button class="tool-btn" id="tool-dict" onclick="setTool('dict')">
         📖 <small>Tra từ (Double‑click)</small>
       </button>
+      <button class="tool-btn" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()">
+        🌐 <small>Dịch (T)</small>
+      </button>
       <button class="tool-btn" id="tool-retry" onclick="retryCurrentPassage()" title="Làm lại passage đang xem">
         🔁 <small>Làm lại</small>
       </button>
@@ -305,6 +308,9 @@
       </button>
       <button class="tool-btn" id="tool-dict-rt" onclick="setTool('dict')">
         📖 <small>Tra từ (Double‑click)</small>
+      </button>
+      <button class="tool-btn" id="tool-translate-rt" onmousedown="event.preventDefault()" onclick="translateSelected()">
+        🌐 <small>Dịch (T)</small>
       </button>
     </div>
 
@@ -370,6 +376,18 @@
       <button class="dict-close" onclick="closeDictPopup()">✕</button>
     </div>
     <div id="dict-body" class="dict-body"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+     TRANSLATE POPUP
+     ════════════════════════════════════════════════════════ -->
+  <div id="translate-popup" class="translate-popup hidden">
+    <div class="translate-popup-header">
+      <span class="translate-popup-lang">🌐 Dịch sang tiếng Việt</span>
+      <button class="translate-popup-close" onclick="closeTranslatePopup()">✕</button>
+    </div>
+    <div id="translate-src" class="translate-src"></div>
+    <div id="translate-result" class="translate-result"></div>
   </div>
 
   <!-- MODAL – CHỌN SỔ TỪ VỰNG -->
