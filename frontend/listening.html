@@ -1325,9 +1325,18 @@
                 return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
             });
 
+            // Explanation blocks (below summary text, one per question that has explanation)
+            const explHtml = isReview
+                ? questions
+                    .filter(q => q.explanation)
+                    .map(q => `<div class="q-explanation"><span class="rq-q-badge">${q.questionNumber}</span> <strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>`)
+                    .join('')
+                : '';
+
             return `<div class="rq-summary-group">
                 <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
                 <div class="rq-summary-text">${summaryHtml}</div>
+                ${explHtml}
             </div>`;
         }
 

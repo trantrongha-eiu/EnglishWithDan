@@ -1020,9 +1020,21 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
     return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="dropSC(event,${qNum},'${groupId}')" style="display:inline-flex;min-width:90px">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
   });
 
+  // Explanation blocks (below summary text, one per question that has explanation)
+  const explHtml = isReview
+    ? questions
+        .filter(q => reviewMap[q.questionNumber]?.explanation)
+        .map(q => {
+          const r = reviewMap[q.questionNumber];
+          return `<div class="q-explanation"><span class="q-badge">${q.questionNumber}</span> <strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>`;
+        })
+        .join('')
+    : '';
+
   return `<div class="rq-summary-group">
     <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
     <div class="rq-summary-text">${summaryHtml}</div>
+    ${explHtml}
   </div>`;
 }
 
