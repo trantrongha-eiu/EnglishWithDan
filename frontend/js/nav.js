@@ -138,6 +138,13 @@
       ham.classList.remove('open');
     }
   });
+  // Close mobile nav if window is resized to desktop width (prevents overlay getting stuck)
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1024 && drawer.classList.contains('open')) {
+      drawer.classList.remove('open');
+      ham.classList.remove('open');
+    }
+  });
 
   // ── Dark mode button ──────────────────────────────────────
   document.getElementById('globalDarkBtn').addEventListener('click', function () {

@@ -226,7 +226,7 @@ body {
 ══════════════════════════════════════════════ */
 .wp-main {
   flex: 1;
-  padding: 24px 28px;
+  padding: 24px 210px 24px 28px; /* right 210px reserves space for fixed wp-stats-widget (176px wide) */
   overflow-y: auto;
   min-width: 0;
 }
