@@ -202,6 +202,7 @@
             <span class="review-band-badge" id="review-band-badge">Band –</span>
             <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Bôi màu</button>
             <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
+            <button class="tool-btn-rv" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()">🌐 Dịch (T)</button>
         </div>
 
         <div class="audio-bar" id="review-audio-bar">
@@ -272,6 +273,9 @@
             <button class="tool-btn-rv" id="tool-dict-pr" onclick="setTool('dict')">
                 🔍 <small>Tra từ</small>
             </button>
+            <button class="tool-btn-rv" id="tool-translate-pr" onmousedown="event.preventDefault()" onclick="translateSelected()">
+                🌐 <small>Dịch (T)</small>
+            </button>
         </div>
         <!-- Audio bar -->
         <div class="audio-bar" id="practice-audio-bar">
@@ -335,6 +339,16 @@
             </div>
         </div>
         <div id="dict-body" class="dict-body"></div>
+    </div>
+
+    <!-- Translate Popup -->
+    <div id="translate-popup" class="translate-popup hidden">
+        <div class="translate-popup-header">
+            <span class="translate-popup-lang">🌐 Dịch sang tiếng Việt</span>
+            <button class="translate-popup-close" onclick="closeTranslatePopup()">✕</button>
+        </div>
+        <div id="translate-src" class="translate-src"></div>
+        <div id="translate-result" class="translate-result"></div>
     </div>
 
     <!-- ══════════════════════════════════════════════
@@ -2172,7 +2186,7 @@
                 if (!state.isReview && !_ltPracticeSubmitted) return;
                 const sel = window.getSelection();
                 const word = sel?.toString().trim();
-                if (!word || word.includes(' ') || word.length < 2) return;
+                if (!word || word.split(' ').length > 3 || word.length < 2) return;
                 e.preventDefault();
                 await lookupWord(word, e);
             };
@@ -2277,6 +2291,45 @@
             window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
         }
 
+        // ── Translate Popup ────────────────────────────────────────────────
+        async function translateSelected() {
+            if (!state.isReview && !_ltPracticeSubmitted) return;
+            const sel = window.getSelection();
+            const text = sel ? sel.toString().trim() : '';
+            if (!text) return;
+            const PW = 350, PH = 180;
+            let lx = window.innerWidth / 2 - PW / 2;
+            let ly = 200;
+            try {
+                const rect = sel.getRangeAt(0).getBoundingClientRect();
+                lx = rect.left + rect.width / 2 - PW / 2;
+                ly = (window.innerHeight - rect.bottom >= PH + 16) ? rect.bottom + 10 : rect.top - PH - 10;
+            } catch (_) {}
+            const srcEl = document.getElementById('translate-src');
+            const resEl = document.getElementById('translate-result');
+            srcEl.textContent = text;
+            resEl.innerHTML = '<span class="translate-loading">Đang dịch...</span>';
+            positionTranslatePopup(lx, ly);
+            document.getElementById('translate-popup').classList.remove('hidden');
+            const query = text.length > 500 ? text.slice(0, 500) : text;
+            try {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                resEl.textContent = data?.[0]?.map(s => s?.[0]).filter(Boolean).join('') || 'Không dịch được';
+            } catch (_) {
+                resEl.textContent = 'Lỗi kết nối';
+            }
+        }
+
+        function positionTranslatePopup(x, y) {
+            const popup = document.getElementById('translate-popup');
+            const PW = 350;
+            popup.style.left = Math.max(8, Math.min(x, window.innerWidth - PW - 8)) + 'px';
+            popup.style.top = Math.max(8, y) + 'px';
+        }
+
+        function closeTranslatePopup() { document.getElementById('translate-popup').classList.add('hidden'); }
+
         async function saveVocabWord(mi, di) {
             if (!state.dictWord || !_ltDictData) return;
             const m = _ltDictData.meanings[mi];
@@ -2379,8 +2432,14 @@
         function setTool(tool) {
             state.tool = tool;
             document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
-            if (tool === 'highlight') document.getElementById('tool-hl-rv')?.classList.add('active');
-            if (tool === 'dict') document.getElementById('tool-dict-rv')?.classList.add('active');
+            if (tool === 'highlight') {
+                document.getElementById('tool-hl-rv')?.classList.add('active');
+                document.getElementById('tool-hl-pr')?.classList.add('active');
+            }
+            if (tool === 'dict') {
+                document.getElementById('tool-dict-rv')?.classList.add('active');
+                document.getElementById('tool-dict-pr')?.classList.add('active');
+            }
             document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
         }
 
@@ -2481,18 +2540,36 @@
 
         // ── Keyboard shortcuts ─────────────────────────────────────
         document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeDictPopup(); closeTranslatePopup(); return; }
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
             const onExam = document.getElementById('screen-exam')?.classList.contains('active');
             const onReview = document.getElementById('screen-review')?.classList.contains('active');
-            if (!onExam && !onReview) return;
+            const onPractice = document.getElementById('screen-practice')?.classList.contains('active');
+            if (!onExam && !onReview && !onPractice) return;
             if ((e.key === 'h' || e.key === 'H') && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                if (state.isReview) setTool('highlight');
-                else setToolExam('highlight');
+                if (onExam) setToolExam('highlight');
+                else setTool('highlight');
             }
+            if ((e.key === 'd' || e.key === 'D') && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                if (!onExam) setTool('dict');
+            }
+            if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) translateSelected();
             if (['1', '2', '3', '4'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
                 const idx = parseInt(e.key) - 1;
                 const sections = getSortedSections(state.isReview);
                 if (sections[idx]) switchPart(idx, state.isReview);
+            }
+        });
+
+        // ── Click-outside to close translate popup ─────────────────
+        document.addEventListener('mousedown', e => {
+            const popup = document.getElementById('translate-popup');
+            if (popup && !popup.classList.contains('hidden')) {
+                if (!popup.contains(e.target) &&
+                    !e.target.closest('#tool-translate-rv') &&
+                    !e.target.closest('#tool-translate-pr')) {
+                    closeTranslatePopup();
+                }
             }
         });
 
@@ -2536,6 +2613,7 @@
         window.showHistoryModal = showHistoryModal;
         window.reviewFromHistory = reviewFromHistory;
         window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
+        window.translateSelected = translateSelected; window.closeTranslatePopup = closeTranslatePopup;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
         window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
     </script>

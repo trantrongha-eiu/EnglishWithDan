@@ -2171,8 +2171,8 @@ function renderDictPopup(data) {
 
 function positionDictPopup(x, y) {
   const popup = document.getElementById('dict-popup');
-  popup.style.left = Math.min(x, window.innerWidth - 320) + 'px';
-  popup.style.top = Math.min(y + 12, window.innerHeight - 380) + 'px';
+  popup.style.left = Math.max(8, Math.min(x, window.innerWidth - 320)) + 'px';
+  popup.style.top = Math.max(8, Math.min(y + 12, window.innerHeight - 380)) + 'px';
 }
 
 function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
