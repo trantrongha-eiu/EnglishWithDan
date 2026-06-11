@@ -81,7 +81,7 @@
   // ── Guard 2: đã đăng nhập mà vào login/register → redirect ─
   if ((currentPage === 'login.html' || currentPage === 'register.html') && token && user) {
     if (['admin', 'teacher'].includes(user.role)) {
-      window.location.href = 'admin/index.html';
+      window.location.href = '/admin/';
     } else {
       window.location.href = 'dashboard.html';
     }
