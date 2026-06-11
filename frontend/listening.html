@@ -2164,15 +2164,17 @@
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
-                const tb = document.getElementById('transcript-body');
-                const qp = document.getElementById('questions-panel');
-                const rv = document.getElementById('review-questions-inner');
-                const pq = document.getElementById('lt-practice-questions-inner');
-                const inTranscript = tb && tb.contains(range.commonAncestorContainer);
-                const inQPanel = qp && qp.contains(range.commonAncestorContainer);
-                const inReviewQ = rv && rv.contains(range.commonAncestorContainer);
-                const inPracticeQ = pq && pq.contains(range.commonAncestorContainer);
-                if (!inTranscript && !inQPanel && !inReviewQ && !inPracticeQ) return;
+                const tb  = document.getElementById('transcript-body');
+                const qp  = document.getElementById('questions-panel');
+                const rv  = document.getElementById('review-questions-inner');
+                const pq  = document.getElementById('lt-practice-questions-inner');
+                const ptb = document.getElementById('lt-practice-transcript-body');
+                const inTranscript  = tb  && tb.contains(range.commonAncestorContainer);
+                const inQPanel      = qp  && qp.contains(range.commonAncestorContainer);
+                const inReviewQ     = rv  && rv.contains(range.commonAncestorContainer);
+                const inPracticeQ   = pq  && pq.contains(range.commonAncestorContainer);
+                const inPracticeTb  = ptb && ptb.contains(range.commonAncestorContainer);
+                if (!inTranscript && !inQPanel && !inReviewQ && !inPracticeQ && !inPracticeTb) return;
                 const span = document.createElement('span');
                 span.className = 'hl';
                 try { range.surroundContents(span); } catch { }
@@ -2192,7 +2194,7 @@
             if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
             el._dictHandler = async e => {
                 if (state.tool !== 'dict') return;
-                if (!state.isReview && !_ltPracticeSubmitted) return;
+                if (!state.isReview && !_ltPracticeSubmitted && !_ltPracticeActive) return;
                 const sel = window.getSelection();
                 const word = sel?.toString().trim();
                 if (!word || word.split(' ').length > 3 || word.length < 2) return;
@@ -2302,7 +2304,7 @@
 
         // ── Translate Popup ────────────────────────────────────────────────
         async function translateSelected() {
-            if (!state.isReview && !_ltPracticeSubmitted) return;
+            if (!state.isReview && !_ltPracticeSubmitted && !_ltPracticeActive) return;
             const sel = window.getSelection();
             const text = sel ? sel.toString().trim() : '';
             if (!text) return;
@@ -2641,6 +2643,7 @@
     let _ltPracticeStartTime= 0;
     let _ltPracticeElapsed  = 0;
     let _ltPracticeSubmitted= false; // true after submitLTPractice() so dict/highlight work in result view
+    let _ltPracticeActive   = false; // true while practice screen is open (before submit)
 
     /* ── Helper ──────────────────────────────────────────────────────────── */
     function _ltGetAllQs(section) {
@@ -2853,6 +2856,7 @@
         _ltPracticePartNum   = partNum;
         _ltPracticeSectionId = sectionId;
         _ltPracticeSubmitted = false;
+        _ltPracticeActive    = true;
         const tpEnter = document.getElementById('lt-practice-transcript-panel');
         if (tpEnter) tpEnter.style.display = 'none';
         setTool('none');
@@ -3055,6 +3059,7 @@
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;
+        _ltPracticeActive    = false;
         _ltLoadingPart = 0;
         const tpClose = document.getElementById('lt-practice-transcript-panel');
         if (tpClose) tpClose.style.display = 'none';
