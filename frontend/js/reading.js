@@ -886,6 +886,7 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
     case 'sentence-endings': bodyHtml = renderMatchingOptionsGroup(group, isReview, reviewMap); break;
     case 'matching-headings': bodyHtml = renderMatchingHeadingsGroup(group, isReview, reviewMap); break;
     case 'summary-completion': bodyHtml = renderSummaryCompletionGroup(group, isReview, reviewMap); break;
+    case 'multi-answer-group': bodyHtml = renderMultiAnswerCluster(questions, isReview, reviewMap); break;
     default: bodyHtml = renderPlainGroup(questions, isReview, reviewMap); break;
   }
 
