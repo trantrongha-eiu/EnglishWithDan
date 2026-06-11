@@ -36,6 +36,7 @@
                     <button class="filter-btn" onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;display:inline-flex;align-items:center;gap:5px">
                         📜 Lịch sử
                     </button>
+                    <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()">
                 </div>
             </div>
 
@@ -730,7 +731,7 @@
             const tot = t.lastAttempt?.totalQuestions ?? t.totalQuestions ?? '';
             const safeName = (t.name || '').replace(/'/g, "\\'");
             return `
-                <div class="test-card" id="tcard-${t._id}" data-done="${done}">
+                <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${(t.name || '').toLowerCase().replace(/"/g, '')}">
                     <div class="test-card-cover ls-cover">
                         ${done ? '<div class="test-done-tick">✓</div>' : ''}
                         <div class="test-cover-badge">IELTS Listening</div>
@@ -747,14 +748,23 @@
                 </div>`;
         }
 
+        let _activeFilter = 'all';
+
         function filterTests(mode, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
+            _activeFilter = mode;
+            applyTestFilters();
+        }
+
+        function applyTestFilters() {
+            const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
             document.querySelectorAll('.test-card').forEach(c => {
                 const done = c.dataset.done === 'true';
-                if (mode === 'all') c.style.display = '';
-                else if (mode === 'done') c.style.display = done ? '' : 'none';
-                else c.style.display = !done ? '' : 'none';
+                const name = c.dataset.name || '';
+                const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
+                const matchSearch = !q || name.includes(q);
+                c.style.display = (matchFilter && matchSearch) ? '' : 'none';
             });
             document.querySelectorAll('.test-group').forEach(g => {
                 const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');
@@ -2605,7 +2615,7 @@
         window.logout = logout;
         window.showScreen = showScreen;
         window.openModal = openModal; window.closeModal = closeModal;
-        window.filterTests = filterTests;
+        window.filterTests = filterTests; window.applyTestFilters = applyTestFilters;
         window.goToKey = goToKey;
         window.formatKeyInput = formatKeyInput;
         window.verifyKeyAndStart = verifyKeyAndStart;

@@ -24,6 +24,7 @@ const state = {
 };
 
 let allTests = [];
+let _activeFilter = 'all';
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 
@@ -255,7 +256,7 @@ function testCard(t) {
   const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
   const cor = t.lastAttempt?.correctCount ?? '';
   const tot = t.lastAttempt?.totalQuestions ?? '';
-  return `<div class="test-card" id="tcard-${t._id}" data-done="${done}">
+  return `<div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}">
     <div class="test-card-cover">
       <div class="test-cover-badge">IELTS</div>
       <div class="test-cover-title">Test ${t.testNumber}</div>
@@ -277,13 +278,19 @@ function testCard(t) {
 
 function filterTests(filter, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const cards = document.querySelectorAll('.test-card');
-  cards.forEach(c => {
+  if (btn) btn.classList.add('active');
+  _activeFilter = filter;
+  applyTestFilters();
+}
+
+function applyTestFilters() {
+  const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
+  document.querySelectorAll('.test-card').forEach(c => {
     const done = c.dataset.done === 'true';
-    if (filter === 'all') c.style.display = '';
-    else if (filter === 'done') c.style.display = done ? '' : 'none';
-    else c.style.display = !done ? '' : 'none';
+    const name = c.dataset.name || '';
+    const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
+    const matchSearch = !q || name.includes(q);
+    c.style.display = (matchFilter && matchSearch) ? '' : 'none';
   });
   document.querySelectorAll('.test-group').forEach(g => {
     const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');

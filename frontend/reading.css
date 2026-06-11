@@ -108,7 +108,24 @@ body.eye-protection .split-questions {
 .list-filter {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }
+
+.test-search-input {
+  padding: 5px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 13px;
+  color: #374151;
+  outline: none;
+  transition: border-color .2s;
+  width: 180px;
+  font-family: 'Inter', sans-serif;
+}
+.test-search-input:focus { border-color: #e53935; }
+.test-search-input::placeholder { color: #9ca3af; }
 
 .filter-btn {
   padding: 6px 14px;
@@ -2603,6 +2620,8 @@ body.eye-protection .split-questions {
 [data-theme="dark"] .list-header h2 { color: #f9fafb; }
 [data-theme="dark"] .list-subtitle { color: #9ca3af; }
 [data-theme="dark"] .filter-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .test-search-input { background: #1f2937; border-color: #374151; color: #d1d5db; }
+[data-theme="dark"] .test-search-input:focus { border-color: #e53935; }
 [data-theme="dark"] .filter-btn.active,
 [data-theme="dark"] .filter-btn:hover { background: #7f1d1d; border-color: #e53935; color: #fca5a5; }
 
