@@ -894,18 +894,16 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
 
 /* ── PLAIN ────────────────────────────────────────────────────────── */
 function renderPlainGroup(questions, isReview, reviewMap) {
-  const normOpts = opts => JSON.stringify((opts || []).map(o => (o || '').trim().toLowerCase()));
   const items = [];
   let i = 0;
   while (i < questions.length) {
     const q = questions[i];
     if (q.type === 'multi-answer-group') {
+      // Gom tất cả câu multi-answer-group liên tiếp trong cùng nhóm thành 1 cluster
       const cluster = [q];
-      while (
-        i + 1 < questions.length &&
-        questions[i + 1].type === 'multi-answer-group' &&
-        normOpts(questions[i + 1].options) === normOpts(q.options)
-      ) { i++; cluster.push(questions[i]); }
+      while (i + 1 < questions.length && questions[i + 1].type === 'multi-answer-group') {
+        i++; cluster.push(questions[i]);
+      }
       items.push(renderMultiAnswerCluster(cluster, isReview, reviewMap));
     } else {
       items.push(renderSingleQuestion(q, isReview, reviewMap));
