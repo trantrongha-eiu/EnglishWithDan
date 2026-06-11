@@ -2194,6 +2194,12 @@ function submitRetry() {
 
     if (!userAns || userAns === '[]') {
       skipped++;
+    } else if (q.type === 'multi-answer-group') {
+      try {
+        const uaArr = JSON.parse(userAns).map(x => x.toUpperCase().trim());
+        isCorrect = uaArr.includes(correctAns.toUpperCase().trim());
+      } catch { isCorrect = false; }
+      if (isCorrect) correct++; else wrong++;
     } else if (q.type === 'checkbox') {
       try {
         const a = JSON.parse(userAns).sort();
