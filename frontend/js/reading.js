@@ -2470,16 +2470,17 @@ function showVocabToast(msg, type = 'success') {
    HIGHLIGHT
 ══════════════════════════════════════════════════════════════════════ */
 function setTool(tool) {
-  state.tool = tool;
+  const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
+  state.tool = next;
   ['tool-hl', 'tool-hl-rv', 'tool-hl-rt'].forEach(id => {
     const b = document.getElementById(id);
-    if (b) b.classList.toggle('active', tool === 'highlight');
+    if (b) b.classList.toggle('active', next === 'highlight');
   });
   ['tool-dict', 'tool-dict-rt'].forEach(id => {
     const td = document.getElementById(id);
-    if (td) td.classList.toggle('active', tool === 'dict');
+    if (td) td.classList.toggle('active', next === 'dict');
   });
-  document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
+  document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
 }
 
 document.addEventListener('mouseup', e => {
@@ -2524,6 +2525,7 @@ function handleKeyShortcuts(e) {
     closeModal('modal-vocab-picker');
     const sp = document.getElementById('settings-panel');
     if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
+    setTool('none');
     return;
   }
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;

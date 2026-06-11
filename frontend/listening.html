@@ -2441,25 +2441,27 @@
         // TOOL
         // ══════════════════════════════════════════════
         function setTool(tool) {
-            state.tool = tool;
+            const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
+            state.tool = next;
             document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
-            if (tool === 'highlight') {
+            if (next === 'highlight') {
                 document.getElementById('tool-hl-rv')?.classList.add('active');
                 document.getElementById('tool-hl-pr')?.classList.add('active');
             }
-            if (tool === 'dict') {
+            if (next === 'dict') {
                 document.getElementById('tool-dict-rv')?.classList.add('active');
                 document.getElementById('tool-dict-pr')?.classList.add('active');
             }
-            document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
+            document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
         }
 
         function setToolExam(tool) {
-            state.tool = tool;
+            const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
+            state.tool = next;
             document.querySelectorAll('#exam-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
-            if (tool === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
-            if (tool === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
-            document.body.style.cursor = tool === 'highlight' ? 'crosshair' : 'default';
+            if (next === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
+            if (next === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
+            document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
         }
 
         // ══════════════════════════════════════════════
@@ -2551,7 +2553,7 @@
 
         // ── Keyboard shortcuts ─────────────────────────────────────
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeDictPopup(); closeTranslatePopup(); return; }
+            if (e.key === 'Escape') { closeDictPopup(); closeTranslatePopup(); setTool('none'); return; }
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
             const onExam = document.getElementById('screen-exam')?.classList.contains('active');
             const onReview = document.getElementById('screen-review')?.classList.contains('active');
