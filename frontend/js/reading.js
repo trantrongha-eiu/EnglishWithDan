@@ -2195,7 +2195,8 @@ function submitRetry() {
 
     if (!userAns || userAns === '[]') {
       skipped++;
-    } else if (q.type === 'multi-answer-group') {
+    } else if (q.type === 'multi-answer-group' || (q.type !== 'checkbox' && userAns.startsWith('['))) {
+      // multi-answer cluster: userAns là JSON array, correctAns là 1 chữ cái
       try {
         const uaArr = JSON.parse(userAns).map(x => x.toUpperCase().trim());
         isCorrect = uaArr.includes(correctAns.toUpperCase().trim());
