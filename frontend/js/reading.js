@@ -894,7 +894,89 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
 
 /* ── PLAIN ────────────────────────────────────────────────────────── */
 function renderPlainGroup(questions, isReview, reviewMap) {
-  return questions.map(q => renderSingleQuestion(q, isReview, reviewMap)).join('');
+  const normOpts = opts => JSON.stringify((opts || []).map(o => (o || '').trim().toLowerCase()));
+  const items = [];
+  let i = 0;
+  while (i < questions.length) {
+    const q = questions[i];
+    if (q.type === 'multi-answer-group') {
+      const cluster = [q];
+      while (
+        i + 1 < questions.length &&
+        questions[i + 1].type === 'multi-answer-group' &&
+        normOpts(questions[i + 1].options) === normOpts(q.options)
+      ) { i++; cluster.push(questions[i]); }
+      items.push(renderMultiAnswerCluster(cluster, isReview, reviewMap));
+    } else {
+      items.push(renderSingleQuestion(q, isReview, reviewMap));
+    }
+    i++;
+  }
+  return items.join('');
+}
+
+/* ── MULTI-ANSWER CLUSTER (Choose TWO/THREE Letters) ─────────────── */
+function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
+  const count = cluster.length;
+  const firstNum = cluster[0].questionNumber;
+  const lastNum  = cluster[cluster.length - 1].questionNumber;
+  const opts = cluster[0].options || [];
+  const LETTERS = 'ABCDEFGHIJ';
+
+  const caLetters = cluster.map(q => (q.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
+
+  let uaArr = [];
+  if (isReview) {
+    try { uaArr = JSON.parse(reviewMap[firstNum]?.userAnswer || '[]').map(x => x.toUpperCase()); } catch { }
+  } else {
+    try { uaArr = JSON.parse(state.answers[firstNum] || '[]').map(x => x.toUpperCase()); } catch { }
+  }
+
+  let rangeLabel;
+  if (count === 1) rangeLabel = `Question ${firstNum}`;
+  else if (count === 2) rangeLabel = `Questions ${firstNum} and ${lastNum}`;
+  else {
+    const nums = cluster.map(q => q.questionNumber);
+    rangeLabel = `Questions ${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`;
+  }
+
+  const letterWord = count === 2 ? 'TWO' : count === 3 ? 'THREE' : count === 4 ? 'FOUR' : String(count);
+
+  const optHtml = opts.map((opt, idx) => {
+    const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
+    let cls = '';
+    if (isReview) {
+      if (caLetters.includes(letter)) cls = 'correct-ans';
+      else if (uaArr.includes(letter)) cls = 'wrong-ans';
+    } else {
+      if (uaArr.includes(letter)) cls = 'selected';
+    }
+    const onclick = isReview ? '' : `onclick="toggleMultiAnswer(${firstNum},'${letter}',${count},${lastNum})"`;
+    return `<div class="checkbox-opt ${cls}" data-cluster="${firstNum}" data-value="${letter}" ${onclick}>
+      <span class="check-box"></span>
+      <label><strong class="cb-letter">${letter}</strong>&nbsp;&nbsp;${escHtml(opt.replace(/^[A-Ja-j]\s+/, ''))}</label>
+    </div>`;
+  }).join('');
+
+  let reviewExtra = '';
+  if (isReview) {
+    reviewExtra = cluster.map(q => {
+      const r = reviewMap[q.questionNumber];
+      const ok = !!r?.isCorrect;
+      const ca = (r?.correctAnswer || q.correctAnswer || '').toUpperCase();
+      return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
+        Q${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`}
+      </div>${r?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>` : ''}`;
+    }).join('');
+  }
+
+  return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}">
+    <div class="q-num-label"><span class="q-badge">${rangeLabel}</span></div>
+    <div class="q-text">${escHtml(cluster[0].questionText || '')}</div>
+    <div class="checkbox-hint">Chọn <strong>${letterWord}</strong> chữ cái, A–${LETTERS[opts.length - 1] || 'E'}</div>
+    <div class="checkbox-opts">${optHtml}</div>
+    ${reviewExtra}
+  </div>`;
 }
 
 /* ── TABLE ────────────────────────────────────────────────────────── */
@@ -1377,6 +1459,24 @@ function toggleCheckbox(qNum, letter, maxCount, el) {
   saveExamToStorage();
 }
 
+function toggleMultiAnswer(firstNum, letter, maxCount, lastNum) {
+  let arr = [];
+  try { arr = JSON.parse(state.answers[firstNum] || '[]'); } catch { }
+  if (arr.includes(letter)) {
+    arr = arr.filter(v => v !== letter);
+  } else {
+    if (arr.length >= maxCount) return;
+    arr.push(letter);
+  }
+  arr.sort();
+  const val = JSON.stringify(arr);
+  for (let n = firstNum; n <= lastNum; n++) { state.answers[n] = val; updateQNavBtn(n); }
+  document.querySelectorAll(`[data-cluster="${firstNum}"]`).forEach(o =>
+    o.classList.toggle('selected', arr.includes(o.dataset.value))
+  );
+  saveExamToStorage();
+}
+
 function pickMatchAnswer(qNum, val) {
   state.answers[qNum] = val;
   updateQNavBtn(qNum);
@@ -1628,7 +1728,15 @@ function restoreAnswers(isReview) {
       }
     }
 
-    // 3. Matching-options drop zone
+    // 3. Multi-answer-group cluster (options have data-cluster="firstNum")
+    const clusterOpts = document.querySelectorAll(`[data-cluster="${qNum}"]`);
+    if (clusterOpts.length) {
+      let arr = []; try { arr = JSON.parse(val); } catch {}
+      clusterOpts.forEach(o => o.classList.toggle('selected', arr.includes(o.dataset.value)));
+      return;
+    }
+
+    // 4. Matching-options drop zone
     const moDz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"]`);
     if (moDz) {
       const groupId = moDz.dataset.groupid;
