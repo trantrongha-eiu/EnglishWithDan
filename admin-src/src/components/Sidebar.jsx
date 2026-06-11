@@ -21,8 +21,10 @@ const NAV = [
   { to: '/task1-exercises',  icon: '📉', label: 'Task 1 Grammar' },
   { to: '/task2-exercises',  icon: '📝', label: 'Task 2 Writing' },
   { to: '/task2-templates', icon: '📄', label: 'Task 2 Templates' },
+  { to: '/writing-samples', icon: '📋', label: 'Bài mẫu Writing' },
   { section: 'HỌC SINH' },
   { to: '/history',         icon: '🕓', label: 'Lịch sử làm bài' },
+  { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing' },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
   { to: '/messages',        icon: '✉️', label: 'Hộp thư' },
 ];

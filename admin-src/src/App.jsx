@@ -26,6 +26,8 @@ import Task2Templates from './pages/Task2Templates';
 import StudentHistory from './pages/StudentHistory';
 import VocabActivity from './pages/VocabActivity';
 import Messages from './pages/Messages';
+import WritingGrades from './pages/WritingGrades';
+import WritingSamples from './pages/WritingSamples';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -62,6 +64,8 @@ export default function App() {
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />
                 <Route path="messages" element={<Messages />} />
+                <Route path="writing-grades" element={<WritingGrades />} />
+                <Route path="writing-samples" element={<WritingSamples />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

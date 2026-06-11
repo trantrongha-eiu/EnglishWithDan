@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
+import { useAuth } from '../contexts/AuthContext';
 
 const PAGE_SIZE = 25;
 
@@ -26,6 +27,7 @@ function formatDur(sec) {
 export default function StudentHistory() {
   const toast   = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
 
   const [all,     setAll]     = useState([]);
   const [loading, setLoading] = useState(false);
@@ -140,7 +142,7 @@ export default function StudentHistory() {
                         : bandBadge(h.bandScore)}
                       </td>
                       <td>
-                        {['reading', 'listening', 'writing'].includes(h.skill) && (
+                        {isAdmin && ['reading', 'listening', 'writing'].includes(h.skill) && (
                           <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(h._id, h.skill, name)}>🗑</button>
                         )}
                       </td>
