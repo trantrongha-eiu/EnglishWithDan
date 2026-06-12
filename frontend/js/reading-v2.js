@@ -628,6 +628,7 @@ async function loadPracticePassages(category, tabEl) {
       'sentence-endings': 'Sentence Endings',
     };
 
+    const _searchVal = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
     listEl.innerHTML = `<div class="practice-card-grid">${passages.map(p => {
       const qtypes = [...new Set(
         (p.questionGroups || []).flatMap(g =>
@@ -651,6 +652,7 @@ async function loadPracticePassages(category, tabEl) {
         </div>
       </div>`;
     }).join('')}</div>`;
+    if (_searchVal) filterPracticeCards(_searchVal);
   } catch (e) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
       <div style="color:#e53935;margin-bottom:12px">Lỗi tải danh sách bài đọc</div>
@@ -1814,6 +1816,14 @@ function updateQNavBtn(qNum) {
   btn.classList.toggle('answered', answered);
 }
 
+/* Find a question element by number — works for both plain (id="qN") and cluster (id="qi-N") */
+function _findQuestionEl(qNum) {
+  return document.getElementById(`q${qNum}`)
+    || document.getElementById(`qi-${qNum}`)
+    || document.querySelector(`[data-cluster-start="${qNum}"]`)
+    || document.querySelector(`[data-cluster-end="${qNum}"]`);
+}
+
 function jumpToQuestion(qNum) {
   // Find which passage contains this question
   let pIdx = state.currentPassageIdx;
@@ -1822,7 +1832,7 @@ function jumpToQuestion(qNum) {
   });
   if (pIdx !== state.currentPassageIdx) switchPassage(pIdx);
   setTimeout(() => {
-    const el = document.getElementById(`q${qNum}`);
+    const el = _findQuestionEl(qNum);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, 100);
 }
@@ -2082,11 +2092,11 @@ function jumpToReviewQuestion(qNum) {
     switchReviewPassage(pIdx);
     // Wait for DOM to render before scrolling
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const el = document.getElementById(`q${qNum}`);
+      const el = _findQuestionEl(qNum);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }));
   } else {
-    const el = document.getElementById(`q${qNum}`);
+    const el = _findQuestionEl(qNum);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
@@ -2163,7 +2173,7 @@ function retryCurrentPassage() {
 }
 
 function jumpToRetryQuestion(qNum) {
-  const el = document.getElementById(`q${qNum}`);
+  const el = _findQuestionEl(qNum);
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 

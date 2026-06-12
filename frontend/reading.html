@@ -520,6 +520,73 @@
     }
   </script>
   <script>
+    // Override _findQuestionEl — hỗ trợ cả plain (id="qN") lẫn multi-answer cluster (id="qi-N")
+    function _findQuestionEl(qNum) {
+      return document.getElementById('q' + qNum)
+        || document.getElementById('qi-' + qNum)
+        || document.querySelector('[data-cluster-start="' + qNum + '"]')
+        || document.querySelector('[data-cluster-end="' + qNum + '"]');
+    }
+
+    // Override jumpToQuestion
+    function jumpToQuestion(qNum) {
+      let pIdx = state.currentPassageIdx;
+      state.passages.forEach(function(p, i) {
+        if (getAllQuestionsFromPassage(p).some(function(q) { return q.questionNumber === qNum; })) pIdx = i;
+      });
+      if (pIdx !== state.currentPassageIdx) switchPassage(pIdx);
+      setTimeout(function() {
+        const el = _findQuestionEl(qNum);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+
+    // Override jumpToReviewQuestion
+    function jumpToReviewQuestion(qNum) {
+      let pIdx = state.currentPassageIdx;
+      state.passages.forEach(function(p, i) {
+        if (getAllQuestionsFromPassage(p).some(function(q) { return q.questionNumber === qNum; })) pIdx = i;
+      });
+      if (pIdx !== state.currentPassageIdx) {
+        switchReviewPassage(pIdx);
+        requestAnimationFrame(function() { requestAnimationFrame(function() {
+          const el = _findQuestionEl(qNum);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }); });
+      } else {
+        const el = _findQuestionEl(qNum);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    // Override jumpToRetryQuestion
+    function jumpToRetryQuestion(qNum) {
+      const el = _findQuestionEl(qNum);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Override handleKeyShortcuts — block D key in exam mode (no dict toolbar there)
+    function handleKeyShortcuts(e) {
+      if (e.key === 'Escape') {
+        closeDictPopup(); closeTranslatePopup();
+        closeModal('modal-vocab-picker');
+        const sp = document.getElementById('settings-panel');
+        if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
+        setTool('none'); return;
+      }
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.key === 'h' || e.key === 'H') setTool('highlight');
+      // D key only in review/practice/retry — exam mode has no dict UI
+      if ((e.key === 'd' || e.key === 'D') && (state.isReview || _practiceMode || _retryState)) setTool('dict');
+      if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) translateSelected();
+      if (['1','2','3'].includes(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        const idx = parseInt(e.key) - 1;
+        if (state.isReview && state.passages[idx]) switchReviewPassage(idx);
+        else if (!state.isReview && state.passages[idx]) switchPassage(idx);
+      }
+    }
+  </script>
+  <script>
     // ── Skill nav toggle (mobile) ────────────────────────────
     function toggleSkillNav() {
       const bar = document.getElementById('skill-tabs-bar');
@@ -542,7 +609,7 @@
     document.addEventListener('fullscreenchange', () => {
       const btn = document.getElementById('btn-fullscreen');
       const fsEl = document.fullscreenElement;
-      const ids = ['dict-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel'];
+      const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel'];
       if (fsEl) {
         if (btn) btn.title = 'Thoát toàn màn hình';
         ids.forEach(id => {
