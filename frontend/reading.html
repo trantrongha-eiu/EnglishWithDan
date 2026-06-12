@@ -40,7 +40,6 @@
           <button class="filter-btn" onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;display:inline-flex;align-items:center;gap:5px">
             📋 Lịch sử
           </button>
-          <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()">
         </div>
       </div>
 
@@ -52,6 +51,11 @@
         <button id="rmode-lele" class="rmode-tab" onclick="setReadingMode('lele')">
           📖 Bài lẻ
         </button>
+      </div>
+
+      <!-- Search bar – chỉ hiện ở Bài lẻ mode -->
+      <div id="practice-search-bar" class="hidden" style="margin:8px 0 4px">
+        <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards(this.value)" style="width:260px">
       </div>
 
       <!-- Practice picker (Bài lẻ mode) -->

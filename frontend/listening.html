@@ -36,7 +36,6 @@
                     <button class="filter-btn" onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;display:inline-flex;align-items:center;gap:5px">
                         📜 Lịch sử
                     </button>
-                    <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()">
                 </div>
             </div>
 
@@ -44,6 +43,11 @@
             <div class="rmode-tabs-bar">
                 <button id="ls-mode-full" class="rmode-tab rmode-active" onclick="setListeningMode('full')">🎧 Full đề</button>
                 <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')">🎵 Bài lẻ</button>
+            </div>
+
+            <!-- Search bar – chỉ hiện ở Bài lẻ mode -->
+            <div id="lt-practice-search-bar" class="hidden" style="margin:8px 0 4px">
+                <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:260px">
             </div>
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
@@ -2748,10 +2752,13 @@
         const subtitle = document.getElementById('ls-mode-subtitle');
         const title    = document.getElementById('ls-mode-title');
 
+        const searchBar = document.getElementById('lt-practice-search-bar');
         if (picker)    picker.classList.toggle('hidden', !isLele);
         if (wrapper)   wrapper.style.display    = isLele ? 'none' : '';
         if (banner)    banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
         if (filterBar) filterBar.style.display  = isLele ? 'none' : '';
+        if (searchBar) searchBar.classList.toggle('hidden', !isLele);
+        if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; }
         if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
         if (title) {
             title.innerHTML = isLele
@@ -2766,6 +2773,14 @@
                 loadPracticeSections(part);
             }
         }
+    }
+
+    function filterLtPracticeCards(query) {
+        const q = (query || '').trim().toLowerCase();
+        document.querySelectorAll('#lt-section-list .practice-card').forEach(card => {
+            const title = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
+            card.style.display = (!q || title.includes(q)) ? '' : 'none';
+        });
     }
 
     let _ltLoadingPart = 0; // race-condition lock
@@ -3145,6 +3160,7 @@
     // Expose bài lẻ functions after they are defined
     window.confirmCloseLTPractice = confirmCloseLTPractice;
     window.setListeningMode = setListeningMode;
+    window.filterLtPracticeCards = filterLtPracticeCards;
     window.loadPracticeSections = loadPracticeSections;
     window.startPracticeSection = startPracticeSection;
     window.submitLTPractice = submitLTPractice;
