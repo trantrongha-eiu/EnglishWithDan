@@ -452,7 +452,7 @@
       const lastNum  = cluster[cluster.length - 1].questionNumber;
       const opts     = cluster[0].options || [];
       const LTRS     = 'ABCDEFGHIJ';
-      const caLetters = cluster.map(q => (q.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
+      const caLetters = cluster.map(q => (q.correctAnswer || reviewMap[q.questionNumber]?.correctAnswer || '').trim().toUpperCase()).filter(Boolean);
       let uaArr = [];
       if (isReview) {
         try { uaArr = JSON.parse(reviewMap[firstNum]?.userAnswer || '[]').map(x => x.toUpperCase()); } catch {}
