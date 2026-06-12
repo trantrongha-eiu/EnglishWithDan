@@ -77,6 +77,9 @@
                     <button class="plele-tab" data-part="4" onclick="loadPracticeSections(4, this)">
                         <span class="plele-badge p4">S4</span> Section 4 <span class="plele-range">câu 31–40</span>
                     </button>
+                    <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
+                        <span class="plele-badge at">AT</span> Actual Tests
+                    </button>
                 </div>
                 <div id="lt-section-list"></div>
             </div>
@@ -2797,8 +2800,9 @@
         const listEl = document.getElementById('lt-section-list');
         if (!listEl) return;
 
+        const isActual = partNum === 'actual';
         const clsMap  = { 1:'p1', 2:'p2', 3:'p3', 4:'p4' };
-        const cls     = clsMap[partNum] || 'p1';
+        const cls     = isActual ? 'at' : (clsMap[partNum] || 'p1');
         const typeLabel = {
             'multiple-choice':'Multiple Choice', 'fill-blank':'Gap Filling',
             'sentence-completion':'Sentence Completion', 'matching':'Matching',
@@ -2822,15 +2826,19 @@
             </div>`).join('')}</div>`;
 
         try {
-            const res = await fetch(`${API}/listening/practice/list?part=${partNum}`, { headers: authH() });
+            const url = isActual
+                ? `${API}/listening/practice/list?actualTest=true`
+                : `${API}/listening/practice/list?part=${partNum}`;
+            const res = await fetch(url, { headers: authH() });
             const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
             if (!data.success) throw new Error(data.message);
             const sections = data.sections || [];
             if (!sections.length) {
+                const emptyLabel = isActual ? 'Actual Tests' : `Section ${partNum}`;
                 listEl.innerHTML = `<div style="text-align:center;padding:56px 24px;color:#9ca3af;max-width:420px;margin:0 auto">
                     <div style="font-size:48px;margin-bottom:16px">🎵</div>
                     <div style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài lẻ nào</div>
-                    <div style="font-size:14px;line-height:1.6">Section ${partNum} chưa có bài luyện tập.<br>Admin sẽ thêm bài sớm nhé!</div>
+                    <div style="font-size:14px;line-height:1.6">${emptyLabel} chưa có bài luyện tập.<br>Admin sẽ thêm bài sớm nhé!</div>
                 </div>`;
                 return;
             }
@@ -2840,16 +2848,20 @@
                     (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
                 ))].slice(0, 3);
                 const dur = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} min` : '';
-                return `<div class="practice-card" onclick="startPracticeSection('${s._id}',${partNum})">
+                const cardCls = isActual ? (clsMap[s.partNumber] || 'p1') : cls;
+                const cardLabel = isActual
+                    ? `<span class="practice-card-cat-badge at">Actual</span><span class="practice-card-cat-badge ${clsMap[s.partNumber] || 'p1'}" style="margin-left:4px;font-size:10px">S${s.partNumber}</span>`
+                    : `<span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>`;
+                return `<div class="practice-card" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">
                         <div class="practice-cover-logo"><span>D</span>aniel</div>
-                        <span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>
+                        ${cardLabel}
                     </div>
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
                         <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small style="color:#9ca3af">🎵 ${dur}</small>` : ''}</div>
-                        <button class="practice-card-btn ${cls}"
-                            onclick="event.stopPropagation();startPracticeSection('${s._id}',${partNum})">
+                        <button class="practice-card-btn ${cardCls}"
+                            onclick="event.stopPropagation();startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                             Làm bài · ${s.questionCount} câu
                         </button>
                     </div>
@@ -2859,7 +2871,7 @@
         } catch(e) {
             listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#e53935">
                 Lỗi tải danh sách: ${e.message}
-                <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections(${partNum})">Thử lại</button>
+                <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections('${partNum}')">Thử lại</button>
             </div>`;
         } finally {
             _ltLoadingPart = 0; // mở lock khi xong

@@ -105,7 +105,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({
     title: '', category: 'passage1', content: '', difficulty: 'medium',
-    questionRange: { start: 1, end: 13 }, tags: '', isActive: true
+    questionRange: { start: 1, end: 13 }, tags: '', isActive: true, isActualTest: false
   });
   const [loading, setLoading] = useState(!!passageId);
   const [saving, setSaving] = useState(false);
@@ -122,7 +122,8 @@ function PassageModal({ passageId, onClose, onSaved }) {
           difficulty: p.difficulty || 'medium',
           questionRange: { start: p.questionRange?.start ?? 1, end: p.questionRange?.end ?? 13 },
           tags: Array.isArray(p.tags) ? p.tags.join(', ') : (p.tags || ''),
-          isActive: p.isActive !== false
+          isActive: p.isActive !== false,
+          isActualTest: p.isActualTest === true
         });
       })
       .catch(() => toast('Không tải được bài đọc', 'error'))
@@ -208,9 +209,15 @@ function PassageModal({ passageId, onClose, onSaved }) {
                 style={{ fontFamily: 'monospace', fontSize: 12, lineHeight: 1.6 }}
                 placeholder={'<p>Paragraph one of the reading passage...</p>\n<p>Paragraph two continues here...</p>'} />
             </div>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
-              <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Hiển thị
-            </label>
+            <div style={{ display: 'flex', gap: 20 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+                <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Hiển thị
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+                <input type="checkbox" checked={form.isActualTest} onChange={set('isActualTest')} />
+                <span>Actual Test <span style={{ fontSize: 11, color: 'var(--text3)' }}>(hiện ở tab "Actual Tests")</span></span>
+              </label>
+            </div>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 4 }}>
               <button type="button" className="btn btn-ghost" onClick={onClose}>Huỷ</button>
               <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Đang lưu...' : 'Lưu'}</button>
@@ -303,7 +310,10 @@ export default function Passages() {
               ? <tr><td colSpan={8} className="table-empty">Không có bài đọc nào</td></tr>
               : paged.map(p => (
                 <tr key={p._id}>
-                  <td><strong>{p.title}</strong></td>
+                  <td>
+                    <strong>{p.title}</strong>
+                    {p.isActualTest && <span className="badge badge-yellow" style={{ marginLeft: 6, fontSize: 10 }}>Actual</span>}
+                  </td>
                   <td>{catBadge(p.category)}</td>
                   <td>{diffBadge(p.difficulty)}</td>
                   <td>{p.questionCount ?? (p.questionRange ? (p.questionRange.end - p.questionRange.start + 1) : '–')}</td>

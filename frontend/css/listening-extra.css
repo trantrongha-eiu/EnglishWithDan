@@ -266,6 +266,10 @@
         .plele-tab[data-part="4"].plele-active { border-color: #8b5cf6; color: #6d28d9; background: #f5f3ff; }
         .plele-tab[data-part="4"].plele-active .plele-range { color: #c4b5fd; }
 
+        /* ── Actual Tests colour overrides ───────────────────────────────── */
+        .plele-badge.at { background: #e11d48; }
+        .plele-tab[data-part="actual"].plele-active { border-color: #e11d48; color: #9f1239; background: #fff1f2; }
+
         /* ── Practice section cards ──────────────────────────────────────── */
         .practice-card-grid {
             display: grid;
@@ -318,6 +322,7 @@
         .practice-card-cat-badge.p2 { background: #10b981; }
         .practice-card-cat-badge.p3 { background: #f59e0b; }
         .practice-card-cat-badge.p4 { background: #8b5cf6; }
+        .practice-card-cat-badge.at { background: #e11d48; }
         .practice-card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
         .practice-card-title {
             font-size: 13px;
@@ -352,6 +357,7 @@
         .practice-card-btn.p2 { background: #10b981; }
         .practice-card-btn.p3 { background: #f59e0b; }
         .practice-card-btn.p4 { background: #8b5cf6; }
+        .practice-card-btn.at { background: #e11d48; }
 
         /* Skeleton cards */
         .practice-card-sk .practice-card-cover { background: #f3f4f6; }

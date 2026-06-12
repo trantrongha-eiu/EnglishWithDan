@@ -56,8 +56,9 @@ const ListeningSectionSchema = new mongoose.Schema({
   audioDuration: { type: Number, default: 0 },
   transcript:    { type: String, default: '' },
   questionRange: { start: Number, end: Number },
-  questionGroups: [LSGroupSchema],
-  isActive: { type: Boolean, default: true },
+  questionGroups:  [LSGroupSchema],
+  isActive:        { type: Boolean, default: true },
+  isActualTest:    { type: Boolean, default: false },
 }, { timestamps: true });
 
 module.exports = mongoose.model('ListeningSection', ListeningSectionSchema);

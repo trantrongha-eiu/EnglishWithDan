@@ -199,7 +199,8 @@ export default function ListeningSections() {
   useEffect(() => { load(); }, []);
 
   const filtered = sections.filter(s => {
-    const matchPart = partFilter === 'all' || String(s.partNumber) === partFilter;
+    const matchPart = partFilter === 'all'
+      || (partFilter === 'actual' ? s.isActualTest : String(s.partNumber) === partFilter);
     const matchSearch = !search ||
       s.title?.toLowerCase().includes(search.toLowerCase());
     return matchPart && matchSearch;
@@ -264,6 +265,7 @@ export default function ListeningSections() {
           <option value="2">Section 2</option>
           <option value="3">Section 3</option>
           <option value="4">Section 4</option>
+          <option value="actual">⭐ Actual Tests</option>
         </select>
       </div>
 
@@ -297,7 +299,10 @@ export default function ListeningSections() {
                         {PART_LABEL[s.partNumber]}
                       </span>
                     </td>
-                    <td><strong>{s.title}</strong></td>
+                    <td>
+                      <strong>{s.title}</strong>
+                      {s.isActualTest && <span className="badge badge-yellow" style={{ marginLeft: 6, fontSize: 10 }}>Actual</span>}
+                    </td>
                     <td>
                       {s.audioUrl
                         ? <span className="badge badge-green" style={{ cursor: 'pointer' }}

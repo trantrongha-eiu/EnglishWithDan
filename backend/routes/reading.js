@@ -449,12 +449,15 @@ router.get('/history', auth, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/practice/list', auth, async (req, res) => {
   const { category } = req.query;
-  if (!['passage1', 'passage2', 'passage3'].includes(category)) {
+  if (!['passage1', 'passage2', 'passage3', 'actual-test'].includes(category)) {
     return res.status(400).json({ success: false, message: 'Category không hợp lệ' });
   }
   try {
-    const passages = await Passage.find({ category, isActive: true })
-      .select('_id title category questionRange questionGroups questions')
+    const filter = category === 'actual-test'
+      ? { isActualTest: true, isActive: true }
+      : { category, isActive: true };
+    const passages = await Passage.find(filter)
+      .select('_id title category isActualTest questionRange questionGroups questions')
       .lean();
     const safePassages = passages.map(p => ({
       _id: p._id,

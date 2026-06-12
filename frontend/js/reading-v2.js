@@ -584,8 +584,9 @@ async function loadPracticePassages(category, tabEl) {
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
 
-  const cls = { passage1: 'p1', passage2: 'p2', passage3: 'p3' }[category] || 'p1';
-  const pNum = { passage1: '1', passage2: '2', passage3: '3' }[category] || '1';
+  const isActual = category === 'actual-test';
+  const cls  = isActual ? 'at' : ({ passage1: 'p1', passage2: 'p2', passage3: 'p3' }[category] || 'p1');
+  const pNum = isActual ? null : ({ passage1: '1', passage2: '2', passage3: '3' }[category] || '1');
 
   // Skeleton
   listEl.innerHTML = `<div class="practice-card-grid">${Array(4).fill(0).map(() => `
@@ -637,15 +638,18 @@ async function loadPracticePassages(category, tabEl) {
       )].slice(0, 3);
       const qCount = p.questionCount || 0;
 
+      const badgeLabel = isActual
+        ? `<span class="practice-card-cat-badge at">Actual</span><span class="practice-card-cat-badge ${{ passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1'}" style="margin-left:4px;font-size:10px">${{ passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || ''}</span>`
+        : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
       return `<div class="practice-card" onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
           <div class="practice-cover-logo"><span>D</span>aniel</div>
-          <span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>
+          ${badgeLabel}
         </div>
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
           <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
-          <button class="practice-card-btn ${cls}"
+          <button class="practice-card-btn ${isActual ? (({ passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1')) : cls}"
             onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
             Làm bài · ${qCount} câu
           </button>

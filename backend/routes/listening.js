@@ -349,15 +349,24 @@ router.get('/admin/attempts/stats', auth, teacherOnly, async (req, res) => {
 // STUDENT – Bài lẻ practice
 // ══════════════════════════════════════════════════════════════════════════════
 
-// GET /api/listening/practice/list?part=1|2|3|4
+// GET /api/listening/practice/list?part=1|2|3|4  OR  ?actualTest=true
 router.get('/practice/list', auth, async (req, res) => {
   try {
-    const part = parseInt(req.query.part);
-    if (![1, 2, 3, 4].includes(part))
-      return res.status(400).json({ success: false, message: 'Part không hợp lệ (1–4)' });
-    const sections = await ListeningSection.find({ partNumber: part, isActive: true })
-      .select('_id partNumber title description audioDuration questionRange questionGroups')
-      .sort({ createdAt: -1 })
+    const isActualTest = req.query.actualTest === 'true';
+    let filter, sortBy;
+    if (isActualTest) {
+      filter  = { isActualTest: true, isActive: true };
+      sortBy  = { createdAt: -1 };
+    } else {
+      const part = parseInt(req.query.part);
+      if (![1, 2, 3, 4].includes(part))
+        return res.status(400).json({ success: false, message: 'Part không hợp lệ (1–4)' });
+      filter = { partNumber: part, isActive: true };
+      sortBy = { createdAt: -1 };
+    }
+    const sections = await ListeningSection.find(filter)
+      .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups')
+      .sort(sortBy)
       .lean();
     const safe = sections.map(s => ({
       _id:          s._id,

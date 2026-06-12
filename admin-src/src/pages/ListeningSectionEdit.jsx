@@ -131,6 +131,7 @@ export default function ListeningSectionEdit() {
     partNumber: 1,
     title: '',
     description: '',
+    isActualTest: false,
     transcript: '',
     audioUrl: '',
     audioFileName: '',
@@ -171,6 +172,7 @@ export default function ListeningSectionEdit() {
           audioFileName:  s.audioFileName || '',
           audioDuration:  s.audioDuration || 0,
           isActive:       s.isActive !== false,
+          isActualTest:   s.isActualTest === true,
           questionRange:  s.questionRange || DEFAULT_RANGES[s.partNumber] || { start: 1, end: 10 },
         });
         setQuestionGroups(s.questionGroups || []);
@@ -306,10 +308,16 @@ export default function ListeningSectionEdit() {
           }}
         />
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)', marginTop: 8 }}>
-          <input type="checkbox" checked={meta.isActive} onChange={e => setField('isActive', e.target.checked)} />
-          Kích hoạt (hiện với học sinh)
-        </label>
+        <div style={{ display: 'flex', gap: 20, marginTop: 8 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+            <input type="checkbox" checked={meta.isActive} onChange={e => setField('isActive', e.target.checked)} />
+            Kích hoạt (hiện với học sinh)
+          </label>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
+            <input type="checkbox" checked={meta.isActualTest} onChange={e => setField('isActualTest', e.target.checked)} />
+            <span>Actual Test <span style={{ fontSize: 11, color: 'var(--text3)' }}>(hiện ở tab "Actual Tests")</span></span>
+          </label>
+        </div>
       </div>
 
       {/* Transcript */}

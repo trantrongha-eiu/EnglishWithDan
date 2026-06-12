@@ -122,9 +122,10 @@ const PassageSchema = new mongoose.Schema({
     end:   { type: Number, required: true }
   },
 
-  difficulty: { type: String, enum: ['easy','medium','hard'], default: 'medium' },
-  tags:       [String],
-  isActive:   { type: Boolean, default: true }
+  difficulty:    { type: String, enum: ['easy','medium','hard'], default: 'medium' },
+  tags:          [String],
+  isActive:      { type: Boolean, default: true },
+  isActualTest:  { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Passage', PassageSchema);
