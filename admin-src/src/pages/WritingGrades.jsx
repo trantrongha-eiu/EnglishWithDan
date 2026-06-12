@@ -131,7 +131,12 @@ function GradeModal({ attemptId, onClose, onGraded }) {
         method: 'POST',
         body: JSON.stringify({ taskNum })
       });
-      await refresh();
+      const taskKey = taskNum === 1 ? 'task1' : 'task2';
+      setAttempt(prev => prev ? {
+        ...prev,
+        gradingStatus: 'ai_done',
+        aiGrading: { ...(prev.aiGrading || {}), [taskKey]: d.result, generatedAt: new Date().toISOString() }
+      } : prev);
       toast(`Task ${taskNum} đã chấm xong – Band ${d.result.bandScore}`);
     } catch (e) { toast(e.message, 'error'); }
     finally { setGradingTask(0); }
