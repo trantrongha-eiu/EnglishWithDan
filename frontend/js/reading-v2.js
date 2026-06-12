@@ -1629,6 +1629,7 @@ function _refreshMOZone(qNum, groupId) {
   if (!dz) return;
   const letter = state.answers[qNum] || '';
   const passage = state.passages[state.currentPassageIdx];
+  if (!passage) return;
   const allGroups = getAllGroupsFromPassage(passage);
   let desc = '';
   for (const g of allGroups) {
@@ -1669,6 +1670,7 @@ function clickMHChip(numeral, groupId) {
 }
 function _refreshMHZone(qNum, groupId) {
   const passage = state.passages[state.currentPassageIdx];
+  if (!passage) return;
   const allGroups = getAllGroupsFromPassage(passage);
   let headingText = '';
   for (const g of allGroups) {
@@ -2052,6 +2054,7 @@ function switchReviewPassage(idx) {
   state.currentPassageIdx = idx;
   const p = state.passages[idx];
   if (!p) return;
+  if (!state.reviewData) return;
   const { reviewMap } = state.reviewData;
 
   const cached = reviewHlCache[idx];
