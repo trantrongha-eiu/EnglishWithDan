@@ -160,7 +160,7 @@
         <div class="exam-body">
             <div class="questions-panel" id="questions-panel"></div>
             <div class="sidebar-panel">
-                <div class="q-nav-label">Questions</div>
+                <div class="q-nav-label">Câu hỏi</div>
                 <div class="q-nav-grid" id="q-nav-grid"></div>
             </div>
         </div>
@@ -488,7 +488,7 @@
         document.addEventListener('fullscreenchange', () => {
             const btn = document.getElementById('btn-fullscreen');
             const fsEl = document.fullscreenElement;
-            const ids = ['dict-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed'];
+            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed'];
             if (fsEl) {
                 if (btn) btn.title = 'Exit fullscreen';
                 ids.forEach(id => {
@@ -740,14 +740,14 @@
                         ${done ? '<div class="test-done-tick">✓</div>' : ''}
                         <div class="test-cover-badge">IELTS Listening</div>
                         <div class="test-cover-title">🎧</div>
-                        <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} parts</div>
+                        <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} phần</div>
                     </div>
                     <div class="test-card-body">
                         <div class="test-card-name">${t.name}</div>
-                        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} questions</div>
-                        ${done ? `<div class="test-card-last">Last attempt: <span class="band-mini">${band}</span> · ${cor}/${tot}</div>` : ''}
-                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 Start</button>
-                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">🔄 Retake</button>` : ''}
+                        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
+                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}</div>` : ''}
+                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 ${done ? 'Làm lại' : 'Bắt đầu'}</button>
+                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">📋 Xem lại</button>` : ''}
                     </div>
                 </div>`;
         }
@@ -786,7 +786,7 @@
             const msg = document.getElementById('key-msg');
             msg.textContent = ''; msg.className = 'key-msg hidden';
             const btn = document.getElementById('btn-start-key');
-            btn.disabled = false; btn.textContent = '🎧 Start test';
+            btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
             showScreen('key');
             setTimeout(() => document.getElementById('key-input').focus(), 100);
         }
@@ -814,9 +814,9 @@
         async function verifyKeyAndStart() {
             const key = document.getElementById('key-input').value.trim();
             const btn = document.getElementById('btn-start-key');
-            if (!key) { showKeyMsg('Please enter your access code', 'error'); return; }
+            if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
 
-            btn.disabled = true; btn.textContent = 'Verifying...';
+            btn.disabled = true; btn.textContent = 'Đang xác thực...';
             document.getElementById('key-msg').className = 'key-msg hidden';
 
             try {
@@ -828,14 +828,14 @@
                 const vData = await safeJson(vRes);
                 if (!vData.success) {
                     showKeyMsg(vData.message || 'Invalid access code', 'error');
-                    btn.disabled = false; btn.textContent = '🎧 Start test';
+                    btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
                     return;
                 }
                 // Key valid → start test
                 await startTest(state.pendingTestId, key);
             } catch (err) {
                 showKeyMsg(err.message, 'error');
-                btn.disabled = false; btn.textContent = '🎧 Start test';
+                btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
             }
         }
 
@@ -882,7 +882,7 @@
                 // Start periodic auto-save every 10s
                 clearInterval(_saveInterval);
                 _saveInterval = setInterval(saveExamToStorage, 10000);
-            } catch (err) { toast('Error loading test: ' + err.message, 'error'); }
+            } catch (err) { toast('Lỗi tải bài thi: ' + err.message, 'error'); }
         }
 
         // ══════════════════════════════════════════════
@@ -1133,7 +1133,7 @@
                     <div class="section-part-label">Part ${section.partNumber}</div>
                     <div class="section-title-text">${section.title}</div>
                     ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
-                    <div class="section-range">Questions ${section.questionRange.start}–${section.questionRange.end}</div>
+                    <div class="section-range">Câu ${section.questionRange.start}–${section.questionRange.end}</div>
                 </div>`;
             (section.questionGroups || []).forEach((group, gi) => {
                 html += renderQuestionGroup(group, gi, false);
@@ -1407,12 +1407,12 @@
             // Label range: "Questions 18, 19 and 20" hoặc "Questions 17 and 18"
             let rangeLabel;
             if (count === 1) {
-                rangeLabel = `Question ${firstNum}`;
+                rangeLabel = `Câu ${firstNum}`;
             } else if (count === 2) {
-                rangeLabel = `Questions ${firstNum} and ${lastNum}`;
+                rangeLabel = `Câu ${firstNum} và ${lastNum}`;
             } else {
                 const nums = cluster.map(q => q.questionNumber);
-                rangeLabel = `Questions ${nums.slice(0, -1).join(', ')} and ${nums[nums.length - 1]}`;
+                rangeLabel = `Câu ${nums.slice(0, -1).join(', ')} và ${nums[nums.length - 1]}`;
             }
 
             // Tên chữ cái: A, B, C, D, E, F, G
@@ -1442,8 +1442,8 @@
                     const ok = !!q.isCorrect;
                     const qCA = (q.correctAnswer || '').trim().toUpperCase();
                     return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
-                        Q${q.questionNumber}: ${ok ? '✓ Correct' : `✗ Incorrect — Answer: <strong>${qCA}</strong>`}
-                    </div>${q.explanation ? `<div class="q-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}`;
+                        Q${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${qCA}</strong>`}
+                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
                 }).join('');
             }
 
@@ -1483,9 +1483,9 @@
             const showText = !['sentence-completion', 'matching'].includes(q.type);
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
-                    ${ok ? '✓ Correct' : `✗ Incorrect — Answer: <strong>${ca}</strong>`}
+                    ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${ca}</strong>`}
                 </div>
-                ${q.explanation ? `<div class="q-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}` : '';
+                ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}` : '';
 
             return `<div class="question-item" id="qi-${num}" data-qnum="${num}">
                 <div class="q-header">
@@ -1568,7 +1568,7 @@
                     <div class="section-part-label">Part ${section.partNumber}</div>
                     <div class="section-title-text">${section.title}</div>
                     ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
-                    <div class="section-range">Questions ${section.questionRange.start}–${section.questionRange.end}</div>
+                    <div class="section-range">Câu ${section.questionRange.start}–${section.questionRange.end}</div>
                 </div>`;
 
             (section.questionGroups || []).forEach((group, gi) => {
@@ -1584,7 +1584,7 @@
 
         function renderTranscript(transcript) {
             const tb = document.getElementById('transcript-body');
-            if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Transcript not available.</p>'; return; }
+            if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Chưa có transcript.</p>'; return; }
             tb.innerHTML = transcript.split('\n').map(line =>
                 line.trim() ? `<p style="margin-bottom:8px">${line}</p>` : '<br>'
             ).join('');
@@ -2112,7 +2112,7 @@
                 overlay = document.createElement('div');
                 overlay.id = 'submit-loading-overlay';
                 overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
-                overlay.innerHTML = '<div style="width:52px;height:52px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:submitSpin .8s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0;text-shadow:0 1px 4px rgba(0,0,0,.4)">Submitting, please wait…</p>';
+                overlay.innerHTML = '<div style="width:52px;height:52px;border:5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:submitSpin .8s linear infinite"></div><p style="color:#fff;font-size:16px;font-weight:600;margin:0;text-shadow:0 1px 4px rgba(0,0,0,.4)">Đang nộp bài, vui lòng chờ…</p>';
                 if (!document.getElementById('submit-spin-style')) {
                     const s = document.createElement('style');
                     s.id = 'submit-spin-style';
@@ -2380,7 +2380,7 @@
             modal.innerHTML = `
                 <div class="modal-box modal-sm">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                        <h3 style="margin:0">Save to vocabulary book</h3>
+                        <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
                         <button onclick="document.getElementById('book-picker-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
                     </div>
                     <div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border-radius:10px">
@@ -2394,7 +2394,7 @@
                             onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'">
                             <span style="font-size:20px">${b.emoji || '📖'}</span>
                             <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords ?? 0} words</div></div>
-                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">No vocabulary books yet.</p>'}
+                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">Chưa có sổ từ vựng nào.</p>'}
                     </div>
                     <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px">
                         <div style="font-size:13px;font-weight:600;color:#6b7280;margin-bottom:8px">➕ Create new book &amp; save word</div>
@@ -2491,7 +2491,7 @@
                 state.reviewResult = data.result;
                 goToReview();
             } catch (err) {
-                toast('Error loading result: ' + err.message, 'error');
+                toast('Lỗi tải kết quả: ' + err.message, 'error');
             }
         }
 
@@ -2501,12 +2501,12 @@
         async function showHistoryModal() {
             openModal('modal-history');
             const tbody = document.getElementById('history-tbody');
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Đang tải...</td></tr>';
             try {
                 const res = await fetch(`${API}/listening/history`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success || !data.attempts?.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">No attempts yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử làm bài.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.attempts.map(a => {
@@ -2567,7 +2567,7 @@
 
         // ── Keyboard shortcuts ─────────────────────────────────────
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') { closeDictPopup(); closeTranslatePopup(); setTool('none'); return; }
+            if (e.key === 'Escape') { closeDictPopup(); closeTranslatePopup(); setTool('none'); setToolExam('none'); return; }
             if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
             const onExam = document.getElementById('screen-exam')?.classList.contains('active');
             const onReview = document.getElementById('screen-review')?.classList.contains('active');
@@ -2834,6 +2834,7 @@
                 </div>`;
                 return;
             }
+            const _ltSearchVal = (document.getElementById('lt-practice-search-input')?.value || '').trim().toLowerCase();
             listEl.innerHTML = `<div class="practice-card-grid">${sections.map(s => {
                 const qtypes = [...new Set((s.questionGroups || []).flatMap(g =>
                     (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
@@ -2854,6 +2855,7 @@
                     </div>
                 </div>`;
             }).join('')}</div>`;
+            if (_ltSearchVal) filterLtPracticeCards(_ltSearchVal);
         } catch(e) {
             listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#e53935">
                 Lỗi tải danh sách: ${e.message}
@@ -2910,7 +2912,7 @@
             <div class="section-part-label">Section ${partNum}</div>
             <div class="section-title-text">${escHtml(section.title || '')}</div>
             ${section.description ? `<div class="section-desc">${escHtml(section.description)}</div>` : ''}
-            <div class="section-range">Questions ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
+            <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
         </div>`;
         (_ltCleanSection.questionGroups || []).forEach((group, gi) => {
             html += renderQuestionGroup(group, gi, false);
