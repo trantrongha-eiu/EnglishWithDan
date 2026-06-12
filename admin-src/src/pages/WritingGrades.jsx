@@ -150,7 +150,7 @@ function TaskPanel({
         )}
         {!isConfirmed && (
           <span style={{
-            marginLeft: 'auto', fontSize: 11, color: 'var(--text3)',
+            marginLeft: 'auto', fontSize: 11,
             background: mode === 'manual' ? 'rgba(16,185,129,.12)' : 'rgba(61,139,255,.1)',
             color: mode === 'manual' ? '#059669' : '#3d8bff',
             borderRadius: 4, padding: '1px 7px', fontWeight: 600
@@ -250,10 +250,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
   const hasTask1     = !!(attempt?.task1Snapshot?.prompt || (attempt?.task1Answer && attempt.task1Answer.trim()));
   const hasTask2     = !!(attempt?.task2Snapshot?.prompt || (attempt?.task2Answer && attempt.task2Answer.trim()));
   const hasAiResult  = !!(ai.task1?.bandScore || ai.task2?.bandScore);
-  const hasManualResult = !!(
-    (modes.task1 === 'manual' && manuals.task1?.bandScore) ||
-    (modes.task2 === 'manual' && manuals.task2?.bandScore)
-  );
+  const hasManualResult = modes.task1 === 'manual' || modes.task2 === 'manual';
 
   function calcBand(a) {
     const scores = [a?.aiGrading?.task1?.bandScore, a?.aiGrading?.task2?.bandScore]
@@ -318,7 +315,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
   }
 
   function buildManualTask(manual) {
-    const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+    const num = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
     return {
       bandScore:       num(manual.bandScore),
       ta:  { score: num(manual.ta?.score),  comment: manual.ta?.comment  || '' },
