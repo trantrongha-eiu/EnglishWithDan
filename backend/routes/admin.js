@@ -160,16 +160,17 @@ router.put('/passages/:id', auth, teacherOnly, async (req, res) => {
     if (!passage) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
 
     // Gán từng field rõ ràng để Mongoose thay hẳn arrays subdocument
-    const { title, category, content, questionRange, difficulty, tags, questionGroups, questions, isActive } = req.body;
-    if (title        !== undefined) passage.title        = title;
-    if (category     !== undefined) passage.category     = category;
-    if (content      !== undefined) passage.content      = content;
-    if (questionRange!== undefined) passage.questionRange= questionRange;
-    if (difficulty   !== undefined) passage.difficulty   = difficulty;
-    if (tags         !== undefined) passage.tags         = tags;
-    if (isActive     !== undefined) passage.isActive     = isActive;
+    const { title, category, content, questionRange, difficulty, tags, questionGroups, questions, isActive, isActualTest } = req.body;
+    if (title          !== undefined) passage.title          = title;
+    if (category       !== undefined) passage.category       = category;
+    if (content        !== undefined) passage.content        = content;
+    if (questionRange  !== undefined) passage.questionRange  = questionRange;
+    if (difficulty     !== undefined) passage.difficulty     = difficulty;
+    if (tags           !== undefined) passage.tags           = tags;
+    if (isActive       !== undefined) passage.isActive       = isActive;
+    if (isActualTest   !== undefined) passage.isActualTest   = isActualTest;
     if (questionGroups !== undefined) passage.questionGroups = questionGroups;
-    if (questions    !== undefined) passage.questions    = questions;
+    if (questions      !== undefined) passage.questions      = questions;
 
     const updated = await passage.save();
     res.json({ success: true, passage: updated });

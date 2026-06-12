@@ -2772,7 +2772,8 @@
             const listEl = document.getElementById('lt-section-list');
             if (listEl && !listEl.children.length) {
                 const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
-                const part = parseInt(activeTab?.dataset.part) || 1;
+                const rawPart = activeTab?.dataset.part;
+                const part = rawPart === 'actual' ? 'actual' : (parseInt(rawPart) || 1);
                 loadPracticeSections(part);
             }
         }
@@ -2848,9 +2849,13 @@
                     (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
                 ))].slice(0, 3);
                 const dur = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} min` : '';
-                const cardCls = isActual ? (clsMap[s.partNumber] || 'p1') : cls;
+                const partCls  = clsMap[s.partNumber] || 'p1';
+                const cardCls  = isActual ? partCls : cls;
                 const cardLabel = isActual
-                    ? `<span class="practice-card-cat-badge at">Actual</span><span class="practice-card-cat-badge ${clsMap[s.partNumber] || 'p1'}" style="margin-left:4px;font-size:10px">S${s.partNumber}</span>`
+                    ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
+                        <span class="practice-card-cat-badge at" style="position:static">Actual</span>
+                        <span class="practice-card-cat-badge ${partCls}" style="position:static;font-size:9px;padding:2px 6px">S${s.partNumber}</span>
+                       </div>`
                     : `<span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>`;
                 return `<div class="practice-card" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">

@@ -638,8 +638,13 @@ async function loadPracticePassages(category, tabEl) {
       )].slice(0, 3);
       const qCount = p.questionCount || 0;
 
+      const catCls  = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
+      const catName = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';
       const badgeLabel = isActual
-        ? `<span class="practice-card-cat-badge at">Actual</span><span class="practice-card-cat-badge ${{ passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1'}" style="margin-left:4px;font-size:10px">${{ passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || ''}</span>`
+        ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
+            <span class="practice-card-cat-badge at" style="position:static">Actual</span>
+            <span class="practice-card-cat-badge ${catCls}" style="position:static;font-size:9px;padding:2px 6px">${catName}</span>
+           </div>`
         : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
       return `<div class="practice-card" onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
@@ -649,7 +654,7 @@ async function loadPracticePassages(category, tabEl) {
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
           <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
-          <button class="practice-card-btn ${isActual ? (({ passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1')) : cls}"
+          <button class="practice-card-btn ${isActual ? catCls : cls}"
             onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
             Làm bài · ${qCount} câu
           </button>
