@@ -8,6 +8,15 @@ const STATUS = {
   confirmed: { label: 'Đã xác nhận',   cls: 'badge-green' },
 };
 
+const EMPTY_MANUAL = () => ({
+  bandScore: '',
+  ta:  { score: '', comment: '' },
+  cc:  { score: '', comment: '' },
+  lr:  { score: '', comment: '' },
+  gra: { score: '', comment: '' },
+  overallFeedback: ''
+});
+
 function ScoreRow({ label, score, comment }) {
   if (score == null) return null;
   const color = score >= 7 ? '#15803d' : score >= 5.5 ? '#92400e' : '#b91c1c';
@@ -21,12 +30,110 @@ function ScoreRow({ label, score, comment }) {
   );
 }
 
-function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiResult, isGrading, isConfirmed, onGrade }) {
+function ResultBlock({ result, label, accentColor }) {
+  if (!result) return null;
+  return (
+    <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: accentColor + '08' }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: 10 }}>{label}</div>
+      <ScoreRow label="TA"  score={result.ta?.score}  comment={result.ta?.comment}  />
+      <ScoreRow label="CC"  score={result.cc?.score}  comment={result.cc?.comment}  />
+      <ScoreRow label="LR"  score={result.lr?.score}  comment={result.lr?.comment}  />
+      <ScoreRow label="GRA" score={result.gra?.score} comment={result.gra?.comment} />
+      {result.overallFeedback && (
+        <div style={{ marginTop: 8, fontSize: 13, color: 'var(--text2)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+          <strong style={{ color: 'var(--text1)' }}>Nhận xét chung:</strong> {result.overallFeedback}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ManualGradeForm({ value, onChange, disabled }) {
+  const set = (key, subKey, val) => {
+    if (subKey) {
+      onChange({ ...value, [key]: { ...(value[key] || {}), [subKey]: val } });
+    } else {
+      onChange({ ...value, [key]: val });
+    }
+  };
+
+  return (
+    <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,.05)', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: 10 }}>
+        ✏️ Chấm thủ công
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, minWidth: 60, color: 'var(--text2)' }}>Band</span>
+        <input
+          type="number" min="0" max="9" step="0.5"
+          value={value.bandScore ?? ''}
+          onChange={e => set('bandScore', null, e.target.value)}
+          disabled={disabled}
+          className="form-input"
+          style={{ width: 80, padding: '4px 8px' }}
+          placeholder="0–9"
+        />
+      </div>
+
+      {[['TA', 'ta'], ['CC', 'cc'], ['LR', 'lr'], ['GRA', 'gra']].map(([label, key]) => (
+        <div key={key} style={{ display: 'grid', gridTemplateColumns: '36px 72px 1fr', gap: 6, marginBottom: 6, alignItems: 'center' }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)' }}>{label}</span>
+          <input
+            type="number" min="0" max="9" step="0.5"
+            value={value[key]?.score ?? ''}
+            onChange={e => set(key, 'score', e.target.value)}
+            disabled={disabled}
+            className="form-input"
+            style={{ padding: '4px 8px' }}
+            placeholder="0–9"
+          />
+          <input
+            type="text"
+            value={value[key]?.comment ?? ''}
+            onChange={e => set(key, 'comment', e.target.value)}
+            disabled={disabled}
+            className="form-input"
+            style={{ padding: '4px 8px' }}
+            placeholder="Nhận xét tiêu chí..."
+          />
+        </div>
+      ))}
+
+      <div style={{ marginTop: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)', marginBottom: 4 }}>Nhận xét chung</div>
+        <textarea
+          value={value.overallFeedback ?? ''}
+          onChange={e => set('overallFeedback', null, e.target.value)}
+          disabled={disabled}
+          className="form-input"
+          rows={3}
+          placeholder="Nhận xét tổng thể cho học sinh..."
+          style={{ width: '100%', resize: 'vertical', padding: '6px 8px', boxSizing: 'border-box' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function TaskPanel({
+  title, prompt, imageUrl, answer, wordCount, minWords,
+  aiResult, confirmedResult,
+  isGrading, isConfirmed, onGrade,
+  mode, onModeChange, manualData, onManualChange
+}) {
   const [expanded, setExpanded] = useState(false);
   const hasAnswer = !!(answer && answer.trim());
 
+  const displayBand = isConfirmed
+    ? confirmedResult?.bandScore
+    : mode === 'ai'
+      ? aiResult?.bandScore
+      : (parseFloat(manualData?.bandScore) || null);
+
   return (
     <div style={{ border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
+      {/* Header */}
       <div style={{ background: 'var(--bg2)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <span style={{ fontWeight: 700, fontSize: 15 }}>{title}</span>
         {wordCount > 0 && (
@@ -36,13 +143,24 @@ function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiRes
             borderRadius: 5, padding: '1px 8px', fontSize: 11, fontWeight: 600
           }}>{wordCount}w {wordCount < minWords ? `(thiếu ${minWords - wordCount}w)` : ''}</span>
         )}
-        {aiResult?.bandScore != null && (
+        {displayBand != null && (
           <span style={{ background: '#3d8bff22', color: '#3d8bff', borderRadius: 5, padding: '1px 9px', fontSize: 13, fontWeight: 700 }}>
-            Band {aiResult.bandScore}
+            Band {displayBand}
+          </span>
+        )}
+        {!isConfirmed && (
+          <span style={{
+            marginLeft: 'auto', fontSize: 11, color: 'var(--text3)',
+            background: mode === 'manual' ? 'rgba(16,185,129,.12)' : 'rgba(61,139,255,.1)',
+            color: mode === 'manual' ? '#059669' : '#3d8bff',
+            borderRadius: 4, padding: '1px 7px', fontWeight: 600
+          }}>
+            {mode === 'manual' ? '✏️ Thủ công' : '🤖 AI'}
           </span>
         )}
       </div>
 
+      {/* Prompt */}
       {prompt && (
         <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)', background: 'rgba(0,0,0,.02)' }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 6 }}>Đề bài</div>
@@ -51,7 +169,8 @@ function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiRes
         </div>
       )}
 
-      <div style={{ padding: '10px 16px', borderBottom: aiResult ? '1px solid var(--border)' : 'none' }}>
+      {/* Student answer */}
+      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Bài làm học sinh</span>
           {hasAnswer && (
@@ -68,26 +187,46 @@ function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiRes
         </div>
       </div>
 
-      {aiResult && (
-        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: 'rgba(61,139,255,.04)' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#3d8bff', textTransform: 'uppercase', marginBottom: 10 }}>Kết quả AI Grading</div>
-          <ScoreRow label="TA"  score={aiResult.ta?.score}  comment={aiResult.ta?.comment}  />
-          <ScoreRow label="CC"  score={aiResult.cc?.score}  comment={aiResult.cc?.comment}  />
-          <ScoreRow label="LR"  score={aiResult.lr?.score}  comment={aiResult.lr?.comment}  />
-          <ScoreRow label="GRA" score={aiResult.gra?.score} comment={aiResult.gra?.comment} />
-          {aiResult.overallFeedback && (
-            <div style={{ marginTop: 8, fontSize: 13, color: 'var(--text2)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
-              <strong style={{ color: 'var(--text1)' }}>Nhận xét chung:</strong> {aiResult.overallFeedback}
-            </div>
-          )}
-        </div>
+      {/* Grading result area */}
+      {isConfirmed && (
+        <ResultBlock result={confirmedResult} label="✓ Kết quả đã xác nhận" accentColor="#059669" />
+      )}
+      {!isConfirmed && mode === 'ai' && aiResult?.bandScore != null && (
+        <ResultBlock result={aiResult} label="Kết quả AI Grading" accentColor="#3d8bff" />
+      )}
+      {!isConfirmed && mode === 'manual' && (
+        <ManualGradeForm value={manualData || EMPTY_MANUAL()} onChange={onManualChange} disabled={false} />
       )}
 
+      {/* Mode selector + action (only when not confirmed) */}
       {!isConfirmed && (
-        <div style={{ padding: '10px 16px' }}>
-          <button className="btn btn-primary btn-sm" onClick={onGrade} disabled={isGrading}>
-            {isGrading ? '⏳ Đang chấm AI...' : aiResult ? '🔄 Chấm lại AI' : '🤖 Chấm AI'}
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', background: 'var(--bg2)', borderTop: '1px solid var(--border)' }}>
+          <span style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 600 }}>Phương thức:</span>
+          <button
+            className={`btn btn-sm ${mode === 'ai' ? 'btn-primary' : 'btn-ghost'}`}
+            onClick={() => onModeChange('ai')}
+          >
+            🤖 AI
           </button>
+          <button
+            className="btn btn-sm"
+            style={mode === 'manual'
+              ? { background: '#059669', color: '#fff', border: '1px solid #15803d' }
+              : { background: 'none', border: '1px solid var(--border)', color: 'var(--text2)' }}
+            onClick={() => onModeChange('manual')}
+          >
+            ✏️ Thủ công
+          </button>
+          {mode === 'ai' && (
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ marginLeft: 'auto' }}
+              onClick={onGrade}
+              disabled={isGrading}
+            >
+              {isGrading ? '⏳ Đang chấm AI...' : aiResult ? '🔄 Chấm lại AI' : '▶ Chấm AI'}
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -96,15 +235,29 @@ function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiRes
 
 function GradeModal({ attemptId, onClose, onGraded }) {
   const toast = useToast();
-  const [attempt, setAttempt] = useState(null);
+  const [attempt, setAttempt]   = useState(null);
   const [gradingTask, setGradingTask] = useState(0);
-  const [confirming, setConfirming] = useState(false);
+  const [confirming, setConfirming]   = useState(false);
   const [overallBand, setOverallBand] = useState('');
-  const [adminNote, setAdminNote] = useState('');
+  const [adminNote, setAdminNote]     = useState('');
+  const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
+  const [manuals, setManuals] = useState({ task1: EMPTY_MANUAL(), task2: EMPTY_MANUAL() });
+
+  // Derived values
+  const isConfirmed  = attempt?.gradingStatus === 'confirmed';
+  const ai           = attempt?.aiGrading || {};
+  const confirmed    = attempt?.grading || {};
+  const hasTask1     = !!(attempt?.task1Snapshot?.prompt || (attempt?.task1Answer && attempt.task1Answer.trim()));
+  const hasTask2     = !!(attempt?.task2Snapshot?.prompt || (attempt?.task2Answer && attempt.task2Answer.trim()));
+  const hasAiResult  = !!(ai.task1?.bandScore || ai.task2?.bandScore);
+  const hasManualResult = !!(
+    (modes.task1 === 'manual' && manuals.task1?.bandScore) ||
+    (modes.task2 === 'manual' && manuals.task2?.bandScore)
+  );
 
   function calcBand(a) {
-    const ai = a?.aiGrading || {};
-    const scores = [ai.task1?.bandScore, ai.task2?.bandScore].filter(s => s != null && s > 0);
+    const scores = [a?.aiGrading?.task1?.bandScore, a?.aiGrading?.task2?.bandScore]
+      .filter(s => s != null && s > 0);
     if (!scores.length) return '';
     return String(Math.round((scores.reduce((x, y) => x + y, 0) / scores.length) * 2) / 2);
   }
@@ -114,15 +267,37 @@ function GradeModal({ attemptId, onClose, onGraded }) {
       const d = await apiFetch(`/admin/writing-attempt/${attemptId}`);
       setAttempt(d.attempt);
       setAdminNote(d.attempt.grading?.adminNote || '');
-      if (d.attempt.grading?.overallBand) {
-        setOverallBand(String(d.attempt.grading.overallBand));
-      } else {
-        setOverallBand(calcBand(d.attempt));
-      }
+      setOverallBand(d.attempt.grading?.overallBand
+        ? String(d.attempt.grading.overallBand)
+        : calcBand(d.attempt));
     } catch (e) { toast(e.message, 'error'); }
   }
 
   useEffect(() => { refresh(); }, [attemptId]);
+
+  function setMode(taskKey, newMode) {
+    setModes(prev => ({ ...prev, [taskKey]: newMode }));
+    if (newMode === 'manual' && !manuals[taskKey]?.bandScore) {
+      const src = attempt?.aiGrading?.[taskKey];
+      if (src) {
+        setManuals(prev => ({
+          ...prev,
+          [taskKey]: {
+            bandScore:       src.bandScore != null ? String(src.bandScore) : '',
+            ta:  { score: src.ta?.score  != null ? String(src.ta.score)  : '', comment: src.ta?.comment  || '' },
+            cc:  { score: src.cc?.score  != null ? String(src.cc.score)  : '', comment: src.cc?.comment  || '' },
+            lr:  { score: src.lr?.score  != null ? String(src.lr.score)  : '', comment: src.lr?.comment  || '' },
+            gra: { score: src.gra?.score != null ? String(src.gra.score) : '', comment: src.gra?.comment || '' },
+            overallFeedback: src.overallFeedback || ''
+          }
+        }));
+      }
+    }
+  }
+
+  function updateManual(taskKey, data) {
+    setManuals(prev => ({ ...prev, [taskKey]: data }));
+  }
 
   async function gradeTask(taskNum) {
     setGradingTask(taskNum);
@@ -142,16 +317,35 @@ function GradeModal({ attemptId, onClose, onGraded }) {
     finally { setGradingTask(0); }
   }
 
+  function buildManualTask(manual) {
+    const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+    return {
+      bandScore:       num(manual.bandScore),
+      ta:  { score: num(manual.ta?.score),  comment: manual.ta?.comment  || '' },
+      cc:  { score: num(manual.cc?.score),  comment: manual.cc?.comment  || '' },
+      lr:  { score: num(manual.lr?.score),  comment: manual.lr?.comment  || '' },
+      gra: { score: num(manual.gra?.score), comment: manual.gra?.comment || '' },
+      overallFeedback: manual.overallFeedback || '',
+      sentenceFeedback: []
+    };
+  }
+
   async function confirmGrade() {
     if (!overallBand) return toast('Nhập band tổng thể trước khi xác nhận', 'error');
     setConfirming(true);
     try {
-      const ai = attempt.aiGrading || {};
+      const task1Data = hasTask1
+        ? (modes.task1 === 'manual' ? buildManualTask(manuals.task1) : (ai.task1 || null))
+        : null;
+      const task2Data = hasTask2
+        ? (modes.task2 === 'manual' ? buildManualTask(manuals.task2) : (ai.task2 || null))
+        : null;
+
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
         method: 'PUT',
         body: JSON.stringify({
-          task1: ai.task1 || null,
-          task2: ai.task2 || null,
+          task1: task1Data,
+          task2: task2Data,
           overallBand: parseFloat(overallBand),
           adminNote
         })
@@ -163,17 +357,13 @@ function GradeModal({ attemptId, onClose, onGraded }) {
     finally { setConfirming(false); }
   }
 
-  const isConfirmed = attempt?.gradingStatus === 'confirmed';
-  const ai = attempt?.aiGrading || {};
-  const hasTask1 = !!(attempt?.task1Snapshot?.prompt || (attempt?.task1Answer && attempt.task1Answer.trim()));
-  const hasTask2 = !!(attempt?.task2Snapshot?.prompt || (attempt?.task2Answer && attempt.task2Answer.trim()));
-  const hasAiResult = !!(ai.task1?.bandScore || ai.task2?.bandScore);
-
   return (
     <div className="modal-overlay" onClick={onClose} style={{ alignItems: 'flex-start', paddingTop: 20, paddingBottom: 20 }}>
-      <div className="modal" style={{ maxWidth: 900, width: '96vw', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }}
-        onClick={e => e.stopPropagation()}>
-
+      <div
+        className="modal"
+        style={{ maxWidth: 900, width: '96vw', maxHeight: '92vh', display: 'flex', flexDirection: 'column' }}
+        onClick={e => e.stopPropagation()}
+      >
         <div className="modal-header" style={{ flexShrink: 0 }}>
           {!attempt ? (
             <h3 className="modal-title">Đang tải...</h3>
@@ -212,9 +402,14 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   wordCount={attempt.wordCount1}
                   minWords={150}
                   aiResult={ai.task1}
+                  confirmedResult={confirmed.task1}
                   isGrading={gradingTask === 1}
                   isConfirmed={isConfirmed}
                   onGrade={() => gradeTask(1)}
+                  mode={modes.task1}
+                  onModeChange={m => setMode('task1', m)}
+                  manualData={manuals.task1}
+                  onManualChange={d => updateManual('task1', d)}
                 />
               )}
               {hasTask2 && (
@@ -226,13 +421,18 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   wordCount={attempt.wordCount2}
                   minWords={250}
                   aiResult={ai.task2}
+                  confirmedResult={confirmed.task2}
                   isGrading={gradingTask === 2}
                   isConfirmed={isConfirmed}
                   onGrade={() => gradeTask(2)}
+                  mode={modes.task2}
+                  onModeChange={m => setMode('task2', m)}
+                  manualData={manuals.task2}
+                  onManualChange={d => updateManual('task2', d)}
                 />
               )}
 
-              {(hasAiResult || isConfirmed) && (
+              {(hasAiResult || hasManualResult || isConfirmed) && (
                 <div style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px', marginTop: 4 }}>
                   <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 15 }}>
                     {isConfirmed ? '✓ Điểm đã xác nhận' : 'Xác nhận điểm'}
@@ -281,6 +481,15 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                 </div>
               )}
 
+              {/* Show confirm section even when no AI result yet (manual only) */}
+              {!hasAiResult && !hasManualResult && !isConfirmed && (hasTask1 || hasTask2) && (
+                <div style={{ border: '1px dashed var(--border)', borderRadius: 10, padding: '16px 20px', marginTop: 4, opacity: 0.6 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text3)', textAlign: 'center' }}>
+                    Chấm AI hoặc nhập thủ công ít nhất một task để xác nhận điểm
+                  </div>
+                </div>
+              )}
+
               {!hasTask1 && !hasTask2 && (
                 <div style={{ textAlign: 'center', color: 'var(--text3)', padding: 40 }}>
                   Không tìm thấy bài làm
@@ -296,10 +505,10 @@ function GradeModal({ attemptId, onClose, onGraded }) {
 
 export default function WritingGrades() {
   const toast = useToast();
-  const [attempts, setAttempts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [attempts, setAttempts]   = useState([]);
+  const [loading, setLoading]     = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
-  const [search, setSearch] = useState('');
+  const [search, setSearch]       = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
   async function load() {
@@ -316,7 +525,7 @@ export default function WritingGrades() {
   const filtered = attempts.filter(a => {
     if (statusFilter && a.gradingStatus !== statusFilter) return false;
     if (search) {
-      const q = search.toLowerCase();
+      const q     = search.toLowerCase();
       const uname = (a.userId?.username || '').toLowerCase();
       const fname = [a.userId?.firstName, a.userId?.lastName].filter(Boolean).join(' ').toLowerCase();
       const exam  = (a.examName || '').toLowerCase();
@@ -418,7 +627,7 @@ export default function WritingGrades() {
                           className={`btn btn-sm ${a.gradingStatus === 'pending' ? 'btn-primary' : 'btn-ghost'}`}
                           onClick={() => setSelectedId(a._id)}
                         >
-                          {a.gradingStatus === 'pending' ? '🤖 Chấm AI' : '👁 Xem & Chấm'}
+                          {a.gradingStatus === 'pending' ? '📝 Chấm bài' : '👁 Xem & Chấm'}
                         </button>
                       </td>
                     </tr>
