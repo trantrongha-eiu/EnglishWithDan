@@ -1136,7 +1136,7 @@
                     <div class="section-part-label">Part ${section.partNumber}</div>
                     <div class="section-title-text">${section.title}</div>
                     ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
-                    <div class="section-range">Câu ${section.questionRange.start}–${section.questionRange.end}</div>
+                    <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
                 </div>`;
             (section.questionGroups || []).forEach((group, gi) => {
                 html += renderQuestionGroup(group, gi, false);
@@ -1571,7 +1571,7 @@
                     <div class="section-part-label">Part ${section.partNumber}</div>
                     <div class="section-title-text">${section.title}</div>
                     ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
-                    <div class="section-range">Câu ${section.questionRange.start}–${section.questionRange.end}</div>
+                    <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
                 </div>`;
 
             (section.questionGroups || []).forEach((group, gi) => {
@@ -2010,7 +2010,7 @@
             // Nếu câu thuộc part khác → switch part trước
             const sections = getSortedSections(state.isReview);
             const partIdx = sections.findIndex(s =>
-                num >= s.questionRange.start && num <= s.questionRange.end
+                s.questionRange && num >= s.questionRange.start && num <= s.questionRange.end
             );
             const needSwitch = partIdx >= 0 && partIdx !== state.partIdx;
             if (needSwitch) {
