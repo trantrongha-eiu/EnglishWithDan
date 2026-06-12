@@ -25,7 +25,7 @@
   <div class="key-screen-body">
     <div class="key-card">
       <div class="key-card-icon">✏️</div>
-      <h2>Writing Practice</h2>
+      <h2>IELTS Writing</h2>
       <p class="key-desc">Nhập mã truy cập do giáo viên cung cấp để bắt đầu bài thi</p>
 
       <!-- Restore banner (shown only when unsaved exam exists) -->
@@ -82,14 +82,14 @@
     <div class="exam-topbar-right">
       <span class="exam-autosave-label" id="btn-autosave" title="Tự động lưu">💾</span>
       <button class="exam-topbar-btn" id="btn-fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
-      <button class="exam-topbar-btn" onclick="toggleHideTimer()" id="btn-hide-timer">Hide</button>
-      <button class="exam-topbar-btn" onclick="confirmSubmit()">Submit ✓</button>
+      <button class="exam-topbar-btn" onclick="toggleHideTimer()" id="btn-hide-timer">Ẩn</button>
+      <button class="exam-topbar-btn" onclick="confirmSubmit()">Nộp bài ✓</button>
     </div>
   </div>
 
   <!-- Task title bar -->
   <div class="task-titlebar">
-    <strong id="task-title-label">Academic Writing Part 1</strong>
+    <strong id="task-title-label">Academic Writing Task 1</strong>
     <p id="task-instructions-label"></p>
   </div>
 
@@ -102,12 +102,12 @@
       <textarea
         class="answer-textarea"
         id="answer-textarea"
-        placeholder="Write your answer here..."
+        placeholder="Viết bài của bạn vào đây..."
         spellcheck="true"
         oninput="onAnswerInput()"
       ></textarea>
       <div class="word-count-bar">
-        Word Count: <strong id="word-count" style="margin-left:4px">0</strong>
+        Số từ: <strong id="word-count" style="margin-left:4px">0</strong>
         <span id="word-count-target" style="margin-left:6px;font-size:12px"></span>
         <div class="wc-progress-wrap"><div class="wc-progress-bar" id="wc-progress-bar"></div></div>
       </div>
@@ -118,7 +118,7 @@
   <div class="exam-footer">
     <label class="review-label">
       <input type="checkbox" id="review-check" onchange="toggleFlag()" />
-      Review
+      Đánh dấu
     </label>
     <div id="footer-wc-summary" style="font-size:12px;color:#6b7280;display:flex;gap:10px;align-items:center">
       <span>T1: <strong id="footer-wc1" style="color:#374151">0</strong></span>
@@ -131,7 +131,7 @@
     <div class="footer-spacer"></div>
     <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous">&#9664;</button>
     <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next">&#9654;</button>
-    <button class="btn-submit-exam" onclick="confirmSubmit()">Submit</button>
+    <button class="btn-submit-exam" onclick="confirmSubmit()">Nộp bài</button>
   </div>
 </div>
 
@@ -148,11 +148,11 @@
       <div class="done-stats">
         <div class="done-stat">
           <div class="done-stat-val" id="done-wc1">0</div>
-          <div class="done-stat-label">Task 1 words</div>
+          <div class="done-stat-label">Số từ Task 1</div>
         </div>
         <div class="done-stat">
           <div class="done-stat-val" id="done-wc2">0</div>
-          <div class="done-stat-label">Task 2 words</div>
+          <div class="done-stat-label">Số từ Task 2</div>
         </div>
       </div>
       <div class="done-actions">
@@ -199,11 +199,11 @@
     <!-- Left: filters + list -->
     <div class="pv-sidebar samples-list-col">
       <div class="pv-sidebar-filter">
-        <div class="pv-filter-title">Quarter</div>
+        <div class="pv-filter-title">Quý</div>
         <div class="pv-chip-group" id="wsampl-quarter-chips">
           <span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>
         </div>
-        <div class="pv-filter-title">Topic</div>
+        <div class="pv-filter-title">Chủ đề</div>
         <div class="pv-chip-group" id="wsampl-topic-chips">
           <span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>
         </div>
@@ -340,12 +340,12 @@
       <textarea
         class="answer-textarea"
         id="pw-textarea"
-        placeholder="Write your answer here..."
+        placeholder="Viết bài của bạn vào đây..."
         spellcheck="true"
         oninput="onPracticeInput()"
       ></textarea>
       <div class="word-count-bar">
-        Word Count: <strong id="pw-wc" style="margin-left:4px">0</strong>
+        Số từ: <strong id="pw-wc" style="margin-left:4px">0</strong>
         <span id="pw-wc-target" style="margin-left:6px;font-size:12px;color:#6b7280"></span>
         <div class="wc-progress-wrap"><div class="wc-progress-bar" id="pw-progress-bar"></div></div>
       </div>

@@ -228,7 +228,7 @@ function renderTimer() {
 
 function toggleHideTimer() {
   state.timerHidden = !state.timerHidden;
-  document.getElementById('btn-hide-timer').textContent = state.timerHidden ? 'Show' : 'Hide';
+  document.getElementById('btn-hide-timer').textContent = state.timerHidden ? 'Hiện' : 'Ẩn';
   renderTimer();
 }
 
@@ -247,7 +247,7 @@ function switchTask(num) {
 
   // Title bar
   document.getElementById('task-title-label').textContent =
-    `Academic Writing Part ${num}`;
+    `Academic Writing Task ${num}`;
   document.getElementById('task-instructions-label').textContent =
     task.instructions || '';
 
@@ -260,7 +260,7 @@ function switchTask(num) {
     `;
   } else {
     leftPanel.innerHTML = `
-      <div style="margin-bottom:10px;font-size:13px;color:#555">Write about the following topic:</div>
+      <div style="margin-bottom:10px;font-size:13px;color:#555">Hãy viết về chủ đề sau:</div>
       <div class="task-prompt" style="font-weight:600;white-space:pre-wrap">${escHtml(task.prompt || '')}</div>
     `;
   }
@@ -1333,7 +1333,7 @@ function renderPracticeWriteScreen(taskType, task) {
   document.getElementById('pw-task-label').textContent = `Task ${taskType} – Luyện tập`;
   document.getElementById('pw-title-label').textContent = `Task ${taskType} – Luyện tập`;
   document.getElementById('pw-instructions-label').textContent = task.instructions || '';
-  document.getElementById('pw-wc-target').textContent = `/ ${minWords}w`;
+  document.getElementById('pw-wc-target').textContent = `/ ${minWords} từ`;
   document.getElementById('pw-wc').textContent = '0';
   document.getElementById('pw-progress-bar').style.width = '0%';
   document.getElementById('pw-textarea').value = '';
