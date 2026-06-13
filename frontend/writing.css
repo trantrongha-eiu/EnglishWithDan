@@ -952,3 +952,21 @@ body {
 [data-theme="dark"] #restore-banner      { background: #1c1a00 !important; border-color: #d97706 !important; }
 [data-theme="dark"] #restore-banner p:first-child { color: #fbbf24 !important; }
 [data-theme="dark"] #restore-banner #restore-banner-desc { color: #fde68a !important; }
+
+/* ── Writing task search input ──────────────────────────── */
+.wt-search-input {
+  padding: 5px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 13px;
+  color: #374151;
+  outline: none;
+  transition: border-color .2s;
+  width: 220px;
+  font-family: 'Inter', sans-serif;
+}
+.wt-search-input:focus { border-color: #e53935; }
+.wt-search-input::placeholder { color: #9ca3af; }
+[data-theme="dark"] .wt-search-input { background: #1f2937; border-color: #374151; color: #d1d5db; }
+[data-theme="dark"] .wt-search-input:focus { border-color: #e53935; }

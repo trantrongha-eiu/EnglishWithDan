@@ -1276,6 +1276,8 @@ async function showPracticeTaskList(taskType) {
   cardSelect.style.display = 'none';
   listPanel.style.display  = '';
   itemsEl.innerHTML = '<div class="spinner"></div>';
+  const searchEl = document.getElementById('writing-task-search');
+  if (searchEl) searchEl.value = '';
 
   try {
     const d = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
@@ -1285,7 +1287,8 @@ async function showPracticeTaskList(taskType) {
     }
     practiceState.tasks = d.tasks;
     const cards = d.tasks.map((t, i) => `
-      <div style="border:1.5px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:10px"
+      <div class="wt-task-card" data-prompt="${escHtml((t.prompt || '').toLowerCase())}"
+        style="border:1.5px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:10px"
         onclick="startPracticeTask(${taskType},'${t._id}')"
         onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f8fbff'"
         onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'"
@@ -1307,6 +1310,16 @@ async function showPracticeTaskList(taskType) {
 function hidePracticeTaskList() {
   document.getElementById('practice-task-list').style.display  = 'none';
   document.getElementById('practice-task-select').style.display = '';
+  const s = document.getElementById('writing-task-search');
+  if (s) s.value = '';
+}
+
+function filterWritingTasks(query) {
+  const q = (query || '').trim().toLowerCase();
+  document.querySelectorAll('#practice-task-items .wt-task-card').forEach(card => {
+    const prompt = card.dataset.prompt || '';
+    card.style.display = (!q || prompt.includes(q)) ? '' : 'none';
+  });
 }
 
 function startPracticeTask(taskType, taskId) {

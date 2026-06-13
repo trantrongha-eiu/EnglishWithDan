@@ -294,9 +294,12 @@
 
     <!-- Task list panel (shown after clicking T1/T2 card) -->
     <div id="practice-task-list" style="display:none;margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
         <button class="btn-secondary" onclick="hidePracticeTaskList()">← Quay lại</button>
         <h3 id="practice-list-title" style="font-size:15px;font-weight:700;margin:0">Chọn đề Task 1</h3>
+        <input type="search" id="writing-task-search" class="wt-search-input"
+          placeholder="🔍 Tìm đề..." oninput="filterWritingTasks(this.value)"
+          style="margin-left:auto">
       </div>
       <div id="practice-task-items"><div class="spinner"></div></div>
     </div>
