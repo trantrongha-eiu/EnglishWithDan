@@ -826,54 +826,68 @@ body {
 /* ══════════════════════════════════════════════
    DICTIONARY POPUP
 ══════════════════════════════════════════════ */
+/* ── Dictionary Popup ──────────────────────────────── */
 #dict-popup {
   position: fixed; z-index: 500;
   background: #fff; border: 1px solid #e5e7eb;
-  border-radius: 12px; padding: 16px 18px;
-  width: 300px; box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  border-radius: 16px; padding: 16px 18px 14px;
+  width: 320px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
   animation: pop .15s ease;
 }
-.dict-word     { font-size: 18px; font-weight: 800; color: #1a1a2e; margin-bottom: 2px; display: block; }
-.dict-phonetic { font-family: 'Courier New', monospace; font-size: 12px; color: #9ca3af; margin-bottom: 8px; display: block; }
-.dict-pos      { font-size: 11px; font-weight: 600; color: #7c3aed; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
-.dict-meaning  { font-size: 14px; color: #1a1a2e; line-height: 1.5; margin-bottom: 6px; }
-.dict-example  { font-size: 13px; color: #6b7280; font-style: italic; margin-bottom: 12px; }
-
-.dict-actions { display: flex; gap: 8px; }
-.dict-btn {
-  flex: 1; padding: 7px 10px; border-radius: 8px;
-  font-size: 12px; font-weight: 600; cursor: pointer;
-  border: 1px solid #e5e7eb; background: #f8f9fb;
-  font-family: 'Inter', sans-serif; transition: all .15s;
+.dict-word {
+  font-size: 20px; font-weight: 800; color: #1e3a8a;
+  display: block; flex: 1;
 }
-.dict-btn.primary { background: #e53935; color: #fff; border-color: #e53935; }
-.dict-btn.primary:hover { background: #c62828; }
-
+.dict-phonetic {
+  font-family: 'Courier New', monospace; font-size: 12px;
+  color: #6b7280; display: block; margin-bottom: 10px;
+}
 .dict-body {
-  max-height: 260px;
-  overflow-y: auto;
-  padding-right: 2px;
+  max-height: 300px; overflow-y: auto; padding-right: 2px;
 }
-.dict-pos-label {
-  font-size: 11px; font-weight: 700; color: #7c3aed;
-  text-transform: uppercase; letter-spacing: .5px; font-style: italic;
-  margin: 8px 0 6px; padding-bottom: 4px;
-  border-bottom: 1px solid #f3f4f6;
+.dict-loading {
+  text-align: center; padding: 20px 16px; color: #9ca3af; font-size: 13px;
 }
-.dict-pos-label:first-child { margin-top: 0; }
-.dict-def-item {
-  margin-bottom: 8px; padding-bottom: 8px;
-  border-bottom: 1px solid #f3f4f6;
+/* Primary meaning */
+.dict-primary-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 8px; margin-bottom: 10px;
 }
-.dict-def-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.dict-def-vi { font-size: 13px; font-weight: 600; color: #1a1a2e; line-height: 1.5; margin-bottom: 4px; }
-.dict-def-num { color: #9ca3af; font-size: 11px; font-weight: 400; margin-right: 3px; }
-.dict-def-example {
+.dict-primary-meaning {
+  font-size: 22px; font-weight: 800; color: #1e3a8a; line-height: 1.2; flex: 1;
+}
+.dict-save-btn {
+  flex-shrink: 0; padding: 6px 12px; background: #e53935;
+  color: #fff; border: none; border-radius: 8px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: background .15s; white-space: nowrap;
+}
+.dict-save-btn:hover { background: #c62828; }
+/* Chips */
+.dict-chips-label {
+  font-size: 10px; font-weight: 700; color: #9ca3af;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px;
+}
+.dict-chips-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.dict-meaning-chip {
+  padding: 3px 10px; background: #f3f4f6; border: 1px solid #e5e7eb;
+  border-radius: 20px; font-size: 12px; color: #374151;
+  cursor: pointer; font-family: inherit; transition: all .13s;
+}
+.dict-meaning-chip:hover { background: #eff6ff; border-color: #3d8bff; color: #1d4ed8; }
+.dict-meaning-chip.active { background: #dbeafe; border-color: #2563eb; color: #1e40af; font-weight: 600; }
+/* Examples */
+.dict-ex-section {
+  border-top: 1px solid #f3f4f6; padding-top: 8px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.dict-ex-item {
   font-size: 12px; font-style: italic; color: #6b7280;
-  border-left: 3px solid #e53935; padding-left: 7px;
-  margin-bottom: 6px; line-height: 1.4;
+  line-height: 1.5; border-left: 3px solid #dbeafe; padding-left: 8px;
 }
-.btn-save-def { width: 100%; }
+/* Old classes hidden */
+.dict-btn.primary { display: none; }
+.dict-pos-label,.dict-def-item,.dict-def-vi,.dict-def-example,.btn-save-def { display: none; }
 
 /* ══════════════════════════════════════════════
    BUTTONS

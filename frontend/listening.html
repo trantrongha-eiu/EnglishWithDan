@@ -2319,8 +2319,8 @@
             let top = 200, left = 200;
             if (sel?.rangeCount) {
                 const r = sel.getRangeAt(0).getBoundingClientRect();
-                top = Math.min(r.bottom + 8, window.innerHeight - 380);
-                left = Math.min(r.left, window.innerWidth - 320);
+                top = Math.min(r.bottom + 8, window.innerHeight - 400);
+                left = Math.min(r.left, window.innerWidth - 330);
                 top = Math.max(top, 8); left = Math.max(left, 8);
             }
             popup.style.top = top + 'px'; popup.style.left = left + 'px';
@@ -2328,77 +2328,93 @@
             document.getElementById('dict-phonetic').textContent = '';
             popup.classList.remove('hidden');
 
-            if (_ltDictCache.has(key)) {
-                renderDictPopup(_ltDictCache.get(key));
-                return;
-            }
+            if (_ltDictCache.has(key)) { renderDictPopup(_ltDictCache.get(key)); return; }
 
-            document.getElementById('dict-body').innerHTML = '<div style="text-align:center;padding:16px;color:#9ca3af;font-size:13px">Đang tra...</div>';
+            document.getElementById('dict-body').innerHTML = '<div class="dict-loading">Đang tra...</div>';
 
-            const [dictRes, transRes] = await Promise.allSettled([
-                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then(r => r.ok ? r.json() : null),
-                fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(word)}`).then(r => r.json())
+            const enc = encodeURIComponent;
+            const [dictRes, transRes, memRes] = await Promise.allSettled([
+                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`).then(r => r.ok ? r.json() : null),
+                fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
+                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.json())
             ]);
 
-            let phonetic = '';
-            let meanings = [];
+            let phonetic = '', partOfSpeech = '', examples = [];
 
             if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
                 const entry = dictRes.value[0];
-                phonetic = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
-                let defCount = 0;
+                phonetic     = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
+                partOfSpeech = entry?.meanings?.[0]?.partOfSpeech || '';
                 for (const m of (entry?.meanings || [])) {
-                    if (defCount >= 4) break;
-                    const defs = [];
                     for (const d of (m.definitions || [])) {
-                        if (defCount >= 4) break;
-                        defs.push({ enDefinition: d.definition || '', example: d.example ? `"${d.example}"` : '' });
-                        defCount++;
+                        if (d.example && !examples.includes(d.example)) {
+                            examples.push(d.example);
+                            if (examples.length >= 3) break;
+                        }
                     }
-                    if (defs.length) meanings.push({ partOfSpeech: m.partOfSpeech || '', definitions: defs });
+                    if (examples.length >= 3) break;
                 }
             }
 
-            const allDefs = meanings.flatMap(m => m.definitions);
-            if (allDefs.length) {
-                const viResults = await Promise.all(allDefs.map(d =>
-                    fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(d.enDefinition)}`)
-                        .then(r => r.json()).then(j => j?.[0]?.[0]?.[0] || d.enDefinition).catch(() => d.enDefinition)
-                ));
-                let i = 0;
-                for (const m of meanings) for (const d of m.definitions) d.viMeaning = viResults[i++];
+            let primaryMeaning = '';
+            if (transRes.status === 'fulfilled') {
+                primaryMeaning = transRes.value?.[0]?.[0]?.[0]?.trim() || '';
             }
 
-            if (!meanings.length) {
-                const viWord = (transRes.status === 'fulfilled' ? transRes.value?.[0]?.[0]?.[0] : null) || 'Không tìm thấy';
-                meanings = [{ partOfSpeech: '', definitions: [{ viMeaning: viWord, enDefinition: '', example: '' }] }];
+            const otherMeanings = [];
+            if (memRes.status === 'fulfilled') {
+                const seen = new Set([primaryMeaning.toLowerCase()]);
+                const matches = (memRes.value?.matches || [])
+                    .filter(m => m.translation && typeof m.translation === 'string')
+                    .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
+                for (const m of matches) {
+                    const val = m.translation.trim();
+                    if (!val || val.length > 45 || seen.has(val.toLowerCase())) continue;
+                    if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue;
+                    seen.add(val.toLowerCase());
+                    otherMeanings.push(val);
+                    if (otherMeanings.length >= 3) break;
+                }
             }
 
-            const cached = { phonetic, meanings };
+            if (!primaryMeaning) primaryMeaning = 'Không tìm thấy';
+
+            const cached = { phonetic, partOfSpeech, primaryMeaning, otherMeanings, examples };
             _ltDictCache.set(key, cached);
             if (state.dictWord.toLowerCase() === key) renderDictPopup(cached);
         }
 
         function renderDictPopup(data) {
             _ltDictData = data;
-            document.getElementById('dict-phonetic').textContent = data.phonetic;
-            const body = document.getElementById('dict-body');
-            let html = '';
-            let defIdx = 0;
-            for (let mi = 0; mi < data.meanings.length; mi++) {
-                const m = data.meanings[mi];
-                if (m.partOfSpeech) html += `<div class="dict-pos-label">${escHtml(m.partOfSpeech)}</div>`;
-                for (let di = 0; di < m.definitions.length; di++) {
-                    const d = m.definitions[di];
-                    defIdx++;
-                    html += `<div class="dict-def-item">
-                        <div class="dict-def-vi"><span class="dict-def-num">${defIdx}.</span> ${escHtml(d.viMeaning)}</div>
-                        ${d.example ? `<div class="dict-def-example">${escHtml(d.example)}</div>` : ''}
-                        <button class="dict-btn primary btn-save-def" onclick="saveVocabWord(${mi},${di})">＋ Lưu từ</button>
-                    </div>`;
-                }
-            }
-            body.innerHTML = html;
+            const meta = [data.phonetic, data.partOfSpeech].filter(Boolean).join('  ·  ');
+            document.getElementById('dict-phonetic').textContent = meta;
+
+            const chipsHtml = data.otherMeanings.length
+                ? `<div class="dict-chips-label">Nghĩa khác:</div>
+                   <div class="dict-chips-wrap">${data.otherMeanings.map(m =>
+                       `<button class="dict-meaning-chip" onclick="selectDictMeaning(this,'${m.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">${escHtml(m)}</button>`
+                     ).join('')}</div>`
+                : '';
+
+            const exHtml = data.examples.length
+                ? `<div class="dict-ex-section">
+                    ${data.examples.map(ex => `<div class="dict-ex-item">"${escHtml(ex)}"</div>`).join('')}
+                   </div>`
+                : '';
+
+            document.getElementById('dict-body').innerHTML = `
+                <div class="dict-primary-row">
+                  <span class="dict-primary-meaning" id="dict-primary-meaning">${escHtml(data.primaryMeaning)}</span>
+                  <button class="dict-save-btn" onclick="saveVocabWord()">＋ Lưu từ</button>
+                </div>
+                ${chipsHtml}${exHtml}`;
+        }
+
+        function selectDictMeaning(btn, val) {
+            const el = document.getElementById('dict-primary-meaning');
+            if (el) el.textContent = val;
+            btn.closest('.dict-chips-wrap').querySelectorAll('.dict-meaning-chip')
+                .forEach(b => b.classList.toggle('active', b === btn));
         }
 
         function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
@@ -2448,13 +2464,12 @@
 
         function closeTranslatePopup() { document.getElementById('translate-popup').classList.add('hidden'); }
 
-        async function saveVocabWord(mi, di) {
+        async function saveVocabWord() {
             if (!state.dictWord || !_ltDictData) return;
-            const m = _ltDictData.meanings[mi];
-            const d = m.definitions[di];
-            state.dictMeaning = d.viMeaning;
-            state.dictExample = d.example;
-            state.dictPos = m.partOfSpeech;
+            state.dictMeaning = document.getElementById('dict-primary-meaning')?.textContent?.trim()
+                || _ltDictData.primaryMeaning;
+            state.dictExample = _ltDictData.examples[0] || '';
+            state.dictPos     = _ltDictData.partOfSpeech;
             closeDictPopup();
             try {
                 const res = await fetch(`${API}/vocabbook`, { headers: authH() });
