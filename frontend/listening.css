@@ -889,6 +889,26 @@ body {
 .dict-btn.primary { display: none; }
 .dict-pos-label,.dict-def-item,.dict-def-vi,.dict-def-example,.btn-save-def { display: none; }
 
+/* ── Dark mode ─────────────────────────────── */
+[data-theme="dark"] #dict-popup {
+  background: #1f2937; border-color: #374151;
+  box-shadow: 0 10px 36px rgba(0,0,0,.5);
+}
+[data-theme="dark"] .dict-word            { color: #93c5fd; }
+[data-theme="dark"] .dict-phonetic        { color: #9ca3af; }
+[data-theme="dark"] .dict-close           { color: #6b7280; }
+[data-theme="dark"] .dict-primary-meaning { color: #e5e7eb; }
+[data-theme="dark"] .dict-save-btn        { background: #b91c1c; }
+[data-theme="dark"] .dict-save-btn:hover  { background: #991b1b; }
+[data-theme="dark"] .dict-chips-label     { color: #6b7280; }
+[data-theme="dark"] .dict-meaning-chip {
+  background: #374151; border-color: #4b5563; color: #d1d5db;
+}
+[data-theme="dark"] .dict-meaning-chip:hover { background: #1e3a5f; border-color: #3d8bff; color: #93c5fd; }
+[data-theme="dark"] .dict-meaning-chip.active { background: #1e3a8a; border-color: #2563eb; color: #bfdbfe; }
+[data-theme="dark"] .dict-ex-section      { border-top-color: #374151; }
+[data-theme="dark"] .dict-ex-item         { color: #9ca3af; border-left-color: #374151; }
+
 /* ══════════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════════ */

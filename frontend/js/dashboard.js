@@ -1013,6 +1013,7 @@ function openAddWordManual() {
 async function lookupNewWord(word) {
     const suggestWrap   = document.getElementById('aw-example-suggestions');
     const meaningSugWrap = document.getElementById('aw-meaning-suggestions');
+    clearTimeout(lookupNewWord._t); // always clear, even when word too short
     if (!word || word.length < 2) {
         _lookupPhonetic = '';
         _lookupPartOfSpeech = '';
@@ -1022,13 +1023,14 @@ async function lookupNewWord(word) {
     }
     _lookupPhonetic = '';
     _lookupPartOfSpeech = '';
-    clearTimeout(lookupNewWord._t);
     lookupNewWord._t = setTimeout(async () => {
         try {
-            // Fetch dictionary (examples + phonetic) and Vietnamese translation in parallel
-            const [dictRes, transRes] = await Promise.allSettled([
-                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`),
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`)
+            const enc = encodeURIComponent;
+            // Fetch dictionary (examples + phonetic), Google Translate (primary meaning), MyMemory (alternatives)
+            const [dictRes, gtRes, memRes] = await Promise.allSettled([
+                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`),
+                fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
+                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`)
             ]);
 
             // ── Dictionary API ──
@@ -1070,53 +1072,53 @@ async function lookupNewWord(word) {
                 }
             } else if (suggestWrap) { suggestWrap.innerHTML = ''; }
 
-            // ── MyMemory Translation API (Vietnamese meanings) ──
-            if (transRes.status === 'fulfilled' && transRes.value.ok) {
-                const tData = await transRes.value.json();
-                const seen  = new Set();
+            // ── Vietnamese meaning: Google Translate (primary) + MyMemory (alternatives) ──
+            if (meaningSugWrap) {
                 const meanings = [];
+                const seen = new Set();
 
-                // Collect unique translations from matches, sorted by quality
-                const matches = (tData.matches || [])
-                    .filter(m => m.translation && typeof m.translation === 'string')
-                    .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
-
-                for (const m of matches) {
-                    const val = m.translation.trim().toLowerCase();
-                    if (!val || val === word.toLowerCase()) continue;
-                    // skip if it looks like English (no Vietnamese diacritics and mostly ASCII)
-                    if (/^[a-z0-9\s\-,.']+$/i.test(val) && !/[àáảãạăắặẳẵằâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(val)) continue;
-                    const display = m.translation.trim();
-                    if (!seen.has(display.toLowerCase())) {
-                        seen.add(display.toLowerCase());
-                        meanings.push(display);
+                // Primary: Google Translate — short, accurate
+                if (gtRes.status === 'fulfilled') {
+                    const gt = gtRes.value?.[0]?.[0]?.[0]?.trim() || '';
+                    if (gt && gt.toLowerCase() !== word.toLowerCase()) {
+                        meanings.push(gt);
+                        seen.add(gt.toLowerCase());
                     }
-                    if (meanings.length >= 4) break;
                 }
 
-                if (meaningSugWrap) {
-                    if (!meanings.length) { meaningSugWrap.innerHTML = ''; }
-                    else {
-                        // Auto-fill if meaning field is still empty
-                        const meaningInp = document.getElementById('aw-meaning');
-                        if (meaningInp && !meaningInp.value) {
-                            meaningInp.value = meanings[0];
-                        }
-                        meaningSugWrap.innerHTML =
-                            '<div class="example-suggestion-label meaning-suggestion-label">🇻🇳 Nghĩa gợi ý — bấm để chọn:</div>' +
-                            meanings.map(m => {
-                                const attr = m.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                                const html = m.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                                return `<button class="example-suggestion meaning-suggestion" data-val="${attr}" onclick="selectMeaningSuggestion(this)">${html}</button>`;
-                            }).join('');
-                        // Highlight first if auto-filled
-                        const firstM = meaningSugWrap.querySelector('.meaning-suggestion');
-                        if (firstM && document.getElementById('aw-meaning').value === meanings[0]) {
-                            firstM.classList.add('selected');
+                // Alternatives: MyMemory ranked by quality
+                if (memRes.status === 'fulfilled' && memRes.value.ok) {
+                    const tData = await memRes.value.json();
+                    const matches = (tData.matches || [])
+                        .filter(m => m.translation && typeof m.translation === 'string')
+                        .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
+                    for (const m of matches) {
+                        if (meanings.length >= 4) break;
+                        const val = m.translation.trim();
+                        if (!val || val.toLowerCase() === word.toLowerCase()) continue;
+                        if (/^[a-z0-9\s\-,.']+$/i.test(val) && !/[àáảãạăắặẳẵằâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(val)) continue;
+                        if (!seen.has(val.toLowerCase())) {
+                            seen.add(val.toLowerCase());
+                            meanings.push(val);
                         }
                     }
                 }
-            } else if (meaningSugWrap) { meaningSugWrap.innerHTML = ''; }
+
+                if (!meanings.length) { meaningSugWrap.innerHTML = ''; }
+                else {
+                    const meaningInp = document.getElementById('aw-meaning');
+                    if (meaningInp && !meaningInp.value) meaningInp.value = meanings[0];
+                    meaningSugWrap.innerHTML =
+                        '<div class="example-suggestion-label meaning-suggestion-label">🇻🇳 Nghĩa gợi ý — bấm để chọn:</div>' +
+                        meanings.map(m => {
+                            const attr = m.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                            const html = m.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                            return `<button class="example-suggestion meaning-suggestion" data-val="${attr}" onclick="selectMeaningSuggestion(this)">${html}</button>`;
+                        }).join('');
+                    const firstM = meaningSugWrap.querySelector('.meaning-suggestion');
+                    if (firstM && document.getElementById('aw-meaning').value === meanings[0]) firstM.classList.add('selected');
+                }
+            }
 
         } catch { if (suggestWrap) suggestWrap.innerHTML = ''; if (meaningSugWrap) meaningSugWrap.innerHTML = ''; }
     }, 700);

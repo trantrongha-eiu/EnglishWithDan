@@ -2631,7 +2631,7 @@ async function loadPracticeReview(attemptId) {
 ══════════════════════════════════════════════════════════════════════ */
 let _dictWord = '';
 let _dictCurrentData = null;
-const _dictCache = new Map(); // word.toLowerCase() → { phonetic, meanings: [{partOfSpeech, definitions:[{viMeaning,enDefinition,example}]}] }
+const _dictCache = new Map(); // word.toLowerCase() → { phonetic, partOfSpeech, primaryMeaning, otherMeanings[], examples[] }
 
 document.addEventListener('dblclick', e => {
   if (state.tool !== 'dict' || (!state.isReview && !_practiceMode && !_retryState)) return;
