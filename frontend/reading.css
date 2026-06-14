@@ -522,12 +522,13 @@ body.eye-protection .split-questions {
 .exam-exit-btn {
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
   color: #6b7280;
   padding: 4px 8px;
   border-radius: 6px;
   transition: background .15s;
+  line-height: 1;
 }
 
 .exam-exit-btn:hover {
@@ -1367,13 +1368,13 @@ body.eye-protection .split-questions {
    BUTTONS
 ══════════════════════════════════════════════ */
 .btn-primary {
-  padding: 10px 22px;
+  padding: 8px 20px;
   background: #e53935;
   color: #fff;
   border: none;
   border-radius: 9px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   transition: background .2s;
 }
@@ -1383,13 +1384,13 @@ body.eye-protection .split-questions {
 }
 
 .btn-ghost {
-  padding: 10px 22px;
+  padding: 8px 16px;
   background: #fff;
   color: #374151;
   border: 1.5px solid #e5e7eb;
   border-radius: 9px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   transition: all .2s;
 }
@@ -1399,13 +1400,13 @@ body.eye-protection .split-questions {
 }
 
 .btn-danger {
-  padding: 10px 22px;
+  padding: 8px 20px;
   background: #fff;
   color: #e53935;
   border: 1.5px solid #e53935;
   border-radius: 9px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
 }
 
