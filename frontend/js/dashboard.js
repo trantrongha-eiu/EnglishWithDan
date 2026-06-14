@@ -540,12 +540,18 @@ function renderBookContent(book) {
         if (limitEl) limitEl.textContent = ' / 300 words';
     }
 
-    // Cập nhật nút "Ôn lại từ hay sai"
+    // Cập nhật nút "Ôn lại từ hay sai" — luôn hiện khi sổ mở
     const hardBtn = document.getElementById('btn-hard-words');
     if (hardBtn) {
         const hardCount = book.words.filter(w => (w.wrongCount || 0) >= 3).length;
-        hardBtn.style.display = hardCount > 0 ? '' : 'none';
-        if (hardCount > 0) hardBtn.innerHTML = `<i class="fas fa-fire"></i> Ôn lại từ hay sai (${hardCount})`;
+        hardBtn.style.display = '';
+        if (hardCount > 0) {
+            hardBtn.innerHTML = `<i class="fas fa-fire"></i> Ôn lại từ hay sai (${hardCount})`;
+            hardBtn.classList.add('has-hard-words');
+        } else {
+            hardBtn.innerHTML = `<i class="fas fa-fire"></i> Ôn lại từ hay sai`;
+            hardBtn.classList.remove('has-hard-words');
+        }
     }
 }
 

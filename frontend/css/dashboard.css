@@ -1087,9 +1087,13 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .wl-meaning{color:var(--text2);font-size:12px;flex:1}
 
 /* ── Hard words button in action bar ── */
-.btn-hard-words{background:linear-gradient(135deg,#ff6b35,var(--brand));color:#fff !important;border:none !important;font-weight:600;font-size:13px}
-.btn-hard-words:hover{background:linear-gradient(135deg,#e85d2f,#c62828);transform:translateY(-1px)}
-[data-theme="dark"] .btn-hard-words{background:linear-gradient(135deg,rgba(255,107,53,.85),rgba(229,57,53,.85))}
+/* Default: ghost (chưa có từ đủ điều kiện) */
+.btn-hard-words{background:transparent;color:var(--text2) !important;border:1.5px solid var(--border) !important;font-weight:600;font-size:13px;opacity:.7}
+.btn-hard-words:hover{background:var(--bg2);opacity:1}
+/* has-hard-words: có từ sai >= 3 lần */
+.btn-hard-words.has-hard-words{background:linear-gradient(135deg,#ff6b35,var(--brand));color:#fff !important;border:none !important;opacity:1}
+.btn-hard-words.has-hard-words:hover{background:linear-gradient(135deg,#e85d2f,#c62828);transform:translateY(-1px)}
+[data-theme="dark"] .btn-hard-words.has-hard-words{background:linear-gradient(135deg,rgba(255,107,53,.85),rgba(229,57,53,.85))}
 
 /* ── Example sentence suggestions (add-word modal) ── */
 .example-suggestions-wrap{margin-top:8px}
