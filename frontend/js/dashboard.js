@@ -540,12 +540,12 @@ function renderBookContent(book) {
         if (limitEl) limitEl.textContent = ' / 300 words';
     }
 
-    // Cập nhật nút "Hard words"
+    // Cập nhật nút "Ôn lại từ hay sai"
     const hardBtn = document.getElementById('btn-hard-words');
     if (hardBtn) {
-        const hardCount = book.words.filter(w => (w.wrongCount || 0) >= 1).length;
+        const hardCount = book.words.filter(w => (w.wrongCount || 0) >= 3).length;
         hardBtn.style.display = hardCount > 0 ? '' : 'none';
-        if (hardCount > 0) hardBtn.innerHTML = `<i class="fas fa-fire"></i> Hard words (${hardCount})`;
+        if (hardCount > 0) hardBtn.innerHTML = `<i class="fas fa-fire"></i> Ôn lại từ hay sai (${hardCount})`;
     }
 }
 
@@ -1255,14 +1255,14 @@ function openPreviewMode() {
 function practiceHardWords() {
     if (!currentBookData?.words?.length) return;
     const hardWords = currentBookData.words
-        .filter(w => (w.wrongCount || 0) >= 1)
+        .filter(w => (w.wrongCount || 0) >= 3)
         .sort((a, b) => (b.wrongCount || 0) - (a.wrongCount || 0));
-    if (!hardWords.length) { toast('No hard words yet. Keep practicing!', 'info'); return; }
+    if (!hardWords.length) { toast('Chưa có từ nào sai từ 3 lần trở lên. Hãy tiếp tục luyện tập!', 'info'); return; }
     _isBookPractice = true;
     currentUnit = { words: hardWords, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
-    document.getElementById('unitTitle').textContent = `🎯 Hard Words – ${hardWords.length} to review`;
+    document.getElementById('unitTitle').textContent = `🔥 Ôn lại từ hay sai – ${hardWords.length} từ`;
     if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
     showMode('mixed');
 }
