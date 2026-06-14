@@ -159,9 +159,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else if (s === 'key' && e.state.testId) {
       _openKeyScreen(e.state.testId, e.state.testName);
     } else if (s === 'practice' && e.state.passageId) {
-      // Forward button to a saved practice URL — re-enter that practice
-      setReadingMode('lele');
-      startPractice(e.state.passageId, e.state.category || 'passage1');
+      // Forward button to a saved practice URL — re-enter that practice (silent: no re-push)
+      startPractice(e.state.passageId, e.state.category || 'passage1', true);
     }
   });
 
@@ -532,6 +531,11 @@ async function resumePractice() {
   try {
     const res = await apiFetch(`/api/reading/practice/by-id/${data.passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không thể tiếp tục bài cũ', 'error'); return; }
+    history.pushState(
+      { screen: 'practice', passageId: data.passageId, category: data.category },
+      '',
+      `?passageId=${data.passageId}&category=${encodeURIComponent(data.category)}`
+    );
     _enterPracticeScreen(res.passage, data.category, data.passageId);
     const savedAnswers = data.answers || {};
     if (Object.keys(savedAnswers).length > 0) {
@@ -700,8 +704,10 @@ async function loadPracticePassages(category, tabEl) {
 
       const doneInfo = _practiceDoneMap[p._id?.toString()];
       const doneAttr = doneInfo ? ' data-done="1"' : '';
+      const donePct  = doneInfo?.lastTotal
+        ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
       const doneRibbon = doneInfo
-        ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x</span>`
+        ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>`
         : '';
       const btnText = doneInfo ? `Làm lại · ${qCount} câu` : `Làm bài · ${qCount} câu`;
 
@@ -733,13 +739,8 @@ async function loadPracticePassages(category, tabEl) {
   }
 }
 
-async function startPractice(passageId, category) {
+async function startPractice(passageId, category, _silent = false) {
   _practiceCategory = category;
-  history.pushState(
-    { screen: 'practice', passageId, category },
-    '',
-    `?passageId=${passageId}&category=${encodeURIComponent(category)}`
-  );
 
   const cards = document.querySelectorAll('#practice-passage-list .practice-card');
   cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
@@ -747,6 +748,14 @@ async function startPractice(passageId, category) {
   try {
     const res = await apiFetch(`/api/reading/practice/by-id/${passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
+    // Push URL only after successful fetch (and only when not responding to a popstate event)
+    if (!_silent) {
+      history.pushState(
+        { screen: 'practice', passageId, category },
+        '',
+        `?passageId=${passageId}&category=${encodeURIComponent(category)}`
+      );
+    }
     _enterPracticeScreen(res.passage, category, passageId);
   } catch (e) {
     showVocabToast('Lỗi kết nối server');
@@ -2511,13 +2520,23 @@ async function loadPracticeReview(attemptId) {
       (attempt.answers || []).map(a => [a.questionNumber, a.userAnswer])
     );
 
-    // Show the retry screen
-    document.getElementById('screen-list').classList.add('hidden');
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    const retryScreen = document.getElementById('screen-retry');
-    retryScreen.classList.remove('hidden');
     document.getElementById('retry-title').textContent = passage.title || 'Xem lại bài lẻ';
     document.getElementById('retry-score-badge').style.display = 'none';
+
+    // Fill passage text (left panel)
+    document.getElementById('retry-passage-inner').innerHTML =
+      `<div class="passage-title">${escHtml(passage.title || '')}</div>
+       <div class="passage-text">${passage.content || ''}</div>`;
+
+    // Q-nav footer
+    const nav = document.getElementById('retry-q-nav');
+    if (nav) {
+      nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
+        .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+        .join('');
+    }
+
+    showScreen('retry');
 
     const inner = document.getElementById('retry-questions-inner');
     const pct   = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
