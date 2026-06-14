@@ -2401,18 +2401,31 @@ body.eye-protection .split-questions {
 
 /* ── Fullscreen: convert fixed footer to flex child so clicks work ── */
 #screen-exam:fullscreen,
-#screen-exam:-webkit-full-screen {
+#screen-exam:-webkit-full-screen,
+#screen-retry:fullscreen,
+#screen-retry:-webkit-full-screen {
   display: flex !important;
   flex-direction: column !important;
+  background: #fff;
+}
+[data-theme="dark"] #screen-exam:fullscreen,
+[data-theme="dark"] #screen-exam:-webkit-full-screen,
+[data-theme="dark"] #screen-retry:fullscreen,
+[data-theme="dark"] #screen-retry:-webkit-full-screen {
+  background: #111827;
 }
 #screen-exam:fullscreen .exam-split,
-#screen-exam:-webkit-full-screen .exam-split {
+#screen-exam:-webkit-full-screen .exam-split,
+#screen-retry:fullscreen .exam-split,
+#screen-retry:-webkit-full-screen .exam-split {
   flex: 1;
   height: auto;
   min-height: 0;
 }
 #screen-exam:fullscreen .exam-footer,
-#screen-exam:-webkit-full-screen .exam-footer {
+#screen-exam:-webkit-full-screen .exam-footer,
+#screen-retry:fullscreen .exam-footer,
+#screen-retry:-webkit-full-screen .exam-footer {
   position: relative;
   flex-shrink: 0;
 }

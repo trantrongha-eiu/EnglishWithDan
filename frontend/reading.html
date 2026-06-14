@@ -259,7 +259,7 @@
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
       <div class="exam-bar-right">
-        <button class="btn-icon-sm" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()">⚙️</button>
       </div>
     </div>
 
@@ -314,6 +314,8 @@
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
         <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen-rt">⛶</button>
+        <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
       </div>
     </div>
     <div id="practice-prog-bar" class="practice-prog-bar" style="display:none">
@@ -641,26 +643,31 @@
 
     // ── Fullscreen toggle ───────────────────────────────────
     function toggleFullscreen() {
-      const el = document.getElementById('screen-exam');
-      if (!document.fullscreenElement) {
-        el.requestFullscreen && el.requestFullscreen();
-      } else {
+      if (document.fullscreenElement) {
         document.exitFullscreen && document.exitFullscreen();
+        return;
       }
+      // Fullscreen trên màn hình đang active (exam hoặc retry/practice)
+      const retry = document.getElementById('screen-retry');
+      const exam  = document.getElementById('screen-exam');
+      const el = (retry && !retry.classList.contains('hidden')) ? retry : exam;
+      el && el.requestFullscreen && el.requestFullscreen();
     }
 
     document.addEventListener('fullscreenchange', () => {
-      const btn = document.getElementById('btn-fullscreen');
       const fsEl = document.fullscreenElement;
+      // Sync cả 2 nút fullscreen
+      ['btn-fullscreen', 'btn-fullscreen-rt'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+      });
       const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel'];
       if (fsEl) {
-        if (btn) btn.title = 'Thoát toàn màn hình';
         ids.forEach(id => {
           const el = document.getElementById(id);
           if (el && !fsEl.contains(el)) { el._fsPrev = el.parentNode; fsEl.appendChild(el); }
         });
       } else {
-        if (btn) btn.title = 'Toàn màn hình';
         ids.forEach(id => {
           const el = document.getElementById(id);
           if (el && el._fsPrev) { el._fsPrev.appendChild(el); el._fsPrev = null; }

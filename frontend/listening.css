@@ -1713,12 +1713,16 @@ body {
 
 /* ── Fullscreen: explicit background so browser backdrop doesn't show through ── */
 #screen-exam:fullscreen,
-#screen-exam:-webkit-full-screen {
+#screen-exam:-webkit-full-screen,
+#screen-practice:fullscreen,
+#screen-practice:-webkit-full-screen {
   background: #fff;
   overflow-y: auto;
 }
 [data-theme="dark"] #screen-exam:fullscreen,
-[data-theme="dark"] #screen-exam:-webkit-full-screen {
+[data-theme="dark"] #screen-exam:-webkit-full-screen,
+[data-theme="dark"] #screen-practice:fullscreen,
+[data-theme="dark"] #screen-practice:-webkit-full-screen {
   background: #111827;
 }
 /* ── Fullscreen: convert fixed section-nav to flex child so clicks work ── */
@@ -1729,6 +1733,12 @@ body {
 }
 #screen-exam:fullscreen .exam-body,
 #screen-exam:-webkit-full-screen .exam-body {
+  min-height: 0;
+}
+/* ── Fullscreen practice: body fills remaining space ── */
+#screen-practice:fullscreen .lt-practice-body,
+#screen-practice:-webkit-full-screen .lt-practice-body {
+  flex: 1;
   min-height: 0;
 }
 
@@ -1774,7 +1784,7 @@ body {
 
 /* Settings dropdown panel */
 .settings-panel {
-  position: absolute;
+  position: fixed;
   top: 56px;
   right: 12px;
   background: #fff;

@@ -113,25 +113,6 @@
             <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
         </div>
 
-        <!-- Settings dropdown -->
-        <div id="settings-panel" class="settings-panel hidden">
-            <div class="settings-row">
-                <span>👁️ Chế độ bảo vệ mắt</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
-                    <span class="toggle-knob"></span>
-                </label>
-            </div>
-            <div class="settings-row">
-                <span>Tᴛ Kích cỡ chữ</span>
-                <div class="fs-group">
-                    <button class="fs-btn" onclick="setFontSize('S')">S</button>
-                    <button class="fs-btn active" onclick="setFontSize('M')">M</button>
-                    <button class="fs-btn" onclick="setFontSize('L')">L</button>
-                </div>
-            </div>
-        </div>
-
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
             <span class="exam-audio-status" id="exam-audio-status">🎧 Chờ audio...</span>
             <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Phát ngay</button>
@@ -279,6 +260,8 @@
             <span class="exam-title" id="lt-practice-title" style="flex:1">Luyện tập Listening</span>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
             <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+            <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+            <button class="btn-icon-sm" id="btn-settings-pr" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
         </div>
         <!-- Progress bar -->
         <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
@@ -340,6 +323,25 @@
             <div class="exam-footer-btns" id="lt-practice-footer-btns">
                 <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
                 <button class="btn-primary" onclick="submitLTPractice()">Kiểm tra đáp án</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings panel – ở body level để dùng được cho cả exam và practice khi fullscreen -->
+    <div id="settings-panel" class="settings-panel hidden">
+        <div class="settings-row">
+            <span>👁️ Chế độ bảo vệ mắt</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
+                <span class="toggle-knob"></span>
+            </label>
+        </div>
+        <div class="settings-row">
+            <span>Tᴛ Kích cỡ chữ</span>
+            <div class="fs-group">
+                <button class="fs-btn" onclick="setFontSize('S')">S</button>
+                <button class="fs-btn active" onclick="setFontSize('M')">M</button>
+                <button class="fs-btn" onclick="setFontSize('L')">L</button>
             </div>
         </div>
     </div>
@@ -519,26 +521,31 @@
 
         // ── Fullscreen toggle ──────────────────────────────────────────
         function toggleFullscreen() {
-            const el = document.getElementById('screen-exam');
-            if (!document.fullscreenElement) {
-                el.requestFullscreen && el.requestFullscreen();
-            } else {
+            if (document.fullscreenElement) {
                 document.exitFullscreen && document.exitFullscreen();
+                return;
             }
+            // Fullscreen trên màn hình đang active (exam hoặc practice)
+            const practice = document.getElementById('screen-practice');
+            const exam = document.getElementById('screen-exam');
+            const el = (practice && practice.classList.contains('active')) ? practice : exam;
+            el && el.requestFullscreen && el.requestFullscreen();
         }
 
         document.addEventListener('fullscreenchange', () => {
-            const btn = document.getElementById('btn-fullscreen');
             const fsEl = document.fullscreenElement;
-            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed'];
+            // Sync cả 2 nút fullscreen
+            ['btn-fullscreen', 'btn-fullscreen-pr'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+            });
+            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed', 'settings-panel'];
             if (fsEl) {
-                if (btn) btn.title = 'Exit fullscreen';
                 ids.forEach(id => {
                     const el = document.getElementById(id);
                     if (el && !fsEl.contains(el)) { el._fsPrev = el.parentNode; fsEl.appendChild(el); }
                 });
             } else {
-                if (btn) btn.title = 'Fullscreen';
                 ids.forEach(id => {
                     const el = document.getElementById(id);
                     if (el && el._fsPrev) { el._fsPrev.appendChild(el); el._fsPrev = null; }
@@ -2712,8 +2719,11 @@
         document.addEventListener('click', e => {
             const panel = document.getElementById('settings-panel');
             if (!panel || panel.classList.contains('hidden')) return;
-            const btn = document.getElementById('btn-settings');
-            if (!e.target.closest('#settings-panel') && !btn?.contains(e.target) && e.target !== btn) {
+            const btn  = document.getElementById('btn-settings');
+            const btnPr = document.getElementById('btn-settings-pr');
+            if (!e.target.closest('#settings-panel')
+                && !btn?.contains(e.target) && e.target !== btn
+                && !btnPr?.contains(e.target) && e.target !== btnPr) {
                 panel.classList.add('hidden');
             }
         });

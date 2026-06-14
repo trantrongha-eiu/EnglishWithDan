@@ -3082,8 +3082,9 @@ function fmtDuration(s) {
 document.addEventListener('click', e => {
   const panel = document.getElementById('settings-panel');
   if (!panel || panel.classList.contains('hidden')) return;
-  const btn = document.getElementById('btn-settings');
-  if (!e.target.closest('#settings-panel') && !btn?.contains(e.target) && e.target !== btn) {
-    panel.classList.add('hidden');
-  }
+  if (e.target.closest('#settings-panel')) return;
+  // Đừng đóng khi click vào bất kỳ nút ⚙️ nào (exam / review / retry)
+  const settingsBtns = ['btn-settings', 'btn-settings-rv', 'btn-settings-rt'];
+  if (settingsBtns.some(id => { const b = document.getElementById(id); return b && (b === e.target || b.contains(e.target)); })) return;
+  panel.classList.add('hidden');
 });
