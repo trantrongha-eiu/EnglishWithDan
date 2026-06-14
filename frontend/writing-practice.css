@@ -39,6 +39,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .wp-xp-badge {
@@ -52,6 +53,7 @@ body {
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .wp-streak-badge {
@@ -62,12 +64,19 @@ body {
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .wp-username {
   font-size: 13px;
   font-weight: 600;
   color: #6b7280;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dark-toggle-btn {
