@@ -76,6 +76,9 @@
           <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
             <span class="plele-badge at">AT</span> Actual Tests
           </button>
+          <button class="plele-tab" onclick="showPracticeHistoryModal()" style="margin-left:auto;background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+            📋 Lịch sử
+          </button>
         </div>
         <div id="practice-passage-list"></div>
       </div>
@@ -368,6 +371,36 @@
             </tr>
           </thead>
           <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+     MODAL – LỊCH SỬ BÀI LẺ READING
+     ════════════════════════════════════════════════════════ -->
+  <div id="modal-practice-history" class="modal-overlay hidden">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>📋 Lịch sử luyện bài lẻ – Reading</h3>
+        <button class="modal-close" onclick="closeModal('modal-practice-history')">✕</button>
+      </div>
+      <div class="modal-body-scroll">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Loại</th>
+              <th>Tên bài</th>
+              <th>Ngày</th>
+              <th>Thời gian</th>
+              <th>Đúng</th>
+              <th>Sai</th>
+              <th>Bỏ qua</th>
+              <th>%</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="practice-history-tbody"></tbody>
         </table>
       </div>
     </div>

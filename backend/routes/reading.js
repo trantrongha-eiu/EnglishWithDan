@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
+const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const AccessKey = require('../models/AccessKey');
 const auth = require('../middleware/auth');
 
@@ -499,8 +500,79 @@ router.get('/practice/by-id/:id', auth, async (req, res) => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /api/reading/practice/save
+// Lưu kết quả luyện bài lẻ của học sinh
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/practice/save', auth, async (req, res) => {
+  try {
+    const { passageId, passageTitle, category, answers, correctCount, wrongCount, skippedCount, timeTaken } = req.body;
+    if (!passageId || !Array.isArray(answers)) {
+      return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+    }
+    const attempt = await ReadingPracticeAttempt.create({
+      userId:         req.user._id,
+      passageId,
+      passageTitle:   passageTitle || '',
+      category:       category || '',
+      answers,
+      totalQuestions: answers.length,
+      correctCount:   correctCount || 0,
+      wrongCount:     wrongCount || 0,
+      skippedCount:   skippedCount || 0,
+      timeTaken:      timeTaken || 0,
+      submittedAt:    new Date()
+    });
+    res.json({ success: true, attemptId: attempt._id });
+  } catch (err) {
+    console.error('[Reading practice save]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/reading/practice/history
+// Danh sách lịch sử luyện bài lẻ của user
+// (MUST be before /practice/:category to avoid wildcard match)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/history', auth, async (req, res) => {
+  try {
+    const attempts = await ReadingPracticeAttempt.find({ userId: req.user._id })
+      .select('-answers')
+      .sort({ submittedAt: -1 })
+      .limit(50)
+      .lean();
+    res.json({ success: true, attempts });
+  } catch (err) {
+    console.error('[Reading practice history]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/reading/practice/history/:attemptId
+// Chi tiết 1 lần luyện – trả về attempt + passage đầy đủ (để render review)
+// (MUST be before /practice/:category to avoid wildcard match)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/history/:attemptId', auth, async (req, res) => {
+  try {
+    const attempt = await ReadingPracticeAttempt.findOne({
+      _id:    req.params.attemptId,
+      userId: req.user._id
+    }).lean();
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    const passage = await Passage.findById(attempt.passageId).lean();
+    res.json({ success: true, attempt, passage });
+  } catch (err) {
+    console.error('[Reading practice history detail]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/reading/practice/:category
 // Lấy 1 passage ngẫu nhiên để luyện riêng lẻ (không cần key, grade client-side)
+// (Wildcard — must be LAST among /practice/* GET routes)
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/practice/:category', auth, async (req, res) => {
   const { category } = req.params;

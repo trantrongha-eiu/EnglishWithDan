@@ -2270,9 +2270,10 @@ function submitRetry() {
   // Stop stopwatch, build time display for practice mode
   const fromPractice = _retryState?.isPractice;
   if (fromPractice) { clearPracticeStorage(); window.onbeforeunload = null; }
+  let elapsed = 0;
   let timeLine = '';
   if (fromPractice) {
-    const elapsed = _stopPracticeTimer();
+    elapsed = _stopPracticeTimer();
     const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ts = String(elapsed % 60).padStart(2, '0');
     const perQ = total ? Math.round(elapsed / total) : 0;
@@ -2286,6 +2287,26 @@ function submitRetry() {
       <span>${speed} · ${perQ}s/câu</span>
       <span style="color:${color};font-style:italic">${encourage}</span>
     </div>`;
+
+    // Lưu kết quả lên server (fire-and-forget)
+    apiFetch('/api/reading/practice/save', {
+      method: 'POST',
+      body: JSON.stringify({
+        passageId:    _retryState.practicePassageId,
+        passageTitle: passage.title || '',
+        category:     _retryState.practiceCategory || '',
+        answers:      Object.entries(retryReviewMap).map(([qNum, r]) => ({
+          questionNumber: Number(qNum),
+          userAnswer:     r.userAnswer    || '',
+          correctAnswer:  r.correctAnswer || '',
+          isCorrect:      !!r.isCorrect
+        })),
+        correctCount: correct,
+        wrongCount:   wrong,
+        skippedCount: skipped,
+        timeTaken:    elapsed
+      })
+    }).catch(() => {});
   }
 
   const qi = document.getElementById('retry-questions-inner');
@@ -2349,6 +2370,123 @@ async function showHistoryModal() {
       </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#9ca3af">Chưa có lịch sử</td></tr>';
     openModal('modal-history');
   } catch { showVocabToast('Lỗi tải lịch sử'); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PRACTICE HISTORY MODAL
+══════════════════════════════════════════════════════════════════════ */
+async function showPracticeHistoryModal() {
+  try {
+    const res = await apiFetch('/api/reading/practice/history');
+    const attempts = res.attempts || [];
+    const tbody = document.getElementById('practice-history-tbody');
+    tbody.innerHTML = attempts.map(h => {
+      const date = new Date(h.submittedAt).toLocaleDateString('vi-VN');
+      const time = fmtDuration(h.timeTaken);
+      const pct  = h.totalQuestions ? Math.round(h.correctCount / h.totalQuestions * 100) : 0;
+      const catLabel = { passage1: 'P1', passage2: 'P2', passage3: 'P3', 'actual-test': 'AT' }[h.category] || '–';
+      return `<tr>
+        <td><span class="plele-badge ${catLabel === 'AT' ? 'at' : catLabel.toLowerCase()}" style="font-size:10px;padding:2px 6px">${catLabel}</span></td>
+        <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(h.passageTitle || '–')}</td>
+        <td>${date}</td>
+        <td>${time}</td>
+        <td style="color:#16a34a;font-weight:600">${h.correctCount}</td>
+        <td style="color:#dc2626;font-weight:600">${h.wrongCount}</td>
+        <td style="color:#9ca3af">${h.skippedCount}</td>
+        <td style="font-weight:700;color:${pct>=70?'#166534':pct>=40?'#92400e':'#991b1b'}">${pct}%</td>
+        <td><button class="btn-review-sm" onclick="loadPracticeReview('${h._id}')">Xem lại</button></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử luyện bài lẻ.</td></tr>';
+    openModal('modal-practice-history');
+  } catch { showVocabToast('Lỗi tải lịch sử'); }
+}
+
+async function loadPracticeReview(attemptId) {
+  closeModal('modal-practice-history');
+  showVocabToast('Đang tải bài...', 'info');
+  try {
+    const res = await apiFetch(`/api/reading/practice/history/${attemptId}`);
+    if (!res.success || !res.passage) { showVocabToast('Không tải được bài', 'error'); return; }
+    const { attempt, passage } = res;
+
+    // Build reviewMap from saved answers
+    const reviewMap = {};
+    (attempt.answers || []).forEach(a => {
+      reviewMap[a.questionNumber] = {
+        userAnswer:    a.userAnswer    || '',
+        correctAnswer: a.correctAnswer || '',
+        isCorrect:     !!a.isCorrect,
+        explanation:   ''
+      };
+    });
+
+    // Reuse the retry screen with read-only review
+    const cleanPassage = JSON.parse(JSON.stringify(passage));
+    // Strip correct answers from passage so they don't auto-appear
+    (cleanPassage.questionGroups || []).forEach(g =>
+      (g.questions || []).forEach(q => { delete q.correctAnswer; delete q.explanation; })
+    );
+
+    // Temporarily enter practice screen to show the review
+    _retryState = {
+      passages: [cleanPassage],
+      answers:  {},
+      isReview: false,
+      currentPassageIdx: 0,
+      correctMap: Object.fromEntries(
+        (attempt.answers || []).map(a => [a.questionNumber, a.correctAnswer])
+      ),
+      isPractice:         true,
+      practicePassageId:  attempt.passageId,
+      practiceCategory:   attempt.category || ''
+    };
+    _practiceMode = true;
+    state.passages = [cleanPassage];
+    state.answers  = Object.fromEntries(
+      (attempt.answers || []).map(a => [a.questionNumber, a.userAnswer])
+    );
+
+    // Show the retry screen
+    document.getElementById('screen-list').classList.add('hidden');
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    const retryScreen = document.getElementById('screen-retry');
+    retryScreen.classList.remove('hidden');
+    document.getElementById('retry-title').textContent = passage.title || 'Xem lại bài lẻ';
+    document.getElementById('retry-score-badge').style.display = 'none';
+
+    const inner = document.getElementById('retry-questions-inner');
+    const pct   = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
+    const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
+    const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
+    const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+    const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
+    const ts = String(attempt.timeTaken % 60).padStart(2, '0');
+    inner.innerHTML =
+      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <span>Kết quả: <strong>${attempt.correctCount}/${attempt.totalQuestions}</strong> câu đúng (${pct}%)</span>
+          <span style="color:#16a34a">● Đúng: ${attempt.correctCount}</span>
+          <span style="color:#dc2626">● Sai: ${attempt.wrongCount}</span>
+          <span style="color:#9ca3af">● Bỏ qua: ${attempt.skippedCount}</span>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400">
+          ⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong>
+          &nbsp;·&nbsp; ${new Date(attempt.submittedAt).toLocaleDateString('vi-VN')}
+        </div>
+      </div>`
+      + renderPassageQuestions(passage, true, reviewMap);
+
+    document.getElementById('retry-footer-btns').innerHTML =
+      `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
+       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại bài này</button>`;
+    document.getElementById('retry-score-badge').textContent = `${attempt.correctCount}/${attempt.totalQuestions} câu đúng`;
+    document.getElementById('retry-score-badge').style.display = '';
+    inner.scrollTop = 0;
+    showVocabToast('Đã tải bài xem lại', 'success');
+  } catch (e) {
+    console.error(e);
+    showVocabToast('Lỗi tải bài xem lại', 'error');
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════

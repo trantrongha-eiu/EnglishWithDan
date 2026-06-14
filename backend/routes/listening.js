@@ -8,11 +8,12 @@ const rateLimit = require('express-rate-limit');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const ListeningTest    = require('../models/ListeningTest');
-const ListeningAttempt = require('../models/ListeningAttempt');
-const ListeningSection = require('../models/ListeningSection');
-const AccessKey        = require('../models/AccessKey');
-const auth             = require('../middleware/auth');
+const ListeningTest            = require('../models/ListeningTest');
+const ListeningAttempt         = require('../models/ListeningAttempt');
+const ListeningSection         = require('../models/ListeningSection');
+const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const AccessKey                = require('../models/AccessKey');
+const auth                     = require('../middleware/auth');
 
 const verifyKeyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -912,6 +913,72 @@ router.get('/history/:attemptId', auth, async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/listening/practice/save
+// ─────────────────────────────────────────────────────────────────────────────
+router.post('/practice/save', auth, async (req, res) => {
+  try {
+    const { sectionId, sectionTitle, partNumber, answers, correctCount, wrongCount, skippedCount, timeTaken } = req.body;
+    if (!sectionId || !Array.isArray(answers)) {
+      return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+    }
+    const attempt = await ListeningPracticeAttempt.create({
+      userId:         req.user._id,
+      sectionId,
+      sectionTitle:   sectionTitle || '',
+      partNumber:     partNumber || 1,
+      answers,
+      totalQuestions: answers.length,
+      correctCount:   correctCount || 0,
+      wrongCount:     wrongCount || 0,
+      skippedCount:   skippedCount || 0,
+      timeTaken:      timeTaken || 0,
+      submittedAt:    new Date()
+    });
+    res.json({ success: true, attemptId: attempt._id });
+  } catch (err) {
+    console.error('[Listening practice save]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/listening/practice/history
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/history', auth, async (req, res) => {
+  try {
+    const attempts = await ListeningPracticeAttempt.find({ userId: req.user._id })
+      .select('-answers')
+      .sort({ submittedAt: -1 })
+      .limit(50)
+      .lean();
+    res.json({ success: true, attempts });
+  } catch (err) {
+    console.error('[Listening practice history]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/listening/practice/history/:attemptId
+// Chi tiết 1 lần luyện – trả về attempt + section đầy đủ (để render review)
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/practice/history/:attemptId', auth, async (req, res) => {
+  try {
+    const attempt = await ListeningPracticeAttempt.findOne({
+      _id:    req.params.attemptId,
+      userId: req.user._id
+    }).lean();
+    if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    const section = await ListeningSection.findById(attempt.sectionId).lean();
+    res.json({ success: true, attempt, section });
+  } catch (err) {
+    console.error('[Listening practice history detail]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

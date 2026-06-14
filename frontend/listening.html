@@ -80,6 +80,9 @@
                     <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
                         <span class="plele-badge at">AT</span> Actual Tests
                     </button>
+                    <button onclick="showLTPracticeHistoryModal()" style="margin-left:auto;background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
+                        📋 Lịch sử
+                    </button>
                 </div>
                 <div id="lt-section-list"></div>
             </div>
@@ -405,6 +408,34 @@
                         </tr>
                     </thead>
                     <tbody id="history-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Lịch sử bài lẻ Listening -->
+    <div class="modal-overlay hidden" id="modal-lt-practice-history">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3>📋 Lịch sử luyện bài lẻ – Listening</h3>
+                <button class="modal-close" onclick="closeModal('modal-lt-practice-history')">✕</button>
+            </div>
+            <div class="modal-body-scroll">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Tên bài</th>
+                            <th>Ngày</th>
+                            <th>Thời gian</th>
+                            <th>Đúng</th>
+                            <th>Sai</th>
+                            <th>Bỏ qua</th>
+                            <th>%</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="lt-practice-history-tbody"></tbody>
                 </table>
             </div>
         </div>
@@ -3094,6 +3125,31 @@
         _ltPracticeSubmitted = true;
         setTool('none');
 
+        // Lưu kết quả lên server (fire-and-forget)
+        // reviewSection already has q.userAnswer + q.isCorrect from the grading loop above
+        const answersToSave = (reviewSection.questionGroups || []).flatMap(g =>
+            (g.questions || []).map(q => ({
+                questionNumber: q.questionNumber,
+                userAnswer:    q.userAnswer    || '',
+                correctAnswer: q.correctAnswer || '',
+                isCorrect:     !!q.isCorrect
+            }))
+        );
+        fetch(`${API}/listening/practice/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authH() },
+            body: JSON.stringify({
+                sectionId:    _ltPracticeSectionId,
+                sectionTitle: _ltOrigSection.title || '',
+                partNumber:   _ltPracticePartNum || 1,
+                answers:      answersToSave,
+                correctCount: correct,
+                wrongCount:   wrong,
+                skippedCount: skipped,
+                timeTaken:    elapsed
+            })
+        }).catch(() => {});
+
         // Update footer
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
@@ -3176,8 +3232,139 @@
 
     function confirmCloseLTPractice() { openModal('modal-lt-practice-exit'); }
 
+    /* ── Practice history modal ──────────────────────────────────────────── */
+    async function showLTPracticeHistoryModal() {
+        try {
+            const res = await fetch(`${API}/listening/practice/history`, { headers: authH() });
+            const data = await res.json();
+            const attempts = data.attempts || [];
+            const partLabel = { 1: 'S1', 2: 'S2', 3: 'S3', 4: 'S4' };
+            const tbody = document.getElementById('lt-practice-history-tbody');
+            tbody.innerHTML = attempts.map(h => {
+                const date = new Date(h.submittedAt).toLocaleDateString('vi-VN');
+                const m = String(Math.floor(h.timeTaken / 60)).padStart(2, '0');
+                const s = String(h.timeTaken % 60).padStart(2, '0');
+                const pct = h.totalQuestions ? Math.round(h.correctCount / h.totalQuestions * 100) : 0;
+                const lbl = partLabel[h.partNumber] || 'AT';
+                const cls = { S1:'p1', S2:'p2', S3:'p3', S4:'p4', AT:'at' }[lbl] || 'at';
+                return `<tr>
+                    <td><span class="plele-badge ${cls}" style="font-size:10px;padding:2px 6px">${lbl}</span></td>
+                    <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(h.sectionTitle||'–')}</td>
+                    <td>${date}</td>
+                    <td>${m}:${s}</td>
+                    <td style="color:#16a34a;font-weight:600">${h.correctCount}</td>
+                    <td style="color:#dc2626;font-weight:600">${h.wrongCount}</td>
+                    <td style="color:#9ca3af">${h.skippedCount}</td>
+                    <td style="font-weight:700;color:${pct>=70?'#166534':pct>=40?'#92400e':'#991b1b'}">${pct}%</td>
+                    <td><button class="btn-review-sm" onclick="loadLTPracticeReview('${h._id}')">Xem lại</button></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử luyện bài lẻ.</td></tr>';
+            openModal('modal-lt-practice-history');
+        } catch (e) { console.error(e); }
+    }
+
+    async function loadLTPracticeReview(attemptId) {
+        closeModal('modal-lt-practice-history');
+        try {
+            const res  = await fetch(`${API}/listening/practice/history/${attemptId}`, { headers: authH() });
+            const data = await res.json();
+            if (!data.success || !data.section) return;
+            const { attempt, section } = data;
+
+            // Build reviewSection: merge saved answers onto the full section
+            const reviewSection = JSON.parse(JSON.stringify(section));
+            const answerMap = {};
+            (attempt.answers || []).forEach(a => { answerMap[a.questionNumber] = a; });
+
+            for (const group of reviewSection.questionGroups || []) {
+                for (const q of group.questions || []) {
+                    const saved = answerMap[q.questionNumber];
+                    q.userAnswer = saved?.userAnswer || '';
+                    q.isCorrect  = saved?.isCorrect  || false;
+                }
+            }
+
+            // Enter the practice screen in "review from history" mode
+            _ltOrigSection       = section;
+            _ltCleanSection      = reviewSection;
+            _ltPracticePartNum   = attempt.partNumber;
+            _ltPracticeSectionId = attempt.sectionId;
+            _ltPracticeSubmitted = true;
+
+            // Backup current state
+            _ltPracticeBackup = {
+                answers:       { ...state.answers },
+                currentTestId: state.currentTestId,
+                currentTest:   state.currentTest,
+                partIdx:       state.partIdx,
+                isReview:      state.isReview
+            };
+            state.answers = Object.fromEntries(
+                (attempt.answers || []).map(a => [a.questionNumber, a.userAnswer || ''])
+            );
+
+            // Show practice screen
+            showScreen('practice');
+            document.getElementById('lt-practice-title').textContent = section.title || 'Xem lại bài lẻ';
+            document.getElementById('lt-practice-part-label').textContent = `Section ${attempt.partNumber}`;
+
+            const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
+            const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
+            const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
+            const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+            const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
+            const ts = String(attempt.timeTaken % 60).padStart(2, '0');
+
+            let html = `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+                <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+                    <span>Kết quả: <strong>${attempt.correctCount}/${attempt.totalQuestions}</strong> câu đúng (${pct}%)</span>
+                    <span style="color:#16a34a">● Đúng: ${attempt.correctCount}</span>
+                    <span style="color:#dc2626">● Sai: ${attempt.wrongCount}</span>
+                    <span style="color:#9ca3af">● Bỏ qua: ${attempt.skippedCount}</span>
+                </div>
+                <div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400">
+                    ⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong>
+                    &nbsp;·&nbsp; ${new Date(attempt.submittedAt).toLocaleDateString('vi-VN')}
+                </div>
+            </div>
+            <div class="section-header-card">
+                <div class="section-part-label">Section ${attempt.partNumber}</div>
+                <div class="section-title-text">${escHtml(section.title || '')}</div>
+            </div>`;
+            (reviewSection.questionGroups || []).forEach((group, gi) => {
+                html += renderQuestionGroup(group, gi, true);
+            });
+
+            const inner = document.getElementById('lt-practice-questions-inner');
+            inner.innerHTML = html;
+            inner.scrollTop = 0;
+
+            // Show transcript if available
+            const tp = document.getElementById('lt-practice-transcript-panel');
+            const tb = document.getElementById('lt-practice-transcript-body');
+            if (tp && tb) {
+                if (section.transcript) {
+                    tb.innerHTML = section.transcript.split('\n').map(l =>
+                        l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
+                    ).join('');
+                    tp.style.display = '';
+                    setupDictionaryDouble('lt-practice-transcript-body');
+                } else {
+                    tp.style.display = 'none';
+                }
+            }
+
+            _hideLTPracticeHUD();
+            document.getElementById('lt-practice-footer-btns').innerHTML = `
+                <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
+                <button class="btn-primary" onclick="retryLTPractice()">🔁 Làm lại bài này</button>`;
+        } catch (e) { console.error(e); }
+    }
+
     // Expose bài lẻ functions after they are defined
     window.confirmCloseLTPractice = confirmCloseLTPractice;
+    window.showLTPracticeHistoryModal = showLTPracticeHistoryModal;
+    window.loadLTPracticeReview = loadLTPracticeReview;
     window.setListeningMode = setListeningMode;
     window.filterLtPracticeCards = filterLtPracticeCards;
     window.loadPracticeSections = loadPracticeSections;
