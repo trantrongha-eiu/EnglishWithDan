@@ -30,6 +30,7 @@
                     <p class="list-subtitle" id="ls-mode-subtitle">Làm bài Listening IELTS đầy đủ 4 parts, có audio player và transcript sau khi nộp bài.</p>
                 </div>
                 <div class="list-filter" id="ls-filter-bar">
+                    <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()" style="width:180px">
                     <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
                     <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
                     <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
@@ -831,7 +832,7 @@
                         <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
                         ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}</div>` : ''}
                         <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 ${done ? 'Làm lại' : 'Bắt đầu'}</button>
-                        ${done ? `<button class="btn-redo-test" onclick="goToKey('${t._id}', '${safeName}')">📋 Xem lại</button>` : ''}
+                        ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')">📋 Xem lại</button>` : ''}
                     </div>
                 </div>`;
         }
@@ -2040,16 +2041,24 @@
         }
 
         function renderQNav(gridId, isReview) {
-            const allQs = getAllQuestions(isReview);
             const grid = document.getElementById(gridId);
             if (!grid) return;
-            grid.innerHTML = allQs.map(q => {
-                const num = q.questionNumber;
-                let cls = '';
-                if (isReview) cls = q.isCorrect ? 'correct' : (q.userAnswer ? 'wrong' : 'skipped');
-                else cls = state.answers[num] ? 'answered' : '';
-                return `<button class="q-nav-btn ${cls}" id="qnb-${num}" onclick="scrollToQ(${num})">${num}</button>`;
-            }).join('');
+            const sections = getSortedSections(isReview);
+            const rvMap = {};
+            if (isReview) (state.reviewResult?.questions || []).forEach(q => { rvMap[q.questionNumber] = q; });
+            const parts = sections.map(s => {
+                const qs = (s.questionGroups || []).flatMap(g => g.questions || [])
+                    .sort((a, b) => a.questionNumber - b.questionNumber);
+                const btns = qs.map(q => {
+                    const num = q.questionNumber;
+                    let cls = '';
+                    if (isReview) { const r = rvMap[num]; cls = r?.isCorrect ? 'correct' : (r?.userAnswer ? 'wrong' : 'skipped'); }
+                    else cls = state.answers[num] ? 'answered' : '';
+                    return `<button class="q-nav-btn ${cls}" id="qnb-${num}" onclick="scrollToQ(${num})">${num}</button>`;
+                }).join('');
+                return `<span class="q-nav-section-label">S${s.partNumber}</span>${btns}`;
+            });
+            grid.innerHTML = parts.join('');
         }
 
         function isAnswered(qnum) {
@@ -2876,15 +2885,39 @@
     }
 
     function _applyLtFilters() {
-        document.querySelectorAll('#lt-section-list .practice-card').forEach(card => {
+        const allCards = document.querySelectorAll('#lt-section-list .practice-card');
+        let visibleCount = 0;
+        allCards.forEach(card => {
             const title  = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
             const isDone = card.dataset.done === '1';
             const passTitle  = !_ltSearchVal || title.includes(_ltSearchVal);
             const passStatus = _ltStatusFilter === 'all'
                 || (_ltStatusFilter === 'done' && isDone)
                 || (_ltStatusFilter === 'new'  && !isDone);
-            card.style.display = (passTitle && passStatus) ? '' : 'none';
+            const show = passTitle && passStatus;
+            card.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
         });
+        const listEl = document.getElementById('lt-section-list');
+        if (!listEl) return;
+        let emptyEl = document.getElementById('lt-filter-empty');
+        if (visibleCount === 0 && allCards.length > 0) {
+            if (!emptyEl) {
+                emptyEl = document.createElement('div');
+                emptyEl.id = 'lt-filter-empty';
+                emptyEl.style.cssText = 'text-align:center;padding:40px 16px;color:#9ca3af';
+                listEl.appendChild(emptyEl);
+            }
+            const icon = _ltSearchVal ? '🔍' : (_ltStatusFilter === 'done' ? '✅' : '🆕');
+            const msg  = _ltSearchVal
+                ? `Không tìm thấy bài nào khớp với "<strong>${_ltSearchVal}</strong>"`
+                : _ltStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
+                : 'Đã làm tất cả bài trong mục này rồi!';
+            emptyEl.innerHTML = `<div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div>`;
+            emptyEl.style.display = '';
+        } else if (emptyEl) {
+            emptyEl.style.display = 'none';
+        }
     }
 
     let _ltLoadingPart = 0; // race-condition lock
@@ -3200,6 +3233,17 @@
         inner.innerHTML = html;
         inner.scrollTop = 0;
 
+        // Update Q-nav with correct/wrong/skipped colors
+        const navPr = document.getElementById('lt-practice-q-nav');
+        if (navPr) {
+            navPr.innerHTML = _ltGetAllQs(reviewSection)
+                .map(q => {
+                    const cls = !q.userAnswer ? 'skipped' : q.isCorrect ? 'correct' : 'wrong';
+                    return `<button class="q-nav-btn ${cls}" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`;
+                })
+                .join('');
+        }
+
         // Show transcript panel (left side, like full-test review)
         const tp = document.getElementById('lt-practice-transcript-panel');
         const tb = document.getElementById('lt-practice-transcript-body');
@@ -3448,11 +3492,14 @@
                 }
             }
 
-            // Q-nav: build scroll buttons for review
+            // Q-nav: build scroll buttons for review with correct/wrong/skipped colors
             const nav = document.getElementById('lt-practice-q-nav');
             if (nav) {
                 nav.innerHTML = _ltGetAllQs(reviewSection)
-                    .map(q => `<button class="q-nav-btn" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`)
+                    .map(q => {
+                        const cls = !q.userAnswer ? 'skipped' : q.isCorrect ? 'correct' : 'wrong';
+                        return `<button class="q-nav-btn ${cls}" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`;
+                    })
                     .join('');
             }
 
