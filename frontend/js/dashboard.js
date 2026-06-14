@@ -536,6 +536,8 @@ function renderBookContent(book) {
         if (limitEl) limitEl.textContent = ` / ${book.words.length} words`;
     } else {
         renderWordsTable(book.words);
+        const limitEl = document.getElementById('stat-limit-label');
+        if (limitEl) limitEl.textContent = ' / 300 words';
     }
 
     // Cập nhật nút "Hard words"
@@ -1003,17 +1005,19 @@ function openAddWordManual() {
     _lookupPhonetic = '';
     _lookupPartOfSpeech = '';
     ['aw-word','aw-meaning','aw-example','aw-note'].forEach(id => { document.getElementById(id).value = ''; });
-    const sg = document.getElementById('aw-example-suggestions');
-    if (sg) sg.innerHTML = '';
+    document.getElementById('aw-example-suggestions').innerHTML = '';
+    document.getElementById('aw-meaning-suggestions').innerHTML = '';
     openModal('modal-add-word');
     setTimeout(() => document.getElementById('aw-word').focus(), 100);
 }
 async function lookupNewWord(word) {
-    const suggestWrap = document.getElementById('aw-example-suggestions');
+    const suggestWrap   = document.getElementById('aw-example-suggestions');
+    const meaningSugWrap = document.getElementById('aw-meaning-suggestions');
     if (!word || word.length < 2) {
         _lookupPhonetic = '';
         _lookupPartOfSpeech = '';
         if (suggestWrap) suggestWrap.innerHTML = '';
+        if (meaningSugWrap) meaningSugWrap.innerHTML = '';
         return;
     }
     _lookupPhonetic = '';
@@ -1021,47 +1025,100 @@ async function lookupNewWord(word) {
     clearTimeout(lookupNewWord._t);
     lookupNewWord._t = setTimeout(async () => {
         try {
-            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-            if (!res.ok) { if (suggestWrap) suggestWrap.innerHTML = ''; return; }
-            const data = await res.json();
-            _lookupPhonetic     = data[0]?.phonetics?.find(p => p.text)?.text || '';
-            _lookupPartOfSpeech = data[0]?.meanings?.[0]?.partOfSpeech || '';
+            // Fetch dictionary (examples + phonetic) and Vietnamese translation in parallel
+            const [dictRes, transRes] = await Promise.allSettled([
+                fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`),
+                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`)
+            ]);
 
-            // Thu thập tối đa 5 ví dụ duy nhất từ mọi meanings/definitions
-            const examples = [];
-            for (const entry of data) {
-                for (const meaning of entry.meanings || []) {
-                    for (const def of meaning.definitions || []) {
-                        if (def.example && !examples.includes(def.example)) {
-                            examples.push(def.example);
+            // ── Dictionary API ──
+            if (dictRes.status === 'fulfilled' && dictRes.value.ok) {
+                const data = await dictRes.value.json();
+                _lookupPhonetic     = data[0]?.phonetics?.find(p => p.text)?.text || '';
+                _lookupPartOfSpeech = data[0]?.meanings?.[0]?.partOfSpeech || '';
+
+                const examples = [];
+                for (const entry of data) {
+                    for (const meaning of entry.meanings || []) {
+                        for (const def of meaning.definitions || []) {
+                            if (def.example && !examples.includes(def.example)) {
+                                examples.push(def.example);
+                            }
+                        }
+                    }
+                    if (examples.length >= 5) break;
+                }
+
+                if (examples.length && !document.getElementById('aw-example').value) {
+                    document.getElementById('aw-example').value = examples[0];
+                }
+                if (suggestWrap) {
+                    if (!examples.length) { suggestWrap.innerHTML = ''; }
+                    else {
+                        suggestWrap.innerHTML =
+                            '<div class="example-suggestion-label">💡 Ví dụ phổ biến — bấm để chọn:</div>' +
+                            examples.map(ex => {
+                                const attr = ex.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                                const html = ex.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                                return `<button class="example-suggestion" data-ex="${attr}" onclick="selectExampleSuggestion(this)">${html}</button>`;
+                            }).join('');
+                        const firstBtn = suggestWrap.querySelector('.example-suggestion');
+                        if (firstBtn && !document.getElementById('aw-example').dataset.userEdited) {
+                            firstBtn.classList.add('selected');
                         }
                     }
                 }
-                if (examples.length >= 5) break;
-            }
+            } else if (suggestWrap) { suggestWrap.innerHTML = ''; }
 
-            // Auto-fill ô example nếu còn trống
-            if (examples.length && !document.getElementById('aw-example').value) {
-                document.getElementById('aw-example').value = examples[0];
-            }
+            // ── MyMemory Translation API (Vietnamese meanings) ──
+            if (transRes.status === 'fulfilled' && transRes.value.ok) {
+                const tData = await transRes.value.json();
+                const seen  = new Set();
+                const meanings = [];
 
-            // Hiện danh sách gợi ý
-            if (suggestWrap) {
-                if (!examples.length) { suggestWrap.innerHTML = ''; return; }
-                suggestWrap.innerHTML =
-                    '<div class="example-suggestion-label">💡 Ví dụ phổ biến — bấm để chọn:</div>' +
-                    examples.map(ex => {
-                        const attr = ex.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                        const html = ex.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                        return `<button class="example-suggestion" data-ex="${attr}" onclick="selectExampleSuggestion(this)">${html}</button>`;
-                    }).join('');
-                // Highlight first suggestion nếu đã auto-fill
-                const firstBtn = suggestWrap.querySelector('.example-suggestion');
-                if (firstBtn && !document.getElementById('aw-example').dataset.userEdited) {
-                    firstBtn.classList.add('selected');
+                // Collect unique translations from matches, sorted by quality
+                const matches = (tData.matches || [])
+                    .filter(m => m.translation && typeof m.translation === 'string')
+                    .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
+
+                for (const m of matches) {
+                    const val = m.translation.trim().toLowerCase();
+                    if (!val || val === word.toLowerCase()) continue;
+                    // skip if it looks like English (no Vietnamese diacritics and mostly ASCII)
+                    if (/^[a-z0-9\s\-,.']+$/i.test(val) && !/[àáảãạăắặẳẵằâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(val)) continue;
+                    const display = m.translation.trim();
+                    if (!seen.has(display.toLowerCase())) {
+                        seen.add(display.toLowerCase());
+                        meanings.push(display);
+                    }
+                    if (meanings.length >= 4) break;
                 }
-            }
-        } catch { if (suggestWrap) suggestWrap.innerHTML = ''; }
+
+                if (meaningSugWrap) {
+                    if (!meanings.length) { meaningSugWrap.innerHTML = ''; }
+                    else {
+                        // Auto-fill if meaning field is still empty
+                        const meaningInp = document.getElementById('aw-meaning');
+                        if (meaningInp && !meaningInp.value) {
+                            meaningInp.value = meanings[0];
+                        }
+                        meaningSugWrap.innerHTML =
+                            '<div class="example-suggestion-label meaning-suggestion-label">🇻🇳 Nghĩa gợi ý — bấm để chọn:</div>' +
+                            meanings.map(m => {
+                                const attr = m.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                                const html = m.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                                return `<button class="example-suggestion meaning-suggestion" data-val="${attr}" onclick="selectMeaningSuggestion(this)">${html}</button>`;
+                            }).join('');
+                        // Highlight first if auto-filled
+                        const firstM = meaningSugWrap.querySelector('.meaning-suggestion');
+                        if (firstM && document.getElementById('aw-meaning').value === meanings[0]) {
+                            firstM.classList.add('selected');
+                        }
+                    }
+                }
+            } else if (meaningSugWrap) { meaningSugWrap.innerHTML = ''; }
+
+        } catch { if (suggestWrap) suggestWrap.innerHTML = ''; if (meaningSugWrap) meaningSugWrap.innerHTML = ''; }
     }, 700);
 }
 
@@ -1070,6 +1127,14 @@ window.selectExampleSuggestion = function(btn) {
     const inp = document.getElementById('aw-example');
     if (inp) inp.value = ex;
     btn.closest('.example-suggestions-wrap')?.querySelectorAll('.example-suggestion')
+        .forEach(b => b.classList.toggle('selected', b === btn));
+};
+
+window.selectMeaningSuggestion = function(btn) {
+    const val = btn.dataset.val;
+    const inp = document.getElementById('aw-meaning');
+    if (inp) inp.value = val;
+    btn.closest('.example-suggestions-wrap')?.querySelectorAll('.meaning-suggestion')
         .forEach(b => b.classList.toggle('selected', b === btn));
 };
 async function addWordManual() {
@@ -2563,9 +2628,9 @@ async function confirmBulkImport() {
     btn.innerHTML = '<span class="bulk-spinner"></span> Đang thêm…';
 
     try {
-        const res  = await fetch(`/api/vocabbook/${currentBookId}/words/bulk`, {
+        const res  = await fetch(`${API}/vocabbook/${currentBookId}/words/bulk`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            headers: authH(),
             body: JSON.stringify({ words: toAdd })
         });
         const data = await res.json();

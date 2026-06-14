@@ -1110,6 +1110,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 [data-theme="dark"] .example-suggestion:hover{background:rgba(61,139,255,.12);border-color:var(--blue);color:var(--text)}
 [data-theme="dark"] .example-suggestion.selected{background:rgba(34,197,94,.12);border-color:var(--green);color:#4ade80}
 
+/* Meaning suggestions — tách biệt khỏi example suggestions bằng màu xanh */
+.meaning-suggestion-label{color:#2563eb!important}
+.meaning-suggestion{border-color:#bfdbfe!important;color:#1d4ed8!important;background:#eff6ff!important;font-style:normal!important}
+.meaning-suggestion:hover{background:#dbeafe!important;border-color:#3b82f6!important;color:#1e3a8a!important}
+.meaning-suggestion.selected{background:#dbeafe!important;border-color:#2563eb!important;color:#1e40af!important;font-weight:600}
+[data-theme="dark"] .meaning-suggestion{background:rgba(59,130,246,.12)!important;border-color:#1d4ed8!important;color:#93c5fd!important}
+[data-theme="dark"] .meaning-suggestion:hover{background:rgba(59,130,246,.22)!important;border-color:#3b82f6!important;color:#bfdbfe!important}
+[data-theme="dark"] .meaning-suggestion.selected{background:rgba(59,130,246,.28)!important;border-color:#60a5fa!important;color:#dbeafe!important}
+
 /* ── Welcome feature grid ── */
 .welcome-feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 .welcome-feat-card{
