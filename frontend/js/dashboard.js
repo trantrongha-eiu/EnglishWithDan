@@ -2585,6 +2585,8 @@ function _esc(str) {
     return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function openGuideModal() { openModal('modal-guide'); }
+window.openGuideModal    = openGuideModal;
 window.openBulkImport    = openBulkImport;
 window.parseBulkInput    = parseBulkInput;
 window.confirmBulkImport = confirmBulkImport;

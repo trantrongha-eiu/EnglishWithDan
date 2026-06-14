@@ -45,16 +45,65 @@
     <!-- VIEW: Sổ từ vựng cá nhân -->
     <div id="view-mybook" style="display:flex;flex-direction:column;height:100%">
 
-      <div id="book-welcome" style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px">
-        <div style="text-align:center;color:var(--text3)">
-          <div style="font-size:60px;margin-bottom:16px">📚</div>
-          <h3 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Your Vocabulary Notebook</h3>
-          <p style="font-size:14px">Select a notebook from the sidebar to view your saved words</p>
-          <p style="font-size:13px;margin-top:6px;color:var(--text3)">or do a Reading exercise and double-click a word to save it</p>
-          <!-- Mobile hint -->
-          <p style="font-size:13px;margin-top:14px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
-            <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> below to choose a notebook or study a Unit
-          </p>
+      <div id="book-welcome" style="flex:1;overflow-y:auto;padding:40px 32px">
+        <div style="max-width:780px;margin:0 auto">
+          <!-- Title -->
+          <div style="text-align:center;margin-bottom:36px">
+            <div style="font-size:52px;margin-bottom:12px">📚</div>
+            <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px">Sổ từ vựng thông minh</h3>
+            <p style="font-size:14px;color:var(--text2)">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên dưới</p>
+            <p style="font-size:13px;margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
+              <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ hoặc học Unit
+            </p>
+          </div>
+
+          <!-- Feature guide cards -->
+          <div class="welcome-feature-grid">
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-layer-group"></i></div>
+              <h4>Flashcard</h4>
+              <p>Lật thẻ từng từ, đánh giá mức độ nhớ: <em>Chưa thuộc</em>, <em>So-so</em>, <em>Thuộc rồi</em>. Hệ thống tự ưu tiên từ yếu để ôn lại sớm hơn.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#f0fdf4;color:var(--green)"><i class="fas fa-check-circle"></i></div>
+              <h4>Quiz trắc nghiệm</h4>
+              <p>Chọn đáp án đúng trong 4 lựa chọn. Mỗi câu sai được tính thêm điểm <em>sai</em> để nhắc ôn lại qua Hard Words.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-sync-alt"></i></div>
+              <h4>Điền vào chỗ trống</h4>
+              <p>Đọc ví dụ và gõ từ tiếng Anh còn thiếu. Luyện spelling và nhớ nghĩa theo ngữ cảnh.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-headphones"></i></div>
+              <h4>Nghe – Đoán từ</h4>
+              <p>Nghe phát âm chuẩn và gõ từ bạn nghe được. Luyện tai và chính tả cùng lúc.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-language"></i></div>
+              <h4>Dịch nghĩa</h4>
+              <p>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh tương ứng. Kiểm tra khả năng sản xuất từ vựng chủ động.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-fire"></i></div>
+              <h4>Hard Words</h4>
+              <p>Tổng hợp các từ hay sai nhiều nhất. Nhấn <strong>Ôn lại từ hay sai</strong> ở sidebar để luyện riêng nhóm này.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#ecfdf5;color:#059669"><i class="fas fa-file-import"></i></div>
+              <h4>Nhập hàng loạt</h4>
+              <p>Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.</p>
+            </div>
+            <div class="welcome-feat-card">
+              <div class="welcome-feat-icon" style="background:#fffbeb;color:#b45309"><i class="fas fa-fire-alt"></i></div>
+              <h4>Streak hàng ngày</h4>
+              <p>Học ít nhất một lần mỗi ngày để giữ streak. Panda sẽ cổ vũ bạn! Streak bị reset nếu bỏ một ngày.</p>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin-top:28px">
+            <button class="btn btn-primary btn-sm" onclick="openGuideModal()"><i class="fas fa-book-open"></i> Xem hướng dẫn chi tiết</button>
+          </div>
         </div>
       </div>
 
@@ -65,6 +114,7 @@
             <input class="book-editable-name" id="book-editable-name" value="Sổ 1" title="Click để đổi tên" onkeypress="if(event.key==='Enter')renameBook()"/>
             <button class="btn-rename" onclick="renameBook()" title="Đổi tên"><i class="fas fa-pen"></i></button>
             <button class="btn-book-options" onclick="openCurrentBookMenu()" title="Tùy chọn sổ">⋯</button>
+            <button class="btn-help-guide" onclick="openGuideModal()" title="Hướng dẫn sử dụng"><i class="fas fa-question-circle"></i></button>
           </div>
           <div class="book-stats">
             <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Mastered</span>
@@ -603,6 +653,101 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-edit-word')">Cancel</button>
       <button class="btn btn-primary" onclick="saveEditWord()"><i class="fas fa-save"></i> Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Hướng dẫn sử dụng -->
+<div class="modal-overlay hidden" id="modal-guide">
+  <div class="modal-box modal-guide">
+    <div class="modal-header">
+      <h3><i class="fas fa-book-open"></i> Hướng dẫn sử dụng Sổ từ vựng</h3>
+      <button class="modal-close" onclick="closeModal('modal-guide')">×</button>
+    </div>
+    <div class="modal-body guide-body">
+
+      <div class="guide-section">
+        <div class="guide-section-title"><span class="guide-num">1</span> Tạo & quản lý sổ</div>
+        <ul class="guide-list">
+          <li><strong>Tạo sổ mới:</strong> Nhấn nút <code>＋</code> ở góc trên sidebar bên trái.</li>
+          <li><strong>Đổi tên sổ:</strong> Click vào tên sổ ở topbar hoặc nhấn icon bút <i class="fas fa-pen" style="font-size:11px"></i>.</li>
+          <li><strong>Gộp sổ / Xóa sổ:</strong> Nhấn <code>⋯</code> ở topbar → chọn Gộp sổ hoặc Xóa.</li>
+          <li>Mỗi sổ chứa tối đa <strong>300 từ</strong>. Bạn có thể tạo tối đa <strong>15 sổ</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-section-title"><span class="guide-num">2</span> Thêm từ vào sổ</div>
+        <ul class="guide-list">
+          <li><strong>Thêm thủ công:</strong> Nhấn <code>+ Add word</code> → nhập từ, nghĩa, ví dụ. Hệ thống tự gợi ý ví dụ từ từ điển.</li>
+          <li><strong>Nhập hàng loạt:</strong> Nhấn <code>Nhập hàng loạt</code> → dán danh sách theo định dạng:<br>
+            <code class="guide-code">word: nghĩa tiếng Việt</code> (hoặc dùng <code>-</code> hay Tab thay dấu <code>:</code>)<br>
+            Hệ thống sẽ tự tra ví dụ và phát âm từ từ điển Oxford/Cambridge.
+          </li>
+          <li><strong>Từ bài Reading:</strong> Đọc bài Reading → double-click vào từ bất kỳ → chọn sổ để lưu.</li>
+        </ul>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-section-title"><span class="guide-num">3</span> Trạng thái từ vựng</div>
+        <div class="guide-status-row">
+          <span class="guide-status-badge" style="background:#f0fdf4;color:#15803d;border-color:#86efac">Mastered</span>
+          <span>Đã thuộc chắc, ít được ôn lại hơn.</span>
+        </div>
+        <div class="guide-status-row">
+          <span class="guide-status-badge" style="background:#fefce8;color:#92400e;border-color:#fcd34d">So-so</span>
+          <span>Nhớ lơ mơ, cần ôn thêm vài lần.</span>
+        </div>
+        <div class="guide-status-row">
+          <span class="guide-status-badge" style="background:#f3f4f6;color:#374151;border-color:#d1d5db">Not yet</span>
+          <span>Chưa thuộc, ưu tiên ôn trước.</span>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:8px">Khi học Flashcard, bạn tự đánh giá và cập nhật trạng thái. Các chế độ Quiz/Điền từ sẽ tự tăng điểm sai nếu trả lời sai.</p>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-section-title"><span class="guide-num">4</span> Các chế độ học</div>
+        <div class="guide-modes-grid">
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-layer-group"></i></span>
+            <div><strong>Flashcard</strong><br>Lật thẻ, đánh giá mức độ nhớ. Bấm xem trước với Preview.</div>
+          </div>
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#f0fdf4;color:var(--green)"><i class="fas fa-check-circle"></i></span>
+            <div><strong>Quiz</strong><br>Chọn đáp án đúng trong 4 lựa chọn ngẫu nhiên.</div>
+          </div>
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-sync-alt"></i></span>
+            <div><strong>Điền từ</strong><br>Đọc ví dụ, gõ từ tiếng Anh còn thiếu.</div>
+          </div>
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-headphones"></i></span>
+            <div><strong>Nghe</strong><br>Nghe phát âm, gõ từ bạn nghe thấy.</div>
+          </div>
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-language"></i></span>
+            <div><strong>Dịch</strong><br>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh.</div>
+          </div>
+          <div class="guide-mode-item">
+            <span class="guide-mode-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-random"></i></span>
+            <div><strong>Mixed</strong><br>Kết hợp ngẫu nhiên cả 4 chế độ Quiz/Điền/Nghe/Dịch.</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:10px"><i class="fas fa-lightbulb"></i> Chế độ học được áp dụng cho cả Study Unit (chọn unit từ sidebar) và sổ từ vựng của bạn.</p>
+      </div>
+
+      <div class="guide-section">
+        <div class="guide-section-title"><span class="guide-num">5</span> Hard Words & Streak</div>
+        <ul class="guide-list">
+          <li><strong>Hard Words:</strong> Nhấn <code>Hard words</code> (xuất hiện khi sổ có từ hay sai) để ôn lại riêng các từ bạn trả lời sai nhiều nhất.</li>
+          <li><strong>Ôn lại từ hay sai (toàn bộ):</strong> Sidebar → <code>Ôn lại các chữ hay sai</code> — tổng hợp từ tất cả sổ.</li>
+          <li><strong>Streak:</strong> Học ít nhất một session mỗi ngày để giữ chuỗi ngày liên tiếp. Panda sẽ cổ vũ bạn mỗi ngày!</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('modal-guide')">Đã hiểu, bắt đầu học!</button>
     </div>
   </div>
 </div>
