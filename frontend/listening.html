@@ -84,6 +84,13 @@
                         📋 Lịch sử
                     </button>
                 </div>
+                <!-- Filter bar: đã làm / chưa làm -->
+                <div class="plele-filter-bar" id="lt-practice-filter-bar">
+                    <button class="pf-btn pf-active" onclick="filterLtByStatus('all', this)">Tất cả</button>
+                    <button class="pf-btn" onclick="filterLtByStatus('done', this)">✓ Đã làm</button>
+                    <button class="pf-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
+                    <span id="lt-practice-done-count" style="margin-left:auto;font-size:12px;color:#6b7280;font-weight:500"></span>
+                </div>
                 <div id="lt-section-list"></div>
             </div>
         </div>
@@ -685,7 +692,7 @@
         // ══════════════════════════════════════════════
         // INIT
         // ══════════════════════════════════════════════
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             if (!token) { window.location.href = 'login.html'; return; }
             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -697,7 +704,50 @@
             setupAudioEvents();
             loadTestList();
             checkResumeExam();
-            showScreen('list');
+
+            // Handle browser Back/Forward button
+            window.addEventListener('popstate', (e) => {
+                if (_ltPracticeActive) {
+                    _clearLTPracticeTimer();
+                    _hideLTPracticeHUD();
+                    _ltPracticeSubmitted = false;
+                    _ltPracticeActive    = false;
+                    _ltLoadingPart       = 0;
+                    const tpClose = document.getElementById('lt-practice-transcript-panel');
+                    if (tpClose) tpClose.style.display = 'none';
+                    setTool('none');
+                    audio.pause();
+                    audio.src = '';
+                    if (_ltPracticeBackup) {
+                        state.answers       = _ltPracticeBackup.answers;
+                        state.currentTestId = _ltPracticeBackup.currentTestId;
+                        state.currentTest   = _ltPracticeBackup.currentTest;
+                        state.partIdx       = _ltPracticeBackup.partIdx;
+                        state.isReview      = _ltPracticeBackup.isReview;
+                        _ltPracticeBackup   = null;
+                    }
+                    _ltOrigSection = _ltCleanSection = null;
+                    const listEl = document.getElementById('lt-section-list');
+                    if (listEl) listEl.innerHTML = '';
+                    showScreen('list');
+                    setListeningMode('lele');
+                    return;
+                }
+                showScreen('list');
+            });
+
+            // Check URL params — shareable link ?sectionId=xxx&part=1
+            const params = new URLSearchParams(location.search);
+            const sectionIdParam = params.get('sectionId');
+            const partParam      = sectionIdParam ? (parseInt(params.get('part')) || 1) : null;
+            if (sectionIdParam) {
+                history.replaceState({ screen: 'list' }, '', 'listening.html');
+                setListeningMode('lele');
+                await startPracticeSection(sectionIdParam, partParam);
+            } else {
+                history.replaceState({ screen: 'list' }, '', 'listening.html');
+                showScreen('list');
+            }
         });
 
         // ══════════════════════════════════════════════
@@ -2691,6 +2741,9 @@
     let _ltPracticeBackup   = null;  // saves state.answers etc. when entering practice
     let _ltPracticeTimer    = null;
     let _ltPracticeStartTime= 0;
+    let _ltPracticeDoneMap  = {};    // sectionId → { count, lastScore, lastTotal }
+    let _ltStatusFilter     = 'all'; // 'all' | 'done' | 'new'
+    let _ltSearchVal        = '';    // current text search value
     let _ltPracticeElapsed  = 0;
     let _ltPracticeSubmitted= false; // true after submitLTPractice() so dict/highlight work in result view
     let _ltPracticeActive   = false; // true while practice screen is open (before submit)
@@ -2811,10 +2864,26 @@
     }
 
     function filterLtPracticeCards(query) {
-        const q = (query || '').trim().toLowerCase();
+        _ltSearchVal = (query || '').trim().toLowerCase();
+        _applyLtFilters();
+    }
+
+    function filterLtByStatus(filter, btn) {
+        document.querySelectorAll('#lt-practice-filter-bar .pf-btn').forEach(b => b.classList.remove('pf-active'));
+        if (btn) btn.classList.add('pf-active');
+        _ltStatusFilter = filter;
+        _applyLtFilters();
+    }
+
+    function _applyLtFilters() {
         document.querySelectorAll('#lt-section-list .practice-card').forEach(card => {
-            const title = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
-            card.style.display = (!q || title.includes(q)) ? '' : 'none';
+            const title  = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
+            const isDone = card.dataset.done === '1';
+            const passTitle  = !_ltSearchVal || title.includes(_ltSearchVal);
+            const passStatus = _ltStatusFilter === 'all'
+                || (_ltStatusFilter === 'done' && isDone)
+                || (_ltStatusFilter === 'new'  && !isDone);
+            card.style.display = (passTitle && passStatus) ? '' : 'none';
         });
     }
 
@@ -2865,6 +2934,8 @@
             const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
             if (!data.success) throw new Error(data.message);
             const sections = data.sections || [];
+            _ltPracticeDoneMap = data.doneMap || {};
+
             if (!sections.length) {
                 const emptyLabel = isActual ? 'Actual Tests' : `Section ${partNum}`;
                 listEl.innerHTML = `<div style="text-align:center;padding:56px 24px;color:#9ca3af;max-width:420px;margin:0 auto">
@@ -2872,9 +2943,16 @@
                     <div style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài lẻ nào</div>
                     <div style="font-size:14px;line-height:1.6">${emptyLabel} chưa có bài luyện tập.<br>Admin sẽ thêm bài sớm nhé!</div>
                 </div>`;
+                const countEl = document.getElementById('lt-practice-done-count');
+                if (countEl) countEl.textContent = '';
                 return;
             }
-            const _ltSearchVal = (document.getElementById('lt-practice-search-input')?.value || '').trim().toLowerCase();
+
+            // Update done count label
+            const doneCount = sections.filter(s => _ltPracticeDoneMap[s._id?.toString()]).length;
+            const countEl = document.getElementById('lt-practice-done-count');
+            if (countEl) countEl.textContent = `${doneCount}/${sections.length} đã làm`;
+
             listEl.innerHTML = `<div class="practice-card-grid">${sections.map(s => {
                 const qtypes = [...new Set((s.questionGroups || []).flatMap(g =>
                     (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
@@ -2888,22 +2966,30 @@
                         <span class="practice-card-cat-badge ${partCls}" style="position:static;font-size:9px;padding:2px 6px">S${s.partNumber}</span>
                        </div>`
                     : `<span class="practice-card-cat-badge ${cls}">Section ${partNum}</span>`;
-                return `<div class="practice-card" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
+
+                const doneInfo  = _ltPracticeDoneMap[s._id?.toString()];
+                const doneAttr  = doneInfo ? ' data-done="1"' : '';
+                const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
+                const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
+                const btnText   = doneInfo ? `Làm lại · ${s.questionCount} câu` : `Làm bài · ${s.questionCount} câu`;
+
+                return `<div class="practice-card"${doneAttr} onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">
                         <div class="practice-cover-logo"><span>D</span>aniel</div>
                         ${cardLabel}
+                        ${doneRibbon}
                     </div>
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
                         <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small style="color:#9ca3af">🎵 ${dur}</small>` : ''}</div>
                         <button class="practice-card-btn ${cardCls}"
                             onclick="event.stopPropagation();startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
-                            Làm bài · ${s.questionCount} câu
+                            ${btnText}
                         </button>
                     </div>
                 </div>`;
             }).join('')}</div>`;
-            if (_ltSearchVal) filterLtPracticeCards(_ltSearchVal);
+            _applyLtFilters();
         } catch(e) {
             listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#e53935">
                 Lỗi tải danh sách: ${e.message}
@@ -2915,13 +3001,20 @@
     }
 
     /* ── Start practice for one section ─────────────────────────────────── */
-    async function startPracticeSection(sectionId, partNum) {
+    async function startPracticeSection(sectionId, partNum, _silent = false) {
         const cards = document.querySelectorAll('#lt-section-list .practice-card');
         cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
         try {
             const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
             const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
             if (!data.success || !data.section) { toast('Không tải được bài luyện tập', 'error'); return; }
+            if (!_silent) {
+                history.pushState(
+                    { screen: 'practice', sectionId, part: partNum },
+                    '',
+                    `?sectionId=${sectionId}&part=${partNum}`
+                );
+            }
             _enterLTPracticeScreen(data.section, partNum, sectionId);
         } catch(e) { toast('Lỗi kết nối server', 'error'); }
         finally { cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; }); }
@@ -3181,7 +3274,8 @@
         }
         _ltOrigSection = _ltCleanSection = null;
 
-        // Clear list so it reloads fresh
+        // Clear list so it reloads fresh and clean URL
+        if (location.search) history.pushState({ screen: 'list' }, '', 'listening.html');
         const listEl = document.getElementById('lt-section-list');
         if (listEl) listEl.innerHTML = '';
         showScreen('list');
@@ -3305,8 +3399,7 @@
 
             // Show practice screen
             showScreen('practice');
-            document.getElementById('lt-practice-title').textContent = section.title || 'Xem lại bài lẻ';
-            document.getElementById('lt-practice-part-label').textContent = `Section ${attempt.partNumber}`;
+            document.getElementById('lt-practice-title').textContent = section.title || `Xem lại – Section ${attempt.partNumber}`;
 
             const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
             const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
@@ -3367,6 +3460,7 @@
     window.loadLTPracticeReview = loadLTPracticeReview;
     window.setListeningMode = setListeningMode;
     window.filterLtPracticeCards = filterLtPracticeCards;
+    window.filterLtByStatus = filterLtByStatus;
     window.loadPracticeSections = loadPracticeSections;
     window.startPracticeSection = startPracticeSection;
     window.submitLTPractice = submitLTPractice;

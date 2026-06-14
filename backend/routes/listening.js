@@ -382,7 +382,22 @@ router.get('/practice/list', auth, async (req, res) => {
         questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
       }))
     }));
-    res.json({ success: true, sections: safe });
+    const sectionIds = sections.map(s => s._id);
+    const attemptStats = await ListeningPracticeAttempt.aggregate([
+      { $match: { userId: req.user._id, sectionId: { $in: sectionIds } } },
+      { $sort: { submittedAt: 1 } },
+      { $group: {
+        _id:       '$sectionId',
+        count:     { $sum: 1 },
+        lastScore: { $last: '$correctCount' },
+        lastTotal: { $last: '$totalQuestions' },
+      }}
+    ]);
+    const doneMap = {};
+    attemptStats.forEach(a => {
+      doneMap[a._id.toString()] = { count: a.count, lastScore: a.lastScore, lastTotal: a.lastTotal };
+    });
+    res.json({ success: true, sections: safe, doneMap });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
