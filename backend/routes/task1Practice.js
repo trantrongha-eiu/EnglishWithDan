@@ -86,6 +86,45 @@ function localCheck(exercise, userAnswer) {
 
 
 // ══════════════════════════════════════════════════════════════════════
+//  GET /api/task1/meta  – số câu theo level + skillType (không cần auth)
+// ══════════════════════════════════════════════════════════════════════
+router.get('/meta', async (_req, res) => {
+  try {
+    const agg = await Task1Exercise.aggregate([
+      { $match: { isActive: true } },
+      { $group: { _id: { level: '$level', skillType: '$skillType' }, count: { $sum: 1 } } }
+    ]);
+
+    const levels = ['beginner', 'elementary', 'intermediate'];
+    const skills = ['noun_phrase', 'data_description', 'comparison', 'trend_language', 'paraphrase', 'overview'];
+
+    const counts = {};
+    levels.forEach(l => {
+      counts[l] = { _total: 0 };
+      skills.forEach(s => { counts[l][s] = 0; });
+    });
+
+    agg.forEach(({ _id, count }) => {
+      if (counts[_id.level]) {
+        counts[_id.level][_id.skillType] = (counts[_id.level][_id.skillType] || 0) + count;
+        counts[_id.level]._total += count;
+      }
+    });
+
+    // Tổng "Tất cả" = cộng tất cả levels
+    counts.all = { _total: 0 };
+    skills.forEach(s => {
+      counts.all[s] = levels.reduce((sum, l) => sum + (counts[l][s] || 0), 0);
+    });
+    counts.all._total = levels.reduce((sum, l) => sum + counts[l]._total, 0);
+
+    res.json({ success: true, counts, totalExercises: counts.all._total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════
 //  GET /api/task1/exercises
 // ══════════════════════════════════════════════════════════════════════
 router.get('/exercises', async (req, res) => {

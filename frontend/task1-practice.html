@@ -765,6 +765,7 @@ function setShuffleMode(val) {
 document.addEventListener('DOMContentLoaded', () => {
   initUser();
   loadXPFromStorage();
+  loadMeta();
   showState('welcome');
   // Restore toggle states
   document.getElementById('toggle-autonext').checked       = autoNext;
@@ -898,6 +899,7 @@ function selectLevel(level) {
     saveBatch(); currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
+    updateSkillCounts();
     loadExercises();
   };
   if (sessionDone > 0) {
@@ -916,6 +918,50 @@ function selectSkill(skill) {
   if (sessionDone > 0) {
     askWpQuit(doChange, { title:'Đổi kỹ năng?', sub:'Tiến độ sẽ được lưu.', confirmText:'Đổi ngay', continueText:'Giữ nguyên' });
   } else doChange();
+}
+
+// ════════════════════════════════════════════════════════
+//  META – số câu theo level / skill
+// ════════════════════════════════════════════════════════
+let _t1Meta = null;
+
+async function loadMeta() {
+  try {
+    const res  = await fetch(`${API}/api/task1/meta`);
+    const data = await res.json();
+    if (!data.success) return;
+    _t1Meta = data;
+    updateLevelCounts();
+    updateSkillCounts();
+  } catch (_) { /* silent */ }
+}
+
+function updateLevelCounts() {
+  if (!_t1Meta) return;
+  ['beginner', 'elementary', 'intermediate', 'all'].forEach(lvl => {
+    const count = _t1Meta.counts?.[lvl]?._total || 0;
+    if (!count) return;
+    document.querySelectorAll(
+      `.wp-level-btn[data-level="${lvl}"], .wp-level-btn[data-tlevel="${lvl}"]`
+    ).forEach(btn => {
+      let badge = btn.querySelector('.wp-lc-badge');
+      if (!badge) { badge = document.createElement('span'); badge.className = 'wp-lc-badge'; btn.appendChild(badge); }
+      badge.textContent = count;
+    });
+  });
+}
+
+function updateSkillCounts() {
+  if (!_t1Meta) return;
+  const levelData = _t1Meta.counts?.[currentLevel] || {};
+  document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(btn => {
+    const skill = btn.dataset.skill;
+    const count = skill === 'all' ? (levelData._total || 0) : (levelData[skill] || 0);
+    let badge = btn.querySelector('.wp-lc-badge');
+    if (!badge) { badge = document.createElement('span'); badge.className = 'wp-lc-badge'; btn.appendChild(badge); }
+    badge.textContent = count || '';
+    btn.style.opacity = (count || skill === 'all') ? '' : '0.6';
+  });
 }
 
 // ════════════════════════════════════════════════════════
