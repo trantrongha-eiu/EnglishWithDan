@@ -475,7 +475,25 @@ router.get('/practice/list', auth, async (req, res) => {
         }))
       }))
     }));
-    res.json({ success: true, passages: safePassages });
+
+    // doneMap: passageId → { count, lastScore, lastTotal } for this user
+    const passageIds = safePassages.map(p => p._id);
+    const attemptStats = await ReadingPracticeAttempt.aggregate([
+      { $match: { userId: req.user._id, passageId: { $in: passageIds } } },
+      { $sort: { submittedAt: 1 } },
+      { $group: {
+        _id: '$passageId',
+        count:     { $sum: 1 },
+        lastScore: { $last: '$correctCount' },
+        lastTotal: { $last: '$totalQuestions' },
+      }}
+    ]);
+    const doneMap = {};
+    attemptStats.forEach(a => {
+      doneMap[a._id.toString()] = { count: a.count, lastScore: a.lastScore, lastTotal: a.lastTotal };
+    });
+
+    res.json({ success: true, passages: safePassages, doneMap });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Lỗi server' });

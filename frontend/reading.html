@@ -55,7 +55,7 @@
 
       <!-- Search bar – chỉ hiện ở Bài lẻ mode -->
       <div id="practice-search-bar" class="hidden" style="margin:8px 0 4px">
-        <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards(this.value)" style="width:260px">
+        <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:260px">
       </div>
 
       <!-- Practice picker (Bài lẻ mode) -->
@@ -79,6 +79,12 @@
           <button class="plele-tab" onclick="showPracticeHistoryModal()" style="margin-left:auto;background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
             📋 Lịch sử
           </button>
+        </div>
+        <div class="plele-filter-bar" id="practice-filter-bar">
+          <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
+          <button class="pf-btn" onclick="filterPracticeByStatus('done', this)">✓ Đã làm</button>
+          <button class="pf-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
+          <span id="practice-done-count" style="margin-left:auto;font-size:12px;color:#6b7280;font-weight:500"></span>
         </div>
         <div id="practice-passage-list"></div>
       </div>

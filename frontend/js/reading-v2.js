@@ -28,6 +28,8 @@ let allTests = [];
 let _activeFilter = 'all';
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
+let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
+let _practiceStatusFilter = 'all'; // 'all' | 'done' | 'new'
 
 /* ── Practice stopwatch ─────────────────────────────────────────────── */
 let _practiceTimer     = null;
@@ -136,17 +138,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle browser back/forward button
   window.addEventListener('popstate', (e) => {
     const s = e.state?.screen;
+
+    // If an active practice session is running, clean it up before navigating
+    if (_practiceMode || _retryState?.isPractice) {
+      window.onbeforeunload = null;
+      _clearPracticeTimer();
+      _hidePracticeHUD();
+      clearPracticeStorage();
+      _retryState = null;
+      _practiceMode = false;
+      const listEl = document.getElementById('practice-passage-list');
+      if (listEl) listEl.innerHTML = '';
+      loadTests(true);
+      setTimeout(() => setReadingMode('lele'), 100);
+      return;
+    }
+
     if (!s || s === 'list') {
       loadTests(true);
     } else if (s === 'key' && e.state.testId) {
       _openKeyScreen(e.state.testId, e.state.testName);
+    } else if (s === 'practice' && e.state.passageId) {
+      // Forward button to a saved practice URL — re-enter that practice
+      setReadingMode('lele');
+      startPractice(e.state.passageId, e.state.category || 'passage1');
     }
   });
 
   // Check URL params on load
   const params = new URLSearchParams(location.search);
-  const reviewId = params.get('review');
-  const testIdParam = params.get('testId');
+  const reviewId     = params.get('review');
+  const testIdParam  = params.get('testId');
+  const passageIdParam = params.get('passageId');
+  const categoryParam  = params.get('category') || 'passage1';
 
   if (reviewId) {
     history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
@@ -159,10 +183,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (testIdParam) {
     const test = allTests.find(t => t._id === testIdParam);
     if (test) {
-      // Replace state so the initial list is still accessible via back
       history.replaceState({ screen: 'key', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
       _openKeyScreen(test._id, test.name);
     }
+  } else if (passageIdParam) {
+    // Shareable practice link: build a list entry first so Back works
+    history.replaceState({ screen: 'list' }, '', 'reading.html');
+    setReadingMode('lele');
+    await startPractice(passageIdParam, categoryParam);
   } else {
     history.replaceState({ screen: 'list' }, '', 'reading.html');
   }
@@ -567,11 +595,27 @@ function setReadingMode(mode) {
   }
 }
 
-function filterPracticeCards(query) {
-  const q = (query || '').trim().toLowerCase();
+function filterPracticeCards() {
+  _applyPracticeFilters();
+}
+
+function filterPracticeByStatus(filter, btn) {
+  document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('pf-active'));
+  if (btn) btn.classList.add('pf-active');
+  _practiceStatusFilter = filter;
+  _applyPracticeFilters();
+}
+
+function _applyPracticeFilters() {
+  const q = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
   document.querySelectorAll('#practice-passage-list .practice-card').forEach(card => {
     const title = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
-    card.style.display = (!q || title.includes(q)) ? '' : 'none';
+    const isDone = card.dataset.done === '1';
+    const passTitle  = !q || title.includes(q);
+    const passStatus = _practiceStatusFilter === 'all'
+      || (_practiceStatusFilter === 'done' && isDone)
+      || (_practiceStatusFilter === 'new'  && !isDone);
+    card.style.display = (passTitle && passStatus) ? '' : 'none';
   });
 }
 
@@ -602,6 +646,7 @@ async function loadPracticePassages(category, tabEl) {
   try {
     const res = await apiFetch(`/api/reading/practice/list?category=${category}`);
     const passages = res.passages || [];
+    _practiceDoneMap = res.doneMap || {};
 
     if (!passages.length) {
       listEl.innerHTML = `<div style="text-align:center;padding:48px 0;color:#9ca3af">
@@ -609,6 +654,8 @@ async function loadPracticePassages(category, tabEl) {
         <div style="font-weight:600;margin-bottom:4px">Chưa có bài đọc nào</div>
         <div style="font-size:13px">Category này chưa có passage được thêm vào</div>
       </div>`;
+      const countEl = document.getElementById('practice-done-count');
+      if (countEl) countEl.textContent = '';
       return;
     }
 
@@ -629,7 +676,11 @@ async function loadPracticePassages(category, tabEl) {
       'sentence-endings': 'Sentence Endings',
     };
 
-    const _searchVal = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
+    // Update done count label
+    const doneCount = passages.filter(p => _practiceDoneMap[p._id?.toString()]).length;
+    const countEl = document.getElementById('practice-done-count');
+    if (countEl) countEl.textContent = `${doneCount}/${passages.length} đã làm`;
+
     listEl.innerHTML = `<div class="practice-card-grid">${passages.map(p => {
       const qtypes = [...new Set(
         (p.questionGroups || []).flatMap(g =>
@@ -646,22 +697,31 @@ async function loadPracticePassages(category, tabEl) {
             <span class="practice-card-cat-badge ${catCls}" style="position:static;font-size:9px;padding:2px 6px">${catName}</span>
            </div>`
         : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
-      return `<div class="practice-card" onclick="startPractice('${p._id}','${category}')">
+
+      const doneInfo = _practiceDoneMap[p._id?.toString()];
+      const doneAttr = doneInfo ? ' data-done="1"' : '';
+      const doneRibbon = doneInfo
+        ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x</span>`
+        : '';
+      const btnText = doneInfo ? `Làm lại · ${qCount} câu` : `Làm bài · ${qCount} câu`;
+
+      return `<div class="practice-card"${doneAttr} onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
           <div class="practice-cover-logo"><span>D</span>aniel</div>
           ${badgeLabel}
+          ${doneRibbon}
         </div>
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
           <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
           <button class="practice-card-btn ${isActual ? catCls : cls}"
             onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
-            Làm bài · ${qCount} câu
+            ${btnText}
           </button>
         </div>
       </div>`;
     }).join('')}</div>`;
-    if (_searchVal) filterPracticeCards(_searchVal);
+    _applyPracticeFilters();
   } catch (e) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
       <div style="color:#e53935;margin-bottom:12px">Lỗi tải danh sách bài đọc</div>
@@ -675,6 +735,11 @@ async function loadPracticePassages(category, tabEl) {
 
 async function startPractice(passageId, category) {
   _practiceCategory = category;
+  history.pushState(
+    { screen: 'practice', passageId, category },
+    '',
+    `?passageId=${passageId}&category=${encodeURIComponent(category)}`
+  );
 
   const cards = document.querySelectorAll('#practice-passage-list .practice-card');
   cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
