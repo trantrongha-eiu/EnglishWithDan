@@ -345,6 +345,65 @@ router.delete('/:id/words/:wordId', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════
+// POST /api/vocabbook/:id/words/bulk  – thêm nhiều từ cùng lúc
+// Body: { words: [{word, meaning, example, phonetic, partOfSpeech}] }
+// ══════════════════════════════════════════════════════
+router.post('/:id/words/bulk', auth, async (req, res) => {
+  try {
+    const { words } = req.body;
+    if (!Array.isArray(words) || !words.length) {
+      return res.status(400).json({ success: false, message: 'Danh sách từ không hợp lệ' });
+    }
+
+    const book = await VocabBook.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
+
+    const existingWords = new Set(book.words.map(w => w.word.toLowerCase().trim()));
+    let addedCount  = 0;
+    let skippedDup  = 0;
+    let skippedLimit = 0;
+
+    for (const item of words) {
+      const wordTrimmed = (item.word || '').trim();
+      if (!wordTrimmed) continue;
+
+      if (book.words.length >= 300) { skippedLimit++; continue; }
+
+      const key = wordTrimmed.toLowerCase();
+      if (existingWords.has(key)) { skippedDup++; continue; }
+
+      book.words.push({
+        word:         wordTrimmed,
+        meaning:      (item.meaning      || '').trim(),
+        example:      (item.example      || '').trim(),
+        phonetic:     (item.phonetic     || '').trim(),
+        partOfSpeech: (item.partOfSpeech || '').trim(),
+        source: 'bulk-import',
+        note: ''
+      });
+      existingWords.add(key);
+      addedCount++;
+    }
+
+    if (addedCount > 0) {
+      await book.save();
+      if (req.user.role === 'student') {
+        logActivity(req.user._id, { wordsAdded: addedCount });
+        req.user.updateStreak();
+        await req.user.save();
+      }
+    }
+
+    const parts = [`Đã thêm ${addedCount} từ`];
+    if (skippedDup   > 0) parts.push(`${skippedDup} từ trùng`);
+    if (skippedLimit > 0) parts.push(`${skippedLimit} từ vượt giới hạn 300`);
+    res.json({ success: true, addedCount, skippedDup, skippedLimit, message: parts.join(' · ') });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════════
 // DELETE /api/vocabbook/:id/words  – xoá nhiều từ cùng lúc
 // Body: { wordIds: [...] }
 // ══════════════════════════════════════════════════════

@@ -531,7 +531,9 @@ function renderBookContent(book) {
             (w.note || '').toLowerCase().includes(q));
         renderWordsTable(filtered);
         const totalEl = document.getElementById('stat-total');
-        if (totalEl) totalEl.textContent = `${filtered.length}/${book.words.length}`;
+        const limitEl = document.getElementById('stat-limit-label');
+        if (totalEl) totalEl.textContent = filtered.length;
+        if (limitEl) limitEl.textContent = ` / ${book.words.length} words`;
     } else {
         renderWordsTable(book.words);
     }
@@ -629,8 +631,10 @@ function filterWords(q) {
             : all;
         renderWordsTable(words);
         // Update total count label to show filtered result
-        const totalEl = document.getElementById('stat-total');
-        if (totalEl) totalEl.textContent = query ? `${words.length}/${all.length}` : all.length;
+        const totalEl    = document.getElementById('stat-total');
+        const limitEl    = document.getElementById('stat-limit-label');
+        if (totalEl) totalEl.textContent = query ? words.length : all.length;
+        if (limitEl) limitEl.textContent = query ? ` / ${all.length} words` : ' / 300 words';
     }, 120);
 }
 
@@ -2407,3 +2411,182 @@ window.openCurrentBookMenu = function() {
 };
 window.filterWords = filterWords;
 window.openEditWordModal = openEditWordModal;
+
+// ── Bulk import ──────────────────────────────────────────────────────────────
+
+let _bulkRows = []; // [{word, meaning, example, phonetic, partOfSpeech, status}]
+
+function openBulkImport() {
+    if (!currentBookId) { toast('Chọn sổ từ vựng trước', 'error'); return; }
+    document.getElementById('bulk-textarea').value = '';
+    document.getElementById('bulk-parse-error').style.display = 'none';
+    document.getElementById('bulk-step-1').style.display = '';
+    document.getElementById('bulk-step-2').style.display = 'none';
+    _bulkRows = [];
+    openModal('modal-bulk-import');
+}
+
+function bulkGoBack() {
+    document.getElementById('bulk-step-1').style.display = '';
+    document.getElementById('bulk-step-2').style.display = 'none';
+}
+
+async function parseBulkInput() {
+    const raw = document.getElementById('bulk-textarea').value.trim();
+    const errEl = document.getElementById('bulk-parse-error');
+    if (!raw) { errEl.textContent = 'Vui lòng nhập ít nhất một từ.'; errEl.style.display = ''; return; }
+    errEl.style.display = 'none';
+
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const parsed = [];
+    const existingSet = new Set((currentBookData?.words || []).map(w => w.word.toLowerCase().trim()));
+
+    for (const line of lines) {
+        let word = '', meaning = '';
+        const colonIdx = line.indexOf(':');
+        const dashIdx  = line.indexOf(' - ');
+        const tabIdx   = line.indexOf('\t');
+        if (colonIdx > 0) {
+            word    = line.slice(0, colonIdx).trim();
+            meaning = line.slice(colonIdx + 1).trim();
+        } else if (dashIdx > 0) {
+            word    = line.slice(0, dashIdx).trim();
+            meaning = line.slice(dashIdx + 3).trim();
+        } else if (tabIdx > 0) {
+            word    = line.slice(0, tabIdx).trim();
+            meaning = line.slice(tabIdx + 1).trim();
+        } else {
+            word = line.trim();
+        }
+        if (!word) continue;
+        const isDup = existingSet.has(word.toLowerCase());
+        parsed.push({ word, meaning, example: '', phonetic: '', partOfSpeech: '', status: isDup ? 'dup' : 'loading', selected: !isDup });
+    }
+
+    if (!parsed.length) { errEl.textContent = 'Không tìm thấy từ nào hợp lệ.'; errEl.style.display = ''; return; }
+
+    _bulkRows = parsed;
+    document.getElementById('bulk-step-1').style.display = 'none';
+    document.getElementById('bulk-step-2').style.display = '';
+    _renderBulkPreview();
+
+    // Auto-fetch examples concurrently for non-dup words
+    const fetches = _bulkRows.map((row, i) => {
+        if (row.status === 'dup') return Promise.resolve();
+        return _fetchWordInfo(row.word).then(info => {
+            _bulkRows[i].example      = info.example;
+            _bulkRows[i].phonetic     = info.phonetic;
+            _bulkRows[i].partOfSpeech = info.partOfSpeech;
+            _bulkRows[i].status       = 'ok';
+            _updateBulkRow(i);
+        }).catch(() => {
+            _bulkRows[i].status = 'ok';
+            _updateBulkRow(i);
+        });
+    });
+    await Promise.all(fetches);
+    _updateBulkStepInfo();
+}
+
+async function _fetchWordInfo(word) {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) return { phonetic: '', partOfSpeech: '', example: '' };
+    const data = await res.json();
+    const entry    = Array.isArray(data) ? data[0] : null;
+    if (!entry) return { phonetic: '', partOfSpeech: '', example: '' };
+    const phonetic    = entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '';
+    const meaning     = entry.meanings?.[0];
+    const partOfSpeech = meaning?.partOfSpeech || '';
+    const example     = meaning?.definitions?.[0]?.example || '';
+    return { phonetic, partOfSpeech, example };
+}
+
+function _renderBulkPreview() {
+    const tbody = document.getElementById('bulk-preview-body');
+    tbody.innerHTML = _bulkRows.map((r, i) => `
+        <tr id="bulk-row-${i}" class="${r.status === 'dup' ? 'bulk-row-dup' : ''}">
+          <td><input type="checkbox" id="bulk-chk-${i}" ${r.selected ? 'checked' : ''} ${r.status === 'dup' ? 'disabled' : ''} onchange="_bulkRows[${i}].selected=this.checked;_updateBulkStepInfo()"/></td>
+          <td><strong>${_esc(r.word)}</strong>${r.phonetic ? `<br><span class="bulk-phonetic">${_esc(r.phonetic)}</span>` : ''}</td>
+          <td>${_esc(r.meaning) || '<em style="color:var(--text3)">—</em>'}</td>
+          <td id="bulk-ex-${i}" class="bulk-ex-cell">
+            ${r.status === 'loading' ? '<span class="bulk-spinner"></span>' :
+              (r.example ? `<span class="bulk-example-text">${_esc(r.example)}</span>` : '<em style="color:var(--text3)">—</em>')}
+          </td>
+          <td id="bulk-st-${i}">${_bulkStatusBadge(r.status)}</td>
+        </tr>`).join('');
+    _updateBulkStepInfo();
+}
+
+function _updateBulkRow(i) {
+    const r = _bulkRows[i];
+    const exCell = document.getElementById(`bulk-ex-${i}`);
+    const stCell = document.getElementById(`bulk-st-${i}`);
+    const wordCell = document.querySelector(`#bulk-row-${i} td:nth-child(2)`);
+    if (exCell) exCell.innerHTML = r.example
+        ? `<span class="bulk-example-text">${_esc(r.example)}</span>`
+        : '<em style="color:var(--text3)">—</em>';
+    if (stCell) stCell.innerHTML = _bulkStatusBadge(r.status);
+    if (wordCell) wordCell.innerHTML = `<strong>${_esc(r.word)}</strong>${r.phonetic ? `<br><span class="bulk-phonetic">${_esc(r.phonetic)}</span>` : ''}`;
+}
+
+function _bulkStatusBadge(status) {
+    if (status === 'loading') return '<span class="bulk-spinner"></span>';
+    if (status === 'dup')     return '<span class="bulk-badge bulk-badge-dup">Trùng</span>';
+    return '<span class="bulk-badge bulk-badge-ok">OK</span>';
+}
+
+function _updateBulkStepInfo() {
+    const el = document.getElementById('bulk-step2-info');
+    if (!el) return;
+    const total    = _bulkRows.length;
+    const dups     = _bulkRows.filter(r => r.status === 'dup').length;
+    const selected = _bulkRows.filter(r => r.selected).length;
+    el.innerHTML = `<span>${total} từ được nhập</span>${dups ? `<span class="bulk-info-dup">· ${dups} từ trùng (bỏ qua)</span>` : ''}<span class="bulk-info-sel">· <strong>${selected}</strong> từ sẽ được thêm</span>`;
+}
+
+function bulkToggleAll(chk) {
+    _bulkRows.forEach((r, i) => {
+        if (r.status === 'dup') return;
+        r.selected = chk.checked;
+        const c = document.getElementById(`bulk-chk-${i}`);
+        if (c) c.checked = chk.checked;
+    });
+    _updateBulkStepInfo();
+}
+
+async function confirmBulkImport() {
+    const toAdd = _bulkRows.filter(r => r.selected && r.status !== 'dup');
+    if (!toAdd.length) { toast('Không có từ nào được chọn', 'error'); return; }
+
+    const btn = document.getElementById('btn-confirm-bulk');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="bulk-spinner"></span> Đang thêm…';
+
+    try {
+        const res  = await fetch(`/api/vocabbook/${currentBookId}/words/bulk`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+            body: JSON.stringify({ words: toAdd })
+        });
+        const data = await res.json();
+        if (!data.success) { toast(data.message || 'Lỗi thêm từ', 'error'); return; }
+        toast(data.message, 'success');
+        closeModal('modal-bulk-import');
+        await refreshCurrentBook();
+    } catch (e) {
+        toast('Lỗi kết nối', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-plus"></i> Thêm vào sổ';
+    }
+}
+
+function _esc(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+window.openBulkImport    = openBulkImport;
+window.parseBulkInput    = parseBulkInput;
+window.confirmBulkImport = confirmBulkImport;
+window.bulkGoBack        = bulkGoBack;
+window.bulkToggleAll     = bulkToggleAll;

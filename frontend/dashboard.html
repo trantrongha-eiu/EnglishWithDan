@@ -71,7 +71,7 @@
             <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
             <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
             <span style="color:var(--text3);font-size:12px">·</span>
-            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span> / 300 words</span>
+            <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span><span id="stat-limit-label"> / 300 words</span></span>
           </div>
         </div>
         <div class="book-progress-bar"><div class="book-progress-fill" id="book-progress-fill" style="width:0%"></div></div>
@@ -98,6 +98,9 @@
           </button>
           <button class="btn btn-ghost btn-sm" onclick="openAddWordManual()">
             <i class="fas fa-plus"></i> Add word
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="openBulkImport()" title="Nhập nhiều từ một lúc từ danh sách">
+            <i class="fas fa-file-import"></i> Nhập hàng loạt
           </button>
           <button class="btn btn-sm btn-hard-words" id="btn-hard-words" onclick="practiceHardWords()" style="display:none">
             <i class="fas fa-fire"></i> Hard words
@@ -502,6 +505,61 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-save-word')">Cancel</button>
       <button class="btn btn-primary" onclick="confirmSaveWord()" id="btn-confirm-save">Save word</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nhập hàng loạt -->
+<div class="modal-overlay hidden" id="modal-bulk-import">
+  <div class="modal-box modal-bulk">
+    <div class="modal-header">
+      <h3><i class="fas fa-file-import"></i> Nhập hàng loạt</h3>
+      <button class="modal-close" onclick="closeModal('modal-bulk-import')">×</button>
+    </div>
+
+    <!-- Step 1: Paste input -->
+    <div id="bulk-step-1">
+      <div class="modal-body">
+        <p class="bulk-hint">Mỗi dòng một từ. Hỗ trợ định dạng:<br>
+          <code>word: nghĩa</code> &nbsp;·&nbsp; <code>word - nghĩa</code> &nbsp;·&nbsp; <code>word&nbsp;&nbsp;nghĩa</code>
+        </p>
+        <textarea id="bulk-textarea" class="bulk-textarea" rows="10"
+          placeholder="abandon: từ bỏ&#10;acquire: có được, đạt được&#10;beneficial - có lợi&#10;consequence	hậu quả"></textarea>
+        <div id="bulk-parse-error" class="bulk-parse-error" style="display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('modal-bulk-import')">Hủy</button>
+        <button class="btn btn-primary" onclick="parseBulkInput()">
+          <i class="fas fa-arrow-right"></i> Xem trước &amp; thêm ví dụ
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Preview table -->
+    <div id="bulk-step-2" style="display:none">
+      <div class="bulk-step2-info" id="bulk-step2-info"></div>
+      <div class="modal-body" style="padding-top:0">
+        <div class="bulk-preview-wrap">
+          <table class="bulk-preview-table" id="bulk-preview-table">
+            <thead>
+              <tr>
+                <th style="width:32px"><input type="checkbox" id="bulk-check-all" onchange="bulkToggleAll(this)" checked/></th>
+                <th>Từ</th>
+                <th>Nghĩa</th>
+                <th>Ví dụ (tự động)</th>
+                <th style="width:72px">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="bulk-preview-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="bulkGoBack()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+        <button class="btn btn-primary" id="btn-confirm-bulk" onclick="confirmBulkImport()">
+          <i class="fas fa-plus"></i> Thêm vào sổ
+        </button>
+      </div>
     </div>
   </div>
 </div>
