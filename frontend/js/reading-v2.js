@@ -612,15 +612,40 @@ function filterPracticeByStatus(filter, btn) {
 
 function _applyPracticeFilters() {
   const q = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
-  document.querySelectorAll('#practice-passage-list .practice-card').forEach(card => {
+  const allCards = document.querySelectorAll('#practice-passage-list .practice-card');
+  let visibleCount = 0;
+  allCards.forEach(card => {
     const title = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
     const isDone = card.dataset.done === '1';
     const passTitle  = !q || title.includes(q);
     const passStatus = _practiceStatusFilter === 'all'
       || (_practiceStatusFilter === 'done' && isDone)
       || (_practiceStatusFilter === 'new'  && !isDone);
-    card.style.display = (passTitle && passStatus) ? '' : 'none';
+    const show = passTitle && passStatus;
+    card.style.display = show ? '' : 'none';
+    if (show) visibleCount++;
   });
+
+  // Empty state khi không có kết quả
+  const listEl = document.getElementById('practice-passage-list');
+  if (!listEl) return;
+  let emptyEl = document.getElementById('practice-filter-empty');
+  if (visibleCount === 0 && allCards.length > 0) {
+    if (!emptyEl) {
+      emptyEl = document.createElement('div');
+      emptyEl.id = 'practice-filter-empty';
+      emptyEl.style.cssText = 'text-align:center;padding:40px 16px;color:#9ca3af';
+      listEl.appendChild(emptyEl);
+    }
+    const icon = q ? '🔍' : (_practiceStatusFilter === 'done' ? '✅' : '🆕');
+    const msg  = q ? `Không tìm thấy bài nào khớp với "<strong>${escHtml(q)}</strong>"`
+                   : _practiceStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
+                   : 'Đã làm tất cả bài trong mục này rồi!';
+    emptyEl.innerHTML = `<div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div>`;
+    emptyEl.style.display = '';
+  } else if (emptyEl) {
+    emptyEl.style.display = 'none';
+  }
 }
 
 async function loadPracticePassages(category, tabEl) {
@@ -1881,10 +1906,14 @@ function restoreAnswers(isReview) {
 function buildQNavFooter() {
   const nav = document.getElementById('q-nav-scroll');
   if (!nav) return;
-  const allNums = state.passages.flatMap(p => getAllQuestionsFromPassage(p).map(q => q.questionNumber));
-  nav.innerHTML = allNums.map(n =>
-    `<button class="q-nav-btn" id="qnav-${n}" onclick="jumpToQuestion(${n})">${n}</button>`
-  ).join('');
+  const parts = state.passages.map((p, i) => {
+    const label = p.category?.replace('passage', 'P') || `P${i + 1}`;
+    const btns = getAllQuestionsFromPassage(p).map(q =>
+      `<button class="q-nav-btn" id="qnav-${q.questionNumber}" onclick="jumpToQuestion(${q.questionNumber})">${q.questionNumber}</button>`
+    ).join('');
+    return `<span class="q-nav-passage-label">${label}</span>${btns}`;
+  });
+  nav.innerHTML = parts.join('');
 }
 
 function updateQNavFooter() {
@@ -2049,6 +2078,14 @@ function showResult(r) {
   document.getElementById('r-wrong').textContent = r.wrongCount;
   document.getElementById('r-skip').textContent = r.skippedCount;
   document.getElementById('result-band').dataset.attemptId = r.attemptId;
+  const band = r.bandScore || 0;
+  const msgEl = document.getElementById('result-msg');
+  if (msgEl) {
+    msgEl.textContent = band >= 7.0 ? 'Xuất sắc! Band 7+ — bạn đang ở level rất tốt rồi! 🎉'
+      : band >= 6.0 ? 'Khá tốt! Tiếp tục ôn luyện để chinh phục Band 7 nhé!'
+      : band >= 5.0 ? 'Cố lên! Luyện thêm đọc nhanh và từ vựng học thuật là sẽ lên điểm ngay.'
+      : 'Đừng nản nhé — bắt đầu từ từ rồi sẽ tiến bộ rất nhanh thôi!';
+  }
   showScreen('result');
 }
 
@@ -2064,6 +2101,10 @@ async function loadReview(attemptId) {
   try {
     const res = await apiFetch(`/api/reading/attempt/${attemptId}/review`);
     if (!res.success) { showVocabToast('Không tải được bài review'); return; }
+    // Push URL để có thể bookmark/share link review
+    if (!location.search.includes(`review=${attemptId}`)) {
+      history.pushState({ screen: 'review', reviewId: attemptId }, '', `?review=${attemptId}`);
+    }
     renderReview(res.attempt);
   } catch (e) { showVocabToast('Lỗi tải bài review. Thử lại sau.'); }
 }
@@ -2156,14 +2197,16 @@ function switchReviewPassage(idx) {
 function buildReviewQNav(attempt, reviewMap) {
   const nav = document.getElementById('review-q-nav');
   if (!nav) return;
-  const allNums = attempt.passages.flatMap(p =>
-    getAllQuestionsFromPassage(p).map(q => q.questionNumber)
-  );
-  nav.innerHTML = allNums.map(n => {
-    const r = reviewMap[n];
-    const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
-    return `<button class="q-nav-btn ${cls}" title="Câu ${n}" onclick="jumpToReviewQuestion(${n})">${n}</button>`;
-  }).join('');
+  const parts = attempt.passages.map((p, i) => {
+    const label = p.category?.replace('passage', 'P') || `P${i + 1}`;
+    const btns = getAllQuestionsFromPassage(p).map(q => {
+      const r = reviewMap[q.questionNumber];
+      const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
+      return `<button class="q-nav-btn ${cls}" title="Câu ${q.questionNumber}" onclick="jumpToReviewQuestion(${q.questionNumber})">${q.questionNumber}</button>`;
+    }).join('');
+    return `<span class="q-nav-passage-label">${label}</span>${btns}`;
+  });
+  nav.innerHTML = parts.join('');
 }
 
 function jumpToReviewQuestion(qNum) {
@@ -2493,6 +2536,12 @@ async function loadPracticeReview(attemptId) {
         explanation:   ''
       };
     });
+    // Merge explanation từ passage questions (DB lưu trên question, không phải trên attempt.answers)
+    getAllQuestionsFromPassage(passage).forEach(q => {
+      if (reviewMap[q.questionNumber] && q.explanation) {
+        reviewMap[q.questionNumber].explanation = q.explanation;
+      }
+    });
 
     // Reuse the retry screen with read-only review
     const cleanPassage = JSON.parse(JSON.stringify(passage));
@@ -2528,11 +2577,15 @@ async function loadPracticeReview(attemptId) {
       `<div class="passage-title">${escHtml(passage.title || '')}</div>
        <div class="passage-text">${passage.content || ''}</div>`;
 
-    // Q-nav footer
+    // Q-nav footer với màu đúng/sai/bỏ qua
     const nav = document.getElementById('retry-q-nav');
     if (nav) {
       nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
-        .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+        .map(q => {
+          const r = reviewMap[q.questionNumber];
+          const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
+          return `<button class="q-nav-btn ${cls}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`;
+        })
         .join('');
     }
 

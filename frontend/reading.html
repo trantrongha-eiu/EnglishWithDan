@@ -34,6 +34,7 @@
           </p>
         </div>
         <div class="list-filter" id="list-filter-bar">
+          <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()" style="width:180px">
           <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
           <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
           <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
