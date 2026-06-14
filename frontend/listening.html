@@ -2845,7 +2845,7 @@
         if (banner)    banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
         if (filterBar) filterBar.style.display  = isLele ? 'none' : '';
         if (searchBar) searchBar.classList.toggle('hidden', !isLele);
-        if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; }
+        if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; _ltSearchVal = ''; }
         if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
         if (title) {
             title.innerHTML = isLele
@@ -3384,6 +3384,7 @@
             _ltPracticePartNum   = attempt.partNumber;
             _ltPracticeSectionId = attempt.sectionId;
             _ltPracticeSubmitted = true;
+            _ltPracticeActive    = true;  // needed so closeLTPractice cleans up correctly
 
             // Backup current state
             _ltPracticeBackup = {
@@ -3445,6 +3446,23 @@
                 } else {
                     tp.style.display = 'none';
                 }
+            }
+
+            // Q-nav: build scroll buttons for review
+            const nav = document.getElementById('lt-practice-q-nav');
+            if (nav) {
+                nav.innerHTML = _ltGetAllQs(reviewSection)
+                    .map(q => `<button class="q-nav-btn" onclick="ltScrollToQ(${q.questionNumber})">${q.questionNumber}</button>`)
+                    .join('');
+            }
+
+            // Set up audio so user can replay while reviewing
+            audio.pause();
+            audio.src = section.audioUrl || '';
+            if (section.audioUrl) {
+                audio.load();
+                const prBtn = document.getElementById('play-btn-pr');
+                if (prBtn) prBtn.textContent = '▶';
             }
 
             _hideLTPracticeHUD();
