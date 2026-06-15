@@ -1274,7 +1274,7 @@ body {
 .q-nav-btn { cursor: pointer; }
 
 /* ══ HISTORY MODAL ══════════════════════════════════════════════ */
-.modal-lg { max-width: 720px; width: 95vw; }
+.modal-lg { max-width: 880px; width: 95vw; }
 .modal-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px;
