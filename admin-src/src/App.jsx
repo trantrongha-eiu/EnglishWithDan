@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { ConfirmProvider } from './components/ConfirmDialog';
@@ -32,7 +32,7 @@ import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/admin">
+    <HashRouter>
       <AuthProvider>
         <ToastProvider>
           <ConfirmProvider>
@@ -73,6 +73,6 @@ export default function App() {
           </ConfirmProvider>
         </ToastProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
