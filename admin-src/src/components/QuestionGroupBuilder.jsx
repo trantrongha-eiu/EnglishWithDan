@@ -98,7 +98,7 @@ function defaultGroup(type) {
   switch (type) {
     case 'table':             return { ...base, tableConfig: { headers: ['', '', ''], rows: [['', '', '']] } };
     case 'note-form':         return { ...base, noteConfig: { title: '', lines: [''] } };
-    case 'matching-options':  return { ...base, matchingOptions: ['', '', '', '', '', ''], matchingReuseAllowed: false, interchangeableAnswers: false };
+    case 'matching-options':  return { ...base, matchingOptions: ['', '', '', '', '', ''], matchingOptionsTitle: '', matchingReuseAllowed: false, interchangeableAnswers: false };
     case 'matching-headings': return { ...base, headingsConfig: { headings: ROMAN.slice(0, 7).map(r => ({ numeral: r, text: '' })) } };
     case 'summary-completion':return { ...base, summaryConfig: { text: '', wordBank: 'ABCDEFGH'.split('').map(l => ({ letter: l, word: '' })) } };
     case 'map':               return { ...base, imageUrl: '' };
@@ -220,6 +220,12 @@ function MatchingOptionsConfig({ group, onChange }) {
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer', color: 'var(--green)', fontWeight: 600 }}>
               <input type="checkbox" checked={group.interchangeableAnswers || false} onChange={e => onChange({ ...group, interchangeableAnswers: e.target.checked })} /> Hoán đổi thứ tự (Choose TWO/THREE)
             </label>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Tiêu đề bảng lựa chọn (tuỳ chọn)</label>
+            <input className="form-input" style={{ marginTop: 4, fontSize: 12, padding: '5px 9px', width: '100%' }}
+              value={group.matchingOptionsTitle || ''} placeholder='VD: "Types of Products"'
+              onChange={e => onChange({ ...group, matchingOptionsTitle: e.target.value })} />
           </div>
           <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Danh sách lựa chọn (A, B, C…)</label>
           <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 5 }}>

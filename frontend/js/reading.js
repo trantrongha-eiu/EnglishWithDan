@@ -1109,9 +1109,14 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
     </div>`;
   }).join('');
 
+  const title = group.matchingOptionsTitle?.trim();
+  const chipBankHtml = title
+    ? `<div class="mo-options-box"><div class="mo-options-title">${escHtml(title)}</div><div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div></div>`
+    : `<div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>`;
+
   return `<div class="rq-mo-group">
     ${reuseNote}
-    <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
+    ${chipBankHtml}
     <div class="rq-mo-questions">${qRowsHtml}</div>
   </div>`;
 }
