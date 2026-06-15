@@ -145,14 +145,13 @@
             </div>
         </div>
 
-        <!-- Exam toolbar: highlight + dict -->
-        <div class="exam-toolbar" id="exam-toolbar">
-            <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
-                🖊 <small>Bôi màu (H)</small>
-            </button>
-        </div>
-
         <div class="exam-body">
+            <div class="exam-toolbar" id="exam-toolbar">
+                <span class="toolbar-label">Công cụ</span>
+                <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
+                    🖊<small>Bôi màu</small>
+                </button>
+            </div>
             <div class="questions-panel" id="questions-panel"></div>
             <div class="sidebar-panel">
                 <div class="q-nav-label">Câu hỏi</div>
@@ -267,18 +266,6 @@
         <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
             <div id="lt-practice-prog-fill" class="practice-prog-fill"></div>
         </div>
-        <!-- Practice toolbar (always visible while in practice screen) -->
-        <div id="lt-practice-toolbar" class="exam-toolbar">
-            <button class="tool-btn-rv" id="tool-hl-pr" onclick="setTool('highlight')">
-                ✏️ <small>Bôi màu</small>
-            </button>
-            <button class="tool-btn-rv" id="tool-dict-pr" onclick="setTool('dict')">
-                🔍 <small>Tra từ</small>
-            </button>
-            <button class="tool-btn-rv" id="tool-translate-pr" onmousedown="event.preventDefault()" onclick="translateSelected()">
-                🌐 <small>Dịch (T)</small>
-            </button>
-        </div>
         <!-- Audio bar -->
         <div class="audio-bar" id="practice-audio-bar">
             <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()">▶</button>
@@ -306,6 +293,18 @@
         </div>
         <!-- Body -->
         <div class="lt-practice-body">
+            <div id="lt-practice-toolbar" class="exam-toolbar">
+                <span class="toolbar-label">Công cụ</span>
+                <button class="tool-btn" id="tool-hl-pr" onclick="setTool('highlight')">
+                    ✏️<small>Bôi màu</small>
+                </button>
+                <button class="tool-btn" id="tool-dict-pr" onclick="setTool('dict')">
+                    🔍<small>Tra từ</small>
+                </button>
+                <button class="tool-btn" onmousedown="event.preventDefault()" onclick="translateSelected()">
+                    🌐<small>Dịch (T)</small>
+                </button>
+            </div>
             <div class="transcript-panel" id="lt-practice-transcript-panel" style="display:none">
                 <div class="transcript-header">
                     <span>📜 Transcript</span>
@@ -2572,7 +2571,7 @@
         function setTool(tool) {
             const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
             state.tool = next;
-            document.querySelectorAll('.tool-btn-rv').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tool-btn-rv, #lt-practice-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
             if (next === 'highlight') {
                 document.getElementById('tool-hl-rv')?.classList.add('active');
                 document.getElementById('tool-hl-pr')?.classList.add('active');

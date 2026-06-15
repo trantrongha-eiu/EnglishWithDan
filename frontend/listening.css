@@ -1240,35 +1240,59 @@ body {
 /* ══ EXAM TOOLBAR (highlight khi làm bài) ══════════════════════ */
 .exam-toolbar {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
+  gap: 6px;
+  padding: 10px 6px;
+  width: 64px;
+  flex-shrink: 0;
   background: #f8faff;
-  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  overflow-y: auto;
+}
+.toolbar-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
 }
 .tool-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
+  gap: 3px;
+  padding: 8px 4px;
+  width: 52px;
   border: 1.5px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #fff;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   color: #6b7280;
   transition: all .15s;
+  line-height: 1;
+}
+.tool-btn small {
+  font-size: 9px;
+  font-weight: 600;
+  color: #9ca3af;
+  line-height: 1.2;
+  text-align: center;
 }
 .tool-btn.active {
   background: #fef3c7;
   border-color: #f59e0b;
   color: #92400e;
 }
+.tool-btn.active small { color: #92400e; }
 .tool-btn:hover:not(.active) {
   border-color: #3d8bff;
   color: #3d8bff;
 }
+.tool-btn:hover:not(.active) small { color: #3d8bff; }
 
 /* ══ Q NAV BTN – cursor pointer khi review ════════════════════ */
 .q-nav-btn { cursor: pointer; }
@@ -1456,33 +1480,6 @@ body {
 .q-nav-btn.skipped  { background: #f3f4f6; border-color: #d1d5db; color: #9ca3af; }
 
 
-/* ────────────────────────────────────────────────────────────
-   EXAM TOOLBAR
-──────────────────────────────────────────────────────────── */
-.exam-toolbar {
-  display: flex;
-  gap: 8px;
-  padding: 6px 16px;
-  background: #fff;
-  border-bottom: 1px solid #f3f4f6;
-  align-items: center;
-}
-
-.tool-btn {
-  padding: 5px 14px;
-  border-radius: 8px;
-  border: 1.5px solid #e5e7eb;
-  background: #fff;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer; color: #6b7280;
-  font-family: inherit;
-  transition: all .15s;
-  display: flex; align-items: center; gap: 5px;
-  white-space: nowrap;
-}
-
-.tool-btn:hover  { border-color: #3d8bff; color: #3d8bff; }
-.tool-btn.active { background: #3d8bff; border-color: #3d8bff; color: #fff; }
 
 
 /* ────────────────────────────────────────────────────────────
@@ -1594,10 +1591,14 @@ body {
 [data-theme="dark"] .key-input:focus { border-color: #3d8bff; }
 
 /* ── Dark mode: exam toolbar ── */
-[data-theme="dark"] .exam-toolbar { background: #1f2937; border-bottom-color: #374151; }
-[data-theme="dark"] .tool-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .exam-toolbar { background: #1f2937; border-right-color: #374151; }
+[data-theme="dark"] .toolbar-label { color: #6b7280; }
+[data-theme="dark"] .tool-btn { background: #111827; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .tool-btn small { color: #6b7280; }
 [data-theme="dark"] .tool-btn:hover { border-color: #3d8bff; color: #60a5fa; }
+[data-theme="dark"] .tool-btn:hover small { color: #60a5fa; }
 [data-theme="dark"] .tool-btn.active { background: #3d8bff; border-color: #3d8bff; color: #fff; }
+[data-theme="dark"] .tool-btn.active small { color: #fff; }
 
 /* ── Dark mode: question items & text ── */
 [data-theme="dark"] .question-item { background: #1e2433; border-color: #374151; }
