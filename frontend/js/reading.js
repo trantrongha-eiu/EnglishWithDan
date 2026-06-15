@@ -1359,7 +1359,7 @@ function renderFillBlank(qNum, isReview, review) {
   }
   const val = state.answers[qNum] || '';
   return `<input class="fill-input" data-qnum="${qNum}" value="${escHtml(val)}"
-           oninput="setAnswer(${qNum},this.value)" placeholder="Nhập đáp án..." />`;
+           oninput="setAnswer(${qNum},this.value)" placeholder="Nhập đáp án..." autocomplete="off" />`;
 }
 
 /* ── Word Bank / Drag-drop ────────────────────────────────────────── */

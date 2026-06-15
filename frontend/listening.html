@@ -1605,7 +1605,7 @@
                 return `<span class="inline-input-wrap" id="q${num}" data-qnum="${num}">
                     <span class="q-badge-inline">${num}</span>
                     <input id="fi-${num}" class="fill-input-inline" type="text"
-                        value="${ua}" placeholder="..."
+                        value="${ua}" placeholder="..." autocomplete="off"
                         oninput="saveText(${num}, this.value)" />
                 </span>`;
             });
@@ -1735,7 +1735,7 @@
         function renderFillBlank(num, ua, ca, isReview) {
             const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct' : 'incorrect') : '';
             return `<input id="fi-${num}" class="fill-input ${cls}" type="text"
-                placeholder="Nhập câu trả lời..." value="${ua}"
+                placeholder="Nhập câu trả lời..." value="${ua}" autocomplete="off"
                 ${isReview ? 'readonly' : `oninput="saveText(${num}, this.value)"`} />`;
         }
 
