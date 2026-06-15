@@ -108,7 +108,8 @@ body.eye-protection .split-questions {
 .list-filter {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
   align-items: center;
 }
 
