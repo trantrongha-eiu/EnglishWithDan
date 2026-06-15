@@ -832,7 +832,7 @@ function _enterPracticeScreen(passage, category, passageId) {
   if (badge) badge.style.display = 'none';
 
   document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
+    <button class="btn-ghost" onclick="confirmCloseRetry()">← Chọn bài khác</button>
     <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
@@ -2306,7 +2306,17 @@ function jumpToRetryQuestion(qNum) {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+function confirmCloseRetry() {
+  const fromPractice = _retryState?.isPractice || _practiceMode;
+  if (fromPractice) {
+    document.getElementById('modal-retry-exit').classList.remove('hidden');
+  } else {
+    closeRetry();
+  }
+}
+
 function closeRetry() {
+  if (document.fullscreenElement) document.exitFullscreen();
   const fromPractice = _retryState?.isPractice || _practiceMode;
   _clearPracticeTimer();
   _hidePracticeHUD();

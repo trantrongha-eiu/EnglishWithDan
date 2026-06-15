@@ -304,7 +304,7 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="closeRetry()">✕</button>
+        <button class="exam-exit-btn" onclick="confirmCloseRetry()">✕</button>
         <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
       </div>
       <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
@@ -378,6 +378,20 @@
           </thead>
           <tbody id="history-tbody"></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+     MODAL – THOÁT LUYỆN BÀI LẺ READING
+     ════════════════════════════════════════════════════════ -->
+  <div id="modal-retry-exit" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <h3>Thoát luyện tập?</h3>
+      <p>Bạn có chắc muốn thoát bài luyện tập này không?</p>
+      <div class="modal-actions">
+        <button class="btn-ghost" onclick="closeModal('modal-retry-exit')">Ở lại</button>
+        <button class="btn-danger" onclick="closeModal('modal-retry-exit'); closeRetry()">Thoát</button>
       </div>
     </div>
   </div>
@@ -658,7 +672,7 @@
         const btn = document.getElementById(id);
         if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
       });
-      const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel'];
+      const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
       if (fsEl) {
         ids.forEach(id => {
           const el = document.getElementById(id);

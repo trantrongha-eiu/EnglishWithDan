@@ -539,7 +539,7 @@
                 const btn = document.getElementById(id);
                 if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
             });
-            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'toast', 'section-nav-fixed', 'settings-panel'];
+            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'modal-lt-practice-exit', 'toast', 'section-nav-fixed', 'settings-panel'];
             if (fsEl) {
                 ids.forEach(id => {
                     const el = document.getElementById(id);
@@ -3320,6 +3320,7 @@
 
     /* ── Close practice → back to section list ───────────────────────────── */
     function closeLTPractice() {
+        if (document.fullscreenElement) document.exitFullscreen();
         _clearLTPracticeTimer();
         _hideLTPracticeHUD();
         _ltPracticeSubmitted = false;
