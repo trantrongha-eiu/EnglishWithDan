@@ -1732,10 +1732,14 @@
         }
 
         function renderFillBlank(num, ua, ca, isReview) {
-            const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct' : 'incorrect') : '';
-            return `<input id="fi-${num}" class="fill-input ${cls}" type="text"
+            if (isReview) {
+                const alts = ca.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
+                const ok = alts.length > 0 && alts.some(a => a === ua.toLowerCase().trim());
+                return `<span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}" style="display:inline-block;min-width:80px;padding:4px 14px;border-radius:6px;font-size:14px;font-weight:600;margin:4px 0">${escHtml(ua || '–')}</span>`;
+            }
+            return `<input id="fi-${num}" class="fill-input" type="text"
                 placeholder="Nhập câu trả lời..." value="${ua}" autocomplete="off"
-                ${isReview ? 'readonly' : `oninput="saveText(${num}, this.value)"`} />`;
+                oninput="saveText(${num}, this.value)" />`;
         }
 
         function renderInlineDrop(num, questionText, ua, ca, isReview) {
@@ -3156,6 +3160,9 @@
     /* ── Submit + grade ──────────────────────────────────────────────────── */
     function submitLTPractice() {
         if (!_ltCleanSection || !_ltOrigSection) return;
+        try { _doSubmitLTPractice(); } catch(e) { console.error('[submitLTPractice]', e); toast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
+    }
+    function _doSubmitLTPractice() {
 
         const elapsed = _stopLTPracticeTimer();
         const allQ    = _ltGetAllQs(_ltOrigSection);
@@ -3248,7 +3255,8 @@
             <div class="section-title-text">${escHtml(_ltOrigSection.title || '')}</div>
         </div>`;
         (reviewSection.questionGroups || []).forEach((group, gi) => {
-            html += renderQuestionGroup(group, gi, true);
+            try { html += renderQuestionGroup(group, gi, true); }
+            catch (e) { console.error('[lt-review] group', gi, e); }
         });
 
         inner.innerHTML = html;
@@ -3312,7 +3320,7 @@
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
             <button class="btn-primary" onclick="retryLTPractice()">🔁 Làm lại bài này</button>`;
-    }
+    } // end _doSubmitLTPractice
 
     /* ── Close practice → back to section list ───────────────────────────── */
     function closeLTPractice() {
