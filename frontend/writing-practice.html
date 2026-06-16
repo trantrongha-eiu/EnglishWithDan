@@ -1850,6 +1850,7 @@ function confirmWpQuit() {
 }
 
 function exitWpPractice() {
+  if (sessionDone === 0) { saveBatch(); window.location.href = 'dashboard.html'; return; }
   askWpQuit(() => { saveBatch(); window.location.href = 'dashboard.html'; }, {
     mascot: '🚪',
     title: 'Rời luyện tập?',

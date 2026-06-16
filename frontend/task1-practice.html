@@ -711,6 +711,7 @@ document.getElementById('quit-leave-btn').onclick = () => {
 };
 
 function exitT1Practice() {
+  if (sessionDone === 0) { window.location.href = 'dashboard.html'; return; }
   askWpQuit(() => { window.location.href = 'dashboard.html'; }, {
     mascot: '🚪',
     title: 'Rời luyện tập?',
