@@ -28,6 +28,7 @@ import VocabActivity from './pages/VocabActivity';
 import Messages from './pages/Messages';
 import WritingGrades from './pages/WritingGrades';
 import WritingSamples from './pages/WritingSamples';
+import Tuition from './pages/Tuition';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -66,6 +67,7 @@ export default function App() {
                 <Route path="messages" element={<Messages />} />
                 <Route path="writing-grades" element={<WritingGrades />} />
                 <Route path="writing-samples" element={<WritingSamples />} />
+                <Route path="tuition" element={<Tuition />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -118,6 +118,7 @@ app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));
 app.use('/api/task2',           require('./routes/task2Practice'));
 app.use('/api/difficult-words', require('./routes/difficultWords'));
+app.use('/api/tuition',        require('./routes/tuition'));
 
 // ── 404 handler ──────────────────────────────────────────────
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Route không tồn tại' }));

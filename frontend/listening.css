@@ -501,10 +501,11 @@ body {
 .q-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
 
 .q-badge {
-  width: 26px; height: 26px;
+  min-width: 26px; height: 26px;
+  padding: 0 8px;
   background: #3d8bff;
   color: #fff;
-  border-radius: 50%;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -512,6 +513,7 @@ body {
   font-weight: 700;
   flex-shrink: 0;
   margin-top: 1px;
+  white-space: nowrap;
 }
 
 .q-text { font-size: 14px; color: #1a1a2e; line-height: 1.65; font-weight: 500; flex: 1; }

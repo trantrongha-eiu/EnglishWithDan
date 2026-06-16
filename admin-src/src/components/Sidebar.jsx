@@ -27,6 +27,7 @@ const NAV = [
   { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing' },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
   { to: '/messages',        icon: '✉️', label: 'Hộp thư' },
+  { to: '/tuition',         icon: '💰', label: 'Học phí' },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
