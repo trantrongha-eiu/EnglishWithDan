@@ -51,10 +51,6 @@
         </button>
       </div>
 
-      <!-- Search bar – chỉ hiện ở Bài lẻ mode -->
-      <div id="practice-search-bar" class="hidden" style="margin:8px 0 4px">
-        <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:260px">
-      </div>
 
       <!-- Practice picker (Bài lẻ mode) -->
       <div id="practice-picker" class="hidden">
@@ -74,9 +70,12 @@
           <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
             <span class="plele-badge at">AT</span> Actual Tests
           </button>
-          <button class="plele-tab" onclick="showPracticeHistoryModal()" style="margin-left:auto;background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
-            📋 Lịch sử
-          </button>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
+            <button onclick="showPracticeHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex-shrink:0">
+              📋 Lịch sử
+            </button>
+          </div>
         </div>
         <div class="plele-filter-bar" id="practice-filter-bar">
           <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>

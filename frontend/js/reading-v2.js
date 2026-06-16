@@ -571,7 +571,6 @@ function setReadingMode(mode) {
   const wrapper    = document.getElementById('tests-wrapper');
   const banner     = document.getElementById('resume-banner');
   const filterBar  = document.getElementById('list-filter-bar');
-  const searchBar  = document.getElementById('practice-search-bar');
   const subtitle   = document.getElementById('list-mode-subtitle');
   const title      = document.getElementById('list-mode-title');
 
@@ -579,7 +578,6 @@ function setReadingMode(mode) {
   if (wrapper)   wrapper.style.display   = isLele ? 'none' : '';
   if (banner)    banner.style.display    = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
   if (filterBar) filterBar.style.display = isLele ? 'none' : '';
-  if (searchBar) searchBar.classList.toggle('hidden', !isLele);
   if (!isLele) { const inp = document.getElementById('practice-search-input'); if (inp) inp.value = ''; }
   if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
   if (title) {

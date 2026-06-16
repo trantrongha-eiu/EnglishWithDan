@@ -46,10 +46,6 @@
                 <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')">🎵 Bài lẻ</button>
             </div>
 
-            <!-- Search bar – chỉ hiện ở Bài lẻ mode -->
-            <div id="lt-practice-search-bar" class="hidden" style="margin:8px 0 4px">
-                <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:260px">
-            </div>
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
             <div id="resume-banner">
@@ -81,9 +77,12 @@
                     <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
                         <span class="plele-badge at">AT</span> Actual Tests
                     </button>
-                    <button onclick="showLTPracticeHistoryModal()" style="margin-left:auto;background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px">
-                        📋 Lịch sử
-                    </button>
+                    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
+                        <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:180px" autocomplete="off">
+                        <button onclick="showLTPracticeHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex-shrink:0">
+                            📋 Lịch sử
+                        </button>
+                    </div>
                 </div>
                 <!-- Filter bar: đã làm / chưa làm -->
                 <div class="plele-filter-bar" id="lt-practice-filter-bar">
@@ -2872,12 +2871,10 @@
         const subtitle = document.getElementById('ls-mode-subtitle');
         const title    = document.getElementById('ls-mode-title');
 
-        const searchBar = document.getElementById('lt-practice-search-bar');
         if (picker)    picker.classList.toggle('hidden', !isLele);
         if (wrapper)   wrapper.style.display    = isLele ? 'none' : '';
         if (banner)    banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
         if (filterBar) filterBar.style.display  = isLele ? 'none' : '';
-        if (searchBar) searchBar.classList.toggle('hidden', !isLele);
         if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; _ltSearchVal = ''; }
         if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
         if (title) {
