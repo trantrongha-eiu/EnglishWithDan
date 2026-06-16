@@ -17,6 +17,7 @@
     },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
     { href: 'inbox.html',            icon: 'fa-envelope',    label: 'Hộp thư', badge: true, badgeId: 'navInboxBadge' },
+    { href: 'tuition.html',          icon: 'fa-money-bill-wave', label: 'Học phí', badge: true, badgeId: 'navTuitionBadge' },
   ];
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
@@ -196,6 +197,11 @@
     fetch(API + '/writing/unread-feedback-count', { headers: headers })
       .then(function (r) { return r.json(); })
       .then(function (d) { if (d.count > 0) showBadge('navWritingBadge', d.count); })
+      .catch(function () {});
+
+    fetch(API + '/tuition/my/summary', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d.unpaidCount > 0) showBadge('navTuitionBadge', d.unpaidCount); })
       .catch(function () {});
   }
 })();

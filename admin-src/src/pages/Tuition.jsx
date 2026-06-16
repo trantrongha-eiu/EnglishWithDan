@@ -70,8 +70,13 @@ export default function Tuition() {
   const [bulkMsg, setBulkMsg]     = useState('');
   const [sendingBulk, setSendingBulk] = useState(false);
 
+  // ── Student unpaid warning (when creating new fee) ──
+  const [studentUnpaid, setStudentUnpaid] = useState(null); // { count, total }
+
   useEffect(() => { loadStudents(); }, []);
-  useEffect(() => { if (activeTab === 'fees') loadFees(1); }, [filter, activeTab]);
+  useEffect(() => {
+    if (activeTab === 'fees') { setPage(1); loadFees(1); }
+  }, [filter, activeTab]);
   useEffect(() => { if (activeTab === 'summary') loadSummary(); }, [summaryYear, activeTab]);
   useEffect(() => { if (activeTab === 'settings') loadSettings(); }, [activeTab]);
 
@@ -116,8 +121,19 @@ export default function Tuition() {
   }
 
   // ── CRUD ──
+  async function fetchStudentUnpaid(studentId) {
+    if (!studentId) { setStudentUnpaid(null); return; }
+    try {
+      const d = await apiFetch(`/tuition?studentId=${studentId}&isPaid=false&limit=100`);
+      const fees = d.fees || [];
+      const total = fees.reduce((s, f) => s + (f.amount || 0), 0);
+      setStudentUnpaid(fees.length > 0 ? { count: fees.length, total } : null);
+    } catch { setStudentUnpaid(null); }
+  }
+
   function openCreate() {
     setEditFee(null);
+    setStudentUnpaid(null);
     setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
     setShowForm(true);
   }
@@ -160,7 +176,7 @@ export default function Tuition() {
         method: 'PUT',
         body: JSON.stringify({ isPaid: !fee.isPaid }),
       });
-      setFees(prev => prev.map(f => f._id === fee._id ? { ...f, isPaid: !f.isPaid, paidDate: !f.isPaid ? new Date().toISOString() : undefined } : f));
+      loadFees(page); // reload từ server để đảm bảo dữ liệu chính xác
     } catch (e) { toast(e.message, 'error'); }
   }
 
@@ -251,6 +267,15 @@ export default function Tuition() {
   const paidAmount   = fees.reduce((a, f) => a + (f.isPaid ? f.amount : 0), 0);
   const unpaidAmount = totalAmount - paidAmount;
   const pendingNotify = fees.filter(f => f.studentNotified && !f.isPaid).length;
+
+  // ── accumulated unpaid per student (for warning icon in table) ──
+  const studentDebtMap = fees.reduce((map, f) => {
+    if (!f.isPaid) {
+      const sid = f.studentId?._id || f.studentId;
+      map[sid] = (map[sid] || 0) + (f.amount || 0);
+    }
+    return map;
+  }, {});
 
   return (
     <>
@@ -365,12 +390,17 @@ export default function Tuition() {
                     <input className="form-input" placeholder="Tìm học viên..." value={studentSearch}
                       onChange={e => setStudentSearch(e.target.value)} style={{ marginBottom: 6 }} />
                     <select className="form-input" value={formData.studentId}
-                      onChange={e => setFormData(f => ({ ...f, studentId: e.target.value }))} required>
+                      onChange={e => { setFormData(f => ({ ...f, studentId: e.target.value })); fetchStudentUnpaid(e.target.value); }} required>
                       <option value="">-- Chọn học viên --</option>
                       {filteredStudents.map(s => (
                         <option key={s._id} value={s._id}>{s.username} ({s.email})</option>
                       ))}
                     </select>
+                    {studentUnpaid && (
+                      <div style={{ marginTop: 8, padding: '8px 14px', background: '#fef9c3', border: '1px solid #fde047', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#854d0e' }}>
+                        ⚠️ Học viên này đang nợ <strong>{studentUnpaid.count} kỳ</strong>, tổng cộng: <strong>{Number(studentUnpaid.total).toLocaleString('vi-VN')} ₫</strong> chưa đóng.
+                      </div>
+                    )}
                   </div>
                 )}
                 {editFee && (
@@ -457,6 +487,15 @@ export default function Tuition() {
                       <td>
                         <strong>{f.studentId?.username || '–'}</strong>
                         <div style={{ fontSize: 11, color: 'var(--text3)' }}>{f.studentId?.email}</div>
+                        {(() => {
+                          const sid = f.studentId?._id || f.studentId;
+                          const debt = studentDebtMap[sid];
+                          return debt > (f.amount || 0) ? (
+                            <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 700, marginTop: 2 }}>
+                              ⚠️ Tổng nợ: {Number(debt).toLocaleString('vi-VN')} ₫
+                            </div>
+                          ) : null;
+                        })()}
                       </td>
                       <td>
                         <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 20, background: f.feeType === 'monthly' ? '#eff6ff' : '#f0fdf4', color: f.feeType === 'monthly' ? '#1d4ed8' : '#15803d', fontWeight: 600 }}>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Học phí – EnglishWithDan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <script src="js/theme.js"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); }
+
+    .tuition-layout { max-width: 860px; margin: 0 auto; padding: 28px 16px; }
+
+    /* Summary banner */
+    .debt-banner {
+      border-radius: 16px; padding: 22px 28px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .debt-banner.has-debt {
+      background: linear-gradient(135deg,#dc2626,#b91c1c);
+      color: #fff; border: none;
+    }
+    .debt-banner.no-debt {
+      background: linear-gradient(135deg,#16a34a,#15803d);
+      color: #fff; border: none;
+    }
+    .debt-banner.loading {
+      background: var(--card); border: 1px solid var(--border);
+    }
+    .debt-icon { font-size: 40px; flex-shrink: 0; }
+    .debt-info { flex: 1; min-width: 160px; }
+    .debt-label { font-size: 13px; opacity: .85; margin-bottom: 4px; }
+    .debt-amount { font-size: 32px; font-weight: 800; line-height: 1.1; }
+    .debt-sub { font-size: 13px; opacity: .8; margin-top: 4px; }
+
+    /* Section headings */
+    .section-title {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      margin: 0 0 12px; display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Fee card */
+    .fee-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+      margin-bottom: 10px; transition: box-shadow .15s;
+    }
+    .fee-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    .fee-card.unpaid { border-left: 4px solid #dc2626; }
+    .fee-card.notified { border-left: 4px solid #7c3aed; }
+    .fee-card.paid { border-left: 4px solid #16a34a; opacity: .7; }
+
+    .fee-period { flex: 1; min-width: 130px; }
+    .fee-type-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+    .fee-period-text { font-size: 16px; font-weight: 700; color: var(--text); }
+    .fee-note { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+    .fee-amount { font-size: 20px; font-weight: 800; color: var(--text); min-width: 120px; }
+    .fee-amount.unpaid { color: #dc2626; }
+    .fee-amount.paid-color { color: #16a34a; }
+
+    .status-badge {
+      padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .status-unpaid   { background: #fee2e2; color: #dc2626; }
+    .status-notified { background: #ede9fe; color: #7c3aed; }
+    .status-paid     { background: #dcfce7; color: #16a34a; }
+
+    .btn-notify {
+      padding: 9px 18px; background: #3b82f6; color: #fff; border: none;
+      border-radius: 9px; font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: .15s; white-space: nowrap;
+    }
+    .btn-notify:hover { background: #2563eb; }
+    .btn-notify:disabled { opacity: .6; cursor: default; }
+
+    /* Payment info */
+    .payment-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-top: 24px;
+    }
+    .bank-info { font-size: 14px; line-height: 2.2; }
+    .bank-row { display: flex; align-items: center; gap: 10px; }
+    .bank-label { color: var(--text3); min-width: 130px; font-size: 13px; }
+    .bank-value { font-weight: 700; color: var(--text); }
+    .bank-account-num {
+      font-family: 'JetBrains Mono', monospace; font-size: 17px;
+      font-weight: 800; color: #1d4ed8; letter-spacing: 1px;
+      background: rgba(59,130,246,.08); padding: 4px 12px; border-radius: 8px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .copy-btn {
+      background: none; border: none; cursor: pointer; color: #3b82f6;
+      font-size: 13px; padding: 2px 4px; border-radius: 4px; transition: .15s;
+    }
+    .copy-btn:hover { background: rgba(59,130,246,.1); }
+
+    .payment-note {
+      margin-top: 16px; padding: 12px 16px;
+      background: rgba(59,130,246,.07); border-radius: 10px;
+      font-size: 13px; color: #1e40af; line-height: 1.8;
+    }
+
+    .qr-wrap { text-align: center; }
+    .qr-wrap img {
+      max-width: 220px; max-height: 220px; border-radius: 10px;
+      border: 1px solid var(--border); display: block; margin: 0 auto 8px;
+    }
+    .qr-caption { font-size: 12px; color: var(--text3); }
+
+    .payment-layout { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text3); }
+    .empty-state i { font-size: 48px; margin-bottom: 16px; display: block; }
+
+    /* Paid section toggle */
+    .paid-toggle {
+      background: none; border: none; cursor: pointer; font-family: inherit;
+      color: var(--text3); font-size: 13px; font-weight: 600;
+      padding: 6px 0; display: flex; align-items: center; gap: 6px;
+      margin-bottom: 10px;
+    }
+    .paid-toggle:hover { color: var(--text2); }
+
+    /* Toast */
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 340px; animation: slideIn .25s ease; }
+    .toast.success { border-left: 4px solid #22c55e; }
+    .toast.error   { border-left: 4px solid #ef4444; }
+    .toast.info    { border-left: 4px solid #3b82f6; }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+    .toast-body { flex: 1; }
+    .toast-title { font-size: 13px; font-weight: 700; color: var(--text); }
+    .toast-msg   { font-size: 12px; color: var(--text3); }
+    .toast.hiding { opacity: 0; transition: opacity .3s; }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  </style>
+</head>
+<body>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+
+  <div class="tuition-layout">
+
+    <!-- Debt summary banner -->
+    <div class="debt-banner loading" id="debtBanner">
+      <div class="debt-icon">💰</div>
+      <div class="debt-info">
+        <div class="debt-label">Đang tải thông tin học phí...</div>
+        <div class="debt-amount" style="font-size:18px; opacity:.5;">–</div>
+      </div>
+    </div>
+
+    <!-- Unpaid fees -->
+    <div id="unpaidSection" style="display:none; margin-bottom:28px;">
+      <div class="section-title"><i class="fas fa-exclamation-circle" style="color:#dc2626;"></i> Học phí chưa đóng</div>
+      <div id="unpaidList"></div>
+    </div>
+
+    <!-- Paid fees (collapsible) -->
+    <div id="paidSection" style="display:none;">
+      <button class="paid-toggle" onclick="togglePaidSection()">
+        <i class="fas fa-chevron-right" id="paidToggleIcon"></i>
+        <span id="paidToggleLabel">Xem học phí đã đóng</span>
+      </button>
+      <div id="paidList" style="display:none;"></div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <i class="fas fa-receipt"></i>
+      <div style="font-size:16px; font-weight:600; margin-bottom:8px;">Chưa có thông tin học phí</div>
+      <div style="font-size:14px;">Liên hệ giáo viên để được cập nhật thông tin học phí.</div>
+    </div>
+
+    <!-- Payment info (bank + QR) -->
+    <div class="payment-card" id="paymentCard" style="display:none;">
+      <h3 style="margin:0 0 20px; font-size:16px; font-weight:700;"><i class="fas fa-university"></i> Thông tin chuyển khoản</h3>
+      <div class="payment-layout">
+        <div style="flex:1; min-width:220px;">
+          <div class="bank-info" id="bankInfoBody"></div>
+          <div class="payment-note" id="paymentNoteBody" style="display:none;"></div>
+        </div>
+        <div class="qr-wrap" id="qrWrap" style="display:none;">
+          <img id="qrImg" src="" alt="QR ngân hàng">
+          <div class="qr-caption">Quét mã để chuyển khoản</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    const API = 'https://englishwithdan.onrender.com';
+    function tok() { return localStorage.getItem('token'); }
+    function hdrs() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok() }; }
+
+    function showToast(type, title, msg, duration = 4000) {
+      const icons = { success:'✅', error:'❌', info:'ℹ️' };
+      const el = document.createElement('div');
+      el.className = 'toast ' + type;
+      el.innerHTML = `<div class="toast-icon">${icons[type]||'ℹ️'}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
+      document.getElementById('toastContainer').appendChild(el);
+      if (duration > 0) setTimeout(() => { el.classList.add('hiding'); setTimeout(() => el.remove(), 300); }, duration);
+    }
+
+    function fmtVND(n) { return Number(n || 0).toLocaleString('vi-VN') + ' ₫'; }
+
+    const MONTHS = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+      'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+    function fmtPeriod(fee) {
+      return fee.feeType === 'monthly'
+        ? (MONTHS[fee.month] || 'Tháng ' + fee.month) + '/' + fee.year
+        : (fee.courseName || 'Khóa học');
+    }
+    function fmtTypeLabel(fee) {
+      return fee.feeType === 'monthly' ? 'Học phí tháng' : 'Học phí khóa học';
+    }
+
+    function renderFeeCard(fee) {
+      let stateClass = 'unpaid', statusHtml = '', btnHtml = '';
+      if (fee.isPaid) {
+        stateClass = 'paid';
+        const paidDate = fee.paidDate ? new Date(fee.paidDate).toLocaleDateString('vi-VN') : '';
+        statusHtml = `<span class="status-badge status-paid">✅ Đã đóng${paidDate ? ' · ' + paidDate : ''}</span>`;
+      } else if (fee.studentNotified) {
+        stateClass = 'notified';
+        statusHtml = '<span class="status-badge status-notified">⏳ Đang xác nhận</span>';
+      } else {
+        statusHtml = '<span class="status-badge status-unpaid">❌ Chưa đóng</span>';
+        btnHtml = `<button class="btn-notify" id="nbtn-${fee._id}" onclick="notifyPayment('${fee._id}')">💸 Đã chuyển khoản</button>`;
+      }
+      return `<div class="fee-card ${stateClass}" id="fcard-${fee._id}">
+        <div class="fee-period">
+          <div class="fee-type-label">${fmtTypeLabel(fee)}</div>
+          <div class="fee-period-text">${fmtPeriod(fee)}</div>
+          ${fee.note ? `<div class="fee-note">${fee.note}</div>` : ''}
+        </div>
+        <div class="fee-amount ${fee.isPaid ? 'paid-color' : 'unpaid'}">${fmtVND(fee.amount)}</div>
+        ${statusHtml}
+        ${btnHtml}
+      </div>`;
+    }
+
+    let _paidVisible = false;
+    function togglePaidSection() {
+      _paidVisible = !_paidVisible;
+      document.getElementById('paidList').style.display = _paidVisible ? 'block' : 'none';
+      document.getElementById('paidToggleIcon').style.transform = _paidVisible ? 'rotate(90deg)' : '';
+      document.getElementById('paidToggleLabel').textContent = _paidVisible ? 'Ẩn học phí đã đóng' : 'Xem học phí đã đóng';
+    }
+
+    async function load() {
+      try {
+        const res  = await fetch(API + '/api/tuition/my', { headers: hdrs() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Lỗi tải dữ liệu');
+
+        const fees    = data.fees    || [];
+        const settings = data.settings || {};
+
+        // ── Debt banner ──────────────────────────────────────
+        const unpaid = fees.filter(f => !f.isPaid);
+        const totalUnpaid = unpaid.reduce((s, f) => s + (f.amount || 0), 0);
+        const paid   = fees.filter(f => f.isPaid);
+        const banner = document.getElementById('debtBanner');
+
+        if (fees.length === 0) {
+          // no fees at all
+          banner.className = 'debt-banner no-debt';
+          banner.innerHTML = '<div class="debt-icon">🎉</div><div class="debt-info"><div class="debt-label">Không có thông tin học phí nào</div><div class="debt-amount" style="font-size:18px;">Liên hệ giáo viên</div></div>';
+          document.getElementById('emptyState').style.display = 'block';
+        } else if (unpaid.length === 0) {
+          // all paid
+          banner.className = 'debt-banner no-debt';
+          banner.innerHTML = `<div class="debt-icon">✅</div><div class="debt-info"><div class="debt-label">Tất cả học phí đã được đóng</div><div class="debt-amount">Không nợ học phí</div><div class="debt-sub">${paid.length} khoản đã đóng</div></div>`;
+        } else {
+          // has unpaid
+          const pending = unpaid.filter(f => f.studentNotified).length;
+          banner.className = 'debt-banner has-debt';
+          banner.innerHTML = `
+            <div class="debt-icon">⚠️</div>
+            <div class="debt-info">
+              <div class="debt-label">Tổng học phí cần đóng (cộng dồn ${unpaid.length} kỳ chưa thanh toán)</div>
+              <div class="debt-amount">${fmtVND(totalUnpaid)}</div>
+              <div class="debt-sub">${pending > 0 ? pending + ' kỳ đang chờ xác nhận · ' : ''}Vui lòng chuyển khoản và bấm "Đã chuyển khoản"</div>
+            </div>`;
+        }
+
+        // ── Unpaid section ───────────────────────────────────
+        if (unpaid.length > 0) {
+          document.getElementById('unpaidSection').style.display = 'block';
+          document.getElementById('unpaidList').innerHTML = unpaid.map(renderFeeCard).join('');
+        }
+
+        // ── Paid section ─────────────────────────────────────
+        if (paid.length > 0) {
+          document.getElementById('paidSection').style.display = 'block';
+          document.getElementById('paidToggleLabel').textContent = `Xem ${paid.length} khoản học phí đã đóng`;
+          document.getElementById('paidList').innerHTML = paid.map(renderFeeCard).join('');
+        }
+
+        // ── Payment info ─────────────────────────────────────
+        if (settings.bankAccount || settings.bankName) {
+          document.getElementById('paymentCard').style.display = 'block';
+          const rows = [];
+          if (settings.bankName)    rows.push(`<div class="bank-row"><span class="bank-label">🏦 Ngân hàng</span><span class="bank-value">${settings.bankName}</span></div>`);
+          if (settings.accountName) rows.push(`<div class="bank-row"><span class="bank-label">👤 Chủ tài khoản</span><span class="bank-value">${settings.accountName}</span></div>`);
+          if (settings.bankAccount) rows.push(`<div class="bank-row"><span class="bank-label">💳 Số tài khoản</span><span class="bank-account-num">${settings.bankAccount}<button class="copy-btn" onclick="copyAccount('${settings.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
+          if (settings.defaultMonthlyFee) rows.push(`<div class="bank-row"><span class="bank-label">💰 HP/tháng</span><span class="bank-value" style="color:#16a34a;">${fmtVND(settings.defaultMonthlyFee)}</span></div>`);
+          document.getElementById('bankInfoBody').innerHTML = rows.join('');
+          if (settings.paymentNote) {
+            const noteEl = document.getElementById('paymentNoteBody');
+            noteEl.style.display = 'block';
+            noteEl.innerHTML = '📋 <strong>Hướng dẫn CK:</strong> ' + settings.paymentNote.replace(/\n/g, '<br>');
+          }
+          if (settings.qrImageUrl) {
+            document.getElementById('qrWrap').style.display = 'block';
+            document.getElementById('qrImg').src = settings.qrImageUrl;
+          }
+        }
+
+      } catch (err) {
+        const banner = document.getElementById('debtBanner');
+        banner.className = 'debt-banner loading';
+        banner.innerHTML = '<div class="debt-icon">⚠️</div><div class="debt-info"><div class="debt-label" style="color:#dc2626;">Không tải được dữ liệu. Vui lòng thử lại.</div></div>';
+        console.error(err);
+      }
+    }
+
+    async function notifyPayment(feeId) {
+      const btn = document.getElementById('nbtn-' + feeId);
+      if (btn) { btn.disabled = true; btn.textContent = 'Đang gửi...'; }
+      try {
+        const res  = await fetch(API + `/api/tuition/${feeId}/notify`, { method: 'POST', headers: hdrs() });
+        const data = await res.json();
+        if (data.success) {
+          showToast('success', 'Đã gửi thông báo', 'Admin sẽ xác nhận thanh toán của bạn sớm nhất!');
+          // reload page after 1.5s
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast('error', 'Lỗi', data.message || 'Không gửi được');
+          if (btn) { btn.disabled = false; btn.textContent = '💸 Đã chuyển khoản'; }
+        }
+      } catch {
+        showToast('error', 'Lỗi', 'Không kết nối được server');
+        if (btn) { btn.disabled = false; btn.textContent = '💸 Đã chuyển khoản'; }
+      }
+    }
+
+    function copyAccount(num) {
+      navigator.clipboard.writeText(num).then(() => {
+        showToast('success', 'Đã sao chép', 'Số tài khoản đã được sao chép vào clipboard', 2000);
+      }).catch(() => {
+        showToast('info', 'Số tài khoản', num, 4000);
+      });
+    }
+
+    load();
+  </script>
+</body>
+</html>

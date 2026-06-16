@@ -250,6 +250,15 @@ router.post('/remind-bulk', auth, adminOnly, async (req, res) => {
 // STUDENT — view own fees + notify payment
 // ────────────────────────────────────────────────
 
+// GET /api/tuition/my/summary — lightweight badge count (unpaid fees)
+router.get('/my/summary', auth, async (req, res) => {
+  try {
+    const fees = await TuitionFee.find({ studentId: req.user._id, isPaid: false }).lean();
+    const totalUnpaid = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
+    res.json({ success: true, unpaidCount: fees.length, totalUnpaid });
+  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
 // GET /api/tuition/my — student's own fees
 router.get('/my', auth, async (req, res) => {
   try {
