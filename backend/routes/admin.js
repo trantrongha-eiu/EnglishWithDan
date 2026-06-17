@@ -43,6 +43,8 @@ const Course           = require('../models/Course');
 const AccessKey    = require('../models/AccessKey');
 const TestAttempt  = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
+const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const ReadingPracticeAttempt   = require('../models/ReadingPracticeAttempt');
 const WPTopic      = require('../models/WPTopic');
 const WPExercise   = require('../models/WPExercise');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
@@ -462,7 +464,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       return { ...u, displayName: (first ? (last ? `${first} ${last}` : first) : '') || u.username || '–' };
     }
 
-    const [reading, listening, writing] = await Promise.all([
+    const [reading, listening, writing, listeningPractice, readingPractice] = await Promise.all([
       TestAttempt.find({ status: 'completed' })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -477,6 +479,16 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
+        .catch(() => []),
+      ListeningPracticeAttempt.find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-answers').lean()
+        .catch(() => []),
+      ReadingPracticeAttempt.find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('-answers').lean()
         .catch(() => [])
     ]);
 
@@ -510,6 +522,28 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: null,
         totalQuestions: null,
         duration: null
+      })),
+      ...listeningPractice.map(h => ({
+        _id: h._id, skill: 'listening-practice',
+        testName: h.sectionTitle || '–',
+        testMeta: `Part ${h.partNumber || '?'}`,
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: null,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalQuestions,
+        duration: h.timeTaken
+      })),
+      ...readingPractice.map(h => ({
+        _id: h._id, skill: 'reading-practice',
+        testName: h.passageTitle || '–',
+        testMeta: h.category || '',
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: null,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalQuestions,
+        duration: h.timeTaken
       }))
     ];
 
@@ -1201,6 +1235,28 @@ router.delete('/writing-attempts/:id', auth, teacherOnly, async (req, res) => {
     const result = await WritingAttempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi' });
     res.json({ success: true, message: 'Đã xóa bài nộp Writing' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/listening-practice-attempts/:id  – xóa bài lẻ Listening
+router.delete('/listening-practice-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await ListeningPracticeAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
+    res.json({ success: true, message: 'Đã xóa bài luyện Listening' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/reading-practice-attempts/:id  – xóa bài lẻ Reading
+router.delete('/reading-practice-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await ReadingPracticeAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
+    res.json({ success: true, message: 'Đã xóa bài luyện Reading' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

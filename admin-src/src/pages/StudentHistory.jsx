@@ -12,10 +12,18 @@ function bandBadge(score) {
   return <span style={{ color, fontWeight: 700 }}>{score.toFixed(1)}</span>;
 }
 
+const SKILL_META = {
+  'reading':           { color: '#3d8bff', label: 'Reading' },
+  'listening':         { color: '#34d399', label: 'Listening' },
+  'writing':           { color: '#fbbf24', label: 'Writing' },
+  'speaking':          { color: '#a78bfa', label: 'Speaking' },
+  'reading-practice':  { color: '#93c5fd', label: '📄 Reading lẻ' },
+  'listening-practice':{ color: '#6ee7b7', label: '🎵 Listening lẻ' },
+};
+
 function skillBadge(skill) {
-  const map = { reading: '#3d8bff', listening: '#34d399', writing: '#fbbf24', speaking: '#a78bfa' };
-  const c = map[skill] || '#8b92a8';
-  return <span style={{ background: c + '22', color: c, padding: '2px 8px', borderRadius: 6, fontSize: 12, fontWeight: 600, textTransform: 'capitalize' }}>{skill}</span>;
+  const { color, label } = SKILL_META[skill] || { color: '#8b92a8', label: skill };
+  return <span style={{ background: color + '22', color, padding: '2px 8px', borderRadius: 6, fontSize: 12, fontWeight: 600 }}>{label}</span>;
 }
 
 function formatDur(sec) {
@@ -66,9 +74,14 @@ export default function StudentHistory() {
   async function del(id, skillName, name) {
     confirm(`Xóa bài làm của "${name}"?`, async () => {
       try {
-        const endpoint = skillName === 'reading'
-          ? `/admin/attempts/${id}`
-          : `/admin/${skillName}-attempts/${id}`;
+        const endpointMap = {
+          'reading':            `/admin/attempts/${id}`,
+          'listening':          `/admin/listening-attempts/${id}`,
+          'writing':            `/admin/writing-attempts/${id}`,
+          'listening-practice': `/admin/listening-practice-attempts/${id}`,
+          'reading-practice':   `/admin/reading-practice-attempts/${id}`,
+        };
+        const endpoint = endpointMap[skillName] || `/admin/${skillName}-attempts/${id}`;
         await apiFetch(endpoint, { method: 'DELETE' });
         toast('Đã xóa');
         setAll(a => a.filter(x => x._id !== id));
@@ -93,10 +106,12 @@ export default function StudentHistory() {
           onChange={e => { setSearch(e.target.value); setPage(1); }}
           style={{ maxWidth: 300 }}
         />
-        <select className="form-input" value={skill} onChange={e => { setSkill(e.target.value); setPage(1); }} style={{ width: 160 }}>
+        <select className="form-input" value={skill} onChange={e => { setSkill(e.target.value); setPage(1); }} style={{ width: 180 }}>
           <option value="">Tất cả kỹ năng</option>
-          <option value="reading">Reading</option>
-          <option value="listening">Listening</option>
+          <option value="reading">Reading (đề thi)</option>
+          <option value="reading-practice">📄 Reading lẻ</option>
+          <option value="listening">Listening (đề thi)</option>
+          <option value="listening-practice">🎵 Listening lẻ</option>
           <option value="writing">Writing</option>
           <option value="speaking">Speaking</option>
         </select>
@@ -133,7 +148,10 @@ export default function StudentHistory() {
                         )}
                       </td>
                       <td>{skillBadge(h.skill)}</td>
-                      <td>{h.testName || '–'}</td>
+                      <td>
+                        {h.testName || '–'}
+                        {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
+                      </td>
                       <td style={{ fontSize: 12 }}>{formatDate(h.date)}</td>
                       <td>{formatDur(h.duration)}</td>
                       <td>{h.correctCount != null ? `${h.correctCount}/${h.totalQuestions}` : '–'}</td>
@@ -142,7 +160,7 @@ export default function StudentHistory() {
                         : bandBadge(h.bandScore)}
                       </td>
                       <td>
-                        {isAdmin && ['reading', 'listening', 'writing'].includes(h.skill) && (
+                        {isAdmin && ['reading', 'listening', 'writing', 'reading-practice', 'listening-practice'].includes(h.skill) && (
                           <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(h._id, h.skill, name)}>🗑</button>
                         )}
                       </td>
