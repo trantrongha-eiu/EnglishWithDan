@@ -548,7 +548,7 @@ export default function Tuition() {
                         </span>
                       </td>
                       <td style={{ fontWeight: 600 }}>{fmtLabel(f)}</td>
-                      <td style={{ fontWeight: 700, color: '#0f172a' }}>{fmtVND(f.amount)}</td>
+                      <td style={{ fontWeight: 700, color: 'var(--text1)' }}>{fmtVND(f.amount)}</td>
                       <td style={{ textAlign: 'center' }}>
                         <input type="checkbox" checked={f.isPaid} onChange={() => togglePaid(f)}
                           style={{ width: 17, height: 17, cursor: 'pointer', accentColor: '#22c55e' }} />
