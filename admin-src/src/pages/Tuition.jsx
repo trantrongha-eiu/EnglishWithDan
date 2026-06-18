@@ -87,9 +87,10 @@ export default function Tuition() {
     } catch { /* ignore */ }
   }
 
-  async function loadFees(p = page) {
+  async function loadFees(p = page, overrideFilter) {
     try {
-      const q = new URLSearchParams({ page: p, limit: PAGE, ...filter });
+      const f = overrideFilter !== undefined ? overrideFilter : filter;
+      const q = new URLSearchParams({ page: p, limit: PAGE, ...f });
       // remove empty
       for (const [k, v] of [...q.entries()]) { if (!v) q.delete(k); }
       const d = await apiFetch(`/tuition?${q}`);
@@ -159,13 +160,20 @@ export default function Tuition() {
       if (editFee) {
         await apiFetch(`/tuition/${editFee._id}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã cập nhật học phí');
+        setShowForm(false);
+        loadFees(page);
       } else {
         await apiFetch('/tuition', { method: 'POST', body: JSON.stringify(payload) });
         toast('Đã thêm học phí');
+        setShowForm(false);
+        setPage(1);
+        // Snap filter to the month/year of the new fee so it's immediately visible
+        const newFilter = formData.feeType === 'monthly'
+          ? { ...filter, month: String(formData.month), year: String(formData.year) }
+          : { ...filter, month: '', year: '' };
+        setFilter(newFilter);
+        loadFees(1, newFilter); // pass new filter directly to bypass stale closure
       }
-      setShowForm(false);
-      loadFees(editFee ? page : 1);
-      if (!editFee) setPage(1);
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
