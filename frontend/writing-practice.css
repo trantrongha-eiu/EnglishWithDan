@@ -358,6 +358,24 @@ body {
   font-size: 12px;
   font-weight: 600;
 }
+.wp-vocab-hint-btn {
+  background: none;
+  border: 1.5px solid #fde68a;
+  color: #92400e;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: border-color .2s, color .2s, background .2s;
+  white-space: nowrap;
+}
+.wp-vocab-hint-btn:hover:not(:disabled) { background: #fffbeb; border-color: #fbbf24; }
+.wp-vocab-hint-btn:disabled { opacity: 0.4; cursor: default; }
+.wp-vocab-hint-btn.hidden { display: none; }
 
 /* Answer box */
 .wp-answer-box {
@@ -939,6 +957,8 @@ body {
 [data-theme="dark"] .wp-task-label     { color: #9ca3af; }
 [data-theme="dark"] .wp-question-text  { color: #f9fafb; }
 [data-theme="dark"] .wp-hint-chip      { background: #451a03; color: #fde68a; border-color: #92400e; }
+[data-theme="dark"] .wp-vocab-hint-btn { border-color: #92400e; color: #fde68a; }
+[data-theme="dark"] .wp-vocab-hint-btn:hover:not(:disabled) { background: #451a03; }
 
 [data-theme="dark"] .wp-answer-box,
 [data-theme="dark"] .wp-fill-input     { background: #111827; color: #f9fafb; border-color: #374151; }
