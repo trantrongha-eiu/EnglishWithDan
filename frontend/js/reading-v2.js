@@ -2347,7 +2347,10 @@ function closeRetry() {
 }
 
 function submitRetry() {
-  if (!_retryState) return;
+  if (!_retryState) { showVocabToast('Lỗi: không tìm thấy dữ liệu bài luyện', 'error'); return; }
+  try { _doSubmitRetry(); } catch(e) { console.error('[submitRetry]', e); showVocabToast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
+}
+function _doSubmitRetry() {
   const passage = state.passages[0];
   const allQ = getAllQuestionsFromPassage(passage);
   const { correctMap } = _retryState;

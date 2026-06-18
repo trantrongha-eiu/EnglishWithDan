@@ -3159,7 +3159,7 @@
 
     /* ── Submit + grade ──────────────────────────────────────────────────── */
     function submitLTPractice() {
-        if (!_ltCleanSection || !_ltOrigSection) return;
+        if (!_ltCleanSection || !_ltOrigSection) { toast('Lỗi: không tìm thấy dữ liệu bài luyện. Vui lòng tải lại trang.', 'error'); return; }
         try { _doSubmitLTPractice(); } catch(e) { console.error('[submitLTPractice]', e); toast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
     }
     function _doSubmitLTPractice() {
