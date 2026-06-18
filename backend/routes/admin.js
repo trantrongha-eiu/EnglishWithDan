@@ -521,7 +521,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         bandScore: h.grading?.overallBand ?? null,
         correctCount: null,
         totalQuestions: null,
-        duration: null
+        duration: h.timeTaken || null
       })),
       ...listeningPractice.map(h => ({
         _id: h._id, skill: 'listening-practice',
