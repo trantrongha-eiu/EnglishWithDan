@@ -38,6 +38,7 @@ export default function Tuition() {
   // ── Create/Edit form ──
   const [showForm, setShowForm]     = useState(false);
   const [editFee, setEditFee]       = useState(null);
+  const [isCopy, setIsCopy]         = useState(false);
   const [formData, setFormData]     = useState({
     studentId: '', feeType: 'monthly', month: String(CUR_MONTH),
     year: String(CUR_YEAR), courseName: '', amount: '', note: '',
@@ -138,14 +139,12 @@ export default function Tuition() {
   }
 
   function openCreate() {
-    setEditFee(null);
-    setStudentUnpaid(null);
+    setEditFee(null); setIsCopy(false); setStudentUnpaid(null); setStudentSearch('');
     setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
     setShowForm(true);
   }
   function openCopy(fee) {
-    setEditFee(null);
-    setStudentUnpaid(null);
+    setEditFee(null); setIsCopy(true); setStudentUnpaid(null); setStudentSearch('');
     let nextMonth = fee.feeType === 'monthly' ? Number(fee.month) + 1 : CUR_MONTH;
     let nextYear  = fee.feeType === 'monthly' ? Number(fee.year)      : CUR_YEAR;
     if (nextMonth > 12) { nextMonth = 1; nextYear += 1; }
@@ -163,15 +162,15 @@ export default function Tuition() {
     setShowForm(true);
   }
   function openEdit(fee) {
-    setEditFee(fee);
+    setEditFee(fee); setIsCopy(false); setStudentUnpaid(null);
     setFormData({
-      studentId: fee.studentId?._id || fee.studentId,
-      feeType:   fee.feeType,
-      month:     String(fee.month || CUR_MONTH),
-      year:      String(fee.year  || CUR_YEAR),
+      studentId:  fee.studentId?._id || fee.studentId,
+      feeType:    fee.feeType,
+      month:      String(fee.month || CUR_MONTH),
+      year:       String(fee.year  || CUR_YEAR),
       courseName: fee.courseName || '',
-      amount:    String(fee.amount),
-      note:      fee.note || '',
+      amount:     String(fee.amount),
+      note:       fee.note || '',
     });
     setShowForm(true);
   }
@@ -412,11 +411,25 @@ export default function Tuition() {
           {showForm && (
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24, marginBottom: 20 }}>
               <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>
-                {editFee ? '✏️ Sửa học phí' : '＋ Thêm khoản học phí'}
+                {editFee ? '✏️ Sửa học phí' : isCopy ? '📋 Copy học phí sang tháng tiếp' : '＋ Thêm khoản học phí'}
               </h3>
               <form onSubmit={saveFee} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {/* Student */}
-                {!editFee && (
+                {/* Copy/Edit mode: show student name (locked). Create mode: show picker */}
+                {(editFee || isCopy) ? (
+                  <div style={{ fontSize: 14, fontWeight: 600 }}>
+                    Học viên: <span style={{ color: '#3b82f6' }}>
+                      {editFee
+                        ? (editFee.studentId?.username)
+                        : (students.find(s => s._id === formData.studentId)?.username || formData.studentId)}
+                    </span>
+                    {isCopy && studentUnpaid && (
+                      <div style={{ marginTop: 8, padding: '8px 14px', background: '#fef9c3', border: '1px solid #fde047', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#854d0e' }}>
+                        ⚠️ Học viên này đang nợ <strong>{studentUnpaid.count} kỳ</strong>, tổng cộng: <strong>{Number(studentUnpaid.total).toLocaleString('vi-VN')} ₫</strong> chưa đóng.
+                      </div>
+                    )}
+                  </div>
+                ) : (
                   <div className="form-group" style={{ margin: 0 }}>
                     <label className="form-label">Học viên *</label>
                     <input className="form-input" placeholder="Tìm học viên..." value={studentSearch}
@@ -433,11 +446,6 @@ export default function Tuition() {
                         ⚠️ Học viên này đang nợ <strong>{studentUnpaid.count} kỳ</strong>, tổng cộng: <strong>{Number(studentUnpaid.total).toLocaleString('vi-VN')} ₫</strong> chưa đóng.
                       </div>
                     )}
-                  </div>
-                )}
-                {editFee && (
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>
-                    Học viên: <span style={{ color: '#3b82f6' }}>{editFee.studentId?.username}</span>
                   </div>
                 )}
                 {/* Type */}

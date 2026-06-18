@@ -21,7 +21,8 @@ const TuitionFeeSchema = new mongoose.Schema({
   createdBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 
-// Compound index to prevent duplicate monthly fees per student
-TuitionFeeSchema.index({ studentId: 1, feeType: 1, month: 1, year: 1 });
+// Unique compound index — prevents duplicate monthly fees per student.
+// sparse: true so course fees (month/year = null) are excluded from uniqueness check.
+TuitionFeeSchema.index({ studentId: 1, feeType: 1, month: 1, year: 1 }, { unique: true, sparse: true });
 
 module.exports = mongoose.model('TuitionFee', TuitionFeeSchema);
