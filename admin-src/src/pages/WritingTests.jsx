@@ -106,12 +106,12 @@ function Task1Modal({ task, onClose, onSaved }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 580 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+      <div className="modal" style={{ maxWidth: 600, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header" style={{ flexShrink: 0 }}>
           <h3 className="modal-title">{task?._id ? 'Sửa Task 1' : 'Thêm Task 1'}</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
           <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
             <strong style={{ color: 'var(--blue)' }}>Các dạng Task 1:</strong>
             <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>
@@ -211,12 +211,12 @@ function Task2Modal({ task, onClose, onSaved }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 580 }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+      <div className="modal" style={{ maxWidth: 600, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header" style={{ flexShrink: 0 }}>
           <h3 className="modal-title">{task?._id ? 'Sửa Task 2' : 'Thêm Task 2'}</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
           <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
             <strong style={{ color: 'var(--blue)' }}>Các dạng đề Task 2:</strong>
             <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>

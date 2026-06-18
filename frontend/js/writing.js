@@ -1361,34 +1361,54 @@ function renderPracticeWriteScreen(taskType, task) {
   html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   leftPanel.innerHTML = html;
 
-  // Reset sample toggle
-  const chk = document.getElementById('pw-sample-chk');
-  if (chk) chk.checked = false;
-  togglePracticeSample(false);
-
   // Show/hide sample toggle bar based on whether sample exists
   const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
-  const bar = document.getElementById('pw-sample-bar') || document.querySelector('.pw-sample-bar');
+  const bar = document.getElementById('pw-sample-bar');
   if (bar) bar.style.display = hasSample ? '' : 'none';
 
-  // Pre-build sample panel HTML
+  // Pre-build sample panel HTML with copy buttons
   const panel = document.getElementById('pw-sample-panel');
   if (panel && hasSample) {
-    panel.innerHTML = task.sampleSections.filter(s => s.content?.trim()).map(s => `
+    panel.innerHTML = task.sampleSections.filter(s => s.content?.trim()).map((s, i) => `
       <div class="pw-sample-section">
-        <div class="pw-sample-section-title">${escHtml(s.title)}</div>
+        <div class="pw-sample-section-title">
+          <span>${escHtml(s.title)}</span>
+          <button class="pw-copy-btn" onclick="copySampleSection(this,${i})" title="Sao chép đoạn này">📋 Copy</button>
+        </div>
         <div class="pw-sample-section-body">${escHtml(s.content)}</div>
       </div>`).join('');
   } else if (panel) {
     panel.innerHTML = '';
   }
+
+  // Reset sample toggle to OFF
+  const chk = document.getElementById('pw-sample-chk');
+  if (chk) chk.checked = false;
+  togglePracticeSample(false);
 }
 
 function togglePracticeSample(on) {
   const writePanel  = document.getElementById('pw-write-panel');
   const samplePanel = document.getElementById('pw-sample-panel');
+  const hint        = document.getElementById('pw-sample-hint');
   if (writePanel)  writePanel.style.display  = on ? 'none' : 'flex';
-  if (samplePanel) samplePanel.style.display = on ? 'flex' : 'none';
+  if (samplePanel) {
+    samplePanel.style.display = on ? 'flex' : 'none';
+    if (on) samplePanel.scrollTop = 0;
+  }
+  if (hint) hint.style.display = on ? '' : 'none';
+}
+
+function copySampleSection(btn, idx) {
+  const bodies = document.querySelectorAll('#pw-sample-panel .pw-sample-section-body');
+  const text = bodies[idx]?.textContent || '';
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Đã copy';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1800);
+  }).catch(() => showToast('Không copy được', 'error'));
 }
 
 let _practiceSaveDebounce = null;
