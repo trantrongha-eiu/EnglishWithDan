@@ -142,7 +142,7 @@ router.get('/questions/topic/:topicId', async (req, res) => {
 
     // strip answers before sending; for rearrange, provide baseWords from correctAnswer if missing
     const safe = questions.map(q => {
-      const { correctAnswer, fallbackKeywords, ...rest } = q; // eslint-disable-line no-unused-vars
+      const { correctAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
@@ -224,7 +224,7 @@ router.get('/exam', async (req, res) => {
     }
     const selected = allQ.slice(0, parseInt(count));
     const safe = selected.map(q => {
-      const { correctAnswer, fallbackKeywords, ...rest } = q; // eslint-disable-line no-unused-vars
+      const { correctAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
