@@ -93,8 +93,9 @@ export default function Tuition() {
     try {
       const f = overrideFilter !== undefined ? overrideFilter : filter;
       const q = new URLSearchParams({ page: p, limit: PAGE, ...f });
-      // remove empty
+      // remove empty; course fees have no year/month so never filter by them
       for (const [k, v] of [...q.entries()]) { if (!v) q.delete(k); }
+      if (f.feeType === 'course') { q.delete('month'); q.delete('year'); }
       const d = await apiFetch(`/tuition?${q}`);
       setFees(d.fees || []);
       setTotal(d.total || 0);
@@ -339,6 +340,7 @@ export default function Tuition() {
         <>
           {/* Filter bar */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 16, alignItems: 'flex-end' }}>
+            {filter.feeType !== 'course' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>Tháng</label>
               <select className="form-input" style={{ width: 110, padding: '6px 8px' }}
@@ -347,6 +349,8 @@ export default function Tuition() {
                 {MONTHS.slice(1).map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
               </select>
             </div>
+            )}
+            {filter.feeType !== 'course' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>Năm</label>
               <select className="form-input" style={{ width: 90, padding: '6px 8px' }}
@@ -355,6 +359,7 @@ export default function Tuition() {
                 {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text3)' }}>Loại</label>
               <select className="form-input" style={{ width: 130, padding: '6px 8px' }}
