@@ -340,18 +340,34 @@
   <div class="exam-body">
     <div class="exam-left" id="pw-left-panel"></div>
     <div class="exam-right">
-      <textarea
-        class="answer-textarea"
-        id="pw-textarea"
-        placeholder="Viết bài của bạn vào đây..."
-        spellcheck="true"
-        oninput="onPracticeInput()"
-      ></textarea>
-      <div class="word-count-bar">
-        Số từ: <strong id="pw-wc" style="margin-left:4px">0</strong>
-        <span id="pw-wc-target" style="margin-left:6px;font-size:12px;color:#6b7280"></span>
-        <div class="wc-progress-wrap"><div class="wc-progress-bar" id="pw-progress-bar"></div></div>
+      <!-- Sample toggle bar -->
+      <div class="pw-sample-bar">
+        <label class="pw-sample-toggle" title="Xem bài mẫu từ Daniel">
+          <input type="checkbox" id="pw-sample-chk" onchange="togglePracticeSample(this.checked)" />
+          <span class="pw-sample-slider"></span>
+          <span class="pw-sample-label">Bài mẫu từ Daniel</span>
+        </label>
+        <span id="pw-wc-inline" style="font-size:12px;color:#6b7280;margin-left:auto">Số từ: <strong id="pw-wc-inline-n">0</strong></span>
       </div>
+
+      <!-- Write panel -->
+      <div id="pw-write-panel" style="display:flex;flex-direction:column;flex:1;min-height:0">
+        <textarea
+          class="answer-textarea"
+          id="pw-textarea"
+          placeholder="Viết bài của bạn vào đây..."
+          spellcheck="true"
+          oninput="onPracticeInput()"
+        ></textarea>
+        <div class="word-count-bar">
+          Số từ: <strong id="pw-wc" style="margin-left:4px">0</strong>
+          <span id="pw-wc-target" style="margin-left:6px;font-size:12px;color:#6b7280"></span>
+          <div class="wc-progress-wrap"><div class="wc-progress-bar" id="pw-progress-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- Sample panel (hidden by default) -->
+      <div id="pw-sample-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 20px 20px;gap:14px;flex-direction:column"></div>
     </div>
   </div>
 

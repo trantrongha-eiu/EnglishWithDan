@@ -1360,6 +1360,35 @@ function renderPracticeWriteScreen(taskType, task) {
   }
   html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   leftPanel.innerHTML = html;
+
+  // Reset sample toggle
+  const chk = document.getElementById('pw-sample-chk');
+  if (chk) chk.checked = false;
+  togglePracticeSample(false);
+
+  // Show/hide sample toggle bar based on whether sample exists
+  const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
+  const bar = document.getElementById('pw-sample-bar') || document.querySelector('.pw-sample-bar');
+  if (bar) bar.style.display = hasSample ? '' : 'none';
+
+  // Pre-build sample panel HTML
+  const panel = document.getElementById('pw-sample-panel');
+  if (panel && hasSample) {
+    panel.innerHTML = task.sampleSections.filter(s => s.content?.trim()).map(s => `
+      <div class="pw-sample-section">
+        <div class="pw-sample-section-title">${escHtml(s.title)}</div>
+        <div class="pw-sample-section-body">${escHtml(s.content)}</div>
+      </div>`).join('');
+  } else if (panel) {
+    panel.innerHTML = '';
+  }
+}
+
+function togglePracticeSample(on) {
+  const writePanel  = document.getElementById('pw-write-panel');
+  const samplePanel = document.getElementById('pw-sample-panel');
+  if (writePanel)  writePanel.style.display  = on ? 'none' : 'flex';
+  if (samplePanel) samplePanel.style.display = on ? 'flex' : 'none';
 }
 
 let _practiceSaveDebounce = null;
@@ -1371,6 +1400,8 @@ function onPracticeInput() {
   const minWords = practiceState.taskType === 1 ? 150 : 250;
   const pct = Math.min(100, (words / minWords) * 100);
   document.getElementById('pw-wc').textContent = words;
+  const inlineN = document.getElementById('pw-wc-inline-n');
+  if (inlineN) inlineN.textContent = words;
   const bar = document.getElementById('pw-progress-bar');
   if (bar) {
     bar.style.width = pct + '%';

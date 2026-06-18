@@ -10,6 +10,19 @@ function Tab({ label, active, onClick }) {
 
 const DEFAULT_T1 = 'You should spend about 20 minutes on this task. Write at least 150 words.';
 const DEFAULT_T2 = 'You should spend about 40 minutes on this task. Write at least 250 words.';
+
+const DEFAULT_T1_SECTIONS = [
+  { title: 'Introduction', content: '' },
+  { title: 'Overview', content: '' },
+  { title: 'Body 1', content: '' },
+  { title: 'Body 2', content: '' },
+];
+const DEFAULT_T2_SECTIONS = [
+  { title: 'Introduction', content: '' },
+  { title: 'Body 1', content: '' },
+  { title: 'Body 2', content: '' },
+  { title: 'Conclusion', content: '' },
+];
 const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' };
 
 function bandBadge(b) {
@@ -34,7 +47,7 @@ function wcBadge(count, target) {
 function Task1Modal({ task, onClose, onSaved }) {
   const toast = useToast();
   const imgFileRef = useRef();
-  const [form, setForm] = useState({ prompt: '', imageUrl: '', instructions: DEFAULT_T1, isActive: true });
+  const [form, setForm] = useState({ prompt: '', imageUrl: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -43,11 +56,17 @@ function Task1Modal({ task, onClose, onSaved }) {
       prompt: task.prompt || '',
       imageUrl: task.imageUrl || '',
       instructions: task.instructions || DEFAULT_T1,
+      sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T1_SECTIONS,
       isActive: task.isActive !== false,
     });
   }, [task]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+  const setSection = (i, content) => setForm(f => {
+    const sampleSections = [...f.sampleSections];
+    sampleSections[i] = { ...sampleSections[i], content };
+    return { ...f, sampleSections };
+  });
 
   async function uploadImage() {
     const file = imgFileRef.current?.files[0];
@@ -131,6 +150,19 @@ function Task1Modal({ task, onClose, onSaved }) {
             <label className="form-label">Hướng dẫn</label>
             <textarea className="form-input" rows={2} value={form.instructions} onChange={set('instructions')} />
           </div>
+          <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text2)', marginBottom: 10 }}>
+              📝 Bài mẫu từ Daniel <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text3)' }}>(không bắt buộc — học sinh xem được ở chế độ luyện tập)</span>
+            </div>
+            {form.sampleSections.map((sec, i) => (
+              <div key={i} style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--blue)', marginBottom: 4, display: 'block' }}>{sec.title}</label>
+                <textarea className="form-input" rows={3} value={sec.content}
+                  onChange={e => setSection(i, e.target.value)}
+                  placeholder={`Nhập đoạn ${sec.title}...`} />
+              </div>
+            ))}
+          </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
             <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Kích hoạt
           </label>
@@ -146,18 +178,24 @@ function Task1Modal({ task, onClose, onSaved }) {
 
 function Task2Modal({ task, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ prompt: '', instructions: DEFAULT_T2, isActive: true });
+  const [form, setForm] = useState({ prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (task) setForm({
       prompt: task.prompt || '',
       instructions: task.instructions || DEFAULT_T2,
+      sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T2_SECTIONS,
       isActive: task.isActive !== false,
     });
   }, [task]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+  const setSection = (i, content) => setForm(f => {
+    const sampleSections = [...f.sampleSections];
+    sampleSections[i] = { ...sampleSections[i], content };
+    return { ...f, sampleSections };
+  });
 
   async function save(e) {
     e.preventDefault();
@@ -198,6 +236,19 @@ function Task2Modal({ task, onClose, onSaved }) {
           <div className="form-group">
             <label className="form-label">Hướng dẫn</label>
             <textarea className="form-input" rows={2} value={form.instructions} onChange={set('instructions')} />
+          </div>
+          <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text2)', marginBottom: 10 }}>
+              📝 Bài mẫu từ Daniel <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text3)' }}>(không bắt buộc — học sinh xem được ở chế độ luyện tập)</span>
+            </div>
+            {form.sampleSections.map((sec, i) => (
+              <div key={i} style={{ marginBottom: 10 }}>
+                <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--blue)', marginBottom: 4, display: 'block' }}>{sec.title}</label>
+                <textarea className="form-input" rows={4} value={sec.content}
+                  onChange={e => setSection(i, e.target.value)}
+                  placeholder={`Nhập đoạn ${sec.title}...`} />
+              </div>
+            ))}
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
             <input type="checkbox" checked={form.isActive} onChange={set('isActive')} /> Kích hoạt
