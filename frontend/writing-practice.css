@@ -348,6 +348,7 @@ body {
   gap: 6px;
   margin-bottom: 16px;
 }
+.wp-hints-row:empty { margin-bottom: 0; }
 .wp-hint-label { font-size: 13px; color: #9ca3af; }
 .wp-hint-chip {
   background: #fffbeb;
