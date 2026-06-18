@@ -478,6 +478,9 @@
             <button class="wp-skip-btn" id="skip-btn" onclick="skipExercise()">
               <i class="fas fa-forward"></i> Bỏ qua
             </button>
+            <button class="wp-vocab-hint-btn hidden" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">
+              💡 <span id="vocab-hint-count"></span>
+            </button>
             <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()" style="flex:1">
               <i class="fas fa-check"></i> Kiểm tra
             </button>
@@ -657,6 +660,29 @@ let _skippedIds  = new Set();
 let autoNext     = localStorage.getItem('t1_autonext') === 'on';
 let shuffleMode  = localStorage.getItem('t1_shuffle') === 'on';
 let _autoNextTimer = null;
+let _vocabHintCount = 0;
+let _vocabHintList  = [];
+
+function revealVocabHint() {
+  const maxHints = Math.min(3, _vocabHintList.length);
+  if (_vocabHintCount >= maxHints) return;
+  _vocabHintCount++;
+  const row = document.getElementById('hints-row');
+  if (!row) return;
+  row.innerHTML = '';
+  const lbl = document.createElement('span');
+  lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
+  row.appendChild(lbl);
+  _vocabHintList.slice(0, _vocabHintCount).forEach(h => {
+    const chip = document.createElement('span');
+    chip.className = 't1-hint-chip'; chip.textContent = h;
+    row.appendChild(chip);
+  });
+  const btn = document.getElementById('vocab-hint-btn');
+  const countEl = document.getElementById('vocab-hint-count');
+  if (countEl) countEl.textContent = `${_vocabHintCount}/${maxHints}`;
+  if (btn) btn.disabled = _vocabHintCount >= maxHints;
+}
 
 // rearrange
 let rearrangeWords  = [];
@@ -1064,20 +1090,14 @@ function showTranslationView(ex) {
   const qEl = document.getElementById('question-text');
   qEl.textContent = ex.questionVi || ex.questionEn || '';
 
-  // hints — 2 chips for short answers (≤6 words), 3 for longer
-  const row = document.getElementById('hints-row');
-  row.innerHTML = '';
-  if (ex.hints?.length && ex.type !== 'error_correction') {
-    const ansWords = (ex.primaryAnswer || ex.sampleAnswers?.[0] || '').trim().split(/\s+/).length;
-    const hintCount = ansWords <= 6 ? 2 : 3;
-    const lbl = document.createElement('span');
-    lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
-    row.appendChild(lbl);
-    ex.hints.slice(0, hintCount).forEach(h => {
-      const chip = document.createElement('span');
-      chip.className = 't1-hint-chip'; chip.textContent = h;
-      row.appendChild(chip);
-    });
+  document.getElementById('hints-row').innerHTML = '';
+  _vocabHintList  = (ex.type !== 'error_correction' && ex.hints?.length) ? ex.hints : [];
+  _vocabHintCount = 0;
+  const hintBtn = document.getElementById('vocab-hint-btn');
+  const hintCountEl = document.getElementById('vocab-hint-count');
+  if (hintBtn) {
+    if (_vocabHintList.length > 0) { hintBtn.classList.remove('hidden'); hintBtn.disabled = false; if (hintCountEl) hintCountEl.textContent = ''; }
+    else { hintBtn.classList.add('hidden'); }
   }
 
   const box = document.getElementById('answer-box');
@@ -1085,6 +1105,7 @@ function showTranslationView(ex) {
 }
 
 function showRearrangeView(ex) {
+  document.getElementById('vocab-hint-btn')?.classList.add('hidden');
   document.getElementById('view-rearrange').classList.remove('hidden');
   document.getElementById('rearrange-instruction').textContent = ex.instruction || 'Sắp xếp các từ thành câu đúng:';
 
@@ -1115,6 +1136,7 @@ function showRearrangeView(ex) {
 }
 
 function showFillBlankView(ex) {
+  document.getElementById('vocab-hint-btn')?.classList.add('hidden');
   document.getElementById('view-fill-blank').classList.remove('hidden');
   document.getElementById('fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
 
@@ -1170,6 +1192,7 @@ function showFillBlankView(ex) {
 }
 
 function showMultipleChoiceView(ex) {
+  document.getElementById('vocab-hint-btn')?.classList.add('hidden');
   document.getElementById('view-multiple-choice').classList.remove('hidden');
   document.getElementById('mc-instruction').textContent = ex.instruction || '';
 

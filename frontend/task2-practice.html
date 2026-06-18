@@ -328,6 +328,8 @@ let _autoNextTimer = null;
 //  QUIT MODAL
 // ════════════════════════════════════════════════════════
 let _t2QuitCb = null;
+let _vocabHintCount = 0;
+let _vocabHintList  = [];
 function askT2Quit(cb, opts = {}) {
   _t2QuitCb = cb;
   document.getElementById('t2-quit-mascot').textContent   = opts.mascot      || '✏️';
@@ -686,6 +688,7 @@ function renderPractice() {
     <div class="wp-card" style="margin:0 20px" id="qcard">
       ${renderQuestion(q)}
       <div style="display:flex;gap:8px;margin-top:12px">
+        ${q.type === 'translation' && (q.fallbackKeywords||q.hints||[]).length ? `<button class="wp-vocab-hint-btn" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">💡 <span id="vocab-hint-count"></span></button>` : ''}
         <button class="wp-submit-btn" id="submit-btn" onclick="submitPractice()" style="flex:1" disabled>
           <i class="fas fa-check"></i> Kiểm tra
         </button>
@@ -746,14 +749,39 @@ function renderQuestion(q) {
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
   return `<div class="wp-task-label" style="white-space:pre-line">${q.questionText}</div>
+    ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
     <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
     ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
+}
+
+function revealVocabHint() {
+  const maxHints = Math.min(3, _vocabHintList.length);
+  if (_vocabHintCount >= maxHints) return;
+  _vocabHintCount++;
+  const row = document.getElementById('hints-row');
+  if (!row) return;
+  row.innerHTML = '';
+  const lbl = document.createElement('span');
+  lbl.className = 'wp-hint-label'; lbl.textContent = '💡';
+  row.appendChild(lbl);
+  _vocabHintList.slice(0, _vocabHintCount).forEach(h => {
+    const chip = document.createElement('span');
+    chip.className = 'wp-hint-chip'; chip.textContent = h;
+    row.appendChild(chip);
+  });
+  const btn = document.getElementById('vocab-hint-btn');
+  const countEl = document.getElementById('vocab-hint-count');
+  if (countEl) countEl.textContent = `${_vocabHintCount}/${maxHints}`;
+  if (btn) btn.disabled = _vocabHintCount >= maxHints;
 }
 
 function bindPractice() {
   state.rearrangeAnswer = [];
   state.rearrangeWords  = [];
   state.mcSelected      = null;
+  const q = state.questions[state.currentIdx];
+  _vocabHintCount = 0;
+  _vocabHintList  = (q?.fallbackKeywords || q?.hints || []);
   // remove previous listener before adding a new one
   if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
   _practiceKeyHandler = function(e) {
