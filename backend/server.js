@@ -96,6 +96,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       console.error('[Task2Seed] Error:', e.message);
     }
+    // Start tuition auto-reminder cron
+    try {
+      require('./cron/tuitionReminder').start();
+    } catch (e) {
+      console.error('[TuitionCron] Failed to start:', e.message);
+    }
   })
   .catch(err => console.error('MongoDB error:', err));
 

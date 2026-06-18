@@ -9,7 +9,11 @@ const TuitionSettingsSchema = new mongoose.Schema({
   qrImageUrl:     { type: String, default: '' },
   qrImagePublicId:{ type: String, default: '' },
   defaultMonthlyFee: { type: Number, default: 0 },
-  paymentNote:    { type: String, default: '' }, // hướng dẫn chuyển khoản
+  paymentNote:    { type: String, default: '' },
+  autoRemindEnabled:  { type: Boolean, default: false },
+  autoRemindDay:      { type: Number,  default: 10 },   // ngày trong tháng (1-31)
+  autoRemindEndMonth: { type: Number,  default: null },  // tháng cuối (1-12)
+  autoRemindEndYear:  { type: Number,  default: null },  // năm cuối
 }, { timestamps: true });
 
 TuitionSettingsSchema.statics.getSingleton = async function () {

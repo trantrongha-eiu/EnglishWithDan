@@ -53,6 +53,7 @@ export default function Tuition() {
   const [settings, setSettings]     = useState(null);
   const [settingsForm, setSettingsForm] = useState({
     bankName: '', bankAccount: '', accountName: '', defaultMonthlyFee: '', paymentNote: '',
+    autoRemindEnabled: false, autoRemindDay: 10, autoRemindEndMonth: '', autoRemindEndYear: '',
   });
   const [savingSettings, setSavingSettings] = useState(false);
   const [uploadingQr, setUploadingQr]       = useState(false);
@@ -112,11 +113,15 @@ export default function Tuition() {
       const d = await apiFetch('/tuition/settings');
       setSettings(d.settings);
       setSettingsForm({
-        bankName:         d.settings.bankName || '',
-        bankAccount:      d.settings.bankAccount || '',
-        accountName:      d.settings.accountName || '',
+        bankName:          d.settings.bankName || '',
+        bankAccount:       d.settings.bankAccount || '',
+        accountName:       d.settings.accountName || '',
         defaultMonthlyFee: d.settings.defaultMonthlyFee || '',
-        paymentNote:      d.settings.paymentNote || '',
+        paymentNote:       d.settings.paymentNote || '',
+        autoRemindEnabled:  d.settings.autoRemindEnabled || false,
+        autoRemindDay:      d.settings.autoRemindDay || 10,
+        autoRemindEndMonth: d.settings.autoRemindEndMonth || '',
+        autoRemindEndYear:  d.settings.autoRemindEndYear || '',
       });
     } catch (e) { toast(e.message, 'error'); }
   }
@@ -136,6 +141,25 @@ export default function Tuition() {
     setEditFee(null);
     setStudentUnpaid(null);
     setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
+    setShowForm(true);
+  }
+  function openCopy(fee) {
+    setEditFee(null);
+    setStudentUnpaid(null);
+    let nextMonth = fee.feeType === 'monthly' ? Number(fee.month) + 1 : CUR_MONTH;
+    let nextYear  = fee.feeType === 'monthly' ? Number(fee.year)      : CUR_YEAR;
+    if (nextMonth > 12) { nextMonth = 1; nextYear += 1; }
+    const sid = fee.studentId?._id || fee.studentId;
+    setFormData({
+      studentId:  sid,
+      feeType:    fee.feeType,
+      month:      String(nextMonth),
+      year:       String(nextYear),
+      courseName: fee.courseName || '',
+      amount:     String(fee.amount),
+      note:       fee.note || '',
+    });
+    fetchStudentUnpaid(sid);
     setShowForm(true);
   }
   function openEdit(fee) {
@@ -533,6 +557,7 @@ export default function Tuition() {
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button className="btn btn-ghost btn-sm" title="Nhắc nhở" onClick={() => { setRemindFee(f); setRemindMsg(''); }}>📩</button>
+                          <button className="btn btn-ghost btn-sm" title="Copy sang tháng tiếp" onClick={() => openCopy(f)}>📋</button>
                           <button className="btn btn-ghost btn-sm" title="Sửa" onClick={() => openEdit(f)}>✏️</button>
                           <button className="btn btn-danger btn-sm" title="Xóa" onClick={() => deleteFee(f._id)}>🗑</button>
                         </div>
@@ -679,8 +704,63 @@ export default function Tuition() {
             <input ref={qrInputRef} type="file" accept="image/*" style={{ display: 'none' }}
               onChange={e => { if (e.target.files[0]) uploadQr(e.target.files[0]); e.target.value = ''; }} />
             <div style={{ marginTop: 16, padding: 12, background: 'rgba(59,130,246,.08)', borderRadius: 8, fontSize: 12, color: 'var(--text2)' }}>
-              💡 Học viên sẽ thấy mã QR này trong trang Hồ sơ → tab Học phí để quét và chuyển khoản.
+              💡 Học viên sẽ thấy mã QR này trong trang Học phí để quét và chuyển khoản.
             </div>
+          </div>
+
+          {/* Auto-remind card */}
+          <div style={{ flex: '0 0 100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
+            <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700 }}>⏰ Nhắc nhở tự động hàng tháng</h3>
+            <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text3)' }}>
+              Hệ thống tự động gửi tin nhắn nhắc học viên vào ngày đã chọn mỗi tháng, cho đến tháng cuối bạn đặt.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-end' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}>
+                <input type="checkbox" checked={settingsForm.autoRemindEnabled}
+                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEnabled: e.target.checked }))}
+                  style={{ width: 18, height: 18, accentColor: '#22c55e', cursor: 'pointer' }} />
+                <span style={{ fontWeight: 700, fontSize: 14 }}>Bật nhắc nhở tự động</span>
+              </label>
+
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="form-label">Ngày nhắc mỗi tháng</label>
+                <input className="form-input" type="number" min={1} max={28} style={{ width: 80 }}
+                  value={settingsForm.autoRemindDay}
+                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindDay: e.target.value }))} />
+              </div>
+
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="form-label">Tháng cuối</label>
+                <select className="form-input" style={{ width: 120 }} value={settingsForm.autoRemindEndMonth}
+                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEndMonth: e.target.value }))}>
+                  <option value="">--</option>
+                  {MONTHS.slice(1).map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
+                </select>
+              </div>
+
+              <div className="form-group" style={{ margin: 0 }}>
+                <label className="form-label">Năm cuối</label>
+                <select className="form-input" style={{ width: 100 }} value={settingsForm.autoRemindEndYear}
+                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEndYear: e.target.value }))}>
+                  <option value="">--</option>
+                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                </select>
+              </div>
+
+              <button type="button" className="btn btn-primary" disabled={savingSettings}
+                onClick={() => saveSettings({ preventDefault: () => {} })}>
+                {savingSettings ? 'Đang lưu...' : '💾 Lưu cài đặt nhắc nhở'}
+              </button>
+            </div>
+
+            {settingsForm.autoRemindEnabled && (
+              <div style={{ marginTop: 14, padding: '10px 14px', background: 'rgba(34,197,94,.1)', border: '1px solid rgba(34,197,94,.3)', borderRadius: 8, fontSize: 13, color: '#15803d' }}>
+                ✅ Đang bật — gửi lúc 8:00 sáng ngày <strong>{settingsForm.autoRemindDay}</strong> mỗi tháng
+                {settingsForm.autoRemindEndMonth && settingsForm.autoRemindEndYear
+                  ? `, đến hết tháng ${settingsForm.autoRemindEndMonth}/${settingsForm.autoRemindEndYear}`
+                  : ' (không giới hạn)'}
+              </div>
+            )}
           </div>
         </div>
       )}

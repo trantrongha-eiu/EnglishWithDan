@@ -30,13 +30,18 @@ router.get('/settings', auth, async (req, res) => {
 // PUT /api/tuition/settings  — admin only
 router.put('/settings', auth, adminOnly, async (req, res) => {
   try {
-    const { bankName, bankAccount, accountName, defaultMonthlyFee, paymentNote } = req.body;
+    const { bankName, bankAccount, accountName, defaultMonthlyFee, paymentNote,
+            autoRemindEnabled, autoRemindDay, autoRemindEndMonth, autoRemindEndYear } = req.body;
     const s = await TuitionSettings.getSingleton();
     if (bankName    !== undefined) s.bankName    = bankName;
     if (bankAccount !== undefined) s.bankAccount = bankAccount;
     if (accountName !== undefined) s.accountName = accountName;
     if (defaultMonthlyFee !== undefined) s.defaultMonthlyFee = Number(defaultMonthlyFee);
     if (paymentNote !== undefined) s.paymentNote = paymentNote;
+    if (autoRemindEnabled  !== undefined) s.autoRemindEnabled  = Boolean(autoRemindEnabled);
+    if (autoRemindDay      !== undefined) s.autoRemindDay      = Number(autoRemindDay) || 10;
+    if (autoRemindEndMonth !== undefined) s.autoRemindEndMonth = autoRemindEndMonth ? Number(autoRemindEndMonth) : null;
+    if (autoRemindEndYear  !== undefined) s.autoRemindEndYear  = autoRemindEndYear  ? Number(autoRemindEndYear)  : null;
     await s.save();
     res.json({ success: true, settings: s });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
