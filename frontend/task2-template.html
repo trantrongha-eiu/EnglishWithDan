@@ -62,11 +62,32 @@
     [data-theme="dark"] .t2-type-tab-btn.active{color:#a5b4fc;border-bottom-color:#a5b4fc}
 
     /* Exam button in tab bar */
-    .t2-tpl-exam-btn-tab{flex-shrink:0;border:none;border-left:1px solid #e5e7eb;background:none;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s}
-    .t2-tpl-exam-btn-tab:hover{background:#fff7ed;color:#ea580c}
-    .t2-tpl-exam-btn-tab.active{background:#fff7ed;color:#ea580c}
-    [data-theme="dark"] .t2-tpl-exam-btn-tab{border-color:#1e293b;color:#64748b}
-    [data-theme="dark"] .t2-tpl-exam-btn-tab:hover,[data-theme="dark"] .t2-tpl-exam-btn-tab.active{background:#431407;color:#fb923c}
+    .t2-tpl-exam-btn-tab{flex-shrink:0;border:none;border-left:2px solid #fed7aa;background:#fff7ed;padding:6px 16px;font-size:11px;font-weight:800;color:#ea580c;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:background .15s,color .15s,box-shadow .15s;letter-spacing:.02em;text-transform:uppercase}
+    .t2-tpl-exam-btn-tab:hover{background:#ffedd5;box-shadow:0 2px 8px rgba(234,88,12,.18)}
+    .t2-tpl-exam-btn-tab.active{background:#ea580c;color:#fff;border-left-color:#c2410c;box-shadow:0 2px 12px rgba(234,88,12,.35)}
+    .t2-tpl-exam-btn-tab.active::after{content:'';display:inline-block;width:7px;height:7px;background:rgba(255,255,255,.9);border-radius:50%;animation:examLivePulse 1.2s ease-in-out infinite;margin-left:2px}
+    @keyframes examLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+    [data-theme="dark"] .t2-tpl-exam-btn-tab{border-left-color:#7c2d12;background:#431407;color:#fb923c}
+    [data-theme="dark"] .t2-tpl-exam-btn-tab:hover{background:#7c2d12}
+    [data-theme="dark"] .t2-tpl-exam-btn-tab.active{background:#ea580c;color:#fff;border-left-color:#c2410c}
+
+    /* Back button */
+    .t2-back-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0}
+    .t2-back-btn:hover{border-color:#6366f1;color:#6366f1}
+    [data-theme="dark"] .t2-back-btn{border-color:#374151;color:#9ca3af}
+    [data-theme="dark"] .t2-back-btn:hover{border-color:#818cf8;color:#a5b4fc}
+
+    /* Exam footer hint */
+    .t2-exam-hint-text{font-size:12px;color:#6b7280}
+    [data-theme="dark"] .t2-exam-hint-text{color:#94a3b8}
+
+    /* Exam result bar score variants */
+    .t2-exam-bar--good{background:#dcfce7;border-bottom-color:#86efac;color:#15803d}
+    .t2-exam-bar--mid{background:#fef9c3;border-bottom-color:#fde047;color:#854d0e}
+    .t2-exam-bar--bad{background:#fee2e2;border-bottom-color:#fca5a5;color:#991b1b}
+    [data-theme="dark"] .t2-exam-bar--good{background:#052e16;border-bottom-color:#166534;color:#4ade80}
+    [data-theme="dark"] .t2-exam-bar--mid{background:#422006;border-bottom-color:#854d0e;color:#fbbf24}
+    [data-theme="dark"] .t2-exam-bar--bad{background:#1c0505;border-bottom-color:#7f1d1d;color:#fca5a5}
 
     .t2-type-progress-wrap{height:4px;background:#e5e7eb;overflow:hidden}
     [data-theme="dark"] .t2-type-progress-wrap{background:#334155}
@@ -195,7 +216,7 @@
 
 <!-- Stats header -->
 <header class="wp-header">
-  <button onclick="history.back()" style="display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#374151'">← Quay lại</button>
+  <button onclick="history.back()" class="t2-back-btn">← Quay lại</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -695,7 +716,7 @@ function renderTplContent() {
 
   const footerHtml = _examMode
     ? `<div class="t2-tpl-footer">
-        <span style="font-size:12px;color:#6b7280">Điền tất cả rồi nhấn nộp bài</span>
+        <span class="t2-exam-hint-text">Điền tất cả rồi nhấn nộp bài</span>
         <button class="t2-exam-submit-btn" onclick="submitExam()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
        </div>`
     : `<div class="t2-tpl-footer">
@@ -1007,10 +1028,13 @@ function submitExam() {
   if (bar) {
     const pct  = Math.round(correct / total * 100);
     const rank = pct >= 80 ? '🏆 Xuất sắc!' : pct >= 60 ? '👍 Khá tốt!' : '💪 Cần ôn thêm!';
+    const scoreVariant = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
+    bar.className = `t2-exam-bar t2-exam-bar--${scoreVariant}`;
     bar.innerHTML = `
-      <span style="font-size:13px;font-weight:800">📋 ${correct}/${total} đúng (${pct}%)</span>
+      <span style="font-size:15px;font-weight:900">${pct}% · ${correct}/${total}</span>
       <span class="t2-exam-label">${rank} · ⏱ ${fmtTime(timeTaken)}</span>
       <button class="t2-exam-exit-btn" onclick="exitExamMode()">✕ Thoát thi</button>`;
+    bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // Update footer

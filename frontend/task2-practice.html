@@ -203,6 +203,12 @@
     @keyframes t2CountdownBar{from{width:100%}to{width:0%}}
     .t2-countdown-bar{height:3px;background:#6366f1;border-radius:2px;margin-top:6px;animation:t2CountdownBar var(--cd-dur,1.5s) linear forwards}
 
+    /* ── Back button ── */
+    .t2-back-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0}
+    .t2-back-btn:hover{border-color:#6366f1;color:#6366f1}
+    [data-theme="dark"] .t2-back-btn{border-color:#374151;color:#9ca3af}
+    [data-theme="dark"] .t2-back-btn:hover{border-color:#818cf8;color:#a5b4fc}
+
   </style>
 </head>
 <body>
@@ -228,7 +234,7 @@
 
 <!-- ── Stats header ── -->
 <header class="wp-header">
-  <button onclick="history.back()" style="display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#374151'">← Quay lại</button>
+  <button onclick="history.back()" class="t2-back-btn">← Quay lại</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -926,8 +932,9 @@ async function submitPractice() {
       expBox.classList.remove('hidden');
     } else expBox.classList.add('hidden');
 
-    document.getElementById('result-banner').textContent = isOk ? '✅ Chính xác!' : '❌ Chưa đúng';
-    document.getElementById('result-banner').style.color = isOk ? '#16a34a' : '#dc2626';
+    const bannerEl = document.getElementById('result-banner');
+    bannerEl.textContent = isOk ? '✅ Chính xác!' : '❌ Chưa đúng';
+    bannerEl.className = 'wp-result-banner ' + (isOk ? 'wp-result-correct' : 'wp-result-wrong');
     document.getElementById('feedback-text').textContent = data.feedbackVi || '';
 
     document.getElementById('qcard').classList.add('hidden');
@@ -1117,23 +1124,23 @@ async function submitExam() {
 
 function renderExamDone() {
   const r = state.examResults;
-  const scoreColor = r.score >= 70 ? '#16a34a' : r.score >= 40 ? '#ca8a04' : '#dc2626';
+  const scoreClass = r.score >= 70 ? 'wp-score-good' : r.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
   const emoji = r.score >= 70 ? '🎉' : r.score >= 40 ? '👍' : '📚';
   const reviews = (r.results || []).map((item, i) => `
-    <div class="t2-review-item" style="border-left-color:${item.isCorrect ? '#16a34a' : '#dc2626'};background:${item.isCorrect ? '#f0fdf4' : '#fff1f2'}">
-      <div style="font-size:12px;font-weight:700;color:${item.isCorrect ? '#15803d' : '#b91c1c'};margin-bottom:5px">
+    <div class="${item.isCorrect ? 'wp-wr-item-ok' : 'wp-wr-item'}">
+      <div class="${item.isCorrect ? 'wp-wr-num-ok' : 'wp-wr-num'}">
         ${item.isCorrect ? '✅' : '❌'} Câu ${i+1} — ${Q_LABELS[item.type] || item.type}
-        <span style="font-weight:400;color:#6b7280;margin-left:6px">${item.level} · ${item.topicName || ''}</span>
+        <span class="wp-wr-skill">${item.level} · ${item.topicName || ''}</span>
       </div>
-      <div style="font-size:12px;color:#6b7280;margin-bottom:4px">${item.questionText || ''}</div>
-      <div style="font-size:12px"><span style="color:#6b7280">Bạn:</span> <span style="font-weight:600">${item.userAnswer || '(bỏ trống)'}</span></div>
-      <div style="font-size:12px"><span style="color:#15803d">Đáp án:</span> <span style="font-weight:600">${item.modelAnswer || ''}</span></div>
-      ${item.explanationVi ? `<div style="font-size:11px;color:#0369a1;margin-top:5px;padding:4px 8px;background:#f0f9ff;border-radius:6px">💡 ${item.explanationVi}</div>` : ''}
+      <div class="wp-wr-q">${item.questionText || ''}</div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${item.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${item.userAnswer || '(bỏ trống)'}</span></div>
+      ${!item.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${item.modelAnswer || ''}</span></div>` : ''}
+      ${item.explanationVi ? `<div class="wp-wr-gp">💡 ${item.explanationVi}</div>` : ''}
     </div>`).join('');
   return `
     <div style="text-align:center;padding:32px 20px 16px">
       <div style="font-size:52px">${emoji}</div>
-      <div style="font-size:48px;font-weight:900;color:${scoreColor}">${r.score}%</div>
+      <div class="t2-done-score ${scoreClass}">${r.score}%</div>
       <div style="font-size:15px;color:#6b7280;margin-bottom:16px">Đúng ${r.correct} / ${r.total} câu</div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="wp-restart-btn" onclick="startExam()"><i class="fas fa-redo"></i> Thi lại</button>
@@ -1179,27 +1186,27 @@ function renderVocab() {
 function renderDone() {
   const pct = state.sessionDone > 0 ? Math.round((state.sessionCorrect / state.sessionDone) * 100) : 0;
   const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
-  const color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#ca8a04' : '#dc2626';
+  const scoreClass = pct >= 80 ? 'wp-score-good' : pct >= 50 ? 'wp-score-mid' : 'wp-score-bad';
   const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
 
   const wrongReview = wrongAttempts.map((a, i) => `
-    <div class="t2-review-item" style="border-left-color:#dc2626;background:#fff1f2">
-      <div style="font-size:11px;font-weight:700;color:#b91c1c;margin-bottom:4px">❌ Câu ${i+1} — ${Q_LABELS[a.type] || a.type}</div>
-      <div style="font-size:12px;color:#374151;margin-bottom:6px;line-height:1.5;white-space:pre-line">${a.questionText || ''}</div>
-      <div style="font-size:12px;margin-bottom:2px"><span style="color:#6b7280">Bạn trả lời:</span> <span style="font-weight:600;color:#b91c1c">${a.userAnswer || '(bỏ trống)'}</span></div>
-      <div style="font-size:12px;margin-bottom:4px"><span style="color:#15803d">Đáp án đúng:</span> <span style="font-weight:600;color:#15803d">${a.modelAnswer || ''}</span></div>
-      ${a.feedbackVi ? `<div style="font-size:11px;color:#0369a1;padding:4px 8px;background:#f0f9ff;border-radius:6px">${a.feedbackVi}</div>` : ''}
+    <div class="wp-wr-item">
+      <div class="wp-wr-num">❌ Câu ${i+1} — ${Q_LABELS[a.type] || a.type}</div>
+      <div class="wp-wr-q" style="white-space:pre-line">${a.questionText || ''}</div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn trả lời:</span> <span class="wp-wr-your">${a.userAnswer || '(bỏ trống)'}</span></div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án đúng:</span> <span class="wp-wr-ans">${a.modelAnswer || ''}</span></div>
+      ${a.feedbackVi ? `<div class="wp-wr-gp">${a.feedbackVi}</div>` : ''}
     </div>`).join('');
 
   return `
     <div class="t2-done">
       <div class="t2-done-icon">${emoji}</div>
-      <div class="t2-done-score" style="color:${color}">${pct}%</div>
+      <div class="t2-done-score ${scoreClass}">${pct}%</div>
       <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${state.selectedTopic?.topicName || ''}</div>
       <div class="t2-done-stats">
-        <div class="t2-done-stat"><div class="t2-done-stat-num" style="color:#16a34a">✅ ${state.sessionCorrect}</div><div class="t2-done-stat-lbl">Đúng</div></div>
-        <div class="t2-done-stat"><div class="t2-done-stat-num" style="color:#dc2626">❌ ${wrongCount}</div><div class="t2-done-stat-lbl">Sai</div></div>
+        <div class="t2-done-stat"><div class="t2-done-stat-num wp-score-good">✅ ${state.sessionCorrect}</div><div class="t2-done-stat-lbl">Đúng</div></div>
+        <div class="t2-done-stat"><div class="t2-done-stat-num wp-score-bad">❌ ${wrongCount}</div><div class="t2-done-stat-lbl">Sai</div></div>
         <div class="t2-done-stat"><div class="t2-done-stat-num">${state.sessionDone}</div><div class="t2-done-stat-lbl">Tổng</div></div>
       </div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -1210,9 +1217,9 @@ function renderDone() {
     </div>
     ${wrongCount > 0 ? `
     <div style="padding:0 20px 30px">
-      <h3 style="font-size:14px;font-weight:700;color:#374151;margin:0 0 10px">📋 Chi tiết câu sai (${wrongCount})</h3>
+      <h3 class="wp-wr-title">📋 Chi tiết câu sai (${wrongCount})</h3>
       ${wrongReview}
-    </div>` : `<div style="text-align:center;padding:12px;color:#16a34a;font-weight:700;font-size:14px">🌟 Tuyệt vời! Không có câu nào sai!</div>`}`;
+    </div>` : `<div class="wp-wr-all-ok" style="padding:12px">🌟 Tuyệt vời! Không có câu nào sai!</div>`}`;
 }
 
 function retryWrong() {
