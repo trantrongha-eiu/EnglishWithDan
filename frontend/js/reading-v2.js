@@ -242,9 +242,9 @@ async function loadTests(fromNav = false) {
     wrap.innerHTML = `
       <div class="loading-spinner">
         <div style="font-size:36px;margin-bottom:12px">😕</div>
-        <div style="font-weight:600;color:#374151;margin-bottom:6px">Không tải được danh sách đề thi</div>
-        <div style="font-size:12px;margin-bottom:16px;color:#9ca3af">Kiểm tra kết nối rồi thử lại</div>
-        <button onclick="loadTests()" style="background:#3d8bff;color:#fff;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">↺ Thử lại</button>
+        <div class="rd-load-error-title">Không tải được danh sách đề thi</div>
+        <div class="rd-load-error-desc">Kiểm tra kết nối rồi thử lại</div>
+        <button onclick="loadTests()" class="rd-retry-btn">↺ Thử lại</button>
       </div>`;
   }
 }
@@ -498,7 +498,7 @@ function checkResumePractice() {
     if (!banner) {
       banner = document.createElement('div');
       banner.id = 'practice-resume-banner';
-      banner.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;flex-wrap:wrap';
+      banner.className = 'rd-resume-banner';
       picker.prepend(banner);
     }
     const answered = Object.keys(data.answers || {}).length;
@@ -507,16 +507,10 @@ function checkResumePractice() {
       <span style="flex:1;min-width:180px">
         📖 Bài dở dang: <strong>${escHtml(data.title || 'Không tên')}</strong>
         — đã trả lời <strong>${answered}</strong> câu
-        <span style="color:#6b7280">(${timeAgo})</span>
+        <span class="rd-resume-time-ago">(${timeAgo})</span>
       </span>
-      <button onclick="resumePractice()"
-        style="background:#3d8bff;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
-        Tiếp tục
-      </button>
-      <button onclick="dismissPracticeResume()"
-        style="background:none;border:1px solid #d1d5db;color:#6b7280;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit">
-        Bỏ qua
-      </button>`;
+      <button onclick="resumePractice()" class="rd-resume-continue-btn">Tiếp tục</button>
+      <button onclick="dismissPracticeResume()" class="rd-resume-dismiss-btn">Bỏ qua</button>`;
     banner._resumeData = data;
     banner.style.display = 'flex';
   } catch { clearPracticeStorage(); }
@@ -582,7 +576,7 @@ function setReadingMode(mode) {
   if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
   if (title) {
     title.innerHTML = isLele
-      ? 'Luyện tập <span style="background:#3d8bff;color:#fff;padding:2px 10px;border-radius:6px;font-size:14px">Reading Bài lẻ</span>'
+      ? 'Luyện tập <span class="rd-tag-blue">Reading Bài lẻ</span>'
       : 'Luyện tập <span class="tag-red">Reading Full đề</span>';
   }
 
@@ -676,7 +670,7 @@ async function loadPracticePassages(category, tabEl) {
     _practiceDoneMap = res.doneMap || {};
 
     if (!passages.length) {
-      listEl.innerHTML = `<div style="text-align:center;padding:48px 0;color:#9ca3af">
+      listEl.innerHTML = `<div class="rd-empty-list">
         <div style="font-size:32px;margin-bottom:10px">📭</div>
         <div style="font-weight:600;margin-bottom:4px">Chưa có bài đọc nào</div>
         <div style="font-size:13px">Category này chưa có passage được thêm vào</div>
@@ -753,11 +747,8 @@ async function loadPracticePassages(category, tabEl) {
     _applyPracticeFilters();
   } catch (e) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
-      <div style="color:#e53935;margin-bottom:12px">Lỗi tải danh sách bài đọc</div>
-      <button onclick="loadPracticePassages('${category}')"
-        style="background:#3d8bff;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit">
-        ↺ Thử lại
-      </button>
+      <div class="rd-list-error">Lỗi tải danh sách bài đọc</div>
+      <button onclick="loadPracticePassages('${category}')" class="rd-retry-btn">↺ Thử lại</button>
     </div>`;
   }
 }
@@ -2052,19 +2043,19 @@ function openSubmitErrorModal() {
     m.className = 'modal-overlay';
     m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
     m.innerHTML = `
-      <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.18)">
+      <div class="rd-error-modal-box">
         <div style="font-size:40px;margin-bottom:12px">⚠️</div>
-        <h3 style="font-size:17px;font-weight:700;margin-bottom:8px;color:#1f2937">Kết nối bị gián đoạn</h3>
-        <p style="font-size:13px;color:#6b7280;line-height:1.6;margin-bottom:20px">
+        <h3 class="rd-error-modal-title">Kết nối bị gián đoạn</h3>
+        <p class="rd-error-modal-desc">
           Bài thi có thể đã được lưu trên server.<br>Kiểm tra lịch sử để xem kết quả.
         </p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
           <button onclick="showHistoryModal();document.getElementById('modal-submit-error').remove()"
-            style="background:#3d8bff;color:#fff;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">
+            class="btn-primary">
             Xem lịch sử
           </button>
           <button onclick="document.getElementById('modal-submit-error').remove();state.submitted=false;submitExam()"
-            style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer">
+            class="rd-error-modal-retry">
             Nộp lại
           </button>
         </div>
@@ -2395,10 +2386,8 @@ function _doSubmitRetry() {
   });
 
   const total = allQ.length;
-  const pct = total ? Math.round(correct / total * 100) : 0;
-  const color = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
-  const bg    = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
-  const border= pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+  const pct    = total ? Math.round(correct / total * 100) : 0;
+  const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
 
   // Stop stopwatch, build time display for practice mode
   const fromPractice = _retryState?.isPractice;
@@ -2415,10 +2404,10 @@ function _doSubmitRetry() {
                     : pct >= 40 ? 'Cần luyện tập thêm một chút!'
                     : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
     const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 75 ? 'Ổn' : 'Cần tăng tốc';
-    timeLine = `<div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-      <span>⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong></span>
+    timeLine = `<div class="rd-rb-time">
+      <span>⏱ Thời gian: <strong>${tm}:${ts}</strong></span>
       <span>${speed} · ${perQ}s/câu</span>
-      <span style="color:${color};font-style:italic">${encourage}</span>
+      <span style="font-style:italic">${encourage}</span>
     </div>`;
 
     // Lưu kết quả lên server (fire-and-forget)
@@ -2445,12 +2434,12 @@ function _doSubmitRetry() {
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
     qi.innerHTML =
-      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+      `<div class="rd-result-bar rd-result-bar--${barVar}">
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
           <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
-          <span style="color:#16a34a">● Đúng: ${correct}</span>
-          <span style="color:#dc2626">● Sai: ${wrong}</span>
-          <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+          <span class="rd-rb-correct">● Đúng: ${correct}</span>
+          <span class="rd-rb-wrong">● Sai: ${wrong}</span>
+          <span class="rd-rb-skip">● Bỏ qua: ${skipped}</span>
         </div>${timeLine}
       </div>`
       + renderPassageQuestions(passage, true, retryReviewMap);
@@ -2495,12 +2484,12 @@ async function showHistoryModal() {
         <td>${new Date(h.endTime).toLocaleDateString('vi-VN')}</td>
         <td>${fmtDuration(h.duration)}</td>
         <td>${h.totalQuestions}</td>
-        <td style="color:#43a047;font-weight:600">${h.correctCount}</td>
-        <td style="color:#e53935;font-weight:600">${h.wrongCount}</td>
-        <td style="color:#9ca3af">${h.skippedCount}</td>
+        <td class="rd-td-correct">${h.correctCount}</td>
+        <td class="rd-td-wrong">${h.wrongCount}</td>
+        <td class="rd-td-skip">${h.skippedCount}</td>
         <td class="band-cell">${h.bandScore?.toFixed(1)}</td>
         <td><button class="btn-review-sm" onclick="loadReview('${h._id}');closeModal('modal-history')">Xem lại</button></td>
-      </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#9ca3af">Chưa có lịch sử</td></tr>';
+      </tr>`).join('') || '<tr><td colspan="9" class="rd-no-history">Chưa có lịch sử</td></tr>';
     openModal('modal-history');
   } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
@@ -2523,13 +2512,13 @@ async function showPracticeHistoryModal() {
         <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(h.passageTitle || '–')}</td>
         <td>${date}</td>
         <td>${time}</td>
-        <td style="color:#16a34a;font-weight:600">${h.correctCount}</td>
-        <td style="color:#dc2626;font-weight:600">${h.wrongCount}</td>
-        <td style="color:#9ca3af">${h.skippedCount}</td>
-        <td style="font-weight:700;color:${pct>=70?'#166534':pct>=40?'#92400e':'#991b1b'}">${pct}%</td>
+        <td class="rd-td-correct">${h.correctCount}</td>
+        <td class="rd-td-wrong">${h.wrongCount}</td>
+        <td class="rd-td-skip">${h.skippedCount}</td>
+        <td class="${pct>=70?'rd-pct-good':pct>=40?'rd-pct-mid':'rd-pct-bad'}">${pct}%</td>
         <td><button class="btn-review-sm" onclick="loadPracticeReview('${h._id}')">Xem lại</button></td>
       </tr>`;
-    }).join('') || '<tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử luyện bài lẻ.</td></tr>';
+    }).join('') || '<tr><td colspan="9" class="rd-no-history">Chưa có lịch sử luyện bài lẻ.</td></tr>';
     openModal('modal-practice-history');
   } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
@@ -2608,22 +2597,20 @@ async function loadPracticeReview(attemptId) {
     showScreen('retry');
 
     const inner = document.getElementById('retry-questions-inner');
-    const pct   = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
-    const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
-    const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
-    const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+    const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
+    const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
     const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
     const ts = String(attempt.timeTaken % 60).padStart(2, '0');
     inner.innerHTML =
-      `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+      `<div class="rd-result-bar rd-result-bar--${barVar}">
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
           <span>Kết quả: <strong>${attempt.correctCount}/${attempt.totalQuestions}</strong> câu đúng (${pct}%)</span>
-          <span style="color:#16a34a">● Đúng: ${attempt.correctCount}</span>
-          <span style="color:#dc2626">● Sai: ${attempt.wrongCount}</span>
-          <span style="color:#9ca3af">● Bỏ qua: ${attempt.skippedCount}</span>
+          <span class="rd-rb-correct">● Đúng: ${attempt.correctCount}</span>
+          <span class="rd-rb-wrong">● Sai: ${attempt.wrongCount}</span>
+          <span class="rd-rb-skip">● Bỏ qua: ${attempt.skippedCount}</span>
         </div>
-        <div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400">
-          ⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong>
+        <div class="rd-rb-time">
+          ⏱ Thời gian: <strong>${tm}:${ts}</strong>
           &nbsp;·&nbsp; ${new Date(attempt.submittedAt).toLocaleDateString('vi-VN')}
         </div>
       </div>`
@@ -2860,13 +2847,13 @@ async function openVocabBookPicker(wordData) {
   _pendingVocabWord = wordData;
   const modal = document.getElementById('modal-vocab-picker');
   const listEl = document.getElementById('vocab-book-list');
-  listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#9ca3af">Đang tải sổ...</div>';
+  listEl.innerHTML = '<div class="rd-vocab-loading">Đang tải sổ...</div>';
   modal.classList.remove('hidden');
   try {
     const res = await apiFetch('/api/vocabbook/');
     const books = res.books || [];
     if (!books.length) {
-      listEl.innerHTML = '<div style="text-align:center;padding:16px;color:#9ca3af">Chưa có sổ nào</div>';
+      listEl.innerHTML = '<div class="rd-vocab-loading">Chưa có sổ nào</div>';
       return;
     }
     listEl.innerHTML = books.map(b =>
@@ -2881,7 +2868,7 @@ async function openVocabBookPicker(wordData) {
     ).join('');
   } catch (e) {
     const isColdStart = e.message === 'server-cold-start';
-    listEl.innerHTML = `<div style="text-align:center;padding:16px;color:${isColdStart ? '#f59e0b' : '#e53935'}">
+    listEl.innerHTML = `<div class="rd-vocab-loading" style="color:${isColdStart ? '#f59e0b' : '#e53935'}">
       ${isColdStart
         ? '🔄 Server đang khởi động,<br>vui lòng thử lại sau vài giây.'
         : 'Lỗi tải sổ từ vựng'}
