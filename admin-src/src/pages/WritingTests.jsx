@@ -1099,29 +1099,37 @@ export default function WritingTests() {
       {tab === 'task1' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
             <tbody>
               {task1.length === 0
-                ? <tr><td colSpan={5} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
-                : task1.map(p => (
-                  <tr key={p._id}>
-                    <td style={{ maxWidth: 340 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
-                    <td>{p.imageUrl ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
-                    <td>
-                      <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
-                        <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
-                    <td>
-                      <div className="row-actions">
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                ? <tr><td colSpan={6} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
+                : task1.map(p => {
+                  const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                  return (
+                    <tr key={p._id}>
+                      <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
+                      <td>{p.imageUrl ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
+                      <td>
+                        {hasSample
+                          ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
+                          : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                      </td>
+                      <td>
+                        <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                          <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -1130,28 +1138,36 @@ export default function WritingTests() {
       {tab === 'task2' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
             <tbody>
               {task2.length === 0
-                ? <tr><td colSpan={4} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
-                : task2.map(p => (
-                  <tr key={p._id}>
-                    <td style={{ maxWidth: 400 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>
-                    <td>
-                      <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
-                        <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
-                    <td>
-                      <div className="row-actions">
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                ? <tr><td colSpan={5} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
+                : task2.map(p => {
+                  const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                  return (
+                    <tr key={p._id}>
+                      <td style={{ maxWidth: 380 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>
+                      <td>
+                        {hasSample
+                          ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
+                          : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                      </td>
+                      <td>
+                        <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                          <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>

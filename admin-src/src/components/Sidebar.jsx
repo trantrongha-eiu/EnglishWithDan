@@ -24,7 +24,7 @@ const NAV = [
   { to: '/writing-samples', icon: '📋', label: 'Bài mẫu Writing' },
   { section: 'HỌC SINH' },
   { to: '/history',         icon: '🕓', label: 'Lịch sử làm bài' },
-  { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing' },
+  { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
   { to: '/messages',        icon: '✉️', label: 'Hộp thư' },
   { to: '/tuition',         icon: '💰', label: 'Học phí' },
@@ -33,13 +33,20 @@ const NAV = [
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [pendingGrades, setPendingGrades] = useState(0);
 
   useEffect(() => {
     function fetchOnline() {
       apiFetch('/admin/online-users').then(d => setOnlineUsers((d.users || []).filter(u => u.role !== 'admin'))).catch(() => {});
     }
+    function fetchPending() {
+      apiFetch('/admin/writing-attempts?gradingStatus=pending,ai_done&limit=1').then(d => {
+        setPendingGrades(d.total || 0);
+      }).catch(() => {});
+    }
     fetchOnline();
-    const id = setInterval(fetchOnline, 60_000);
+    fetchPending();
+    const id = setInterval(() => { fetchOnline(); fetchPending(); }, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -50,7 +57,10 @@ export default function Sidebar({ mobileOpen, onClose }) {
       )}
       <nav className={`sidebar${mobileOpen ? ' open' : ''}`}>
         <div className="sidebar-logo">
-          <img src="/img/big_logo.png" alt="Daniel Hà English Education" style={{ height: 52, width: 'auto', display: 'block', borderRadius: 8, background: 'rgba(255,255,255,.92)', padding: '4px 10px', marginBottom: 6 }} />
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
+            <img src="/img/big_logo.png" alt="Daniel Hà English Education" style={{ height: 52, width: 'auto', display: 'block', borderRadius: 8, background: 'rgba(255,255,255,.92)', padding: '4px 10px', marginBottom: 6 }} />
+            <button className="sidebar-close-btn" onClick={onClose} aria-label="Đóng menu" title="Đóng">✕</button>
+          </div>
           <div className="sidebar-logo-sub">ADMIN PANEL</div>
           {onlineUsers.length > 0 && (
             <div style={{ marginTop: 8, padding: '8px 10px', background: 'rgba(34,197,94,.08)', borderRadius: 8, border: '1px solid rgba(34,197,94,.2)' }}>
@@ -87,6 +97,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
               >
                 <span className="nav-icon">{item.icon}</span>
                 {item.label}
+                {item.badge && pendingGrades > 0 && (
+                  <span className="nav-badge">{pendingGrades > 99 ? '99+' : pendingGrades}</span>
+                )}
               </NavLink>
             );
           })}

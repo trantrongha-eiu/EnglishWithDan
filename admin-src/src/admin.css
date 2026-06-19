@@ -1069,6 +1069,23 @@
     }
 
     /* Tablet & mobile: sidebar collapse */
+    /* ── Sidebar close button (visible only on mobile) ── */
+    .sidebar-close-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      color: var(--text2);
+      font-size: 16px;
+      line-height: 1;
+      padding: 4px 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 4px;
+      transition: background .15s, color .15s;
+    }
+    .sidebar-close-btn:hover { background: var(--border); color: var(--text); }
+
     @media (max-width: 1024px) {
       /* Sidebar slide off-screen */
       .sidebar {
@@ -1083,6 +1100,9 @@
 
       /* Show hamburger */
       .sidebar-toggle { display: flex !important; }
+
+      /* Show sidebar close button */
+      .sidebar-close-btn { display: block; }
 
       /* Topbar compact */
       .topbar { padding: 0 14px; gap: 10px; }
@@ -1103,27 +1123,57 @@
       .table-wrap table { min-width: 520px; }
 
       /* Content padding */
-      .content { padding: 14px; }
+      .content { padding: 12px; }
 
       /* Section actions wrap */
       .section-header { flex-wrap: wrap; gap: 8px; }
       .section-actions { flex-wrap: wrap; }
 
-      /* Override ALL inline grid-template-columns (reading/listening forms) */
-      [style*="grid-template-columns"] {
+      /* Override inline grid columns only for FORM grids, not filter/action rows */
+      .form-group [style*="grid-template-columns"],
+      .modal [style*="grid-template-columns"],
+      .modal-box [style*="grid-template-columns"] {
         grid-template-columns: 1fr !important;
       }
 
+      /* Inner tabs: horizontal scroll on mobile */
+      .inner-tabs-nav {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 4px;
+        padding: 4px 6px;
+      }
+      .inner-tabs-nav::-webkit-scrollbar { display: none; }
+      .inner-tab { flex: 0 0 auto; min-width: auto; font-size: 12px; padding: 7px 12px; }
+
+      /* Larger touch targets for icon buttons */
+      .btn-icon { min-width: 36px; min-height: 36px; padding: 8px; }
+      .row-actions { gap: 6px; }
+
       /* Modal bottom-sheet on mobile */
       .modal-overlay { align-items: flex-end; padding: 0; }
-      .modal-box, .modal { max-height: 95vh; border-radius: 12px 12px 0 0; overflow-y: auto; }
-      .modal-lg, .modal-xl, .modal { width: 100%; }
+      .modal-box, .modal { max-height: 92vh; border-radius: 14px 14px 0 0; width: 100% !important; max-width: 100% !important; }
+      .modal-lg, .modal-xl { width: 100% !important; }
+
+      /* Sticky modal footer on mobile */
+      .modal-footer { position: sticky; bottom: 0; background: var(--surface); border-top: 1px solid var(--border); z-index: 2; padding: 12px 20px; margin: 0 -24px -20px; }
+
+      /* Filter rows: let them wrap */
+      .section-header > div,
+      [style*="display: flex"][style*="flex-wrap: wrap"] { gap: 8px !important; }
 
       /* Buttons compact */
       .btn-sm { font-size: 12px; padding: 5px 10px; }
 
       /* Toast bottom-center */
       #toast { right: 12px; left: 12px; bottom: 16px; max-width: none; }
+
+      /* Table scroll shadow indicator */
+      .table-wrap {
+        position: relative;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1136,6 +1186,13 @@
 
       /* Content tighter */
       .content { padding: 10px; }
+
+      /* Section header stack */
+      .section-header { flex-direction: column; align-items: flex-start; }
+      .section-header .btn { width: 100%; text-align: center; justify-content: center; }
+
+      /* Table cells more compact */
+      thead th, tbody td { padding: 9px 10px; }
     }
 
     /* ── INNER SUB-TABS (Writing, Speaking) ── */

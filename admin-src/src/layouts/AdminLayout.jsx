@@ -4,22 +4,27 @@ import Sidebar from '../components/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 
 const TITLES = {
-  '/admin/dashboard':        'Dashboard',
-  '/admin/users':            'Người dùng',
-  '/admin/access-codes':     'Mã truy cập',
-  '/admin/courses':          'Khóa học',
-  '/admin/passages':         'Bài đọc (Passages)',
-  '/admin/reading-tests':    'Bộ đề Reading',
-  '/admin/listening-tests':  'Đề Listening',
-  '/admin/writing-tests':    'Đề Writing',
-  '/admin/speaking':         'Speaking',
-  '/admin/vocabulary':       'Từ vựng (Units)',
-  '/admin/writing-practice': 'Luyện viết',
-  '/admin/task1-exercises':  'Task 1 Grammar',
-  '/admin/task2-exercises':  'Task 2 Writing',
-  '/admin/history':          'Lịch sử làm bài',
-  '/admin/vocab-activity':   'Hoạt động từ vựng',
-  '/admin/messages':         'Hộp thư',
+  '/dashboard':              'Dashboard',
+  '/users':                  'Người dùng',
+  '/access-codes':           'Mã truy cập',
+  '/courses':                'Khóa học',
+  '/passages':               'Bài đọc (Passages)',
+  '/reading-tests':          'Bộ đề Reading',
+  '/listening-tests':        'Đề Listening',
+  '/listening-sections':     'Bài lẻ Listening',
+  '/writing-tests':          'Đề Writing',
+  '/speaking':               'Speaking',
+  '/vocabulary':             'Từ vựng (Units)',
+  '/writing-practice':       'Luyện viết (Writing Practice)',
+  '/task1-exercises':        'Task 1 Grammar Exercises',
+  '/task2-exercises':        'Task 2 Writing Exercises',
+  '/task2-templates':        'Task 2 Templates',
+  '/history':                'Lịch sử làm bài',
+  '/writing-grades':         'Chấm bài Writing',
+  '/vocab-activity':         'Hoạt động từ vựng',
+  '/messages':               'Hộp thư',
+  '/writing-samples':        'Bài mẫu Writing',
+  '/tuition':                'Quản lý học phí',
 };
 
 export default function AdminLayout() {
@@ -27,8 +32,9 @@ export default function AdminLayout() {
   const { pathname } = useLocation();
   const { user } = useAuth();
   const title = TITLES[pathname]
-    || (pathname.startsWith('/admin/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
-    || (pathname.startsWith('/admin/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
+    || (pathname.startsWith('/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
+    || (pathname.startsWith('/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
+    || (pathname.startsWith('/listening-sections/') ? 'Chỉnh sửa bài Listening' : null)
     || 'Admin';
 
   return (
