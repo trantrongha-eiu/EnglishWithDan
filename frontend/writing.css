@@ -785,7 +785,7 @@ body {
 [data-theme="dark"] .task-nav-btn:hover:not(.active) { background: #4b5563; }
 [data-theme="dark"] .arrow-btn           { background: #374151; border-color: #4b5563; color: #d1d5db; }
 [data-theme="dark"] .arrow-btn:hover     { background: #4b5563; }
-[data-theme="dark"] #footer-wc-summary   { color: #9ca3af; }
+/* #footer-wc-summary dark mode handled by .wr-footer-wc class */
 
 /* ══════════════════════════════════════════════
    DARK MODE – done screen
@@ -949,9 +949,7 @@ body {
 [data-theme="dark"] .btn-secondary       { border-color: #374151; color: #d1d5db; }
 [data-theme="dark"] .btn-secondary:hover { background: #374151; }
 [data-theme="dark"] .spinner             { border-color: #374151; border-top-color: #e53935; }
-[data-theme="dark"] #restore-banner      { background: #1c1a00 !important; border-color: #d97706 !important; }
-[data-theme="dark"] #restore-banner p:first-child { color: #fbbf24 !important; }
-[data-theme="dark"] #restore-banner #restore-banner-desc { color: #fde68a !important; }
+/* #restore-banner dark mode handled by .wr-restore-banner class */
 
 /* ── Writing task search input ──────────────────────────── */
 .wt-search-input {
@@ -1082,3 +1080,96 @@ body {
 [data-theme="dark"] .pw-copy-btn { border-color: #166534; color: #4ade80; }
 [data-theme="dark"] .pw-copy-btn:hover:not(:disabled) { background: #14532d; }
 [data-theme="dark"] .pw-sample-hint { background: #14532d; color: #4ade80; }
+
+/* ══════════════════════════════════════════════
+   CSS VARIABLE DEFAULTS (text colour tokens)
+══════════════════════════════════════════════ */
+:root { --text2: #555; --text3: #888; }
+[data-theme="dark"] { --text2: #d1d5db; --text3: #9ca3af; }
+
+/* ══════════════════════════════════════════════
+   RESTORE BANNER  (exam + practice variants)
+══════════════════════════════════════════════ */
+.wr-restore-banner {
+  background: #fffbeb;
+  border: 1.5px solid #f59e0b;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+.wr-restore-banner-title { font-size: 13px; font-weight: 600; color: #92400e; margin: 0 0 8px; }
+.wr-restore-banner-desc  { font-size: 12px; color: #78350f; margin: 0 0 10px; }
+.wr-restore-btn-row      { display: flex; gap: 8px; }
+.wr-restore-btn-primary  { background: #f59e0b; color: #fff; border: none; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.wr-restore-btn-primary:hover { background: #d97706; }
+.wr-restore-btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; border-radius: 7px; padding: 6px 14px; font-size: 12px; cursor: pointer; transition: background .15s; }
+.wr-restore-btn-secondary:hover { background: #e5e7eb; }
+[data-theme="dark"] .wr-restore-banner          { background: #1c1a00; border-color: #d97706; }
+[data-theme="dark"] .wr-restore-banner-title     { color: #fbbf24; }
+[data-theme="dark"] .wr-restore-banner-desc      { color: #fde68a; }
+[data-theme="dark"] .wr-restore-btn-secondary    { background: #1f2937; color: #9ca3af; border-color: #374151; }
+[data-theme="dark"] .wr-restore-btn-secondary:hover { background: #374151; }
+
+/* ══════════════════════════════════════════════
+   PENDING NOTICE
+══════════════════════════════════════════════ */
+.wr-pending-notice { background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; }
+.wr-pending-title  { font-size: 13px; font-weight: 600; color: #92400e; margin: 0 0 4px; }
+.wr-pending-desc   { font-size: 12px; color: #78350f; margin: 0; }
+[data-theme="dark"] .wr-pending-notice { background: #1c1a00; border-color: #d97706; }
+[data-theme="dark"] .wr-pending-title  { color: #fbbf24; }
+[data-theme="dark"] .wr-pending-desc   { color: #fde68a; }
+
+/* ══════════════════════════════════════════════
+   PRACTICE TASK SELECTION CARDS
+══════════════════════════════════════════════ */
+.wr-pcard {
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.wr-pcard:hover { border-color: #3d8bff; background: #f0f7ff; box-shadow: 0 4px 16px rgba(61,139,255,.12); }
+[data-theme="dark"] .wr-pcard       { border-color: #374151; background: #1f2937; }
+[data-theme="dark"] .wr-pcard:hover { border-color: #3b82f6; background: #1e3a5f; }
+.wr-pcard-emoji { font-size: 36px; margin-bottom: 10px; }
+.wr-pcard-name  { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+[data-theme="dark"] .wr-pcard-name  { color: #f9fafb; }
+.wr-pcard-desc  { font-size: 12px; color: #6b7280; }
+[data-theme="dark"] .wr-pcard-desc  { color: #94a3b8; }
+
+/* ══════════════════════════════════════════════
+   FOOTER WORD-COUNT SUMMARY
+══════════════════════════════════════════════ */
+.wr-footer-wc         { font-size: 12px; color: #6b7280; display: flex; gap: 10px; align-items: center; }
+.wr-footer-wc strong  { color: #374151; }
+[data-theme="dark"] .wr-footer-wc        { color: #9ca3af; }
+[data-theme="dark"] .wr-footer-wc strong { color: #e5e7eb; }
+
+/* ══════════════════════════════════════════════
+   DONE SCREEN – label & note box
+══════════════════════════════════════════════ */
+.wr-done-label { font-weight: 600; color: #111; margin-bottom: 4px; font-size: 14px; }
+[data-theme="dark"] .wr-done-label { color: #f9fafb; }
+
+.wr-done-note-box   { margin: 18px 0; padding: 14px 18px; background: #f0f7ff; border-radius: 10px; border: 1.5px solid #bfdbfe; text-align: left; }
+.wr-done-note-title { font-size: 13px; font-weight: 600; color: #1e40af; margin: 0 0 4px; }
+.wr-done-note-body  { font-size: 12px; color: #1d4ed8; margin: 0; }
+[data-theme="dark"] .wr-done-note-box   { background: #0f2133; border-color: #1e3a5f; }
+[data-theme="dark"] .wr-done-note-title { color: #93c5fd; }
+[data-theme="dark"] .wr-done-note-body  { color: #bfdbfe; }
+
+/* ══════════════════════════════════════════════
+   SHARED TEXT HELPERS
+══════════════════════════════════════════════ */
+.wr-modal-text     { font-size: 14px; line-height: 1.7; color: #444; }
+[data-theme="dark"] .wr-modal-text { color: #d1d5db; }
+
+.wr-label-sm       { font-size: 12px; color: #6b7280; }
+[data-theme="dark"] .wr-label-sm { color: #94a3b8; }
+
+.pw-instructions-text { font-size: 12px; color: #777; margin: 0; }
+[data-theme="dark"] .pw-instructions-text { color: #9ca3af; }

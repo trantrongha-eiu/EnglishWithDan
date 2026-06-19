@@ -29,12 +29,12 @@
       <p class="key-desc">Nhập mã truy cập do giáo viên cung cấp để bắt đầu bài thi</p>
 
       <!-- Restore banner (shown only when unsaved exam exists) -->
-      <div id="restore-banner" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:left">
-        <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 8px">📝 Bạn có bài làm chưa hoàn thành</p>
-        <p id="restore-banner-desc" style="font-size:12px;color:#78350f;margin:0 0 10px"></p>
-        <div style="display:flex;gap:8px">
-          <button onclick="restoreExam()" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer">▶ Tiếp tục làm</button>
-          <button onclick="discardSaved()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer">Bỏ qua</button>
+      <div id="restore-banner" class="wr-restore-banner" style="display:none">
+        <p class="wr-restore-banner-title">📝 Bạn có bài làm chưa hoàn thành</p>
+        <p id="restore-banner-desc" class="wr-restore-banner-desc"></p>
+        <div class="wr-restore-btn-row">
+          <button onclick="restoreExam()" class="wr-restore-btn-primary">▶ Tiếp tục làm</button>
+          <button onclick="discardSaved()" class="wr-restore-btn-secondary">Bỏ qua</button>
         </div>
       </div>
 
@@ -120,9 +120,9 @@
       <input type="checkbox" id="review-check" onchange="toggleFlag()" />
       Đánh dấu
     </label>
-    <div id="footer-wc-summary" style="font-size:12px;color:#6b7280;display:flex;gap:10px;align-items:center">
-      <span>T1: <strong id="footer-wc1" style="color:#374151">0</strong></span>
-      <span>T2: <strong id="footer-wc2" style="color:#374151">0</strong></span>
+    <div id="footer-wc-summary" class="wr-footer-wc">
+      <span>T1: <strong id="footer-wc1">0</strong></span>
+      <span>T2: <strong id="footer-wc2">0</strong></span>
     </div>
     <div class="task-nav-btns" id="task-nav-btns">
       <button class="task-nav-btn active" id="btn-task-1" onclick="switchTask(1)">1</button>
@@ -143,7 +143,7 @@
     <div class="done-card">
       <div class="done-icon">✅</div>
       <h2>Đã nộp bài!</h2>
-      <p id="done-exam-name" style="font-weight:600;color:#111;margin-bottom:4px"></p>
+      <p id="done-exam-name" class="wr-done-label"></p>
       <p>Bài làm đã được lưu thành công.</p>
       <div class="done-stats">
         <div class="done-stat">
@@ -253,41 +253,33 @@
     </div>
 
     <!-- Restore banner (shown when có draft luyện tập chưa nộp) -->
-    <div id="practice-restore-banner" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:12px 16px;margin-bottom:16px;text-align:left">
-      <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 8px">📝 Bạn có bài luyện tập chưa nộp</p>
-      <p id="practice-restore-desc" style="font-size:12px;color:#78350f;margin:0 0 10px"></p>
-      <div style="display:flex;gap:8px">
-        <button onclick="restorePracticeWrite()" style="background:#f59e0b;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer">▶ Tiếp tục viết</button>
-        <button onclick="discardPracticeAutoSave()" style="background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;border-radius:7px;padding:6px 14px;font-size:12px;cursor:pointer">Bỏ qua</button>
+    <div id="practice-restore-banner" class="wr-restore-banner" style="display:none">
+      <p class="wr-restore-banner-title">📝 Bạn có bài luyện tập chưa nộp</p>
+      <p id="practice-restore-desc" class="wr-restore-banner-desc"></p>
+      <div class="wr-restore-btn-row">
+        <button onclick="restorePracticeWrite()" class="wr-restore-btn-primary">▶ Tiếp tục viết</button>
+        <button onclick="discardPracticeAutoSave()" class="wr-restore-btn-secondary">Bỏ qua</button>
       </div>
     </div>
 
     <!-- Pending notice -->
-    <div id="practice-pending-notice" style="display:none;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:20px">
-      <p style="font-size:13px;font-weight:600;color:#92400e;margin:0 0 4px">⏳ Bạn đang có bài chờ chấm</p>
-      <p id="practice-pending-desc" style="font-size:12px;color:#78350f;margin:0">Vui lòng đợi giáo viên chấm xong bài hiện tại trước khi nộp bài mới.</p>
+    <div id="practice-pending-notice" class="wr-pending-notice" style="display:none">
+      <p class="wr-pending-title">⏳ Bạn đang có bài chờ chấm</p>
+      <p id="practice-pending-desc" class="wr-pending-desc">Vui lòng đợi giáo viên chấm xong bài hiện tại trước khi nộp bài mới.</p>
     </div>
 
     <!-- Task type cards -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px" id="practice-task-select">
-      <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t1"
-        onclick="showPracticeTaskList(1)"
-        onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
-        onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
-      >
-        <div style="font-size:36px;margin-bottom:10px">📊</div>
-        <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 1</div>
-        <div style="font-size:12px;color:#6b7280">Graph / Chart / Table / Map<br/>Tối thiểu <strong>150 từ</strong></div>
+      <div class="wr-pcard" id="pcard-t1" onclick="showPracticeTaskList(1)">
+        <div class="wr-pcard-emoji">📊</div>
+        <div class="wr-pcard-name">Task 1</div>
+        <div class="wr-pcard-desc">Graph / Chart / Table / Map<br/>Tối thiểu <strong>150 từ</strong></div>
         <button id="btn-practice-t1" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();showPracticeTaskList(1)">Chọn đề Task 1</button>
       </div>
-      <div style="border:2px solid #e5e7eb;border-radius:14px;padding:24px;text-align:center;cursor:pointer;transition:all .2s" id="pcard-t2"
-        onclick="showPracticeTaskList(2)"
-        onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f0f7ff'"
-        onmouseout="this.style.borderColor='#e5e7eb';this.style.background=''"
-      >
-        <div style="font-size:36px;margin-bottom:10px">📝</div>
-        <div style="font-weight:700;font-size:16px;margin-bottom:6px">Task 2</div>
-        <div style="font-size:12px;color:#6b7280">Essay / Discussion / Opinion<br/>Tối thiểu <strong>250 từ</strong></div>
+      <div class="wr-pcard" id="pcard-t2" onclick="showPracticeTaskList(2)">
+        <div class="wr-pcard-emoji">📝</div>
+        <div class="wr-pcard-name">Task 2</div>
+        <div class="wr-pcard-desc">Essay / Discussion / Opinion<br/>Tối thiểu <strong>250 từ</strong></div>
         <button id="btn-practice-t2" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();showPracticeTaskList(2)">Chọn đề Task 2</button>
       </div>
     </div>
@@ -318,7 +310,7 @@
   <div class="exam-topbar">
     <div class="exam-topbar-left">
       <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExitPractice()">← Thoát</button>
-      <span id="pw-task-label" style="font-weight:600;font-size:14px;color:var(--text2,#555)">Task 1 – Luyện tập</span>
+      <span id="pw-task-label" style="font-weight:600;font-size:14px;color:var(--text2,#555);">Task 1 – Luyện tập</span>
     </div>
     <div class="exam-topbar-center">
       <span style="font-size:13px;color:var(--text3,#888)">⏱ <span id="pw-stopwatch">00:00</span></span>
@@ -333,7 +325,7 @@
   <!-- Task title bar -->
   <div class="task-titlebar">
     <strong id="pw-title-label">Task 1 – Luyện tập</strong>
-    <p id="pw-instructions-label" style="font-size:12px;color:#777;margin:0"></p>
+    <p id="pw-instructions-label" class="pw-instructions-text"></p>
   </div>
 
   <!-- Split body -->
@@ -348,7 +340,7 @@
           <span class="pw-sample-label">Bài mẫu từ Daniel</span>
         </label>
         <span id="pw-sample-hint" class="pw-sample-hint" style="display:none">↩ Tắt để tiếp tục viết</span>
-        <span id="pw-wc-inline" style="font-size:12px;color:#6b7280;margin-left:auto">Số từ: <strong id="pw-wc-inline-n">0</strong></span>
+        <span id="pw-wc-inline" class="wr-label-sm" style="margin-left:auto">Số từ: <strong id="pw-wc-inline-n">0</strong></span>
       </div>
 
       <!-- Write panel -->
@@ -362,7 +354,7 @@
         ></textarea>
         <div class="word-count-bar">
           Số từ: <strong id="pw-wc" style="margin-left:4px">0</strong>
-          <span id="pw-wc-target" style="margin-left:6px;font-size:12px;color:#6b7280"></span>
+          <span id="pw-wc-target" class="wr-label-sm" style="margin-left:6px"></span>
           <div class="wc-progress-wrap"><div class="wc-progress-bar" id="pw-progress-bar"></div></div>
         </div>
       </div>
@@ -388,11 +380,11 @@
     <div class="done-card">
       <div class="done-icon">📬</div>
       <h2>Đã nộp bài!</h2>
-      <p id="pw-done-label" style="font-weight:600;color:#111;margin-bottom:4px"></p>
-      <p style="color:#6b7280;font-size:14px">Bài của bạn đã được gửi đến giáo viên.<br/>Kết quả sẽ xuất hiện trong lịch sử luyện tập sau khi giáo viên trả bài.</p>
-      <div style="margin:18px 0;padding:14px 18px;background:#f0f7ff;border-radius:10px;border:1.5px solid #bfdbfe;text-align:left">
-        <p style="font-size:13px;font-weight:600;color:#1e40af;margin:0 0 4px">⚠️ Lưu ý</p>
-        <p style="font-size:12px;color:#1d4ed8;margin:0">Mỗi lần chỉ được nộp <strong>1 bài</strong>. Bài tiếp theo chỉ được nộp sau khi giáo viên đã chấm và trả bài.</p>
+      <p id="pw-done-label" class="wr-done-label"></p>
+      <p>Bài của bạn đã được gửi đến giáo viên.<br/>Kết quả sẽ xuất hiện trong lịch sử luyện tập sau khi giáo viên trả bài.</p>
+      <div class="wr-done-note-box">
+        <p class="wr-done-note-title">⚠️ Lưu ý</p>
+        <p class="wr-done-note-body">Mỗi lần chỉ được nộp <strong>1 bài</strong>. Bài tiếp theo chỉ được nộp sau khi giáo viên đã chấm và trả bài.</p>
       </div>
       <div class="done-actions">
         <button class="btn-secondary" onclick="showPracticeMode()">✏️ Xem lịch sử luyện tập</button>
@@ -410,7 +402,7 @@
       <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">×</button>
     </div>
     <div class="review-modal-body" style="padding:20px">
-      <p style="font-size:14px;line-height:1.7;color:#444">Bài viết chưa nộp sẽ được <strong>lưu nháp tự động</strong>. Bạn có thể vào lại để tiếp tục viết sau.</p>
+      <p class="wr-modal-text">Bài viết chưa nộp sẽ được <strong>lưu nháp tự động</strong>. Bạn có thể vào lại để tiếp tục viết sau.</p>
     </div>
     <div class="review-modal-footer">
       <button class="btn-secondary" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">Tiếp tục viết</button>
@@ -427,7 +419,7 @@
       <button class="review-modal-close" onclick="document.getElementById('practice-submit-modal').classList.remove('open')">×</button>
     </div>
     <div class="review-modal-body" style="padding:20px">
-      <p style="font-size:14px;line-height:1.7;color:#444">
+      <p class="wr-modal-text">
         Số từ: <strong id="ps-wc-confirm">0</strong><br/>
         Sau khi nộp, bạn sẽ <strong>không thể nộp thêm bài</strong> cho đến khi giáo viên chấm xong.
       </p>
@@ -468,7 +460,7 @@
       <button class="review-modal-close" onclick="closeExitModal()">×</button>
     </div>
     <div class="review-modal-body" style="padding:20px">
-      <p style="font-size:14px;line-height:1.7;color:#444">
+      <p class="wr-modal-text">
         Bài làm đã được <strong>tự động lưu</strong>. Bạn có thể nhập lại mã và tiếp tục sau.
       </p>
     </div>
@@ -489,7 +481,7 @@
       <button class="review-modal-close" onclick="closeConfirmModal()">×</button>
     </div>
     <div class="review-modal-body" style="padding:20px">
-      <p style="font-size:14px;line-height:1.7;color:#444">
+      <p class="wr-modal-text">
         Bạn có chắc muốn nộp bài không?<br/>
         Task 1: <strong id="confirm-wc1">0</strong> từ &nbsp;|&nbsp;
         Task 2: <strong id="confirm-wc2">0</strong> từ
