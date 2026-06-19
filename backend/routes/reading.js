@@ -65,6 +65,7 @@ router.post('/verify-key', auth, async (req, res) => {
     const accessKey = await AccessKey.findOne({
       key: key.toUpperCase().trim(),
       isActive: true,
+      testType: { $in: ['reading', null] },
       $or: [{ testId }, { testId: null }]
     });
 
@@ -98,6 +99,7 @@ router.post('/start', auth, startLimiter, async (req, res) => {
     const accessKey = await AccessKey.findOne({
       key: key.toUpperCase().trim(),
       isActive: true,
+      testType: { $in: ['reading', null] },
       $or: [{ testId }, { testId: null }]
     });
 

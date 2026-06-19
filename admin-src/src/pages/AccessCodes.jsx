@@ -183,7 +183,7 @@ export default function AccessCodes() {
           </thead>
           <tbody>
             {filtered.length === 0
-              ? <tr><td colSpan={7} className="table-empty">Không có mã nào</td></tr>
+              ? <tr><td colSpan={isAdmin ? 8 : 7} className="table-empty">Không có mã nào</td></tr>
               : filtered.map(k => {
                 const pct = k.maxUses ? Math.min(100, Math.round((k.currentUses / k.maxUses) * 100)) : 0;
                 const { label: stLabel, cls: stCls } = keyStatus(k);
@@ -216,7 +216,7 @@ export default function AccessCodes() {
                     <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(k.createdAt).split(' ')[0]}</td>
                     {isAdmin && <td style={{ fontSize: 12, color: 'var(--text3)' }}>{k.createdBy?.username || '–'}</td>}
                     <td>
-                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(k._id, k.key)} title="Vô hiệu hoá">🗑</button>
+                      {k.isActive && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(k._id, k.key)} title="Vô hiệu hoá">🗑</button>}
                     </td>
                   </tr>
                 );

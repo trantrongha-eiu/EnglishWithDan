@@ -1796,9 +1796,9 @@ const RAW_EXERCISES = [
   { topicKey:'food', level:'beginner', type:'translation', orderIndex:4,
     grammarPoint:'S + like + V-ing + with + noun',
     instruction:'Dịch sang tiếng Anh:', question:'Tôi thích ăn cơm với gia đình.',
-    hints:['like eating rice','with my family'],
-    sampleAnswer:'I like eating rice with my family.',
-    alternativeAnswers:['I enjoy eating rice with my family.','I love eating rice with my family.'] },
+    hints:['like having meals','with my family'],
+    sampleAnswer:'I like having meals with my family.',
+    alternativeAnswers:['I enjoy having meals with my family.','I like eating together with my family.','I love having family meals.'] },
 
   { topicKey:'food', level:'beginner', type:'translation', orderIndex:5,
     grammarPoint:'S + usually + V + O + for + meal',
@@ -3093,10 +3093,10 @@ const RAW_EXERCISES = [
 
   { topicKey:'environment', level:'intermediate', type:'expand', orderIndex:13,
     grammarPoint:'Develop with examples + result',
-    instruction:'Mở rộng thành đoạn văn (3 câu):', question:'Recycling is important.',
-    baseText:'Recycling is important.',
-    hints:['For example','reduce waste','As a result','protect the environment'],
-    sampleAnswer:'Recycling is important because it helps reduce the amount of waste that ends up in landfills. For example, recycling aluminium cans uses 95% less energy than producing new ones from scratch. As a result, widespread recycling can significantly lower pollution and preserve natural resources for future generations.',
+    instruction:'Mở rộng thành đoạn văn (3 câu):', question:'Reducing waste is a shared responsibility.',
+    baseText:'Reducing waste is a shared responsibility.',
+    hints:['For example','recycle / reuse','As a result','protect the environment'],
+    sampleAnswer:'Reducing waste is a shared responsibility that every individual and government must take seriously. For example, recycling aluminium cans uses 95% less energy than producing new ones from scratch, and composting food waste can greatly reduce landfill pressure. As a result, if more people adopt these habits, we can significantly lower pollution and preserve natural resources for future generations.',
     alternativeAnswers:[] },
 
   { topicKey:'environment', level:'intermediate', type:'expand', orderIndex:14,
@@ -3475,6 +3475,14 @@ async function runSeed() {
     lessonMap[`${l.topicKey}:${l.level}`] = doc._id;
   }
   console.log(`[Seed] ✓ ${LESSONS.length} lessons`);
+
+  // Deactivate stale exercises that were replaced by a new question string
+  const RETIRED = [
+    { topicKey: 'environment', level: 'intermediate', question: 'Recycling is important.' },
+  ];
+  for (const r of RETIRED) {
+    await WPExercise.updateMany({ ...r, isActive: true }, { $set: { isActive: false } });
+  }
 
   let count = 0;
   for (const ex of RAW_EXERCISES) {
