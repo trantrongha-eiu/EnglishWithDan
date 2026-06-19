@@ -34,7 +34,7 @@
                     <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
                     <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
                     <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
-                    <button class="filter-btn" onclick="showHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;display:inline-flex;align-items:center;gap:5px">
+                    <button class="ls-hist-btn" onclick="showHistoryModal()">
                         📋 Lịch sử
                     </button>
                 </div>
@@ -79,7 +79,7 @@
                     </button>
                     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
                         <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:180px" autocomplete="off">
-                        <button onclick="showLTPracticeHistoryModal()" style="background:none;border:1px solid #e5e7eb;color:#6b7280;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex-shrink:0">
+                        <button onclick="showLTPracticeHistoryModal()" class="ls-hist-btn">
                             📋 Lịch sử
                         </button>
                     </div>
@@ -89,7 +89,7 @@
                     <button class="pf-btn pf-active" onclick="filterLtByStatus('all', this)">Tất cả</button>
                     <button class="pf-btn" onclick="filterLtByStatus('done', this)">✓ Đã làm</button>
                     <button class="pf-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
-                    <span id="lt-practice-done-count" style="margin-left:auto;font-size:12px;color:#6b7280;font-weight:500"></span>
+                    <span id="lt-practice-done-count" class="ls-done-count"></span>
                 </div>
                 <div id="lt-section-list"></div>
             </div>
@@ -103,7 +103,7 @@
         <div class="exam-topbar">
             <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát">✕</button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
-            <div id="exam-progress-pill" style="font-size:12px;font-weight:600;color:#6b7280;background:#f3f4f6;padding:4px 10px;border-radius:50px;border:1px solid #e5e7eb;flex-shrink:0">
+            <div id="exam-progress-pill" class="ls-progress-pill">
                 <span id="prog-answered">0</span>/<span id="prog-total">40</span>
             </div>
             <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu">💾</span>
@@ -169,15 +169,15 @@
             <div class="result-band-label">Band Score</div>
             <div class="result-stats">
                 <div class="result-stat">
-                    <div class="result-stat-val" style="color:#16a34a" id="r-correct">0</div>
+                    <div class="result-stat-val ls-stat-correct" id="r-correct">0</div>
                     <div class="result-stat-lab">Đúng</div>
                 </div>
                 <div class="result-stat">
-                    <div class="result-stat-val" style="color:#e53935" id="r-wrong">0</div>
+                    <div class="result-stat-val ls-stat-wrong" id="r-wrong">0</div>
                     <div class="result-stat-lab">Sai</div>
                 </div>
                 <div class="result-stat">
-                    <div class="result-stat-val" style="color:#9ca3af" id="r-skip">0</div>
+                    <div class="result-stat-val ls-stat-skip" id="r-skip">0</div>
                     <div class="result-stat-lab">Bỏ qua</div>
                 </div>
             </div>
@@ -233,7 +233,7 @@
             <div class="transcript-panel">
                 <div class="transcript-header">
                     <span>📜 Transcript</span>
-                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click để tra từ</span>
+                    <span class="ls-transcript-hint">Double-click để tra từ</span>
                 </div>
                 <div class="transcript-body" id="transcript-body"></div>
             </div>
@@ -307,7 +307,7 @@
             <div class="transcript-panel" id="lt-practice-transcript-panel" style="display:none">
                 <div class="transcript-header">
                     <span>📜 Transcript</span>
-                    <span style="font-size:11px;color:#9ca3af;font-weight:400">Double-click để tra từ</span>
+                    <span class="ls-transcript-hint">Double-click để tra từ</span>
                 </div>
                 <div class="transcript-body" id="lt-practice-transcript-body"></div>
             </div>
@@ -353,8 +353,7 @@
             </div>
             <div style="display:flex;gap:4px;align-items:center">
                 <button class="dict-btn" style="padding:4px 8px;font-size:14px;flex:none" onclick="speakDictWord()">🔊</button>
-                <button onclick="closeDictPopup()"
-                    style="background:none;border:none;font-size:18px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
+                <button onclick="closeDictPopup()" class="ls-dict-close">×</button>
             </div>
         </div>
         <div id="dict-body" class="dict-body"></div>
@@ -454,7 +453,7 @@
         <div class="modal-box modal-sm">
             <h3>Nộp bài?</h3>
             <p>Bạn đã trả lời <strong id="modal-answered">0</strong>/<strong id="modal-total">0</strong> câu hỏi.</p>
-            <p id="modal-warning" style="color:#f59e0b;font-size:13px;margin-top:8px"></p>
+            <p id="modal-warning" class="ls-modal-warning"></p>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModal('modal-submit')">Tiếp tục làm</button>
                 <button class="btn-primary" onclick="submitExam()">Nộp bài</button>
@@ -801,13 +800,13 @@
                 renderTestList(data.tests);
             } catch (err) {
                 document.getElementById('tests-wrapper').innerHTML =
-                    `<p style="text-align:center;padding:40px;color:#e53935">Error loading tests: ${err.message}</p>`;
+                    `<p class="ls-error-msg">Error loading tests: ${err.message}</p>`;
             }
         }
 
         function renderTestList(tests) {
             const wrap = document.getElementById('tests-wrapper');
-            if (!tests.length) { wrap.innerHTML = '<p style="text-align:center;padding:60px;color:#9ca3af">No listening tests available.</p>'; return; }
+            if (!tests.length) { wrap.innerHTML = '<p class="ls-empty-msg">No listening tests available.</p>'; return; }
             const groups = {};
             tests.forEach(t => { const g = t.seriesName || 'Tests'; if (!groups[g]) groups[g] = []; groups[g].push(t); });
             wrap.innerHTML = Object.entries(groups).map(([grp, list]) => `
@@ -1356,7 +1355,7 @@
                 if (isReview) {
                     const isCorrect = !!q.isCorrect;
                     const expl = q.explanation
-                        ? `<div class="match-feedback q-explanation" style="width:100%;font-size:12px;color:#6b7280;margin-top:4px"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : '';
+                        ? `<div class="match-feedback q-explanation" style="width:100%;font-size:12px;margin-top:4px"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : '';
                     return `<div class="mo-q-row" id="qi-${qNum}" data-qnum="${qNum}">
                         <span class="mo-q-num">${qNum}</span>
                         <span class="mo-q-text">${escHtml(q.questionText || '')}</span>
@@ -1674,7 +1673,7 @@
 
         function renderTranscript(transcript) {
             const tb = document.getElementById('transcript-body');
-            if (!transcript) { tb.innerHTML = '<p style="color:#9ca3af;font-style:italic">Chưa có transcript.</p>'; return; }
+            if (!transcript) { tb.innerHTML = '<p class="ls-transcript-empty">Chưa có transcript.</p>'; return; }
             tb.innerHTML = transcript.split('\n').map(line =>
                 line.trim() ? `<p style="margin-bottom:8px">${line}</p>` : '<br>'
             ).join('');
@@ -2498,30 +2497,25 @@
                 <div class="modal-box modal-sm">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
                         <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
-                        <button onclick="document.getElementById('book-picker-modal').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;padding:2px">×</button>
+                        <button onclick="document.getElementById('book-picker-modal').remove()" class="ls-dict-close">×</button>
                     </div>
-                    <div style="margin-bottom:14px;padding:10px 12px;background:#f8fafc;border-radius:10px">
+                    <div class="ls-bp-word-preview">
                         <strong>${state.dictWord}</strong>
-                        <span style="color:#9ca3af;font-size:13px"> – ${state.dictMeaning}</span>
+                        <span class="ls-bp-word-meaning"> – ${state.dictMeaning}</span>
                     </div>
                     <div id="bp-book-list">
-                    ${books.length ? books.map(b => `<div onclick="pickBook('${b._id}', this)" id="bp-${b._id}"
-                            style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1.5px solid #e5e7eb;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .15s"
-                            onmouseover="this.style.borderColor='#3d8bff';this.style.background='#eff6ff'"
-                            onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'">
+                    ${books.length ? books.map(b => `<div onclick="pickBook('${b._id}', this)" id="bp-${b._id}" class="ls-bp-book-item">
                             <span style="font-size:20px">${b.emoji || '📖'}</span>
-                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div style="font-size:12px;color:#9ca3af">${b.totalWords ?? 0} words</div></div>
-                        </div>`).join('') : '<p style="color:#9ca3af;font-size:13px;text-align:center;padding:8px 0">Chưa có sổ từ vựng nào.</p>'}
+                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div class="ls-bp-book-count">${b.totalWords ?? 0} words</div></div>
+                        </div>`).join('') : '<p class="ls-bp-empty">Chưa có sổ từ vựng nào.</p>'}
                     </div>
-                    <div style="border-top:1px solid #f1f5f9;margin-top:12px;padding-top:12px">
-                        <div style="font-size:13px;font-weight:600;color:#6b7280;margin-bottom:8px">➕ Create new book &amp; save word</div>
+                    <div class="ls-bp-new-section">
+                        <div class="ls-bp-new-label">➕ Create new book &amp; save word</div>
                         <div style="display:flex;gap:8px">
                             <input id="bp-new-name" type="text" placeholder="Book name..." maxlength="40"
-                                style="flex:1;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:9px;font-size:13px;font-family:inherit;outline:none"
-                                onfocus="this.style.borderColor='#3d8bff'" onblur="this.style.borderColor='#e5e7eb'"
+                                class="ls-bp-input"
                                 onkeydown="if(event.key==='Enter') createBookAndSave()" />
-                            <button onclick="createBookAndSave()"
-                                style="background:#3d8bff;color:#fff;border:none;padding:9px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">
+                            <button onclick="createBookAndSave()" class="ls-bp-create-btn">
                                 Create &amp; Save
                             </button>
                         </div>
@@ -2618,32 +2612,32 @@
         async function showHistoryModal() {
             openModal('modal-history');
             const tbody = document.getElementById('history-tbody');
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Đang tải...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="ls-no-history">Đang tải...</td></tr>';
             try {
                 const res = await fetch(`${API}/listening/history`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success || !data.attempts?.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử làm bài.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="ls-no-history">Chưa có lịch sử làm bài.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.attempts.map(a => {
                     const date = new Date(a.submittedAt).toLocaleDateString('en-GB');
                     const mins = a.timeTaken ? `${Math.floor(a.timeTaken / 60)}:${pad(a.timeTaken % 60)}` : '–';
-                    const bandCls = a.bandScore >= 7 ? 'color:#16a34a' : a.bandScore >= 5.5 ? 'color:#f59e0b' : 'color:#e53935';
+                    const bandClass = a.bandScore >= 7 ? 'ls-band-good' : a.bandScore >= 5.5 ? 'ls-band-mid' : 'ls-band-bad';
                     const attemptId = a._id || '';
                     return `<tr>
                         <td>${a.testName || a.testId?.name || '–'}</td>
                         <td>${date}</td>
                         <td>${mins}</td>
-                        <td style="color:#16a34a;font-weight:600">${a.correctCount ?? '–'}</td>
-                        <td style="color:#e53935;font-weight:600">${a.wrongCount ?? '–'}</td>
-                        <td style="color:#9ca3af;font-weight:600">${a.skippedCount ?? '–'}</td>
-                        <td><strong style="${bandCls}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
-                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" style="background:#eff6ff;color:#3d8bff;border:1px solid #bfdbfe;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Review</button>` : ''}</td>
+                        <td class="ls-td-correct">${a.correctCount ?? '–'}</td>
+                        <td class="ls-td-wrong">${a.wrongCount ?? '–'}</td>
+                        <td class="ls-td-skip">${a.skippedCount ?? '–'}</td>
+                        <td><strong class="${bandClass}">${a.bandScore?.toFixed(1) ?? '–'}</strong></td>
+                        <td>${attemptId ? `<button onclick="reviewFromHistory('${attemptId}')" class="btn-review-sm">Review</button>` : ''}</td>
                     </tr>`;
                 }).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#e53935">Error: ${err.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="ls-history-error">Error: ${err.message}</td></tr>`;
             }
         }
 
@@ -2883,7 +2877,7 @@
         if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
         if (title) {
             title.innerHTML = isLele
-                ? 'Luyện tập <span style="background:#3d8bff;color:#fff;padding:2px 10px;border-radius:6px;font-size:14px">Listening Bài lẻ</span>'
+                ? 'Luyện tập <span class="ls-tag-blue">Listening Bài lẻ</span>'
                 : 'Luyện tập <span class="tag-red">Listening Full đề</span>';
         }
         if (isLele) {
@@ -3039,7 +3033,7 @@
                     </div>
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
-                        <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small style="color:#9ca3af">🎵 ${dur}</small>` : ''}</div>
+                        <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur">🎵 ${dur}</small>` : ''}</div>
                         <button class="practice-card-btn ${cardCls}"
                             onclick="event.stopPropagation();startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                             ${btnText}
@@ -3049,7 +3043,7 @@
             }).join('')}</div>`;
             _applyLtFilters();
         } catch(e) {
-            listEl.innerHTML = `<div style="text-align:center;padding:48px 16px;color:#e53935">
+            listEl.innerHTML = `<div class="ls-section-error">
                 Lỗi tải danh sách: ${e.message}
                 <br><button class="btn-ghost" style="margin-top:12px" onclick="loadPracticeSections('${partNum}')">Thử lại</button>
             </div>`;
@@ -3221,9 +3215,7 @@
         }
 
         const pct    = total ? Math.round(correct / total * 100) : 0;
-        const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
-        const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
-        const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+        const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
 
         // Time line
         const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
@@ -3234,20 +3226,20 @@
                         : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
                         : pct >= 40 ? 'Cần luyện tập thêm một chút!'
                         : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
-        const timeLine = `<div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-            <span>⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong></span>
+        const timeLine = `<div class="ls-rb-time">
+            <span>⏱ Thời gian: <strong>${tm}:${ts}</strong></span>
             <span>${speed} · ${perQ}s/câu</span>
-            <span style="color:${color};font-style:italic">${encourage}</span>
+            <span style="font-style:italic">${encourage}</span>
         </div>`;
 
         // Re-render with review data
         const inner = document.getElementById('lt-practice-questions-inner');
-        let html = `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+        let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
                 <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
-                <span style="color:#16a34a">● Đúng: ${correct}</span>
-                <span style="color:#dc2626">● Sai: ${wrong}</span>
-                <span style="color:#9ca3af">● Bỏ qua: ${skipped}</span>
+                <span class="ls-rb-correct">● Đúng: ${correct}</span>
+                <span class="ls-rb-wrong">● Sai: ${wrong}</span>
+                <span class="ls-rb-skip">● Bỏ qua: ${skipped}</span>
             </div>${timeLine}
         </div>
         <div class="section-header-card">
@@ -3415,18 +3407,19 @@
                 const pct = h.totalQuestions ? Math.round(h.correctCount / h.totalQuestions * 100) : 0;
                 const lbl = partLabel[h.partNumber] || 'AT';
                 const cls = { S1:'p1', S2:'p2', S3:'p3', S4:'p4', AT:'at' }[lbl] || 'at';
+                const pctCls = pct >= 70 ? 'ls-pct-good' : pct >= 40 ? 'ls-pct-mid' : 'ls-pct-bad';
                 return `<tr>
                     <td><span class="plele-badge ${cls}" style="font-size:10px;padding:2px 6px">${lbl}</span></td>
                     <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(h.sectionTitle||'–')}</td>
                     <td>${date}</td>
                     <td>${m}:${s}</td>
-                    <td style="color:#16a34a;font-weight:600">${h.correctCount}</td>
-                    <td style="color:#dc2626;font-weight:600">${h.wrongCount}</td>
-                    <td style="color:#9ca3af">${h.skippedCount}</td>
-                    <td style="font-weight:700;color:${pct>=70?'#166534':pct>=40?'#92400e':'#991b1b'}">${pct}%</td>
+                    <td class="ls-td-correct">${h.correctCount}</td>
+                    <td class="ls-td-wrong">${h.wrongCount}</td>
+                    <td class="ls-td-skip">${h.skippedCount}</td>
+                    <td class="${pctCls}">${pct}%</td>
                     <td><button class="btn-review-sm" onclick="loadLTPracticeReview('${h._id}')">Xem lại</button></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="9" style="text-align:center;padding:20px;color:#9ca3af">Chưa có lịch sử luyện bài lẻ.</td></tr>';
+            }).join('') || '<tr><td colspan="9" class="ls-no-history">Chưa có lịch sử luyện bài lẻ.</td></tr>';
             openModal('modal-lt-practice-history');
         } catch (e) { console.error(e); }
     }
@@ -3477,21 +3470,19 @@
             document.getElementById('lt-practice-title').textContent = section.title || `Xem lại – Section ${attempt.partNumber}`;
 
             const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
-            const color  = pct >= 70 ? '#166534' : pct >= 40 ? '#92400e' : '#991b1b';
-            const bg     = pct >= 70 ? '#f0fdf4' : pct >= 40 ? '#fffbeb' : '#fef2f2';
-            const border = pct >= 70 ? '#86efac' : pct >= 40 ? '#fde68a' : '#fca5a5';
+            const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
             const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
             const ts = String(attempt.timeTaken % 60).padStart(2, '0');
 
-            let html = `<div style="background:${bg};border:1px solid ${border};border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-weight:600;color:${color}">
+            let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
                 <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
                     <span>Kết quả: <strong>${attempt.correctCount}/${attempt.totalQuestions}</strong> câu đúng (${pct}%)</span>
-                    <span style="color:#16a34a">● Đúng: ${attempt.correctCount}</span>
-                    <span style="color:#dc2626">● Sai: ${attempt.wrongCount}</span>
-                    <span style="color:#9ca3af">● Bỏ qua: ${attempt.skippedCount}</span>
+                    <span class="ls-rb-correct">● Đúng: ${attempt.correctCount}</span>
+                    <span class="ls-rb-wrong">● Sai: ${attempt.wrongCount}</span>
+                    <span class="ls-rb-skip">● Bỏ qua: ${attempt.skippedCount}</span>
                 </div>
-                <div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400">
-                    ⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong>
+                <div class="ls-rb-time">
+                    ⏱ Thời gian: <strong>${tm}:${ts}</strong>
                     &nbsp;·&nbsp; ${new Date(attempt.submittedAt).toLocaleDateString('vi-VN')}
                 </div>
             </div>

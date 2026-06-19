@@ -1945,3 +1945,127 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 [data-theme="dark"] .translate-popup-close { color: #6b7280; }
 [data-theme="dark"] .translate-src { color: #d1d5db; border-bottom-color: #374151; }
 [data-theme="dark"] .translate-result { color: #93c5fd; }
+
+/* ── Dark-mode utility classes (replace inline styles) ── */
+
+/* History buttons */
+.ls-hist-btn { background:none; border:1px solid #e5e7eb; color:#6b7280; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px; flex-shrink:0; }
+.ls-hist-btn:hover { background:#f3f4f6; }
+[data-theme="dark"] .ls-hist-btn { border-color:#374151; color:#9ca3af; }
+[data-theme="dark"] .ls-hist-btn:hover { background:#374151; }
+
+/* Done-count label */
+.ls-done-count { margin-left:auto; font-size:12px; color:#6b7280; font-weight:500; }
+[data-theme="dark"] .ls-done-count { color:#9ca3af; }
+
+/* Exam progress pill */
+.ls-progress-pill { font-size:12px; font-weight:600; color:#6b7280; background:#f3f4f6; padding:4px 10px; border-radius:50px; border:1px solid #e5e7eb; flex-shrink:0; }
+[data-theme="dark"] .ls-progress-pill { background:#1f2937; border-color:#374151; color:#9ca3af; }
+
+/* Result stat colors */
+.ls-stat-correct { color:#16a34a; }
+.ls-stat-wrong   { color:#e53935; }
+.ls-stat-skip    { color:#9ca3af; }
+[data-theme="dark"] .ls-stat-correct { color:#4ade80; }
+[data-theme="dark"] .ls-stat-wrong   { color:#f87171; }
+
+/* Transcript hint */
+.ls-transcript-hint { font-size:11px; color:#9ca3af; font-weight:400; }
+[data-theme="dark"] .ls-transcript-hint { color:#6b7280; }
+
+/* Dict close button */
+.ls-dict-close { background:none; border:none; font-size:18px; cursor:pointer; color:#9ca3af; padding:2px; }
+[data-theme="dark"] .ls-dict-close { color:#6b7280; }
+
+/* Modal warning */
+.ls-modal-warning { color:#f59e0b; font-size:13px; margin-top:8px; }
+[data-theme="dark"] .ls-modal-warning { color:#fbbf24; }
+
+/* JS-generated error / empty states */
+.ls-error-msg  { text-align:center; padding:40px; color:#e53935; }
+.ls-empty-msg  { text-align:center; padding:60px; color:#9ca3af; }
+.ls-no-history { text-align:center; padding:20px; color:#9ca3af; }
+.ls-history-error { text-align:center; color:#e53935; }
+.ls-transcript-empty { color:#9ca3af; font-style:italic; }
+[data-theme="dark"] .ls-error-msg    { color:#f87171; }
+[data-theme="dark"] .ls-empty-msg    { color:#6b7280; }
+[data-theme="dark"] .ls-no-history   { color:#6b7280; }
+[data-theme="dark"] .ls-history-error { color:#f87171; }
+
+/* History table colored cells */
+.ls-td-correct { color:#16a34a; font-weight:600; }
+.ls-td-wrong   { color:#dc2626; font-weight:600; }
+.ls-td-skip    { color:#9ca3af; }
+[data-theme="dark"] .ls-td-correct { color:#4ade80; }
+[data-theme="dark"] .ls-td-wrong   { color:#f87171; }
+[data-theme="dark"] .ls-td-skip    { color:#6b7280; }
+
+/* History band score */
+.ls-band-good { color:#16a34a; }
+.ls-band-mid  { color:#f59e0b; }
+.ls-band-bad  { color:#e53935; }
+[data-theme="dark"] .ls-band-good { color:#4ade80; }
+[data-theme="dark"] .ls-band-mid  { color:#fbbf24; }
+[data-theme="dark"] .ls-band-bad  { color:#f87171; }
+
+/* Practice result bar */
+.ls-result-bar { border-radius:12px; padding:12px 16px; margin-bottom:16px; font-size:14px; font-weight:600; border:1px solid; }
+.ls-result-bar--good { background:#f0fdf4; border-color:#86efac; color:#166534; }
+.ls-result-bar--mid  { background:#fffbeb; border-color:#fde68a; color:#92400e; }
+.ls-result-bar--bad  { background:#fef2f2; border-color:#fca5a5; color:#991b1b; }
+[data-theme="dark"] .ls-result-bar--good { background:#052e16; border-color:#166534; color:#86efac; }
+[data-theme="dark"] .ls-result-bar--mid  { background:#1c1a00; border-color:#92400e; color:#fde68a; }
+[data-theme="dark"] .ls-result-bar--bad  { background:#1c0000; border-color:#991b1b; color:#fca5a5; }
+
+/* Result bar inner colored spans */
+.ls-rb-correct { color:#16a34a; }
+.ls-rb-wrong   { color:#dc2626; }
+.ls-rb-skip    { color:#9ca3af; }
+.ls-rb-time    { font-size:12px; color:#6b7280; font-weight:400; margin-top:8px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.ls-rb-time strong { color:#374151; }
+[data-theme="dark"] .ls-rb-correct { color:#4ade80; }
+[data-theme="dark"] .ls-rb-wrong   { color:#f87171; }
+[data-theme="dark"] .ls-rb-time    { color:#9ca3af; }
+[data-theme="dark"] .ls-rb-time strong { color:#e5e7eb; }
+
+/* Practice history pct column */
+.ls-pct-good { color:#166534; font-weight:700; }
+.ls-pct-mid  { color:#92400e; font-weight:700; }
+.ls-pct-bad  { color:#991b1b; font-weight:700; }
+[data-theme="dark"] .ls-pct-good { color:#86efac; }
+[data-theme="dark"] .ls-pct-mid  { color:#fde68a; }
+[data-theme="dark"] .ls-pct-bad  { color:#fca5a5; }
+
+/* Blue badge tag (Bài lẻ) */
+.ls-tag-blue { background:#3d8bff; color:#fff; padding:2px 10px; border-radius:6px; font-size:14px; }
+[data-theme="dark"] .ls-tag-blue { background:#1d4ed8; }
+
+/* Practice card duration text */
+.ls-card-dur { color:#9ca3af; }
+[data-theme="dark"] .ls-card-dur { color:#6b7280; }
+
+/* Book-picker modal */
+.ls-bp-word-preview { margin-bottom:14px; padding:10px 12px; background:#f8fafc; border-radius:10px; }
+[data-theme="dark"] .ls-bp-word-preview { background:#1f2937; }
+.ls-bp-word-meaning { color:#9ca3af; font-size:13px; }
+[data-theme="dark"] .ls-bp-word-meaning { color:#6b7280; }
+.ls-bp-book-item { display:flex; align-items:center; gap:12px; padding:11px 13px; border:1.5px solid #e5e7eb; border-radius:10px; cursor:pointer; margin-bottom:8px; transition:border-color .15s, background .15s; }
+.ls-bp-book-item:hover { border-color:#3d8bff; background:#eff6ff; }
+[data-theme="dark"] .ls-bp-book-item { border-color:#374151; background:#1f2937; }
+[data-theme="dark"] .ls-bp-book-item:hover { border-color:#3d8bff; background:#1e3a5f; }
+.ls-bp-book-count { font-size:12px; color:#9ca3af; }
+[data-theme="dark"] .ls-bp-book-count { color:#6b7280; }
+.ls-bp-empty { color:#9ca3af; font-size:13px; text-align:center; padding:8px 0; }
+.ls-bp-new-section { border-top:1px solid #f1f5f9; margin-top:12px; padding-top:12px; }
+[data-theme="dark"] .ls-bp-new-section { border-top-color:#374151; }
+.ls-bp-new-label { font-size:13px; font-weight:600; color:#6b7280; margin-bottom:8px; }
+[data-theme="dark"] .ls-bp-new-label { color:#9ca3af; }
+.ls-bp-input { flex:1; padding:9px 12px; border:1.5px solid #e5e7eb; border-radius:9px; font-size:13px; font-family:inherit; outline:none; background:#fff; color:#111; transition:border-color .15s; }
+.ls-bp-input:focus { border-color:#3d8bff; }
+[data-theme="dark"] .ls-bp-input { background:#1f2937; border-color:#374151; color:#e5e7eb; }
+[data-theme="dark"] .ls-bp-input:focus { border-color:#3d8bff; }
+.ls-bp-create-btn { background:#3d8bff; color:#fff; border:none; padding:9px 16px; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; }
+.ls-bp-create-btn:hover { background:#1d4ed8; }
+/* Practice section list error */
+.ls-section-error { text-align:center; padding:48px 16px; color:#e53935; }
+[data-theme="dark"] .ls-section-error { color:#f87171; }
