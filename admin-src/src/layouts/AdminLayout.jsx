@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const TITLES = {
   '/dashboard':              'Dashboard',
@@ -31,6 +32,7 @@ export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const { user } = useAuth();
+  const { theme, toggle } = useTheme();
   const title = TITLES[pathname]
     || (pathname.startsWith('/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
     || (pathname.startsWith('/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
@@ -51,6 +53,11 @@ export default function AdminLayout() {
             <span className="topbar-title">{title}</span>
           </div>
           <div className="topbar-right">
+            <button
+              className="btn btn-ghost btn-icon theme-toggle"
+              onClick={toggle}
+              title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+            >{theme === 'dark' ? '☀️' : '🌙'}</button>
             <a href="/" className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>← Trang chủ</a>
             {user && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text2)' }}>

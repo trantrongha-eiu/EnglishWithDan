@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ConfirmProvider } from './components/ConfirmDialog';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminLayout from './layouts/AdminLayout';
@@ -33,6 +34,7 @@ import NotFound from './pages/NotFound';
 
 export default function App() {
   return (
+    <ThemeProvider>
     <HashRouter>
       <AuthProvider>
         <ToastProvider>
@@ -76,5 +78,6 @@ export default function App() {
         </ToastProvider>
       </AuthProvider>
     </HashRouter>
+    </ThemeProvider>
   );
 }
