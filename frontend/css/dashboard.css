@@ -591,6 +591,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   font-size:13px;font-weight:500;
   z-index:999;transform:translateY(20px);opacity:0;transition:all .25s;
   display:flex;align-items:center;gap:8px;max-width:320px;box-shadow:var(--shadow-md);
+  pointer-events:none;
 }
 #toast.show{transform:translateY(0);opacity:1}
 #toast.success{background:#166534}
