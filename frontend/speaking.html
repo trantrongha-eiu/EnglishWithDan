@@ -17,8 +17,25 @@
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
 
+<!-- ── Access Key Gate ── -->
+<div id="sp-gate" class="sp-gate" style="display:none">
+  <div class="sp-gate-card">
+    <div class="sp-gate-icon">🎙</div>
+    <h2 class="sp-gate-title">Speaking Practice</h2>
+    <p class="sp-gate-desc">Nhập mã truy cập do giáo viên cấp để bắt đầu luyện nói.</p>
+    <div class="sp-gate-row">
+      <input id="gate-key-input" class="gate-key-input" type="text"
+        placeholder="NHẬP MÃ TRUY CẬP" autocomplete="off"
+        onkeydown="if(event.key==='Enter')submitKey()"
+        oninput="this.value=this.value.toUpperCase()" />
+      <button class="gate-submit-btn" id="gate-submit-btn" onclick="submitKey()">Xác nhận →</button>
+    </div>
+    <div id="gate-msg" class="gate-msg" style="display:none"></div>
+  </div>
+</div>
+
 <!-- ── Page tabs ── -->
-<div class="sp-tabs">
+<div class="sp-tabs" id="sp-tabs" style="display:none">
   <button class="sp-tab active" id="tab-btn-practice"  onclick="switchTab('practice')">🎙 Practice</button>
   <button class="sp-tab"        id="tab-btn-materials" onclick="switchTab('materials')">📚 Materials</button>
 </div>
@@ -26,7 +43,7 @@
 <!-- ════════════════════════════════════════════
      TAB 1 – PRACTICE
 ════════════════════════════════════════════ -->
-<div id="tab-practice" class="sp-content active">
+<div id="tab-practice" class="sp-content active sp-tab-hidden">
   <div class="practice-container">
 
     <!-- No Speech API warning -->
@@ -66,10 +83,28 @@
 
     <!-- Record section -->
     <div class="record-section">
+
+      <!-- Part 2: Preparation countdown (60s) -->
+      <div id="p2-prep" class="p2-prep" style="display:none">
+        <div class="p2-prep-phase">📖 Thời gian chuẩn bị</div>
+        <div class="p2-prep-clock" id="p2-prep-clock">1:00</div>
+        <div class="p2-prep-hint">Đọc cue card và lập dàn ý trước khi nói</div>
+        <button class="p2-prep-skip" onclick="skipPrep()">Bỏ qua – Bắt đầu nói ngay →</button>
+      </div>
+
       <button class="btn-record" id="btn-record" onclick="toggleRecord()">
         <span class="rec-icon" id="rec-icon">🎙</span>
         <span class="rec-label" id="rec-label">Start Speaking</span>
       </button>
+
+      <!-- Elapsed time (all parts) + Part 2 remaining countdown -->
+      <div class="rec-timers">
+        <div class="rec-elapsed hidden" id="rec-elapsed">⏱ 0:00</div>
+        <div class="p2-speak-countdown hidden" id="p2-speak-countdown">
+          <span id="p2-speak-time">2:00</span> còn lại
+        </div>
+      </div>
+
       <div class="rec-status" id="rec-status">Nhấn để bắt đầu ghi âm</div>
       <div class="transcript-interim" id="transcript-interim"></div>
     </div>
@@ -113,7 +148,7 @@
 <!-- ════════════════════════════════════════════
      TAB 2 – MATERIALS
 ════════════════════════════════════════════ -->
-<div id="tab-materials" class="sp-content">
+<div id="tab-materials" class="sp-content sp-tab-hidden">
   <div class="pv-layout">
 
     <!-- Left: filter + list -->

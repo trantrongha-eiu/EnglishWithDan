@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const AccessKeySchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true, uppercase: true },
 
-  // 'reading' | 'listening' | 'writing' | null (null = dùng được cho mọi test mọi loại)
+  // 'reading' | 'listening' | 'writing' | 'speaking' | null (null = dùng được cho mọi loại)
   testType: {
     type: String,
-    enum: ['reading', 'listening', 'writing', null],
+    enum: ['reading', 'listening', 'writing', 'speaking', null],
     default: null
   },
 

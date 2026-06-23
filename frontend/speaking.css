@@ -425,3 +425,189 @@ body {
   color: #fcd34d;
 }
 
+/* ══════════════════════════════════════════════
+   ACCESS KEY GATE
+══════════════════════════════════════════════ */
+.sp-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 112px);
+  padding: 40px 20px;
+}
+.sp-gate-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,.07);
+}
+.sp-gate-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.sp-gate-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 10px;
+}
+.sp-gate-desc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.sp-gate-row {
+  display: flex;
+  gap: 8px;
+}
+.gate-key-input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace, inherit;
+  letter-spacing: 1.5px;
+  text-align: center;
+  color: #111;
+  transition: border-color .15s;
+}
+.gate-key-input:focus { outline: none; border-color: #e53935; }
+.gate-submit-btn {
+  padding: 11px 20px;
+  background: #e53935;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.gate-submit-btn:hover  { background: #c62828; }
+.gate-submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+.gate-msg {
+  margin-top: 14px;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+.gate-msg--error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.gate-msg--success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+/* Dark mode gate */
+[data-theme="dark"] .sp-gate-card   { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .sp-gate-title  { color: #f9fafb; }
+[data-theme="dark"] .sp-gate-desc   { color: #9ca3af; }
+[data-theme="dark"] .gate-key-input { background: #111827; border-color: #374151; color: #f9fafb; }
+[data-theme="dark"] .gate-key-input:focus { border-color: #e53935; }
+
+/* ══════════════════════════════════════════════
+   PART 2 – PREP TIMER
+══════════════════════════════════════════════ */
+.p2-prep {
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border: 2px solid #3b82f6;
+  border-radius: 16px;
+  padding: 24px 28px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.p2-prep-phase {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: #1d4ed8;
+  margin-bottom: 8px;
+}
+.p2-prep-clock {
+  font-size: 52px;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
+}
+.p2-prep-hint {
+  font-size: 13px;
+  color: #3b82f6;
+  margin-bottom: 16px;
+}
+.p2-prep-skip {
+  padding: 8px 20px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.p2-prep-skip:hover { background: #2563eb; }
+
+[data-theme="dark"] .p2-prep {
+  background: linear-gradient(135deg, #1e3a5f, #1a3050);
+  border-color: #3b82f6;
+}
+[data-theme="dark"] .p2-prep-phase,
+[data-theme="dark"] .p2-prep-clock,
+[data-theme="dark"] .p2-prep-hint { color: #93c5fd; }
+
+/* ══════════════════════════════════════════════
+   RECORDING TIMERS (elapsed + Part 2 speak)
+══════════════════════════════════════════════ */
+.rec-timers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 22px;
+}
+.rec-elapsed {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e53935;
+  font-variant-numeric: tabular-nums;
+}
+.rec-elapsed.hidden { display: none; }
+
+.p2-speak-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+.p2-speak-countdown.hidden { display: none; }
+#p2-speak-time {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1d4ed8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Disabled record button during prep */
+.btn-record--disabled {
+  opacity: .4;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
+/* Tab hidden state (before key verified) */
+.sp-tab-hidden { display: none !important; }
+
+/* Hidden utility */
+.hidden { display: none !important; }
+

@@ -1,6 +1,33 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt  = require('../models/SpeakingAttempt');
+const AccessKey        = require('../models/AccessKey');
+
+// ── POST /api/speaking/verify-key ────────────────────────────
+exports.verifyKey = async (req, res) => {
+  try {
+    const { key } = req.body;
+    if (!key) return res.status(400).json({ success: false, message: 'Thiếu mã truy cập' });
+
+    const accessKey = await AccessKey.findOne({
+      key:      key.toUpperCase().trim(),
+      isActive: true,
+      testType: { $in: ['speaking', null] },
+    });
+
+    if (!accessKey)
+      return res.status(404).json({ success: false, message: 'Mã không tồn tại hoặc không dùng cho Speaking' });
+    if (accessKey.expiresAt && new Date() > accessKey.expiresAt)
+      return res.status(403).json({ success: false, message: 'Mã đã hết hạn' });
+    if (accessKey.currentUses >= accessKey.maxUses)
+      return res.status(403).json({ success: false, message: 'Mã đã dùng hết lượt' });
+
+    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
+    res.json({ success: true, message: 'Xác nhận thành công!' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 // ── GET /api/speaking/topics ─────────────────────────────────
 exports.getTopics = async (req, res) => {
