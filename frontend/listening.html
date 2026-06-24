@@ -822,6 +822,9 @@
             const band = t.lastAttempt?.bandScore?.toFixed(1) || '';
             const cor = t.lastAttempt?.correctCount ?? '';
             const tot = t.lastAttempt?.totalQuestions ?? t.totalQuestions ?? '';
+            const dateStr = t.lastAttempt?.submittedAt
+                ? new Date(t.lastAttempt.submittedAt).toLocaleDateString('en-GB')
+                : '';
             const safeName = (t.name || '').replace(/'/g, "\\'");
             return `
                 <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${(t.name || '').toLowerCase().replace(/"/g, '')}">
@@ -834,7 +837,7 @@
                     <div class="test-card-body">
                         <div class="test-card-name">${t.name}</div>
                         <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
-                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}</div>` : ''}
+                        ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
                         <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 ${done ? 'Làm lại' : 'Bắt đầu'}</button>
                         ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')">📋 Xem lại</button>` : ''}
                     </div>
@@ -1199,7 +1202,7 @@
                     setupDictionaryDouble('questions-panel');
                     const section = getSortedSections(false)[idx];
                     (section?.questionGroups || []).forEach(g =>
-                        g.questions.forEach(q => restoreAnswer(q))
+                        (g.questions || []).forEach(q => restoreAnswer(q))
                     );
                 } else {
                     renderPartQuestions(idx);
@@ -1902,6 +1905,8 @@
             updateQNav(); updateFooter(); saveExamToStorage();
         }
         function ltClickMOChip(letter, groupId) {
+            const optRow = document.querySelector(`.mo-opt-row[data-groupid="${groupId}"][data-value="${letter}"]`);
+            if (optRow && optRow.dataset.reuse === '0' && optRow.classList.contains('mo-opt-used')) return;
             const emptyDz = document.querySelector(`.rq-mo-drop[data-groupid="${groupId}"]:not(.filled)`);
             if (!emptyDz) return;
             const qNum = parseInt(emptyDz.dataset.qnum);
@@ -1933,6 +1938,9 @@
             updateQNav(); updateFooter(); saveExamToStorage();
         }
         function ltClickSCChip(word, groupId) {
+            const chips = document.querySelectorAll(`.sc-chip[data-groupid="${groupId}"]`);
+            const matchingChip = Array.from(chips).find(c => c.dataset.value === word);
+            if (matchingChip && matchingChip.dataset.reuse === '0' && matchingChip.classList.contains('used')) return;
             const emptyDz = document.querySelector(`.sc-drop[data-groupid="${groupId}"]:not(.filled)`);
             if (!emptyDz) return;
             const qNum = parseInt(emptyDz.dataset.qnum);
@@ -2612,12 +2620,12 @@
         async function showHistoryModal() {
             openModal('modal-history');
             const tbody = document.getElementById('history-tbody');
-            tbody.innerHTML = '<tr><td colspan="7" class="ls-no-history">Đang tải...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Đang tải...</td></tr>';
             try {
                 const res = await fetch(`${API}/listening/history`, { headers: authH() });
                 const data = await res.json();
                 if (!data.success || !data.attempts?.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="ls-no-history">Chưa có lịch sử làm bài.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Chưa có lịch sử làm bài.</td></tr>';
                     return;
                 }
                 tbody.innerHTML = data.attempts.map(a => {
@@ -2637,7 +2645,7 @@
                     </tr>`;
                 }).join('');
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="7" class="ls-history-error">Error: ${err.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="ls-history-error">Error: ${err.message}</td></tr>`;
             }
         }
 
@@ -3025,7 +3033,7 @@
                 const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
                 const btnText   = doneInfo ? `Làm lại · ${s.questionCount} câu` : `Làm bài · ${s.questionCount} câu`;
 
-                return `<div class="practice-card"${doneAttr} onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
+                return `<div class="practice-card"${doneAttr} data-pid="${s._id}" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">
                         <div class="practice-cover-logo"><span>D</span>aniel</div>
                         ${cardLabel}
@@ -3055,7 +3063,17 @@
     /* ── Start practice for one section ─────────────────────────────────── */
     async function startPracticeSection(sectionId, partNum, _silent = false) {
         const cards = document.querySelectorAll('#lt-section-list .practice-card');
-        cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+        const clickedCard = document.querySelector(`#lt-section-list .practice-card[data-pid="${sectionId}"]`);
+        cards.forEach(c => {
+            if (c === clickedCard) {
+                const btn = c.querySelector('.practice-card-btn');
+                if (btn) { btn._origText = btn.textContent; btn.textContent = '⏳ Đang tải...'; }
+                c.style.pointerEvents = 'none';
+            } else {
+                c.style.opacity = '0.5';
+                c.style.pointerEvents = 'none';
+            }
+        });
         try {
             const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
             const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
@@ -3069,7 +3087,14 @@
             }
             _enterLTPracticeScreen(data.section, partNum, sectionId);
         } catch(e) { toast('Lỗi kết nối server', 'error'); }
-        finally { cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; }); }
+        finally {
+            cards.forEach(c => {
+                c.style.opacity = '';
+                c.style.pointerEvents = '';
+                const btn = c.querySelector('.practice-card-btn');
+                if (btn && btn._origText) { btn.textContent = btn._origText; btn._origText = null; }
+            });
+        }
     }
 
     /* ── Enter practice screen ───────────────────────────────────────────── */
@@ -3394,12 +3419,14 @@
 
     /* ── Practice history modal ──────────────────────────────────────────── */
     async function showLTPracticeHistoryModal() {
+        const tbody = document.getElementById('lt-practice-history-tbody');
+        tbody.innerHTML = '<tr><td colspan="9" class="ls-no-history">Đang tải...</td></tr>';
+        openModal('modal-lt-practice-history');
         try {
             const res = await fetch(`${API}/listening/practice/history`, { headers: authH() });
             const data = await res.json();
             const attempts = data.attempts || [];
             const partLabel = { 1: 'S1', 2: 'S2', 3: 'S3', 4: 'S4' };
-            const tbody = document.getElementById('lt-practice-history-tbody');
             tbody.innerHTML = attempts.map(h => {
                 const date = new Date(h.submittedAt).toLocaleDateString('vi-VN');
                 const m = String(Math.floor(h.timeTaken / 60)).padStart(2, '0');
@@ -3420,8 +3447,9 @@
                     <td><button class="btn-review-sm" onclick="loadLTPracticeReview('${h._id}')">Xem lại</button></td>
                 </tr>`;
             }).join('') || '<tr><td colspan="9" class="ls-no-history">Chưa có lịch sử luyện bài lẻ.</td></tr>';
-            openModal('modal-lt-practice-history');
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="9" class="ls-history-error">Lỗi tải lịch sử: ${e.message}</td></tr>`;
+        }
     }
 
     async function loadLTPracticeReview(attemptId) {
