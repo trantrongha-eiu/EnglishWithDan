@@ -884,7 +884,7 @@ async function submitPractice() {
   try {
     const data = await apiFetch('/api/task2/check', {
       method: 'POST',
-      body: JSON.stringify({ topicId: state.selectedTopic._id, questionId: q._id, userAnswer: answer })
+      body: JSON.stringify({ topicId: state.selectedTopic._id, questionId: q.questionId || q._id, userAnswer: answer })
     });
     if (!data.success) throw new Error(data.message);
 
@@ -903,7 +903,7 @@ async function submitPractice() {
     }
 
     state.sessionAttempts.push({
-      questionId: q._id || q.questionId,
+      questionId: q.questionId || q._id,
       userAnswer: answer,
       isCorrect: isOk,
       score: data.score || 0,
@@ -1103,7 +1103,7 @@ async function examNext() {
     showToast('Vui lòng trả lời câu hỏi trước khi tiếp tục!', 'warn', 2500);
     return;
   }
-  state.examAnswers.push({ topicId: q.topicId || state.selectedTopic._id, questionId: q._id, userAnswer: answer });
+  state.examAnswers.push({ topicId: q.topicId || state.selectedTopic._id, questionId: q.questionId || q._id, userAnswer: answer });
   state.examIdx++;
   if (state.examIdx >= state.examQuestions.length) {
     await submitExam();
