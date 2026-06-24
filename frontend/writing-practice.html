@@ -155,7 +155,7 @@
     .wp-welcome-types-lbl { font-size:12px; font-weight:700; color:#0369a1; margin-bottom:8px; text-transform:uppercase; letter-spacing:.04em; }
     .wp-welcome-chips { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
     .wp-welcome-chips span { background:#fff; border:1px solid #bae6fd; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:500; color:#0369a1; }
-    .wp-welcome-start { background:linear-gradient(135deg,#f093fb,#f5576c); color:#fff; border:none; border-radius:12px; padding:14px 36px; font-size:15px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity .2s,transform .2s; box-shadow:0 4px 14px rgba(245,87,108,.35); }
+    .wp-welcome-start { background:linear-gradient(135deg,#e53935 0%,#ff6b6b 100%); color:#fff; border:none; border-radius:12px; padding:14px 36px; font-size:15px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:opacity .2s,transform .2s; box-shadow:0 4px 14px rgba(229,57,53,.35); }
     .wp-welcome-start:hover { opacity:.9; transform:translateY(-1px); }
     .wp-welcome-hint { font-size:12px; color:#9ca3af; margin-top:10px; }
     @media (max-width:480px) { .wp-welcome-cards { grid-template-columns:1fr; } }
@@ -207,10 +207,11 @@
       content: ''; position: absolute; height: 14px; width: 14px; left: 3px; top: 3px;
       background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25);
     }
-    .wp-toggle-switch input:checked + .wp-toggle-slider { background: #6366f1; }
+    .wp-toggle-switch input:checked + .wp-toggle-slider { background: #3d8bff; }
     .wp-toggle-switch input:checked + .wp-toggle-slider::before { transform: translateX(16px); }
     [data-theme="dark"] .wp-option-label { color: #cbd5e1; }
     [data-theme="dark"] .wp-option-row { border-bottom-color: #1e293b; }
+    [data-theme="dark"] .wp-toggle-slider { background: #374151; }
 
     /* ── History button & modal ── */
     .t1-hist-open-btn{background:none;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 22px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;margin-top:8px}
@@ -1528,7 +1529,11 @@ function restartExercises() {
 }
 
 function tryMoreTopics() {
-  document.getElementById('wp-sidebar').scrollIntoView({ behavior: 'smooth' });
+  if (window.innerWidth <= 768) {
+    openWpSheet();
+  } else {
+    document.getElementById('wp-sidebar').scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 function showState(state) {
@@ -2002,8 +2007,10 @@ function renderWpHistory(attempts) {
     byDay[key].list.push(a);
   });
 
-  const rows = Object.values(byDay)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+  const allDays = Object.values(byDay).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const dayCount = allDays.length;
+
+  const rows = allDays
     .slice(0, 30)
     .map(d => {
       const xp  = d.list.reduce((s, a) => s + (a.xpEarned || 0), 0);
@@ -2023,7 +2030,7 @@ function renderWpHistory(attempts) {
   body.innerHTML = `
     <div class="t1-hist-summary">
       <div class="t1-hist-stat"><div class="t1-hist-num">${total}</div><div class="t1-hist-lbl">Tổng bài</div></div>
-      <div class="t1-hist-stat"><div class="t1-hist-num">30</div><div class="t1-hist-lbl">Ngày lưu</div></div>
+      <div class="t1-hist-stat"><div class="t1-hist-num">${dayCount}</div><div class="t1-hist-lbl">Ngày học</div></div>
       <div class="t1-hist-stat"><div class="t1-hist-num">+${totalXP}</div><div class="t1-hist-lbl">Tổng XP</div></div>
     </div>
     <div>${rows}</div>`;
