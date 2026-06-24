@@ -705,6 +705,7 @@ let rearrangeAnswer = [];
 let _wpAutoAdvance   = localStorage.getItem('wp_auto_advance') === 'on';
 let _wpShuffle       = localStorage.getItem('wp_shuffle') === 'on';
 let _autoAdvanceTick = null;
+let _wpPracticeState = 'welcome';
 
 const TYPE_LABELS = {
   translation:'🔄 Dịch câu', rearrange:'🔀 Sắp xếp từ',
@@ -1033,6 +1034,10 @@ function _doSetMode(mode) {
     document.getElementById('test-in-progress').style.display  = 'none';
     document.getElementById('test-results').style.display      = 'none';
     document.getElementById('vocab-hint-btn')?.classList.add('hidden');
+  }
+  const widget = document.getElementById('wp-stats-widget');
+  if (widget) {
+    widget.style.display = (mode === 'practice' && (_wpPracticeState === 'exercise' || _wpPracticeState === 'done')) ? '' : 'none';
   }
 }
 
@@ -1537,8 +1542,11 @@ function tryMoreTopics() {
 }
 
 function showState(state) {
+  _wpPracticeState = state;
   ['welcome','loading','empty','exercise','done'].forEach(s =>
-    document.getElementById('state-' + s).classList.toggle('hidden', s !== state));
+    document.getElementById('state-' + s)?.classList.toggle('hidden', s !== state));
+  const widget = document.getElementById('wp-stats-widget');
+  if (widget) widget.style.display = (state === 'exercise' || state === 'done') ? '' : 'none';
 }
 
 function startPractice() {
@@ -2043,7 +2051,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- ── Desktop stats widget (top-right) ── -->
-<div class="wp-stats-widget" id="wp-stats-widget">
+<div class="wp-stats-widget" id="wp-stats-widget" style="display:none">
   <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Phiên này</div>
   <div class="wp-stats-row">
     <div class="wp-stat-box"><div class="wp-stat-num" id="stat-done">0</div><div class="wp-stat-label">Bài làm</div></div>
