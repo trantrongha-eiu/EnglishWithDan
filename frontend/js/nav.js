@@ -7,6 +7,7 @@
     { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading' },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening' },
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge' },
+    { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
       children: [
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
