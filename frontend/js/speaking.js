@@ -310,8 +310,9 @@ function setQuestion(q) {
 
   // Part 2: show prep timer after reset
   if (q.part === 2) {
-    // Slight delay so resetPractice() runs first
-    setTimeout(startPrepTimer, 100);
+    // Capture question ref; check it still matches when timeout fires
+    // (guards against rapid question switching)
+    setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
   }
 }
 
@@ -347,7 +348,12 @@ function resetPractice() {
   if (elapsed)     { elapsed.textContent = '⏱ 0:00'; elapsed.classList.add('hidden'); }
 }
 
-function retryQuestion() { resetPractice(); }
+function retryQuestion() {
+  resetPractice();
+  if (state.currentQuestion?.part === 2) {
+    setTimeout(() => { if (state.currentQuestion?.part === 2) startPrepTimer(); }, 100);
+  }
+}
 
 // ──────────────────────────────────────────────────────
 // Part 2 Timer – Prep phase (60 seconds)

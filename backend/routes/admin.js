@@ -576,11 +576,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       })),
       ...task1Attempts.map(h => ({
         _id: h._id, skill: 'task1-practice',
-        testName: h.exerciseId?.toString() || '–',
-        testMeta: `${h.skillType || ''} · ${h.module || ''}`,
+        testName: [h.skillType, h.module != null ? `M${h.module}` : ''].filter(Boolean).join(' ') || 'Task 1',
+        testMeta: `${h.isCorrect ? '✓' : '✗'} · ${h.score != null ? h.score + ' pts' : ''}`.trim().replace(/·\s*$/, ''),
         userId: normUser(h.userId),
         date: h.createdAt,
-        bandScore: h.score ?? null,
+        bandScore: null,
         correctCount: h.isCorrect ? 1 : 0,
         totalQuestions: 1,
         duration: null
@@ -591,7 +591,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         testMeta: `Week ${h.week || '?'} · ${h.level || ''}`,
         userId: normUser(h.userId),
         date: h.completedAt || h.createdAt,
-        bandScore: h.scorePercentage != null ? +(h.scorePercentage / 10).toFixed(1) : null,
+        bandScore: null,
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
         duration: null
