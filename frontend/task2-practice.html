@@ -83,6 +83,13 @@
     .t2-mc-option.correct .t2-opt-letter{background:#16a34a;color:#fff}
     .t2-mc-option.wrong .t2-opt-letter{background:#dc2626;color:#fff}
     [data-theme="dark"] .t2-mc-option{background:#1e293b;border-color:#334155;color:#f1f5f9}
+    [data-theme="dark"] .t2-mc-option:hover{border-color:#6366f1;background:#1e1b4b}
+    [data-theme="dark"] .t2-mc-option.selected{border-color:#6366f1;background:#1e1b4b}
+    [data-theme="dark"] .t2-mc-option .t2-opt-letter{background:#334155;color:#94a3b8}
+    [data-theme="dark"] .t2-mc-option.correct{border-color:#16a34a;background:#14532d;color:#f1f5f9}
+    [data-theme="dark"] .t2-mc-option.wrong{border-color:#dc2626;background:#450a0a;color:#f1f5f9}
+    [data-theme="dark"] .t2-mc-option.correct .t2-opt-letter{background:#16a34a;color:#fff}
+    [data-theme="dark"] .t2-mc-option.wrong .t2-opt-letter{background:#dc2626;color:#fff}
 
     /* ── Word count ── */
     .t2-word-count{font-size:11px;color:#9ca3af;text-align:right;margin-top:4px}
@@ -209,6 +216,54 @@
     [data-theme="dark"] .t2-back-btn{border-color:#374151;color:#9ca3af}
     [data-theme="dark"] .t2-back-btn:hover{border-color:#818cf8;color:#a5b4fc}
 
+    /* ── Page-level headings / sub-text (rendered inside #app) ── */
+    .t2-page-h2{font-weight:800;color:#111827;margin:0 0 4px}
+    .t2-page-sub{color:#6b7280;margin:0}
+    .t2-week-name{font-size:12px;font-weight:600;margin-bottom:2px}
+    [data-theme="dark"] .t2-page-h2{color:#f1f5f9}
+    [data-theme="dark"] .t2-page-sub{color:#9ca3af}
+    [data-theme="dark"] .t2-week-label{color:#64748b}
+    [data-theme="dark"] .t2-week-name{color:#cbd5e1}
+    [data-theme="dark"] .t2-done-sub{color:#9ca3af}
+    [data-theme="dark"] .t2-done-stat-lbl{color:#64748b}
+    [data-theme="dark"] .t2-selector-title{color:#f1f5f9}
+    [data-theme="dark"] .t2-selector-prompt{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
+    [data-theme="dark"] .t2-selector-label{color:#94a3b8}
+
+    /* ── Show stats bar on all screen sizes (task2 has no sidebar widget) ── */
+    .wp-mobile-stats{display:flex}
+
+    /* ── History modal (task2) ── */
+    .t2-hist-modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .t2-hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6}
+    .t2-hist-hdr h3{margin:0;font-size:16px;font-weight:800;color:#111827}
+    .t2-hist-close{background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer;line-height:1;padding:4px}
+    .t2-hist-close:hover{color:#374151}
+    .t2-hist-body2{overflow-y:auto;padding:16px 20px;flex:1}
+    .t2-hist-stats{display:flex;gap:10px;margin-bottom:16px}
+    .t2-hist-stat{flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6}
+    .t2-hist-num{font-size:20px;font-weight:800;color:#111827}
+    .t2-hist-lbl{font-size:11px;color:#9ca3af;margin-top:2px}
+    .t2-hist-entry{padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa}
+    .t2-hist-entry-date{font-size:11px;color:#9ca3af;margin-bottom:3px}
+    .t2-hist-entry-name{font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+    .t2-hist-entry-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .t2-hist-entry-count{font-size:12px;color:#6b7280}
+    .t2-hist-entry-acc{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px}
+    .t2-hist-entry-acc.good{background:#dcfce7;color:#15803d}
+    .t2-hist-entry-acc.mid{background:#fef3c7;color:#92400e}
+    .t2-hist-entry-acc.bad{background:#fee2e2;color:#b91c1c}
+    [data-theme="dark"] .t2-hist-modal{background:#1e293b}
+    [data-theme="dark"] .t2-hist-hdr{border-color:#334155}
+    [data-theme="dark"] .t2-hist-hdr h3{color:#f1f5f9}
+    [data-theme="dark"] .t2-hist-close{color:#64748b}
+    [data-theme="dark"] .t2-hist-close:hover{color:#f1f5f9}
+    [data-theme="dark"] .t2-hist-stat{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t2-hist-num{color:#f1f5f9}
+    [data-theme="dark"] .t2-hist-entry{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t2-hist-entry-name{color:#94a3b8}
+    [data-theme="dark"] .t2-hist-entry-count{color:#64748b}
+
   </style>
 </head>
 <body>
@@ -234,7 +289,7 @@
 
 <!-- ── Stats header ── -->
 <header class="wp-header">
-  <button onclick="history.back()" class="t2-back-btn">← Quay lại</button>
+  <button onclick="history.back()" class="t2-back-btn"><i class="fas fa-arrow-left"></i> Quay lại</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -342,7 +397,7 @@ function askT2Quit(cb, opts = {}) {
   document.getElementById('t2-quit-title').textContent    = opts.title        || 'Dừng luyện tập?';
   document.getElementById('t2-quit-sub').textContent      = opts.sub          || '';
   document.getElementById('t2-quit-continue-btn').innerHTML = `<i class="fas fa-arrow-left"></i> ${opts.continueText || 'Tiếp tục học'}`;
-  document.getElementById('t2-quit-leave-btn').textContent  = opts.confirmText  || 'Dừng lại';
+  document.getElementById('t2-quit-leave-btn').innerHTML = '<i class="fas fa-sign-out-alt"></i> ' + (opts.confirmText || 'Dừng lại');
   document.getElementById('t2-quit-overlay').classList.remove('hidden');
 }
 document.addEventListener('DOMContentLoaded', () => {
@@ -453,10 +508,10 @@ function renderWeeks() {
   return `
     <div style="padding:20px 20px 8px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div>
-        <h2 style="font-size:20px;font-weight:800;color:#111827;margin:0 0 4px">📝 IELTS Task 2 Writing</h2>
-        <p style="font-size:14px;color:#6b7280;margin:0">Chọn tuần học để bắt đầu luyện tập</p>
+        <h2 class="t2-page-h2" style="font-size:20px">📝 IELTS Task 2 Writing</h2>
+        <p class="t2-page-sub" style="font-size:14px">Chọn tuần học để bắt đầu luyện tập</p>
       </div>
-      <button onclick="openT2History()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;margin-top:4px" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#d1d5db';this.style.color='#6b7280'">
+      <button onclick="openT2History()" class="t2-back-btn" style="margin-top:4px;white-space:nowrap">
         <i class="fas fa-history"></i> Lịch sử
       </button>
     </div>
@@ -466,7 +521,7 @@ function renderWeeks() {
         const hasContent = !!d;
         return `<div class="t2-week-card ${hasContent ? '' : 'locked'}" data-week="${w}" style="${!hasContent ? 'opacity:.45;cursor:not-allowed' : ''}">
           <div class="t2-week-num">W${w}</div>
-          <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:2px">${weekNames[w] || ''}</div>
+          <div class="t2-week-name">${weekNames[w] || ''}</div>
           <div class="t2-week-label">${hasContent ? d.topicCount + ' topic' : 'Sắp ra'}</div>
         </div>`;
       }).join('')}
@@ -496,7 +551,7 @@ function renderTopics() {
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <b>Tuần ${state.selectedWeek}</b></div>
     </div>
     <div style="padding:0 20px 8px">
-      <h2 style="font-size:18px;font-weight:800;color:#111827;margin:0 0 4px">Tuần ${state.selectedWeek} — Chọn chủ đề</h2>
+      <h2 class="t2-page-h2" style="font-size:18px">Tuần ${state.selectedWeek} — Chọn chủ đề</h2>
     </div>
     <div class="t2-topic-list">
       ${state.topics.map(t => `
@@ -601,14 +656,21 @@ function setAutoNext(v) { state.autoNext = v; }
 function setShuffleMode(v) { state.shuffleMode = v; }
 
 async function startSession() {
-  if (state.currentMode === 'vocab') {
-    await loadVocab();
-  } else if (state.currentMode === 'exam') {
-    await startExam();
-  } else if (state.currentMode === 'retry') {
-    await startRetryWrong();
-  } else {
-    await startPractice();
+  const btn = document.querySelector('.t2-start-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
+  try {
+    if (state.currentMode === 'vocab') {
+      await loadVocab();
+    } else if (state.currentMode === 'exam') {
+      await startExam();
+    } else if (state.currentMode === 'retry') {
+      await startRetryWrong();
+    } else {
+      await startPractice();
+    }
+  } finally {
+    const btn2 = document.querySelector('.t2-start-btn');
+    if (btn2) { btn2.disabled = false; btn2.innerHTML = '<i class="fas fa-play-circle"></i> Bắt đầu'; }
   }
 }
 
@@ -1078,7 +1140,7 @@ function renderExam() {
     <div class="wp-card" style="margin:0 20px">
       ${renderQuestion(q)}
       <button class="wp-submit-btn" style="margin-top:12px;width:100%" onclick="examNext()">
-        ${isLast ? '✓ Nộp bài' : 'Tiếp theo →'}
+        ${isLast ? '<i class="fas fa-check"></i> Nộp bài' : 'Tiếp theo <i class="fas fa-arrow-right"></i>'}
       </button>
     </div>`;
 }
@@ -1170,10 +1232,10 @@ async function loadVocab() {
 function renderVocab() {
   const t = state.selectedTopic;
   return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><span onclick="state.view='select';render()">← Quay lại</span></div></div>
+    <div class="t2-nav"><div class="t2-nav-crumb"><button class="t2-back-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Quay lại</button></div></div>
     <div style="padding:0 20px 8px">
-      <h2 style="font-size:18px;font-weight:800;color:#111827;margin:0 0 4px">📖 Từ vựng: ${t.topicEmoji} ${t.topicName}</h2>
-      <p style="font-size:13px;color:#6b7280;margin:0">${state.vocab.length} từ / cụm từ quan trọng</p>
+      <h2 class="t2-page-h2" style="font-size:18px">📖 Từ vựng: ${t.topicEmoji} ${t.topicName}</h2>
+      <p class="t2-page-sub" style="font-size:13px">${state.vocab.length} từ / cụm từ quan trọng</p>
     </div>
     <div class="t2-vocab-grid">
       ${state.vocab.map(v => `
@@ -1327,12 +1389,12 @@ async function openT2History() {
     overlay.id = 't2-hist-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px';
     overlay.innerHTML = `
-      <div style="background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6">
-          <h3 style="margin:0;font-size:16px;font-weight:800;color:#111827">📝 Lịch sử Task 2 Writing</h3>
-          <button onclick="document.getElementById('t2-hist-overlay').style.display='none'" style="background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer">✕</button>
+      <div class="t2-hist-modal">
+        <div class="t2-hist-hdr">
+          <h3>📝 Lịch sử Task 2 Writing</h3>
+          <button class="t2-hist-close" onclick="document.getElementById('t2-hist-overlay').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
-        <div id="t2-hist-body" style="overflow-y:auto;padding:16px 20px;flex:1">
+        <div class="t2-hist-body2" id="t2-hist-body">
           <div style="text-align:center;padding:24px"><div class="wp-spinner"></div></div>
         </div>
       </div>`;
@@ -1350,41 +1412,31 @@ async function openT2History() {
       body.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><div style="font-size:40px;margin-bottom:10px">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
       return;
     }
-    const total   = attempts.length;
+    const total    = attempts.length;
     const avgScore = Math.round(attempts.reduce((s, a) => s + (a.scorePercentage || 0), 0) / total);
-    const totalQ  = attempts.reduce((s, a) => s + (a.totalQuestions || 0), 0);
-    const totalC  = attempts.reduce((s, a) => s + (a.correctCount || 0), 0);
+    const totalQ   = attempts.reduce((s, a) => s + (a.totalQuestions || 0), 0);
+    const totalC   = attempts.reduce((s, a) => s + (a.correctCount || 0), 0);
 
     const rows = attempts.slice(0, 40).map(a => {
       const acc = a.scorePercentage != null ? Math.round(a.scorePercentage) : (a.totalQuestions ? Math.round((a.correctCount/a.totalQuestions)*100) : 0);
       const cls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
-      const clsColor = acc >= 70 ? '#15803d;background:#dcfce7' : acc >= 50 ? '#92400e;background:#fef3c7' : '#b91c1c;background:#fee2e2';
       const date = new Date(a.completedAt || a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
       const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
-      return `<div style="padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa">
-        <div style="font-size:11px;color:#9ca3af;margin-bottom:3px">${date} · ${mode}</div>
-        <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:5px">${a.topicName || '–'}${a.week ? ` · W${a.week}` : ''}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <span style="font-size:12px;color:#6b7280">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
-          <span style="font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;color:${clsColor}">${acc}% đúng</span>
+      return `<div class="t2-hist-entry">
+        <div class="t2-hist-entry-date">${date} · ${mode}</div>
+        <div class="t2-hist-entry-name">${a.topicName || '–'}${a.week ? ` · W${a.week}` : ''}</div>
+        <div class="t2-hist-entry-row">
+          <span class="t2-hist-entry-count">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
+          <span class="t2-hist-entry-acc ${cls}">${acc}% đúng</span>
         </div>
       </div>`;
     }).join('');
 
     body.innerHTML = `
-      <div style="display:flex;gap:10px;margin-bottom:16px">
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">${total}</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Phiên học</div>
-        </div>
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">${totalC}/${totalQ}</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Đúng/Tổng</div>
-        </div>
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">${avgScore}%</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">TB chính xác</div>
-        </div>
+      <div class="t2-hist-stats">
+        <div class="t2-hist-stat"><div class="t2-hist-num">${total}</div><div class="t2-hist-lbl">Phiên học</div></div>
+        <div class="t2-hist-stat"><div class="t2-hist-num">${totalC}/${totalQ}</div><div class="t2-hist-lbl">Đúng/Tổng</div></div>
+        <div class="t2-hist-stat"><div class="t2-hist-num">${avgScore}%</div><div class="t2-hist-lbl">TB chính xác</div></div>
       </div>
       ${rows}`;
   } catch (e) {
