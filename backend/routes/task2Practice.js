@@ -313,6 +313,23 @@ router.post('/save-attempt', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════════════
+//  GET /api/task2/history  (auth required)
+// ══════════════════════════════════════════════════════════════════════
+router.get('/history', auth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 100, 500);
+    const attempts = await Task2Attempt.find({ userId: req.user._id })
+      .sort({ completedAt: -1 })
+      .limit(limit)
+      .select('topicName week level correctCount totalQuestions scorePercentage completedAt sessionType')
+      .lean();
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/progress  (auth required)
 // ══════════════════════════════════════════════════════════════════════
 router.get('/progress', auth, async (req, res) => {

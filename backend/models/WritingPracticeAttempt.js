@@ -11,4 +11,7 @@ const writingPracticeAttemptSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Auto-delete after 30 days
+writingPracticeAttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+
 module.exports = mongoose.model('WritingPracticeAttempt', writingPracticeAttemptSchema);

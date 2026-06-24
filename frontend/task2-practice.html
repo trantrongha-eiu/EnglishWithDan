@@ -451,9 +451,14 @@ function renderWeeks() {
   state.weeks.forEach(w => { weekData[w.week] = w; });
   const weekNames = { 1:'Adv & Disadv', 2:'Adv & Disadv', 3:'Solution Essays', 4:'Cause & Effect', 5:'Agree/Disagree', 6:'Agree/Disagree', 7:'Discuss Both', 8:'Discuss Both', 9:'Ôn tập', 10:'Ôn tập', 11:'Ôn tập', 12:'Ôn tập' };
   return `
-    <div style="padding:20px 20px 8px">
-      <h2 style="font-size:20px;font-weight:800;color:#111827;margin:0 0 4px">📝 IELTS Task 2 Writing</h2>
-      <p style="font-size:14px;color:#6b7280;margin:0">Chọn tuần học để bắt đầu luyện tập</p>
+    <div style="padding:20px 20px 8px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div>
+        <h2 style="font-size:20px;font-weight:800;color:#111827;margin:0 0 4px">📝 IELTS Task 2 Writing</h2>
+        <p style="font-size:14px;color:#6b7280;margin:0">Chọn tuần học để bắt đầu luyện tập</p>
+      </div>
+      <button onclick="openT2History()" style="background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;margin-top:4px" onmouseover="this.style.borderColor='#6366f1';this.style.color='#6366f1'" onmouseout="this.style.borderColor='#d1d5db';this.style.color='#6b7280'">
+        <i class="fas fa-history"></i> Lịch sử
+      </button>
     </div>
     <div class="t2-week-grid">
       ${weekNums.map(w => {
@@ -1315,6 +1320,77 @@ function shuffle(arr) {
   return arr;
 }
 
+// ── Task 2 History modal ──────────────────────────────────────
+async function openT2History() {
+  if (!document.getElementById('t2-hist-overlay')) {
+    const overlay = document.createElement('div');
+    overlay.id = 't2-hist-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6">
+          <h3 style="margin:0;font-size:16px;font-weight:800;color:#111827">📝 Lịch sử Task 2 Writing</h3>
+          <button onclick="document.getElementById('t2-hist-overlay').style.display='none'" style="background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer">✕</button>
+        </div>
+        <div id="t2-hist-body" style="overflow-y:auto;padding:16px 20px;flex:1">
+          <div style="text-align:center;padding:24px"><div class="wp-spinner"></div></div>
+        </div>
+      </div>`;
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+    document.body.appendChild(overlay);
+  }
+  document.getElementById('t2-hist-overlay').style.display = 'flex';
+  const body = document.getElementById('t2-hist-body');
+  body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
+  try {
+    const data = await apiFetch('/api/task2/history?limit=100');
+    if (!data.success) throw new Error(data.message);
+    const attempts = data.attempts || [];
+    if (!attempts.length) {
+      body.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><div style="font-size:40px;margin-bottom:10px">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
+      return;
+    }
+    const total   = attempts.length;
+    const avgScore = Math.round(attempts.reduce((s, a) => s + (a.scorePercentage || 0), 0) / total);
+    const totalQ  = attempts.reduce((s, a) => s + (a.totalQuestions || 0), 0);
+    const totalC  = attempts.reduce((s, a) => s + (a.correctCount || 0), 0);
+
+    const rows = attempts.slice(0, 40).map(a => {
+      const acc = a.scorePercentage != null ? Math.round(a.scorePercentage) : (a.totalQuestions ? Math.round((a.correctCount/a.totalQuestions)*100) : 0);
+      const cls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
+      const clsColor = acc >= 70 ? '#15803d;background:#dcfce7' : acc >= 50 ? '#92400e;background:#fef3c7' : '#b91c1c;background:#fee2e2';
+      const date = new Date(a.completedAt || a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+      const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
+      return `<div style="padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa">
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:3px">${date} · ${mode}</div>
+        <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:5px">${a.topicName || '–'}${a.week ? ` · W${a.week}` : ''}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:12px;color:#6b7280">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
+          <span style="font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;color:${clsColor}">${acc}% đúng</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    body.innerHTML = `
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
+          <div style="font-size:20px;font-weight:800;color:#111827">${total}</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Phiên học</div>
+        </div>
+        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
+          <div style="font-size:20px;font-weight:800;color:#111827">${totalC}/${totalQ}</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Đúng/Tổng</div>
+        </div>
+        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
+          <div style="font-size:20px;font-weight:800;color:#111827">${avgScore}%</div>
+          <div style="font-size:11px;color:#9ca3af;margin-top:2px">TB chính xác</div>
+        </div>
+      </div>
+      ${rows}`;
+  } catch (e) {
+    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
+  }
+}
 </script>
 </body>
 </html>

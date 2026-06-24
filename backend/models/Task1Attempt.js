@@ -13,4 +13,7 @@ const task1AttemptSchema = new mongoose.Schema({
   sessionId:  { type: String }
 }, { timestamps: true });
 
+// Auto-delete after 30 days
+task1AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
+
 module.exports = mongoose.model('Task1Attempt', task1AttemptSchema);

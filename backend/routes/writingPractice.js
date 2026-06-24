@@ -396,6 +396,23 @@ router.post('/save', auth, async (req, res) => {
 });
 
 // ══════════════════════════════════════════════════════════════
+//  GET /api/writing-practice/history  (auth required)
+// ══════════════════════════════════════════════════════════════
+router.get('/history', auth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+    const attempts = await WritingPracticeAttempt.find({ studentId: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select('level type topic xpEarned createdAt')
+      .lean();
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
 //  GET /api/writing-practice/my-stats  (auth required)
 // ══════════════════════════════════════════════════════════════
 router.get('/my-stats', auth, async (req, res) => {

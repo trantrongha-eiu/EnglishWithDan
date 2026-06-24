@@ -123,6 +123,7 @@ app.use('/api/courses',         require('./routes/courses'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));
 app.use('/api/task2',           require('./routes/task2Practice'));
+app.use('/api/task2template',   require('./routes/task2Template'));
 app.use('/api/difficult-words', require('./routes/difficultWords'));
 app.use('/api/tuition',        require('./routes/tuition'));
 

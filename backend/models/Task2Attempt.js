@@ -22,4 +22,7 @@ const task2AttemptSchema = new mongoose.Schema({
   completedAt:        { type: Date, default: Date.now }
 }, { timestamps: true });
 
+// Auto-delete after 60 days
+task2AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 24 * 60 * 60 });
+
 module.exports = mongoose.model('Task2Attempt', task2AttemptSchema);
