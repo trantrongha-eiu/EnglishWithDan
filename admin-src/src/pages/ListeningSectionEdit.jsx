@@ -4,8 +4,13 @@ import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
 
+function fmtDuration(sec) {
+  if (!sec) return '';
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+}
+
 // Shared audio uploader – reuses the listening upload-audio endpoint
-function AudioUploader({ audioUrl, onUploaded }) {
+function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -58,6 +63,7 @@ function AudioUploader({ audioUrl, onUploaded }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 11, color: 'var(--text3)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {audioUrl.split('/').pop()}
+              {audioDuration ? <span style={{ marginLeft: 8, color: 'var(--green)', fontWeight: 600 }}>⏱ {fmtDuration(audioDuration)}</span> : null}
             </span>
             <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 11 }} onClick={() => setReplacing(true)}>
               🔄 Thay thế
@@ -302,6 +308,7 @@ export default function ListeningSectionEdit() {
 
         <AudioUploader
           audioUrl={meta.audioUrl}
+          audioDuration={meta.audioDuration}
           onUploaded={(url, duration, name) => {
             setIsDirty(true);
             setMeta(f => ({ ...f, audioUrl: url, audioDuration: duration, audioFileName: name || '' }));

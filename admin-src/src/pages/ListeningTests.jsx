@@ -81,12 +81,18 @@ export default function ListeningTests() {
   const { isAdmin } = useAuth();
   const [tests, setTests] = useState([]);
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [audioTest, setAudioTest] = useState(null);
 
   const load = () => apiFetch('/listening/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
-  const filtered = tests.filter(t => !search || t.name?.toLowerCase().includes(search.toLowerCase()) || (t.seriesName || '').toLowerCase().includes(search.toLowerCase()));
+  const filtered = tests.filter(t => {
+    if (search && !t.name?.toLowerCase().includes(search.toLowerCase()) && !(t.seriesName || '').toLowerCase().includes(search.toLowerCase())) return false;
+    if (statusFilter === 'active' && t.isActive === false) return false;
+    if (statusFilter === 'hidden' && t.isActive !== false) return false;
+    return true;
+  });
 
   async function toggleActive(id, isActive) {
     try {
@@ -97,14 +103,14 @@ export default function ListeningTests() {
   }
 
   async function del(id, name) {
-    confirm(`Xóa vĩnh viễn đề listening "${name}"?`, async () => {
-      try { await apiFetch(`/listening/admin/tests/${id}`, { method: 'DELETE' }); toast('Đã xóa'); load(); }
+    confirm(`Ẩn đề listening "${name}"? (có thể bật lại sau)`, async () => {
+      try { await apiFetch(`/listening/admin/tests/${id}`, { method: 'DELETE' }); toast('Đã ẩn đề'); load(); }
       catch (e) { toast(e.message, 'error'); }
     });
   }
 
   function copyLink(id) {
-    const url = `${location.origin}/listening.html?testId=${id}`;
+    const url = `https://englishwithdan.onrender.com/listening.html?testId=${id}`;
     navigator.clipboard.writeText(url)
       .then(() => toast('Đã copy link chia sẻ ✓'))
       .catch(() => toast(`Link: ${url}`, 'error'));
@@ -136,9 +142,14 @@ export default function ListeningTests() {
         <button className="btn btn-primary" onClick={() => navigate('/listening-tests/new')}>+ Thêm đề</button>
       </div>
 
-      <div className="filter-bar" style={{ marginBottom: 16 }}>
+      <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
         <input className="form-input search-input" placeholder="Tìm tên đề, series..." value={search}
-          onChange={e => setSearch(e.target.value)} style={{ maxWidth: 280 }} />
+          onChange={e => setSearch(e.target.value)} style={{ maxWidth: 260 }} />
+        <select className="form-input" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ width: 160 }}>
+          <option value="">Tất cả trạng thái</option>
+          <option value="active">Đang hoạt động</option>
+          <option value="hidden">Đang ẩn</option>
+        </select>
       </div>
 
       <div className="table-wrap">

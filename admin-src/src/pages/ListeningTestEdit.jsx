@@ -360,6 +360,7 @@ export default function ListeningTestEdit() {
           groups={sec.questionGroups || []}
           onChange={groups => updateSection(activePart, { questionGroups: groups })}
           context="listening"
+          questionFrom={sec.questionRange.start || 1}
         />
 
         <div style={{ marginTop: 16, padding: 14, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.75 }}>
