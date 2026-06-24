@@ -11,16 +11,18 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Vui lòng điền họ tên và số điện thoại' });
   }
 
-  // Ghi log dù có email hay không
   console.log(`[Contact] ${name} | ${phone} | ${course}`);
 
   try {
-    if (process.env.RESEND_API_KEY) {
-      const { Resend } = require('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from:    'EnglishWithDan <onboarding@resend.dev>',
-        to:      'tranhaforwork@gmail.com',
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const nodemailer = require('nodemailer');
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+      });
+      await transporter.sendMail({
+        from:    `"EnglishWithDan" <${process.env.EMAIL_USER}>`,
+        to:      process.env.EMAIL_USER,
         subject: `[Tư Vấn Khóa Học] ${name} – ${course || 'Chưa chọn khóa'}`,
         html: `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
