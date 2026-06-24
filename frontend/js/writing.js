@@ -78,7 +78,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (typeof window.hideTopNav === 'function') {
-    const NAV_SCREENS = ['screen-key', 'screen-history'];
+    const NAV_SCREENS = ['screen-key', 'screen-history', 'screen-practice', 'screen-samples'];
     NAV_SCREENS.includes(id) ? window.showTopNav() : window.hideTopNav();
   }
 }
@@ -1479,6 +1479,7 @@ function exitPracticeWrite() {
   if (cards) cards.style.display = '';
   showScreen('screen-practice');
   checkPracticeRestoreBanner(); // Show restore banner since draft was saved
+  loadPracticeHistory(); // Refresh pending status
 }
 
 function confirmSubmitPractice() {

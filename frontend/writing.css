@@ -19,10 +19,16 @@ body {
   position: fixed;
   inset: 0;
   z-index: 400;
-  background: #f8f9fb;
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+/* Practice done screen also uses gradient */
+#screen-practice-done.active {
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+  min-height: 100vh;
 }
 
 /* ══════════════════════════════════════════════
@@ -100,6 +106,25 @@ body {
 }
 .btn-logout:hover { background: #f3f4f6; }
 
+/* ── Key screen gradient background ── */
+#screen-key.active {
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+  position: relative;
+  overflow: hidden;
+}
+#screen-key.active::before {
+  content: '✍️';
+  position: absolute;
+  font-size: 420px;
+  opacity: .07;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
+  z-index: 0;
+}
+
 /* ══════════════════════════════════════════════
    KEY SCREEN BODY
 ══════════════════════════════════════════════ */
@@ -113,14 +138,17 @@ body {
 }
 
 .key-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: rgba(255,255,255,.93);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.6);
   border-radius: 16px;
   padding: 48px 40px;
   width: 100%;
   max-width: 420px;
   text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,.07);
+  box-shadow: 0 8px 40px rgba(0,0,0,.2);
+  position: relative;
+  z-index: 1;
 }
 
 .key-card-icon { font-size: 48px; margin-bottom: 12px; }
@@ -668,11 +696,10 @@ body {
    DARK MODE – panels & containers
 ══════════════════════════════════════════════ */
 [data-theme="dark"] body          { background: #111827; color: #f9fafb; }
-[data-theme="dark"] #screen-done.active { background: #111827; }
 [data-theme="dark"] .skill-tabs-bar { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .main-header  { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .header-right span { color: #9ca3af; }
-[data-theme="dark"] .key-card     { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .key-card     { background: rgba(30,41,59,.9); border-color: rgba(255,255,255,.15); }
 [data-theme="dark"] .key-card h2  { color: #f9fafb; }
 [data-theme="dark"] .task-titlebar { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .task-titlebar strong { color: #f9fafb; }
@@ -1130,9 +1157,9 @@ body {
   padding: 24px;
   text-align: center;
   cursor: pointer;
-  transition: border-color .2s, background .2s, box-shadow .2s;
+  transition: border-color .2s, background .2s, box-shadow .2s, transform .2s;
 }
-.wr-pcard:hover { border-color: #3d8bff; background: #f0f7ff; box-shadow: 0 4px 16px rgba(61,139,255,.12); }
+.wr-pcard:hover { border-color: #3d8bff; background: #f0f7ff; box-shadow: 0 8px 28px rgba(0,0,0,.11); transform: translateY(-3px); }
 [data-theme="dark"] .wr-pcard       { border-color: #374151; background: #1f2937; }
 [data-theme="dark"] .wr-pcard:hover { border-color: #3b82f6; background: #1e3a5f; }
 .wr-pcard-emoji { font-size: 36px; margin-bottom: 10px; }
@@ -1173,3 +1200,98 @@ body {
 
 .pw-instructions-text { font-size: 12px; color: #777; margin: 0; }
 [data-theme="dark"] .pw-instructions-text { color: #9ca3af; }
+
+/* ══════════════════════════════════════════════
+   PAGE HEADER – gradient bar (history + practice)
+══════════════════════════════════════════════ */
+.wr-page-header {
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.wr-page-header::before {
+  content: '✍️';
+  position: absolute;
+  font-size: 160px;
+  opacity: .07;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
+}
+.wr-page-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 12px;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+.wr-page-header-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+}
+.wr-page-header-back {
+  color: rgba(255,255,255,.85) !important;
+  border-color: rgba(255,255,255,.3) !important;
+  background: rgba(255,255,255,.1) !important;
+}
+.wr-page-header-back:hover {
+  background: rgba(255,255,255,.22) !important;
+  border-color: rgba(255,255,255,.45) !important;
+  color: #fff !important;
+}
+.wr-page-header-filters {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px 14px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.wr-page-header-filters .btn-hist-filter {
+  color: rgba(255,255,255,.8);
+  border-color: rgba(255,255,255,.25);
+  background: rgba(255,255,255,.1);
+}
+.wr-page-header-filters .btn-hist-filter.active {
+  background: rgba(255,255,255,.25);
+  border-color: rgba(255,255,255,.5);
+  color: #fff;
+}
+.wr-page-header-filters .btn-hist-filter:hover {
+  background: rgba(255,255,255,.2);
+  border-color: rgba(255,255,255,.4);
+  color: #fff;
+}
+[data-theme="dark"] .wr-page-header { background: linear-gradient(135deg, #0f1736 0%, #1e2a6e 100%); }
+
+/* ── Done screens on gradient: card stays bright ── */
+#screen-done.active .done-card,
+#screen-practice-done.active .done-card {
+  background: rgba(255,255,255,.97);
+  box-shadow: 0 12px 48px rgba(0,0,0,.22);
+}
+
+/* ── Dark mode: done screens ── */
+[data-theme="dark"] #screen-done.active,
+[data-theme="dark"] #screen-practice-done.active {
+  background: linear-gradient(135deg, #0a0f2e 0%, #111d52 100%);
+}
+[data-theme="dark"] #screen-done.active .done-card,
+[data-theme="dark"] #screen-practice-done.active .done-card {
+  background: rgba(31,41,55,.96);
+  box-shadow: 0 12px 48px rgba(0,0,0,.45);
+}
+
+/* ── Dark mode: key screen card ── */
+[data-theme="dark"] .key-card {
+  background: rgba(30,41,59,.9);
+  border-color: rgba(255,255,255,.15);
+  box-shadow: 0 8px 40px rgba(0,0,0,.5);
+}

@@ -167,16 +167,18 @@
      SCREEN 4 – HISTORY
 ═══════════════════════════════════════════ -->
 <div id="screen-history" class="screen">
-  <div class="history-body">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <h2 class="history-title" style="margin-bottom:0">📋 Lịch sử làm bài Writing</h2>
-      <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+  <div class="wr-page-header">
+    <div class="wr-page-header-inner">
+      <h2 class="wr-page-header-title">📋 Lịch sử làm bài Writing</h2>
+      <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')">← Quay lại</button>
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <div class="wr-page-header-filters">
       <button class="btn-hist-filter active" id="hf-all"  onclick="setHistoryFilter('all',this)">Tất cả</button>
       <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)">🏆 Thi</button>
       <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)">✏️ Luyện</button>
     </div>
+  </div>
+  <div class="history-body">
     <div id="history-content">
       <div class="spinner"></div>
     </div>
@@ -246,11 +248,13 @@
      SCREEN 6 – CHỌN ĐỀ LUYỆN TẬP
 ═══════════════════════════════════════════ -->
 <div id="screen-practice" class="screen">
-  <div class="history-body">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-      <h2 class="history-title" style="margin-bottom:0">✏️ Luyện tập Writing</h2>
-      <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+  <div class="wr-page-header">
+    <div class="wr-page-header-inner">
+      <h2 class="wr-page-header-title">✏️ Luyện tập Writing</h2>
+      <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')">← Quay lại</button>
     </div>
+  </div>
+  <div class="history-body">
 
     <!-- Restore banner (shown when có draft luyện tập chưa nộp) -->
     <div id="practice-restore-banner" class="wr-restore-banner" style="display:none">
