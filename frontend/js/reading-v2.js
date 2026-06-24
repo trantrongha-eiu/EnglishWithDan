@@ -294,7 +294,7 @@ function testCard(t) {
     <div class="test-card-body">
       <div class="test-card-name">${escHtml(t.name)}</div>
       <div class="test-card-meta">40 câu · 60 phút</div>
-      ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu</div>` : ''}
+      ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
       <button class="btn-do-test" onclick="goToKey('${t._id}','${escHtml(t.name)}')">
         ${done ? 'Làm test mới' : 'Bắt đầu'}
       </button>
@@ -541,6 +541,7 @@ async function resumePractice() {
       savePracticeToStorage();
       const n = Object.keys(savedAnswers).length;
       showVocabToast(`Đã khôi phục ${n} câu trả lời`, 'success');
+      setTimeout(_updatePracticeProgress, 100);
     }
   } catch {
     showVocabToast('Không thể tiếp tục bài cũ', 'error');
@@ -728,7 +729,7 @@ async function loadPracticePassages(category, tabEl) {
         : '';
       const btnText = doneInfo ? `Làm lại · ${qCount} câu` : `Làm bài · ${qCount} câu`;
 
-      return `<div class="practice-card"${doneAttr} onclick="startPractice('${p._id}','${category}')">
+      return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
           <div class="practice-cover-logo"><span>D</span>aniel</div>
           ${badgeLabel}
@@ -757,12 +758,14 @@ async function startPractice(passageId, category, _silent = false) {
   _practiceCategory = category;
 
   const cards = document.querySelectorAll('#practice-passage-list .practice-card');
-  cards.forEach(c => { c.style.opacity = '0.5'; c.style.pointerEvents = 'none'; });
+  const clickedCard = document.querySelector(`.practice-card[data-pid="${passageId}"]`);
+  const clickedBtn  = clickedCard?.querySelector('.practice-card-btn');
+  if (clickedBtn) { clickedBtn._origHtml = clickedBtn.innerHTML; clickedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; clickedBtn.disabled = true; }
+  cards.forEach(c => { c.style.opacity = c === clickedCard ? '1' : '0.5'; c.style.pointerEvents = 'none'; });
 
   try {
     const res = await apiFetch(`/api/reading/practice/by-id/${passageId}`);
     if (!res.success || !res.passage) { showVocabToast('Không tải được bài luyện tập'); return; }
-    // Push URL only after successful fetch (and only when not responding to a popstate event)
     if (!_silent) {
       history.pushState(
         { screen: 'practice', passageId, category },
@@ -774,6 +777,7 @@ async function startPractice(passageId, category, _silent = false) {
   } catch (e) {
     showVocabToast('Lỗi kết nối server');
   } finally {
+    if (clickedBtn) { clickedBtn.innerHTML = clickedBtn._origHtml || 'Làm bài'; clickedBtn.disabled = false; }
     cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; });
   }
 }
@@ -1635,6 +1639,7 @@ function clickChip(qNum, word) {
   refreshWordBankZone(qNum, word);
 }
 function clearDrop(qNum) {
+  const word = state.answers[qNum] || '';
   delete state.answers[qNum];
   const passage = state.passages[state.currentPassageIdx];
   const allQ = getAllQuestionsFromPassage(passage);
@@ -1642,9 +1647,11 @@ function clearDrop(qNum) {
   if (q) {
     const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
     if (dz) { dz.classList.remove('filled'); dz.innerHTML = 'Kéo hoặc click'; }
-    document.querySelectorAll('.word-chip').forEach(c => {
-      if (c.textContent === q.wordBank?.find(w => w === c.textContent)) c.classList.remove('used');
-    });
+    if (word) {
+      document.querySelectorAll('.word-chip').forEach(c => {
+        if (c.textContent.trim() === word.trim()) c.classList.remove('used');
+      });
+    }
   }
   updateQNavBtn(qNum);
   saveExamToStorage();
@@ -2107,7 +2114,7 @@ async function loadReviewByTest(testId) {
   try {
     const histRes = await apiFetch('/api/reading/history');
     const attempts = histRes.history || [];
-    const attempt = attempts.find(a => a.testId?._id === testId || a.testId === testId);
+    const attempt = attempts.find(a => (a.testId?._id?.toString() === testId) || (a.testId === testId));
     if (attempt) loadReview(attempt._id);
     else showVocabToast('Không tìm thấy lịch sử làm bài', 'info');
   } catch { showVocabToast('Lỗi tải lịch sử'); }
@@ -2339,6 +2346,8 @@ function closeRetry() {
 
 function submitRetry() {
   if (!_retryState) { showVocabToast('Lỗi: không tìm thấy dữ liệu bài luyện', 'error'); return; }
+  const answered = Object.values(state.answers).filter(a => a && a !== '[]').length;
+  if (answered === 0) { showVocabToast('Hãy trả lời ít nhất 1 câu trước khi kiểm tra', 'info'); return; }
   try { _doSubmitRetry(); } catch(e) { console.error('[submitRetry]', e); showVocabToast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
 }
 function _doSubmitRetry() {
