@@ -188,6 +188,44 @@
       .t2-exam-bar{padding:8px 12px}
       .t2-exam-timer{font-size:16px}
     }
+
+    /* Template history modal */
+    .tpl-hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px}
+    .tpl-hist-box{background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    [data-theme="dark"] .tpl-hist-box{background:#1e293b}
+    .tpl-hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6}
+    [data-theme="dark"] .tpl-hist-hdr{border-color:#334155}
+    .tpl-hist-title{margin:0;font-size:16px;font-weight:800;color:#111827;display:flex;align-items:center;gap:8px}
+    [data-theme="dark"] .tpl-hist-title{color:#f1f5f9}
+    .tpl-hist-close{background:none;border:none;font-size:16px;color:#9ca3af;cursor:pointer;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;transition:background .15s,color .15s}
+    .tpl-hist-close:hover{background:#f3f4f6;color:#374151}
+    [data-theme="dark"] .tpl-hist-close:hover{background:#334155;color:#f1f5f9}
+    .tpl-hist-body{overflow-y:auto;padding:16px 20px;flex:1}
+    .tpl-hist-stats{display:flex;gap:10px;margin-bottom:16px}
+    .tpl-hist-stat{flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6}
+    [data-theme="dark"] .tpl-hist-stat{background:#0f172a;border-color:#334155}
+    .tpl-hist-stat-val{font-size:20px;font-weight:800;color:#111827}
+    [data-theme="dark"] .tpl-hist-stat-val{color:#f1f5f9}
+    .tpl-hist-stat-lbl{font-size:11px;color:#9ca3af;margin-top:2px}
+    .tpl-hist-entry{padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa}
+    [data-theme="dark"] .tpl-hist-entry{background:#0f172a;border-color:#334155}
+    .tpl-hist-date{font-size:11px;color:#9ca3af;margin-bottom:3px}
+    .tpl-hist-name{font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+    [data-theme="dark"] .tpl-hist-name{color:#e2e8f0}
+    .tpl-hist-row{display:flex;gap:8px;align-items:center}
+    .tpl-hist-score{font-size:12px;color:#6b7280}
+    [data-theme="dark"] .tpl-hist-score{color:#94a3b8}
+    .tpl-hist-badge{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px}
+    .tpl-hist-badge--good{color:#15803d;background:#dcfce7}
+    .tpl-hist-badge--mid{color:#92400e;background:#fef3c7}
+    .tpl-hist-badge--bad{color:#b91c1c;background:#fee2e2}
+    [data-theme="dark"] .tpl-hist-badge--good{color:#4ade80;background:#052e16}
+    [data-theme="dark"] .tpl-hist-badge--mid{color:#fbbf24;background:#422006}
+    [data-theme="dark"] .tpl-hist-badge--bad{color:#fca5a5;background:#1c0505}
+    .tpl-hist-empty{text-align:center;padding:40px;color:#9ca3af}
+    .tpl-hist-empty-icon{font-size:40px;margin-bottom:10px}
+    .tpl-hist-loading{text-align:center;padding:32px;color:#9ca3af}
+    .tpl-hist-loading-icon{font-size:32px;margin-bottom:8px}
   </style>
 </head>
 <body>
@@ -208,7 +246,7 @@
         <i class="fas fa-arrow-left"></i> Ở lại làm tiếp
       </button>
       <button class="t2-quit-leave" id="tpl-switch-confirm-btn" onclick="confirmTypeSwitch()">
-        Chuyển sang type mới
+        <i class="fas fa-exchange-alt"></i> Chuyển sang type mới
       </button>
     </div>
   </div>
@@ -216,7 +254,7 @@
 
 <!-- Stats header -->
 <header class="wp-header">
-  <button onclick="history.back()" class="t2-back-btn">← Quay lại</button>
+  <button onclick="history.back()" class="t2-back-btn"><i class="fas fa-arrow-left"></i> Quay lại</button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -238,13 +276,13 @@
     <div class="t2-type-tabs-outer">
       <div class="t2-type-tabs-wrap" id="tpl-type-tabs"></div>
       <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
-        ⏱ <span id="tpl-exam-label">Thi thử</span>
+        <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
       </button>
       <button class="t2-tpl-vi-btn-tab" id="tpl-vi-btn" onclick="toggleTplVi()">
         🇻🇳 <span id="tpl-vi-label">Tiếng Việt</span>
       </button>
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
-        📋 Lịch sử
+        <i class="fas fa-history"></i> Lịch sử
       </button>
     </div>
     <div class="t2-type-progress-wrap">
@@ -577,7 +615,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch(e) {}
 
   try {
-    const res = await fetch(`${API}/task2/templates`);
+    const res = await fetch(`${API}/api/task2/templates`);
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.templates && data.templates.length > 0) {
@@ -879,7 +917,7 @@ function switchTplType(typeId) {
     document.getElementById('tpl-switch-sub').innerHTML =
       `⏱️ Bạn đang ở <b>chế độ thi thử</b>.<br>Chuyển type sẽ <b>thoát khỏi chế độ thi thử</b>. Tiếp tục?`;
     const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn) confirmBtn.textContent = toMeta ? `Chuyển → ${toMeta.label}` : 'Chuyển type';
+    if (confirmBtn) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> ${toMeta ? `Chuyển → ${toMeta.label}` : 'Chuyển type'}`;
     document.getElementById('tpl-switch-overlay').classList.remove('hidden');
     return;
   }
@@ -899,7 +937,7 @@ function switchTplType(typeId) {
     document.getElementById('tpl-switch-sub').innerHTML =
       `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${fromMeta ? fromMeta.label : _tplActiveType}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
     const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn && toMeta) confirmBtn.textContent = `Chuyển → ${toMeta.label} · ${TPL_DATA[typeId]?.name || ''}`;
+    if (confirmBtn && toMeta) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> Chuyển → ${toMeta.label} · ${TPL_DATA[typeId]?.name || ''}`;
     document.getElementById('tpl-switch-overlay').classList.remove('hidden');
   } else {
     doSwitchType(typeId);
@@ -1037,7 +1075,7 @@ function submitExam() {
     bar.innerHTML = `
       <span style="font-size:15px;font-weight:900">${pct}% · ${correct}/${total}</span>
       <span class="t2-exam-label">${rank} · ⏱ ${fmtTime(timeTaken)}</span>
-      <button class="t2-exam-exit-btn" onclick="exitExamMode()">✕ Thoát thi</button>`;
+      <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát thi</button>`;
     bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -1046,7 +1084,7 @@ function submitExam() {
   if (footerEl) {
     footerEl.innerHTML = `
       <span>Đúng: <span class="t2-tpl-score">${correct} / ${total}</span></span>
-      <button class="t2-tpl-reset-btn" onclick="exitExamMode()">✕ Thoát thi thử</button>`;
+      <button class="t2-tpl-reset-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát thi thử</button>`;
   }
 
   _examMode = false;
@@ -1158,25 +1196,26 @@ function openTplHistory() {
   if (!document.getElementById('tpl-hist-overlay')) {
     const overlay = document.createElement('div');
     overlay.id = 'tpl-hist-overlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px';
+    overlay.className = 'tpl-hist-overlay';
     overlay.innerHTML = `
-      <div style="background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6">
-          <h3 style="margin:0;font-size:16px;font-weight:800;color:#111827">📐 Lịch sử Task 2 Templates</h3>
-          <button onclick="document.getElementById('tpl-hist-overlay').style.display='none'" style="background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer">✕</button>
+      <div class="tpl-hist-box">
+        <div class="tpl-hist-hdr">
+          <h3 class="tpl-hist-title"><i class="fas fa-history"></i> Lịch sử Task 2 Templates</h3>
+          <button class="tpl-hist-close" onclick="document.getElementById('tpl-hist-overlay').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
-        <div id="tpl-hist-body" style="overflow-y:auto;padding:16px 20px;flex:1"></div>
+        <div id="tpl-hist-body" class="tpl-hist-body"></div>
       </div>`;
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
     document.body.appendChild(overlay);
+  } else {
+    document.getElementById('tpl-hist-overlay').style.display = 'flex';
   }
-  document.getElementById('tpl-hist-overlay').style.display = 'flex';
   loadTplHistory();
 }
 
 async function loadTplHistory() {
   const body = document.getElementById('tpl-hist-body');
-  body.innerHTML = '<div style="text-align:center;padding:32px;color:#9ca3af"><div style="font-size:32px;margin-bottom:8px">⏳</div><p>Đang tải...</p></div>';
+  body.innerHTML = '<div class="tpl-hist-loading"><div class="tpl-hist-loading-icon">⏳</div><p>Đang tải...</p></div>';
   try {
     const token = localStorage.getItem('token');
     const res   = await fetch(`${API}/api/task2template/history?limit=200`, {
@@ -1186,7 +1225,7 @@ async function loadTplHistory() {
     if (!data.success) throw new Error(data.message);
     const attempts = data.attempts || [];
     if (!attempts.length) {
-      body.innerHTML = '<div style="text-align:center;padding:40px;color:#9ca3af"><div style="font-size:40px;margin-bottom:10px">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
+      body.innerHTML = '<div class="tpl-hist-empty"><div class="tpl-hist-empty-icon">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
       return;
     }
     const totalSessions = attempts.length;
@@ -1195,36 +1234,36 @@ async function loadTplHistory() {
 
     const rows = attempts.slice(0, 40).map(a => {
       const acc = a.totalItems > 0 ? Math.round((a.correctItems / a.totalItems) * 100) : 0;
-      const clsColor = acc >= 70 ? '#15803d;background:#dcfce7' : acc >= 50 ? '#92400e;background:#fef3c7' : '#b91c1c;background:#fee2e2';
+      const badgeCls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
       const date = new Date(a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
-      return `<div style="padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa">
-        <div style="font-size:11px;color:#9ca3af;margin-bottom:3px">${date}</div>
-        <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:5px">${a.templateName || a.templateType || '–'}</div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <span style="font-size:12px;color:#6b7280">${a.correctItems}/${a.totalItems} mẫu</span>
-          <span style="font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px;color:${clsColor}">${acc}%</span>
+      return `<div class="tpl-hist-entry">
+        <div class="tpl-hist-date">${date}</div>
+        <div class="tpl-hist-name">${escHtml(a.templateName || a.templateType || '–')}</div>
+        <div class="tpl-hist-row">
+          <span class="tpl-hist-score">${a.correctItems}/${a.totalItems} mẫu</span>
+          <span class="tpl-hist-badge tpl-hist-badge--${badgeCls}">${acc}%</span>
         </div>
       </div>`;
     }).join('');
 
     body.innerHTML = `
-      <div style="display:flex;gap:10px;margin-bottom:16px">
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">${totalSessions}</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Phiên học</div>
+      <div class="tpl-hist-stats">
+        <div class="tpl-hist-stat">
+          <div class="tpl-hist-stat-val">${totalSessions}</div>
+          <div class="tpl-hist-stat-lbl">Phiên học</div>
         </div>
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">${totalCorrect}/${totalItems}</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Đúng/Tổng</div>
+        <div class="tpl-hist-stat">
+          <div class="tpl-hist-stat-val">${totalCorrect}/${totalItems}</div>
+          <div class="tpl-hist-stat-lbl">Đúng/Tổng</div>
         </div>
-        <div style="flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6">
-          <div style="font-size:20px;font-weight:800;color:#111827">30</div>
-          <div style="font-size:11px;color:#9ca3af;margin-top:2px">Ngày lưu</div>
+        <div class="tpl-hist-stat">
+          <div class="tpl-hist-stat-val">30</div>
+          <div class="tpl-hist-stat-lbl">Ngày lưu</div>
         </div>
       </div>
       ${rows}`;
   } catch (e) {
-    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
+    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${escHtml(e.message)}</p>`;
   }
 }
 </script>
