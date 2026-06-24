@@ -48,6 +48,8 @@ const ReadingPracticeAttempt   = require('../models/ReadingPracticeAttempt');
 const WPTopic      = require('../models/WPTopic');
 const WPExercise   = require('../models/WPExercise');
 const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
+const Task1Attempt = require('../models/Task1Attempt');
+const Task2Attempt = require('../models/Task2Attempt');
 const auth         = require('../middleware/auth');
 
 // Chỉ teacher và admin mới dùng được
@@ -464,7 +466,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       return { ...u, displayName: (first ? (last ? `${first} ${last}` : first) : '') || u.username || '–' };
     }
 
-    const [reading, listening, writing, listeningPractice, readingPractice] = await Promise.all([
+    const [reading, listening, writing, listeningPractice, readingPractice,
+           wpAttempts, task1Attempts, task2Attempts] = await Promise.all([
       TestAttempt.find({ status: 'completed' })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -489,6 +492,21 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
+        .catch(() => []),
+      WritingPracticeAttempt.find()
+        .populate('studentId', 'username firstName lastName')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-userAnswer').lean()
+        .catch(() => []),
+      Task1Attempt.find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-userAnswer -feedback').lean()
+        .catch(() => []),
+      Task2Attempt.find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ completedAt: -1 }).limit(LIMIT)
+        .select('-questionsAttempted').lean()
         .catch(() => [])
     ]);
 
@@ -544,6 +562,39 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
         duration: h.timeTaken
+      })),
+      ...wpAttempts.map(h => ({
+        _id: h._id, skill: 'writing-practice',
+        testName: h.topic || '–',
+        testMeta: `${h.type || ''} · Lv${h.level || '?'}`,
+        userId: normUser(h.studentId),
+        date: h.createdAt,
+        bandScore: null,
+        correctCount: null,
+        totalQuestions: null,
+        duration: null
+      })),
+      ...task1Attempts.map(h => ({
+        _id: h._id, skill: 'task1-practice',
+        testName: h.exerciseId?.toString() || '–',
+        testMeta: `${h.skillType || ''} · ${h.module || ''}`,
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: h.score ?? null,
+        correctCount: h.isCorrect ? 1 : 0,
+        totalQuestions: 1,
+        duration: null
+      })),
+      ...task2Attempts.map(h => ({
+        _id: h._id, skill: 'task2-practice',
+        testName: h.topicName || '–',
+        testMeta: `Week ${h.week || '?'} · ${h.level || ''}`,
+        userId: normUser(h.userId),
+        date: h.completedAt || h.createdAt,
+        bandScore: h.scorePercentage != null ? +(h.scorePercentage / 10).toFixed(1) : null,
+        correctCount: h.correctCount,
+        totalQuestions: h.totalQuestions,
+        duration: null
       }))
     ];
 
@@ -1257,6 +1308,39 @@ router.delete('/reading-practice-attempts/:id', auth, teacherOnly, async (req, r
     const result = await ReadingPracticeAttempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
     res.json({ success: true, message: 'Đã xóa bài luyện Reading' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/writing-practice-attempts/:id
+router.delete('/writing-practice-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await WritingPracticeAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
+    res.json({ success: true, message: 'Đã xóa bài luyện Writing' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/task1-attempts/:id
+router.delete('/task1-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await Task1Attempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Task 1' });
+    res.json({ success: true, message: 'Đã xóa bài Task 1' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/task2-attempts/:id
+router.delete('/task2-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await Task2Attempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Task 2' });
+    res.json({ success: true, message: 'Đã xóa bài Task 2' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

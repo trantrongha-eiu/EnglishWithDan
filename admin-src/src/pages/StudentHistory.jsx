@@ -19,6 +19,9 @@ const SKILL_META = {
   'speaking':          { color: '#a78bfa', label: 'Speaking' },
   'reading-practice':  { color: '#93c5fd', label: '📄 Reading lẻ' },
   'listening-practice':{ color: '#6ee7b7', label: '🎵 Listening lẻ' },
+  'writing-practice':  { color: '#f97316', label: '✍ Writing lẻ' },
+  'task1-practice':    { color: '#fb923c', label: '📊 Task 1' },
+  'task2-practice':    { color: '#ef4444', label: '📝 Task 2' },
 };
 
 function skillBadge(skill) {
@@ -80,6 +83,9 @@ export default function StudentHistory() {
           'writing':            `/admin/writing-attempts/${id}`,
           'listening-practice': `/admin/listening-practice-attempts/${id}`,
           'reading-practice':   `/admin/reading-practice-attempts/${id}`,
+          'writing-practice':   `/admin/writing-practice-attempts/${id}`,
+          'task1-practice':     `/admin/task1-attempts/${id}`,
+          'task2-practice':     `/admin/task2-attempts/${id}`,
         };
         const endpoint = endpointMap[skillName] || `/admin/${skillName}-attempts/${id}`;
         await apiFetch(endpoint, { method: 'DELETE' });
@@ -112,7 +118,10 @@ export default function StudentHistory() {
           <option value="reading-practice">📄 Reading lẻ</option>
           <option value="listening">Listening (đề thi)</option>
           <option value="listening-practice">🎵 Listening lẻ</option>
-          <option value="writing">Writing</option>
+          <option value="writing">Writing (đề thi)</option>
+          <option value="writing-practice">✍ Writing lẻ</option>
+          <option value="task1-practice">📊 Task 1 Practice</option>
+          <option value="task2-practice">📝 Task 2 Practice</option>
           <option value="speaking">Speaking</option>
         </select>
       </div>
@@ -160,7 +169,7 @@ export default function StudentHistory() {
                         : bandBadge(h.bandScore)}
                       </td>
                       <td>
-                        {isAdmin && ['reading', 'listening', 'writing', 'reading-practice', 'listening-practice'].includes(h.skill) && (
+                        {isAdmin && (
                           <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(h._id, h.skill, name)}>🗑</button>
                         )}
                       </td>
