@@ -243,6 +243,21 @@
     [data-theme="dark"] .t1-hist-row-skills{color:#94a3b8}
     [data-theme="dark"] .t1-hist-row-count{color:#64748b}
 
+    /* ── MC options after answer – dark mode ── */
+    [data-theme="dark"] .t1-mc-option.correct{border-color:#16a34a;background:#14532d;color:#f1f5f9}
+    [data-theme="dark"] .t1-mc-option.wrong{border-color:#dc2626;background:#450a0a;color:#f1f5f9}
+    [data-theme="dark"] .t1-mc-option.correct .t1-opt-letter{background:#16a34a;color:#fff}
+    [data-theme="dark"] .t1-mc-option.wrong .t1-opt-letter{background:#dc2626;color:#fff}
+
+    /* ── Desktop stats widget (Task 1 override: 3 boxes in a row) ── */
+    #t1-stats-widget .wp-stats-row{flex-wrap:nowrap}
+
+    /* ── wp-state-exercise wrapper ── */
+    .wp-state-exercise{display:block}
+
+    /* ── Skill list gap sync ── */
+    .t1-settings-section{margin-top:8px}
+
   </style>
 </head>
 <body>
@@ -289,6 +304,25 @@
     <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
   </div>
 </header>
+
+<!-- Desktop stats widget -->
+<div class="wp-stats-widget" id="t1-stats-widget" style="display:none">
+  <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Phiên học</div>
+  <div class="wp-stats-row">
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-done">0</div>
+      <div class="wp-stat-label">Bài làm</div>
+    </div>
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-xp">0</div>
+      <div class="wp-stat-label">XP</div>
+    </div>
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-correct">–</div>
+      <div class="wp-stat-label">Đúng</div>
+    </div>
+  </div>
+</div>
 
 <!-- ── Mobile stats bar ── -->
 <div class="wp-mobile-stats" id="wp-mobile-stats">
@@ -905,16 +939,24 @@ function updateXPStorage(earned) {
 function showState(state) {
   ['welcome','loading','empty','exercise','done'].forEach(s =>
     document.getElementById('state-' + s)?.classList.toggle('hidden', s !== state));
+  const widget = document.getElementById('t1-stats-widget');
+  if (widget) widget.style.display = (state === 'exercise' || state === 'done') ? '' : 'none';
 }
 
 // ════════════════════════════════════════════════════════
 //  SESSION STATS
 // ════════════════════════════════════════════════════════
 function updateSessionStats() {
+  const pct = sessionDone > 0 ? Math.round((sessionCorrect / sessionDone) * 100) + '%' : '–';
   document.getElementById('mob-stat-done').textContent    = sessionDone;
   document.getElementById('mob-stat-xp').textContent      = sessionXP;
-  document.getElementById('mob-stat-correct').textContent =
-    sessionDone > 0 ? Math.round((sessionCorrect / sessionDone) * 100) + '%' : '–';
+  document.getElementById('mob-stat-correct').textContent = pct;
+  const wd = document.getElementById('widget-done');
+  if (wd) {
+    wd.textContent = sessionDone;
+    document.getElementById('widget-xp').textContent      = sessionXP;
+    document.getElementById('widget-correct').textContent = pct;
+  }
 }
 
 async function saveBatch() {
