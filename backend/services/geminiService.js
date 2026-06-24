@@ -40,7 +40,18 @@ async function checkEssay(question, essay, _attempt = 0) {
     });
     rawText = result.text;
   } catch (err) {
-    console.error('[Gemini] API error:', err.message || err);
+    console.error('[Gemini] API error:', err.status, err.message || err);
+    // Detect quota / overload errors so caller can return 503 to admin
+    const msg = (err.message || '').toLowerCase();
+    const isOverload =
+      err.status === 503 || err.status === 429 ||
+      msg.includes('overloaded') || msg.includes('resource_exhausted') ||
+      msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
+    if (isOverload) {
+      const oe = new Error('AI đang quá tải hoặc hết quota, vui lòng thử lại sau ít phút.');
+      oe.isOverloaded = true;
+      throw oe;
+    }
     throw err;
   }
 

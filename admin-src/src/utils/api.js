@@ -13,7 +13,11 @@ export async function apiFetch(path, opts = {}) {
     headers: { ...authHeaders(), ...(opts.headers || {}) },
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+  if (!res.ok) {
+    const err = new Error(data.message || `HTTP ${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 

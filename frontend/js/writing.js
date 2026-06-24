@@ -659,11 +659,11 @@ function _buildStudentFeedback(g) {
         // type === 'issue'
         const critColor = s.criterion === 'GRA' ? '#7c3aed' : s.criterion === 'LR' ? '#0369a1' : s.criterion === 'CC' ? '#b45309' : '#dc2626';
         return `<div style="background:#fff7f7;border-radius:8px;border-left:3px solid #ef4444;padding:10px 12px">
-          <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px">
-            <span style="font-size:15px;flex-shrink:0">❌</span>
-            <span style="font-size:13px;color:#7f1d1d;text-decoration:line-through;line-height:1.6">${escHtml(s.original)}</span>
+          ${s.original ? `<div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px;padding:5px 8px;background:#fee2e2;border-radius:5px">${escHtml(s.original)}</div>` : ''}
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:5px">
+            <span style="font-size:14px;flex-shrink:0">❌</span>
+            ${s.criterion ? `<span style="display:inline-block;background:${critColor};color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px">${escHtml(s.criterion)}</span>` : ''}
           </div>
-          ${s.criterion ? `<span style="display:inline-block;background:${critColor};color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px;margin-bottom:5px">${escHtml(s.criterion)}</span>` : ''}
           ${s.issue ? `<div style="font-size:12px;color:#6b7280;margin-bottom:6px;padding-left:4px">🔍 ${escHtml(s.issue)}</div>` : ''}
           ${s.better ? `<div style="display:flex;gap:8px;align-items:flex-start">
             <span style="font-size:15px;flex-shrink:0">✅</span>

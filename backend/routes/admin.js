@@ -1465,7 +1465,8 @@ router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, async (req, res
 
     res.json({ success: true, taskNum, result: gradeResult });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    const status = err.isOverloaded ? 503 : 500;
+    res.status(status).json({ success: false, message: err.message });
   }
 });
 

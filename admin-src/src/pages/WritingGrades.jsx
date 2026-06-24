@@ -119,7 +119,7 @@ function ManualGradeForm({ value, onChange, disabled }) {
 function TaskPanel({
   title, prompt, imageUrl, answer, wordCount, minWords,
   aiResult, confirmedResult,
-  isGrading, isConfirmed, onGrade,
+  isGrading, isConfirmed, onGrade, aiDisabled,
   mode, onModeChange, manualData, onManualChange
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -218,14 +218,21 @@ function TaskPanel({
             ✏️ Thủ công
           </button>
           {mode === 'ai' && (
-            <button
-              className="btn btn-primary btn-sm"
-              style={{ marginLeft: 'auto' }}
-              onClick={onGrade}
-              disabled={isGrading}
-            >
-              {isGrading ? '⏳ Đang chấm AI...' : aiResult ? '🔄 Chấm lại AI' : '▶ Chấm AI'}
-            </button>
+            <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={onGrade}
+                disabled={isGrading || aiDisabled}
+                title={aiDisabled ? 'AI đang quá tải — chờ vài phút rồi thử lại' : ''}
+              >
+                {isGrading ? '⏳ Đang chấm AI...' : aiResult ? '🔄 Chấm lại AI' : '▶ Chấm AI'}
+              </button>
+              {aiDisabled && (
+                <span style={{ fontSize: 11, color: '#b45309', background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 4, padding: '2px 7px', whiteSpace: 'nowrap' }}>
+                  ⚠️ AI quá tải — thử lại sau ít phút
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -238,6 +245,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
   const [attempt, setAttempt]   = useState(null);
   const [gradingTask, setGradingTask] = useState(0);
   const [confirming, setConfirming]   = useState(false);
+  const [aiOverloaded, setAiOverloaded] = useState(false);
   const [overallBand, setOverallBand] = useState('');
   const [adminNote, setAdminNote]     = useState('');
   const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
@@ -298,6 +306,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
 
   async function gradeTask(taskNum) {
     setGradingTask(taskNum);
+    setAiOverloaded(false);
     try {
       const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, {
         method: 'POST',
@@ -310,7 +319,14 @@ function GradeModal({ attemptId, onClose, onGraded }) {
         aiGrading: { ...(prev.aiGrading || {}), [taskKey]: d.result, generatedAt: new Date().toISOString() }
       } : prev);
       toast(`Task ${taskNum} đã chấm xong – Band ${d.result.bandScore}`);
-    } catch (e) { toast(e.message, 'error'); }
+    } catch (e) {
+      if (e.status === 503) {
+        setAiOverloaded(true);
+        toast('AI đang quá tải — nút chấm đã tạm khoá, thử lại sau vài phút.', 'error');
+      } else {
+        toast(e.message, 'error');
+      }
+    }
     finally { setGradingTask(0); }
   }
 
@@ -403,6 +419,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   isGrading={gradingTask === 1}
                   isConfirmed={isConfirmed}
                   onGrade={() => gradeTask(1)}
+                  aiDisabled={aiOverloaded}
                   mode={modes.task1}
                   onModeChange={m => setMode('task1', m)}
                   manualData={manuals.task1}
@@ -422,6 +439,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   isGrading={gradingTask === 2}
                   isConfirmed={isConfirmed}
                   onGrade={() => gradeTask(2)}
+                  aiDisabled={aiOverloaded}
                   mode={modes.task2}
                   onModeChange={m => setMode('task2', m)}
                   manualData={manuals.task2}
