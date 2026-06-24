@@ -85,7 +85,7 @@
     .wp-welcome-types-lbl{font-size:12px;font-weight:700;color:#0369a1;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
     .wp-welcome-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
     .wp-welcome-chips span{background:#fff;border:1px solid #bae6fd;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;color:#0369a1}
-    .wp-welcome-start{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
+    .wp-welcome-start{background:linear-gradient(135deg,#e53935 0%,#ff6b6b 100%);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(229,57,53,.35)}
     .wp-welcome-start:hover{opacity:.9;transform:translateY(-1px)}
     .wp-welcome-hint{font-size:12px;color:#9ca3af;margin-top:10px}
     @media(max-width:480px){.wp-welcome-cards{grid-template-columns:1fr}}
@@ -97,7 +97,7 @@
     [data-theme="dark"] .wp-welcome-chips span{background:#0f2d45;border-color:#1e4060;color:#7dd3fc}
 
     /* ── Task1 skill badge ── */
-    .t1-skill-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .t1-skill-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#3d8bff 0%,#2563eb 100%);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 
     /* ── Grammar box ── */
     .t1-grammar-box{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:10px 14px;margin:10px 0 0;font-size:13px}
@@ -110,25 +110,25 @@
     /* ── Multiple choice ── */
     .t1-mc-options{display:flex;flex-direction:column;gap:8px;margin:10px 0}
     .t1-mc-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;width:100%}
-    .t1-mc-option:hover{border-color:#6366f1;background:#f0f0ff}
-    .t1-mc-option.selected{border-color:#6366f1;background:#ede9fe;font-weight:600}
+    .t1-mc-option:hover{border-color:#3d8bff;background:#f0f7ff}
+    .t1-mc-option.selected{border-color:#3d8bff;background:#eff6ff;font-weight:600}
     .t1-mc-option.correct{border-color:#16a34a;background:#dcfce7}
     .t1-mc-option.wrong{border-color:#dc2626;background:#fee2e2}
     .t1-mc-option .t1-opt-letter{width:22px;height:22px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
-    .t1-mc-option.selected .t1-opt-letter{background:#6366f1;color:#fff}
+    .t1-mc-option.selected .t1-opt-letter{background:#3d8bff;color:#fff}
     .t1-mc-option.correct .t1-opt-letter{background:#16a34a;color:#fff}
     .t1-mc-option.wrong .t1-opt-letter{background:#dc2626;color:#fff}
     [data-theme="dark"] .t1-mc-option{background:#1e293b;border-color:#334155;color:#f1f5f9}
-    [data-theme="dark"] .t1-mc-option:hover{border-color:#818cf8;background:#1e1b4b}
-    [data-theme="dark"] .t1-mc-option.selected{border-color:#818cf8;background:#1e1b4b}
+    [data-theme="dark"] .t1-mc-option:hover{border-color:#3d8bff;background:#0c1e30}
+    [data-theme="dark"] .t1-mc-option.selected{border-color:#3d8bff;background:#0c1e30}
     [data-theme="dark"] .t1-mc-option .t1-opt-letter{background:#334155;color:#94a3b8}
 
     /* ── Skill tabs in sidebar ── */
     .t1-skill-tab{background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;transition:all .2s;text-align:left;width:100%}
-    .t1-skill-tab.active{border-color:#6366f1;color:#6366f1;background:#ede9fe}
-    .t1-skill-tab:hover{border-color:#6366f1;color:#6366f1}
+    .t1-skill-tab.active{border-color:#e53935;color:#e53935;background:#fff0f0}
+    .t1-skill-tab:hover{border-color:#e53935;color:#e53935}
     [data-theme="dark"] .t1-skill-tab{border-color:#334155;color:#64748b}
-    [data-theme="dark"] .t1-skill-tab.active{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+    [data-theme="dark"] .t1-skill-tab.active{border-color:#f87171;color:#f87171;background:#2d1111}
     .t1-skill-list{display:flex;flex-direction:column;gap:6px}
 
     /* ── Data context box ── */
@@ -163,10 +163,10 @@
     [data-theme="dark"] .t1-hint-chip{background:#451a03;border-color:#78350f;color:#fcd34d}
 
     /* ── Grammar context note (shown before answer) ── */
-    .t1-ctx-note{background:#f0f9ff;border-left:3px solid #6366f1;border-radius:0 8px 8px 0;padding:7px 12px;margin:8px 0 10px;font-size:12px;color:#3730a3;line-height:1.5}
-    .t1-ctx-note-lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#6366f1;margin-bottom:2px}
-    [data-theme="dark"] .t1-ctx-note{background:#1e1b4b;border-color:#818cf8;color:#c7d2fe}
-    [data-theme="dark"] .t1-ctx-note-lbl{color:#a5b4fc}
+    .t1-ctx-note{background:#f0f9ff;border-left:3px solid #3d8bff;border-radius:0 8px 8px 0;padding:7px 12px;margin:8px 0 10px;font-size:12px;color:#1e40af;line-height:1.5}
+    .t1-ctx-note-lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#3d8bff;margin-bottom:2px}
+    [data-theme="dark"] .t1-ctx-note{background:#0c1e30;border-color:#3d8bff;color:#93c5fd}
+    [data-theme="dark"] .t1-ctx-note-lbl{color:#7dd3fc}
 
     /* ── Module badge ── */
     .t1-module-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
@@ -176,20 +176,20 @@
     .t1-settings-section{margin-top:4px;padding:10px 0 2px;border-top:1px solid #f3f4f6}
     [data-theme="dark"] .t1-settings-section{border-color:#1e293b}
     .t1-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
-    .t1-toggle-row:hover .t1-toggle-label{color:#6366f1}
+    .t1-toggle-row:hover .t1-toggle-label{color:#e53935}
     .t1-toggle-label{font-size:12px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
     [data-theme="dark"] .t1-toggle-label{color:#94a3b8}
     .t1-switch{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
     .t1-switch input{opacity:0;width:0;height:0}
     .t1-slider{position:absolute;cursor:pointer;inset:0;background:#d1d5db;border-radius:18px;transition:.2s}
     .t1-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-    .t1-switch input:checked+.t1-slider{background:#6366f1}
+    .t1-switch input:checked+.t1-slider{background:#3d8bff}
     .t1-switch input:checked+.t1-slider:before{transform:translateX(16px)}
     [data-theme="dark"] .t1-slider{background:#334155}
 
     /* ── Auto-next countdown bar ── */
     @keyframes t1CountdownBar{from{width:100%}to{width:0%}}
-    .t1-countdown-bar{height:3px;background:#6366f1;border-radius:2px;margin-top:6px;animation:t1CountdownBar var(--cd-dur,1.5s) linear forwards}
+    .t1-countdown-bar{height:3px;background:#3d8bff;border-radius:2px;margin-top:6px;animation:t1CountdownBar var(--cd-dur,1.5s) linear forwards}
 
     /* ── Mobile sheet: skill tabs go horizontal ── */
     .wp-sheet-filters .t1-skill-list{flex-direction:row;flex-wrap:wrap;gap:6px}
@@ -203,9 +203,9 @@
 
     /* ── History button ── */
     .t1-hist-open-btn{background:none;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 22px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;margin-top:8px}
-    .t1-hist-open-btn:hover{border-color:#6366f1;color:#6366f1;background:#f5f3ff}
+    .t1-hist-open-btn:hover{border-color:#e53935;color:#e53935;background:#fff0f0}
     [data-theme="dark"] .t1-hist-open-btn{border-color:#334155;color:#64748b}
-    [data-theme="dark"] .t1-hist-open-btn:hover{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+    [data-theme="dark"] .t1-hist-open-btn:hover{border-color:#f87171;color:#f87171;background:#2d1111}
 
     /* ── History modal ── */
     .t1-hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px}
@@ -229,7 +229,7 @@
     .t1-hist-row-acc.good{background:#dcfce7;color:#15803d}
     .t1-hist-row-acc.mid{background:#fef3c7;color:#92400e}
     .t1-hist-row-acc.bad{background:#fee2e2;color:#b91c1c}
-    .t1-hist-row-xp{font-size:12px;color:#6366f1;font-weight:700;margin-left:auto}
+    .t1-hist-row-xp{font-size:12px;color:#d97706;font-weight:700;margin-left:auto}
     .t1-hist-empty{text-align:center;padding:40px 20px;color:#9ca3af}
     .t1-hist-empty-icon{font-size:40px;margin-bottom:10px}
     [data-theme="dark"] .t1-hist-modal{background:#1e293b}
@@ -1421,12 +1421,12 @@ function showFeedback(userAnswer, data, ex) {
   // highlight MC options
   if (ex.type === 'multiple_choice' || ex.type === 'paraphrase_choose') {
     const idx = parseInt(userAnswer);
+    const correctIdx = data.correctOptionIndex ?? -1;
     document.querySelectorAll('.t1-mc-option').forEach((btn, i) => {
       if (i === idx) btn.classList.add(data.isCorrect ? 'correct' : 'wrong');
-      // Always highlight the correct option (even when user was wrong)
-      if (!data.isCorrect && data.sampleAnswer) {
-        const optText = btn.querySelector('span:last-child')?.textContent || '';
-        if (optText === data.sampleAnswer) btn.classList.add('correct');
+      if (!data.isCorrect) {
+        if (correctIdx >= 0 ? i === correctIdx : btn.querySelector('span:last-child')?.textContent === data.sampleAnswer)
+          btn.classList.add('correct');
       }
     });
     document.getElementById('comparison-box').style.display = 'none';

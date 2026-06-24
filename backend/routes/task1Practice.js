@@ -166,8 +166,12 @@ router.post('/check', async (req, res) => {
       ? (exercise.xpReward || 5)
       : Math.max(1, Math.floor((exercise.xpReward || 5) * 0.1));
 
+    const mcTypes = ['multiple_choice', 'paraphrase_choose'];
+    const sampleAnswer = exercise.primaryAnswer ||
+      (mcTypes.includes(exercise.type) ? (exercise.options?.[exercise.correctOptionIndex] || '') : '');
+
     if (!result.feedbackVi && result.isCorrect === false) {
-      result.feedbackVi = `❌ Chưa đúng. Đáp án mẫu: "${exercise.primaryAnswer}"`;
+      result.feedbackVi = `❌ Chưa đúng. Đáp án mẫu: "${sampleAnswer}"`;
     }
 
     res.json({
@@ -176,7 +180,8 @@ router.post('/check', async (req, res) => {
       score: result.score,
       xpEarned,
       feedbackVi: result.feedbackVi,
-      sampleAnswer: exercise.primaryAnswer,
+      sampleAnswer,
+      correctOptionIndex: mcTypes.includes(exercise.type) ? exercise.correctOptionIndex : undefined,
       grammarPoint: exercise.grammarPoint,
       explanation: exercise.explanation,
       hints: exercise.hints || []
