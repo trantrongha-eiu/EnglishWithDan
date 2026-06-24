@@ -195,6 +195,54 @@
     .wp-sheet-filters .t1-skill-list{flex-direction:row;flex-wrap:wrap;gap:6px}
     .wp-sheet-filters .t1-skill-tab{width:auto;padding:6px 12px;font-size:12px}
 
+    /* ── Count badge (số câu bên cạnh level/skill) ── */
+    .wp-level-btn,.t1-skill-tab{display:flex;align-items:center;justify-content:space-between}
+    .wp-lc-badge{background:rgba(0,0,0,.08);color:inherit;border-radius:20px;padding:0 7px;font-size:10px;font-weight:700;line-height:17px;flex-shrink:0}
+    .wp-level-btn.active .wp-lc-badge,.t1-skill-tab.active .wp-lc-badge{background:rgba(255,255,255,.3)}
+    [data-theme="dark"] .wp-lc-badge{background:rgba(255,255,255,.12)}
+
+    /* ── History button ── */
+    .t1-hist-open-btn{background:none;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 22px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;margin-top:8px}
+    .t1-hist-open-btn:hover{border-color:#6366f1;color:#6366f1;background:#f5f3ff}
+    [data-theme="dark"] .t1-hist-open-btn{border-color:#334155;color:#64748b}
+    [data-theme="dark"] .t1-hist-open-btn:hover{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+
+    /* ── History modal ── */
+    .t1-hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px}
+    .t1-hist-overlay.hidden{display:none}
+    .t1-hist-modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .t1-hist-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6}
+    .t1-hist-header h3{margin:0;font-size:16px;font-weight:800;color:#111827}
+    .t1-hist-close{background:none;border:none;font-size:18px;color:#9ca3af;cursor:pointer;line-height:1;padding:4px}
+    .t1-hist-close:hover{color:#374151}
+    .t1-hist-body{overflow-y:auto;padding:16px 20px;flex:1}
+    .t1-hist-summary{display:flex;gap:10px;margin-bottom:16px}
+    .t1-hist-stat{flex:1;text-align:center;background:#f9fafb;border-radius:10px;padding:12px 6px;border:1px solid #f3f4f6}
+    .t1-hist-num{font-size:20px;font-weight:800;color:#111827}
+    .t1-hist-lbl{font-size:11px;color:#9ca3af;margin-top:2px}
+    .t1-hist-row{padding:10px 12px;border-radius:10px;border:1px solid #f3f4f6;margin-bottom:8px;background:#fafafa}
+    .t1-hist-row-date{font-size:11px;color:#9ca3af;margin-bottom:3px}
+    .t1-hist-row-skills{font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+    .t1-hist-row-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .t1-hist-row-count{font-size:12px;color:#6b7280}
+    .t1-hist-row-acc{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px}
+    .t1-hist-row-acc.good{background:#dcfce7;color:#15803d}
+    .t1-hist-row-acc.mid{background:#fef3c7;color:#92400e}
+    .t1-hist-row-acc.bad{background:#fee2e2;color:#b91c1c}
+    .t1-hist-row-xp{font-size:12px;color:#6366f1;font-weight:700;margin-left:auto}
+    .t1-hist-empty{text-align:center;padding:40px 20px;color:#9ca3af}
+    .t1-hist-empty-icon{font-size:40px;margin-bottom:10px}
+    [data-theme="dark"] .t1-hist-modal{background:#1e293b}
+    [data-theme="dark"] .t1-hist-header{border-color:#334155}
+    [data-theme="dark"] .t1-hist-header h3{color:#f1f5f9}
+    [data-theme="dark"] .t1-hist-close{color:#64748b}
+    [data-theme="dark"] .t1-hist-close:hover{color:#f1f5f9}
+    [data-theme="dark"] .t1-hist-stat{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t1-hist-num{color:#f1f5f9}
+    [data-theme="dark"] .t1-hist-row{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t1-hist-row-skills{color:#94a3b8}
+    [data-theme="dark"] .t1-hist-row-count{color:#64748b}
+
   </style>
 </head>
 <body>
@@ -214,6 +262,19 @@
     <div class="wp-quit-actions">
       <button class="wp-quit-continue" id="quit-continue-btn"><i class="fas fa-arrow-left"></i> Tiếp tục học</button>
       <button class="wp-quit-leave"    id="quit-leave-btn">Dừng lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── History modal ── -->
+<div class="t1-hist-overlay hidden" id="t1-hist-overlay">
+  <div class="t1-hist-modal">
+    <div class="t1-hist-header">
+      <h3>📊 Lịch sử luyện tập Task 1</h3>
+      <button class="t1-hist-close" onclick="closeHistory()">✕</button>
+    </div>
+    <div class="t1-hist-body" id="t1-hist-body">
+      <div style="text-align:center;padding:24px"><div class="wp-spinner"></div></div>
     </div>
   </div>
 </div>
@@ -378,6 +439,11 @@
         <button class="wp-welcome-start" onclick="startPractice()">
           <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
         </button>
+        <div style="margin-top:4px">
+          <button class="t1-hist-open-btn" onclick="openHistory()">
+            <i class="fas fa-history"></i> Xem lịch sử luyện tập
+          </button>
+        </div>
         <p class="wp-welcome-hint">Chọn cấp độ &amp; kỹ năng ở thanh bên trái trước khi bắt đầu</p>
       </div>
 
@@ -1775,6 +1841,88 @@ function stopTestMode() {
     confirmText: 'Dừng lại', continueText: 'Tiếp tục thi'
   });
 }
+
+// ════════════════════════════════════════════════════════
+//  HISTORY MODAL
+// ════════════════════════════════════════════════════════
+async function openHistory() {
+  document.getElementById('t1-hist-overlay').classList.remove('hidden');
+  const body = document.getElementById('t1-hist-body');
+  body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
+  try {
+    const token = localStorage.getItem('token');
+    const res   = await fetch(`${API}/api/task1/history?limit=200`, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data  = await res.json();
+    if (!data.success) throw new Error(data.message);
+    renderHistory(data.attempts || []);
+  } catch (e) {
+    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${e.message}</p>`;
+  }
+}
+
+function closeHistory() {
+  document.getElementById('t1-hist-overlay').classList.add('hidden');
+}
+
+function renderHistory(attempts) {
+  const body = document.getElementById('t1-hist-body');
+  if (!attempts.length) {
+    body.innerHTML = '<div class="t1-hist-empty"><div class="t1-hist-empty-icon">📭</div><p>Chưa có lịch sử luyện tập.<br>Hãy bắt đầu làm bài nhé!</p></div>';
+    return;
+  }
+
+  const total    = attempts.length;
+  const correct  = attempts.filter(a => a.isCorrect).length;
+  const totalXP  = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
+  const accuracy = Math.round((correct / total) * 100);
+
+  // Group by sessionId (fallback: by date string)
+  const sessions = {};
+  attempts.forEach(a => {
+    const key = a.sessionId || new Date(a.createdAt).toISOString().slice(0, 13); // hour bucket
+    if (!sessions[key]) sessions[key] = { date: a.createdAt, attempts: [] };
+    sessions[key].attempts.push(a);
+  });
+
+  const rows = Object.values(sessions)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 40)
+    .map(s => {
+      const sc   = s.attempts.filter(a => a.isCorrect).length;
+      const xp   = s.attempts.reduce((sum, a) => sum + (a.xpEarned || 0), 0);
+      const acc  = Math.round((sc / s.attempts.length) * 100);
+      const cls  = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
+      const date = new Date(s.date).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      const skills = [...new Set(s.attempts.map(a => SKILL_LABELS[a.skillType]).filter(Boolean))];
+      return `
+        <div class="t1-hist-row">
+          <div class="t1-hist-row-date">${date}</div>
+          <div class="t1-hist-row-skills">${skills.slice(0, 3).join(' · ') || 'Tổng hợp'}</div>
+          <div class="t1-hist-row-stats">
+            <span class="t1-hist-row-count">${s.attempts.length} câu</span>
+            <span class="t1-hist-row-acc ${cls}">${sc}/${s.attempts.length} đúng · ${acc}%</span>
+            <span class="t1-hist-row-xp">+${xp} XP</span>
+          </div>
+        </div>`;
+    }).join('');
+
+  body.innerHTML = `
+    <div class="t1-hist-summary">
+      <div class="t1-hist-stat"><div class="t1-hist-num">${total}</div><div class="t1-hist-lbl">Tổng câu</div></div>
+      <div class="t1-hist-stat"><div class="t1-hist-num">${accuracy}%</div><div class="t1-hist-lbl">Tỉ lệ đúng</div></div>
+      <div class="t1-hist-stat"><div class="t1-hist-num">+${totalXP}</div><div class="t1-hist-lbl">Tổng XP</div></div>
+    </div>
+    <div class="t1-hist-list">${rows}</div>`;
+}
+
+// Close history on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('t1-hist-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('t1-hist-overlay')) closeHistory();
+  });
+});
 </script>
 
 <!-- ── Mobile FAB ── -->

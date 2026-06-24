@@ -317,4 +317,21 @@ router.get('/progress', auth, async (req, res) => {
   }
 });
 
+// ══════════════════════════════════════════════════════════════════════
+//  GET /api/task1/history  (auth required)
+// ══════════════════════════════════════════════════════════════════════
+router.get('/history', auth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+    const attempts = await Task1Attempt.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .select('isCorrect score skillType module sessionId createdAt xpEarned')
+      .lean();
+    res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 module.exports = router;
