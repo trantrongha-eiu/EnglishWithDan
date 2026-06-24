@@ -1,6 +1,7 @@
 const express      = require('express');
 const router       = express.Router();
 const crypto       = require('crypto');
+const { checkEssay } = require('../services/geminiService');
 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
@@ -1360,7 +1361,7 @@ router.delete('/task2-attempts/:id', auth, teacherOnly, async (req, res) => {
 // WRITING AI GRADING
 // ══════════════════════════════════════════════════
 
-async function gradeTaskWithAI(taskType, prompt, answer, wordCount, _attempt = 0) {
+async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
   const minWords = taskType === 1 ? 150 : 250;
   const isUnderLength = wordCount < minWords;
   const isIncomplete = answer.trim().length > 0 && !answer.trim().match(/[.!?]["']?\s*$/);
@@ -1399,9 +1400,7 @@ CALIBRATION: Band 4 = communication is SERIOUSLY and FREQUENTLY impeded. Band 5 
     ? `\nCẢNH BÁO: Bài viết bị cắt đứt giữa chừng (không kết thúc bằng câu hoàn chỉnh). Áp dụng cap: ${taLabel} ≤ 4.`
     : '';
 
-  const systemPrompt = `You are an experienced, calibrated IELTS examiner (IDP/British Council certified). Apply the May 2023 Band Descriptors accurately — score exactly what the evidence shows, neither inflating nor deflating. Remember: most non-native learners who write a complete, coherent essay score 5–6.5. Reserve Band 4 ONLY when the descriptor explicitly matches (serious, frequent problems). Enforce band caps only when the stated condition is genuinely met. Respond ONLY in valid JSON. IMPORTANT: You MUST include sentenceFeedback covering EVERY sentence of the student essay — this is mandatory.`;
-
-  const userPrompt = `Grade this IELTS Academic Writing Task ${taskType} (${wordCount} từ).${wordCountNote}${incompleteNote}
+  const questionContext = `Grade this IELTS Academic Writing Task ${taskType} (${wordCount} từ).${wordCountNote}${incompleteNote}
 
 BAND DESCRIPTORS – ${taLabel}:
 ${taskDescriptor}
@@ -1410,9 +1409,6 @@ BAND DESCRIPTORS – CC / LR / GRA:
 ${sharedDescriptors}
 
 **Đề bài:** ${prompt}
-
-**Bài làm của học sinh:**
-${answer}
 
 STEP 1 – SCORES: Score each criterion 4–9. Match the score to the band descriptor above — pick the band whose description best fits the essay, not the lowest band that has any overlap. For each criterion write 1–2 sentences Vietnamese justification using descriptor language, addressing the student as "em".
 
@@ -1431,50 +1427,8 @@ CRITICAL RULES:
 - All comment/issue/overallFeedback text must be in Vietnamese; "better" field must be in English
 - Use teacher tone in Vietnamese, address student as "em"`;
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) throw new Error('GROQ_API_KEY chưa được cấu hình');
+  const result = await checkEssay(questionContext, answer);
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: userPrompt }
-      ],
-      temperature: 0.4,
-      max_tokens: 8192,
-      response_format: { type: 'json_object' }
-    })
-  });
-
-  if (response.status === 429 && _attempt < 2) {
-    // Rate limit: parse retry-after from Groq error message and wait
-    let waitMs = 35000;
-    try {
-      const errData = await response.json();
-      const match = (errData?.error?.message || '').match(/try again in ([\d.]+)s/i);
-      if (match) waitMs = Math.ceil(parseFloat(match[1]) * 1000) + 1000;
-    } catch (_) {}
-    await new Promise(r => setTimeout(r, waitMs));
-    return gradeTaskWithAI(taskType, prompt, answer, wordCount, _attempt + 1);
-  }
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Groq API error: ${errText}`);
-  }
-
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content || '';
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('AI không trả về JSON hợp lệ');
-
-  const result = JSON.parse(jsonMatch[0]);
   // Recalculate bandScore from individual criterion scores to override AI's calculation
   const scores = [result.ta?.score, result.cc?.score, result.lr?.score, result.gra?.score]
     .map(Number).filter(s => !isNaN(s) && s > 0);
