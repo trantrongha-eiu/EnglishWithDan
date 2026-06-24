@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -26,26 +26,28 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const saveTimer = useRef(null);
 
   useEffect(() => {
     apiFetch(`/admin/passages/${passageId}`)
       .then(d => { setPassageData(d.passage); setGroups(d.passage?.questionGroups || []); })
       .catch(() => toast('Không tải được câu hỏi', 'error'))
       .finally(() => setLoading(false));
+    return () => clearTimeout(saveTimer.current);
   }, [passageId]);
 
   async function persist(updatedGroups) {
-    if (!passageData) return;
     setSaving(true);
     try {
-      await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify({ ...passageData, questionGroups: updatedGroups }) });
+      await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify({ questionGroups: updatedGroups }) });
     } catch (e) { toast(e.message, 'error'); }
     finally { setSaving(false); }
   }
 
   function handleGroupsChange(updated) {
     setGroups(updated);
-    persist(updated);
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => persist(updated), 700);
   }
 
   const totalQs = groups.reduce((n, g) => n + (g.questions?.length || 0), 0);
@@ -243,7 +245,7 @@ export default function Passages() {
   const [qPassage, setQPassage] = useState(null);
   const [diff, setDiff] = useState('');
 
-  const load = () => apiFetch('/admin/passages?limit=200').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
+  const load = () => apiFetch('/admin/passages?limit=500').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
   useEffect(() => {

@@ -75,6 +75,7 @@ const QuestionGroupSchema = new mongoose.Schema({
   imageUrl: { type: String, default: '' },
 
   // ── matching-options config ──
+  matchingOptionsTitle: { type: String, default: '' },
   // Danh sách options hiển thị bên dưới (VD: A. Shaping... B. Causes...)
   matchingOptions: [String],
 

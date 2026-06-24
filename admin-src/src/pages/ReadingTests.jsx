@@ -49,7 +49,7 @@ export default function ReadingTests() {
   }
 
   function copyLink(id) {
-    const url = `${location.origin}/reading.html?testId=${id}`;
+    const url = `https://englishwithdan.onrender.com/reading.html?testId=${id}`;
     navigator.clipboard.writeText(url)
       .then(() => toast('Đã copy link chia sẻ ✓'))
       .catch(() => toast(`Link: ${url}`, 'error'));

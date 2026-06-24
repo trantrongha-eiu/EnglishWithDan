@@ -86,7 +86,7 @@ router.get('/passages', auth, teacherOnly, async (req, res) => {
       { $skip: (Number(page) - 1) * Number(limit) },
       { $limit: Number(limit) },
       { $project: {
-        title: 1, category: 1, difficulty: 1, tags: 1, isActive: 1, questionRange: 1, createdAt: 1,
+        title: 1, category: 1, difficulty: 1, tags: 1, isActive: 1, isActualTest: 1, questionRange: 1, createdAt: 1,
         questionCount: {
           $add: [
             { $size: { $ifNull: ['$questions', []] } },
@@ -222,6 +222,16 @@ router.post('/tests', auth, teacherOnly, async (req, res) => {
     res.status(201).json({ success: true, test });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+router.get('/tests/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const test = await ReadingTest.findById(req.params.id);
+    if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
+    res.json({ success: true, test });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 

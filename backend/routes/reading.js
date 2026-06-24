@@ -167,6 +167,7 @@ router.post('/start', auth, startLimiter, async (req, res) => {
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
         imageUrl: g.imageUrl,
+        matchingOptionsTitle: g.matchingOptionsTitle,
         matchingOptions: g.matchingOptions,
         matchingReuseAllowed: g.matchingReuseAllowed,
         interchangeableAnswers: g.interchangeableAnswers,
@@ -175,7 +176,7 @@ router.post('/start', auth, startLimiter, async (req, res) => {
         endingsConfig: g.endingsConfig,
         questions: (g.questions || []).map(safeQ)
       })),
-      questions: p.questions.map(safeQ)
+      questions: (p.questions || []).map(safeQ)
     }));
 
     res.json({
@@ -391,6 +392,7 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
         imageUrl: g.imageUrl,
+        matchingOptionsTitle: g.matchingOptionsTitle,
         matchingOptions: g.matchingOptions,
         matchingReuseAllowed: g.matchingReuseAllowed,
         interchangeableAnswers: g.interchangeableAnswers,
@@ -399,7 +401,7 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
         endingsConfig: g.endingsConfig,
         questions: (g.questions || []).map(reviewQ)
       })),
-      questions: p.questions.map(reviewQ)
+      questions: (p.questions || []).map(reviewQ)
     }));
 
     res.json({

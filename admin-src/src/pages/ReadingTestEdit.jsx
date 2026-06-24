@@ -23,9 +23,9 @@ export default function ReadingTestEdit() {
 
   useEffect(() => {
     if (isNew) return;
-    apiFetch('/admin/tests')
+    apiFetch(`/admin/tests/${id}`)
       .then(d => {
-        const t = (d.tests || []).find(x => x._id === id);
+        const t = d.test;
         if (t) setForm({ name: t.name || '', seriesName: t.seriesName || '', testNumber: t.testNumber || 1, isActive: t.isActive !== false });
         else toast('Không tìm thấy bộ đề', 'error');
       })
