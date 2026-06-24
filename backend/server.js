@@ -78,21 +78,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       console.error('[Task1Seed] Error:', e.message);
     }
-    // Auto-seed Task 2 topics
+    // Auto-seed Task 2 topics (always run – replaceOne+upsert is idempotent)
     try {
-      const Task2Topic = require('./models/Task2Topic');
-      const { topics: t2data, runSeed: runTask2Seed } = require('./scripts/seedTask2Exercises');
-      const t2count = await Task2Topic.countDocuments();
-      const t2topics = await Task2Topic.find({}, 'questions').lean();
-      const t2qcount = t2topics.reduce((acc, t) => acc + (t.questions || []).length, 0);
-      const t2qExpected = t2data.reduce((acc, t) => acc + (t.questions || []).length, 0);
-      if (t2count < t2data.length || t2qcount < t2qExpected) {
-        console.log(`[Task2Seed] Has ${t2count}/${t2data.length} topics, ${t2qcount}/${t2qExpected} questions – seeding...`);
-        await runTask2Seed();
-        console.log('[Task2Seed] Done ✓');
-      } else {
-        console.log(`[Task2Seed] Already has ${t2count} topics, ${t2qcount} questions – skip`);
-      }
+      const { runSeed: runTask2Seed } = require('./scripts/seedTask2Exercises');
+      console.log('[Task2Seed] Seeding...');
+      await runTask2Seed();
+      console.log('[Task2Seed] Done ✓');
     } catch (e) {
       console.error('[Task2Seed] Error:', e.message);
     }
