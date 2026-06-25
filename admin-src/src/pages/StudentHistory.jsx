@@ -122,7 +122,6 @@ export default function StudentHistory() {
           <option value="writing-practice">✍ Writing lẻ</option>
           <option value="task1-practice">📊 Task 1 Practice</option>
           <option value="task2-practice">📝 Task 2 Practice</option>
-          <option value="speaking">Speaking</option>
         </select>
       </div>
 

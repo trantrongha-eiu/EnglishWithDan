@@ -739,7 +739,7 @@ export default function Tuition() {
                 <label className="form-label">Ngày nhắc mỗi tháng</label>
                 <input className="form-input" type="number" min={1} max={28} style={{ width: 80 }}
                   value={settingsForm.autoRemindDay}
-                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindDay: e.target.value }))} />
+                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindDay: Number(e.target.value) }))} />
               </div>
 
               <div className="form-group" style={{ margin: 0 }}>

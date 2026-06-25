@@ -158,7 +158,7 @@ export default function WritingSamples() {
     try {
       await apiFetch(`/admin/writing/samples/${s._id}`, {
         method: 'PUT',
-        body: JSON.stringify({ ...s, isActive: !s.isActive }),
+        body: JSON.stringify({ isActive: !s.isActive }),
       });
       load();
     } catch (e) { toast(e.message, 'error'); }

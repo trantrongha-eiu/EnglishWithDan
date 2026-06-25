@@ -40,8 +40,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
       apiFetch('/admin/online-users').then(d => setOnlineUsers((d.users || []).filter(u => u.role !== 'admin'))).catch(() => {});
     }
     function fetchPending() {
-      apiFetch('/admin/writing-attempts?gradingStatus=pending,ai_done&limit=1').then(d => {
-        setPendingGrades(d.total || 0);
+      apiFetch('/admin/writing-history').then(d => {
+        const n = (d.attempts || []).filter(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done').length;
+        setPendingGrades(n);
       }).catch(() => {});
     }
     fetchOnline();
