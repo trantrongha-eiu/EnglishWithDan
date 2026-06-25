@@ -25,25 +25,6 @@ const DEFAULT_T2_SECTIONS = [
 ];
 const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' };
 
-function bandBadge(b) {
-  if (b == null) return null;
-  const cls = b >= 7 ? 'badge-green' : b >= 5.5 ? 'badge-blue' : 'badge-red';
-  return <span className={`badge ${cls}`} style={{ fontWeight: 700 }}>{Number(b).toFixed(1)}</span>;
-}
-
-function wcBadge(count, target) {
-  const n = count || 0;
-  const met = n >= target;
-  const close = n >= target * 0.8;
-  const bg = met ? '#dcfce7' : close ? '#fef9c3' : '#fee2e2';
-  const col = met ? '#15803d' : close ? '#a16207' : '#b91c1c';
-  return (
-    <span style={{ background: bg, color: col, borderRadius: 5, padding: '2px 8px', fontSize: 12, fontWeight: 600 }}>
-      {n}w{!met ? ` ⚠<${target}` : ''}
-    </span>
-  );
-}
-
 function Task1Modal({ task, onClose, onSaved }) {
   const toast = useToast();
   const imgFileRef = useRef();
@@ -263,336 +244,6 @@ function Task2Modal({ task, onClose, onSaved }) {
   );
 }
 
-function BandInput({ label, value, onChange }) {
-  return (
-    <div className="form-group" style={{ marginBottom: 0 }}>
-      <label className="form-label" style={{ fontSize: 11 }}>{label}</label>
-      <input className="form-input" type="number" min={0} max={9} step={0.5}
-        value={value ?? ''}
-        onChange={e => onChange(e.target.value === '' ? null : Number(e.target.value))}
-        style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
-    </div>
-  );
-}
-
-function GradingModal({ attemptId, onClose, onGraded }) {
-  const toast = useToast();
-  const [attempt, setAttempt] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [confirming, setConfirming] = useState(false);
-  const [aiGrading, setAiGrading] = useState({ t1: false, t2: false });
-  const [grade, setGrade] = useState({
-    task1: { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' },
-    task2: { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' },
-    overallBand: null,
-    adminNote: '',
-  });
-  const [aiRaw, setAiRaw] = useState({ task1: null, task2: null });
-
-  useEffect(() => {
-    apiFetch(`/admin/writing-attempt/${attemptId}`)
-      .then(d => {
-        const a = d.attempt;
-        setAttempt(a);
-
-        function buildGradeFromAi(t) {
-          return t ? {
-            bandScore: t.bandScore ?? null,
-            ta:  t.ta?.score  ?? null,
-            cc:  t.cc?.score  ?? null,
-            lr:  t.lr?.score  ?? null,
-            gra: t.gra?.score ?? null,
-            feedback: t.overallFeedback || '',
-          } : { bandScore: null, ta: null, cc: null, lr: null, gra: null, feedback: '' };
-        }
-
-        if (a.grading?.overallBand != null) {
-          // Load confirmed grade
-          const src = a.grading;
-          setGrade({
-            task1: buildGradeFromAi(src.task1),
-            task2: buildGradeFromAi(src.task2),
-            overallBand: src.overallBand ?? null,
-            adminNote: src.adminNote || '',
-          });
-          setAiRaw({ task1: src.task1, task2: src.task2 });
-        } else if (a.aiGrading?.task1 || a.aiGrading?.task2) {
-          // Load previously run AI results that haven't been confirmed yet
-          const ai = a.aiGrading;
-          setAiRaw({ task1: ai.task1 || null, task2: ai.task2 || null });
-          setGrade(g => ({
-            ...g,
-            task1: ai.task1 ? buildGradeFromAi(ai.task1) : g.task1,
-            task2: ai.task2 ? buildGradeFromAi(ai.task2) : g.task2,
-          }));
-        }
-      })
-      .catch(() => toast('Không tải được bài nộp', 'error'))
-      .finally(() => setLoading(false));
-  }, [attemptId]);
-
-  function setTask(taskKey, field, val) {
-    setGrade(g => ({ ...g, [taskKey]: { ...g[taskKey], [field]: val } }));
-  }
-
-  function autoTaskBand(taskKey) {
-    setGrade(g => {
-      const t = g[taskKey];
-      const scores = [t.ta, t.cc, t.lr, t.gra].map(Number).filter(s => !isNaN(s) && s > 0);
-      if (scores.length < 4) return g;
-      const band = Math.round((scores.reduce((a, b) => a + b, 0) / 4) * 2) / 2;
-      return { ...g, [taskKey]: { ...t, bandScore: band } };
-    });
-  }
-
-  function autoOverall() {
-    const b1 = grade.task1.bandScore;
-    const b2 = grade.task2.bandScore;
-    const hasT1 = b1 != null;
-    const hasT2 = b2 != null;
-    const isPractice = attempt?.submissionType === 'practice';
-    const onlyT1 = isPractice && attempt?.task1Answer && !attempt?.task2Answer;
-    const onlyT2 = isPractice && attempt?.task2Answer && !attempt?.task1Answer;
-    if (onlyT1 && hasT1) {
-      setGrade(g => ({ ...g, overallBand: b1 }));
-    } else if (onlyT2 && hasT2) {
-      setGrade(g => ({ ...g, overallBand: b2 }));
-    } else if (hasT1 && hasT2) {
-      const avg = Math.round(((b1 / 3) + (b2 * 2 / 3)) * 2) / 2;
-      setGrade(g => ({ ...g, overallBand: avg }));
-    } else if (hasT1 || hasT2) {
-      setGrade(g => ({ ...g, overallBand: hasT1 ? b1 : b2 }));
-    }
-  }
-
-  async function runAiGrade(taskNum) {
-    const key = taskNum === 1 ? 't1' : 't2';
-    const taskKey = taskNum === 1 ? 'task1' : 'task2';
-    setAiGrading(s => ({ ...s, [key]: true }));
-    try {
-      const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, {
-        method: 'POST',
-        body: JSON.stringify({ taskNum }),
-      });
-      const r = d.result || {};
-      setAiRaw(prev => ({ ...prev, [taskKey]: r }));
-      setGrade(g => ({
-        ...g,
-        [taskKey]: {
-          bandScore: r.bandScore ?? g[taskKey].bandScore,
-          ta:  r.ta?.score  ?? g[taskKey].ta,
-          cc:  r.cc?.score  ?? g[taskKey].cc,
-          lr:  r.lr?.score  ?? g[taskKey].lr,
-          gra: r.gra?.score ?? g[taskKey].gra,
-          feedback: r.overallFeedback || g[taskKey].feedback,
-        },
-      }));
-      toast(`AI đã chấm xong Task ${taskNum} – kiểm tra và xác nhận điểm`);
-    } catch (err) { toast('AI chấm thất bại: ' + err.message, 'error'); }
-    finally { setAiGrading(s => ({ ...s, [key]: false })); }
-  }
-
-  async function submitGrade() {
-    if (grade.overallBand == null) { toast('Vui lòng nhập điểm tổng', 'error'); return; }
-    setConfirming(true);
-    try {
-      function buildTask(g, ai) {
-        return {
-          bandScore:       g.bandScore,
-          ta:  { score: g.ta,  comment: ai?.ta?.comment  || '' },
-          cc:  { score: g.cc,  comment: ai?.cc?.comment  || '' },
-          lr:  { score: g.lr,  comment: ai?.lr?.comment  || '' },
-          gra: { score: g.gra, comment: ai?.gra?.comment || '' },
-          overallFeedback:  g.feedback || ai?.overallFeedback || '',
-          sentenceFeedback: ai?.sentenceFeedback || [],
-          corrections:      ai?.corrections || [],
-          suggestions:      ai?.suggestions || [],
-        };
-      }
-      await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          task1:       buildTask(grade.task1, aiRaw.task1),
-          task2:       buildTask(grade.task2, aiRaw.task2),
-          overallBand: grade.overallBand,
-          adminNote:   grade.adminNote,
-        }),
-      });
-      toast('Đã xác nhận điểm và gửi feedback cho học sinh');
-      onGraded();
-      onClose();
-    } catch (err) { toast(err.message, 'error'); }
-    finally { setConfirming(false); }
-  }
-
-  const CRITERIA_T1 = [
-    { key: 'ta',  label: 'Task Achievement' },
-    { key: 'cc',  label: 'Coherence & Cohesion' },
-    { key: 'lr',  label: 'Lexical Resource' },
-    { key: 'gra', label: 'Grammatical Range' },
-  ];
-  const CRITERIA_T2 = [
-    { key: 'ta',  label: 'Task Response' },
-    { key: 'cc',  label: 'Coherence & Cohesion' },
-    { key: 'lr',  label: 'Lexical Resource' },
-    { key: 'gra', label: 'Grammatical Range' },
-  ];
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 780, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">✏️ Chấm bài Writing</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
-        </div>
-        {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>
-        ) : (
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {attempt && (
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 13, color: 'var(--text2)', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
-                <span><strong>Học sinh:</strong> {attempt.userId ? [attempt.userId.firstName, attempt.userId.lastName].filter(Boolean).join(' ') || attempt.userId.username : '–'}</span>
-                <span><strong>Loại:</strong> {attempt.submissionType === 'practice' ? '✏️ Luyện' : '🏆 Thi'}</span>
-                <span><strong>Số từ:</strong> T1: {attempt.wordCount1 || 0}w / T2: {attempt.wordCount2 || 0}w</span>
-                <span><strong>Trạng thái:</strong> {attempt.gradingStatus === 'confirmed' ? '✅ Đã xác nhận' : '⏳ Chờ chấm'}</span>
-              </div>
-            )}
-
-            {attempt?.task1Answer && (
-              <div>
-                <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 14 }}>Task 1</div>
-                {attempt.task1Snapshot?.imageUrl && (
-                  <img src={attempt.task1Snapshot.imageUrl} alt="task1"
-                    style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
-                )}
-                <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>{attempt.task1Snapshot?.prompt}</div>
-                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 160, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                  {attempt.task1Answer}
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
-                      <label className="form-label" style={{ fontSize: 11, marginBottom: 0 }}>Band Score</label>
-                      <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 10, padding: '1px 5px' }}
-                        onClick={() => autoTaskBand('task1')} title="Tính từ 4 tiêu chí">Auto</button>
-                    </div>
-                    <input className="form-input" type="number" min={0} max={9} step={0.5}
-                      value={grade.task1.bandScore ?? ''}
-                      onChange={e => setTask('task1', 'bandScore', e.target.value === '' ? null : Number(e.target.value))}
-                      style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
-                  </div>
-                  {CRITERIA_T1.map(c => <BandInput key={c.key} label={c.label} value={grade.task1[c.key]} onChange={v => setTask('task1', c.key, v)} />)}
-                </div>
-                {aiRaw.task1 && (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginTop: 6 }}>
-                    {CRITERIA_T1.map(c => aiRaw.task1?.[c.key]?.comment ? (
-                      <div key={c.key} style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5, padding: '5px 7px', background: 'var(--surface2)', borderRadius: 6, borderLeft: '2px solid var(--border)' }}>
-                        <div style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', color: 'var(--text3)', marginBottom: 2 }}>{c.label}</div>
-                        {aiRaw.task1[c.key].comment}
-                      </div>
-                    ) : null)}
-                  </div>
-                )}
-                <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
-                  value={grade.task1.feedback}
-                  onChange={e => setTask('task1', 'feedback', e.target.value)}
-                  placeholder="Nhận xét Task 1 (AI tự điền sau khi chấm, bạn có thể chỉnh)..." />
-              </div>
-            )}
-
-            {attempt?.task2Answer && (
-              <div>
-                <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 14 }}>Task 2</div>
-                <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>{attempt.task2Snapshot?.prompt}</div>
-                <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.7, maxHeight: 180, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                  {attempt.task2Answer}
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8, marginTop: 10 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 2 }}>
-                      <label className="form-label" style={{ fontSize: 11, marginBottom: 0 }}>Band Score</label>
-                      <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 10, padding: '1px 5px' }}
-                        onClick={() => autoTaskBand('task2')} title="Tính từ 4 tiêu chí">Auto</button>
-                    </div>
-                    <input className="form-input" type="number" min={0} max={9} step={0.5}
-                      value={grade.task2.bandScore ?? ''}
-                      onChange={e => setTask('task2', 'bandScore', e.target.value === '' ? null : Number(e.target.value))}
-                      style={{ fontSize: 13, padding: '6px 8px' }} placeholder="0–9" />
-                  </div>
-                  {CRITERIA_T2.map(c => <BandInput key={c.key} label={c.label} value={grade.task2[c.key]} onChange={v => setTask('task2', c.key, v)} />)}
-                </div>
-                {aiRaw.task2 && (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginTop: 6 }}>
-                    {CRITERIA_T2.map(c => aiRaw.task2?.[c.key]?.comment ? (
-                      <div key={c.key} style={{ fontSize: 11, color: 'var(--text2)', lineHeight: 1.5, padding: '5px 7px', background: 'var(--surface2)', borderRadius: 6, borderLeft: '2px solid var(--border)' }}>
-                        <div style={{ fontWeight: 700, fontSize: 10, textTransform: 'uppercase', color: 'var(--text3)', marginBottom: 2 }}>{c.label}</div>
-                        {aiRaw.task2[c.key].comment}
-                      </div>
-                    ) : null)}
-                  </div>
-                )}
-                <textarea className="form-input" rows={3} style={{ marginTop: 8, fontSize: 13 }}
-                  value={grade.task2.feedback}
-                  onChange={e => setTask('task2', 'feedback', e.target.value)}
-                  placeholder="Nhận xét Task 2 (AI tự điền sau khi chấm, bạn có thể chỉnh)..." />
-              </div>
-            )}
-
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 14 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: 12, alignItems: 'start' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                    <label className="form-label" style={{ marginBottom: 0 }}>Điểm tổng (Band)</label>
-                    <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '2px 6px' }}
-                      onClick={autoOverall} title="Tự tính từ Task 1 + Task 2">Auto</button>
-                  </div>
-                  <input className="form-input" type="number" min={0} max={9} step={0.5}
-                    value={grade.overallBand ?? ''}
-                    onChange={e => setGrade(g => ({ ...g, overallBand: e.target.value === '' ? null : Number(e.target.value) }))}
-                    style={{ fontSize: 16, fontWeight: 700, textAlign: 'center' }} placeholder="6.5" />
-                </div>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Feedback gửi cho học sinh</label>
-                  <textarea className="form-input" rows={3} value={grade.adminNote}
-                    onChange={e => setGrade(g => ({ ...g, adminNote: e.target.value }))}
-                    placeholder="Nhận xét và góp ý cụ thể cho học sinh..." />
-                </div>
-              </div>
-            </div>
-
-            {/* Warning: confirmed but missing sentence feedback */}
-            {attempt?.gradingStatus === 'confirmed' &&
-              !attempt?.grading?.task1?.sentenceFeedback?.length &&
-              !attempt?.grading?.task2?.sentenceFeedback?.length && (
-              <div style={{ background: '#fffbeb', border: '1px solid #f59e0b', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#92400e', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <span style={{ flexShrink: 0 }}>⚠️</span>
-                <span>Bài này <strong>chưa có phân tích câu chi tiết</strong> (chấm lúc cũ). Nhấn lại <strong>🤖 AI T1 / AI T2</strong> rồi bấm Xác nhận để học sinh nhận được phần sửa lỗi từng câu.</span>
-              </div>
-            )}
-
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
-              <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
-              <button className="btn btn-ghost" onClick={() => runAiGrade(1)}
-                disabled={aiGrading.t1 || aiGrading.t2 || confirming || !attempt?.task1Answer}
-                title={attempt?.task1Answer ? 'AI chấm Task 1 – bạn vẫn có thể sửa trước khi xác nhận' : 'Không có bài Task 1'}>
-                {aiGrading.t1 ? '⏳ Task 1...' : '🤖 AI T1'}
-              </button>
-              <button className="btn btn-ghost" onClick={() => runAiGrade(2)}
-                disabled={aiGrading.t1 || aiGrading.t2 || confirming || !attempt?.task2Answer}
-                title={attempt?.task2Answer ? 'AI chấm Task 2 – bạn vẫn có thể sửa trước khi xác nhận' : 'Không có bài Task 2'}>
-                {aiGrading.t2 ? '⏳ Task 2...' : '🤖 AI T2'}
-              </button>
-              <button className="btn btn-primary" onClick={submitGrade} disabled={confirming || aiGrading.t1 || aiGrading.t2}>
-                {confirming ? 'Đang lưu...' : '✅ Xác nhận & Gửi feedback'}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function WritingSampleModal({ sample, onClose, onSaved }) {
   const toast = useToast();
   const fileRef = useRef();
@@ -715,139 +366,6 @@ function WritingSampleModal({ sample, onClose, onSaved }) {
   );
 }
 
-function WritingViewModal({ attemptId, onClose }) {
-  const toast = useToast();
-  const [attempt, setAttempt] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    apiFetch(`/admin/writing-attempt/${attemptId}`)
-      .then(d => setAttempt(d.attempt))
-      .catch(() => toast('Không tải được bài nộp', 'error'))
-      .finally(() => setLoading(false));
-  }, [attemptId]);
-
-  function download() {
-    if (!attempt) return;
-    const u = attempt.userId || {};
-    const name = u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : (u.username || 'Student');
-    const t1 = attempt.task1Snapshot || {};
-    const t2 = attempt.task2Snapshot || {};
-    const text = [
-      `${name} — ${attempt.examName || 'Writing Test'}`,
-      `Ngày nộp: ${new Date(attempt.submittedAt || attempt.createdAt).toLocaleString('vi-VN')}`,
-      '',
-      '=== TASK 1 ===',
-      t1.prompt || '',
-      '',
-      attempt.task1Answer || '(trống)',
-      '',
-      '=== TASK 2 ===',
-      t2.prompt || '',
-      '',
-      attempt.task2Answer || '(trống)',
-    ].join('\n');
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const el = document.createElement('a');
-    el.href = url; el.download = `${name}_writing.txt`; el.click();
-    URL.revokeObjectURL(url);
-  }
-
-  const u = attempt?.userId || {};
-  const studentName = attempt
-    ? ([u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–')
-    : '';
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 800, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">👁 Xem bài Writing{attempt ? ` — ${studentName}` : ''}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
-        </div>
-        {loading ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>
-        ) : !attempt ? (
-          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Không tìm thấy bài nộp</div>
-        ) : (
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {(() => {
-              const showT1 = attempt.submissionType !== 'practice' || !!(attempt.task1Answer) || (attempt.wordCount1 || 0) > 0;
-              const showT2 = attempt.submissionType !== 'practice' || !!(attempt.task2Answer) || (attempt.wordCount2 || 0) > 0;
-              return (
-                <>
-                  <div style={{ fontSize: 13, color: 'var(--text2)', display: 'flex', gap: 16, flexWrap: 'wrap', padding: '8px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
-                    <span><strong>Học sinh:</strong> {studentName}</span>
-                    <span><strong>Bài thi:</strong> {attempt.examName || '–'}</span>
-                    <span><strong>Loại:</strong> {attempt.submissionType === 'practice' ? '✏️ Luyện tập' : '🏆 Thi'}</span>
-                    <span><strong>Ngày nộp:</strong> {formatDate(attempt.submittedAt || attempt.createdAt)}</span>
-                  </div>
-
-                  {showT1 && (
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                        TASK 1 — {attempt.wordCount1 || 0} từ
-                        {(attempt.wordCount1 || 0) < 150 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 150</span>}
-                      </div>
-                      {attempt.task1Snapshot?.imageUrl && (
-                        <img src={attempt.task1Snapshot.imageUrl} alt="task1"
-                          style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, marginBottom: 8, border: '1px solid var(--border)' }} />
-                      )}
-                      {attempt.task1Snapshot?.prompt && (
-                        <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
-                          {attempt.task1Snapshot.prompt}
-                        </div>
-                      )}
-                      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 220, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                        {attempt.task1Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
-                      </div>
-                    </div>
-                  )}
-
-                  {showT2 && (
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                        TASK 2 — {attempt.wordCount2 || 0} từ
-                        {(attempt.wordCount2 || 0) < 250 && <span style={{ color: '#b91c1c', fontSize: 12, marginLeft: 6 }}>⚠ dưới 250</span>}
-                      </div>
-                      {attempt.task2Snapshot?.prompt && (
-                        <div style={{ background: 'var(--surface2)', borderRadius: 6, padding: '10px 12px', fontSize: 13, marginBottom: 8, whiteSpace: 'pre-wrap', color: 'var(--text2)' }}>
-                          {attempt.task2Snapshot.prompt}
-                        </div>
-                      )}
-                      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 12px', fontSize: 13, lineHeight: 1.75, maxHeight: 280, overflowY: 'auto', whiteSpace: 'pre-wrap' }}>
-                        {attempt.task2Answer || <span style={{ color: 'var(--text3)' }}>(trống)</span>}
-                      </div>
-                    </div>
-                  )}
-                </>
-              );
-            })()}
-
-            {attempt.grading?.overallBand != null && (
-              <div style={{ background: 'var(--surface2)', borderRadius: 8, padding: '12px 16px', fontSize: 13 }}>
-                <strong>Điểm xác nhận:</strong>{' '}
-                <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--green)' }}>{attempt.grading.overallBand}</span>
-                {attempt.grading.adminNote && (
-                  <div style={{ marginTop: 8, color: 'var(--text2)', lineHeight: 1.6 }}>
-                    <strong>Feedback:</strong> {attempt.grading.adminNote}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', paddingTop: 4 }}>
-              <button className="btn btn-ghost" onClick={download}>⬇ Tải về (.txt)</button>
-              <button className="btn btn-ghost" onClick={onClose}>Đóng</button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function WritingExamModal({ exam, onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({ name: '', duration: 60, isActive: true });
@@ -910,33 +428,26 @@ export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
-  const [tab, setTab] = useState('task1');
+  const [tab, setTab] = useState('exams');
   const [task1, setTask1] = useState([]);
   const [task2, setTask2] = useState([]);
-  const [history, setHistory] = useState([]);
   const [samples, setSamples] = useState([]);
   const [exams, setExams] = useState([]);
   const [editTask1, setEditTask1] = useState(null);
   const [showT1Modal, setShowT1Modal] = useState(false);
   const [editTask2, setEditTask2] = useState(null);
   const [showT2Modal, setShowT2Modal] = useState(false);
-  const [gradingId, setGradingId] = useState(null);
-  const [viewAttemptId, setViewAttemptId] = useState(null);
   const [editSample, setEditSample] = useState(null);
   const [showSampleModal, setShowSampleModal] = useState(false);
   const [editExam, setEditExam] = useState(null);
   const [showExamModal, setShowExamModal] = useState(false);
-  const [historyFilter, setHistoryFilter] = useState('');
-  const [historySearch, setHistorySearch] = useState('');
-  const [historyTypeFilter, setHistoryTypeFilter] = useState('');
 
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
-  const loadHistory = () => apiFetch('/admin/writing-history').then(d => setHistory(d.attempts || [])).catch(() => {});
   const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(() => {});
   const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(() => {});
 
-  useEffect(() => { loadT1(); loadT2(); loadHistory(); loadSamples(); loadExams(); }, []);
+  useEffect(() => { loadT1(); loadT2(); loadSamples(); loadExams(); }, []);
 
   async function toggleActive(pool, id, isActive) {
     const endpoint = pool === 'task1' ? `/admin/writing-task1/${id}` : `/admin/writing-task2/${id}`;
@@ -955,16 +466,6 @@ export default function WritingTests() {
         toast('Đã xóa');
         if (pool === 'task1') setTask1(a => a.filter(x => x._id !== id));
         else setTask2(a => a.filter(x => x._id !== id));
-      } catch (e) { toast(e.message, 'error'); }
-    });
-  }
-
-  function delAttempt(id) {
-    confirm('Xóa bài nộp này?', async () => {
-      try {
-        await apiFetch(`/admin/writing-attempts/${id}`, { method: 'DELETE' });
-        toast('Đã xóa');
-        loadHistory();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
@@ -1005,9 +506,6 @@ export default function WritingTests() {
     });
   }
 
-  const STATUS_MAP = { pending: '⏳ Chờ chấm', ai_done: '🤖 Chờ xác nhận', confirmed: '✅ Đã xác nhận' };
-  const STATUS_COLOR = { pending: 'var(--text3)', ai_done: '#d97706', confirmed: 'var(--green)' };
-
   return (
     <>
       {(showT1Modal || editTask1) && (
@@ -1015,12 +513,6 @@ export default function WritingTests() {
       )}
       {(showT2Modal || editTask2) && (
         <Task2Modal task={editTask2} onClose={() => { setShowT2Modal(false); setEditTask2(null); }} onSaved={loadT2} />
-      )}
-      {gradingId && (
-        <GradingModal attemptId={gradingId} onClose={() => setGradingId(null)} onGraded={loadHistory} />
-      )}
-      {viewAttemptId && (
-        <WritingViewModal attemptId={viewAttemptId} onClose={() => setViewAttemptId(null)} />
       )}
       {(showSampleModal || editSample) && (
         <WritingSampleModal
@@ -1049,13 +541,6 @@ export default function WritingTests() {
         <Tab label="🗂 Đề thi" active={tab === 'exams'} onClick={() => setTab('exams')} />
         <Tab label="📝 Task 1 Pool" active={tab === 'task1'} onClick={() => setTab('task1')} />
         <Tab label="📝 Task 2 Pool" active={tab === 'task2'} onClick={() => setTab('task2')} />
-        <Tab
-          label={(() => {
-            const n = history.filter(h => h.gradingStatus === 'pending' || h.gradingStatus === 'ai_done').length;
-            return n > 0 ? `📊 Lịch sử (${n} chờ chấm)` : '📊 Lịch sử nộp bài';
-          })()}
-          active={tab === 'history'} onClick={() => setTab('history')}
-        />
         <Tab label="📄 Bài mẫu" active={tab === 'samples'} onClick={() => setTab('samples')} />
       </div>
 
@@ -1172,83 +657,6 @@ export default function WritingTests() {
           </table>
         </div>
       )}
-
-      {tab === 'history' && (() => {
-        const displayHistory = history.filter(h => {
-          const u = h.userId || {};
-          const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '';
-          const matchSearch = !historySearch || name.toLowerCase().includes(historySearch.toLowerCase()) || (h.examName || '').toLowerCase().includes(historySearch.toLowerCase());
-          const matchStatus = !historyFilter || h.gradingStatus === historyFilter;
-          const matchType = !historyTypeFilter || (h.submissionType || 'exam') === historyTypeFilter;
-          return matchSearch && matchStatus && matchType;
-        });
-        return (
-          <>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
-              <select className="form-input" value={historyFilter} onChange={e => setHistoryFilter(e.target.value)} style={{ width: 180 }}>
-                <option value="">Tất cả trạng thái</option>
-                <option value="pending">⏳ Chờ chấm</option>
-                <option value="ai_done">🤖 AI đã chấm</option>
-                <option value="confirmed">✅ Đã xác nhận</option>
-              </select>
-              <select className="form-input" value={historyTypeFilter} onChange={e => setHistoryTypeFilter(e.target.value)} style={{ width: 160 }}>
-                <option value="">Tất cả loại</option>
-                <option value="exam">🏆 Bài thi</option>
-                <option value="practice">✏️ Luyện tập</option>
-              </select>
-              <input className="form-input search-input" placeholder="Tìm học sinh, bài thi..."
-                value={historySearch} onChange={e => setHistorySearch(e.target.value)} style={{ maxWidth: 260 }} />
-            </div>
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr><th>HỌC SINH</th><th>LOẠI</th><th>BÀI THI</th><th>T1 (≥150w)</th><th>T2 (≥250w)</th><th>ĐIỂM</th><th>TRẠNG THÁI</th><th>NGÀY NỘP</th><th></th></tr>
-                </thead>
-                <tbody>
-                  {displayHistory.length === 0
-                    ? <tr><td colSpan={9} className="table-empty">Không tìm thấy bài nộp nào</td></tr>
-                    : displayHistory.slice(0, 200).map(h => {
-                      const u = h.userId || {};
-                      const name = [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '–';
-                      const finalScore = h.grading?.overallBand;
-                      const isPracticeT1 = h.submissionType === 'practice' && (h.examName || '').includes('Task 1');
-                      const isPracticeT2 = h.submissionType === 'practice' && (h.examName || '').includes('Task 2');
-                      const dash = <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>;
-                      return (
-                        <tr key={h._id}>
-                          <td><strong>{name}</strong></td>
-                          <td>
-                            {h.submissionType === 'practice'
-                              ? <span className="badge badge-blue" style={{ fontSize: 11 }}>✏️ Luyện</span>
-                              : <span className="badge badge-gray" style={{ fontSize: 11 }}>🏆 Thi</span>}
-                          </td>
-                          <td style={{ fontSize: 12, color: 'var(--text2)' }}>{h.examName || '–'}</td>
-                          <td>{isPracticeT2 ? dash : wcBadge(h.wordCount1, 150)}</td>
-                          <td>{isPracticeT1 ? dash : wcBadge(h.wordCount2, 250)}</td>
-                          <td>{finalScore != null ? bandBadge(finalScore) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
-                          <td>
-                            <span style={{ fontSize: 12, color: STATUS_COLOR[h.gradingStatus] || 'var(--text3)' }}>
-                              {STATUS_MAP[h.gradingStatus] || '–'}
-                            </span>
-                          </td>
-                          <td style={{ fontSize: 12 }}>{formatDate(h.submittedAt || h.createdAt)}</td>
-                          <td>
-                            <div className="row-actions">
-                              <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setViewAttemptId(h._id)} title="Xem bài">👁</button>
-                              <button className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '3px 8px' }}
-                                onClick={() => setGradingId(h._id)}>✏️ Chấm</button>
-                              {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delAttempt(h._id)}>🗑</button>}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </>
-        );
-      })()}
 
       {tab === 'samples' && (
         <div className="table-wrap">
