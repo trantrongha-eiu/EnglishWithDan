@@ -938,24 +938,78 @@ router.get('/history/:attemptId', auth, async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/practice/save', auth, async (req, res) => {
   try {
-    const { sectionId, sectionTitle, partNumber, answers, correctCount, wrongCount, skippedCount, timeTaken } = req.body;
+    const { sectionId, sectionTitle, partNumber, answers, timeTaken } = req.body;
     if (!sectionId || !Array.isArray(answers)) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
+
+    // Server-side grading: fetch section and re-grade independently of client
+    const section = await ListeningSection.findById(sectionId).lean();
+    if (!section) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+
+    // Build userAnswer map: questionNumber → userAnswer string
+    const uaMap = {};
+    for (const a of answers) uaMap[a.questionNumber] = (a.userAnswer || '').trim();
+
+    let correct = 0, wrong = 0, skipped = 0;
+    const gradedAnswers = [];
+
+    for (const group of section.questionGroups || []) {
+      const qs = group.questions || [];
+      if (group.interchangeableAnswers && qs.length > 0) {
+        const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
+        for (const q of qs) {
+          const ua = uaMap[q.questionNumber] || '';
+          const poolIdx = ua ? remainingPool.indexOf(ua.toLowerCase()) : -1;
+          const isCorrect = poolIdx !== -1;
+          if (isCorrect) remainingPool.splice(poolIdx, 1);
+          if (!ua) skipped++; else if (isCorrect) correct++; else wrong++;
+          gradedAnswers.push({ questionNumber: q.questionNumber, userAnswer: ua, correctAnswer: q.correctAnswer || '', isCorrect });
+        }
+      } else {
+        for (const q of qs) {
+          const ua = uaMap[q.questionNumber] || '';
+          const ca = (q.correctAnswer || '').trim();
+          let isCorrect = false;
+          if (!ua) {
+            skipped++;
+          } else if (q.type === 'multi-answer-group') {
+            try {
+              const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
+              isCorrect = uaArr.includes(ca.toUpperCase().trim());
+            } catch { isCorrect = false; }
+            if (isCorrect) correct++; else wrong++;
+          } else if (q.type === 'checkbox') {
+            try {
+              const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
+              const caArr = JSON.parse(ca || '[]').map(x => x.toLowerCase().trim()).sort();
+              isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
+            } catch { isCorrect = false; }
+            if (isCorrect) correct++; else wrong++;
+          } else {
+            const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
+            isCorrect = caVariants.includes(ua.toLowerCase());
+            if (isCorrect) correct++; else wrong++;
+          }
+          gradedAnswers.push({ questionNumber: q.questionNumber, userAnswer: ua, correctAnswer: ca, isCorrect });
+        }
+      }
+    }
+
     const attempt = await ListeningPracticeAttempt.create({
       userId:         req.user._id,
       sectionId,
-      sectionTitle:   sectionTitle || '',
-      partNumber:     partNumber || 1,
-      answers,
-      totalQuestions: answers.length,
-      correctCount:   correctCount || 0,
-      wrongCount:     wrongCount || 0,
-      skippedCount:   skippedCount || 0,
+      sectionTitle:   sectionTitle || section.title || '',
+      partNumber:     partNumber || section.partNumber || 1,
+      answers:        gradedAnswers,
+      totalQuestions: gradedAnswers.length,
+      correctCount:   correct,
+      wrongCount:     wrong,
+      skippedCount:   skipped,
       timeTaken:      timeTaken || 0,
       submittedAt:    new Date()
     });
-    res.json({ success: true, attemptId: attempt._id });
+    res.json({ success: true, attemptId: attempt._id, correctCount: correct, totalQuestions: gradedAnswers.length });
   } catch (err) {
     console.error('[Listening practice save]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });

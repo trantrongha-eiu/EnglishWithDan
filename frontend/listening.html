@@ -3308,14 +3308,11 @@
         _ltPracticeSubmitted = true;
         setTool('none');
 
-        // Lưu kết quả lên server (fire-and-forget)
-        // reviewSection already has q.userAnswer + q.isCorrect from the grading loop above
+        // Lưu kết quả lên server — server tự grade lại để đảm bảo tính chính xác
         const answersToSave = (reviewSection.questionGroups || []).flatMap(g =>
             (g.questions || []).map(q => ({
                 questionNumber: q.questionNumber,
-                userAnswer:    q.userAnswer    || '',
-                correctAnswer: q.correctAnswer || '',
-                isCorrect:     !!q.isCorrect
+                userAnswer:    q.userAnswer || ''
             }))
         );
         fetch(`${API}/listening/practice/save`, {
@@ -3326,12 +3323,9 @@
                 sectionTitle: _ltOrigSection.title || '',
                 partNumber:   _ltPracticePartNum || 1,
                 answers:      answersToSave,
-                correctCount: correct,
-                wrongCount:   wrong,
-                skippedCount: skipped,
                 timeTaken:    elapsed
             })
-        }).catch(() => {});
+        }).catch(() => { toast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error'); });
 
         // Update footer
         document.getElementById('lt-practice-footer-btns').innerHTML = `
