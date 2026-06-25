@@ -98,10 +98,48 @@ function showScreen(id) {
   document.querySelectorAll('#user-name-done, #user-name-history, #user-name-samples')
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 
+  // Sharable link: writing.html?taskType=1&taskId=<id>
+  const params = new URLSearchParams(location.search);
+  const urlTaskType = parseInt(params.get('taskType'));
+  const urlTaskId   = params.get('taskId');
+  if ((urlTaskType === 1 || urlTaskType === 2) && urlTaskId) {
+    _openDirectPracticeTask(urlTaskType, urlTaskId);
+    return;
+  }
+
   checkRestoreBanner();
-  // Focus key input on load
   setTimeout(() => { const ki = document.getElementById('key-input'); if (ki) ki.focus(); }, 150);
 })();
+
+async function _openDirectPracticeTask(taskType, taskId) {
+  showScreen('screen-practice');
+  try {
+    const [taskRes, histRes] = await Promise.all([
+      apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`),
+      apiFetch('/api/writing/practice/history')
+    ]);
+    practiceState.tasks = taskRes.tasks || [];
+
+    const pending = (histRes.attempts || []).find(a =>
+      a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done'
+    );
+    if (pending) {
+      showPracticeMode();
+      return;
+    }
+
+    const task = practiceState.tasks.find(t => String(t._id) === taskId);
+    if (!task) {
+      showPracticeMode();
+      showToast('Không tìm thấy đề bài hoặc đề đã bị ẩn', 'error');
+      return;
+    }
+
+    startPracticeTask(taskType, taskId);
+  } catch (e) {
+    showToast('Lỗi tải đề bài', 'error');
+  }
+}
 
 // ──────────────────────────────────────────────────────
 // Format key input  (XXXX-XXXX) — đồng bộ với reading/listening

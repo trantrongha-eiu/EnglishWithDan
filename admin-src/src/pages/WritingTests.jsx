@@ -444,6 +444,13 @@ export default function WritingTests() {
 
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
+
+  function copyPracticeLink(taskType, id) {
+    const url = `https://englishwithdan.onrender.com/writing.html?taskType=${taskType}&taskId=${id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => toast('Đã copy link chia sẻ ✓'))
+      .catch(() => toast(`Link: ${url}`, 'info'));
+  }
   const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(() => {});
   const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(() => {});
 
@@ -584,7 +591,7 @@ export default function WritingTests() {
       {tab === 'task1' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
             <tbody>
               {task1.length === 0
                 ? <tr><td colSpan={6} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
@@ -605,6 +612,7 @@ export default function WritingTests() {
                         </span>
                       </td>
                       <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                      <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(1, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
                       <td>
                         <div className="row-actions">
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
@@ -623,10 +631,10 @@ export default function WritingTests() {
       {tab === 'task2' && (
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>PROMPT</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+            <thead><tr><th>PROMPT</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
             <tbody>
               {task2.length === 0
-                ? <tr><td colSpan={5} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
+                ? <tr><td colSpan={6} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
                 : task2.map(p => {
                   const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
                   return (
@@ -643,6 +651,7 @@ export default function WritingTests() {
                         </span>
                       </td>
                       <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                      <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(2, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
                       <td>
                         <div className="row-actions">
                           <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
