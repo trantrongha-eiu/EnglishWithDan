@@ -224,17 +224,17 @@
 
     <!-- Right: PDF viewer -->
     <div class="pv-viewer" id="wsampl-viewer-col">
-      <button class="pv-back-btn" id="wsampl-back-btn" onclick="closeWritingMobilePdf()">← Quay lại danh sách</button>
+      <button class="pv-back-btn" id="wsampl-back-btn" onclick="closeWritingMobilePdf()"><i class="fas fa-arrow-left"></i> Quay lại danh sách</button>
       <div class="pv-placeholder" id="wsampl-placeholder">
-        <div class="pv-placeholder-icon">📄</div>
+        <div class="pv-placeholder-icon"><i class="fas fa-file-pdf" style="font-size:48px;color:#9ca3af"></i></div>
         <p>Chọn tài liệu để xem</p>
       </div>
       <div class="pv-box" id="wsampl-viewer-wrap" style="display:none">
         <div class="pv-toolbar">
           <span class="pv-toolbar-title" id="wsampl-viewer-title"></span>
           <div class="pv-toolbar-actions">
-            <a class="pv-btn-action" id="wsampl-newtab-btn" href="#" target="_blank">↗ Mở tab mới</a>
-            <a class="pv-btn-action" id="wsampl-download-btn" href="#" target="_blank">⬇ Tải về PDF</a>
+            <a class="pv-btn-action" id="wsampl-newtab-btn" href="#" target="_blank"><i class="fas fa-external-link-alt"></i> Mở tab mới</a>
+            <a class="pv-btn-action" id="wsampl-download-btn" href="#" target="_blank"><i class="fas fa-download"></i> Tải về PDF</a>
           </div>
         </div>
         <iframe class="pv-frame" id="wsampl-frame" allowfullscreen></iframe>
@@ -403,7 +403,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Thoát bài luyện?</h3>
-      <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')">×</button>
+      <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">Bài viết chưa nộp sẽ được <strong>lưu nháp tự động</strong>. Bạn có thể vào lại để tiếp tục viết sau.</p>
@@ -420,7 +420,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Nộp bài luyện tập?</h3>
-      <button class="review-modal-close" onclick="document.getElementById('practice-submit-modal').classList.remove('open')">×</button>
+      <button class="review-modal-close" onclick="document.getElementById('practice-submit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
@@ -442,13 +442,13 @@
   <div class="review-modal">
     <div class="review-modal-header">
       <h3 id="review-modal-title">Xem lại bài làm</h3>
-      <button class="review-modal-close" onclick="closeReviewModal()">×</button>
+      <button class="review-modal-close" onclick="closeReviewModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" id="review-modal-body">
       <div class="spinner"></div>
     </div>
     <div class="review-modal-footer">
-      <button class="btn-secondary" onclick="downloadAttempt()" id="btn-download">⬇ Tải về (.txt)</button>
+      <button class="btn-secondary" onclick="downloadAttempt()" id="btn-download"><i class="fas fa-download"></i> Tải về (.txt)</button>
       <button class="btn-secondary" onclick="closeReviewModal()">Đóng</button>
     </div>
   </div>
@@ -461,7 +461,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Thoát khỏi bài thi?</h3>
-      <button class="review-modal-close" onclick="closeExitModal()">×</button>
+      <button class="review-modal-close" onclick="closeExitModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
@@ -482,7 +482,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Nộp bài?</h3>
-      <button class="review-modal-close" onclick="closeConfirmModal()">×</button>
+      <button class="review-modal-close" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">

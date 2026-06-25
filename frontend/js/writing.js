@@ -745,14 +745,15 @@ function doDownload(a) {
   const hasT1 = !isPractice || (a.wordCount1 || 0) > 0 || !!(a.task1Answer?.trim());
   const hasT2 = !isPractice || (a.wordCount2 || 0) > 0 || !!(a.task2Answer?.trim());
 
+  // Use null for optional/conditional lines; '' for intentional blank lines
   const lines = [
     `ENGLISH WITH DAN – WRITING SUBMISSION`,
     `========================================`,
     `Đề: ${a.examName || ''}`,
     `Loại: ${isPractice ? 'Luyện tập' : 'Thi'}`,
     `Ngày nộp: ${date}`,
-    hasT1 ? `Task 1: ${a.wordCount1 || 0} từ` : '',
-    hasT2 ? `Task 2: ${a.wordCount2 || 0} từ` : '',
+    hasT1 ? `Task 1: ${a.wordCount1 || 0} từ` : null,
+    hasT2 ? `Task 2: ${a.wordCount2 || 0} từ` : null,
     ``,
   ];
 
@@ -761,9 +762,9 @@ function doDownload(a) {
       `────────────────────────────────────────`,
       `TASK 1`,
       `────────────────────────────────────────`,
-      t1.prompt || '',
+      t1.prompt || null,
       ``,
-      a.task1Answer || '',
+      a.task1Answer || '(Không có bài làm)',
       ``
     );
   }
@@ -772,13 +773,13 @@ function doDownload(a) {
       `────────────────────────────────────────`,
       `TASK 2`,
       `────────────────────────────────────────`,
-      t2.prompt || '',
+      t2.prompt || null,
       ``,
-      a.task2Answer || '',
+      a.task2Answer || '(Không có bài làm)',
     );
   }
 
-  const blob = new Blob([lines.filter(l => l !== '').concat(['']) .join('\n')], { type: 'text/plain;charset=utf-8' });
+  const blob = new Blob([lines.filter(l => l != null).join('\n')], { type: 'text/plain;charset=utf-8' });
   const url  = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href     = url;
@@ -794,6 +795,11 @@ const sampleFilters = { quarter: 'all', topic: 'all', taskType: 'all' };
 
 async function loadWritingSamples() {
   showScreen('screen-samples');
+
+  // Reset filter state so chips and fetch are in sync when reopening screen
+  sampleFilters.quarter  = 'all';
+  sampleFilters.topic    = 'all';
+  sampleFilters.taskType = 'all';
 
   // Load filters (quarters + topics) once
   try {
