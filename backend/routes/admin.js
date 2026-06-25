@@ -364,8 +364,8 @@ router.post('/keys/generate', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/admin/keys/:id – teacher chỉ được vô hiệu hoá key do chính mình tạo
-router.delete('/keys/:id', auth, async (req, res) => {
+// PATCH /api/admin/keys/:id/deactivate – vô hiệu hoá (teacher chỉ được key của mình)
+router.patch('/keys/:id/deactivate', auth, async (req, res) => {
   try {
     if (!['teacher', 'admin'].includes(req.user.role))
       return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
@@ -375,6 +375,22 @@ router.delete('/keys/:id', auth, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Chỉ có thể vô hiệu hoá key do bạn tạo' });
     await AccessKey.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: 'Đã vô hiệu hoá key' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/keys/:id – xóa vĩnh viễn (admin xóa bất kỳ, teacher xóa key của mình)
+router.delete('/keys/:id', auth, async (req, res) => {
+  try {
+    if (!['teacher', 'admin'].includes(req.user.role))
+      return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
+    const key = await AccessKey.findById(req.params.id);
+    if (!key) return res.status(404).json({ success: false, message: 'Không tìm thấy key' });
+    if (req.user.role === 'teacher' && key.createdBy?.toString() !== req.user._id.toString())
+      return res.status(403).json({ success: false, message: 'Chỉ có thể xóa key do bạn tạo' });
+    await AccessKey.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Đã xóa key' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

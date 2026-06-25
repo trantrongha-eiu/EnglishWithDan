@@ -79,9 +79,16 @@ export default function AccessCodes() {
     setForm({ count: 1, maxUses: 1, expiryDays: '', testType: '' });
   }
 
-  function del(id, key) {
+  function deactivate(id, key) {
     confirm(`Vô hiệu hoá mã "${key}"?`, async () => {
-      try { await apiFetch(`/admin/keys/${id}`, { method: 'DELETE' }); toast('Đã vô hiệu hoá'); load(); }
+      try { await apiFetch(`/admin/keys/${id}/deactivate`, { method: 'PATCH' }); toast('Đã vô hiệu hoá'); load(); }
+      catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
+  function deleteKey(id, key) {
+    confirm(`Xóa vĩnh viễn mã "${key}"? Không thể khôi phục!`, async () => {
+      try { await apiFetch(`/admin/keys/${id}`, { method: 'DELETE' }); toast('Đã xóa mã'); load(); }
       catch (e) { toast(e.message, 'error'); }
     });
   }
@@ -215,8 +222,15 @@ export default function AccessCodes() {
                     <td style={{ fontSize: 12 }}>{k.expiresAt ? formatDate(k.expiresAt).split(' ')[0] : '–'}</td>
                     <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(k.createdAt).split(' ')[0]}</td>
                     {isAdmin && <td style={{ fontSize: 12, color: 'var(--text3)' }}>{k.createdBy?.username || '–'}</td>}
-                    <td>
-                      {k.isActive && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(k._id, k.key)} title="Vô hiệu hoá">🗑</button>}
+                    <td style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', alignItems: 'center' }}>
+                      {k.isActive && (
+                        <button className="btn btn-warning btn-sm btn-icon" onClick={() => deactivate(k._id, k.key)} title="Vô hiệu hoá">
+                          🚫
+                        </button>
+                      )}
+                      <button className="btn btn-danger btn-sm btn-icon" onClick={() => deleteKey(k._id, k.key)} title="Xóa vĩnh viễn">
+                        🗑
+                      </button>
                     </td>
                   </tr>
                 );
