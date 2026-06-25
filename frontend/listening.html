@@ -2529,7 +2529,7 @@
                         </div>
                     </div>
                 </div>`;
-            document.body.appendChild(modal);
+            (document.fullscreenElement || document.body).appendChild(modal);
             modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
             setTimeout(() => document.getElementById('bp-new-name')?.focus(), 50);
         }
