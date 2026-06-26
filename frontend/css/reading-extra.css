@@ -362,6 +362,10 @@
     .practice-card-btn.p2 { background: #10b981; }
     .practice-card-btn.p3 { background: #f59e0b; }
     .practice-card-btn.at { background: #e11d48; }
+    .practice-card-btn.redo { background: #f1f5f9 !important; color: #475569; border: 1.5px solid #cbd5e1; }
+    .practice-card-btn.redo:hover { background: #e2e8f0 !important; border-color: #94a3b8; opacity: 1; }
+    [data-theme="dark"] .practice-card-btn.redo { background: #1e293b !important; color: #94a3b8; border-color: #334155; }
+    [data-theme="dark"] .practice-card-btn.redo:hover { background: #293548 !important; border-color: #475569; }
 
     /* ── Practice filter bar (Tất cả / Đã làm / Chưa làm) ─────────── */
     .plele-filter-bar {

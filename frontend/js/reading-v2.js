@@ -727,7 +727,8 @@ async function loadPracticePassages(category, tabEl) {
       const doneRibbon = doneInfo
         ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>`
         : '';
-      const btnText = doneInfo ? `Làm lại · ${qCount} câu` : `Làm bài · ${qCount} câu`;
+      const btnText = doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`;
+      const btnCls  = `practice-card-btn ${isActual ? catCls : cls}${doneInfo ? ' redo' : ''}`;
 
       return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
@@ -738,7 +739,7 @@ async function loadPracticePassages(category, tabEl) {
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
           <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
-          <button class="practice-card-btn ${isActual ? catCls : cls}"
+          <button class="${btnCls}"
             onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
             ${btnText}
           </button>

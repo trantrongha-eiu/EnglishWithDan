@@ -3031,7 +3031,8 @@
                 const doneAttr  = doneInfo ? ' data-done="1"' : '';
                 const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
                 const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
-                const btnText   = doneInfo ? `Làm lại · ${s.questionCount} câu` : `Làm bài · ${s.questionCount} câu`;
+                const btnText   = doneInfo ? `↺ Làm lại · ${s.questionCount} câu` : `▶ Làm bài · ${s.questionCount} câu`;
+                const btnCls    = `practice-card-btn ${cardCls}${doneInfo ? ' redo' : ''}`;
 
                 return `<div class="practice-card"${doneAttr} data-pid="${s._id}" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">
@@ -3042,7 +3043,7 @@
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
                         <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur">🎵 ${dur}</small>` : ''}</div>
-                        <button class="practice-card-btn ${cardCls}"
+                        <button class="${btnCls}"
                             onclick="event.stopPropagation();startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                             ${btnText}
                         </button>
