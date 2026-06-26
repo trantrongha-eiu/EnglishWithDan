@@ -66,10 +66,11 @@ export default function Dashboard() {
       </div>
       <div className="stats-row">
         <StatCard color="blue" icon="📖" label="Lượt Reading" value={s.totalReadingAttempts}
-          sub={s.avgReadingBand != null ? `Band TB: ${s.avgReadingBand}` : undefined} />
+          sub={`Full đề: ${s.readingFullCount ?? 0} | Luyện tập: ${s.readingPracticeCount ?? 0}${s.avgReadingBand ? ` | Band TB: ${s.avgReadingBand}` : ''}`} />
         <StatCard color="green" icon="🎧" label="Lượt Listening" value={s.totalListeningAttempts}
-          sub={s.avgListeningBand != null ? `Band TB: ${s.avgListeningBand}` : undefined} />
-        <StatCard color="yellow" icon="✏️" label="Lượt Writing" value={s.totalWritingAttempts} sub="Bài đã nộp" />
+          sub={`Full đề: ${s.listeningFullCount ?? 0} | Luyện tập: ${s.listeningPracticeCount ?? 0}${s.avgListeningBand ? ` | Band TB: ${s.avgListeningBand}` : ''}`} />
+        <StatCard color="yellow" icon="✏️" label="Lượt Writing" value={s.totalWritingAttempts}
+          sub={`Full đề: ${s.writingFullCount ?? 0} | Luyện tập: ${s.writingPracticeCount ?? 0}`} />
         <StatCard color="red" icon="📄" label="Bài đọc / Từ vựng" value={s.passageCount}
           sub={s.vocabUnitCount != null ? `Vocab units: ${s.vocabUnitCount}` : undefined} />
       </div>

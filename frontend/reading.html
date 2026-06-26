@@ -36,7 +36,7 @@
           <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
           <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
           <button class="rd-hist-btn" onclick="showHistoryModal()">
-            📋 Lịch sử
+            <i class="fas fa-history"></i> Lịch sử
           </button>
         </div>
       </div>
@@ -44,10 +44,10 @@
       <!-- Mode tabs: Full đề / Bài lẻ -->
       <div class="rmode-tabs-bar">
         <button id="rmode-full" class="rmode-tab rmode-active" onclick="setReadingMode('full')">
-          📋 Full đề
+          <i class="fas fa-file-alt"></i> Full đề
         </button>
         <button id="rmode-lele" class="rmode-tab" onclick="setReadingMode('lele')">
-          📖 Bài lẻ
+          <i class="fas fa-book-open"></i> Bài lẻ
         </button>
       </div>
 
@@ -73,7 +73,7 @@
           <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
             <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
             <button onclick="showPracticeHistoryModal()" class="rd-hist-btn">
-              📋 Lịch sử
+              <i class="fas fa-history"></i> Lịch sử
             </button>
           </div>
         </div>
@@ -115,9 +115,9 @@
         <div id="key-msg" class="key-msg hidden"></div>
 
         <div class="key-actions">
-          <button class="btn-ghost" onclick="loadTests(true)">← Quay lại</button>
+          <button class="btn-ghost" onclick="loadTests(true)"><i class="fas fa-arrow-left"></i> Quay lại</button>
           <button class="btn-primary" onclick="verifyAndStart()" id="btn-start-key">
-            Bắt đầu làm bài
+            <i class="fas fa-play"></i> Bắt đầu làm bài
           </button>
         </div>
       </div>
@@ -132,20 +132,20 @@
     <!-- Top bar -->
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="confirmExit()">✕</button>
+        <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="exam-title">Loading...</span>
       </div>
       <div class="exam-timer" id="exam-timer">
-        <span>⏱</span>
+        <i class="fas fa-stopwatch"></i>
         <span id="timer-display">01:00:00</span>
       </div>
       <div class="exam-bar-right" style="display:flex;align-items:center;gap:8px;">
         <div id="exam-progress-pill" class="rd-progress-pill">
           <span id="prog-answered">0</span>/<span id="prog-total">40</span>
         </div>
-        <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu">💾</span>
-        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen">⛶</button>
-        <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
+        <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
+        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
+        <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
 
@@ -158,7 +158,7 @@
     <!-- Toolbar -->
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl" onclick="setTool('highlight')">
-        🖊 <small>Highlight (H)</small>
+        <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
       </button>
       <div class="toolbar-passage-tabs" id="toolbar-passage-tabs"></div>
     </div>
@@ -179,7 +179,7 @@
     <!-- Footer -->
     <div class="exam-footer">
       <div class="q-nav-scroll" id="q-nav-scroll"></div>
-      <button class="btn-submit-exam" onclick="confirmSubmit()">Hoàn thành</button>
+      <button class="btn-submit-exam" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
     </div>
 
     <!-- ══ MODAL NỘP BÀI – nằm trong screen-exam để hiển thị đúng khi fullscreen ══ -->
@@ -233,9 +233,9 @@
           <span class="rb-skip">● Bỏ qua: <b id="r-skip">0</b> câu</span>
         </div>
         <div class="result-actions">
-          <button class="btn-primary" onclick="goToReview()">Xem giải thích chi tiết</button>
-          <button class="btn-ghost" onclick="showHistoryModal()">Lịch sử làm bài</button>
-          <button class="btn-ghost" onclick="loadTests(true)">Làm bài khác</button>
+          <button class="btn-primary" onclick="goToReview()"><i class="fas fa-search"></i> Xem giải thích chi tiết</button>
+          <button class="btn-ghost" onclick="showHistoryModal()"><i class="fas fa-history"></i> Lịch sử làm bài</button>
+          <button class="btn-ghost" onclick="loadTests(true)"><i class="fas fa-list"></i> Làm bài khác</button>
         </div>
       </div>
     </div>
@@ -248,28 +248,28 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn"
-          onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')">✕</button>
+        <button class="exam-exit-btn" title="Thoát"
+          onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
       <div class="exam-bar-right">
-        <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
 
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl-rv" onclick="setTool('highlight')">
-        🖊 <small>Highlight (H)</small>
+        <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
       </button>
       <button class="tool-btn" id="tool-dict" onclick="setTool('dict')">
-        📖 <small>Tra từ (Double‑click)</small>
+        <i class="fas fa-book"></i> <small>Tra từ (D)</small>
       </button>
       <button class="tool-btn" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()">
-        🌐 <small>Dịch (T)</small>
+        <i class="fas fa-language"></i> <small>Dịch (T)</small>
       </button>
       <button class="tool-btn" id="tool-retry" onclick="retryCurrentPassage()" title="Làm lại passage đang xem">
-        🔁 <small>Làm lại</small>
+        <i class="fas fa-redo"></i> <small>Làm lại</small>
       </button>
       <div class="toolbar-passage-tabs" id="toolbar-passage-tabs-rv"></div>
     </div>
@@ -289,8 +289,8 @@
     <div class="exam-footer">
       <div class="q-nav-scroll" id="review-q-nav"></div>
       <div class="exam-footer-btns">
-        <button class="btn-ghost" onclick="showHistoryModal()">Xem lịch sử làm bài</button>
-        <button class="btn-primary" onclick="loadTests(true)">Làm bài khác</button>
+        <button class="btn-ghost" onclick="showHistoryModal()"><i class="fas fa-history"></i> Lịch sử</button>
+        <button class="btn-primary" onclick="loadTests(true)"><i class="fas fa-list"></i> Làm bài khác</button>
       </div>
     </div>
   </div>
@@ -302,15 +302,15 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="confirmCloseRetry()">✕</button>
+        <button class="exam-exit-btn" onclick="confirmCloseRetry()" title="Thoát"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
       </div>
       <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
         <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
-        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen-rt">⛶</button>
-        <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
+        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen-rt"><i class="fas fa-expand" id="fs-icon-retry"></i></button>
+        <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
     <div id="practice-prog-bar" class="practice-prog-bar" style="display:none">
@@ -319,13 +319,13 @@
 
     <div class="exam-toolbar">
       <button class="tool-btn" id="tool-hl-rt" onclick="setTool('highlight')">
-        🖊 <small>Highlight (H)</small>
+        <i class="fas fa-highlighter"></i> <small>Bôi màu (H)</small>
       </button>
       <button class="tool-btn" id="tool-dict-rt" onclick="setTool('dict')">
-        📖 <small>Tra từ (Double‑click)</small>
+        <i class="fas fa-book"></i> <small>Tra từ (D)</small>
       </button>
       <button class="tool-btn" id="tool-translate-rt" onmousedown="event.preventDefault()" onclick="translateSelected()">
-        🌐 <small>Dịch (T)</small>
+        <i class="fas fa-language"></i> <small>Dịch (T)</small>
       </button>
     </div>
 
@@ -357,7 +357,7 @@
     <div class="modal-box modal-lg">
       <div class="modal-header">
         <h3>Lịch sử làm bài</h3>
-        <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
+        <button class="modal-close" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll">
         <table class="history-table">
@@ -401,7 +401,7 @@
     <div class="modal-box modal-lg">
       <div class="modal-header">
         <h3>📋 Lịch sử luyện bài lẻ – Reading</h3>
-        <button class="modal-close" onclick="closeModal('modal-practice-history')">✕</button>
+        <button class="modal-close" onclick="closeModal('modal-practice-history')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll">
         <table class="history-table">
@@ -431,8 +431,8 @@
     <div class="dict-header">
       <span class="dict-word" id="dict-word"></span>
       <span class="dict-phonetic" id="dict-phonetic"></span>
-      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm">🔊</button>
-      <button class="dict-close" onclick="closeDictPopup()">✕</button>
+      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+      <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
     </div>
     <div id="dict-body" class="dict-body"></div>
   </div>
@@ -443,7 +443,7 @@
   <div id="translate-popup" class="translate-popup hidden">
     <div class="translate-popup-header">
       <span class="translate-popup-lang">🌐 Dịch sang tiếng Việt</span>
-      <button class="translate-popup-close" onclick="closeTranslatePopup()">✕</button>
+      <button class="translate-popup-close" onclick="closeTranslatePopup()"><i class="fas fa-times"></i></button>
     </div>
     <div id="translate-src" class="translate-src"></div>
     <div id="translate-result" class="translate-result"></div>
@@ -454,7 +454,7 @@
     <div class="modal-box modal-sm">
       <div class="modal-header">
         <h3>📚 Lưu vào sổ từ vựng</h3>
-        <button class="modal-close" onclick="closeModal('modal-vocab-picker')">✕</button>
+        <button class="modal-close" onclick="closeModal('modal-vocab-picker')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll" style="max-height:320px;overflow-y:auto;padding:8px 0">
         <div id="vocab-book-list"></div>
@@ -476,14 +476,14 @@
   <!-- Settings panel – outside all screens so it's accessible from exam/review/retry -->
   <div id="settings-panel" class="settings-panel hidden">
     <div class="settings-row">
-      <span>👁️ Chế độ bảo vệ mắt</span>
+      <span><i class="fas fa-eye"></i> Bảo vệ mắt</span>
       <label class="toggle-switch">
         <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
         <span class="toggle-knob"></span>
       </label>
     </div>
     <div class="settings-row">
-      <span>Tᴛ Kích cỡ chữ</span>
+      <span><i class="fas fa-text-height"></i> Cỡ chữ</span>
       <div class="fs-group">
         <button class="fs-btn" onclick="setFontSize('S')">S</button>
         <button class="fs-btn active" onclick="setFontSize('M')">M</button>
@@ -664,10 +664,14 @@
 
     document.addEventListener('fullscreenchange', () => {
       const fsEl = document.fullscreenElement;
-      // Sync cả 2 nút fullscreen
-      ['btn-fullscreen', 'btn-fullscreen-rt'].forEach(id => {
-        const btn = document.getElementById(id);
+      // Sync icon và title cho cả 2 nút fullscreen
+      [['btn-fullscreen', 'fs-icon-exam'], ['btn-fullscreen-rt', 'fs-icon-retry']].forEach(([btnId, iconId]) => {
+        const btn = document.getElementById(btnId);
+        const icon = document.getElementById(iconId);
         if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+        if (icon) {
+          icon.className = fsEl ? 'fas fa-compress' : 'fas fa-expand';
+        }
       });
       const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
       if (fsEl) {

@@ -584,3 +584,119 @@
       border-color: #374151;
       color: #d1d5db;
     }
+
+    /* ── FA icon sizing fixes ──────────────────────────────────── */
+    /* tool-btn: ensure FA icons are vertically centred and sized right */
+    .tool-btn i {
+      font-size: 13px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* btn-icon-sm: small icon buttons in exam bar */
+    .btn-icon-sm i {
+      font-size: 15px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* exam-exit-btn: close / exit icon */
+    .exam-exit-btn i {
+      font-size: 15px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* autosave label icon */
+    .exam-autosave-lbl i {
+      font-size: 12px;
+      vertical-align: middle;
+      margin-right: 3px;
+    }
+
+    /* Exam timer icon */
+    .exam-timer i {
+      font-size: 14px;
+      opacity: .85;
+    }
+
+    /* fs-btn: font-size picker — use blue (reading theme) instead of red */
+    .fs-btn.active,
+    .fs-btn:hover {
+      background: #1e40af;
+      color: #fff;
+      border-color: #1e40af;
+    }
+    [data-theme="dark"] .fs-btn {
+      background: #1f2937;
+      border-color: #374151;
+      color: #9ca3af;
+    }
+    [data-theme="dark"] .fs-btn.active,
+    [data-theme="dark"] .fs-btn:hover {
+      background: #1e40af;
+      color: #fff;
+      border-color: #3b82f6;
+    }
+
+    /* ── Dark mode: exam-exit-btn & btn-icon-sm hover ──────────── */
+    [data-theme="dark"] .exam-exit-btn { color: #9ca3af; }
+    [data-theme="dark"] .exam-exit-btn:hover { background: #374151; color: #f9fafb; }
+    [data-theme="dark"] .btn-icon-sm:hover { color: #f9fafb; }
+
+    /* ── Dark mode: settings-row icon color ───────────────────── */
+    [data-theme="dark"] .settings-row i {
+      color: #9ca3af;
+    }
+
+    /* ── Dark mode: exam-band-badge ────────────────────────────── */
+    [data-theme="dark"] .exam-band-badge {
+      background: #1e3a5f;
+      color: #93c5fd;
+    }
+
+    /* ── Dark mode: exam-title-txt and exam-bar profile link ───── */
+    [data-theme="dark"] .exam-bar .profile-link {
+      border-color: #374151;
+      color: #9ca3af;
+    }
+    [data-theme="dark"] .exam-bar .profile-link:hover {
+      background: #374151;
+      color: #f9fafb;
+    }
+
+    /* ── Dark mode: toolbar background refinement ──────────────── */
+    [data-theme="dark"] .tool-btn.active {
+      background: #1e3a5f;
+      border-color: #3b82f6;
+      color: #93c5fd;
+    }
+
+    /* ── Dark mode: vb-pick-item ──────────────────────────────── */
+    [data-theme="dark"] .vb-pick-item:hover { background: #1f2937; }
+    [data-theme="dark"] .vb-pick-name { color: #f9fafb; }
+    [data-theme="dark"] .vb-pick-count { color: #6b7280; }
+    [data-theme="dark"] .vb-pick-arrow { color: #4b5563; }
+
+    /* ── Dark mode: q-nav-passage-label (already in file, kept) ─ */
+
+    /* ── Practice search input dark mode ──────────────────────── */
+    [data-theme="dark"] #practice-search-input {
+      background: #1f2937;
+      border-color: #374151;
+      color: #d1d5db;
+    }
+    [data-theme="dark"] #practice-search-input::placeholder { color: #6b7280; }
+
+    /* ── Fullscreen btn: ensure icon contrast in dark mode ──────── */
+    [data-theme="dark"] #btn-fullscreen,
+    [data-theme="dark"] #btn-fullscreen-rt {
+      color: #9ca3af;
+    }
+    [data-theme="dark"] #btn-fullscreen:hover,
+    [data-theme="dark"] #btn-fullscreen-rt:hover {
+      background: #374151;
+      color: #f9fafb;
+    }

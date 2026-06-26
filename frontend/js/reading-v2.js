@@ -647,6 +647,12 @@ async function loadPracticePassages(category, tabEl) {
   const tab = tabEl || document.querySelector(`.plele-tab[data-category="${category}"]`);
   if (tab) tab.classList.add('plele-active');
 
+  // Reset search & status filter when switching tabs so all cards are visible
+  const searchInp = document.getElementById('practice-search-input');
+  if (searchInp) searchInp.value = '';
+  _practiceStatusFilter = 'all';
+  document.querySelectorAll('.pf-btn').forEach(b => b.classList.toggle('pf-active', b.textContent.trim() === 'Tất cả'));
+
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
 
@@ -839,7 +845,7 @@ function _enterPracticeScreen(passage, category, passageId) {
   const nav = document.getElementById('retry-q-nav');
   if (nav) {
     nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
-      .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+      .map(q => `<button class="q-nav-btn" id="qnav-${q.questionNumber}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
       .join('');
   }
 
@@ -2295,7 +2301,7 @@ function retryCurrentPassage() {
   const nav = document.getElementById('retry-q-nav');
   if (nav) {
     nav.innerHTML = getAllQuestionsFromPassage(cleanPassage)
-      .map(q => `<button class="q-nav-btn" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
+      .map(q => `<button class="q-nav-btn" id="qnav-${q.questionNumber}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`)
       .join('');
   }
 
@@ -2338,8 +2344,7 @@ function closeRetry() {
     // Clear list so setReadingMode reloads it fresh
     const listEl = document.getElementById('practice-passage-list');
     if (listEl) listEl.innerHTML = '';
-    loadTests(true);
-    setTimeout(() => setReadingMode('lele'), 100);
+    loadTests(true).then(() => setReadingMode('lele')).catch(() => setReadingMode('lele'));
   } else {
     showScreen('review');
   }
@@ -2458,11 +2463,21 @@ function _doSubmitRetry() {
   const badge = document.getElementById('retry-score-badge');
   if (badge) { badge.textContent = `${correct}/${total} câu đúng`; badge.style.display = ''; }
 
+  // Rebuild q-nav with correct/wrong/skipped colours
+  const nav = document.getElementById('retry-q-nav');
+  if (nav) {
+    nav.innerHTML = allQ.map(q => {
+      const r = retryReviewMap[q.questionNumber];
+      const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
+      return `<button class="q-nav-btn ${cls}" id="qnav-${q.questionNumber}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`;
+    }).join('');
+  }
+
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
     ? `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
-       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại bài này</button>`
+       <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
     : `<button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
-       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại từ đầu</button>`;
+       <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;
 }
 
 function retryReset() {
@@ -2599,7 +2614,7 @@ async function loadPracticeReview(attemptId) {
         .map(q => {
           const r = reviewMap[q.questionNumber];
           const cls = !r?.userAnswer ? 'skipped' : r.isCorrect ? 'correct' : 'wrong';
-          return `<button class="q-nav-btn ${cls}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`;
+          return `<button class="q-nav-btn ${cls}" id="qnav-${q.questionNumber}" onclick="jumpToRetryQuestion(${q.questionNumber})">${q.questionNumber}</button>`;
         })
         .join('');
     }

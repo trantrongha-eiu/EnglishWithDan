@@ -402,13 +402,25 @@ router.delete('/keys/:id', auth, async (req, res) => {
 
 router.get('/stats', auth, teacherOnly, async (req, res) => {
   try {
+    const ReadingPracticeAttempt  = require('../models/ReadingPracticeAttempt');
+    const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+    const WritingAttempt          = require('../models/WritingAttempt');
+    const WritingPracticeAttempt  = require('../models/WritingPracticeAttempt');
+    const Task1Attempt            = require('../models/Task1Attempt');
+    const Task2Attempt            = require('../models/Task2Attempt');
+
     const [
       totalStudents,
       totalTeachers,
       bannedUsers,
-      totalReadingAttempts,
-      totalListeningAttempts,
-      totalWritingAttempts,
+      readingFullCount,
+      readingPracticeCount,
+      listeningFullCount,
+      listeningPracticeCount,
+      writingFullCount,
+      writingPracticeCount,
+      task1Count,
+      task2Count,
       avgBandReading,
       avgBandListening,
       newUsersThisWeek,
@@ -419,8 +431,13 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
       User.countDocuments({ role: { $in: ['teacher', 'admin'] } }),
       User.countDocuments({ isBanned: true }),
       TestAttempt.countDocuments({ status: 'completed' }),
+      ReadingPracticeAttempt.countDocuments(),
       ListeningAttempt.countDocuments({ status: 'completed' }),
-      require('../models/WritingAttempt').countDocuments(),
+      ListeningPracticeAttempt.countDocuments(),
+      WritingAttempt.countDocuments(),
+      WritingPracticeAttempt.countDocuments(),
+      Task1Attempt.countDocuments(),
+      Task2Attempt.countDocuments(),
       TestAttempt.aggregate([
         { $match: { status: 'completed' } },
         { $group: { _id: null, avg: { $avg: '$bandScore' } } }
@@ -441,9 +458,15 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
         totalTeachers,
         bannedUsers,
         newUsersThisWeek,
-        totalReadingAttempts,
-        totalListeningAttempts,
-        totalWritingAttempts,
+        totalReadingAttempts:   readingFullCount + readingPracticeCount,
+        readingFullCount,
+        readingPracticeCount,
+        totalListeningAttempts: listeningFullCount + listeningPracticeCount,
+        listeningFullCount,
+        listeningPracticeCount,
+        totalWritingAttempts:   writingFullCount + writingPracticeCount + task1Count + task2Count,
+        writingFullCount,
+        writingPracticeCount:   writingPracticeCount + task1Count + task2Count,
         avgReadingBand:   avgBandReading[0]?.avg?.toFixed(1)  || '0.0',
         avgListeningBand: avgBandListening[0]?.avg?.toFixed(1) || '0.0',
         passageCount,
