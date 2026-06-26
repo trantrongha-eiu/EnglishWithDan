@@ -493,3 +493,23 @@
         }
         .q-nav-section-label:first-child { margin-left: 0; }
         [data-theme="dark"] .q-nav-section-label { background: #1f2937; border-color: #374151; color: #6b7280; }
+
+        /* ── Full-mode test search input (đồng bộ với reading) ── */
+        .list-filter .test-search-input {
+            height: 34px;
+            padding: 0 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            color: #374151;
+            background: #fff;
+            transition: border-color .15s;
+        }
+        .list-filter .test-search-input:focus { border-color: #3d8bff; }
+        [data-theme="dark"] .list-filter .test-search-input {
+            background: #1f2937;
+            border-color: #374151;
+            color: #d1d5db;
+        }
