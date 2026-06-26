@@ -35,23 +35,23 @@
                     <button class="filter-btn" onclick="filterTests('done', this)">Đã làm</button>
                     <button class="filter-btn" onclick="filterTests('new', this)">Chưa làm</button>
                     <button class="ls-hist-btn" onclick="showHistoryModal()">
-                        📋 Lịch sử
+                        <i class="fas fa-history"></i> Lịch sử
                     </button>
                 </div>
             </div>
 
             <!-- Mode tabs: Full đề / Bài lẻ -->
             <div class="rmode-tabs-bar">
-                <button id="ls-mode-full" class="rmode-tab rmode-active" onclick="setListeningMode('full')">🎧 Full đề</button>
-                <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')">🎵 Bài lẻ</button>
+                <button id="ls-mode-full" class="rmode-tab rmode-active" onclick="setListeningMode('full')"><i class="fas fa-headphones"></i> Full đề</button>
+                <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')"><i class="fas fa-music"></i> Bài lẻ</button>
             </div>
 
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
             <div id="resume-banner">
-                <span>⚡ Bài thi dở dang: <strong id="resume-test-name"></strong> — <span
+                <span><i class="fas fa-bolt"></i> Bài thi dở dang: <strong id="resume-test-name"></strong> — <span
                         id="resume-answered-count"></span></span>
-                <button class="resume-btn-continue" onclick="resumeExam()">▶ Tiếp tục làm</button>
+                <button class="resume-btn-continue" onclick="resumeExam()"><i class="fas fa-play"></i> Tiếp tục làm</button>
                 <button class="resume-btn-dismiss" onclick="dismissResume()">Bỏ qua</button>
             </div>
 
@@ -80,7 +80,7 @@
                     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
                         <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:180px" autocomplete="off">
                         <button onclick="showLTPracticeHistoryModal()" class="ls-hist-btn">
-                            📋 Lịch sử
+                            <i class="fas fa-history"></i> Lịch sử
                         </button>
                     </div>
                 </div>
@@ -101,20 +101,20 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-exam">
         <div class="exam-topbar">
-            <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát">✕</button>
+            <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát"><i class="fas fa-times"></i></button>
             <span class="exam-title" id="exam-title">IELTS Listening</span>
             <div id="exam-progress-pill" class="ls-progress-pill">
                 <span id="prog-answered">0</span>/<span id="prog-total">40</span>
             </div>
-            <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu">💾</span>
-            <button id="btn-fullscreen" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
-            <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
-            <button class="btn-primary" onclick="confirmSubmit()">📤 Nộp bài</button>
+            <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
+            <button id="btn-fullscreen" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
+            <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
+            <button class="btn-primary" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
-            <span class="exam-audio-status" id="exam-audio-status">🎧 Chờ audio...</span>
-            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()">▶ Phát ngay</button>
+            <span class="exam-audio-status" id="exam-audio-status"><i class="fas fa-headphones"></i> Chờ audio...</span>
+            <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="startAudioPlay()"><i class="fas fa-play"></i> Phát ngay</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100"
                     step="0.1" tabindex="-1" />
@@ -125,7 +125,7 @@
             </div>
             <!-- Volume control -->
             <div class="volume-wrap">
-                <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()">🔊</span>
+                <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()"><i class="fas fa-volume-up"></i></span>
                 <input type="range" class="volume-seek" id="volume-seek-exam" value="100" min="0" max="100" step="1"
                     oninput="setVolume(this.value, 'exam')" title="Volume" />
             </div>
@@ -137,10 +137,10 @@
         <!-- Audio start overlay (shows before exam audio begins) -->
         <div id="audio-start-overlay" class="audio-start-overlay hidden">
             <div class="aso-card">
-                <div class="aso-icon">🎧</div>
+                <div class="aso-icon"><i class="fas fa-headphones"></i></div>
                 <p class="aso-text">Audio sẽ được phát <strong>một lần duy nhất</strong>.<br>Bạn <strong>không được tạm dừng</strong> hoặc <strong>tua lại</strong> trong khi làm bài.</p>
                 <p class="aso-sub">Sau khi nhấn bên dưới, bạn có <strong>30 giây</strong> để đọc câu hỏi trước khi audio tự phát.</p>
-                <button class="aso-play-btn" onclick="startReadingTime()">📖 Đã hiểu — Bắt đầu đọc đề</button>
+                <button class="aso-play-btn" onclick="startReadingTime()"><i class="fas fa-book-open"></i> Đã hiểu — Bắt đầu đọc đề</button>
             </div>
         </div>
 
@@ -148,7 +148,7 @@
             <div class="exam-toolbar" id="exam-toolbar">
                 <span class="toolbar-label">Công cụ</span>
                 <button class="tool-btn" id="tool-hl-exam" onclick="setToolExam('highlight')">
-                    🖊<small>Bôi màu</small>
+                    <i class="fas fa-highlighter"></i><small>Bôi màu</small>
                 </button>
             </div>
             <div class="questions-panel" id="questions-panel"></div>
@@ -183,9 +183,9 @@
             </div>
             <div class="result-msg-box" id="result-msg"></div>
             <div class="result-actions">
-                <button class="btn-primary" onclick="goToReview()">📋 Xem giải thích chi tiết</button>
-                <button class="btn-ghost" onclick="showHistoryModal()">📋 Lịch sử</button>
-                <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+                <button class="btn-primary" onclick="goToReview()"><i class="fas fa-search"></i> Xem giải thích chi tiết</button>
+                <button class="btn-ghost" onclick="showHistoryModal()"><i class="fas fa-history"></i> Lịch sử</button>
+                <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-home"></i> Về trang chủ</button>
             </div>
         </div>
     </div>
@@ -195,17 +195,17 @@
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-review">
         <div class="review-topbar">
-            <button class="btn-ghost" onclick="showScreen('list')">← Về trang chủ</button>
+            <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-arrow-left"></i> Về trang chủ</button>
             <span class="exam-title" id="review-title" style="flex:1">Xem lại bài</span>
             <span class="review-band-badge" id="review-band-badge">Band –</span>
-            <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')">✏️ Bôi màu</button>
-            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')">🔍 Tra từ</button>
-            <button class="tool-btn-rv" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()">🌐 Dịch (T)</button>
+            <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')"><i class="fas fa-highlighter"></i> Bôi màu</button>
+            <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')"><i class="fas fa-book"></i> Tra từ</button>
+            <button class="tool-btn-rv" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()"><i class="fas fa-language"></i> Dịch (T)</button>
         </div>
 
         <div class="audio-bar" id="review-audio-bar">
-            <button class="audio-play-btn" id="play-btn-rv" onclick="togglePlay()">▶</button>
-            <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
+            <button class="audio-play-btn" id="play-btn-rv" onclick="togglePlay()"><i class="fas fa-play" id="play-icon-rv"></i></button>
+            <button class="audio-skip-btn" onclick="skipAudio(-10)"><i class="fas fa-backward"></i> 10s</button>
             <div class="audio-seek-wrap">
                 <input type="range" class="audio-seek" id="audio-seek-rv" value="0" min="0" max="100" step="0.1"
                     oninput="onSeekInput(this.value)" />
@@ -214,7 +214,7 @@
                     <span id="audio-total-rv">00:00</span>
                 </div>
             </div>
-            <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
+            <button class="audio-skip-btn" onclick="skipAudio(10)">10s <i class="fas fa-forward"></i></button>
             <div class="speed-btns">
                 <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
                 <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
@@ -223,7 +223,7 @@
             </div>
             <!-- Volume control -->
             <div class="volume-wrap">
-                <span class="volume-icon" id="vol-icon-rv" onclick="toggleMute()">🔊</span>
+                <span class="volume-icon" id="vol-icon-rv" onclick="toggleMute()"><i class="fas fa-volume-up"></i></span>
                 <input type="range" class="volume-seek" id="volume-seek-rv" value="100" min="0" max="100" step="1"
                     oninput="setVolume(this.value, 'rv')" title="Volume" />
             </div>
@@ -232,7 +232,7 @@
         <div class="review-layout">
             <div class="transcript-panel">
                 <div class="transcript-header">
-                    <span>📜 Transcript</span>
+                    <span><i class="fas fa-scroll"></i> Transcript</span>
                     <span class="ls-transcript-hint">Double-click để tra từ</span>
                 </div>
                 <div class="transcript-body" id="transcript-body"></div>
@@ -254,12 +254,12 @@
     <div id="screen-practice" class="screen">
         <!-- Topbar -->
         <div class="exam-topbar">
-            <button class="exam-exit-btn" onclick="confirmCloseLTPractice()" title="Thoát">✕</button>
+            <button class="exam-exit-btn" onclick="confirmCloseLTPractice()" title="Thoát"><i class="fas fa-times"></i></button>
             <span class="exam-title" id="lt-practice-title" style="flex:1">Luyện tập Listening</span>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
             <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
-            <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
-            <button class="btn-icon-sm" id="btn-settings-pr" onclick="toggleSettings()" title="Cài đặt">⚙️</button>
+            <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-pr"></i></button>
+            <button class="btn-icon-sm" id="btn-settings-pr" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
         </div>
         <!-- Progress bar -->
         <div id="lt-practice-prog-bar" class="practice-prog-bar" style="display:none">
@@ -267,8 +267,8 @@
         </div>
         <!-- Audio bar -->
         <div class="audio-bar" id="practice-audio-bar">
-            <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()">▶</button>
-            <button class="audio-skip-btn" onclick="skipAudio(-10)">⏪ 10s</button>
+            <button class="audio-play-btn" id="play-btn-pr" onclick="togglePlay()"><i class="fas fa-play" id="play-icon-pr"></i></button>
+            <button class="audio-skip-btn" onclick="skipAudio(-10)"><i class="fas fa-backward"></i> 10s</button>
             <div class="audio-seek-wrap">
                 <input type="range" class="audio-seek" id="audio-seek-pr" value="0" min="0" max="100" step="0.1"
                     oninput="onSeekInput(this.value)" />
@@ -277,7 +277,7 @@
                     <span id="audio-total-pr">00:00</span>
                 </div>
             </div>
-            <button class="audio-skip-btn" onclick="skipAudio(10)">10s ⏩</button>
+            <button class="audio-skip-btn" onclick="skipAudio(10)">10s <i class="fas fa-forward"></i></button>
             <div class="speed-btns">
                 <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
                 <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
@@ -285,7 +285,7 @@
                 <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
             </div>
             <div class="volume-wrap">
-                <span class="volume-icon" id="vol-icon-pr" onclick="toggleMute()">🔊</span>
+                <span class="volume-icon" id="vol-icon-pr" onclick="toggleMute()"><i class="fas fa-volume-up"></i></span>
                 <input type="range" class="volume-seek" id="volume-seek-pr" value="100" min="0" max="100" step="1"
                     oninput="setVolume(this.value, 'pr')" title="Volume" />
             </div>
@@ -295,18 +295,18 @@
             <div id="lt-practice-toolbar" class="exam-toolbar">
                 <span class="toolbar-label">Công cụ</span>
                 <button class="tool-btn" id="tool-hl-pr" onclick="setTool('highlight')">
-                    ✏️<small>Bôi màu</small>
+                    <i class="fas fa-highlighter"></i><small>Bôi màu</small>
                 </button>
                 <button class="tool-btn" id="tool-dict-pr" onclick="setTool('dict')">
-                    🔍<small>Tra từ</small>
+                    <i class="fas fa-book"></i><small>Tra từ</small>
                 </button>
                 <button class="tool-btn" onmousedown="event.preventDefault()" onclick="translateSelected()">
-                    🌐<small>Dịch (T)</small>
+                    <i class="fas fa-language"></i><small>Dịch (T)</small>
                 </button>
             </div>
             <div class="transcript-panel" id="lt-practice-transcript-panel" style="display:none">
                 <div class="transcript-header">
-                    <span>📜 Transcript</span>
+                    <span><i class="fas fa-scroll"></i> Transcript</span>
                     <span class="ls-transcript-hint">Double-click để tra từ</span>
                 </div>
                 <div class="transcript-body" id="lt-practice-transcript-body"></div>
@@ -319,8 +319,8 @@
         <div class="exam-footer">
             <div class="q-nav-scroll" id="lt-practice-q-nav"></div>
             <div class="exam-footer-btns" id="lt-practice-footer-btns">
-                <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
-                <button class="btn-primary" onclick="submitLTPractice()">Kiểm tra đáp án</button>
+                <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+                <button class="btn-primary" onclick="submitLTPractice()"><i class="fas fa-check"></i> Kiểm tra đáp án</button>
             </div>
         </div>
     </div>
@@ -328,14 +328,14 @@
     <!-- Settings panel – ở body level để dùng được cho cả exam và practice khi fullscreen -->
     <div id="settings-panel" class="settings-panel hidden">
         <div class="settings-row">
-            <span>👁️ Chế độ bảo vệ mắt</span>
+            <span><i class="fas fa-eye"></i> Chế độ bảo vệ mắt</span>
             <label class="toggle-switch">
                 <input type="checkbox" id="toggle-eye" onchange="toggleEyeProtection()" />
                 <span class="toggle-knob"></span>
             </label>
         </div>
         <div class="settings-row">
-            <span>Tᴛ Kích cỡ chữ</span>
+            <span><i class="fas fa-text-height"></i> Kích cỡ chữ</span>
             <div class="fs-group">
                 <button class="fs-btn" onclick="setFontSize('S')">S</button>
                 <button class="fs-btn active" onclick="setFontSize('M')">M</button>
@@ -352,8 +352,8 @@
                 <span class="dict-phonetic" id="dict-phonetic"></span>
             </div>
             <div style="display:flex;gap:4px;align-items:center">
-                <button class="dict-btn" style="padding:4px 8px;font-size:14px;flex:none" onclick="speakDictWord()">🔊</button>
-                <button onclick="closeDictPopup()" class="ls-dict-close">×</button>
+                <button class="dict-btn" style="padding:4px 8px;font-size:14px;flex:none" onclick="speakDictWord()"><i class="fas fa-volume-up"></i></button>
+                <button onclick="closeDictPopup()" class="ls-dict-close"><i class="fas fa-times"></i></button>
             </div>
         </div>
         <div id="dict-body" class="dict-body"></div>
@@ -362,8 +362,8 @@
     <!-- Translate Popup -->
     <div id="translate-popup" class="translate-popup hidden">
         <div class="translate-popup-header">
-            <span class="translate-popup-lang">🌐 Dịch sang tiếng Việt</span>
-            <button class="translate-popup-close" onclick="closeTranslatePopup()">✕</button>
+            <span class="translate-popup-lang"><i class="fas fa-language"></i> Dịch sang tiếng Việt</span>
+            <button class="translate-popup-close" onclick="closeTranslatePopup()"><i class="fas fa-times"></i></button>
         </div>
         <div id="translate-src" class="translate-src"></div>
         <div id="translate-result" class="translate-result"></div>
@@ -384,9 +384,9 @@
                     onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
                 <div id="key-msg" class="key-msg hidden"></div>
                 <div class="key-actions">
-                    <button class="btn-ghost" onclick="showScreen('list')">← Quay lại</button>
+                    <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-arrow-left"></i> Quay lại</button>
                     <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
-                        🎧 Bắt đầu làm bài
+                        <i class="fas fa-headphones"></i> Bắt đầu làm bài
                     </button>
                 </div>
             </div>
@@ -398,7 +398,7 @@
         <div class="modal-box modal-lg">
             <div class="modal-header">
                 <h3>Lịch sử làm bài – Listening</h3>
-                <button class="modal-close" onclick="closeModal('modal-history')">✕</button>
+                <button class="modal-close" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body-scroll">
                 <table class="history-table">
@@ -424,8 +424,8 @@
     <div class="modal-overlay hidden" id="modal-lt-practice-history">
         <div class="modal-box modal-lg">
             <div class="modal-header">
-                <h3>📋 Lịch sử luyện bài lẻ – Listening</h3>
-                <button class="modal-close" onclick="closeModal('modal-lt-practice-history')">✕</button>
+                <h3><i class="fas fa-history"></i> Lịch sử luyện bài lẻ – Listening</h3>
+                <button class="modal-close" onclick="closeModal('modal-lt-practice-history')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body-scroll">
                 <table class="history-table">
@@ -499,7 +499,7 @@
             <div class="snf-exam-controls" id="snf-exam-controls">
                 <div class="snf-answered">Đã trả lời: <strong id="footer-answered">0</strong> / <span
                         id="footer-total">0</span></div>
-                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()">📤 Nộp bài</button>
+                <button class="btn-primary snf-submit-btn" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
             </div>
         </div>
     </div>
@@ -531,10 +531,12 @@
 
         document.addEventListener('fullscreenchange', () => {
             const fsEl = document.fullscreenElement;
-            // Sync cả 2 nút fullscreen
-            ['btn-fullscreen', 'btn-fullscreen-pr'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+            // Sync cả 2 nút fullscreen (title + icon)
+            [['btn-fullscreen', 'fs-icon-exam'], ['btn-fullscreen-pr', 'fs-icon-pr']].forEach(([btnId, iconId]) => {
+                const btn  = document.getElementById(btnId);
+                const icon = document.getElementById(iconId);
+                if (btn)  btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+                if (icon) icon.className = fsEl ? 'fas fa-compress' : 'fas fa-expand';
             });
             const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'modal-lt-practice-exit', 'toast', 'section-nav-fixed', 'settings-panel'];
             if (fsEl) {
@@ -831,15 +833,15 @@
                     <div class="test-card-cover ls-cover">
                         ${done ? '<div class="test-done-tick">✓</div>' : ''}
                         <div class="test-cover-badge">IELTS Listening</div>
-                        <div class="test-cover-title">🎧</div>
+                        <div class="test-cover-title"><i class="fas fa-headphones"></i></div>
                         <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} phần</div>
                     </div>
                     <div class="test-card-body">
                         <div class="test-card-name">${t.name}</div>
-                        <div class="test-card-meta">🎵 ${dur} · ${t.totalQuestions} câu</div>
+                        <div class="test-card-meta"><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</div>
                         ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
-                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')">🎧 ${done ? 'Làm lại' : 'Bắt đầu'}</button>
-                        ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')">📋 Xem lại</button>` : ''}
+                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')"><i class="fas fa-headphones"></i> ${done ? 'Làm lại' : 'Bắt đầu'}</button>
+                        ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')"><i class="fas fa-search"></i> Xem lại</button>` : ''}
                     </div>
                 </div>`;
         }
@@ -878,7 +880,7 @@
             const msg = document.getElementById('key-msg');
             msg.textContent = ''; msg.className = 'key-msg hidden';
             const btn = document.getElementById('btn-start-key');
-            btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
             showScreen('key');
             setTimeout(() => document.getElementById('key-input').focus(), 100);
         }
@@ -908,7 +910,7 @@
             const btn = document.getElementById('btn-start-key');
             if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
 
-            btn.disabled = true; btn.textContent = 'Đang xác thực...';
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
             document.getElementById('key-msg').className = 'key-msg hidden';
 
             try {
@@ -920,14 +922,14 @@
                 const vData = await safeJson(vRes);
                 if (!vData.success) {
                     showKeyMsg(vData.message || 'Invalid access code', 'error');
-                    btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
                     return;
                 }
                 // Key valid → start test
                 await startTest(state.pendingTestId, key);
             } catch (err) {
                 showKeyMsg(err.message, 'error');
-                btn.disabled = false; btn.textContent = '🎧 Bắt đầu làm bài';
+                btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
             }
         }
 
@@ -995,14 +997,14 @@
             audio.addEventListener('play', () => {
                 ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) el.textContent = '⏸';
+                    if (el) el.innerHTML = '<i class="fas fa-pause"></i>';
                 });
                 if (!state.isReview) updateExamAudioStatus(true);
             });
             audio.addEventListener('pause', () => {
                 ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) el.textContent = '▶';
+                    if (el) el.innerHTML = '<i class="fas fa-play"></i>';
                 });
                 if (!state.isReview) updateExamAudioStatus(false);
             });
@@ -1043,10 +1045,10 @@
                     if (el) el.value = val;
                 }
             });
-            const icon = v === 0 ? '🔇' : v < 0.4 ? '🔉' : '🔊';
+            const iconHTML = v === 0 ? '<i class="fas fa-volume-mute"></i>' : v < 0.4 ? '<i class="fas fa-volume-down"></i>' : '<i class="fas fa-volume-up"></i>';
             _allVolIcons.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.textContent = icon;
+                if (el) el.innerHTML = iconHTML;
             });
             if (v > 0) _prevVolume = v;
         }
@@ -1056,13 +1058,13 @@
                 _prevVolume = audio.volume;
                 audio.volume = 0;
                 _allVolSliders.forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
-                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '🔇'; });
+                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = '<i class="fas fa-volume-mute"></i>'; });
             } else {
                 const restore = Math.round(_prevVolume * 100);
                 audio.volume = _prevVolume;
                 _allVolSliders.forEach(id => { const el = document.getElementById(id); if (el) el.value = restore; });
-                const icon = _prevVolume < 0.4 ? '🔉' : '🔊';
-                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = icon; });
+                const iconHTML = _prevVolume < 0.4 ? '<i class="fas fa-volume-down"></i>' : '<i class="fas fa-volume-up"></i>';
+                _allVolIcons.forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = iconHTML; });
             }
         }
 
@@ -1113,13 +1115,13 @@
             const el = document.getElementById('exam-audio-status');
             if (!el) return;
             if (playing) {
-                el.textContent = '🎧 Playing';
-                el.style.color = '';
+                el.innerHTML = '<i class="fas fa-headphones"></i> Playing';
+                el.style.color = '#22c55e';
             } else if (countdown != null) {
-                el.textContent = `⏱ Auto-play in: ${countdown}s`;
+                el.innerHTML = `<i class="fas fa-clock"></i> Auto-play in: ${countdown}s`;
                 el.style.color = countdown <= 10 ? '#f59e0b' : '';
             } else {
-                el.textContent = '🎧 Waiting';
+                el.innerHTML = '<i class="fas fa-headphones"></i> Chờ audio...';
                 el.style.color = '';
             }
         }
@@ -1370,7 +1372,7 @@
                     </div>`;
                 }
                 const dropInner = ans
-                    ? `<span class="mo-ans-letter">${escHtml(ans)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')">✕</span>`
+                    ? `<span class="mo-ans-letter">${escHtml(ans)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>`
                     : `<span class="mo-ans-placeholder">?</span>`;
                 return `<div class="mo-q-row" id="qi-${qNum}" data-qnum="${qNum}">
                     <span class="mo-q-num">${qNum}</span>
@@ -1428,7 +1430,7 @@
                     return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }
                 const ans = state.answers[qNum] || '';
-                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
+                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Kéo từ vào'}</span></span>`;
             });
 
             // Explanation blocks (below summary text, one per question that has explanation)
@@ -1748,7 +1750,7 @@
             const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : 'wrong-drop') : '';
             const dzHtml = `<div class="drop-zone ${ua ? 'filled' : ''} ${isReview ? cls : ''}" data-qnum="${num}"
                 ${isReview ? '' : `ondragover="dzOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
-                ${ua ? `${ua}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
+                ${ua ? `${ua}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
             </div>`;
             const filled = questionText.replace(/_{2,}|\[blank\]/i, dzHtml);
             return `<div class="q-text" style="margin-top:-6px">${filled !== questionText ? filled : questionText + ' ' + dzHtml}</div>`;
@@ -1853,7 +1855,7 @@
 
             if (['sentence-completion', 'matching'].includes(q.type)) {
                 const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
-                if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})">×</span>`; }
+                if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>`; }
             } else if (['fill-blank', 'map-labelling', 'matching-info'].includes(q.type)) {
                 const inp = document.getElementById(`fi-${num}`);
                 if (inp) inp.value = saved;
@@ -1925,7 +1927,7 @@
                 return;
             }
             dz.classList.add('filled');
-            dz.innerHTML = `<span class="mo-ans-letter">${escHtml(letter)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
+            dz.innerHTML = `<span class="mo-ans-letter">${escHtml(letter)}</span><span class="clear-drop" onclick="event.stopPropagation();ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>`;
         }
 
         function ltDropSC(e, qNum, groupId) {
@@ -1953,8 +1955,13 @@
             const dz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
             if (!dz) return;
             const word = state.answers[qNum] || '';
+            if (!word) {
+                dz.classList.remove('filled');
+                dz.textContent = 'Kéo từ vào';
+                return;
+            }
             dz.classList.add('filled');
-            dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')">✕</span>`;
+            dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>`;
         }
 
         function ltClearDragDrop(qNum, groupId) {
@@ -2025,7 +2032,7 @@
             const ua = state.answers[qnum] || '';
             if (ua) {
                 dz.classList.add('filled');
-                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})">×</span>`;
+                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})"><i class="fas fa-times"></i></span>`;
             } else {
                 dz.classList.remove('filled');
                 dz.innerHTML = '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;';
@@ -2188,7 +2195,7 @@
             document.getElementById('modal-answered').textContent = answered;
             document.getElementById('modal-total').textContent = total;
             const unanswered = total - answered;
-            document.getElementById('modal-warning').textContent = unanswered > 0 ? `⚠️ Còn ${unanswered} câu chưa trả lời.` : '';
+            document.getElementById('modal-warning').innerHTML = unanswered > 0 ? `<i class="fas fa-exclamation-triangle"></i> Còn ${unanswered} câu chưa trả lời.` : '';
             const progAns = document.getElementById('prog-answered');
             const progTot = document.getElementById('prog-total');
             if (progAns) progAns.textContent = answered;
@@ -2505,7 +2512,7 @@
                 <div class="modal-box modal-sm">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
                         <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
-                        <button onclick="document.getElementById('book-picker-modal').remove()" class="ls-dict-close">×</button>
+                        <button onclick="document.getElementById('book-picker-modal').remove()" class="ls-dict-close"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="ls-bp-word-preview">
                         <strong>${state.dictWord}</strong>
@@ -2935,12 +2942,16 @@
                 emptyEl.style.cssText = 'text-align:center;padding:40px 16px;color:#9ca3af';
                 listEl.appendChild(emptyEl);
             }
-            const icon = _ltSearchVal ? '🔍' : (_ltStatusFilter === 'done' ? '✅' : '🆕');
+            const icon = _ltSearchVal
+                ? '<i class="fas fa-search" style="font-size:32px;color:#9ca3af"></i>'
+                : (_ltStatusFilter === 'done'
+                    ? '<i class="fas fa-clipboard-list" style="font-size:32px;color:#9ca3af"></i>'
+                    : '<i class="fas fa-check-circle" style="font-size:32px;color:#9ca3af"></i>');
             const msg  = _ltSearchVal
                 ? `Không tìm thấy bài nào khớp với "<strong>${_ltSearchVal}</strong>"`
                 : _ltStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
                 : 'Đã làm tất cả bài trong mục này rồi!';
-            emptyEl.innerHTML = `<div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div>`;
+            emptyEl.innerHTML = `<div style="margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div>`;
             emptyEl.style.display = '';
         } else if (emptyEl) {
             emptyEl.style.display = 'none';
@@ -2999,7 +3010,7 @@
             if (!sections.length) {
                 const emptyLabel = isActual ? 'Actual Tests' : `Section ${partNum}`;
                 listEl.innerHTML = `<div style="text-align:center;padding:56px 24px;color:#9ca3af;max-width:420px;margin:0 auto">
-                    <div style="font-size:48px;margin-bottom:16px">🎵</div>
+                    <div style="font-size:48px;margin-bottom:16px"><i class="fas fa-music" style="color:#9ca3af"></i></div>
                     <div style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài lẻ nào</div>
                     <div style="font-size:14px;line-height:1.6">${emptyLabel} chưa có bài luyện tập.<br>Admin sẽ thêm bài sớm nhé!</div>
                 </div>`;
@@ -3031,7 +3042,7 @@
                 const doneAttr  = doneInfo ? ' data-done="1"' : '';
                 const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
                 const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
-                const btnText   = doneInfo ? `↺ Làm lại · ${s.questionCount} câu` : `▶ Làm bài · ${s.questionCount} câu`;
+                const btnText   = doneInfo ? `<i class="fas fa-redo"></i> Làm lại · ${s.questionCount} câu` : `<i class="fas fa-play"></i> Làm bài · ${s.questionCount} câu`;
                 const btnCls    = `practice-card-btn ${cardCls}${doneInfo ? ' redo' : ''}`;
 
                 return `<div class="practice-card"${doneAttr} data-pid="${s._id}" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
@@ -3042,7 +3053,7 @@
                     </div>
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
-                        <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur">🎵 ${dur}</small>` : ''}</div>
+                        <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}${dur ? `<br><small class="ls-card-dur"><i class="fas fa-music"></i> ${dur}</small>` : ''}</div>
                         <button class="${btnCls}"
                             onclick="event.stopPropagation();startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                             ${btnText}
@@ -3154,14 +3165,14 @@
         audio.src = section.audioUrl || '';
         audio.load();
         const prBtn = document.getElementById('play-btn-pr');
-        if (prBtn) prBtn.textContent = '▶';
-        audio.onended = () => toast('🎵 Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
+        if (prBtn) prBtn.innerHTML = '<i class="fas fa-play"></i>';
+        audio.onended = () => toast('<i class="fas fa-music"></i> Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
 
         // Title + footer
-        document.getElementById('lt-practice-title').textContent = `🎧 Luyện: ${section.title || `Section ${partNum}`}`;
+        document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${section.title || `Section ${partNum}`}`;
         document.getElementById('lt-practice-footer-btns').innerHTML = `
-            <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
-            <button class="btn-primary" onclick="submitLTPractice()">Kiểm tra đáp án</button>`;
+            <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+            <button class="btn-primary" onclick="submitLTPractice()"><i class="fas fa-check"></i> Kiểm tra đáp án</button>`;
 
         // Stopwatch + progress
         _startLTPracticeTimer(_ltGetAllQs(_ltCleanSection).length);
@@ -3247,13 +3258,13 @@
         const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
         const ts = String(elapsed % 60).padStart(2, '0');
         const perQ = total ? Math.round(elapsed / total) : 0;
-        const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 80 ? 'Ổn' : 'Cần tăng tốc';
+        const speed = perQ <= 45 ? '<i class="fas fa-bolt"></i> Rất nhanh' : perQ <= 80 ? 'Ổn' : 'Cần tăng tốc';
         const encourage = pct >= 80 ? 'Xuất sắc! Tiếp tục phát huy!'
                         : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
                         : pct >= 40 ? 'Cần luyện tập thêm một chút!'
                         : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
         const timeLine = `<div class="ls-rb-time">
-            <span>⏱ Thời gian: <strong>${tm}:${ts}</strong></span>
+            <span><i class="fas fa-clock"></i> Thời gian: <strong>${tm}:${ts}</strong></span>
             <span>${speed} · ${perQ}s/câu</span>
             <span style="font-style:italic">${encourage}</span>
         </div>`;
@@ -3330,8 +3341,8 @@
 
         // Update footer
         document.getElementById('lt-practice-footer-btns').innerHTML = `
-            <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
-            <button class="btn-primary" onclick="retryLTPractice()">🔁 Làm lại bài này</button>`;
+            <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+            <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     } // end _doSubmitLTPractice
 
     /* ── Close practice → back to section list ───────────────────────────── */
@@ -3490,7 +3501,7 @@
 
             // Show practice screen
             showScreen('practice');
-            document.getElementById('lt-practice-title').textContent = section.title || `Xem lại – Section ${attempt.partNumber}`;
+            document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Xem lại – ${section.title || `Section ${attempt.partNumber}`}`;
 
             const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
             const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
@@ -3505,7 +3516,7 @@
                     <span class="ls-rb-skip">● Bỏ qua: ${attempt.skippedCount}</span>
                 </div>
                 <div class="ls-rb-time">
-                    ⏱ Thời gian: <strong>${tm}:${ts}</strong>
+                    <i class="fas fa-clock"></i> Thời gian: <strong>${tm}:${ts}</strong>
                     &nbsp;·&nbsp; ${new Date(attempt.submittedAt).toLocaleDateString('vi-VN')}
                 </div>
             </div>
@@ -3553,13 +3564,13 @@
             if (section.audioUrl) {
                 audio.load();
                 const prBtn = document.getElementById('play-btn-pr');
-                if (prBtn) prBtn.textContent = '▶';
+                if (prBtn) prBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
 
             _hideLTPracticeHUD();
             document.getElementById('lt-practice-footer-btns').innerHTML = `
-                <button class="btn-ghost" onclick="closeLTPractice()">← Chọn bài khác</button>
-                <button class="btn-primary" onclick="retryLTPractice()">🔁 Làm lại bài này</button>`;
+                <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+                <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
         } catch (e) { console.error(e); }
     }
 

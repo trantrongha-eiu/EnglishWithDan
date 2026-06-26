@@ -517,3 +517,66 @@
             border-color: #374151;
             color: #d1d5db;
         }
+
+        /* ── FontAwesome icon sizing ───────────────────────── */
+        .test-cover-title i                { font-size: 28px; line-height: 1; color: rgba(255,255,255,.9); }
+        .aso-icon i                        { font-size: 48px; line-height: 1; }
+        .tool-btn i, .tool-btn-rv i        { font-size: 13px; line-height: 1; flex-shrink: 0; }
+        .btn-icon-sm i                     { font-size: 15px; line-height: 1; display: flex; align-items: center; }
+        .exam-exit-btn i                   { font-size: 15px; line-height: 1; }
+        .exam-autosave-lbl i               { font-size: 12px; vertical-align: middle; margin-right: 3px; }
+        .exam-timer i                      { font-size: 14px; opacity: .85; }
+        .audio-play-btn i                  { font-size: 16px; line-height: 1; }
+        .audio-skip-btn i                  { font-size: 13px; line-height: 1; }
+        .volume-icon i                     { font-size: 16px; line-height: 1; pointer-events: none; }
+        .exam-audio-status i               { font-size: 13px; margin-right: 4px; }
+        .mode-tab i                        { font-size: 14px; margin-right: 4px; }
+        .lt-history-btn i                  { font-size: 13px; margin-right: 4px; }
+
+        /* ── Dark mode: exam topbar buttons ───────────────── */
+        [data-theme="dark"] .exam-exit-btn { color: #d1d5db; }
+        [data-theme="dark"] .exam-exit-btn:hover { background: #374151; color: #f9fafb; }
+        [data-theme="dark"] .btn-icon-sm   { color: #d1d5db; border-color: #374151; }
+        [data-theme="dark"] .btn-icon-sm:hover { background: #374151; color: #f9fafb; }
+        [data-theme="dark"] .exam-autosave-lbl { color: #9ca3af; }
+        [data-theme="dark"] .exam-timer    { color: #d1d5db; }
+
+        /* ── Dark mode: audio bar ──────────────────────────── */
+        [data-theme="dark"] .audio-play-btn { background: #1e40af; border-color: #1d4ed8; }
+        [data-theme="dark"] .audio-play-btn:hover { background: #1d4ed8; }
+        [data-theme="dark"] .audio-skip-btn { color: #d1d5db; border-color: #374151; }
+        [data-theme="dark"] .audio-skip-btn:hover { background: #374151; }
+        [data-theme="dark"] .volume-icon   { color: #9ca3af; }
+        [data-theme="dark"] .volume-icon:hover { color: #d1d5db; }
+
+        /* ── Dark mode: tool buttons (review + practice) ──── */
+        [data-theme="dark"] .tool-btn      { color: #9ca3af; border-color: #374151; }
+        [data-theme="dark"] .tool-btn:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .tool-btn.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+        [data-theme="dark"] .tool-btn-rv   { color: #9ca3af; border-color: #374151; }
+        [data-theme="dark"] .tool-btn-rv:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .tool-btn-rv.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+
+        /* ── Dark mode: mode tabs ──────────────────────────── */
+        [data-theme="dark"] .mode-tab      { color: #9ca3af; border-color: #374151; }
+        [data-theme="dark"] .mode-tab:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .mode-tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+
+        /* ── Dark mode: practice cards ─────────────────────── */
+        [data-theme="dark"] .btn-do-test   { background: #1e40af; border-color: #1d4ed8; color: #fff; }
+        [data-theme="dark"] .btn-do-test:hover { background: #1d4ed8; }
+        [data-theme="dark"] .btn-redo-test { color: #93c5fd; border-color: #374151; }
+        [data-theme="dark"] .btn-redo-test:hover { background: #374151; }
+
+        /* ── Dark mode: fullscreen btn ─────────────────────── */
+        [data-theme="dark"] #btn-fullscreen,
+        [data-theme="dark"] #btn-fullscreen-rt { color: #d1d5db; border-color: #374151; }
+        [data-theme="dark"] #btn-fullscreen:hover,
+        [data-theme="dark"] #btn-fullscreen-rt:hover { background: #374151; }
+        [data-theme="dark"] #btn-fullscreen.active,
+        [data-theme="dark"] #btn-fullscreen-rt.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+
+        /* ── Dark mode: section sub-tabs ─────────────────────── */
+        [data-theme="dark"] .lt-sub-tab    { color: #9ca3af; border-color: #374151; }
+        [data-theme="dark"] .lt-sub-tab:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .lt-sub-tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
