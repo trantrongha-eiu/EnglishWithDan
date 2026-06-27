@@ -171,7 +171,20 @@ function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiRes
         <ManualGradeForm value={manualData || EMPTY_MANUAL()} onChange={onManualChange} disabled={false} />
       )}
 
-      {!isConfirmed && (
+      {isConfirmed ? (
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg2)', borderTop: '1px solid var(--border)' }}>
+          <span style={{ fontSize: 11, color: 'var(--text3)' }}>Chấm lại để cập nhật phản hồi cho học sinh:</span>
+          <button className="btn btn-sm btn-ghost" onClick={onGrade} disabled={isGrading || aiDisabled}
+            title={aiDisabled ? 'AI đang quá tải — chờ vài phút rồi thử lại' : 'Chấm lại bằng AI, sau đó bấm Xác nhận để gửi cho học sinh'}>
+            {isGrading ? '⏳ Đang chấm lại...' : '🔄 Chấm lại AI'}
+          </button>
+          {aiDisabled && (
+            <span style={{ fontSize: 11, color: '#b45309', background: '#fef9c3', border: '1px solid #fde68a', borderRadius: 4, padding: '2px 7px' }}>
+              ⚠️ AI quá tải — thử lại sau ít phút
+            </span>
+          )}
+        </div>
+      ) : (
         <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', background: 'var(--bg2)', borderTop: '1px solid var(--border)' }}>
           <span style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 600 }}>Phương thức:</span>
           <button className={`btn btn-sm ${mode === 'ai' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => onModeChange('ai')}>🤖 AI</button>
@@ -269,10 +282,15 @@ function GradeModal({ attemptId, onClose, onGraded }) {
         method: 'POST', body: JSON.stringify({ taskNum })
       });
       const taskKey = taskNum === 1 ? 'task1' : 'task2';
-      setAttempt(prev => prev ? {
-        ...prev, gradingStatus: 'ai_done',
-        aiGrading: { ...(prev.aiGrading || {}), [taskKey]: d.result, generatedAt: new Date().toISOString() }
-      } : prev);
+      setAttempt(prev => {
+        if (!prev) return prev;
+        const updated = {
+          ...prev, gradingStatus: 'ai_done',
+          aiGrading: { ...(prev.aiGrading || {}), [taskKey]: d.result, generatedAt: new Date().toISOString() }
+        };
+        setOverallBand(calcBand(updated));
+        return updated;
+      });
       toast(`Task ${taskNum} đã chấm xong – Band ${d.result.bandScore}`);
     } catch (e) {
       if (e.status === 503) { setAiOverloaded(true); toast('AI đang quá tải — thử lại sau vài phút.', 'error'); }
