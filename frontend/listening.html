@@ -713,7 +713,9 @@
             checkResumeExam();
 
             // Handle browser Back/Forward button
-            window.addEventListener('popstate', (e) => {
+            window.addEventListener('popstate', async (e) => {
+                const tab  = e.state?.tab;
+                const part = e.state?.part ?? 1;
                 if (_ltPracticeActive) {
                     _clearLTPracticeTimer();
                     _hideLTPracticeHUD();
@@ -734,25 +736,49 @@
                         _ltPracticeBackup   = null;
                     }
                     _ltOrigSection = _ltCleanSection = null;
-                    const listEl = document.getElementById('lt-section-list');
-                    if (listEl) listEl.innerHTML = '';
+                    document.getElementById('lt-section-list')?.innerHTML = '';
                     showScreen('list');
-                    setListeningMode('lele');
+                    document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
+                        t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
+                    );
+                    setListeningMode(tab === 'full' ? 'full' : 'lele', false);
                     return;
                 }
                 showScreen('list');
+                if (tab === 'lele' || e.state?.screen === 'practice') {
+                    document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
+                        t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
+                    );
+                    setListeningMode('lele', false);
+                } else {
+                    setListeningMode('full', false);
+                }
             });
 
-            // Check URL params — shareable link ?sectionId=xxx&part=1
+            // Check URL params — shareable link ?sectionId=xxx&part=1 or ?tab=lele&part=2
             const params = new URLSearchParams(location.search);
             const sectionIdParam = params.get('sectionId');
-            const partParam      = sectionIdParam ? (parseInt(params.get('part')) || 1) : null;
+            const tabParam       = params.get('tab');
+            const partRaw        = params.get('part');
+            const partParam      = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
             if (sectionIdParam) {
-                history.replaceState({ screen: 'list' }, '', 'listening.html');
-                setListeningMode('lele');
-                await startPracticeSection(sectionIdParam, partParam);
+                const partForSection = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
+                history.replaceState({ screen: 'list', tab: 'lele', part: partForSection }, '', `?tab=lele&part=${partForSection}`);
+                document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
+                    t.classList.toggle('plele-active', String(t.dataset.part) === String(partForSection))
+                );
+                setListeningMode('lele', false);
+                await startPracticeSection(sectionIdParam, partForSection);
+            } else if (tabParam === 'lele') {
+                // Direct shareable link to bài lẻ tab: listening.html?tab=lele&part=2
+                history.replaceState({ screen: 'list', tab: 'lele', part: partParam }, '', location.href);
+                document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
+                    t.classList.toggle('plele-active', String(t.dataset.part) === String(partParam))
+                );
+                setListeningMode('lele', false);
+                showScreen('list');
             } else {
-                history.replaceState({ screen: 'list' }, '', 'listening.html');
+                history.replaceState({ screen: 'list', tab: 'full' }, '', 'listening.html');
                 showScreen('list');
             }
         });
@@ -2872,8 +2898,17 @@
     }
 
     /* ── Mode switch (Full đề ↔ Bài lẻ) ─────────────────────────────────── */
-    function setListeningMode(mode) {
+    function setListeningMode(mode, pushHistory = true) {
         const isLele = mode === 'lele';
+        if (pushHistory) {
+            const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
+            const part = activeTab?.dataset.part ?? 1;
+            if (isLele) {
+                history.pushState({ screen: 'list', tab: 'lele', part }, '', `?tab=lele&part=${part}`);
+            } else {
+                history.pushState({ screen: 'list', tab: 'full' }, '', 'listening.html');
+            }
+        }
         document.getElementById('ls-mode-full')?.classList.toggle('rmode-active', !isLele);
         document.getElementById('ls-mode-lele')?.classList.toggle('rmode-active', isLele);
 
@@ -2964,6 +2999,9 @@
     async function loadPracticeSections(partNum, tabEl) {
         if (_ltLoadingPart === partNum) return; // đang load part này rồi, bỏ qua
         _ltLoadingPart = partNum;
+
+        // Update URL to reflect active section tab
+        history.replaceState({ screen: 'list', tab: 'lele', part: partNum }, '', `?tab=lele&part=${partNum}`);
 
         document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(b => b.classList.remove('plele-active'));
         const tab = tabEl || document.querySelector(`#lele-picker-lt .plele-tab[data-part="${partNum}"]`);
@@ -3371,12 +3409,13 @@
         }
         _ltOrigSection = _ltCleanSection = null;
 
-        // Clear list so it reloads fresh and clean URL
-        if (location.search) history.pushState({ screen: 'list' }, '', 'listening.html');
+        // Clear list so it reloads fresh; replaceState keeps correct lele URL without adding history entry
+        const partNum = _ltPracticePartNum || 1;
+        history.replaceState({ screen: 'list', tab: 'lele', part: partNum }, '', `?tab=lele&part=${partNum}`);
         const listEl = document.getElementById('lt-section-list');
         if (listEl) listEl.innerHTML = '';
         showScreen('list');
-        setListeningMode('lele');
+        setListeningMode('lele', false);
     }
 
     /* ── Retry same section ───────────────────────────────────────────────── */
