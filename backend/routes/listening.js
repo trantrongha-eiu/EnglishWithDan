@@ -543,9 +543,36 @@ router.post('/admin/assemble', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
-    const tests = await ListeningTest.find({ isActive: true })
-      .select('name testNumber seriesName audioDuration sections')
-      .sort({ testNumber: -1 });
+    // Dùng aggregation để tính totalQuestions/totalParts trong DB,
+    // tránh load toàn bộ sections (bao gồm transcript dài) về Node.js
+    const tests = await ListeningTest.aggregate([
+      { $match: { isActive: true } },
+      { $sort: { testNumber: -1 } },
+      { $project: {
+        name: 1,
+        testNumber: 1,
+        seriesName: 1,
+        audioDuration: 1,
+        totalParts: { $size: '$sections' },
+        totalQuestions: {
+          $sum: {
+            $map: {
+              input: '$sections',
+              as: 's',
+              in: {
+                $sum: {
+                  $map: {
+                    input: '$$s.questionGroups',
+                    as: 'g',
+                    in: { $size: '$$g.questions' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }}
+    ]);
 
     // Lấy attempt gần nhất của user cho mỗi test
     const attempts = await ListeningAttempt.find({
@@ -568,8 +595,8 @@ router.get('/tests', auth, async (req, res) => {
       testNumber: t.testNumber,
       seriesName: t.seriesName,
       audioDuration: t.audioDuration,
-      totalParts: t.sections.length,
-      totalQuestions: flattenQuestions(t.sections).length,
+      totalParts: t.totalParts,
+      totalQuestions: t.totalQuestions,
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
