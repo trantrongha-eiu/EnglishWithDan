@@ -493,9 +493,37 @@ async function loadWeeks() {
   const app = document.getElementById('app');
   app.innerHTML = '<div style="text-align:center;padding:40px"><div class="wp-spinner"></div><p>Đang tải...</p></div>';
   try {
+    const params = new URLSearchParams(location.search);
+    const urlWeek    = parseInt(params.get('week')) || null;
+    const urlTopicId = params.get('topicId');
+
     const data = await apiFetch('/api/task2/weeks');
     state.weeks = data.weeks || [];
+
+    if (urlWeek && urlTopicId) {
+      state.selectedWeek = urlWeek;
+      const td = await apiFetch(`/api/task2/topics/week/${urlWeek}`);
+      state.topics = td.topics || [];
+      const topic = state.topics.find(t => t._id === urlTopicId);
+      if (topic) {
+        state.selectedTopic = topic;
+        state.view = 'select';
+        history.replaceState({ view: 'select', week: urlWeek, topicId: urlTopicId }, '', location.href);
+        render();
+        return;
+      }
+    } else if (urlWeek) {
+      state.selectedWeek = urlWeek;
+      const td = await apiFetch(`/api/task2/topics/week/${urlWeek}`);
+      state.topics = td.topics || [];
+      state.view = 'topics';
+      history.replaceState({ view: 'topics', week: urlWeek }, '', location.href);
+      render();
+      return;
+    }
+
     state.view = 'weeks';
+    history.replaceState({ view: 'weeks' }, '', location.href);
     render();
   } catch { app.innerHTML = '<p style="text-align:center;color:red;padding:40px">Lỗi tải dữ liệu</p>'; }
 }
@@ -538,6 +566,7 @@ async function selectWeek(w) {
     const data = await apiFetch(`/api/task2/topics/week/${w}`);
     state.topics = data.topics || [];
     state.view = 'topics';
+    history.pushState({ view: 'topics', week: w }, '', `task2-practice.html?week=${w}`);
     render();
   } catch { showToast('Lỗi tải topics', 'error'); }
 }
@@ -574,6 +603,8 @@ async function selectTopic(id) {
   const topic = state.topics.find(t => t._id === id);
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
+  history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '',
+    `task2-practice.html?week=${state.selectedWeek}&topicId=${id}`);
   // Fetch persisted wrong-question IDs if user is logged in
   if (localStorage.getItem('token')) {
     try {
@@ -1306,8 +1337,46 @@ function retryWrong() {
 // ════════════════════════════════════════════════════════
 //  NAVIGATION HELPERS
 // ════════════════════════════════════════════════════════
-function goWeeks()  { state.view = 'weeks';  render(); }
-function goTopics() { state.view = 'topics'; render(); }
+function goWeeks() {
+  history.pushState({ view: 'weeks' }, '', 'task2-practice.html');
+  state.view = 'weeks';
+  render();
+}
+function goTopics() {
+  history.pushState({ view: 'topics', week: state.selectedWeek }, '', `task2-practice.html?week=${state.selectedWeek}`);
+  state.view = 'topics';
+  render();
+}
+
+window.addEventListener('popstate', async e => {
+  const s = e.state?.view;
+  if (state.examTimerInterval) stopExamTimer();
+  if (s === 'select' && e.state.week && e.state.topicId) {
+    if (state.selectedWeek !== e.state.week || !state.topics.length) {
+      try {
+        const d = await apiFetch(`/api/task2/topics/week/${e.state.week}`);
+        state.topics = d.topics || [];
+      } catch {}
+    }
+    state.selectedWeek = e.state.week;
+    const topic = state.topics.find(t => t._id === e.state.topicId);
+    if (topic) { state.selectedTopic = topic; state.view = 'select'; render(); }
+    else { state.view = 'weeks'; render(); }
+  } else if (s === 'topics' && e.state.week) {
+    if (state.selectedWeek !== e.state.week || !state.topics.length) {
+      try {
+        const d = await apiFetch(`/api/task2/topics/week/${e.state.week}`);
+        state.topics = d.topics || [];
+      } catch {}
+    }
+    state.selectedWeek = e.state.week;
+    state.view = 'topics';
+    render();
+  } else {
+    state.view = 'weeks';
+    render();
+  }
+});
 
 // ════════════════════════════════════════════════════════
 //  SAVE ATTEMPT
