@@ -118,6 +118,7 @@ window.addEventListener('popstate', e => {
   if (practiceState.task) {
     stopPracticeStopwatch();
     savePracticeToStorage();
+    saveDraftToServer();
     window.onbeforeunload = null;
     practiceState.task = null;
     document.getElementById('practice-exit-modal')?.classList.remove('open');
@@ -1163,6 +1164,7 @@ function _updateSaveIndicator(ts) {
 function saveDraftManual() {
   if (!practiceState.task) return;
   savePracticeToStorage();
+  saveDraftToServer();
   showToast('Đã lưu nháp ✓ — bạn có thể thoát và tiếp tục sau', 'success', 3000);
 }
 
@@ -1184,8 +1186,52 @@ function clearPracticeAutoSave() {
   localStorage.removeItem(_PRACTICE_SAVE_KEY);
 }
 
-function checkPracticeRestoreBanner() {
-  const saved   = loadPracticeFromStorage();
+// ── Server-side draft helpers ───────────────────
+async function saveDraftToServer() {
+  if (!practiceState.task) return;
+  const ta = document.getElementById('pw-textarea');
+  try {
+    await apiFetch('/api/writing/practice/draft', {
+      method: 'POST',
+      body: JSON.stringify({
+        taskType:  practiceState.taskType,
+        task:      practiceState.task,
+        answer:    ta?.value || '',
+        wordCount: practiceState.wordCount,
+        seconds:   practiceState.seconds
+      })
+    });
+  } catch (_) {}
+}
+
+async function loadDraftFromServer() {
+  try {
+    const d = await apiFetch('/api/writing/practice/draft');
+    if (!d.success || !d.draft) return null;
+    return {
+      taskType:  d.draft.taskType,
+      task:      d.draft.task,
+      answer:    d.draft.answer || '',
+      wordCount: d.draft.wordCount || 0,
+      seconds:   d.draft.seconds || 0,
+      savedAt:   new Date(d.draft.savedAt).getTime()
+    };
+  } catch (_) { return null; }
+}
+
+function deleteDraftFromServer() {
+  apiFetch('/api/writing/practice/draft', { method: 'DELETE' }).catch(() => {});
+}
+
+async function checkPracticeRestoreBanner() {
+  let saved = loadPracticeFromStorage();
+  if (!saved) {
+    // Thử lấy từ server (dùng khi đổi thiết bị hoặc mất localStorage)
+    saved = await loadDraftFromServer();
+    if (saved) {
+      try { localStorage.setItem(_PRACTICE_SAVE_KEY, JSON.stringify(saved)); } catch (_) {}
+    }
+  }
   const banner  = document.getElementById('practice-restore-banner');
   const descEl  = document.getElementById('practice-restore-desc');
   if (!banner) return;
@@ -1231,6 +1277,7 @@ function restorePracticeWrite() {
 
 function discardPracticeAutoSave() {
   clearPracticeAutoSave();
+  deleteDraftFromServer();
   const banner = document.getElementById('practice-restore-banner');
   if (banner) banner.style.display = 'none';
 }
@@ -1494,8 +1541,8 @@ function startPracticeStopwatch(startSeconds = 0) {
     const s = String(practiceState.seconds % 60).padStart(2, '0');
     const el = document.getElementById('pw-stopwatch');
     if (el) el.textContent = `${m}:${s}`;
-    // Auto-save every 30 seconds
     if (practiceState.seconds % 30 === 0) savePracticeToStorage();
+    if (practiceState.seconds % 300 === 0) saveDraftToServer();
   }, 1000);
 }
 
@@ -1516,6 +1563,7 @@ function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
   stopPracticeStopwatch();
   savePracticeToStorage();
+  saveDraftToServer();
   window.onbeforeunload = null;
   practiceState.task = null;
   history.pushState({ screen: 'practice' }, '', 'writing.html');
@@ -1559,7 +1607,8 @@ async function submitPractice() {
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
     stopPracticeStopwatch();
-    clearPracticeAutoSave(); // Draft submitted – clear saved state
+    clearPracticeAutoSave();
+    deleteDraftFromServer();
     window.onbeforeunload = null;
     document.getElementById('practice-submit-modal').classList.remove('open');
     const label = `Task ${practiceState.taskType} (${practiceState.wordCount} từ)`;

@@ -8,6 +8,7 @@ const WritingTask1   = require('../models/WritingTask1');
 const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample  = require('../models/WritingSample');
+const WritingDraft   = require('../models/WritingDraft');
 
 const verifyKeyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -257,6 +258,46 @@ router.get('/practice/history', auth, async (req, res) => {
       .limit(20)
       .select('-task1Answer -task2Answer');
     res.json({ success: true, attempts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// DRAFT – lưu nháp luyện viết lên server
+// ══════════════════════════════════════════════════
+
+// GET /api/writing/practice/draft
+router.get('/practice/draft', auth, async (req, res) => {
+  try {
+    const draft = await WritingDraft.findOne({ userId: req.user._id }).lean();
+    res.json({ success: true, draft: draft || null });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/writing/practice/draft
+router.post('/practice/draft', auth, async (req, res) => {
+  try {
+    const { taskType, task, answer = '', wordCount = 0, seconds = 0 } = req.body;
+    if (!task || !taskType) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+    await WritingDraft.findOneAndUpdate(
+      { userId: req.user._id },
+      { taskType, task, answer, wordCount, seconds, savedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/writing/practice/draft
+router.delete('/practice/draft', auth, async (req, res) => {
+  try {
+    await WritingDraft.deleteOne({ userId: req.user._id });
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
