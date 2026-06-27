@@ -102,7 +102,10 @@ function showPractice() {
   document.getElementById('sp-gate').style.display = 'none';
   document.getElementById('sp-tabs').style.display = 'flex';
   document.querySelectorAll('.sp-content').forEach(el => el.classList.remove('sp-tab-hidden'));
-  loadTopics();
+  const tabParam = new URLSearchParams(location.search).get('tab');
+  const tab = tabParam === 'materials' ? 'materials' : 'practice';
+  history.replaceState({ tab }, '', `speaking.html?tab=${tab}`);
+  switchTab(tab, false);
 }
 
 async function submitKey() {
@@ -188,7 +191,10 @@ function hideGateMsg() {
 // ──────────────────────────────────────────────────────
 // Tab switching
 // ──────────────────────────────────────────────────────
-function switchTab(tab) {
+function switchTab(tab, pushHistory = true) {
+  if (pushHistory) {
+    history.pushState({ tab }, '', `speaking.html?tab=${tab}`);
+  }
   document.querySelectorAll('.sp-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.sp-content').forEach(c => c.classList.remove('active'));
 
@@ -790,3 +796,10 @@ function closeMobilePdf() {
   if (right)   right.classList.remove('mobile-open');
   if (sidebar) sidebar.style.display = '';
 }
+
+window.addEventListener('popstate', e => {
+  const tab = e.state?.tab || 'practice';
+  if (sessionStorage.getItem('sp_verified') === '1') {
+    switchTab(tab, false);
+  }
+});

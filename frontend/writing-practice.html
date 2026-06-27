@@ -950,6 +950,32 @@ document.addEventListener('DOMContentLoaded', () => {
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
+
+  // Read URL params to pre-configure filters (shareable links)
+  const _wpp = new URLSearchParams(location.search);
+  const _wpLvl   = _wpp.get('level');
+  const _wpTopic = _wpp.get('topic');
+  const _wpType  = _wpp.get('type');
+  const _validWpLevels = ['beginner','elementary','intermediate'];
+  const _validWpTopics = ['all','myself','family','hobbies','school','friends','food','technology','travel','health','environment'];
+  const _validWpTypes  = ['all','translation','rearrange','fill_blank','expand','combine'];
+  if (_validWpLevels.includes(_wpLvl)) {
+    currentLevel = _wpLvl;
+    document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
+      b.classList.toggle('active', b.dataset.level === currentLevel));
+  }
+  if (_validWpTopics.includes(_wpTopic)) {
+    currentTopic = _wpTopic;
+    document.querySelectorAll('.wp-topic-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.topic === currentTopic));
+  }
+  if (_validWpTypes.includes(_wpType)) {
+    currentType = _wpType;
+    document.querySelectorAll('.wp-type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.type === currentType));
+  }
+  history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
+
   // Init toggles from saved prefs
   document.getElementById('toggle-auto-advance').checked       = _wpAutoAdvance;
   document.getElementById('sheet-toggle-auto-advance').checked = _wpAutoAdvance;
@@ -1051,6 +1077,7 @@ function selectLevel(level) {
     currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
+    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     updateTopicCounts();
     loadExercises();
   };
@@ -1069,6 +1096,7 @@ function selectTopic(topic) {
     currentTopic = topic;
     document.querySelectorAll('.wp-topic-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.topic === topic));
+    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     loadExercises();
   };
   if (sessionDone > 0) {
@@ -1086,6 +1114,7 @@ function selectType(type) {
     currentType = type;
     document.querySelectorAll('.wp-type-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.type === type));
+    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     loadExercises();
   };
   if (sessionDone > 0) {

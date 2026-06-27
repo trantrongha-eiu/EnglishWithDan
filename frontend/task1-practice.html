@@ -899,6 +899,25 @@ document.addEventListener('DOMContentLoaded', () => {
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
+
+  // Read URL params to pre-configure filters (shareable links)
+  const _t1p = new URLSearchParams(location.search);
+  const _t1Skill = _t1p.get('skill');
+  const _t1Level = _t1p.get('level');
+  const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview'];
+  const _validT1Levels = ['beginner','elementary','intermediate','all'];
+  if (_validT1Levels.includes(_t1Level)) {
+    currentLevel = _t1Level;
+    document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
+      b.classList.toggle('active', b.dataset.level === currentLevel));
+  }
+  if (_validT1Skills.includes(_t1Skill)) {
+    currentSkill = _t1Skill;
+    document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
+      b.classList.toggle('active', b.dataset.skill === currentSkill));
+  }
+  history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
+
   // Restore toggle states
   document.getElementById('toggle-autonext').checked       = autoNext;
   document.getElementById('sheet-toggle-autonext').checked = autoNext;
@@ -1044,6 +1063,7 @@ function selectLevel(level) {
     saveBatch(); currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
+    history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
     updateSkillCounts();
     loadExercises();
   };
@@ -1058,6 +1078,7 @@ function selectSkill(skill) {
     saveBatch(); currentSkill = skill;
     document.querySelectorAll('.t1-skill-tab').forEach(b =>
       b.classList.toggle('active', b.dataset.skill === skill));
+    history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
     loadExercises();
   };
   if (sessionDone > 0) {
