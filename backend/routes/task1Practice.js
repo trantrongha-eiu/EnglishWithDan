@@ -43,7 +43,10 @@ function localCheck(exercise, userAnswer) {
   }
 
   if (exercise.type === 'fill_blank') {
-    const accepted = exercise.sampleAnswers.map(normalize);
+    // Accept sampleAnswers OR primaryAnswer (full sentence) for multi-blank exercises
+    const candidates = [...(exercise.sampleAnswers || [])];
+    if (exercise.primaryAnswer) candidates.push(exercise.primaryAnswer);
+    const accepted = [...new Set(candidates)].map(normalize);
     const isCorrect = accepted.some(a => {
       if (a === normUser) return true;
       const dist = levenshtein(a, normUser);

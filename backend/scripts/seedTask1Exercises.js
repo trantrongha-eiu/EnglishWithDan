@@ -59,46 +59,45 @@ const exercises = [
   {
     skillType: 'data_description', module: 1, level: 'beginner', type: 'translation',
     instruction: 'Dịch câu sau sang tiếng Anh (dữ liệu ở cuối câu):',
-    questionVi: 'Số lượng người dùng ô tô ở Việt Nam là 5 triệu người.',
-    dataContext: { type: 'table', subject: 'Vietnamese car users', year: '2000', value: '5 million', unit: 'million people' },
+    questionVi: 'Số lượng sinh viên đại học ở Anh năm 2010 là 2,5 triệu người.',
+    dataContext: { type: 'table', subject: 'UK university students', year: '2010', value: '2.5 million', unit: 'students' },
     sampleAnswers: [
-      'The number of Vietnamese car users was 5 million.',
-      'The number of Vietnamese car users stood at 5 million.',
-      'The quantity of people using cars in Vietnam was 5 million.'
+      'The number of university students in the UK was 2.5 million in 2010.',
+      'The number of university students in the UK stood at 2.5 million in 2010.',
+      'The quantity of university students in the UK was 2.5 million in 2010.'
     ],
-    primaryAnswer: 'The number of Vietnamese car users was 5 million.',
-    grammarPoint: 'Structure 1: Data at end — The number of + noun + verb + figure',
-    explanation: 'Cấu trúc 1: Dữ liệu ở cuối câu. Chủ ngữ là "The number of..."',
-    hints: ['The number of', 'Vietnamese car users', 'was', '5 million'],
+    primaryAnswer: 'The number of university students in the UK was 2.5 million in 2010.',
+    grammarPoint: 'Structure 1: Data at end — The number of + noun + was/stood at + figure',
+    explanation: 'Cấu trúc 1: Dữ liệu ở cuối câu. Chủ ngữ là "The number of...". "stood at" là cách hay thay cho "was".',
+    hints: ['The number of', 'university students', 'in the UK', 'was/stood at', '2.5 million'],
     xpReward: 8, orderIndex: 5
   },
   {
     skillType: 'data_description', module: 1, level: 'beginner', type: 'translation',
     instruction: 'Dịch câu sau sang tiếng Anh (dữ liệu ở đầu câu):',
-    questionVi: '5 triệu người Việt Nam đã sử dụng ô tô.',
+    questionVi: '38% dân số Australia sử dụng phương tiện công cộng vào năm 2018.',
     sampleAnswers: [
-      '5 million Vietnamese people used cars.',
-      '5 million individuals in Vietnam traveled by cars.',
-      '5 million people in Vietnam drove cars.'
+      '38% of the Australian population used public transport in 2018.',
+      "38% of Australia's population travelled by public transport in 2018."
     ],
-    primaryAnswer: '5 million Vietnamese people used cars.',
-    grammarPoint: 'Structure 2: Data at beginning — Figure + noun + verb',
-    explanation: 'Cấu trúc 2: Dữ liệu ở đầu câu. Số liệu làm chủ ngữ.',
-    hints: ['5 million', 'Vietnamese people', 'used cars'],
+    primaryAnswer: '38% of the Australian population used public transport in 2018.',
+    grammarPoint: 'Structure 2: Data at beginning — Figure% of + noun + verb',
+    explanation: 'Cấu trúc 2: Dữ liệu ở đầu câu. Số liệu (38%) làm chủ ngữ. Dùng "of" để chỉ thuộc về.',
+    hints: ['38% of', 'the Australian population', 'used', 'in 2018'],
     xpReward: 8, orderIndex: 6
   },
   {
     skillType: 'data_description', module: 1, level: 'beginner', type: 'translation',
     instruction: 'Dịch câu sau sang tiếng Anh (dùng cấu trúc "There were"):',
-    questionVi: 'Có 5 triệu người Việt Nam sử dụng ô tô.',
+    questionVi: 'Có khoảng 1,2 tỷ người sử dụng xe đạp trên toàn thế giới vào năm 2015.',
     sampleAnswers: [
-      'There were 5 million Vietnamese people using cars.',
-      'There were 5 million people in Vietnam who used cars.'
+      'There were approximately 1.2 billion people using bicycles worldwide in 2015.',
+      'There were around 1.2 billion bicycle users across the world in 2015.'
     ],
-    primaryAnswer: 'There were 5 million Vietnamese people using cars.',
+    primaryAnswer: 'There were approximately 1.2 billion people using bicycles worldwide in 2015.',
     grammarPoint: 'Structure 3: Data in middle — There were + figure + noun + V-ing',
-    explanation: 'Cấu trúc 3: Dữ liệu ở giữa câu, dùng "There were"',
-    hints: ['There were', '5 million', 'Vietnamese people', 'using cars'],
+    explanation: 'Cấu trúc 3: Dùng "There were" khi số liệu nằm ở giữa câu. "approximately/around" = khoảng.',
+    hints: ['There were', 'approximately', '1.2 billion people', 'using bicycles', 'worldwide'],
     xpReward: 8, orderIndex: 7
   },
   {
@@ -115,12 +114,12 @@ const exercises = [
   {
     skillType: 'data_description', module: 1, level: 'elementary', type: 'rearrange',
     instruction: 'Sắp xếp các từ thành câu đúng:',
-    questionEn: 'Vietnam Internet users = 20% of total Vietnamese population',
-    baseWords: ['Internet', 'users', 'accounted', 'for', '20%', 'of', 'the', 'Vietnamese', 'population'],
-    sampleAnswers: ['Internet users accounted for 20% of the Vietnamese population.'],
-    primaryAnswer: 'Internet users accounted for 20% of the Vietnamese population.',
-    grammarPoint: 'Percentage in middle: Subject + accounted for / made up + figure%',
-    explanation: 'Dùng "accounted for" hoặc "made up" khi % nằm giữa câu',
+    questionEn: "Brazil coffee exports = $5 billion (2005)",
+    baseWords: ["Brazil's", 'coffee', 'exports', 'were', 'worth', '$5', 'billion', 'in', '2005'],
+    sampleAnswers: ["Brazil's coffee exports were worth $5 billion in 2005."],
+    primaryAnswer: "Brazil's coffee exports were worth $5 billion in 2005.",
+    grammarPoint: 'Subject + were worth + monetary figure (dùng cho dữ liệu tiền tệ/thương mại)',
+    explanation: 'Dữ liệu tài chính dùng "were worth" thay vì "were + figure". "$5 billion" = 5 tỷ đô.',
     xpReward: 8, orderIndex: 9
   },
 
@@ -128,56 +127,57 @@ const exercises = [
   {
     skillType: 'comparison', module: 1, level: 'elementary', type: 'fill_blank',
     instruction: 'Điền từ/cụm từ so sánh thích hợp:',
-    sentenceWithBlanks: 'The number of Vietnamese car users was 5 million, ___ to 20 million motorbike users.',
+    sentenceWithBlanks: 'The UK spent $50 billion on education in 2019, ___ only $30 billion in France.',
     blanksCount: 1,
-    sampleAnswers: ['compared', 'in comparison'],
-    primaryAnswer: 'compared',
-    grammarPoint: 'Comparison: compared to / in comparison with',
-    explanation: 'Dùng "compared to" hoặc "in comparison with" để so sánh hai con số',
-    hints: ['compared', 'in comparison'],
+    sampleAnswers: ['compared to', 'compared with', 'in comparison with'],
+    primaryAnswer: 'compared to',
+    grammarPoint: 'Comparison: compared to/with | in comparison with — so sánh 2 giá trị trong cùng câu',
+    explanation: '"compared to/with" nối trực tiếp hai số liệu trong cùng câu. "in comparison with" = cùng nghĩa, trang trọng hơn.',
+    hints: ['compared to', 'compared with'],
     xpReward: 5, orderIndex: 10
   },
   {
     skillType: 'comparison', module: 1, level: 'elementary', type: 'translation',
-    instruction: 'Dịch câu so sánh sau sang tiếng Anh dùng "while":',
-    questionVi: 'Số người dùng ô tô là 5 triệu, trong khi số người dùng xe máy là 20 triệu.',
+    instruction: 'Dịch câu so sánh sau sang tiếng Anh dùng "whereas":',
+    questionVi: 'Số người dùng ô tô là 10 triệu, trong khi số người đi xe buýt là 25 triệu.',
     sampleAnswers: [
-      'The number of car users was 5 million, while the number of motorbike users was 20 million.',
-      'There were 5 million car users, while there were 20 million motorbike users.',
-      '5 million Vietnamese people used cars, while 20 million traveled by motorbikes.'
+      'The number of car users was 10 million, whereas the number of bus users was 25 million.',
+      'There were 10 million car users, whereas there were 25 million bus users.',
+      'The figure for car users was 10 million, whereas the figure for bus users was 25 million.'
     ],
-    primaryAnswer: 'The number of car users was 5 million, while the number of motorbike users was 20 million.',
-    grammarPoint: 'Comparison with "while/whereas" — contrasting two figures',
-    explanation: '"While/whereas" nối hai mệnh đề để so sánh hai số liệu khác nhau',
-    hints: ['The number of car users', 'was 5 million', 'while', 'the number of motorbike users', 'was 20 million'],
+    primaryAnswer: 'The number of car users was 10 million, whereas the number of bus users was 25 million.',
+    grammarPoint: 'Comparison with "whereas/while" — contrasting two different figures in one sentence',
+    explanation: '"whereas" thường trang trọng hơn "while". Cả hai đặt ở giữa câu nối hai mệnh đề tương phản.',
+    hints: ['The number of car users', 'was 10 million', 'whereas', 'the number of bus users', 'was 25 million'],
     xpReward: 10, orderIndex: 11
   },
   {
     skillType: 'comparison', module: 1, level: 'elementary', type: 'translation',
     instruction: 'Dịch câu sau dùng "respectively":',
-    questionVi: 'Số người dùng ô tô và xe máy ở Việt Nam lần lượt là 5 triệu và 20 triệu.',
+    questionVi: 'Tỷ lệ nam và nữ theo học đại học lần lượt là 55% và 45%.',
     sampleAnswers: [
-      'The numbers of Vietnamese car and motorbike users were 5 million and 20 million, respectively.',
-      '5 million and 20 million Vietnamese people used cars and motorbikes, respectively.'
+      'The proportions of male and female university students were 55% and 45%, respectively.',
+      'The figures for male and female university enrolment were 55% and 45%, respectively.'
     ],
-    primaryAnswer: 'The numbers of Vietnamese car and motorbike users were 5 million and 20 million, respectively.',
-    grammarPoint: '"Respectively" — luôn đặt cuối câu, chỉ sự tương ứng',
-    explanation: '"Respectively" = "lần lượt", đặt cuối câu để chỉ rõ số liệu nào thuộc về ai',
-    hints: ['The numbers of', 'car and motorbike users', 'were', '5 million and 20 million', 'respectively'],
+    primaryAnswer: 'The proportions of male and female university students were 55% and 45%, respectively.',
+    grammarPoint: '"Respectively" — luôn đặt cuối câu, chỉ sự tương ứng theo thứ tự',
+    explanation: '"respectively" = "lần lượt", đặt cuối câu sau dấu phẩy để chỉ rõ số liệu nào thuộc về ai.',
+    hints: ['The proportions of', 'male and female', 'were 55% and 45%', 'respectively'],
     xpReward: 10, orderIndex: 12
   },
   {
     skillType: 'comparison', module: 1, level: 'intermediate', type: 'translation',
-    instruction: 'Dịch câu sau sang tiếng Anh dùng cụm "twice as many as":',
-    questionVi: 'Số người dùng xe đạp là 10 triệu, gấp đôi so với người dùng ô tô.',
+    instruction: 'Dịch câu sau sang tiếng Anh dùng cụm "three times as many as":',
+    questionVi: 'Số người dùng điện thoại thông minh gấp ba lần số người dùng máy tính bảng.',
     sampleAnswers: [
-      'The number of Vietnamese bike users was 10 million, which was twice as many as that of car users.',
-      'The figure for bike users was 10 million, twice as many as the number of car users.'
+      'The number of smartphone users was three times as many as that of tablet users.',
+      'The figure for smartphone users was three times as high as that for tablet users.',
+      'There were three times as many smartphone users as tablet users.'
     ],
-    primaryAnswer: 'The number of Vietnamese bike users was 10 million, which was twice as many as that of car users.',
-    grammarPoint: 'Multiplicative: twice as many as / double / treble / quadruple',
-    explanation: '"Twice as many as" = gấp đôi. "that of" thay cho "the number of" để tránh lặp.',
-    hints: ['The number of bike users', 'was 10 million', 'which was', 'twice as many as', 'that of car users'],
+    primaryAnswer: 'The number of smartphone users was three times as many as that of tablet users.',
+    grammarPoint: 'Multiplicative: X times as many/much as + "that of" (tránh lặp từ)',
+    explanation: '"three times as many as" = gấp ba lần. "that of" thay thế "the number of" để tránh lặp.',
+    hints: ['three times as many as', 'that of tablet users'],
     xpReward: 12, orderIndex: 13
   },
 
@@ -237,30 +237,30 @@ const exercises = [
   {
     skillType: 'trend_language', module: 2, level: 'elementary', type: 'multiple_choice',
     instruction: 'Chọn cách mô tả xu hướng ĐÚNG và HỌC THUẬT NHẤT:',
-    questionEn: 'Car sales: 2000 = 5 million → 2010 = 15 million (tăng nhanh)',
+    questionEn: 'Wind energy production: 2000 = 10 GW → 2020 = 200 GW (tăng rất mạnh)',
     options: [
-      'Car sales went up a lot.',
-      'The number of car sales rapidly increased by 10 million to 15 million.',
-      'Car sales increased to 15 million by 10 million rapidly.',
-      'There was car sales that increased rapidly.'
+      'Wind energy went up a lot from 2000 to 2020.',
+      'There was a dramatic increase in wind energy production, from 10 GW in 2000 to 200 GW in 2020.',
+      'Wind energy increased to 200 GW by 10 GW dramatically.',
+      'There was wind energy that increased dramatically from 2000.'
     ],
     correctOptionIndex: 1,
-    grammarPoint: 'Structure 1: Subject + Verb + Adverb + "by" + difference + "to" + final figure',
-    explanation: 'Cấu trúc chuẩn: S + rapidly increased + by [mức tăng] + to [giá trị cuối]',
+    grammarPoint: 'Structure 1: There was a [adj] + noun + in [subject] + from X to Y',
+    explanation: 'Cấu trúc danh từ "There was a dramatic increase in..." rất học thuật. Không dùng "went up a lot" (không trang trọng).',
     xpReward: 8, orderIndex: 17
   },
   {
     skillType: 'trend_language', module: 2, level: 'elementary', type: 'translation',
-    instruction: 'Dịch sang tiếng Anh dùng cấu trúc "There was a(n) adj + noun":',
-    questionVi: 'Có một sự gia tăng nhanh chóng từ 10 triệu lên 15 triệu trong số người dùng ô tô.',
+    instruction: 'Dịch sang tiếng Anh dùng cấu trúc "experienced":',
+    questionVi: 'Số lượng khách du lịch đến Thái Lan tăng đều đặn từ 20 triệu lên 40 triệu trong giai đoạn 2000-2019.',
     sampleAnswers: [
-      'There was a rapid increase of 10 million to 15 million in the number of Vietnamese car users.',
-      'There was a rapid increase from 5 million to 15 million in the number of car users.'
+      'The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.',
+      'Tourism in Thailand experienced a gradual rise from 20 million to 40 million visitors between 2000 and 2019.'
     ],
-    primaryAnswer: 'There was a rapid increase of 10 million to 15 million in the number of Vietnamese car users.',
-    grammarPoint: 'Structure 2: There was a(n) [adj + noun] + of [difference] + to [final] + in [subject]',
-    explanation: 'Cấu trúc danh từ: "a rapid increase" thay cho động từ "increased rapidly"',
-    hints: ['There was', 'a rapid increase', 'of 10 million', 'to 15 million', 'in the number of'],
+    primaryAnswer: 'The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.',
+    grammarPoint: 'Structure 2: Subject + experienced a [adj] + noun + from X to Y + between A and B',
+    explanation: '"experienced" = "trải qua/ghi nhận". "a steady increase" là cấu trúc danh từ, lịch sự hơn "increased steadily".',
+    hints: ['experienced', 'a steady increase', 'from 20 million', 'to 40 million', 'between 2000 and 2019'],
     xpReward: 12, orderIndex: 18
   },
   {
@@ -287,15 +287,15 @@ const exercises = [
   {
     skillType: 'trend_language', module: 2, level: 'intermediate', type: 'translation',
     instruction: 'Dịch sang tiếng Anh dùng cấu trúc kết hợp 2 xu hướng (tăng rồi giảm):',
-    questionVi: 'Doanh số ô tô tăng mạnh từ 1960 đến 1990 cho đến khi đạt đỉnh gần 95,000; tuy nhiên, doanh số bắt đầu giảm nhanh xuống dưới 65,000 vào 2010.',
+    questionVi: 'Giá bất động sản tại Mỹ tăng mạnh từ 1990 đến 2006, cho đến khi đạt đỉnh gần $300,000; tuy nhiên, sau đó bắt đầu giảm nhanh xuống dưới $180,000 vào năm 2010.',
     sampleAnswers: [
-      'There was a sharp increase in GM car sales between 1960 and 1990 until it reached a high of almost $95,000; however, sales began to decrease swiftly to under $65,000 in 2010.',
-      'Car sales increased sharply between 1960 and 1990, reaching a peak of almost $95,000; however, this figure then fell to under $65,000 by 2010.'
+      'US property prices rose sharply between 1990 and 2006, until they reached a peak of almost $300,000; however, prices began to fall steeply to under $180,000 by 2010.',
+      'There was a sharp increase in US property prices between 1990 and 2006, reaching a high of almost $300,000; however, prices then declined rapidly to under $180,000 in 2010.'
     ],
-    primaryAnswer: 'There was a sharp increase in GM car sales between 1960 and 1990 until it reached a high of almost $95,000; however, sales began to decrease swiftly to under $65,000 in 2010.',
-    grammarPoint: 'Connecting opposing trends: "until it reached a high of..." + "however" + opposite trend',
-    explanation: 'Dùng "however" để nối hai xu hướng trái ngược. "until" chỉ điểm đảo chiều.',
-    hints: ['until it reached a high of', 'however', 'began to decrease'],
+    primaryAnswer: 'US property prices rose sharply between 1990 and 2006, until they reached a peak of almost $300,000; however, prices began to fall steeply to under $180,000 by 2010.',
+    grammarPoint: 'Connecting opposing trends: "until they reached a peak of..." + "however" + opposite trend',
+    explanation: 'Dùng "however" (dấu chấm phẩy trước) để nối hai xu hướng trái ngược. "until" chỉ điểm đảo chiều.',
+    hints: ['until they reached a peak of', 'however', 'began to fall steeply'],
     xpReward: 15, orderIndex: 21
   },
 
@@ -314,12 +314,12 @@ const exercises = [
   {
     skillType: 'trend_language', module: 2, level: 'beginner', type: 'fill_blank',
     instruction: 'Điền giới từ đúng:',
-    sentenceWithBlanks: 'GM car sales peaked ___ 2,000 in 1999.',
+    sentenceWithBlanks: 'Solar panel installations peaked ___ 80,000 units in 2020.',
     blanksCount: 1,
     sampleAnswers: ['at'],
     primaryAnswer: 'at',
-    grammarPoint: 'peaked at + number: "peak" dùng với "at"',
-    explanation: '"peaked at 2,000" = đạt đỉnh tại mức 2,000. Sau peak/bottom/remain stable dùng "at".',
+    grammarPoint: 'peaked at + number: "peak" (động từ) dùng với "at"',
+    explanation: '"peaked at 80,000" = đạt đỉnh tại mức 80,000. Sau các từ chỉ trạng thái (peak, bottom, remain) dùng "at".',
     hints: ['at', 'to', 'by'],
     xpReward: 5, orderIndex: 23
   },
@@ -339,17 +339,17 @@ const exercises = [
   // ─── MODULE 2: SENTENCE REWRITING ────────────────────────────────────
   {
     skillType: 'trend_language', module: 2, level: 'intermediate', type: 'data_transform',
-    instruction: 'Viết lại câu bắt đầu bằng "The number of cars":',
-    questionEn: 'ORIGINAL: There was a gradual fall in the number of cars over the period from 1990 to 2000.',
+    instruction: 'Viết lại câu bắt đầu bằng "The number of electric vehicles":',
+    questionEn: 'ORIGINAL: There was a gradual rise in the number of electric vehicles sold in Europe from 2015 to 2022.',
     sampleAnswers: [
-      'The number of cars fell gradually over the period from 1990 to 2000.',
-      'The number of cars declined gradually between 1990 and 2000.',
-      'The number of cars dropped gradually from 1990 to 2000.'
+      'The number of electric vehicles sold in Europe rose gradually from 2015 to 2022.',
+      'The number of electric vehicles sold in Europe increased gradually between 2015 and 2022.',
+      'The number of electric vehicles sold in Europe grew gradually from 2015 to 2022.'
     ],
-    primaryAnswer: 'The number of cars fell gradually over the period from 1990 to 2000.',
+    primaryAnswer: 'The number of electric vehicles sold in Europe rose gradually from 2015 to 2022.',
     grammarPoint: 'Sentence transformation: There was a [adj+noun] → Subject + Verb + Adverb',
-    explanation: '"There was a gradual fall" (danh từ) → "fell gradually" (động từ + trạng từ)',
-    hints: ['The number of cars', 'fell/declined/dropped', 'gradually', 'from 1990 to 2000'],
+    explanation: '"There was a gradual rise" (cụm danh từ) → "rose gradually" (động từ + trạng từ). Đây là phép biến đổi noun phrase → verb phrase.',
+    hints: ['The number of electric vehicles', 'rose/increased/grew', 'gradually', 'from 2015 to 2022'],
     xpReward: 12, orderIndex: 25
   },
   {
@@ -1413,4 +1413,19 @@ async function runSeed() {
   console.log(`[Task1Seed] Seeded ${toInsert.length} new Task 1 exercises (total target: ${allExercises.length})`);
 }
 
-module.exports = { runSeed, exercises: allExercises };
+// Update existing DB exercises with current seed file content (for the core 36 exercises)
+async function runUpdate() {
+  const Task1Exercise = require('../models/Task1Exercise');
+  let updated = 0;
+  for (const ex of exercises) {
+    const result = await Task1Exercise.updateOne(
+      { orderIndex: ex.orderIndex },
+      { $set: { ...ex, isActive: true } },
+      { upsert: true }
+    );
+    if (result.modifiedCount > 0 || result.upsertedCount > 0) updated++;
+  }
+  console.log(`[Task1Update] Updated/upserted ${updated} core exercises (orderIndex 1-36)`);
+}
+
+module.exports = { runSeed, runUpdate, exercises: allExercises };

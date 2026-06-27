@@ -302,7 +302,7 @@
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up"></i></button>
   </div>
 </header>
 
@@ -474,9 +474,12 @@
         <button class="wp-welcome-start" onclick="startPractice()">
           <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
         </button>
-        <div style="margin-top:4px">
+        <div style="margin-top:4px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <button class="t1-hist-open-btn" onclick="openHistory()">
-            <i class="fas fa-history"></i> Xem lịch sử luyện tập
+            <i class="fas fa-history"></i> Xem lịch sử
+          </button>
+          <button class="t1-hist-open-btn" onclick="copyShareUrl()" id="copy-url-btn">
+            <i class="fas fa-link"></i> Sao chép link
           </button>
         </div>
         <p class="wp-welcome-hint">Chọn cấp độ &amp; kỹ năng ở thanh bên trái trước khi bắt đầu</p>
@@ -663,6 +666,10 @@
           <!-- translation/transform/error -->
           <div id="test-view-text" class="hidden">
             <div class="wp-task-label" id="test-instruction"></div>
+            <div class="t1-data-ctx hidden" id="test-data-ctx-box">
+              <div class="t1-data-ctx-label">📋 Ngữ cảnh dữ liệu</div>
+              <div id="test-data-ctx-content"></div>
+            </div>
             <div id="test-error-orig-wrap" class="hidden">
               <div class="t1-data-ctx-label" style="margin-top:8px">❌ Câu có lỗi cần sửa:</div>
               <div class="t1-error-text" id="test-error-orig"></div>
@@ -730,10 +737,12 @@ function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; 
 function toggleWpSound() {
   _soundEnabled = !_soundEnabled;
   localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const btn = document.getElementById('wp-sound-toggle');
+  btn.innerHTML = _soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 }
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const btn = document.getElementById('wp-sound-toggle');
+  btn.innerHTML = _soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 });
 
 function showToast(msg, type = 'warn', duration = 3000) {
@@ -817,6 +826,28 @@ const SKILL_LABELS = {
   comparison:'So sánh', trend_language:'Xu hướng',
   paraphrase:'Paraphrase', overview:'Overview'
 };
+
+// ════════════════════════════════════════════════════════
+//  SHAREABLE URL
+// ════════════════════════════════════════════════════════
+function _syncShareUrl() {
+  const params = `skill=${currentSkill}&level=${currentLevel}&mode=${currentMode}`;
+  history.replaceState(null, '', `task1-practice.html?${params}`);
+}
+
+function copyShareUrl() {
+  const url = location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('Đã sao chép link chia sẻ! 🔗', 'info', 2500)).catch(_copyFallback);
+  } else { _copyFallback(); }
+  function _copyFallback() {
+    const el = document.createElement('textarea');
+    el.value = url; el.style.position = 'fixed'; el.style.opacity = '0';
+    document.body.appendChild(el); el.select();
+    try { document.execCommand('copy'); showToast('Đã sao chép link chia sẻ! 🔗', 'info', 2500); } catch { showToast('Không sao chép được, hãy copy thủ công.', 'warn'); }
+    document.body.removeChild(el);
+  }
+}
 
 // ════════════════════════════════════════════════════════
 //  QUIT MODAL
@@ -904,6 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const _t1p = new URLSearchParams(location.search);
   const _t1Skill = _t1p.get('skill');
   const _t1Level = _t1p.get('level');
+  const _t1Mode  = _t1p.get('mode');
   const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview'];
   const _validT1Levels = ['beginner','elementary','intermediate','all'];
   if (_validT1Levels.includes(_t1Level)) {
@@ -916,7 +948,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
       b.classList.toggle('active', b.dataset.skill === currentSkill));
   }
-  history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
+  if (_t1Mode === 'test') _doSetMode('test');
+  _syncShareUrl();
 
   // Restore toggle states
   document.getElementById('toggle-autonext').checked       = autoNext;
@@ -1016,6 +1049,7 @@ function setMode(mode) {
 }
 function _doSetMode(mode) {
   currentMode = mode;
+  _syncShareUrl();
   document.getElementById('btn-mode-practice').classList.toggle('active', mode === 'practice');
   document.getElementById('btn-mode-test').classList.toggle('active', mode === 'test');
   document.getElementById('practice-filters').style.display = mode === 'practice' ? '' : 'none';
@@ -1063,7 +1097,7 @@ function selectLevel(level) {
     saveBatch(); currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
-    history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
+    _syncShareUrl();
     updateSkillCounts();
     loadExercises();
   };
@@ -1078,7 +1112,7 @@ function selectSkill(skill) {
     saveBatch(); currentSkill = skill;
     document.querySelectorAll('.t1-skill-tab').forEach(b =>
       b.classList.toggle('active', b.dataset.skill === skill));
-    history.replaceState(null, '', `task1-practice.html?skill=${currentSkill}&level=${currentLevel}`);
+    _syncShareUrl();
     loadExercises();
   };
   if (sessionDone > 0) {
@@ -1327,6 +1361,15 @@ function showFillBlankView(ex) {
   }
 
   const inp = document.getElementById('fill-input');
+  const blankCount = (sentence.match(/___/g) || []).length;
+  if (blankCount > 1) {
+    inp.placeholder = `Nhập ${blankCount} từ theo thứ tự, cách nhau bằng dấu phẩy (vd: from, to, of)`;
+    const lbl = document.getElementById('fill-label');
+    if (lbl && !lbl.textContent.includes('dấu phẩy'))
+      lbl.textContent = lbl.textContent + ` — điền ${blankCount} chỗ trống, cách nhau bằng dấu phẩy`;
+  } else {
+    inp.placeholder = 'Nhập từ cần điền vào chỗ trống...';
+  }
   inp.value = ''; inp.focus();
 }
 
@@ -1733,6 +1776,13 @@ function showTestQuestion(idx) {
   if (['translation', 'error_correction', 'data_transform'].includes(ex.type)) {
     document.getElementById('test-view-text').classList.remove('hidden');
     document.getElementById('test-instruction').textContent = ex.instruction || '';
+    // data context (needed for translation exercises)
+    const testCtxBox = document.getElementById('test-data-ctx-box');
+    if (ex.dataContext?.subject) {
+      document.getElementById('test-data-ctx-content').textContent =
+        `${ex.dataContext.subject}${ex.dataContext.year ? ' · ' + ex.dataContext.year : ''}${ex.dataContext.value ? ' · ' + ex.dataContext.value + (ex.dataContext.unit ? ' ' + ex.dataContext.unit : '') : ''}`;
+      testCtxBox.classList.remove('hidden');
+    } else testCtxBox.classList.add('hidden');
     const errWrap = document.getElementById('test-error-orig-wrap');
     if (ex.type === 'error_correction' && ex.sentenceWithBlanks) {
       document.getElementById('test-error-orig').textContent = ex.sentenceWithBlanks;
@@ -1825,6 +1875,7 @@ function renderTestRearrangeAnswer() {
       const chip = document.createElement('span');
       chip.className = 'wp-answer-chip'; chip.textContent = w;
       chip.dataset.word = w; chip.dataset.idx = i;
+      chip.title = 'Bấm để bỏ từ này';
       area.appendChild(chip);
     });
   }
@@ -1908,6 +1959,7 @@ async function submitTest() {
 
 function retakeTest() {
   stopTestTimer();
+  testIdx = 0; testAnswers = []; testExercises = [];
   document.getElementById('test-intro').style.display       = '';
   document.getElementById('test-in-progress').style.display = 'none';
   document.getElementById('test-results').style.display     = 'none';
@@ -1933,13 +1985,17 @@ function stopTestMode() {
 async function openHistory() {
   document.getElementById('t1-hist-overlay').classList.remove('hidden');
   const body = document.getElementById('t1-hist-body');
+  const token = localStorage.getItem('token');
+  if (!token) {
+    body.innerHTML = '<div class="t1-hist-empty"><div class="t1-hist-empty-icon">🔒</div><p>Vui lòng <a href="login.html" style="color:#e53935;font-weight:700">đăng nhập</a> để xem lịch sử luyện tập.</p></div>';
+    return;
+  }
   body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
   try {
-    const token = localStorage.getItem('token');
-    const res   = await fetch(`${API}/api/task1/history?limit=200`, {
+    const res  = await fetch(`${API}/api/task1/history?limit=200`, {
       headers: { Authorization: 'Bearer ' + token }
     });
-    const data  = await res.json();
+    const data = await res.json();
     if (!data.success) throw new Error(data.message);
     renderHistory(data.attempts || []);
   } catch (e) {

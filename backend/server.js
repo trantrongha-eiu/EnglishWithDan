@@ -66,14 +66,15 @@ mongoose.connect(process.env.MONGO_URI)
     // Auto-seed Task 1 exercises
     try {
       const Task1Exercise = require('./models/Task1Exercise');
-      const { exercises: t1data, runSeed: runTask1Seed } = require('./scripts/seedTask1Exercises');
+      const { exercises: t1data, runSeed: runTask1Seed, runUpdate: runTask1Update } = require('./scripts/seedTask1Exercises');
       const t1count = await Task1Exercise.countDocuments();
       if (t1count < t1data.length) {
         console.log(`[Task1Seed] Has ${t1count}/${t1data.length} – seeding...`);
         await runTask1Seed();
         console.log('[Task1Seed] Done ✓');
       } else {
-        console.log(`[Task1Seed] Already has ${t1count} exercises – skip`);
+        console.log(`[Task1Seed] Already has ${t1count} exercises – updating core 36...`);
+        await runTask1Update();
       }
     } catch (e) {
       console.error('[Task1Seed] Error:', e.message);
