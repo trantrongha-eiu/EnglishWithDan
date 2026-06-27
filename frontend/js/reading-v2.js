@@ -155,6 +155,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (!s || s === 'list') {
+      // Stop exam timer when navigating back — prevents practice answers contaminating exam localStorage
+      if (state.timer && state.attemptId && !state.submitted) {
+        saveExamToStorage(); // snapshot remaining progress before stopping
+        clearInterval(state.timer);
+        state.timer = null;
+      }
       loadTests(true);
     } else if (s === 'key' && e.state.testId) {
       _openKeyScreen(e.state.testId, e.state.testName);
@@ -385,7 +391,7 @@ const _EXAM_KEY     = 'ews_reading_progress';
 const _PRACTICE_KEY = 'ews_reading_practice';
 
 function saveExamToStorage() {
-  if (!state.attemptId || state.submitted) return;
+  if (!state.attemptId || state.submitted || _practiceMode) return;
   try {
     localStorage.setItem(_EXAM_KEY, JSON.stringify({
       attemptId: state.attemptId,
@@ -791,6 +797,12 @@ async function startPractice(passageId, category, _silent = false) {
 
 function _enterPracticeScreen(passage, category, passageId) {
   _practiceMode = true;
+  // Stop any running exam timer to prevent practice answers contaminating exam localStorage
+  if (state.timer && state.attemptId && !state.submitted) {
+    saveExamToStorage();
+    clearInterval(state.timer);
+    state.timer = null;
+  }
 
   // Build correctMap từ passage (backend trả đầy đủ đáp án)
   const correctMap = {};
