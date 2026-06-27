@@ -543,20 +543,39 @@ router.post('/admin/assemble', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
-    // Loại transcript và correctAnswer/explanation ra để giảm data transfer
-    // (transcript có thể hàng nghìn từ × 4 sections × N bài)
-    const tests = await ListeningTest.find({ isActive: true })
-      .select('-sections.transcript -sections.questionGroups.correctAnswer -sections.questionGroups.explanation -sections.questionGroups.imageUrl')
-      .sort({ testNumber: -1 })
-      .lean();
+    // Dùng aggregation để tính totalParts/totalQuestions mà không cần load section data
+    const [tests, attempts] = await Promise.all([
+      ListeningTest.aggregate([
+        { $match: { isActive: true } },
+        { $sort: { testNumber: -1 } },
+        { $addFields: {
+          totalParts: { $size: { $ifNull: ['$sections', []] } },
+          totalQuestions: {
+            $sum: {
+              $map: {
+                input: { $ifNull: ['$sections', []] },
+                as: 'sec',
+                in: {
+                  $sum: {
+                    $map: {
+                      input: { $ifNull: ['$$sec.questionGroups', []] },
+                      as: 'grp',
+                      in: { $size: { $ifNull: ['$$grp.questions', []] } }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }},
+        { $project: { name: 1, testNumber: 1, seriesName: 1, audioDuration: 1, totalParts: 1, totalQuestions: 1 } }
+      ]),
+      ListeningAttempt.find({
+        userId: req.user._id || req.user.id,
+        status: 'completed'
+      }).select('testId bandScore correctCount wrongCount skippedCount submittedAt timeTaken').lean()
+    ]);
 
-    // Lấy attempt gần nhất của user cho mỗi test
-    const attempts = await ListeningAttempt.find({
-      userId: req.user._id || req.user.id,
-      status: 'completed'
-    }).select('testId bandScore correctCount wrongCount skippedCount submittedAt timeTaken');
-
-    // Map: testId → attempt mới nhất
     const attemptMap = {};
     attempts.forEach(a => {
       const key = a.testId.toString();
@@ -571,8 +590,8 @@ router.get('/tests', auth, async (req, res) => {
       testNumber: t.testNumber,
       seriesName: t.seriesName,
       audioDuration: t.audioDuration,
-      totalParts: t.sections.length,
-      totalQuestions: flattenQuestions(t.sections).length,
+      totalParts: t.totalParts,
+      totalQuestions: t.totalQuestions,
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 

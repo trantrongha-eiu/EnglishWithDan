@@ -716,27 +716,9 @@
             window.addEventListener('popstate', async (e) => {
                 const tab  = e.state?.tab;
                 const part = e.state?.part ?? 1;
-                if (_ltPracticeActive) {
-                    _clearLTPracticeTimer();
-                    _hideLTPracticeHUD();
-                    _ltPracticeSubmitted = false;
-                    _ltPracticeActive    = false;
-                    _ltLoadingPart       = 0;
-                    const tpClose = document.getElementById('lt-practice-transcript-panel');
-                    if (tpClose) tpClose.style.display = 'none';
-                    setTool('none');
-                    audio.pause();
-                    audio.src = '';
-                    if (_ltPracticeBackup) {
-                        state.answers       = _ltPracticeBackup.answers;
-                        state.currentTestId = _ltPracticeBackup.currentTestId;
-                        state.currentTest   = _ltPracticeBackup.currentTest;
-                        state.partIdx       = _ltPracticeBackup.partIdx;
-                        state.isReview      = _ltPracticeBackup.isReview;
-                        _ltPracticeBackup   = null;
-                    }
-                    _ltOrigSection = _ltCleanSection = null;
-                    document.getElementById('lt-section-list')?.innerHTML = '';
+                // Delegate to block-3 handler (which can access block-3 let vars)
+                if (typeof window.handleLtPracticePopstate === 'function' &&
+                    window.handleLtPracticePopstate(tab, part)) {
                     showScreen('list');
                     document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                         t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
@@ -2350,7 +2332,9 @@
             if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
             el._dictHandler = async e => {
                 if (state.tool !== 'dict') return;
-                if (!state.isReview && !_ltPracticeSubmitted && !_ltPracticeActive) return;
+                const ltSubmitted = window.isLtPracticeSubmitted?.();
+                const ltActive    = window.isLtPracticeActive?.();
+                if (!state.isReview && !ltSubmitted && !ltActive) return;
                 const sel = window.getSelection();
                 const word = sel?.toString().trim();
                 if (!word || word.split(' ').length > 3 || word.length < 2) return;
@@ -3145,7 +3129,7 @@
                 );
             }
             _enterLTPracticeScreen(data.section, partNum, sectionId);
-        } catch(e) { toast('Lỗi kết nối server', 'error'); }
+        } catch(e) { toast('Lỗi: ' + (e?.message || 'Không xác định'), 'error'); console.error('[startPracticeSection]', e); }
         finally {
             cards.forEach(c => {
                 c.style.opacity = '';
@@ -3635,6 +3619,34 @@
     window.closeLTPractice = closeLTPractice;
     window.retryLTPractice = retryLTPractice;
     window.ltScrollToQ = ltScrollToQ;
+    // Getters for block-2 code (popstate listener, setupDictionaryDouble) to read block-3 state
+    window.isLtPracticeActive    = () => _ltPracticeActive;
+    window.isLtPracticeSubmitted = () => _ltPracticeSubmitted;
+    // Handles the "close practice on browser Back" logic that lives in block-3 scope
+    window.handleLtPracticePopstate = function(tab, part) {
+        if (!_ltPracticeActive) return false;
+        _clearLTPracticeTimer();
+        _hideLTPracticeHUD();
+        _ltPracticeSubmitted = false;
+        _ltPracticeActive    = false;
+        _ltLoadingPart       = 0;
+        const tp = document.getElementById('lt-practice-transcript-panel');
+        if (tp) tp.style.display = 'none';
+        setTool('none');
+        audio.pause();
+        audio.src = '';
+        if (_ltPracticeBackup) {
+            state.answers       = _ltPracticeBackup.answers;
+            state.currentTestId = _ltPracticeBackup.currentTestId;
+            state.currentTest   = _ltPracticeBackup.currentTest;
+            state.partIdx       = _ltPracticeBackup.partIdx;
+            state.isReview      = _ltPracticeBackup.isReview;
+            _ltPracticeBackup   = null;
+        }
+        _ltOrigSection = _ltCleanSection = null;
+        document.getElementById('lt-section-list')?.innerHTML = '';
+        return true;
+    };
     </script>
 </body>
 
