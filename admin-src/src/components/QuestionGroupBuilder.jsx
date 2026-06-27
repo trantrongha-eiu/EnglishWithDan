@@ -128,6 +128,19 @@ function RemoveBtn({ onClick }) {
   return <button style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 13, padding: '2px 4px' }} onClick={onClick}>✕</button>;
 }
 
+function formatRanges(nums) {
+  if (!nums.length) return '';
+  const sorted = [...nums].sort((a, b) => a - b);
+  const ranges = [];
+  let start = sorted[0], end = sorted[0];
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] === end + 1) { end = sorted[i]; }
+    else { ranges.push(start === end ? `${start}` : `${start}–${end}`); start = end = sorted[i]; }
+  }
+  ranges.push(start === end ? `${start}` : `${start}–${end}`);
+  return ranges.join(', ');
+}
+
 function TableConfig({ config, onChange }) {
   const { headers = ['', '', ''], rows = [[]] } = config || {};
   const updateH = v => onChange({ ...config, headers: v.split('|').map(h => h.trim()) });
@@ -575,7 +588,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
 }
 
 /* ── Main component ─────────────────────────────────────────────────────── */
-export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading', questionFrom = 1 }) {
+export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading', questionFrom = 1, questionTo = null }) {
   const confirm = useConfirm();
   const toast = useToast();
   const [showPicker, setShowPicker] = useState(false);
@@ -720,6 +733,25 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
 
   const totalQs = groups.reduce((n, g) => n + (g.questions?.length || 0), 0);
 
+  // Validation: duplicates + missing numbers
+  const dupNums = [...new Set(allNums.filter(n => allNums.filter(x => x === n).length > 1))].sort((a, b) => a - b);
+  const missingNums = (() => {
+    if (!allNums.length) return [];
+    if (questionTo) {
+      const numSet = new Set(allNums);
+      const missing = [];
+      for (let i = questionFrom; i <= questionTo; i++) { if (!numSet.has(i)) missing.push(i); }
+      return missing;
+    }
+    const sorted = [...allNums].sort((a, b) => a - b);
+    const missing = [];
+    for (let i = 0; i < sorted.length - 1; i++) {
+      for (let n = sorted[i] + 1; n < sorted[i + 1]; n++) missing.push(n);
+    }
+    return missing;
+  })();
+  const hasWarnings = dupNums.length > 0 || missingNums.length > 0;
+
   return (
     <div>
       {groups.map((g, gi) => (
@@ -835,6 +867,36 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       {totalQs > 0 && (
         <div style={{ marginTop: 10, padding: '8px 12px', background: 'var(--surface2)', borderRadius: 6, fontSize: 12, color: 'var(--text3)' }}>
           Tổng: <strong>{totalQs}</strong> câu hỏi trong <strong>{groups.length}</strong> nhóm
+          {questionTo && <span style={{ marginLeft: 8 }}>| Phạm vi câu {questionFrom}–{questionTo} ({questionTo - questionFrom + 1} câu)</span>}
+          {hasWarnings && <span style={{ marginLeft: 8, color: '#ef4444', fontWeight: 700 }}>⚠ Có lỗi nhập liệu!</span>}
+        </div>
+      )}
+
+      {/* Validation warning banner */}
+      {hasWarnings && (
+        <div style={{ marginTop: 10, padding: '12px 16px', background: '#fef3c7', border: '2px solid #f59e0b', borderRadius: 10, fontSize: 13 }}>
+          <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 8, fontSize: 14 }}>
+            ⚠ Cảnh báo — cần kiểm tra lại câu hỏi
+          </div>
+          {dupNums.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: missingNums.length ? 8 : 0 }}>
+              <span style={{ color: '#ef4444', fontWeight: 700, flexShrink: 0 }}>🔴 Số câu bị trùng:</span>
+              <span style={{ color: '#7f1d1d', fontWeight: 600 }}>
+                {dupNums.map(n => `Câu ${n}`).join(', ')}
+              </span>
+            </div>
+          )}
+          {missingNums.length > 0 && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+              <span style={{ color: '#d97706', fontWeight: 700, flexShrink: 0 }}>🟡 Số câu bị thiếu:</span>
+              <span style={{ color: '#78350f', fontWeight: 600 }}>
+                Câu {formatRanges(missingNums)}
+                {questionTo
+                  ? ` (so với phạm vi ${questionFrom}–${questionTo})`
+                  : ' (khoảng trống giữa các câu hiện có)'}
+              </span>
+            </div>
+          )}
         </div>
       )}
 

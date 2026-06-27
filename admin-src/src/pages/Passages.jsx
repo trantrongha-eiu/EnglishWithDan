@@ -83,7 +83,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
                 </ul>
                 <div style={{ marginTop: 5, color: 'var(--text3)' }}>Mỗi nhóm câu hỏi lưu tự động khi thay đổi (thấy "✓ Đã lưu" ở tiêu đề).</div>
               </div>
-              <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" questionFrom={passageData?.questionRange?.start || 1} />
+              <QuestionGroupBuilder groups={groups} onChange={handleGroupsChange} context="reading" questionFrom={passageData?.questionRange?.start || 1} questionTo={passageData?.questionRange?.end || null} />
             </>
           )}
         </div>
