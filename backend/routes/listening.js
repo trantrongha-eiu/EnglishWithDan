@@ -543,36 +543,12 @@ router.post('/admin/assemble', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
-    // Dùng aggregation để tính totalQuestions/totalParts trong DB,
-    // tránh load toàn bộ sections (bao gồm transcript dài) về Node.js
-    const tests = await ListeningTest.aggregate([
-      { $match: { isActive: true } },
-      { $sort: { testNumber: -1 } },
-      { $project: {
-        name: 1,
-        testNumber: 1,
-        seriesName: 1,
-        audioDuration: 1,
-        totalParts: { $size: '$sections' },
-        totalQuestions: {
-          $sum: {
-            $map: {
-              input: '$sections',
-              as: 's',
-              in: {
-                $sum: {
-                  $map: {
-                    input: '$$s.questionGroups',
-                    as: 'g',
-                    in: { $size: '$$g.questions' }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }}
-    ]);
+    // Loại transcript và correctAnswer/explanation ra để giảm data transfer
+    // (transcript có thể hàng nghìn từ × 4 sections × N bài)
+    const tests = await ListeningTest.find({ isActive: true })
+      .select('-sections.transcript -sections.questionGroups.correctAnswer -sections.questionGroups.explanation -sections.questionGroups.imageUrl')
+      .sort({ testNumber: -1 })
+      .lean();
 
     // Lấy attempt gần nhất của user cho mỗi test
     const attempts = await ListeningAttempt.find({
@@ -595,8 +571,8 @@ router.get('/tests', auth, async (req, res) => {
       testNumber: t.testNumber,
       seriesName: t.seriesName,
       audioDuration: t.audioDuration,
-      totalParts: t.totalParts,
-      totalQuestions: t.totalQuestions,
+      totalParts: t.sections.length,
+      totalQuestions: flattenQuestions(t.sections).length,
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
