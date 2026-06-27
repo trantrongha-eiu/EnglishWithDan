@@ -3644,7 +3644,8 @@
             _ltPracticeBackup   = null;
         }
         _ltOrigSection = _ltCleanSection = null;
-        document.getElementById('lt-section-list')?.innerHTML = '';
+        const _sl = document.getElementById('lt-section-list');
+        if (_sl) _sl.innerHTML = '';
         return true;
     };
     </script>
