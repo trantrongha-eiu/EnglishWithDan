@@ -570,13 +570,41 @@
 
         /* ── Dark mode: fullscreen btn ─────────────────────── */
         [data-theme="dark"] #btn-fullscreen,
-        [data-theme="dark"] #btn-fullscreen-rt { color: #d1d5db; border-color: #374151; }
+        [data-theme="dark"] #btn-fullscreen-pr { color: #d1d5db; border-color: #374151; }
         [data-theme="dark"] #btn-fullscreen:hover,
-        [data-theme="dark"] #btn-fullscreen-rt:hover { background: #374151; }
+        [data-theme="dark"] #btn-fullscreen-pr:hover { background: #374151; }
         [data-theme="dark"] #btn-fullscreen.active,
-        [data-theme="dark"] #btn-fullscreen-rt.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+        [data-theme="dark"] #btn-fullscreen-pr.active { background: #1e40af; color: #fff; border-color: #1e40af; }
 
         /* ── Dark mode: section sub-tabs ─────────────────────── */
         [data-theme="dark"] .lt-sub-tab    { color: #9ca3af; border-color: #374151; }
         [data-theme="dark"] .lt-sub-tab:hover { background: #374151; color: #d1d5db; }
         [data-theme="dark"] .lt-sub-tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+
+        /* ── Share button on card covers ─────────────────────── */
+        .pc-share-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.16);
+            border: 1px solid rgba(255,255,255,.25);
+            color: rgba(255,255,255,.75);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            line-height: 1;
+            padding: 0;
+            transition: background .15s, color .15s, transform .1s;
+            z-index: 5;
+        }
+        .pc-share-btn:hover {
+            background: rgba(255,255,255,.3);
+            color: #fff;
+            transform: scale(1.08);
+        }
+        .pc-share-btn:active { transform: scale(.96); }

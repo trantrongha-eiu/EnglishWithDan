@@ -793,7 +793,7 @@
         function toast(msg, type = 'success') {
             const el = document.getElementById('toast');
             el.className = `show ${type}`;
-            document.getElementById('toast-msg').textContent = msg;
+            document.getElementById('toast-msg').innerHTML = msg;
             clearTimeout(el._t);
             el._t = setTimeout(() => el.classList.remove('show'), 3000);
         }
@@ -824,6 +824,12 @@
                     <div class="test-group-title">${grp}</div>
                     <div class="test-grid">${list.map(renderTestCard).join('')}</div>
                 </div>`).join('');
+            // Auto-navigate if ?testId= present (shareable link to a specific test)
+            const _tid = new URLSearchParams(location.search).get('testId');
+            if (_tid) {
+                const _t = tests.find(t => String(t._id) === _tid);
+                if (_t) setTimeout(() => goToKey(_tid, _t.name || ''), 80);
+            }
         }
 
         function renderTestCard(t) {
@@ -840,6 +846,7 @@
                 <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${(t.name || '').toLowerCase().replace(/"/g, '')}">
                     <div class="test-card-cover ls-cover">
                         ${done ? '<div class="test-done-tick">✓</div>' : ''}
+                        <button class="pc-share-btn" onclick="copyTestLink('${t._id}',event)" title="Sao chép link bài thi"><i class="fas fa-link"></i></button>
                         <div class="test-cover-badge">IELTS Listening</div>
                         <div class="test-cover-title"><i class="fas fa-headphones"></i></div>
                         <div class="test-cover-sub">TEST ${t.testNumber} · ${t.totalParts} phần</div>
@@ -2754,6 +2761,15 @@
         // ══════════════════════════════════════════════
         function pad(n) { return String(n).padStart(2, '0'); }
 
+        function copyTestLink(testId, e) {
+            e.stopPropagation();
+            const url = `${location.origin}/listening.html?testId=${testId}`;
+            navigator.clipboard.writeText(url).then(
+                () => toast('<i class="fas fa-check"></i> Link bài thi đã được sao chép!', 'success'),
+                () => toast('Không thể sao chép link', 'error')
+            );
+        }
+
         // Expose globals
         window.logout = logout;
         window.showScreen = showScreen;
@@ -2782,6 +2798,7 @@
         window.translateSelected = translateSelected; window.closeTranslatePopup = closeTranslatePopup;
         window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
         window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
+        window.copyTestLink = copyTestLink;
         // Shared with block 3 (Bài lẻ)
         window.state = state; window.audio = audio; window.pad = pad; window.toast = toast;
         window.renderQuestionGroup = renderQuestionGroup; window.restoreAnswer = restoreAnswer;
@@ -3081,6 +3098,7 @@
                         <div class="practice-cover-logo"><span>D</span>aniel</div>
                         ${cardLabel}
                         ${doneRibbon}
+                        <button class="pc-share-btn" onclick="event.stopPropagation();copyLtPracticeLink('${s._id}',${isActual ? s.partNumber : partNum})" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
                     </div>
                     <div class="practice-card-body">
                         <div class="practice-card-title">${escHtml(s.title)}</div>
@@ -3606,7 +3624,16 @@
         } catch (e) { console.error(e); }
     }
 
+    function copyLtPracticeLink(sectionId, partNum) {
+        const url = `${location.origin}/listening.html?sectionId=${sectionId}&part=${partNum}`;
+        navigator.clipboard.writeText(url).then(
+            () => toast('<i class="fas fa-check"></i> Link bài lẻ đã được sao chép!', 'success'),
+            () => toast('Không thể sao chép link', 'error')
+        );
+    }
+
     // Expose bài lẻ functions after they are defined
+    window.copyLtPracticeLink = copyLtPracticeLink;
     window.confirmCloseLTPractice = confirmCloseLTPractice;
     window.showLTPracticeHistoryModal = showLTPracticeHistoryModal;
     window.loadLTPracticeReview = loadLTPracticeReview;
