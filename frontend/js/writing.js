@@ -128,9 +128,10 @@ window.addEventListener('popstate', e => {
   } else if (s === 'practice') {
     showPracticeMode(false);
   } else if (s === 'practice-write') {
-    if (practiceState.tasks?.length) {
-      startPracticeTask(e.state.taskType, e.state.taskId, false);
-    }
+    // Forward to a write-screen URL: show the task list instead of restarting
+    // (restarting would call clearPracticeAutoSave and delete the saved draft)
+    if (e.state.taskType) showPracticeTaskList(e.state.taskType, false);
+    else showPracticeMode(false);
   } else {
     showScreen('screen-key');
     checkRestoreBanner();
