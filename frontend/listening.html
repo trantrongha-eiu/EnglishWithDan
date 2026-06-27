@@ -2805,6 +2805,8 @@
     'use strict';
 
     const API = 'https://englishwithdan.onrender.com/api';
+    function authH() { return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' }; }
+    function escHtml(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     /* ── State ─────────────────────────────────────────────────────────── */
     let _ltOrigSection      = null;  // full section with correctAnswer
