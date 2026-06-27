@@ -111,31 +111,49 @@ function showScreen(id) {
   setTimeout(() => { const ki = document.getElementById('key-input'); if (ki) ki.focus(); }, 150);
 })();
 
+window.addEventListener('popstate', e => {
+  const s = e.state?.screen;
+
+  // Clean up write screen if navigating away
+  if (practiceState.task) {
+    stopPracticeStopwatch();
+    savePracticeToStorage();
+    window.onbeforeunload = null;
+    practiceState.task = null;
+    document.getElementById('practice-exit-modal')?.classList.remove('open');
+  }
+
+  if (s === 'practice-list') {
+    showPracticeTaskList(e.state.taskType, false);
+  } else if (s === 'practice') {
+    showPracticeMode(false);
+  } else if (s === 'practice-write') {
+    if (practiceState.tasks?.length) {
+      startPracticeTask(e.state.taskType, e.state.taskId, false);
+    }
+  } else {
+    showScreen('screen-key');
+    checkRestoreBanner();
+  }
+});
+
 async function _openDirectPracticeTask(taskType, taskId) {
   showScreen('screen-practice');
   try {
-    const [taskRes, histRes] = await Promise.all([
-      apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`),
-      apiFetch('/api/writing/practice/history')
-    ]);
+    const taskRes = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
     practiceState.tasks = taskRes.tasks || [];
-
-    const pending = (histRes.attempts || []).find(a =>
-      a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done'
-    );
-    if (pending) {
-      showPracticeMode();
-      return;
-    }
 
     const task = practiceState.tasks.find(t => String(t._id) === taskId);
     if (!task) {
-      showPracticeMode();
+      history.replaceState({ screen: 'practice' }, '', 'writing.html');
+      showPracticeMode(false);
       showToast('Không tìm thấy đề bài hoặc đề đã bị ẩn', 'error');
       return;
     }
 
-    startPracticeTask(taskType, taskId);
+    history.replaceState({ screen: 'practice-write', taskType, taskId }, '',
+      `writing.html?taskType=${taskType}&taskId=${encodeURIComponent(taskId)}`);
+    startPracticeTask(taskType, taskId, false);
   } catch (e) {
     showToast('Lỗi tải đề bài', 'error');
   }
@@ -1216,11 +1234,12 @@ function discardPracticeAutoSave() {
   if (banner) banner.style.display = 'none';
 }
 
-function showPracticeMode() {
+function showPracticeMode(pushHistory = true) {
   const list  = document.getElementById('practice-task-list');
   const cards = document.getElementById('practice-task-select');
   if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
+  if (pushHistory) history.pushState({ screen: 'practice' }, '', 'writing.html');
   checkPracticeRestoreBanner();
   showScreen('screen-practice');
   loadPracticeHistory();
@@ -1235,37 +1254,16 @@ async function loadPracticeHistory() {
     const d = await apiFetch('/api/writing/practice/history');
     const attempts = d.attempts || [];
 
-    // Check if any pending
+    // Show informational notice for pending attempts (no longer blocks new submissions)
     const pending = attempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
     if (pending) {
-      practiceState.hasPending = true;
       noticeEl.style.display = '';
-      // Hide restore banner (draft is outdated if there's a pending submission)
-      const restoreBanner = document.getElementById('practice-restore-banner');
-      if (restoreBanner) restoreBanner.style.display = 'none';
       const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
       const gradingLabel = pending.gradingStatus === 'ai_done' ? 'AI đã chấm, đang chờ giáo viên xác nhận' : 'đang chờ chấm';
       const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
       descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} ${gradingLabel}. Kết quả sẽ hiện trong lịch sử sau khi được xác nhận.`;
-      ['btn-practice-t1', 'btn-practice-t2'].forEach(id => {
-        const btn = document.getElementById(id);
-        if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang chờ chấm'; }
-      });
-      ['pcard-t1', 'pcard-t2'].forEach(id => {
-        const card = document.getElementById(id);
-        if (card) { card.style.cursor = 'not-allowed'; card.style.opacity = '0.6'; }
-      });
     } else {
-      practiceState.hasPending = false;
       noticeEl.style.display = 'none';
-      const b1 = document.getElementById('btn-practice-t1');
-      const b2 = document.getElementById('btn-practice-t2');
-      if (b1) { b1.disabled = false; b1.textContent = 'Chọn đề Task 1'; }
-      if (b2) { b2.disabled = false; b2.textContent = 'Chọn đề Task 2'; }
-      ['pcard-t1', 'pcard-t2'].forEach(id => {
-        const card = document.getElementById(id);
-        if (card) { card.style.cursor = 'pointer'; card.style.opacity = '1'; }
-      });
     }
 
     if (!attempts.length) {
@@ -1304,12 +1302,10 @@ async function loadPracticeHistory() {
   }
 }
 
-async function showPracticeTaskList(taskType) {
-  if (practiceState.hasPending) {
-    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài.', 'info');
-    return;
+async function showPracticeTaskList(taskType, pushHistory = true) {
+  if (pushHistory) {
+    history.pushState({ screen: 'practice-list', taskType }, '', `writing.html?taskType=${taskType}`);
   }
-
   practiceState.taskType = taskType;
   const listPanel  = document.getElementById('practice-task-list');
   const cardSelect = document.getElementById('practice-task-select');
@@ -1356,6 +1352,7 @@ function hidePracticeTaskList() {
   document.getElementById('practice-task-select').style.display = '';
   const s = document.getElementById('writing-task-search');
   if (s) s.value = '';
+  history.pushState({ screen: 'practice' }, '', 'writing.html');
 }
 
 function filterWritingTasks(query) {
@@ -1366,10 +1363,14 @@ function filterWritingTasks(query) {
   });
 }
 
-function startPracticeTask(taskType, taskId) {
+function startPracticeTask(taskType, taskId, pushHistory = true) {
   const task = practiceState.tasks.find(t => String(t._id) === String(taskId));
   if (!task) { showToast('Không tìm thấy đề bài', 'error'); return; }
 
+  if (pushHistory) {
+    history.pushState({ screen: 'practice-write', taskType, taskId }, '',
+      `writing.html?taskType=${taskType}&taskId=${encodeURIComponent(taskId)}`);
+  }
   practiceState.taskType  = taskType;
   practiceState.task      = task;
   practiceState.wordCount = 0;
@@ -1513,17 +1514,17 @@ function confirmExitPractice() {
 function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
   stopPracticeStopwatch();
-  // Save draft before exiting so student can resume
   savePracticeToStorage();
   window.onbeforeunload = null;
-  // Reset task list state
+  practiceState.task = null;
+  history.pushState({ screen: 'practice' }, '', 'writing.html');
   const list  = document.getElementById('practice-task-list');
   const cards = document.getElementById('practice-task-select');
   if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
   showScreen('screen-practice');
-  checkPracticeRestoreBanner(); // Show restore banner since draft was saved
-  loadPracticeHistory(); // Refresh pending status
+  checkPracticeRestoreBanner();
+  loadPracticeHistory();
 }
 
 function confirmSubmitPractice() {
