@@ -104,6 +104,17 @@
     '</div>';
   document.body.appendChild(drawer);
 
+  // ── Facebook floating button ──────────────────────────────
+  var fbBtn = document.createElement('div');
+  fbBtn.className = 'fb-float-container';
+  fbBtn.innerHTML =
+    '<a href="https://facebook.com/tranhadeeptry" target="_blank" rel="noopener nofollow">' +
+      '<div class="fb-float-ring"></div>' +
+      '<div class="fb-float-fill"></div>' +
+      '<span><i class="fab fa-facebook-f"></i></span>' +
+    '</a>';
+  document.body.appendChild(fbBtn);
+
   // ── Zalo floating button ──────────────────────────────────
   var zaloBtn = document.createElement('div');
   zaloBtn.className = 'zalo-container';

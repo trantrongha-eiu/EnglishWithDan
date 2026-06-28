@@ -1269,6 +1269,32 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
 }
 
 /* ══════════════════════════════════════════════
+   FACEBOOK FLOATING BUTTON
+══════════════════════════════════════════════ */
+.fb-float-container { position:fixed; width:40px; height:40px; bottom:180px; left:35px; z-index:9999999; }
+.fb-float-container a { display:block; }
+.fb-float-container span {
+  display:flex; align-items:center; justify-content:center;
+  width:40px; height:40px;
+  border-radius:50%; background:#1877F2; position:relative;
+  color:#fff; font-size:20px;
+  transition:transform .2s;
+}
+.fb-float-container a:hover span { transform:scale(1.1); }
+.fb-float-ring {
+  width:50px; height:50px; top:-5px; right:-5px; position:absolute;
+  background-color:transparent; border-radius:100%;
+  border:2px solid #1877F2; opacity:.5;
+  animation:zoomIn_zalo 1s both infinite;
+}
+.fb-float-fill {
+  width:60px; height:60px; top:-10px; right:-10px; position:absolute;
+  border-radius:100%; border:2px solid transparent;
+  background-color:rgba(24,119,242,.45); opacity:.75;
+  animation:pulse_zalo 1s both infinite;
+}
+
+/* ══════════════════════════════════════════════
    ZALO FLOATING BUTTON
 ══════════════════════════════════════════════ */
 .zalo-container { position:fixed; width:40px; height:40px; bottom:120px; left:35px; z-index:9999999; }
