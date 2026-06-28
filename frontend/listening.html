@@ -2112,7 +2112,7 @@
                 chip.onclick = () => { placeAnswer(qnum, w); picker.remove(); };
                 picker.appendChild(chip);
             });
-            document.body.appendChild(picker);
+            (document.fullscreenElement || document.body).appendChild(picker);
             setTimeout(() => document.addEventListener('click', function closeP(ev) {
                 if (!picker.contains(ev.target)) { picker.remove(); document.removeEventListener('click', closeP); }
             }), 0);
@@ -2351,6 +2351,7 @@
                 const r = data.result;
                 state.reviewResult = r;
                 overlay.style.display = 'none';
+                if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
                 // refresh test list để cập nhật trạng thái đã làm
                 loadTestList();
                 document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
@@ -2754,8 +2755,9 @@
         // MODALS & EXIT
         // ══════════════════════════════════════════════
         function confirmExit() { openModal('modal-exit'); }
-        function forceExit() {
+        async function forceExit() {
             closeModal('modal-exit');
+            if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
             // Save current position so resume banner appears on list screen
             saveExamToStorage();
             setToolExam('none'); // reset cursor before leaving exam
