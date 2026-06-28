@@ -1298,23 +1298,23 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
    ZALO FLOATING BUTTON
 ══════════════════════════════════════════════ */
 .zalo-container { position:fixed; width:40px; height:40px; bottom:120px; left:35px; z-index:9999999; }
-.zalo-container img { max-width:100%; height:auto; }
 .zalo-container a { display:block; }
 .zalo-container span {
-  display:flex; align-items:center;
+  display:flex; align-items:center; justify-content:center;
   width:40px; height:40px;
-  border-radius:50%; background:#1182FC; position:relative;
+  border-radius:50%; overflow:hidden; position:relative;
 }
+.zalo-container img { width:40px; height:40px; object-fit:cover; display:block; }
 .cmoz-alo-circle {
   width:50px; height:50px; top:-5px; right:-5px; position:absolute;
   background-color:transparent; border-radius:100%;
-  border:2px solid #1182FC; opacity:.5;
+  border:2px solid #0068FF; opacity:.5;
   animation:zoomIn_zalo 1s both infinite;
 }
 .cmoz-alo-circle-fill {
   width:60px; height:60px; top:-10px; right:-10px; position:absolute;
   border-radius:100%; border:2px solid transparent;
-  background-color:rgba(17,130,252,.45); opacity:.75;
+  background-color:rgba(0,104,255,.45); opacity:.75;
   animation:pulse_zalo 1s both infinite;
 }
 @keyframes zoomIn_zalo {
