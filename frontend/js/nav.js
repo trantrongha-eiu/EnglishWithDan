@@ -122,7 +122,7 @@
     '<a href="https://zalo.me/0868017791" target="_blank" rel="noopener nofollow">' +
       '<div class="cmoz-alo-circle"></div>' +
       '<div class="cmoz-alo-circle-fill"></div>' +
-      '<span><img src="img/zalo.svg" alt="Liên hệ Zalo"></span>' +
+      '<span><img src="img/zalo-2.png" alt="Liên hệ Zalo"></span>' +
     '</a>';
   document.body.appendChild(zaloBtn);
 
