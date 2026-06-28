@@ -616,6 +616,7 @@ async function loadPracticePassages(category, tabEl) {
       'sentence-endings': 'Sentence Endings',
     };
 
+    const _isPremium = (JSON.parse(localStorage.getItem('user') || '{}').plan === 'premium');
     listEl.innerHTML = `<div class="practice-card-grid">${passages.map(p => {
       const qtypes = [...new Set(
         (p.questionGroups || []).flatMap(g =>
@@ -623,6 +624,8 @@ async function loadPracticePassages(category, tabEl) {
         )
       )].slice(0, 3);
       const qCount = p.questionCount || 0;
+      const btnText = _isPremium ? `Làm bài · ${qCount} câu` : '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói';
+      const btnCls  = `practice-card-btn ${cls}${_isPremium ? '' : ' btn-upgrade-lock'}`;
 
       return `<div class="practice-card" onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
@@ -632,9 +635,8 @@ async function loadPracticePassages(category, tabEl) {
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
           <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
-          <button class="practice-card-btn ${cls}"
-            onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
-            Làm bài · ${qCount} câu
+          <button class="${btnCls}" onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
+            ${btnText}
           </button>
         </div>
       </div>`;

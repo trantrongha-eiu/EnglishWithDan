@@ -3161,8 +3161,10 @@
                 const doneAttr  = doneInfo ? ' data-done="1"' : '';
                 const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
                 const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
-                const btnText   = doneInfo ? `<i class="fas fa-redo"></i> Làm lại · ${s.questionCount} câu` : `<i class="fas fa-play"></i> Làm bài · ${s.questionCount} câu`;
-                const btnCls    = `practice-card-btn ${cardCls}${doneInfo ? ' redo' : ''}`;
+                const btnText   = _userPlan !== 'premium'
+                    ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
+                    : (doneInfo ? `<i class="fas fa-redo"></i> Làm lại · ${s.questionCount} câu` : `<i class="fas fa-play"></i> Làm bài · ${s.questionCount} câu`);
+                const btnCls    = `practice-card-btn ${cardCls}${_userPlan !== 'premium' ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
 
                 return `<div class="practice-card"${doneAttr} data-pid="${s._id}" onclick="startPracticeSection('${s._id}',${isActual ? s.partNumber : partNum})">
                     <div class="practice-card-cover">

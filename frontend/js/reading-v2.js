@@ -770,8 +770,11 @@ async function loadPracticePassages(category, tabEl) {
       const doneRibbon = doneInfo
         ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>`
         : '';
-      const btnText = doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`;
-      const btnCls  = `practice-card-btn ${isActual ? catCls : cls}${doneInfo ? ' redo' : ''}`;
+      const isPremium = _userPlan === 'premium';
+      const btnText = !isPremium
+        ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
+        : (doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`);
+      const btnCls  = `practice-card-btn ${isActual ? catCls : cls}${!isPremium ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
 
       return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
         <div class="practice-card-cover">
