@@ -2072,7 +2072,7 @@ async function submitExam() {
       s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
       document.head.appendChild(s);
     }
-    document.body.appendChild(overlay);
+    (document.fullscreenElement || document.body).appendChild(overlay);
   }
   overlay.style.display = 'flex';
 
@@ -2125,7 +2125,7 @@ function openSubmitErrorModal() {
           </button>
         </div>
       </div>`;
-    document.body.appendChild(m);
+    (document.fullscreenElement || document.body).appendChild(m);
   }
   m.style.display = 'flex';
 }
