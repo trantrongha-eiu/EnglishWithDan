@@ -2018,6 +2018,21 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 [data-theme="dark"] .ls-td-wrong   { color:#f87171; }
 [data-theme="dark"] .ls-td-skip    { color:#6b7280; }
 
+/* ══════════════════════════════════════════════
+   MOBILE – List screen
+══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .list-container { padding: 14px 12px; }
+  .list-header { flex-direction: column; gap: 10px; padding: 16px; }
+  .list-filter { flex-wrap: wrap; gap: 6px; flex-shrink: unset; }
+  .list-filter .test-search-input { width: 100% !important; }
+}
+@media (max-width: 480px) {
+  .list-header h2 { font-size: 17px; }
+  .list-subtitle { font-size: 12px; }
+  .rmode-tab { font-size: 12px; padding: 8px 12px; }
+}
+
 /* History band score */
 .ls-band-good { color:#16a34a; }
 .ls-band-mid  { color:#f59e0b; }

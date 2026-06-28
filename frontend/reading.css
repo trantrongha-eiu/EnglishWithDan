@@ -2882,6 +2882,21 @@ body.eye-protection .split-questions {
 .rd-submit-warn { display:block; margin-top:8px; color:#e53935; font-weight:600; font-size:13px; }
 [data-theme="dark"] .rd-submit-warn { color:#f87171; }
 
+/* ══════════════════════════════════════════════
+   MOBILE – List screen
+══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .list-container { padding: 14px 12px; }
+  .list-header { flex-direction: column; gap: 10px; padding: 16px; }
+  .list-filter { flex-wrap: wrap; gap: 6px; flex-shrink: unset; }
+  .list-filter .test-search-input { width: 100% !important; }
+}
+@media (max-width: 480px) {
+  .list-header h2 { font-size: 17px; }
+  .list-subtitle { font-size: 12px; }
+  .rmode-tab { font-size: 12px; padding: 8px 12px; }
+}
+
 /* Vocab picker: create-new section */
 .rd-vocab-new-section { border-top:1px solid #e5e7eb; padding:12px 0 0; }
 [data-theme="dark"] .rd-vocab-new-section { border-top-color:#374151; }
