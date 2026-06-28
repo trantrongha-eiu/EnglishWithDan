@@ -651,6 +651,11 @@ async function loadPracticePassages(category, tabEl) {
 }
 
 async function startPractice(passageId, category) {
+  const _u = JSON.parse(localStorage.getItem('user') || '{}');
+  if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+    openUpgradeModal(); return;
+  }
+
   _practiceCategory = category;
 
   const cards = document.querySelectorAll('#practice-passage-list .practice-card');

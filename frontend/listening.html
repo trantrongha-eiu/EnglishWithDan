@@ -3194,6 +3194,11 @@
 
     /* ── Start practice for one section ─────────────────────────────────── */
     async function startPracticeSection(sectionId, partNum, _silent = false) {
+        const _u = JSON.parse(localStorage.getItem('user') || '{}');
+        if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+            openUpgradeModal(); return;
+        }
+
         const cards = document.querySelectorAll('#lt-section-list .practice-card');
         const clickedCard = document.querySelector(`#lt-section-list .practice-card[data-pid="${sectionId}"]`);
         cards.forEach(c => {
