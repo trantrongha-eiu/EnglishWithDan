@@ -1140,3 +1140,67 @@
         text-align: center
       }
     }
+
+/* ══════════════════════════════════════
+   FLOATING ZALO BUTTON
+══════════════════════════════════════ */
+.zalo-float {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.zalo-float img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 104, 255, 0.45);
+  animation: zalo-pulse 2.2s infinite;
+  transition: transform 0.2s;
+}
+
+.zalo-float:hover img {
+  transform: scale(1.1);
+  animation: none;
+}
+
+.zalo-float-label {
+  background: #0068FF;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.zalo-float:hover .zalo-float-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes zalo-pulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(0,104,255,.45); }
+  50%       { box-shadow: 0 4px 28px rgba(0,104,255,.8), 0 0 0 8px rgba(0,104,255,.12); }
+}
+
+@media (max-width: 600px) {
+  .zalo-float {
+    bottom: 18px;
+    right: 16px;
+  }
+  .zalo-float img {
+    width: 48px;
+    height: 48px;
+  }
+}
