@@ -782,6 +782,7 @@ async function loadPracticePassages(category, tabEl) {
           <div class="practice-cover-logo"><span>D</span>aniel</div>
           ${badgeLabel}
           ${doneRibbon}
+          <button class="pc-share-btn" onclick="event.stopPropagation();copyRdPracticeLink('${p._id}','${category}')" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
         </div>
         <div class="practice-card-body">
           <div class="practice-card-title">${escHtml(p.title)}</div>
@@ -3169,6 +3170,17 @@ function _fallbackCopyReading(url) {
   try { document.execCommand('copy'); showVocabToast('Đã sao chép link!', 'success'); }
   catch { showVocabToast('Không thể sao chép link', 'info'); }
   document.body.removeChild(ta);
+}
+function copyRdPracticeLink(passageId, category) {
+  const base = location.origin + location.pathname.split('?')[0];
+  const url = `${base}?passageId=${passageId}&category=${category}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => showVocabToast('Đã sao chép link bài này!', 'success'))
+      .catch(() => _fallbackCopyReading(url));
+  } else {
+    _fallbackCopyReading(url);
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
