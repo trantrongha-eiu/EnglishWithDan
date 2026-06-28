@@ -475,24 +475,55 @@
             }
         }
 
+        .teacher-profile {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 28px;
+        }
+
+        .teacher-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+            border: 2px solid rgba(255,255,255,0.5);
+            flex-shrink: 0;
+        }
+
+        .teacher-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .teacher-title {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 3px;
+        }
+
         .benefits-sidebar h3 {
-            font-size: 24px;
-            margin-bottom: 30px;
+            font-size: 20px;
+            margin-bottom: 22px;
             font-weight: 600;
         }
 
         .benefit-item {
             display: flex;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             align-items: flex-start;
         }
 
         .benefit-number {
-            font-size: 24px;
-            font-weight: 700;
-            min-width: 50px;
-            height: 50px;
+            font-size: 22px;
+            min-width: 46px;
+            height: 46px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             display: flex;
