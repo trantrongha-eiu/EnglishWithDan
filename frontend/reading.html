@@ -75,11 +75,14 @@
             <button onclick="showPracticeHistoryModal()" class="rd-hist-btn">
               <i class="fas fa-history"></i> Lịch sử
             </button>
+            <button onclick="copyReadingUrl()" class="rd-hist-btn" title="Sao chép link chia sẻ trang này">
+              <i class="fas fa-link"></i> Sao chép link
+            </button>
           </div>
         </div>
         <div class="plele-filter-bar" id="practice-filter-bar">
           <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
-          <button class="pf-btn" onclick="filterPracticeByStatus('done', this)">✓ Đã làm</button>
+          <button class="pf-btn" onclick="filterPracticeByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
           <button class="pf-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
           <span id="practice-done-count" class="rd-done-count"></span>
         </div>
@@ -254,6 +257,7 @@
       </div>
       <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
       <div class="exam-bar-right">
+        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ"><i class="fas fa-link"></i></button>
         <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
@@ -309,6 +313,7 @@
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
         <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
+        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" id="btn-copy-link-rt"><i class="fas fa-link"></i></button>
         <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen-rt"><i class="fas fa-expand" id="fs-icon-retry"></i></button>
         <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
@@ -344,8 +349,8 @@
     <div class="exam-footer">
       <div class="q-nav-scroll" id="retry-q-nav"></div>
       <div class="exam-footer-btns" id="retry-footer-btns">
-        <button class="btn-ghost" onclick="closeRetry()">← Về review</button>
-        <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>
+        <button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Về review</button>
+        <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>
       </div>
     </div>
   </div>

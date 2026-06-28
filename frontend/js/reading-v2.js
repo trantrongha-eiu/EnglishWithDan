@@ -879,8 +879,8 @@ function _enterPracticeScreen(passage, category, passageId) {
   if (badge) badge.style.display = 'none';
 
   document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="confirmCloseRetry()">← Chọn bài khác</button>
-    <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
+    <button class="btn-ghost" onclick="confirmCloseRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+    <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
     `<div class="passage-title">${escHtml(passage.title)}</div>
@@ -898,6 +898,9 @@ function _enterPracticeScreen(passage, category, passageId) {
 
   setTool('none');
   initDropZones();
+  // Show copy-link button only in practice mode (URL has passageId)
+  const copyLinkBtn = document.getElementById('btn-copy-link-rt');
+  if (copyLinkBtn) copyLinkBtn.style.display = '';
   showScreen('retry');
 
   // Start stopwatch + progress HUD (practice mode only)
@@ -2334,8 +2337,8 @@ function retryCurrentPassage() {
   if (badge) badge.style.display = 'none';
 
   document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="closeRetry()">← Về review</button>
-    <button class="btn-primary" onclick="submitRetry()">Kiểm tra đáp án</button>`;
+    <button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Về review</button>
+    <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
     `<div class="passage-title">${escHtml(cleanPassage.title)}</div>
@@ -2353,6 +2356,9 @@ function retryCurrentPassage() {
   }
 
   initDropZones();
+  // Hide copy-link button for retry-from-review (URL is ?review=..., not passageId)
+  const copyLinkBtn = document.getElementById('btn-copy-link-rt');
+  if (copyLinkBtn) copyLinkBtn.style.display = 'none';
   showScreen('retry');
 }
 
@@ -2523,9 +2529,9 @@ function _doSubmitRetry() {
   }
 
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
-    ? `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
+    ? `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
-    : `<button class="btn-ghost" onclick="closeRetry()">Quay lại review</button>
+    : `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;
 }
 
@@ -2668,6 +2674,9 @@ async function loadPracticeReview(attemptId) {
         .join('');
     }
 
+    // loadPracticeReview has no passageId URL — hide copy-link
+    const copyLinkBtnPr = document.getElementById('btn-copy-link-rt');
+    if (copyLinkBtnPr) copyLinkBtnPr.style.display = 'none';
     showScreen('retry');
 
     const inner = document.getElementById('retry-questions-inner');
@@ -2691,8 +2700,8 @@ async function loadPracticeReview(attemptId) {
       + renderPassageQuestions(passage, true, reviewMap);
 
     document.getElementById('retry-footer-btns').innerHTML =
-      `<button class="btn-ghost" onclick="closeRetry()">← Chọn bài khác</button>
-       <button class="btn-primary" onclick="retryReset()">🔁 Làm lại bài này</button>`;
+      `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+       <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     document.getElementById('retry-score-badge').textContent = `${attempt.correctCount}/${attempt.totalQuestions} câu đúng`;
     document.getElementById('retry-score-badge').style.display = '';
     inner.scrollTop = 0;
@@ -2804,7 +2813,7 @@ function renderDictPopup(data) {
   document.getElementById('dict-body').innerHTML = `
     <div class="dict-primary-row">
       <span class="dict-primary-meaning" id="dict-primary-meaning">${escHtml(data.primaryMeaning)}</span>
-      <button class="dict-save-btn" onclick="saveVocab()">＋ Lưu từ</button>
+      <button class="dict-save-btn" onclick="saveVocab()"><i class="fas fa-plus"></i> Lưu từ</button>
     </div>
     ${chipsHtml}${exHtml}`;
 }
@@ -3138,6 +3147,28 @@ async function apiFetch(url, opts = {}) {
     throw new Error(isColdStart ? 'server-cold-start' : `HTTP ${res.status}`);
   }
   return res.json();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SHARE URL
+══════════════════════════════════════════════════════════════════════ */
+function copyReadingUrl() {
+  const url = location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => showVocabToast('Đã sao chép link chia sẻ!', 'success'))
+      .catch(() => _fallbackCopyReading(url));
+  } else {
+    _fallbackCopyReading(url);
+  }
+}
+function _fallbackCopyReading(url) {
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showVocabToast('Đã sao chép link!', 'success'); }
+  catch { showVocabToast('Không thể sao chép link', 'info'); }
+  document.body.removeChild(ta);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
