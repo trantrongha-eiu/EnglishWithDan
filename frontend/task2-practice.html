@@ -294,7 +294,7 @@
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
   </div>
 </header>
 
@@ -333,7 +333,8 @@ function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; 
 function toggleWpSound() {
   _soundEnabled = !_soundEnabled;
   localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
 function showToast(msg, type = 'warn', ms = 3000) {
@@ -386,6 +387,42 @@ let state = {
 let _autoNextTimer = null;
 
 // ════════════════════════════════════════════════════════
+//  SHAREABLE URL
+// ════════════════════════════════════════════════════════
+function _syncT2ShareUrl() {
+  const params = new URLSearchParams();
+  if (state.selectedWeek) params.set('week', state.selectedWeek);
+  if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
+  if (state.selectedLevel && state.selectedLevel !== 'beginner') params.set('level', state.selectedLevel);
+  if (state.currentMode && state.currentMode !== 'practice') params.set('mode', state.currentMode);
+  const search = params.toString() ? '?' + params.toString() : location.pathname.split('?')[0];
+  history.replaceState(null, '', location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : ''));
+}
+
+function copyT2ShareUrl() {
+  // Always include current level+mode in the copied URL
+  const params = new URLSearchParams();
+  if (state.selectedWeek) params.set('week', state.selectedWeek);
+  if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
+  if (state.selectedLevel) params.set('level', state.selectedLevel);
+  if (state.currentMode) params.set('mode', state.currentMode);
+  const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('Đã sao chép link chia sẻ!', 'info', 2500))
+      .catch(() => _fallbackCopy(url));
+  } else { _fallbackCopy(url); }
+}
+function _fallbackCopy(url) {
+  const el = document.createElement('textarea');
+  el.value = url; el.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+  document.body.appendChild(el); el.select();
+  try { document.execCommand('copy'); showToast('Đã sao chép link chia sẻ!', 'info', 2500); }
+  catch { showToast('Không sao chép được – hãy copy thủ công.', 'warn'); }
+  document.body.removeChild(el);
+}
+
+// ════════════════════════════════════════════════════════
 //  QUIT MODAL
 // ════════════════════════════════════════════════════════
 let _t2QuitCb = null;
@@ -425,7 +462,8 @@ function initUser() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
   if (name) document.getElementById('userName').textContent = '👋 ' + name;
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
 }
 
@@ -496,6 +534,10 @@ async function loadWeeks() {
     const params = new URLSearchParams(location.search);
     const urlWeek    = parseInt(params.get('week')) || null;
     const urlTopicId = params.get('topicId');
+    const urlLevel   = params.get('level');
+    const urlMode    = params.get('mode');
+    if (urlLevel) state.selectedLevel = urlLevel;
+    if (urlMode)  state.currentMode   = urlMode;
 
     const data = await apiFetch('/api/task2/weeks');
     state.weeks = data.weeks || [];
@@ -539,9 +581,11 @@ function renderWeeks() {
         <h2 class="t2-page-h2" style="font-size:20px">📝 IELTS Task 2 Writing</h2>
         <p class="t2-page-sub" style="font-size:14px">Chọn tuần học để bắt đầu luyện tập</p>
       </div>
-      <button onclick="openT2History()" class="t2-back-btn" style="margin-top:4px;white-space:nowrap">
-        <i class="fas fa-history"></i> Lịch sử
-      </button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button onclick="openT2History()" class="t2-back-btn" style="white-space:nowrap">
+          <i class="fas fa-history"></i> Lịch sử
+        </button>
+      </div>
     </div>
     <div class="t2-week-grid">
       ${weekNums.map(w => {
@@ -603,8 +647,8 @@ async function selectTopic(id) {
   const topic = state.topics.find(t => t._id === id);
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
-  history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '',
-    `task2-practice.html?week=${state.selectedWeek}&topicId=${id}`);
+  const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, level: state.selectedLevel, mode: state.currentMode });
+  history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
   // Fetch persisted wrong-question IDs if user is logged in
   if (localStorage.getItem('token')) {
     try {
@@ -622,8 +666,11 @@ async function selectTopic(id) {
 function renderSelect() {
   const t = state.selectedTopic;
   return `
-    <div class="t2-nav">
+    <div class="t2-nav" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <span onclick="goTopics()">Tuần ${state.selectedWeek}</span> › <b>${t.topicName}</b></div>
+      <button onclick="copyT2ShareUrl()" class="t2-back-btn" style="white-space:nowrap;font-size:12px;padding:4px 10px" title="Sao chép link bài luyện này">
+        <i class="fas fa-link"></i> Sao chép link
+      </button>
     </div>
     <div class="t2-selector-panel">
       <div style="font-size:28px;margin-bottom:4px">${t.topicEmoji || '📝'}</div>
@@ -680,8 +727,8 @@ function renderSelect() {
     </div>`;
 }
 function bindSelect() {}
-function setLevel(l) { state.selectedLevel = l; render(); }
-function setMode2(m) { state.currentMode = m; render(); }
+function setLevel(l) { state.selectedLevel = l; _syncT2ShareUrl(); render(); }
+function setMode2(m) { state.currentMode = m; _syncT2ShareUrl(); render(); }
 function setExamCount(n) { state.examCount = n; render(); }
 function setAutoNext(v) { state.autoNext = v; }
 function setShuffleMode(v) { state.shuffleMode = v; }
@@ -984,7 +1031,7 @@ async function submitPractice() {
     const isOk = data.isCorrect;
     isOk ? playOk() : playWrong();
     state.sessionDone++;
-    if (isOk) { state.sessionCorrect++; updateXPStorage(5, true); }
+    if (isOk) { state.sessionCorrect++; updateXPStorage(q.xpReward || 5, true); }
     updateSessionStats();
 
     // Update progress dot for current question
@@ -1472,6 +1519,17 @@ async function openT2History() {
   }
   document.getElementById('t2-hist-overlay').style.display = 'flex';
   const body = document.getElementById('t2-hist-body');
+  const token = localStorage.getItem('token');
+  if (!token) {
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:#9ca3af">
+      <div style="font-size:40px;margin-bottom:12px">🔒</div>
+      <p style="font-size:14px;margin-bottom:16px">Vui lòng đăng nhập để xem lịch sử luyện tập</p>
+      <a href="login.html" class="t2-start-btn" style="display:inline-block;text-decoration:none;font-size:14px;padding:10px 24px">
+        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+      </a>
+    </div>`;
+    return;
+  }
   body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
   try {
     const data = await apiFetch('/api/task2/history?limit=100');
