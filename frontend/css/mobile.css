@@ -1302,9 +1302,9 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
 .zalo-container span {
   display:flex; align-items:center; justify-content:center;
   width:40px; height:40px;
-  border-radius:50%; background:#0068FF; overflow:hidden; position:relative;
+  border-radius:50%; overflow:hidden; position:relative;
 }
-.zalo-container img { width:28px; height:28px; object-fit:contain; display:block; }
+.zalo-container img { width:40px; height:40px; object-fit:cover; display:block; }
 .cmoz-alo-circle {
   width:50px; height:50px; top:-5px; right:-5px; position:absolute;
   background-color:transparent; border-radius:100%;
