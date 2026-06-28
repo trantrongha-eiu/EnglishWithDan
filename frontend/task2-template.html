@@ -259,7 +259,7 @@
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
   </div>
 </header>
 
@@ -283,6 +283,9 @@
       </button>
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
+      </button>
+      <button onclick="copyTplShareUrl()" class="t2-back-btn" style="white-space:nowrap;font-size:12px;padding:4px 10px" title="Sao chép link chia sẻ trang này">
+        <i class="fas fa-link"></i> Sao chép link
       </button>
     </div>
     <div class="t2-type-progress-wrap">
@@ -309,7 +312,8 @@ function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; 
 function toggleWpSound() {
   _soundEnabled = !_soundEnabled;
   localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
 function showToast(msg, type = 'warn', ms = 3000) {
@@ -334,7 +338,8 @@ function initUser() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
   if (name) document.getElementById('userName').textContent = '👋 ' + name;
-  document.getElementById('wp-sound-toggle').textContent = _soundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
 }
 
@@ -606,9 +611,39 @@ function saveTplScores() {
   localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
 }
 
+// ── URL sharing ────────────────────────────────────────────────
+function _syncTplShareUrl() {
+  const params = new URLSearchParams();
+  if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
+  history.replaceState(null, '', location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : ''));
+}
+function copyTplShareUrl() {
+  const params = new URLSearchParams();
+  if (_tplActiveType) params.set('type', _tplActiveType);
+  const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('Đã sao chép link chia sẻ!', 'info', 2500))
+      .catch(() => _fallbackCopyTpl(url));
+  } else { _fallbackCopyTpl(url); }
+}
+function _fallbackCopyTpl(url) {
+  const ta = document.createElement('textarea');
+  ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('Đã sao chép link!', 'info', 2500); }
+  catch { showToast('Không thể sao chép', 'warn', 2000); }
+  document.body.removeChild(ta);
+}
+
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initUser();
+  // Restore type from URL param
+  const _urlParams = new URLSearchParams(location.search);
+  const _urlType   = _urlParams.get('type');
+  if (_urlType && TPL_DATA[_urlType]) _tplActiveType = _urlType;
+
   try {
     const saved = localStorage.getItem('tpl_scores');
     if (saved) _tplScores = JSON.parse(saved);
@@ -752,7 +787,7 @@ function renderTplContent() {
     <div class="t2-exam-bar" id="exam-bar">
       <span class="t2-exam-timer" id="exam-time-display">${fmtTime(_examTimeLeft)}</span>
       <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${escHtml(type.name)} · Chế độ thi thử</span>
-      <button class="t2-exam-exit-btn" onclick="exitExamMode()">✕ Thoát</button>
+      <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát</button>
     </div>` : '';
 
   const footerHtml = _examMode
@@ -762,7 +797,7 @@ function renderTplContent() {
        </div>`
     : `<div class="t2-tpl-footer">
         <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
-        <button class="t2-tpl-reset-btn" onclick="resetTplType()">🔄 Làm lại</button>
+        <button class="t2-tpl-reset-btn" onclick="resetTplType()"><i class="fas fa-redo"></i> Làm lại</button>
        </div>`;
 
   area.innerHTML = `
@@ -962,13 +997,14 @@ function cancelTypeSwitch() {
 }
 
 function doSwitchType(typeId) {
-  saveTplAttemptToServer(_tplActiveType); // lưu tiến độ type cũ trước khi chuyển
+  saveTplAttemptToServer(_tplActiveType);
   _tplActiveType = typeId;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === typeId);
   });
   renderTplContent();
   updateTplScore();
+  _syncTplShareUrl();
 }
 
 // ── Exam mode ──────────────────────────────────────────────────
@@ -1216,8 +1252,12 @@ function openTplHistory() {
 async function loadTplHistory() {
   const body = document.getElementById('tpl-hist-body');
   body.innerHTML = '<div class="tpl-hist-loading"><div class="tpl-hist-loading-icon">⏳</div><p>Đang tải...</p></div>';
+  const token = localStorage.getItem('token');
+  if (!token) {
+    body.innerHTML = `<div style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:12px">🔒</div><p style="color:#555;font-size:14px">Vui lòng đăng nhập để xem lịch sử luyện tập.</p><a href="login.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">Đăng nhập</a></div>`;
+    return;
+  }
   try {
-    const token = localStorage.getItem('token');
     const res   = await fetch(`${API}/api/task2template/history?limit=200`, {
       headers: { Authorization: 'Bearer ' + token }
     });
