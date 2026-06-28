@@ -18,7 +18,7 @@
 <script src="js/nav.js"></script>
 
 <!-- ═══════════════════════════════════════════
-     SCREEN 1 – ENTER KEY
+     SCREEN 1 – HOME
 ═══════════════════════════════════════════ -->
 <div id="screen-key" class="screen active">
 
@@ -26,7 +26,7 @@
     <div class="key-card">
       <div class="key-card-icon">✏️</div>
       <h2>IELTS Writing</h2>
-      <p class="key-desc">Nhập mã truy cập do giáo viên cung cấp để bắt đầu bài thi</p>
+      <p class="key-desc">Làm bài thi Writing tổng hợp Task 1 + Task 2 với đề ngẫu nhiên</p>
 
       <!-- Restore banner (shown only when unsaved exam exists) -->
       <div id="restore-banner" class="wr-restore-banner" style="display:none">
@@ -38,17 +38,6 @@
         </div>
       </div>
 
-      <input
-        type="text"
-        id="key-input"
-        class="key-input"
-        placeholder="VD: A3F9-B2C1"
-        maxlength="9"
-        autocomplete="off"
-        oninput="formatKeyInput(this)"
-        onkeydown="if(event.key==='Enter') startExam()"
-      />
-      <div id="key-msg" class="key-msg hidden"></div>
       <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()">✏️ Bắt đầu làm bài</button>
       <div style="margin-top:16px;border-top:1px solid #f0f0f0;padding-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="btn-secondary" style="font-size:13px" onclick="showPracticeMode()">

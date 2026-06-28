@@ -5,7 +5,6 @@ const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
-const AccessKey = require('../models/AccessKey');
 const auth = require('../middleware/auth');
 
 // Chặn brute-force key: tối đa 10 lần start / 15 phút / user
@@ -45,41 +44,7 @@ router.get('/tests', auth, async (req, res) => {
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
-    res.json({ success: true, tests: result });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/reading/verify-key
-// Xác thực key trước khi hiện nút "Bắt đầu làm bài"
-// Body: { key, testId }
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/verify-key', auth, async (req, res) => {
-  try {
-    const { key, testId } = req.body;
-    if (!key) return res.json({ success: false, message: 'Vui lòng nhập key' });
-
-    const accessKey = await AccessKey.findOne({
-      key: key.toUpperCase().trim(),
-      isActive: true,
-      testType: { $in: ['reading', null] },
-      $or: [{ testId }, { testId: null }]
-    });
-
-    if (!accessKey) {
-      return res.json({ success: false, message: 'Key không hợp lệ' });
-    }
-    if (accessKey.currentUses >= accessKey.maxUses) {
-      return res.json({ success: false, message: 'Key đã được sử dụng hết lượt' });
-    }
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
-      return res.json({ success: false, message: 'Key đã hết hạn' });
-    }
-
-    res.json({ success: true, message: 'Key hợp lệ ✓' });
+    res.json({ success: true, tests: result, userPlan: req.user.plan || 'free' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
@@ -88,26 +53,17 @@ router.post('/verify-key', auth, async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/reading/start
-// Bắt đầu thi: random 3 passages + tạo TestAttempt + tăng lượt dùng key
-// Body: { key, testId }
+// Bắt đầu thi: random 3 passages + tạo TestAttempt
+// Body: { testId }
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/start', auth, startLimiter, async (req, res) => {
   try {
-    const { key, testId } = req.body;
+    const { testId } = req.body;
 
-    // Xác thực key lần nữa (double-check)
-    const accessKey = await AccessKey.findOne({
-      key: key.toUpperCase().trim(),
-      isActive: true,
-      testType: { $in: ['reading', null] },
-      $or: [{ testId }, { testId: null }]
-    });
-
-    if (!accessKey || accessKey.currentUses >= accessKey.maxUses) {
-      return res.status(403).json({ success: false, message: 'Key không hợp lệ hoặc đã hết lượt' });
-    }
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
-      return res.status(403).json({ success: false, message: 'Key đã hết hạn' });
+    // Kiểm tra quyền: chỉ premium và admin/teacher mới được làm bài
+    const isPremium = req.user.plan === 'premium' || ['admin', 'teacher'].includes(req.user.role);
+    if (!isPremium) {
+      return res.status(403).json({ success: false, message: 'Bạn cần nâng cấp lên Premium để làm bài thi này', code: 'PLAN_REQUIRED' });
     }
 
     // Kiểm tra test tồn tại
@@ -138,9 +94,6 @@ router.post('/start', auth, startLimiter, async (req, res) => {
       startTime: new Date()
     });
     await attempt.save();
-
-    // Tăng lượt dùng key
-    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
 
     // Trả về passages – ẨN correctAnswer và explanation khi đang thi
     const safeQ = q => ({

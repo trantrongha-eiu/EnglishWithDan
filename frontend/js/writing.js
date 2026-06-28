@@ -108,7 +108,6 @@ function showScreen(id) {
   }
 
   checkRestoreBanner();
-  setTimeout(() => { const ki = document.getElementById('key-input'); if (ki) ki.focus(); }, 150);
 })();
 
 window.addEventListener('popstate', e => {
@@ -161,46 +160,19 @@ async function _openDirectPracticeTask(taskType, taskId) {
   }
 }
 
-// ──────────────────────────────────────────────────────
-// Format key input  (XXXX-XXXX) — đồng bộ với reading/listening
-// ──────────────────────────────────────────────────────
-function formatKeyInput(input) {
-  let v = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
-  if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
-  input.value = v;
-}
-
-function showKeyMsg(text, type) {
-  const el = document.getElementById('key-msg');
-  if (!el) return;
-  el.textContent = text;
-  el.className = `key-msg ${type}`;
-}
 
 // ──────────────────────────────────────────────────────
-// Verify key & load exam
+// Start exam (no key required — writing is free)
 // ──────────────────────────────────────────────────────
 async function startExam() {
-  const key = document.getElementById('key-input').value.trim();
-  showKeyMsg('', 'hidden');
-
-  if (!key || key.replace(/-/g, '').length < 8) {
-    showKeyMsg('Vui lòng nhập mã truy cập (8 ký tự)', 'error');
-    return;
-  }
-
   const btn = document.getElementById('btn-start');
-  btn.disabled = true;
-  btn.textContent = 'Đang kiểm tra...';
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
 
   try {
-    const data = await apiFetch('/api/writing/verify-key', {
-      method: 'POST',
-      body: JSON.stringify({ key })
-    });
+    const data = await apiFetch('/api/writing/start', { method: 'POST', body: JSON.stringify({}) });
 
     if (!data.success) {
-      showKeyMsg(data.message || 'Mã không hợp lệ', 'error');
+      showToast(data.message || 'Không thể tải bài thi', 'error');
       return;
     }
 
@@ -212,10 +184,9 @@ async function startExam() {
 
     launchExam();
   } catch (e) {
-    showKeyMsg(e.message, 'error');
+    showToast(e.message, 'error');
   } finally {
-    btn.disabled = false;
-    btn.textContent = '✏️ Bắt đầu làm bài';
+    if (btn) { btn.disabled = false; btn.textContent = '✏️ Bắt đầu làm bài'; }
   }
 }
 
@@ -1049,9 +1020,6 @@ function forceExit() {
   // Reset state (giữ autosave để restore sau)
   state.exam = null;
   showScreen('screen-key');
-  const ki = document.getElementById('key-input');
-  if (ki) { ki.value = ''; ki.focus(); }
-  showKeyMsg('', 'hidden');
 }
 
 function loadFromStorage() {

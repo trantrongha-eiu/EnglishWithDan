@@ -1,22 +1,12 @@
 const express        = require('express');
 const router         = express.Router();
-const rateLimit      = require('express-rate-limit');
 const auth           = require('../middleware/auth');
-const AccessKey      = require('../models/AccessKey');
 const WritingExam    = require('../models/WritingExam');
 const WritingTask1   = require('../models/WritingTask1');
 const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample  = require('../models/WritingSample');
 const WritingDraft   = require('../models/WritingDraft');
-
-const verifyKeyLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  keyGenerator: req => req.user?._id?.toString() || req.ip,
-  handler: (req, res) => res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, thử lại sau 15 phút.' }),
-  skip: req => req.user?.role === 'admin'
-});
 
 // helper – random document from a collection
 async function randomDoc(Model) {
@@ -26,44 +16,16 @@ async function randomDoc(Model) {
 }
 
 // ══════════════════════════════════════════════════
-// POST /api/writing/verify-key
-// Body: { key }
+// POST /api/writing/start
+// Không cần mã truy cập — writing là tính năng miễn phí
 // Returns exam + random task1 + random task2
 // ══════════════════════════════════════════════════
-router.post('/verify-key', auth, verifyKeyLimiter, async (req, res) => {
+router.post('/start', auth, async (req, res) => {
   try {
-    const { key } = req.body;
-    if (!key) return res.status(400).json({ success: false, message: 'Thiếu mã truy cập' });
+    let exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 });
+    if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 });
+    if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
 
-    const accessKey = await AccessKey.findOne({ key: key.toUpperCase().trim() });
-    if (!accessKey)
-      return res.status(404).json({ success: false, message: 'Mã không tồn tại' });
-    if (!accessKey.isActive)
-      return res.status(403).json({ success: false, message: 'Mã đã bị vô hiệu hoá' });
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt)
-      return res.status(403).json({ success: false, message: 'Mã đã hết hạn' });
-    if (accessKey.currentUses >= accessKey.maxUses)
-      return res.status(403).json({ success: false, message: 'Mã đã được sử dụng hết lượt' });
-    if (accessKey.testType && accessKey.testType !== 'writing')
-      return res.status(403).json({ success: false, message: 'Mã này không dùng cho Writing' });
-
-    // Lấy đề thi (chỉ cần name + duration)
-    // Ưu tiên: exam gắn với key → exam active mới nhất → bất kỳ exam nào → tự tạo default
-    let exam = null;
-    if (accessKey.testId) {
-      exam = await WritingExam.findById(accessKey.testId);
-    }
-    if (!exam) {
-      exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 });
-    }
-    if (!exam) {
-      exam = await WritingExam.findOne().sort({ createdAt: -1 });
-    }
-    if (!exam) {
-      exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
-    }
-
-    // Random task1 + task2 từ pool
     const task1 = await randomDoc(WritingTask1);
     const task2 = await randomDoc(WritingTask2);
     if (!task1)
@@ -71,19 +33,9 @@ router.post('/verify-key', auth, verifyKeyLimiter, async (req, res) => {
     if (!task2)
       return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 2 nào. Vui lòng liên hệ giáo viên.' });
 
-    // Tăng lượt dùng
-    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
-
-    // Trả về exam kèm task1 + task2 – giữ cấu trúc giống cũ để writing.js frontend không đổi
     res.json({
       success: true,
-      exam: {
-        _id:      exam._id,
-        name:     exam.name,
-        duration: exam.duration,
-        task1,
-        task2
-      }
+      exam: { _id: exam._id, name: exam.name, duration: exam.duration, task1, task2 }
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

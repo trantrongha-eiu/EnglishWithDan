@@ -6,9 +6,9 @@ import { apiFetch } from '../utils/api';
 const NAV = [
   { section: 'TỔNG QUAN' },
   { to: '/dashboard',       icon: '📊', label: 'Dashboard' },
-  { to: '/users',           icon: '👥', label: 'Người dùng' },
-  { to: '/access-codes',    icon: '🔑', label: 'Mã truy cập' },
-  { to: '/courses',         icon: '🎓', label: 'Khóa học' },
+  { to: '/users',              icon: '👥', label: 'Người dùng' },
+  { to: '/upgrade-requests',   icon: '⭐', label: 'Yêu cầu nâng cấp', upgradeBadge: true },
+  { to: '/courses',            icon: '🎓', label: 'Khóa học' },
   { section: 'NỘI DUNG THI' },
   { to: '/passages',        icon: '📖', label: 'Bài đọc (Passages)' },
   { to: '/reading-tests',   icon: '📋', label: 'Bộ đề Reading' },
@@ -34,6 +34,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [pendingGrades, setPendingGrades] = useState(0);
+  const [pendingUpgrades, setPendingUpgrades] = useState(0);
 
   useEffect(() => {
     function fetchOnline() {
@@ -45,9 +46,13 @@ export default function Sidebar({ mobileOpen, onClose }) {
         setPendingGrades(n);
       }).catch(() => {});
     }
+    function fetchUpgrades() {
+      apiFetch('/admin/upgrade-requests?status=pending&limit=1').then(d => setPendingUpgrades(d.total || 0)).catch(() => {});
+    }
     fetchOnline();
     fetchPending();
-    const id = setInterval(() => { fetchOnline(); fetchPending(); }, 60_000);
+    fetchUpgrades();
+    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); }, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -100,6 +105,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 {item.label}
                 {item.badge && pendingGrades > 0 && (
                   <span className="nav-badge">{pendingGrades > 99 ? '99+' : pendingGrades}</span>
+                )}
+                {item.upgradeBadge && pendingUpgrades > 0 && (
+                  <span className="nav-badge">{pendingUpgrades > 99 ? '99+' : pendingUpgrades}</span>
                 )}
               </NavLink>
             );

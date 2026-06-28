@@ -8,7 +8,6 @@ import AdminLayout from './layouts/AdminLayout';
 
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
-import AccessCodes from './pages/AccessCodes';
 import Courses from './pages/Courses';
 import Passages from './pages/Passages';
 import ReadingTests from './pages/ReadingTests';
@@ -30,6 +29,7 @@ import Messages from './pages/Messages';
 import WritingGrades from './pages/WritingGrades';
 import WritingSamples from './pages/WritingSamples';
 import Tuition from './pages/Tuition';
+import UpgradeRequests from './pages/UpgradeRequests';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -48,7 +48,6 @@ export default function App() {
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="users" element={<Users />} />
-                <Route path="access-codes" element={<AccessCodes />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="passages" element={<Passages />} />
                 <Route path="reading-tests" element={<ReadingTests />} />
@@ -70,6 +69,7 @@ export default function App() {
                 <Route path="writing-grades" element={<WritingGrades />} />
                 <Route path="writing-samples" element={<WritingSamples />} />
                 <Route path="tuition" element={<Tuition />} />
+                <Route path="upgrade-requests" element={<UpgradeRequests />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

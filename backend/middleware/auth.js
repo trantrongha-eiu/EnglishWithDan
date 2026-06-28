@@ -24,6 +24,12 @@ module.exports = async (req, res, next) => {
       });
     }
 
+    // Auto-expire plan nếu đã hết hạn
+    if (user.plan === 'premium' && user.planExpiresAt && user.planExpiresAt < new Date()) {
+      user.plan = 'free';
+      User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
+    }
+
     req.user = user;
     // Cập nhật lastSeen — fire-and-forget, không chặn request
     User.updateOne({ _id: user._id }, { lastSeen: new Date() }).catch(() => {});

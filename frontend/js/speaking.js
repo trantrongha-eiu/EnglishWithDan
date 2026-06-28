@@ -90,16 +90,9 @@ function clearAllTimers() {
 }
 
 // ──────────────────────────────────────────────────────
-// Access Key Gate
+// Show practice (speaking is free — no key gate)
 // ──────────────────────────────────────────────────────
-function showGate() {
-  document.getElementById('sp-gate').style.display = 'flex';
-  document.getElementById('sp-tabs').style.display = 'none';
-  document.querySelectorAll('.sp-content').forEach(el => el.classList.add('sp-tab-hidden'));
-}
-
 function showPractice() {
-  document.getElementById('sp-gate').style.display = 'none';
   document.getElementById('sp-tabs').style.display = 'flex';
   document.querySelectorAll('.sp-content').forEach(el => el.classList.remove('sp-tab-hidden'));
   const tabParam = new URLSearchParams(location.search).get('tab');
@@ -108,49 +101,6 @@ function showPractice() {
   switchTab(tab, false);
 }
 
-async function submitKey() {
-  const input = document.getElementById('gate-key-input');
-  const msgEl = document.getElementById('gate-msg');
-  const btn   = document.getElementById('gate-submit-btn');
-  const key   = (input?.value || '').trim().toUpperCase();
-
-  if (!key) { showGateMsg('Vui lòng nhập mã truy cập.', 'error'); return; }
-
-  btn.disabled = true;
-  btn.textContent = 'Đang kiểm tra...';
-  hideGateMsg();
-
-  try {
-    const data = await apiFetch('/api/speaking/verify-key', {
-      method: 'POST',
-      body: JSON.stringify({ key }),
-    });
-    if (!data.success) {
-      showGateMsg(data.message || 'Mã không hợp lệ.', 'error');
-      return;
-    }
-    sessionStorage.setItem('sp_verified', '1');
-    showPractice();
-    showToast('✅ Xác nhận thành công! Chúc bạn luyện tập hiệu quả.', 'success');
-  } catch (e) {
-    showGateMsg(e.message || 'Lỗi kết nối. Vui lòng thử lại.', 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Xác nhận →';
-  }
-}
-
-function showGateMsg(msg, type = 'error') {
-  const el = document.getElementById('gate-msg');
-  if (!el) return;
-  el.textContent  = msg;
-  el.style.display = 'block';
-  el.className = `gate-msg gate-msg--${type}`;
-}
-function hideGateMsg() {
-  const el = document.getElementById('gate-msg');
-  if (el) el.style.display = 'none';
-}
 
 // ──────────────────────────────────────────────────────
 // Init
@@ -180,12 +130,8 @@ function hideGateMsg() {
     });
   }
 
-  // Check session access
-  if (sessionStorage.getItem('sp_verified') === '1') {
-    showPractice();
-  } else {
-    showGate();
-  }
+  // Speaking is free — show practice directly
+  showPractice();
 })();
 
 // ──────────────────────────────────────────────────────

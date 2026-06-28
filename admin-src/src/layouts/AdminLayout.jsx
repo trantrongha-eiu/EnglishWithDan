@@ -7,7 +7,6 @@ import { useTheme } from '../contexts/ThemeContext';
 const TITLES = {
   '/dashboard':              'Dashboard',
   '/users':                  'Người dùng',
-  '/access-codes':           'Mã truy cập',
   '/courses':                'Khóa học',
   '/passages':               'Bài đọc (Passages)',
   '/reading-tests':          'Bộ đề Reading',
@@ -26,6 +25,7 @@ const TITLES = {
   '/messages':               'Hộp thư',
   '/writing-samples':        'Bài mẫu Writing',
   '/tuition':                'Quản lý học phí',
+  '/upgrade-requests':       'Yêu cầu nâng cấp Premium',
 };
 
 export default function AdminLayout() {

@@ -16,7 +16,9 @@ function userPayload(user) {
     username:  user.username,
     email:     user.email,
     role:      user.role,
-    avatar:    user.avatar || ''
+    avatar:    user.avatar || '',
+    plan:      user.plan || 'free',
+    planExpiresAt: user.planExpiresAt || null
   };
 }
 

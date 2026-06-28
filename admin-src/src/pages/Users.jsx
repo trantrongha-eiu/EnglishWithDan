@@ -27,6 +27,57 @@ function roleBadge(r) {
   return <span className={`badge ${map[r] || 'badge-gray'}`}>{label[r] || r}</span>;
 }
 
+function planBadge(plan, expiresAt) {
+  if (plan === 'premium') {
+    const exp = expiresAt ? new Date(expiresAt) : null;
+    const expired = exp && exp < new Date();
+    return <span className={`badge ${expired ? 'badge-gray' : 'badge-blue'}`} title={exp ? `HSD: ${exp.toLocaleDateString('vi-VN')}` : ''}>
+      {expired ? 'Premium (Hết hạn)' : '⭐ Premium'}
+    </span>;
+  }
+  return <span className="badge badge-gray">Free</span>;
+}
+
+function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSaved }) {
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+
+  async function setPlan(plan, months) {
+    setLoading(true);
+    try {
+      await apiFetch(`/admin/users/${userId}/plan`, { method: 'PUT', body: JSON.stringify({ plan, months }) });
+      toast(plan === 'premium' ? `Đã nâng ${username} lên Premium (${months} tháng)` : `Đã hạ ${username} về Free`);
+      onSaved();
+      onClose();
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setLoading(false); }
+  }
+
+  const exp = planExpiresAt ? new Date(planExpiresAt).toLocaleDateString('vi-VN') : null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 400 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Gói dịch vụ — {username}</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 4 }}>
+            Hiện tại: {planBadge(currentPlan, planExpiresAt)}{exp && <span style={{ marginLeft: 6, fontSize: 12 }}>HSD: {exp}</span>}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 1)}>⭐ Premium 1 tháng — 90,000 ₫</button>
+            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 3)}>⭐ Premium 3 tháng — 250,000 ₫</button>
+            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 6)}>⭐ Premium 6 tháng — 500,000 ₫</button>
+            <button className="btn btn-ghost" disabled={loading} onClick={() => setPlan('free', 0)} style={{ marginTop: 4 }}>🔽 Hạ về Free</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CreateUserModal({ onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({ username: '', email: '', password: '', role: 'student', firstName: '', lastName: '' });
@@ -194,6 +245,7 @@ export default function Users() {
   const [statusFilter, setStatusFilter] = useState('');
   const [editId, setEditId] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [planUser, setPlanUser] = useState(null);
   const [onlineIds, setOnlineIds] = useState(new Set());
   const timer = useRef(null);
 
@@ -237,6 +289,7 @@ export default function Users() {
     <>
       {editId && <UserModal userId={editId} onClose={() => setEditId(null)} onSaved={() => load(page)} />}
       {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} onSaved={() => load(page)} />}
+      {planUser && <PlanModal userId={planUser._id} username={planUser.username} currentPlan={planUser.plan} planExpiresAt={planUser.planExpiresAt} onClose={() => setPlanUser(null)} onSaved={() => load(page)} />}
 
       <div className="section-header">
         <h2 className="section-title">Người dùng ({total})</h2>
@@ -263,12 +316,12 @@ export default function Users() {
         <table className="table">
           <thead>
             <tr>
-              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>ROLE</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
+              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
             </tr>
           </thead>
           <tbody>
             {users.length === 0
-              ? <tr><td colSpan={8} className="table-empty">Không có người dùng</td></tr>
+              ? <tr><td colSpan={9} className="table-empty">Không có người dùng</td></tr>
               : users.map(u => {
                 const ls = formatLastSeen(u.lastSeen);
                 return (
@@ -284,6 +337,7 @@ export default function Users() {
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{u.email}</td>
                   <td>{[u.firstName, u.lastName].filter(Boolean).join(' ') || '–'}</td>
                   <td>{roleBadge(u.role)}</td>
+                  <td>{planBadge(u.plan, u.planExpiresAt)}</td>
                   <td>
                     {u.isBanned
                       ? <span className="badge badge-red">Bị cấm</span>
@@ -294,6 +348,7 @@ export default function Users() {
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
+                      {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
                       <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
                       {isAdmin && (
                         <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}

@@ -12,16 +12,7 @@ const ListeningTest            = require('../models/ListeningTest');
 const ListeningAttempt         = require('../models/ListeningAttempt');
 const ListeningSection         = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
-const AccessKey                = require('../models/AccessKey');
 const auth                     = require('../middleware/auth');
-
-const verifyKeyLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { success: false, message: 'Quá nhiều lần thử, vui lòng đợi 15 phút' }
-});
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -595,74 +586,26 @@ router.get('/tests', auth, async (req, res) => {
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
-    res.json({ success: true, tests: list });
+    res.json({ success: true, tests: list, userPlan: req.user.plan || 'free' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
-// STUDENT – Xác thực Access Key (trước khi vào làm bài)
-// POST /api/listening/verify-key
-// Body: { key, testId }
-// ══════════════════════════════════════════════════════════════════════════════
-router.post('/verify-key', auth, verifyKeyLimiter, async (req, res) => {
-  try {
-    const { key, testId } = req.body;
-    if (!key) return res.json({ success: false, message: 'Vui lòng nhập key' });
-
-    const accessKey = await AccessKey.findOne({
-      key: key.toUpperCase().trim(),
-      isActive: true,
-      testType: { $in: ['listening', null] },
-      $or: [{ testId }, { testId: null }]
-    });
-
-    if (!accessKey) {
-      return res.json({ success: false, message: 'Key không hợp lệ' });
-    }
-    if (accessKey.currentUses >= accessKey.maxUses) {
-      return res.json({ success: false, message: 'Key đã được sử dụng hết lượt' });
-    }
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
-      return res.json({ success: false, message: 'Key đã hết hạn' });
-    }
-
-    res.json({ success: true, message: 'Key hợp lệ ✓' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// ══════════════════════════════════════════════════════════════════════════════
-// STUDENT – Lấy full đề để làm bài (yêu cầu access key)
+// STUDENT – Lấy full đề để làm bài (yêu cầu Premium)
 // POST /api/listening/tests/:id/start
-// Body: { key }
 // ══════════════════════════════════════════════════════════════════════════════
 router.post('/tests/:id/start', auth, async (req, res) => {
   try {
-    const { key } = req.body;
-
-    // Xác thực key (double-check)
-    const accessKey = await AccessKey.findOne({
-      key: (key || '').toUpperCase().trim(),
-      isActive: true,
-      testType: { $in: ['listening', null] },
-      $or: [{ testId: req.params.id }, { testId: null }]
-    });
-
-    if (!accessKey || accessKey.currentUses >= accessKey.maxUses) {
-      return res.status(403).json({ success: false, message: 'Key không hợp lệ hoặc đã hết lượt' });
-    }
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt) {
-      return res.status(403).json({ success: false, message: 'Key đã hết hạn' });
+    // Kiểm tra quyền: chỉ premium và admin/teacher mới được làm bài
+    const isPremium = req.user.plan === 'premium' || ['admin', 'teacher'].includes(req.user.role);
+    if (!isPremium) {
+      return res.status(403).json({ success: false, message: 'Bạn cần nâng cấp lên Premium để làm bài thi này', code: 'PLAN_REQUIRED' });
     }
 
     const test = await ListeningTest.findOne({ _id: req.params.id, isActive: true });
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
-
-    // Tăng lượt dùng key
-    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
 
     const sections = test.sections.map(s => ({
       partNumber: s.partNumber,

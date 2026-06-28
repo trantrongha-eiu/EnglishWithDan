@@ -25,6 +25,7 @@ const state = {
 };
 
 let allTests = [];
+let _userPlan = 'free';   // refreshed on loadTests
 let _activeFilter = 'all';
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
@@ -175,8 +176,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         setReadingMode('full', false);
       }
-    } else if (s === 'key' && e.state.testId) {
-      _openKeyScreen(e.state.testId, e.state.testName);
+    } else if (s === 'starting' && e.state.testId) {
+      // Browser forward into a test start — treat as back to list
+      await loadTests(false);
     } else if (s === 'practice' && e.state.passageId) {
       // Forward button to a saved practice URL — re-enter that practice (silent: no re-push)
       startPractice(e.state.passageId, e.state.category || 'passage1', true);
@@ -202,8 +204,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (testIdParam) {
     const test = allTests.find(t => t._id === testIdParam);
     if (test) {
-      history.replaceState({ screen: 'key', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
-      _openKeyScreen(test._id, test.name);
+      if (_userPlan === 'premium') {
+        history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
+        state.testId = test._id;
+        state.testName = test.name;
+        _doStartExam(test._id);
+      } else {
+        history.replaceState({ screen: 'list' }, '', 'reading.html');
+        openUpgradeModal();
+      }
     }
   } else if (passageIdParam) {
     // Shareable practice link: build a list entry first so Back works
@@ -266,6 +275,9 @@ async function loadTests(fromNav = false) {
   try {
     const res = await apiFetch('/api/reading/tests');
     allTests = res.tests || [];
+    _userPlan = res.userPlan || 'free';
+    const promoBanner = document.getElementById('premium-promo-banner');
+    if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
     renderTestList(allTests);
     checkResumeExam();
   } catch (e) {
@@ -325,8 +337,8 @@ function testCard(t) {
       <div class="test-card-name">${escHtml(t.name)}</div>
       <div class="test-card-meta">40 câu · 60 phút</div>
       ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
-      <button class="btn-do-test" onclick="goToKey('${t._id}','${escHtml(t.name)}')">
-        ${done ? 'Làm test mới' : 'Bắt đầu'}
+      <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escHtml(t.name)}')">
+        ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? 'Làm test mới' : 'Bắt đầu')}
       </button>
       <div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>
       ${done ? `<button class="btn-redo-test" onclick="loadReviewByTest('${t._id}')">Xem lại kết quả</button>` : ''}
@@ -357,55 +369,39 @@ function applyTestFilters() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   SCREEN 2 – KEY
+   SCREEN 2 – START TEST (plan-gated)
 ══════════════════════════════════════════════════════════════════════ */
-// Called from test card button — updates URL too
-function goToKey(testId, testName) {
-  history.pushState({ screen: 'key', testId, testName }, '', `?testId=${testId}`);
-  _openKeyScreen(testId, testName);
-}
-
-// Internal: opens key screen without touching URL (used by popstate / direct link)
-function _openKeyScreen(testId, testName) {
+function goToStartTest(testId, testName) {
+  if (_userPlan !== 'premium') {
+    openUpgradeModal();
+    return;
+  }
   state.testId = testId;
   state.testName = testName;
-  document.getElementById('key-test-name').textContent = testName;
-  document.getElementById('key-input').value = '';
-  const msg = document.getElementById('key-msg');
-  msg.textContent = ''; msg.className = 'key-msg hidden';
-  showScreen('key');
-  setTimeout(() => document.getElementById('key-input')?.focus(), 50);
+  history.pushState({ screen: 'starting', testId, testName }, '', `?testId=${testId}`);
+  _doStartExam(testId);
 }
 
-function formatKeyInput(inp) {
-  let v = inp.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
-  if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
-  inp.value = v;
-}
-
-async function verifyAndStart() {
-  const key = document.getElementById('key-input').value.trim();
-  const btn = document.getElementById('btn-start-key');
-  const msg = document.getElementById('key-msg');
-  if (!key) { showMsg(msg, 'Vui lòng nhập mã truy cập', 'error'); return; }
-  btn.disabled = true; btn.textContent = 'Đang xác thực...';
+async function _doStartExam(testId) {
+  const btn = document.querySelector(`#tcard-${testId} .btn-do-test`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
   try {
     const res = await apiFetch('/api/reading/start', {
       method: 'POST',
-      body: JSON.stringify({ key, testId: state.testId })
+      body: JSON.stringify({ testId })
     });
-    if (!res.success) { showMsg(msg, res.message, 'error'); return; }
+    if (!res.success) {
+      showVocabToast(res.message || 'Không thể bắt đầu bài thi', 'error');
+      history.replaceState({ screen: 'list' }, '', 'reading.html');
+      if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+      return;
+    }
     startExam(res);
   } catch (e) {
-    showMsg(msg, 'Lỗi kết nối server', 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Bắt đầu làm bài';
+    showVocabToast('Lỗi kết nối server', 'error');
+    history.replaceState({ screen: 'list' }, '', 'reading.html');
+    if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
   }
-}
-
-function showMsg(el, text, type) {
-  el.textContent = text;
-  el.className = `key-msg ${type}`;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3209,3 +3205,99 @@ document.addEventListener('click', e => {
   if (settingsBtns.some(id => { const b = document.getElementById(id); return b && (b === e.target || b.contains(e.target)); })) return;
   panel.classList.add('hidden');
 });
+
+/* ══════════════════════════════════════════════════════════════════════
+   PREMIUM UPGRADE MODAL
+══════════════════════════════════════════════════════════════════════ */
+const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+let _upgradeSettings = null;
+
+async function openUpgradeModal() {
+  const modal = document.getElementById('modal-upgrade');
+  if (!modal) return;
+  modal.classList.remove('hidden');
+  // Fetch bank info & QR once
+  if (!_upgradeSettings) {
+    try {
+      const res = await fetch(`${API}/tuition/settings`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const data = await res.json();
+      _upgradeSettings = data.settings || {};
+    } catch { _upgradeSettings = {}; }
+    _renderUpgradeBankInfo();
+  }
+  selectUpgradePlan(1);
+}
+
+function closeUpgradeModal() {
+  const modal = document.getElementById('modal-upgrade');
+  if (modal) modal.classList.add('hidden');
+}
+
+function selectUpgradePlan(months) {
+  document.querySelectorAll('.up-plan-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.up-plan-btn[data-months="${months}"]`);
+  if (btn) btn.classList.add('active');
+  const amount = UPGRADE_PRICES[months] || 0;
+  const el = document.getElementById('up-total-price');
+  if (el) el.textContent = amount.toLocaleString('vi-VN') + ' ₫';
+  const el2 = document.getElementById('up-selected-months');
+  if (el2) el2.textContent = months;
+  // Update transfer content
+  const s = _upgradeSettings || {};
+  const contentEl = document.getElementById('up-transfer-content');
+  if (contentEl && s.paymentNote) {
+    contentEl.textContent = s.paymentNote;
+  }
+}
+
+function _renderUpgradeBankInfo() {
+  const s = _upgradeSettings || {};
+  const el = document.getElementById('up-bank-info');
+  if (!el) return;
+  const rows = [];
+  if (s.bankName)    rows.push(`<div class="up-bank-row"><span class="up-bank-label">🏦 Ngân hàng</span><span class="up-bank-val">${s.bankName}</span></div>`);
+  if (s.accountName) rows.push(`<div class="up-bank-row"><span class="up-bank-label">👤 Chủ TK</span><span class="up-bank-val">${s.accountName}</span></div>`);
+  if (s.bankAccount) rows.push(`<div class="up-bank-row"><span class="up-bank-label">💳 Số TK</span><span class="up-bank-val up-acc-num">${s.bankAccount}<button onclick="copyUpgradeAccount('${s.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
+  if (s.paymentNote) rows.push(`<div class="up-bank-row"><span class="up-bank-label">📋 Nội dung CK</span><span class="up-bank-val" id="up-transfer-content">${s.paymentNote}</span></div>`);
+  el.innerHTML = rows.join('');
+  const qrEl = document.getElementById('up-qr-img');
+  if (qrEl) { qrEl.src = s.qrImageUrl || ''; qrEl.style.display = s.qrImageUrl ? 'block' : 'none'; }
+}
+
+function copyUpgradeAccount(num) {
+  if (navigator.clipboard) navigator.clipboard.writeText(num).then(() => showVocabToast('Đã sao chép số tài khoản', 'success'));
+}
+
+async function submitUpgradeRequest() {
+  const activeBtn = document.querySelector('.up-plan-btn.active');
+  const months = activeBtn ? parseInt(activeBtn.dataset.months) : 1;
+  const submitBtn = document.getElementById('btn-upgrade-submit');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...'; }
+  try {
+    const res = await fetch(`${API}/upgrade/request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+      body: JSON.stringify({ months })
+    });
+    const data = await res.json();
+    if (data.success) {
+      closeUpgradeModal();
+      showVocabToast('Yêu cầu đã gửi! Admin sẽ xác nhận trong 24 giờ.', 'success');
+    } else {
+      showVocabToast(data.message || 'Lỗi gửi yêu cầu', 'error');
+    }
+  } catch {
+    showVocabToast('Lỗi kết nối server', 'error');
+  } finally {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Tôi đã thanh toán'; }
+  }
+}
+
+window.goToStartTest = goToStartTest;
+window.openUpgradeModal = openUpgradeModal;
+window.closeUpgradeModal = closeUpgradeModal;
+window.selectUpgradePlan = selectUpgradePlan;
+window.submitUpgradeRequest = submitUpgradeRequest;
+window.copyUpgradeAccount = copyUpgradeAccount;

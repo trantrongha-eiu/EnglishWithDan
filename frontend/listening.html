@@ -47,6 +47,16 @@
             </div>
 
 
+            <!-- Premium promo banner -->
+            <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(79,70,229,.06));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap">
+              <div style="font-size:22px">⭐</div>
+              <div style="flex:1;min-width:200px">
+                <div style="font-size:13px;font-weight:700;color:#7c3aed;margin-bottom:2px">Nâng cấp Premium để làm bài thi IELTS thật</div>
+                <div style="font-size:12px;color:var(--text2,#555)">Ngân hàng đề Reading · Listening · Writing · Vocabulary — cập nhật thường xuyên</div>
+              </div>
+              <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+            </div>
+
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
             <div id="resume-banner">
                 <span><i class="fas fa-bolt"></i> Bài thi dở dang: <strong id="resume-test-name"></strong> — <span
@@ -370,28 +380,59 @@
     </div>
 
     <!-- ══════════════════════════════════════════════
-     SCREEN: KEY  (giống reading)
+     MODAL – NÂNG CẤP PREMIUM (listening)
 ══════════════════════════════════════════════ -->
-    <div id="screen-key" class="screen">
-        <div class="key-overlay">
-            <div class="key-card">
-                <div class="key-card-icon">🔑</div>
-                <h3>Nhập mã truy cập</h3>
-                <p class="key-desc">Bạn cần mã từ giáo viên để bắt đầu bài thi này</p>
-                <div class="key-test-name" id="key-test-name"></div>
-                <input id="key-input" type="text" class="key-input ls-key-input" placeholder="VD: A3F9-B2C1"
-                    maxlength="9" autocomplete="off" oninput="formatKeyInput(this)"
-                    onkeydown="if(event.key==='Enter') verifyKeyAndStart()" />
-                <div id="key-msg" class="key-msg hidden"></div>
-                <div class="key-actions">
-                    <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-arrow-left"></i> Quay lại</button>
-                    <button class="btn-primary" id="btn-start-key" onclick="verifyKeyAndStart()">
-                        <i class="fas fa-headphones"></i> Bắt đầu làm bài
-                    </button>
-                </div>
-            </div>
+    <div id="modal-upgrade" class="modal-overlay hidden" onclick="if(event.target===this)closeUpgradeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px">
+      <div style="background:var(--card,#fff);border-radius:20px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.25)">
+        <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:24px 28px 20px;color:#fff;position:relative">
+          <button onclick="closeUpgradeModal()" style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+          <div style="font-size:28px;margin-bottom:6px">⭐</div>
+          <h3 style="margin:0 0 4px;font-size:20px;font-weight:700">Nâng cấp Premium</h3>
+          <p style="margin:0;font-size:13px;opacity:.85">Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary</p>
         </div>
+        <div style="padding:20px 28px 0">
+          <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:var(--text2,#555)">Chọn gói:</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+            <button class="up-plan-btn" data-months="1" onclick="selectUpgradePlan(1)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
+              <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 tháng</div>
+              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">90.000 ₫</div>
+            </button>
+            <button class="up-plan-btn" data-months="3" onclick="selectUpgradePlan(3)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
+              <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 tháng</div>
+              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">250.000 ₫</div>
+            </button>
+            <button class="up-plan-btn" data-months="6" onclick="selectUpgradePlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
+              <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
+              <div style="font-size:15px;font-weight:700;color:var(--text,#111)">6 tháng</div>
+              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">500.000 ₫</div>
+            </button>
+          </div>
+          <div style="background:var(--bg,#f9fafb);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:center">
+            <span style="font-size:13px;color:var(--text2,#555)">Tổng thanh toán:</span>
+            <span id="up-total-price" style="font-size:22px;font-weight:800;color:#7c3aed;margin-left:10px">90.000 ₫</span>
+          </div>
+          <div id="up-bank-info" style="font-size:13px;line-height:2;margin-bottom:10px"></div>
+          <div style="text-align:center;margin-bottom:12px">
+            <img id="up-qr-img" src="" alt="QR chuyển khoản" style="max-width:180px;border-radius:10px;border:1px solid var(--border,#e5e7eb);display:none">
+          </div>
+        </div>
+        <div style="padding:0 28px 24px;display:flex;flex-direction:column;gap:10px">
+          <button id="btn-upgrade-submit" onclick="submitUpgradeRequest()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+            Tôi đã thanh toán
+          </button>
+          <p style="margin:0;font-size:12px;color:var(--text3,#888);text-align:center">Sau khi thanh toán, Admin sẽ xác nhận và nâng cấp tài khoản của bạn trong vòng 24 giờ.</p>
+        </div>
+      </div>
     </div>
+    <style>
+      .up-plan-btn.active { border-color: #7c3aed !important; background: #f5f3ff !important; }
+      .up-bank-row { display:flex; align-items:center; gap:10px; }
+      .up-bank-label { color:var(--text3,#888); min-width:110px; font-size:12px; }
+      .up-bank-val { font-weight:700; color:var(--text,#111); }
+      .up-acc-num { font-family:monospace; font-size:16px; color:#1d4ed8; }
+      .up-acc-num button { background:none; border:none; cursor:pointer; color:#64748b; margin-left:6px; }
+      .btn-upgrade-lock { background: linear-gradient(135deg,#7c3aed,#4f46e5) !important; color:#fff !important; }
+    </style>
 
     <!-- Modal: History -->
     <div class="modal-overlay hidden" id="modal-history">
@@ -801,12 +842,19 @@
         // ══════════════════════════════════════════════
         // SCREEN: LIST
         // ══════════════════════════════════════════════
+        let _userPlan = 'free';
+        const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+        let _upgradeSettings = null;
+
         async function loadTestList() {
             try {
                 const res = await fetch(`${API}/listening/tests`, { headers: authH() });
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 state.tests = data.tests;
+                _userPlan = data.userPlan || 'free';
+                const promoBanner = document.getElementById('premium-promo-banner');
+                if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
                 renderTestList(data.tests);
             } catch (err) {
                 document.getElementById('tests-wrapper').innerHTML =
@@ -828,7 +876,7 @@
             const _tid = new URLSearchParams(location.search).get('testId');
             if (_tid) {
                 const _t = tests.find(t => String(t._id) === _tid);
-                if (_t) setTimeout(() => goToKey(_tid, _t.name || ''), 80);
+                if (_t) setTimeout(() => goToStartTest(_tid), 80);
             }
         }
 
@@ -855,7 +903,7 @@
                         <div class="test-card-name">${t.name}</div>
                         <div class="test-card-meta"><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</div>
                         ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
-                        <button class="btn-do-test" onclick="goToKey('${t._id}', '${safeName}')"><i class="fas fa-headphones"></i> ${done ? 'Làm lại' : 'Bắt đầu'}</button>
+                        <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}')"><i class="fas ${_userPlan !== 'premium' ? 'fa-lock' : 'fa-headphones'}" style="font-size:11px"></i> ${_userPlan !== 'premium' ? 'Upgrade gói' : (done ? 'Làm lại' : 'Bắt đầu')}</button>
                         ${done ? `<button class="btn-redo-test" onclick="reviewFromHistory('${t.lastAttempt._id}')"><i class="fas fa-search"></i> Xem lại</button>` : ''}
                     </div>
                 </div>`;
@@ -886,31 +934,88 @@
         }
 
         // ══════════════════════════════════════════════
-        // ACCESS KEY FLOW  (screen-key, giống reading)
+        // PLAN-GATED START
         // ══════════════════════════════════════════════
-        function goToKey(testId, testName) {
+        function goToStartTest(testId) {
+            if (_userPlan !== 'premium') { openUpgradeModal(); return; }
             state.pendingTestId = testId;
-            document.getElementById('key-test-name').textContent = testName;
-            document.getElementById('key-input').value = '';
-            const msg = document.getElementById('key-msg');
-            msg.textContent = ''; msg.className = 'key-msg hidden';
-            const btn = document.getElementById('btn-start-key');
-            btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
-            showScreen('key');
-            setTimeout(() => document.getElementById('key-input').focus(), 100);
+            startTest(testId);
         }
 
-        function formatKeyInput(inp) {
-            let v = inp.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
-            if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
-            inp.value = v;
+        // ══════════════════════════════════════════════
+        // PREMIUM UPGRADE MODAL
+        // ══════════════════════════════════════════════
+        async function openUpgradeModal() {
+            const modal = document.getElementById('modal-upgrade');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            if (!_upgradeSettings) {
+                try {
+                    const res = await fetch(`${API}/tuition/settings`, { headers: authH() });
+                    const data = await res.json();
+                    _upgradeSettings = data.settings || {};
+                } catch { _upgradeSettings = {}; }
+                _renderUpgradeBankInfo();
+            }
+            selectUpgradePlan(1);
+        }
+        function closeUpgradeModal() {
+            const modal = document.getElementById('modal-upgrade');
+            if (modal) modal.classList.add('hidden');
+        }
+        function selectUpgradePlan(months) {
+            document.querySelectorAll('.up-plan-btn').forEach(b => b.classList.remove('active'));
+            const btn = document.querySelector(`.up-plan-btn[data-months="${months}"]`);
+            if (btn) btn.classList.add('active');
+            const amount = UPGRADE_PRICES[months] || 0;
+            const el = document.getElementById('up-total-price');
+            if (el) el.textContent = amount.toLocaleString('vi-VN') + ' ₫';
+        }
+        function _renderUpgradeBankInfo() {
+            const s = _upgradeSettings || {};
+            const el = document.getElementById('up-bank-info');
+            if (!el) return;
+            const rows = [];
+            if (s.bankName)    rows.push(`<div class="up-bank-row"><span class="up-bank-label">🏦 Ngân hàng</span><span class="up-bank-val">${s.bankName}</span></div>`);
+            if (s.accountName) rows.push(`<div class="up-bank-row"><span class="up-bank-label">👤 Chủ TK</span><span class="up-bank-val">${s.accountName}</span></div>`);
+            if (s.bankAccount) rows.push(`<div class="up-bank-row"><span class="up-bank-label">💳 Số TK</span><span class="up-bank-val up-acc-num">${s.bankAccount}<button onclick="copyUpgradeAccount('${s.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
+            if (s.paymentNote) rows.push(`<div class="up-bank-row"><span class="up-bank-label">📋 Nội dung CK</span><span class="up-bank-val">${s.paymentNote}</span></div>`);
+            el.innerHTML = rows.join('');
+            const qrEl = document.getElementById('up-qr-img');
+            if (qrEl) { qrEl.src = s.qrImageUrl || ''; qrEl.style.display = s.qrImageUrl ? 'block' : 'none'; }
+        }
+        function copyUpgradeAccount(num) {
+            if (navigator.clipboard) navigator.clipboard.writeText(num).then(() => toast('Đã sao chép số TK', 'success'));
+        }
+        async function submitUpgradeRequest() {
+            const activeBtn = document.querySelector('.up-plan-btn.active');
+            const months = activeBtn ? parseInt(activeBtn.dataset.months) : 1;
+            const submitBtn = document.getElementById('btn-upgrade-submit');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...'; }
+            try {
+                const res = await fetch(`${API}/upgrade/request`, {
+                    method: 'POST', headers: authH(),
+                    body: JSON.stringify({ months })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeUpgradeModal();
+                    toast('Yêu cầu đã gửi! Admin sẽ xác nhận trong 24 giờ.', 'success');
+                } else {
+                    toast(data.message || 'Lỗi gửi yêu cầu', 'error');
+                }
+            } catch { toast('Lỗi kết nối server', 'error'); }
+            finally {
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Tôi đã thanh toán'; }
+            }
         }
 
-        function showKeyMsg(text, type) {
-            const el = document.getElementById('key-msg');
-            el.textContent = text;
-            el.className = `key-msg ${type}`;
-        }
+        window.goToStartTest = goToStartTest;
+        window.openUpgradeModal = openUpgradeModal;
+        window.closeUpgradeModal = closeUpgradeModal;
+        window.selectUpgradePlan = selectUpgradePlan;
+        window.submitUpgradeRequest = submitUpgradeRequest;
+        window.copyUpgradeAccount = copyUpgradeAccount;
 
         async function safeJson(res) {
             const text = await res.text();
@@ -920,43 +1025,15 @@
             return JSON.parse(text);
         }
 
-        async function verifyKeyAndStart() {
-            const key = document.getElementById('key-input').value.trim();
-            const btn = document.getElementById('btn-start-key');
-            if (!key) { showKeyMsg('Vui lòng nhập mã truy cập', 'error'); return; }
-
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
-            document.getElementById('key-msg').className = 'key-msg hidden';
-
-            try {
-                // Bước 1: verify (không tốn lượt)
-                const vRes = await fetch(`${API}/listening/verify-key`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ key, testId: state.pendingTestId })
-                });
-                const vData = await safeJson(vRes);
-                if (!vData.success) {
-                    showKeyMsg(vData.message || 'Invalid access code', 'error');
-                    btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
-                    return;
-                }
-                // Key valid → start test
-                await startTest(state.pendingTestId, key);
-            } catch (err) {
-                showKeyMsg(err.message, 'error');
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-headphones"></i> Bắt đầu làm bài';
-            }
-        }
-
         // ══════════════════════════════════════════════
         // START EXAM
         // ══════════════════════════════════════════════
-        async function startTest(testId, key) {
+        async function startTest(testId) {
             try {
                 clearExamStorage(); // clear any previous in-progress exam
                 const res = await fetch(`${API}/listening/tests/${testId}/start`, {
                     method: 'POST', headers: authH(),
-                    body: JSON.stringify({ key })
+                    body: JSON.stringify({})
                 });
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
@@ -2775,9 +2852,6 @@
         window.showScreen = showScreen;
         window.openModal = openModal; window.closeModal = closeModal;
         window.filterTests = filterTests; window.applyTestFilters = applyTestFilters;
-        window.goToKey = goToKey;
-        window.formatKeyInput = formatKeyInput;
-        window.verifyKeyAndStart = verifyKeyAndStart;
         window.startAudioPlay = startAudioPlay; window.startReadingTime = startReadingTime;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;

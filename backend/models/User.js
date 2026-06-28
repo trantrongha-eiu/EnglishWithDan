@@ -37,6 +37,9 @@ const UserSchema = new mongoose.Schema({
   resetOTP:           { type: String, default: '' },
   resetOTPExpires:    { type: Date, default: null },
   lastSeen:           { type: Date, default: null },
+  // Subscription plan
+  plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
+  planExpiresAt:  { type: Date, default: null },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 
