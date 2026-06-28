@@ -104,6 +104,17 @@
     '</div>';
   document.body.appendChild(drawer);
 
+  // ── Zalo floating button ──────────────────────────────────
+  var zaloBtn = document.createElement('div');
+  zaloBtn.className = 'zalo-container';
+  zaloBtn.innerHTML =
+    '<a href="https://zalo.me/0868017791" target="_blank" rel="noopener nofollow">' +
+      '<div class="cmoz-alo-circle"></div>' +
+      '<div class="cmoz-alo-circle-fill"></div>' +
+      '<span><img src="img/zalo-2.png" alt="Liên hệ Zalo"></span>' +
+    '</a>';
+  document.body.appendChild(zaloBtn);
+
   // ── Nav visibility helpers ────────────────────────────────
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
