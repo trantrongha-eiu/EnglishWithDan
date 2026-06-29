@@ -4,8 +4,18 @@
   var page = location.pathname.split('/').pop() || 'index.html';
 
   var LINKS = [
-    { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading' },
-    { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening' },
+    { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading',
+      children: [
+        { href: 'reading.html?mode=full',   icon: 'fa-file-alt',   label: 'Full đề' },
+        { href: 'reading.html?mode=single', icon: 'fa-book-open',  label: 'Bài lẻ' },
+      ]
+    },
+    { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
+      children: [
+        { href: 'listening.html?mode=full',   icon: 'fa-headphones', label: 'Full đề' },
+        { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
+      ]
+    },
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge' },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
@@ -23,14 +33,30 @@
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
 
+  // Subset-param match: child href is active when the current page filename matches
+  // AND every query param in the child href is present in the current URL.
+  // A child with no query string is only active when the current URL also has no query string.
+  function navChildActive(cHref) {
+    var ci = cHref.indexOf('?');
+    var cBase   = ci === -1 ? cHref : cHref.slice(0, ci);
+    var cSearch = ci === -1 ? '' : cHref.slice(ci + 1);
+    if (cBase !== page) return false;
+    if (!cSearch) return !location.search;
+    var cParams  = new URLSearchParams(cSearch);
+    var curParams = new URLSearchParams(location.search);
+    var ok = true;
+    cParams.forEach(function (v, k) { if (curParams.get(k) !== v) ok = false; });
+    return ok;
+  }
+
   function mkDesktopLinks() {
     return LINKS.map(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return navChildActive(c.href); }));
       var cls = isActive ? ' class="active"' : '';
       var badge = l.badgeId ? '<span id="' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       if (l.children) {
         var items = l.children.map(function (c) {
-          var cc = page === c.href ? ' class="active"' : '';
+          var cc = navChildActive(c.href) ? ' class="active"' : '';
           return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + '</a>';
         }).join('');
         return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
@@ -42,13 +68,13 @@
   function mkMobileLinks() {
     var out = [];
     LINKS.forEach(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return page === c.href; }));
+      var isActive = page === l.href || (l.children && l.children.some(function (c) { return navChildActive(c.href); }));
       var active = isActive ? ' active' : '';
       var badge = l.badgeId ? '<span id="mob_' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       out.push('<a href="' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
       if (l.children) {
         l.children.forEach(function (c) {
-          var ca = page === c.href ? ' active' : '';
+          var ca = navChildActive(c.href) ? ' active' : '';
           out.push('<a href="' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + '</a>');
         });
       }

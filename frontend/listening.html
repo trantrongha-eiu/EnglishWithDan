@@ -751,20 +751,22 @@
 
             // Handle browser Back/Forward button
             window.addEventListener('popstate', async (e) => {
-                const tab  = e.state?.tab;
+                // Support both new {mode} and old {tab} history state keys for backward compat
+                const mode = e.state?.mode ?? e.state?.tab;
                 const part = e.state?.part ?? 1;
+                const isSingle = mode === 'single' || mode === 'lele';
                 // Delegate to block-3 handler (which can access block-3 let vars)
                 if (typeof window.handleLtPracticePopstate === 'function' &&
-                    window.handleLtPracticePopstate(tab, part)) {
+                    window.handleLtPracticePopstate(mode, part)) {
                     showScreen('list');
                     document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                         t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
                     );
-                    setListeningMode(tab === 'full' ? 'full' : 'lele', false);
+                    setListeningMode(mode === 'full' ? 'full' : 'lele', false);
                     return;
                 }
                 showScreen('list');
-                if (tab === 'lele' || e.state?.screen === 'practice') {
+                if (isSingle || e.state?.screen === 'practice') {
                     document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                         t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
                     );
@@ -774,30 +776,32 @@
                 }
             });
 
-            // Check URL params — shareable link ?sectionId=xxx&part=1 or ?tab=lele&part=2
+            // Check URL params — ?sectionId=xxx&part=1 deep-links into a section;
+            // ?mode=single[&part=N] opens bài lẻ list; ?mode=full (or no param) opens full test list.
+            // Legacy ?tab=lele is also accepted for backward compat with old shared links.
             const params = new URLSearchParams(location.search);
             const sectionIdParam = params.get('sectionId');
-            const tabParam       = params.get('tab');
+            const modeParam      = params.get('mode') ?? params.get('tab');
             const partRaw        = params.get('part');
             const partParam      = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
             if (sectionIdParam) {
                 const partForSection = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
-                history.replaceState({ screen: 'list', tab: 'lele', part: partForSection }, '', `?tab=lele&part=${partForSection}`);
+                history.replaceState({ screen: 'list', mode: 'single', part: partForSection }, '', `?mode=single&part=${partForSection}`);
                 document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                     t.classList.toggle('plele-active', String(t.dataset.part) === String(partForSection))
                 );
                 setListeningMode('lele', false);
                 await startPracticeSection(sectionIdParam, partForSection);
-            } else if (tabParam === 'lele') {
-                // Direct shareable link to bài lẻ tab: listening.html?tab=lele&part=2
-                history.replaceState({ screen: 'list', tab: 'lele', part: partParam }, '', location.href);
+            } else if (modeParam === 'single' || modeParam === 'lele') {
+                const partStr = partParam !== 1 ? `&part=${partParam}` : '';
+                history.replaceState({ screen: 'list', mode: 'single', part: partParam }, '', `?mode=single${partStr}`);
                 document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                     t.classList.toggle('plele-active', String(t.dataset.part) === String(partParam))
                 );
                 setListeningMode('lele', false);
                 showScreen('list');
             } else {
-                history.replaceState({ screen: 'list', tab: 'full' }, '', 'listening.html');
+                history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
                 showScreen('list');
             }
         });
@@ -2988,9 +2992,9 @@
             const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
             const part = activeTab?.dataset.part ?? 1;
             if (isLele) {
-                history.pushState({ screen: 'list', tab: 'lele', part }, '', `?tab=lele&part=${part}`);
+                history.pushState({ screen: 'list', mode: 'single', part }, '', `?mode=single&part=${part}`);
             } else {
-                history.pushState({ screen: 'list', tab: 'full' }, '', 'listening.html');
+                history.pushState({ screen: 'list', mode: 'full' }, '', '?mode=full');
             }
         }
         document.getElementById('ls-mode-full')?.classList.toggle('rmode-active', !isLele);
@@ -3085,7 +3089,7 @@
         _ltLoadingPart = partNum;
 
         // Update URL to reflect active section tab
-        history.replaceState({ screen: 'list', tab: 'lele', part: partNum }, '', `?tab=lele&part=${partNum}`);
+        history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', `?mode=single&part=${partNum}`);
 
         document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(b => b.classList.remove('plele-active'));
         const tab = tabEl || document.querySelector(`#lele-picker-lt .plele-tab[data-part="${partNum}"]`);
@@ -3501,9 +3505,9 @@
         }
         _ltOrigSection = _ltCleanSection = null;
 
-        // Clear list so it reloads fresh; replaceState keeps correct lele URL without adding history entry
+        // Clear list so it reloads fresh; replaceState keeps correct URL without adding history entry
         const partNum = _ltPracticePartNum || 1;
-        history.replaceState({ screen: 'list', tab: 'lele', part: partNum }, '', `?tab=lele&part=${partNum}`);
+        history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', `?mode=single&part=${partNum}`);
         const listEl = document.getElementById('lt-section-list');
         if (listEl) listEl.innerHTML = '';
         showScreen('list');

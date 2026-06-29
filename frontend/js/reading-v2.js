@@ -139,8 +139,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle browser back/forward button
   window.addEventListener('popstate', async (e) => {
     const s        = e.state?.screen;
-    const tab      = e.state?.tab;
+    const mode     = e.state?.mode ?? e.state?.tab; // support both new {mode} and old {tab} state keys
     const category = e.state?.category || 'passage1';
+    const isSingle = mode === 'single' || mode === 'lele';
 
     // If an active practice session is running, clean it up before navigating
     if (_practiceMode || _retryState?.isPractice) {
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.querySelectorAll('.plele-tab').forEach(t =>
         t.classList.toggle('plele-active', t.dataset.category === category)
       );
-      setReadingMode(tab === 'full' ? 'full' : 'lele', false);
+      setReadingMode(mode === 'full' ? 'full' : 'lele', false);
       return;
     }
 
@@ -168,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         state.timer = null;
       }
       await loadTests(false);
-      if (tab === 'lele') {
+      if (isSingle) {
         document.querySelectorAll('.plele-tab').forEach(t =>
           t.classList.toggle('plele-active', t.dataset.category === category)
         );
@@ -190,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const reviewId       = params.get('review');
   const testIdParam    = params.get('testId');
   const passageIdParam = params.get('passageId');
-  const tabParam       = params.get('tab');
+  const modeParam      = params.get('mode') ?? params.get('tab'); // ?mode=single/full; legacy ?tab=lele accepted
   const categoryParam  = params.get('category') || 'passage1';
 
   if (reviewId) {
@@ -210,27 +211,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         state.testName = test.name;
         _doStartExam(test._id);
       } else {
-        history.replaceState({ screen: 'list' }, '', 'reading.html');
+        history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
         openUpgradeModal();
       }
     }
   } else if (passageIdParam) {
     // Shareable practice link: build a list entry first so Back works
-    history.replaceState({ screen: 'list', tab: 'lele', category: categoryParam }, '', `?tab=lele&category=${categoryParam}`);
+    history.replaceState({ screen: 'list', mode: 'single', category: categoryParam }, '', `?mode=single&category=${categoryParam}`);
     document.querySelectorAll('.plele-tab').forEach(t =>
       t.classList.toggle('plele-active', t.dataset.category === categoryParam)
     );
     setReadingMode('lele', false);
     await startPractice(passageIdParam, categoryParam);
-  } else if (tabParam === 'lele') {
-    // Direct shareable link to bài lẻ tab: reading.html?tab=lele&category=passage2
-    history.replaceState({ screen: 'list', tab: 'lele', category: categoryParam }, '', location.href);
+  } else if (modeParam === 'single' || modeParam === 'lele') {
+    const catStr = categoryParam !== 'passage1' ? `&category=${categoryParam}` : '';
+    history.replaceState({ screen: 'list', mode: 'single', category: categoryParam }, '', `?mode=single${catStr}`);
     document.querySelectorAll('.plele-tab').forEach(t =>
       t.classList.toggle('plele-active', t.dataset.category === categoryParam)
     );
     setReadingMode('lele', false);
   } else {
-    history.replaceState({ screen: 'list', tab: 'full' }, '', 'reading.html');
+    history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
   }
 });
 
@@ -256,7 +257,7 @@ function showScreen(name) {
 ══════════════════════════════════════════════════════════════════════ */
 async function loadTests(fromNav = false) {
   // Clean URL when user explicitly navigates back to list (not on first load)
-  if (fromNav && location.search) history.pushState({ screen: 'list' }, '', 'reading.html');
+  if (fromNav) history.pushState({ screen: 'list', mode: 'full' }, '', '?mode=full');
   showScreen('list');
   const wrap = document.getElementById('tests-wrapper');
 
@@ -392,14 +393,14 @@ async function _doStartExam(testId) {
     });
     if (!res.success) {
       showVocabToast(res.message || 'Không thể bắt đầu bài thi', 'error');
-      history.replaceState({ screen: 'list' }, '', 'reading.html');
+      history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
       if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
       return;
     }
     startExam(res);
   } catch (e) {
     showVocabToast('Lỗi kết nối server', 'error');
-    history.replaceState({ screen: 'list' }, '', 'reading.html');
+    history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
   }
 }
@@ -588,9 +589,9 @@ function setReadingMode(mode, pushHistory = true) {
   if (pushHistory) {
     const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'passage1';
     if (isLele) {
-      history.pushState({ screen: 'list', tab: 'lele', category: cat }, '', `?tab=lele&category=${cat}`);
+      history.pushState({ screen: 'list', mode: 'single', category: cat }, '', `?mode=single&category=${cat}`);
     } else {
-      history.pushState({ screen: 'list', tab: 'full' }, '', 'reading.html');
+      history.pushState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     }
   }
   document.getElementById('rmode-full')?.classList.toggle('rmode-active', !isLele);
@@ -677,7 +678,7 @@ function _applyPracticeFilters() {
 
 async function loadPracticePassages(category, tabEl) {
   // Update URL to reflect active category tab
-  history.replaceState({ screen: 'list', tab: 'lele', category }, '', `?tab=lele&category=${category}`);
+  history.replaceState({ screen: 'list', mode: 'single', category }, '', `?mode=single&category=${category}`);
 
   // Update active tab
   document.querySelectorAll('.plele-tab').forEach(b => b.classList.remove('plele-active'));
@@ -2403,7 +2404,7 @@ function closeRetry() {
     const listEl = document.getElementById('practice-passage-list');
     if (listEl) listEl.innerHTML = '';
     const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'passage1';
-    history.replaceState({ screen: 'list', tab: 'lele', category: cat }, '', `?tab=lele&category=${cat}`);
+    history.replaceState({ screen: 'list', mode: 'single', category: cat }, '', `?mode=single&category=${cat}`);
     loadTests(false).then(() => setReadingMode('lele', false)).catch(() => setReadingMode('lele', false));
   } else {
     showScreen('review');
@@ -3087,7 +3088,7 @@ function forceExit() {
   saveExamToStorage();
   clearInterval(state.timer);
   window.onbeforeunload = null;
-  history.replaceState({ screen: 'list', tab: 'full' }, '', 'reading.html');
+  history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
   loadTests(false);
 }
 
