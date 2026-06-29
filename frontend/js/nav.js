@@ -104,28 +104,6 @@
     '</div>';
   document.body.appendChild(drawer);
 
-  // ── Facebook floating button ──────────────────────────────
-  var fbBtn = document.createElement('div');
-  fbBtn.className = 'fb-float-container';
-  fbBtn.innerHTML =
-    '<a href="https://facebook.com/tranhadeeptry" target="_blank" rel="noopener nofollow">' +
-      '<div class="fb-float-ring"></div>' +
-      '<div class="fb-float-fill"></div>' +
-      '<span><i class="fab fa-facebook-f"></i></span>' +
-    '</a>';
-  document.body.appendChild(fbBtn);
-
-  // ── Zalo floating button ──────────────────────────────────
-  var zaloBtn = document.createElement('div');
-  zaloBtn.className = 'zalo-container';
-  zaloBtn.innerHTML =
-    '<a href="https://zalo.me/0868017791" target="_blank" rel="noopener nofollow">' +
-      '<div class="cmoz-alo-circle"></div>' +
-      '<div class="cmoz-alo-circle-fill"></div>' +
-      '<span><img src="img/zalo-icon.png" alt="Liên hệ Zalo"></span>' +
-    '</a>';
-  document.body.appendChild(zaloBtn);
-
   // ── Nav visibility helpers ────────────────────────────────
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
