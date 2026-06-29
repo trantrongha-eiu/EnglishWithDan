@@ -108,7 +108,7 @@ function showScreen(id) {
   }
   if (urlTaskType === 1 || urlTaskType === 2) {
     history.replaceState({ screen: 'practice-list', taskType: urlTaskType }, '', `writing.html?taskType=${urlTaskType}`);
-    showPracticeTaskList(urlTaskType, false);
+    showScreen('screen-practice'); // switch screen now; task list loads after practiceState is defined (see deferred init below)
     return;
   }
 
@@ -1103,6 +1103,16 @@ const practiceState = {
   seconds: 0,
   hasPending: false
 };
+
+// Deferred init: ?taskType=1/2 nav link — must run here because practiceState (const) is not
+// hoisted and showPracticeTaskList accesses it before its first await.
+(function() {
+  var _p = new URLSearchParams(location.search);
+  var _tt = parseInt(_p.get('taskType'));
+  if ((_tt === 1 || _tt === 2) && !_p.get('taskId')) {
+    showPracticeTaskList(_tt, false);
+  }
+})();
 
 // ── Practice Auto-save (localStorage) ─────────────────
 const _PRACTICE_SAVE_KEY = 'ews_practice_autosave';
