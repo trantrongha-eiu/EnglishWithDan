@@ -39,6 +39,7 @@ const WritingTask2   = require('../models/WritingTask2');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
+const SpeakingAttempt  = require('../models/SpeakingAttempt');
 const WritingSample    = require('../models/WritingSample');
 const Course           = require('../models/Course');
 const AccessKey    = require('../models/AccessKey');
@@ -1054,6 +1055,27 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
   try {
     await SpeakingMaterial.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Đã xóa vĩnh viễn tài liệu' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/speaking/history  — tất cả lượt luyện của học sinh
+router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
+  try {
+    const { page = 1, limit = 40, userId } = req.query;
+    const filter = {};
+    if (userId) filter.userId = userId;
+    const skip = (Number(page) - 1) * Number(limit);
+    const [attempts, total] = await Promise.all([
+      SpeakingAttempt.find(filter)
+        .populate('userId', 'username email plan')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit)),
+      SpeakingAttempt.countDocuments(filter)
+    ]);
+    res.json({ success: true, attempts, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
