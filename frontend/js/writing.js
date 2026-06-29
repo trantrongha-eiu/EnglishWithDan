@@ -1266,36 +1266,49 @@ function discardPracticeAutoSave() {
 }
 
 function showPracticeMode(pushHistory = true) {
-  const list  = document.getElementById('practice-task-list');
-  const cards = document.getElementById('practice-task-select');
+  const list      = document.getElementById('practice-task-list');
+  const cards     = document.getElementById('practice-task-select');
+  const histBody  = document.querySelector('#screen-practice .history-body');
+  const histTitle = document.getElementById('practice-hist-title');
   if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
+  if (histBody)  histBody.classList.remove('practice-split-mode');
+  if (histTitle) histTitle.textContent = '📋 Lịch sử luyện tập';
   if (pushHistory) history.pushState({ screen: 'practice' }, '', 'writing.html');
   checkPracticeRestoreBanner();
   showScreen('screen-practice');
   loadPracticeHistory();
 }
 
-async function loadPracticeHistory() {
+async function loadPracticeHistory(taskTypeFilter = null) {
   const listEl = document.getElementById('practice-history-list');
   const noticeEl = document.getElementById('practice-pending-notice');
   const descEl   = document.getElementById('practice-pending-desc');
   listEl.innerHTML = '<div class="spinner"></div>';
   try {
     const d = await apiFetch('/api/writing/practice/history');
-    const attempts = d.attempts || [];
+    const allAttempts = d.attempts || [];
 
-    // Show informational notice for pending attempts (no longer blocks new submissions)
-    const pending = attempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
-    if (pending) {
-      noticeEl.style.display = '';
-      const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
-      const gradingLabel = pending.gradingStatus === 'ai_done' ? 'AI đã chấm, đang chờ giáo viên xác nhận' : 'đang chờ chấm';
-      const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
-      descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} ${gradingLabel}. Kết quả sẽ hiện trong lịch sử sau khi được xác nhận.`;
-    } else {
-      noticeEl.style.display = 'none';
+    // Pending notice only in home mode (not in sidebar)
+    if (!taskTypeFilter) {
+      const pending = allAttempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
+      if (pending) {
+        noticeEl.style.display = '';
+        const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
+        const gradingLabel = pending.gradingStatus === 'ai_done' ? 'AI đã chấm, đang chờ giáo viên xác nhận' : 'đang chờ chấm';
+        const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
+        descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} ${gradingLabel}. Kết quả sẽ hiện trong lịch sử sau khi được xác nhận.`;
+      } else {
+        noticeEl.style.display = 'none';
+      }
     }
+
+    const attempts = taskTypeFilter
+      ? allAttempts.filter(a => {
+          const isT1 = (a.examName || '').includes('Task 1') || (a.wordCount1 || 0) > 0;
+          return taskTypeFilter === 1 ? isT1 : !isT1;
+        })
+      : allAttempts;
 
     if (!attempts.length) {
       listEl.innerHTML = '<p style="color:#9ca3af;font-size:14px;text-align:center;padding:24px 0">Chưa có bài luyện tập nào.</p>';
@@ -1305,9 +1318,11 @@ async function loadPracticeHistory() {
     const STATUS = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã chấm' };
     const STATUS_COL = { pending: '#f59e0b', ai_done: '#f59e0b', confirmed: '#16a34a' };
 
+    // In sidebar mode (taskTypeFilter set), omit the Task column to save space
+    const showTaskCol = !taskTypeFilter;
     listEl.innerHTML = `<table class="history-table" style="width:100%">
       <thead><tr>
-        <th>Task</th><th>Ngày nộp</th><th>Số từ</th><th>Trạng thái</th><th>Band</th><th></th>
+        ${showTaskCol ? '<th>Task</th>' : ''}<th>Ngày nộp</th><th>Số từ</th><th>Trạng thái</th><th>Band</th><th></th>
       </tr></thead>
       <tbody>
       ${attempts.map(a => {
@@ -1318,7 +1333,7 @@ async function loadPracticeHistory() {
         const status = a.gradingStatus || 'pending';
         const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
         return `<tr>
-          <td><span class="badge-wc">${taskLabel}</span></td>
+          ${showTaskCol ? `<td><span class="badge-wc">${taskLabel}</span></td>` : ''}
           <td style="font-size:13px;color:#6b7280">${date}</td>
           <td><span class="badge-wc">${wc}w</span></td>
           <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>
@@ -1342,13 +1357,19 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
   const cardSelect = document.getElementById('practice-task-select');
   const titleEl    = document.getElementById('practice-list-title');
   const itemsEl    = document.getElementById('practice-task-items');
+  const histTitle  = document.getElementById('practice-hist-title');
+  const histBody   = document.querySelector('#screen-practice .history-body');
 
   titleEl.textContent = `Chọn đề Task ${taskType}`;
+  if (histTitle) histTitle.textContent = `📋 Lịch sử Task ${taskType}`;
   cardSelect.style.display = 'none';
   listPanel.style.display  = '';
+  if (histBody) histBody.classList.add('practice-split-mode');
   itemsEl.innerHTML = '<div class="spinner"></div>';
   const searchEl = document.getElementById('writing-task-search');
   if (searchEl) searchEl.value = '';
+
+  loadPracticeHistory(taskType);
 
   try {
     const d = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
@@ -1379,11 +1400,16 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
 }
 
 function hidePracticeTaskList() {
+  const histBody  = document.querySelector('#screen-practice .history-body');
+  const histTitle = document.getElementById('practice-hist-title');
   document.getElementById('practice-task-list').style.display  = 'none';
   document.getElementById('practice-task-select').style.display = '';
+  if (histBody)  histBody.classList.remove('practice-split-mode');
+  if (histTitle) histTitle.textContent = '📋 Lịch sử luyện tập';
   const s = document.getElementById('writing-task-search');
   if (s) s.value = '';
   history.pushState({ screen: 'practice' }, '', 'writing.html');
+  loadPracticeHistory();
 }
 
 function filterWritingTasks(query) {

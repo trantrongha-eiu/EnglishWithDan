@@ -1307,11 +1307,69 @@ body {
 }
 
 /* ══════════════════════════════════════════════
+   PRACTICE SPLIT LAYOUT (task 1 / task 2 mode)
+   Left: history sidebar | Right: task list
+══════════════════════════════════════════════ */
+.history-body.practice-split-mode {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  max-width: 1200px;
+  align-items: flex-start;
+}
+
+#practice-hist-section {
+  /* shared styles used in both modes */
+}
+
+.history-body.practice-split-mode #practice-hist-section {
+  flex: 0 0 280px;
+  order: 0;
+  position: sticky;
+  top: calc(var(--nav-height, 56px) + 16px);
+  max-height: calc(100vh - var(--nav-height, 56px) - 48px);
+  overflow-y: auto;
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  padding: 16px;
+}
+
+.history-body.practice-split-mode #practice-task-list {
+  flex: 1;
+  min-width: 0;
+  order: 1;
+  margin-bottom: 0;
+}
+
+/* Home-only elements are already hidden by JS in task mode; belt-and-suspenders */
+.history-body.practice-split-mode #practice-task-select,
+.history-body.practice-split-mode #practice-restore-banner,
+.history-body.practice-split-mode #practice-pending-notice {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════
    MOBILE RESPONSIVE
 ══════════════════════════════════════════════ */
 
 /* Tablet (≤ 768px) */
 @media (max-width: 768px) {
+  /* split mode stacks vertically on mobile; history goes below tasks */
+  .history-body.practice-split-mode {
+    flex-direction: column;
+  }
+  .history-body.practice-split-mode #practice-hist-section {
+    flex: none;
+    width: 100%;
+    position: static;
+    max-height: none;
+    order: 1;
+  }
+  .history-body.practice-split-mode #practice-task-list {
+    order: 0;
+  }
+
   .wr-page-header-inner   { padding: 12px 16px 10px; }
   .wr-page-header-filters { padding: 0 16px 10px; }
   .history-body           { padding: 16px; }
