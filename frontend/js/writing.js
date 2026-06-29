@@ -98,12 +98,17 @@ function showScreen(id) {
   document.querySelectorAll('#user-name-done, #user-name-history, #user-name-samples')
     .forEach(el => { if (el) el.textContent = `👋 ${displayName}`; });
 
-  // Sharable link: writing.html?taskType=1&taskId=<id>
+  // URL param routing: ?taskType=1/2&taskId=<id> (shareable), or ?taskType=1/2 (nav link to task list)
   const params = new URLSearchParams(location.search);
   const urlTaskType = parseInt(params.get('taskType'));
   const urlTaskId   = params.get('taskId');
   if ((urlTaskType === 1 || urlTaskType === 2) && urlTaskId) {
     _openDirectPracticeTask(urlTaskType, urlTaskId);
+    return;
+  }
+  if (urlTaskType === 1 || urlTaskType === 2) {
+    history.replaceState({ screen: 'practice-list', taskType: urlTaskType }, '', `writing.html?taskType=${urlTaskType}`);
+    showPracticeTaskList(urlTaskType, false);
     return;
   }
 

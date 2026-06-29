@@ -16,7 +16,13 @@
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
       ]
     },
-    { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge' },
+    { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
+      children: [
+        { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
+        { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1' },
+        { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2' },
+      ]
+    },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking' },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
       children: [
@@ -59,7 +65,7 @@
           var cc = navChildActive(c.href) ? ' class="active"' : '';
           return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + '</a>';
         }).join('');
-        return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
+        return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
       }
       return '<a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + '</a>';
     }).join('');
