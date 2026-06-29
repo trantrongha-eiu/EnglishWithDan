@@ -173,29 +173,25 @@
      SCREEN: RESULT
 ══════════════════════════════════════════════ -->
     <div class="screen" id="screen-result">
-        <div class="result-card">
-            <div class="result-emoji" id="result-emoji">🎉</div>
-            <div class="result-band-lg" id="result-band">0.0</div>
-            <div class="result-band-label">Band Score</div>
-            <div class="result-stats">
-                <div class="result-stat">
-                    <div class="result-stat-val ls-stat-correct" id="r-correct">0</div>
-                    <div class="result-stat-lab">Đúng</div>
-                </div>
-                <div class="result-stat">
-                    <div class="result-stat-val ls-stat-wrong" id="r-wrong">0</div>
-                    <div class="result-stat-lab">Sai</div>
-                </div>
-                <div class="result-stat">
-                    <div class="result-stat-val ls-stat-skip" id="r-skip">0</div>
-                    <div class="result-stat-lab">Bỏ qua</div>
-                </div>
+        <div class="result-wrap">
+            <div class="result-left">
+                <div class="result-mascot" id="result-emoji">🎉</div>
+                <p class="result-msg" id="result-msg">Hãy tiếp tục – luyện tập đều đặn sẽ giúp bạn tiến bộ! 🌱</p>
             </div>
-            <div class="result-msg-box" id="result-msg"></div>
-            <div class="result-actions">
-                <button class="btn-primary" onclick="goToReview()"><i class="fas fa-search"></i> Xem giải thích chi tiết</button>
-                <button class="btn-ghost" onclick="showHistoryModal()"><i class="fas fa-history"></i> Lịch sử</button>
-                <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-home"></i> Về trang chủ</button>
+            <div class="result-right">
+                <p class="result-label">Band Score:</p>
+                <div class="result-band" id="result-band">0.0</div>
+                <div class="result-total" id="result-total">0/40 câu đúng</div>
+                <div class="result-breakdown">
+                    <span class="rb-correct">● Đúng: <b id="r-correct">0</b> câu</span>
+                    <span class="rb-wrong">● Sai: <b id="r-wrong">0</b> câu</span>
+                    <span class="rb-skip">● Bỏ qua: <b id="r-skip">0</b> câu</span>
+                </div>
+                <div class="result-actions">
+                    <button class="btn-primary" onclick="goToReview()"><i class="fas fa-search"></i> Xem giải thích chi tiết</button>
+                    <button class="btn-ghost" onclick="showHistoryModal()"><i class="fas fa-history"></i> Lịch sử làm bài</button>
+                    <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-list"></i> Làm bài khác</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2355,6 +2351,7 @@
                 // refresh test list để cập nhật trạng thái đã làm
                 loadTestList();
                 document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
+                document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
                 document.getElementById('r-correct').textContent = r.correctCount;
                 document.getElementById('r-wrong').textContent = r.wrongCount;
                 document.getElementById('r-skip').textContent = r.skippedCount;
