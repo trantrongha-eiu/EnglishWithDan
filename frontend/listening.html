@@ -1857,6 +1857,7 @@
         // ANSWER HANDLERS
         // ══════════════════════════════════════════════
         function pickRadio(qnum, value) {
+            if (window.getSelection()?.toString()?.trim()) return;
             state.answers[qnum] = value;
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.radio-opt')
                 .forEach(o => o.classList.toggle('selected', o.dataset.value === value));
@@ -1864,6 +1865,7 @@
         }
 
         function toggleCheckbox(qnum, value, maxCount) {
+            if (window.getSelection()?.toString()?.trim()) return;
             let arr = [];
             try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch { }
             if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
@@ -2685,6 +2687,7 @@
                 document.getElementById('tool-dict-pr')?.classList.add('active');
             }
             document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
+            document.body.classList.toggle('tool-hl', next === 'highlight');
         }
 
         function setToolExam(tool) {
@@ -2694,6 +2697,7 @@
             if (next === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
             if (next === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
             document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
+            document.body.classList.toggle('tool-hl', next === 'highlight');
         }
 
         // ══════════════════════════════════════════════

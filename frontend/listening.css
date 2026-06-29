@@ -543,6 +543,8 @@ body {
   cursor: pointer; transition: all .15s;
   font-size: 14px; user-select: none;
 }
+body.tool-hl .radio-opt { user-select: text; }
+body.tool-hl .radio-dot { user-select: none; }
 .radio-opt:hover      { border-color: #3d8bff; background: #eff6ff; }
 .radio-opt.selected   { border-color: #3d8bff; background: #dbeafe; }
 .radio-opt.correct-ans{ border-color: #16a34a !important; background: #dcfce7 !important; }
@@ -574,6 +576,8 @@ body {
   cursor: pointer; transition: all .15s;
   font-size: 14px; user-select: none;
 }
+body.tool-hl .checkbox-opt { user-select: text; }
+body.tool-hl .check-box { user-select: none; }
 .checkbox-opt:hover      { border-color: #3d8bff; background: #eff6ff; }
 .checkbox-opt.selected   { border-color: #3d8bff; background: #dbeafe; }
 .checkbox-opt.correct-ans{ border-color: #16a34a !important; background: #dcfce7 !important; }

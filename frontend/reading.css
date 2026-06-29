@@ -983,6 +983,8 @@ body.eye-protection .split-questions {
   transition: all .15s;
   user-select: none;
 }
+body.tool-hl .radio-opt { user-select: text; }
+body.tool-hl .radio-dot { user-select: none; }
 
 .radio-opt:hover {
   background: #f3f4f6;
@@ -1781,6 +1783,8 @@ body.eye-protection .split-questions {
   transition: all .15s;
   user-select: none;
 }
+body.tool-hl .checkbox-opt { user-select: text; }
+body.tool-hl .check-box { user-select: none; }
 
 .checkbox-opt:hover {
   background: #f3f4f6;
