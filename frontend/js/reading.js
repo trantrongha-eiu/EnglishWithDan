@@ -1447,7 +1447,7 @@ function pickTFNG(qNum, val, el) {
 }
 
 function pickMC(qNum, val, el) {
-  if (window.getSelection()?.toString()?.trim()) return;
+  if (state._justHighlighted) return;
   state.answers[qNum] = val;
   el.closest('.q-options').querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
   el.classList.add('selected');
@@ -1456,7 +1456,7 @@ function pickMC(qNum, val, el) {
 }
 
 function toggleCheckbox(qNum, letter, maxCount, el) {
-  if (window.getSelection()?.toString()?.trim()) return;
+  if (state._justHighlighted) return;
   let arr = [];
   try { arr = JSON.parse(state.answers[qNum] || '[]'); } catch { arr = []; }
   if (arr.includes(letter)) {
@@ -2632,6 +2632,8 @@ document.addEventListener('mouseup', e => {
   const span = document.createElement('span');
   span.className = 'hl';
   try { range.surroundContents(span); } catch { }
+  state._justHighlighted = true;
+  setTimeout(() => { state._justHighlighted = false; }, 0);
   sel.removeAllRanges();
 });
 

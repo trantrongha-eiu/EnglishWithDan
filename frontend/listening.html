@@ -1857,7 +1857,7 @@
         // ANSWER HANDLERS
         // ══════════════════════════════════════════════
         function pickRadio(qnum, value) {
-            if (window.getSelection()?.toString()?.trim()) return;
+            if (state._justHighlighted) return;
             state.answers[qnum] = value;
             document.getElementById(`qi-${qnum}`)?.querySelectorAll('.radio-opt')
                 .forEach(o => o.classList.toggle('selected', o.dataset.value === value));
@@ -1865,7 +1865,7 @@
         }
 
         function toggleCheckbox(qnum, value, maxCount) {
-            if (window.getSelection()?.toString()?.trim()) return;
+            if (state._justHighlighted) return;
             let arr = [];
             try { arr = JSON.parse(state.answers[qnum] || '[]'); } catch { }
             if (arr.includes(value)) { arr = arr.filter(v => v !== value); }
@@ -2400,6 +2400,8 @@
                 const span = document.createElement('span');
                 span.className = 'hl';
                 try { range.surroundContents(span); } catch { }
+                state._justHighlighted = true;
+                setTimeout(() => { state._justHighlighted = false; }, 0);
                 sel.removeAllRanges();
             });
         }
