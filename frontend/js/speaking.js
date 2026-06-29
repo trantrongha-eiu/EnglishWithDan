@@ -50,7 +50,14 @@ async function apiFetch(path, opts = {}) {
   if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
   const text = await res.text();
   if (text.trimStart().startsWith('<')) throw new Error('Server không phản hồi đúng.');
-  try { return JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
+  let json;
+  try { json = JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
+  // Nếu hết hạn premium mid-session → chuyển về upgrade screen
+  if (res.status === 403 && json.requiresPremium) {
+    showScreen('screen-upgrade');
+    throw new Error(json.message || 'Cần nâng cấp Premium.');
+  }
+  return json;
 }
 
 // ──────────────────────────────────────────────────────
@@ -981,11 +988,23 @@ function closeMobilePdf() {
   if (sidebar) sidebar.style.display = '';
 }
 
+// ──────────────────────────────────────────────────────
+// Navigation helper — free user quay lại upgrade screen
+// ──────────────────────────────────────────────────────
+function goBackFromHistory() {
+  const _u = JSON.parse(localStorage.getItem('user') || '{}');
+  if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+    showScreen('screen-upgrade');
+  } else {
+    showScreen('screen-home');
+  }
+}
+
 // ══════════════════════════════════════════════════════
 // UPGRADE MODAL
 // ══════════════════════════════════════════════════════
 
-const SP_UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+const SP_UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000, 12: 900000, 36: 2500000 };
 let _spUpgradeSettings = null;
 
 async function openSpeakingUpgradeModal() {

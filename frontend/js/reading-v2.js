@@ -3217,7 +3217,7 @@ document.addEventListener('click', e => {
 /* ══════════════════════════════════════════════════════════════════════
    PREMIUM UPGRADE MODAL
 ══════════════════════════════════════════════════════════════════════ */
-const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000, 12: 900000, 36: 2500000 };
 let _upgradeSettings = null;
 
 async function openUpgradeModal() {

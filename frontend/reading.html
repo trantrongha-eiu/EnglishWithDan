@@ -124,7 +124,7 @@
       <!-- Plan selector -->
       <div style="padding:20px 28px 0">
         <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:var(--text2,#555)">Chọn gói:</p>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
           <button class="up-plan-btn" data-months="1" onclick="selectUpgradePlan(1)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
             <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 tháng</div>
             <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">90.000 ₫</div>
@@ -133,10 +133,23 @@
             <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 tháng</div>
             <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">250.000 ₫</div>
           </button>
-          <button class="up-plan-btn" data-months="6" onclick="selectUpgradePlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
-            <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
+          <button class="up-plan-btn" data-months="6" onclick="selectUpgradePlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
             <div style="font-size:15px;font-weight:700;color:var(--text,#111)">6 tháng</div>
             <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">500.000 ₫</div>
+          </button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px">
+          <button class="up-plan-btn" data-months="12" onclick="selectUpgradePlan(12)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
+            <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 năm</div>
+            <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">900.000 ₫</div>
+            <div style="font-size:11px;color:var(--text3,#888);margin-top:2px">75.000/tháng</div>
+          </button>
+          <button class="up-plan-btn" data-months="36" onclick="selectUpgradePlan(36)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
+            <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 năm</div>
+            <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">2.500.000 ₫</div>
+            <div style="font-size:11px;color:var(--text3,#888);margin-top:2px">~69.000/tháng</div>
           </button>
         </div>
         <div style="background:var(--bg,#f9fafb);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:center">

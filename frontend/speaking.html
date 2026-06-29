@@ -40,6 +40,12 @@
         ⭐ Nâng cấp Premium ngay
       </button>
       <p style="font-size:12px;color:var(--text3,#888)">Đã có Premium? <a href="login.html" style="color:#7c3aed;font-weight:600">Đăng nhập lại</a> để cập nhật.</p>
+      <div style="margin-top:20px;border-top:1px solid var(--border,#e5e7eb);padding-top:16px">
+        <button onclick="showScreen('screen-history');loadHistory()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border,#e5e7eb);border-radius:10px;font-size:14px;color:var(--text2,#555);cursor:pointer;font-family:inherit">
+          📋 Xem lịch sử luyện tập cũ
+        </button>
+        <p style="font-size:11px;color:var(--text3,#888);margin:6px 0 0">Bài đã làm khi có Premium vẫn được lưu lại.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -55,7 +61,7 @@
     </div>
     <div style="padding:20px 28px 0">
       <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:var(--text2,#555)">Chọn gói:</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
         <button class="sp-up-plan-btn" data-months="1" onclick="selectSpeakingPlan(1)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
           <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 tháng</div>
           <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">90.000 ₫</div>
@@ -64,10 +70,23 @@
           <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 tháng</div>
           <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">250.000 ₫</div>
         </button>
-        <button class="sp-up-plan-btn" data-months="6" onclick="selectSpeakingPlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
-          <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
+        <button class="sp-up-plan-btn" data-months="6" onclick="selectSpeakingPlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
           <div style="font-size:15px;font-weight:700;color:var(--text,#111)">6 tháng</div>
           <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">500.000 ₫</div>
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px">
+        <button class="sp-up-plan-btn" data-months="12" onclick="selectSpeakingPlan(12)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
+          <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#22c55e;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 năm</div>
+          <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">900.000 ₫</div>
+          <div style="font-size:11px;color:var(--text3,#888);margin-top:2px">75.000/tháng</div>
+        </button>
+        <button class="sp-up-plan-btn" data-months="36" onclick="selectSpeakingPlan(36)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
+          <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
+          <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 năm</div>
+          <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">2.500.000 ₫</div>
+          <div style="font-size:11px;color:var(--text3,#888);margin-top:2px">~69.000/tháng</div>
         </button>
       </div>
       <div style="background:var(--bg,#f9fafb);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:center">
@@ -389,7 +408,7 @@
   <div class="sp-page-header">
     <div class="sp-page-header-inner">
       <h2 class="sp-page-header-title">📋 Lịch sử luyện Speaking</h2>
-      <button class="btn-secondary" onclick="showScreen('screen-home')">
+      <button class="btn-secondary" onclick="goBackFromHistory()">
         <i class="fas fa-arrow-left"></i> Quay lại
       </button>
     </div>

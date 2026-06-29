@@ -5,7 +5,13 @@ import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 
 const PAGE = 30;
-const PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+const PRICES = { 1: 90000, 3: 250000, 6: 500000, 12: 900000, 36: 2500000 };
+
+function formatMonths(m) {
+  if (m === 12) return '1 năm';
+  if (m === 36) return '3 năm';
+  return `${m} tháng`;
+}
 
 function statusBadge(s) {
   if (s === 'approved') return <span className="badge badge-green">Đã duyệt</span>;
@@ -117,7 +123,7 @@ export default function UpgradeRequests() {
                       <div><strong>{username}</strong></div>
                       {u.email && <div style={{ fontSize: 11, color: 'var(--text3)' }}>{u.email}</div>}
                     </td>
-                    <td><strong>{r.months} tháng</strong></td>
+                    <td><strong>{formatMonths(r.months)}</strong></td>
                     <td style={{ whiteSpace: 'nowrap' }}>{(r.amount || PRICES[r.months] || 0).toLocaleString('vi-VN')} ₫</td>
                     <td style={{ maxWidth: 200, fontSize: 12, color: 'var(--text2)' }}>{r.note || '–'}</td>
                     <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(r.createdAt)}</td>

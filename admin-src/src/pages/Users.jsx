@@ -27,16 +27,38 @@ function roleBadge(r) {
   return <span className={`badge ${map[r] || 'badge-gray'}`}>{label[r] || r}</span>;
 }
 
+function daysLeft(expiresAt) {
+  if (!expiresAt) return null;
+  const diff = Math.ceil((new Date(expiresAt) - new Date()) / 86400000);
+  return diff;
+}
+
 function planBadge(plan, expiresAt) {
   if (plan === 'premium') {
     const exp = expiresAt ? new Date(expiresAt) : null;
-    const expired = exp && exp < new Date();
-    return <span className={`badge ${expired ? 'badge-gray' : 'badge-blue'}`} title={exp ? `HSD: ${exp.toLocaleDateString('vi-VN')}` : ''}>
-      {expired ? 'Premium (Hết hạn)' : '⭐ Premium'}
-    </span>;
+    const days = exp ? daysLeft(exp) : null;
+    const expired = days !== null && days <= 0;
+    const urgentColor = !expired && days !== null && days <= 7 ? '#f59e0b' : null;
+    const expStr = exp ? exp.toLocaleDateString('vi-VN') : '';
+    const countStr = days === null ? '' : expired ? ' (Hết hạn)' : days === 0 ? ' (Hết hạn hôm nay)' : ` (còn ${days} ngày)`;
+    return (
+      <span className={`badge ${expired ? 'badge-gray' : 'badge-blue'}`}
+        style={urgentColor ? { background: urgentColor, color: '#fff', border: 'none' } : {}}
+        title={expStr ? `HSD: ${expStr}` : ''}>
+        {expired ? '⏰ Hết hạn' : '⭐ Premium'}{countStr}
+      </span>
+    );
   }
   return <span className="badge badge-gray">Free</span>;
 }
+
+const PLAN_OPTIONS = [
+  { months: 1,  label: '1 tháng',  price: '90.000 ₫' },
+  { months: 3,  label: '3 tháng',  price: '250.000 ₫' },
+  { months: 6,  label: '6 tháng',  price: '500.000 ₫' },
+  { months: 12, label: '1 năm',    price: '900.000 ₫', badge: 'Tiết kiệm' },
+  { months: 36, label: '3 năm',    price: '2.500.000 ₫', badge: 'Tiết kiệm nhất' },
+];
 
 function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSaved }) {
   const toast = useToast();
@@ -46,32 +68,63 @@ function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSa
     setLoading(true);
     try {
       await apiFetch(`/admin/users/${userId}/plan`, { method: 'PUT', body: JSON.stringify({ plan, months }) });
-      toast(plan === 'premium' ? `Đã nâng ${username} lên Premium (${months} tháng)` : `Đã hạ ${username} về Free`);
+      const label = PLAN_OPTIONS.find(o => o.months === months)?.label || `${months} tháng`;
+      toast(plan === 'premium' ? `Đã nâng ${username} lên Premium (${label})` : `Đã hạ ${username} về Free`);
       onSaved();
       onClose();
     } catch (e) { toast(e.message, 'error'); }
     finally { setLoading(false); }
   }
 
-  const exp = planExpiresAt ? new Date(planExpiresAt).toLocaleDateString('vi-VN') : null;
+  const exp = planExpiresAt ? new Date(planExpiresAt) : null;
+  const days = exp ? daysLeft(exp) : null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 400 }} onClick={e => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Gói dịch vụ — {username}</h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 4 }}>
-            Hiện tại: {planBadge(currentPlan, planExpiresAt)}{exp && <span style={{ marginLeft: 6, fontSize: 12 }}>HSD: {exp}</span>}
+          {/* Current status */}
+          <div style={{ background: 'var(--surface2,#f1f5f9)', borderRadius: 10, padding: '10px 14px', fontSize: 13 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: exp ? 4 : 0 }}>
+              <span style={{ color: 'var(--text2)' }}>Gói hiện tại:</span>
+              {planBadge(currentPlan, planExpiresAt)}
+            </div>
+            {exp && (
+              <div style={{ fontSize: 12, color: days !== null && days <= 7 ? '#f59e0b' : 'var(--text2)' }}>
+                HSD: {exp.toLocaleDateString('vi-VN')}
+                {days !== null && days > 0 && ` — còn ${days} ngày`}
+                {days !== null && days <= 0 && ' — Đã hết hạn'}
+              </div>
+            )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 1)}>⭐ Premium 1 tháng — 90,000 ₫</button>
-            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 3)}>⭐ Premium 3 tháng — 250,000 ₫</button>
-            <button className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', 6)}>⭐ Premium 6 tháng — 500,000 ₫</button>
-            <button className="btn btn-ghost" disabled={loading} onClick={() => setPlan('free', 0)} style={{ marginTop: 4 }}>🔽 Hạ về Free</button>
+
+          {/* Cấp Premium */}
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: -4 }}>
+            Cấp Premium (cộng thêm từ ngày hết hạn hiện tại)
           </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            {PLAN_OPTIONS.map(o => (
+              <button key={o.months} className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', o.months)}
+                style={{ position: 'relative', padding: '10px 12px', textAlign: 'left', lineHeight: 1.4 }}>
+                {o.badge && (
+                  <span style={{ position: 'absolute', top: -7, right: 8, background: '#f59e0b', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10 }}>
+                    {o.badge}
+                  </span>
+                )}
+                <div style={{ fontWeight: 700 }}>⭐ {o.label}</div>
+                <div style={{ fontSize: 12, opacity: .8 }}>{o.price}</div>
+              </button>
+            ))}
+          </div>
+
+          <button className="btn btn-ghost" disabled={loading} onClick={() => setPlan('free', 0)}
+            style={{ marginTop: 4, color: 'var(--danger)', border: '1px solid var(--danger)' }}>
+            🔽 Hạ về Free ngay
+          </button>
         </div>
       </div>
     </div>

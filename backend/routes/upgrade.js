@@ -3,14 +3,14 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const UpgradeRequest = require('../models/UpgradeRequest');
 
-const PRICES = { 1: 90000, 3: 250000, 6: 500000 };
+const PRICES = { 1: 90000, 3: 250000, 6: 500000, 12: 900000, 36: 2500000 };
 
 // POST /api/upgrade/request — học viên gửi yêu cầu nâng cấp
 router.post('/request', auth, async (req, res) => {
   try {
     const { months, note } = req.body;
-    if (![1, 3, 6].includes(Number(months))) {
-      return res.status(400).json({ success: false, message: 'Gói không hợp lệ. Chọn 1, 3 hoặc 6 tháng.' });
+    if (![1, 3, 6, 12, 36].includes(Number(months))) {
+      return res.status(400).json({ success: false, message: 'Gói không hợp lệ.' });
     }
     const amount = PRICES[Number(months)];
 

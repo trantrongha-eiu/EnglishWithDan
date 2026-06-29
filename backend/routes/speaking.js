@@ -17,7 +17,7 @@ router.get('/topics',           auth, premiumOnly, speakCtrl.getTopics);
 router.get('/random',           auth, premiumOnly, speakCtrl.getRandom);
 router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
 router.post('/analyze',         auth, premiumOnly, speakCtrl.analyze);
-router.get('/history',          auth, premiumOnly, speakCtrl.getHistory);
+router.get('/history',          auth,              speakCtrl.getHistory);   // free users vẫn xem được lịch sử cũ
 router.get('/materials',        auth, premiumOnly, speakCtrl.getMaterials);
 router.get('/material-filters', auth, premiumOnly, speakCtrl.getMaterialFilters);
 
