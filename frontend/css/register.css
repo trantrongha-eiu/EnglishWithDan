@@ -556,20 +556,32 @@
 
         @media (max-width: 576px) {
             body {
-                padding: 20px;
+                padding: 16px;
+                align-items: flex-start;
             }
 
             .register-card {
-                padding: 35px 25px;
+                padding: 28px 20px;
                 border-radius: 20px;
+                max-width: 100%;
             }
 
-            .logo-text {
-                font-size: 32px;
+            .logo-container img {
+                height: 64px !important;
+            }
+
+            .logo-container {
+                margin-bottom: 20px;
             }
 
             .welcome-text {
-                font-size: 22px;
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+                margin-bottom: 18px;
             }
 
             .form-row {
@@ -577,7 +589,44 @@
                 gap: 0;
             }
 
+            .form-group {
+                margin-bottom: 14px;
+            }
+
+            .form-group input {
+                padding: 11px 15px 11px 40px;
+                font-size: 14px;
+            }
+
+            .btn-register {
+                padding: 13px;
+                font-size: 14px;
+            }
+
             .social-login {
                 grid-template-columns: 1fr;
+            }
+
+            .divider {
+                margin: 16px 0;
+            }
+        }
+
+        @media (max-width: 380px) {
+            body {
+                padding: 12px;
+            }
+
+            .register-card {
+                padding: 24px 16px;
+                border-radius: 16px;
+            }
+
+            .welcome-text {
+                font-size: 18px;
+            }
+
+            .tagline {
+                font-size: 11px;
             }
         }
