@@ -1,38 +1,15 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt  = require('../models/SpeakingAttempt');
-const AccessKey        = require('../models/AccessKey');
-
-// ── POST /api/speaking/verify-key ────────────────────────────
-exports.verifyKey = async (req, res) => {
-  try {
-    const { key } = req.body;
-    if (!key) return res.status(400).json({ success: false, message: 'Thiếu mã truy cập' });
-
-    const accessKey = await AccessKey.findOne({
-      key:      key.toUpperCase().trim(),
-      isActive: true,
-      testType: { $in: ['speaking', null] },
-    });
-
-    if (!accessKey)
-      return res.status(404).json({ success: false, message: 'Mã không tồn tại hoặc không dùng cho Speaking' });
-    if (accessKey.expiresAt && new Date() > accessKey.expiresAt)
-      return res.status(403).json({ success: false, message: 'Mã đã hết hạn' });
-    if (accessKey.currentUses >= accessKey.maxUses)
-      return res.status(403).json({ success: false, message: 'Mã đã dùng hết lượt' });
-
-    await AccessKey.findByIdAndUpdate(accessKey._id, { $inc: { currentUses: 1 } });
-    res.json({ success: true, message: 'Xác nhận thành công!' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
+const { checkSpeaking } = require('../services/geminiService');
 
 // ── GET /api/speaking/topics ─────────────────────────────────
 exports.getTopics = async (req, res) => {
   try {
-    const topics = await SpeakingQuestion.distinct('topic', { isActive: true });
+    const { part } = req.query;
+    const filter = { isActive: true };
+    if (part && part !== 'all') filter.part = Number(part);
+    const topics = await SpeakingQuestion.distinct('topic', filter);
     res.json({ success: true, topics: topics.sort() });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -66,7 +43,7 @@ exports.getQuestions = async (req, res) => {
     if (topic && topic !== 'all') filter.topic = topic;
     if (part  && part  !== 'all') filter.part = Number(part);
 
-    const questions = await SpeakingQuestion.find(filter).sort({ topic: 1, part: 1 });
+    const questions = await SpeakingQuestion.find(filter).sort({ part: 1, topic: 1 });
     res.json({ success: true, questions });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -81,92 +58,46 @@ exports.analyze = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Transcript trống' });
     }
 
-    const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
-    if (!OPENROUTER_KEY) {
-      return res.json({
-        success: true,
-        feedback: {
-          corrected:     transcript,
-          errors:        [],
-          tips:          ['Chưa cấu hình OPENROUTER_API_KEY trong .env'],
-          band_estimate: null
-        }
-      });
-    }
+    const partNum = part ? Number(part) : 1;
+    const questionText = question || 'General speaking practice';
 
-    const prompt = `You are an IELTS speaking examiner. Analyze this student response and reply ONLY with a JSON object, no markdown, no explanation.
-
-Question: "${question || 'General speaking practice'}"
-Student said: "${transcript}"
-
-Return ONLY this JSON:
-{"corrected":"improved natural version","errors":[{"wrong":"original","right":"better","tip":"why"}],"tips":["tip1","tip2"],"band_estimate":"5.0-6.0","fluency":6,"vocabulary":5,"grammar":6,"pronunciation":6,"overall_band":5.5}
-
-Rules: max 3 errors, max 2 tips, scores 1-9. Return ONLY the JSON.`;
-
-    let feedback = null;
+    let feedback;
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://englishwithdan.onrender.com',
-          'X-Title': 'EnglishWithDan'
-        },
-        body: JSON.stringify({
-          model: 'mistralai/mistral-7b-instruct:free',
-          messages: [
-            { role: 'system', content: 'You are an IELTS examiner. Respond with valid JSON only.' },
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.2,
-          max_tokens: 900
-        })
-      });
-
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || '';
-      const cleaned = content.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
-
-      try {
-        feedback = JSON.parse(cleaned);
-      } catch {
-        const match = cleaned.match(/\{[\s\S]*"corrected"[\s\S]*\}/);
-        if (match) feedback = JSON.parse(match[0]);
-      }
+      feedback = await checkSpeaking(questionText, transcript.trim(), partNum);
     } catch (aiErr) {
-      console.error('[Speaking] AI error:', aiErr.message);
+      console.error('[Speaking] Gemini error:', aiErr.message);
+      if (aiErr.isOverloaded) {
+        return res.status(503).json({ success: false, message: aiErr.message });
+      }
+      return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
     }
 
-    if (!feedback) {
-      return res.json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
-    }
-
-    // Save attempt to DB
+    // Save attempt
     try {
       const attempt = new SpeakingAttempt({
         userId:     req.user._id,
         questionId: questionId || null,
         topic:      topic || '',
-        part:       part ? Number(part) : 1,
-        question:   question || '',
+        part:       partNum,
+        question:   questionText,
         transcript,
         duration:   duration || 0,
         status:     'analyzed',
         aiFeedback: {
-          overallBand:   feedback.overall_band || 0,
-          fluency:       feedback.fluency || 0,
-          vocabulary:    feedback.vocabulary || 0,
-          grammar:       feedback.grammar || 0,
-          pronunciation: feedback.pronunciation || 0,
-          feedback:      feedback.corrected || '',
-          corrections:   (feedback.errors || []).map(e => ({
+          overallBand:      feedback.overall_band   || 0,
+          fluency:          feedback.fluency         || 0,
+          vocabulary:       feedback.vocabulary      || 0,
+          grammar:          feedback.grammar         || 0,
+          pronunciation:    feedback.pronunciation   || 0,
+          overallFeedback:  feedback.overall_feedback || '',
+          correctedVersion: feedback.corrected       || '',
+          strengths:        feedback.strengths       || [],
+          corrections:      (feedback.errors || []).map(e => ({
             original:    e.wrong,
             corrected:   e.right,
             explanation: e.tip
           })),
-          suggestions:   feedback.tips || []
+          suggestions:      feedback.improvements   || []
         }
       });
       await attempt.save();
@@ -186,8 +117,7 @@ exports.getHistory = async (req, res) => {
   try {
     const attempts = await SpeakingAttempt.find({ userId: req.user._id })
       .sort({ createdAt: -1 })
-      .limit(20)
-      .select('-transcript');
+      .limit(30);
     res.json({ success: true, attempts });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

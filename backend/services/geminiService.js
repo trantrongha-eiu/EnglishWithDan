@@ -70,4 +70,85 @@ async function checkEssay(question, essay, _attempt = 0) {
   }
 }
 
-module.exports = { checkEssay };
+// ── Speaking Analysis ─────────────────────────────────
+const SPEAKING_SYSTEM = `You are an experienced IELTS Speaking examiner (IDP/British Council certified).
+Apply the IELTS Speaking Band Descriptors accurately across all four criteria.
+Most non-native speakers score Band 5–7. Be calibrated, not inflated.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+/**
+ * Analyze an IELTS speaking transcript with Gemini.
+ */
+async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  const content = `IELTS Speaking Part ${part}
+
+Question: "${question}"
+
+Student's spoken response:
+"${transcript}"
+
+Return this exact JSON (no other text):
+{
+  "overall_band": <number 1–9, nearest 0.5>,
+  "fluency": <integer 1–9>,
+  "vocabulary": <integer 1–9>,
+  "grammar": <integer 1–9>,
+  "pronunciation": <integer 1–9>,
+  "corrected": "<natural improved version of the full response>",
+  "overall_feedback": "<2–3 sentences: key observations>",
+  "strengths": ["<specific strength>", "<specific strength>"],
+  "improvements": ["<actionable suggestion>", "<actionable suggestion>"],
+  "errors": [
+    {"wrong": "<original phrase>", "right": "<better version>", "tip": "<brief reason why>"}
+  ]
+}
+
+Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded average of the 4 scores.`;
+
+  let rawText;
+  try {
+    const result = await ai.models.generateContent({
+      model: MODEL,
+      contents: content,
+      config: {
+        systemInstruction: SPEAKING_SYSTEM,
+        responseMimeType: 'application/json',
+        temperature: 0.35,
+        maxOutputTokens: 2048
+      }
+    });
+    rawText = result.text;
+  } catch (err) {
+    console.error('[Gemini Speaking] API error:', err.status, err.message || err);
+    const msg = (err.message || '').toLowerCase();
+    const isOverload =
+      err.status === 503 || err.status === 429 ||
+      msg.includes('overloaded') || msg.includes('resource_exhausted') ||
+      msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
+    if (isOverload) {
+      const oe = new Error('AI đang quá tải, vui lòng thử lại sau ít phút.');
+      oe.isOverloaded = true;
+      throw oe;
+    }
+    throw err;
+  }
+
+  try {
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('no JSON object found');
+    return JSON.parse(jsonMatch[0]);
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      console.error('[Gemini Speaking] JSON parse failed, retrying…', parseErr.message);
+      return checkSpeaking(question, transcript, part, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+  }
+}
+
+module.exports = { checkEssay, checkSpeaking };

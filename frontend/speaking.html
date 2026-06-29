@@ -17,125 +17,324 @@
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
 
-<!-- sp-gate removed: speaking is now free for all authenticated users -->
-
-<!-- ── Page tabs ── -->
-<div class="sp-tabs" id="sp-tabs" style="display:flex">
-  <button class="sp-tab active" id="tab-btn-practice"  onclick="switchTab('practice')">🎙 Practice</button>
-  <button class="sp-tab"        id="tab-btn-materials" onclick="switchTab('materials')">📚 Materials</button>
-</div>
-
-<!-- ════════════════════════════════════════════
-     TAB 1 – PRACTICE
-════════════════════════════════════════════ -->
-<div id="tab-practice" class="sp-content active">
-  <div class="practice-container">
-
-    <!-- No Speech API warning -->
-    <div class="no-speech-warning" id="no-speech-warning">
-      ⚠️ Trình duyệt của bạn không hỗ trợ ghi âm tự động. Bạn vẫn có thể gõ câu trả lời vào ô bên dưới để nhận AI feedback.
+<!-- ═══════════════════════════════════════════
+     SCREEN 1 – HOME
+═══════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="sp-home-body">
+    <div class="sp-home-hero">
+      <div class="sp-home-icon">🎙</div>
+      <h1 class="sp-home-title">IELTS Speaking</h1>
+      <p class="sp-home-subtitle">Luyện nói Part 1 · 2 · 3 với AI feedback từ Gemini</p>
     </div>
-
-    <!-- Controls -->
-    <div class="practice-controls">
-      <label for="sel-part">Part</label>
-      <select class="sp-select" id="sel-part" onchange="loadTopics()">
-        <option value="all">Tất cả</option>
-        <option value="1">Part 1</option>
-        <option value="2">Part 2</option>
-        <option value="3">Part 3</option>
-      </select>
-
-      <label for="sel-topic">Topic</label>
-      <select class="sp-select" id="sel-topic" onchange="loadQuestions()">
-        <option value="all">Tất cả</option>
-      </select>
-
-      <label for="sel-question">Câu hỏi</label>
-      <select class="sp-select" id="sel-question" onchange="selectQuestion(this.value)" style="max-width:320px">
-        <option value="">-- Chọn câu hỏi --</option>
-      </select>
-
-      <button class="btn-random" onclick="loadRandomQuestion()">🔀 Random</button>
-    </div>
-
-    <!-- Question card -->
-    <div class="question-card" id="question-card">
-      <div class="q-label" id="q-part-label">Part 1</div>
-      <div class="q-text" id="q-text">Nhấn 🔀 Random hoặc chọn topic để bắt đầu.</div>
-      <div class="q-cue hidden" id="q-cue"></div>
-    </div>
-
-    <!-- Record section -->
-    <div class="record-section">
-
-      <!-- Part 2: Preparation countdown (60s) -->
-      <div id="p2-prep" class="p2-prep" style="display:none">
-        <div class="p2-prep-phase">📖 Thời gian chuẩn bị</div>
-        <div class="p2-prep-clock" id="p2-prep-clock">1:00</div>
-        <div class="p2-prep-hint">Đọc cue card và lập dàn ý trước khi nói</div>
-        <button class="p2-prep-skip" onclick="skipPrep()">Bỏ qua – Bắt đầu nói ngay →</button>
-      </div>
-
-      <button class="btn-record" id="btn-record" onclick="toggleRecord()">
-        <span class="rec-icon" id="rec-icon">🎙</span>
-        <span class="rec-label" id="rec-label">Start Speaking</span>
-      </button>
-
-      <!-- Elapsed time (all parts) + Part 2 remaining countdown -->
-      <div class="rec-timers">
-        <div class="rec-elapsed hidden" id="rec-elapsed">⏱ 0:00</div>
-        <div class="p2-speak-countdown hidden" id="p2-speak-countdown">
-          <span id="p2-speak-time">2:00</span> còn lại
+    <div class="sp-home-cards">
+      <div class="sp-home-card" onclick="showScreen('screen-practice');initPractice()">
+        <div class="sp-home-card-icon-wrap sp-card-red">
+          <i class="fas fa-microphone"></i>
         </div>
-      </div>
-
-      <div class="rec-status" id="rec-status">Nhấn để bắt đầu ghi âm</div>
-      <div class="transcript-interim" id="transcript-interim"></div>
-    </div>
-
-    <!-- Transcript -->
-    <div class="transcript-box">
-      <div class="box-label">📝 Transcript – chỉnh sửa nếu cần</div>
-      <textarea class="transcript-textarea" id="transcript-textarea"
-        placeholder="Transcript sẽ hiện ở đây khi bạn nói..."></textarea>
-      <button class="btn-analyze" id="btn-analyze" onclick="analyzeTranscript()" disabled>
-        🤖 Analyze with AI
-      </button>
-    </div>
-
-    <!-- AI Feedback -->
-    <div class="feedback-box" id="feedback-box">
-      <div class="box-label">🤖 AI Feedback</div>
-      <div id="feedback-loading" style="text-align:center;padding:16px 0">
-        <div class="spinner"></div>
-        <p style="color:#9ca3af;font-size:13px;margin-top:8px">AI đang phân tích...</p>
-      </div>
-      <div id="feedback-content" style="display:none">
-        <div class="feedback-band" id="feedback-band" style="display:none">
-          🎯 Estimated Band: <span id="band-value"></span>
+        <div class="sp-home-card-body">
+          <div class="sp-home-card-title">Luyện tập</div>
+          <div class="sp-home-card-desc">Chọn đề Part 1, 2, 3 — ghi âm và nhận AI feedback ngay lập tức</div>
         </div>
-        <div class="feedback-corrected" id="feedback-corrected"></div>
-        <div class="feedback-errors" id="feedback-errors"></div>
-        <div class="feedback-tips"   id="feedback-tips"></div>
+        <i class="fas fa-chevron-right sp-home-card-arrow"></i>
+      </div>
+      <div class="sp-home-card" onclick="showScreen('screen-history');loadHistory()">
+        <div class="sp-home-card-icon-wrap sp-card-blue">
+          <i class="fas fa-history"></i>
+        </div>
+        <div class="sp-home-card-body">
+          <div class="sp-home-card-title">Lịch sử</div>
+          <div class="sp-home-card-desc">Xem lại các lần luyện tập và điểm số AI đánh giá</div>
+        </div>
+        <i class="fas fa-chevron-right sp-home-card-arrow"></i>
+      </div>
+      <div class="sp-home-card" onclick="showScreen('screen-materials');loadMaterialFilters();loadMaterials()">
+        <div class="sp-home-card-icon-wrap sp-card-green">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="sp-home-card-body">
+          <div class="sp-home-card-title">Tài liệu</div>
+          <div class="sp-home-card-desc">Đề mẫu và tài liệu luyện tập theo quý</div>
+        </div>
+        <i class="fas fa-chevron-right sp-home-card-arrow"></i>
       </div>
     </div>
-
-    <!-- Actions -->
-    <div class="practice-actions">
-      <button class="btn-retry" onclick="retryQuestion()">🔁 Retry</button>
-      <button class="btn-next"  onclick="loadRandomQuestion()">➡ Next Question</button>
-    </div>
-
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════
-     TAB 2 – MATERIALS
-════════════════════════════════════════════ -->
-<div id="tab-materials" class="sp-content">
-  <div class="pv-layout">
+<!-- ═══════════════════════════════════════════
+     SCREEN 2 – PRACTICE
+═══════════════════════════════════════════ -->
+<div id="screen-practice" class="screen">
+  <!-- Topbar -->
+  <div class="sp-topbar">
+    <button class="sp-topbar-back" onclick="showScreen('screen-home')">
+      <i class="fas fa-arrow-left"></i> Trang chủ
+    </button>
+    <span class="sp-topbar-title">
+      <i class="fas fa-microphone"></i> Luyện Speaking
+    </span>
+    <div></div>
+  </div>
 
+  <!-- No Speech API warning -->
+  <div class="no-speech-warning" id="no-speech-warning">
+    <i class="fas fa-exclamation-triangle"></i>
+    Trình duyệt không hỗ trợ ghi âm. Bạn vẫn có thể <strong>gõ câu trả lời</strong> vào ô bên dưới để nhận AI feedback.
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="practice-layout">
+
+    <!-- LEFT: Question browser -->
+    <div class="practice-sidebar">
+      <!-- Part filter tabs -->
+      <div class="part-tabs">
+        <button class="part-tab active" id="ptab-all" onclick="setPartFilter('all',this)">Tất cả</button>
+        <button class="part-tab" id="ptab-1" onclick="setPartFilter('1',this)">Part 1</button>
+        <button class="part-tab" id="ptab-2" onclick="setPartFilter('2',this)">Part 2</button>
+        <button class="part-tab" id="ptab-3" onclick="setPartFilter('3',this)">Part 3</button>
+      </div>
+
+      <!-- Topic filter -->
+      <div class="sidebar-section">
+        <label class="sidebar-label">Chủ đề</label>
+        <select class="sp-select full-width" id="sel-topic" onchange="loadQuestions()">
+          <option value="all">Tất cả chủ đề</option>
+        </select>
+      </div>
+
+      <!-- Question list -->
+      <div class="sidebar-section sidebar-questions">
+        <div class="sidebar-q-header">
+          <label class="sidebar-label" style="margin-bottom:0">Câu hỏi</label>
+          <button class="btn-random-sm" onclick="loadRandomQuestion()">
+            <i class="fas fa-random"></i> Random
+          </button>
+        </div>
+        <div class="question-list" id="question-list">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Practice area -->
+    <div class="practice-main">
+
+      <!-- Empty state -->
+      <div class="practice-empty" id="practice-empty">
+        <div class="practice-empty-icon">🎯</div>
+        <p class="practice-empty-title">Chọn câu hỏi để bắt đầu</p>
+        <p class="practice-empty-desc">Chọn từ danh sách bên trái hoặc nhấn Random để lấy câu ngẫu nhiên</p>
+        <button class="btn-primary" style="margin-top:20px" onclick="loadRandomQuestion()">
+          <i class="fas fa-random"></i> Lấy câu ngẫu nhiên
+        </button>
+      </div>
+
+      <!-- Practice content (shown after question selected) -->
+      <div id="practice-content" style="display:none">
+
+        <!-- Question card -->
+        <div class="question-card">
+          <div class="q-meta">
+            <span class="q-part-badge" id="q-part-badge">Part 1</span>
+            <span class="q-topic-badge" id="q-topic-badge"></span>
+            <button class="q-read-btn" onclick="readQuestion()" title="Nghe câu hỏi">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+          <div class="q-text" id="q-text"></div>
+          <div class="q-cue" id="q-cue" style="display:none"></div>
+        </div>
+
+        <!-- Part 2: Prep timer -->
+        <div id="p2-prep" class="p2-prep" style="display:none">
+          <div class="p2-prep-phase">
+            <i class="fas fa-book-open"></i> Thời gian chuẩn bị (Part 2)
+          </div>
+          <div class="p2-prep-clock" id="p2-prep-clock">1:00</div>
+          <div class="p2-prep-hint">Đọc cue card và lập dàn ý trước khi nói</div>
+          <button class="p2-prep-skip" onclick="skipPrep()">
+            Bỏ qua — Bắt đầu nói ngay <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Record section -->
+        <div class="record-section">
+          <div class="record-area">
+            <button class="btn-record" id="btn-record" onclick="toggleRecord()">
+              <span class="rec-ring" id="rec-ring"></span>
+              <i class="fas fa-microphone rec-mic" id="rec-icon"></i>
+              <span class="rec-label" id="rec-label">Bắt đầu</span>
+            </button>
+            <div class="rec-info">
+              <div class="rec-status" id="rec-status">Nhấn để ghi âm</div>
+              <div class="rec-timers">
+                <div class="rec-elapsed hidden" id="rec-elapsed">
+                  <i class="fas fa-circle" style="font-size:7px;color:#e53935;vertical-align:2px"></i>
+                  <span id="rec-elapsed-time">0:00</span>
+                </div>
+                <div class="p2-countdown hidden" id="p2-speak-countdown">
+                  <i class="fas fa-hourglass-half"></i>
+                  <span id="p2-speak-time">2:00</span> còn lại
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="transcript-interim" id="transcript-interim"></div>
+        </div>
+
+        <!-- Transcript input -->
+        <div class="transcript-box">
+          <div class="transcript-box-header">
+            <span class="box-label"><i class="fas fa-file-alt"></i> Transcript</span>
+            <span class="transcript-hint">Chỉnh sửa nếu cần trước khi phân tích</span>
+          </div>
+          <textarea class="transcript-textarea" id="transcript-textarea"
+            placeholder="Transcript sẽ hiện ở đây khi bạn nói... hoặc gõ thủ công."></textarea>
+          <div class="transcript-footer">
+            <button class="btn-clear" onclick="clearTranscript()">
+              <i class="fas fa-trash-alt"></i> Xóa
+            </button>
+            <button class="btn-analyze" id="btn-analyze" onclick="analyzeTranscript()" disabled>
+              <i class="fas fa-robot"></i> Phân tích với Gemini AI
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Feedback -->
+        <div class="feedback-section" id="feedback-section" style="display:none">
+
+          <!-- Loading state -->
+          <div class="feedback-loading" id="feedback-loading">
+            <div class="spinner"></div>
+            <p>Gemini AI đang phân tích câu trả lời của bạn...</p>
+          </div>
+
+          <!-- Results -->
+          <div id="feedback-results" style="display:none">
+
+            <!-- Score cards -->
+            <div class="score-header">
+              <i class="fas fa-chart-bar"></i> Kết quả đánh giá
+            </div>
+            <div class="score-grid">
+              <div class="score-card score-overall">
+                <div class="score-label">Band tổng thể</div>
+                <div class="score-value" id="score-overall">—</div>
+              </div>
+              <div class="score-card">
+                <div class="score-label">Fluency &amp; Coherence</div>
+                <div class="score-value" id="score-fluency">—</div>
+                <div class="score-sub">Lưu loát &amp; mạch lạc</div>
+              </div>
+              <div class="score-card">
+                <div class="score-label">Lexical Resource</div>
+                <div class="score-value" id="score-vocabulary">—</div>
+                <div class="score-sub">Từ vựng</div>
+              </div>
+              <div class="score-card">
+                <div class="score-label">Grammatical Range</div>
+                <div class="score-value" id="score-grammar">—</div>
+                <div class="score-sub">Ngữ pháp</div>
+              </div>
+              <div class="score-card">
+                <div class="score-label">Pronunciation</div>
+                <div class="score-value" id="score-pronunciation">—</div>
+                <div class="score-sub">Phát âm</div>
+              </div>
+            </div>
+
+            <!-- Overall feedback -->
+            <div class="fb-card" id="fb-overall-card">
+              <div class="fb-card-title">
+                <i class="fas fa-comment-alt"></i> Nhận xét tổng thể
+              </div>
+              <p id="fb-overall-text" class="fb-card-text"></p>
+            </div>
+
+            <!-- Corrected version -->
+            <div class="fb-card fb-card-green" id="fb-corrected-card">
+              <div class="fb-card-title">
+                <i class="fas fa-check-circle"></i> Phiên bản cải thiện
+              </div>
+              <p id="fb-corrected-text" class="fb-card-text"></p>
+            </div>
+
+            <!-- Strengths -->
+            <div class="fb-card fb-card-blue" id="fb-strengths-card">
+              <div class="fb-card-title">
+                <i class="fas fa-star"></i> Điểm mạnh
+              </div>
+              <ul id="fb-strengths-list" class="fb-list"></ul>
+            </div>
+
+            <!-- Errors -->
+            <div class="fb-card fb-card-red" id="fb-errors-card">
+              <div class="fb-card-title">
+                <i class="fas fa-times-circle"></i> Lỗi cần sửa
+              </div>
+              <div id="fb-errors-list"></div>
+            </div>
+
+            <!-- Improvements -->
+            <div class="fb-card fb-card-yellow" id="fb-improvements-card">
+              <div class="fb-card-title">
+                <i class="fas fa-lightbulb"></i> Gợi ý cải thiện
+              </div>
+              <ul id="fb-improvements-list" class="fb-list"></ul>
+            </div>
+
+          </div><!-- /feedback-results -->
+        </div><!-- /feedback-section -->
+
+        <!-- Action buttons -->
+        <div class="practice-actions">
+          <button class="btn-secondary" onclick="retryQuestion()">
+            <i class="fas fa-redo"></i> Thử lại
+          </button>
+          <button class="btn-primary" onclick="loadRandomQuestion()">
+            Câu tiếp theo <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div><!-- /practice-content -->
+    </div><!-- /practice-main -->
+  </div><!-- /practice-layout -->
+</div><!-- /screen-practice -->
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 3 – HISTORY
+═══════════════════════════════════════════ -->
+<div id="screen-history" class="screen">
+  <div class="sp-page-header">
+    <div class="sp-page-header-inner">
+      <h2 class="sp-page-header-title">📋 Lịch sử luyện Speaking</h2>
+      <button class="btn-secondary" onclick="showScreen('screen-home')">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </button>
+    </div>
+  </div>
+  <div class="history-body">
+    <div id="history-content">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 4 – MATERIALS
+═══════════════════════════════════════════ -->
+<div id="screen-materials" class="screen">
+  <div class="sp-page-header">
+    <div class="sp-page-header-inner">
+      <h2 class="sp-page-header-title">📚 Tài liệu Speaking</h2>
+      <button class="btn-secondary" onclick="showScreen('screen-home')">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </button>
+    </div>
+  </div>
+  <div class="pv-layout sp-mat-layout">
     <!-- Left: filter + list -->
     <div class="pv-sidebar">
       <div class="pv-sidebar-filter">
@@ -155,7 +354,9 @@
 
     <!-- Right: PDF viewer -->
     <div class="pv-viewer" id="materials-right">
-      <button class="pv-back-btn" id="pdf-back-btn" onclick="closeMobilePdf()">← Quay lại danh sách</button>
+      <button class="pv-back-btn" id="pdf-back-btn" onclick="closeMobilePdf()">
+        <i class="fas fa-arrow-left"></i> Quay lại danh sách
+      </button>
       <div class="pv-placeholder" id="pdf-placeholder">
         <div class="pv-placeholder-icon">📄</div>
         <p>Chọn tài liệu để xem</p>
@@ -164,14 +365,35 @@
         <div class="pv-toolbar">
           <span class="pv-toolbar-title" id="sp-viewer-title"></span>
           <div class="pv-toolbar-actions">
-            <a class="pv-btn-action" id="sp-newtab-btn" href="#" target="_blank">↗ Mở tab mới</a>
-            <a class="pv-btn-action" id="sp-download-btn" href="#" target="_blank">⬇ Tải về PDF</a>
+            <a class="pv-btn-action" id="sp-newtab-btn" href="#" target="_blank">
+              <i class="fas fa-external-link-alt"></i> Mở tab mới
+            </a>
+            <a class="pv-btn-action" id="sp-download-btn" href="#" target="_blank">
+              <i class="fas fa-download"></i> Tải về PDF
+            </a>
           </div>
         </div>
         <iframe class="pv-frame" id="pdf-frame" allowfullscreen></iframe>
       </div>
     </div>
+  </div>
+</div>
 
+<!-- History detail modal -->
+<div class="modal-overlay" id="history-modal">
+  <div class="sp-modal">
+    <div class="sp-modal-header">
+      <h3 id="history-modal-title">Chi tiết bài luyện</h3>
+      <button class="sp-modal-close" onclick="closeHistoryModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="sp-modal-body" id="history-modal-body">
+      <div class="spinner"></div>
+    </div>
+    <div class="sp-modal-footer">
+      <button class="btn-secondary" onclick="closeHistoryModal()">Đóng</button>
+    </div>
   </div>
 </div>
 

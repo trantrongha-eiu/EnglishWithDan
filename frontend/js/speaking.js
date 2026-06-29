@@ -1,56 +1,52 @@
 /* ═══════════════════════════════════════════════════════
    speaking.js  –  EnglishWithDan Speaking Module
-   ⚠️  All AI calls go through /api/speaking/analyze (backend proxy)
-       No API keys are stored or used in this file.
+   All AI calls go through /api/speaking/analyze (backend).
 ═══════════════════════════════════════════════════════ */
 
 const API = 'https://englishwithdan.onrender.com';
 
 // ──────────────────────────────────────────────────────
-// Toast notification
+// Toast
 // ──────────────────────────────────────────────────────
 function showToast(message, type = 'info') {
-  let container = document.getElementById('toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'toast-container';
-    container.style.cssText =
+  let c = document.getElementById('toast-container');
+  if (!c) {
+    c = document.createElement('div');
+    c.id = 'toast-container';
+    c.style.cssText =
       'position:fixed;top:68px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
-    document.body.appendChild(container);
+    document.body.appendChild(c);
   }
-  const toast = document.createElement('div');
+  const t = document.createElement('div');
   const colors = { info: '#3d8bff', error: '#e53935', success: '#22c55e', warn: '#f59e0b' };
-  toast.style.cssText = `background:#fff;border-left:4px solid ${colors[type] || colors.info};border-radius:8px;padding:12px 16px;font-size:13px;font-weight:500;color:#111;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
-  toast.textContent = message;
-  container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity .3s';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+  t.style.cssText = `background:#fff;border-left:4px solid ${colors[type]||colors.info};border-radius:8px;
+    padding:12px 16px;font-size:13px;font-weight:500;color:#111;
+    box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
+  t.textContent = message;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 3500);
 }
 
 // ──────────────────────────────────────────────────────
-// Auth helpers
+// Auth
 // ──────────────────────────────────────────────────────
 function getToken() { return localStorage.getItem('token'); }
 
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  sessionStorage.removeItem('sp_verified');
   window.location.href = 'login.html';
 }
 
 function escHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 async function apiFetch(path, opts = {}) {
   const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
   if (!(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-  const res = await fetch(API + path, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  const res = await fetch(API + path, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
   if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
   const text = await res.text();
   if (text.trimStart().startsWith('<')) throw new Error('Server không phản hồi đúng.');
@@ -65,11 +61,13 @@ const state = {
   recognition:      null,
   isRecording:      false,
   recordStartTime:  null,
-  elapsedTimer:     null,   // setInterval for elapsed counter
-  prepTimer:        null,   // setInterval for Part 2 prep countdown
-  speakTimer:       null,   // setInterval for Part 2 speaking countdown
+  elapsedTimer:     null,
+  prepTimer:        null,
+  speakTimer:       null,
   prepSecondsLeft:  60,
   speakSecondsLeft: 120,
+  practiceInited:   false,
+  partFilter:       'all',
   materialFilter:   { quarter: 'all', topic: 'all' },
 };
 
@@ -79,7 +77,7 @@ const state = {
 function fmtTime(secs) {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
 }
 
 function clearAllTimers() {
@@ -89,18 +87,27 @@ function clearAllTimers() {
   state.elapsedTimer = state.prepTimer = state.speakTimer = null;
 }
 
-// ──────────────────────────────────────────────────────
-// Show practice (speaking is free — no key gate)
-// ──────────────────────────────────────────────────────
-function showPractice() {
-  document.getElementById('sp-tabs').style.display = 'flex';
-  document.querySelectorAll('.sp-content').forEach(el => el.classList.remove('sp-tab-hidden'));
-  const tabParam = new URLSearchParams(location.search).get('tab');
-  const tab = tabParam === 'materials' ? 'materials' : 'practice';
-  history.replaceState({ tab }, '', `speaking.html?tab=${tab}`);
-  switchTab(tab, false);
+function bandColor(band) {
+  if (band >= 7) return 'high';
+  if (band >= 5.5) return 'medium';
+  return 'low';
 }
 
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ──────────────────────────────────────────────────────
+// Screen navigation
+// ──────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const screen = document.getElementById(id);
+  if (screen) screen.classList.add('active');
+  window.scrollTo(0, 0);
+}
 
 // ──────────────────────────────────────────────────────
 // Init
@@ -108,12 +115,7 @@ function showPractice() {
 (function init() {
   if (!getToken()) { window.location.href = 'login.html'; return; }
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
-  const el = document.getElementById('userName');
-  if (el) el.textContent = `👋 ${name}`;
-
-  // Web Speech API support check
+  // Speech API check
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     const warn = document.getElementById('no-speech-warning');
     if (warn) warn.classList.add('visible');
@@ -122,47 +124,52 @@ function showPractice() {
   }
 
   // Enable analyze button on manual typing
-  const textarea = document.getElementById('transcript-textarea');
-  if (textarea) {
-    textarea.addEventListener('input', function () {
+  const ta = document.getElementById('transcript-textarea');
+  if (ta) {
+    ta.addEventListener('input', function() {
       const btn = document.getElementById('btn-analyze');
       if (btn) btn.disabled = !this.value.trim();
     });
   }
 
-  // Speaking is free — show practice directly
-  showPractice();
+  // Navigate to practice if URL param
+  const tabParam = new URLSearchParams(location.search).get('tab');
+  if (tabParam === 'materials') {
+    showScreen('screen-materials');
+    loadMaterialFilters();
+    loadMaterials();
+  } else if (tabParam === 'practice') {
+    showScreen('screen-practice');
+    initPractice();
+  }
 })();
 
-// ──────────────────────────────────────────────────────
-// Tab switching
-// ──────────────────────────────────────────────────────
-function switchTab(tab, pushHistory = true) {
-  if (pushHistory) {
-    history.pushState({ tab }, '', `speaking.html?tab=${tab}`);
-  }
-  document.querySelectorAll('.sp-tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.sp-content').forEach(c => c.classList.remove('active'));
+// ══════════════════════════════════════════════════════
+// PRACTICE SCREEN
+// ══════════════════════════════════════════════════════
 
-  document.getElementById('tab-btn-' + tab)?.classList.add('active');
-  document.getElementById('tab-' + tab)?.classList.add('active');
-
-  if (tab === 'materials') { loadMaterialFilters(); loadMaterials(); }
-  if (tab === 'practice'  ) { if (!state.currentQuestion) loadTopics(); }
+function initPractice() {
+  if (state.practiceInited) return;
+  state.practiceInited = true;
+  loadTopics();
 }
 
-// ══════════════════════════════════════════════════════
-// PRACTICE TAB
-// ══════════════════════════════════════════════════════
+// ── Part filter ──
+function setPartFilter(part, el) {
+  state.partFilter = part;
+  document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  loadTopics();
+}
 
+// ── Topics ──
 async function loadTopics() {
   try {
-    const part = document.getElementById('sel-part').value;
-    const qs   = part !== 'all' ? `?part=${part}` : '';
-    const data  = await apiFetch(`/api/speaking/topics${qs}`);
-    const sel   = document.getElementById('sel-topic');
-    const prev  = sel.value;
-    sel.innerHTML = '<option value="all">Tất cả</option>';
+    const qs = state.partFilter !== 'all' ? `?part=${state.partFilter}` : '';
+    const data = await apiFetch(`/api/speaking/topics${qs}`);
+    const sel = document.getElementById('sel-topic');
+    const prev = sel.value;
+    sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
     (data.topics || []).forEach(t => {
       const opt = document.createElement('option');
       opt.value = t; opt.textContent = t;
@@ -171,74 +178,93 @@ async function loadTopics() {
     });
   } catch (e) {
     console.error('loadTopics:', e);
-    showToast('Không thể tải danh sách chủ đề. Vui lòng thử lại.', 'error');
   }
   await loadQuestions();
 }
 
+// ── Questions ──
 async function loadQuestions() {
-  const part  = document.getElementById('sel-part').value;
   const topic = document.getElementById('sel-topic').value;
   const params = [];
-  if (part  !== 'all') params.push(`part=${part}`);
+  if (state.partFilter !== 'all') params.push(`part=${state.partFilter}`);
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
-  const sel = document.getElementById('sel-question');
-  sel.innerHTML = '<option value="">-- Chọn câu hỏi --</option>';
+  const list = document.getElementById('question-list');
+  if (list) list.innerHTML = '<div class="spinner"></div>';
 
   try {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
-    (data.questions || []).forEach(q => {
-      const opt    = document.createElement('option');
-      opt.value    = q._id;
-      const label  = q.question.length > 65 ? q.question.slice(0, 62) + '…' : q.question;
-      opt.textContent = `[Part ${q.part}] ${label}`;
-      opt.dataset.q   = JSON.stringify(q);
-      sel.appendChild(opt);
+    const questions = data.questions || [];
+
+    if (!list) return;
+    if (!questions.length) {
+      list.innerHTML = '<div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">Không có câu hỏi</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    questions.forEach(q => {
+      const item = document.createElement('div');
+      item.className = 'question-item';
+      item.dataset.id = q._id;
+      item.dataset.q  = JSON.stringify(q);
+
+      const badgeClass = `p${q.part}`;
+      item.innerHTML = `
+        <div class="q-item-meta">
+          <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
+          <span class="q-item-topic">${escHtml(q.topic)}</span>
+        </div>
+        <div class="q-item-text">${escHtml(q.question)}</div>`;
+      item.onclick = () => selectQuestion(q, item);
+      list.appendChild(item);
     });
   } catch (e) {
+    if (list) list.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
     console.error('loadQuestions:', e);
-    showToast('Không thể tải câu hỏi. Vui lòng thử lại.', 'error');
   }
 }
 
-function selectQuestion(id) {
-  if (!id) return;
-  const opt = document.querySelector(`#sel-question option[value="${id}"]`);
-  if (!opt) return;
-  try {
-    const q = JSON.parse(opt.dataset.q);
-    setQuestion(q);
-    resetPractice();
-  } catch (e) { console.error('selectQuestion:', e); }
-}
+function selectQuestion(q, itemEl) {
+  // Highlight selected
+  document.querySelectorAll('.question-item').forEach(i => i.classList.remove('active'));
+  if (itemEl) itemEl.classList.add('active');
 
-function readQuestion(text) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter  = new SpeechSynthesisUtterance(text);
-  utter.lang   = 'en-US';
-  utter.rate   = 0.85;
-  utter.pitch  = 1;
-  window.speechSynthesis.speak(utter);
+  setQuestion(q);
+  resetPractice();
+
+  // Show practice content
+  document.getElementById('practice-empty').style.display   = 'none';
+  document.getElementById('practice-content').style.display = 'block';
+
+  // On mobile, scroll to practice area
+  if (window.innerWidth <= 768) {
+    document.getElementById('practice-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 async function loadRandomQuestion() {
-  const part  = document.getElementById('sel-part').value;
   const topic = document.getElementById('sel-topic').value;
   const params = [];
-  if (part  !== 'all') params.push(`part=${part}`);
+  if (state.partFilter !== 'all') params.push(`part=${state.partFilter}`);
   if (topic !== 'all') params.push(`topic=${encodeURIComponent(topic)}`);
   const qs = params.length ? '?' + params.join('&') : '';
 
   try {
     const data = await apiFetch(`/api/speaking/random${qs}`);
-    if (!data.question) { showToast('Không tìm thấy câu hỏi phù hợp. Thử chọn topic khác.', 'warn'); return; }
-    const sel = document.getElementById('sel-question');
-    if (sel) sel.value = data.question._id || '';
+    if (!data.question) { showToast('Không tìm thấy câu hỏi phù hợp.', 'warn'); return; }
+
+    // Highlight in list
+    const listItem = document.querySelector(`.question-item[data-id="${data.question._id}"]`);
+    document.querySelectorAll('.question-item').forEach(i => i.classList.remove('active'));
+    if (listItem) listItem.classList.add('active');
+
     setQuestion(data.question);
     resetPractice();
+
+    document.getElementById('practice-empty').style.display   = 'none';
+    document.getElementById('practice-content').style.display = 'block';
   } catch (e) {
     console.error('loadRandomQuestion:', e);
     showToast('Không thể tải câu hỏi. Vui lòng thử lại.', 'error');
@@ -248,56 +274,65 @@ async function loadRandomQuestion() {
 function setQuestion(q) {
   state.currentQuestion = q;
 
-  const partLabel = document.getElementById('q-part-label');
-  const qText     = document.getElementById('q-text');
-  const cue       = document.getElementById('q-cue');
+  const partBadge  = document.getElementById('q-part-badge');
+  const topicBadge = document.getElementById('q-topic-badge');
+  const qText      = document.getElementById('q-text');
+  const qCue       = document.getElementById('q-cue');
 
-  if (partLabel) partLabel.textContent = `Part ${q.part}`;
-  if (qText)     qText.textContent     = q.question;
-  if (cue) {
-    if (q.cueCard) { cue.textContent = q.cueCard; cue.classList.remove('hidden'); }
-    else             cue.classList.add('hidden');
+  if (partBadge)  partBadge.textContent  = `Part ${q.part}`;
+  if (topicBadge) topicBadge.textContent = q.topic || '';
+  if (qText)      qText.textContent      = q.question;
+  if (qCue) {
+    if (q.cueCard) { qCue.textContent = q.cueCard; qCue.style.display = 'block'; }
+    else             qCue.style.display = 'none';
   }
-  readQuestion(q.question);
 
-  // Part 2: show prep timer after reset
+  readQuestion();
+
   if (q.part === 2) {
-    // Capture question ref; check it still matches when timeout fires
-    // (guards against rapid question switching)
     setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
   }
 }
 
+function readQuestion() {
+  const q = state.currentQuestion;
+  if (!q || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(q.question);
+  utter.lang  = 'en-US';
+  utter.rate  = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
 function resetPractice() {
   clearAllTimers();
-
   if (state.isRecording && state.recognition) state.recognition.stop();
-  state.isRecording   = false;
+  state.isRecording    = false;
   state.recordStartTime = null;
 
-  // Hide Part 2 elements
   hidePrepTimer();
   hideSpeakCountdown();
 
+  // Reset UI
   const ta          = document.getElementById('transcript-textarea');
   const btnAnalyze  = document.getElementById('btn-analyze');
-  const feedbackBox = document.getElementById('feedback-box');
+  const fbSection   = document.getElementById('feedback-section');
   const interim     = document.getElementById('transcript-interim');
   const recStatus   = document.getElementById('rec-status');
-  const recIcon     = document.getElementById('rec-icon');
-  const recLabel    = document.getElementById('rec-label');
   const btnRecord   = document.getElementById('btn-record');
   const elapsed     = document.getElementById('rec-elapsed');
+  const recIcon     = document.getElementById('rec-icon');
+  const recLabel    = document.getElementById('rec-label');
 
-  if (ta)          ta.value           = '';
-  if (btnAnalyze)  btnAnalyze.disabled = true;
-  if (feedbackBox) feedbackBox.classList.remove('visible');
-  if (interim)     interim.textContent = '';
-  if (recStatus)   { recStatus.textContent = 'Nhấn để bắt đầu ghi âm'; recStatus.classList.remove('live'); }
-  if (recIcon)     recIcon.textContent  = '🎙';
-  if (recLabel)    recLabel.textContent = 'Start Speaking';
-  if (btnRecord)   btnRecord.classList.remove('recording');
-  if (elapsed)     { elapsed.textContent = '⏱ 0:00'; elapsed.classList.add('hidden'); }
+  if (ta)         ta.value           = '';
+  if (btnAnalyze) btnAnalyze.disabled = true;
+  if (fbSection)  fbSection.style.display = 'none';
+  if (interim)    interim.textContent = '';
+  if (recStatus)  { recStatus.textContent = 'Nhấn để ghi âm'; recStatus.classList.remove('live'); }
+  if (btnRecord)  btnRecord.classList.remove('recording');
+  if (elapsed)    elapsed.classList.add('hidden');
+  if (recIcon)    { recIcon.className = 'fas fa-microphone rec-mic'; }
+  if (recLabel)   recLabel.textContent = 'Bắt đầu';
 }
 
 function retryQuestion() {
@@ -307,8 +342,15 @@ function retryQuestion() {
   }
 }
 
+function clearTranscript() {
+  const ta = document.getElementById('transcript-textarea');
+  if (ta) ta.value = '';
+  const btn = document.getElementById('btn-analyze');
+  if (btn) btn.disabled = true;
+}
+
 // ──────────────────────────────────────────────────────
-// Part 2 Timer – Prep phase (60 seconds)
+// Part 2 – Prep Timer (60s)
 // ──────────────────────────────────────────────────────
 function startPrepTimer() {
   clearInterval(state.prepTimer);
@@ -320,21 +362,17 @@ function startPrepTimer() {
 
   if (!prepEl) return;
   prepEl.style.display = 'block';
-  if (clockEl) clockEl.textContent = fmtTime(state.prepSecondsLeft);
-
-  // Disable record button during prep
+  if (clockEl)  clockEl.textContent = fmtTime(state.prepSecondsLeft);
   if (btnRecord) { btnRecord.disabled = true; btnRecord.classList.add('btn-record--disabled'); }
 
   state.prepTimer = setInterval(() => {
     state.prepSecondsLeft--;
     if (clockEl) clockEl.textContent = fmtTime(state.prepSecondsLeft);
-
     if (state.prepSecondsLeft <= 0) {
       clearInterval(state.prepTimer);
       state.prepTimer = null;
       hidePrepTimer();
-      // Auto-start recording when prep ends
-      showToast('⏰ Hết thời gian chuẩn bị – Bắt đầu nói!', 'info');
+      showToast('⏰ Hết thời gian chuẩn bị — Bắt đầu nói!', 'info');
       if (state.recognition && !state.isRecording) {
         state.recognition.start();
         state.isRecording = true;
@@ -356,12 +394,12 @@ function skipPrep() {
 function hidePrepTimer() {
   const prepEl    = document.getElementById('p2-prep');
   const btnRecord = document.getElementById('btn-record');
-  if (prepEl) prepEl.style.display = 'none';
+  if (prepEl)    prepEl.style.display = 'none';
   if (btnRecord) { btnRecord.disabled = false; btnRecord.classList.remove('btn-record--disabled'); }
 }
 
 // ──────────────────────────────────────────────────────
-// Part 2 Timer – Speaking phase (2 minutes)
+// Part 2 – Speaking Countdown (2 min)
 // ──────────────────────────────────────────────────────
 function startSpeakCountdown() {
   if (state.currentQuestion?.part !== 2) return;
@@ -370,28 +408,21 @@ function startSpeakCountdown() {
 
   const cdEl = document.getElementById('p2-speak-countdown');
   const tmEl = document.getElementById('p2-speak-time');
-
   if (cdEl) cdEl.classList.remove('hidden');
   if (tmEl) tmEl.textContent = fmtTime(state.speakSecondsLeft);
 
   state.speakTimer = setInterval(() => {
     state.speakSecondsLeft--;
     if (tmEl) tmEl.textContent = fmtTime(state.speakSecondsLeft);
-
-    // Warning at 30 seconds left
-    if (state.speakSecondsLeft === 30) {
-      showToast('⚠️ Còn 30 giây – hãy kết thúc câu trả lời!', 'warn');
-    }
-
+    if (state.speakSecondsLeft === 30) showToast('⚠️ Còn 30 giây!', 'warn');
     if (state.speakSecondsLeft <= 0) {
       clearInterval(state.speakTimer);
       state.speakTimer = null;
-      // Auto-stop recording
       if (state.isRecording && state.recognition) {
         state.recognition.stop();
         state.isRecording = false;
       }
-      showToast('⏰ Hết 2 phút – ghi âm đã dừng tự động.', 'info');
+      showToast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');
       hideSpeakCountdown();
     }
   }, 1000);
@@ -405,7 +436,7 @@ function hideSpeakCountdown() {
 }
 
 // ──────────────────────────────────────────────────────
-// Elapsed time counter (all parts)
+// Elapsed timer
 // ──────────────────────────────────────────────────────
 function startElapsedTimer() {
   clearInterval(state.elapsedTimer);
@@ -415,8 +446,8 @@ function startElapsedTimer() {
 
   state.elapsedTimer = setInterval(() => {
     const secs = Math.floor((Date.now() - state.recordStartTime) / 1000);
-    const elEl = document.getElementById('rec-elapsed');
-    if (elEl) elEl.textContent = `⏱ ${fmtTime(secs)}`;
+    const t = document.getElementById('rec-elapsed-time');
+    if (t) t.textContent = fmtTime(secs);
   }, 1000);
 }
 
@@ -444,14 +475,18 @@ function setupRecognition() {
 
   state.recognition.onstart = () => {
     finalTranscript = '';
-    document.getElementById('rec-icon')?.textContent  && (document.getElementById('rec-icon').textContent  = '🔴');
-    document.getElementById('rec-label')?.textContent && (document.getElementById('rec-label').textContent = 'Stop');
+    const recIcon   = document.getElementById('rec-icon');
+    const recLabel  = document.getElementById('rec-label');
     const recStatus = document.getElementById('rec-status');
-    if (recStatus) { recStatus.textContent = '🔴 Recording...'; recStatus.classList.add('live'); }
-    document.getElementById('btn-record')?.classList.add('recording');
+    const btnRecord = document.getElementById('btn-record');
+
+    if (recIcon)   recIcon.className  = 'fas fa-stop rec-mic';
+    if (recLabel)  recLabel.textContent = 'Dừng';
+    if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
+    if (btnRecord) btnRecord.classList.add('recording');
 
     startElapsedTimer();
-    startSpeakCountdown(); // only does something for Part 2
+    startSpeakCountdown();
   };
 
   state.recognition.onresult = (e) => {
@@ -468,7 +503,8 @@ function setupRecognition() {
     if (cleaned) {
       const ta = document.getElementById('transcript-textarea');
       if (ta) ta.value = cleaned;
-      document.getElementById('btn-analyze') && (document.getElementById('btn-analyze').disabled = false);
+      const btn = document.getElementById('btn-analyze');
+      if (btn) btn.disabled = false;
     }
   };
 
@@ -483,10 +519,10 @@ function setupRecognition() {
     const btnRecord = document.getElementById('btn-record');
     const interimEl = document.getElementById('transcript-interim');
     const ta        = document.getElementById('transcript-textarea');
-    const btnAnalyze= document.getElementById('btn-analyze');
+    const btn       = document.getElementById('btn-analyze');
 
-    if (recIcon)   recIcon.textContent  = '🎙';
-    if (recLabel)  recLabel.textContent = 'Start Speaking';
+    if (recIcon)   recIcon.className  = 'fas fa-microphone rec-mic';
+    if (recLabel)  recLabel.textContent = 'Bắt đầu';
     if (recStatus) recStatus.classList.remove('live');
     if (btnRecord) btnRecord.classList.remove('recording');
     if (interimEl) interimEl.textContent = '';
@@ -494,8 +530,8 @@ function setupRecognition() {
     if (ta && !ta.value.trim() && finalTranscript.trim()) ta.value = finalTranscript.trim();
 
     if (ta && ta.value.trim()) {
-      if (btnAnalyze) btnAnalyze.disabled = false;
-      if (recStatus) recStatus.textContent = 'Ghi âm hoàn tất ✓';
+      if (btn) btn.disabled = false;
+      if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất';
     } else {
       if (recStatus) recStatus.textContent = 'Ghi âm đã dừng';
     }
@@ -513,8 +549,10 @@ function setupRecognition() {
     state.isRecording = false;
     stopElapsedTimer();
     document.getElementById('btn-record')?.classList.remove('recording');
-    if (document.getElementById('rec-icon'))  document.getElementById('rec-icon').textContent  = '🎙';
-    if (document.getElementById('rec-label')) document.getElementById('rec-label').textContent = 'Start Speaking';
+    const recIcon  = document.getElementById('rec-icon');
+    const recLabel = document.getElementById('rec-label');
+    if (recIcon)  recIcon.className  = 'fas fa-microphone rec-mic';
+    if (recLabel) recLabel.textContent = 'Bắt đầu';
   };
 }
 
@@ -533,7 +571,7 @@ function toggleRecord() {
 }
 
 // ──────────────────────────────────────────────────────
-// AI Analyze
+// AI Analysis
 // ──────────────────────────────────────────────────────
 async function analyzeTranscript() {
   const ta         = document.getElementById('transcript-textarea');
@@ -543,14 +581,14 @@ async function analyzeTranscript() {
   const question = state.currentQuestion?.question || '';
   const duration = getElapsedSeconds();
 
-  const box     = document.getElementById('feedback-box');
-  const loading = document.getElementById('feedback-loading');
-  const content = document.getElementById('feedback-content');
+  const section  = document.getElementById('feedback-section');
+  const loading  = document.getElementById('feedback-loading');
+  const results  = document.getElementById('feedback-results');
 
-  if (box)     box.classList.add('visible');
-  if (loading) loading.style.display = 'block';
-  if (content) content.style.display = 'none';
-  if (box)     box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (section) section.style.display = 'block';
+  if (loading) loading.style.display = 'flex';
+  if (results) results.style.display = 'none';
+  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
     const data = await apiFetch('/api/speaking/analyze', {
@@ -566,69 +604,259 @@ async function analyzeTranscript() {
     });
 
     if (loading) loading.style.display = 'none';
-    if (content) content.style.display = 'block';
+    if (results) results.style.display = 'block';
 
-    const fb = data.feedback || {};
-
-    // Band score
-    const bandEl  = document.getElementById('feedback-band');
-    const bandVal = document.getElementById('band-value');
-    if (fb.band_estimate) {
-      if (bandVal) bandVal.textContent = fb.band_estimate;
-      if (bandEl)  bandEl.style.display = 'inline-flex';
-    } else {
-      if (bandEl) bandEl.style.display = 'none';
-    }
-
-    // Corrected version
-    const corrEl = document.getElementById('feedback-corrected');
-    if (corrEl) corrEl.textContent = fb.corrected || transcript;
-
-    // Errors
-    const errEl = document.getElementById('feedback-errors');
-    if (errEl) {
-      errEl.innerHTML = '';
-      if (fb.errors?.length) {
-        errEl.innerHTML = '<h4>❌ Lỗi cần sửa</h4>';
-        fb.errors.forEach(err => {
-          const d = document.createElement('div');
-          d.className = 'error-item';
-          d.innerHTML = `
-            <span class="error-wrong">${escHtml(err.wrong)}</span>
-            <span class="error-arrow">→</span>
-            <span class="error-right">${escHtml(err.right)}</span>
-            <span class="error-tip">${escHtml(err.tip || '')}</span>`;
-          errEl.appendChild(d);
-        });
-      }
-    }
-
-    // Tips
-    const tipEl = document.getElementById('feedback-tips');
-    if (tipEl) {
-      tipEl.innerHTML = '';
-      if (fb.tips?.length) {
-        tipEl.innerHTML = '<h4>💡 Gợi ý cải thiện</h4>';
-        fb.tips.forEach(t => {
-          const d = document.createElement('div');
-          d.className = 'tip-item';
-          d.textContent = t;
-          tipEl.appendChild(d);
-        });
-      }
-    }
+    renderFeedback(data.feedback || {});
   } catch (e) {
     if (loading) loading.style.display = 'none';
-    if (content) content.style.display = 'block';
-    const corrEl = document.getElementById('feedback-corrected');
-    if (corrEl) corrEl.textContent = 'Không thể phân tích lúc này. Vui lòng thử lại.';
-    console.error('analyzeTranscript:', e);
+    if (results) results.style.display = 'block';
     showToast('Không thể phân tích. Vui lòng thử lại sau.', 'error');
+    const scoreOverall = document.getElementById('score-overall');
+    if (scoreOverall) scoreOverall.textContent = 'Lỗi';
+    console.error('analyzeTranscript:', e);
+  }
+}
+
+function renderFeedback(fb) {
+  // Scores
+  const scores = [
+    ['overall',       fb.overall_band],
+    ['fluency',       fb.fluency],
+    ['vocabulary',    fb.vocabulary],
+    ['grammar',       fb.grammar],
+    ['pronunciation', fb.pronunciation],
+  ];
+  scores.forEach(([key, val]) => {
+    const el = document.getElementById(`score-${key}`);
+    if (!el) return;
+    el.textContent = val != null ? val : '—';
+    el.dataset.band = val != null ? bandColor(val) : '';
+  });
+
+  // Overall feedback
+  const fbOverall = document.getElementById('fb-overall-card');
+  const fbOverallText = document.getElementById('fb-overall-text');
+  if (fb.overall_feedback) {
+    if (fbOverallText) fbOverallText.textContent = fb.overall_feedback;
+    if (fbOverall) fbOverall.style.display = 'block';
+  } else {
+    if (fbOverall) fbOverall.style.display = 'none';
+  }
+
+  // Corrected version
+  const fbCorrected = document.getElementById('fb-corrected-card');
+  const fbCorrectedText = document.getElementById('fb-corrected-text');
+  if (fb.corrected) {
+    if (fbCorrectedText) fbCorrectedText.textContent = fb.corrected;
+    if (fbCorrected) fbCorrected.style.display = 'block';
+  } else {
+    if (fbCorrected) fbCorrected.style.display = 'none';
+  }
+
+  // Strengths
+  const fbStrengths = document.getElementById('fb-strengths-card');
+  const fbStrengthsList = document.getElementById('fb-strengths-list');
+  if (fb.strengths?.length) {
+    if (fbStrengthsList) fbStrengthsList.innerHTML = fb.strengths.map(s => `<li>${escHtml(s)}</li>`).join('');
+    if (fbStrengths) fbStrengths.style.display = 'block';
+  } else {
+    if (fbStrengths) fbStrengths.style.display = 'none';
+  }
+
+  // Errors
+  const fbErrors = document.getElementById('fb-errors-card');
+  const fbErrorsList = document.getElementById('fb-errors-list');
+  if (fb.errors?.length) {
+    if (fbErrorsList) {
+      fbErrorsList.innerHTML = fb.errors.map(err => `
+        <div class="error-item">
+          <span class="error-wrong">${escHtml(err.wrong)}</span>
+          <span class="error-arrow">→</span>
+          <span class="error-right">${escHtml(err.right)}</span>
+          ${err.tip ? `<div class="error-tip-row">💡 ${escHtml(err.tip)}</div>` : ''}
+        </div>`).join('');
+    }
+    if (fbErrors) fbErrors.style.display = 'block';
+  } else {
+    if (fbErrors) fbErrors.style.display = 'none';
+  }
+
+  // Improvements
+  const fbImprovements = document.getElementById('fb-improvements-card');
+  const fbImprovementsList = document.getElementById('fb-improvements-list');
+  if (fb.improvements?.length) {
+    if (fbImprovementsList) {
+      fbImprovementsList.innerHTML = fb.improvements.map(i => `<li>${escHtml(i)}</li>`).join('');
+    }
+    if (fbImprovements) fbImprovements.style.display = 'block';
+  } else {
+    if (fbImprovements) fbImprovements.style.display = 'none';
   }
 }
 
 // ══════════════════════════════════════════════════════
-// MATERIALS TAB
+// HISTORY SCREEN
+// ══════════════════════════════════════════════════════
+
+async function loadHistory() {
+  const container = document.getElementById('history-content');
+  if (!container) return;
+  container.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const data = await apiFetch('/api/speaking/history');
+    const attempts = data.attempts || [];
+
+    if (!attempts.length) {
+      container.innerHTML = `
+        <div class="history-empty">
+          <p style="font-size:48px;margin-bottom:16px">🎙</p>
+          <p style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài luyện nào</p>
+          <p>Hãy bắt đầu luyện tập và nhận AI feedback ngay!</p>
+          <button class="btn-primary" style="margin-top:20px" onclick="showScreen('screen-practice');initPractice()">
+            <i class="fas fa-microphone"></i> Luyện ngay
+          </button>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = '<div class="history-list" id="history-list"></div>';
+    const list = document.getElementById('history-list');
+
+    attempts.forEach(a => {
+      const band = a.aiFeedback?.overallBand || 0;
+      const card = document.createElement('div');
+      card.className = 'history-card';
+      const badgeClass = `hbadge-p${a.part}`;
+      card.innerHTML = `
+        <div class="history-card-top">
+          <div class="history-card-meta">
+            <span class="history-part-badge ${badgeClass}">Part ${a.part}</span>
+            ${a.topic ? `<span class="history-topic-badge">${escHtml(a.topic)}</span>` : ''}
+            <span class="history-date">${formatDate(a.createdAt)}</span>
+          </div>
+          ${band ? `<div class="history-band-badge">${band}</div>` : ''}
+        </div>
+        <div class="history-question">${escHtml(a.question || 'Không có câu hỏi')}</div>
+        ${renderHistoryScores(a.aiFeedback)}`;
+
+      card.onclick = () => openHistoryModal(a);
+      list.appendChild(card);
+    });
+  } catch (e) {
+    container.innerHTML = '<div class="history-empty">Lỗi tải lịch sử. Vui lòng thử lại.</div>';
+    console.error('loadHistory:', e);
+  }
+}
+
+function renderHistoryScores(fb) {
+  if (!fb || !fb.overallBand) return '';
+  const items = [
+    ['Fluency', fb.fluency],
+    ['Vocabulary', fb.vocabulary],
+    ['Grammar', fb.grammar],
+    ['Pronunciation', fb.pronunciation],
+  ].filter(([,v]) => v);
+  if (!items.length) return '';
+  return `<div class="history-scores">
+    ${items.map(([label, val]) => `
+      <div class="history-score-item">
+        ${escHtml(label)}: <strong>${val}</strong>
+      </div>`).join('')}
+  </div>`;
+}
+
+function openHistoryModal(attempt) {
+  const modal = document.getElementById('history-modal');
+  const title = document.getElementById('history-modal-title');
+  const body  = document.getElementById('history-modal-body');
+
+  if (title) title.textContent = `Part ${attempt.part} · ${attempt.topic || 'Speaking'}`;
+
+  const fb   = attempt.aiFeedback || {};
+  const band = fb.overallBand || 0;
+  const badgeClass = `hbadge-p${attempt.part}`;
+
+  body.innerHTML = `
+    <div class="modal-question-card">
+      <div class="q-meta">
+        <span class="q-part-badge">Part ${attempt.part}</span>
+        ${attempt.topic ? `<span class="q-topic-badge">${escHtml(attempt.topic)}</span>` : ''}
+      </div>
+      <div class="q-text" style="font-size:15px">${escHtml(attempt.question || '')}</div>
+    </div>
+
+    ${attempt.transcript ? `
+    <div class="modal-transcript">
+      <div class="modal-transcript-label">📝 Transcript của bạn</div>
+      ${escHtml(attempt.transcript)}
+    </div>` : ''}
+
+    ${band ? `
+    <div class="score-header"><i class="fas fa-chart-bar"></i> Điểm số</div>
+    <div class="score-grid modal-score-grid">
+      <div class="score-card score-overall">
+        <div class="score-label">Band tổng</div>
+        <div class="score-value">${band}</div>
+      </div>
+      ${fb.fluency      ? `<div class="score-card"><div class="score-label">Fluency</div><div class="score-value">${fb.fluency}</div></div>` : ''}
+      ${fb.vocabulary   ? `<div class="score-card"><div class="score-label">Vocabulary</div><div class="score-value">${fb.vocabulary}</div></div>` : ''}
+      ${fb.grammar      ? `<div class="score-card"><div class="score-label">Grammar</div><div class="score-value">${fb.grammar}</div></div>` : ''}
+      ${fb.pronunciation? `<div class="score-card"><div class="score-label">Pronunciation</div><div class="score-value">${fb.pronunciation}</div></div>` : ''}
+    </div>` : ''}
+
+    ${(fb.overallFeedback || fb.feedback) ? `
+    <div class="fb-card" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-comment-alt"></i> Nhận xét</div>
+      <p class="fb-card-text">${escHtml(fb.overallFeedback || fb.feedback)}</p>
+    </div>` : ''}
+
+    ${fb.correctedVersion ? `
+    <div class="fb-card fb-card-green" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-check-circle"></i> Phiên bản cải thiện</div>
+      <p class="fb-card-text">${escHtml(fb.correctedVersion)}</p>
+    </div>` : ''}
+
+    ${fb.strengths?.length ? `
+    <div class="fb-card fb-card-blue" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-star"></i> Điểm mạnh</div>
+      <ul class="fb-list">${fb.strengths.map(s=>`<li>${escHtml(s)}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${fb.corrections?.length ? `
+    <div class="fb-card fb-card-red" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-times-circle"></i> Lỗi cần sửa</div>
+      ${fb.corrections.map(c=>`
+        <div class="error-item">
+          <span class="error-wrong">${escHtml(c.original)}</span>
+          <span class="error-arrow">→</span>
+          <span class="error-right">${escHtml(c.corrected)}</span>
+          ${c.explanation ? `<div class="error-tip-row">💡 ${escHtml(c.explanation)}</div>` : ''}
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${fb.suggestions?.length ? `
+    <div class="fb-card fb-card-yellow">
+      <div class="fb-card-title"><i class="fas fa-lightbulb"></i> Gợi ý cải thiện</div>
+      <ul class="fb-list">${fb.suggestions.map(s=>`<li>${escHtml(s)}</li>`).join('')}</ul>
+    </div>` : ''}
+  `;
+
+  if (modal) modal.classList.add('open');
+}
+
+function closeHistoryModal() {
+  const modal = document.getElementById('history-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+// Close modal on overlay click
+document.getElementById('history-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeHistoryModal();
+});
+
+// ══════════════════════════════════════════════════════
+// MATERIALS SCREEN
 // ══════════════════════════════════════════════════════
 
 async function loadMaterialFilters() {
@@ -688,7 +916,10 @@ async function loadMaterials() {
     const data      = await apiFetch(`/api/speaking/materials${qs}`);
     const materials = data.materials || [];
 
-    if (!materials.length) { list.innerHTML = '<div class="materials-empty">Chưa có tài liệu nào.</div>'; return; }
+    if (!materials.length) {
+      list.innerHTML = '<div class="materials-empty">Chưa có tài liệu nào.</div>';
+      return;
+    }
 
     list.innerHTML = '';
     materials.forEach(m => {
@@ -697,8 +928,8 @@ async function loadMaterials() {
       card.innerHTML = `
         <div class="pv-doc-icon">📄</div>
         <div class="pv-doc-info">
-          <div class="pv-doc-title">${m.title}</div>
-          <div class="pv-doc-meta">${m.quarter} · ${m.topic}</div>
+          <div class="pv-doc-title">${escHtml(m.title)}</div>
+          <div class="pv-doc-meta">${escHtml(m.quarter)} · ${escHtml(m.topic)}</div>
         </div>`;
       card.onclick = () => openMaterial(m, card);
       list.appendChild(card);
@@ -731,21 +962,14 @@ function openMaterial(m, card) {
 
   if (window.innerWidth <= 768 && right) {
     right.classList.add('mobile-open');
-    document.querySelector('.pv-sidebar').style.display = 'none';
+    document.querySelector('#screen-materials .pv-sidebar').style.display = 'none';
     right.scrollIntoView({ behavior: 'smooth' });
   }
 }
 
 function closeMobilePdf() {
   const right   = document.getElementById('materials-right');
-  const sidebar = document.querySelector('#tab-materials .pv-sidebar');
+  const sidebar = document.querySelector('#screen-materials .pv-sidebar');
   if (right)   right.classList.remove('mobile-open');
   if (sidebar) sidebar.style.display = '';
 }
-
-window.addEventListener('popstate', e => {
-  const tab = e.state?.tab || 'practice';
-  if (sessionStorage.getItem('sp_verified') === '1') {
-    switchTab(tab, false);
-  }
-});
