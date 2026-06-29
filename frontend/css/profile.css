@@ -250,14 +250,102 @@ body { background: var(--bg); padding-top: var(--nav-height); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .profile-layout { grid-template-columns: 1fr; padding: 14px 12px; gap: 14px; }
+  .profile-layout {
+    grid-template-columns: 1fr;
+    padding: 12px 12px;
+    gap: 12px;
+  }
   .profile-sidebar { position: static; }
   .form-row { flex-direction: column; gap: 0; }
   .badges-grid { grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); }
-  .streak-display { padding: 14px 16px; }
+
+  /* Profile card: horizontal layout to save vertical space */
+  .profile-card-cover { height: 54px; }
+  .profile-card-body {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 14px 14px;
+  }
+  .avatar-wrap { margin: -36px auto 8px; }
+
+  /* Plan card & mini stats: tighter */
+  .plan-card { padding: 12px 13px; }
+  .card-plain { padding: 12px 13px; }
+  .mini-stats { gap: 6px; }
+  .mini-stat { padding: 8px 6px; }
+  .mini-stat-val { font-size: 18px; }
+
+  /* Main cards */
+  .card-header { padding: 11px 14px; font-size: 13px; }
+  .card-body { padding: 13px 14px; }
+
+  /* Streak */
+  .streak-display { padding: 12px 14px; margin-bottom: 12px; }
+  .streak-fire { font-size: 32px; }
+  .streak-info h3 { font-size: 16px; }
+
+  /* Band items */
+  .band-item { padding: 8px 11px; gap: 9px; }
+  .band-skill { min-width: 62px; font-size: 12px; }
+  .band-score { font-size: 14px; }
+
+  /* Activity */
+  .activity-item { padding: 9px 11px; font-size: 12.5px; }
+  .activity-date { font-size: 10.5px; }
+
+  /* Toast: full-width bottom */
+  .toast-container { left: 12px; right: 12px; bottom: 16px; }
+  .toast { min-width: 0; max-width: 100%; }
 }
+
 @media (max-width: 480px) {
-  .profile-layout { padding: 10px 10px; }
-  .tab-btn { font-size: 11.5px; padding: 7px 8px; gap: 4px; }
+  .profile-layout { padding: 10px 8px; gap: 10px; }
+
+  /* Tabs: text only, scroll if needed */
+  .tab-btn { font-size: 11px; padding: 7px 6px; gap: 3px; min-width: 56px; }
   .tab-btn i { display: none; }
+
+  /* Profile card compact */
+  .profile-card-cover { height: 46px; }
+  .avatar-wrap { width: 72px; height: 72px; margin: -34px auto 8px; }
+  .avatar-wrap img, .avatar-wrap .avatar-placeholder {
+    width: 72px; height: 72px; font-size: 24px;
+  }
+  .profile-name { font-size: 15px; }
+  .profile-username { font-size: 11px; }
+  .profile-bio { font-size: 11.5px; }
+
+  /* Mini stats */
+  .mini-stat-val { font-size: 16px; }
+  .mini-stat-label { font-size: 9px; }
+
+  /* Cards */
+  .card-body { padding: 11px 12px; }
+  .card-header { padding: 10px 12px; font-size: 12.5px; }
+
+  /* Streak */
+  .streak-display { gap: 10px; padding: 10px 12px; border-radius: 12px; }
+  .streak-fire { font-size: 26px; }
+  .streak-info h3 { font-size: 15px; }
+  .streak-info p { font-size: 11px; }
+
+  /* Band items */
+  .band-item { padding: 7px 10px; gap: 8px; }
+  .band-skill { min-width: 54px; font-size: 11.5px; }
+
+  /* Activity */
+  .activity-item { padding: 8px 10px; }
+  .activity-icon { width: 28px; height: 28px; font-size: 13px; border-radius: 6px; }
+
+  /* Badges */
+  .badges-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; }
+  .badge-item { padding: 10px 4px; border-radius: 10px; }
+  .badge-emoji { font-size: 22px; }
+
+  /* Tables */
+  .responsive-table th { padding: 8px 10px; font-size: 10px; }
+  .responsive-table td { padding: 8px 10px; font-size: 12px; }
+
+  /* Form */
+  .form-control { font-size: 14px; }
+  .btn { width: 100%; justify-content: center; }
 }
