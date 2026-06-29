@@ -21,27 +21,42 @@
     <!-- Sidebar -->
     <aside class="profile-sidebar">
       <div class="profile-card">
-        <div class="avatar-wrap">
-          <div class="avatar-placeholder" id="avatarDisplay">?</div>
-          <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()" title="Đổi ảnh">
-            <i class="fas fa-camera"></i>
+        <div class="profile-card-cover"></div>
+        <div class="profile-card-body">
+          <div class="avatar-wrap">
+            <div class="avatar-placeholder" id="avatarDisplay">?</div>
+            <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()" title="Đổi ảnh">
+              <i class="fas fa-camera"></i>
+            </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
           </div>
-          <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
-        </div>
-        <div class="profile-name" id="profileName">Đang tải...</div>
-        <div class="profile-username" id="profileUsername">@...</div>
-        <div class="profile-role"><i class="fas fa-user"></i> <span id="profileRole">student</span></div>
-        <div class="profile-bio" id="profileBio"></div>
-        <div class="profile-motto" id="profileMotto" style="display:none">
-          <i class="fas fa-quote-left"></i><span id="mottoText"></span>
-        </div>
-        <div class="profile-target" id="profileTarget" style="display:none">
-          🎯 Mục tiêu: Band <strong id="targetBandDisplay">-</strong>
+          <div class="profile-name" id="profileName">Đang tải...</div>
+          <div class="profile-username" id="profileUsername">@...</div>
+          <div class="profile-role"><i class="fas fa-user-graduate"></i> <span id="profileRole">Học sinh</span></div>
+          <div class="profile-bio" id="profileBio"></div>
+          <div class="profile-motto" id="profileMotto" style="display:none">
+            <i class="fas fa-quote-left"></i><span id="mottoText"></span>
+          </div>
+          <div class="profile-target" id="profileTarget" style="display:none">
+            🎯 Mục tiêu: Band <strong id="targetBandDisplay">-</strong>
+          </div>
         </div>
       </div>
 
-      <!-- Mini stats -->
-      <div class="card" style="padding:16px;">
+      <!-- Plan card -->
+      <div class="plan-card">
+        <div class="plan-card-top">
+          <span class="plan-card-heading"><i class="fas fa-tag" style="margin-right:4px;"></i>Gói học tập</span>
+          <span class="plan-tag plan-tag--free" id="planBadge">🆓 Free</span>
+        </div>
+        <div class="plan-dates" id="planDates"></div>
+        <div id="planCountdown"></div>
+        <a href="reading.html" class="plan-upgrade-link" id="planUpgradeBtn" style="display:none">
+          <i class="fas fa-crown"></i> Nâng cấp Premium
+        </a>
+      </div>
+
+      <div class="card-plain">
         <div class="mini-stats">
           <div class="mini-stat">
             <div class="mini-stat-val" id="statReading">-</div>
@@ -60,11 +75,6 @@
             <div class="mini-stat-label">Bài Speaking</div>
           </div>
         </div>
-      </div>
-
-      <div class="card" style="padding:16px; text-align:center;">
-        <div style="font-size:13px; color:var(--text-light); margin-bottom:6px;">Ngày tham gia</div>
-        <div style="font-weight:600;" id="joinDate">-</div>
       </div>
     </aside>
 
@@ -390,6 +400,63 @@
       return badges;
     }
 
+    // ── Plan card ─────────────────────────────────────────────
+    function renderPlanCard(u) {
+      const plan      = u.plan || 'free';
+      const expiresAt = u.planExpiresAt ? new Date(u.planExpiresAt) : null;
+      const createdAt = new Date(u.createdAt);
+      const now       = new Date();
+      const isPremium = plan === 'premium';
+      const isExpired = expiresAt && expiresAt < now;
+
+      // Badge
+      const badgeEl = document.getElementById('planBadge');
+      if (isPremium && !isExpired) {
+        badgeEl.className = 'plan-tag plan-tag--premium';
+        badgeEl.textContent = '⭐ Premium';
+      } else if (isExpired) {
+        badgeEl.className = 'plan-tag plan-tag--expired';
+        badgeEl.textContent = '⏰ Hết hạn';
+      } else {
+        badgeEl.className = 'plan-tag plan-tag--free';
+        badgeEl.textContent = '🆓 Free';
+      }
+
+      // Dates
+      const fmtDate = d => d.toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+      let datesHtml = `<div class="plan-date-row"><i class="fas fa-calendar-plus"></i> Thành viên từ: <strong>${fmtDate(createdAt)}</strong></div>`;
+      if (expiresAt) {
+        datesHtml += `<div class="plan-date-row"><i class="fas fa-calendar-times"></i> Hết hạn: <strong>${fmtDate(expiresAt)}</strong></div>`;
+      }
+      document.getElementById('planDates').innerHTML = datesHtml;
+
+      // Countdown for premium
+      const ctEl = document.getElementById('planCountdown');
+      if (isPremium && !isExpired && expiresAt) {
+        const daysTotal = Math.ceil((expiresAt - createdAt) / 86400000);
+        const daysLeft  = Math.ceil((expiresAt - now) / 86400000);
+        const pct       = Math.max(0, Math.min(100, (daysLeft / Math.max(daysTotal, 1)) * 100));
+        const cls       = daysLeft <= 7 ? 'warn' : daysLeft <= 30 ? 'mid' : 'ok';
+        const barColor  = daysLeft <= 7 ? '#ef4444' : daysLeft <= 30 ? '#f59e0b' : '#22c55e';
+        ctEl.innerHTML  = `
+          <div class="plan-progress-wrap"><div class="plan-progress-fill" style="width:${pct}%;background:${barColor}"></div></div>
+          <span class="plan-countdown-txt ${cls}"><i class="fas fa-clock"></i> Còn ${daysLeft} ngày</span>`;
+      } else {
+        ctEl.innerHTML = '';
+      }
+
+      // Upgrade CTA
+      const upgradeBtn = document.getElementById('planUpgradeBtn');
+      if (!isPremium || isExpired) {
+        upgradeBtn.style.display = 'flex';
+        upgradeBtn.innerHTML = isExpired
+          ? '<i class="fas fa-crown"></i> Gia hạn Premium'
+          : '<i class="fas fa-crown"></i> Nâng cấp Premium';
+      } else {
+        upgradeBtn.style.display = 'none';
+      }
+    }
+
     // ── Load profile & stats ──────────────────────────────────
     async function loadProfile() {
       try {
@@ -405,7 +472,7 @@
           // Sidebar
           const avatarEl = document.getElementById('avatarDisplay');
           if (u.avatar) {
-            avatarEl.outerHTML = `<img id="avatarDisplay" src="${u.avatar}" alt="avatar" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);">`;
+            avatarEl.outerHTML = `<img id="avatarDisplay" src="${u.avatar}" alt="avatar">`;
           } else {
             avatarEl.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
           }
@@ -413,7 +480,7 @@
           document.getElementById('profileUsername').textContent = '@' + u.username;
           document.getElementById('profileRole').textContent     = u.role === 'teacher' ? 'Giáo viên' : u.role === 'admin' ? 'Quản trị viên' : 'Học sinh';
           document.getElementById('profileBio').textContent      = u.bio || '';
-          document.getElementById('joinDate').textContent        = new Date(u.createdAt).toLocaleDateString('vi-VN');
+          renderPlanCard(u);
 
           // Motto
           const mottoEl = document.getElementById('profileMotto');
@@ -661,7 +728,7 @@
           if (existing) existing.remove();
           const img = document.createElement('img');
           img.src = data.avatar; img.alt = 'avatar';
-          img.style.cssText = 'width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);';
+          img.id = 'avatarDisplay';
           wrap.insertBefore(img, wrap.firstChild);
           showToast('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
         } else {
