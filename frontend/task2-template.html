@@ -189,6 +189,99 @@
       .t2-exam-timer{font-size:16px}
     }
 
+    /* ── SIDEBAR LAYOUT ─────────────────────────────────── */
+    .tpl-layout{display:flex;align-items:flex-start;min-height:calc(100vh - var(--nav-height,64px))}
+
+    .tpl-sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid #e5e7eb;
+      position:sticky;top:var(--nav-height,64px);height:calc(100vh - var(--nav-height,64px));
+      overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#e5e7eb transparent;
+      display:flex;flex-direction:column;z-index:20}
+    [data-theme=dark] .tpl-sidebar{background:#1e293b;border-color:#334155;scrollbar-color:#334155 transparent}
+
+    .tpl-sidebar-top{padding:15px 13px 11px;border-bottom:1px solid #f3f4f6;flex-shrink:0}
+    [data-theme=dark] .tpl-sidebar-top{border-color:#334155}
+    .tpl-sidebar-brand{font-size:13px;font-weight:800;color:#374151;margin-bottom:1px}
+    [data-theme=dark] .tpl-sidebar-brand{color:#f1f5f9}
+    .tpl-sidebar-subtitle{font-size:10px;color:#9ca3af;margin-bottom:9px;font-weight:500}
+    .tpl-sidebar-badge{display:inline-flex;align-items:center;background:#ede9fe;color:#6366f1;
+      font-size:11px;font-weight:700;border-radius:14px;padding:3px 10px}
+    [data-theme=dark] .tpl-sidebar-badge{background:#1e1b4b;color:#a5b4fc}
+
+    .tpl-type-nav{flex:1;padding:5px 0}
+
+    /* ── Override: vertical sidebar buttons ── */
+    .t2-type-tab-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 11px 9px 9px;
+      border:none;border-left:3px solid transparent;border-bottom:none;margin-bottom:0;
+      background:none;text-align:left;cursor:pointer;font-family:inherit;
+      transition:background .14s,border-color .14s;flex-shrink:0;position:relative}
+    .t2-type-tab-btn:hover{background:#f9fafb}
+    .t2-type-tab-btn.active{background:rgba(99,102,241,.06);border-left-color:var(--tab-color,#6366f1)}
+    [data-theme=dark] .t2-type-tab-btn:hover{background:rgba(255,255,255,.04)}
+    [data-theme=dark] .t2-type-tab-btn.active{background:rgba(99,102,241,.1)}
+
+    .t2-tab-icon-wrap{width:31px;height:31px;border-radius:9px;display:flex;align-items:center;
+      justify-content:center;color:#fff;font-size:13px;flex-shrink:0;transition:transform .15s}
+    .t2-type-tab-btn.active .t2-tab-icon-wrap,.t2-type-tab-btn:hover .t2-tab-icon-wrap{transform:scale(1.07)}
+    .t2-tab-text{flex:1;min-width:0}
+    .t2-tab-label{font-size:11.5px;font-weight:700;color:#374151;line-height:1.3}
+    [data-theme=dark] .t2-tab-label{color:#e2e8f0}
+    .t2-type-tab-btn.active .t2-tab-label{color:var(--tab-color,#6366f1)}
+    .t2-tab-sub{font-size:10px;color:#9ca3af;font-weight:500;margin-top:1px}
+    .t2-tab-prog{height:3px;background:#f3f4f6;border-radius:2px;margin-top:5px;overflow:hidden}
+    [data-theme=dark] .t2-tab-prog{background:#334155}
+    .t2-tab-prog-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+    .t2-tab-done-badge{font-size:13px;flex-shrink:0;color:#16a34a;line-height:1}
+    .t2-tab-pct-badge{font-size:9px;font-weight:700;color:#9ca3af;flex-shrink:0;
+      background:#f3f4f6;border-radius:8px;padding:1px 5px;white-space:nowrap}
+    [data-theme=dark] .t2-tab-pct-badge{background:#334155;color:#64748b}
+
+    .tpl-sidebar-footer{padding:10px 12px;border-top:1px solid #f3f4f6;flex-shrink:0}
+    [data-theme=dark] .tpl-sidebar-footer{border-color:#334155}
+    .tpl-sb-btn{width:100%;border:1.5px solid #e5e7eb;background:none;border-radius:8px;
+      padding:7px 12px;font-size:11px;font-weight:600;color:#6b7280;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;transition:all .15s}
+    .tpl-sb-btn:hover{border-color:#6366f1;color:#6366f1;background:#f5f3ff}
+    [data-theme=dark] .tpl-sb-btn{border-color:#334155;color:#94a3b8}
+    [data-theme=dark] .tpl-sb-btn:hover{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+
+    /* ── Main area ── */
+    .tpl-main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+    /* Hero inside main (no max-width) */
+    .tpl-page-hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:14px 18px;color:#fff;flex-shrink:0}
+    .tpl-page-hero-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .tpl-page-title{font-size:17px;font-weight:900;margin:0 0 2px}
+    .tpl-page-sub{font-size:11.5px;opacity:.85;margin:0}
+
+    /* Toolbar replaces old t2-type-tabs-outer */
+    .tpl-toolbar{display:flex;align-items:stretch;background:#fafafa;border-bottom:2px solid #e5e7eb;
+      flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+    .tpl-toolbar::-webkit-scrollbar{display:none}
+    [data-theme=dark] .tpl-toolbar{background:#0f172a;border-color:#334155}
+
+    /* Content outer: no max-width, fills main */
+    .tpl-content-outer{background:#fff;border:none;flex:1;max-width:unset;margin:0;border-left:none;border-right:none}
+    [data-theme=dark] .tpl-content-outer{background:#1e293b}
+
+    /* ── Mobile: sidebar → horizontal scroll ── */
+    @media(max-width:768px){
+      .tpl-layout{flex-direction:column}
+      .tpl-sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:2px solid #e5e7eb}
+      .tpl-sidebar-top,.tpl-sidebar-footer{display:none}
+      .tpl-type-nav{display:flex;flex-direction:row;overflow-x:auto;padding:0;scrollbar-width:none}
+      .tpl-type-nav::-webkit-scrollbar{display:none}
+      .t2-type-tab-btn{flex-direction:column;align-items:center;border-left:none;
+        border-bottom:3px solid transparent;padding:7px 10px;min-width:70px;max-width:86px;gap:3px;flex-shrink:0}
+      .t2-type-tab-btn.active{background:#f5f3ff;border-bottom-color:var(--tab-color,#6366f1)}
+      .t2-tab-text{text-align:center}
+      .t2-tab-prog,.t2-tab-done-badge,.t2-tab-pct-badge{display:none}
+      .t2-tab-icon-wrap{width:26px;height:26px;font-size:11px;border-radius:7px}
+      .t2-tab-label{font-size:10px}
+      .t2-tab-sub{font-size:9.5px}
+      .tpl-page-hero{padding:11px 13px}
+      .tpl-page-title{font-size:14px}
+    }
+
     /* Template history modal */
     .tpl-hist-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10001;padding:16px}
     .tpl-hist-box{background:#fff;border-radius:16px;width:100%;max-width:500px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
@@ -263,18 +356,39 @@
   </div>
 </header>
 
-<!-- Page hero -->
-<div class="tpl-page-hero">
-  <div class="tpl-page-hero-inner">
-    <div>
-      <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
-      <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+<!-- ══ LAYOUT: SIDEBAR + MAIN ══ -->
+<div class="tpl-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="tpl-sidebar">
+    <div class="tpl-sidebar-top">
+      <div class="tpl-sidebar-brand">📚 Task 2 Writing</div>
+      <div class="tpl-sidebar-subtitle">7 dạng bài IELTS Task 2</div>
+      <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
     </div>
-    <span class="tpl-overall-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
-  </div>
-  <div class="tpl-tabs-wrap">
-    <div class="t2-type-tabs-outer">
-      <div class="t2-type-tabs-wrap" id="tpl-type-tabs"></div>
+    <nav id="tpl-type-tabs" class="tpl-type-nav"></nav>
+    <div class="tpl-sidebar-footer">
+      <button onclick="copyTplShareUrl()" class="tpl-sb-btn" title="Sao chép link chia sẻ trang này">
+        <i class="fas fa-link"></i> Sao chép link
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="tpl-main">
+
+    <!-- Hero -->
+    <div class="tpl-page-hero">
+      <div class="tpl-page-hero-inner">
+        <div>
+          <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
+          <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="tpl-toolbar">
       <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
         <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
       </button>
@@ -284,20 +398,20 @@
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
-      <button onclick="copyTplShareUrl()" class="t2-back-btn" style="white-space:nowrap;font-size:12px;padding:4px 10px" title="Sao chép link chia sẻ trang này">
-        <i class="fas fa-link"></i> Sao chép link
-      </button>
     </div>
+
+    <!-- Progress bar -->
     <div class="t2-type-progress-wrap">
       <div class="t2-type-progress-fill" id="tpl-progress-fill" style="width:0%"></div>
     </div>
-  </div>
-</div>
 
-<!-- Content -->
-<div class="tpl-content-outer">
-  <div id="tpl-content-area"></div>
-</div>
+    <!-- Content area -->
+    <div class="tpl-content-outer">
+      <div id="tpl-content-area"></div>
+    </div>
+
+  </div><!-- end .tpl-main -->
+</div><!-- end .tpl-layout -->
 
 <script src="js/auth.js"></script>
 <script>
@@ -676,16 +790,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
-// ── Render tabs ────────────────────────────────────────────────
+// ── Render tabs (sidebar vertical buttons) ─────────────────────
 function renderTabs() {
   const wrap = document.getElementById('tpl-type-tabs');
   if (!wrap) return;
-  wrap.innerHTML = TPL_TYPES.map(t => `
+  wrap.innerHTML = TPL_TYPES.map(t => {
+    const typeData = TPL_DATA[t.id];
+    let done = 0, total = 0;
+    if (typeData) {
+      typeData.sections.forEach((sec, si) => {
+        sec.items.forEach((item, ii) => {
+          total++;
+          if (_tplScores[`${t.id}-${si}-${ii}`] === 'ok') done++;
+        });
+      });
+    }
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const isDone = total > 0 && done === total;
+    const badge = isDone
+      ? '<span class="t2-tab-done-badge">✓</span>'
+      : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
+    return `
     <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
-      onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}">
-      ${t.icon ? `<i class="fas ${t.icon}" style="font-size:9px;opacity:.65;margin-right:2px"></i>` : ''}${t.label}<br>
-      <span style="font-size:10px;font-weight:600;opacity:.7">${t.sub}</span>
-    </button>`).join('');
+      onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${t.color||'#6366f1'}">
+      <div class="t2-tab-icon-wrap" style="background:${t.color||'#6366f1'}">
+        ${t.icon ? `<i class="fas ${t.icon}"></i>` : ''}
+      </div>
+      <div class="t2-tab-text">
+        <div class="t2-tab-label">${escHtml(t.label)}</div>
+        <div class="t2-tab-sub">${escHtml(t.sub)}</div>
+        ${total > 0 ? `<div class="t2-tab-prog"><div class="t2-tab-prog-fill" style="width:${pct}%;background:${t.color||'#6366f1'}"></div></div>` : ''}
+      </div>
+      ${badge}
+    </button>`;
+  }).join('');
 }
 
 // ── Render content ─────────────────────────────────────────────
@@ -915,6 +1053,7 @@ function updateOverallBadge() {
   const doneAll = Object.keys(_tplScores).filter(k => _tplScores[k] === 'ok').length;
   const badge = document.getElementById('tpl-main-badge');
   if (badge) badge.textContent = `${doneAll} / ${totalAll} mẫu câu`;
+  renderTabs();
 }
 
 // ── Vietnamese toggle ──────────────────────────────────────────
