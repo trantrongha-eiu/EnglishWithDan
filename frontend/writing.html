@@ -39,16 +39,10 @@
       </div>
 
       <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()">✏️ Bắt đầu làm bài</button>
-      <div style="margin-top:16px;border-top:1px solid #f0f0f0;padding-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn-secondary" style="font-size:13px" onclick="showPracticeMode()">
-          ✏️ Luyện tập lẻ
-        </button>
-        <button class="btn-secondary" style="font-size:13px" onclick="openHistoryModal()">
-          📋 Xem lịch sử
-        </button>
-        <button class="btn-secondary" style="font-size:13px" onclick="loadWritingSamples()">
-          📄 Tài liệu mẫu
-        </button>
+      <div class="key-card-actions">
+        <button class="btn-secondary" onclick="showPracticeMode()">✏️ Luyện tập lẻ</button>
+        <button class="btn-secondary" onclick="openHistoryModal()">📋 Xem lịch sử</button>
+        <button class="btn-secondary" onclick="loadWritingSamples()">📄 Tài liệu mẫu</button>
       </div>
     </div>
   </div>
@@ -61,7 +55,7 @@
   <!-- Top bar -->
   <div class="exam-topbar">
     <div class="exam-topbar-left">
-      <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExit()" title="Thoát (bài được lưu tự động)">← Thoát</button>
+      <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExit()" title="Thoát (bài được lưu tự động)"><i class="fas fa-arrow-left"></i> Thoát</button>
       <span id="exam-candidate"></span>
     </div>
     <div class="exam-topbar-center" id="exam-timer">
@@ -182,7 +176,7 @@
   <!-- Topbar: title + back -->
   <div class="wsampl-topbar">
     <h2 class="wsampl-topbar-title">📄 Tài liệu mẫu Writing</h2>
-    <button class="btn-secondary" onclick="showScreen('screen-key')">← Quay lại</button>
+    <button class="btn-secondary" onclick="showScreen('screen-key')"><i class="fas fa-arrow-left"></i> Quay lại</button>
   </div>
 
   <!-- Full-height layout: sidebar + PDF viewer -->
@@ -241,7 +235,7 @@
   <div class="wr-page-header">
     <div class="wr-page-header-inner">
       <h2 class="wr-page-header-title">✏️ Luyện tập Writing</h2>
-      <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')">← Quay lại</button>
+      <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')"><i class="fas fa-arrow-left"></i> Quay lại</button>
     </div>
   </div>
   <div class="history-body">
@@ -280,12 +274,11 @@
 
     <!-- Task list panel (shown after clicking T1/T2 card) -->
     <div id="practice-task-list" style="display:none;margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-        <button class="btn-secondary" onclick="hidePracticeTaskList()">← Quay lại</button>
-        <h3 id="practice-list-title" style="font-size:15px;font-weight:700;margin:0">Chọn đề Task 1</h3>
+      <div class="practice-task-list-header">
+        <button class="btn-secondary" onclick="hidePracticeTaskList()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+        <h3 id="practice-list-title" class="practice-task-list-title">Chọn đề Task 1</h3>
         <input type="search" id="writing-task-search" class="wt-search-input"
-          placeholder="🔍 Tìm đề..." oninput="filterWritingTasks(this.value)"
-          style="margin-left:auto">
+          placeholder="🔍 Tìm đề..." oninput="filterWritingTasks(this.value)">
       </div>
       <div id="practice-task-items"><div class="spinner"></div></div>
     </div>
@@ -305,7 +298,7 @@
   <!-- Topbar -->
   <div class="exam-topbar">
     <div class="exam-topbar-left">
-      <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExitPractice()">← Thoát</button>
+      <button class="exam-topbar-btn exam-exit-btn" onclick="confirmExitPractice()"><i class="fas fa-arrow-left"></i> Thoát</button>
       <span id="pw-task-label" style="font-weight:600;font-size:14px;color:var(--text2,#555);">Task 1 – Luyện tập</span>
     </div>
     <div class="exam-topbar-center">
@@ -362,8 +355,6 @@
 
   <!-- Footer -->
   <div class="exam-footer" style="justify-content:flex-end;gap:12px">
-    <button class="btn-secondary" onclick="confirmExitPractice()">Thoát</button>
-    <button class="btn-secondary" onclick="saveDraftManual()">💾 Lưu nháp</button>
     <button class="btn-submit-exam" onclick="confirmSubmitPractice()">📤 Nộp bài</button>
   </div>
 </div>

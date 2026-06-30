@@ -1438,3 +1438,171 @@ body {
   /* Samples layout: already handled by pv-layout but reduce height calc */
   #screen-samples .pv-layout { height: calc(100vh - 128px); }
 }
+
+/* ══════════════════════════════════════════════
+   KEY SCREEN – secondary action strip
+══════════════════════════════════════════════ */
+.key-card-actions {
+  margin-top: 16px;
+  border-top: 1px solid rgba(0,0,0,.07);
+  padding-top: 16px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+[data-theme="dark"] .key-card-actions { border-top-color: rgba(255,255,255,.08); }
+.key-card-actions .btn-secondary { font-size: 13px; padding: 8px 16px; }
+
+/* ══════════════════════════════════════════════
+   PRACTICE – Task list header bar
+══════════════════════════════════════════════ */
+.practice-task-list-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.practice-task-list-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  color: #111;
+}
+[data-theme="dark"] .practice-task-list-title { color: #f9fafb; }
+
+/* ══════════════════════════════════════════════
+   PRACTICE – Task list grid & cards
+══════════════════════════════════════════════ */
+.wt-task-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.wt-task-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, box-shadow .15s, transform .12s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.wt-task-card:hover {
+  border-color: #3d8bff;
+  background: #f8fbff;
+  box-shadow: 0 4px 16px rgba(61,139,255,.1);
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .wt-task-card { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .wt-task-card:hover { border-color: #3b82f6; background: #1e3a5f; }
+
+.wt-task-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wt-task-card-num {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f0f7ff;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .wt-task-card-num { background: #1e3a5f; color: #93c5fd; }
+
+.wt-task-card-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 12px !important;
+  padding: 5px 14px !important;
+  white-space: nowrap;
+}
+
+.wt-task-card-img {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+[data-theme="dark"] .wt-task-card-img { border-color: #374151; }
+
+.wt-task-card-prompt {
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+[data-theme="dark"] .wt-task-card-prompt { color: #d1d5db; }
+
+/* ══════════════════════════════════════════════
+   PRACTICE – Pagination controls
+══════════════════════════════════════════════ */
+.practice-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 0 4px;
+}
+
+.practice-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;
+  transition: all .15s;
+  font-family: 'Inter', sans-serif;
+}
+.practice-page-btn:hover:not([disabled]) { background: #f3f4f6; border-color: #9ca3af; }
+.practice-page-btn[disabled] { opacity: .38; cursor: not-allowed; }
+[data-theme="dark"] .practice-page-btn { background: #1f2937; border-color: #374151; color: #d1d5db; }
+[data-theme="dark"] .practice-page-btn:hover:not([disabled]) { background: #374151; border-color: #6b7280; }
+
+.practice-page-info {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: center;
+}
+[data-theme="dark"] .practice-page-info { color: #9ca3af; }
+
+/* ── Practice history list: allow horizontal scroll on narrow containers ── */
+#practice-history-list { overflow-x: auto; }
+
+/* ══════════════════════════════════════════════
+   MOBILE – additional writing page tweaks
+══════════════════════════════════════════════ */
+@media (max-width: 576px) {
+  .wt-task-grid { grid-template-columns: 1fr; }
+  .wt-search-input { width: 100%; }
+  .practice-task-list-header { gap: 8px; }
+}
+
+/* ── Ensure wt-search-input fills remaining space in header ── */
+.wt-search-input { margin-left: auto; }

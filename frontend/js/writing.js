@@ -1106,12 +1106,77 @@ document.addEventListener('keydown', e => {
 const practiceState = {
   taskType: null,
   task: null,
-  tasks: [],       // cached list from /practice/tasks
+  tasks: [],
+  filteredTasks: [],
+  page: 1,
   wordCount: 0,
   stopwatchInterval: null,
   seconds: 0,
   hasPending: false
 };
+
+// ── Practice task list – pagination ─────────────────────
+const PRACTICE_PAGE_SIZE = 8;
+
+function _renderTaskPage() {
+  const itemsEl = document.getElementById('practice-task-items');
+  if (!itemsEl) return;
+  const { filteredTasks, page, taskType } = practiceState;
+  const total = (filteredTasks || []).length;
+  const totalPages = Math.max(1, Math.ceil(total / PRACTICE_PAGE_SIZE));
+  const curPage = Math.min(Math.max(1, page), totalPages);
+  practiceState.page = curPage;
+  const start = (curPage - 1) * PRACTICE_PAGE_SIZE;
+  const pageTasks = (filteredTasks || []).slice(start, start + PRACTICE_PAGE_SIZE);
+
+  if (!total) {
+    itemsEl.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px">Không tìm thấy đề nào phù hợp.</p>';
+    return;
+  }
+
+  const pendingBanner = practiceState.hasPending
+    ? `<div class="wr-pending-notice" style="margin-bottom:12px"><p class="wr-pending-title">⏳ Bạn đang có bài chờ chấm</p><p class="wr-pending-desc">Vui lòng đợi giáo viên trả bài trước khi nộp bài mới. Bạn vẫn có thể đọc đề để chuẩn bị.</p></div>`
+    : '';
+
+  const cards = pageTasks.map((t, i) => {
+    const idx = start + i + 1;
+    const imgHtml = (taskType === 1 && t.imageUrl)
+      ? `<img src="${escHtml(t.imageUrl)}" alt="" class="wt-task-card-img" />`
+      : '';
+    const promptPreview = (t.prompt || '').slice(0, 200) + ((t.prompt || '').length > 200 ? '…' : '');
+    return `<div class="wt-task-card" data-id="${escHtml(String(t._id))}">
+      <div class="wt-task-card-header">
+        <span class="wt-task-card-num">${idx}</span>
+        <button class="btn-primary wt-task-card-btn" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">Làm bài</button>
+      </div>
+      ${imgHtml}
+      <div class="wt-task-card-prompt">${escHtml(promptPreview)}</div>
+    </div>`;
+  }).join('');
+
+  const pgHtml = totalPages > 1
+    ? `<div class="practice-pagination">
+        <button class="practice-page-btn" onclick="goToTaskPage(${curPage - 1})" ${curPage <= 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i> Trước</button>
+        <span class="practice-page-info">Trang ${curPage} / ${totalPages} &nbsp;·&nbsp; ${total} đề</span>
+        <button class="practice-page-btn" onclick="goToTaskPage(${curPage + 1})" ${curPage >= totalPages ? 'disabled' : ''}>Sau <i class="fas fa-chevron-right"></i></button>
+      </div>`
+    : `<p style="text-align:center;font-size:12px;color:#9ca3af;padding:6px 0">${total} đề</p>`;
+
+  itemsEl.innerHTML = pendingBanner + `<div class="wt-task-grid">${cards}</div>` + pgHtml;
+
+  itemsEl.querySelectorAll('.wt-task-card').forEach(card => {
+    card.addEventListener('click', () => startPracticeTask(taskType, card.dataset.id));
+  });
+}
+
+function goToTaskPage(n) {
+  const totalPages = Math.max(1, Math.ceil((practiceState.filteredTasks || []).length / PRACTICE_PAGE_SIZE));
+  if (n < 1 || n > totalPages) return;
+  practiceState.page = n;
+  _renderTaskPage();
+  const list = document.getElementById('practice-task-list');
+  if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 // Deferred init: ?taskType=1/2 nav link — must run here because practiceState (const) is not
 // hoisted and showPracticeTaskList accesses it before its first await.
@@ -1301,6 +1366,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
     // Pending notice only in home mode (not in sidebar)
     if (!taskTypeFilter) {
       const pending = allAttempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
+      practiceState.hasPending = !!pending;
       if (pending) {
         noticeEl.style.display = '';
         const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
@@ -1411,22 +1477,9 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
       return;
     }
     practiceState.tasks = d.tasks;
-    const cards = d.tasks.map((t, i) => `
-      <div class="wt-task-card" data-prompt="${escHtml((t.prompt || '').toLowerCase())}"
-        style="border:1.5px solid #e5e7eb;border-radius:12px;padding:14px;background:#fff;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:10px"
-        onclick="startPracticeTask(${taskType},'${t._id}')"
-        onmouseover="this.style.borderColor='#3d8bff';this.style.background='#f8fbff'"
-        onmouseout="this.style.borderColor='#e5e7eb';this.style.background='#fff'"
-      >
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="min-width:24px;height:24px;border-radius:50%;background:#f0f7ff;color:#2563eb;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i + 1}</div>
-          <button class="btn-primary" style="margin-left:auto;flex-shrink:0;font-size:12px;padding:5px 12px;white-space:nowrap" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">Làm bài</button>
-        </div>
-        ${taskType === 1 && t.imageUrl ? `<img src="${escHtml(t.imageUrl)}" alt="" style="width:100%;max-height:130px;object-fit:cover;border-radius:6px;border:1px solid #e5e7eb" />` : ''}
-        <div style="font-size:12px;color:#374151;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden">${escHtml((t.prompt || '').slice(0, 180))}${(t.prompt || '').length > 180 ? '…' : ''}</div>
-      </div>
-    `).join('');
-    itemsEl.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${cards}</div>`;
+    practiceState.filteredTasks = d.tasks;
+    practiceState.page = 1;
+    _renderTaskPage();
   } catch (e) {
     itemsEl.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">Lỗi tải đề: ${escHtml(e.message)}</p>`;
   }
@@ -1447,13 +1500,18 @@ function hidePracticeTaskList() {
 
 function filterWritingTasks(query) {
   const q = (query || '').trim().toLowerCase();
-  document.querySelectorAll('#practice-task-items .wt-task-card').forEach(card => {
-    const prompt = card.dataset.prompt || '';
-    card.style.display = (!q || prompt.includes(q)) ? '' : 'none';
-  });
+  practiceState.filteredTasks = q
+    ? practiceState.tasks.filter(t => (t.prompt || '').toLowerCase().includes(q))
+    : practiceState.tasks;
+  practiceState.page = 1;
+  _renderTaskPage();
 }
 
 function startPracticeTask(taskType, taskId, pushHistory = true) {
+  if (practiceState.hasPending) {
+    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài trước khi làm bài mới.', 'info', 5000);
+    return;
+  }
   const task = practiceState.tasks.find(t => String(t._id) === String(taskId));
   if (!task) { showToast('Không tìm thấy đề bài', 'error'); return; }
 
