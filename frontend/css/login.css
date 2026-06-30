@@ -9,10 +9,17 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Centering wrapper — takes all remaining height so footer stays at bottom */
+        .page-center {
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+            padding: 24px 20px;
         }
 
         .container {
@@ -520,32 +527,58 @@
         }
         .otp-input:focus { border-color: #f5576c; box-shadow: 0 0 0 3px rgba(245,87,108,.15); }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .features-sidebar {
-                display: none;
-            }
+        /* ── Site footer ── */
+        .site-footer {
+            text-align: center;
+            padding: 14px 20px;
+            font-size: 13px;
+            color: rgba(255,255,255,.75);
+            flex-shrink: 0;
+        }
+        .site-footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .site-footer a:hover { text-decoration: underline; }
 
-            .container {
-                justify-content: center;
+        /* ── Responsive ── */
+        @media (max-width: 992px) {
+            .features-sidebar { display: none; }
+            .container { justify-content: center; }
+        }
+
+        /* Tablet */
+        @media (max-width: 768px) {
+            .page-center { padding: 16px 16px; }
+            .login-card {
+                padding: 36px 28px;
+                border-radius: 24px;
+                max-width: 100%;
             }
         }
 
-        @media (max-width: 576px) {
+        /* Mobile */
+        @media (max-width: 480px) {
+            .page-center { padding: 12px 12px; align-items: flex-start; padding-top: 24px; }
             .login-card {
-                padding: 40px 25px;
+                padding: 28px 20px;
                 border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(0,0,0,.2);
             }
+            .logo-container { margin-bottom: 20px; }
+            .welcome-text { font-size: 22px; }
+            .subtitle { font-size: 14px; margin-bottom: 20px; }
+            .form-group { margin-bottom: 16px; }
+            .form-group input { padding: 13px 14px 13px 42px; font-size: 15px; }
+            .btn-login { padding: 14px; font-size: 15px; }
+            .social-login { grid-template-columns: 1fr; }
+            .form-options { font-size: 13px; }
+            .divider { margin: 18px 0; }
+        }
 
-            .logo-text {
-                font-size: 36px;
-            }
-
-            .welcome-text {
-                font-size: 24px;
-            }
-
-            .social-login {
-                grid-template-columns: 1fr;
-            }
+        /* Very small phones */
+        @media (max-width: 360px) {
+            .login-card { padding: 24px 16px; }
+            .welcome-text { font-size: 20px; }
         }
