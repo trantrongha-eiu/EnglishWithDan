@@ -1608,14 +1608,7 @@ function exitPracticeWrite() {
   saveDraftToServer();
   window.onbeforeunload = null;
   practiceState.task = null;
-  history.pushState({ screen: 'practice' }, '', 'writing.html');
-  const list  = document.getElementById('practice-task-list');
-  const cards = document.getElementById('practice-task-select');
-  if (list)  list.style.display  = 'none';
-  if (cards) cards.style.display = '';
-  showScreen('screen-practice');
-  checkPracticeRestoreBanner();
-  loadPracticeHistory();
+  showPracticeMode(); // handles pushState, split-mode cleanup, title reset, history load
 }
 
 function confirmSubmitPractice() {
