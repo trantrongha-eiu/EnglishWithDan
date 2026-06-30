@@ -1349,6 +1349,32 @@ body {
   display: none !important;
 }
 
+/* ── Practice history sidebar cards ── */
+.phist-card {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, #e5e7eb);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background .14s, border-color .14s, box-shadow .14s;
+}
+.phist-card:last-child { margin-bottom: 0; }
+.phist-card:hover {
+  background: var(--bg, #f9fafb);
+  border-color: var(--primary, #e879a0);
+  box-shadow: 0 2px 8px rgba(240,147,251,.12);
+}
+.phist-card-top,
+.phist-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.phist-card-bottom { margin-top: 6px; }
+.phist-date { font-size: 12px; color: var(--text-light, #6b7280); }
+.phist-band { font-weight: 700; font-size: 13px; }
+
 /* ══════════════════════════════════════════════
    MOBILE RESPONSIVE
 ══════════════════════════════════════════════ */

@@ -1327,11 +1327,35 @@ async function loadPracticeHistory(taskTypeFilter = null) {
     const STATUS = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã chấm' };
     const STATUS_COL = { pending: '#f59e0b', ai_done: '#f59e0b', confirmed: '#16a34a' };
 
-    // In sidebar mode (taskTypeFilter set), omit the Task column to save space
-    const showTaskCol = !taskTypeFilter;
+    if (taskTypeFilter) {
+      // Sidebar mode → compact card layout (table too wide for 280px column)
+      listEl.innerHTML = attempts.map(a => {
+        const isT1 = (a.examName || '').includes('Task 1') || (a.wordCount1 || 0) > 0;
+        const wc   = isT1 ? (a.wordCount1 || 0) : (a.wordCount2 || 0);
+        const band = a.grading?.overallBand;
+        const status = a.gradingStatus || 'pending';
+        const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
+        const bandColor = band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : band != null ? '#d97706' : '#9ca3af';
+        const actionLabel = status === 'confirmed' ? '👁 Xem' : '📄 Bài nộp';
+        return `
+          <div class="phist-card" onclick="viewAttempt('${a._id}')">
+            <div class="phist-card-top">
+              <span class="phist-date">${date}</span>
+              <span class="badge-wc">${wc}w</span>
+            </div>
+            <div class="phist-card-bottom">
+              <span style="color:${STATUS_COL[status]||'#6b7280'};font-size:12px;font-weight:600">${STATUS[status]||status}</span>
+              <span class="phist-band" style="color:${bandColor}">${band != null ? 'Band ' + band : '–'}</span>
+            </div>
+          </div>`;
+      }).join('');
+      return;
+    }
+
+    // Home mode → full table
     listEl.innerHTML = `<table class="history-table" style="width:100%">
       <thead><tr>
-        ${showTaskCol ? '<th>Task</th>' : ''}<th>Ngày nộp</th><th>Số từ</th><th>Trạng thái</th><th>Band</th><th></th>
+        <th>Task</th><th>Ngày nộp</th><th>Số từ</th><th>Trạng thái</th><th>Band</th><th></th>
       </tr></thead>
       <tbody>
       ${attempts.map(a => {
@@ -1342,7 +1366,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
         const status = a.gradingStatus || 'pending';
         const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
         return `<tr>
-          ${showTaskCol ? `<td><span class="badge-wc">${taskLabel}</span></td>` : ''}
+          <td><span class="badge-wc">${taskLabel}</span></td>
           <td style="font-size:13px;color:#6b7280">${date}</td>
           <td><span class="badge-wc">${wc}w</span></td>
           <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>
