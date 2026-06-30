@@ -43,7 +43,7 @@
         <button class="btn-secondary" style="font-size:13px" onclick="showPracticeMode()">
           ✏️ Luyện tập lẻ
         </button>
-        <button class="btn-secondary" style="font-size:13px" onclick="showScreen('screen-history');loadHistory()">
+        <button class="btn-secondary" style="font-size:13px" onclick="openHistoryModal()">
           📋 Xem lịch sử
         </button>
         <button class="btn-secondary" style="font-size:13px" onclick="loadWritingSamples()">
@@ -145,30 +145,31 @@
         </div>
       </div>
       <div class="done-actions">
-        <button class="btn-secondary" onclick="showScreen('screen-history');loadHistory()">📋 Xem lịch sử</button>
+        <button class="btn-secondary" onclick="openHistoryModal()">📋 Xem lịch sử</button>
         <button class="btn-primary"   onclick="showScreen('screen-key')">✏️ Làm bài mới</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- screen-history kept as empty shell (history now shown via wr-history-modal) -->
+<div id="screen-history" class="screen"></div>
+
 <!-- ═══════════════════════════════════════════
-     SCREEN 4 – HISTORY
+     MODAL – LỊCH SỬ LÀM BÀI WRITING
 ═══════════════════════════════════════════ -->
-<div id="screen-history" class="screen">
-  <div class="wr-page-header">
-    <div class="wr-page-header-inner">
-      <h2 class="wr-page-header-title">📋 Lịch sử làm bài Writing</h2>
-      <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')">← Quay lại</button>
+<div class="modal-overlay" id="wr-history-modal" onclick="if(event.target===this)closeHistoryModal()">
+  <div class="review-modal">
+    <div class="review-modal-header">
+      <h3>📋 Lịch sử làm bài Writing</h3>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn-hist-filter active" id="hf-all"      onclick="setHistoryFilter('all',this)">Tất cả</button>
+        <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)">🏆 Thi</button>
+        <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)">✏️ Luyện</button>
+        <button class="review-modal-close" onclick="closeHistoryModal()"><i class="fas fa-times"></i></button>
+      </div>
     </div>
-    <div class="wr-page-header-filters">
-      <button class="btn-hist-filter active" id="hf-all"  onclick="setHistoryFilter('all',this)">Tất cả</button>
-      <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)">🏆 Thi</button>
-      <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)">✏️ Luyện</button>
-    </div>
-  </div>
-  <div class="history-body">
-    <div id="history-content">
+    <div class="review-modal-body" id="history-content">
       <div class="spinner"></div>
     </div>
   </div>

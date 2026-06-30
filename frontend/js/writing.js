@@ -1079,12 +1079,21 @@ function discardSaved() {
 }
 
 // ──────────────────────────────────────────────────────
+function openHistoryModal() {
+  document.getElementById('wr-history-modal').classList.add('open');
+  loadHistory();
+}
+
+function closeHistoryModal() {
+  document.getElementById('wr-history-modal').classList.remove('open');
+}
+
 // Keyboard shortcuts
 // ──────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  const overlay = ['exit-modal-overlay', 'confirm-modal-overlay', 'review-modal-overlay',
-                   'practice-exit-modal', 'practice-submit-modal'];
+  const overlay = ['wr-history-modal', 'exit-modal-overlay', 'confirm-modal-overlay',
+                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal'];
   for (const id of overlay) {
     const el = document.getElementById(id);
     if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }
