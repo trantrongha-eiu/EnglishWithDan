@@ -88,6 +88,10 @@
     .t2-structure-hint-label{font-weight:700;white-space:nowrap;flex-shrink:0}
     [data-theme="dark"] .t2-structure-hint{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}
 
+    /* ── AI grading badge ── */
+    .t2-ai-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.3px}
+    [data-theme="dark"] .t2-ai-badge{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
+
     .t2-mc-options{display:flex;flex-direction:column;gap:8px;margin:10px 0}
     .t2-mc-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;width:100%}
     .t2-mc-option:hover{border-color:#6366f1;background:#f0f0ff}
@@ -1007,7 +1011,7 @@ function renderPractice() {
       <div id="t2-countdown-bar" style="display:none"></div>
     </div>
     <div class="wp-checking-loader hidden" id="checking-loader" style="margin:0 20px">
-      <div class="wp-spinner"></div><p>Đang chấm bài...</p>
+      <div class="wp-spinner"></div><p id="checking-loader-text">Đang chấm bài...</p>
     </div>`;
 }
 
@@ -1169,8 +1173,11 @@ async function submitPractice() {
   const answer = getUserAnswerPractice();
   if (answer === '' || answer === undefined) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
 
+  const AI_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
   state._isSubmitting = true;
   document.getElementById('submit-btn').disabled = true;
+  const loaderText = document.getElementById('checking-loader-text');
+  if (loaderText) loaderText.textContent = AI_TYPES.has(q.type) ? '✨ AI đang chấm bài...' : 'Đang chấm bài...';
   document.getElementById('checking-loader').classList.remove('hidden');
 
   try {
@@ -1231,7 +1238,8 @@ async function submitPractice() {
     } else expBox.classList.add('hidden');
 
     const bannerEl = document.getElementById('result-banner');
-    bannerEl.textContent = isOk ? '✅ Chính xác!' : '❌ Chưa đúng';
+    const aiBadge = data.aiGraded ? ' <span class="t2-ai-badge"><i class="fas fa-robot"></i> AI</span>' : '';
+    bannerEl.innerHTML = (isOk ? '✅ Chính xác!' : '❌ Chưa đúng') + aiBadge;
     bannerEl.className = 'wp-result-banner ' + (isOk ? 'wp-result-correct' : 'wp-result-wrong');
     document.getElementById('feedback-text').textContent = data.feedbackVi || '';
 

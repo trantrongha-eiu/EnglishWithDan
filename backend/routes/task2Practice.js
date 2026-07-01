@@ -5,6 +5,10 @@ const Task2Topic     = require('../models/Task2Topic');
 const Task2Attempt   = require('../models/Task2Attempt');
 const Task2Template  = require('../models/Task2Template');
 const Task2Draft     = require('../models/Task2Draft');
+const { gradeT2Question } = require('../services/geminiService');
+
+// Question types graded by Gemini (full open-ended sentences)
+const AI_GRADED_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
 
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/templates  (public – cho task2-template.html)
@@ -223,16 +227,36 @@ router.post('/check', async (req, res) => {
     const q = (topic.questions || []).find(q => q._id.toString() === questionId || q.questionId === questionId);
     if (!q) return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
 
-    const result = autoGrade(q, (userAnswer || '').trim());
+    const trimmed = (userAnswer || '').trim();
+    let result;
+    let aiGraded = false;
+
+    if (AI_GRADED_TYPES.has(q.type) && trimmed.length >= 3) {
+      try {
+        result = await gradeT2Question({
+          type:        q.type,
+          questionText: q.questionText,
+          modelAnswer: q.modelAnswer || q.correctAnswer || '',
+          userAnswer:  trimmed
+        });
+        aiGraded = true;
+      } catch (aiErr) {
+        console.warn('[Task2/check] Gemini failed, falling back to keyword:', aiErr.message);
+        result = autoGrade(q, trimmed);
+      }
+    } else {
+      result = autoGrade(q, trimmed);
+    }
 
     res.json({
-      success: true,
+      success:      true,
       isCorrect:    result.isCorrect,
       score:        result.score,
       feedbackVi:   result.feedbackVi,
       modelAnswer:  q.modelAnswer || q.correctAnswer || '',
       explanationVi: q.explanationVi || '',
-      explanationEn: q.explanationEn || ''
+      explanationEn: q.explanationEn || '',
+      aiGraded
     });
   } catch (err) {
     console.error('[Task2] check error:', err.message);
