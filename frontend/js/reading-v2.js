@@ -27,6 +27,8 @@ const state = {
 let allTests = [];
 let _userPlan = 'free';   // refreshed on loadTests
 let _activeFilter = 'all';
+let _rdPage = 1;
+const RD_PAGE_SIZE = 9;
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
@@ -279,7 +281,8 @@ async function loadTests(fromNav = false) {
     _userPlan = res.userPlan || 'free';
     const promoBanner = document.getElementById('premium-promo-banner');
     if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
-    renderTestList(allTests);
+    _rdPage = 1;
+    rerenderFilteredTests();
     checkResumeExam();
   } catch (e) {
     wrap.innerHTML = `
@@ -351,22 +354,69 @@ function filterTests(filter, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   _activeFilter = filter;
-  applyTestFilters();
+  _rdPage = 1;
+  rerenderFilteredTests();
 }
 
 function applyTestFilters() {
+  _rdPage = 1;
+  rerenderFilteredTests();
+}
+
+function getFilteredTests() {
   const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
-  document.querySelectorAll('.test-card').forEach(c => {
-    const done = c.dataset.done === 'true';
-    const name = c.dataset.name || '';
+  return allTests.filter(t => {
+    const done = !!t.lastAttempt;
     const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
-    const matchSearch = !q || name.includes(q);
-    c.style.display = (matchFilter && matchSearch) ? '' : 'none';
+    const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
+    return matchFilter && matchSearch;
   });
-  document.querySelectorAll('.test-group').forEach(g => {
-    const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');
-    g.style.display = hasVisible ? '' : 'none';
-  });
+}
+
+function rerenderFilteredTests() {
+  const filtered = getFilteredTests();
+  const start = (_rdPage - 1) * RD_PAGE_SIZE;
+  renderTestList(filtered.slice(start, start + RD_PAGE_SIZE));
+  renderPagination(filtered.length, _rdPage);
+}
+
+function renderPagination(total, page) {
+  const container = document.getElementById('tests-pagination');
+  if (!container) return;
+  const pages = Math.ceil(total / RD_PAGE_SIZE);
+  if (pages <= 1) { container.innerHTML = ''; return; }
+  let start = Math.max(1, page - 2);
+  let end = Math.min(pages, page + 2);
+  if (end - start < 4) {
+    if (start === 1) end = Math.min(pages, 5);
+    else start = Math.max(1, end - 4);
+  }
+  let html = '<div class="pg-wrap">';
+  html += `<button class="pg-btn" onclick="goToRdPage(${page - 1})" ${page === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+  if (start > 1) {
+    html += `<button class="pg-btn" onclick="goToRdPage(1)">1</button>`;
+    if (start > 2) html += `<span class="pg-ellipsis">…</span>`;
+  }
+  for (let i = start; i <= end; i++) {
+    html += `<button class="pg-btn${i === page ? ' pg-active' : ''}" onclick="goToRdPage(${i})">${i}</button>`;
+  }
+  if (end < pages) {
+    if (end < pages - 1) html += `<span class="pg-ellipsis">…</span>`;
+    html += `<button class="pg-btn" onclick="goToRdPage(${pages})">${pages}</button>`;
+  }
+  html += `<button class="pg-btn" onclick="goToRdPage(${page + 1})" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+  html += `<span class="pg-info">Trang ${page}/${pages} · ${total} đề</span>`;
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function goToRdPage(p) {
+  const filtered = getFilteredTests();
+  const pages = Math.ceil(filtered.length / RD_PAGE_SIZE) || 1;
+  if (p < 1 || p > pages) return;
+  _rdPage = p;
+  rerenderFilteredTests();
+  document.getElementById('tests-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3333,6 +3383,7 @@ async function submitUpgradeRequest() {
   }
 }
 
+window.goToRdPage = goToRdPage;
 window.goToStartTest = goToStartTest;
 window.openUpgradeModal = openUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;

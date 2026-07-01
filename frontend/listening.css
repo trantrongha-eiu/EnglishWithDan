@@ -2167,3 +2167,37 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 /* Practice section list error */
 .ls-section-error { text-align:center; padding:48px 16px; color:#e53935; }
 [data-theme="dark"] .ls-section-error { color:#f87171; }
+
+/* ── Pagination ── */
+#tests-pagination { padding: 8px 0 32px; }
+.pg-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.pg-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 9px;
+  border-radius: 7px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pg-btn:hover:not(:disabled) { background: #f3f4f6; border-color: #d1d5db; }
+.pg-btn.pg-active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+.pg-btn:disabled { opacity: .38; cursor: default; }
+.pg-ellipsis { color: #9ca3af; font-size: 13px; padding: 0 2px; }
+.pg-info { font-size: 12px; color: #9ca3af; margin-left: 8px; white-space: nowrap; }
+[data-theme="dark"] .pg-btn { background: #1f2937; border-color: #374151; color: #e5e7eb; }
+[data-theme="dark"] .pg-btn:hover:not(:disabled) { background: #374151; border-color: #4b5563; }
+[data-theme="dark"] .pg-btn.pg-active { background: #3b82f6; border-color: #3b82f6; color: #fff; }

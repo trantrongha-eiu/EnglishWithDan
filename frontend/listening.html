@@ -68,6 +68,7 @@
             <div id="tests-wrapper">
                 <div class="loading-spinner">Đang tải đề thi...</div>
             </div>
+            <div id="tests-pagination"></div>
 
             <!-- Bài lẻ section picker (hidden initially) -->
             <div id="lele-picker-lt" class="hidden">
@@ -845,6 +846,8 @@
         let _userPlan = 'free';
         const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
         let _upgradeSettings = null;
+        let _lsPage = 1;
+        const LS_PAGE_SIZE = 9;
 
         async function loadTestList() {
             try {
@@ -855,7 +858,8 @@
                 _userPlan = data.userPlan || 'free';
                 const promoBanner = document.getElementById('premium-promo-banner');
                 if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
-                renderTestList(data.tests);
+                _lsPage = 1;
+                rerenderLsFilteredTests();
             } catch (err) {
                 document.getElementById('tests-wrapper').innerHTML =
                     `<p class="ls-error-msg">Error loading tests: ${err.message}</p>`;
@@ -915,22 +919,69 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
             _activeFilter = mode;
-            applyTestFilters();
+            _lsPage = 1;
+            rerenderLsFilteredTests();
         }
 
         function applyTestFilters() {
+            _lsPage = 1;
+            rerenderLsFilteredTests();
+        }
+
+        function getLsFilteredTests() {
             const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
-            document.querySelectorAll('.test-card').forEach(c => {
-                const done = c.dataset.done === 'true';
-                const name = c.dataset.name || '';
+            return (state.tests || []).filter(t => {
+                const done = !!t.lastAttempt;
                 const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
-                const matchSearch = !q || name.includes(q);
-                c.style.display = (matchFilter && matchSearch) ? '' : 'none';
+                const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
+                return matchFilter && matchSearch;
             });
-            document.querySelectorAll('.test-group').forEach(g => {
-                const hasVisible = Array.from(g.querySelectorAll('.test-card')).some(c => c.style.display !== 'none');
-                g.style.display = hasVisible ? '' : 'none';
-            });
+        }
+
+        function rerenderLsFilteredTests() {
+            const filtered = getLsFilteredTests();
+            const start = (_lsPage - 1) * LS_PAGE_SIZE;
+            renderTestList(filtered.slice(start, start + LS_PAGE_SIZE));
+            renderLsPagination(filtered.length, _lsPage);
+        }
+
+        function renderLsPagination(total, page) {
+            const container = document.getElementById('tests-pagination');
+            if (!container) return;
+            const pages = Math.ceil(total / LS_PAGE_SIZE);
+            if (pages <= 1) { container.innerHTML = ''; return; }
+            let start = Math.max(1, page - 2);
+            let end = Math.min(pages, page + 2);
+            if (end - start < 4) {
+                if (start === 1) end = Math.min(pages, 5);
+                else start = Math.max(1, end - 4);
+            }
+            let html = '<div class="pg-wrap">';
+            html += `<button class="pg-btn" onclick="goToLsPage(${page - 1})" ${page === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            if (start > 1) {
+                html += `<button class="pg-btn" onclick="goToLsPage(1)">1</button>`;
+                if (start > 2) html += `<span class="pg-ellipsis">…</span>`;
+            }
+            for (let i = start; i <= end; i++) {
+                html += `<button class="pg-btn${i === page ? ' pg-active' : ''}" onclick="goToLsPage(${i})">${i}</button>`;
+            }
+            if (end < pages) {
+                if (end < pages - 1) html += `<span class="pg-ellipsis">…</span>`;
+                html += `<button class="pg-btn" onclick="goToLsPage(${pages})">${pages}</button>`;
+            }
+            html += `<button class="pg-btn" onclick="goToLsPage(${page + 1})" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            html += `<span class="pg-info">Trang ${page}/${pages} · ${total} đề</span>`;
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function goToLsPage(p) {
+            const filtered = getLsFilteredTests();
+            const pages = Math.ceil(filtered.length / LS_PAGE_SIZE) || 1;
+            if (p < 1 || p > pages) return;
+            _lsPage = p;
+            rerenderLsFilteredTests();
+            document.getElementById('tests-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // ══════════════════════════════════════════════
@@ -2932,6 +2983,7 @@
         window.showScreen = showScreen;
         window.openModal = openModal; window.closeModal = closeModal;
         window.filterTests = filterTests; window.applyTestFilters = applyTestFilters;
+        window.goToLsPage = goToLsPage;
         window.startAudioPlay = startAudioPlay; window.startReadingTime = startReadingTime;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;
