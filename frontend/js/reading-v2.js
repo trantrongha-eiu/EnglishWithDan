@@ -2156,7 +2156,12 @@ function showResult(r) {
       : band >= 5.0 ? 'Cố lên! Luyện thêm đọc nhanh và từ vựng học thuật là sẽ lên điểm ngay.'
       : 'Đừng nản nhé — bắt đầu từ từ rồi sẽ tiến bộ rất nhanh thôi!';
   }
-  showScreen('result');
+  // screen-result is outside the fullscreen container (screen-exam), so exit fullscreen first
+  if (document.fullscreenElement) {
+    document.exitFullscreen().then(() => showScreen('result')).catch(() => showScreen('result'));
+  } else {
+    showScreen('result');
+  }
 }
 
 function goToReview() {
