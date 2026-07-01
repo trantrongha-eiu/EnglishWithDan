@@ -875,10 +875,19 @@ async function resumeSession() {
     state.sessionCorrect  = draft.sessionCorrect  || 0;
     state.mcSelected      = null;
     state.rearrangeAnswer = [];
-    state.view = 'practice';
-    render();
+    // If all questions were already answered, jump straight to done and save
+    if (state.currentIdx >= state.questions.length && state.sessionDone > 0) {
+      state.view = 'done';
+      render();
+      savePracticeAttempt();
+    } else {
+      state.view = 'practice';
+      render();
+    }
   } catch {
     showToast('Lỗi khôi phục tiến độ', 'error');
+  } finally {
+    // If render() replaced the DOM, querySelector returns null — safe no-op
     const b = document.querySelector('.t2-resume-btn');
     if (b) { b.disabled = false; b.innerHTML = '<i class="fas fa-play"></i> Tiếp tục'; }
   }
