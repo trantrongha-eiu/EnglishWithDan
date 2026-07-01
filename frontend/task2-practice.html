@@ -82,8 +82,11 @@
 
     /* ── Practice: header + question card ── */
     .t2-prompt-box{background:#fefce8;border:1.5px solid #fde047;border-radius:10px;padding:10px 14px;margin:0 20px 12px;font-size:13px;color:#713f12;line-height:1.6}
-    .t2-prompt-box summary{font-weight:700;cursor:pointer;color:#92400e;font-size:13px}
-    .t2-prompt-box p{margin:6px 0 0}
+    .t2-prompt-box-label{font-weight:700;color:#92400e;font-size:13px;margin-bottom:4px}
+    .t2-prompt-box p{margin:4px 0 0}
+    .t2-structure-hint{display:flex;align-items:flex-start;gap:6px;background:#eff6ff;border-left:3px solid #3b82f6;border-radius:0 6px 6px 0;padding:6px 10px;margin:8px 0 6px;font-size:12px;color:#1d4ed8;line-height:1.5}
+    .t2-structure-hint-label{font-weight:700;white-space:nowrap;flex-shrink:0}
+    [data-theme="dark"] .t2-structure-hint{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}
 
     .t2-mc-options{display:flex;flex-direction:column;gap:8px;margin:10px 0}
     .t2-mc-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;width:100%}
@@ -953,7 +956,6 @@ function renderPractice() {
   return `
     <div class="t2-nav" style="padding:8px 20px">
       <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát">✕</button></div>
-      ${q.type === 'translation' && q.sentenceStructure ? `<span class="t2-grammar-badge">${q.sentenceStructure}</span>` : ''}
     </div>
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
@@ -964,10 +966,10 @@ function renderPractice() {
       <span class="t2-ctx-level" style="background:${lvlColor}22;color:${lvlColor}">${lvlLabel}</span>
       ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>` : ''}
     </div>
-    <details class="t2-prompt-box">
-      <summary>📋 Đề bài IELTS</summary>
+    <div class="t2-prompt-box">
+      <div class="t2-prompt-box-label">▼ 📋 Đề bài IELTS</div>
       <p>${topic.prompt}</p>
-    </details>
+    </div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="t2-q-dots" id="q-dots">
       ${state.questions.map((q, i) => {
@@ -1043,7 +1045,11 @@ function renderQuestion(q) {
   }
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
+  const structureHint = q.type === 'translation' && q.sentenceStructure
+    ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${q.sentenceStructure}</span></div>`
+    : '';
   return `<div class="wp-task-label" style="white-space:pre-line">${q.questionText}</div>
+    ${structureHint}
     ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
     <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
     ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
