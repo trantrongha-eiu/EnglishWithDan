@@ -1361,6 +1361,7 @@
                 case 'map': contentHtml = renderMapGroup(group, isReview); break;
                 case 'matching-options':
                 case 'sentence-endings': contentHtml = renderMatchingOptionsGroup(group, isReview); break;
+                case 'drag-drop':          contentHtml = renderDragDropGroup(group, isReview); break;
                 case 'summary-completion': contentHtml = renderSummaryCompletionGroup(group, isReview); break;
                 default: contentHtml = renderPlainGroup(group, isReview); break;
             }
@@ -1486,6 +1487,54 @@
                 <div class="mo-two-col">
                     <div class="mo-options-col" id="${groupId}-bank">${optListHtml}</div>
                     <div class="mo-questions-col">${qRowsHtml}</div>
+                </div>
+            </div>`;
+        }
+
+        // ── Drag & Drop (Listening) ───────────────────────────────
+        function renderDragDropGroup(group, isReview) {
+            const { dragDropConfig = {}, questions = [] } = group;
+            const { text = '', words = [] } = dragDropConfig;
+            if (!words.length && !text) return '<div class="form-hint">Chưa có nội dung. Vui lòng cấu hình nhóm câu hỏi này.</div>';
+            const groupId = 'lddg-' + questions.map(q => q.questionNumber).join('-');
+            const qMap = {};
+            questions.forEach(q => { qMap[q.questionNumber] = q; });
+
+            const chipsHtml = words.map(word => {
+                const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+                return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
+                    data-value="${escHtml(word)}" data-groupid="${groupId}"
+                    data-reuse="0"
+                    draggable="${isReview ? 'false' : 'true'}"
+                    ondragstart="ltDragStart(event,'${escHtml(word)}')"
+                    onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                    <i class="fas fa-grip-vertical" style="color:#9ca3af;font-size:10px;margin-right:4px"></i>${escHtml(word)}
+                </span>`;
+            }).join('');
+
+            const contentHtml = text.replace(/__Q(\d+)__/g, (_, numStr) => {
+                const qNum = parseInt(numStr);
+                const q = qMap[qNum];
+                if (!q) return `[Q${qNum}]`;
+                if (isReview) {
+                    const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                    const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
+                    return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
+                }
+                const ans = state.answers[qNum] || '';
+                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Kéo từ vào'}</span></span>`;
+            });
+
+            const explHtml = isReview
+                ? questions.filter(q => q.explanation).map(q => `<div class="q-explanation"><span class="rq-q-badge">${q.questionNumber}</span> <strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>`).join('')
+                : '';
+
+            return `<div class="rq-drag-drop-group">
+                <div class="dd-text-col">${contentHtml}${explHtml}</div>
+                <div class="dd-bank-col" id="${groupId}-bank">
+                    <div class="dd-bank-title">KÉO OPTION VÀO CÂU HỎI</div>
+                    <div class="dd-bank-count">${words.length} OPTIONS</div>
+                    <div class="dd-bank-chips">${chipsHtml}</div>
                 </div>
             </div>`;
         }

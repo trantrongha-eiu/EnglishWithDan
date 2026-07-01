@@ -194,6 +194,21 @@
         .clear-drop { cursor:pointer;font-size:11px;color:#9ca3af;margin-left:4px; }
         .clear-drop:hover { color:#ef4444; }
 
+        /* ── Drag & Drop Listening ── */
+        .rq-drag-drop-group { display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:start; }
+        .dd-text-col { font-size:14px;line-height:2.1;color:#374151;padding:14px;background:#fafafa;border:1px solid #e5e7eb;border-radius:8px; }
+        .dd-bank-col { border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;background:#fff;position:sticky;top:70px; }
+        .dd-bank-title { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;margin-bottom:2px; }
+        .dd-bank-count { font-size:11px;color:#9ca3af;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f3f4f6; }
+        .dd-bank-chips { display:flex;flex-direction:column;gap:7px; }
+        .dd-bank-chips .drag-chip { width:100%;justify-content:flex-start;border-radius:8px;padding:6px 10px; }
+        @media(max-width:640px) {
+          .rq-drag-drop-group { grid-template-columns:1fr; }
+          .dd-bank-col { order:-1;position:static; }
+          .dd-bank-chips { flex-direction:row;flex-wrap:wrap; }
+          .dd-bank-chips .drag-chip { width:auto; }
+        }
+
         /* ── Mode tabs: Full đề / Bài lẻ ────────────────────────────────── */
         .rmode-tabs-bar {
             display: flex;

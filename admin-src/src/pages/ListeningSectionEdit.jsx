@@ -368,6 +368,7 @@ export default function ListeningSectionEdit() {
             <li><strong>Multiple choice (1 đáp án):</strong> đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
             <li><strong>✦ Choose TWO/THREE Letters A-G (Q18-20):</strong> Chọn loại <strong>"Choose TWO/THREE Letters A-G ✦"</strong>. Tạo <strong>từng câu riêng biệt</strong> (Q18, Q19, Q20) với cùng danh sách options A-G. Đáp án mỗi câu = 1 chữ cái. Hệ thống tự gộp thành 1 UI chung.</li>
             <li><strong>Matching:</strong> đáp án là chữ cái của lựa chọn. VD: <code>B</code></li>
+            <li><strong>🎯 Kéo-thả (Drag &amp; Drop):</strong> Chọn loại <strong>"Kéo-thả (Drag &amp; Drop)"</strong>. Nhập nội dung với <code>__Q5__</code> cho chỗ trống + danh sách từ/cụm từ (Option Bank). Đáp án mỗi câu = từ thực tế (VD: <code>export routes</code>). Có thể thêm distractors vào Option Bank để tăng độ khó.</li>
             <li><strong>Map labelling:</strong> đáp án là nhãn điền vào sơ đồ, VD: <code>car park</code></li>
           </ul>
           <div style={{ marginTop: 6 }}>Đáp án <strong>không phân biệt hoa/thường</strong>. Nhiều đáp án fill-blank: dùng <code>/</code> ngăn cách.</div>

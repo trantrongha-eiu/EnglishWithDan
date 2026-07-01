@@ -19,6 +19,7 @@ const GROUP_TYPES_LISTENING = [
   { value: 'plain',            icon: '💬', label: 'Câu hỏi thường',              desc: 'Multiple Choice, Short-answer, Sentence Completion riêng lẻ' },
   { value: 'table',            icon: '📋', label: 'Table Completion',             desc: 'Điền vào ô bảng – dùng __Q1__ cho ô trống' },
   { value: 'note-form',        icon: '📝', label: 'Form / Note / Flow-chart',     desc: 'Điền vào biểu mẫu, ghi chú, lưu đồ – dùng __Q6__ cho chỗ trống' },
+  { value: 'drag-drop',        icon: '🎯', label: 'Kéo-thả (Drag & Drop)',        desc: 'Học sinh kéo từ/cụm từ từ Option Bank vào chỗ trống – Flow chart, Diagram Summary' },
   { value: 'matching-options', icon: '🔗', label: 'Matching',                     desc: 'Nối thông tin – ghép chữ cái A-H (Part 2 / Part 3)' },
   { value: 'map',              icon: '🗺️', label: 'Map / Plan / Diagram',         desc: 'Dán nhãn bản đồ, sơ đồ – có hình ảnh chung cho nhóm' },
 ];
@@ -49,6 +50,7 @@ const ALLOWED = {
   plain:               null,
   table:               ['fill-blank', 'sentence-completion'],
   'note-form':         ['fill-blank', 'sentence-completion'],
+  'drag-drop':         ['fill-blank'],
   'matching-options':  ['matching-info'],
   'sentence-endings':  ['matching-info'],
   'matching-headings': ['matching-headings'],
@@ -60,6 +62,7 @@ const GROUP_LABEL = {
   plain:               '💬 Câu hỏi thường',
   table:               '📋 Bảng (Table)',
   'note-form':         '📝 Note Completion',
+  'drag-drop':         '🎯 Kéo-thả (Drag & Drop)',
   'matching-options':  '🔗 Matching Features',
   'sentence-endings':  '🔚 Sentence Endings',
   'matching-headings': '📌 Matching Headings',
@@ -100,6 +103,7 @@ function defaultGroup(type) {
     case 'note-form':         return { ...base, noteConfig: { title: '', lines: [''] } };
     case 'matching-options':  return { ...base, matchingOptions: ['', '', '', '', '', ''], matchingOptionsTitle: '', matchingReuseAllowed: false, interchangeableAnswers: false };
     case 'matching-headings': return { ...base, headingsConfig: { headings: ROMAN.slice(0, 7).map(r => ({ numeral: r, text: '' })) } };
+    case 'drag-drop':          return { ...base, dragDropConfig: { text: '', words: [] } };
     case 'summary-completion':return { ...base, summaryConfig: { text: '', wordBank: 'ABCDEFGH'.split('').map(l => ({ letter: l, word: '' })) } };
     case 'map':               return { ...base, imageUrl: '' };
     default:                  return base;
@@ -107,7 +111,7 @@ function defaultGroup(type) {
 }
 
 function autoQType(groupType, ctx) {
-  if (['table', 'note-form', 'summary-completion'].includes(groupType)) return 'fill-blank';
+  if (['table', 'note-form', 'summary-completion', 'drag-drop'].includes(groupType)) return 'fill-blank';
   if (groupType === 'map') return 'map-labelling';
   if (['matching-options', 'sentence-endings'].includes(groupType)) return 'matching-info';
   if (groupType === 'matching-headings') return 'matching-headings';
@@ -318,6 +322,51 @@ function SummaryConfig({ config, onChange }) {
         ))}
       </div>
       <button className="btn btn-ghost btn-sm" style={{ marginTop: 7 }} onClick={addWB}>＋ Thêm từ</button>
+    </div>
+  );
+}
+
+function DragDropConfig({ config, onChange }) {
+  const { text = '', words = [] } = config || {};
+  const updateWord = (i, v) => onChange({ ...config, words: words.map((w, j) => j === i ? v : w) });
+  const addWord = () => onChange({ ...config, words: [...words, ''] });
+  const removeWord = i => onChange({ ...config, words: words.filter((_, j) => j !== i) });
+  return (
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
+      <InfoBox>
+        🎯 <strong>Drag &amp; Drop:</strong> Nhập nội dung/lưu đồ với <code>__Q5__</code> cho chỗ trống.
+        Danh sách từ/cụm từ bên dưới là <strong>Option Bank</strong> — học sinh kéo thả vào chỗ trống.
+        Có thể thêm từ mồi (distractors) để tăng độ khó.
+        Đáp án mỗi câu = từ/cụm từ thực tế (VD: <em>export routes</em>). Nhiều đáp án: <code>word1 / word2</code>.
+      </InfoBox>
+      <div style={{ marginBottom: 10 }}>
+        <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>
+          Nội dung / Lưu đồ (dùng __Q5__ cho chỗ trống)
+        </label>
+        <textarea className="form-input" rows={5} style={{ marginTop: 4, fontSize: 12, resize: 'vertical' }}
+          value={text} onChange={e => onChange({ ...config, text: e.target.value })}
+          placeholder={"Examine a pencil and discuss where the materials come from.\nLocate the top 5. __Q5__ on a world map.\nDiscuss the pros and cons of different 6. __Q6__.\nIn groups, discuss countries' possible 7. __Q7__ like USA."} />
+        <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 3 }}>
+          Mỗi <code>__Q5__</code> = 1 chỗ trống ứng với câu Q5 bên dưới. Xuống dòng bình thường để tạo các dòng / khung riêng.
+        </div>
+      </div>
+      <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>
+        Option Bank – từ / cụm từ (gồm cả distractors)
+      </label>
+      <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2, marginBottom: 6 }}>
+        Thêm 2–4 từ mồi không phải đáp án để tăng độ khó. Thứ tự nhập = thứ tự hiển thị cho học sinh.
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {words.map((w, i) => (
+          <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontWeight: 700, color: 'var(--text3)', width: 20, fontSize: 12, textAlign: 'right', flexShrink: 0 }}>{i + 1}.</span>
+            <input className="form-input" style={{ flex: 1, fontSize: 12, padding: '5px 9px' }}
+              value={w} onChange={e => updateWord(i, e.target.value)} placeholder="VD: export routes" />
+            <RemoveBtn onClick={() => removeWord(i)} />
+          </div>
+        ))}
+      </div>
+      <button className="btn btn-ghost btn-sm" style={{ marginTop: 8 }} onClick={addWord}>＋ Thêm từ / cụm từ</button>
     </div>
   );
 }
@@ -803,6 +852,9 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
           )}
           {g.groupType === 'matching-headings' && (
             <MatchingHeadingsConfig config={g.headingsConfig} onChange={cfg => updateGroup(gi, { headingsConfig: cfg })} />
+          )}
+          {g.groupType === 'drag-drop' && (
+            <DragDropConfig config={g.dragDropConfig} onChange={cfg => updateGroup(gi, { dragDropConfig: cfg })} />
           )}
           {g.groupType === 'summary-completion' && (
             <SummaryConfig config={g.summaryConfig} onChange={cfg => updateGroup(gi, { summaryConfig: cfg })} />
