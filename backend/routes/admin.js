@@ -1487,7 +1487,14 @@ Band 5: Only limited range of structures. Complex sentences attempted but tend t
 Band 4: Very limited range with rare subordinate clauses. Some accurate structures but errors predominate; punctuation often faulty.
 Band 3: Sentence forms attempted but errors in grammar and punctuation predominate and distort meaning.
 
-SCORE CALIBRATION: Band 9 = near-perfect native-level. Band 7–8 = competent writer, minor issues. Band 6 = communicates but noticeable weaknesses. Band 5 = limited, reader can understand but significant problems. Band 4 = seriously and FREQUENTLY impeded — reserve for essays where the criterion descriptor for Band 4 is CLEARLY met. Most EFL learners who write a complete coherent essay score 5–6.5. Do NOT inflate scores.`;
+SCORE CALIBRATION (strictly enforced):
+• Band 9: Near-perfect native-level control — extremely rare.
+• Band 8: Only minor, infrequent errors; consistently sophisticated — uncommon in learner writing.
+• Band 7: Some flexibility and range but clear gaps remain; occasional errors are acceptable but not frequent. Award ONLY when the Band 7 descriptor is clearly and consistently met.
+• Band 6: Communicates adequately but with noticeable weaknesses throughout — this is the realistic ceiling for most intermediate EFL writers.
+• Band 5: Limited range, frequent errors, reader must work to understand — common for developing writers.
+• Band 4: Communication seriously and FREQUENTLY impeded — reserve for essays where the Band 4 descriptor is clearly met.
+STRICT RULE: When in doubt between two adjacent bands, choose the LOWER one. Do not round up. A single impressive sentence does not justify a higher band. Evidence must be consistent across the whole essay. Most IELTS candidates score 5–6; a score of 7+ must be justified by concrete evidence of advanced language use.`;
 
   // ─── Build context string (essay injected by geminiService) ───────────────
   const wordCountLine = isUnderLength
@@ -1497,7 +1504,9 @@ SCORE CALIBRATION: Band 9 = near-perfect native-level. Band 7–8 = competent wr
     ? `\n⚠️ INCOMPLETE ESSAY: Essay does not end with a complete sentence (no .!? at end). Apply mandatory cap: ${taLabel} ≤ Band 4.`
     : '';
 
-  const questionContext = `Grade this IELTS Academic Writing Task ${taskType}.${wordCountLine}${incompleteLine}
+  const questionContext = `You are a strict IELTS examiner applying official IDP/British Council band descriptors. Award scores that reflect the writing as it stands — do NOT give the benefit of the doubt, do NOT assume what the writer intended, and do NOT inflate scores because the student made an effort. High scores (7+) must be earned by clear, consistent evidence across the full essay.
+
+Grade this IELTS Academic Writing Task ${taskType}.${wordCountLine}${incompleteLine}
 
 ═══════════════════════════════════════════
 BAND DESCRIPTORS – ${taLabel}:
@@ -1514,7 +1523,7 @@ TASK PROMPT: ${prompt}
 INSTRUCTIONS:
 
 STEP 1 – SCORES (4–9 per criterion):
-• Pick the band whose FULL descriptor BEST fits the writing evidence. Do not pick the lowest band with any overlap — match the overall picture.
+• Pick the band whose FULL descriptor BEST fits the writing evidence. When the essay sits between two bands, award the LOWER band unless the higher band is clearly and consistently demonstrated throughout the full essay.
 • For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.
 • For each criterion write 1–2 sentences in Vietnamese using IDP descriptor language, addressing the student as "em". If a mandatory penalty was applied, the comment MUST state the reason (word count, no overview, incomplete essay, or no position) in plain Vietnamese.
 

@@ -222,8 +222,10 @@ function GradeModal({ attemptId, onClose, onGraded }) {
   const [adminNote, setAdminNote]     = useState('');
   const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
   const [manuals, setManuals] = useState({ task1: EMPTY_MANUAL(), task2: EMPTY_MANUAL() });
+  const [reEditing, setReEditing] = useState(false);
 
-  const isConfirmed  = attempt?.gradingStatus === 'confirmed';
+  const isConfirmed          = attempt?.gradingStatus === 'confirmed';
+  const isEffectivelyConfirmed = isConfirmed && !reEditing;
   const ai           = attempt?.aiGrading || {};
   const confirmed    = attempt?.grading || {};
   const hasTask1     = !!(attempt?.task1Snapshot?.prompt || (attempt?.task1Answer && attempt.task1Answer.trim()));
@@ -274,6 +276,23 @@ function GradeModal({ attemptId, onClose, onGraded }) {
     setManuals(prev => ({ ...prev, [taskKey]: data }));
   }
 
+  function enterEditMode() {
+    const g = attempt?.grading || {};
+    const mapTask = t => t ? {
+      bandScore:       t.bandScore  != null ? String(t.bandScore)  : '',
+      ta:  { score: t.ta?.score  != null ? String(t.ta.score)  : '', comment: t.ta?.comment  || '' },
+      cc:  { score: t.cc?.score  != null ? String(t.cc.score)  : '', comment: t.cc?.comment  || '' },
+      lr:  { score: t.lr?.score  != null ? String(t.lr.score)  : '', comment: t.lr?.comment  || '' },
+      gra: { score: t.gra?.score != null ? String(t.gra.score) : '', comment: t.gra?.comment || '' },
+      overallFeedback: t.overallFeedback || ''
+    } : EMPTY_MANUAL();
+    setManuals({ task1: mapTask(g.task1), task2: mapTask(g.task2) });
+    setModes({ task1: 'manual', task2: 'manual' });
+    setOverallBand(g.overallBand != null ? String(g.overallBand) : '');
+    setAdminNote(g.adminNote || '');
+    setReEditing(true);
+  }
+
   async function gradeTask(taskNum) {
     setGradingTask(taskNum);
     setAiOverloaded(false);
@@ -321,7 +340,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
         method: 'PUT',
         body: JSON.stringify({ task1: task1Data, task2: task2Data, overallBand: parseFloat(overallBand), adminNote })
       });
-      toast('Đã xác nhận điểm và gửi feedback cho học sinh');
+      toast(reEditing ? 'Đã cập nhật điểm và gửi lại feedback cho học sinh' : 'Đã xác nhận điểm và gửi feedback cho học sinh');
       onGraded();
       onClose();
     } catch (e) { toast(e.message, 'error'); }
@@ -362,7 +381,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
           ) : (
             <>
               {/* Warning: confirmed but missing sentence feedback */}
-              {isConfirmed && !attempt.grading?.task1?.sentenceFeedback?.length && !attempt.grading?.task2?.sentenceFeedback?.length && (
+              {isEffectivelyConfirmed && !attempt.grading?.task1?.sentenceFeedback?.length && !attempt.grading?.task2?.sentenceFeedback?.length && (
                 <div style={{ background: '#fffbeb', border: '1px solid #f59e0b', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#92400e', display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 14 }}>
                   <span style={{ flexShrink: 0 }}>⚠️</span>
                   <span>Bài này <strong>chưa có phân tích câu chi tiết</strong>. Chấm lại AI rồi bấm Xác nhận để học sinh nhận được phần sửa lỗi từng câu.</span>
@@ -375,7 +394,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   imageUrl={attempt.task1Snapshot?.imageUrl || ''}
                   answer={attempt.task1Answer} wordCount={attempt.wordCount1} minWords={150}
                   aiResult={ai.task1} confirmedResult={confirmed.task1}
-                  isGrading={gradingTask === 1} isConfirmed={isConfirmed}
+                  isGrading={gradingTask === 1} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(1)} aiDisabled={aiOverloaded}
                   mode={modes.task1} onModeChange={m => setMode('task1', m)}
                   manualData={manuals.task1} onManualChange={d => updateManual('task1', d)} />
@@ -386,38 +405,50 @@ function GradeModal({ attemptId, onClose, onGraded }) {
                   imageUrl={null}
                   answer={attempt.task2Answer} wordCount={attempt.wordCount2} minWords={250}
                   aiResult={ai.task2} confirmedResult={confirmed.task2}
-                  isGrading={gradingTask === 2} isConfirmed={isConfirmed}
+                  isGrading={gradingTask === 2} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(2)} aiDisabled={aiOverloaded}
                   mode={modes.task2} onModeChange={m => setMode('task2', m)}
                   manualData={manuals.task2} onManualChange={d => updateManual('task2', d)} />
               )}
 
               {(hasAiResult || hasManualResult || isConfirmed) && (
-                <div style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '16px 20px', marginTop: 4 }}>
+                <div style={{ border: `1px solid ${reEditing ? '#f59e0b' : 'var(--border)'}`, borderRadius: 10, padding: '16px 20px', marginTop: 4, background: reEditing ? '#fffbeb' : undefined }}>
                   <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 15 }}>
-                    {isConfirmed ? '✓ Điểm đã xác nhận' : 'Xác nhận điểm'}
+                    {isEffectivelyConfirmed ? '✓ Điểm đã xác nhận' : reEditing ? '✏️ Chỉnh sửa điểm đã xác nhận' : 'Xác nhận điểm'}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 12, marginBottom: 14 }}>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Band tổng thể *</label>
                       <input className="form-input" type="number" step="0.5" min="0" max="9"
                         value={overallBand} onChange={e => setOverallBand(e.target.value)}
-                        disabled={isConfirmed} placeholder="0–9" />
+                        disabled={isEffectivelyConfirmed} placeholder="0–9" />
                     </div>
                     <div className="form-group" style={{ marginBottom: 0 }}>
                       <label className="form-label">Ghi chú giáo viên (tuỳ chọn)</label>
                       <input className="form-input" value={adminNote} onChange={e => setAdminNote(e.target.value)}
-                        placeholder="Nhận xét thêm cho học sinh..." disabled={isConfirmed} />
+                        placeholder="Nhận xét thêm cho học sinh..." disabled={isEffectivelyConfirmed} />
                     </div>
                   </div>
-                  {isConfirmed ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {isEffectivelyConfirmed ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                       <span className="badge badge-green" style={{ fontSize: 14, padding: '4px 14px' }}>
                         ✓ Band {attempt.grading?.overallBand?.toFixed(1)}
                       </span>
                       {attempt.grading?.adminNote && (
                         <span style={{ fontSize: 13, color: 'var(--text2)' }}>"{attempt.grading.adminNote}"</span>
                       )}
+                      <button className="btn btn-ghost btn-sm" onClick={enterEditMode} style={{ marginLeft: 'auto' }}>
+                        ✏️ Sửa điểm
+                      </button>
+                    </div>
+                  ) : reEditing ? (
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <button className="btn btn-primary" onClick={confirmGrade} disabled={confirming || !overallBand}>
+                        {confirming ? '⏳ Đang cập nhật...' : '✓ Cập nhật & Gửi lại feedback'}
+                      </button>
+                      <button className="btn btn-ghost" onClick={() => setReEditing(false)} disabled={confirming}>
+                        Hủy
+                      </button>
                     </div>
                   ) : (
                     <button className="btn btn-primary" onClick={confirmGrade} disabled={confirming || !overallBand}>
