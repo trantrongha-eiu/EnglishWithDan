@@ -183,10 +183,15 @@
     .t2-quit-continue:hover{background:#4f46e5}
     .t2-quit-leave{background:none;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
     .t2-quit-leave:hover{border-color:#e53935;color:#e53935}
+    .t2-quit-save{background:none;color:#059669;border:1.5px solid #6ee7b7;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+    .t2-quit-save:hover{background:#ecfdf5;border-color:#10b981}
+    .t2-quit-save.hidden{display:none}
     [data-theme="dark"] .t2-quit-box{background:#1e293b}
     [data-theme="dark"] .t2-quit-top{background:linear-gradient(135deg,#1e1b4b,#2e1b0e)}
     [data-theme="dark"] .t2-quit-title{color:#fbbf24}
     [data-theme="dark"] .t2-quit-leave{border-color:#374151;color:#9ca3af}
+    [data-theme="dark"] .t2-quit-save{color:#34d399;border-color:#065f46}
+    [data-theme="dark"] .t2-quit-save:hover{background:#064e3b;border-color:#34d399}
 
     /* ── Test countdown timer ── */
     .wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
@@ -288,6 +293,7 @@
     </div>
     <div class="t2-quit-actions">
       <button class="t2-quit-continue" id="t2-quit-continue-btn"><i class="fas fa-arrow-left"></i> Tiếp tục học</button>
+      <button class="t2-quit-save hidden" id="t2-quit-save-btn"><i class="fas fa-bookmark"></i> Thoát và lưu tiến độ</button>
       <button class="t2-quit-leave"    id="t2-quit-leave-btn">Dừng lại</button>
     </div>
   </div>
@@ -434,20 +440,29 @@ function _fallbackCopy(url) {
 //  QUIT MODAL
 // ════════════════════════════════════════════════════════
 let _t2QuitCb = null;
+let _t2QuitSaveCb = null;
 let _vocabHintCount = 0;
 let _vocabHintList  = [];
 function askT2Quit(cb, opts = {}) {
   _t2QuitCb = cb;
+  _t2QuitSaveCb = opts.onSave || null;
   document.getElementById('t2-quit-mascot').textContent   = opts.mascot      || '✏️';
   document.getElementById('t2-quit-title').textContent    = opts.title        || 'Dừng luyện tập?';
   document.getElementById('t2-quit-sub').textContent      = opts.sub          || '';
   document.getElementById('t2-quit-continue-btn').innerHTML = `<i class="fas fa-arrow-left"></i> ${opts.continueText || 'Tiếp tục học'}`;
   document.getElementById('t2-quit-leave-btn').innerHTML = '<i class="fas fa-sign-out-alt"></i> ' + (opts.confirmText || 'Dừng lại');
+  const saveBtn = document.getElementById('t2-quit-save-btn');
+  if (_t2QuitSaveCb) saveBtn.classList.remove('hidden');
+  else saveBtn.classList.add('hidden');
   document.getElementById('t2-quit-overlay').classList.remove('hidden');
 }
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('t2-quit-continue-btn').onclick = () =>
     document.getElementById('t2-quit-overlay').classList.add('hidden');
+  document.getElementById('t2-quit-save-btn').onclick = () => {
+    document.getElementById('t2-quit-overlay').classList.add('hidden');
+    if (_t2QuitSaveCb) { _t2QuitSaveCb(); _t2QuitSaveCb = null; }
+  };
   document.getElementById('t2-quit-leave-btn').onclick = () => {
     document.getElementById('t2-quit-overlay').classList.add('hidden');
     if (_t2QuitCb) { _t2QuitCb(); _t2QuitCb = null; }
@@ -1222,7 +1237,12 @@ function quitPractice() {
       title: 'Dừng luyện tập?',
       sub: `Bạn đã làm ${state.sessionDone} câu. Xem tổng kết phiên học nhé!`,
       confirmText: 'Xem kết quả',
-      continueText: 'Tiếp tục học'
+      continueText: 'Tiếp tục học',
+      onSave: () => {
+        cleanup();
+        saveDraft();
+        state.view = 'select'; render();
+      }
     });
   } else {
     cleanup();
