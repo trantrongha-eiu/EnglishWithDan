@@ -4,6 +4,81 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import Pagination from '../components/Pagination';
 
+/* ── Searchable student picker ──────────────────────────────────────── */
+function StudentPicker({ students, value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const wrapRef = useRef();
+
+  const selected = students.find(s => s._id === value) || null;
+  const filtered = search.trim()
+    ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
+    : students;
+
+  useEffect(() => {
+    function handle(e) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
+        setOpen(false); setSearch('');
+      }
+    }
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, []);
+
+  useEffect(() => { if (!value) { setSearch(''); setOpen(false); } }, [value]);
+
+  function pick(s) { onChange(s._id); setSearch(''); setOpen(false); }
+
+  const displayValue = open ? search : (selected ? `${selected.username} (${selected.email})` : '');
+
+  return (
+    <div ref={wrapRef} style={{ position: 'relative' }}>
+      <div style={{ position: 'relative' }}>
+        <input
+          className="form-input"
+          placeholder="Tìm và chọn học viên..."
+          value={displayValue}
+          onFocus={() => { setSearch(''); setOpen(true); }}
+          onChange={e => { setSearch(e.target.value); setOpen(true); }}
+          onKeyDown={e => { if (e.key === 'Escape') { setOpen(false); setSearch(''); } }}
+          autoComplete="off"
+          style={{ paddingRight: 28 }}
+        />
+        <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text3)', fontSize: 10 }}>▼</span>
+      </div>
+      {/* hidden input for HTML5 required validation */}
+      <input type="text" value={value} required readOnly tabIndex={-1}
+        style={{ position: 'absolute', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }} />
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: 300,
+          background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8,
+          boxShadow: '0 8px 28px rgba(0,0,0,.18)', maxHeight: 280, overflowY: 'auto',
+        }}>
+          {filtered.length === 0
+            ? <div style={{ padding: '10px 14px', color: 'var(--text3)', fontSize: 13 }}>Không tìm thấy học viên</div>
+            : filtered.map(s => (
+              <div key={s._id}
+                onMouseDown={e => { e.preventDefault(); pick(s); }}
+                style={{
+                  padding: '9px 14px', cursor: 'pointer', fontSize: 13,
+                  background: s._id === value ? 'rgba(59,130,246,.12)' : undefined,
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,.08)'}
+                onMouseLeave={e => e.currentTarget.style.background = s._id === value ? 'rgba(59,130,246,.12)' : ''}
+              >
+                <strong style={{ color: '#3b82f6' }}>{s.username}</strong>
+                <span style={{ color: 'var(--text3)', fontSize: 12 }}>{s.email}</span>
+              </div>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const PAGE = 30;
 const MONTHS = ['', 'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
   'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -32,8 +107,7 @@ export default function Tuition() {
     month: String(CUR_MONTH), year: String(CUR_YEAR),
     feeType: '', isPaid: '', studentNotified: '', studentId: '',
   });
-  const [students, setStudents]       = useState([]);
-  const [studentSearch, setStudentSearch] = useState('');
+  const [students, setStudents] = useState([]);
 
   // ── Create/Edit form ──
   const [showForm, setShowForm]     = useState(false);
@@ -140,12 +214,12 @@ export default function Tuition() {
   }
 
   function openCreate() {
-    setEditFee(null); setIsCopy(false); setStudentUnpaid(null); setStudentSearch('');
+    setEditFee(null); setIsCopy(false); setStudentUnpaid(null);
     setFormData({ studentId: '', feeType: 'monthly', month: String(CUR_MONTH), year: String(CUR_YEAR), courseName: '', amount: settings?.defaultMonthlyFee || '', note: '' });
     setShowForm(true);
   }
   function openCopy(fee) {
-    setEditFee(null); setIsCopy(true); setStudentUnpaid(null); setStudentSearch('');
+    setEditFee(null); setIsCopy(true); setStudentUnpaid(null);
     let nextMonth = fee.feeType === 'monthly' ? Number(fee.month) + 1 : CUR_MONTH;
     let nextYear  = fee.feeType === 'monthly' ? Number(fee.year)      : CUR_YEAR;
     if (nextMonth > 12) { nextMonth = 1; nextYear += 1; }
@@ -290,10 +364,6 @@ export default function Tuition() {
     });
   }
 
-  const filteredStudents = students.filter(s =>
-    !studentSearch || (s.username + s.email).toLowerCase().includes(studentSearch.toLowerCase())
-  );
-
   // ── stat cards for top of fees tab ──
   const totalAmount  = fees.reduce((a, f) => a + f.amount, 0);
   const paidAmount   = fees.reduce((a, f) => a + (f.isPaid ? f.amount : 0), 0);
@@ -437,15 +507,11 @@ export default function Tuition() {
                 ) : (
                   <div className="form-group" style={{ margin: 0 }}>
                     <label className="form-label">Học viên *</label>
-                    <input className="form-input" placeholder="Tìm học viên..." value={studentSearch}
-                      onChange={e => setStudentSearch(e.target.value)} style={{ marginBottom: 6 }} />
-                    <select className="form-input" value={formData.studentId}
-                      onChange={e => { setFormData(f => ({ ...f, studentId: e.target.value })); fetchStudentUnpaid(e.target.value); }} required>
-                      <option value="">-- Chọn học viên --</option>
-                      {filteredStudents.map(s => (
-                        <option key={s._id} value={s._id}>{s.username} ({s.email})</option>
-                      ))}
-                    </select>
+                    <StudentPicker
+                      students={students}
+                      value={formData.studentId}
+                      onChange={sid => { setFormData(f => ({ ...f, studentId: sid })); fetchStudentUnpaid(sid); }}
+                    />
                     {studentUnpaid && (
                       <div style={{ marginTop: 8, padding: '8px 14px', background: '#fef9c3', border: '1px solid #fde047', borderRadius: 8, fontSize: 13, fontWeight: 600, color: '#854d0e' }}>
                         ⚠️ Học viên này đang nợ <strong>{studentUnpaid.count} kỳ</strong>, tổng cộng: <strong>{Number(studentUnpaid.total).toLocaleString('vi-VN')} ₫</strong> chưa đóng.

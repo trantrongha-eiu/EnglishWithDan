@@ -168,13 +168,27 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* Unit section trong sidebar */
 .unit-section{padding:12px 18px 0}
 .unit-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
-#unitSelect{
-  width:100%;padding:8px 10px;
+
+/* ── Custom unit picker ── */
+.unit-picker{position:relative;width:100%;margin-bottom:0}
+.unit-picker-input{
+  width:100%;padding:8px 28px 8px 10px;box-sizing:border-box;
   border:1px solid var(--border);border-radius:var(--radius-sm);
   font-size:13px;font-family:inherit;outline:none;
   background:var(--bg);color:var(--text);cursor:pointer;
 }
-#unitSelect:focus{border-color:var(--blue)}
+.unit-picker-input:focus{border-color:var(--blue)}
+.unit-picker-input.up-mob{padding:11px 30px 11px 13px;font-size:14px}
+.unit-picker-caret{position:absolute;right:9px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text3);font-size:11px}
+.unit-picker-dd{
+  display:none;position:absolute;left:0;right:0;top:calc(100% + 3px);z-index:500;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,.16);max-height:240px;overflow-y:auto;
+}
+.up-item{padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text)}
+.up-item:hover{background:rgba(61,139,255,.08)}
+.up-item.up-active{background:rgba(61,139,255,.12);color:var(--blue);font-weight:600}
+.up-empty{padding:10px 12px;font-size:13px;color:var(--text3);text-align:center}
 .btn-start-unit{
   display:flex;align-items:center;justify-content:center;gap:6px;
   width:100%;margin-top:8px;padding:9px;
@@ -734,14 +748,8 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   font-size:11px;font-weight:700;color:var(--text3);
   text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
 }
-#unitSelectMob{
-  width:100%;padding:11px 13px;
-  border:1.5px solid var(--border);border-radius:var(--radius-sm);
-  font-size:14px;font-family:inherit;outline:none;
-  background:var(--bg);color:var(--text);cursor:pointer;
-  margin-bottom:10px;
-}
-#unitSelectMob:focus{border-color:var(--blue)}
+#unitPickerMobile .unit-picker-dd{ max-height:200px; }
+#unitPickerMobile .unit-picker-input{ margin-bottom:10px; }
 .sheet-start-btn{
   width:100%;padding:12px;
   background:linear-gradient(135deg,var(--blue) 0%,#2563eb 100%);

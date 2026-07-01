@@ -27,7 +27,14 @@
     <div class="sidebar-divider"></div>
     <div class="unit-section">
       <h4><i class="fas fa-book"></i> Study Unit</h4>
-      <select id="unitSelect"><option value="">-- Select Unit --</option></select>
+      <div class="unit-picker" id="unitPickerDesktop">
+        <div style="position:relative">
+          <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Unit --" autocomplete="off">
+          <span class="unit-picker-caret">▾</span>
+        </div>
+        <div class="unit-picker-dd" id="unitPickerDdD"></div>
+      </div>
+      <select id="unitSelect" style="display:none"><option value="">-- Select Unit --</option></select>
       <button class="btn-start-unit" onclick="loadUnit()">
         <i class="fas fa-play"></i> Start Learning
       </button>
@@ -424,10 +431,14 @@
     <div class="sheet-panel" id="sheetPanel1">
       <div class="sheet-unit-section">
         <h4><i class="fas fa-book-open"></i> Select a Unit to study</h4>
-        <select id="unitSelectMob">
-          <!-- Synced with #unitSelect by JS -->
-          <option value="">-- Select Unit --</option>
-        </select>
+        <div class="unit-picker" id="unitPickerMobile">
+          <div style="position:relative">
+            <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Unit --" autocomplete="off">
+            <span class="unit-picker-caret">▾</span>
+          </div>
+          <div class="unit-picker-dd" id="unitPickerDdM"></div>
+        </div>
+        <select id="unitSelectMob" style="display:none"><option value="">-- Select Unit --</option></select>
         <button class="sheet-start-btn" onclick="loadUnitFromSheet()">
           <i class="fas fa-play"></i> Start Learning
         </button>
@@ -849,13 +860,54 @@
     }).join('');
   };
 
-  // ── Sync unit select ────────────────────────────
+  // ── Custom Unit Picker ──────────────────────────
+  (function(){
+    var _units = [], _val = '', _pickers = [];
+    function _lbl(v){ var u=_units.find(function(u){return String(u.value)===String(v);}); return u?u.label:''; }
+    function _buildPicker(inpId, ddId){
+      var inp=document.getElementById(inpId), dd=document.getElementById(ddId);
+      if(!inp||!dd) return null;
+      var isOpen=false;
+      function render(q){
+        var list=q?_units.filter(function(u){return u.label.toLowerCase().includes(q.toLowerCase());}):_units;
+        dd.innerHTML='';
+        if(!list.length){dd.innerHTML='<div class="up-empty">Không tìm thấy</div>';return;}
+        list.forEach(function(u){
+          var d=document.createElement('div');
+          d.className='up-item'+(String(u.value)===String(_val)?' up-active':'');
+          d.textContent=u.label;
+          d.addEventListener('mousedown',function(e){e.preventDefault();_pick(String(u.value));});
+          dd.appendChild(d);
+        });
+      }
+      function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Unit --';render('');dd.style.display='block';isOpen=true;}
+      function closeDD(){dd.style.display='none';isOpen=false;inp.value=_lbl(_val);inp.placeholder=_lbl(_val)||'-- Chọn Unit --';}
+      inp.addEventListener('focus',openDD);
+      inp.addEventListener('input',function(){if(!isOpen){isOpen=true;dd.style.display='block';}render(inp.value);});
+      inp.addEventListener('keydown',function(e){if(e.key==='Escape')closeDD();});
+      document.addEventListener('mousedown',function(e){if(!inp.contains(e.target)&&!dd.contains(e.target)&&isOpen)closeDD();});
+      return{refresh:function(){render(isOpen?inp.value:'');if(!isOpen)inp.value=_lbl(_val);},close:closeDD,updateDisplay:function(){if(!isOpen)inp.value=_lbl(_val);}};
+    }
+    function _pick(val){
+      _val=val;
+      var s1=document.getElementById('unitSelect'),s2=document.getElementById('unitSelectMob');
+      if(s1)s1.value=val; if(s2)s2.value=val;
+      _pickers.forEach(function(p){p.updateDisplay();});
+      _pickers.forEach(function(p){p.close();});
+    }
+    window._upSetUnits=function(units){
+      _units=units.map(function(u){return{value:String(u.unitNumber),label:'Unit '+u.unitNumber+' – '+u.title};});
+      _pickers.forEach(function(p){p.refresh();});
+    };
+    var p1=_buildPicker('unitPickerInputD','unitPickerDdD');
+    var p2=_buildPicker('unitPickerInputM','unitPickerDdM');
+    if(p1)_pickers.push(p1); if(p2)_pickers.push(p2);
+  })();
+
+  // ── syncSheetUnits: now just syncs hidden selects (compat) ──────
   window.syncSheetUnits = function(){
-    var src  = document.getElementById('unitSelect');
-    var dest = document.getElementById('unitSelectMob');
-    if(!src || !dest) return;
-    dest.innerHTML = src.innerHTML;
-    dest.value = src.value;
+    var src=document.getElementById('unitSelect'), dest=document.getElementById('unitSelectMob');
+    if(src&&dest){dest.innerHTML=src.innerHTML;dest.value=src.value;}
   };
 
   // ── Load unit từ sheet ──────────────────────────
@@ -863,7 +915,7 @@
     var mob = document.getElementById('unitSelectMob');
     var src = document.getElementById('unitSelect');
     if(mob && src) src.value = mob.value;
-    if(!mob || !mob.value){ loadUnit(); return; } // hiện error toast, không đóng sheet
+    if(!src || !src.value){ loadUnit(); return; }
     loadUnit();
     closeSheet();
   };
@@ -914,6 +966,15 @@
     if(origLoadUnits){
       window.loadUnits = async function(){
         await origLoadUnits();
+        // Feed units to the custom pickers via #unitSelect options
+        var sel = document.getElementById('unitSelect');
+        if(sel && window._upSetUnits){
+          var units = Array.from(sel.options).filter(function(o){return o.value;}).map(function(o){
+            var m = o.text.match(/^Unit\s*(\d+)\s*[–-]\s*(.*)/);
+            return { unitNumber: m ? parseInt(m[1]) : parseInt(o.value), title: m ? m[2] : o.text };
+          });
+          window._upSetUnits(units);
+        }
         syncSheetUnits();
       };
     }
