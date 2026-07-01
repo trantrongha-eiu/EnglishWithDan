@@ -1012,6 +1012,10 @@ function renderPractice() {
 }
 
 function renderQuestion(q) {
+  const structureHint = q.sentenceStructure
+    ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${q.sentenceStructure}</span></div>`
+    : '';
+
   if (['essay_type_recognition', 'topic_sentence'].includes(q.type)) {
     const letters = ['A','B','C','D'];
     return `<div class="wp-task-label">${q.questionText}</div>
@@ -1028,9 +1032,9 @@ function renderQuestion(q) {
       ? q.baseWords
       : q.questionText.replace(/\[.*\]/s, '').replace('Sắp xếp:','').split(/\s+/).filter(Boolean);
     const shuffled = shuffle([...words]);
-    // strip [word list] from questionText for display
     const displayText = q.questionText.replace(/\n?\[.*\]/s, '').trim();
     return `<div class="wp-task-label" style="white-space:pre-line">${displayText}</div>
+    ${structureHint}
     <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)">
       <span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>
     </div>
@@ -1041,13 +1045,11 @@ function renderQuestion(q) {
   }
   if (q.type === 'fill_blank') {
     return `<div class="wp-task-label">${q.questionText}</div>
+    ${structureHint}
     <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
-  const structureHint = q.type === 'translation' && q.sentenceStructure
-    ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${q.sentenceStructure}</span></div>`
-    : '';
   return `<div class="wp-task-label" style="white-space:pre-line">${q.questionText}</div>
     ${structureHint}
     ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}

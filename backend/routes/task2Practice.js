@@ -19,9 +19,12 @@ router.get('/templates', async (req, res) => {
 });
 
 // ── Sentence structure derivation (for translation questions) ──────────
+// Types where correctAnswer is a full sentence → auto-derive works
+const AUTO_DERIVE_TYPES = new Set(['translation', 'rearrange', 'error_correction', 'paraphrase']);
+
 function deriveSentenceStructure(q) {
-  if (q.sentenceStructure) return q.sentenceStructure; // admin-set takes priority
-  if (q.type !== 'translation') return null;
+  if (q.sentenceStructure) return q.sentenceStructure; // admin-set always wins
+  if (!AUTO_DERIVE_TYPES.has(q.type)) return null;
   const ans = (q.correctAnswer || q.modelAnswer || '').trim();
   if (!ans) return null;
 
@@ -183,7 +186,7 @@ router.get('/questions/topic/:topicId', async (req, res) => {
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
-      if (q.type === 'translation') rest.sentenceStructure = deriveSentenceStructure(q);
+      rest.sentenceStructure = deriveSentenceStructure(q) || undefined;
       return rest;
     });
     res.json({ success: true, questions: safe, topicName: topic.topicName, topicEmoji: topic.topicEmoji, prompt: topic.prompt, essayType: topic.essayType });
@@ -266,7 +269,7 @@ router.get('/exam', async (req, res) => {
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
-      if (q.type === 'translation') rest.sentenceStructure = deriveSentenceStructure(q);
+      rest.sentenceStructure = deriveSentenceStructure(q) || undefined;
       return rest;
     });
     res.json({ success: true, questions: safe, total: safe.length });
