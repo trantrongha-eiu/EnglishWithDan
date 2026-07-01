@@ -867,20 +867,45 @@
             }
         }
 
-        function renderTestList(tests) {
+        // Group filtered tests into pages where each page holds complete groups (no group split)
+        function getGroupedPages(tests) {
+            const groupMap = {};
+            const groupOrder = [];
+            tests.forEach(t => {
+                const g = t.seriesName || 'Tests';
+                if (!groupMap[g]) { groupMap[g] = []; groupOrder.push(g); }
+                groupMap[g].push(t);
+            });
+            const groups = groupOrder.map(g => ({ name: g, tests: groupMap[g] }));
+            const pages = [];
+            let curPage = [], curCount = 0;
+            groups.forEach(group => {
+                if (curPage.length > 0 && curCount + group.tests.length > LS_PAGE_SIZE) {
+                    pages.push(curPage);
+                    curPage = [group];
+                    curCount = group.tests.length;
+                } else {
+                    curPage.push(group);
+                    curCount += group.tests.length;
+                }
+            });
+            if (curPage.length) pages.push(curPage);
+            return pages;
+        }
+
+        function renderTestList(groups) {
             const wrap = document.getElementById('tests-wrapper');
-            if (!tests.length) { wrap.innerHTML = '<p class="ls-empty-msg">No listening tests available.</p>'; return; }
-            const groups = {};
-            tests.forEach(t => { const g = t.seriesName || 'Tests'; if (!groups[g]) groups[g] = []; groups[g].push(t); });
-            wrap.innerHTML = Object.entries(groups).map(([grp, list]) => `
+            if (!groups.length) { wrap.innerHTML = '<p class="ls-empty-msg">No listening tests available.</p>'; return; }
+            wrap.innerHTML = groups.map(({ name, tests }) => `
                 <div class="test-group">
-                    <div class="test-group-title">${grp}</div>
-                    <div class="test-grid">${list.map(renderTestCard).join('')}</div>
+                    <div class="test-group-title">${name}</div>
+                    <div class="test-grid">${tests.map(renderTestCard).join('')}</div>
                 </div>`).join('');
             // Auto-navigate if ?testId= present (shareable link to a specific test)
             const _tid = new URLSearchParams(location.search).get('testId');
             if (_tid) {
-                const _t = tests.find(t => String(t._id) === _tid);
+                const allTests = groups.flatMap(g => g.tests);
+                const _t = allTests.find(t => String(t._id) === _tid);
                 if (_t) setTimeout(() => goToStartTest(_tid), 80);
             }
         }
@@ -941,20 +966,19 @@
 
         function rerenderLsFilteredTests() {
             const filtered = getLsFilteredTests();
-            const start = (_lsPage - 1) * LS_PAGE_SIZE;
-            renderTestList(filtered.slice(start, start + LS_PAGE_SIZE));
-            renderLsPagination(filtered.length, _lsPage);
+            const pages = getGroupedPages(filtered);
+            renderTestList(pages[_lsPage - 1] || []);
+            renderLsPagination(pages.length, _lsPage, filtered.length);
         }
 
-        function renderLsPagination(total, page) {
+        function renderLsPagination(totalPages, page, totalTests) {
             const container = document.getElementById('tests-pagination');
             if (!container) return;
-            const pages = Math.ceil(total / LS_PAGE_SIZE);
-            if (pages <= 1) { container.innerHTML = ''; return; }
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
             let start = Math.max(1, page - 2);
-            let end = Math.min(pages, page + 2);
+            let end = Math.min(totalPages, page + 2);
             if (end - start < 4) {
-                if (start === 1) end = Math.min(pages, 5);
+                if (start === 1) end = Math.min(totalPages, 5);
                 else start = Math.max(1, end - 4);
             }
             let html = '<div class="pg-wrap">';
@@ -966,20 +990,20 @@
             for (let i = start; i <= end; i++) {
                 html += `<button class="pg-btn${i === page ? ' pg-active' : ''}" onclick="goToLsPage(${i})">${i}</button>`;
             }
-            if (end < pages) {
-                if (end < pages - 1) html += `<span class="pg-ellipsis">…</span>`;
-                html += `<button class="pg-btn" onclick="goToLsPage(${pages})">${pages}</button>`;
+            if (end < totalPages) {
+                if (end < totalPages - 1) html += `<span class="pg-ellipsis">…</span>`;
+                html += `<button class="pg-btn" onclick="goToLsPage(${totalPages})">${totalPages}</button>`;
             }
-            html += `<button class="pg-btn" onclick="goToLsPage(${page + 1})" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
-            html += `<span class="pg-info">Trang ${page}/${pages} · ${total} đề</span>`;
+            html += `<button class="pg-btn" onclick="goToLsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            html += `<span class="pg-info">Trang ${page}/${totalPages} · ${totalTests} đề</span>`;
             html += '</div>';
             container.innerHTML = html;
         }
 
         function goToLsPage(p) {
             const filtered = getLsFilteredTests();
-            const pages = Math.ceil(filtered.length / LS_PAGE_SIZE) || 1;
-            if (p < 1 || p > pages) return;
+            const totalPages = getGroupedPages(filtered).length || 1;
+            if (p < 1 || p > totalPages) return;
             _lsPage = p;
             rerenderLsFilteredTests();
             document.getElementById('tests-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
