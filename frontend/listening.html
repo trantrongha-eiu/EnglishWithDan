@@ -2370,7 +2370,9 @@
             state.submitted = true;
             clearExamStorage(); // clear saved progress on submit
             window.onbeforeunload = null;
+            clearInterval(_asoTimer);
             audio.pause();
+            audio.src = '';
 
             // Show loading overlay (works in both normal and fullscreen mode)
             let overlay = document.getElementById('submit-loading-overlay');

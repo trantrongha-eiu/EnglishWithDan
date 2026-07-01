@@ -103,8 +103,8 @@ export default function ListeningTests() {
   }
 
   async function del(id, name) {
-    confirm(`Ẩn đề listening "${name}"? (có thể bật lại sau)`, async () => {
-      try { await apiFetch(`/listening/admin/tests/${id}`, { method: 'DELETE' }); toast('Đã ẩn đề'); load(); }
+    confirm(`Xóa vĩnh viễn đề listening "${name}"? Không thể khôi phục!`, async () => {
+      try { await apiFetch(`/listening/admin/tests/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
       catch (e) { toast(e.message, 'error'); }
     });
   }

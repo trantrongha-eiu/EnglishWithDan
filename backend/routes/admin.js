@@ -995,7 +995,7 @@ router.delete('/speaking/questions/:id/permanent', auth, teacherOnly, async (req
 // GET /api/admin/speaking/materials
 router.get('/speaking/materials', auth, teacherOnly, async (req, res) => {
   try {
-    const materials = await SpeakingMaterial.find().sort({ createdAt: -1 });
+    const materials = await SpeakingMaterial.find({ isActive: { $ne: false } }).sort({ createdAt: -1 });
     res.json({ success: true, materials });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

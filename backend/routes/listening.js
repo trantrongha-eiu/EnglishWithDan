@@ -112,11 +112,22 @@ router.put('/admin/tests/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// DELETE /api/listening/admin/tests/:id
+// DELETE /api/listening/admin/tests/:id  (soft delete – ẩn)
 router.delete('/admin/tests/:id', auth, teacherOnly, async (req, res) => {
   try {
     await ListeningTest.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: 'Đã ẩn đề nghe' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/listening/admin/tests/:id/permanent  (hard delete – xóa vĩnh viễn)
+router.delete('/admin/tests/:id/permanent', auth, teacherOnly, async (req, res) => {
+  try {
+    const test = await ListeningTest.findByIdAndDelete(req.params.id);
+    if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề nghe' });
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn đề nghe' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
