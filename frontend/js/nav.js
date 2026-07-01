@@ -28,7 +28,7 @@
       children: [
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
         { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
-        { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing' },
+        { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing', badgeId: 'navTask2Badge' },
         { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
       ]
     },
@@ -63,7 +63,8 @@
       if (l.children) {
         var items = l.children.map(function (c) {
           var cc = navChildActive(c.href) ? ' class="active"' : '';
-          return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + '</a>';
+          var cbadge = c.badgeId ? '<span id="' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
+          return '<a href="' + c.href + '"' + cc + '><i class="fas ' + c.icon + '"></i> ' + c.label + cbadge + '</a>';
         }).join('');
         return '<div class="nav-dropdown"><a href="' + l.href + '"' + cls + '><i class="fas ' + l.icon + '"></i> ' + l.label + badge + ' <i class="fas fa-chevron-down nav-dd-arrow"></i></a><div class="nav-dd-menu">' + items + '</div></div>';
       }
@@ -81,7 +82,8 @@
       if (l.children) {
         l.children.forEach(function (c) {
           var ca = navChildActive(c.href) ? ' active' : '';
-          out.push('<a href="' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + '</a>');
+          var cbadge = c.badgeId ? '<span id="mob_' + c.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
+          out.push('<a href="' + c.href + '" class="mobile-nav-link mobile-nav-sub' + ca + '"><i class="fas ' + c.icon + '" style="width:20px;text-align:center"></i> ' + c.label + cbadge + '</a>');
         });
       }
     });
@@ -235,6 +237,16 @@
     fetch(API + '/tuition/my/summary', { headers: headers })
       .then(function (r) { return r.json(); })
       .then(function (d) { if (d.unpaidCount > 0) showBadge('navTuitionBadge', d.unpaidCount); })
+      .catch(function () {});
+
+    fetch(API + '/task2/drafts', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var count = (d.drafts || []).filter(function (dr) {
+          return ((dr.questionIds && dr.questionIds.length) || 0) - (dr.currentIdx || 0) > 0;
+        }).length;
+        if (count > 0) showBadge('navTask2Badge', count);
+      })
       .catch(function () {});
   }
 })();

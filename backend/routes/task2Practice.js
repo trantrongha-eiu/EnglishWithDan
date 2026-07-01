@@ -416,4 +416,15 @@ router.delete('/draft/:topicId', auth, async (req, res) => {
   }
 });
 
+router.get('/drafts', auth, async (req, res) => {
+  try {
+    const drafts = await Task2Draft.find({ userId: req.user._id })
+      .select('topicId topicName week currentIdx questionIds savedAt')
+      .lean();
+    res.json({ success: true, drafts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
 module.exports = router;

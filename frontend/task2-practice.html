@@ -38,10 +38,15 @@
     .t2-week-card{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:12px;padding:16px 14px;cursor:pointer;transition:all .2s;text-align:center}
     .t2-week-card:hover{border-color:#6366f1;background:#f0f0ff}
     .t2-week-card.active{border-color:#6366f1;background:#ede9fe}
+    .t2-week-card.has-draft{border-color:#f59e0b;background:#fffbeb}
+    .t2-week-card.has-draft:hover{border-color:#d97706;background:#fef3c7}
     .t2-week-num{font-size:22px;font-weight:800;color:#6366f1;margin-bottom:4px}
     .t2-week-label{font-size:12px;color:#6b7280}
+    .t2-week-draft-pill{display:inline-flex;align-items:center;gap:3px;background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px}
     [data-theme="dark"] .t2-week-card{background:#1e293b;border-color:#334155;color:#f1f5f9}
     [data-theme="dark"] .t2-week-card:hover{border-color:#818cf8;background:#1e1b4b}
+    [data-theme="dark"] .t2-week-card.has-draft{border-color:#d97706;background:#1c1a0e}
+    [data-theme="dark"] .t2-week-card.has-draft:hover{background:#292008}
 
     /* ── Topic list ── */
     .t2-topic-list{display:flex;flex-direction:column;gap:10px;padding:16px 20px}
@@ -393,6 +398,8 @@ let state = {
   questionStatus: [],
   // saved session draft for resuming
   draft: null,
+  // all drafts across topics (for week screen indicators)
+  allDrafts: [],
   // settings toggles
   autoNext: false,
   shuffleMode: false
@@ -597,6 +604,12 @@ async function loadWeeks() {
       return;
     }
 
+    if (localStorage.getItem('token')) {
+      try {
+        const allDraftsData = await apiFetch('/api/task2/drafts');
+        state.allDrafts = allDraftsData.drafts || [];
+      } catch {}
+    }
     state.view = 'weeks';
     history.replaceState({ view: 'weeks' }, '', location.href);
     render();
@@ -608,6 +621,17 @@ function renderWeeks() {
   const weekData = {};
   state.weeks.forEach(w => { weekData[w.week] = w; });
   const weekNames = { 1:'Adv & Disadv', 2:'Adv & Disadv', 3:'Solution Essays', 4:'Cause & Effect', 5:'Agree/Disagree', 6:'Agree/Disagree', 7:'Discuss Both', 8:'Discuss Both', 9:'Ôn tập', 10:'Ôn tập', 11:'Ôn tập', 12:'Ôn tập' };
+  // group pending drafts by week
+  const draftsByWeek = {};
+  (state.allDrafts || []).forEach(dr => {
+    const rem = (dr.questionIds?.length || 0) - (dr.currentIdx || 0);
+    if (rem > 0 && dr.week) {
+      if (!draftsByWeek[dr.week]) draftsByWeek[dr.week] = { remaining: 0, topics: 0 };
+      draftsByWeek[dr.week].remaining += rem;
+      draftsByWeek[dr.week].topics++;
+    }
+  });
+  const totalDraftTopics = Object.values(draftsByWeek).reduce((s, v) => s + v.topics, 0);
   return `
     <div style="padding:20px 20px 8px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div>
@@ -620,14 +644,24 @@ function renderWeeks() {
         </button>
       </div>
     </div>
+    ${totalDraftTopics > 0 ? `<div style="margin:0 20px 4px;padding:10px 14px;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:10px;font-size:13px;color:#92400e;display:flex;align-items:center;gap:8px">
+      <i class="fas fa-bookmark" style="color:#f59e0b"></i>
+      Bạn có <strong>${totalDraftTopics} topic</strong> đang dở — tuần được đánh dấu màu vàng. Nhấn vào để tiếp tục!
+    </div>` : ''}
     <div class="t2-week-grid">
       ${weekNums.map(w => {
         const d = weekData[w];
         const hasContent = !!d;
-        return `<div class="t2-week-card ${hasContent ? '' : 'locked'}" data-week="${w}" style="${!hasContent ? 'opacity:.45;cursor:not-allowed' : ''}">
+        const draftInfo = draftsByWeek[w];
+        const draftCls = draftInfo ? ' has-draft' : '';
+        const draftPill = draftInfo
+          ? `<div class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> còn ${draftInfo.remaining} câu</div>`
+          : '';
+        return `<div class="t2-week-card ${hasContent ? '' : 'locked'}${draftCls}" data-week="${w}" style="${!hasContent ? 'opacity:.45;cursor:not-allowed' : ''}">
           <div class="t2-week-num">W${w}</div>
           <div class="t2-week-name">${weekNames[w] || ''}</div>
           <div class="t2-week-label">${hasContent ? d.topicCount + ' topic' : 'Sắp ra'}</div>
+          ${draftPill}
         </div>`;
       }).join('')}
     </div>`;
