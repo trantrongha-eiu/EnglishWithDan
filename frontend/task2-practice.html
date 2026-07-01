@@ -967,7 +967,7 @@ function renderPractice() {
       ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>` : ''}
     </div>
     <div class="t2-prompt-box">
-      <div class="t2-prompt-box-label">▼ 📋 Đề bài IELTS</div>
+      <div class="t2-prompt-box-label">📋 Đề bài IELTS</div>
       <p>${topic.prompt}</p>
     </div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
@@ -1389,7 +1389,7 @@ function renderExam() {
       <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
       ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${q.topicName}">${q.topicName}</span>` : ''}
     </div>
-    ${q.prompt ? `<details class="t2-prompt-box"><summary>📋 Đề bài</summary><p>${q.prompt}</p></details>` : ''}
+    ${q.prompt ? `<div class="t2-prompt-box"><div class="t2-prompt-box-label">📋 Đề bài</div><p>${q.prompt}</p></div>` : ''}
     <div class="wp-card" style="margin:0 20px">
       ${renderQuestion(q)}
       <button class="wp-submit-btn" style="margin-top:12px;width:100%" onclick="examNext()">
