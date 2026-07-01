@@ -1102,6 +1102,10 @@ body.tool-hl .radio-dot { user-select: none; }
   color: #c62828;
 }
 
+.q-correct-ans.skip {
+  color: #6b7280;
+}
+
 /* ══════════════════════════════════════════════
    DRAG-AND-DROP (sentence-completion / matching)
 ══════════════════════════════════════════════ */
@@ -2615,6 +2619,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .q-group-title { color: #93c5fd; }
 [data-theme="dark"] .q-correct-ans.right { background: #14532d; color: #86efac; }
 [data-theme="dark"] .q-correct-ans.wrong { background: #7f1d1d; color: #fca5a5; }
+[data-theme="dark"] .q-correct-ans.skip { color: #9ca3af; }
 [data-theme="dark"] .q-explanation { background: #1c1917; border-left-color: #92400e; color: #d6d3d1; }
 [data-theme="dark"] .q-explanation strong { color: #f59e0b; }
 

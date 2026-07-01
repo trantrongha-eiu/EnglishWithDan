@@ -205,7 +205,10 @@ router.post('/submit', auth, async (req, res) => {
       for (const group of groups) {
         const qs = group.questions || [];
 
-        if (group.interchangeableAnswers && qs.length > 0) {
+        // TFNG/yes-no-ng never uses pool matching — each question has its own fixed answer
+        const isTFNG = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+
+        if (group.interchangeableAnswers && qs.length > 0 && !isTFNG) {
           // ── Interchangeable: pool matching – từng câu được kiểm tra riêng trong pool đáp án ──
           const correctPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
           const remainingPool = [...correctPool];

@@ -1140,9 +1140,12 @@ function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
     reviewExtra = cluster.map(q => {
       const r = reviewMap[q.questionNumber];
       const ok = !!r?.isCorrect;
+      const ua = r?.userAnswer || '';
       const ca = (r?.correctAnswer || q.correctAnswer || '').toUpperCase();
-      return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
-        Q${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`}
+      return `<div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}" style="margin-top:4px">
+        Q${q.questionNumber}: ${ok ? '✓ Đúng'
+          : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>`
+               : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
       </div>${r?.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(r.explanation)}</div>` : ''}`;
     }).join('');
   }
@@ -1454,9 +1457,12 @@ function renderSingleQuestion(q, isReview, reviewMap) {
   const imgHtml = (type === 'map-labelling' && q.imageUrl)
     ? `<div class="map-img-wrap"><img class="map-img" src="${escHtml(q.imageUrl)}" /></div>` : '';
 
+  const _ua = review?.userAnswer || '';
   const reviewFeedback = isReview && review
-    ? `<div class="q-correct-ans ${review.isCorrect ? 'right' : 'wrong'}">
-        ${review.isCorrect ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`}
+    ? `<div class="q-correct-ans ${review.isCorrect ? 'right' : _ua ? 'wrong' : 'skip'}">
+        ${review.isCorrect ? '✓ Đúng'
+          : _ua ? `✗ Sai — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`
+                : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(review.correctAnswer)}</strong>`}
        </div>
        ${review.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtmlNl(review.explanation)}</div>` : ''}` : '';
 
