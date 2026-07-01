@@ -19,6 +19,47 @@ function statusBadge(s) {
   return <span className="badge badge-blue">Chờ duyệt</span>;
 }
 
+function ApproveModal({ request, onClose, onDone }) {
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const u = request.userId || {};
+  const username = u.username || '(Đã xóa)';
+
+  async function confirm() {
+    setLoading(true);
+    try {
+      await apiFetch(`/admin/upgrade-requests/${request._id}/approve`, { method: 'PUT' });
+      toast('Đã duyệt — tài khoản đã được nâng lên Premium');
+      onDone();
+      onClose();
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setLoading(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Xác nhận duyệt yêu cầu</h3>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <p style={{ margin: 0, fontSize: 14 }}>
+            Duyệt nâng cấp <strong>{username}</strong> lên Premium <strong>{formatMonths(request.months)}</strong> ({(request.amount || PRICES[request.months] || 0).toLocaleString('vi-VN')} ₫)?
+          </p>
+          <p style={{ margin: 0, fontSize: 13, color: 'var(--text3)' }}>
+            Ngày Premium sẽ được cộng dồn vào thời hạn hiện tại của học viên.
+          </p>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+            <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+            <button className="btn btn-primary" onClick={confirm} disabled={loading}>{loading ? 'Đang duyệt...' : '✅ Xác nhận duyệt'}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RejectModal({ requestId, onClose, onDone }) {
   const toast = useToast();
   const [note, setNote] = useState('');
@@ -65,6 +106,7 @@ export default function UpgradeRequests() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('pending');
   const [rejectId, setRejectId] = useState(null);
+  const [approveTarget, setApproveTarget] = useState(null);
 
   function load(p = page) {
     const params = new URLSearchParams({ page: p, limit: PAGE, status: statusFilter });
@@ -76,17 +118,13 @@ export default function UpgradeRequests() {
   useEffect(() => { load(1); setPage(1); }, [statusFilter]);
   useEffect(() => { load(page); }, [page]);
 
-  async function approve(id, username) {
-    if (!window.confirm(`Duyệt yêu cầu nâng cấp của ${username}?`)) return;
-    try {
-      await apiFetch(`/admin/upgrade-requests/${id}/approve`, { method: 'PUT' });
-      toast('Đã duyệt — tài khoản đã được nâng lên Premium');
-      load(page);
-    } catch (e) { toast(e.message, 'error'); }
+  function approve(request) {
+    setApproveTarget(request);
   }
 
   return (
     <>
+      {approveTarget && <ApproveModal request={approveTarget} onClose={() => setApproveTarget(null)} onDone={() => load(page)} />}
       {rejectId && <RejectModal requestId={rejectId} onClose={() => setRejectId(null)} onDone={() => load(page)} />}
 
       <div className="section-header">
@@ -133,7 +171,7 @@ export default function UpgradeRequests() {
                     {isAdmin && statusFilter === 'pending' && (
                       <td>
                         <div style={{ display: 'flex', gap: 6 }}>
-                          <button className="btn btn-primary btn-sm" onClick={() => approve(r._id, username)}>✅ Duyệt</button>
+                          <button className="btn btn-primary btn-sm" onClick={() => approve(r)}>✅ Duyệt</button>
                           <button className="btn btn-danger btn-sm" onClick={() => setRejectId(r._id)}>❌ Từ chối</button>
                         </div>
                       </td>
