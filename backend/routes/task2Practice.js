@@ -18,6 +18,36 @@ router.get('/templates', async (req, res) => {
   }
 });
 
+// ── Sentence structure derivation (for translation questions) ──────────
+function deriveSentenceStructure(q) {
+  if (q.sentenceStructure) return q.sentenceStructure; // admin-set takes priority
+  if (q.type !== 'translation') return null;
+  const ans = (q.correctAnswer || q.modelAnswer || '').trim();
+  if (!ans) return null;
+
+  if (/^although\b/i.test(ans))           return 'Although + S + V (điều kiện), + S + V (kết quả)';
+  if (/^even though\b/i.test(ans))        return 'Even though + S + V (điều kiện), + S + V (kết quả)';
+  if (/^despite\b/i.test(ans))            return 'Despite + V-ing / noun phrase, + S + V';
+  if (/^in spite of\b/i.test(ans))        return 'In spite of + V-ing / noun phrase, + S + V';
+  if (/^while\b/i.test(ans) && /,/.test(ans)) return 'While + S + V (đối lập), + S + V';
+  if (/^whereas\b/i.test(ans))            return 'Whereas + S + V (đối lập), + S + V';
+  if (/^not only\b/i.test(ans))           return 'Not only + auxiliary + S + V, but also + S + V';
+  if (/\bnot only\b.{1,50}\bbut also\b/i.test(ans)) return 'S + not only + V, but also + V';
+  if (/^there (is|are|was|were)\b/i.test(ans)) return 'There + is/are + noun + (that/which + V)';
+  if (/^it (is|was|seems)\b/i.test(ans) && /\b(that|to)\b/.test(ans)) return 'It + is + adj + that + S + V  /  It + is + adj + to + V';
+  if (/^if\b/i.test(ans))                 return 'If + S + V (điều kiện), + S + would/will + V (kết quả)';
+  if (/^unless\b/i.test(ans))             return 'Unless + S + V, + S + V';
+  if (/\b(which|who|whom|whose)\b/i.test(ans) && /,/.test(ans)) return 'S + V + O, + which/who + V (mệnh đề quan hệ)';
+  if (/\b(should|must|ought to|have to|need to)\b/i.test(ans)) return 'S + should/must + V + O (lời khuyên / bắt buộc)';
+  if (/\b(has been|have been|had been)\b/i.test(ans)) return 'S + has/have been + V-ing / V3 (hoàn thành)';
+  if (/\b(is|are|was|were)\b.+\bby\b/i.test(ans)) return 'S + is/are + V3 + by + tác nhân (bị động)';
+  if (/\b(because|since|as)\b.+,?/i.test(ans)) return 'S + V + because/since + S + V (nguyên nhân)';
+  if (/\b(in order to|so as to)\b/i.test(ans)) return 'S + V + in order to + V (mục đích)';
+  if (/\bto\b .+$/.test(ans) && ans.split(' ').length <= 10) return 'S + V + to + V (mục đích đơn giản)';
+
+  return 'S + V + O (+ bổ ngữ / trạng ngữ)';
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────
 function normalize(str) {
   return (str || '').toLowerCase().trim()
@@ -141,12 +171,13 @@ router.get('/questions/topic/:topicId', async (req, res) => {
     if (level !== 'all') questions = questions.filter(q => q.level === level);
     questions = questions.sort((a, b) => a.orderIndex - b.orderIndex);
 
-    // strip answers before sending; for rearrange, provide baseWords from correctAnswer if missing
+    // strip answers before sending; derive sentence structure for translation questions
     const safe = questions.map(q => {
       const { correctAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
+      if (q.type === 'translation') rest.sentenceStructure = deriveSentenceStructure(q);
       return rest;
     });
     res.json({ success: true, questions: safe, topicName: topic.topicName, topicEmoji: topic.topicEmoji, prompt: topic.prompt, essayType: topic.essayType });
@@ -229,6 +260,7 @@ router.get('/exam', async (req, res) => {
       if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
         rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
       }
+      if (q.type === 'translation') rest.sentenceStructure = deriveSentenceStructure(q);
       return rest;
     });
     res.json({ success: true, questions: safe, total: safe.length });

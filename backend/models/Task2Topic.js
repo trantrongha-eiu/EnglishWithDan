@@ -11,9 +11,10 @@ const questionSchema = new mongoose.Schema({
   explanationVi:    { type: String },
   explanationEn:    { type: String },
   modelAnswer:      { type: String },
-  fallbackKeywords: [{ type: String }],
-  orderIndex:       { type: Number, default: 0 },
-  isActive:         { type: Boolean, default: true }
+  fallbackKeywords:   [{ type: String }],
+  sentenceStructure:  { type: String },
+  orderIndex:         { type: Number, default: 0 },
+  isActive:           { type: Boolean, default: true }
 }, { _id: true });
 
 const vocabSchema = new mongoose.Schema({

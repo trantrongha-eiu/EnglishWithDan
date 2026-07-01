@@ -32,6 +32,8 @@
     .t2-nav-crumb{font-size:13px;color:#9ca3af}
     .t2-nav-crumb span{color:#6366f1;font-weight:700;cursor:pointer}
     .t2-nav-crumb span:hover{text-decoration:underline}
+    .t2-grammar-badge{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:20px;padding:3px 11px;font-size:11px;font-weight:700;white-space:nowrap}
+    [data-theme="dark"] .t2-grammar-badge{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
 
     /* ── Week grid ── */
     .t2-week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:20px}
@@ -951,6 +953,7 @@ function renderPractice() {
   return `
     <div class="t2-nav" style="padding:8px 20px">
       <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát">✕</button></div>
+      ${q.type === 'translation' && q.sentenceStructure ? `<span class="t2-grammar-badge">${q.sentenceStructure}</span>` : ''}
     </div>
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
