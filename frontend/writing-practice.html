@@ -1903,6 +1903,38 @@ function closeWpSheet() {
   document.body.style.overflow = '';
 }
 
+// Mobile sheet: update state only, no immediate load
+function mobSetLevel(level) {
+  currentLevel = level;
+  document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
+    b.classList.toggle('active', b.dataset.level === level));
+  updateTopicCounts();
+}
+function mobSetTopic(topic) {
+  currentTopic = topic;
+  document.querySelectorAll('.wp-topic-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.topic === topic));
+}
+function mobSetType(type) {
+  currentType = type;
+  document.querySelectorAll('.wp-type-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.type === type));
+}
+function mobStartLearning() {
+  if (sessionDone > 0) {
+    closeWpSheet();
+    askWpQuit(() => { stopSessionTimer(); saveBatch(); loadExercises(); }, {
+      title: 'Bắt đầu bộ mới?',
+      sub: 'Tiến độ hiện tại sẽ được lưu.',
+      confirmText: 'Bắt đầu', continueText: 'Tiếp tục'
+    });
+  } else {
+    stopSessionTimer(); saveBatch();
+    loadExercises();
+    closeWpSheet();
+  }
+}
+
 // ════════════════════════════════════════════════════════
 //  QUIT / STOP MODAL
 // ════════════════════════════════════════════════════════
@@ -2117,32 +2149,32 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="sheet-practice-filters">
       <div class="wp-sheet-section-title"><i class="fas fa-layer-group"></i> Cấp độ</div>
       <div class="wp-sheet-filters"><div class="wp-level-list">
-        <button class="wp-level-btn active" data-level="beginner"     onclick="selectLevel('beginner');closeWpSheet()">🌱 Beginner</button>
-        <button class="wp-level-btn"        data-level="elementary"   onclick="selectLevel('elementary');closeWpSheet()">📘 Elementary</button>
-        <button class="wp-level-btn"        data-level="intermediate" onclick="selectLevel('intermediate');closeWpSheet()">📗 Intermediate</button>
+        <button class="wp-level-btn active" data-level="beginner"     onclick="mobSetLevel('beginner')">🌱 Beginner</button>
+        <button class="wp-level-btn"        data-level="elementary"   onclick="mobSetLevel('elementary')">📘 Elementary</button>
+        <button class="wp-level-btn"        data-level="intermediate" onclick="mobSetLevel('intermediate')">📗 Intermediate</button>
       </div></div>
       <div class="wp-sheet-section-title"><i class="fas fa-tags"></i> Chủ đề</div>
       <div class="wp-sheet-filters"><div class="wp-topic-list">
-        <button class="wp-topic-btn active" data-topic="all"         onclick="selectTopic('all');closeWpSheet()">🎯 Tất cả</button>
-        <button class="wp-topic-btn"        data-topic="myself"      onclick="selectTopic('myself');closeWpSheet()">👤 Bản thân</button>
-        <button class="wp-topic-btn"        data-topic="family"      onclick="selectTopic('family');closeWpSheet()">👨‍👩‍👧 Gia đình</button>
-        <button class="wp-topic-btn"        data-topic="hobbies"     onclick="selectTopic('hobbies');closeWpSheet()">🎮 Sở thích</button>
-        <button class="wp-topic-btn"        data-topic="school"      onclick="selectTopic('school');closeWpSheet()">🏫 Trường học</button>
-        <button class="wp-topic-btn"        data-topic="friends"     onclick="selectTopic('friends');closeWpSheet()">👫 Bạn bè</button>
-        <button class="wp-topic-btn"        data-topic="food"        onclick="selectTopic('food');closeWpSheet()">🍜 Ăn uống</button>
-        <button class="wp-topic-btn"        data-topic="technology"  onclick="selectTopic('technology');closeWpSheet()">💻 Công nghệ</button>
-        <button class="wp-topic-btn"        data-topic="travel"      onclick="selectTopic('travel');closeWpSheet()">✈️ Du lịch</button>
-        <button class="wp-topic-btn"        data-topic="health"      onclick="selectTopic('health');closeWpSheet()">❤️ Sức khỏe</button>
-        <button class="wp-topic-btn"        data-topic="environment" onclick="selectTopic('environment');closeWpSheet()">🌿 Môi trường</button>
+        <button class="wp-topic-btn active" data-topic="all"         onclick="mobSetTopic('all')">🎯 Tất cả</button>
+        <button class="wp-topic-btn"        data-topic="myself"      onclick="mobSetTopic('myself')">👤 Bản thân</button>
+        <button class="wp-topic-btn"        data-topic="family"      onclick="mobSetTopic('family')">👨‍👩‍👧 Gia đình</button>
+        <button class="wp-topic-btn"        data-topic="hobbies"     onclick="mobSetTopic('hobbies')">🎮 Sở thích</button>
+        <button class="wp-topic-btn"        data-topic="school"      onclick="mobSetTopic('school')">🏫 Trường học</button>
+        <button class="wp-topic-btn"        data-topic="friends"     onclick="mobSetTopic('friends')">👫 Bạn bè</button>
+        <button class="wp-topic-btn"        data-topic="food"        onclick="mobSetTopic('food')">🍜 Ăn uống</button>
+        <button class="wp-topic-btn"        data-topic="technology"  onclick="mobSetTopic('technology')">💻 Công nghệ</button>
+        <button class="wp-topic-btn"        data-topic="travel"      onclick="mobSetTopic('travel')">✈️ Du lịch</button>
+        <button class="wp-topic-btn"        data-topic="health"      onclick="mobSetTopic('health')">❤️ Sức khỏe</button>
+        <button class="wp-topic-btn"        data-topic="environment" onclick="mobSetTopic('environment')">🌿 Môi trường</button>
       </div></div>
       <div class="wp-sheet-section-title"><i class="fas fa-tasks"></i> Dạng bài</div>
       <div class="wp-sheet-filters"><div class="wp-type-list">
-        <button class="wp-type-btn active" data-type="all"         onclick="selectType('all');closeWpSheet()">Tất cả</button>
-        <button class="wp-type-btn"        data-type="translation" onclick="selectType('translation');closeWpSheet()">🔄 Dịch câu</button>
-        <button class="wp-type-btn"        data-type="rearrange"   onclick="selectType('rearrange');closeWpSheet()">🔀 Sắp xếp từ</button>
-        <button class="wp-type-btn"        data-type="fill_blank"  onclick="selectType('fill_blank');closeWpSheet()">✏️ Điền chỗ trống</button>
-        <button class="wp-type-btn"        data-type="expand"      onclick="selectType('expand');closeWpSheet()">🔡 Mở rộng câu</button>
-        <button class="wp-type-btn"        data-type="combine"     onclick="selectType('combine');closeWpSheet()">🔗 Nối câu</button>
+        <button class="wp-type-btn active" data-type="all"         onclick="mobSetType('all')">Tất cả</button>
+        <button class="wp-type-btn"        data-type="translation" onclick="mobSetType('translation')">🔄 Dịch câu</button>
+        <button class="wp-type-btn"        data-type="rearrange"   onclick="mobSetType('rearrange')">🔀 Sắp xếp từ</button>
+        <button class="wp-type-btn"        data-type="fill_blank"  onclick="mobSetType('fill_blank')">✏️ Điền chỗ trống</button>
+        <button class="wp-type-btn"        data-type="expand"      onclick="mobSetType('expand')">🔡 Mở rộng câu</button>
+        <button class="wp-type-btn"        data-type="combine"     onclick="mobSetType('combine')">🔗 Nối câu</button>
       </div></div>
       <div class="wp-sheet-section-title"><i class="fas fa-sliders-h"></i> Tùy chọn</div>
       <div style="padding:0 0 4px">
@@ -2161,6 +2193,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </label>
         </div>
       </div>
+      <button class="wp-start-learn-btn" onclick="mobStartLearning()">
+        <i class="fas fa-play"></i> Bắt đầu học
+      </button>
     </div>
 
     <!-- Test setup -->

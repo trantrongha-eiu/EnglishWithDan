@@ -1075,6 +1075,25 @@ body {
 }
 .wp-start-test-btn:hover { background: #c62828; }
 
+.wp-start-learn-btn {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 12px 12px 4px;
+  padding: 12px;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+.wp-start-learn-btn:hover { background: #16a34a; }
+[data-theme="dark"] .wp-start-learn-btn { background: #16a34a; }
+[data-theme="dark"] .wp-start-learn-btn:hover { background: #15803d; }
+
 /* ══════════════════════════════════════════════
    RESULT BANNER (local check feedback)
 ══════════════════════════════════════════════ */
