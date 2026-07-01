@@ -1393,9 +1393,10 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
     if (!q) return `[Q${qNum}]`;
     if (isReview) {
       const review = reviewMap[qNum];
-      const cls = review?.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+      const rvUA = review?.userAnswer || '';
+      const cls = review?.isCorrect ? 'rq-ans-ok' : rvUA ? 'rq-ans-wrong' : 'rq-ans-skip';
       const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
-      return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(review?.userAnswer || '–')}</span>${hint}</span>`;
+      return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}</span>`;
     }
     const ans = state.answers[qNum] || '';
     return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
@@ -1546,8 +1547,9 @@ function renderCheckbox(q, isReview, review) {
 /* ── Fill Blank ───────────────────────────────────────────────────── */
 function renderFillBlank(qNum, isReview, review) {
   if (isReview) {
-    const cls = review?.isCorrect ? 'correct' : 'incorrect';
-    return `<input class="fill-input ${cls}" value="${escHtml(review?.userAnswer || '')}" readonly />`;
+    const ua = review?.userAnswer || '';
+    const cls = review?.isCorrect ? 'correct' : ua ? 'incorrect' : 'skipped';
+    return `<input class="fill-input ${cls}" value="${escHtml(ua)}" readonly />`;
   }
   const val = state.answers[qNum] || '';
   return `<input class="fill-input" data-qnum="${qNum}" value="${escHtml(val)}"
@@ -1557,8 +1559,9 @@ function renderFillBlank(qNum, isReview, review) {
 /* ── Word Bank / Drag-drop ────────────────────────────────────────── */
 function renderWordBank(qNum, wordBank, isReview, review) {
   if (isReview) {
-    const cls = review?.isCorrect ? 'correct' : 'incorrect';
-    return `<input class="fill-input ${cls}" value="${escHtml(review?.userAnswer || '')}" readonly />`;
+    const ua = review?.userAnswer || '';
+    const cls = review?.isCorrect ? 'correct' : ua ? 'incorrect' : 'skipped';
+    return `<input class="fill-input ${cls}" value="${escHtml(ua)}" readonly />`;
   }
   const current = state.answers[qNum] || '';
   const chips = wordBank.map(w =>
@@ -1594,7 +1597,7 @@ function resolvePlaceholders(text, qMap, isReview, reviewMap) {
       const review = reviewMap[qNum];
       const userAns = review?.userAnswer || '';
       const isCorrect = review?.isCorrect;
-      const cls = isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+      const cls = isCorrect ? 'rq-ans-ok' : userAns ? 'rq-ans-wrong' : 'rq-ans-skip';
       const correctHint = !isCorrect && review?.correctAnswer
         ? `<span class="rq-ans-correct">(✓ ${escHtml(review.correctAnswer)})</span>` : '';
       const expl = review?.explanation

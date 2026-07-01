@@ -1458,7 +1458,7 @@
                         <span class="mo-q-num">${qNum}</span>
                         <span class="mo-q-text">${escHtml(q.questionText || '')}</span>
                         <div class="mo-q-answer">
-                            <span class="mo-ans-letter ${isCorrect ? 'correct' : 'wrong'}">${escHtml(ans || '–')}</span>
+                            <span class="mo-ans-letter ${isCorrect ? 'correct' : ans ? 'wrong' : 'skip'}">${escHtml(ans || '–')}</span>
                             ${!isCorrect ? `<span class="mo-correct-ans">✓ ${escHtml(q.correctAnswer || '')}</span>` : ''}
                         </div>
                         ${expl}
@@ -1682,9 +1682,12 @@
                 reviewExtra = cluster.map(q => {
                     // q.isCorrect đã được tính ở backend
                     const ok = !!q.isCorrect;
+                    const qUA = (q.userAnswer || '').trim();
                     const qCA = (q.correctAnswer || '').trim().toUpperCase();
-                    return `<div class="q-correct-ans ${ok ? 'right' : 'wrong'}" style="margin-top:4px">
-                        Q${q.questionNumber}: ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${qCA}</strong>`}
+                    return `<div class="q-correct-ans ${ok ? 'right' : qUA ? 'wrong' : 'skip'}" style="margin-top:4px">
+                        Q${q.questionNumber}: ${ok ? '✓ Đúng'
+                          : qUA ? `✗ Sai — Đáp án: <strong>${qCA}</strong>`
+                                : `⊘ Bỏ qua — Đáp án: <strong>${qCA}</strong>`}
                     </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
                 }).join('');
             }
@@ -1724,8 +1727,8 @@
 
             const showText = !['sentence-completion', 'matching'].includes(q.type);
             const reviewExtra = isReview ? `
-                <div class="q-correct-ans ${ok ? 'right' : 'wrong'}">
-                    ${ok ? '✓ Đúng' : `✗ Sai — Đáp án: <strong>${ca}</strong>`}
+                <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}">
+                    ${ok ? '✓ Đúng' : ua ? `✗ Sai — Đáp án: <strong>${ca}</strong>` : `⊘ Bỏ qua — Đáp án: <strong>${ca}</strong>`}
                 </div>
                 ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}` : '';
 
@@ -1749,7 +1752,7 @@
                     const ok = !!q.isCorrect;
                     return `<span class="inline-answer-wrap" id="rv-q${num}" data-qnum="${num}">
                         <span class="q-badge-inline">${num}</span>
-                        <span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}">${ua || '–'}</span>
+                        <span class="inline-answer ${ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip'}">${ua || '–'}</span>
                         ${!ok ? `<span class="inline-correct-ans">(${ca})</span>` : ''}
                     </span>`;
                 }
@@ -1887,7 +1890,8 @@
             if (isReview) {
                 const alts = ca.split(/\s*\/\s*/).map(s => s.toLowerCase().trim()).filter(Boolean);
                 const ok = alts.length > 0 && alts.some(a => a === ua.toLowerCase().trim());
-                return `<span class="inline-answer ${ok ? 'inline-correct' : 'inline-wrong'}" style="display:inline-block;min-width:80px;padding:4px 14px;border-radius:6px;font-size:14px;font-weight:600;margin:4px 0">${escHtml(ua || '–')}</span>`;
+                const cls = ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip';
+                return `<span class="inline-answer ${cls}" style="display:inline-block;min-width:80px;padding:4px 14px;border-radius:6px;font-size:14px;font-weight:600;margin:4px 0">${escHtml(ua || '–')}</span>`;
             }
             return `<input id="fi-${num}" class="fill-input" type="text"
                 placeholder="Nhập câu trả lời..." value="${ua}" autocomplete="off"
@@ -1895,7 +1899,7 @@
         }
 
         function renderInlineDrop(num, questionText, ua, ca, isReview) {
-            const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : 'wrong-drop') : '';
+            const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : ua ? 'wrong-drop' : 'skip-drop') : '';
             const dzHtml = `<div class="drop-zone ${ua ? 'filled' : ''} ${isReview ? cls : ''}" data-qnum="${num}"
                 ${isReview ? '' : `ondragover="dzOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
                 ${ua ? `${ua}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
@@ -3396,7 +3400,9 @@
         const reviewSection = JSON.parse(JSON.stringify(_ltOrigSection));
         for (const group of reviewSection.questionGroups || []) {
             const qs = group.questions || [];
-            if (group.interchangeableAnswers && qs.length > 0) {
+            // TFNG/yes-no-ng never uses pool matching — each question has its own fixed answer
+            const isTFNGLt = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+            if (group.interchangeableAnswers && qs.length > 0 && !isTFNGLt) {
                 // Pool matching: đáp án trong nhóm có thể hoán đổi thứ tự (như backend)
                 const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
                 for (const q of qs) {

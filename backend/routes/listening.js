@@ -686,7 +686,10 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
       for (const group of section.questionGroups) {
         const qs = group.questions || [];
 
-        if (group.interchangeableAnswers && qs.length > 0) {
+        // TFNG/yes-no-ng never uses pool matching — each question has its own fixed answer
+        const isTFNG = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+
+        if (group.interchangeableAnswers && qs.length > 0 && !isTFNG) {
           // Pool matching: mỗi đáp án trong nhóm có thể hoán đổi thứ tự cho nhau
           const correctPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
           const remainingPool = [...correctPool];
@@ -932,7 +935,9 @@ router.post('/practice/save', auth, async (req, res) => {
 
     for (const group of section.questionGroups || []) {
       const qs = group.questions || [];
-      if (group.interchangeableAnswers && qs.length > 0) {
+      // TFNG/yes-no-ng never uses pool matching — each question has its own fixed answer
+      const isTFNGPr = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+      if (group.interchangeableAnswers && qs.length > 0 && !isTFNGPr) {
         const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
         for (const q of qs) {
           const ua = uaMap[q.questionNumber] || '';
