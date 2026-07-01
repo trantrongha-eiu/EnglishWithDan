@@ -29,6 +29,10 @@ let _userPlan = 'free';   // refreshed on loadTests
 let _activeFilter = 'all';
 let _rdPage = 1;
 const RD_PAGE_SIZE = 9;
+let _rdPracticePage = 1;
+const RD_PRACTICE_PAGE_SIZE = 15;
+let _allPracticePassages = [];
+let _currentPracticeCategory = '';
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
@@ -654,10 +658,14 @@ function setReadingMode(mode, pushHistory = true) {
   const subtitle   = document.getElementById('list-mode-subtitle');
   const title      = document.getElementById('list-mode-title');
 
-  if (picker)    picker.classList.toggle('hidden', !isLele);
-  if (wrapper)   wrapper.style.display   = isLele ? 'none' : '';
-  if (banner)    banner.style.display    = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
-  if (filterBar) filterBar.style.display = isLele ? 'none' : '';
+  const leleHdrBtns = document.getElementById('lele-header-btns');
+  const testsPag    = document.getElementById('tests-pagination');
+  if (picker)       picker.classList.toggle('hidden', !isLele);
+  if (wrapper)      wrapper.style.display    = isLele ? 'none' : '';
+  if (banner)       banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
+  if (filterBar)    filterBar.style.display  = isLele ? 'none' : '';
+  if (leleHdrBtns)  leleHdrBtns.style.display = isLele ? 'flex' : 'none';
+  if (testsPag)     testsPag.style.display   = isLele ? 'none' : '';
   if (!isLele) { const inp = document.getElementById('practice-search-input'); if (inp) inp.value = ''; }
   if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
   if (title) {
@@ -678,52 +686,133 @@ function setReadingMode(mode, pushHistory = true) {
 }
 
 function filterPracticeCards() {
-  _applyPracticeFilters();
+  _rdPracticePage = 1;
+  rerenderPracticePassages();
 }
 
 function filterPracticeByStatus(filter, btn) {
   document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('pf-active'));
   if (btn) btn.classList.add('pf-active');
   _practiceStatusFilter = filter;
-  _applyPracticeFilters();
+  _rdPracticePage = 1;
+  rerenderPracticePassages();
 }
 
 function _applyPracticeFilters() {
+  _rdPracticePage = 1;
+  rerenderPracticePassages();
+}
+
+function getRdFilteredPassages() {
   const q = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
-  const allCards = document.querySelectorAll('#practice-passage-list .practice-card');
-  let visibleCount = 0;
-  allCards.forEach(card => {
-    const title = card.querySelector('.practice-card-title')?.textContent?.toLowerCase() || '';
-    const isDone = card.dataset.done === '1';
-    const passTitle  = !q || title.includes(q);
+  return _allPracticePassages.filter(p => {
+    const isDone = !!_practiceDoneMap[p._id?.toString()];
+    const passTitle  = !q || (p.title || '').toLowerCase().includes(q);
     const passStatus = _practiceStatusFilter === 'all'
       || (_practiceStatusFilter === 'done' && isDone)
       || (_practiceStatusFilter === 'new'  && !isDone);
-    const show = passTitle && passStatus;
-    card.style.display = show ? '' : 'none';
-    if (show) visibleCount++;
+    return passTitle && passStatus;
   });
+}
 
-  // Empty state khi không có kết quả
+function rerenderPracticePassages() {
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
-  let emptyEl = document.getElementById('practice-filter-empty');
-  if (visibleCount === 0 && allCards.length > 0) {
-    if (!emptyEl) {
-      emptyEl = document.createElement('div');
-      emptyEl.id = 'practice-filter-empty';
-      emptyEl.style.cssText = 'text-align:center;padding:40px 16px;color:#9ca3af';
-      listEl.appendChild(emptyEl);
-    }
+  const filtered = getRdFilteredPassages();
+  if (filtered.length === 0 && _allPracticePassages.length > 0) {
+    const q = (document.getElementById('practice-search-input')?.value || '').trim();
     const icon = q ? '🔍' : (_practiceStatusFilter === 'done' ? '✅' : '🆕');
     const msg  = q ? `Không tìm thấy bài nào khớp với "<strong>${escHtml(q)}</strong>"`
                    : _practiceStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
                    : 'Đã làm tất cả bài trong mục này rồi!';
-    emptyEl.innerHTML = `<div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div>`;
-    emptyEl.style.display = '';
-  } else if (emptyEl) {
-    emptyEl.style.display = 'none';
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div></div>`;
+    const pag = document.getElementById('rd-practice-pagination');
+    if (pag) pag.innerHTML = '';
+    return;
   }
+  const start = (_rdPracticePage - 1) * RD_PRACTICE_PAGE_SIZE;
+  const pageItems = filtered.slice(start, start + RD_PRACTICE_PAGE_SIZE);
+  listEl.innerHTML = `<div class="practice-card-grid">${pageItems.map(p => _rdRenderPassageCard(p)).join('')}</div>`;
+  renderRdPracticePagination(filtered.length, _rdPracticePage);
+}
+
+function renderRdPracticePagination(total, page) {
+  const container = document.getElementById('rd-practice-pagination');
+  if (!container) return;
+  const pages = Math.ceil(total / RD_PRACTICE_PAGE_SIZE);
+  if (pages <= 1) { container.innerHTML = ''; return; }
+  let start = Math.max(1, page - 2);
+  let end   = Math.min(pages, page + 2);
+  if (end - start < 4) { if (start === 1) end = Math.min(pages, 5); else start = Math.max(1, end - 4); }
+  let html = '<div class="pg-wrap">';
+  html += `<button class="pg-btn" onclick="goToRdPracticePage(${page - 1})" ${page === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+  if (start > 1) { html += `<button class="pg-btn" onclick="goToRdPracticePage(1)">1</button>`; if (start > 2) html += `<span class="pg-ellipsis">…</span>`; }
+  for (let i = start; i <= end; i++) html += `<button class="pg-btn${i === page ? ' pg-active' : ''}" onclick="goToRdPracticePage(${i})">${i}</button>`;
+  if (end < pages) { if (end < pages - 1) html += `<span class="pg-ellipsis">…</span>`; html += `<button class="pg-btn" onclick="goToRdPracticePage(${pages})">${pages}</button>`; }
+  html += `<button class="pg-btn" onclick="goToRdPracticePage(${page + 1})" ${page === pages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+  html += `<span class="pg-info">Trang ${page}/${pages} · ${total} bài</span></div>`;
+  container.innerHTML = html;
+}
+
+function goToRdPracticePage(p) {
+  const filtered = getRdFilteredPassages();
+  const pages = Math.ceil(filtered.length / RD_PRACTICE_PAGE_SIZE) || 1;
+  if (p < 1 || p > pages) return;
+  _rdPracticePage = p;
+  rerenderPracticePassages();
+  document.getElementById('practice-passage-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function _rdRenderPassageCard(p) {
+  const category  = _currentPracticeCategory;
+  const isActual  = category === 'actual-test';
+  const cls       = isActual ? 'at' : ({ passage1:'p1', passage2:'p2', passage3:'p3' }[category] || 'p1');
+  const pNum      = isActual ? null : ({ passage1:'1', passage2:'2', passage3:'3' }[category] || '1');
+  const typeLabel = {
+    'true-false-ng':'True / False / Not Given', 'yes-no-ng':'Yes / No / Not Given',
+    'multiple-choice':'Multiple Choice', 'fill-blank':'Gap Filling',
+    'sentence-completion':'Sentence Completion', 'matching-headings':'Matching Headings',
+    'matching-info':'Matching Information', 'matching-options':'Matching Features',
+    'map':'Map / Diagram', 'table':'Table Completion', 'note-form':'Note Completion',
+    'bullet-list':'Bullet List', 'summary-completion':'Summary Completion',
+    'sentence-endings':'Sentence Endings',
+  };
+  const qtypes    = [...new Set(
+    (p.questionGroups || []).flatMap(g =>
+      g.questions?.map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType) || []
+    )
+  )].slice(0, 3);
+  const qCount    = p.questionCount || 0;
+  const catCls    = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
+  const catName   = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';
+  const badgeLabel= isActual
+    ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
+        <span class="practice-card-cat-badge at" style="position:static">Actual</span>
+        <span class="practice-card-cat-badge ${catCls}" style="position:static;font-size:9px;padding:2px 6px">${catName}</span>
+       </div>`
+    : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
+  const doneInfo  = _practiceDoneMap[p._id?.toString()];
+  const doneAttr  = doneInfo ? ' data-done="1"' : '';
+  const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
+  const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
+  const isPremium = _userPlan === 'premium';
+  const btnText   = !isPremium
+    ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
+    : (doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`);
+  const btnCls    = `practice-card-btn ${isActual ? catCls : cls}${!isPremium ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
+  return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
+    <div class="practice-card-cover">
+      <div class="practice-cover-logo"><span>D</span>aniel</div>
+      ${badgeLabel}
+      ${doneRibbon}
+      <button class="pc-share-btn" onclick="event.stopPropagation();copyRdPracticeLink('${p._id}','${category}')" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
+    </div>
+    <div class="practice-card-body">
+      <div class="practice-card-title">${escHtml(p.title)}</div>
+      <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
+      <button class="${btnCls}" onclick="event.stopPropagation();startPractice('${p._id}','${category}')">${btnText}</button>
+    </div>
+  </div>`;
 }
 
 async function loadPracticePassages(category, tabEl) {
@@ -765,6 +854,7 @@ async function loadPracticePassages(category, tabEl) {
     _practiceDoneMap = res.doneMap || {};
 
     if (!passages.length) {
+      _allPracticePassages = [];
       listEl.innerHTML = `<div class="rd-empty-list">
         <div style="font-size:32px;margin-bottom:10px">📭</div>
         <div style="font-weight:600;margin-bottom:4px">Chưa có bài đọc nào</div>
@@ -772,79 +862,26 @@ async function loadPracticePassages(category, tabEl) {
       </div>`;
       const countEl = document.getElementById('practice-done-count');
       if (countEl) countEl.textContent = '';
+      const pag = document.getElementById('rd-practice-pagination');
+      if (pag) pag.innerHTML = '';
       return;
     }
 
-    const typeLabel = {
-      'true-false-ng': 'True / False / Not Given',
-      'yes-no-ng': 'Yes / No / Not Given',
-      'multiple-choice': 'Multiple Choice',
-      'fill-blank': 'Gap Filling',
-      'sentence-completion': 'Sentence Completion',
-      'matching-headings': 'Matching Headings',
-      'matching-info': 'Matching Information',
-      'matching-options': 'Matching Features',
-      'map': 'Map / Diagram',
-      'table': 'Table Completion',
-      'note-form': 'Note Completion',
-      'bullet-list': 'Bullet List',
-      'summary-completion': 'Summary Completion',
-      'sentence-endings': 'Sentence Endings',
-    };
+    // Store data for paginated rendering
+    _allPracticePassages    = passages;
+    _currentPracticeCategory = category;
+    _practiceStatusFilter   = 'all';
+    document.querySelectorAll('.pf-btn').forEach((b, i) => b.classList.toggle('pf-active', i === 0));
+    const searchInpReset = document.getElementById('practice-search-input');
+    if (searchInpReset) searchInpReset.value = '';
 
-    // Update done count label
+    // Update done count label (based on all passages)
     const doneCount = passages.filter(p => _practiceDoneMap[p._id?.toString()]).length;
     const countEl = document.getElementById('practice-done-count');
     if (countEl) countEl.textContent = `${doneCount}/${passages.length} đã làm`;
 
-    listEl.innerHTML = `<div class="practice-card-grid">${passages.map(p => {
-      const qtypes = [...new Set(
-        (p.questionGroups || []).flatMap(g =>
-          g.questions?.map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType) || []
-        )
-      )].slice(0, 3);
-      const qCount = p.questionCount || 0;
-
-      const catCls  = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
-      const catName = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';
-      const badgeLabel = isActual
-        ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
-            <span class="practice-card-cat-badge at" style="position:static">Actual</span>
-            <span class="practice-card-cat-badge ${catCls}" style="position:static;font-size:9px;padding:2px 6px">${catName}</span>
-           </div>`
-        : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
-
-      const doneInfo = _practiceDoneMap[p._id?.toString()];
-      const doneAttr = doneInfo ? ' data-done="1"' : '';
-      const donePct  = doneInfo?.lastTotal
-        ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
-      const doneRibbon = doneInfo
-        ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>`
-        : '';
-      const isPremium = _userPlan === 'premium';
-      const btnText = !isPremium
-        ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
-        : (doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`);
-      const btnCls  = `practice-card-btn ${isActual ? catCls : cls}${!isPremium ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
-
-      return `<div class="practice-card" data-pid="${p._id}"${doneAttr} onclick="startPractice('${p._id}','${category}')">
-        <div class="practice-card-cover">
-          <div class="practice-cover-logo"><span>D</span>aniel</div>
-          ${badgeLabel}
-          ${doneRibbon}
-          <button class="pc-share-btn" onclick="event.stopPropagation();copyRdPracticeLink('${p._id}','${category}')" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
-        </div>
-        <div class="practice-card-body">
-          <div class="practice-card-title">${escHtml(p.title)}</div>
-          <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
-          <button class="${btnCls}"
-            onclick="event.stopPropagation();startPractice('${p._id}','${category}')">
-            ${btnText}
-          </button>
-        </div>
-      </div>`;
-    }).join('')}</div>`;
-    _applyPracticeFilters();
+    _rdPracticePage = 1;
+    rerenderPracticePassages();
   } catch (e) {
     listEl.innerHTML = `<div style="text-align:center;padding:40px 0">
       <div class="rd-list-error">Lỗi tải danh sách bài đọc</div>
@@ -3384,6 +3421,7 @@ async function submitUpgradeRequest() {
 }
 
 window.goToRdPage = goToRdPage;
+window.goToRdPracticePage = goToRdPracticePage;
 window.goToStartTest = goToStartTest;
 window.openUpgradeModal = openUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;

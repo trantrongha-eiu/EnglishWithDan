@@ -30,6 +30,12 @@
           <h2 id="list-mode-title">Luyện tập <span class="tag-red">Reading Full đề</span></h2>
           <p class="list-subtitle" id="list-mode-subtitle">Làm bài Reading IELTS đầy đủ 3 passages, có đếm giờ 60 phút và tính band score như khi thi thật.</p>
         </div>
+        <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto">
+          <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
+          <button onclick="showPracticeHistoryModal()" class="rd-hist-btn">
+            <i class="fas fa-history"></i> Lịch sử
+          </button>
+        </div>
         <div class="list-filter" id="list-filter-bar">
           <input type="search" id="test-search" class="test-search-input" placeholder="🔍 Tìm tên đề..." oninput="applyTestFilters()" style="width:180px">
           <button class="filter-btn active" onclick="filterTests('all', this)">Tất cả</button>
@@ -80,12 +86,6 @@
           <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
             <span class="plele-badge at">AT</span> Actual Tests
           </button>
-          <div class="plele-search-row" style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
-            <button onclick="showPracticeHistoryModal()" class="rd-hist-btn">
-              <i class="fas fa-history"></i> Lịch sử
-            </button>
-          </div>
         </div>
         <div class="plele-filter-bar" id="practice-filter-bar">
           <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
@@ -94,6 +94,7 @@
           <span id="practice-done-count" class="rd-done-count"></span>
         </div>
         <div id="practice-passage-list"></div>
+        <div id="rd-practice-pagination"></div>
       </div>
 
       <!-- Resume banner -->

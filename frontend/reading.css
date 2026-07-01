@@ -3065,6 +3065,7 @@ body.tool-hl .check-box { user-select: none; }
 
 /* ── Pagination ── */
 #tests-pagination { padding: 8px 0 32px; }
+#rd-practice-pagination { padding: 8px 0 32px; }
 .pg-wrap {
   display: flex;
   align-items: center;
