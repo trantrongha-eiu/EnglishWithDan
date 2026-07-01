@@ -383,8 +383,8 @@
         <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:24px 28px 20px;color:#fff;position:relative">
           <button onclick="closeUpgradeModal()" style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
           <div style="font-size:28px;margin-bottom:6px">⭐</div>
-          <h3 style="margin:0 0 4px;font-size:20px;font-weight:700">Nâng cấp Premium</h3>
-          <p style="margin:0;font-size:13px;opacity:.85">Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary</p>
+          <h3 id="up-modal-title" style="margin:0 0 4px;font-size:20px;font-weight:700">Nâng cấp Premium</h3>
+          <p id="up-modal-desc" style="margin:0;font-size:13px;opacity:.85">Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary</p>
         </div>
         <div style="padding:20px 28px 0">
           <p style="margin:0 0 12px;font-size:13px;font-weight:600;color:var(--text2,#555)">Chọn gói:</p>
@@ -949,6 +949,15 @@
             const modal = document.getElementById('modal-upgrade');
             if (!modal) return;
             modal.classList.remove('hidden');
+            const titleEl = document.getElementById('up-modal-title');
+            const descEl  = document.getElementById('up-modal-desc');
+            if (_userPlan === 'premium') {
+                if (titleEl) titleEl.textContent = 'Gia hạn Premium';
+                if (descEl)  descEl.textContent  = 'Gia hạn thêm thời gian Premium — ngày sẽ được cộng dồn vào thời hạn hiện tại của bạn';
+            } else {
+                if (titleEl) titleEl.textContent = 'Nâng cấp Premium';
+                if (descEl)  descEl.textContent  = 'Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary';
+            }
             if (!_upgradeSettings) {
                 try {
                     const res = await fetch(`${API}/tuition/settings`, { headers: authH() });
@@ -3266,7 +3275,7 @@
     /* ── Start practice for one section ─────────────────────────────────── */
     async function startPracticeSection(sectionId, partNum, _silent = false) {
         const _u = JSON.parse(localStorage.getItem('user') || '{}');
-        if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+        if (_userPlan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
             openUpgradeModal(); return;
         }
 

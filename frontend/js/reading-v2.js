@@ -805,7 +805,7 @@ async function loadPracticePassages(category, tabEl) {
 
 async function startPractice(passageId, category, _silent = false) {
   const _u = JSON.parse(localStorage.getItem('user') || '{}');
-  if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+  if (_userPlan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
     openUpgradeModal(); return;
   }
 
@@ -3245,6 +3245,15 @@ async function openUpgradeModal() {
   const modal = document.getElementById('modal-upgrade');
   if (!modal) return;
   modal.classList.remove('hidden');
+  const titleEl = document.getElementById('up-modal-title');
+  const descEl  = document.getElementById('up-modal-desc');
+  if (_userPlan === 'premium') {
+    if (titleEl) titleEl.textContent = 'Gia hạn Premium';
+    if (descEl)  descEl.textContent  = 'Gia hạn thêm thời gian Premium — ngày sẽ được cộng dồn vào thời hạn hiện tại của bạn';
+  } else {
+    if (titleEl) titleEl.textContent = 'Nâng cấp Premium';
+    if (descEl)  descEl.textContent  = 'Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary';
+  }
   // Fetch bank info & QR once
   if (!_upgradeSettings) {
     try {
