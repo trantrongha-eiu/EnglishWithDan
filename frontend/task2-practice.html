@@ -569,8 +569,13 @@ async function loadWeeks() {
     if (urlLevel) state.selectedLevel = urlLevel;
     if (urlMode)  state.currentMode   = urlMode;
 
-    const data = await apiFetch('/api/task2/weeks');
+    const hasToken = !!localStorage.getItem('token');
+    const [data, allDraftsData] = await Promise.all([
+      apiFetch('/api/task2/weeks'),
+      hasToken ? apiFetch('/api/task2/drafts').catch(() => ({ drafts: [] })) : Promise.resolve({ drafts: [] })
+    ]);
     state.weeks = data.weeks || [];
+    state.allDrafts = allDraftsData.drafts || [];
 
     if (urlWeek && urlTopicId) {
       state.selectedWeek = urlWeek;
@@ -579,7 +584,7 @@ async function loadWeeks() {
       const topic = state.topics.find(t => t._id === urlTopicId);
       if (topic) {
         state.selectedTopic = topic;
-        if (localStorage.getItem('token')) {
+        if (hasToken) {
           try {
             const [wrongData, draftData] = await Promise.all([
               apiFetch(`/api/task2/wrong-questions/${urlTopicId}`),
@@ -604,12 +609,6 @@ async function loadWeeks() {
       return;
     }
 
-    if (localStorage.getItem('token')) {
-      try {
-        const allDraftsData = await apiFetch('/api/task2/drafts');
-        state.allDrafts = allDraftsData.drafts || [];
-      } catch {}
-    }
     state.view = 'weeks';
     history.replaceState({ view: 'weeks' }, '', location.href);
     render();
@@ -1275,6 +1274,23 @@ function quitPractice() {
       onSave: () => {
         cleanup();
         saveDraft();
+        // Optimistically update state so select screen + week card reflect the saved draft immediately
+        const savedDraft = {
+          topicId:        state.selectedTopic._id,
+          topicName:      state.selectedTopic.topicName,
+          week:           state.selectedWeek,
+          currentIdx:     state.sessionDone,
+          questionIds:    state.questions.map(q => q._id || q.questionId),
+          savedAt:        new Date().toISOString(),
+          sessionDone:    state.sessionDone,
+          sessionAttempts:state.sessionAttempts,
+          questionStatus: state.questionStatus,
+          sessionCorrect: state.sessionCorrect
+        };
+        state.draft = savedDraft;
+        const existIdx = state.allDrafts.findIndex(d => d.topicId === state.selectedTopic._id);
+        if (existIdx >= 0) state.allDrafts[existIdx] = savedDraft;
+        else state.allDrafts.push(savedDraft);
         state.view = 'select'; render();
       }
     });
@@ -1607,6 +1623,7 @@ async function savePracticeAttempt() {
       // Clear draft — session is complete
       try { await apiFetch(`/api/task2/draft/${state.selectedTopic._id}`, { method: 'DELETE' }); } catch {}
       state.draft = null;
+      state.allDrafts = state.allDrafts.filter(d => d.topicId !== state.selectedTopic._id);
     }
   } catch {}
 }
