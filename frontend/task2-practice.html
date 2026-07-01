@@ -66,6 +66,12 @@
     [data-theme="dark"] .t2-btn.active{border-color:#818cf8;background:#1e1b4b;color:#a5b4fc}
     .t2-start-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-top:20px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
     .t2-start-btn:hover{opacity:.9;transform:translateY(-1px)}
+    .t2-draft-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fefce8;border:1.5px solid #fde047;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
+    .t2-draft-info{font-size:13px;color:#713f12;line-height:1.5}
+    .t2-resume-btn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:opacity .2s}
+    .t2-resume-btn:hover{opacity:.88}
+    [data-theme="dark"] .t2-draft-banner{background:#1c1a00;border-color:#92400e}
+    [data-theme="dark"] .t2-draft-info{color:#fde68a}
 
     /* ── Practice: header + question card ── */
     .t2-prompt-box{background:#fefce8;border:1.5px solid #fde047;border-radius:10px;padding:10px 14px;margin:0 20px 12px;font-size:13px;color:#713f12;line-height:1.6}
@@ -379,6 +385,8 @@ let state = {
   wrongQuestionIds: [],
   // per-question status for progress dots
   questionStatus: [],
+  // saved session draft for resuming
+  draft: null,
   // settings toggles
   autoNext: false,
   shuffleMode: false
@@ -549,6 +557,16 @@ async function loadWeeks() {
       const topic = state.topics.find(t => t._id === urlTopicId);
       if (topic) {
         state.selectedTopic = topic;
+        if (localStorage.getItem('token')) {
+          try {
+            const [wrongData, draftData] = await Promise.all([
+              apiFetch(`/api/task2/wrong-questions/${urlTopicId}`),
+              apiFetch(`/api/task2/draft/${urlTopicId}`)
+            ]);
+            state.wrongQuestionIds = wrongData.wrongIds || [];
+            state.draft = draftData.draft || null;
+          } catch {}
+        }
         state.view = 'select';
         history.replaceState({ view: 'select', week: urlWeek, topicId: urlTopicId }, '', location.href);
         render();
@@ -647,13 +665,17 @@ async function selectTopic(id) {
   const topic = state.topics.find(t => t._id === id);
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
+  state.draft = null;
   const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, level: state.selectedLevel, mode: state.currentMode });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
-  // Fetch persisted wrong-question IDs if user is logged in
   if (localStorage.getItem('token')) {
     try {
-      const data = await apiFetch(`/api/task2/wrong-questions/${id}`);
-      state.wrongQuestionIds = data.wrongIds || [];
+      const [wrongData, draftData] = await Promise.all([
+        apiFetch(`/api/task2/wrong-questions/${id}`),
+        apiFetch(`/api/task2/draft/${id}`)
+      ]);
+      state.wrongQuestionIds = wrongData.wrongIds || [];
+      state.draft = draftData.draft || null;
     } catch {}
   }
   state.view = 'select';
@@ -720,9 +742,15 @@ function renderSelect() {
         </label>
       </div>
 
+      ${state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0) ? `
+      <div class="t2-draft-banner">
+        <div class="t2-draft-info">📌 Còn <strong>${(state.draft.questionIds?.length || 0) - state.draft.sessionDone} câu chưa làm</strong> từ phiên trước <span style="color:#6b7280;font-size:12px">· ${new Date(state.draft.savedAt).toLocaleDateString('vi-VN')}</span></div>
+        <button class="t2-resume-btn" onclick="resumeSession()"><i class="fas fa-play"></i> Tiếp tục</button>
+      </div>` : ''}
+
       <br>
       <button class="t2-start-btn" onclick="startSession()">
-        <i class="fas fa-play-circle"></i> Bắt đầu
+        <i class="fas fa-play-circle"></i> ${state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0) ? 'Bắt đầu mới' : 'Bắt đầu'}
       </button>
     </div>`;
 }
@@ -778,12 +806,12 @@ async function startPractice() {
 
 async function startRetryWrong() {
   try {
-    const params = new URLSearchParams({ level: state.selectedLevel });
+    const params = new URLSearchParams({ level: 'all' });
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
-    if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
+    if (!data.questions?.length) { showToast('Chưa có câu hỏi', 'warn'); return; }
     const wrongSet = new Set(state.wrongQuestionIds);
     const wrongQuestions = data.questions.filter(q => wrongSet.has(q._id) || wrongSet.has(q.questionId));
-    if (!wrongQuestions.length) { showToast('Không có câu sai ở level này. Hãy thử chọn "Tất cả"!', 'info', 4000); return; }
+    if (!wrongQuestions.length) { showToast('Không có câu sai nào', 'info'); return; }
     state.questions = wrongQuestions;
     if (state.shuffleMode) {
       for (let i = state.questions.length - 1; i > 0; i--) {
@@ -798,6 +826,62 @@ async function startRetryWrong() {
     state.view = 'practice';
     render();
   } catch { showToast('Lỗi tải câu hỏi', 'error'); }
+}
+
+// ════════════════════════════════════════════════════════
+//  DRAFT — SAVE / RESUME
+// ════════════════════════════════════════════════════════
+async function saveDraft() {
+  if (!localStorage.getItem('token') || !state.selectedTopic?._id || !state.questions.length) return;
+  try {
+    await apiFetch('/api/task2/draft', {
+      method: 'POST',
+      body: JSON.stringify({
+        topicId:        state.selectedTopic._id,
+        topicName:      state.selectedTopic.topicName,
+        week:           state.selectedWeek,
+        level:          state.selectedLevel,
+        mode:           state.currentMode,
+        questionIds:    state.questions.map(q => q._id || q.questionId),
+        currentIdx:     state.sessionDone,
+        sessionAttempts:state.sessionAttempts,
+        questionStatus: state.questionStatus,
+        sessionDone:    state.sessionDone,
+        sessionCorrect: state.sessionCorrect
+      })
+    });
+  } catch {}
+}
+
+async function resumeSession() {
+  const btn = document.querySelector('.t2-resume-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
+  try {
+    const draft = state.draft;
+    if (!draft) return;
+    const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?level=all`);
+    if (!data.questions?.length) { showToast('Không thể tải câu hỏi', 'error'); return; }
+    const qMap = {};
+    data.questions.forEach(q => { qMap[q._id] = q; if (q.questionId) qMap[q.questionId] = q; });
+    const restoredQuestions = (draft.questionIds || []).map(id => qMap[id]).filter(Boolean);
+    if (!restoredQuestions.length) { showToast('Không thể khôi phục tiến độ', 'error'); return; }
+    state.questions       = restoredQuestions;
+    state.selectedLevel   = draft.level || state.selectedLevel;
+    state.currentMode     = draft.mode  || 'practice';
+    state.currentIdx      = draft.currentIdx || 0;
+    state.sessionAttempts = draft.sessionAttempts || [];
+    state.questionStatus  = draft.questionStatus  || new Array(restoredQuestions.length).fill('pending');
+    state.sessionDone     = draft.sessionDone     || 0;
+    state.sessionCorrect  = draft.sessionCorrect  || 0;
+    state.mcSelected      = null;
+    state.rearrangeAnswer = [];
+    state.view = 'practice';
+    render();
+  } catch {
+    showToast('Lỗi khôi phục tiến độ', 'error');
+    const b = document.querySelector('.t2-resume-btn');
+    if (b) { b.disabled = false; b.innerHTML = '<i class="fas fa-play"></i> Tiếp tục'; }
+  }
 }
 
 function renderPractice() {
@@ -1052,6 +1136,7 @@ async function submitPractice() {
       questionText: q.questionText || '',
       type: q.type
     });
+    saveDraft(); // fire-and-forget
 
     // show feedback
     const mc = ['essay_type_recognition','topic_sentence'].includes(q.type);
@@ -1456,6 +1541,9 @@ async function savePracticeAttempt() {
         const data = await apiFetch(`/api/task2/wrong-questions/${state.selectedTopic._id}`);
         state.wrongQuestionIds = data.wrongIds || [];
       } catch {}
+      // Clear draft — session is complete
+      try { await apiFetch(`/api/task2/draft/${state.selectedTopic._id}`, { method: 'DELETE' }); } catch {}
+      state.draft = null;
     }
   } catch {}
 }

@@ -4,6 +4,7 @@ const auth           = require('../middleware/auth');
 const Task2Topic     = require('../models/Task2Topic');
 const Task2Attempt   = require('../models/Task2Attempt');
 const Task2Template  = require('../models/Task2Template');
+const Task2Draft     = require('../models/Task2Draft');
 
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/templates  (public – cho task2-template.html)
@@ -375,6 +376,41 @@ router.get('/wrong-questions/:topicId', auth, async (req, res) => {
       .map(([id]) => id);
 
     res.json({ success: true, wrongIds });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════════════════
+//  DRAFT — save / load / delete session progress
+// ══════════════════════════════════════════════════════════════════════
+router.post('/draft', auth, async (req, res) => {
+  try {
+    const { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect } = req.body;
+    await Task2Draft.findOneAndUpdate(
+      { userId: req.user._id, topicId },
+      { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect, savedAt: new Date() },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi lưu tiến độ' });
+  }
+});
+
+router.get('/draft/:topicId', auth, async (req, res) => {
+  try {
+    const draft = await Task2Draft.findOne({ userId: req.user._id, topicId: req.params.topicId }).lean();
+    res.json({ success: true, draft: draft || null });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+});
+
+router.delete('/draft/:topicId', auth, async (req, res) => {
+  try {
+    await Task2Draft.deleteOne({ userId: req.user._id, topicId: req.params.topicId });
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
