@@ -31,6 +31,12 @@
       transition: border-color .2s, color .2s;
     }
     .wp-stop-btn:hover { border-color: #e53935; color: #e53935; }
+    [data-theme="dark"] .wp-stop-btn { border-color: #374151; color: #64748b; }
+    [data-theme="dark"] .wp-stop-btn:hover { border-color: #e53935; color: #f87171; }
+
+    /* ── Auto-advance countdown bar ── */
+    @keyframes wpCountdownBar { from { width: 100%; } to { width: 0%; } }
+    .wp-countdown-bar-inner { height: 3px; background: #6366f1; border-radius: 2px; margin-top: 6px; animation: wpCountdownBar var(--cd-dur, 2s) linear forwards; }
 
     /* ── Test countdown timer ── */
     .wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
@@ -261,12 +267,12 @@
 
 <!-- ── Stats bar ── -->
 <header class="wp-header">
-  <button class="exam-exit-btn" onclick="exitWpPractice()" title="Thoát">✕</button>
+  <button class="exam-exit-btn" onclick="exitWpPractice()" title="Thoát"><i class="fas fa-times"></i></button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
     <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh">🔊</button>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
   </div>
 </header>
 
@@ -509,7 +515,7 @@
               <i class="fas fa-forward"></i> Bỏ qua
             </button>
             <button class="wp-vocab-hint-btn hidden" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">
-              💡 <span id="vocab-hint-count"></span>
+              <i class="fas fa-lightbulb"></i> <span id="vocab-hint-count"></span>
             </button>
             <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()" style="flex:1">
               <i class="fas fa-check"></i> Kiểm tra
@@ -533,9 +539,10 @@
           </div>
           <div class="wp-feedback" id="feedback-text"></div>
           <div class="wp-explanation-box hidden" id="explanation-box"></div>
-          <button class="wp-next-btn" onclick="nextExercise()">
+          <button class="wp-next-btn" id="wp-next-btn" onclick="nextExercise()">
             Câu tiếp theo <i class="fas fa-arrow-right"></i>
           </button>
+          <div id="wp-countdown-bar" style="display:none"><div class="wp-countdown-bar-inner"></div></div>
         </div>
 
         <div class="wp-checking-loader hidden" id="checking-loader">
@@ -653,10 +660,12 @@ function playWrongSound() {
 function toggleWpSound() {
   _wpSoundEnabled = !_wpSoundEnabled;
   localStorage.setItem('wp_sound', _wpSoundEnabled ? 'on' : 'off');
-  document.getElementById('wp-sound-toggle').textContent = _wpSoundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _wpSoundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('wp-sound-toggle').textContent = _wpSoundEnabled ? '🔊' : '🔇';
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _wpSoundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 });
 
 function showToast(msg, type = 'warn', duration = 3000) {
@@ -939,10 +948,10 @@ function setShuffleSentences(val) {
 }
 
 function _clearAutoAdvance() {
-  clearInterval(_autoAdvanceTick);
+  clearTimeout(_autoAdvanceTick);
   _autoAdvanceTick = null;
-  const btn = document.querySelector('#feedback-card .wp-next-btn');
-  if (btn) btn.innerHTML = 'Câu tiếp theo <i class="fas fa-arrow-right"></i>';
+  const cdBar = document.getElementById('wp-countdown-bar');
+  if (cdBar) cdBar.style.display = 'none';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1421,22 +1430,18 @@ function showFeedback(userAnswer, data) {
 
   // Auto-advance countdown
   _clearAutoAdvance();
+  const cdBar = document.getElementById('wp-countdown-bar');
+  if (cdBar) cdBar.style.display = 'none';
   if (_wpAutoAdvance) {
-    let countdown = 2;
-    const btn = document.querySelector('#feedback-card .wp-next-btn');
-    function tick() {
-      if (countdown <= 0) {
-        clearInterval(_autoAdvanceTick);
-        _autoAdvanceTick = null;
-        if (btn) btn.innerHTML = 'Câu tiếp theo <i class="fas fa-arrow-right"></i>';
-        nextExercise();
-        return;
-      }
-      if (btn) btn.innerHTML = `Câu tiếp theo <i class="fas fa-arrow-right"></i> <small style="font-weight:400;opacity:.65">(${countdown}s)</small>`;
-      countdown--;
+    const dur = 2000;
+    if (cdBar) {
+      cdBar.innerHTML = `<div class="wp-countdown-bar-inner" style="--cd-dur:${dur}ms"></div>`;
+      cdBar.style.display = 'block';
     }
-    tick();
-    _autoAdvanceTick = setInterval(tick, 1000);
+    _autoAdvanceTick = setTimeout(() => {
+      if (cdBar) cdBar.style.display = 'none';
+      nextExercise();
+    }, dur);
   }
 }
 
@@ -1946,9 +1951,9 @@ function askWpQuit(callback, opts = {}) {
   const subEl    = document.getElementById('wp-quit-sub');
   const leaveBtn = document.getElementById('wp-quit-leave-btn');
   const contBtn  = document.getElementById('wp-quit-continue-btn');
-  if (titleEl)  titleEl.textContent  = opts.title       || 'Bạn muốn dừng học?';
-  if (leaveBtn) leaveBtn.textContent = opts.confirmText  || 'Dừng lại';
-  if (contBtn)  contBtn.innerHTML    = `<i class="fas fa-play-circle"></i> ${opts.continueText || 'Tiếp tục học'}`;
+  if (titleEl)  titleEl.textContent = opts.title || 'Bạn muốn dừng học?';
+  if (leaveBtn) leaveBtn.innerHTML  = `<i class="fas fa-sign-out-alt"></i> ${opts.confirmText || 'Dừng lại'}`;
+  if (contBtn)  contBtn.innerHTML   = `<i class="fas fa-play-circle"></i> ${opts.continueText || 'Tiếp tục học'}`;
 
   const showResults = sessionDone > 0 && currentMode === 'practice';
   const resultsEl = document.getElementById('wp-quit-results');
@@ -2047,6 +2052,7 @@ async function openHistory() {
   body.innerHTML = '<div style="text-align:center;padding:32px"><div class="wp-spinner"></div><p style="color:#9ca3af;margin-top:10px;font-size:13px">Đang tải...</p></div>';
   try {
     const token = localStorage.getItem('token');
+    if (!token) { body.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px;font-size:13px">Vui lòng đăng nhập để xem lịch sử.</p>'; return; }
     const res   = await fetch(`${API}/api/writing-practice/history?limit=200`, {
       headers: { Authorization: 'Bearer ' + token }
     });

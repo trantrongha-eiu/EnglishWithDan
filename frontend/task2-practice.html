@@ -955,7 +955,7 @@ function renderPractice() {
   const lvlLabel = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', all:'Tất cả' }[state.selectedLevel] || state.selectedLevel;
   return `
     <div class="t2-nav" style="padding:8px 20px">
-      <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát">✕</button></div>
+      <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát"><i class="fas fa-times"></i></button></div>
     </div>
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
@@ -985,7 +985,7 @@ function renderPractice() {
     <div class="wp-card" style="margin:0 20px" id="qcard">
       ${renderQuestion(q)}
       <div style="display:flex;gap:8px;margin-top:12px">
-        ${q.type === 'translation' && (q.fallbackKeywords||q.hints||[]).length ? `<button class="wp-vocab-hint-btn" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">💡 <span id="vocab-hint-count"></span></button>` : ''}
+        ${q.type === 'translation' && (q.fallbackKeywords||q.hints||[]).length ? `<button class="wp-vocab-hint-btn" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)"><i class="fas fa-lightbulb"></i> <span id="vocab-hint-count"></span></button>` : ''}
         <button class="wp-submit-btn" id="submit-btn" onclick="submitPractice()" style="flex:1" disabled>
           <i class="fas fa-check"></i> Kiểm tra
         </button>
@@ -1380,7 +1380,7 @@ function renderExam() {
   const timerCls = timerPct <= 0.1 ? 'wp-test-timer danger' : timerPct <= 0.25 ? 'wp-test-timer warn' : 'wp-test-timer';
   const timerTxt = state.examTimeLeft > 0 ? _fmtExamTime(state.examTimeLeft) : '--:--';
   return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitExam()" title="Thoát thi">✕</button></div></div>
+    <div class="t2-nav"><div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitExam()" title="Thoát thi"><i class="fas fa-times"></i></button></div></div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>

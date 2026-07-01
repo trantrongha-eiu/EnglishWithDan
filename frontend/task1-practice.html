@@ -297,7 +297,7 @@
 
 <!-- ── Stats header ── -->
 <header class="wp-header">
-  <button class="exam-exit-btn" onclick="exitT1Practice()" title="Thoát">✕</button>
+  <button class="exam-exit-btn" onclick="exitT1Practice()" title="Thoát"><i class="fas fa-times"></i></button>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -583,7 +583,7 @@
               <i class="fas fa-forward"></i> Bỏ qua
             </button>
             <button class="wp-vocab-hint-btn hidden" id="vocab-hint-btn" onclick="revealVocabHint()" title="Gợi ý từ vựng (tối đa 3 lần)">
-              💡 <span id="vocab-hint-count"></span>
+              <i class="fas fa-lightbulb"></i> <span id="vocab-hint-count"></span>
             </button>
             <button class="wp-submit-btn" id="submit-btn" onclick="submitAnswer()" style="flex:1">
               <i class="fas fa-check"></i> Kiểm tra
@@ -1993,13 +1993,15 @@ function retakeTest() {
 }
 
 function stopTestMode() {
-  askWpQuit(() => {
+  const reset = () => {
     stopTestTimer();
     document.getElementById('test-intro').style.display       = '';
     document.getElementById('test-in-progress').style.display = 'none';
     document.getElementById('test-results').style.display     = 'none';
     testIdx = 0; testAnswers = [];
-  }, {
+  };
+  if (testIdx === 0) { reset(); return; }
+  askWpQuit(reset, {
     title: 'Dừng bài thi?',
     sub: `Câu ${testIdx + 1}/${testExercises.length}. Kết quả sẽ bị mất.`,
     confirmText: 'Dừng lại', continueText: 'Tiếp tục thi'
