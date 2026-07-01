@@ -1379,7 +1379,7 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
       draggable="${isReview ? 'false' : 'true'}"
       ondragstart="dragStart(event,'${escHtml(word)}')"
       onclick="clickSCChip('${escHtml(word)}','${groupId}')">
-      <strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+      <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
     </span>`;
   }).join('');
 
@@ -1395,7 +1395,7 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
       return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(review?.userAnswer || '–')}</span>${hint}</span>`;
     }
     const ans = state.answers[qNum] || '';
-    return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="dropSC(event,${qNum},'${groupId}')" style="display:inline-flex;min-width:90px">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>` : 'Kéo từ vào'}</span></span>`;
+    return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
   });
 
   // Explanation blocks (below summary text, one per question that has explanation)
@@ -1410,9 +1410,14 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
     : '';
 
   return `<div class="rq-summary-group">
-    <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
-    <div class="rq-summary-text">${summaryHtml}</div>
-    ${explHtml}
+    <div class="rq-summary-text">${summaryHtml}${explHtml}</div>
+    <div class="rq-sc-bank" id="${groupId}-bank">
+      <div class="rq-sc-bank-header">
+        <span class="rq-sc-bank-title">KÉO TỪ VÀO CÂU HỎI</span>
+        <span class="rq-sc-bank-count">${wordBank.length} từ gợi ý</span>
+      </div>
+      <div class="rq-sc-bank-chips">${chipsHtml}</div>
+    </div>
   </div>`;
 }
 
@@ -1745,9 +1750,9 @@ function clearDragDrop(qNum, groupId) {
   delete state.answers[qNum];
   const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
   if (dz) {
-    dz.classList.remove('filled');
+    dz.classList.remove('filled', 'dragover');
     dz.innerHTML = dz.classList.contains('rq-heading-drop') ? 'Kéo tiêu đề vào đây'
-      : dz.classList.contains('sc-drop') ? 'Kéo từ vào'
+      : dz.classList.contains('sc-drop') ? 'Thả vào'
         : dz.classList.contains('rq-mo-drop') ? 'Kéo chữ cái vào đây'
           : 'Thả vào đây';
   }
@@ -1872,8 +1877,9 @@ function _refreshSCZone(qNum, groupId) {
   const dz = document.querySelector(`.sc-drop[data-qnum="${qNum}"]`);
   if (!dz) return;
   const word = state.answers[qNum] || '';
+  dz.classList.remove('dragover');
   dz.classList.add('filled');
-  dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  dz.innerHTML = `${escHtml(word)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>`;
   updateQNavBtn(qNum);
 }
 

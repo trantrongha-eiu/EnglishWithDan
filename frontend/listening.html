@@ -1508,7 +1508,7 @@
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${escHtml(word)}')"
                     onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
-                    <i class="fas fa-grip-vertical" style="color:#9ca3af;font-size:10px;margin-right:4px"></i>${escHtml(word)}
+                    <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
                 </span>`;
             }).join('');
 
@@ -1522,7 +1522,7 @@
                     return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }
                 const ans = state.answers[qNum] || '';
-                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Kéo từ vào'}</span></span>`;
+                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
             });
 
             const explHtml = isReview
@@ -1532,8 +1532,10 @@
             return `<div class="rq-drag-drop-group">
                 <div class="dd-text-col">${contentHtml}${explHtml}</div>
                 <div class="dd-bank-col" id="${groupId}-bank">
-                    <div class="dd-bank-title">KÉO OPTION VÀO CÂU HỎI</div>
-                    <div class="dd-bank-count">${words.length} OPTIONS</div>
+                    <div class="dd-bank-header">
+                        <span class="dd-bank-title">KÉO OPTION VÀO CÂU HỎI</span>
+                        <span class="dd-bank-count">${words.length} lựa chọn</span>
+                    </div>
                     <div class="dd-bank-chips">${chipsHtml}</div>
                 </div>
             </div>`;
@@ -1557,7 +1559,7 @@
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${escHtml(word)}')"
                     onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
-                    <strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+                    <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
                 </span>`;
             }).join('');
 
@@ -1571,7 +1573,7 @@
                     return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }
                 const ans = state.answers[qNum] || '';
-                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault()" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Kéo từ vào'}</span></span>`;
+                return `<span class="rq-inline-wrap"><span class="rq-q-badge">${qNum}</span><span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="ltDropSC(event,${qNum},'${groupId}')">${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}</span></span>`;
             });
 
             // Explanation blocks (below summary text, one per question that has explanation)
@@ -1583,9 +1585,14 @@
                 : '';
 
             return `<div class="rq-summary-group">
-                <div class="rq-chip-bank" id="${groupId}-bank">${chipsHtml}</div>
-                <div class="rq-summary-text">${summaryHtml}</div>
-                ${explHtml}
+                <div class="rq-summary-text">${summaryHtml}${explHtml}</div>
+                <div class="rq-sc-bank" id="${groupId}-bank">
+                    <div class="rq-sc-bank-header">
+                        <span class="rq-sc-bank-title">KÉO TỪ VÀO CÂU HỎI</span>
+                        <span class="rq-sc-bank-count">${wordBank.length} từ gợi ý</span>
+                    </div>
+                    <div class="rq-sc-bank-chips">${chipsHtml}</div>
+                </div>
             </div>`;
         }
 
@@ -2099,8 +2106,8 @@
             if (!dz) return;
             const word = state.answers[qNum] || '';
             if (!word) {
-                dz.classList.remove('filled');
-                dz.textContent = 'Kéo từ vào';
+                dz.classList.remove('filled', 'dragover');
+                dz.textContent = 'Thả vào';
                 return;
             }
             dz.classList.add('filled');
@@ -2112,7 +2119,7 @@
             const dz = document.querySelector(`.rq-mo-drop[data-qnum="${qNum}"],.sc-drop[data-qnum="${qNum}"],.drop-zone[data-qnum="${qNum}"]`);
             if (dz) {
                 dz.classList.remove('filled');
-                dz.innerHTML = dz.classList.contains('sc-drop') ? 'Kéo từ vào' : '<span class="mo-ans-placeholder">?</span>';
+                dz.innerHTML = dz.classList.contains('sc-drop') ? 'Thả vào' : '<span class="mo-ans-placeholder">?</span>';
             }
             _ltRefreshGroupChips(groupId);
             updateQNav(); updateFooter(); saveExamToStorage();
