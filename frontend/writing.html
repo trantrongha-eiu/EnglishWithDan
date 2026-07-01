@@ -33,16 +33,16 @@
         <p class="wr-restore-banner-title">📝 Bạn có bài làm chưa hoàn thành</p>
         <p id="restore-banner-desc" class="wr-restore-banner-desc"></p>
         <div class="wr-restore-btn-row">
-          <button onclick="restoreExam()" class="wr-restore-btn-primary">▶ Tiếp tục làm</button>
+          <button onclick="restoreExam()" class="wr-restore-btn-primary"><i class="fas fa-play"></i> Tiếp tục làm</button>
           <button onclick="discardSaved()" class="wr-restore-btn-secondary">Bỏ qua</button>
         </div>
       </div>
 
-      <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()">✏️ Bắt đầu làm bài</button>
+      <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()"><i class="fas fa-pen"></i> Bắt đầu làm bài</button>
       <div class="key-card-actions">
-        <button class="btn-secondary" onclick="showPracticeMode()">✏️ Luyện tập lẻ</button>
-        <button class="btn-secondary" onclick="openHistoryModal()">📋 Xem lịch sử</button>
-        <button class="btn-secondary" onclick="loadWritingSamples()">📄 Tài liệu mẫu</button>
+        <button class="btn-secondary" onclick="showPracticeMode()"><i class="fas fa-dumbbell"></i> Luyện tập lẻ</button>
+        <button class="btn-secondary" onclick="openHistoryModal()"><i class="fas fa-history"></i> Xem lịch sử</button>
+        <button class="btn-secondary" onclick="loadWritingSamples()"><i class="fas fa-file-alt"></i> Tài liệu mẫu</button>
       </div>
     </div>
   </div>
@@ -63,10 +63,10 @@
       <span id="timer-display">60:00</span>
     </div>
     <div class="exam-topbar-right">
-      <span class="exam-autosave-label" id="btn-autosave" title="Tự động lưu">💾</span>
-      <button class="exam-topbar-btn" id="btn-fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+      <span class="exam-autosave-label" id="btn-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
+      <button class="exam-topbar-btn" id="btn-fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
       <button class="exam-topbar-btn" onclick="toggleHideTimer()" id="btn-hide-timer">Ẩn</button>
-      <button class="exam-topbar-btn" onclick="confirmSubmit()">Nộp bài ✓</button>
+      <button class="exam-topbar-btn exam-submit-topbar-btn" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
     </div>
   </div>
 
@@ -112,9 +112,9 @@
       <button class="task-nav-btn"        id="btn-task-2" onclick="switchTask(2)">2</button>
     </div>
     <div class="footer-spacer"></div>
-    <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous">&#9664;</button>
-    <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next">&#9654;</button>
-    <button class="btn-submit-exam" onclick="confirmSubmit()">Nộp bài</button>
+    <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous"><i class="fas fa-chevron-left"></i></button>
+    <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next"><i class="fas fa-chevron-right"></i></button>
+    <button class="btn-submit-exam" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
   </div>
 </div>
 
@@ -139,8 +139,8 @@
         </div>
       </div>
       <div class="done-actions">
-        <button class="btn-secondary" onclick="openHistoryModal()">📋 Xem lịch sử</button>
-        <button class="btn-primary"   onclick="showScreen('screen-key')">✏️ Làm bài mới</button>
+        <button class="btn-secondary" onclick="openHistoryModal()"><i class="fas fa-history"></i> Xem lịch sử</button>
+        <button class="btn-primary"   onclick="showScreen('screen-key')"><i class="fas fa-pen"></i> Làm bài mới</button>
       </div>
     </div>
   </div>
@@ -245,7 +245,7 @@
       <p class="wr-restore-banner-title">📝 Bạn có bài luyện tập chưa nộp</p>
       <p id="practice-restore-desc" class="wr-restore-banner-desc"></p>
       <div class="wr-restore-btn-row">
-        <button onclick="restorePracticeWrite()" class="wr-restore-btn-primary">▶ Tiếp tục viết</button>
+        <button onclick="restorePracticeWrite()" class="wr-restore-btn-primary"><i class="fas fa-play"></i> Tiếp tục viết</button>
         <button onclick="discardPracticeAutoSave()" class="wr-restore-btn-secondary">Bỏ qua</button>
       </div>
     </div>
@@ -306,8 +306,8 @@
     </div>
     <div class="exam-topbar-right">
       <span id="pw-save-status" style="font-size:11px;font-weight:500;color:#9ca3af;margin-right:2px"></span>
-      <button class="exam-topbar-btn" onclick="saveDraftManual()" title="Lưu nháp để tiếp tục sau">💾 Lưu nháp</button>
-      <button class="exam-topbar-btn" onclick="confirmSubmitPractice()">Nộp bài ✓</button>
+      <button class="exam-topbar-btn" onclick="saveDraftManual()" title="Lưu nháp để tiếp tục sau"><i class="fas fa-save"></i> Lưu nháp</button>
+      <button class="exam-topbar-btn exam-submit-topbar-btn" onclick="confirmSubmitPractice()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
     </div>
   </div>
 
@@ -355,7 +355,7 @@
 
   <!-- Footer -->
   <div class="exam-footer" style="justify-content:flex-end;gap:12px">
-    <button class="btn-submit-exam" onclick="confirmSubmitPractice()">📤 Nộp bài</button>
+    <button class="btn-submit-exam" onclick="confirmSubmitPractice()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
   </div>
 </div>
 
@@ -374,8 +374,8 @@
         <p class="wr-done-note-body">Mỗi lần chỉ được nộp <strong>1 bài</strong>. Bài tiếp theo chỉ được nộp sau khi giáo viên đã chấm và trả bài.</p>
       </div>
       <div class="done-actions">
-        <button class="btn-secondary" onclick="showPracticeMode()">✏️ Xem lịch sử luyện tập</button>
-        <button class="btn-primary"   onclick="showScreen('screen-key')">🏠 Trang chủ</button>
+        <button class="btn-secondary" onclick="showPracticeMode()"><i class="fas fa-history"></i> Lịch sử luyện tập</button>
+        <button class="btn-primary"   onclick="showScreen('screen-key')"><i class="fas fa-home"></i> Trang chủ</button>
       </div>
     </div>
   </div>
@@ -448,7 +448,7 @@
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
-        Bài làm đã được <strong>tự động lưu</strong>. Bạn có thể nhập lại mã và tiếp tục sau.
+        Bài làm đã được <strong>tự động lưu</strong>. Bạn có thể quay lại trang và tiếp tục sau.
       </p>
     </div>
     <div class="review-modal-footer">

@@ -529,8 +529,8 @@ function _renderHistory() {
         <td style="font-size:12px;color:#6b7280">${date}</td>
         <td style="font-size:12px;color:#6b7280;text-align:center">${timeStr}</td>
         <td>
-          <button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">👁 Xem</button>
-          <button class="btn-view-attempt" onclick="downloadAttemptById('${a._id}')" style="margin-left:4px">⬇ Tải</button>
+          <button class="btn-view-attempt" onclick="viewAttempt('${a._id}')"><i class="fas fa-eye"></i> Xem</button>
+          <button class="btn-view-attempt" onclick="downloadAttemptById('${a._id}')" style="margin-left:4px"><i class="fas fa-download"></i> Tải</button>
         </td>
       </tr>
     `;
@@ -986,8 +986,10 @@ function toggleFullscreen() {
 }
 
 document.addEventListener('fullscreenchange', () => {
-  const btn = document.getElementById('btn-fullscreen');
-  if (btn) btn.title = document.fullscreenElement ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+  const btn  = document.getElementById('btn-fullscreen');
+  const icon = document.getElementById('fs-icon-exam');
+  if (btn)  btn.title    = document.fullscreenElement ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+  if (icon) icon.className = document.fullscreenElement ? 'fas fa-compress' : 'fas fa-expand';
   // Đưa modals vào trong fullscreen element khi cần
   const fsEl = document.fullscreenElement;
   const ids = ['confirm-modal-overlay', 'exit-modal-overlay', 'review-modal-overlay'];
@@ -1437,7 +1439,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
           <td><span class="badge-wc">${wc}w</span></td>
           <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>
           <td style="font-weight:700;color:${band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : band != null ? '#d97706' : '#9ca3af'}">${band != null ? band : '–'}</td>
-          <td><button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">${status === 'confirmed' ? '👁 Xem' : '📄 Bài nộp'}</button></td>
+          <td><button class="btn-view-attempt" onclick="viewAttempt('${a._id}')">${status === 'confirmed' ? '<i class="fas fa-eye"></i> Xem' : '<i class="fas fa-file-alt"></i> Bài nộp'}</button></td>
         </tr>`;
       }).join('')}
       </tbody>
