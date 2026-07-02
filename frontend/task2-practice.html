@@ -293,6 +293,40 @@
     [data-theme="dark"] .t2-hist-entry-name{color:#94a3b8}
     [data-theme="dark"] .t2-hist-entry-count{color:#64748b}
 
+    /* ── Task2: override shared writing-practice.css to match purple theme ── */
+    /* Show stats bar on all sizes (no sidebar widget on this page) */
+    .wp-mobile-stats { display: flex !important; }
+
+    /* Purple progress bar */
+    .wp-progress-bar { background: linear-gradient(90deg, #6366f1, #8b5cf6) !important; }
+
+    /* Purple submit button */
+    .wp-submit-btn { background: #6366f1 !important; box-shadow: 0 2px 8px rgba(99,102,241,.25) !important; }
+    .wp-submit-btn:hover:not(:disabled) { background: #4f46e5 !important; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,.35) !important; }
+    [data-theme="dark"] .wp-submit-btn { background: #4f46e5 !important; }
+    [data-theme="dark"] .wp-submit-btn:hover:not(:disabled) { background: #4338ca !important; }
+
+    /* Purple next button */
+    .wp-next-btn { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important; box-shadow: 0 2px 8px rgba(99,102,241,.3) !important; }
+    .wp-next-btn:hover { box-shadow: 0 4px 14px rgba(99,102,241,.4) !important; }
+
+    /* Topic card with draft */
+    .t2-topic-card.has-draft { border-color: #f59e0b; background: #fffbeb; }
+    .t2-topic-card.has-draft:hover { border-color: #d97706; background: #fef3c7; }
+    [data-theme="dark"] .t2-topic-card.has-draft { border-color: #d97706; background: #1c1a0e; }
+    [data-theme="dark"] .t2-topic-card.has-draft:hover { background: #292008; }
+
+    /* Readable question text */
+    .t2-question-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      line-height: 1.65;
+      margin-bottom: 14px;
+      white-space: pre-line;
+    }
+    [data-theme="dark"] .t2-question-text { color: #f1f5f9; }
+
   </style>
 </head>
 <body>
@@ -419,6 +453,7 @@ let state = {
 };
 
 let _autoNextTimer = null;
+let _examKeyHandler = null;
 
 // ════════════════════════════════════════════════════════
 //  SHAREABLE URL
@@ -698,6 +733,11 @@ async function selectWeek(w) {
 //  TOPICS SCREEN
 // ════════════════════════════════════════════════════════
 function renderTopics() {
+  const draftTopicIds = new Set((state.allDrafts || []).filter(d => {
+    const rem = (d.questionIds?.length || 0) - (d.currentIdx || 0);
+    return rem > 0;
+  }).map(d => d.topicId?.toString()));
+
   return `
     <div class="t2-nav">
       <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <b>Tuần ${state.selectedWeek}</b></div>
@@ -706,15 +746,22 @@ function renderTopics() {
       <h2 class="t2-page-h2" style="font-size:18px">Tuần ${state.selectedWeek} — Chọn chủ đề</h2>
     </div>
     <div class="t2-topic-list">
-      ${state.topics.map(t => `
-        <div class="t2-topic-card" data-id="${t._id}">
+      ${state.topics.map(t => {
+        const hasDraft = draftTopicIds.has(t._id?.toString());
+        return `
+        <div class="t2-topic-card${hasDraft ? ' has-draft' : ''}" data-id="${t._id}">
           <div class="t2-topic-emoji">${t.topicEmoji || '📝'}</div>
           <div style="flex:1">
             <div class="t2-topic-name">${t.topicName}</div>
-            <div style="margin-bottom:4px"><span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || t.essayType}</span></div>
+            <div style="margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || t.essayType}</span>
+              ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
+            </div>
             <div class="t2-topic-prompt">${t.prompt}</div>
           </div>
-        </div>`).join('')}
+          <div style="color:#9ca3af;font-size:18px;flex-shrink:0"><i class="fas fa-chevron-right"></i></div>
+        </div>`;
+      }).join('')}
     </div>`;
 }
 function bindTopics() {
@@ -981,8 +1028,9 @@ function renderPractice() {
   const lvlColor = LEVEL_COLORS[state.selectedLevel] || '#6b7280';
   const lvlLabel = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', all:'Tất cả' }[state.selectedLevel] || state.selectedLevel;
   return `
-    <div class="t2-nav" style="padding:8px 20px">
-      <div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitPractice()" title="Thoát"><i class="fas fa-times"></i></button></div>
+    <div class="t2-nav" style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between">
+      <button class="t2-back-btn" onclick="quitPractice()"><i class="fas fa-times"></i> Thoát</button>
+      <span style="font-size:12px;color:#9ca3af;font-weight:600">${state.currentMode === 'retry' ? '🔁 Ôn câu sai' : '✏️ Luyện tập'}</span>
     </div>
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
@@ -1029,8 +1077,11 @@ function renderPractice() {
         <div class="t2-exp-title">💡 Giải thích</div>
         <div class="t2-exp-body" id="explanation-text"></div>
       </div>
-      <div class="wp-feedback" id="feedback-text"></div>
-      <button class="wp-next-btn" id="t2-next-btn" onclick="nextPractice()">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>
+      <div class="wp-feedback hidden" id="feedback-text"></div>
+      <button class="wp-next-btn" id="t2-next-btn" onclick="nextPractice()">
+        Câu tiếp theo <i class="fas fa-arrow-right"></i>
+        <span style="font-size:10px;opacity:.55;margin-left:4px;font-weight:400">Enter ↵</span>
+      </button>
       <div id="t2-countdown-bar" style="display:none"></div>
     </div>
     <div class="wp-checking-loader hidden" id="checking-loader" style="margin:0 20px">
@@ -1039,13 +1090,16 @@ function renderPractice() {
 }
 
 function renderQuestion(q) {
+  const typeLbl = Q_LABELS[q.type] || q.type;
   const structureHint = q.sentenceStructure
     ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${q.sentenceStructure}</span></div>`
     : '';
 
   if (['essay_type_recognition', 'topic_sentence'].includes(q.type)) {
     const letters = ['A','B','C','D'];
-    return `<div class="wp-task-label">${q.questionText}</div>
+    return `
+    <div class="wp-task-label">${typeLbl}</div>
+    <div class="t2-question-text">${q.questionText}</div>
     <div class="t2-mc-options">
       ${(q.options||[]).map((opt,i) => `
         <button class="t2-mc-option" data-idx="${i}" onclick="selectMC(${i}, this)">
@@ -1060,7 +1114,9 @@ function renderQuestion(q) {
       : q.questionText.replace(/\[.*\]/s, '').replace('Sắp xếp:','').split(/\s+/).filter(Boolean);
     const shuffled = shuffle([...words]);
     const displayText = q.questionText.replace(/\n?\[.*\]/s, '').trim();
-    return `<div class="wp-task-label" style="white-space:pre-line">${displayText}</div>
+    return `
+    <div class="wp-task-label">${typeLbl}</div>
+    <div class="t2-question-text">${displayText}</div>
     ${structureHint}
     <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)">
       <span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>
@@ -1071,17 +1127,21 @@ function renderQuestion(q) {
     <input type="hidden" id="rearrange-input" value=""/>`;
   }
   if (q.type === 'fill_blank') {
-    return `<div class="wp-task-label">${q.questionText}</div>
+    return `
+    <div class="wp-task-label">${typeLbl}</div>
+    <div class="t2-question-text">${q.questionText}</div>
     ${structureHint}
     <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
-  return `<div class="wp-task-label" style="white-space:pre-line">${q.questionText}</div>
-    ${structureHint}
-    ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
-    <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
-    ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
+  return `
+  <div class="wp-task-label">${typeLbl}</div>
+  <div class="t2-question-text">${q.questionText}</div>
+  ${structureHint}
+  ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
+  <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
+  ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
 }
 
 function revealVocabHint() {
@@ -1264,7 +1324,9 @@ async function submitPractice() {
     const aiBadge = data.aiGraded ? ' <span class="t2-ai-badge"><i class="fas fa-robot"></i> AI</span>' : '';
     bannerEl.innerHTML = (isOk ? '✅ Chính xác!' : '❌ Chưa đúng') + aiBadge;
     bannerEl.className = 'wp-result-banner ' + (isOk ? 'wp-result-correct' : 'wp-result-wrong');
-    document.getElementById('feedback-text').textContent = data.feedbackVi || '';
+    const fbEl = document.getElementById('feedback-text');
+    fbEl.textContent = data.feedbackVi || '';
+    fbEl.classList.toggle('hidden', !data.feedbackVi);
 
     document.getElementById('qcard').classList.add('hidden');
     document.getElementById('feedback-card').classList.remove('hidden');
@@ -1376,9 +1438,14 @@ function stopExamTimer() {
   state.examTimerInterval = null;
 }
 
+function _stopExamSession() {
+  stopExamTimer();
+  if (_examKeyHandler) { document.removeEventListener('keydown', _examKeyHandler); _examKeyHandler = null; }
+}
+
 function quitExam() {
-  if (state.examAnswers.length === 0) { stopExamTimer(); state.view = 'select'; render(); return; }
-  askT2Quit(() => { stopExamTimer(); state.view = 'select'; render(); }, {
+  if (state.examAnswers.length === 0) { _stopExamSession(); state.view = 'select'; render(); return; }
+  askT2Quit(() => { _stopExamSession(); state.view = 'select'; render(); }, {
     mascot: '📋',
     title: 'Dừng bài thi?',
     sub: `Câu ${state.examIdx + 1}/${state.examQuestions.length}. Kết quả sẽ bị mất.`,
@@ -1412,26 +1479,46 @@ function renderExam() {
   const timerCls = timerPct <= 0.1 ? 'wp-test-timer danger' : timerPct <= 0.25 ? 'wp-test-timer warn' : 'wp-test-timer';
   const timerTxt = state.examTimeLeft > 0 ? _fmtExamTime(state.examTimeLeft) : '--:--';
   return `
-    <div class="t2-nav"><div class="t2-nav-crumb"><button class="exam-exit-btn" onclick="quitExam()" title="Thoát thi"><i class="fas fa-times"></i></button></div></div>
+    <div class="t2-nav" style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between">
+      <button class="t2-back-btn" onclick="quitExam()"><i class="fas fa-times"></i> Thoát</button>
+      <span style="font-size:12px;color:#9ca3af;font-weight:600">🎓 Thi thử</span>
+    </div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
+    <div class="t2-q-dots" style="padding:4px 20px 2px;justify-content:center">
+      ${state.examQuestions.map((_, i) => {
+        const answered = i < state.examIdx;
+        const current  = i === state.examIdx;
+        return `<span class="t2-q-dot ${answered ? 't2-dot-ok' : current ? 't2-dot-current' : ''}" title="Câu ${i+1}"></span>`;
+      }).join('')}
+    </div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>
       <span class="${timerCls}" id="exam-timer">⏱ ${timerTxt}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
-      <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
       ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${q.topicName}">${q.topicName}</span>` : ''}
     </div>
     ${q.prompt ? `<div class="t2-prompt-box"><div class="t2-prompt-box-label">📋 Đề bài</div><p>${q.prompt}</p></div>` : ''}
     <div class="wp-card" style="margin:0 20px">
       ${renderQuestion(q)}
       <button class="wp-submit-btn" style="margin-top:12px;width:100%" onclick="examNext()">
-        ${isLast ? '<i class="fas fa-check"></i> Nộp bài' : 'Tiếp theo <i class="fas fa-arrow-right"></i>'}
+        ${isLast
+          ? '<i class="fas fa-check"></i> Nộp bài'
+          : `Tiếp theo <i class="fas fa-arrow-right"></i> <span style="font-size:10px;opacity:.55;margin-left:4px;font-weight:400">Enter ↵</span>`}
       </button>
     </div>`;
 }
 
 function bindExam() {
   state.rearrangeAnswer = []; state.mcSelected = null;
+  if (_examKeyHandler) document.removeEventListener('keydown', _examKeyHandler);
+  _examKeyHandler = function(e) {
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    // Don't intercept Enter inside a textarea (multi-line)
+    if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+    e.preventDefault();
+    examNext();
+  };
+  document.addEventListener('keydown', _examKeyHandler);
 }
 
 function getExamAnswer() {
@@ -1461,7 +1548,7 @@ async function examNext() {
 }
 
 async function submitExam() {
-  stopExamTimer();
+  _stopExamSession();
   const app = document.getElementById('app');
   app.innerHTML = '<div style="text-align:center;padding:40px"><div class="wp-spinner"></div><p>Đang chấm bài...</p></div>';
   try {
@@ -1608,7 +1695,9 @@ function goTopics() {
 
 window.addEventListener('popstate', async e => {
   const s = e.state?.view;
-  if (state.examTimerInterval) stopExamTimer();
+  // Clean up any running timers and keyboard handlers
+  if (state.examTimerInterval) _stopExamSession();
+  if (_practiceKeyHandler) { document.removeEventListener('keydown', _practiceKeyHandler); _practiceKeyHandler = null; }
   if (s === 'select' && e.state.week && e.state.topicId) {
     if (state.selectedWeek !== e.state.week || !state.topics.length) {
       try {
