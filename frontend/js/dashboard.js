@@ -826,9 +826,10 @@ async function renameBook() {
     if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
     if (!currentBookId) return;
     try {
-        await fetch(`${API}/vocabbook/${currentBookId}`, {
+        const res = await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
         });
+        if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Error renaming', 'error'); return; }
         // Update local state so flashcard/practice titles reflect new name immediately
         if (currentBookData) currentBookData.name = name;
         const bEntry = myBooks.find(x => x._id === currentBookId);

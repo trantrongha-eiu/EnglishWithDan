@@ -676,7 +676,11 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
     const userAnswers = req.body.answers || {};
     const startTime = req.body.startTime ? new Date(req.body.startTime) : null;
     const now = new Date();
-    const timeTaken = startTime ? Math.max(0, Math.round((now - startTime) / 1000)) : 0;
+    // Cap at test duration so clients cannot report arbitrarily long/short times
+    const maxSecs = (test.audioDuration || 40) * 60;
+    const timeTaken = startTime
+      ? Math.min(Math.max(0, Math.round((now - startTime) / 1000)), maxSecs)
+      : 0;
 
     let correct = 0, wrong = 0, skipped = 0;
     const total = flattenQuestions(test.sections).length;

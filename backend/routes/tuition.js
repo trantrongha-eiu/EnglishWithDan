@@ -243,6 +243,9 @@ router.post('/:id/remind', auth, adminOnly, async (req, res) => {
 router.post('/remind-bulk', auth, adminOnly, async (req, res) => {
   try {
     const { month, year, customMessage } = req.body;
+    if (!month || !year || isNaN(Number(month)) || isNaN(Number(year))) {
+      return res.status(400).json({ success: false, message: 'Thiếu hoặc sai tháng/năm' });
+    }
     const fees = await TuitionFee.find({ month: Number(month), year: Number(year), isPaid: false })
       .populate('studentId', 'username _id').lean();
     if (!fees.length) return res.json({ success: true, sent: 0 });

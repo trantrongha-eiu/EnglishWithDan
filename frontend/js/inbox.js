@@ -119,26 +119,45 @@ async function selectMsg(id) {
   `;
 }
 
+function showConfirm(msg, onOk) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;display:flex;align-items:center;justify-content:center';
+  const box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:12px;padding:24px 20px;max-width:300px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.2);text-align:center';
+  box.innerHTML = `<p style="margin:0 0 20px;font-size:15px;color:#374151;line-height:1.5">${esc(msg)}</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button id="_c-cancel" style="padding:8px 20px;border:1px solid #d1d5db;border-radius:8px;background:#fff;cursor:pointer;font-size:14px">Hủy</button>
+      <button id="_c-ok" style="padding:8px 20px;border:none;border-radius:8px;background:#ef4444;color:#fff;cursor:pointer;font-size:14px;font-weight:600">Xóa</button>
+    </div>`;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  box.querySelector('#_c-cancel').onclick = close;
+  box.querySelector('#_c-ok').onclick = () => { close(); onOk(); };
+  overlay.onclick = e => { if (e.target === overlay) close(); };
+}
+
 async function deleteMsg(id) {
-  if (!confirm('Xóa tin nhắn này?')) return;
-  try {
-    await apiFetch(`/user/messages/${id}`, { method: 'DELETE' });
-    messages = messages.filter(m => m._id !== id);
-    selectedId = null;
-    renderList();
-    updateBadge();
-    document.getElementById('msgDetail').innerHTML = `
-      <div class="detail-placeholder">
-        <i class="fas fa-envelope-open-text"></i>
-        <p>Chọn một tin nhắn để đọc</p>
-      </div>`;
-  } catch (e) {
-    const t = document.createElement('div');
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#ef4444;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.2)';
-    t.textContent = 'Lỗi: ' + e.message;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3500);
-  }
+  showConfirm('Xóa tin nhắn này?', async () => {
+    try {
+      await apiFetch(`/user/messages/${id}`, { method: 'DELETE' });
+      messages = messages.filter(m => m._id !== id);
+      selectedId = null;
+      renderList();
+      updateBadge();
+      document.getElementById('msgDetail').innerHTML = `
+        <div class="detail-placeholder">
+          <i class="fas fa-envelope-open-text"></i>
+          <p>Chọn một tin nhắn để đọc</p>
+        </div>`;
+    } catch (e) {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#ef4444;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.2)';
+      t.textContent = 'Lỗi: ' + e.message;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3500);
+    }
+  });
 }
 
 // Expose for onclick
