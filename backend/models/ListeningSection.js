@@ -25,7 +25,7 @@ const LSGroupSchema = new mongoose.Schema({
   groupType: {
     type: String,
     enum: ['table', 'note-form', 'bullet-list', 'plain', 'map',
-           'matching-options', 'summary-completion', 'sentence-endings'],
+           'matching-options', 'summary-completion', 'sentence-endings', 'drag-drop'],
     default: 'plain'
   },
   groupTitle:  { type: String, default: '' },
@@ -43,6 +43,10 @@ const LSGroupSchema = new mongoose.Schema({
   },
   endingsConfig: {
     endings: [{ letter: String, text: String }]
+  },
+  dragDropConfig: {
+    text:  { type: String, default: '' },
+    words: [String]
   },
   questions: [LSQuestionSchema],
 });

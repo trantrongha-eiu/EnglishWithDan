@@ -27,7 +27,7 @@ const ListeningQuestionSchema = new mongoose.Schema({
 const QuestionGroupSchema = new mongoose.Schema({
   groupType: {
     type: String,
-    enum: ['table', 'note-form', 'bullet-list', 'plain', 'map', 'matching-options', 'summary-completion', 'sentence-endings'],
+    enum: ['table', 'note-form', 'bullet-list', 'plain', 'map', 'matching-options', 'summary-completion', 'sentence-endings', 'drag-drop'],
     required: true,
     default: 'plain'
   },
@@ -85,6 +85,14 @@ const QuestionGroupSchema = new mongoose.Schema({
   // endingsConfig.endings: mảng { letter, text } — phần kết câu A→H
   endingsConfig: {
     endings: [{ letter: String, text: String }]
+  },
+
+  // ── Cấu hình cho groupType = 'drag-drop' ──────────────────────────────────
+  // dragDropConfig.text: đoạn văn với placeholder __Q{n}__
+  // dragDropConfig.words: Option Bank (mảng từ/cụm từ)
+  dragDropConfig: {
+    text:  { type: String, default: '' },
+    words: [String]
   },
 
   // Các câu hỏi trong group này
