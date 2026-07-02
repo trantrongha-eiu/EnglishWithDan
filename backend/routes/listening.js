@@ -597,7 +597,7 @@ router.get('/tests', auth, async (req, res) => {
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
-    res.json({ success: true, tests: list, userPlan: req.user.plan || 'free' });
+    res.json({ success: true, tests: list, userPlan: req.user.plan || 'free', planExpiresAt: req.user.planExpiresAt || null });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

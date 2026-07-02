@@ -119,14 +119,27 @@ function showScreen(id) {
 // ──────────────────────────────────────────────────────
 // Init
 // ──────────────────────────────────────────────────────
-(function init() {
+(async function init() {
   if (!getToken()) { window.location.href = 'login.html'; return; }
 
-  // Premium gate: free users see upgrade screen only
-  const _u = JSON.parse(localStorage.getItem('user') || '{}');
+  // Premium gate: if localStorage shows free, re-verify with server
+  // (catches stale cache after admin upgrades the account)
+  let _u = JSON.parse(localStorage.getItem('user') || '{}');
   if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
-    showScreen('screen-upgrade');
-    return;
+    try {
+      const _r = await fetch(API + '/api/auth/me', { headers: { Authorization: 'Bearer ' + getToken() } });
+      const _d = await _r.json();
+      if (_d.success && _d.user) {
+        _u = _d.user;
+        const _c = JSON.parse(localStorage.getItem('user') || '{}');
+        _c.plan = _d.user.plan; _c.planExpiresAt = _d.user.planExpiresAt;
+        localStorage.setItem('user', JSON.stringify(_c));
+      }
+    } catch(e) {}
+    if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+      showScreen('screen-upgrade');
+      return;
+    }
   }
 
   // Speech API check

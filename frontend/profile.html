@@ -445,13 +445,19 @@
         ctEl.innerHTML = '';
       }
 
-      // Upgrade CTA
+      // Upgrade / Renew CTA
       const upgradeBtn = document.getElementById('planUpgradeBtn');
+      const daysRemaining = (isPremium && !isExpired && expiresAt)
+        ? Math.ceil((expiresAt - now) / 86400000) : null;
       if (!isPremium || isExpired) {
         upgradeBtn.style.display = 'flex';
         upgradeBtn.innerHTML = isExpired
           ? '<i class="fas fa-crown"></i> Gia hạn Premium'
           : '<i class="fas fa-crown"></i> Nâng cấp Premium';
+      } else if (daysRemaining !== null && daysRemaining <= 7) {
+        upgradeBtn.style.display = 'flex';
+        upgradeBtn.innerHTML = '<i class="fas fa-crown"></i> Gia hạn ngay — còn ' + daysRemaining + ' ngày';
+        upgradeBtn.style.background = daysRemaining <= 3 ? 'linear-gradient(135deg,#dc2626,#ef4444)' : 'linear-gradient(135deg,#d97706,#f59e0b)';
       } else {
         upgradeBtn.style.display = 'none';
       }

@@ -2253,10 +2253,10 @@ function submitRetry() {
     const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ts = String(elapsed % 60).padStart(2, '0');
     const perQ = total ? Math.round(elapsed / total) : 0;
-    const encourage = pct >= 80 ? 'Xuất sắc! Tiếp tục phát huy nhé!'
-                    : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
-                    : pct >= 40 ? 'Cần luyện tập thêm một chút!'
-                    : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
+    const encourage = pct >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 😏🔥'
+                    : pct >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
+                    : pct >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha 🥲 Cày thêm đi!'
+                    : 'Học cho đàng hoàng zô coiii 😤';
     const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 75 ? 'Ổn' : 'Cần tăng tốc';
     timeLine = `<div style="margin-top:8px;font-size:12px;color:#6b7280;font-weight:400;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <span>⏱ Thời gian: <strong style="color:#374151">${tm}:${ts}</strong></span>

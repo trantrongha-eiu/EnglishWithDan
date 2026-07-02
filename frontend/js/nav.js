@@ -248,5 +248,43 @@
         if (count > 0) showBadge('navTask2Badge', count);
       })
       .catch(function () {});
+
+    // Refresh plan silently and show expiry warning if needed
+    fetch(API + '/auth/me', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.success || !d.user) return;
+        // Merge fresh plan data into localStorage
+        var _cached = {};
+        try { _cached = JSON.parse(localStorage.getItem('user') || '{}'); } catch(e) {}
+        _cached.plan = d.user.plan;
+        _cached.planExpiresAt = d.user.planExpiresAt;
+        localStorage.setItem('user', JSON.stringify(_cached));
+        // Show expiry banner if premium and expiring within 7 days
+        if (d.user.plan === 'premium' && d.user.planExpiresAt) {
+          var daysLeft = Math.ceil((new Date(d.user.planExpiresAt) - Date.now()) / 86400000);
+          if (daysLeft >= 0 && daysLeft <= 7) _showExpiryBanner(daysLeft);
+        }
+      })
+      .catch(function () {});
+  }
+
+  function _showExpiryBanner(daysLeft) {
+    if (sessionStorage.getItem('expiry-banner-dismissed')) return;
+    var isUrgent = daysLeft <= 3;
+    var bg = isUrgent
+      ? 'linear-gradient(90deg,#dc2626,#ef4444)'
+      : 'linear-gradient(90deg,#d97706,#f59e0b)';
+    var msg = daysLeft === 0
+      ? 'Gói Premium của bạn hết hạn hôm nay!'
+      : ('Gói Premium còn ' + daysLeft + ' ngày. Gia hạn ngay để không bị gián đoạn!');
+    var banner = document.createElement('div');
+    banner.id = 'nav-expiry-banner';
+    banner.style.cssText = 'position:fixed;top:56px;left:0;right:0;z-index:997;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:' + bg + ';box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.innerHTML =
+      '<span style="flex:1;text-align:center">' + msg + '</span>' +
+      '<a href="profile.html#plan" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Gia hạn</a>' +
+      '<button onclick="(function(){sessionStorage.setItem(\'expiry-banner-dismissed\',\'1\');document.getElementById(\'nav-expiry-banner\').remove();})()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
+    document.body.insertBefore(banner, document.getElementById('globalTopNav').nextSibling);
   }
 })();

@@ -1844,8 +1844,11 @@ function showTestResults(data) {
   document.getElementById('test-results').style.display = '';
   const { correct, score, countable, results } = data;
   const expandCount = results.length - (countable || results.length);
-  const emoji = score >= 80 ? '🏆' : score >= 60 ? '🎉' : score >= 40 ? '💪' : '📚';
-  const msg   = score >= 80 ? 'Xuất sắc!' : score >= 60 ? 'Khá tốt!' : score >= 40 ? 'Cần luyện thêm!' : 'Hãy tiếp tục cố gắng!';
+  const emoji = score >= 80 ? '😎' : score >= 60 ? '🤔' : score >= 40 ? '🥲' : '😤';
+  const msg   = score >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥'
+              : score >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
+              : score >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!'
+              : 'Học cho đàng hoàng zô coiii!';
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
   const wpImgSrc = score >= 70 ? 'img/aboveband7.jpg' : score >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
   document.getElementById('test-score-header').innerHTML = `

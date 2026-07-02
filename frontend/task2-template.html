@@ -71,11 +71,28 @@
     [data-theme="dark"] .t2-tpl-exam-btn-tab:hover{background:#7c2d12}
     [data-theme="dark"] .t2-tpl-exam-btn-tab.active{background:#ea580c;color:#fff;border-left-color:#c2410c}
 
-    /* Back button */
+    /* Back button (kept for exam bar usage) */
     .t2-back-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0}
     .t2-back-btn:hover{border-color:#e53935;color:#e53935}
     [data-theme="dark"] .t2-back-btn{border-color:#374151;color:#9ca3af}
     [data-theme="dark"] .t2-back-btn:hover{border-color:#f87171;color:#f87171}
+
+    /* Practice page nav links */
+    .t2-tpl-nav-group{display:flex;align-items:center;gap:5px}
+    .t2-tpl-nav-link{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:600;color:#374151;text-decoration:none;transition:all .15s;white-space:nowrap;line-height:1;flex-shrink:0}
+    .t2-tpl-nav-link:hover{border-color:#6366f1;color:#6366f1;background:#f5f3ff}
+    [data-theme="dark"] .t2-tpl-nav-link{border-color:#374151;color:#9ca3af}
+    [data-theme="dark"] .t2-tpl-nav-link:hover{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+    @media(max-width:540px){.t2-tpl-nav-link span{display:none}.t2-tpl-nav-link{padding:6px 9px}}
+
+    /* Sidebar nav links */
+    .tpl-sb-nav-links{display:flex;flex-direction:column;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb}
+    [data-theme="dark"] .tpl-sb-nav-links{border-top-color:#1e293b}
+    .tpl-sb-nav-link{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:8px;font-size:12px;font-weight:600;color:#374151;text-decoration:none;transition:all .15s}
+    .tpl-sb-nav-link:hover{background:#f5f3ff;color:#6366f1}
+    .tpl-sb-nav-link i{width:14px;text-align:center;flex-shrink:0}
+    [data-theme="dark"] .tpl-sb-nav-link{color:#9ca3af}
+    [data-theme="dark"] .tpl-sb-nav-link:hover{background:#1e1b4b;color:#a5b4fc}
 
     /* Exam footer hint */
     .t2-exam-hint-text{font-size:12px;color:#6b7280}
@@ -347,7 +364,11 @@
 
 <!-- Stats header -->
 <header class="wp-header">
-  <button onclick="location.href='dashboard.html'" class="t2-back-btn"><i class="fas fa-times"></i> Thoát</button>
+  <nav class="t2-tpl-nav-group">
+    <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
+    <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
+    <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
+  </nav>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
     <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
@@ -371,6 +392,11 @@
       <button onclick="copyTplShareUrl()" class="tpl-sb-btn" title="Sao chép link chia sẻ trang này">
         <i class="fas fa-link"></i> Sao chép link
       </button>
+      <div class="tpl-sb-nav-links">
+        <a href="writing-practice.html" class="tpl-sb-nav-link"><i class="fas fa-house"></i> Giao tiếp</a>
+        <a href="task1-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-chart-bar"></i> Task 1</a>
+        <a href="task2-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-edit"></i> Task 2</a>
+      </div>
     </div>
   </aside>
 
@@ -1244,7 +1270,7 @@ function submitExam() {
   const bar = document.getElementById('exam-bar');
   if (bar) {
     const pct  = Math.round(correct / total * 100);
-    const rank = pct >= 80 ? '🏆 Xuất sắc!' : pct >= 60 ? '👍 Khá tốt!' : '💪 Cần ôn thêm!';
+    const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
     const scoreVariant = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
     bar.className = `t2-exam-bar t2-exam-bar--${scoreVariant}`;
     bar.innerHTML = `

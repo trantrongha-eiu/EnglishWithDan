@@ -1,5 +1,6 @@
 const router   = require('express').Router();
 const authCtrl = require('../controllers/auth.controller');
+const { auth } = require('../middleware/auth');
 
 // ── Local auth ────────────────────────────────────────────────
 router.post('/register', authCtrl.register);
@@ -7,6 +8,20 @@ router.post('/login',           authCtrl.login);
 router.post('/forgot-password', authCtrl.forgotPassword);
 router.post('/verify-otp',      authCtrl.verifyOTP);
 router.post('/reset-password',  authCtrl.resetPassword);
+
+// Returns fresh user payload (plan auto-expired by middleware)
+router.get('/me', auth, (req, res) => {
+  const u = req.user;
+  res.json({
+    success: true,
+    user: {
+      id: u._id, firstName: u.firstName, lastName: u.lastName,
+      username: u.username, email: u.email, role: u.role,
+      avatar: u.avatar || '', plan: u.plan || 'free',
+      planExpiresAt: u.planExpiresAt || null
+    }
+  });
+});
 
 // ── Google OAuth (requires passport-google-oauth20 to be installed) ──
 // Enabled only when GOOGLE_CLIENT_ID is configured in .env

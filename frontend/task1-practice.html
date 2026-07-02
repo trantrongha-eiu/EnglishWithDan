@@ -1643,8 +1643,8 @@ function showDoneSummary() {
   const wrongAttempts = sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
 
-  document.getElementById('done-icon').textContent  = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
-  document.getElementById('done-title').textContent = pct >= 80 ? 'Xuất sắc!' : pct >= 50 ? 'Làm tốt lắm!' : 'Cần cố gắng thêm!';
+  document.getElementById('done-icon').textContent  = pct >= 80 ? '😎' : pct >= 50 ? '🤔' : '😤';
+  document.getElementById('done-title').textContent = pct >= 80 ? 'Giỏi dữ hen!' : pct >= 50 ? 'Tạm ổn thôi...' : 'Học đàng hoàng zô!';
   document.getElementById('done-summary').textContent = `Hoàn thành ${sessionDone} câu — tỉ lệ đúng ${pct}%`;
   document.getElementById('done-stats').innerHTML =
     `<span>✅ Đúng: ${sessionCorrect}</span><span>❌ Sai: ${wrongCount}</span><span>⭐ XP: +${sessionXP}</span>`;

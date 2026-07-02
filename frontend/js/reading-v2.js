@@ -283,12 +283,21 @@ async function loadTests(fromNav = false) {
     const res = await apiFetch('/api/reading/tests');
     allTests = res.tests || [];
     _userPlan = res.userPlan || 'free';
+    // Push fresh plan to localStorage so other pages stay in sync
+    try {
+      var _ru = JSON.parse(localStorage.getItem('user') || '{}');
+      _ru.plan = _userPlan;
+      if (res.planExpiresAt !== undefined) _ru.planExpiresAt = res.planExpiresAt;
+      localStorage.setItem('user', JSON.stringify(_ru));
+    } catch(e) {}
     const promoBanner = document.getElementById('premium-promo-banner');
     if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
     _rdPage = 1;
     rerenderFilteredTests();
     checkResumeExam();
   } catch (e) {
+    // Fallback to cached plan so premium users aren't locked out on transient network failures
+    try { _userPlan = JSON.parse(localStorage.getItem('user') || '{}').plan || 'free'; } catch(ee) {}
     wrap.innerHTML = `
       <div class="loading-spinner">
         <div style="font-size:36px;margin-bottom:12px">😕</div>
@@ -2262,16 +2271,21 @@ function showResult(r) {
   if (msgEl) {
     if (isLow) {
       const funnyMsgs = [
-        'Lần này điểm hơi... thấp nhỉ 😅 Không sao, luyện thêm từ vựng học thuật rồi quay lại chinh phục thôi!',
-        'Hmm, lần này não hơi "vắng chủ nhà" rồi 🧠💤 Đọc thêm mỗi ngày 10 phút là lên điểm liền!',
-        'Band này thấp hơn cả nhiệt độ điều hòa 🥶 Nhưng không ai giỏi ngay từ đầu — cứ luyện là lên!',
+        'Band dưới 5 rồi... thôi không nói gì thêm 😶 Cày từ vựng đi bạn ơi, mỗi ngày 10 từ là lên điểm liền!',
+        'Não đang offline hả bạn? 🧠💤 Log in lại rồi luyện đọc thêm mỗi ngày đi nào!',
+        'Band này mà đi thi thật thì... 😅 Nhưng không sao, ôn thêm một thời gian rồi quay lại chinh phục thôi!',
+        'Điểm này thấp hơn cả nhiệt độ điều hòa 🥶 Nhưng ai cũng phải bắt đầu từ đâu đó — cứ cày là lên!',
       ];
       msgEl.textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
     } else {
-      msgEl.textContent = band >= 7.0 ? 'Xuất sắc! Band 7+ — bạn đang ở level rất tốt rồi! 🎉'
-        : band >= 6.0 ? 'Khá tốt! Tiếp tục ôn luyện để chinh phục Band 7 nhé!'
-        : band >= 5.0 ? 'Cố lên! Luyện thêm đọc nhanh và từ vựng học thuật là sẽ lên điểm ngay.'
-        : 'Đừng nản nhé — bắt đầu từ từ rồi sẽ tiến bộ rất nhanh thôi!';
+      const highMsgs = [
+        'Band 7+ rồi nè! Chắc coi phim Mỹ không cần phụ đề nữa 😎🔥',
+        'Ôi giỏi dữ vậy! Band 7+ thì đi dạy lại đi chứ còn ngồi luyện làm gì nữa 😏',
+      ];
+      msgEl.textContent = band >= 7.0
+        ? highMsgs[Math.floor(Math.random() * highMsgs.length)]
+        : band >= 6.0 ? 'Band 6+, ngon đó! Nhưng Band 7 mới đúng mục tiêu nha 👀 Cày thêm tí là lên liền!'
+        : 'Band 5, chưa ổn lắm đâu bạn ơi 😬 Cày vocab + đọc thật nhiều là lên điểm ngay thôi!';
     }
   }
 
@@ -2605,10 +2619,10 @@ function _doSubmitRetry() {
     const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ts = String(elapsed % 60).padStart(2, '0');
     const perQ = total ? Math.round(elapsed / total) : 0;
-    const encourage = pct >= 80 ? 'Xuất sắc! Tiếp tục phát huy nhé!'
-                    : pct >= 60 ? 'Khá tốt! Ôn lại phần chưa đúng.'
-                    : pct >= 40 ? 'Cần luyện tập thêm một chút!'
-                    : 'Đừng nản, luyện thêm là sẽ tiến bộ!';
+    const encourage = pct >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 😏🔥'
+                    : pct >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
+                    : pct >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha 🥲 Cày thêm đi!'
+                    : 'Học cho đàng hoàng zô coiii 😤';
     const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 75 ? 'Ổn' : 'Cần tăng tốc';
     timeLine = `<div class="rd-rb-time">
       <span>⏱ Thời gian: <strong>${tm}:${ts}</strong></span>
