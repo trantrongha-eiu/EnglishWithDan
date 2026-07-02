@@ -742,7 +742,7 @@
     </button>
   </div>
   <style>
-    .float-btns{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .float-btns{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:12px;width:56px}
     /* Identical box model for both social buttons → perfect alignment */
     .fb-float,.zalo-float{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;text-decoration:none;transition:transform .2s,box-shadow .2s;flex-shrink:0}
     .fb-float{background:#0866FF;font-size:26px;color:#fff;box-shadow:0 4px 16px rgba(8,102,255,.45)}
@@ -760,7 +760,7 @@
     .scroll-top-btn{width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid #e5e7eb;color:#374151;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.12);transition:transform .2s,box-shadow .2s,color .2s,border-color .2s;flex-shrink:0}
     .scroll-top-btn:hover{transform:scale(1.1);box-shadow:0 4px 28px rgba(99,102,241,.3);color:#6366f1;border-color:#6366f1}
     .scroll-top-btn.visible{display:flex}
-    @media(max-width:600px){.float-btns{bottom:18px;right:16px}.fb-float,.zalo-float,.scroll-top-btn{width:48px;height:48px}.fb-float{font-size:22px}.scroll-top-btn{font-size:16px}.zalo-float img{width:48px;height:48px}}
+    @media(max-width:600px){.float-btns{bottom:18px;right:16px;width:48px}.fb-float,.zalo-float,.scroll-top-btn{width:48px;height:48px}.fb-float{font-size:22px}.scroll-top-btn{font-size:16px}.zalo-float img{width:48px;height:48px}}
   </style>
   <script>
     window.addEventListener('scroll',()=>{
