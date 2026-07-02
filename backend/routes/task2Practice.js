@@ -452,6 +452,8 @@ router.get('/wrong-questions/:topicId', auth, async (req, res) => {
 router.post('/draft', auth, async (req, res) => {
   try {
     const { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect } = req.body;
+    // Enforce max-1 draft: delete any drafts for other topics before saving
+    await Task2Draft.deleteMany({ userId: req.user._id, topicId: { $ne: topicId } });
     await Task2Draft.findOneAndUpdate(
       { userId: req.user._id, topicId },
       { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect, savedAt: new Date() },
