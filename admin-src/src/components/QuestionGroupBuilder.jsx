@@ -503,10 +503,13 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
         <div style={{ padding: '14px 22px', display: 'flex', flexDirection: 'column', gap: 11, overflowY: 'auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 12 }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Câu số *</label>
+              <label className="form-label">
+                {positionLabel ? <span>Vị trí <span style={{ color: 'var(--blue)', fontWeight: 800, fontSize: 16 }}>{positionLabel}</span></span> : 'Câu số *'}
+              </label>
               <input className="form-input" type="number" min={1} value={qForm.questionNumber} onChange={setF('questionNumber')}
                 style={{ borderColor: isDup ? '#ef4444' : '' }} />
               {isDup && <div style={{ fontSize: 10, color: '#ef4444', marginTop: 2, fontWeight: 600 }}>⚠ Số câu đã tồn tại!</div>}
+              {positionLabel && <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>Số câu IELTS (25, 26…)</div>}
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Loại câu *</label>
@@ -856,11 +859,16 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
   const activeGroup = activeGi !== null ? groups[activeGi] : null;
   const mapDDWords = (activeGroup?.groupType === 'map' ? (activeGroup?.dragDropConfig?.words || []) : []).filter(Boolean);
   const mapPosLabel = (() => {
-    if (!mapDDWords.length || editQi === null || !activeGroup) return null;
-    const sorted = [...(activeGroup.questions || [])].sort((a, b) => a.questionNumber - b.questionNumber);
-    const origQ = activeGroup.questions[editQi];
-    const idx = sorted.findIndex(q => q.questionNumber === origQ?.questionNumber);
-    return idx >= 0 ? String.fromCharCode(97 + idx) : null;
+    if (!mapDDWords.length || !activeGroup) return null;
+    if (editQi !== null) {
+      // Editing existing question: find its sorted position
+      const sorted = [...(activeGroup.questions || [])].sort((a, b) => a.questionNumber - b.questionNumber);
+      const origQ = activeGroup.questions[editQi];
+      const idx = sorted.findIndex(q => q.questionNumber === origQ?.questionNumber);
+      return idx >= 0 ? String.fromCharCode(97 + idx) : null;
+    }
+    // Adding new question: next position = current count
+    return String.fromCharCode(97 + (activeGroup.questions || []).length);
   })();
 
   // Validation: duplicates + missing numbers
