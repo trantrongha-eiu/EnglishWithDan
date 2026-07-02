@@ -2252,10 +2252,8 @@ function showResult(r) {
   if (imgEl) {
     const imgSrc = band >= 7.0 ? 'img/aboveband7.jpg'
                  : band >= 6.0 ? 'img/band_6_7.jpg'
-                 : band < 5.0  ? 'img/belowband6.jpg'
-                 : '';
-    if (imgSrc) { imgEl.src = imgSrc; imgEl.style.display = ''; }
-    else imgEl.style.display = 'none';
+                 :                'img/belowband6.jpg';
+    imgEl.src = imgSrc; imgEl.style.display = '';
   }
 
   // Motivational message (funny/sarcastic for very low scores)
