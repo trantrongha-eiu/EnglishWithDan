@@ -26,15 +26,15 @@
     <div id="book-list-sidebar"><!-- Rendered by JS --></div>
     <div class="sidebar-divider"></div>
     <div class="unit-section">
-      <h4><i class="fas fa-book"></i> Study Unit</h4>
+      <h4><i class="fas fa-book"></i> Học Paraphrase</h4>
       <div class="unit-picker" id="unitPickerDesktop">
         <div style="position:relative">
-          <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Unit --" autocomplete="off">
+          <input class="unit-picker-input" id="unitPickerInputD" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
           <span class="unit-picker-caret">▾</span>
         </div>
         <div class="unit-picker-dd" id="unitPickerDdD"></div>
       </div>
-      <select id="unitSelect" style="display:none"><option value="">-- Select Unit --</option></select>
+      <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
       <button class="btn-start-unit" onclick="loadUnit()">
         <i class="fas fa-play"></i> Start Learning
       </button>
@@ -109,7 +109,7 @@
             <div class="welcome-feat-card welcome-feat-card--highlight">
               <div class="welcome-feat-icon" style="background:#f0fdf4;color:#059669"><i class="fas fa-book-open"></i></div>
               <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
-              <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Unit ở sidebar để bắt đầu!</p>
+              <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
             </div>
           </div>
 
@@ -400,7 +400,7 @@
       <i class="fas fa-book"></i> My Notebooks
     </button>
     <button class="sheet-tab" id="sheetTab1" onclick="switchSheetTab(1)">
-      <i class="fas fa-graduation-cap"></i> Study Unit
+      <i class="fas fa-graduation-cap"></i> Học Paraphrase
     </button>
   </div>
 
@@ -433,12 +433,12 @@
         <h4><i class="fas fa-book-open"></i> Select a Unit to study</h4>
         <div class="unit-picker" id="unitPickerMobile">
           <div style="position:relative">
-            <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Unit --" autocomplete="off">
+            <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
             <span class="unit-picker-caret">▾</span>
           </div>
           <div class="unit-picker-dd" id="unitPickerDdM"></div>
         </div>
-        <select id="unitSelectMob" style="display:none"><option value="">-- Select Unit --</option></select>
+        <select id="unitSelectMob" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
         <button class="sheet-start-btn" onclick="loadUnitFromSheet()">
           <i class="fas fa-play"></i> Start Learning
         </button>
@@ -755,7 +755,7 @@
             <div><strong>Mixed</strong><br>Kết hợp ngẫu nhiên cả 4 chế độ Quiz/Điền/Nghe/Dịch.</div>
           </div>
         </div>
-        <p style="font-size:12px;color:var(--text3);margin-top:10px"><i class="fas fa-lightbulb"></i> Chế độ học được áp dụng cho cả Study Unit (chọn unit từ sidebar) và sổ từ vựng của bạn.</p>
+        <p style="font-size:12px;color:var(--text3);margin-top:10px"><i class="fas fa-lightbulb"></i> Chế độ học được áp dụng cho cả Học Paraphrase (chọn unit từ sidebar) và sổ từ vựng của bạn.</p>
       </div>
 
       <div class="guide-section">
@@ -880,8 +880,8 @@
           dd.appendChild(d);
         });
       }
-      function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Unit --';render('');dd.style.display='block';isOpen=true;}
-      function closeDD(){dd.style.display='none';isOpen=false;inp.value=_lbl(_val);inp.placeholder=_lbl(_val)||'-- Chọn Unit --';}
+      function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';render('');dd.style.display='block';isOpen=true;}
+      function closeDD(){dd.style.display='none';isOpen=false;inp.value=_lbl(_val);inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';}
       inp.addEventListener('focus',openDD);
       inp.addEventListener('input',function(){if(!isOpen){isOpen=true;dd.style.display='block';}render(inp.value);});
       inp.addEventListener('keydown',function(e){if(e.key==='Escape')closeDD();});

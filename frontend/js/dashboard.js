@@ -1304,19 +1304,21 @@ async function loadUnits() {
         const units = await res.json();
         if (!Array.isArray(units)) return;
         const sel   = document.getElementById('unitSelect');
-        sel.innerHTML = '<option value="">-- Select Unit --</option>';
+        sel.innerHTML = '<option value="">-- Chọn Paraphrase Unit --</option>';
         units.forEach(u => {
             const opt = document.createElement('option');
             opt.value       = u.unitNumber;
             opt.textContent = `Unit ${u.unitNumber} – ${u.title}`;
             sel.appendChild(opt);
         });
+        if (window._upSetUnits) window._upSetUnits(units);
+        if (window.syncSheetUnits) window.syncSheetUnits();
     } catch { }
 }
 
 async function loadUnit() {
     const num = document.getElementById('unitSelect').value;
-    if (!num) { toast('Please select a Unit first', 'error'); return; }
+    if (!num) { toast('Vui lòng chọn một Paraphrase Unit trước', 'error'); return; }
     try {
         const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
         const newUnit = await res.json();
