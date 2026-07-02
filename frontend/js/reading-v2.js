@@ -2244,14 +2244,48 @@ function showResult(r) {
   document.getElementById('r-wrong').textContent = r.wrongCount;
   document.getElementById('r-skip').textContent = r.skippedCount;
   document.getElementById('result-band').dataset.attemptId = r.attemptId;
-  const band = r.bandScore || 0;
+
+  const band       = r.bandScore || 0;
+  const correct    = r.correctCount || 0;
+  const isFullTest = (r.totalQuestions || 0) >= 30;
+
+  // Result image
+  const imgEl = document.getElementById('result-img');
+  if (imgEl) {
+    let imgSrc = '';
+    if (isFullTest) {
+      if (band >= 7.0)      imgSrc = 'img/aboveband7.jpg';
+      else if (band >= 6.0) imgSrc = 'img/band_6_7.jpg';
+      else if (band < 5.0)  imgSrc = 'img/belowband6.jpg';
+    } else {
+      // Passage practice (~13 questions)
+      if (correct >= 12)     imgSrc = 'img/aboveband7.jpg';
+      else if (correct >= 8) imgSrc = 'img/band_6_7.jpg';
+      else                   imgSrc = 'img/belowband6.jpg';
+    }
+    if (imgSrc) { imgEl.src = imgSrc; imgEl.style.display = ''; }
+    else imgEl.style.display = 'none';
+  }
+
+  // Motivational message (funny/sarcastic for very low scores)
+  const isLow = isFullTest ? band < 5.0 : correct < 5;
   const msgEl = document.getElementById('result-msg');
   if (msgEl) {
-    msgEl.textContent = band >= 7.0 ? 'Xuất sắc! Band 7+ — bạn đang ở level rất tốt rồi! 🎉'
-      : band >= 6.0 ? 'Khá tốt! Tiếp tục ôn luyện để chinh phục Band 7 nhé!'
-      : band >= 5.0 ? 'Cố lên! Luyện thêm đọc nhanh và từ vựng học thuật là sẽ lên điểm ngay.'
-      : 'Đừng nản nhé — bắt đầu từ từ rồi sẽ tiến bộ rất nhanh thôi!';
+    if (isLow) {
+      const funnyMsgs = [
+        'Lần này điểm hơi... thấp nhỉ 😅 Không sao, luyện thêm từ vựng học thuật rồi quay lại chinh phục thôi!',
+        'Hmm, lần này não hơi "vắng chủ nhà" rồi 🧠💤 Đọc thêm mỗi ngày 10 phút là lên điểm liền!',
+        'Band này thấp hơn cả nhiệt độ điều hòa 🥶 Nhưng không ai giỏi ngay từ đầu — cứ luyện là lên!',
+      ];
+      msgEl.textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+    } else {
+      msgEl.textContent = band >= 7.0 ? 'Xuất sắc! Band 7+ — bạn đang ở level rất tốt rồi! 🎉'
+        : band >= 6.0 ? 'Khá tốt! Tiếp tục ôn luyện để chinh phục Band 7 nhé!'
+        : band >= 5.0 ? 'Cố lên! Luyện thêm đọc nhanh và từ vựng học thuật là sẽ lên điểm ngay.'
+        : 'Đừng nản nhé — bắt đầu từ từ rồi sẽ tiến bộ rất nhanh thôi!';
+    }
   }
+
   // screen-result is outside the fullscreen container (screen-exam), so exit fullscreen first
   if (document.fullscreenElement) {
     document.exitFullscreen().then(() => showScreen('result')).catch(() => showScreen('result'));

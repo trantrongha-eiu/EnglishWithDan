@@ -1454,6 +1454,7 @@ function renderExamDone() {
   const r = state.examResults;
   const scoreClass = r.score >= 70 ? 'wp-score-good' : r.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
   const emoji = r.score >= 70 ? '🎉' : r.score >= 40 ? '👍' : '📚';
+  const t2ExamImgSrc = r.score >= 70 ? 'img/aboveband7.jpg' : r.score >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
   const reviews = (r.results || []).map((item, i) => `
     <div class="${item.isCorrect ? 'wp-wr-item-ok' : 'wp-wr-item'}">
       <div class="${item.isCorrect ? 'wp-wr-num-ok' : 'wp-wr-num'}">
@@ -1467,6 +1468,7 @@ function renderExamDone() {
     </div>`).join('');
   return `
     <div style="text-align:center;padding:32px 20px 16px">
+      <img src="${t2ExamImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
       <div style="font-size:52px">${emoji}</div>
       <div class="t2-done-score ${scoreClass}">${r.score}%</div>
       <div style="font-size:15px;color:#6b7280;margin-bottom:16px">Đúng ${r.correct} / ${r.total} câu</div>
@@ -1515,6 +1517,7 @@ function renderDone() {
   const pct = state.sessionDone > 0 ? Math.round((state.sessionCorrect / state.sessionDone) * 100) : 0;
   const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
   const scoreClass = pct >= 80 ? 'wp-score-good' : pct >= 50 ? 'wp-score-mid' : 'wp-score-bad';
+  const t2DoneImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
   const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
 
@@ -1529,6 +1532,7 @@ function renderDone() {
 
   return `
     <div class="t2-done">
+      <img src="${t2DoneImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
       <div class="t2-done-icon">${emoji}</div>
       <div class="t2-done-score ${scoreClass}">${pct}%</div>
       <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${state.selectedTopic?.topicName || ''}</div>

@@ -1957,7 +1957,9 @@ async function submitTest() {
     if (!data.success) throw new Error(data.message);
 
     const scoreClass = data.score >= 70 ? 'wp-score-good' : data.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
+    const t1ImgSrc = data.score >= 70 ? 'img/aboveband7.jpg' : data.score >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
     document.getElementById('test-score-header').innerHTML = `
+      <img src="${t1ImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
       <div class="wp-done-icon">${data.score >= 70 ? '🎉' : data.score >= 40 ? '👍' : '📚'}</div>
       <h2 class="${scoreClass}">${data.score}%</h2>
       <p>Đúng ${data.correct} / ${data.total} câu</p>`;

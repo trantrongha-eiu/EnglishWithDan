@@ -2094,6 +2094,20 @@ function showResults(mode) {
     }
     void total; // total used for reference only
 
+    // Vocab result image (shown only for < 70%)
+    const vocabImgEl = document.getElementById('vocab-result-img');
+    if (vocabImgEl) {
+        if (pct < 50) {
+            vocabImgEl.src = 'img/vocabbelow50%25.jpg';
+            vocabImgEl.style.display = 'block';
+        } else if (pct < 70) {
+            vocabImgEl.src = 'img/vocab50_70%25.jpg';
+            vocabImgEl.style.display = 'block';
+        } else {
+            vocabImgEl.style.display = 'none';
+        }
+    }
+
     // Hiện danh sách từ đã sai
     const wrongListEl = document.getElementById('wrong-words-list');
     if (wrongListEl) {

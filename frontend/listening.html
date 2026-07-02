@@ -177,6 +177,7 @@
     <div class="screen" id="screen-result">
         <div class="result-wrap">
             <div class="result-left">
+                <img id="result-img" src="" alt="" style="display:none;width:100%;max-width:260px;border-radius:12px;margin-bottom:12px;object-fit:cover">
                 <div class="result-mascot" id="result-emoji">🎉</div>
                 <p class="result-msg" id="result-msg">Hãy tiếp tục – luyện tập đều đặn sẽ giúp bạn tiến bộ! 🌱</p>
             </div>
@@ -2508,8 +2509,42 @@
                 document.getElementById('r-correct').textContent = r.correctCount;
                 document.getElementById('r-wrong').textContent = r.wrongCount;
                 document.getElementById('r-skip').textContent = r.skippedCount;
-                document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
-                document.getElementById('result-emoji').textContent = r.bandScore >= 7 ? '🎉' : r.bandScore >= 5.5 ? '💪' : '📚';
+
+                const band        = r.bandScore || 0;
+                const correct     = r.correctCount || 0;
+                const isFullTest  = (r.totalQuestions || 40) >= 30;
+
+                // Result image
+                const imgEl = document.getElementById('result-img');
+                if (imgEl) {
+                    let imgSrc = '';
+                    if (isFullTest) {
+                        if (band >= 7.0)      imgSrc = 'img/aboveband7.jpg';
+                        else if (band >= 6.0) imgSrc = 'img/band_6_7.jpg';
+                        else if (band < 5.0)  imgSrc = 'img/belowband6.jpg';
+                    } else {
+                        // Section practice (~10 questions)
+                        if (correct >= 7)      imgSrc = 'img/aboveband7.jpg';
+                        else if (correct >= 5) imgSrc = 'img/band_6_7.jpg';
+                        else                   imgSrc = 'img/belowband6.jpg';
+                    }
+                    if (imgSrc) { imgEl.src = imgSrc; imgEl.style.display = ''; }
+                    else imgEl.style.display = 'none';
+                }
+
+                // Message (funny/sarcastic for very low scores)
+                const isLow = isFullTest ? band < 5.0 : correct < 5;
+                document.getElementById('result-emoji').textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
+                if (isLow) {
+                    const funnyMsgs = [
+                        'Hmm, hôm nay tai không muốn làm việc à? 😅 Nghe lại nhiều lần, tốc độ sẽ quen thôi!',
+                        'Lần này nghe hơi... trật nhỉ 🎧 Luyện shadowing mỗi ngày, tuần sau sẽ khác liền!',
+                        'Band này thấp hơn cả giọng hát của mình 🎤 Nhưng không sao, cứ luyện là lên!',
+                    ];
+                    document.getElementById('result-msg').textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+                } else {
+                    document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
+                }
                 showScreen('result');
             } catch (err) {
                 clearTimeout(submitTimeout);

@@ -1847,7 +1847,9 @@ function showTestResults(data) {
   const emoji = score >= 80 ? '🏆' : score >= 60 ? '🎉' : score >= 40 ? '💪' : '📚';
   const msg   = score >= 80 ? 'Xuất sắc!' : score >= 60 ? 'Khá tốt!' : score >= 40 ? 'Cần luyện thêm!' : 'Hãy tiếp tục cố gắng!';
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
+  const wpImgSrc = score >= 70 ? 'img/aboveband7.jpg' : score >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
   document.getElementById('test-score-header').innerHTML = `
+    <img src="${wpImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
     <div class="wp-test-big-score">${emoji} ${score}%</div>
     <div class="wp-test-score-msg">${msg} Đúng ${correct}/${countable || results.length} câu${expandNote}.</div>`;
 

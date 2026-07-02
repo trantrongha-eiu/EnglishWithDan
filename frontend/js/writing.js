@@ -746,7 +746,17 @@ function _buildStudentFeedback(g) {
     ? new Date(g.confirmedAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
     : '';
 
+  const ob = g.overallBand != null ? Number(g.overallBand) : null;
+  const wImgSrc = ob == null ? ''
+    : ob >= 7.0 ? 'img/aboveband7.jpg'
+    : ob >= 6.0 ? 'img/band_6_7.jpg'
+    : 'img/writingbelow60%25.jpg';
+  const wImgHtml = wImgSrc
+    ? `<img src="${wImgSrc}" alt="" style="display:block;width:100%;max-width:260px;border-radius:12px;margin:0 auto 16px;object-fit:cover">`
+    : '';
+
   return `<div class="fb-wrap">
+    ${wImgHtml}
     <div class="fb-wrap-header">
       <span class="fb-wrap-title"><i class="fas fa-chart-bar"></i> Kết quả chấm bài</span>
       <div class="fb-wrap-right">
