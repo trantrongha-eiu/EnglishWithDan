@@ -171,7 +171,7 @@ async function _openDirectPracticeTask(taskType, taskId) {
 // ──────────────────────────────────────────────────────
 async function startExam() {
   const btn = document.getElementById('btn-start');
-  if (btn) { btn.disabled = true; btn.textContent = 'Đang tải...'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
 
   try {
     const data = await apiFetch('/api/writing/start', { method: 'POST', body: JSON.stringify({}) });
@@ -191,7 +191,7 @@ async function startExam() {
   } catch (e) {
     showToast(e.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '✏️ Bắt đầu làm bài'; }
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-pen"></i> Bắt đầu làm bài'; }
   }
 }
 
@@ -505,8 +505,8 @@ function _renderHistory() {
       ? `${String(Math.floor(a.timeTaken / 60)).padStart(2,'0')}:${String(a.timeTaken % 60).padStart(2,'0')}`
       : '–';
     const typeBadge = isPractice
-      ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">✏️ Luyện</span>`
-      : `<span style="background:#f0fdf4;color:#15803d;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px">🏆 Thi</span>`;
+      ? `<span style="background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px"><i class="fas fa-pencil-alt"></i> Luyện</span>`
+      : `<span style="background:#f0fdf4;color:#15803d;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:600;margin-right:4px"><i class="fas fa-trophy"></i> Thi</span>`;
     const t1badge = isPractice && (a.wordCount1 || 0) === 0 ? '<span style="color:#9ca3af">–</span>' : `<span class="badge-wc">${a.wordCount1 || 0}</span>`;
     const t2badge = isPractice && (a.wordCount2 || 0) === 0 ? '<span style="color:#9ca3af">–</span>' : `<span class="badge-wc">${a.wordCount2 || 0}</span>`;
     let scoreBadge;
@@ -615,8 +615,8 @@ async function viewAttempt(id) {
     const statusBannerHtml = (a.gradingStatus !== 'confirmed')
       ? `<div style="background:${a.gradingStatus === 'ai_done' ? '#fef9c3' : '#f0f7ff'};border:1.5px solid ${a.gradingStatus === 'ai_done' ? '#f59e0b' : '#bfdbfe'};border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:${a.gradingStatus === 'ai_done' ? '#78350f' : '#1e40af'}">
           ${a.gradingStatus === 'ai_done'
-            ? '🤖 AI đã chấm xong – đang chờ giáo viên xác nhận và gửi feedback.'
-            : '⏳ Bài đang chờ chấm – feedback sẽ xuất hiện ở đây sau khi giáo viên trả bài.'}
+            ? '<i class="fas fa-robot"></i> AI đã chấm xong – đang chờ giáo viên xác nhận và gửi feedback.'
+            : '<i class="fas fa-hourglass-half"></i> Bài đang chờ chấm – feedback sẽ xuất hiện ở đây sau khi giáo viên trả bài.'}
         </div>`
       : '';
 
@@ -686,7 +686,7 @@ function _buildStudentFeedback(g) {
       const rows = sfItems.map(s => {
         if (s.type === 'ok') {
           return `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#f0fdf4;border-radius:8px;border-left:3px solid #22c55e">
-            <span style="font-size:15px;flex-shrink:0">✔️</span>
+            <span style="color:#22c55e;flex-shrink:0"><i class="fas fa-check-circle"></i></span>
             <span style="font-size:13px;color:#166534;line-height:1.6">${escHtml(s.original)}</span>
           </div>`;
         }
@@ -695,18 +695,18 @@ function _buildStudentFeedback(g) {
         return `<div style="background:#fff7f7;border-radius:8px;border-left:3px solid #ef4444;padding:10px 12px">
           ${s.original ? `<div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px;padding:5px 8px;background:#fee2e2;border-radius:5px">${escHtml(s.original)}</div>` : ''}
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:5px">
-            <span style="font-size:14px;flex-shrink:0">❌</span>
+            <span style="color:#ef4444;flex-shrink:0"><i class="fas fa-times-circle"></i></span>
             ${s.criterion ? `<span style="display:inline-block;background:${critColor};color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px">${escHtml(s.criterion)}</span>` : ''}
           </div>
-          ${s.issue ? `<div style="font-size:12px;color:#6b7280;margin-bottom:6px;padding-left:4px">🔍 ${escHtml(s.issue)}</div>` : ''}
+          ${s.issue ? `<div style="font-size:12px;color:#6b7280;margin-bottom:6px;padding-left:4px"><i class="fas fa-search"></i> ${escHtml(s.issue)}</div>` : ''}
           ${s.better ? `<div style="display:flex;gap:8px;align-items:flex-start">
-            <span style="font-size:15px;flex-shrink:0">✅</span>
+            <span style="color:#16a34a;flex-shrink:0"><i class="fas fa-check-circle"></i></span>
             <span style="font-size:13px;color:#14532d;font-weight:500;line-height:1.6">${escHtml(s.better)}</span>
           </div>` : ''}
         </div>`;
       }).join('');
       sfHtml = `<div class="fb-section">
-        <div class="fb-section-lbl" style="color:#1e40af;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:3px 8px;display:inline-block">📝 Phân tích từng câu</div>
+        <div class="fb-section-lbl" style="color:#1e40af;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:3px 8px;display:inline-block"><i class="fas fa-list-ul"></i> Phân tích từng câu</div>
         <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
       </div>`;
     }
@@ -741,13 +741,13 @@ function _buildStudentFeedback(g) {
 
   return `<div class="fb-wrap">
     <div class="fb-wrap-header">
-      <span class="fb-wrap-title">📊 Kết quả chấm bài</span>
+      <span class="fb-wrap-title"><i class="fas fa-chart-bar"></i> Kết quả chấm bài</span>
       <div class="fb-wrap-right">
         <div class="fb-wrap-band-lbl">Overall Band${dateStr ? ' · ' + dateStr : ''}</div>
         <div class="fb-wrap-band-num">${g.overallBand ?? '–'}</div>
       </div>
     </div>
-    ${g.adminNote ? `<div class="fb-admin-note"><span class="fb-admin-note-lbl">💬 Nhận xét từ giáo viên:</span> ${escHtml(g.adminNote)}</div>` : ''}
+    ${g.adminNote ? `<div class="fb-admin-note"><span class="fb-admin-note-lbl"><i class="fas fa-comment-dots"></i> Nhận xét từ giáo viên:</span> ${escHtml(g.adminNote)}</div>` : ''}
     ${taskCard('Task 1', g.task1)}
     ${taskCard('Task 2', g.task2)}
   </div>`;
@@ -1216,7 +1216,7 @@ function _updateSaveIndicator(ts) {
   const d  = new Date(ts);
   const hh = String(d.getHours()).padStart(2, '0');
   const mm = String(d.getMinutes()).padStart(2, '0');
-  el.textContent = `✓ Đã lưu ${hh}:${mm}`;
+  el.innerHTML = `<i class="fas fa-check"></i> Đã lưu ${hh}:${mm}`;
   el.style.color  = '#16a34a';
 }
 
@@ -1349,7 +1349,7 @@ function showPracticeMode(pushHistory = true) {
   if (list)  list.style.display  = 'none';
   if (cards) cards.style.display = '';
   if (histBody)  histBody.classList.remove('practice-split-mode');
-  if (histTitle) histTitle.textContent = '📋 Lịch sử luyện tập';
+  if (histTitle) histTitle.innerHTML = '<i class="fas fa-history"></i> Lịch sử luyện tập';
   if (pushHistory) history.pushState({ screen: 'practice' }, '', 'writing.html');
   checkPracticeRestoreBanner();
   showScreen('screen-practice');
@@ -1392,7 +1392,11 @@ async function loadPracticeHistory(taskTypeFilter = null) {
       return;
     }
 
-    const STATUS = { pending: '⏳ Chờ chấm', ai_done: '⏳ Chờ xác nhận', confirmed: '✅ Đã chấm' };
+    const STATUS = {
+      pending:   '<i class="fas fa-hourglass-half"></i> Chờ chấm',
+      ai_done:   '<i class="fas fa-robot"></i> Chờ xác nhận',
+      confirmed: '<i class="fas fa-check-circle"></i> Đã chấm'
+    };
     const STATUS_COL = { pending: '#f59e0b', ai_done: '#f59e0b', confirmed: '#16a34a' };
 
     if (taskTypeFilter) {
@@ -1404,7 +1408,6 @@ async function loadPracticeHistory(taskTypeFilter = null) {
         const status = a.gradingStatus || 'pending';
         const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
         const bandColor = band >= 7 ? '#16a34a' : band >= 5.5 ? '#2563eb' : band != null ? '#d97706' : '#9ca3af';
-        const actionLabel = status === 'confirmed' ? '👁 Xem' : '📄 Bài nộp';
         return `
           <div class="phist-card" onclick="viewAttempt('${a._id}')">
             <div class="phist-card-top">
@@ -1462,7 +1465,7 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
   const histBody   = document.querySelector('#screen-practice .history-body');
 
   titleEl.textContent = `Chọn đề Task ${taskType}`;
-  if (histTitle) histTitle.textContent = `📋 Lịch sử Task ${taskType}`;
+  if (histTitle) histTitle.innerHTML = `<i class="fas fa-history"></i> Lịch sử Task ${taskType}`;
   cardSelect.style.display = 'none';
   listPanel.style.display  = '';
   if (histBody) histBody.classList.add('practice-split-mode');
@@ -1493,7 +1496,7 @@ function hidePracticeTaskList() {
   document.getElementById('practice-task-list').style.display  = 'none';
   document.getElementById('practice-task-select').style.display = '';
   if (histBody)  histBody.classList.remove('practice-split-mode');
-  if (histTitle) histTitle.textContent = '📋 Lịch sử luyện tập';
+  if (histTitle) histTitle.innerHTML = '<i class="fas fa-history"></i> Lịch sử luyện tập';
   const s = document.getElementById('writing-task-search');
   if (s) s.value = '';
   history.pushState({ screen: 'practice' }, '', 'writing.html');
@@ -1568,7 +1571,7 @@ function renderPracticeWriteScreen(taskType, task) {
       <div class="pw-sample-section">
         <div class="pw-sample-section-title">
           <span>${escHtml(s.title)}</span>
-          <button class="pw-copy-btn" onclick="copySampleSection(this,${i})" title="Sao chép đoạn này">📋 Copy</button>
+          <button class="pw-copy-btn" onclick="copySampleSection(this,${i})" title="Sao chép đoạn này"><i class="fas fa-copy"></i> Copy</button>
         </div>
         <div class="pw-sample-section-body">${escHtml(s.content)}</div>
       </div>`).join('');
@@ -1599,10 +1602,10 @@ function copySampleSection(btn, idx) {
   const text = bodies[idx]?.textContent || '';
   if (!text) return;
   navigator.clipboard.writeText(text).then(() => {
-    const orig = btn.textContent;
-    btn.textContent = '✓ Đã copy';
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Đã copy';
     btn.disabled = true;
-    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1800);
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1800);
   }).catch(() => showToast('Không copy được', 'error'));
 }
 
@@ -1624,7 +1627,7 @@ function onPracticeInput() {
   }
   // Show unsaved indicator immediately
   const si = document.getElementById('pw-save-status');
-  if (si) { si.textContent = '● Chưa lưu'; si.style.color = '#f59e0b'; }
+  if (si) { si.innerHTML = '<i class="fas fa-circle" style="font-size:7px;vertical-align:middle"></i> Chưa lưu'; si.style.color = '#f59e0b'; }
   // Debounced auto-save
   clearTimeout(_practiceSaveDebounce);
   _practiceSaveDebounce = setTimeout(savePracticeToStorage, 800);

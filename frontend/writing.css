@@ -997,6 +997,22 @@ body {
 [data-theme="dark"] .spinner             { border-color: #374151; border-top-color: #e53935; }
 /* #restore-banner dark mode handled by .wr-restore-banner class */
 
+/* History modal filter buttons */
+[data-theme="dark"] .btn-hist-filter               { border-color: #374151; color: #9ca3af; background: none; }
+[data-theme="dark"] .btn-hist-filter:hover         { border-color: #6b7280; color: #d1d5db; }
+[data-theme="dark"] .btn-hist-filter.active        { background: #2563eb; border-color: #2563eb; color: #fff; }
+
+/* Practice split sidebar panel */
+[data-theme="dark"] .history-body.practice-split-mode #practice-hist-section {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+/* Practice history sidebar cards */
+[data-theme="dark"] .phist-card              { border-color: #374151; }
+[data-theme="dark"] .phist-card:hover        { background: #1f2937; border-color: #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+[data-theme="dark"] .phist-date              { color: #9ca3af; }
+
 /* ── Writing task search input ──────────────────────────── */
 .wt-search-input {
   padding: 5px 12px;

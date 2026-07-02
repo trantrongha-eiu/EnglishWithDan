@@ -30,7 +30,7 @@
 
       <!-- Restore banner (shown only when unsaved exam exists) -->
       <div id="restore-banner" class="wr-restore-banner" style="display:none">
-        <p class="wr-restore-banner-title">📝 Bạn có bài làm chưa hoàn thành</p>
+        <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> Bạn có bài làm chưa hoàn thành</p>
         <p id="restore-banner-desc" class="wr-restore-banner-desc"></p>
         <div class="wr-restore-btn-row">
           <button onclick="restoreExam()" class="wr-restore-btn-primary"><i class="fas fa-play"></i> Tiếp tục làm</button>
@@ -59,7 +59,7 @@
       <span id="exam-candidate"></span>
     </div>
     <div class="exam-topbar-center" id="exam-timer">
-      <span>⏱</span>
+      <span><i class="fas fa-stopwatch"></i></span>
       <span id="timer-display">60:00</span>
     </div>
     <div class="exam-topbar-right">
@@ -155,11 +155,11 @@
 <div class="modal-overlay" id="wr-history-modal" onclick="if(event.target===this)closeHistoryModal()">
   <div class="review-modal">
     <div class="review-modal-header">
-      <h3>📋 Lịch sử làm bài Writing</h3>
+      <h3><i class="fas fa-history"></i> Lịch sử làm bài Writing</h3>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
         <button class="btn-hist-filter active" id="hf-all"      onclick="setHistoryFilter('all',this)">Tất cả</button>
-        <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)">🏆 Thi</button>
-        <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)">✏️ Luyện</button>
+        <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)"><i class="fas fa-trophy"></i> Thi</button>
+        <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)"><i class="fas fa-pencil-alt"></i> Luyện</button>
         <button class="review-modal-close" onclick="closeHistoryModal()"><i class="fas fa-times"></i></button>
       </div>
     </div>
@@ -175,7 +175,7 @@
 <div id="screen-samples" class="screen">
   <!-- Topbar: title + back -->
   <div class="wsampl-topbar">
-    <h2 class="wsampl-topbar-title">📄 Tài liệu mẫu Writing</h2>
+    <h2 class="wsampl-topbar-title"><i class="fas fa-file-alt"></i> Tài liệu mẫu Writing</h2>
     <button class="btn-secondary" onclick="showScreen('screen-key')"><i class="fas fa-arrow-left"></i> Quay lại</button>
   </div>
 
@@ -234,7 +234,7 @@
 <div id="screen-practice" class="screen">
   <div class="wr-page-header">
     <div class="wr-page-header-inner">
-      <h2 class="wr-page-header-title">✏️ Luyện tập Writing</h2>
+      <h2 class="wr-page-header-title"><i class="fas fa-dumbbell"></i> Luyện tập Writing</h2>
       <button class="btn-secondary wr-page-header-back" onclick="showScreen('screen-key')"><i class="fas fa-arrow-left"></i> Quay lại</button>
     </div>
   </div>
@@ -242,7 +242,7 @@
 
     <!-- Restore banner (shown when có draft luyện tập chưa nộp) -->
     <div id="practice-restore-banner" class="wr-restore-banner" style="display:none">
-      <p class="wr-restore-banner-title">📝 Bạn có bài luyện tập chưa nộp</p>
+      <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> Bạn có bài luyện tập chưa nộp</p>
       <p id="practice-restore-desc" class="wr-restore-banner-desc"></p>
       <div class="wr-restore-btn-row">
         <button onclick="restorePracticeWrite()" class="wr-restore-btn-primary"><i class="fas fa-play"></i> Tiếp tục viết</button>
@@ -252,7 +252,7 @@
 
     <!-- Pending notice -->
     <div id="practice-pending-notice" class="wr-pending-notice" style="display:none">
-      <p class="wr-pending-title">⏳ Bạn đang có bài chờ chấm</p>
+      <p class="wr-pending-title"><i class="fas fa-hourglass-half"></i> Bạn đang có bài chờ chấm</p>
       <p id="practice-pending-desc" class="wr-pending-desc">Vui lòng đợi giáo viên chấm xong bài hiện tại trước khi nộp bài mới.</p>
     </div>
 
@@ -285,7 +285,7 @@
 
     <!-- Practice history (sidebar in split mode, full-width in home mode) -->
     <div id="practice-hist-section">
-      <h3 id="practice-hist-title" style="font-size:15px;font-weight:700;margin-bottom:12px">📋 Lịch sử luyện tập</h3>
+      <h3 id="practice-hist-title" style="font-size:15px;font-weight:700;margin-bottom:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</h3>
       <div id="practice-history-list"><div class="spinner"></div></div>
     </div>
   </div>
@@ -370,7 +370,7 @@
       <p id="pw-done-label" class="wr-done-label"></p>
       <p>Bài của bạn đã được gửi đến giáo viên.<br/>Kết quả sẽ xuất hiện trong lịch sử luyện tập sau khi giáo viên trả bài.</p>
       <div class="wr-done-note-box">
-        <p class="wr-done-note-title">⚠️ Lưu ý</p>
+        <p class="wr-done-note-title"><i class="fas fa-exclamation-triangle"></i> Lưu ý</p>
         <p class="wr-done-note-body">Mỗi lần chỉ được nộp <strong>1 bài</strong>. Bài tiếp theo chỉ được nộp sau khi giáo viên đã chấm và trả bài.</p>
       </div>
       <div class="done-actions">
