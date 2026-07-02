@@ -1,6 +1,6 @@
 const router   = require('express').Router();
 const authCtrl = require('../controllers/auth.controller');
-const { auth } = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
 // ── Local auth ────────────────────────────────────────────────
 router.post('/register', authCtrl.register);
