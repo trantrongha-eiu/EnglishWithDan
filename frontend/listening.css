@@ -631,7 +631,7 @@ body.tool-hl .check-box { user-select: none; }
 }
 .word-chip:hover    { background: #3d8bff; color: #fff; }
 .word-chip.dragging { opacity: .4; transform: scale(.95); }
-.word-chip.used     { background: #f3f4f8; border-color: #d1d5db; color: #9ca3af; cursor: default; }
+.word-chip.used     { background: #f3f4f8; border-color: #d1d5db; color: #9ca3af; cursor: default; pointer-events: none; }
 
 .drop-zone {
   display: inline-flex; align-items: center;

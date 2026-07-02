@@ -102,7 +102,7 @@ router.post('/start', auth, startLimiter, async (req, res) => {
       questionText: q.questionText,
       options: q.options,
       wordBank: q.wordBank,
-      paragraphLabels: q.paragraphLabels,
+      checkboxCount: q.checkboxCount,
       imageUrl: q.imageUrl          // cần cho map-labelling per-question image
       // correctAnswer & explanation bị ẩn
     });

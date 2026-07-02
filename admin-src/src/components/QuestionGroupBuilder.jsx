@@ -19,8 +19,9 @@ const GROUP_TYPES_LISTENING = [
   { value: 'plain',            icon: '💬', label: 'Câu hỏi thường',              desc: 'Multiple Choice, Short-answer, Sentence Completion riêng lẻ' },
   { value: 'table',            icon: '📋', label: 'Table Completion',             desc: 'Điền vào ô bảng – dùng __Q1__ cho ô trống' },
   { value: 'note-form',        icon: '📝', label: 'Form / Note / Flow-chart',     desc: 'Điền vào biểu mẫu, ghi chú, lưu đồ – dùng __Q6__ cho chỗ trống' },
-  { value: 'drag-drop',        icon: '🎯', label: 'Kéo-thả (Drag & Drop)',        desc: 'Học sinh kéo từ/cụm từ từ Option Bank vào chỗ trống – Flow chart, Diagram Summary' },
-  { value: 'matching-options', icon: '🔗', label: 'Matching',                     desc: 'Nối thông tin – ghép chữ cái A-H (Part 2 / Part 3)' },
+  { value: 'drag-drop',          icon: '🎯', label: 'Kéo-thả (Drag & Drop)',        desc: 'Học sinh kéo từ/cụm từ từ Option Bank vào chỗ trống – Flow chart, Diagram Summary' },
+  { value: 'summary-completion', icon: '🧩', label: 'Summary Completion',           desc: 'Đoạn tóm tắt + Word Bank chữ cái A-J (kéo-thả)' },
+  { value: 'matching-options',   icon: '🔗', label: 'Matching',                     desc: 'Nối thông tin – ghép chữ cái A-H (Part 2 / Part 3)' },
   { value: 'map',              icon: '🗺️', label: 'Map / Plan / Diagram',         desc: 'Dán nhãn bản đồ, sơ đồ – có hình ảnh chung cho nhóm' },
 ];
 

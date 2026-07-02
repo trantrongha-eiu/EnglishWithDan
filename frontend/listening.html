@@ -1393,6 +1393,7 @@
                     (section?.questionGroups || []).forEach(g =>
                         (g.questions || []).forEach(q => restoreAnswer(q))
                     );
+                    refreshWordChips();
                 } else {
                     renderPartQuestions(idx);
                 }
@@ -1421,6 +1422,7 @@
             });
             panel.innerHTML = html;
             (section.questionGroups || []).forEach(g => g.questions.forEach(q => restoreAnswer(q)));
+            refreshWordChips();
             setupDragDrop(panel);
             // re-attach dict to questions-panel sau khi re-render
             setupDictionaryDouble('questions-panel');
@@ -2335,7 +2337,12 @@
                 padding: '12px', boxShadow: '0 8px 24px rgba(0,0,0,.15)', zIndex: '500',
                 display: 'flex', flexWrap: 'wrap', gap: '8px', maxWidth: '300px'
             });
-            wordBank.forEach(w => {
+            const usedElsewhere = new Set(
+                Object.entries(state.answers)
+                    .filter(([k]) => Number(k) !== qnum)
+                    .map(([, v]) => v)
+            );
+            wordBank.filter(w => !usedElsewhere.has(w)).forEach(w => {
                 const chip = document.createElement('div');
                 chip.className = 'word-chip'; chip.textContent = w;
                 chip.onclick = () => { placeAnswer(qnum, w); picker.remove(); };
@@ -2365,13 +2372,22 @@
             delete state.answers[qnum];
             saveExamToStorage();
             updateDropZone(qnum);
+            refreshWordChips();
             updateQNav(); updateFooter();
         }
 
         function placeAnswer(qnum, word) {
             state.answers[qnum] = word;
             updateDropZone(qnum);
+            refreshWordChips();
             updateQNav(); state.dragItem = null; updateFooter(); saveExamToStorage();
+        }
+
+        function refreshWordChips() {
+            const used = new Set(Object.values(state.answers));
+            document.querySelectorAll('.word-chip[data-word]').forEach(c => {
+                c.classList.toggle('used', used.has(c.dataset.word));
+            });
         }
 
         // ══════════════════════════════════════════════
@@ -3600,6 +3616,7 @@
         });
         inner.innerHTML = html;
         _ltGetAllQs(_ltCleanSection).forEach(q => restoreAnswer(q));
+        refreshWordChips();
         setupDragDrop(inner);
         setupDictionaryDouble('lt-practice-questions');
 
