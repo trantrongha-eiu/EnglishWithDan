@@ -477,7 +477,7 @@ function MapConfig({ imageUrl, dragDropConfig, onImageChange, onDragDropChange, 
   );
 }
 
-function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClose, isDup }) {
+function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClose, isDup, dragDropWords = [], positionLabel = null }) {
   const allTypes = Q_TYPES[context] || Q_TYPES.reading;
   const allowed = ALLOWED[groupType];
   const types = allowed ? allTypes.filter(t => allowed.includes(t.value)) : allTypes;
@@ -494,7 +494,10 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
     <div className="modal-overlay" style={{ zIndex: 1200 }} onClick={onClose}>
       <div className="modal" style={{ maxWidth: 560, maxHeight: '90vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">Câu hỏi trong nhóm</h3>
+          <h3 className="modal-title">
+            Câu hỏi trong nhóm
+            {positionLabel && <span style={{ marginLeft: 10, fontSize: 18, color: 'var(--blue)', fontWeight: 800 }}>({positionLabel})</span>}
+          </h3>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div style={{ padding: '14px 22px', display: 'flex', flexDirection: 'column', gap: 11, overflowY: 'auto' }}>
@@ -662,11 +665,25 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
                 <input className="form-input" style={{ fontSize: 11 }} value={qForm.correctAnswer}
                   onChange={setF('correctAnswer')} placeholder='["A","C"]' />
               </div>
+            ) : groupType === 'map' && dragDropWords.length > 0 ? (
+              <div style={{ marginTop: 4, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {dragDropWords.filter(Boolean).map(word => (
+                  <label key={word} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13 }}>
+                    <input type="radio" name="map-dd-ans" checked={qForm.correctAnswer === word}
+                      onChange={() => setQForm(f => ({ ...f, correctAnswer: word }))} />
+                    <span style={{ fontWeight: qForm.correctAnswer === word ? 700 : 400, color: qForm.correctAnswer === word ? 'var(--blue)' : 'inherit' }}>
+                      {word}
+                    </span>
+                  </label>
+                ))}
+              </div>
             ) : (
               <input className="form-input" value={qForm.correctAnswer} onChange={setF('correctAnswer')}
                 placeholder={ANS_HINT[qForm.type] || 'Đáp án chính xác'} />
             )}
-            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 3 }}>💡 {ANS_HINT[qForm.type]}</div>
+            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 3 }}>
+              💡 {groupType === 'map' && dragDropWords.length > 0 ? 'Chọn nhãn đúng từ Option Bank bên trên' : ANS_HINT[qForm.type]}
+            </div>
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -830,6 +847,17 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
 
   const totalQs = groups.reduce((n, g) => n + (g.questions?.length || 0), 0);
 
+  // Map drag-drop: compute word list and position label for modal
+  const activeGroup = activeGi !== null ? groups[activeGi] : null;
+  const mapDDWords = (activeGroup?.groupType === 'map' ? (activeGroup?.dragDropConfig?.words || []) : []).filter(Boolean);
+  const mapPosLabel = (() => {
+    if (!mapDDWords.length || editQi === null || !activeGroup) return null;
+    const sorted = [...(activeGroup.questions || [])].sort((a, b) => a.questionNumber - b.questionNumber);
+    const origQ = activeGroup.questions[editQi];
+    const idx = sorted.findIndex(q => q.questionNumber === origQ?.questionNumber);
+    return idx >= 0 ? String.fromCharCode(97 + idx) : null;
+  })();
+
   // Validation: duplicates + missing numbers
   const dupNums = [...new Set(allNums.filter(n => allNums.filter(x => x === n).length > 1))].sort((a, b) => a - b);
   const missingNums = (() => {
@@ -938,10 +966,14 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                     <th style={{ width: 64 }}></th>
                   </tr></thead>
                   <tbody>
-                    {(g.questions || []).map((q, qi) => (
+                    {(g.questions || []).map((q, qi) => {
+                      const isMapDD = g.groupType === 'map' && (g.dragDropConfig?.words || []).filter(Boolean).length > 0;
+                      return (
                       <tr key={qi}>
                         <td style={{ fontWeight: 700, color: isDup(q.questionNumber) ? '#ef4444' : 'inherit' }}>
-                          {q.questionNumber}
+                          {isMapDD
+                            ? <><span style={{ color: 'var(--blue)', fontSize: 15 }}>{String.fromCharCode(97 + qi)}</span><span style={{ color: 'var(--text3)', fontSize: 10, marginLeft: 3 }}>Q{q.questionNumber}</span></>
+                            : q.questionNumber}
                           {isDup(q.questionNumber) && <span title="Số câu trùng!" style={{ marginLeft: 2 }}>⚠</span>}
                         </td>
                         <td><span className="badge badge-blue" style={{ fontSize: 10 }}>{TYPE_LABEL[q.type] || q.type}</span></td>
@@ -955,7 +987,8 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1037,11 +1070,13 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
         <QuestionFormModal
           qForm={qForm}
           setQForm={setQForm}
-          groupType={activeGi !== null ? (groups[activeGi]?.groupType || 'plain') : 'plain'}
+          groupType={activeGroup?.groupType || 'plain'}
           context={context}
           onSave={commitQ}
           onClose={() => setShowQForm(false)}
           isDup={qForm ? isDupModal(qForm.questionNumber) : false}
+          dragDropWords={mapDDWords}
+          positionLabel={mapPosLabel}
         />
       )}
     </div>
