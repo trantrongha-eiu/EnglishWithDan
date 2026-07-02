@@ -1354,6 +1354,7 @@ function stopExamTimer() {
 }
 
 function quitExam() {
+  if (state.examAnswers.length === 0) { stopExamTimer(); state.view = 'select'; render(); return; }
   askT2Quit(() => { stopExamTimer(); state.view = 'select'; render(); }, {
     mascot: '📋',
     title: 'Dừng bài thi?',
