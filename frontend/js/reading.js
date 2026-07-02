@@ -514,6 +514,7 @@ async function resumePractice() {
       savePracticeToStorage();
       const n = Object.keys(savedAnswers).length;
       showVocabToast(`Đã khôi phục ${n} câu trả lời`, 'success');
+      setTimeout(_updatePracticeProgress, 50);
     }
   } catch {
     showVocabToast('Không thể tiếp tục bài cũ', 'error');

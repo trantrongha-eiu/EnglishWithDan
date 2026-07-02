@@ -301,6 +301,7 @@ export default function Users() {
   const [planUser, setPlanUser] = useState(null);
   const [onlineIds, setOnlineIds] = useState(new Set());
   const timer = useRef(null);
+  const skipPageEffect = useRef(false);
 
   useEffect(() => {
     apiFetch('/admin/online-users').then(d => setOnlineIds(new Set((d.users || []).map(u => u._id)))).catch(() => {});
@@ -315,8 +316,9 @@ export default function Users() {
     apiFetch(`/admin/users?${params}`).then(d => { setUsers(d.users || []); setTotal(d.total || 0); }).catch(e => toast(e.message, 'error'));
   }
 
-  useEffect(() => { load(1); setPage(1); }, [search, roleFilter, statusFilter]);
-  useEffect(() => { load(page); }, [page]);
+  // Filter change → reset to page 1 and load once (skip the page effect that fires from setPage)
+  useEffect(() => { skipPageEffect.current = true; setPage(1); load(1); }, [search, roleFilter, statusFilter]);
+  useEffect(() => { if (skipPageEffect.current) { skipPageEffect.current = false; return; } load(page); }, [page]);
 
   async function toggleBan(id, username, isBanned) {
     confirm(`${isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${username}"?`, async () => {

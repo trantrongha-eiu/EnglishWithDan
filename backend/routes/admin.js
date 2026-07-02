@@ -2264,7 +2264,7 @@ router.delete('/task2/topics/:topicId/questions/:qid', auth, teacherOnly, async 
 });
 
 // POST /api/admin/reseed-task2-week12 — delete duplicates + re-insert fresh week-12 topics
-router.post('/reseed-task2-week12', auth, teacherOnly, async (req, res) => {
+router.post('/reseed-task2-week12', auth, adminOnly, async (req, res) => {
   try {
     const { reseedWeek12 } = require('../scripts/seedTask2Exercises');
     await reseedWeek12();
@@ -2275,7 +2275,7 @@ router.post('/reseed-task2-week12', auth, teacherOnly, async (req, res) => {
 });
 
 // POST /api/admin/fix-task1-context — add data context to ambiguous by/to questions
-router.post('/fix-task1-context', auth, teacherOnly, async (req, res) => {
+router.post('/fix-task1-context', auth, adminOnly, async (req, res) => {
   try {
     const { run } = require('../scripts/updateTask1Context');
     await run();

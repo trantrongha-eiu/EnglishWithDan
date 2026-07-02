@@ -293,7 +293,7 @@ export default function WritingPractice() {
       <div className="inner-tabs-nav">
         <Tab label="📝 Bài tập" active={tab === 'exercises'} onClick={() => setTab('exercises')} />
         <Tab label="🏷️ Chủ đề" active={tab === 'topics'} onClick={() => setTab('topics')} />
-        <Tab label="📊 Lịch sử luyện" active={tab === 'attempts'} onClick={() => setTab('attempts')} />
+        <Tab label="📊 Lịch sử luyện" active={tab === 'attempts'} onClick={() => { setTab('attempts'); setAttPage(1); }} />
       </div>
 
       {tab === 'exercises' && (

@@ -22,16 +22,16 @@ async function randomDoc(Model) {
 // ══════════════════════════════════════════════════
 router.post('/start', auth, async (req, res) => {
   try {
-    let exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 });
-    if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 });
-    if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
-
-    const task1 = await randomDoc(WritingTask1);
-    const task2 = await randomDoc(WritingTask2);
+    // Check task pools first — avoid creating ghost exam records when pool is empty
+    const [task1, task2] = await Promise.all([randomDoc(WritingTask1), randomDoc(WritingTask2)]);
     if (!task1)
       return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 1 nào. Vui lòng liên hệ giáo viên.' });
     if (!task2)
       return res.status(404).json({ success: false, message: 'Chưa có câu hỏi Task 2 nào. Vui lòng liên hệ giáo viên.' });
+
+    let exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 });
+    if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 });
+    if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
 
     res.json({
       success: true,

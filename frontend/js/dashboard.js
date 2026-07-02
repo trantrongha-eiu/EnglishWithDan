@@ -36,6 +36,7 @@ let _retryWordList = null;      // set by retryWrongWords, consumed by startPrac
 // ── Session streak tracking ────────────────────
 let sessionAnsweredCount = 0;
 let _streakReportedThisSession = false;
+let _persistedThisSession = false; // prevent double-counting wrongCount on multiple showResults calls
 
 // ── Vocab book practice tracking ───────────────
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
@@ -661,7 +662,6 @@ async function updateWordStatus(wordId, status, selectEl) {
                     row.querySelectorAll('td').forEach(td => td.classList.add('word-mastered-flash'));
                     setTimeout(() => row.querySelectorAll('td').forEach(td => td.classList.remove('word-mastered-flash')), 700);
                 }
-                checkBookCompletion();
             }
         }
         const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, {
@@ -669,6 +669,8 @@ async function updateWordStatus(wordId, status, selectEl) {
             body: JSON.stringify({ status })
         });
         if (!res.ok) throw new Error('Server error');
+        // Confetti only after server confirms — not on optimistic update
+        if (w && status === 'da-thuoc') checkBookCompletion();
     } catch {
         toast('Update error', 'error');
         if (w && prevStatus !== undefined) {
@@ -1508,6 +1510,7 @@ async function _reportSessionStreak() {
 function startPractice(mode) {
     wrongWordSet.clear();
     requeuedWords.clear();
+    _persistedThisSession = false;
     _isDifficultPractice = false;
     mixedQueue = [];
     mixedIndex = 0;
@@ -2117,8 +2120,11 @@ function showResults(mode) {
             wrongListEl.style.display = 'none';
         }
     }
-    // Ghi nhận số lần sai vào DB
-    if (_isBookPractice && wrongWordSet.size > 0) _persistWrongCounts();
+    // Ghi nhận số lần sai vào DB — chỉ 1 lần mỗi session để tránh double-count
+    if (_isBookPractice && wrongWordSet.size > 0 && !_persistedThisSession) {
+        _persistedThisSession = true;
+        _persistWrongCounts();
+    }
     if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
 }
 

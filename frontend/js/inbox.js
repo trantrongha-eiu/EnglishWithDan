@@ -77,17 +77,29 @@ function updateBadge() {
 }
 
 async function selectMsg(id) {
+  const prevId = selectedId;
   selectedId = id;
   const msg = messages.find(m => m._id === id);
   if (!msg) return;
+
+  // Update selection highlight without re-rendering the whole list (preserves scroll position)
+  if (prevId && prevId !== id) {
+    const prevEl = document.querySelector(`.msg-item[data-id="${prevId}"]`);
+    if (prevEl) prevEl.classList.remove('selected');
+  }
+  const curEl = document.querySelector(`.msg-item[data-id="${id}"]`);
+  if (curEl) curEl.classList.add('selected');
 
   // Mark read
   if (!msg.isRead) {
     try { await apiFetch(`/user/messages/${id}/read`, { method: 'PATCH' }); } catch { /* ignore */ }
     msg.isRead = true;
+    if (curEl) {
+      curEl.classList.remove('unread');
+      curEl.querySelector('.dot-unread')?.remove();
+    }
     updateBadge();
   }
-  renderList();
 
   const sender = msg.isBroadcast ? '📢 Thông báo chung' : esc(msg.fromName || 'Giáo viên');
   const subj = msg.subject ? esc(msg.subject) : '(Không có tiêu đề)';

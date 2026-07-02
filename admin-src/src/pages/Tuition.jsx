@@ -102,6 +102,7 @@ export default function Tuition() {
   // ── Fee list state ──
   const [fees, setFees]     = useState([]);
   const [total, setTotal]   = useState(0);
+  const [feeStats, setFeeStats] = useState({ totalAmount: 0, paidAmount: 0, pendingNotify: 0 });
   const [page, setPage]     = useState(1);
   const [filter, setFilter] = useState({
     month: String(CUR_MONTH), year: String(CUR_YEAR),
@@ -173,6 +174,7 @@ export default function Tuition() {
       const d = await apiFetch(`/tuition?${q}`);
       setFees(d.fees || []);
       setTotal(d.total || 0);
+      if (d.stats) setFeeStats(d.stats);
     } catch (e) { toast(e.message, 'error'); }
   }
 
@@ -364,11 +366,11 @@ export default function Tuition() {
     });
   }
 
-  // ── stat cards for top of fees tab ──
-  const totalAmount  = fees.reduce((a, f) => a + f.amount, 0);
-  const paidAmount   = fees.reduce((a, f) => a + (f.isPaid ? f.amount : 0), 0);
-  const unpaidAmount = totalAmount - paidAmount;
-  const pendingNotify = fees.filter(f => f.studentNotified && !f.isPaid).length;
+  // ── stat cards for top of fees tab (server-aggregated over ALL matching records) ──
+  const totalAmount   = feeStats.totalAmount || 0;
+  const paidAmount    = feeStats.paidAmount  || 0;
+  const unpaidAmount  = totalAmount - paidAmount;
+  const pendingNotify = feeStats.pendingNotify || 0;
 
   // ── accumulated unpaid per student (for warning icon in table) ──
   const studentDebtMap = fees.reduce((map, f) => {

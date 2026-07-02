@@ -231,7 +231,9 @@ function GradeModal({ attemptId, onClose, onGraded }) {
   const hasTask1     = !!(attempt?.task1Snapshot?.prompt || (attempt?.task1Answer && attempt.task1Answer.trim()));
   const hasTask2     = !!(attempt?.task2Snapshot?.prompt || (attempt?.task2Answer && attempt.task2Answer.trim()));
   const hasAiResult  = !!(ai.task1?.bandScore || ai.task2?.bandScore);
-  const hasManualResult = modes.task1 === 'manual' || modes.task2 === 'manual';
+  const hasManualResult =
+    (modes.task1 === 'manual' && manuals.task1.bandScore !== '') ||
+    (modes.task2 === 'manual' && manuals.task2.bandScore !== '');
 
   function calcBand(a) {
     const scores = [a?.aiGrading?.task1?.bandScore, a?.aiGrading?.task2?.bandScore].filter(s => s != null && s > 0);

@@ -100,13 +100,25 @@ router.get('/', auth, adminOnly, async (req, res) => {
     if (studentNotified !== undefined && studentNotified !== '') filter.studentNotified = studentNotified === 'true';
 
     const skip  = (Number(page) - 1) * Number(limit);
-    const total = await TuitionFee.countDocuments(filter);
-    const fees  = await TuitionFee.find(filter)
-      .populate('studentId', 'username email firstName lastName')
-      .sort({ year: -1, month: -1, createdAt: -1 })
-      .skip(skip).limit(Number(limit)).lean();
+    const [total, fees, aggStats] = await Promise.all([
+      TuitionFee.countDocuments(filter),
+      TuitionFee.find(filter)
+        .populate('studentId', 'username email firstName lastName')
+        .sort({ year: -1, month: -1, createdAt: -1 })
+        .skip(skip).limit(Number(limit)).lean(),
+      TuitionFee.aggregate([
+        { $match: filter },
+        { $group: {
+          _id: null,
+          totalAmount:    { $sum: '$amount' },
+          paidAmount:     { $sum: { $cond: ['$isPaid', '$amount', 0] } },
+          pendingNotify:  { $sum: { $cond: [{ $and: [{ $eq: ['$studentNotified', true] }, { $eq: ['$isPaid', false] }] }, 1, 0] } }
+        }}
+      ])
+    ]);
+    const stats = aggStats[0] || { totalAmount: 0, paidAmount: 0, pendingNotify: 0 };
 
-    res.json({ success: true, fees, total });
+    res.json({ success: true, fees, total, stats });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
