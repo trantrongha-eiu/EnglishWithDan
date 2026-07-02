@@ -1,6 +1,7 @@
 const { GoogleGenAI } = require('@google/genai');
 
-const MODEL = 'gemini-2.5-flash';
+const MODEL      = 'gemini-2.5-flash'; // essay / speaking (low frequency, high quality)
+const MODEL_FAST = 'gemini-2.0-flash'; // per-answer grading (1 500 RPD free vs 20 RPD)
 
 // IELTS examiner persona — same calibration rules as the original Groq implementation
 const SYSTEM_INSTRUCTION = `You are an experienced, calibrated IELTS examiner (IDP/British Council certified). \
@@ -38,7 +39,7 @@ async function checkEssay(question, essay, _attempt = 0) {
         maxOutputTokens: 8192
       }
     });
-    rawText = result.text;
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
     console.error('[Gemini] API error:', err.status, err.message || err);
     // Detect quota / overload errors so caller can return 503 to admin
@@ -122,7 +123,7 @@ Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded
         maxOutputTokens: 2048
       }
     });
-    rawText = result.text;
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
     console.error('[Gemini Speaking] API error:', err.status, err.message || err);
     const msg = (err.message || '').toLowerCase();
@@ -189,7 +190,7 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
   let rawText;
   try {
     const result = await ai.models.generateContent({
-      model: MODEL,
+      model: MODEL_FAST,
       contents: prompt,
       config: {
         systemInstruction: T2_GRADE_SYSTEM,
@@ -198,7 +199,7 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
         maxOutputTokens: 300
       }
     });
-    rawText = result.text;
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
     console.error('[Gemini T2Grade] API error:', err.status, err.message || err);
     const msg = (err.message || '').toLowerCase();
