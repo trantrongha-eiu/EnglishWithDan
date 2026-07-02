@@ -90,8 +90,10 @@ img { max-width: 100%; height: auto; }
   white-space: nowrap;
 }
 
-.top-nav .nav-links a:hover,
-.top-nav .nav-links a.active {
+.top-nav .nav-links > a:hover,
+.top-nav .nav-links > a.active,
+.top-nav .nav-dropdown > a:hover,
+.top-nav .nav-dropdown > a.active {
   background: linear-gradient(135deg, rgba(240,147,251,.12), rgba(245,87,108,.12));
   color: var(--primary);
 }
