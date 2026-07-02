@@ -53,6 +53,10 @@ const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
 const Task1Attempt = require('../models/Task1Attempt');
 const Task2Attempt = require('../models/Task2Attempt');
 const UpgradeRequest = require('../models/UpgradeRequest');
+const User           = require('../models/User');
+const VocabBook      = require('../models/VocabBook');
+const VocabActivity  = require('../models/VocabActivity');
+const bcrypt         = require('bcryptjs');
 const auth         = require('../middleware/auth');
 
 // Chỉ teacher và admin mới dùng được
@@ -404,13 +408,6 @@ router.delete('/keys/:id', auth, async (req, res) => {
 
 router.get('/stats', auth, teacherOnly, async (req, res) => {
   try {
-    const ReadingPracticeAttempt  = require('../models/ReadingPracticeAttempt');
-    const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
-    const WritingAttempt          = require('../models/WritingAttempt');
-    const WritingPracticeAttempt  = require('../models/WritingPracticeAttempt');
-    const Task1Attempt            = require('../models/Task1Attempt');
-    const Task2Attempt            = require('../models/Task2Attempt');
-
     const [
       totalStudents,
       totalTeachers,
@@ -1156,11 +1153,6 @@ router.delete('/writing/samples/:id/permanent', auth, teacherOnly, async (req, r
 // USER MANAGEMENT
 // ══════════════════════════════════════════════════
 
-const User           = require('../models/User');
-const VocabBook      = require('../models/VocabBook');
-const VocabActivity  = require('../models/VocabActivity');
-const bcrypt         = require('bcryptjs');
-
 // GET /api/admin/users – danh sách user (có search, phân trang)
 router.get('/users', auth, teacherOnly, async (req, res) => {
   try {
@@ -1610,8 +1602,10 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
 
     res.json({ success: true, message: 'Đã xác nhận điểm' });
 
-    // Send email notification (fire-and-forget, không block response)
+    // Fire-and-forget: detached from request lifecycle via setImmediate
+    // so any error here can never trigger the outer catch after headers are sent
     if (attempt && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      setImmediate(async () => {
       try {
         const student = await User.findById(attempt.userId).select('email firstName username').lean();
         if (student?.email) {
@@ -1662,6 +1656,7 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
       } catch (mailErr) {
         console.error('[Writing] Grade email error:', mailErr.message);
       }
+      }); // end setImmediate
     }
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
