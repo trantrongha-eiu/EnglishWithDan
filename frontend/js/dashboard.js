@@ -2094,18 +2094,13 @@ function showResults(mode) {
     }
     void total; // total used for reference only
 
-    // Vocab result image (shown only for < 70%)
+    // Vocab result image
     const vocabImgEl = document.getElementById('vocab-result-img');
     if (vocabImgEl) {
-        if (pct < 50) {
-            vocabImgEl.src = 'img/vocabbelow50%25.jpg';
-            vocabImgEl.style.display = 'block';
-        } else if (pct < 70) {
-            vocabImgEl.src = 'img/vocab50_70%25.jpg';
-            vocabImgEl.style.display = 'block';
-        } else {
-            vocabImgEl.style.display = 'none';
-        }
+        vocabImgEl.src = pct >= 70 ? 'img/aboveband7.jpg'
+                       : pct >= 50 ? 'img/vocab50_70%25.jpg'
+                       :             'img/vocabbelow50%25.jpg';
+        vocabImgEl.style.display = 'block';
     }
 
     // Hiện danh sách từ đã sai
