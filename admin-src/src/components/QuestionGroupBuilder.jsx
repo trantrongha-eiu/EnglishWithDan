@@ -625,10 +625,15 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Đáp án đúng *</label>
             {isTFNG ? (
-              <select className="form-input" value={qForm.correctAnswer} onChange={setF('correctAnswer')}>
-                <option value="">-- Chọn --</option>
-                {tfOpts.map(a => <option key={a} value={a}>{a}</option>)}
-              </select>
+              <div style={{ display: 'flex', gap: 8, marginTop: 6, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6, flexWrap: 'wrap' }}>
+                {tfOpts.map(a => (
+                  <label key={a} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, flex: '1 1 auto', minWidth: 100, padding: '4px 8px', borderRadius: 6, background: qForm.correctAnswer === a ? 'rgba(61,139,255,.12)' : 'transparent', border: qForm.correctAnswer === a ? '1.5px solid var(--blue)' : '1.5px solid transparent', transition: 'all .15s' }}>
+                    <input type="radio" name="tfng-ans" checked={qForm.correctAnswer === a}
+                      onChange={() => setQForm(f => ({ ...f, correctAnswer: a }))} />
+                    <span style={{ fontWeight: qForm.correctAnswer === a ? 700 : 400, color: qForm.correctAnswer === a ? 'var(--blue)' : 'inherit' }}>{a}</span>
+                  </label>
+                ))}
+              </div>
             ) : ['multiple-choice', 'multi-answer-group'].includes(qForm.type) && (qForm.options || []).some(o => o?.trim()) ? (
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 6, padding: '8px 10px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6 }}>
                 {(qForm.options || []).map((opt, i) => !opt?.trim() ? null : (
