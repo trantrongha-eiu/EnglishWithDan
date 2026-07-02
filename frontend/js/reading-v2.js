@@ -1300,10 +1300,73 @@ function renderNoteFormGroup(group, isReview, reviewMap) {
 
 /* ── MAP ──────────────────────────────────────────────────────────── */
 function renderMapGroup(group, isReview, reviewMap) {
-  const { imageUrl = '', questions = [] } = group;
+  const { imageUrl = '', dragDropConfig = {}, questions = [] } = group;
+  const words = dragDropConfig.words || [];
   const imgHtml = imageUrl
     ? `<div class="rq-map-img-wrap"><img class="rq-map-img" src="${escHtml(imageUrl)}" alt="Map/Diagram" /></div>`
     : '';
+
+  // Drag-drop mode when word bank is configured
+  if (words.length > 0) {
+    const groupId = 'rmapg-' + questions.map(q => q.questionNumber).join('-');
+    const qMap = {};
+    questions.forEach(q => { qMap[q.questionNumber] = q; });
+
+    const chipsHtml = words.map(word => {
+      const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+      return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
+        data-value="${escHtml(word)}" data-groupid="${groupId}" data-reuse="0"
+        draggable="${isReview ? 'false' : 'true'}"
+        ondragstart="dragStart(event,'${escHtml(word)}')"
+        onclick="clickSCChip('${escHtml(word)}','${groupId}')">
+        <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
+      </span>`;
+    }).join('');
+
+    const qRowsHtml = questions.map(q => {
+      const qNum = q.questionNumber;
+      const review = reviewMap[qNum];
+      const labelHtml = q.questionText ? `<span class="map-dd-label">${escHtml(q.questionText)}</span>` : '';
+      if (isReview) {
+        const rvUA = review?.userAnswer || '';
+        const cls = review?.isCorrect ? 'rq-ans-ok' : rvUA ? 'rq-ans-wrong' : 'rq-ans-skip';
+        const hint = !review?.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(review?.correctAnswer || '')})</span>` : '';
+        return `<div class="map-dd-row"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(rvUA || '–')}</span>${hint}${labelHtml}</div>`;
+      }
+      const ans = state.answers[qNum] || '';
+      return `<div class="map-dd-row">
+        <span class="rq-q-badge">${qNum}</span>
+        <span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${qNum}" data-groupid="${groupId}"
+          ondragover="event.preventDefault();this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="dropSC(event,${qNum},'${groupId}')">
+          ${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}
+        </span>${labelHtml}
+      </div>`;
+    }).join('');
+
+    const explHtml = isReview
+      ? questions.filter(q => reviewMap[q.questionNumber]?.explanation).map(q =>
+          `<div class="q-explanation"><span class="rq-q-badge">${q.questionNumber}</span> <strong>Giải thích:</strong> ${escHtml(reviewMap[q.questionNumber].explanation)}</div>`
+        ).join('')
+      : '';
+
+    return `<div class="rq-map-group rq-map-dd-group">
+      ${imgHtml}
+      <div class="rq-map-dd-body">
+        <div class="rq-map-dd-questions">${qRowsHtml}${explHtml}</div>
+        <div class="rq-sc-bank" id="${groupId}-bank">
+          <div class="rq-sc-bank-header">
+            <span class="rq-sc-bank-title">KÉO VÀO SƠ ĐỒ</span>
+            <span class="rq-sc-bank-count">${words.length} lựa chọn</span>
+          </div>
+          <div class="rq-sc-bank-chips">${chipsHtml}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Text-input fallback
   const questionsHtml = questions.map(q => renderSingleQuestion(q, isReview, reviewMap)).join('');
   return `<div class="rq-map-group">${imgHtml}<div class="rq-map-questions">${questionsHtml}</div></div>`;
 }

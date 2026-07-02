@@ -73,6 +73,10 @@ const QuestionGroupSchema = new mongoose.Schema({
 
   // ── map config ──
   imageUrl: { type: String, default: '' },
+  dragDropConfig: {
+    text:  { type: String, default: '' },
+    words: [String]
+  },
 
   // ── matching-options config ──
   matchingOptionsTitle: { type: String, default: '' },

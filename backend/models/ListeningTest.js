@@ -70,6 +70,7 @@ const QuestionGroupSchema = new mongoose.Schema({
   // ── Cấu hình cho groupType = 'matching-options' ───────────────────────────
   // matchingOptions: danh sách lựa chọn A→G (VD: ['the museum', 'the library', ...])
   matchingOptions:        [String],
+  matchingOptionsTitle:   { type: String, default: '' },
   matchingReuseAllowed:   { type: Boolean, default: false },
   interchangeableAnswers: { type: Boolean, default: false },
 

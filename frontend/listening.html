@@ -1437,7 +1437,7 @@
             const titleHtml = group.groupTitle
                 ? `<div class="group-title">${escHtml(group.groupTitle)}</div>` : '';
             const instruction = group.instruction
-                ? `<div class="group-instruction">${group.instruction}</div>` : '';
+                ? `<div class="group-instruction">${escHtml(group.instruction)}</div>` : '';
 
             let wordBankHtml = '';
             if (!isReview) {
@@ -1468,7 +1468,7 @@
         function renderTableGroup(group, isReview) {
             const { headers = [], rows = [] } = group.tableConfig || {};
             const headerHtml = headers.length
-                ? `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>` : '';
+                ? `<thead><tr>${headers.map(h => `<th>${escHtml(h)}</th>`).join('')}</tr></thead>` : '';
             const bodyHtml = rows.map(cells =>
                 `<tr>${cells.map(cell =>
                     `<td>${resolvePlaceholders(cell, group.questions, isReview)}</td>`
@@ -1487,7 +1487,7 @@
                 return `<div class="note-line${isIndent ? ' note-line-indent' : ''}">${resolvePlaceholders(cleanLine, group.questions, isReview)}</div>`;
             }).join('');
             return `<div class="group-note-form">
-                ${title ? `<div class="note-form-title">${title}</div>` : ''}
+                ${title ? `<div class="note-form-title">${escHtml(title)}</div>` : ''}
                 <div class="note-form-body">${linesHtml}</div>
             </div>`;
         }
@@ -1532,7 +1532,7 @@
                     const num = q.questionNumber;
                     const labelHtml = q.questionText ? `<span class="map-dd-label">${escHtml(q.questionText)}</span>` : '';
                     if (isReview) {
-                        const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                        const cls = q.isCorrect ? 'rq-ans-ok' : q.userAnswer ? 'rq-ans-wrong' : 'rq-ans-skip';
                         const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
                         return `<div class="map-dd-row"><span class="rq-q-badge">${num}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}${labelHtml}</div>`;
                     }
@@ -1584,6 +1584,10 @@
             const matchingOptions = group.matchingOptions?.length
                 ? group.matchingOptions
                 : (group.endingsConfig?.endings || []).map(e => e.text || '');
+            // L7: sentence-endings use stored letter; matching-options use positional A,B,C...
+            const optLetters = (group.groupType === 'sentence-endings' && group.endingsConfig?.endings?.length)
+                ? group.endingsConfig.endings.map((e, i) => e.letter || String.fromCharCode(65 + i))
+                : matchingOptions.map((_, i) => String.fromCharCode(65 + i));
             const groupId = 'lmog-' + questions.map(q => q.questionNumber).join('-');
 
             const reuseNote = matchingReuseAllowed
@@ -1591,7 +1595,7 @@
 
             // Cột trái: danh sách options dọc (A–G)
             const optListHtml = matchingOptions.map((opt, i) => {
-                const letter = String.fromCharCode(65 + i);
+                const letter = optLetters[i];
                 const isUsed = !isReview && !matchingReuseAllowed &&
                     questions.some(q => state.answers[q.questionNumber] === letter);
                 return `<div class="mo-opt-row${isUsed ? ' mo-opt-used' : ''}"
@@ -1641,10 +1645,14 @@
                 </div>`;
             }).join('');
 
+            const moTitle = group.matchingOptionsTitle?.trim();
+            const optColHtml = moTitle
+                ? `<div class="mo-options-box"><div class="mo-options-title">${escHtml(moTitle)}</div><div class="mo-options-col" id="${groupId}-bank">${optListHtml}</div></div>`
+                : `<div class="mo-options-col" id="${groupId}-bank">${optListHtml}</div>`;
             return `<div class="rq-mo-group">
                 ${reuseNote}
                 <div class="mo-two-col">
-                    <div class="mo-options-col" id="${groupId}-bank">${optListHtml}</div>
+                    ${optColHtml}
                     <div class="mo-questions-col">${qRowsHtml}</div>
                 </div>
             </div>`;
@@ -1676,7 +1684,7 @@
                 const q = qMap[qNum];
                 if (!q) return `[Q${qNum}]`;
                 if (isReview) {
-                    const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                    const cls = q.isCorrect ? 'rq-ans-ok' : q.userAnswer ? 'rq-ans-wrong' : 'rq-ans-skip';
                     const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
                     return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }
@@ -1727,7 +1735,7 @@
                 const q = qMap[qNum];
                 if (!q) return `[Q${qNum}]`;
                 if (isReview) {
-                    const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                    const cls = q.isCorrect ? 'rq-ans-ok' : q.userAnswer ? 'rq-ans-wrong' : 'rq-ans-skip';
                     const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
                     return `<span class="rq-inline-wrap" id="rv-q${qNum}" data-qnum="${qNum}"><span class="rq-q-badge">${qNum}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}</span>`;
                 }

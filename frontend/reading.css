@@ -2109,6 +2109,26 @@ body.tool-hl .check-box { user-select: none; }
   .rq-map-questions { padding: 12px; }
 }
 
+/* ── Map drag-drop mode ── */
+.rq-map-dd-group { flex-direction: column; }
+.rq-map-dd-group > .rq-map-img-wrap {
+  position: sticky;
+  top: 80px;
+  flex: none;
+  width: 100%;
+  border-right: none;
+  border-bottom: 1px solid #e5e7eb;
+}
+.rq-map-dd-body { display: grid; grid-template-columns: 1fr 230px; align-items: start; width: 100%; }
+.rq-map-dd-questions { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.map-dd-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.map-dd-label { font-size: 13px; color: #4b5563; flex: 1; min-width: 0; }
+@media (max-width: 640px) {
+  .rq-map-dd-body { grid-template-columns: 1fr; }
+  .rq-map-dd-group > .rq-map-img-wrap { position: static; }
+  .rq-map-dd-body .rq-sc-bank { order: -1; }
+}
+
 /* ── MATCHING OPTIONS GROUP (BC/IDP layout) ─────────────────────────── */
 .matching-group-wrap { margin-bottom: 4px; }
 
@@ -2666,6 +2686,8 @@ body.tool-hl .check-box { user-select: none; }
 /* ── Dark mode: map group ── */
 [data-theme="dark"] .rq-map-group { border-color: #374151; }
 [data-theme="dark"] .rq-map-img-wrap { background: #1f2937; border-right-color: #374151; }
+[data-theme="dark"] .rq-map-dd-group > .rq-map-img-wrap { border-bottom-color: #374151; }
+[data-theme="dark"] .map-dd-label { color: #9ca3af; }
 
 /* ── Dark mode: matching options / headings ── */
 [data-theme="dark"] .match-question-row { background: #1e2433; border-color: #374151; }
@@ -2709,6 +2731,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .se-endings-label { color: #6b7280; }
 [data-theme="dark"] .se-ending-text { color: #d1d5db; }
 [data-theme="dark"] .rq-summary-text { background: #1a2030; border-color: #374151; color: #d1d5db; }
+[data-theme="dark"] .rq-sc-bank { background: #1f2937; border-color: #374151; }
 
 /* ── Dark mode: two-col matching (MO) ── */
 [data-theme="dark"] .matching-group-wrap .match-question-row { background: #1e2433; border-color: #374151; }

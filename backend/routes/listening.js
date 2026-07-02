@@ -630,12 +630,15 @@ router.post('/tests/:id/start', auth, async (req, res) => {
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
-        summaryConfig: g.summaryConfig,        // ← THÊM
+        summaryConfig: g.summaryConfig,
         matchingOptions: g.matchingOptions,
+        matchingOptionsTitle: g.matchingOptionsTitle,
         matchingReuseAllowed: g.matchingReuseAllowed,
         interchangeableAnswers: g.interchangeableAnswers,
         endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
+        dragDropConfig: g.dragDropConfig,
+        groupTitle: g.groupTitle,
         questions: g.questions.map(q => ({
           _id: q._id,
           questionNumber: q.questionNumber,
@@ -779,16 +782,19 @@ router.post('/tests/:id/submit', auth, async (req, res) => {
       transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
         groupType: g.groupType,
+        groupTitle: g.groupTitle,
         instruction: g.instruction,
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
         summaryConfig: g.summaryConfig,
         matchingOptions: g.matchingOptions,
+        matchingOptionsTitle: g.matchingOptionsTitle,
         matchingReuseAllowed: g.matchingReuseAllowed,
         interchangeableAnswers: g.interchangeableAnswers,
         endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
+        dragDropConfig: g.dragDropConfig,
         questions: g.questions.map(q =>
           reviewMap[q.questionNumber] || { questionNumber: q.questionNumber }
         )
@@ -878,16 +884,19 @@ router.get('/history/:attemptId', auth, async (req, res) => {
       transcript: s.transcript || '',
       questionGroups: s.questionGroups.map(g => ({
         groupType: g.groupType,
+        groupTitle: g.groupTitle,
         instruction: g.instruction,
         tableConfig: g.tableConfig,
         noteConfig: g.noteConfig,
         bulletConfig: g.bulletConfig,
         summaryConfig: g.summaryConfig,
         matchingOptions: g.matchingOptions,
+        matchingOptionsTitle: g.matchingOptionsTitle,
         matchingReuseAllowed: g.matchingReuseAllowed,
         interchangeableAnswers: g.interchangeableAnswers,
         endingsConfig: g.endingsConfig,
         imageUrl: g.imageUrl,
+        dragDropConfig: g.dragDropConfig,
         questions: g.questions.map(q =>
           reviewMap2[q.questionNumber] || { questionNumber: q.questionNumber }
         )

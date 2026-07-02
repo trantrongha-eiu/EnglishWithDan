@@ -35,6 +35,7 @@ const LSGroupSchema = new mongoose.Schema({
   bulletConfig:{ items: [String] },
   imageUrl:    { type: String, default: '' },
   matchingOptions:        [String],
+  matchingOptionsTitle:   { type: String, default: '' },
   matchingReuseAllowed:   { type: Boolean, default: false },
   interchangeableAnswers: { type: Boolean, default: false },
   summaryConfig: {
