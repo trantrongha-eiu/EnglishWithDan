@@ -27,7 +27,7 @@ module.exports = async (req, res, next) => {
     // Auto-expire plan nếu đã hết hạn
     if (user.plan === 'premium' && user.planExpiresAt && user.planExpiresAt < new Date()) {
       user.plan = 'free';
-      User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
+      User.updateOne({ _id: user._id }, { plan: 'free', planExpiresAt: null, planStartedAt: null }).catch(() => {});
     }
 
     req.user = user;

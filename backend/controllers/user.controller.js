@@ -11,6 +11,8 @@ exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password -resetOTP -resetOTPExpires');
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    // Use plan from req.user (already auto-expired by auth middleware) to avoid race with fire-and-forget updateOne
+    user.plan = req.user.plan;
     res.json({ success: true, user });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

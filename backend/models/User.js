@@ -40,6 +40,7 @@ const UserSchema = new mongoose.Schema({
   // Subscription plan
   plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
   planExpiresAt:  { type: Date, default: null },
+  planStartedAt:  { type: Date, default: null },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 

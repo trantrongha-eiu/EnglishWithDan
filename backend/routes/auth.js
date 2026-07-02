@@ -18,7 +18,7 @@ router.get('/me', auth, (req, res) => {
       id: u._id, firstName: u.firstName, lastName: u.lastName,
       username: u.username, email: u.email, role: u.role,
       avatar: u.avatar || '', plan: u.plan || 'free',
-      planExpiresAt: u.planExpiresAt || null
+      planExpiresAt: u.planExpiresAt || null, planStartedAt: u.planStartedAt || null
     }
   });
 });

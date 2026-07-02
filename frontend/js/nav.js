@@ -261,6 +261,7 @@
         try { _cached = JSON.parse(localStorage.getItem('user') || '{}'); } catch(e) {}
         _cached.plan = d.user.plan;
         _cached.planExpiresAt = d.user.planExpiresAt;
+        _cached.planStartedAt = d.user.planStartedAt;
         localStorage.setItem('user', JSON.stringify(_cached));
         // Show expiry banner if premium and expiring within 7 days
         if (d.user.plan === 'premium' && d.user.planExpiresAt) {

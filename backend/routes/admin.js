@@ -2571,8 +2571,10 @@ router.put('/users/:id/plan', auth, adminOnly, async (req, res) => {
     const update = { plan };
     if (plan === 'premium' && months) {
       update.planExpiresAt = new Date(Date.now() + months * 30 * 24 * 3600 * 1000);
+      update.planStartedAt = new Date();
     } else if (plan === 'free') {
       update.planExpiresAt = null;
+      update.planStartedAt = null;
     }
     const user = await require('../models/User').findByIdAndUpdate(req.params.id, update, { new: true })
       .select('username email plan planExpiresAt role');
@@ -2622,7 +2624,7 @@ router.put('/upgrade-requests/:id/approve', auth, adminOnly, async (req, res) =>
     const baseDate = (user.planExpiresAt && user.planExpiresAt > new Date()) ? user.planExpiresAt : new Date();
     const newExpiry = new Date(baseDate.getTime() + request.months * 30 * 24 * 3600 * 1000);
 
-    await require('../models/User').findByIdAndUpdate(user._id, { plan: 'premium', planExpiresAt: newExpiry });
+    await require('../models/User').findByIdAndUpdate(user._id, { plan: 'premium', planExpiresAt: newExpiry, planStartedAt: new Date() });
     request.status = 'approved';
     request.adminNote = adminNote || '';
     request.reviewedBy = req.user._id;
