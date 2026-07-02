@@ -1602,7 +1602,8 @@ function _isActivePractice() {
     const resultsEl = document.getElementById('resultsMode');
     if (resultsEl && resultsEl.style.display === 'block') return false;
     const total = currentMode === 'mixed' ? mixedQueue.length : practiceWords.length;
-    return total > 0;
+    if (total === 0) return false;
+    return (correctAnswers + wrongAnswers) > 0;
 }
 
 function askQuitPractice(onQuit) {
