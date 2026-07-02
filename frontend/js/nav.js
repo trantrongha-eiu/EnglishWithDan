@@ -254,6 +254,8 @@
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d.success || !d.user) return;
+        // Refresh inactivity timer so active users aren't falsely logged out
+        localStorage.setItem('lastLoginAt', Date.now().toString());
         // Merge fresh plan data into localStorage
         var _cached = {};
         try { _cached = JSON.parse(localStorage.getItem('user') || '{}'); } catch(e) {}

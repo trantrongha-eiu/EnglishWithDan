@@ -67,6 +67,7 @@ const state = {
   totalSeconds: 0,
   secondsLeft: 0,
   timerHidden: false,
+  isSubmitting: false,
   currentAttemptId: null,    // set after submit
   currentAttemptData: null   // for download
 };
@@ -414,6 +415,8 @@ function closeConfirmModal() {
 }
 
 async function submitExam(statusOverride) {
+  if (state.isSubmitting) return;
+  state.isSubmitting = true;
   closeConfirmModal();
   clearInterval(state.timerInterval);
   window.onbeforeunload = null;
@@ -473,9 +476,11 @@ async function submitExam(statusOverride) {
       document.getElementById('done-wc2').textContent = wc2;
       showScreen('screen-done');
     } else {
+      state.isSubmitting = false;
       showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'));
     }
   } catch (e) {
+    state.isSubmitting = false;
     overlay.style.display = 'none';
     showToast('Lỗi nộp bài: ' + e.message);
   }

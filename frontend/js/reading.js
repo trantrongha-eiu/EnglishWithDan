@@ -1530,6 +1530,7 @@ function clickChip(qNum, word) {
   refreshWordBankZone(qNum, word);
 }
 function clearDrop(qNum) {
+  const prevWord = state.answers[qNum]; // capture before deleting
   delete state.answers[qNum];
   const passage = state.passages[state.currentPassageIdx];
   const allQ = getAllQuestionsFromPassage(passage);
@@ -1537,9 +1538,11 @@ function clearDrop(qNum) {
   if (q) {
     const dz = document.querySelector(`.drop-zone[data-qnum="${qNum}"]`);
     if (dz) { dz.classList.remove('filled'); dz.innerHTML = 'Kéo hoặc click'; }
-    document.querySelectorAll('.word-chip').forEach(c => {
-      if (c.textContent === q.wordBank?.find(w => w === c.textContent)) c.classList.remove('used');
-    });
+    if (prevWord) {
+      document.querySelectorAll('.word-chip').forEach(c => {
+        if (c.textContent === prevWord) c.classList.remove('used');
+      });
+    }
   }
   updateQNavBtn(qNum);
   saveExamToStorage();
@@ -1870,9 +1873,10 @@ function confirmSubmit() {
 }
 
 async function submitExam() {
+  if (state.submitted) return;
+  state.submitted = true;
   closeModal('modal-submit');
   clearInterval(state.timer);
-  state.submitted = true;
   window.onbeforeunload = null;
 
   // Show loading overlay

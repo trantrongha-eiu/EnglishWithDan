@@ -248,7 +248,7 @@ router.get('/topics', async (_req, res) => {
 //  POST /api/writing-practice/check
 //  Uses local check for all exercise types
 // ══════════════════════════════════════════════════════════════
-router.post('/check', async (req, res) => {
+router.post('/check', auth, async (req, res) => {
   const { exerciseId, userAnswer } = req.body;
   if (!exerciseId || !userAnswer?.trim())
     return res.status(400).json({ success: false, message: 'Thiếu exerciseId hoặc câu trả lời' });

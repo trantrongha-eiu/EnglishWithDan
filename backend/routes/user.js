@@ -66,6 +66,8 @@ router.patch('/messages/:id/read', auth, async (req, res) => {
         await msg.save();
       }
     } else {
+      if (msg.toId.toString() !== uid.toString())
+        return res.status(403).json({ success: false, message: 'Không có quyền' });
       msg.isRead = true;
       await msg.save();
     }
@@ -81,6 +83,8 @@ router.delete('/messages/:id', auth, async (req, res) => {
     const uid = req.user._id;
     const msg = await Message.findById(req.params.id);
     if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+    if (!msg.isBroadcast && msg.toId.toString() !== uid.toString())
+      return res.status(403).json({ success: false, message: 'Không có quyền xóa tin nhắn này' });
     if (!msg.deletedBy.some(id => id.toString() === uid.toString())) {
       msg.deletedBy.push(uid);
       await msg.save();
