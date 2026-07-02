@@ -2510,30 +2510,21 @@
                 document.getElementById('r-wrong').textContent = r.wrongCount;
                 document.getElementById('r-skip').textContent = r.skippedCount;
 
-                const band        = r.bandScore || 0;
-                const correct     = r.correctCount || 0;
-                const isFullTest  = (r.totalQuestions || 40) >= 30;
+                const band = r.bandScore || 0;
 
-                // Result image
+                // Result image (full listening test only — section practice uses inline ls-result-bar)
                 const imgEl = document.getElementById('result-img');
                 if (imgEl) {
-                    let imgSrc = '';
-                    if (isFullTest) {
-                        if (band >= 7.0)      imgSrc = 'img/aboveband7.jpg';
-                        else if (band >= 6.0) imgSrc = 'img/band_6_7.jpg';
-                        else if (band < 5.0)  imgSrc = 'img/belowband6.jpg';
-                    } else {
-                        // Section practice (~10 questions)
-                        if (correct >= 7)      imgSrc = 'img/aboveband7.jpg';
-                        else if (correct >= 5) imgSrc = 'img/band_6_7.jpg';
-                        else                   imgSrc = 'img/belowband6.jpg';
-                    }
+                    const imgSrc = band >= 7.0 ? 'img/aboveband7.jpg'
+                                 : band >= 6.0 ? 'img/band_6_7.jpg'
+                                 : band < 5.0  ? 'img/belowband6.jpg'
+                                 : '';
                     if (imgSrc) { imgEl.src = imgSrc; imgEl.style.display = ''; }
                     else imgEl.style.display = 'none';
                 }
 
                 // Message (funny/sarcastic for very low scores)
-                const isLow = isFullTest ? band < 5.0 : correct < 5;
+                const isLow = band < 5.0;
                 document.getElementById('result-emoji').textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
                 if (isLow) {
                     const funnyMsgs = [
@@ -3654,7 +3645,9 @@
 
         // Re-render with review data
         const inner = document.getElementById('lt-practice-questions-inner');
+        const ltPracImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 50 ? 'img/band_6_7.jpg' : 'img/belowband6.jpg';
         let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
+            <img src="${ltPracImgSrc}" alt="" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
                 <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
                 <span class="ls-rb-correct">● Đúng: ${correct}</span>

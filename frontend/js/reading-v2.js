@@ -2245,30 +2245,21 @@ function showResult(r) {
   document.getElementById('r-skip').textContent = r.skippedCount;
   document.getElementById('result-band').dataset.attemptId = r.attemptId;
 
-  const band       = r.bandScore || 0;
-  const correct    = r.correctCount || 0;
-  const isFullTest = (r.totalQuestions || 0) >= 30;
+  const band = r.bandScore || 0;
 
-  // Result image
+  // Result image (full reading test only — passage practice uses inline rd-result-bar)
   const imgEl = document.getElementById('result-img');
   if (imgEl) {
-    let imgSrc = '';
-    if (isFullTest) {
-      if (band >= 7.0)      imgSrc = 'img/aboveband7.jpg';
-      else if (band >= 6.0) imgSrc = 'img/band_6_7.jpg';
-      else if (band < 5.0)  imgSrc = 'img/belowband6.jpg';
-    } else {
-      // Passage practice (~13 questions)
-      if (correct >= 12)     imgSrc = 'img/aboveband7.jpg';
-      else if (correct >= 8) imgSrc = 'img/band_6_7.jpg';
-      else                   imgSrc = 'img/belowband6.jpg';
-    }
+    const imgSrc = band >= 7.0 ? 'img/aboveband7.jpg'
+                 : band >= 6.0 ? 'img/band_6_7.jpg'
+                 : band < 5.0  ? 'img/belowband6.jpg'
+                 : '';
     if (imgSrc) { imgEl.src = imgSrc; imgEl.style.display = ''; }
     else imgEl.style.display = 'none';
   }
 
   // Motivational message (funny/sarcastic for very low scores)
-  const isLow = isFullTest ? band < 5.0 : correct < 5;
+  const isLow = band < 5.0;
   const msgEl = document.getElementById('result-msg');
   if (msgEl) {
     if (isLow) {
@@ -2648,10 +2639,15 @@ function _doSubmitRetry() {
     }).catch(() => {});
   }
 
+  const rdPracImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 50 ? 'img/band_6_7.jpg' : 'img/belowband6.jpg';
+  const rdPracImgHtml = fromPractice
+    ? `<img src="${rdPracImgSrc}" alt="" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
+    : '';
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
     qi.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
+        ${rdPracImgHtml}
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
           <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
           <span class="rd-rb-correct">● Đúng: ${correct}</span>
