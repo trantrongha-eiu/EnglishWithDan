@@ -105,7 +105,7 @@ function defaultGroup(type) {
     case 'matching-headings': return { ...base, headingsConfig: { headings: ROMAN.slice(0, 7).map(r => ({ numeral: r, text: '' })) } };
     case 'drag-drop':          return { ...base, dragDropConfig: { text: '', words: [] } };
     case 'summary-completion':return { ...base, summaryConfig: { text: '', wordBank: 'ABCDEFGH'.split('').map(l => ({ letter: l, word: '' })) } };
-    case 'map':               return { ...base, imageUrl: '' };
+    case 'map':               return { ...base, imageUrl: '', dragDropConfig: { text: '', words: [] } };
     default:                  return base;
   }
 }
@@ -371,10 +371,12 @@ function DragDropConfig({ config, onChange }) {
   );
 }
 
-function MapConfig({ imageUrl, onChange, context }) {
+function MapConfig({ imageUrl, dragDropConfig, onImageChange, onDragDropChange, context }) {
   const toast = useToast();
   const fileRef = useRef();
   const [uploading, setUploading] = useState(false);
+  const words = dragDropConfig?.words || [];
+  const isDragDrop = words.length > 0;
 
   async function uploadMapImage() {
     const file = fileRef.current?.files[0];
@@ -397,34 +399,79 @@ function MapConfig({ imageUrl, onChange, context }) {
       });
       const d = await r.json();
       if (!d.success) throw new Error(d.message);
-      onChange(d.url);
+      onImageChange(d.url);
       toast('Upload ảnh thành công');
     } catch (err) { toast('Upload thất bại: ' + err.message, 'error'); }
     finally { setUploading(false); }
   }
 
+  function toggleDragDrop(enable) {
+    if (enable) onDragDropChange({ text: '', words: [''] });
+    else onDragDropChange({ text: '', words: [] });
+  }
+  const updateWord = (i, v) => onDragDropChange({ ...dragDropConfig, words: words.map((w, j) => j === i ? v : w) });
+  const addWord = () => onDragDropChange({ ...dragDropConfig, words: [...words, ''] });
+  const removeWord = i => onDragDropChange({ ...dragDropConfig, words: words.filter((_, j) => j !== i) });
+
   return (
-    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>🗺️ <strong>Map/Diagram Labelling:</strong> Upload hoặc paste URL hình ảnh sơ đồ. Câu hỏi: map-labelling, đáp án là nhãn điền vào sơ đồ.</InfoBox>
-      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>URL hình ảnh sơ đồ</label>
-          <input className="form-input" style={{ marginTop: 4, fontSize: 12 }} value={imageUrl || ''} onChange={e => onChange(e.target.value)} placeholder="https://res.cloudinary.com/..." />
-          <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
-            <input ref={fileRef} type="file" accept="image/*" className="form-input"
-              style={{ padding: 5, flex: 1, fontSize: 11 }} />
-            <button type="button" className="btn btn-ghost btn-sm" onClick={uploadMapImage}
-              disabled={uploading} style={{ flexShrink: 0, fontSize: 12 }}>
-              {uploading ? 'Đang upload...' : '📤 Upload'}
-            </button>
+    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {/* Image section */}
+      <div>
+        <InfoBox>🗺️ <strong>Map/Plan/Diagram:</strong> Upload hình sơ đồ. Chọn <strong>Kéo-thả</strong> để thêm Option Bank — học sinh kéo nhãn vào đúng số câu trên sơ đồ. Để trống Option Bank = dạng điền chữ bình thường.</InfoBox>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+          <div style={{ flex: 1 }}>
+            <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>URL hình ảnh sơ đồ</label>
+            <input className="form-input" style={{ marginTop: 4, fontSize: 12 }} value={imageUrl || ''} onChange={e => onImageChange(e.target.value)} placeholder="https://res.cloudinary.com/..." />
+            <div style={{ display: 'flex', gap: 8, marginTop: 8, alignItems: 'center' }}>
+              <input ref={fileRef} type="file" accept="image/*" className="form-input" style={{ padding: 5, flex: 1, fontSize: 11 }} />
+              <button type="button" className="btn btn-ghost btn-sm" onClick={uploadMapImage}
+                disabled={uploading} style={{ flexShrink: 0, fontSize: 12 }}>
+                {uploading ? 'Đang upload...' : '📤 Upload'}
+              </button>
+            </div>
           </div>
+          {imageUrl && (
+            <div style={{ width: 120, height: 80, border: '1.5px dashed var(--border2)', borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
+              <img src={imageUrl} alt="map preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+          )}
         </div>
-        {imageUrl && (
-          <div style={{ width: 120, height: 80, border: '1.5px dashed var(--border2)', borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
-            <img src={imageUrl} alt="map preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-          </div>
-        )}
       </div>
+
+      {/* Mode toggle */}
+      <div style={{ display: 'flex', gap: 20, padding: '8px 0', borderTop: '1px solid var(--border)' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+          <input type="radio" checked={!isDragDrop} onChange={() => toggleDragDrop(false)} />
+          ✏️ Điền chữ (text input)
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+          <input type="radio" checked={isDragDrop} onChange={() => toggleDragDrop(true)} />
+          🎯 Kéo-thả (Option Bank)
+        </label>
+      </div>
+
+      {/* Word bank editor (drag-drop mode only) */}
+      {isDragDrop && (
+        <div>
+          <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>
+            Option Bank – nhãn / từ (gồm cả distractors)
+          </label>
+          <div style={{ fontSize: 11, color: 'var(--text3)', margin: '3px 0 8px' }}>
+            Đáp án mỗi câu = nhãn thực tế (VD: <em>car park</em>). Có thể thêm từ mồi để tăng độ khó.
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {words.map((w, i) => (
+              <div key={i} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <span style={{ fontWeight: 700, color: 'var(--text3)', width: 20, fontSize: 12, textAlign: 'right', flexShrink: 0 }}>{i + 1}.</span>
+                <input className="form-input" style={{ flex: 1, fontSize: 12, padding: '5px 9px' }}
+                  value={w} onChange={e => updateWord(i, e.target.value)} placeholder="VD: car park" />
+                <RemoveBtn onClick={() => removeWord(i)} />
+              </div>
+            ))}
+          </div>
+          <button className="btn btn-ghost btn-sm" style={{ marginTop: 8 }} onClick={addWord}>＋ Thêm nhãn</button>
+        </div>
+      )}
     </div>
   );
 }
@@ -860,7 +907,13 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
             <SummaryConfig config={g.summaryConfig} onChange={cfg => updateGroup(gi, { summaryConfig: cfg })} />
           )}
           {g.groupType === 'map' && (
-            <MapConfig imageUrl={g.imageUrl} onChange={url => updateGroup(gi, { imageUrl: url })} context={context} />
+            <MapConfig
+              imageUrl={g.imageUrl}
+              dragDropConfig={g.dragDropConfig}
+              onImageChange={url => updateGroup(gi, { imageUrl: url })}
+              onDragDropChange={cfg => updateGroup(gi, { dragDropConfig: cfg })}
+              context={context}
+            />
           )}
 
           {/* Questions in group */}

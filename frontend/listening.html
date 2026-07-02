@@ -1505,10 +1505,74 @@
         }
 
         function renderMapGroup(group, isReview) {
-            const imgUrl = group.imageUrl || '';
-            const qsHtml = group.questions.map(q => renderStandaloneQuestion(q, isReview)).join('');
+            const { imageUrl = '', dragDropConfig = {}, questions = [] } = group;
+            const words = dragDropConfig.words || [];
+            const imgHtml = imageUrl
+                ? `<div class="map-img-wrap"><img src="${escHtml(imageUrl)}" class="map-img" alt="Diagram"/></div>`
+                : '';
+
+            // ── Drag-drop mode when word bank is configured ───────────
+            if (words.length > 0) {
+                const groupId = 'lmapg-' + questions.map(q => q.questionNumber).join('-');
+                const qMap = {};
+                questions.forEach(q => { qMap[q.questionNumber] = q; });
+
+                const chipsHtml = words.map(word => {
+                    const isUsed = !isReview && questions.some(q => state.answers[q.questionNumber] === word);
+                    return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
+                        data-value="${escHtml(word)}" data-groupid="${groupId}" data-reuse="0"
+                        draggable="${isReview ? 'false' : 'true'}"
+                        ondragstart="ltDragStart(event,'${escHtml(word)}')"
+                        onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                        <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
+                    </span>`;
+                }).join('');
+
+                const qRowsHtml = questions.map(q => {
+                    const num = q.questionNumber;
+                    const labelHtml = q.questionText ? `<span class="map-dd-label">${escHtml(q.questionText)}</span>` : '';
+                    if (isReview) {
+                        const cls = q.isCorrect ? 'rq-ans-ok' : 'rq-ans-wrong';
+                        const hint = !q.isCorrect ? `<span class="rq-ans-correct">(✓${escHtml(q.correctAnswer || '')})</span>` : '';
+                        return `<div class="map-dd-row"><span class="rq-q-badge">${num}</span><span class="rq-inline-ans ${cls}">${escHtml(q.userAnswer || '–')}</span>${hint}${labelHtml}</div>`;
+                    }
+                    const ans = state.answers[num] || '';
+                    return `<div class="map-dd-row">
+                        <span class="rq-q-badge">${num}</span>
+                        <span class="drop-zone sc-drop${ans ? ' filled' : ''}" data-qnum="${num}" data-groupid="${groupId}"
+                            ondragover="event.preventDefault();this.classList.add('dragover')"
+                            ondragleave="this.classList.remove('dragover')"
+                            ondrop="ltDropSC(event,${num},'${groupId}')">
+                            ${ans ? `${escHtml(ans)}<span class="clear-drop" onclick="ltClearDragDrop(${num},'${groupId}')"><i class="fas fa-times"></i></span>` : 'Thả vào'}
+                        </span>${labelHtml}
+                    </div>`;
+                }).join('');
+
+                const explHtml = isReview
+                    ? questions.filter(q => q.explanation).map(q =>
+                        `<div class="q-explanation"><span class="rq-q-badge">${q.questionNumber}</span> <strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>`
+                      ).join('')
+                    : '';
+
+                return `<div class="map-dd-group">
+                    ${imgHtml}
+                    <div class="map-dd-body">
+                        <div class="map-dd-questions">${qRowsHtml}${explHtml}</div>
+                        <div class="dd-bank-col" id="${groupId}-bank">
+                            <div class="dd-bank-header">
+                                <span class="dd-bank-title">KÉO VÀO SƠ ĐỒ</span>
+                                <span class="dd-bank-count">${words.length} lựa chọn</span>
+                            </div>
+                            <div class="dd-bank-chips">${chipsHtml}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            // ── Fallback: text-input mode ─────────────────────────────
+            const qsHtml = questions.map(q => renderStandaloneQuestion(q, isReview)).join('');
             return `<div class="group-map">
-                ${imgUrl ? `<div class="map-img-wrap"><img src="${imgUrl}" class="map-img" alt="Diagram"/></div>` : ''}
+                ${imgHtml}
                 <div class="map-questions">${qsHtml}</div>
             </div>`;
         }
