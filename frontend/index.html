@@ -728,7 +728,7 @@
   <script src="js/consult-modal.js"></script>
 
   <!-- ════ FLOATING BUTTONS ════ -->
-  <div class="float-btns">
+  <div class="float-btns" id="float-btns">
     <a href="https://www.facebook.com/EnglishWithDan" target="_blank" class="fb-float" title="Nhắn tin Facebook">
       <i class="fab fa-facebook-messenger"></i>
       <span class="float-label">Facebook</span>
@@ -737,20 +737,37 @@
       <img src="img/zalo-icon.png" alt="Zalo">
       <span class="zalo-float-label">Chat Zalo</span>
     </a>
+    <button class="scroll-top-btn" id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Lên đầu trang">
+      <i class="fas fa-chevron-up"></i>
+    </button>
   </div>
   <style>
     .float-btns{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:center;gap:12px}
-    .fb-float{width:56px;height:56px;border-radius:50%;background:#0866FF;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;text-decoration:none;box-shadow:0 4px 16px rgba(8,102,255,.45);transition:transform .2s,box-shadow .2s;position:relative}
+    /* Identical box model for both social buttons → perfect alignment */
+    .fb-float,.zalo-float{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;text-decoration:none;transition:transform .2s,box-shadow .2s;flex-shrink:0}
+    .fb-float{background:#0866FF;font-size:26px;color:#fff;box-shadow:0 4px 16px rgba(8,102,255,.45)}
     .fb-float:hover{transform:scale(1.1);box-shadow:0 4px 28px rgba(8,102,255,.7)}
-    .float-label{position:absolute;right:calc(100% + 8px);background:#0866FF;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;opacity:0;transform:translateX(4px);transition:opacity .2s,transform .2s;pointer-events:none}
-    .fb-float:hover .float-label{opacity:1;transform:translateX(0)}
-    .zalo-float{position:relative;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 4px 16px rgba(0,104,255,.45);transition:transform .2s,box-shadow .2s;text-decoration:none}
+    /* Zalo: no overflow:hidden so label isn't clipped; border-radius on <img> clips the image */
+    .zalo-float{box-shadow:0 4px 16px rgba(0,104,255,.45)}
     .zalo-float:hover{transform:scale(1.1);box-shadow:0 4px 28px rgba(0,104,255,.7)}
     .zalo-float img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-    .zalo-float-label{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%) translateX(4px);background:#0068FF;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
-    .zalo-float:hover .zalo-float-label{opacity:1;transform:translateY(-50%) translateX(0)}
-    @media(max-width:600px){.float-btns{bottom:18px;right:16px}.fb-float,.zalo-float{width:48px;height:48px}.fb-float{font-size:22px}}
+    /* Labels – identical positioning for both */
+    .float-label,.zalo-float-label{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%) translateX(4px);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none}
+    .float-label{background:#0866FF}
+    .zalo-float-label{background:#0068FF}
+    .fb-float:hover .float-label,.zalo-float:hover .zalo-float-label{opacity:1;transform:translateY(-50%) translateX(0)}
+    /* Scroll-to-top button */
+    .scroll-top-btn{width:56px;height:56px;border-radius:50%;background:#fff;border:2px solid #e5e7eb;color:#374151;font-size:18px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.12);transition:transform .2s,box-shadow .2s,color .2s,border-color .2s;flex-shrink:0}
+    .scroll-top-btn:hover{transform:scale(1.1);box-shadow:0 4px 28px rgba(99,102,241,.3);color:#6366f1;border-color:#6366f1}
+    .scroll-top-btn.visible{display:flex}
+    @media(max-width:600px){.float-btns{bottom:18px;right:16px}.fb-float,.zalo-float,.scroll-top-btn{width:48px;height:48px}.fb-float{font-size:22px}.scroll-top-btn{font-size:16px}}
   </style>
+  <script>
+    window.addEventListener('scroll',()=>{
+      const btn=document.getElementById('scroll-top-btn');
+      if(btn) btn.classList.toggle('visible', window.scrollY > 400);
+    });
+  </script>
 </body>
 
 </html>
