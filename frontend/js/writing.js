@@ -112,6 +112,11 @@ function showScreen(id) {
     return;
   }
 
+  if (params.get('view') === 'samples') {
+    loadWritingSamples();
+    return;
+  }
+
   checkRestoreBanner();
 })();
 
@@ -137,6 +142,8 @@ window.addEventListener('popstate', e => {
     // (restarting would call clearPracticeAutoSave and delete the saved draft)
     if (e.state.taskType) showPracticeTaskList(e.state.taskType, false);
     else showPracticeMode(false);
+  } else if (s === 'samples') {
+    showScreen('screen-samples');
   } else {
     showScreen('screen-key');
     checkRestoreBanner();
@@ -827,7 +834,14 @@ function doDownload(a) {
 // ──────────────────────────────────────────────────────
 const sampleFilters = { quarter: 'all', topic: 'all', taskType: 'all' };
 
+function exitSamples() {
+  history.pushState({ screen: 'key' }, '', 'writing.html');
+  showScreen('screen-key');
+  checkRestoreBanner();
+}
+
 async function loadWritingSamples() {
+  history.pushState({ screen: 'samples' }, '', 'writing.html?view=samples');
   showScreen('screen-samples');
 
   // Reset filter state so chips and fetch are in sync when reopening screen
