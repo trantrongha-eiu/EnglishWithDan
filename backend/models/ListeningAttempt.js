@@ -66,6 +66,7 @@ ListeningAttemptSchema.methods.calculateBandScore = function () {
 
 // ── Index thường dùng: lấy lịch sử theo user, sort mới nhất ─────────────────
 ListeningAttemptSchema.index({ userId: 1, submittedAt: -1 });
+ListeningAttemptSchema.index({ userId: 1, status: 1 });
 ListeningAttemptSchema.index({ testId: 1, submittedAt: -1 });
 
 module.exports = mongoose.model('ListeningAttempt', ListeningAttemptSchema);

@@ -130,4 +130,6 @@ ListeningTestSchema.virtual('totalQuestions').get(function () {
   return this.sections.reduce((sum, s) =>
     sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
 });
+ListeningTestSchema.index({ isActive: 1, testNumber: -1 });
+
 module.exports = mongoose.model('ListeningTest', ListeningTestSchema);

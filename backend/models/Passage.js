@@ -133,4 +133,7 @@ const PassageSchema = new mongoose.Schema({
   isActualTest:  { type: Boolean, default: false }
 }, { timestamps: true });
 
+PassageSchema.index({ category: 1, isActive: 1 });
+PassageSchema.index({ isActualTest: 1, isActive: 1 });
+
 module.exports = mongoose.model('Passage', PassageSchema);

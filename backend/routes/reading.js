@@ -22,13 +22,14 @@ const startLimiter = rateLimit({
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/tests', auth, async (req, res) => {
   try {
-    const tests = await ReadingTest.find({ isActive: true }).sort({ testNumber: -1 });
+    res.set('Cache-Control', 'private, max-age=120');
+    const tests = await ReadingTest.find({ isActive: true }).sort({ testNumber: -1 }).lean();
 
     // Lấy lần làm bài hoàn thành gần nhất cho mỗi test
     const attempts = await TestAttempt.find({
       userId: req.user._id,
       status: 'completed'
-    }).select('testId bandScore correctCount wrongCount skippedCount totalQuestions endTime duration');
+    }).select('testId bandScore correctCount wrongCount skippedCount totalQuestions endTime duration').lean();
 
     // Map: testId → attempt mới nhất
     const attemptMap = {};
@@ -70,11 +71,17 @@ router.post('/start', auth, startLimiter, async (req, res) => {
     const test = await ReadingTest.findById(testId);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy bộ đề' });
 
-    // Random 1 passage từ mỗi category
+    // Random 1 passage từ mỗi category — loại correctAnswer/explanation tại DB
+    const safeProject = { $project: {
+      'questionGroups.questions.correctAnswer': 0,
+      'questionGroups.questions.explanation': 0,
+      'questions.correctAnswer': 0,
+      'questions.explanation': 0,
+    }};
     const [p1arr, p2arr, p3arr] = await Promise.all([
-      Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }]),
-      Passage.aggregate([{ $match: { category: 'passage2', isActive: true } }, { $sample: { size: 1 } }]),
-      Passage.aggregate([{ $match: { category: 'passage3', isActive: true } }, { $sample: { size: 1 } }])
+      Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage2', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage3', isActive: true } }, { $sample: { size: 1 } }, safeProject])
     ]);
 
     if (!p1arr[0] || !p2arr[0] || !p3arr[0]) {
@@ -166,7 +173,7 @@ router.post('/submit', auth, async (req, res) => {
     }
 
     // Lấy lại passages với đáp án
-    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } }).lean();
     // Giữ đúng thứ tự passage1 → passage2 → passage3 như khi thi
     const idOrder = attempt.passagesUsed.map(id => id.toString());
     const passages = idOrder
@@ -311,7 +318,7 @@ router.get('/attempt/:id/review', auth, async (req, res) => {
     }
 
     // Lấy passages đầy đủ (có correctAnswer + explanation)
-    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } });
+    const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } }).lean();
     // Giữ đúng thứ tự passage1 → passage2 → passage3 như khi thi
     const idOrder = attempt.passagesUsed.map(id => id.toString());
     const passages = idOrder

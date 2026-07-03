@@ -11,4 +11,6 @@ const ReadingTestSchema = new mongoose.Schema({
   isActive:   { type: Boolean, default: true }
 }, { timestamps: true });
 
+ReadingTestSchema.index({ isActive: 1, testNumber: -1 });
+
 module.exports = mongoose.model('ReadingTest', ReadingTestSchema);

@@ -545,6 +545,7 @@ router.post('/admin/assemble', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, async (req, res) => {
   try {
+    res.set('Cache-Control', 'private, max-age=120');
     // Dùng aggregation để tính totalParts/totalQuestions mà không cần load section data
     const [tests, attempts] = await Promise.all([
       ListeningTest.aggregate([

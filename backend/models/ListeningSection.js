@@ -66,4 +66,7 @@ const ListeningSectionSchema = new mongoose.Schema({
   isActualTest:    { type: Boolean, default: false },
 }, { timestamps: true });
 
+ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });
+ListeningSectionSchema.index({ isActualTest: 1, isActive: 1 });
+
 module.exports = mongoose.model('ListeningSection', ListeningSectionSchema);
