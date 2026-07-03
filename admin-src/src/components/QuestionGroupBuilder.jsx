@@ -1043,10 +1043,14 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       warns.push({ level: 'warn', msg: `${label} (Note): Chưa có dòng nội dung`, gi });
     if (g.groupType === 'table' && !(g.tableConfig?.rows || []).length)
       warns.push({ level: 'warn', msg: `${label} (Bảng): Chưa có hàng nào`, gi });
-    if ((g.groupType === 'matching-options' || g.groupType === 'sentence-endings') && !(g.matchingOptions?.some(o => o.trim()) || g.endingsConfig?.endings?.some(e => e.text?.trim())))
-      warns.push({ level: 'warn', msg: `${label} (Matching): Chưa có danh sách lựa chọn`, gi });
+    if (g.groupType === 'matching-options' && !(g.matchingOptions?.some(o => o.trim())))
+      warns.push({ level: 'warn', msg: `${label} (Matching Options): Chưa có danh sách lựa chọn`, gi });
+    if (g.groupType === 'sentence-endings' && !(g.endingsConfig?.endings?.some(e => e.text?.trim())))
+      warns.push({ level: 'warn', msg: `${label} (Sentence Endings): Chưa có danh sách đoạn câu`, gi });
     if (g.groupType === 'matching-headings' && !(g.headingsConfig?.headings || []).some(h => h.text?.trim()))
       warns.push({ level: 'warn', msg: `${label} (Matching Headings): Chưa có tiêu đề nào`, gi });
+    if (g.groupType === 'drag-drop' && !(g.dragDropConfig?.words || []).some(w => w?.trim()))
+      warns.push({ level: 'warn', msg: `${label} (Drag & Drop): Chưa có từ nào trong danh sách kéo thả`, gi });
     qs.forEach(q => {
       if (!q.correctAnswer?.trim())
         warns.push({ level: 'error', msg: `Câu ${q.questionNumber}: Thiếu đáp án đúng`, gi });
@@ -1058,6 +1062,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
     return warns;
   });
   const hasWarnings = dupNums.length > 0 || missingNums.length > 0 || groupWarnings.length > 0;
+  const hasErrors = dupNums.length > 0 || groupWarnings.some(w => w.level === 'error');
 
   return (
     <div>
@@ -1189,7 +1194,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
         <div style={{ marginTop: 10, padding: '8px 12px', background: 'var(--surface2)', borderRadius: 6, fontSize: 12, color: 'var(--text3)' }}>
           Tổng: <strong>{totalQs}</strong> câu hỏi trong <strong>{groups.length}</strong> nhóm
           {questionTo && <span style={{ marginLeft: 8 }}>| Phạm vi câu {questionFrom}–{questionTo} ({questionTo - questionFrom + 1} câu)</span>}
-          {hasWarnings && <span style={{ marginLeft: 8, color: '#ef4444', fontWeight: 700 }}>⚠ Có lỗi nhập liệu!</span>}
+          {hasWarnings && <span style={{ marginLeft: 8, color: hasErrors ? '#ef4444' : '#d97706', fontWeight: 700 }}>{hasErrors ? '🔴 Có lỗi cần sửa!' : '🟡 Có cảnh báo'}</span>}
         </div>
       )}
 
