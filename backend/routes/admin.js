@@ -477,6 +477,33 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/db-status – MongoDB storage stats (Atlas M0: 512 MB limit)
+router.get('/db-status', auth, adminOnly, async (req, res) => {
+  try {
+    const mongoose = require('mongoose');
+    const raw = await mongoose.connection.db.command({ dbStats: 1, scale: 1 });
+    const FREE_LIMIT = 512 * 1024 * 1024;
+    const used = (raw.storageSize || 0) + (raw.indexSize || 0);
+    res.json({
+      success: true,
+      db: {
+        usedBytes:   used,
+        limitBytes:  FREE_LIMIT,
+        usedMB:      +(used / 1024 / 1024).toFixed(2),
+        limitMB:     512,
+        usedPct:     +(used / FREE_LIMIT * 100).toFixed(1),
+        dataSize:    raw.dataSize    || 0,
+        storageSize: raw.storageSize || 0,
+        indexSize:   raw.indexSize   || 0,
+        collections: raw.collections || 0,
+        objects:     raw.objects     || 0,
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET /api/admin/history – lịch sử Reading
 router.get('/history', auth, teacherOnly, async (req, res) => {
   try {
