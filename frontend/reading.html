@@ -70,31 +70,37 @@
 
       <!-- Practice picker (Bài lẻ mode) -->
       <div id="practice-picker" class="hidden">
-        <div class="plele-cat-tabs">
-          <button class="plele-tab plele-active" data-category="passage1" onclick="loadPracticePassages('passage1', this)">
-            <span class="plele-badge p1">P1</span> Passage 1
-            <span class="plele-range">câu 1–13</span>
-          </button>
-          <button class="plele-tab" data-category="passage2" onclick="loadPracticePassages('passage2', this)">
-            <span class="plele-badge p2">P2</span> Passage 2
-            <span class="plele-range">câu 14–26</span>
-          </button>
-          <button class="plele-tab" data-category="passage3" onclick="loadPracticePassages('passage3', this)">
-            <span class="plele-badge p3">P3</span> Passage 3
-            <span class="plele-range">câu 27–40</span>
-          </button>
-          <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
-            <span class="plele-badge at">AT</span> Actual Tests
-          </button>
+        <div class="plele-layout">
+          <aside class="plele-sidebar">
+            <div class="plele-cat-tabs">
+              <button class="plele-tab plele-active" data-category="passage1" onclick="loadPracticePassages('passage1', this)">
+                <span class="plele-badge p1">P1</span> Passage 1
+                <span class="plele-range">câu 1–13</span>
+              </button>
+              <button class="plele-tab" data-category="passage2" onclick="loadPracticePassages('passage2', this)">
+                <span class="plele-badge p2">P2</span> Passage 2
+                <span class="plele-range">câu 14–26</span>
+              </button>
+              <button class="plele-tab" data-category="passage3" onclick="loadPracticePassages('passage3', this)">
+                <span class="plele-badge p3">P3</span> Passage 3
+                <span class="plele-range">câu 27–40</span>
+              </button>
+              <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
+                <span class="plele-badge at">AT</span> Actual Tests
+              </button>
+            </div>
+            <div class="plele-filter-bar" id="practice-filter-bar">
+              <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
+              <button class="pf-btn" onclick="filterPracticeByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
+              <button class="pf-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
+              <span id="practice-done-count" class="rd-done-count"></span>
+            </div>
+          </aside>
+          <div class="plele-content">
+            <div id="practice-passage-list"></div>
+            <div id="rd-practice-pagination"></div>
+          </div>
         </div>
-        <div class="plele-filter-bar" id="practice-filter-bar">
-          <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
-          <button class="pf-btn" onclick="filterPracticeByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
-          <button class="pf-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
-          <span id="practice-done-count" class="rd-done-count"></span>
-        </div>
-        <div id="practice-passage-list"></div>
-        <div id="rd-practice-pagination"></div>
       </div>
 
       <!-- Resume banner -->

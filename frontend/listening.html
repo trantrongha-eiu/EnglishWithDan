@@ -78,32 +78,38 @@
 
             <!-- Bài lẻ section picker (hidden initially) -->
             <div id="lele-picker-lt" class="hidden">
-                <div class="plele-cat-tabs">
-                    <button class="plele-tab plele-active" data-part="1" onclick="loadPracticeSections(1, this)">
-                        <span class="plele-badge p1">S1</span> Section 1 <span class="plele-range">câu 1–10</span>
-                    </button>
-                    <button class="plele-tab" data-part="2" onclick="loadPracticeSections(2, this)">
-                        <span class="plele-badge p2">S2</span> Section 2 <span class="plele-range">câu 11–20</span>
-                    </button>
-                    <button class="plele-tab" data-part="3" onclick="loadPracticeSections(3, this)">
-                        <span class="plele-badge p3">S3</span> Section 3 <span class="plele-range">câu 21–30</span>
-                    </button>
-                    <button class="plele-tab" data-part="4" onclick="loadPracticeSections(4, this)">
-                        <span class="plele-badge p4">S4</span> Section 4 <span class="plele-range">câu 31–40</span>
-                    </button>
-                    <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
-                        <span class="plele-badge at">AT</span> Actual Tests
-                    </button>
+                <div class="plele-layout">
+                    <aside class="plele-sidebar">
+                        <div class="plele-cat-tabs">
+                            <button class="plele-tab plele-active" data-part="1" onclick="loadPracticeSections(1, this)">
+                                <span class="plele-badge p1">S1</span> Section 1 <span class="plele-range">câu 1–10</span>
+                            </button>
+                            <button class="plele-tab" data-part="2" onclick="loadPracticeSections(2, this)">
+                                <span class="plele-badge p2">S2</span> Section 2 <span class="plele-range">câu 11–20</span>
+                            </button>
+                            <button class="plele-tab" data-part="3" onclick="loadPracticeSections(3, this)">
+                                <span class="plele-badge p3">S3</span> Section 3 <span class="plele-range">câu 21–30</span>
+                            </button>
+                            <button class="plele-tab" data-part="4" onclick="loadPracticeSections(4, this)">
+                                <span class="plele-badge p4">S4</span> Section 4 <span class="plele-range">câu 31–40</span>
+                            </button>
+                            <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
+                                <span class="plele-badge at">AT</span> Actual Tests
+                            </button>
+                        </div>
+                        <!-- Filter bar: đã làm / chưa làm -->
+                        <div class="plele-filter-bar" id="lt-practice-filter-bar">
+                            <button class="pf-btn pf-active" onclick="filterLtByStatus('all', this)">Tất cả</button>
+                            <button class="pf-btn" onclick="filterLtByStatus('done', this)">✓ Đã làm</button>
+                            <button class="pf-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
+                            <span id="lt-practice-done-count" class="ls-done-count"></span>
+                        </div>
+                    </aside>
+                    <div class="plele-content">
+                        <div id="lt-section-list"></div>
+                        <div id="lt-practice-pagination"></div>
+                    </div>
                 </div>
-                <!-- Filter bar: đã làm / chưa làm -->
-                <div class="plele-filter-bar" id="lt-practice-filter-bar">
-                    <button class="pf-btn pf-active" onclick="filterLtByStatus('all', this)">Tất cả</button>
-                    <button class="pf-btn" onclick="filterLtByStatus('done', this)">✓ Đã làm</button>
-                    <button class="pf-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
-                    <span id="lt-practice-done-count" class="ls-done-count"></span>
-                </div>
-                <div id="lt-section-list"></div>
-                <div id="lt-practice-pagination"></div>
             </div>
         </div>
     </div>
