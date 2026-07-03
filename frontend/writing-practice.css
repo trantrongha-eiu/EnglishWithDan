@@ -922,6 +922,9 @@ body {
   .wp-card         { padding: 16px 14px; }
   .wp-question-text { font-size: 18px; }
   .wp-username     { display: none; }
+  /* Prevent iOS Safari auto-zoom when input/textarea is focused */
+  .wp-answer-box   { font-size: 16px; }
+  .wp-fill-input   { font-size: 16px; }
 
   .wp-mobile-stats {
     display: flex !important;
