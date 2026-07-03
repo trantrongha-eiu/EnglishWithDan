@@ -1875,16 +1875,25 @@ body.tool-hl .check-box { user-select: none; }
    RESPONSIVE
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
+  /* Exam split: stack panels vertically, share available height equally */
   .exam-split {
     flex-direction: column;
-    height: auto;
   }
 
   .split-passage,
   .split-questions {
     width: 100% !important;
-    height: 50vh;
+    flex: 1;
+    height: auto;
+    min-height: 0;       /* allow flex to shrink panels below content height */
     min-width: unset;
+    overflow-y: auto;
+  }
+
+  /* Reduce inner content padding to maximize reading area */
+  .passage-inner,
+  .questions-inner {
+    padding: 14px 14px;
   }
 
   .split-divider {
@@ -1892,6 +1901,7 @@ body.tool-hl .check-box { user-select: none; }
     height: 6px;
     cursor: row-resize;
     flex-direction: row;
+    flex-shrink: 0;
   }
 
   .divider-handle {
@@ -1912,6 +1922,17 @@ body.tool-hl .check-box { user-select: none; }
     text-overflow: ellipsis;
   }
 
+  /* Toolbar: scroll horizontally to fit passage tabs without wrapping */
+  .exam-toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    padding: 6px 12px;
+    scrollbar-width: none;
+  }
+  .exam-toolbar::-webkit-scrollbar { display: none; }
+
   .result-wrap {
     flex-direction: column;
     gap: 24px;
@@ -1920,7 +1941,16 @@ body.tool-hl .check-box { user-select: none; }
   .result-band {
     font-size: 56px;
   }
+}
 
+/* Very small phones: compact exam-bar */
+@media (max-width: 480px) {
+  .exam-bar { padding: 0 8px; }
+  .exam-bar-left { gap: 8px; }
+  .exam-bar-right { gap: 6px; }
+  .exam-title-txt { max-width: 80px; }
+  .exam-autosave-lbl { display: none; }
+  #btn-fullscreen { display: none; }
 }
 /* ══════════════════════════════════════════════════════════════════════
    READING – QUESTION GROUPS (thêm vào cuối reading.css)

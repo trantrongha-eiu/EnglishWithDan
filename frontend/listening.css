@@ -1309,12 +1309,75 @@ body.tool-hl .check-box { user-select: none; }
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .transcript-panel { display: none; }
-  .sidebar-panel    { display: none; }
   .audio-bar        { flex-wrap: wrap; }
   .speed-btns       { order: 3; }
   .result-wrap { flex-direction: column; gap: 24px; }
   .result-band { font-size: 56px; }
   .fill-input-inline{ width: 90px; }
+
+  /* Compact exam topbar: hide non-essential controls */
+  .exam-topbar {
+    height: 48px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .exam-topbar .exam-autosave-lbl { display: none; }
+  .exam-topbar #btn-fullscreen { display: none; }
+
+  /* exam-toolbar: narrow on mobile */
+  .exam-toolbar {
+    width: 48px;
+    padding: 8px 4px;
+  }
+  .toolbar-label { display: none; }
+
+  /* Sidebar: fixed horizontal Q-nav strip above section-nav-fixed */
+  .sidebar-panel {
+    display: flex !important;
+    position: fixed;
+    bottom: 120px;          /* above section-nav-fixed (~120px on mobile) */
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 52px;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+    padding: 0 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    z-index: 299;
+    background: #fff;
+    box-shadow: 0 -2px 6px rgba(0,0,0,.07);
+    scrollbar-width: none;
+  }
+  .sidebar-panel::-webkit-scrollbar { display: none; }
+  .q-nav-label {
+    white-space: nowrap;
+    font-size: 10px;
+    margin-bottom: 0;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+  .q-nav-grid {
+    display: flex;
+    gap: 4px;
+    max-width: none;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    grid-template-columns: unset;
+  }
+  .q-nav-btn {
+    width: 28px;
+    height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    flex-shrink: 0;
+    font-size: 11px;
+    border-radius: 5px;
+  }
 
   /* Section nav bar – mobile */
   .snf-inner {
@@ -1339,8 +1402,43 @@ body.tool-hl .check-box { user-select: none; }
     padding-left: 0;
     padding-top: 8px;
   }
-  .questions-panel { padding: 16px 12px 120px; }
+
+  /* Bottom padding: section-nav (~120px) + sidebar strip (52px) = 172px → use 180px */
+  .questions-panel { padding: 16px 12px 180px; }
   .review-questions-panel { padding: 16px 12px 120px; }
+}
+
+/* Very small phones: further compact topbar */
+@media (max-width: 480px) {
+  .exam-topbar {
+    padding: 0 8px;
+    gap: 6px;
+    height: 44px;
+  }
+  .exam-topbar .exam-title { font-size: 13px; }
+  .exam-topbar .btn-primary { padding: 6px 10px; font-size: 12px; }
+}
+
+/* ── Review screen: mobile ── */
+@media (max-width: 768px) {
+  .review-topbar {
+    height: 48px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  /* Show tool-btn-rv as icon-only — hides text node, keeps FA icon */
+  .review-topbar .tool-btn-rv {
+    padding: 6px 8px;
+    font-size: 0;
+  }
+  .review-topbar .tool-btn-rv i { font-size: 14px; }
+  .review-topbar .review-band-badge { font-size: 12px; padding: 3px 8px; }
+  /* Review Q-nav: cap row height so sticky bar doesn't dominate */
+  .review-qnav-bar { padding: 8px 12px; gap: 6px; }
+  .q-nav-grid-horizontal { gap: 3px; }
+  .q-nav-grid-horizontal .q-nav-btn { width: 26px; height: 26px; font-size: 10px; }
+  /* Questions panel: no fixed nav below, reduce excessive bottom padding */
+  .review-questions-panel { padding: 16px 12px 40px; }
 }
 /* ══ EXAM TOOLBAR (highlight khi làm bài) ══════════════════════ */
 .exam-toolbar {
@@ -1666,7 +1764,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] body { background: #111827; color: #f9fafb; }
 [data-theme="dark"] .exam-topbar   { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .exam-title    { color: #f9fafb; }
-[data-theme="dark"] .sidebar-panel { background: #1f2937; border-left-color: #374151; }
+[data-theme="dark"] .sidebar-panel { background: #1f2937; border-left-color: #374151; border-top-color: #374151; }
 [data-theme="dark"] .transcript-panel { background: #1f2937; border-right-color: #374151; }
 [data-theme="dark"] .transcript-header { color: #f9fafb; border-bottom-color: #374151; }
 [data-theme="dark"] .transcript-body { color: #9ca3af; }
