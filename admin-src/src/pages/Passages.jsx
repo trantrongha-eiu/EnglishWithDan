@@ -77,7 +77,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
                   <li><strong>Choose TWO/THREE Letters A-G ✦:</strong> Tạo nhiều câu riêng (VD: Q14, Q15) cùng options — mỗi câu đáp án 1 chữ cái. Dùng khi đề hỏi "Choose TWO answers".</li>
                   <li><strong>Fill-blank:</strong> Dùng <code>________</code> trong câu. Đáp án: từ cần điền. Nhiều đáp án: <code>word1 / word2</code></li>
                   <li><strong>Matching Headings:</strong> Nhóm "Matching Headings". Câu hỏi = tên đoạn (VD: <em>Section A</em>). Đáp án = số La Mã (VD: <em>iii</em>)</li>
-                  <li><strong>Summary Completion:</strong> Nhóm "Summary Completion". Dùng <code>__Q14__</code> trong đoạn tóm tắt. Word Bank A→J. Đáp án là chữ cái.</li>
+                  <li><strong>Summary Completion:</strong> Nhóm "Summary Completion". Dùng <code>__Q14__</code> trong đoạn tóm tắt. Word Bank A→J. Đáp án = <strong>từ thực tế</strong> (VD: <code>popular</code>), không phải chữ cái.</li>
                   <li><strong>Table/Note:</strong> Dùng nhóm "Bảng" hoặc "Note Completion". Đặt <code>__Q1__</code> trong ô/dòng cần điền.</li>
                   <li><strong>Sentence Endings:</strong> Nhóm "Matching / Sentence Endings" → chọn chế độ Sentence Endings. Câu hỏi = phần đầu câu, đáp án = chữ cái phần kết.</li>
                 </ul>

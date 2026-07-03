@@ -6,23 +6,79 @@ import { API } from '../utils/api';
 const ROMAN = ['i','ii','iii','iv','v','vi','vii','viii','ix','x','xi','xii'];
 
 const GROUP_TYPES_READING = [
-  { value: 'plain',              icon: '💬', label: 'Câu hỏi thường',            desc: 'True/False/NG, Multiple choice, Fill-blank riêng lẻ' },
-  { value: 'table',              icon: '📋', label: 'Bảng (Table/Note)',          desc: 'Fill-blank trong ô bảng – dùng __Q1__ cho ô trống' },
-  { value: 'note-form',          icon: '📝', label: 'Note / Bullet Completion',   desc: 'Điền vào biểu mẫu ghi chú – dùng __Q6__' },
-  { value: 'matching-options',   icon: '🔗', label: 'Matching / Sentence Endings',desc: 'Ghép chữ cái – Matching Features, Sentence Endings, Choose Letters' },
-  { value: 'matching-headings',  icon: '📌', label: 'Matching Headings',          desc: 'Tiêu đề i,ii,iii – ghép vào đoạn văn A,B,C' },
-  { value: 'summary-completion', icon: '🧩', label: 'Summary Completion',         desc: 'Đoạn tóm tắt + Word Bank chữ cái A-J (kéo-thả)' },
-  { value: 'map',                icon: '🗺️', label: 'Map / Diagram',              desc: 'Điền nhãn sơ đồ – có hình ảnh chung cho nhóm' },
+  {
+    value: 'plain', icon: '💬', label: 'Câu hỏi thường',
+    desc: 'Câu hỏi riêng lẻ — không cần bảng, sơ đồ hay cấu trúc đặc biệt',
+    supports: ['True / False / Not Given', 'Yes / No / Not Given', 'Multiple Choice (1 đáp án A–D)', 'Short Answer / Fill-blank', 'Sentence Completion (Word Bank)', 'Choose TWO / THREE Letters A–G'],
+  },
+  {
+    value: 'table', icon: '📋', label: 'Bảng (Table / Note)',
+    desc: 'Bảng ô trống cần điền — dùng __Q1__ để đánh dấu ô trống trong bảng',
+    supports: ['Table Completion', 'Note Completion (dạng bảng)'],
+  },
+  {
+    value: 'note-form', icon: '📝', label: 'Note / Bullet Completion',
+    desc: 'Khung ghi chú / danh sách dòng có chỗ trống — dùng __Q6__',
+    supports: ['Note Completion', 'Bullet List Completion', 'Flow-chart Completion (dạng dòng)'],
+  },
+  {
+    value: 'matching-options', icon: '🔗', label: 'Matching / Sentence Endings',
+    desc: 'Kéo chữ cái A–H vào câu hoặc ô trống để ghép / nối',
+    supports: ['Matching Features (người / sự kiện)', 'Matching Information (đoạn văn A–H)', 'Sentence Endings (nối câu)', 'Choose from List (chọn từ danh sách A–G)'],
+  },
+  {
+    value: 'matching-headings', icon: '📌', label: 'Matching Headings',
+    desc: 'Ghép tiêu đề i, ii, iii… vào đoạn văn A, B, C…',
+    supports: ['Matching Headings (6–10 tiêu đề cho 5–8 đoạn văn)'],
+  },
+  {
+    value: 'summary-completion', icon: '🧩', label: 'Summary Completion',
+    desc: 'Đoạn tóm tắt + Word Bank A–J — học sinh kéo từ vào chỗ trống',
+    supports: ['Summary Completion (Word Bank A–J)', 'Drag & Drop từ danh sách từ gợi ý'],
+  },
+  {
+    value: 'map', icon: '🗺️', label: 'Map / Diagram',
+    desc: 'Upload hình sơ đồ + điền nhãn — điền chữ tự do hoặc kéo-thả từ Option Bank',
+    supports: ['Map Labelling', 'Diagram Labelling', 'Diagram / Plan Completion'],
+  },
 ];
 
 const GROUP_TYPES_LISTENING = [
-  { value: 'plain',            icon: '💬', label: 'Câu hỏi thường',              desc: 'Multiple Choice, Short-answer, Sentence Completion riêng lẻ' },
-  { value: 'table',            icon: '📋', label: 'Table Completion',             desc: 'Điền vào ô bảng – dùng __Q1__ cho ô trống' },
-  { value: 'note-form',        icon: '📝', label: 'Form / Note / Flow-chart',     desc: 'Điền vào biểu mẫu, ghi chú, lưu đồ – dùng __Q6__ cho chỗ trống' },
-  { value: 'drag-drop',          icon: '🎯', label: 'Kéo-thả (Drag & Drop)',        desc: 'Học sinh kéo từ/cụm từ từ Option Bank vào chỗ trống – Flow chart, Diagram Summary' },
-  { value: 'summary-completion', icon: '🧩', label: 'Summary Completion',           desc: 'Đoạn tóm tắt + Word Bank chữ cái A-J (kéo-thả)' },
-  { value: 'matching-options',   icon: '🔗', label: 'Matching',                     desc: 'Nối thông tin – ghép chữ cái A-H (Part 2 / Part 3)' },
-  { value: 'map',              icon: '🗺️', label: 'Map / Plan / Diagram',         desc: 'Dán nhãn bản đồ, sơ đồ – có hình ảnh chung cho nhóm' },
+  {
+    value: 'plain', icon: '💬', label: 'Câu hỏi thường',
+    desc: 'Câu hỏi riêng lẻ — không cần bảng hay sơ đồ',
+    supports: ['Multiple Choice (1 đáp án A–D)', 'Short Answer / Fill-blank', 'Sentence Completion (Word Bank)', 'Choose TWO / THREE Letters A–G'],
+  },
+  {
+    value: 'table', icon: '📋', label: 'Table Completion',
+    desc: 'Bảng ô trống cần điền — dùng __Q1__ để đánh dấu ô trống',
+    supports: ['Table Completion', 'Note Completion (dạng bảng)'],
+  },
+  {
+    value: 'note-form', icon: '📝', label: 'Form / Note / Flow-chart',
+    desc: 'Điền vào biểu mẫu, ghi chú, lưu đồ — dùng __Q6__ cho chỗ trống',
+    supports: ['Form Completion', 'Note Completion', 'Flow-chart Completion', 'Sentence Completion (dạng dòng)'],
+  },
+  {
+    value: 'drag-drop', icon: '🎯', label: 'Kéo-thả (Drag & Drop)',
+    desc: 'Học sinh kéo từ / cụm từ từ Option Bank vào chỗ trống trong lưu đồ / diagram',
+    supports: ['Flow-chart Completion (kéo-thả)', 'Diagram / Plan Completion (kéo-thả)', 'Summary Completion (kéo-thả từ gợi ý)'],
+  },
+  {
+    value: 'summary-completion', icon: '🧩', label: 'Summary Completion',
+    desc: 'Đoạn tóm tắt + Word Bank A–J — kéo từ vào chỗ trống',
+    supports: ['Summary Completion (Word Bank A–J)', 'Drag & Drop từ danh sách từ gợi ý'],
+  },
+  {
+    value: 'matching-options', icon: '🔗', label: 'Matching',
+    desc: 'Kéo chữ cái A–H vào câu để ghép thông tin',
+    supports: ['Matching (Part 2 – người / địa điểm)', 'Matching (Part 3 – câu hỏi / ý kiến)', 'Choose from List A–G'],
+  },
+  {
+    value: 'map', icon: '🗺️', label: 'Map / Plan / Diagram',
+    desc: 'Upload hình bản đồ / sơ đồ + điền nhãn vào vị trí trên sơ đồ',
+    supports: ['Map Labelling', 'Plan / Layout Labelling', 'Diagram Completion'],
+  },
 ];
 
 const Q_TYPES = {
@@ -129,6 +185,24 @@ function InfoBox({ children }) {
   );
 }
 
+function GuideBox({ title = 'Hướng dẫn nhập liệu', children }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ border: '1px solid rgba(61,139,255,.2)', borderRadius: 7, marginBottom: 10, overflow: 'hidden' }}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', textAlign: 'left', background: open ? 'rgba(61,139,255,.1)' : 'rgba(61,139,255,.05)', border: 'none', padding: '7px 11px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11, fontWeight: 700, color: 'var(--blue)', gap: 8 }}>
+        <span>📖 {title}</span>
+        <span style={{ fontSize: 10, opacity: .7 }}>{open ? '▲ Thu gọn' : '▼ Xem hướng dẫn'}</span>
+      </button>
+      {open && (
+        <div style={{ fontSize: 11, padding: '10px 12px', color: 'var(--text2)', lineHeight: 1.8, background: 'rgba(61,139,255,.03)', borderTop: '1px solid rgba(61,139,255,.15)' }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RemoveBtn({ onClick }) {
   return <button style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 13, padding: '2px 4px' }} onClick={onClick}>✕</button>;
 }
@@ -154,7 +228,15 @@ function TableConfig({ config, onChange }) {
   const removeRow = ri => onChange({ ...config, rows: rows.filter((_, i) => i !== ri) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>📋 <strong>Table/Note Completion:</strong> Tiêu đề cột cách nhau bằng <code>|</code>. Dùng <code>__Q1__</code> trong hàng để đánh dấu ô cần điền. Câu hỏi bên dưới chỉ cần số câu + đáp án.</InfoBox>
+      <GuideBox title="Hướng dẫn: Table / Note Completion">
+        <strong>Bước 1 – Tiêu đề cột:</strong> Nhập tên cột, phân cách bằng <code>|</code>.<br/>
+        <em>✓ Đúng:</em> <code>Apartments | Parking | Additional notes</code><br/><br/>
+        <strong>Bước 2 – Hàng nội dung:</strong> Mỗi ô phân cách bằng <code>|</code>. Dùng <code>__Q1__</code> cho ô cần điền — số phải khớp với số câu bên dưới.<br/>
+        <em>✓ Đúng:</em> <code>Rose Garden | free parking | a large __Q1__</code><br/>
+        <em>✗ Sai:</em> <code>Rose Garden, free parking, Q1</code> (thiếu <code>|</code> và <code>__</code>)<br/><br/>
+        <strong>Bước 3 – Câu hỏi:</strong> Thêm câu hỏi loại <strong>Fill-blank</strong>. Số câu = số trong <code>__Q1__</code>. Đáp án = từ / cụm từ cần điền.<br/>
+        <em>Lỗi thường gặp:</em> Đặt <code>__Q1__</code> nhưng quên tạo câu Q1 bên dưới.
+      </GuideBox>
       <div style={{ marginBottom: 8 }}>
         <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Tiêu đề cột (cách bằng |)</label>
         <input className="form-input" style={{ marginTop: 4, fontSize: 12 }} value={headers.join(' | ')} onChange={e => updateH(e.target.value)} placeholder="Apartments | Parking | Additional information" />
@@ -181,7 +263,14 @@ function NoteConfig({ config, onChange }) {
   const removeLine = i => onChange({ ...config, lines: lines.filter((_, j) => j !== i) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>📝 <strong>Note Completion:</strong> Tiêu đề khung (tùy chọn), rồi từng dòng nội dung. Dùng <code>__Q6__</code> cho chỗ trống. Câu hỏi bên dưới: fill-blank, đáp án là từ cần điền.</InfoBox>
+      <GuideBox title="Hướng dẫn: Note / Bullet / Flow-chart Completion">
+        <strong>Tiêu đề khung (tùy chọn):</strong> Tên khung hiển thị ở đầu, ví dụ: <em>How Business Works</em>.<br/><br/>
+        <strong>Dòng nội dung:</strong> Mỗi dòng = một hàng trong khung ghi chú. Dùng <code>__Q6__</code> cho chỗ trống — số phải khớp số câu bên dưới.<br/>
+        <em>✓ Đúng:</em> <code>The most important aspect is __Q6__ in others.</code><br/>
+        <em>✗ Sai:</em> <code>The most important aspect is Q6 in others.</code> (thiếu <code>__</code>)<br/><br/>
+        <strong>Câu hỏi:</strong> Loại <strong>Fill-blank</strong>. Đáp án = từ / cụm từ cần điền.<br/>
+        <em>Lỗi thường gặp:</em> Dùng <code>__Q6__</code> nhưng câu Q6 chưa được tạo.
+      </GuideBox>
       <div style={{ marginBottom: 8 }}>
         <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)' }}>Tiêu đề khung</label>
         <input className="form-input" style={{ marginTop: 4, fontSize: 12 }} value={title} onChange={e => onChange({ ...config, title: e.target.value })} placeholder="VD: How Business Works" />
@@ -230,7 +319,13 @@ function MatchingOptionsConfig({ group, onChange }) {
       </div>
       {!isSE ? (
         <>
-          <InfoBox>🔗 <strong>Matching:</strong> Nhập người/sự vật A→G. Câu hỏi loại <code>matching-info</code>. Hoặc 5-7 lựa chọn + bật Hoán đổi cho Choose TWO/THREE letters.</InfoBox>
+          <GuideBox title="Hướng dẫn: Matching / Choose from List">
+            <strong>Bước 1 – Danh sách lựa chọn A, B, C…:</strong> Nhập từng mục (tên người / địa điểm / ý kiến / câu kết). Tối đa 10 mục.<br/>
+            <em>✓ Ví dụ:</em> <code>A. Professor Jones&nbsp;&nbsp;B. Dr Smith&nbsp;&nbsp;C. The Institute</code><br/><br/>
+            <strong>Bước 2 – Câu hỏi:</strong> Mỗi câu = 1 statement, đáp án = chữ cái (A / B / C…).<br/><br/>
+            <strong>Choose TWO/THREE letters:</strong> Bật <em>Hoán đổi thứ tự</em>, tạo nhiều câu riêng (Q14, Q15, Q16), mỗi câu đáp án 1 chữ cái. Hệ thống chấm tự động cho phép thứ tự khác nhau.<br/><br/>
+            <strong>NB: You may use any letter more than once</strong> → bật checkbox <em>Reuse allowed</em> để chip không bị ẩn sau khi dùng.
+          </GuideBox>
           <div style={{ display: 'flex', gap: 16, marginBottom: 10, flexWrap: 'wrap' }}>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
               <input type="checkbox" checked={group.matchingReuseAllowed || false} onChange={e => onChange({ ...group, matchingReuseAllowed: e.target.checked })} /> NB: You may use any letter more than once
@@ -259,7 +354,14 @@ function MatchingOptionsConfig({ group, onChange }) {
         </>
       ) : (
         <>
-          <InfoBox>🔚 <strong>Sentence Endings:</strong> Nhập phần kết câu A-H. Câu hỏi: mỗi câu = phần đầu câu, đáp án = chữ cái (A, B…).</InfoBox>
+          <GuideBox title="Hướng dẫn: Sentence Endings">
+            <strong>Bước 1 – Phần kết câu (A, B, C…):</strong> Nhập từng phần kết câu. Chữ cái có thể tùy chỉnh (A, B, C… hoặc F, G, H…).<br/>
+            <em>✓ Ví dụ:</em> <code>A&nbsp;&nbsp;can be found in unusual thoughts and chance events.</code><br/><br/>
+            <strong>Bước 2 – Câu hỏi:</strong> Mỗi câu = phần đầu câu (beginning). Đáp án = chữ cái phần kết tương ứng.<br/>
+            <em>✓ Câu hỏi:</em> <code>Creative ideas…</code><br/>
+            <em>✓ Đáp án:</em> <code>A</code><br/><br/>
+            <em>Lỗi thường gặp:</em> Nhập đáp án là toàn bộ câu kết thay vì chỉ nhập chữ cái.
+          </GuideBox>
           <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Danh sách phần kết câu</label>
           <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 5 }}>
             {endings.map((e, i) => (
@@ -284,7 +386,15 @@ function MatchingHeadingsConfig({ config, onChange }) {
   const remove = i => onChange({ headings: headings.filter((_, j) => j !== i) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>📌 <strong>Matching Headings:</strong> Nhập tiêu đề (số La Mã + nội dung). Câu hỏi: nội dung = tên đoạn (VD: <em>Section A</em>), đáp án = số La Mã tương ứng (VD: <em>iii</em>).</InfoBox>
+      <GuideBox title="Hướng dẫn: Matching Headings">
+        <strong>Bước 1 – Danh sách tiêu đề:</strong> Nhập số La Mã (i, ii, iii…) và nội dung tiêu đề.<br/>
+        <em>✓ Ví dụ:</em> <code>i&nbsp;&nbsp;The history of silk production</code><br/>
+        <em>Thông thường:</em> 7–10 tiêu đề cho 5–8 đoạn văn (luôn nhiều tiêu đề hơn đoạn văn).<br/><br/>
+        <strong>Bước 2 – Câu hỏi:</strong> Nội dung = tên đoạn văn trong bài đọc.<br/>
+        <em>✓ Câu hỏi:</em> <code>Section A</code> hoặc <code>Paragraph B</code><br/>
+        <em>✓ Đáp án:</em> <code>iii</code> (chính xác số La Mã — phân biệt chữ hoa / thường)<br/><br/>
+        <em>Lỗi thường gặp:</em> Nhập đáp án là <code>III</code> (chữ hoa) thay vì <code>iii</code> (chữ thường).
+      </GuideBox>
       <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Danh sách tiêu đề</label>
       <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 5 }}>
         {headings.map((h, i) => (
@@ -307,7 +417,15 @@ function SummaryConfig({ config, onChange }) {
   const removeWB = i => onChange({ ...config, wordBank: wordBank.filter((_, j) => j !== i) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>🧩 <strong>Summary Completion:</strong> Đoạn tóm tắt với <code>__Q14__</code> cho chỗ trống. Học sinh kéo-thả <strong>từ</strong> từ Word Bank. Câu hỏi: số câu + <strong>đáp án là từ thực tế</strong> (VD: <em>popular</em>, không phải chữ cái). Nhiều đáp án chấp nhận: <code>word1 / word2</code>.</InfoBox>
+      <GuideBox title="Hướng dẫn: Summary Completion">
+        <strong>Bước 1 – Đoạn tóm tắt:</strong> Nhập đoạn văn tóm tắt, dùng <code>__Q14__</code> cho chỗ trống.<br/>
+        <em>✓ Ví dụ:</em> <code>The programme focuses on __Q14__ management and __Q15__ skills…</code><br/><br/>
+        <strong>Bước 2 – Word Bank:</strong> Nhập từng từ / cụm từ cho Word Bank. Có thể thêm từ mồi (distractors) để tăng độ khó. Chữ cái (A, B, C…) được hiển thị kèm từ cho học sinh.<br/>
+        <em>✓ Ví dụ:</em> <code>A → popular&nbsp;&nbsp;B → creative&nbsp;&nbsp;C → financial</code> (C là từ mồi)<br/><br/>
+        <strong>Bước 3 – Câu hỏi:</strong> Thêm câu hỏi loại <strong>Fill-blank</strong>. Đáp án = <strong>từ thực tế</strong> (VD: <code>popular</code>), KHÔNG phải chữ cái.<br/>
+        Nhiều đáp án chấp nhận: <code>word1 / word2</code><br/><br/>
+        <em>Lỗi thường gặp:</em> Nhập đáp án là chữ cái <code>A</code> thay vì từ thực tế <code>popular</code>.
+      </GuideBox>
       <div style={{ marginBottom: 8 }}>
         <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Đoạn tóm tắt (dùng __Q14__ cho chỗ trống)</label>
         <textarea className="form-input" rows={4} style={{ marginTop: 4, fontSize: 12, resize: 'vertical' }} value={text} onChange={e => onChange({ ...config, text: e.target.value })} placeholder="The programme focuses on __Q14__ management and __Q15__ skills…" />
@@ -334,12 +452,16 @@ function DragDropConfig({ config, onChange }) {
   const removeWord = i => onChange({ ...config, words: words.filter((_, j) => j !== i) });
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12 }}>
-      <InfoBox>
-        🎯 <strong>Drag &amp; Drop:</strong> Nhập nội dung/lưu đồ với <code>__Q5__</code> cho chỗ trống.
-        Danh sách từ/cụm từ bên dưới là <strong>Option Bank</strong> — học sinh kéo thả vào chỗ trống.
-        Có thể thêm từ mồi (distractors) để tăng độ khó.
-        Đáp án mỗi câu = từ/cụm từ thực tế (VD: <em>export routes</em>). Nhiều đáp án: <code>word1 / word2</code>.
-      </InfoBox>
+      <GuideBox title="Hướng dẫn: Drag & Drop / Flow-chart">
+        <strong>Bước 1 – Nội dung / Lưu đồ:</strong> Nhập văn bản, dùng <code>__Q5__</code> cho chỗ trống. Xuống dòng để tạo từng bước trong lưu đồ.<br/>
+        <em>✓ Ví dụ:</em><br/>
+        <code>Locate the top 5. __Q5__ on a world map.</code><br/>
+        <code>Discuss the pros and cons of different __Q6__.</code><br/><br/>
+        <strong>Bước 2 – Option Bank:</strong> Nhập từng từ / cụm từ học sinh có thể kéo vào. Thêm 2–4 từ mồi (distractors) để tăng độ khó.<br/>
+        <em>Thứ tự nhập = thứ tự hiển thị cho học sinh.</em><br/><br/>
+        <strong>Bước 3 – Câu hỏi:</strong> Loại <strong>Fill-blank</strong>. Đáp án = từ thực tế trong Option Bank (VD: <code>export routes</code>).<br/>
+        <em>Lỗi thường gặp:</em> Đáp án không khớp chính xác với từ trong Option Bank (kể cả khoảng trắng và chữ hoa/thường).
+      </GuideBox>
       <div style={{ marginBottom: 10 }}>
         <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>
           Nội dung / Lưu đồ (dùng __Q5__ cho chỗ trống)
@@ -418,7 +540,14 @@ function MapConfig({ imageUrl, dragDropConfig, onImageChange, onDragDropChange, 
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, padding: 12, display: 'flex', flexDirection: 'column', gap: 12 }}>
       {/* Image section */}
       <div>
-        <InfoBox>🗺️ <strong>Map/Plan/Diagram:</strong> Upload hình sơ đồ. Chọn <strong>Kéo-thả</strong> để thêm Option Bank — học sinh kéo nhãn vào đúng số câu trên sơ đồ. Để trống Option Bank = dạng điền chữ bình thường.</InfoBox>
+        <GuideBox title="Hướng dẫn: Map / Diagram Labelling">
+          <strong>Bước 1 – Upload hình ảnh:</strong> Chọn file ảnh → nhấn 📤 Upload. Hình ảnh được lưu trên Cloudinary và hiển thị preview bên phải.<br/><br/>
+          <strong>Bước 2 – Chọn chế độ:</strong><br/>
+          • <strong>✏️ Điền chữ:</strong> Học sinh tự gõ nhãn vào ô trống. Đáp án trong câu hỏi = từ cần điền.<br/>
+          • <strong>🎯 Kéo-thả:</strong> Nhập Option Bank — học sinh kéo nhãn đúng vào đúng số câu trên sơ đồ. Đáp án = nhãn thực tế trong Option Bank.<br/><br/>
+          <strong>Bước 3 – Câu hỏi:</strong> Thêm câu hỏi, điền số câu IELTS (ví dụ: 25, 26, 27…). Nội dung câu hỏi = nhãn / mô tả vị trí trên sơ đồ (tùy chọn).<br/><br/>
+          <em>Lỗi thường gặp:</em> Quên upload hình ảnh, hoặc nhập đáp án không khớp với nhãn trong Option Bank.
+        </GuideBox>
         <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
           <div style={{ flex: 1 }}>
             <label style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>URL hình ảnh sơ đồ</label>
@@ -804,8 +933,16 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
     if (isDupModal(qForm.questionNumber)) {
       toast(`Số câu ${qForm.questionNumber} đã tồn tại trong đề`, 'error'); return;
     }
-    if (!qForm.correctAnswer.trim() && !['true-false-ng', 'yes-no-ng'].includes(qForm.type)) {
-      toast('Vui lòng nhập đáp án đúng', 'error'); return;
+    if (!qForm.correctAnswer.trim()) {
+      const isTFNGType = ['true-false-ng', 'yes-no-ng'].includes(qForm.type);
+      toast(isTFNGType ? 'Vui lòng chọn đáp án đúng (True / False / Not Given)' : 'Vui lòng nhập đáp án đúng', 'error'); return;
+    }
+    if (['multiple-choice', 'multi-answer-group'].includes(qForm.type)) {
+      const nonEmpty = (qForm.options || []).filter(o => o.trim());
+      if (nonEmpty.length < 2) { toast('Vui lòng nhập ít nhất 2 lựa chọn (A, B, C…)', 'error'); return; }
+    }
+    if (['multiple-choice', 'true-false-ng', 'yes-no-ng'].includes(qForm.type) && !qForm.questionText.trim()) {
+      toast('Vui lòng nhập nội dung câu hỏi (statement)', 'error'); return;
     }
     const q = {
       questionNumber: qForm.questionNumber,
@@ -888,12 +1025,44 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
     }
     return missing;
   })();
-  const hasWarnings = dupNums.length > 0 || missingNums.length > 0;
+
+  // Group-level warnings: missing images, empty banks, missing answers, etc.
+  const groupWarnings = groups.flatMap((g, gi) => {
+    const warns = [];
+    const qs = g.questions || [];
+    const label = `Nhóm ${gi + 1}`;
+    if (g.groupType === 'map' && !g.imageUrl?.trim())
+      warns.push({ level: 'error', msg: `${label} (Map/Diagram): Chưa upload hình ảnh`, gi });
+    if (g.groupType === 'summary-completion') {
+      if (!g.summaryConfig?.text?.trim())
+        warns.push({ level: 'error', msg: `${label} (Summary): Chưa nhập đoạn tóm tắt`, gi });
+      if (!(g.summaryConfig?.wordBank || []).some(w => w.word?.trim()))
+        warns.push({ level: 'warn', msg: `${label} (Summary): Word bank còn trống`, gi });
+    }
+    if (g.groupType === 'note-form' && !(g.noteConfig?.lines || []).some(l => l.trim()))
+      warns.push({ level: 'warn', msg: `${label} (Note): Chưa có dòng nội dung`, gi });
+    if (g.groupType === 'table' && !(g.tableConfig?.rows || []).length)
+      warns.push({ level: 'warn', msg: `${label} (Bảng): Chưa có hàng nào`, gi });
+    if ((g.groupType === 'matching-options' || g.groupType === 'sentence-endings') && !(g.matchingOptions?.some(o => o.trim()) || g.endingsConfig?.endings?.some(e => e.text?.trim())))
+      warns.push({ level: 'warn', msg: `${label} (Matching): Chưa có danh sách lựa chọn`, gi });
+    if (g.groupType === 'matching-headings' && !(g.headingsConfig?.headings || []).some(h => h.text?.trim()))
+      warns.push({ level: 'warn', msg: `${label} (Matching Headings): Chưa có tiêu đề nào`, gi });
+    qs.forEach(q => {
+      if (!q.correctAnswer?.trim())
+        warns.push({ level: 'error', msg: `Câu ${q.questionNumber}: Thiếu đáp án đúng`, gi });
+      if (['multiple-choice', 'true-false-ng', 'yes-no-ng'].includes(q.type) && !q.questionText?.trim())
+        warns.push({ level: 'warn', msg: `Câu ${q.questionNumber}: Thiếu nội dung câu hỏi`, gi });
+      if (q.type === 'multiple-choice' && (q.options || []).filter(o => o.trim()).length < 2)
+        warns.push({ level: 'error', msg: `Câu ${q.questionNumber} (MC): Thiếu lựa chọn A–D`, gi });
+    });
+    return warns;
+  });
+  const hasWarnings = dupNums.length > 0 || missingNums.length > 0 || groupWarnings.length > 0;
 
   return (
     <div>
       {groups.map((g, gi) => (
-        <div key={gi} style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 14, marginBottom: 14, background: 'var(--bg)' }}>
+        <div key={gi} id={`qgroup-${gi}`} style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 14, marginBottom: 14, background: 'var(--bg)', scrollMarginTop: 8 }}>
           {/* Group header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
             <span style={{ background: '#3d8bff', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, flexShrink: 0 }}>
@@ -1027,50 +1196,79 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       {/* Validation warning banner */}
       {hasWarnings && (
         <div style={{ marginTop: 10, padding: '12px 16px', background: '#fef3c7', border: '2px solid #f59e0b', borderRadius: 10, fontSize: 13 }}>
-          <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 8, fontSize: 14 }}>
-            ⚠ Cảnh báo — cần kiểm tra lại câu hỏi
+          <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 10, fontSize: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+            ⚠ Cần kiểm tra lại
+            <span style={{ fontSize: 11, fontWeight: 400, color: '#b45309', marginLeft: 4 }}>(nhấn vào cảnh báo để đến vị trí)</span>
           </div>
           {dupNums.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: missingNums.length ? 8 : 0 }}>
-              <span style={{ color: '#ef4444', fontWeight: 700, flexShrink: 0 }}>🔴 Số câu bị trùng:</span>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
+              <span style={{ color: '#ef4444', fontWeight: 700, flexShrink: 0 }}>🔴</span>
               <span style={{ color: '#7f1d1d', fontWeight: 600 }}>
-                {dupNums.map(n => `Câu ${n}`).join(', ')}
+                Số câu bị trùng: {dupNums.map(n => `Câu ${n}`).join(', ')}
               </span>
             </div>
           )}
           {missingNums.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-              <span style={{ color: '#d97706', fontWeight: 700, flexShrink: 0 }}>🟡 Số câu bị thiếu:</span>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
+              <span style={{ color: '#d97706', fontWeight: 700, flexShrink: 0 }}>🟡</span>
               <span style={{ color: '#78350f', fontWeight: 600 }}>
-                Câu {formatRanges(missingNums)}
-                {questionTo
-                  ? ` (so với phạm vi ${questionFrom}–${questionTo})`
-                  : ' (khoảng trống giữa các câu hiện có)'}
+                Số câu thiếu: Câu {formatRanges(missingNums)}
+                {questionTo ? ` (so với phạm vi ${questionFrom}–${questionTo})` : ' (khoảng trống giữa các câu)'}
               </span>
             </div>
           )}
+          {groupWarnings.map((w, i) => (
+            <div key={i}
+              onClick={() => document.getElementById(`qgroup-${w.gi}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: i < groupWarnings.length - 1 ? 5 : 0, cursor: 'pointer' }}>
+              <span style={{ color: w.level === 'error' ? '#ef4444' : '#d97706', fontWeight: 700, flexShrink: 0 }}>
+                {w.level === 'error' ? '🔴' : '🟡'}
+              </span>
+              <span style={{ color: w.level === 'error' ? '#7f1d1d' : '#78350f', fontWeight: 600, textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: 2 }}>
+                {w.msg}
+              </span>
+            </div>
+          ))}
         </div>
       )}
 
       {/* Group type picker */}
       {showPicker && (
         <div className="modal-overlay" style={{ zIndex: 1200 }} onClick={() => setShowPicker(false)}>
-          <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
+          <div className="modal" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3 className="modal-title">Chọn loại nhóm câu hỏi</h3>
+              <div>
+                <h3 className="modal-title">Chọn loại nhóm câu hỏi</h3>
+                <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Mỗi loại hỗ trợ các dạng câu hỏi IELTS khác nhau — xem danh sách bên dưới</div>
+              </div>
               <button className="modal-close" onClick={() => setShowPicker(false)}>✕</button>
             </div>
-            <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxHeight: '75vh', overflowY: 'auto' }}>
               {(context === 'listening' ? GROUP_TYPES_LISTENING : GROUP_TYPES_READING).map(gt => (
                 <div key={gt.value}
                   onClick={() => addGroup(gt.value)}
-                  style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 12, cursor: 'pointer', transition: 'all .15s' }}
+                  style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: '12px 14px', cursor: 'pointer', transition: 'border-color .15s, background .15s', display: 'flex', flexDirection: 'column', gap: 4 }}
                   onMouseOver={e => { e.currentTarget.style.borderColor = '#3d8bff'; e.currentTarget.style.background = 'rgba(61,139,255,.06)'; }}
                   onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = ''; }}
                 >
-                  <div style={{ fontSize: 18, marginBottom: 5 }}>{gt.icon}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 3 }}>{gt.label}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 20 }}>{gt.icon}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700 }}>{gt.label}</span>
+                  </div>
                   <div style={{ fontSize: 11, color: 'var(--text3)', lineHeight: 1.4 }}>{gt.desc}</div>
+                  {gt.supports?.length > 0 && (
+                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: 7, marginTop: 3 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.4px', marginBottom: 4 }}>Hỗ trợ dạng:</div>
+                      <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {gt.supports.map((s, i) => (
+                          <li key={i} style={{ fontSize: 10, color: 'var(--text2)', lineHeight: 1.4, display: 'flex', gap: 5 }}>
+                            <span style={{ color: '#22c55e', flexShrink: 0 }}>✓</span>
+                            <span>{s}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
