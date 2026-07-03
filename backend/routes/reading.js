@@ -41,7 +41,7 @@ router.get('/tests', auth, async (req, res) => {
     });
 
     const result = tests.map(t => ({
-      ...t.toObject(),
+      ...t,
       lastAttempt: attemptMap[t._id.toString()] || null
     }));
 
