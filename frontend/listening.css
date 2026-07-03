@@ -21,7 +21,7 @@ body {
 #screen-list.active  { display: block; }
 #screen-exam.active,
 #screen-review.active { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-#screen-practice.active { display: flex; flex-direction: column; }
+#screen-practice.active { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
 .lt-practice-body { display: flex; flex: 1; overflow: hidden; }
 .lt-practice-questions-panel { flex: 2; min-width: 0; overflow-y: auto; padding: 24px 24px 90px; }
@@ -1308,8 +1308,31 @@ body.tool-hl .check-box { user-select: none; }
    RESPONSIVE
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .audio-bar  { flex-wrap: wrap; }
+  /* ── Audio bar: compact padding, hide volume slider (use phone hardware buttons) ── */
+  .audio-bar  { flex-wrap: wrap; padding: 8px 12px; gap: 6px; }
   .speed-btns { order: 3; }
+  .volume-seek { display: none; }
+
+  /* ── Practice toolbar: convert vertical sidebar → horizontal strip ── */
+  #lt-practice-toolbar {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 4px 12px;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+  #lt-practice-toolbar .tool-btn {
+    flex-direction: row;
+    width: auto;
+    min-width: 0;
+    padding: 5px 10px;
+    gap: 5px;
+  }
+  #lt-practice-toolbar .tool-btn small { font-size: 12px; display: inline; }
 
   /* Practice review: stack transcript above questions (column) */
   .lt-practice-body { flex-direction: column; overflow-y: auto; }
@@ -1330,6 +1353,8 @@ body.tool-hl .check-box { user-select: none; }
     border-right: none;
     border-bottom: 1px solid #e5e7eb;
   }
+  /* Review questions panel: needs min-height: 0 to scroll in column layout */
+  .review-layout .review-questions-panel { min-height: 0; }
   .result-wrap { flex-direction: column; gap: 24px; }
   .result-band { font-size: 56px; }
   .fill-input-inline{ width: 90px; }
@@ -1785,6 +1810,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .exam-title    { color: #f9fafb; }
 [data-theme="dark"] .sidebar-panel { background: #1f2937; border-left-color: #374151; border-top-color: #374151; }
 [data-theme="dark"] .transcript-panel { background: #1f2937; border-right-color: #374151; border-bottom-color: #374151; }
+[data-theme="dark"] #lt-practice-toolbar { border-bottom-color: #374151; }
 [data-theme="dark"] .transcript-header { color: #f9fafb; border-bottom-color: #374151; }
 [data-theme="dark"] .transcript-body { color: #9ca3af; }
 [data-theme="dark"] .transcript-body .tw:hover  { background: #451a03; color: #f9fafb; }

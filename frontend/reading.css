@@ -1941,6 +1941,17 @@ body.tool-hl .check-box { user-select: none; }
   .result-band {
     font-size: 56px;
   }
+
+  /* Toolbar: icon-only — hide keyboard shortcut labels (meaningless on touch) */
+  .exam-toolbar .tool-btn small { display: none; }
+  /* Passage tabs: flow immediately after tools, not pushed to far right */
+  .toolbar-passage-tabs { margin-left: 0; }
+
+  /* Footer: Q-nav full width on top row, action buttons on second row */
+  .exam-footer { height: auto; flex-wrap: wrap; padding: 6px 10px; gap: 6px; }
+  .q-nav-scroll { flex: 1 0 100%; }
+  .exam-footer-btns { margin-left: auto; }
+  .btn-submit-exam { font-size: 13px; padding: 7px 14px; }
 }
 
 /* Very small phones: compact exam-bar */
