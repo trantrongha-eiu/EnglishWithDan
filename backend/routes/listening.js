@@ -13,6 +13,7 @@ const ListeningAttempt         = require('../models/ListeningAttempt');
 const ListeningSection         = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const auth                     = require('../middleware/auth');
+const requirePremium           = require('../middleware/requirePremium');
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -608,13 +609,8 @@ router.get('/tests', auth, async (req, res) => {
 // STUDENT – Lấy full đề để làm bài (yêu cầu Premium)
 // POST /api/listening/tests/:id/start
 // ══════════════════════════════════════════════════════════════════════════════
-router.post('/tests/:id/start', auth, async (req, res) => {
+router.post('/tests/:id/start', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), async (req, res) => {
   try {
-    // Kiểm tra quyền: chỉ premium và admin/teacher mới được làm bài
-    const isPremium = req.user.plan === 'premium' || ['admin', 'teacher'].includes(req.user.role);
-    if (!isPremium) {
-      return res.status(403).json({ success: false, message: 'Bạn cần nâng cấp lên Premium để làm bài thi này', code: 'PLAN_REQUIRED' });
-    }
 
     const test = await ListeningTest.findOne({ _id: req.params.id, isActive: true });
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
@@ -672,7 +668,7 @@ router.post('/tests/:id/start', auth, async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Nộp bài, chấm điểm & lưu attempt
 // ══════════════════════════════════════════════════════════════════════════════
-router.post('/tests/:id/submit', auth, async (req, res) => {
+router.post('/tests/:id/submit', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), async (req, res) => {
   try {
     const test = await ListeningTest.findById(req.params.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });

@@ -6,6 +6,7 @@ const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const auth = require('../middleware/auth');
+const requirePremium = require('../middleware/requirePremium');
 
 // Chặn brute-force key: tối đa 10 lần start / 15 phút / user
 const startLimiter = rateLimit({
@@ -57,15 +58,9 @@ router.get('/tests', auth, async (req, res) => {
 // Bắt đầu thi: random 3 passages + tạo TestAttempt
 // Body: { testId }
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/start', auth, startLimiter, async (req, res) => {
+router.post('/start', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), async (req, res) => {
   try {
     const { testId } = req.body;
-
-    // Kiểm tra quyền: chỉ premium và admin/teacher mới được làm bài
-    const isPremium = req.user.plan === 'premium' || ['admin', 'teacher'].includes(req.user.role);
-    if (!isPremium) {
-      return res.status(403).json({ success: false, message: 'Bạn cần nâng cấp lên Premium để làm bài thi này', code: 'PLAN_REQUIRED' });
-    }
 
     // Kiểm tra test tồn tại
     const test = await ReadingTest.findById(testId);

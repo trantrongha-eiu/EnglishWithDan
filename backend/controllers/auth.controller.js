@@ -18,7 +18,8 @@ function userPayload(user) {
     role:      user.role,
     avatar:    user.avatar || '',
     plan:      user.plan || 'free',
-    planExpiresAt: user.planExpiresAt || null
+    planExpiresAt: user.planExpiresAt || null,
+    planStartedAt: user.planStartedAt || null
   };
 }
 

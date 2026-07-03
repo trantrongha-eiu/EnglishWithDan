@@ -2597,7 +2597,10 @@ router.put('/users/:id/plan', auth, adminOnly, async (req, res) => {
     }
     const update = { plan };
     if (plan === 'premium' && months) {
-      update.planExpiresAt = new Date(Date.now() + months * 30 * 24 * 3600 * 1000);
+      const existing = await require('../models/User').findById(req.params.id).select('planExpiresAt');
+      // Cộng thêm từ ngày hết hạn hiện tại nếu vẫn còn hạn, ngược lại tính từ hôm nay
+      const baseDate = (existing?.planExpiresAt && existing.planExpiresAt > new Date()) ? existing.planExpiresAt : new Date();
+      update.planExpiresAt = new Date(baseDate.getTime() + months * 30 * 24 * 3600 * 1000);
       update.planStartedAt = new Date();
     } else if (plan === 'free') {
       update.planExpiresAt = null;
