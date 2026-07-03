@@ -289,7 +289,7 @@ function NoteConfig({ config, onChange }) {
   );
 }
 
-function MatchingOptionsConfig({ group, onChange }) {
+function MatchingOptionsConfig({ group, onChange, context }) {
   const isSE = group.groupType === 'sentence-endings';
   const matchOpts = group.matchingOptions || ['', '', '', '', '', ''];
   const endings = group.endingsConfig?.endings || [];
@@ -313,9 +313,11 @@ function MatchingOptionsConfig({ group, onChange }) {
         <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
           <input type="radio" checked={!isSE} onChange={() => setMode('matching')} /> 🔗 Matching / Choose Letters
         </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
-          <input type="radio" checked={isSE} onChange={() => setMode('endings')} /> 🔚 Sentence Endings
-        </label>
+        {context !== 'listening' && (
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+            <input type="radio" checked={isSE} onChange={() => setMode('endings')} /> 🔚 Sentence Endings
+          </label>
+        )}
       </div>
       {!isSE ? (
         <>
@@ -1058,6 +1060,8 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
         warns.push({ level: 'warn', msg: `Câu ${q.questionNumber}: Thiếu nội dung câu hỏi`, gi });
       if (q.type === 'multiple-choice' && (q.options || []).filter(o => o.trim()).length < 2)
         warns.push({ level: 'error', msg: `Câu ${q.questionNumber} (MC): Thiếu lựa chọn A–D`, gi });
+      if (q.type === 'sentence-completion' && !(q.wordBank || []).length)
+        warns.push({ level: 'warn', msg: `Câu ${q.questionNumber} (Sentence Completion): Word Bank trống`, gi });
     });
     return warns;
   });
@@ -1104,6 +1108,18 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
           </div>
 
           {/* Group-type config */}
+          {g.groupType === 'plain' && (
+            <GuideBox title={context === 'listening' ? 'Hướng dẫn: Câu hỏi thường (Listening)' : 'Hướng dẫn: Câu hỏi thường (Reading)'}>
+              <strong>Dùng khi:</strong> Câu hỏi độc lập — không cần bảng, form hay sơ đồ.<br/><br/>
+              <strong>Fill-blank:</strong> Nhập câu có <code>________</code> (8 gạch) cho chỗ trống. Đáp án = từ / cụm từ cần điền.<br/>
+              <em>✓ Ví dụ:</em> <code>The meeting is on ________ at the community centre.</code><br/><br/>
+              <strong>Multiple Choice:</strong> Nhập statement + 4 lựa chọn A–D. Đáp án = chữ cái (A / B / C / D).<br/><br/>
+              {context === 'listening'
+                ? <><strong>Choose TWO/THREE Letters A–G:</strong> Tạo từng câu riêng (Q18, Q19, Q20), mỗi câu chọn type "Choose TWO/THREE Letters A-G ✦", cùng options A–G, đáp án = 1 chữ cái/câu. Hệ thống tự gộp thành 1 UI chung cho học sinh.<br/><br/></>
+                : <><strong>True/False/NG &amp; Yes/No/NG:</strong> Nhập statement. Đáp án chọn từ nút: TRUE / FALSE / NOT GIVEN.<br/><br/></>}
+              <em>Lỗi thường gặp:</em> Dùng nhóm "Câu hỏi thường" cho dạng cần bảng hoặc sơ đồ — hãy xoá nhóm và chọn đúng loại từ đầu.
+            </GuideBox>
+          )}
           {g.groupType === 'table' && (
             <TableConfig config={g.tableConfig} onChange={cfg => updateGroup(gi, { tableConfig: cfg })} />
           )}
@@ -1111,7 +1127,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
             <NoteConfig config={g.noteConfig} onChange={cfg => updateGroup(gi, { noteConfig: cfg })} />
           )}
           {(g.groupType === 'matching-options' || g.groupType === 'sentence-endings') && (
-            <MatchingOptionsConfig group={g} onChange={updated => onChange(groups.map((x, i) => i === gi ? updated : x))} />
+            <MatchingOptionsConfig group={g} onChange={updated => onChange(groups.map((x, i) => i === gi ? updated : x))} context={context} />
           )}
           {g.groupType === 'matching-headings' && (
             <MatchingHeadingsConfig config={g.headingsConfig} onChange={cfg => updateGroup(gi, { headingsConfig: cfg })} />

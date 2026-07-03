@@ -11,6 +11,7 @@ function fmtDuration(sec) {
 
 // Shared audio uploader – reuses the listening upload-audio endpoint
 function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
+  const toast = useToast();
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState('');
@@ -20,7 +21,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
   async function uploadFile(file) {
     if (!file) return;
     if (!file.type.startsWith('audio/') && file.type !== 'video/mp4') {
-      alert('Chỉ chấp nhận file audio (mp3, m4a, wav, mp4...)');
+      toast('Chỉ chấp nhận file audio (mp3, m4a, wav, mp4...)', 'error');
       return;
     }
     setUploading(true);
@@ -38,7 +39,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
       onUploaded(data.audioUrl, data.audioDuration, file.name);
       setReplacing(false);
     } catch (err) {
-      alert('Upload lỗi: ' + err.message);
+      toast('Upload lỗi: ' + err.message, 'error');
     } finally {
       setUploading(false);
     }
@@ -91,10 +92,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
         >
           {uploading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 13, color: 'var(--text2)' }}>⏳ Đang upload <strong>{fileName}</strong>…</div>
-              <div style={{ width: '100%', maxWidth: 280, height: 4, background: 'var(--surface3)', borderRadius: 2 }}>
-                <div style={{ width: '60%', height: '100%', background: 'var(--blue)', borderRadius: 2 }} />
-              </div>
+              <div style={{ fontSize: 13, color: 'var(--text2)' }}>⏳ Đang upload <strong>{fileName}</strong>… vui lòng chờ</div>
             </div>
           ) : (
             <>
@@ -272,10 +270,10 @@ export default function ListeningSectionEdit() {
             <label className="form-label">Part *</label>
             <select className="form-input" value={meta.partNumber}
               onChange={e => onPartChange(e.target.value)}>
-              <option value={1}>Section 1</option>
-              <option value={2}>Section 2</option>
-              <option value={3}>Section 3</option>
-              <option value={4}>Section 4</option>
+              <option value={1}>Part 1 – Xã hội (Q1–10)</option>
+              <option value={2}>Part 2 – Độc thoại (Q11–20)</option>
+              <option value={3}>Part 3 – Học thuật (Q21–30)</option>
+              <option value={4}>Part 4 – Bài giảng (Q31–40)</option>
             </select>
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -285,13 +283,13 @@ export default function ListeningSectionEdit() {
               placeholder="VD: Cambridge 17 – Test 1, Section 1" />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Câu từ số</label>
+            <label className="form-label">Câu bắt đầu</label>
             <input className="form-input" type="number" value={meta.questionRange.start}
               onChange={e => { setIsDirty(true); setMeta(f => ({ ...f, questionRange: { ...f.questionRange, start: Number(e.target.value) } })); }}
               min={1} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Đến số</label>
+            <label className="form-label">Câu kết thúc</label>
             <input className="form-input" type="number" value={meta.questionRange.end}
               onChange={e => { setIsDirty(true); setMeta(f => ({ ...f, questionRange: { ...f.questionRange, end: Number(e.target.value) } })); }}
               min={1} />
@@ -322,7 +320,7 @@ export default function ListeningSectionEdit() {
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
             <input type="checkbox" checked={meta.isActualTest} onChange={e => setField('isActualTest', e.target.checked)} />
-            <span>Actual Test <span style={{ fontSize: 11, color: 'var(--text3)' }}>(hiện ở tab "Actual Tests")</span></span>
+            <span>Actual Test <span style={{ fontSize: 11, color: 'var(--text3)' }}>(đây là đề thi thật từ Cambridge / British Council — hiện riêng ở tab "Actual Tests" cho học sinh)</span></span>
           </label>
         </div>
       </div>
@@ -343,13 +341,21 @@ export default function ListeningSectionEdit() {
 
       {/* Question groups */}
       <div className="card" style={{ padding: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Câu hỏi
-            </div>
-            <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 2 }}>{totalQs} câu</div>
-          </div>
+        {/* Validation overview strip */}
+        <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center' }}>
+          <span style={{ fontWeight: 700, color: 'var(--text3)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.4px' }}>Tổng quan</span>
+          {meta.audioUrl
+            ? <span style={{ color: '#16a34a', fontWeight: 600 }}>✅ Audio đã upload</span>
+            : <span style={{ color: '#ef4444', fontWeight: 600 }}>❌ Chưa upload audio</span>}
+          {(() => {
+            const expected = (meta.questionRange.end || 10) - (meta.questionRange.start || 1) + 1;
+            const color = totalQs === expected ? '#16a34a' : totalQs > 0 ? '#d97706' : '#ef4444';
+            return <span style={{ color, fontWeight: 600 }}>{totalQs}/{expected} câu</span>;
+          })()}
+        </div>
+
+        <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>
+          Câu hỏi ({totalQs} câu)
         </div>
 
         <QuestionGroupBuilder
@@ -360,18 +366,8 @@ export default function ListeningSectionEdit() {
           questionTo={meta.questionRange.end || null}
         />
 
-        <div style={{ marginTop: 16, padding: 14, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.75 }}>
-          <strong style={{ color: 'var(--blue)' }}>Hướng dẫn nhập câu hỏi Listening:</strong>
-          <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
-            <li><strong>Fill-blank trong câu:</strong> dùng <code>________</code> (8 gạch dưới). Đáp án: từ/cụm từ cần điền. Nhiều đáp án: dùng <code>word1 / word2</code></li>
-            <li><strong>Fill-blank trong bảng/note:</strong> dùng <code>__Q1__</code>, <code>__Q2__</code>… trong ô bảng hoặc dòng note.</li>
-            <li><strong>Multiple choice (1 đáp án):</strong> đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
-            <li><strong>✦ Choose TWO/THREE Letters A-G (Q18-20):</strong> Chọn loại <strong>"Choose TWO/THREE Letters A-G ✦"</strong>. Tạo <strong>từng câu riêng biệt</strong> (Q18, Q19, Q20) với cùng danh sách options A-G. Đáp án mỗi câu = 1 chữ cái. Hệ thống tự gộp thành 1 UI chung.</li>
-            <li><strong>Matching:</strong> đáp án là chữ cái của lựa chọn. VD: <code>B</code></li>
-            <li><strong>🎯 Kéo-thả (Drag &amp; Drop):</strong> Chọn loại <strong>"Kéo-thả (Drag &amp; Drop)"</strong>. Nhập nội dung với <code>__Q5__</code> cho chỗ trống + danh sách từ/cụm từ (Option Bank). Đáp án mỗi câu = từ thực tế (VD: <code>export routes</code>). Có thể thêm distractors vào Option Bank để tăng độ khó.</li>
-            <li><strong>Map labelling:</strong> đáp án là nhãn điền vào sơ đồ, VD: <code>car park</code></li>
-          </ul>
-          <div style={{ marginTop: 6 }}>Đáp án <strong>không phân biệt hoa/thường</strong>. Nhiều đáp án fill-blank: dùng <code>/</code> ngăn cách.</div>
+        <div style={{ marginTop: 12, padding: '8px 12px', background: 'var(--surface2)', borderRadius: 6, fontSize: 11, color: 'var(--text3)' }}>
+          💡 Đáp án không phân biệt hoa/thường. Nhiều đáp án fill-blank: dùng <code>/</code> ngăn cách. Xem hướng dẫn chi tiết trong từng nhóm câu hỏi bên trên.
         </div>
       </div>
 

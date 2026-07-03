@@ -10,9 +10,9 @@ function fmtDuration(sec) {
 }
 
 function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
+  const toast = useToast();
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState('');
   const [replacing, setReplacing] = useState(false);
   const inputRef = useRef();
@@ -20,11 +20,10 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
   async function uploadFile(file) {
     if (!file) return;
     if (!file.type.startsWith('audio/') && file.type !== 'video/mp4') {
-      alert('Chỉ chấp nhận file audio (mp3, m4a, wav, mp4...)');
+      toast('Chỉ chấp nhận file audio (mp3, m4a, wav, mp4...)', 'error');
       return;
     }
     setUploading(true);
-    setProgress(0);
     setFileName(file.name);
     try {
       const formData = new FormData();
@@ -39,10 +38,9 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
       onUploaded(data.audioUrl, data.audioDuration, file.name);
       setReplacing(false);
     } catch (err) {
-      alert('Upload lỗi: ' + err.message);
+      toast('Upload lỗi: ' + err.message, 'error');
     } finally {
       setUploading(false);
-      setProgress(0);
     }
   }
 
@@ -93,10 +91,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
         >
           {uploading ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <div style={{ fontSize: 13, color: 'var(--text2)' }}>⏳ Đang upload <strong>{fileName}</strong>…</div>
-              <div style={{ width: '100%', maxWidth: 280, height: 4, background: 'var(--surface3)', borderRadius: 2 }}>
-                <div style={{ width: '60%', height: '100%', background: 'var(--blue)', borderRadius: 2, animation: 'pulse 1.2s infinite' }} />
-              </div>
+              <div style={{ fontSize: 13, color: 'var(--text2)' }}>⏳ Đang upload <strong>{fileName}</strong>… vui lòng chờ</div>
             </div>
           ) : (
             <>
@@ -305,6 +300,31 @@ export default function ListeningTestEdit() {
       {/* Parts */}
       <div className="card" style={{ padding: 20 }}>
         <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 14 }}>Câu hỏi theo Part</div>
+
+        {/* Validation overview strip */}
+        <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center' }}>
+          <span style={{ fontWeight: 700, color: 'var(--text3)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.4px' }}>Tổng quan</span>
+          {meta.audioUrl
+            ? <span style={{ color: '#16a34a', fontWeight: 600 }}>✅ Audio đã upload</span>
+            : <span style={{ color: '#ef4444', fontWeight: 600 }}>❌ Chưa upload audio</span>}
+          {(() => {
+            const total = sections.reduce((n, s) => n + s.questionGroups.reduce((m, g) => m + (g.questions?.length || 0), 0), 0);
+            const color = total === 40 ? '#16a34a' : total > 0 ? '#d97706' : '#ef4444';
+            return <span style={{ color, fontWeight: 600 }}>{total}/40 câu</span>;
+          })()}
+          <span style={{ color: 'var(--border)', fontSize: 14 }}>|</span>
+          {sections.map((s, i) => {
+            const count = s.questionGroups.reduce((n, g) => n + (g.questions?.length || 0), 0);
+            const expected = (s.questionRange.end || 10) - (s.questionRange.start || 1) + 1;
+            const ok = count === expected;
+            return (
+              <span key={i} style={{ color: ok ? '#16a34a' : count > 0 ? '#d97706' : '#6b7280', fontWeight: 600 }}>
+                P{s.partNumber}: {count}/{expected}
+              </span>
+            );
+          })}
+        </div>
+
         <div className="inner-tabs-nav" style={{ marginBottom: 16 }}>
           {sections.map((s, i) => {
             const qCount = s.questionGroups.reduce((n, g) => n + (g.questions?.length || 0), 0);
@@ -324,11 +344,11 @@ export default function ListeningTestEdit() {
             <input className="form-input" value={sec.title} onChange={e => updateSection(activePart, { title: e.target.value })} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Câu từ số</label>
+            <label className="form-label">Câu bắt đầu</label>
             <input className="form-input" type="number" value={sec.questionRange.start} onChange={e => updateRange(activePart, 'start', e.target.value)} min={1} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Đến số</label>
+            <label className="form-label">Câu kết thúc</label>
             <input className="form-input" type="number" value={sec.questionRange.end} onChange={e => updateRange(activePart, 'end', e.target.value)} min={1} />
           </div>
         </div>
@@ -364,17 +384,8 @@ export default function ListeningTestEdit() {
           questionTo={sec.questionRange.end || null}
         />
 
-        <div style={{ marginTop: 16, padding: 14, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 'var(--radius)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.75 }}>
-          <strong style={{ color: 'var(--blue)' }}>Hướng dẫn nhập câu hỏi Listening:</strong>
-          <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
-            <li><strong>Fill-blank trong câu:</strong> dùng <code>________</code> (8 gạch dưới). Đáp án: từ/cụm từ cần điền. Nhiều đáp án chấp nhận: dùng <code>word1 / word2</code></li>
-            <li><strong>Fill-blank trong bảng/note:</strong> dùng <code>__Q1__</code>, <code>__Q2__</code>… trong ô bảng hoặc dòng note. Đáp án câu Q1 điền vào vị trí tương ứng.</li>
-            <li><strong>Multiple choice (1 đáp án):</strong> đáp án là chữ cái <code>A</code>, <code>B</code>, <code>C</code> hoặc <code>D</code></li>
-            <li><strong>Multiple choice (nhiều đáp án):</strong> đáp án là JSON array, VD <code>["A","C"]</code>. Chọn số lượng đáp án đúng ở trường "Số đáp án cần chọn".</li>
-            <li><strong>Matching:</strong> đáp án là chữ cái của lựa chọn. VD: <code>B</code></li>
-            <li><strong>Map labelling:</strong> đáp án là nhãn điền vào sơ đồ, VD: <code>car park</code></li>
-          </ul>
-          <div style={{ marginTop: 6 }}>Đáp án <strong>không phân biệt hoa/thường</strong>. Nếu 2+ đáp án đúng cho fill-blank: dùng <code>/</code> ngăn cách, VD: <code>train / by train</code>.</div>
+        <div style={{ marginTop: 12, padding: '8px 12px', background: 'var(--surface2)', borderRadius: 6, fontSize: 11, color: 'var(--text3)' }}>
+          💡 Đáp án không phân biệt hoa/thường. Nhiều đáp án fill-blank: dùng <code>/</code> ngăn cách (VD: <code>train / by train</code>). Xem hướng dẫn chi tiết trong từng nhóm câu hỏi bên trên.
         </div>
       </div>
     </div>
