@@ -1308,9 +1308,28 @@ body.tool-hl .check-box { user-select: none; }
    RESPONSIVE
 ══════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .transcript-panel { display: none; }
-  .audio-bar        { flex-wrap: wrap; }
-  .speed-btns       { order: 3; }
+  .audio-bar  { flex-wrap: wrap; }
+  .speed-btns { order: 3; }
+
+  /* Practice review: stack transcript above questions (column) */
+  .lt-practice-body { flex-direction: column; overflow-y: auto; }
+  #lt-practice-transcript-panel {
+    flex-shrink: 0;
+    height: 42vh;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+    overflow-y: auto;
+  }
+  .lt-practice-questions-panel { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 24px; }
+
+  /* Full-exam review: stack transcript above questions (column) */
+  .review-layout { flex-direction: column; }
+  .review-layout .transcript-panel {
+    flex-shrink: 0;
+    height: 42vh;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
   .result-wrap { flex-direction: column; gap: 24px; }
   .result-band { font-size: 56px; }
   .fill-input-inline{ width: 90px; }
@@ -1765,7 +1784,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .exam-topbar   { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .exam-title    { color: #f9fafb; }
 [data-theme="dark"] .sidebar-panel { background: #1f2937; border-left-color: #374151; border-top-color: #374151; }
-[data-theme="dark"] .transcript-panel { background: #1f2937; border-right-color: #374151; }
+[data-theme="dark"] .transcript-panel { background: #1f2937; border-right-color: #374151; border-bottom-color: #374151; }
 [data-theme="dark"] .transcript-header { color: #f9fafb; border-bottom-color: #374151; }
 [data-theme="dark"] .transcript-body { color: #9ca3af; }
 [data-theme="dark"] .transcript-body .tw:hover  { background: #451a03; color: #f9fafb; }
