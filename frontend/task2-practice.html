@@ -953,7 +953,9 @@ async function saveDraft() {
         week:           state.selectedWeek,
         level:          state.selectedLevel,
         mode:           state.currentMode,
-        questionIds:    state.questions.map(q => q._id || q.questionId),
+        // Prefer stable admin-set questionId over auto-generated MongoDB _id which can
+        // change when an admin re-saves the topic (array replacement regenerates _id).
+        questionIds:    state.questions.map(q => q.questionId || q._id),
         currentIdx:     state.sessionDone,
         sessionAttempts:state.sessionAttempts,
         questionStatus: state.questionStatus,
@@ -972,26 +974,35 @@ async function resumeSession() {
     if (!draft) return;
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?level=all`);
     if (!data.questions?.length) { showToast('Không thể tải câu hỏi', 'error'); return; }
+    // Map both stable questionId and MongoDB _id so old and new drafts both work
     const qMap = {};
-    data.questions.forEach(q => { qMap[q._id] = q; if (q.questionId) qMap[q.questionId] = q; });
+    data.questions.forEach(q => {
+      if (q._id)        qMap[String(q._id)] = q;
+      if (q.questionId) qMap[q.questionId]  = q;
+    });
     const restoredQuestions = (draft.questionIds || []).map(id => qMap[id]).filter(Boolean);
     if (!restoredQuestions.length) {
-      showToast('Tiến độ cũ không còn hợp lệ, đã xóa tự động.', 'warn');
-      _clearDraftState();
+      // Don't delete — questions may have been updated by admin; just show a non-destructive warning
+      showToast('Câu hỏi đã được cập nhật, không thể khôi phục phiên cũ. Hãy bắt đầu mới.', 'warn', 4000);
       return;
     }
     state.questions       = restoredQuestions;
     state.selectedLevel   = draft.level || state.selectedLevel;
     state.currentMode     = draft.mode  || 'practice';
-    state.currentIdx      = draft.currentIdx || 0;
     state.sessionAttempts = draft.sessionAttempts || [];
     state.questionStatus  = draft.questionStatus  || new Array(restoredQuestions.length).fill('pending');
     state.sessionDone     = draft.sessionDone     || 0;
     state.sessionCorrect  = draft.sessionCorrect  || 0;
     state.mcSelected      = null;
     state.rearrangeAnswer = [];
-    // If all questions were already answered, jump straight to done and save
-    if (state.currentIdx >= state.questions.length && state.sessionDone > 0) {
+
+    // Cap currentIdx to the restored question count to prevent skipping past the end
+    // Use draft.sessionDone as the pointer (number of questions already answered)
+    state.currentIdx = Math.min(draft.currentIdx || draft.sessionDone || 0, restoredQuestions.length);
+
+    // Check completion against original draft totals, not the (possibly smaller) restored count
+    const allAnswered = draft.sessionDone >= (draft.questionIds?.length || restoredQuestions.length);
+    if (allAnswered && state.sessionDone > 0) {
       state.view = 'done';
       render();
       savePracticeAttempt();
@@ -1383,8 +1394,10 @@ function quitPractice() {
           topicId:        state.selectedTopic._id,
           topicName:      state.selectedTopic.topicName,
           week:           state.selectedWeek,
+          level:          state.selectedLevel,
+          mode:           state.currentMode,
           currentIdx:     state.sessionDone,
-          questionIds:    state.questions.map(q => q._id || q.questionId),
+          questionIds:    state.questions.map(q => q.questionId || q._id),
           savedAt:        new Date().toISOString(),
           sessionDone:    state.sessionDone,
           sessionAttempts:state.sessionAttempts,
