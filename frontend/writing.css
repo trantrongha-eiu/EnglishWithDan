@@ -1146,8 +1146,8 @@ body {
 /* ══════════════════════════════════════════════
    CSS VARIABLE DEFAULTS (text colour tokens)
 ══════════════════════════════════════════════ */
-:root { --text2: #555; --text3: #888; }
-[data-theme="dark"] { --text2: #d1d5db; --text3: #9ca3af; }
+:root { --text1: #111; --text2: #555; --text3: #888; }
+[data-theme="dark"] { --text1: #f3f4f6; --text2: #d1d5db; --text3: #9ca3af; }
 
 /* ══════════════════════════════════════════════
    RESTORE BANNER  (exam + practice variants)
