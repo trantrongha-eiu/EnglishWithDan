@@ -2589,7 +2589,11 @@ async function _fetchWordInfo(word) {
     const phonetic    = entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '';
     const meaning     = entry.meanings?.[0];
     const partOfSpeech = meaning?.partOfSpeech || '';
-    const example     = meaning?.definitions?.[0]?.example || '';
+    let example = '';
+    for (const m of entry.meanings || []) {
+        const def = m.definitions?.find(d => d.example);
+        if (def) { example = def.example; break; }
+    }
     return { phonetic, partOfSpeech, example };
 }
 
