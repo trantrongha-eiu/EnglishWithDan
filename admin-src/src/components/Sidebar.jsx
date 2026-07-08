@@ -28,7 +28,7 @@ const NAV = [
   { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
   { to: '/messages',        icon: '✉️', label: 'Hộp thư' },
-  { to: '/tuition',         icon: '💰', label: 'Học phí' },
+  { to: '/tuition',         icon: '💰', label: 'Học phí', tuitionBadge: true },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
@@ -36,6 +36,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [pendingGrades, setPendingGrades] = useState(0);
   const [pendingUpgrades, setPendingUpgrades] = useState(0);
+  const [pendingTuition, setPendingTuition] = useState(0);
 
   useEffect(() => {
     function fetchOnline() {
@@ -50,10 +51,14 @@ export default function Sidebar({ mobileOpen, onClose }) {
     function fetchUpgrades() {
       apiFetch('/admin/upgrade-requests?status=pending&limit=1').then(d => setPendingUpgrades(d.total || 0)).catch(() => {});
     }
+    function fetchTuition() {
+      apiFetch('/tuition/admin-summary').then(d => setPendingTuition(d.unpaidStudentCount || 0)).catch(() => {});
+    }
     fetchOnline();
     fetchPending();
     fetchUpgrades();
-    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); }, 60_000);
+    fetchTuition();
+    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); }, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -109,6 +114,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 )}
                 {item.upgradeBadge && pendingUpgrades > 0 && (
                   <span className="nav-badge">{pendingUpgrades > 99 ? '99+' : pendingUpgrades}</span>
+                )}
+                {item.tuitionBadge && pendingTuition > 0 && (
+                  <span className="nav-badge">{pendingTuition > 99 ? '99+' : pendingTuition}</span>
                 )}
               </NavLink>
             );

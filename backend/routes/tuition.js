@@ -157,6 +157,14 @@ router.get('/summary', auth, adminOnly, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
+// GET /api/tuition/admin-summary — badge count for sidebar (students still owing)
+router.get('/admin-summary', auth, adminOnly, async (req, res) => {
+  try {
+    const unpaidStudents = await TuitionFee.distinct('studentId', { isPaid: false });
+    res.json({ success: true, unpaidStudentCount: unpaidStudents.length });
+  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+});
+
 // GET /api/tuition/students-list — list all students for dropdown (admin)
 router.get('/students-list', auth, adminOnly, async (req, res) => {
   try {
