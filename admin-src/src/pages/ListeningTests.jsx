@@ -4,6 +4,9 @@ import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import Pagination from '../components/Pagination';
+
+const PAGE = 20;
 
 function AudioUploadModal({ test, onClose, onUploaded }) {
   const toast = useToast();
@@ -36,7 +39,7 @@ function AudioUploadModal({ test, onClose, onUploaded }) {
       <div className="modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Upload Audio</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ fontSize: 13, color: 'var(--text2)' }}>
@@ -83,6 +86,7 @@ export default function ListeningTests() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [audioTest, setAudioTest] = useState(null);
+  const [page, setPage] = useState(1);
 
   const load = () => apiFetch('/listening/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
@@ -93,6 +97,9 @@ export default function ListeningTests() {
     if (statusFilter === 'hidden' && t.isActive !== false) return false;
     return true;
   });
+
+  useEffect(() => { setPage(1); }, [search, statusFilter]);
+  const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {
     try {
@@ -168,9 +175,9 @@ export default function ListeningTests() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0
+            {paged.length === 0
               ? <tr><td colSpan={9} className="table-empty">Không có đề nào</td></tr>
-              : filtered.map(t => (
+              : paged.map(t => (
                 <tr key={t._id}>
                   <td><strong>{t.name}</strong></td>
                   <td style={{ fontSize: 13, color: 'var(--text3)' }}>{t.seriesName || '–'}</td>
@@ -201,6 +208,9 @@ export default function ListeningTests() {
               ))}
           </tbody>
         </table>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <Pagination page={page} total={filtered.length} pageSize={PAGE} onPage={setPage} />
       </div>
     </>
   );

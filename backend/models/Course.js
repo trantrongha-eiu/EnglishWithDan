@@ -7,7 +7,7 @@ const CourseSchema = new mongoose.Schema({
   price:       { type: String, default: 'Liên hệ tư vấn' },
   imageUrl:    { type: String, default: '' },          // img/course-xxx.jpg or Cloudinary URL
   placeholder: { type: String, default: '📚' },       // emoji fallback
-  category:    { type: String, default: 'ielts' },    // "ielts" | "speaking" | "comm" | "speaking ielts"
+  category:    { type: String, enum: ['ielts', 'speaking', 'comm', 'speaking ielts'], default: 'ielts' },
   level:       { type: String, default: '' },          // "Mất gốc", "Nâng cao"...
   levelColor:  { type: String, enum: ['red','blue','green','purple'], default: 'blue' },
   duration:    { type: String, default: '' },          // "6–8 tháng"

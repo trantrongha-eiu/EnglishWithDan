@@ -62,7 +62,8 @@ router.get('/', auth, async (req, res) => {
 
     res.json({ success: true, books: result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -79,7 +80,8 @@ router.put('/reorder', auth, async (req, res) => {
     ));
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -100,7 +102,8 @@ router.post('/practice-complete', auth, async (req, res) => {
 
     res.json({ success: true, streak: req.user.learningStreak });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -115,7 +118,8 @@ router.get('/:id', auth, async (req, res) => {
     if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
     res.json({ success: true, book });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -137,7 +141,8 @@ router.post('/', auth, async (req, res) => {
     await book.save();
     res.status(201).json({ success: true, book });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -160,7 +165,8 @@ router.put('/:id', auth, async (req, res) => {
     if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
     res.json({ success: true, book });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -226,7 +232,8 @@ router.post('/:id/merge', auth, async (req, res) => {
 
     res.json({ success: true, addedCount, mergedCount: sources.length, book: dest });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -243,7 +250,8 @@ router.delete('/:id', auth, async (req, res) => {
     await book.deleteOne();
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -286,7 +294,8 @@ router.post('/:id/words', auth, async (req, res) => {
       word:    book.words[book.words.length - 1]
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -324,7 +333,8 @@ router.patch('/:id/words/:wordId', auth, async (req, res) => {
 
     res.json({ success: true, word: wordDoc });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -340,7 +350,8 @@ router.delete('/:id/words/:wordId', auth, async (req, res) => {
     await book.save();
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -399,7 +410,8 @@ router.post('/:id/words/bulk', auth, async (req, res) => {
     if (skippedLimit > 0) parts.push(`${skippedLimit} từ vượt giới hạn 300`);
     res.json({ success: true, addedCount, skippedDup, skippedLimit, message: parts.join(' · ') });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -417,7 +429,8 @@ router.delete('/:id/words', auth, async (req, res) => {
     await book.save();
     res.json({ success: true, message: `Đã xoá ${wordIds.length} từ` });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[VocabBook] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

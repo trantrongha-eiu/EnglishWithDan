@@ -374,7 +374,7 @@ function GradeModal({ attemptId, onClose, onGraded }) {
               </div>
             </div>
           )}
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
@@ -517,7 +517,7 @@ function ViewModal({ attemptId, onClose }) {
       <div className="modal" style={{ maxWidth: 800, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">👁 Xem bài Writing{attempt ? ` — ${studentName}` : ''}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         {loading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>

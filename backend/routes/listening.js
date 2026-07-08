@@ -14,6 +14,7 @@ const ListeningSection         = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const auth                     = require('../middleware/auth');
 const requirePremium           = require('../middleware/requirePremium');
+const { isImageDataUri }       = require('../utils/validation');
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 const teacherOnly = (req, res, next) => {
@@ -206,6 +207,7 @@ router.post('/admin/upload-map-image', auth, teacherOnly, async (req, res) => {
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu imageBase64' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
     const result = await cloudinary.uploader.upload(imageBase64, {
       folder: 'listening-maps',

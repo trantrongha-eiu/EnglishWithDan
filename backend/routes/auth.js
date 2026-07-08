@@ -1,13 +1,38 @@
 const router   = require('express').Router();
+const rateLimit = require('express-rate-limit');
+const { ipKeyGenerator } = require('express-rate-limit');
 const authCtrl = require('../controllers/auth.controller');
 const auth = require('../middleware/auth');
 
+// ── Brute-force protection ──────────────────────────────────
+// Keyed by IP + the account identifier being targeted, so one attacker can't
+// spray many accounts from one IP, and one IP isn't fully blocked just because
+// several legitimate users share it (e.g. an office network).
+// ipKeyGenerator normalizes IPv6 addresses (required by express-rate-limit v8+).
+const keyByIpAndIdentifier = req =>
+  `${ipKeyGenerator(req.ip)}:${(req.body?.email || req.body?.username || '').toLowerCase()}`;
+
+const authLimiter = (max) => rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max,
+  keyGenerator: keyByIpAndIdentifier,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' })
+});
+
+const loginLimiter          = authLimiter(10);
+const registerLimiter       = authLimiter(5);
+const forgotPasswordLimiter = authLimiter(5);
+const verifyOtpLimiter      = authLimiter(10);
+const resetPasswordLimiter  = authLimiter(10);
+
 // ── Local auth ────────────────────────────────────────────────
-router.post('/register', authCtrl.register);
-router.post('/login',           authCtrl.login);
-router.post('/forgot-password', authCtrl.forgotPassword);
-router.post('/verify-otp',      authCtrl.verifyOTP);
-router.post('/reset-password',  authCtrl.resetPassword);
+router.post('/register', registerLimiter, authCtrl.register);
+router.post('/login',           loginLimiter,          authCtrl.login);
+router.post('/forgot-password', forgotPasswordLimiter, authCtrl.forgotPassword);
+router.post('/verify-otp',      verifyOtpLimiter,       authCtrl.verifyOTP);
+router.post('/reset-password',  resetPasswordLimiter,   authCtrl.resetPassword);
 
 // Returns fresh user payload (plan auto-expired by middleware)
 router.get('/me', auth, (req, res) => {

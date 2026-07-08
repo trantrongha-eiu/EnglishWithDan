@@ -8,7 +8,8 @@ router.get('/', async (_req, res) => {
     const courses = await Course.find({ isActive: true }).sort({ order: 1, createdAt: 1 });
     res.json({ success: true, courses });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[Courses] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

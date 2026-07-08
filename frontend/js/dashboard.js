@@ -195,7 +195,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (navAv && name) navAv.textContent = name[0].toUpperCase();
     if (navAv && user.avatar) {
       navAv.style.background = 'none';
-      navAv.innerHTML = `<img src="${user.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" alt="avatar">`;
+      navAv.innerHTML = '';
+      const navImg = document.createElement('img');
+      navImg.src = user.avatar;
+      navImg.alt = 'avatar';
+      navImg.style.cssText = 'width:28px;height:28px;border-radius:50%;object-fit:cover;';
+      navAv.appendChild(navImg);
     }
 
     // Preload voices (Chrome cần gọi getVoices trước)
@@ -1690,11 +1695,11 @@ function showMixedQuestion() {
               <i class="fas fa-check-circle"></i> Multiple Choice
             </div>
             <div class="question-text" style="font-size:18px;font-weight:700;margin-bottom:20px">
-              What does "<strong>${currentWord.word}</strong>" mean?
+              What does "<strong>${_esc(currentWord.word)}</strong>" mean?
               <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>
             </div>
             <div class="answer-options" id="mixAnswerOptions">
-              ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${o}</button>`).join('')}
+              ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`).join('')}
             </div>
             <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
           </div>`;
@@ -1716,8 +1721,10 @@ function showMixedQuestion() {
           </div>`;
     } else {
         const ex = currentWord.example || `The word is: ${currentWord.word}`;
-        const exHtml = ex.replace(new RegExp(`\\b${escR(currentWord.word)}\\b`, 'gi'),
-            `<strong class="highlight-word">${currentWord.word}</strong>`);
+        const exEsc = _esc(ex);
+        const wordEsc = _esc(currentWord.word);
+        const exHtml = exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
+            `<strong class="highlight-word">${wordEsc}</strong>`);
         wrap.innerHTML = `
           <div class="question-card">
             ${repeatBadge}
@@ -1725,7 +1732,7 @@ function showMixedQuestion() {
               <i class="fas fa-language"></i> Translation
             </div>
             <div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Translate: <strong>${currentWord.word}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Translate: <strong>${_esc(currentWord.word)}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button></div>
             <div class="fb-input-row">
               <input class="trans-input" id="mixTransInput" placeholder="Enter the meaning..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
               <button class="btn-check" onclick="checkMixedTrans()">Check</button>
@@ -1763,11 +1770,11 @@ function checkMixedListen() {
     const ok = ua === currentWord.word.toLowerCase();
     if (ok) {
         document.getElementById('mixListenFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Correct! <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+            `<div class="feedback-correct">✅ Correct! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('mixListenFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${currentWord.word}</strong> – ${currentWord.meaning}
+            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
              <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Listen again</button></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
@@ -1794,11 +1801,11 @@ function checkMixedTrans() {
     });
     if (ok) {
         document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Well done! Answer: <em>${currentWord.meaning}</em></div>`;
+            `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('mixTransFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Correct answer: <strong>${currentWord.meaning}</strong></div>`;
+            `<div class="feedback-wrong">❌ Correct answer: <strong>${_esc(currentWord.meaning)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -1812,12 +1819,12 @@ function showMultipleChoiceQuestion() {
     updateProgress('mc');
     document.getElementById('mcQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
     document.getElementById('mcQuestionText').innerHTML =
-        `What does "<strong>${currentWord.word}</strong>" mean?
+        `What does "<strong>${_esc(currentWord.word)}</strong>" mean?
         <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     const opts      = generateOptions(currentWord);
     const container = document.getElementById('mcAnswerOptions');
     container.innerHTML = opts.map(o =>
-        `<button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${o}</button>`
+        `<button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`
     ).join('');
     document.getElementById('mcBtnNext').style.display = 'none';
 }
@@ -1918,7 +1925,7 @@ function markAsNotRemembered() {
 
     // Hiện feedback + nút Tiếp theo ngay để học sinh tự review rồi bấm
     document.getElementById('fbFeedback').innerHTML =
-        `<div class="feedback-wrong">💪 Keep going! Word: <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+        `<div class="feedback-wrong">💪 Keep going! Word: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
     disableFlashcardBtns();
 
     // Hiện nút Tiếp theo ngay (học sinh tự bấm khi sẵn sàng)
@@ -1944,7 +1951,8 @@ function disableFlashcardBtns() {
 }
 function showHint() {
     if (!document.getElementById('flashcard').classList.contains('flipped')) return;
-    const hint = currentWord.word[0] + '_'.repeat(currentWord.word.length - 1);
+    const rawHint = currentWord.word[0] + '_'.repeat(currentWord.word.length - 1);
+    const hint = _esc(rawHint);
     document.getElementById('fbFeedback').innerHTML =
         `<div class="feedback-hint">💡 Hint: <strong>${hint}</strong> (${currentWord.word.length} letters)</div>`;
     hintUsed = true;
@@ -1963,7 +1971,7 @@ function checkFillBlank() {
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('fbFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${currentWord.word}</strong></div>`;
+            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -1993,11 +2001,11 @@ function checkListening() {
     const ok = ua === currentWord.word.toLowerCase();
     if (ok) {
         document.getElementById('listenFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Correct! <strong>${currentWord.word}</strong> – ${currentWord.meaning}</div>`;
+            `<div class="feedback-correct">✅ Correct! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('listenFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${currentWord.word}</strong> – ${currentWord.meaning}
+            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
        <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Listen again</button></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
@@ -2012,10 +2020,12 @@ function showTranslationQuestion() {
     updateProgress('trans');
     document.getElementById('transQuestionNumber').textContent = `Question ${currentQuestionIndex + 1}/${practiceWords.length}`;
     const ex = currentWord.example || `The word is: ${currentWord.word}`;
+    const exEsc = _esc(ex);
+    const wordEsc = _esc(currentWord.word);
     document.getElementById('transExample').innerHTML =
-        ex.replace(new RegExp(`\\b${escR(currentWord.word)}\\b`, 'gi'),
-            `<strong class="highlight-word">${currentWord.word}</strong>`);
-    document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${currentWord.word}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
+        exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
+            `<strong class="highlight-word">${wordEsc}</strong>`);
+    document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
@@ -2040,11 +2050,11 @@ function checkTranslation() {
     });
     if (ok) {
         document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Well done! Answer: <em>${currentWord.meaning}</em></div>`;
+            `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
         correctAnswers++; playCorrectSound();
     } else {
         document.getElementById('transFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Correct answer: <strong>${currentWord.meaning}</strong></div>`;
+            `<div class="feedback-wrong">❌ Correct answer: <strong>${_esc(currentWord.meaning)}</strong></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
@@ -2115,7 +2125,7 @@ function showResults(mode) {
             const allWords = currentUnit?.words || [];
             const wrongWords = [...wrongWordSet].map(ws => allWords.find(x => x.word === ws) || { word: ws, meaning: '' });
             wrongListEl.innerHTML = `<div class="wl-title">Words to review (${wrongWords.length}):</div>` +
-                wrongWords.map(w => `<div class="wl-item"><span class="wl-word">${w.word}</span>${w.meaning ? `<span class="wl-meaning">${w.meaning}</span>` : ''}</div>`).join('');
+                wrongWords.map(w => `<div class="wl-item"><span class="wl-word">${_esc(w.word)}</span>${w.meaning ? `<span class="wl-meaning">${_esc(w.meaning)}</span>` : ''}</div>`).join('');
             wrongListEl.style.display = 'block';
         } else {
             wrongListEl.style.display = 'none';

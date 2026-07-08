@@ -68,8 +68,8 @@ export default function App() {
                 <Route path="messages" element={<Messages />} />
                 <Route path="writing-grades" element={<WritingGrades />} />
                 <Route path="writing-samples" element={<WritingSamples />} />
-                <Route path="tuition" element={<Tuition />} />
-                <Route path="upgrade-requests" element={<UpgradeRequests />} />
+                <Route path="tuition" element={<ProtectedRoute role="admin"><Tuition /></ProtectedRoute>} />
+                <Route path="upgrade-requests" element={<ProtectedRoute role="admin"><UpgradeRequests /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

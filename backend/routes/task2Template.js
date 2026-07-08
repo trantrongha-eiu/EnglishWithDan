@@ -16,7 +16,8 @@ router.post('/save', auth, async (req, res) => {
     });
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[Task2Template] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -31,7 +32,8 @@ router.get('/history', auth, async (req, res) => {
       .lean();
     res.json({ success: true, attempts });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[Task2Template] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

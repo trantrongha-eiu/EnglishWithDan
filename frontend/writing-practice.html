@@ -1142,7 +1142,10 @@ async function loadExercises() {
   showState('loading');
   try {
     const params = new URLSearchParams({ level: currentLevel, topic: currentTopic, type: currentType });
-    const res  = await fetch(`${API}/api/writing-practice/exercises?${params}`);
+    const token = localStorage.getItem('token');
+    const res  = await fetch(`${API}/api/writing-practice/exercises?${params}`, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
     const data = await res.json();
     if (!data.success || !data.exercises?.length) { showState('empty'); return; }
 
@@ -1354,9 +1357,10 @@ async function submitAnswer() {
   document.getElementById('checking-loader').classList.remove('hidden');
 
   try {
+    const token = localStorage.getItem('token');
     const res  = await fetch(`${API}/api/writing-practice/check`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body: JSON.stringify({ exerciseId: ex._id, userAnswer: answer })
     });
     const data = await res.json();
@@ -1651,7 +1655,10 @@ async function startTest() {
 
   try {
     const params = new URLSearchParams({ level: testLevel, count: testCount });
-    const res  = await fetch(`${API}/api/writing-practice/test-questions?${params}`);
+    const token = localStorage.getItem('token');
+    const res  = await fetch(`${API}/api/writing-practice/test-questions?${params}`, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
     const data = await res.json();
     if (!data.success || !data.exercises?.length) {
       showToast('Không tải được câu hỏi. Vui lòng thử lại.', 'error');
@@ -1823,9 +1830,10 @@ async function submitTest() {
   clearTestStorage();
   document.getElementById('test-in-progress').style.display = 'none';
   try {
+    const token = localStorage.getItem('token');
     const res  = await fetch(`${API}/api/writing-practice/check-test`, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body:    JSON.stringify({ answers: testAnswers })
     });
     const data = await res.json();

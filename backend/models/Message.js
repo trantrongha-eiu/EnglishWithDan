@@ -12,4 +12,10 @@ const MessageSchema = new mongoose.Schema({
   deletedBy:   [{ type: mongoose.Schema.Types.ObjectId }], // soft-delete theo từng user
 }, { timestamps: true });
 
+// Serves GET /api/user/messages/unread-count and GET /api/user/messages (polled
+// on effectively every page load for the nav badge) — previously an unindexed
+// full collection scan.
+MessageSchema.index({ toId: 1, isBroadcast: 1, isRead: 1 });
+MessageSchema.index({ isBroadcast: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Message', MessageSchema);

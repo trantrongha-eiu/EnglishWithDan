@@ -60,7 +60,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {saving && <span style={{ fontSize: 12, color: 'var(--text3)' }}>Đang lưu...</span>}
             {!saving && totalQs > 0 && <span style={{ fontSize: 12, color: 'var(--green)' }}>✓ Đã lưu</span>}
-            <button className="modal-close" onClick={onClose}>✕</button>
+            <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
           </div>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
@@ -157,7 +157,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 680, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{passageId ? 'Sửa bài đọc' : 'Thêm bài đọc mới'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         {loading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--text3)' }}>Đang tải...</div>

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const writingPracticeAttemptSchema = new mongoose.Schema({
-  studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   exerciseId: { type: String, required: true },
   level:      { type: String, enum: ['beginner', 'elementary', 'intermediate'], required: true },
   type:       { type: String, enum: ['translation', 'rearrange', 'fill_blank', 'expand', 'combine'], required: true },

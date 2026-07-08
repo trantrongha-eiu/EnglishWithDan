@@ -4,6 +4,9 @@ import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import Pagination from '../components/Pagination';
+
+const PAGE = 20;
 
 export default function ReadingTests() {
   const navigate = useNavigate();
@@ -14,6 +17,7 @@ export default function ReadingTests() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [passageStats, setPassageStats] = useState(null);
+  const [page, setPage] = useState(1);
 
   const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => {
@@ -29,6 +33,9 @@ export default function ReadingTests() {
     if (statusFilter === 'hidden' && t.isActive !== false) return false;
     return true;
   });
+
+  useEffect(() => { setPage(1); }, [search, statusFilter]);
+  const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {
     try {
@@ -97,9 +104,9 @@ export default function ReadingTests() {
         <table className="table">
           <thead><tr><th>TÊN BỘ ĐỀ</th><th>SERIES</th><th>SỐ ĐỀ</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
           <tbody>
-            {filtered.length === 0
+            {paged.length === 0
               ? <tr><td colSpan={6} className="table-empty">Không có bộ đề nào</td></tr>
-              : filtered.map(t => (
+              : paged.map(t => (
                 <tr key={t._id}>
                   <td><strong>{t.name}</strong></td>
                   <td style={{ fontSize: 13, color: 'var(--text3)' }}>{t.seriesName || '–'}</td>
@@ -122,6 +129,9 @@ export default function ReadingTests() {
               ))}
           </tbody>
         </table>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <Pagination page={page} total={filtered.length} pageSize={PAGE} onPage={setPage} />
       </div>
     </>
   );

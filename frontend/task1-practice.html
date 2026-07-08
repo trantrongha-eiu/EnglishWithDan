@@ -1198,7 +1198,10 @@ async function loadExercises() {
   showState('loading');
   try {
     const params = new URLSearchParams({ level: currentLevel, skillType: currentSkill });
-    const res  = await fetch(`${API}/api/task1/exercises?${params}`);
+    const token = localStorage.getItem('token');
+    const res  = await fetch(`${API}/api/task1/exercises?${params}`, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
     const data = await res.json();
     if (!data.success || !data.exercises?.length) { showState('empty'); return; }
     exercises    = data.exercises;
@@ -1516,9 +1519,10 @@ async function submitAnswer() {
   document.getElementById('checking-loader').classList.remove('hidden');
 
   try {
+    const token = localStorage.getItem('token');
     const res  = await fetch(`${API}/api/task1/check`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body: JSON.stringify({ exerciseId: ex._id, userAnswer: answer })
     });
     const data = await res.json();
@@ -1763,7 +1767,10 @@ async function startTest() {
   startBtns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; });
   try {
     const params = new URLSearchParams({ level: testLevel, count: testCount });
-    const res  = await fetch(`${API}/api/task1/test-questions?${params}`);
+    const token = localStorage.getItem('token');
+    const res  = await fetch(`${API}/api/task1/test-questions?${params}`, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    });
     const data = await res.json();
     if (!data.success || !data.exercises?.length) {
       showToast('Chưa có bài tập. Vui lòng thử lại!', 'error');
@@ -1948,9 +1955,10 @@ async function submitTest() {
     document.getElementById('test-results').style.display     = '';
     document.getElementById('test-score-header').innerHTML    = '<div class="wp-spinner"></div><p>Đang chấm bài...</p>';
 
+    const token = localStorage.getItem('token');
     const res  = await fetch(`${API}/api/task1/check-test`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
       body: JSON.stringify({ answers: testAnswers })
     });
     const data = await res.json();

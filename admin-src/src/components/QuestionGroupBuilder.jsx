@@ -629,7 +629,7 @@ function QuestionFormModal({ qForm, setQForm, groupType, context, onSave, onClos
             Câu hỏi trong nhóm
             {positionLabel && <span style={{ marginLeft: 10, fontSize: 18, color: 'var(--blue)', fontWeight: 800 }}>({positionLabel})</span>}
           </h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '14px 22px', display: 'flex', flexDirection: 'column', gap: 11, overflowY: 'auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 12 }}>
@@ -1262,7 +1262,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                 <h3 className="modal-title">Chọn loại nhóm câu hỏi</h3>
                 <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Mỗi loại hỗ trợ các dạng câu hỏi IELTS khác nhau — xem danh sách bên dưới</div>
               </div>
-              <button className="modal-close" onClick={() => setShowPicker(false)}>✕</button>
+              <button className="modal-close" onClick={() => setShowPicker(false)} aria-label="Đóng">✕</button>
             </div>
             <div style={{ padding: '16px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxHeight: '75vh', overflowY: 'auto' }}>
               {(context === 'listening' ? GROUP_TYPES_LISTENING : GROUP_TYPES_READING).map(gt => (

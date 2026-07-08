@@ -1,4 +1,4 @@
-export const API = 'https://englishwithdan.onrender.com/api';
+export const API = import.meta.env.VITE_API_URL || 'https://englishwithdan.onrender.com/api';
 
 export function authHeaders() {
   return {

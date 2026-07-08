@@ -66,7 +66,7 @@ function CourseModal({ course, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 640, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{course?._id ? 'Sửa khóa học' : 'Thêm khóa học'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto' }}>
           <div className="form-group" style={{ marginBottom: 0 }}>

@@ -174,7 +174,7 @@ router.get('/topics/week/:week', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/questions/topic/:topicId   ?level=
 // ══════════════════════════════════════════════════════════════════════
-router.get('/questions/topic/:topicId', async (req, res) => {
+router.get('/questions/topic/:topicId', auth, async (req, res) => {
   try {
     const { level = 'all' } = req.query;
     const topic = await Task2Topic.findById(req.params.topicId).lean();
@@ -202,7 +202,7 @@ router.get('/questions/topic/:topicId', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/vocabulary/:topicId
 // ══════════════════════════════════════════════════════════════════════
-router.get('/vocabulary/:topicId', async (req, res) => {
+router.get('/vocabulary/:topicId', auth, async (req, res) => {
   try {
     const topic = await Task2Topic.findById(req.params.topicId).select('vocabularyList topicName').lean();
     if (!topic) return res.status(404).json({ success: false, message: 'Không tìm thấy topic' });
@@ -215,7 +215,7 @@ router.get('/vocabulary/:topicId', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  POST /api/task2/check  { topicId, questionId, userAnswer }
 // ══════════════════════════════════════════════════════════════════════
-router.post('/check', async (req, res) => {
+router.post('/check', auth, async (req, res) => {
   const { topicId, questionId, userAnswer } = req.body;
   if (!topicId || !questionId || userAnswer === undefined)
     return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
@@ -267,7 +267,7 @@ router.post('/check', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task2/exam  ?week=&level=&count=10
 // ══════════════════════════════════════════════════════════════════════
-router.get('/exam', async (req, res) => {
+router.get('/exam', auth, async (req, res) => {
   try {
     const { week = 'all', level = 'all', count = 10 } = req.query;
     const topicFilter = { isActive: true };
@@ -305,7 +305,7 @@ router.get('/exam', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  POST /api/task2/exam/submit  { answers: [{topicId, questionId, userAnswer}] }
 // ══════════════════════════════════════════════════════════════════════
-router.post('/exam/submit', async (req, res) => {
+router.post('/exam/submit', auth, async (req, res) => {
   const { answers } = req.body;
   if (!Array.isArray(answers) || !answers.length)
     return res.status(400).json({ success: false, message: 'Không có câu trả lời' });

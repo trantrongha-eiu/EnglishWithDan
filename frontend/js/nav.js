@@ -117,7 +117,12 @@
       var _navAv = document.getElementById('navAvatar');
       if (_navAv) {
         if (_u.avatar) {
-          _navAv.innerHTML = '<img src="' + _u.avatar + '" alt="avatar" style="width:34px;height:34px;object-fit:cover;display:block;">';
+          _navAv.innerHTML = '';
+          var _navImg = document.createElement('img');
+          _navImg.src = _u.avatar;
+          _navImg.alt = 'avatar';
+          _navImg.style.cssText = 'width:34px;height:34px;object-fit:cover;display:block;';
+          _navAv.appendChild(_navImg);
         } else {
           _navAv.textContent = (_u.firstName || _u.username || '?')[0].toUpperCase();
         }

@@ -18,7 +18,7 @@ const task2DraftSchema = new Schema({
   topicName:      { type: String },
   week:           { type: Number },
   level:          { type: String, default: 'beginner' },
-  mode:           { type: String, default: 'practice' },
+  mode:           { type: String, enum: ['practice', 'exam', 'vocab', 'retry'], default: 'practice' },
   questionIds:    [{ type: String }],
   currentIdx:     { type: Number, default: 0 },
   sessionAttempts:[attemptEntrySchema],

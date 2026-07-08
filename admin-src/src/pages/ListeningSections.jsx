@@ -36,7 +36,7 @@ function AssembleModal({ sections, onClose, onSuccess }) {
       <div className="modal" style={{ maxWidth: 560 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Tạo Full Test từ Bài lẻ</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
@@ -145,7 +145,7 @@ function AudioUploadModal({ section, onClose, onUploaded }) {
       <div className="modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Upload Audio – {section.title}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ fontSize: 13, color: 'var(--text2)' }}>

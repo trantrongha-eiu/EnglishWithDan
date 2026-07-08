@@ -9,9 +9,10 @@ router.get('/', auth, async (req, res) => {
         const words = await DifficultWord.find({ userId: req.user._id, wrongCount: { $gte: 3 } })
             .sort({ wrongCount: -1, lastWrongAt: -1 })
             .lean();
-        res.json({ words });
+        res.json({ success: true, words });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        console.error('[DifficultWords] GET / error:', e);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
     }
 });
 
@@ -19,7 +20,7 @@ router.get('/', auth, async (req, res) => {
 router.post('/report', auth, async (req, res) => {
     try {
         const { words = [], source = '' } = req.body;
-        if (!words.length) return res.json({ ok: true });
+        if (!words.length) return res.json({ success: true });
 
         const ops = words.map(w => ({
             updateOne: {
@@ -43,9 +44,10 @@ router.post('/report', auth, async (req, res) => {
         }));
 
         await DifficultWord.bulkWrite(ops);
-        res.json({ ok: true });
+        res.json({ success: true });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        console.error('[DifficultWords] POST /report error:', e);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
     }
 });
 
@@ -60,10 +62,11 @@ router.patch('/:id', auth, async (req, res) => {
             { $set: updates },
             { new: true }
         );
-        if (!doc) return res.status(404).json({ error: 'Not found' });
-        res.json({ word: doc });
+        if (!doc) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+        res.json({ success: true, word: doc });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        console.error('[DifficultWords] PATCH /:id error:', e);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
     }
 });
 
@@ -71,9 +74,10 @@ router.patch('/:id', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
     try {
         await DifficultWord.deleteOne({ _id: req.params.id, userId: req.user._id });
-        res.json({ ok: true });
+        res.json({ success: true });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        console.error('[DifficultWords] DELETE /:id error:', e);
+        res.status(500).json({ success: false, message: 'Lỗi server' });
     }
 });
 

@@ -70,7 +70,7 @@ function SampleModal({ sample, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 540 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{sample?._id ? 'Sửa bài mẫu' : 'Thêm bài mẫu Writing'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group">

@@ -119,7 +119,7 @@ function ExerciseModal({ exercise, topics, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 620 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{exercise?._id ? 'Sửa bài tập' : 'Thêm bài tập'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '75vh', overflowY: 'auto' }}>
           <TypeGuide type={form.type} />
@@ -193,7 +193,7 @@ function TopicModal({ topic, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{topic?._id ? 'Sửa chủ đề' : 'Thêm chủ đề'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>

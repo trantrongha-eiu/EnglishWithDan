@@ -95,6 +95,7 @@ exports.forgotPassword = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     user.resetOTP = otp;
     user.resetOTPExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    user.resetOTPAttempts = 0;
     await user.save();
 
     // Send email if nodemailer is configured
@@ -127,8 +128,9 @@ exports.forgotPassword = async (req, res) => {
         // Still return success but log the error
       }
     } else {
-      // Dev mode: log OTP to console
-      console.log(`[Auth] OTP for ${email}: ${otp}`);
+      // Never log the raw OTP — if this fires, email isn't configured at all.
+      console.error('[Auth] EMAIL_USER/EMAIL_PASS not configured — cannot deliver password-reset OTP');
+      return res.status(500).json({ success: false, message: 'Không thể gửi email lúc này. Vui lòng thử lại sau.' });
     }
 
     res.json({ success: true, message: 'Mã xác nhận đã được gửi đến email của bạn.' });
@@ -139,20 +141,36 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // ── POST /api/auth/verify-otp ───────────────────────────────
+const MAX_OTP_ATTEMPTS = 5;
+
 exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    const user = await User.findOne({
-      email,
-      resetOTP: otp,
-      resetOTPExpires: { $gt: new Date() }
-    });
+    const invalidMsg = { success: false, message: 'Mã không hợp lệ hoặc đã hết hạn' };
 
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'Mã không hợp lệ hoặc đã hết hạn' });
+    const user = await User.findOne({ email });
+    if (!user || !user.resetOTP || !user.resetOTPExpires || user.resetOTPExpires < new Date()) {
+      return res.status(400).json(invalidMsg);
     }
 
-    // Issue a short-lived reset token
+    if ((user.resetOTPAttempts || 0) >= MAX_OTP_ATTEMPTS) {
+      // Too many wrong guesses — burn this OTP so it can't keep being brute-forced
+      user.resetOTP = '';
+      user.resetOTPExpires = null;
+      user.resetOTPAttempts = 0;
+      await user.save();
+      return res.status(400).json(invalidMsg);
+    }
+
+    if (user.resetOTP !== otp) {
+      user.resetOTPAttempts = (user.resetOTPAttempts || 0) + 1;
+      await user.save();
+      return res.status(400).json(invalidMsg);
+    }
+
+    // Correct OTP — reset the attempt counter and issue a short-lived reset token
+    user.resetOTPAttempts = 0;
+    await user.save();
     const resetToken = jwt.sign(
       { id: user._id, purpose: 'reset' },
       process.env.JWT_SECRET,
@@ -191,6 +209,7 @@ exports.resetPassword = async (req, res) => {
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetOTP = '';
     user.resetOTPExpires = null;
+    user.resetOTPAttempts = 0;
     await user.save();
 
     res.json({ success: true, message: 'Mật khẩu đã được đặt lại thành công' });

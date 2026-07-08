@@ -42,7 +42,7 @@ function TplMetaModal({ template, onClose, onSaved }) {
       <div className="modal-box" style={{ maxWidth: 540 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{isEdit ? 'Sửa Template' : 'Thêm Template mới'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 10 }}>
@@ -108,7 +108,7 @@ function SectionModal({ section, onClose, onSaved }) {
       <div className="modal-box" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{section ? 'Sửa tiêu đề Section' : 'Thêm Section mới'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div className="modal-body">
           <label className="form-label">Tiêu đề Section *</label>
@@ -150,7 +150,7 @@ function ItemModal({ item, onClose, onSaved }) {
       <div className="modal-box" style={{ maxWidth: 640 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{isEdit ? 'Sửa câu luyện' : 'Thêm câu luyện'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>

@@ -41,7 +41,7 @@ function ApproveModal({ request, onClose, onDone }) {
       <div className="modal" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Xác nhận duyệt yêu cầu</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <p style={{ margin: 0, fontSize: 14 }}>
@@ -81,7 +81,7 @@ function RejectModal({ requestId, onClose, onDone }) {
       <div className="modal" style={{ maxWidth: 400 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Từ chối yêu cầu</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div className="form-group">

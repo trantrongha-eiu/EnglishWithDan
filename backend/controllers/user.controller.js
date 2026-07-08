@@ -5,6 +5,7 @@ const WritingAttempt  = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
 const bcrypt          = require('bcryptjs');
 const cloudinary      = require('cloudinary').v2;
+const { isImageDataUri } = require('../utils/validation');
 
 // ── GET /api/user/profile ────────────────────────────────────
 exports.getProfile = async (req, res) => {
@@ -70,6 +71,7 @@ exports.uploadAvatar = async (req, res) => {
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
     const result = await cloudinary.uploader.upload(imageBase64, {
       folder: 'avatars',

@@ -84,7 +84,7 @@ function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSa
       <div className="modal" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Gói dịch vụ — {username}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           {/* Current status */}
@@ -154,7 +154,7 @@ function CreateUserModal({ onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Tạo tài khoản mới</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -232,7 +232,7 @@ function UserModal({ userId, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Chỉnh sửa người dùng</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group">
@@ -404,7 +404,7 @@ export default function Users() {
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
                       {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
-                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn">✉️</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn" aria-label="Gửi tin nhắn">✉️</button>
                       {isAdmin && (
                         <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
                           onClick={() => toggleBan(u._id, u.username, u.isBanned)}>

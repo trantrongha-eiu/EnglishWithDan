@@ -37,7 +37,13 @@ AccessKeySchema.virtual('testRefModel').get(function () {
   if (this.testType === 'reading')   return 'ReadingTest';
   if (this.testType === 'listening') return 'ListeningTest';
   if (this.testType === 'writing')   return 'WritingExam';
-  return 'ReadingTest'; // fallback (sẽ không populate nếu testId = null)
+  // testType is 'speaking' or null — there's no dedicated model to ref, so this
+  // deliberately falls back to 'ReadingTest'. That's harmless today because
+  // testId is always null in those cases (no code path sets it), so populate()
+  // just resolves to null rather than a wrong document. If a future change ever
+  // sets testId while testType is 'speaking', this fallback would need a real
+  // SpeakingMaterial/SpeakingQuestion ref instead.
+  return 'ReadingTest';
 });
 
 // Virtual: còn hiệu lực?

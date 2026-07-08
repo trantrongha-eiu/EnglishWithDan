@@ -24,7 +24,7 @@ router.get('/settings', auth, async (req, res) => {
   try {
     const s = await TuitionSettings.getSingleton();
     res.json({ success: true, settings: s });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // PUT /api/tuition/settings  — admin only
@@ -44,7 +44,7 @@ router.put('/settings', auth, adminOnly, async (req, res) => {
     if (autoRemindEndYear  !== undefined) s.autoRemindEndYear  = autoRemindEndYear  ? Number(autoRemindEndYear)  : null;
     await s.save();
     res.json({ success: true, settings: s });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // POST /api/tuition/settings/qr  — admin uploads QR image
@@ -67,7 +67,7 @@ router.post('/settings/qr', auth, adminOnly, upload.single('qr'), async (req, re
     s.qrImagePublicId = result.public_id;
     await s.save();
     res.json({ success: true, qrImageUrl: s.qrImageUrl });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // DELETE /api/tuition/settings/qr — admin removes QR
@@ -80,7 +80,7 @@ router.delete('/settings/qr', auth, adminOnly, async (req, res) => {
     s.qrImageUrl = ''; s.qrImagePublicId = '';
     await s.save();
     res.json({ success: true });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // ────────────────────────────────────────────────
@@ -119,7 +119,7 @@ router.get('/', auth, adminOnly, async (req, res) => {
     const stats = aggStats[0] || { totalAmount: 0, paidAmount: 0, pendingNotify: 0 };
 
     res.json({ success: true, fees, total, stats });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // GET /api/tuition/summary — monthly totals (admin)
@@ -154,7 +154,7 @@ router.get('/summary', auth, adminOnly, async (req, res) => {
       }}
     ]);
     res.json({ success: true, summary, courseSummary });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // GET /api/tuition/admin-summary — badge count for sidebar (students still owing)
@@ -162,7 +162,7 @@ router.get('/admin-summary', auth, adminOnly, async (req, res) => {
   try {
     const unpaidStudents = await TuitionFee.distinct('studentId', { isPaid: false });
     res.json({ success: true, unpaidStudentCount: unpaidStudents.length });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // GET /api/tuition/students-list — list all students for dropdown (admin)
@@ -170,7 +170,7 @@ router.get('/students-list', auth, adminOnly, async (req, res) => {
   try {
     const students = await User.find({ role: { $in: ['student', 'teacher'] } }, 'username email firstName lastName').sort('username').lean();
     res.json({ success: true, students });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // POST /api/tuition — create fee record (admin)
@@ -193,7 +193,8 @@ router.post('/', auth, adminOnly, async (req, res) => {
     res.status(201).json({ success: true, fee: populated });
   } catch (e) {
     if (e.code === 11000) return res.status(400).json({ success: false, message: 'Học phí tháng này đã tồn tại cho học viên này' });
-    res.status(500).json({ success: false, message: e.message });
+    console.error('[Tuition] POST / error:', e);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -203,6 +204,11 @@ router.put('/:id', auth, adminOnly, async (req, res) => {
     const { amount, isPaid, note, courseName, month, year } = req.body;
     const fee = await TuitionFee.findById(req.params.id);
     if (!fee) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+
+    const amountChanged = amount !== undefined && Number(amount) !== fee.amount;
+    const monthChanged  = month  !== undefined && Number(month)  !== fee.month;
+    const yearChanged   = year   !== undefined && Number(year)   !== fee.year;
+
     if (amount     !== undefined) fee.amount     = Number(amount);
     if (isPaid     !== undefined) {
       fee.isPaid   = isPaid;
@@ -213,10 +219,19 @@ router.put('/:id', auth, adminOnly, async (req, res) => {
     if (courseName !== undefined) fee.courseName = courseName;
     if (month      !== undefined) fee.month      = Number(month);
     if (year       !== undefined) fee.year       = Number(year);
+
+    // Fee details changed after the student already confirmed payment under the
+    // old figures — clear that confirmation so admin doesn't mistake it for
+    // confirmation of the new amount/period.
+    if (!fee.isPaid && fee.studentNotified && (amountChanged || monthChanged || yearChanged)) {
+      fee.studentNotified = false;
+      fee.studentNotifiedAt = null;
+    }
+
     await fee.save();
     const populated = await fee.populate('studentId', 'username email firstName lastName');
     res.json({ success: true, fee: populated });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // DELETE /api/tuition/:id (admin)
@@ -224,7 +239,7 @@ router.delete('/:id', auth, adminOnly, async (req, res) => {
   try {
     await TuitionFee.findByIdAndDelete(req.params.id);
     res.json({ success: true });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // POST /api/tuition/:id/remind — admin sends reminder message to student inbox
@@ -244,7 +259,7 @@ router.post('/:id/remind', auth, adminOnly, async (req, res) => {
       body,
     });
     res.json({ success: true, message: 'Đã gửi nhắc nhở' });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // POST /api/tuition/remind-bulk — send reminders to all unpaid in a month (admin)
@@ -271,7 +286,7 @@ router.post('/remind-bulk', auth, adminOnly, async (req, res) => {
     });
     await Message.insertMany(msgs);
     res.json({ success: true, sent: msgs.length });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // ────────────────────────────────────────────────
@@ -284,7 +299,7 @@ router.get('/my/summary', auth, async (req, res) => {
     const fees = await TuitionFee.find({ studentId: req.user._id, isPaid: false }).lean();
     const totalUnpaid = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
     res.json({ success: true, unpaidCount: fees.length, totalUnpaid });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // GET /api/tuition/my — student's own fees
@@ -294,7 +309,7 @@ router.get('/my', auth, async (req, res) => {
       .sort({ year: -1, month: -1, createdAt: -1 }).lean();
     const settings = await TuitionSettings.getSingleton();
     res.json({ success: true, fees, settings });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 // POST /api/tuition/:id/notify — student says "Tôi đã chuyển khoản"
@@ -320,7 +335,7 @@ router.post('/:id/notify', auth, async (req, res) => {
       })));
     }
     res.json({ success: true, message: 'Đã gửi thông báo đến admin' });
-  } catch (e) { res.status(500).json({ success: false, message: e.message }); }
+  } catch (e) { console.error('[Tuition] error:', e); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 });
 
 module.exports = router;

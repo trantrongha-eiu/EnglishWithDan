@@ -130,7 +130,7 @@ router.get('/meta', async (_req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task1/exercises
 // ══════════════════════════════════════════════════════════════════════
-router.get('/exercises', async (req, res) => {
+router.get('/exercises', auth, async (req, res) => {
   try {
     const { level = 'all', skillType = 'all', module: mod = 'all' } = req.query;
     const query = { isActive: true };
@@ -153,7 +153,7 @@ router.get('/exercises', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  POST /api/task1/check
 // ══════════════════════════════════════════════════════════════════════
-router.post('/check', async (req, res) => {
+router.post('/check', auth, async (req, res) => {
   const { exerciseId, userAnswer } = req.body;
   if (!exerciseId || userAnswer === undefined)
     return res.status(400).json({ success: false, message: 'Thiếu exerciseId hoặc câu trả lời' });
@@ -198,7 +198,7 @@ router.post('/check', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  GET /api/task1/test-questions
 // ══════════════════════════════════════════════════════════════════════
-router.get('/test-questions', async (req, res) => {
+router.get('/test-questions', auth, async (req, res) => {
   try {
     const { level = 'all', count = 10 } = req.query;
     const query = { isActive: true };
@@ -219,7 +219,7 @@ router.get('/test-questions', async (req, res) => {
 // ══════════════════════════════════════════════════════════════════════
 //  POST /api/task1/check-test
 // ══════════════════════════════════════════════════════════════════════
-router.post('/check-test', async (req, res) => {
+router.post('/check-test', auth, async (req, res) => {
   const { answers } = req.body;
   if (!Array.isArray(answers) || !answers.length)
     return res.status(400).json({ success: false, message: 'Không có câu trả lời' });

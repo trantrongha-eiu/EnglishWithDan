@@ -21,7 +21,8 @@ router.get('/messages/unread-count', auth, async (req, res) => {
     ]);
     res.json({ success: true, count: personal + broadcast });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[User] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -49,7 +50,8 @@ router.get('/messages', auth, async (req, res) => {
     }));
     res.json({ success: true, messages: result, total });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[User] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -73,7 +75,8 @@ router.patch('/messages/:id/read', auth, async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[User] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -91,7 +94,8 @@ router.delete('/messages/:id', auth, async (req, res) => {
     }
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[User] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

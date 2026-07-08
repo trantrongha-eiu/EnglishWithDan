@@ -55,7 +55,7 @@ function TopicModal({ topic, onClose, onSaved }) {
       <div className="modal-box" style={{ maxWidth: 680 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{isEdit ? 'Sửa Topic' : 'Thêm Topic mới'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div className="modal-body" style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 80px', gap:10 }}>
@@ -160,7 +160,7 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
       <div className="modal-box" style={{ maxWidth: 700 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{isEdit ? 'Sửa câu hỏi' : 'Thêm câu hỏi'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div className="modal-body" style={{ display:'flex', flexDirection:'column', gap:12 }}>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 80px', gap:10 }}>

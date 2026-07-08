@@ -155,7 +155,7 @@ function localCheck(exercise, userAnswer) {
 // ══════════════════════════════════════════════════════════════
 //  GET /api/writing-practice/exercises
 // ══════════════════════════════════════════════════════════════
-router.get('/exercises', async (req, res) => {
+router.get('/exercises', auth, async (req, res) => {
   try {
     const { level, topic, type, limit = 100, skip = 0 } = req.query;
     const query = { isActive: true };
@@ -185,7 +185,7 @@ router.get('/exercises', async (req, res) => {
 //  Returns N random exercises for test mode (no answers)
 //  Query: level, count (default 10)
 // ══════════════════════════════════════════════════════════════
-router.get('/test-questions', async (req, res) => {
+router.get('/test-questions', auth, async (req, res) => {
   try {
     const { level, count = 10 } = req.query;
     const query = { isActive: true };
@@ -279,7 +279,7 @@ router.post('/check', auth, async (req, res) => {
 //  Grades a full test submission: array of { exerciseId, userAnswer }
 //  Returns results with correct answers revealed
 // ══════════════════════════════════════════════════════════════
-router.post('/check-test', async (req, res) => {
+router.post('/check-test', auth, async (req, res) => {
   const { answers } = req.body; // [{ exerciseId, userAnswer }]
   if (!Array.isArray(answers) || !answers.length)
     return res.status(400).json({ success: false, message: 'Không có câu trả lời' });
@@ -417,11 +417,24 @@ router.get('/history', auth, async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 router.get('/my-stats', auth, async (req, res) => {
   try {
-    const attempts = await WritingPracticeAttempt.find({ studentId: req.user._id }).lean();
-    const totalXP   = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
-    const byLevel   = {};
-    attempts.forEach(a => { byLevel[a.level] = (byLevel[a.level] || 0) + 1; });
-    res.json({ success: true, totalXP, totalDone: attempts.length, byLevel });
+    const [totals, byLevelAgg] = await Promise.all([
+      WritingPracticeAttempt.aggregate([
+        { $match: { studentId: req.user._id } },
+        { $group: { _id: null, totalXP: { $sum: '$xpEarned' }, totalDone: { $sum: 1 } } }
+      ]),
+      WritingPracticeAttempt.aggregate([
+        { $match: { studentId: req.user._id } },
+        { $group: { _id: '$level', count: { $sum: 1 } } }
+      ])
+    ]);
+    const byLevel = {};
+    byLevelAgg.forEach(({ _id, count }) => { byLevel[_id] = count; });
+    res.json({
+      success: true,
+      totalXP: totals[0]?.totalXP || 0,
+      totalDone: totals[0]?.totalDone || 0,
+      byLevel
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

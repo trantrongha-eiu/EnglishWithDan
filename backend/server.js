@@ -1,6 +1,8 @@
 const express  = require('express');
 const mongoose = require('mongoose');
 const cors     = require('cors');
+const helmet   = require('helmet');
+const mongoSanitize = require('./middleware/mongoSanitize');
 require('dotenv').config();
 
 // Cloudinary config
@@ -16,8 +18,17 @@ const app = express();
 // ── Middleware ────────────────────────────────────────────────
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(o => o.trim().replace(/\/$/, ''))
-  : ['*'];
+  : [];
 
+// Fail closed: an unset FRONTEND_URL must not silently open CORS to every
+// origin while credentials:true is enabled (reflected-origin-with-credentials
+// is a known anti-pattern). Same-origin/non-browser requests (no Origin header)
+// are unaffected either way.
+if (!allowedOrigins.length) {
+  console.warn('[Server] FRONTEND_URL is not set — cross-origin browser requests will be rejected. Set FRONTEND_URL to allow the frontend to call this API.');
+}
+
+app.use(helmet());
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
@@ -31,6 +42,7 @@ app.use(cors({
 app.use(require('compression')());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(mongoSanitize);
 
 // Passport (for Google OAuth if configured)
 if (process.env.GOOGLE_CLIENT_ID) {

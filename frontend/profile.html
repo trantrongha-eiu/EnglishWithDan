@@ -504,7 +504,11 @@
           // Sidebar
           const avatarEl = document.getElementById('avatarDisplay');
           if (u.avatar) {
-            avatarEl.outerHTML = `<img id="avatarDisplay" src="${u.avatar}" alt="avatar">`;
+            const newAvatarImg = document.createElement('img');
+            newAvatarImg.id = 'avatarDisplay';
+            newAvatarImg.src = u.avatar;
+            newAvatarImg.alt = 'avatar';
+            avatarEl.replaceWith(newAvatarImg);
           } else {
             avatarEl.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
           }
@@ -540,7 +544,12 @@
           const navAv = document.getElementById('navAvatar');
           if (navAv) {
             if (u.avatar) {
-              navAv.innerHTML = '<img src="' + u.avatar + '" alt="avatar" style="width:34px;height:34px;object-fit:cover;display:block;">';
+              navAv.innerHTML = '';
+              const navImg = document.createElement('img');
+              navImg.src = u.avatar;
+              navImg.alt = 'avatar';
+              navImg.style.cssText = 'width:34px;height:34px;object-fit:cover;display:block;';
+              navAv.appendChild(navImg);
             } else {
               navAv.textContent = (u.firstName || u.username || '?')[0].toUpperCase();
             }

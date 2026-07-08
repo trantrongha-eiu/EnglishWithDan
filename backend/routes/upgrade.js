@@ -29,7 +29,13 @@ router.post('/request', auth, async (req, res) => {
     await request.save();
     res.status(201).json({ success: true, message: 'Yêu cầu nâng cấp đã được gửi. Admin sẽ xác nhận trong vòng 24 giờ.', request });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    // The unique partial index on {userId,status:'pending'} is the real guard against
+    // a race between the findOne check above and this save (see model for details).
+    if (err.code === 11000) {
+      return res.status(400).json({ success: false, message: 'Bạn đã có yêu cầu đang chờ xử lý. Vui lòng đợi Admin xác nhận.' });
+    }
+    console.error('[Upgrade] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 
@@ -40,7 +46,8 @@ router.get('/status', auth, async (req, res) => {
       .sort({ createdAt: -1 });
     res.json({ success: true, request: request || null, userPlan: req.user.plan || 'free', planExpiresAt: req.user.planExpiresAt || null });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('[Upgrade] error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 });
 

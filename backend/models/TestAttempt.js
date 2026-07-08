@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { bandScoreTable } = require('../utils/bandScore');
 
 const AnswerSchema = new mongoose.Schema({
   questionNumber: Number,
@@ -53,22 +54,7 @@ TestAttemptSchema.index({ testId: 1, status: 1 });
 
 // ─── Tính band score theo thang IELTS chính thức ───────────────────────────
 TestAttemptSchema.methods.calculateBandScore = function () {
-  const c = this.correctCount;
-  if (c >= 39) return 9.0;
-  if (c >= 37) return 8.5;
-  if (c >= 35) return 8.0;
-  if (c >= 33) return 7.5;
-  if (c >= 30) return 7.0;
-  if (c >= 27) return 6.5;
-  if (c >= 23) return 6.0;
-  if (c >= 19) return 5.5;
-  if (c >= 15) return 5.0;
-  if (c >= 13) return 4.5;
-  if (c >= 10) return 4.0;
-  if (c >= 8)  return 3.5;
-  if (c >= 6)  return 3.0;
-  if (c >= 4)  return 2.5;
-  return 1.0;
+  return bandScoreTable('reading', this.correctCount);
 };
 
 module.exports = mongoose.model('TestAttempt', TestAttemptSchema);

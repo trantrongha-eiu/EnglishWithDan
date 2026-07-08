@@ -108,7 +108,7 @@ function VocabActivityModal({ student, onClose }) {
   useEffect(() => {
     apiFetch(`/admin/vocab-books/${student._id}`)
       .then(d => setBooks(d.books || []))
-      .catch(() => {})
+      .catch(e => toast(e.message, 'error'))
       .finally(() => setLoadingBooks(false));
   }, [student._id]);
 
@@ -137,7 +137,7 @@ function VocabActivityModal({ student, onClose }) {
         onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">📖 {name}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>

@@ -14,9 +14,12 @@
   --danger:      #ef4444;
   --text:        #1f2937;
   --text-light:  #6b7280;
+  --text2:       #6b7280;
+  --text3:       #9ca3af;
   --border:      #e5e7eb;
   --bg:          #f3f4f6;
   --card:        #ffffff;
+  --surface2:    #f3f4f6;
   --shadow:      0 4px 20px rgba(0,0,0,.08);
   --radius:      12px;
   --nav-height:  64px;
@@ -28,14 +31,25 @@
 [data-theme="dark"] {
   --text:       #f9fafb;
   --text-light: #9ca3af;
+  --text2:      #9ca3af;
+  --text3:      #6b7280;
   --border:     #374151;
   --bg:         #111827;
   --card:       #1f2937;
+  --surface2:   #374151;
   --shadow:     0 4px 20px rgba(0,0,0,.4);
 }
 
 /* ── Reset & Base ────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
+
+/* ── Keyboard focus (sitewide) ──────────────────────────
+   Applies wherever mobile.css is loaded. Keeps the browser's default
+   focus ring off for mouse/touch clicks but visible for keyboard nav. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 
 body {
   font-family: 'Poppins', 'Inter', sans-serif;

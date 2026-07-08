@@ -2,6 +2,8 @@ const express      = require('express');
 const router       = express.Router();
 const crypto       = require('crypto');
 const { checkEssay } = require('../services/geminiService');
+const { computePlanExpiry } = require('../utils/plan');
+const { isImageDataUri } = require('../utils/validation');
 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
@@ -134,6 +136,7 @@ router.post('/passages/upload-map-image', auth, teacherOnly, async (req, res) =>
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
     const result = await cloudinary.uploader.upload(imageBase64, {
       folder: 'reading-maps',
@@ -733,6 +736,7 @@ router.post('/writing-exams/upload-image', auth, teacherOnly, async (req, res) =
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
 
     const result = await cloudinary.uploader.upload(imageBase64, {
       folder: 'writing-tasks',
@@ -837,6 +841,7 @@ router.post('/writing-task1/upload-image', auth, teacherOnly, async (req, res) =
   try {
     const { imageBase64 } = req.body;
     if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
     const result = await cloudinary.uploader.upload(imageBase64, {
       folder: 'writing-tasks',
       resource_type: 'image'
@@ -2598,9 +2603,7 @@ router.put('/users/:id/plan', auth, adminOnly, async (req, res) => {
     const update = { plan };
     if (plan === 'premium' && months) {
       const existing = await require('../models/User').findById(req.params.id).select('planExpiresAt');
-      // Cộng thêm từ ngày hết hạn hiện tại nếu vẫn còn hạn, ngược lại tính từ hôm nay
-      const baseDate = (existing?.planExpiresAt && existing.planExpiresAt > new Date()) ? existing.planExpiresAt : new Date();
-      update.planExpiresAt = new Date(baseDate.getTime() + months * 30 * 24 * 3600 * 1000);
+      update.planExpiresAt = computePlanExpiry(existing?.planExpiresAt, months);
       update.planStartedAt = new Date();
     } else if (plan === 'free') {
       update.planExpiresAt = null;
@@ -2651,8 +2654,7 @@ router.put('/upgrade-requests/:id/approve', auth, adminOnly, async (req, res) =>
     }
     // Tính ngày hết hạn plan (cộng thêm từ hiện tại hoặc từ ngày hết hạn cũ nếu còn hạn)
     const user = request.userId;
-    const baseDate = (user.planExpiresAt && user.planExpiresAt > new Date()) ? user.planExpiresAt : new Date();
-    const newExpiry = new Date(baseDate.getTime() + request.months * 30 * 24 * 3600 * 1000);
+    const newExpiry = computePlanExpiry(user.planExpiresAt, request.months);
 
     await require('../models/User').findByIdAndUpdate(user._id, { plan: 'premium', planExpiresAt: newExpiry, planStartedAt: new Date() });
     request.status = 'approved';

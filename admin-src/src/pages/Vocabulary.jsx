@@ -45,7 +45,7 @@ function UnitModal({ unit, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{unit?._id ? 'Sửa unit' : 'Thêm unit mới'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: 12 }}>
@@ -159,7 +159,7 @@ function WordsModal({ unit, onClose }) {
       <div className="modal" style={{ maxWidth: 720, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">📋 Unit {unit.unitNumber}: {unit.title} — {words.length} từ</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
           <form onSubmit={addWord} style={{ background: 'var(--surface2)', padding: 16, borderRadius: 'var(--radius)', marginBottom: 16 }}>
@@ -240,7 +240,7 @@ function WordsModal({ unit, onClose }) {
                           <td>
                             <div className="row-actions">
                               <button className="btn btn-primary btn-sm" onClick={() => saveEdit(idx)} disabled={saving}>✓</button>
-                              <button className="btn btn-ghost btn-sm" onClick={cancelEdit}>✕</button>
+                              <button className="btn btn-ghost btn-sm" onClick={cancelEdit} aria-label="Hủy">✕</button>
                             </div>
                           </td>
                         </tr>
@@ -332,7 +332,7 @@ function ImportJsonModal({ onClose, onImported }) {
       <div className="modal" style={{ maxWidth: 700, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">📂 Import Vocab Units từ JSON</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 

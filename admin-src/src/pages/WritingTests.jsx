@@ -90,7 +90,7 @@ function Task1Modal({ task, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 600, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header" style={{ flexShrink: 0 }}>
           <h3 className="modal-title">{task?._id ? 'Sửa Task 1' : 'Thêm Task 1'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
           <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
@@ -195,7 +195,7 @@ function Task2Modal({ task, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 600, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header" style={{ flexShrink: 0 }}>
           <h3 className="modal-title">{task?._id ? 'Sửa Task 2' : 'Thêm Task 2'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
           <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
@@ -319,7 +319,7 @@ function WritingSampleModal({ sample, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{sample?._id ? 'Chỉnh sửa tài liệu' : 'Upload bài mẫu Writing'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group">
@@ -399,7 +399,7 @@ function WritingExamModal({ exam, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 440 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{exam?._id ? 'Sửa đề Writing' : 'Thêm đề Writing'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group">
@@ -442,8 +442,8 @@ export default function WritingTests() {
   const [editExam, setEditExam] = useState(null);
   const [showExamModal, setShowExamModal] = useState(false);
 
-  const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(() => {});
-  const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(() => {});
+  const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(e => toast(e.message, 'error'));
+  const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(e => toast(e.message, 'error'));
 
   function copyPracticeLink(taskType, id) {
     const url = `https://englishwithdan.onrender.com/writing.html?taskType=${taskType}&taskId=${id}`;
@@ -451,8 +451,8 @@ export default function WritingTests() {
       .then(() => toast('Đã copy link chia sẻ ✓'))
       .catch(() => toast(`Link: ${url}`, 'info'));
   }
-  const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(() => {});
-  const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(() => {});
+  const loadSamples = () => apiFetch('/admin/writing/samples').then(d => setSamples(d.samples || [])).catch(e => toast(e.message, 'error'));
+  const loadExams = () => apiFetch('/admin/writing-exams').then(d => setExams(d.exams || [])).catch(e => toast(e.message, 'error'));
 
   useEffect(() => { loadT1(); loadT2(); loadSamples(); loadExams(); }, []);
 

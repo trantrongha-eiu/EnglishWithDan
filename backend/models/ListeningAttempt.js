@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { bandScoreTable } = require('../utils/bandScore');
 
 // ── Per-question answer record ────────────────────────────────────────────────
 const ListeningAnswerSchema = new mongoose.Schema({
@@ -46,22 +47,7 @@ const ListeningAttemptSchema = new mongoose.Schema({
 
 // ── Band score IELTS Listening (thang chính thức) ────────────────────────────
 ListeningAttemptSchema.methods.calculateBandScore = function () {
-  const c = this.correctCount;
-  if (c >= 39) return 9.0;
-  if (c >= 37) return 8.5;
-  if (c >= 35) return 8.0;
-  if (c >= 32) return 7.5;
-  if (c >= 30) return 7.0;
-  if (c >= 26) return 6.5;
-  if (c >= 23) return 6.0;
-  if (c >= 18) return 5.5;
-  if (c >= 16) return 5.0;
-  if (c >= 13) return 4.5;
-  if (c >= 10) return 4.0;
-  if (c >= 8)  return 3.5;
-  if (c >= 6)  return 3.0;
-  if (c >= 4)  return 2.5;
-  return 2.0;
+  return bandScoreTable('listening', this.correctCount);
 };
 
 // ── Index thường dùng: lấy lịch sử theo user, sort mới nhất ─────────────────

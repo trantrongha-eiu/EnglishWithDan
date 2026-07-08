@@ -131,7 +131,7 @@ function ExModal({ exercise, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 660 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{exercise?._id ? 'Sửa câu hỏi Task 1' : 'Thêm câu hỏi Task 1'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
 
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '78vh', overflowY: 'auto' }}>

@@ -26,7 +26,7 @@ function AttemptModal({ attempt, onClose }) {
       <div className="modal" style={{ maxWidth: 680, maxHeight: '90vh', overflow: 'hidden', display:'flex', flexDirection:'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">Chi tiết luyện Speaking</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ overflowY:'auto', padding:'20px 24px', display:'flex', flexDirection:'column', gap:16 }}>
           {/* Meta */}
@@ -161,7 +161,7 @@ function QuestionModal({ question, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 540 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{question?._id ? 'Sửa câu hỏi' : 'Thêm câu hỏi Speaking'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
@@ -265,7 +265,7 @@ function MaterialModal({ material, onClose, onSaved }) {
       <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{material?._id ? 'Sửa tài liệu PDF' : 'Upload tài liệu PDF'}</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -326,8 +326,8 @@ export default function Speaking() {
   const [selectedAttempt, setSelectedAttempt] = useState(null);
   const histLoaded = useRef(false);
 
-  const loadQ = () => apiFetch('/admin/speaking/questions').then(d => setQuestions(d.questions || [])).catch(() => {});
-  const loadM = () => apiFetch('/admin/speaking/materials').then(d => setMaterials(d.materials || [])).catch(() => {});
+  const loadQ = () => apiFetch('/admin/speaking/questions').then(d => setQuestions(d.questions || [])).catch(e => toast(e.message, 'error'));
+  const loadM = () => apiFetch('/admin/speaking/materials').then(d => setMaterials(d.materials || [])).catch(e => toast(e.message, 'error'));
 
   const loadHistory = async (page = 1) => {
     setHistLoading(true);

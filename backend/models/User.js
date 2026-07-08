@@ -36,6 +36,7 @@ const UserSchema = new mongoose.Schema({
   // Password reset OTP
   resetOTP:           { type: String, default: '' },
   resetOTPExpires:    { type: Date, default: null },
+  resetOTPAttempts:   { type: Number, default: 0 },
   lastSeen:           { type: Date, default: null },
   // Subscription plan
   plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
