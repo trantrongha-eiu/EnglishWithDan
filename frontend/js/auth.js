@@ -78,8 +78,8 @@
     return;
   }
 
-  // ── Guard 2: đã đăng nhập mà vào login/register → redirect ─
-  if ((currentPage === 'login.html' || currentPage === 'register.html') && token && user) {
+  // ── Guard 2: đã đăng nhập mà vào login/register/trang chủ → redirect ─
+  if (['login.html', 'register.html', 'index.html', ''].includes(currentPage) && token && user) {
     if (['admin', 'teacher'].includes(user.role)) {
       window.location.href = '/admin/';
     } else {
