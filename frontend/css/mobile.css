@@ -1416,3 +1416,13 @@ table.responsive-table tbody tr:hover { background: var(--bg); }
   from, to { transform:scale3d(1,1,1); }
   50%      { transform:scale3d(1.05,1.05,1.05); }
 }
+
+/* ── Luyện viết: quick-nav between Giao tiếp / Task 1 / Task 2 / Task 2 Templates ──
+   Shared across writing-practice.html, task1-practice.html, task2-practice.html,
+   task2-template.html so it only needs to be defined once. */
+.t2-tpl-nav-group{display:flex;align-items:center;gap:5px}
+.t2-tpl-nav-link{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:600;color:#374151;text-decoration:none;transition:all .15s;white-space:nowrap;line-height:1;flex-shrink:0}
+.t2-tpl-nav-link:hover{border-color:#6366f1;color:#6366f1;background:#f5f3ff}
+[data-theme="dark"] .t2-tpl-nav-link{border-color:#374151;color:#9ca3af}
+[data-theme="dark"] .t2-tpl-nav-link:hover{border-color:#818cf8;color:#a5b4fc;background:#1e1b4b}
+@media(max-width:540px){.t2-tpl-nav-link span{display:none}.t2-tpl-nav-link{padding:6px 9px}}
