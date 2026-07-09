@@ -16,22 +16,33 @@ cloudinary.config({
 const app = express();
 
 // ── Middleware ────────────────────────────────────────────────
-const allowedOrigins = process.env.FRONTEND_URL
+// Always-allowed origins: production custom domain (+ www) and local dev
+// servers. FRONTEND_URL can add more (e.g. a staging domain) as a
+// comma-separated list — it extends this list, it does not replace it.
+const DEFAULT_ALLOWED_ORIGINS = [
+  'https://ieltsthayha.com',
+  'https://www.ieltsthayha.com',
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+const envOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(o => o.trim().replace(/\/$/, ''))
   : [];
+const allowedOrigins = [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...envOrigins])];
 
-// Fail closed: an unset FRONTEND_URL must not silently open CORS to every
-// origin while credentials:true is enabled (reflected-origin-with-credentials
-// is a known anti-pattern). Same-origin/non-browser requests (no Origin header)
-// are unaffected either way.
-if (!allowedOrigins.length) {
-  console.warn('[Server] FRONTEND_URL is not set — cross-origin browser requests will be rejected. Set FRONTEND_URL to allow the frontend to call this API.');
-}
-
-app.use(helmet());
+// crossOriginResourcePolicy: 'same-origin' (Helmet's default) blocks the
+// browser from using cross-origin fetch responses independently of CORS —
+// this API is deliberately called from a different origin (the frontend),
+// so it must opt in to cross-origin.
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+    // No literal '*' match: with credentials:true, wildcard origins must
+    // never be honored (the cors package would otherwise reflect back
+    // whatever Origin header the caller sent).
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
