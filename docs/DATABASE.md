@@ -727,21 +727,24 @@ Message.insertMany(msgs)                                        // cron bulk rem
 
 ### WritingDraft
 
-**Purpose:** Autosave for an in-progress Writing submission (exam or practice) — one draft per student, overwritten on every autosave tick, so the student doesn't lose work on a page refresh/crash mid-essay.
+**Purpose:** Autosave for an in-progress Writing practice submission — up to 2 drafts per `{userId, taskType}` (so up to 4 total: 2 Task 1 + 2 Task 2), overwritten in place per exact task on every autosave tick, so a student can have two different Task 1 essays (or two Task 2s) in progress at once without one silently overwriting the other, while still bounded.
 
-**Key fields:** `userId` (`unique: true` — enforces exactly one draft per student, autosave overwrites in place rather than accumulating), `taskType`, `task` (`Mixed` — a snapshot of whatever task content was being written), `answer`, `wordCount`, `seconds` (elapsed timer state).
+**Key fields:** `userId`, `taskType`, `taskId` (String — duplicated out of `task._id` so drafts can be scoped/queried per task without reaching into the `Mixed` field), `task` (`Mixed` — a snapshot of whatever task content was being written), `answer`, `wordCount`, `seconds` (elapsed timer state).
 
-**Relationships:** References `User` (uniquely). Referenced by nothing.
+**Relationships:** References `User`. Referenced by nothing.
 
-**Indexes:** TTL — `{ savedAt: 1 }` with `expireAfterSeconds: 30 days` (from last save, not from creation — `savedAt` is bumped on every autosave). Plus the implicit unique index on `userId`.
+**Indexes:** Unique on `{userId, taskType, taskId}` (one draft per exact task, upserted in place). TTL — `{ savedAt: 1 }` with `expireAfterSeconds: 30 days` (from last save, not from creation — `savedAt` is bumped on every autosave).
 
-**Lifecycle:** Upserted via `findOneAndUpdate` on every autosave tick from the Writing exam UI, deleted outright (`deleteOne`) once the student actually submits (no point keeping a draft of something now finalized as a `WritingAttempt`). **Auto-deleted 30 days after the last autosave** if the student never submits or comes back.
+**Lifecycle:** Upserted via `findOneAndUpdate` (keyed by the exact task) on every autosave tick from the Writing practice UI; after each save, `writingService.saveDraft` checks the count for `{userId, taskType}` and deletes the oldest beyond 2, enforcing the cap in application code rather than at the schema level (Mongo has no native "keep N most recent" constraint). Deleted outright (`deleteOne`, scoped to the specific task) once the student actually submits that task. **Auto-deleted 30 days after the last autosave** if the student never submits or comes back.
+
+**Migration note:** this model changed from a single global unique index on `userId` alone to the compound `{userId, taskType, taskId}` index above — MongoDB doesn't drop obsolete indexes automatically, so `backend/scripts/fixWritingDraftIndex.js` must be run once against production after deploying this change, or the old index keeps rejecting a second draft per student.
 
 **Common queries:**
 ```js
-WritingDraft.findOne({ userId }).lean()                          // resume-draft check on page load
-WritingDraft.findOneAndUpdate({ userId }, update, { upsert: true, new: true })
-WritingDraft.deleteOne({ userId })                                // on submit
+WritingDraft.find({ userId }).sort({ savedAt: -1 }).lean()          // restore-banner list on page load
+WritingDraft.findOneAndUpdate({ userId, taskType, taskId }, update, { upsert: true, new: true })
+WritingDraft.find({ userId, taskType }).sort({ savedAt: -1 })       // cap check after each save
+WritingDraft.deleteOne({ userId, taskType, taskId })                 // on submit, or explicit discard
 ```
 
 ### Task2Draft

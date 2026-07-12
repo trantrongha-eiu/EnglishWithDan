@@ -73,20 +73,22 @@ exports.getPracticeHistory = guard(async (req, res) => {
   res.json({ success: true, attempts });
 });
 
-exports.getDraft = guard(async (req, res) => {
-  const draft = await writingService.getDraft(req.user._id);
-  res.json({ success: true, draft: draft || null });
+exports.getDrafts = guard(async (req, res) => {
+  const drafts = await writingService.getDrafts(req.user._id);
+  res.json({ success: true, drafts });
 });
 
 exports.saveDraft = guard(async (req, res) => {
   const { taskType, task } = req.body;
-  if (!task || !taskType) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+  if (!task || !task._id || !taskType) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
   await writingService.saveDraft(req.user._id, req.body);
   res.json({ success: true });
 });
 
 exports.deleteDraft = guard(async (req, res) => {
-  await writingService.deleteDraft(req.user._id);
+  const { taskType, taskId } = req.body;
+  if (!taskType || !taskId) return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
+  await writingService.deleteDraft(req.user._id, taskType, taskId);
   res.json({ success: true });
 });
 

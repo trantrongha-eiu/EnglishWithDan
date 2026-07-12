@@ -115,20 +115,31 @@ async function getPracticeHistory(userId) {
     .sort({ submittedAt: -1 }).limit(20).select('-task1Answer -task2Answer').lean();
 }
 
-async function getDraft(userId) {
-  return WritingDraft.findOne({ userId }).lean();
+async function getDrafts(userId) {
+  return WritingDraft.find({ userId }).sort({ savedAt: -1 }).lean();
 }
 
+// Up to 2 drafts per {userId, taskType} — upserts by exact task, then evicts
+// the oldest beyond 2 for that type so a student can have two different
+// Task 1 essays (or two Task 2s) in progress at once without one silently
+// overwriting the other, but can't accumulate an unbounded number.
 async function saveDraft(userId, { taskType, task, answer = '', wordCount = 0, seconds = 0 }) {
+  const taskId = String(task._id);
   await WritingDraft.findOneAndUpdate(
-    { userId },
-    { taskType, task, answer, wordCount, seconds, savedAt: new Date() },
+    { userId, taskType, taskId },
+    { taskType, taskId, task, answer, wordCount, seconds, savedAt: new Date() },
     { upsert: true, new: true }
   );
+
+  const drafts = await WritingDraft.find({ userId, taskType }).sort({ savedAt: -1 }).select('_id').lean();
+  if (drafts.length > 2) {
+    const staleIds = drafts.slice(2).map(d => d._id);
+    await WritingDraft.deleteMany({ _id: { $in: staleIds } });
+  }
 }
 
-async function deleteDraft(userId) {
-  await WritingDraft.deleteOne({ userId });
+async function deleteDraft(userId, taskType, taskId) {
+  await WritingDraft.deleteOne({ userId, taskType, taskId: String(taskId) });
 }
 
 async function getUnreadFeedbackCount(userId) {
@@ -176,6 +187,6 @@ async function getSampleFilters() {
 
 module.exports = {
   startExam, submitExam, listPracticeTasks, findPendingPracticeAttempt, getPracticeTask, submitPractice,
-  getPracticeHistory, getDraft, saveDraft, deleteDraft, getUnreadFeedbackCount, markFeedbackRead,
+  getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
 };

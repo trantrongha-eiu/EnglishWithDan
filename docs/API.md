@@ -1754,26 +1754,28 @@ Note: this controller's shared `guard()` wrapper deliberately leaks the raw `err
 
 ---
 
-### GET /api/writing/practice/draft
+### GET /api/writing/practice/drafts
 **Auth:** Bearer token required
-**Response:** `{ "success": true, "draft": { "taskType":1, "task":{...}, "answer":"...", "wordCount":80, "seconds":420, "savedAt":"..." } | null }`
+**Response:** `{ "success": true, "drafts": [ { "taskType":1, "taskId":"...", "task":{...}, "answer":"...", "wordCount":80, "seconds":420, "savedAt":"..." }, ... ] }` — up to 2 drafts per `taskType` (so up to 4 total: 2 Task 1 + 2 Task 2), sorted by `savedAt` descending.
 **Error responses:** 500 raw `err.message`.
 
 ---
 
 ### POST /api/writing/practice/draft
 **Auth:** Bearer token required
-**Request:** Body: `{ "taskType":1, "task":{...}, "answer":"...", "wordCount":80, "seconds":420 }` — single draft per user, upserted (`findOneAndUpdate` with `upsert:true`).
+**Request:** Body: `{ "taskType":1, "task":{...}, "answer":"...", "wordCount":80, "seconds":420 }` — `task._id` is required (used as the scoping key). Upserted per `{userId, taskType, taskId}` (`findOneAndUpdate` with `upsert:true`); after the upsert, any drafts beyond the 2 most-recently-saved for that `{userId, taskType}` are deleted, so a 3rd concurrent draft of the same Task type silently evicts the oldest.
 **Response:** `{ "success": true }`
-**Validation:** `task` and `taskType` required — 400 otherwise.
+**Validation:** `task`, `task._id`, and `taskType` required — 400 otherwise.
 **Error responses:** 400 `{ success:false, message:'Thiếu dữ liệu' }`; 500 raw `err.message`.
 
 ---
 
 ### DELETE /api/writing/practice/draft
 **Auth:** Bearer token required
-**Response:** `{ "success": true }` (idempotent — succeeds even if no draft existed).
-**Error responses:** 500 raw `err.message`.
+**Request:** Body: `{ "taskType":1, "taskId":"..." }` — identifies exactly which draft to remove (there can be more than one per user now).
+**Response:** `{ "success": true }` (idempotent — succeeds even if no matching draft existed).
+**Validation:** `taskType` and `taskId` required — 400 otherwise.
+**Error responses:** 400 `{ success:false, message:'Thiếu dữ liệu' }`; 500 raw `err.message`.
 
 ---
 

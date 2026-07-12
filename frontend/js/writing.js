@@ -159,8 +159,11 @@ async function _openDirectPracticeTask(taskType, taskId) {
     // link they already started writing from (see commit 3d9cf30, which
     // fixed the same class of bug for browser back/forward navigation).
     const isSameTask = (d) => d && String(d.task?._id) === String(taskId) && d.taskType === taskType;
-    let saved = loadPracticeFromStorage();
-    if (!isSameTask(saved)) saved = await loadDraftFromServer();
+    let saved = loadPracticeFromStorage(taskType, taskId);
+    if (!isSameTask(saved)) {
+      const serverDrafts = await loadDraftsFromServer();
+      saved = serverDrafts.find(isSameTask) || null;
+    }
     if (isSameTask(saved) && !practiceState.hasPending) {
       _applyPracticeDraft(saved);
     } else {
@@ -1164,14 +1167,22 @@ function goToTaskPage(n) {
 })();
 
 // ── Practice Auto-save (localStorage) ─────────────────
-const _PRACTICE_SAVE_KEY = 'ews_practice_autosave';
-const _PRACTICE_MAX_AGE  = 24 * 60 * 60 * 1000; // 24h
+// Up to 2 drafts per taskType are kept server-side (see writingService.
+// saveDraft), so localStorage mirrors that: one entry PER TASK, keyed by
+// type+id, instead of a single global slot that only ever remembered
+// whichever task was written last.
+const _PRACTICE_SAVE_PREFIX = 'ews_practice_autosave:';
+const _PRACTICE_MAX_AGE     = 24 * 60 * 60 * 1000; // 24h
+
+function _practiceSaveKey(taskType, taskId) {
+  return `${_PRACTICE_SAVE_PREFIX}${taskType}:${taskId}`;
+}
 
 function savePracticeToStorage() {
   if (!practiceState.task) return;
   const ta = document.getElementById('pw-textarea');
   try {
-    localStorage.setItem(_PRACTICE_SAVE_KEY, JSON.stringify({
+    localStorage.setItem(_practiceSaveKey(practiceState.taskType, practiceState.task._id), JSON.stringify({
       taskType:  practiceState.taskType,
       task:      practiceState.task,
       answer:    ta?.value || '',
@@ -1200,22 +1211,41 @@ function saveDraftManual() {
   showToast('Đã lưu nháp ✓ — bạn có thể thoát và tiếp tục sau', 'success', 3000);
 }
 
-function loadPracticeFromStorage() {
+function loadPracticeFromStorage(taskType, taskId) {
   try {
-    const raw = localStorage.getItem(_PRACTICE_SAVE_KEY);
+    const key = _practiceSaveKey(taskType, taskId);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
     const saved = JSON.parse(raw);
     if (!saved?.task) return null;
     if (Date.now() - saved.savedAt > _PRACTICE_MAX_AGE) {
-      localStorage.removeItem(_PRACTICE_SAVE_KEY);
+      localStorage.removeItem(key);
       return null;
     }
     return saved;
   } catch (_) { return null; }
 }
 
-function clearPracticeAutoSave() {
-  localStorage.removeItem(_PRACTICE_SAVE_KEY);
+// All locally-cached drafts across every task — used to build the restore
+// list on the practice home screen (merged with the server's copies).
+function listLocalPracticeDrafts() {
+  const out = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith(_PRACTICE_SAVE_PREFIX)) continue;
+    try {
+      const saved = JSON.parse(localStorage.getItem(key));
+      if (!saved?.task) continue;
+      if (Date.now() - saved.savedAt > _PRACTICE_MAX_AGE) { localStorage.removeItem(key); continue; }
+      out.push(saved);
+    } catch (_) {}
+  }
+  return out;
+}
+
+function clearPracticeAutoSave(taskType, taskId) {
+  if (taskType == null || taskId == null) return;
+  localStorage.removeItem(_practiceSaveKey(taskType, taskId));
 }
 
 // ── Server-side draft helpers ───────────────────
@@ -1236,52 +1266,78 @@ async function saveDraftToServer() {
   } catch (_) {}
 }
 
-async function loadDraftFromServer() {
+async function loadDraftsFromServer() {
   try {
-    const d = await apiFetch('/api/writing/practice/draft');
-    if (!d.success || !d.draft) return null;
-    return {
-      taskType:  d.draft.taskType,
-      task:      d.draft.task,
-      answer:    d.draft.answer || '',
-      wordCount: d.draft.wordCount || 0,
-      seconds:   d.draft.seconds || 0,
-      savedAt:   new Date(d.draft.savedAt).getTime()
-    };
-  } catch (_) { return null; }
+    const d = await apiFetch('/api/writing/practice/drafts');
+    if (!d.success || !Array.isArray(d.drafts)) return [];
+    return d.drafts.map(x => ({
+      taskType:  x.taskType,
+      task:      x.task,
+      answer:    x.answer || '',
+      wordCount: x.wordCount || 0,
+      seconds:   x.seconds || 0,
+      savedAt:   new Date(x.savedAt).getTime()
+    }));
+  } catch (_) { return []; }
 }
 
-function deleteDraftFromServer() {
-  apiFetch('/api/writing/practice/draft', { method: 'DELETE' }).catch(() => {});
+function deleteDraftFromServer(taskType, taskId) {
+  apiFetch('/api/writing/practice/draft', {
+    method: 'DELETE',
+    body: JSON.stringify({ taskType, taskId })
+  }).catch(() => {});
 }
 
 async function checkPracticeRestoreBanner() {
-  let saved = loadPracticeFromStorage();
-  if (!saved) {
-    // Thử lấy từ server (dùng khi đổi thiết bị hoặc mất localStorage)
-    saved = await loadDraftFromServer();
-    if (saved) {
-      try { localStorage.setItem(_PRACTICE_SAVE_KEY, JSON.stringify(saved)); } catch (_) {}
-    }
-  }
-  const banner  = document.getElementById('practice-restore-banner');
-  const descEl  = document.getElementById('practice-restore-desc');
-  if (!banner) return;
-  if (!saved) { banner.style.display = 'none'; return; }
+  const localDrafts  = listLocalPracticeDrafts();
+  const serverDrafts = await loadDraftsFromServer();
 
-  const wc = saved.wordCount || 0;
-  const m  = String(Math.floor(saved.seconds / 60)).padStart(2, '0');
-  const s  = String(saved.seconds % 60).padStart(2, '0');
-  if (descEl) descEl.textContent = `Task ${saved.taskType} – ${wc} từ – đã viết ${m}:${s}`;
+  // Merge by (taskType, taskId), preferring whichever copy was saved more
+  // recently — local can be ahead of the server if the last autosave tick
+  // hasn't synced yet, and the server is the only copy on a new device.
+  const merged = new Map();
+  for (const d of serverDrafts) merged.set(`${d.taskType}:${d.task._id}`, d);
+  for (const d of localDrafts) {
+    const key = `${d.taskType}:${d.task._id}`;
+    const existing = merged.get(key);
+    if (!existing || d.savedAt > existing.savedAt) merged.set(key, d);
+  }
+  const drafts = [...merged.values()].sort((a, b) => b.savedAt - a.savedAt);
+  practiceState.restorableDrafts = drafts;
+
+  const banner    = document.getElementById('practice-restore-banner');
+  const listEl    = document.getElementById('practice-restore-list');
+  const titleTextEl = document.getElementById('practice-restore-title-text');
+  if (!banner || !listEl) return;
+  if (!drafts.length) { banner.style.display = 'none'; return; }
+
+  if (titleTextEl) {
+    titleTextEl.textContent = drafts.length > 1
+      ? `Bạn có ${drafts.length} bài luyện tập chưa nộp`
+      : 'Bạn có bài luyện tập chưa nộp';
+  }
+  listEl.innerHTML = drafts.map((d, i) => {
+    const wc = d.wordCount || 0;
+    const m  = String(Math.floor((d.seconds || 0) / 60)).padStart(2, '0');
+    const s  = String((d.seconds || 0) % 60).padStart(2, '0');
+    return `
+      <div class="wr-restore-item">
+        <span class="wr-restore-item-desc">Task ${d.taskType} – ${wc} từ – đã viết ${m}:${s}</span>
+        <div class="wr-restore-item-btns">
+          <button class="wr-restore-btn-primary" onclick="restorePracticeWrite(${i})"><i class="fas fa-play"></i> Tiếp tục</button>
+          <button class="wr-restore-btn-secondary" onclick="discardPracticeAutoSave(${i})">Bỏ qua</button>
+        </div>
+      </div>`;
+  }).join('');
   banner.style.display = 'block';
 }
 
-function restorePracticeWrite() {
+function restorePracticeWrite(idx) {
   if (practiceState.hasPending) {
     showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài.', 'info');
     return;
   }
-  const saved = loadPracticeFromStorage();
+  const saved = practiceState.restorableDrafts?.[idx];
   if (!saved) return;
 
   const banner = document.getElementById('practice-restore-banner');
@@ -1314,11 +1370,12 @@ function _applyPracticeDraft(saved) {
   };
 }
 
-function discardPracticeAutoSave() {
-  clearPracticeAutoSave();
-  deleteDraftFromServer();
-  const banner = document.getElementById('practice-restore-banner');
-  if (banner) banner.style.display = 'none';
+function discardPracticeAutoSave(idx) {
+  const saved = practiceState.restorableDrafts?.[idx];
+  if (!saved) return;
+  clearPracticeAutoSave(saved.taskType, saved.task._id);
+  deleteDraftFromServer(saved.taskType, saved.task._id);
+  checkPracticeRestoreBanner(); // re-render the list without this item
 }
 
 function showPracticeMode(pushHistory = true) {
@@ -1509,7 +1566,7 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
   practiceState.wordCount = 0;
   practiceState.seconds   = 0;
 
-  clearPracticeAutoSave(); // Clear any stale draft when starting fresh
+  clearPracticeAutoSave(taskType, taskId); // Clear any stale draft when starting fresh
   renderPracticeWriteScreen(taskType, task);
   showScreen('screen-practice-write');
   startPracticeStopwatch(0);
@@ -1694,8 +1751,8 @@ async function submitPractice() {
     if (!d.success) throw new Error(d.message || 'Lỗi nộp bài');
 
     stopPracticeStopwatch();
-    clearPracticeAutoSave();
-    deleteDraftFromServer();
+    clearPracticeAutoSave(practiceState.taskType, practiceState.task?._id);
+    deleteDraftFromServer(practiceState.taskType, practiceState.task?._id);
     window.onbeforeunload = null;
     document.getElementById('practice-submit-modal').classList.remove('open');
     const label = `Task ${practiceState.taskType} (${practiceState.wordCount} từ)`;

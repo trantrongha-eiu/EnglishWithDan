@@ -24,9 +24,9 @@ router.post('/practice/submit', auth, writingController.submitPractice);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // ══════════════════════════════════════════════════
-// DRAFT – lưu nháp luyện viết lên server
+// DRAFT – lưu nháp luyện viết lên server (tối đa 2 nháp mỗi taskType)
 // ══════════════════════════════════════════════════
-router.get('/practice/draft', auth, writingController.getDraft);
+router.get('/practice/drafts', auth, writingController.getDrafts);
 router.post('/practice/draft', auth, writingController.saveDraft);
 router.delete('/practice/draft', auth, writingController.deleteDraft);
 

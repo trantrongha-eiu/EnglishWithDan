@@ -1175,6 +1175,22 @@ body {
 [data-theme="dark"] .wr-restore-btn-secondary    { background: #1f2937; color: #9ca3af; border-color: #374151; }
 [data-theme="dark"] .wr-restore-btn-secondary:hover { background: #374151; }
 
+/* Practice restore banner's per-draft rows — up to 2 drafts per Task type
+   can exist at once, so #practice-restore-list may render more than one. */
+.wr-restore-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(245, 158, 11, .25);
+}
+.wr-restore-item:first-child { border-top: none; padding-top: 0; }
+.wr-restore-item-desc { font-size: 12px; color: #78350f; }
+.wr-restore-item-btns { display: flex; gap: 6px; flex-shrink: 0; }
+[data-theme="dark"] .wr-restore-item      { border-top-color: rgba(217, 119, 6, .35); }
+[data-theme="dark"] .wr-restore-item-desc { color: #fde68a; }
+
 /* ══════════════════════════════════════════════
    PENDING NOTICE
 ══════════════════════════════════════════════ */

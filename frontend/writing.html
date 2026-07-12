@@ -246,14 +246,11 @@
   </div>
   <div class="history-body">
 
-    <!-- Restore banner (shown when có draft luyện tập chưa nộp) -->
+    <!-- Restore banner (shown when có draft luyện tập chưa nộp — tối đa 2
+         bài mỗi Task, nên có thể hiện nhiều dòng cùng lúc) -->
     <div id="practice-restore-banner" class="wr-restore-banner" style="display:none">
-      <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> Bạn có bài luyện tập chưa nộp</p>
-      <p id="practice-restore-desc" class="wr-restore-banner-desc"></p>
-      <div class="wr-restore-btn-row">
-        <button onclick="restorePracticeWrite()" class="wr-restore-btn-primary"><i class="fas fa-play"></i> Tiếp tục viết</button>
-        <button onclick="discardPracticeAutoSave()" class="wr-restore-btn-secondary">Bỏ qua</button>
-      </div>
+      <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> <span id="practice-restore-title-text">Bạn có bài luyện tập chưa nộp</span></p>
+      <div id="practice-restore-list"></div>
     </div>
 
     <!-- Pending notice -->

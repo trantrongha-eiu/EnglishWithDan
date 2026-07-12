@@ -207,24 +207,49 @@ describe('writingService.getAttempt', () => {
   });
 });
 
-describe('writingService.getDraft / saveDraft / deleteDraft', () => {
-  test('saveDraft upserts a single draft per user, and deleteDraft removes it', async () => {
+describe('writingService.getDrafts / saveDraft / deleteDraft', () => {
+  test('saveDraft upserts a single draft per exact task, and deleteDraft removes it', async () => {
+    const student = await createStudent();
+    const task = { _id: 'task-a', prompt: 'p1' };
+
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: 'first', wordCount: 5, seconds: 10 });
+    let drafts = await writingService.getDrafts(student._id);
+    expect(drafts).toHaveLength(1);
+    expect(drafts[0].answer).toBe('first');
+
+    // Saving again for the same task must upsert (update in place), not
+    // create a second document.
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: 'second', wordCount: 8, seconds: 20 });
+    drafts = await writingService.getDrafts(student._id);
+    expect(drafts).toHaveLength(1);
+    expect(drafts[0].answer).toBe('second');
+
+    await writingService.deleteDraft(student._id, 1, 'task-a');
+    drafts = await writingService.getDrafts(student._id);
+    expect(drafts).toHaveLength(0);
+  });
+
+  test('keeps up to 2 drafts per {userId, taskType}, evicting the oldest beyond that', async () => {
     const student = await createStudent();
 
-    await writingService.saveDraft(student._id, { taskType: 1, task: { prompt: 'p1' }, answer: 'first', wordCount: 5, seconds: 10 });
-    let draft = await writingService.getDraft(student._id);
-    expect(draft.answer).toBe('first');
+    await writingService.saveDraft(student._id, { taskType: 1, task: { _id: 'task-1', prompt: 'p1' }, answer: 'first' });
+    await writingService.saveDraft(student._id, { taskType: 1, task: { _id: 'task-2', prompt: 'p2' }, answer: 'second' });
+    // A different taskType has its own independent cap.
+    await writingService.saveDraft(student._id, { taskType: 2, task: { _id: 'task-3', prompt: 'p3' }, answer: 'third' });
 
-    // Saving again must upsert (update in place), not create a second document.
-    await writingService.saveDraft(student._id, { taskType: 1, task: { prompt: 'p1' }, answer: 'second', wordCount: 8, seconds: 20 });
-    draft = await writingService.getDraft(student._id);
-    expect(draft.answer).toBe('second');
-    const count = await WritingDraft.countDocuments({ userId: student._id });
-    expect(count).toBe(1);
+    let drafts = await writingService.getDrafts(student._id);
+    expect(drafts).toHaveLength(3);
 
-    await writingService.deleteDraft(student._id);
-    draft = await writingService.getDraft(student._id);
-    expect(draft).toBeNull();
+    // A third Task 1 draft pushes the count for taskType 1 over the cap —
+    // the oldest Task 1 draft (task-1) should be evicted, task-2 and the
+    // new one survive, and the unrelated Task 2 draft is untouched.
+    await writingService.saveDraft(student._id, { taskType: 1, task: { _id: 'task-4', prompt: 'p4' }, answer: 'fourth' });
+    drafts = await writingService.getDrafts(student._id);
+    const taskIds = drafts.map(d => d.taskId).sort();
+    expect(taskIds).toEqual(['task-2', 'task-3', 'task-4']);
+
+    const t1Count = await WritingDraft.countDocuments({ userId: student._id, taskType: 1 });
+    expect(t1Count).toBe(2);
   });
 });
 
