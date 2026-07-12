@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Điều Khoản Dịch Vụ – EnglishWithDan</title>
+  <meta name="description" content="Điều khoản sử dụng dịch vụ luyện thi IELTS trực tuyến EnglishWithDan."/>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <!--
+    LEGAL REVIEW NEEDED: this page is an operational draft written to remove the
+    dead href="#" link on the registration form (audit finding UI#17 / UX#15).
+    It has NOT been reviewed by a lawyer and should not be treated as a final,
+    legally-binding Terms of Service until it is. Replace this content, or have
+    counsel review it, before relying on it in a dispute.
+  -->
+  <style>
+    .legal-wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
+    .legal-wrap h1{font-size:clamp(28px,3.5vw,38px);margin:0 0 6px}
+    .legal-updated{color:var(--gray);font-size:13.5px;margin:0 0 40px}
+    .legal-wrap h2{font-size:19px;margin:36px 0 10px;color:var(--dark)}
+    .legal-wrap p, .legal-wrap li{font-size:15px;line-height:1.75;color:#374151}
+    .legal-wrap ul{padding-left:20px;margin:0 0 12px}
+    .legal-wrap a{color:var(--blue)}
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Trang chủ</a>
+    <a href="courses.html">Khóa học</a>
+    <a href="about.html">Về chúng tôi</a>
+    <a href="contact.html">Liên hệ</a>
+  </div>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+    <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
+  </div>
+  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
+  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
+  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+</div>
+
+<main class="legal-wrap">
+  <h1>Điều khoản dịch vụ</h1>
+  <p class="legal-updated">Cập nhật lần cuối: 2026-07-10 · Áp dụng cho website và ứng dụng học tập EnglishWithDan.</p>
+
+  <h2>1. Chấp nhận điều khoản</h2>
+  <p>Khi tạo tài khoản hoặc sử dụng bất kỳ tính năng nào của EnglishWithDan (luyện Reading, Listening, Writing, Speaking, từ vựng, hoặc các khóa học đi kèm), bạn đồng ý với các điều khoản trong trang này. Nếu không đồng ý, vui lòng không sử dụng dịch vụ.</p>
+
+  <h2>2. Mô tả dịch vụ</h2>
+  <p>EnglishWithDan cung cấp nền tảng luyện thi IELTS trực tuyến, bao gồm bài luyện tập theo từng kỹ năng, chấm điểm/gợi ý bằng AI (hỗ trợ bởi Gemini), và các khóa học đi kèm do giáo viên phụ trách. Một số tính năng yêu cầu tài khoản trả phí (gói Premium/Nâng cấp).</p>
+
+  <h2>3. Tài khoản người dùng</h2>
+  <ul>
+    <li>Bạn chịu trách nhiệm giữ bí mật mật khẩu và mọi hoạt động diễn ra dưới tài khoản của mình.</li>
+    <li>Thông tin đăng ký (họ tên, email, số điện thoại) cần chính xác để chúng tôi liên hệ hỗ trợ hoặc xử lý học phí khi cần.</li>
+    <li>Chúng tôi có quyền tạm khóa tài khoản vi phạm điều khoản hoặc có dấu hiệu gian lận/lạm dụng hệ thống.</li>
+  </ul>
+
+  <h2>4. Học phí và thanh toán</h2>
+  <p>Học phí cho các gói Premium/khóa học được thông báo trực tiếp trên trang hoặc qua tư vấn viên trước khi thanh toán. Các giao dịch chuyển khoản được đối soát thủ công bởi đội ngũ quản trị; vui lòng giữ lại biên lai/ảnh chụp giao dịch cho đến khi được xác nhận trên hệ thống.</p>
+
+  <h2>5. Nội dung do AI tạo ra</h2>
+  <p>Điểm số và nhận xét từ AI (bao gồm điểm Speaking, Writing) mang tính chất tham khảo để hỗ trợ luyện tập, không phải kết quả thi IELTS chính thức và không được IDP/British Council/Cambridge công nhận. Một số chỉ số (ví dụ điểm Pronunciation trong phần Speaking) được ước tính gián tiếp và có thể không phản ánh đầy đủ khả năng phát âm thực tế — chi tiết được ghi chú ngay tại màn hình kết quả.</p>
+
+  <h2>6. Sở hữu trí tuệ</h2>
+  <p>Toàn bộ đề thi, bài mẫu, video và tài liệu trên nền tảng thuộc bản quyền của EnglishWithDan / Daniel Hà English Center. Không sao chép, phân phối lại hoặc sử dụng cho mục đích thương mại khi chưa có sự đồng ý bằng văn bản.</p>
+
+  <h2>7. Giới hạn trách nhiệm</h2>
+  <p>Dịch vụ được cung cấp trên nguyên tắc "hiện có". Chúng tôi nỗ lực đảm bảo tính chính xác của nội dung và độ ổn định của hệ thống, nhưng không đảm bảo dịch vụ không gián đoạn hoặc không có lỗi.</p>
+
+  <h2>8. Liên hệ</h2>
+  <p>Mọi thắc mắc về điều khoản dịch vụ, vui lòng liên hệ <a href="tel:0914769618">0914 769 618</a> hoặc <a href="mailto:englishwithdan@gmail.com">englishwithdan@gmail.com</a>.</p>
+</main>
+
+<footer class="footer">
+  <div class="footer-bottom">
+    <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const yrEl = document.getElementById('footer-year');
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('ham-icon');
+    const open = menu.classList.toggle('open');
+    icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+  }
+</script>
+<script src="js/consult-modal.js"></script>
+</body>
+</html>

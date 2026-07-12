@@ -85,7 +85,7 @@
 
     <div class="teacher-info">
       <div class="section-tag">Về giáo viên</div>
-      <h2>Hà Trọng — <span style="color:var(--blue)">Thầy Daniel Hà</span></h2>
+      <h2>Thầy <span style="color:var(--blue)">Daniel Hà</span></h2>
       <p class="teacher-name-en">IELTS Instructor &amp; English Coach</p>
       <p>
         Thầy Daniel Hà là giảng viên IELTS với chứng chỉ Overall 8.0 (IDP &amp; British Council),
@@ -306,7 +306,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+    <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
     <div class="footer-socials">
       <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
       <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
@@ -325,6 +325,8 @@ function toggleMenu() {
   const open = menu.classList.toggle('open');
   icon.className = open ? 'fas fa-times' : 'fas fa-bars';
 }
+const yrEl = document.getElementById('footer-year');
+if (yrEl) yrEl.textContent = new Date().getFullYear();
 
 async function submitForm(e) {
   e.preventDefault();

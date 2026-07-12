@@ -7,6 +7,8 @@
   <title>Học phí – EnglishWithDan</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/mobile.css">
   <script src="js/theme.js"></script>
   <style>
@@ -143,8 +145,11 @@
   </style>
 </head>
 <body>
+  <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/shared/toast.js"></script>
+  <script src="js/shared/utils.js"></script>
 
   <div class="tuition-layout">
 
@@ -200,17 +205,12 @@
 
   <script>
     const API = 'https://englishwithdan.onrender.com';
-    function tok() { return localStorage.getItem('token'); }
-    function hdrs() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok() }; }
+    function tok() { return window.AuthService.getToken(); }
+    function hdrs() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
 
-    function showToast(type, title, msg, duration = 4000) {
-      const icons = { success:'✅', error:'❌', info:'ℹ️' };
-      const el = document.createElement('div');
-      el.className = 'toast ' + type;
-      el.innerHTML = `<div class="toast-icon">${icons[type]||'ℹ️'}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
-      document.getElementById('toastContainer').appendChild(el);
-      if (duration > 0) setTimeout(() => { el.classList.add('hiding'); setTimeout(() => el.remove(), 300); }, duration);
-    }
+    // showToastWithTitle() moved to js/shared/toast.js (single source of
+    // truth — Phase 3 audit). This page's old #toastContainer element is
+    // no longer referenced but was left in place.
 
     function fmtVND(n) { return Number(n || 0).toLocaleString('vi-VN') + ' ₫'; }
 
@@ -243,7 +243,7 @@
         <div class="fee-period">
           <div class="fee-type-label">${fmtTypeLabel(fee)}</div>
           <div class="fee-period-text">${fmtPeriod(fee)}</div>
-          ${fee.note ? `<div class="fee-note">${fee.note}</div>` : ''}
+          ${fee.note ? `<div class="fee-note">${escHtml(fee.note)}</div>` : ''}
         </div>
         <div class="fee-amount ${fee.isPaid ? 'paid-color' : 'unpaid'}">${fmtVND(fee.amount)}</div>
         ${statusHtml}
@@ -313,15 +313,17 @@
         if (settings.bankAccount || settings.bankName) {
           document.getElementById('paymentCard').style.display = 'block';
           const rows = [];
-          if (settings.bankName)    rows.push(`<div class="bank-row"><span class="bank-label">🏦 Ngân hàng</span><span class="bank-value">${settings.bankName}</span></div>`);
-          if (settings.accountName) rows.push(`<div class="bank-row"><span class="bank-label">👤 Chủ tài khoản</span><span class="bank-value">${settings.accountName}</span></div>`);
-          if (settings.bankAccount) rows.push(`<div class="bank-row"><span class="bank-label">💳 Số tài khoản</span><span class="bank-account-num">${settings.bankAccount}<button class="copy-btn" onclick="copyAccount('${settings.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
+          // Admin-controlled but rendered on every logged-in student's page —
+          // must be escaped before reaching innerHTML (security audit finding).
+          if (settings.bankName)    rows.push(`<div class="bank-row"><span class="bank-label">🏦 Ngân hàng</span><span class="bank-value">${escHtml(settings.bankName)}</span></div>`);
+          if (settings.accountName) rows.push(`<div class="bank-row"><span class="bank-label">👤 Chủ tài khoản</span><span class="bank-value">${escHtml(settings.accountName)}</span></div>`);
+          if (settings.bankAccount) rows.push(`<div class="bank-row"><span class="bank-label">💳 Số tài khoản</span><span class="bank-account-num">${escHtml(settings.bankAccount)}<button class="copy-btn" onclick="copyAccount('${escAttr(settings.bankAccount)}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
           if (settings.defaultMonthlyFee) rows.push(`<div class="bank-row"><span class="bank-label">💰 HP/tháng</span><span class="bank-value" style="color:#16a34a;">${fmtVND(settings.defaultMonthlyFee)}</span></div>`);
           document.getElementById('bankInfoBody').innerHTML = rows.join('');
           if (settings.paymentNote) {
             const noteEl = document.getElementById('paymentNoteBody');
             noteEl.style.display = 'block';
-            noteEl.innerHTML = '📋 <strong>Hướng dẫn CK:</strong> ' + settings.paymentNote.replace(/\n/g, '<br>');
+            noteEl.innerHTML = '📋 <strong>Hướng dẫn CK:</strong> ' + escHtml(settings.paymentNote).replace(/\n/g, '<br>');
           }
           if (settings.qrImageUrl) {
             document.getElementById('qrWrap').style.display = 'block';
@@ -344,24 +346,24 @@
         const res  = await fetch(API + `/api/tuition/${feeId}/notify`, { method: 'POST', headers: hdrs() });
         const data = await res.json();
         if (data.success) {
-          showToast('success', 'Đã gửi thông báo', 'Admin sẽ xác nhận thanh toán của bạn sớm nhất!');
+          showToastWithTitle('success', 'Đã gửi thông báo', 'Admin sẽ xác nhận thanh toán của bạn sớm nhất!');
           // reload page after 1.5s
           setTimeout(() => location.reload(), 1500);
         } else {
-          showToast('error', 'Lỗi', data.message || 'Không gửi được');
+          showToastWithTitle('error', 'Lỗi', data.message || 'Không gửi được');
           if (btn) { btn.disabled = false; btn.textContent = '💸 Đã chuyển khoản'; }
         }
       } catch {
-        showToast('error', 'Lỗi', 'Không kết nối được server');
+        showToastWithTitle('error', 'Lỗi', 'Không kết nối được server');
         if (btn) { btn.disabled = false; btn.textContent = '💸 Đã chuyển khoản'; }
       }
     }
 
     function copyAccount(num) {
       navigator.clipboard.writeText(num).then(() => {
-        showToast('success', 'Đã sao chép', 'Số tài khoản đã được sao chép vào clipboard', 2000);
+        showToastWithTitle('success', 'Đã sao chép', 'Số tài khoản đã được sao chép vào clipboard', 2000);
       }).catch(() => {
-        showToast('info', 'Số tài khoản', num, 4000);
+        showToastWithTitle('info', 'Số tài khoản', num, 4000);
       });
     }
 

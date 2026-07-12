@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="writing-practice.css"/>
   <link rel="stylesheet" href="css/mobile.css"/>
   <script src="js/theme.js"></script>
@@ -330,7 +332,12 @@
   </style>
 </head>
 <body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
+<script src="js/shared/api-client.js"></script>
 
 
 <div id="wp-toast"></div>
@@ -386,7 +393,6 @@
 <!-- ── MAIN CONTENT ── -->
 <div id="app" style="max-width:900px;margin:0 auto;padding-bottom:40px"></div>
 
-<script src="js/auth.js"></script>
 <script>
 // ════════════════════════════════════════════════════════
 //  CONFIG
@@ -406,11 +412,7 @@ function toggleWpSound() {
   if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
-function showToast(msg, type = 'warn', ms = 3000) {
-  const el = document.getElementById('wp-toast');
-  el.textContent = msg; el.className = 'show ' + type;
-  clearTimeout(el._t); el._t = setTimeout(() => { el.className = ''; }, ms);
-}
+// showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree / Disagree', discuss_both_views:'Discuss Both Views' };
 const ESSAY_BADGE_CLASS = { advantages_disadvantages:'et-badge et-adv', cause_effect:'et-badge et-cause', cause_solution:'et-badge et-cause', effect_solution:'et-badge et-cause', agree_disagree:'et-badge et-opinion', discuss_both_views:'et-badge et-discuss' };
@@ -542,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initUser() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = window.AuthService.getUser() || {};
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
   if (name) document.getElementById('userName').textContent = '👋 ' + name;
   const icon = document.getElementById('sound-icon');
@@ -598,13 +600,14 @@ function render() {
 // ════════════════════════════════════════════════════════
 //  API HELPERS
 // ════════════════════════════════════════════════════════
+// apiFetch keeps its own request-building and delegates response-handling
+// (including the 401 check this file previously lacked entirely) to
+// js/shared/api-client.js — single source of truth (Phase 3 audit).
 async function apiFetch(path, opts = {}) {
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) };
   const res = await fetch(API + path, { ...opts, headers: { ...headers, ...opts.headers } });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
-  return data;
+  return window.ApiClient.handleResponse(res);
 }
 
 // ════════════════════════════════════════════════════════
@@ -622,7 +625,7 @@ async function loadWeeks() {
     if (urlLevel) state.selectedLevel = urlLevel;
     if (urlMode)  state.currentMode   = urlMode;
 
-    const hasToken = !!localStorage.getItem('token');
+    const hasToken = window.AuthService.isLoggedIn();
     const [data, allDraftsData] = await Promise.all([
       apiFetch('/api/task2/weeks'),
       hasToken ? apiFetch('/api/task2/drafts').catch(() => ({ drafts: [] })) : Promise.resolve({ drafts: [] })
@@ -781,7 +784,7 @@ async function selectTopic(id) {
   state.draft = null;
   const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, level: state.selectedLevel, mode: state.currentMode });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
-  if (localStorage.getItem('token')) {
+  if (window.AuthService.isLoggedIn()) {
     try {
       const [wrongData, draftData] = await Promise.all([
         apiFetch(`/api/task2/wrong-questions/${id}`),
@@ -947,8 +950,9 @@ async function startRetryWrong() {
 // ════════════════════════════════════════════════════════
 //  DRAFT — SAVE / RESUME
 // ════════════════════════════════════════════════════════
+let _t2DraftSaveFailCount = 0;
 async function saveDraft() {
-  if (!localStorage.getItem('token') || !state.selectedTopic?._id || !state.questions.length) return;
+  if (!window.AuthService.isLoggedIn() || !state.selectedTopic?._id || !state.questions.length) return;
   try {
     await apiFetch('/api/task2/draft', {
       method: 'POST',
@@ -968,7 +972,15 @@ async function saveDraft() {
         sessionCorrect: state.sessionCorrect
       })
     });
-  } catch {}
+    _t2DraftSaveFailCount = 0;
+  } catch {
+    // Autosave chạy thường xuyên — chỉ báo lỗi khi thất bại liên tiếp để tránh làm phiền,
+    // nhưng không còn thất bại hoàn toàn trong im lặng như trước.
+    _t2DraftSaveFailCount++;
+    if (_t2DraftSaveFailCount === 3) {
+      showToast('Không lưu được tiến độ bài viết lên server. Kiểm tra kết nối mạng.', 'warn');
+    }
+  }
 }
 
 async function resumeSession() {
@@ -1747,7 +1759,7 @@ window.addEventListener('popstate', async e => {
 //  SAVE ATTEMPT
 // ════════════════════════════════════════════════════════
 async function savePracticeAttempt() {
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token || !state.sessionDone) return;
   try {
     await apiFetch('/api/task2/save-attempt', {
@@ -1841,7 +1853,7 @@ async function openT2History() {
   }
   document.getElementById('t2-hist-overlay').style.display = 'flex';
   const body = document.getElementById('t2-hist-body');
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token) {
     body.innerHTML = `<div style="text-align:center;padding:40px;color:#9ca3af">
       <div style="font-size:40px;margin-bottom:12px">🔒</div>

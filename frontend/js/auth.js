@@ -1,62 +1,25 @@
 /**
  * frontend/js/auth.js
  * Chạy trên browser – KHÔNG dùng require()
+ *
+ * Phase 5: this is now a thin bootstrap over js/shared/auth-service.js
+ * (the actual AuthService — must load before this file). It wires
+ * AuthService's pure functions into THIS page's lifecycle: the page-load
+ * guards, the inactivity check, and the banned-account interceptor. It
+ * also keeps window.getToken/getUser/saveToken/saveUser/logout as aliases
+ * to the AuthService equivalents so none of the ~40 existing call sites
+ * across the app need to change.
  */
 
 (function () {
-  const TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000; // 10 ngày tính bằng ms
+  const AS = window.AuthService;
 
-  // ── Helpers ──────────────────────────────────────────────
-  function getToken() { return localStorage.getItem('token'); }
-  function getUser()  { try { return JSON.parse(localStorage.getItem('user')); } catch { return null; } }
-  function saveToken(t) { localStorage.setItem('token', t); }
-  function saveUser(u)  { localStorage.setItem('user', JSON.stringify(u)); }
-
-  function logout(reason) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('lastLoginAt');
-    // Nếu có lý do (ví dụ: hết hạn 10 ngày) thì truyền qua URL để login.html hiển thị
-    const url = reason ? `login.html?reason=${encodeURIComponent(reason)}` : 'login.html';
-    window.location.href = url;
-  }
-
-  // ── Kiểm tra 10 ngày không đăng nhập ─────────────────────
-  function checkInactiveLogout() {
-    const lastLoginAt = parseInt(localStorage.getItem('lastLoginAt') || '0', 10);
-    if (!lastLoginAt) return; // chưa có dữ liệu → bỏ qua
-    if (Date.now() - lastLoginAt > TEN_DAYS_MS) {
-      logout('inactive');
-    }
-  }
-
-  // ── Intercept fetch để bắt 403 banned từ middleware ─────
-  // Khi server trả 403 { success:false, message:'Tài khoản đã bị cấm.' }
-  // → xoá token + redirect về login với reason=banned
-  const _origFetch = window.fetch;
-  window.fetch = async function(...args) {
-    const res = await _origFetch(...args);
-    if (res.status === 403 && !isPublic) {
-      try {
-        const clone = res.clone();
-        const data  = await clone.json();
-        if (data && data.success === false &&
-            typeof data.message === 'string' &&
-            data.message.includes('bị cấm')) {
-          logout('banned');
-          return res;
-        }
-      } catch { /* ignore parse errors */ }
-    }
-    return res;
-  };
-
-  // ── Expose globally ───────────────────────────────────────
-  window.getToken  = getToken;
-  window.getUser   = getUser;
-  window.saveToken = saveToken;
-  window.saveUser  = saveUser;
-  window.logout    = logout;
+  // ── Backward-compatible globals (delegate to AuthService) ───
+  window.getToken  = AS.getToken;
+  window.getUser   = AS.getUser;
+  window.saveToken = AS.setToken;
+  window.saveUser  = AS.setUser;
+  window.logout    = AS.logout;
 
   // ── Xác định trang hiện tại ───────────────────────────────
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -64,29 +27,24 @@
   const PUBLIC_PAGES = ['login.html', 'register.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
 
-  const token = getToken();
-  const user  = getUser();
+  AS.installBannedInterceptor(isPublic);
 
   // ── Kiểm tra inactive 10 ngày (chỉ khi đã login) ─────────
-  if (token) {
-    checkInactiveLogout();
-  }
+  // Audit finding (Phase 5 review): checkInactiveLogout() queues a
+  // navigation via location.href, but that doesn't stop this script from
+  // continuing — Guard 1 below used to re-check isLoggedIn() fresh, see it
+  // as false (session already cleared above), and fire its OWN redirect
+  // with no reason= param, silently overwriting the inactive-logout one
+  // and losing the "your session expired" toast. Skipping the guards
+  // below when checkInactiveLogout() already redirected fixes this.
+  const justLoggedOutForInactivity = AS.isLoggedIn() && AS.checkInactiveLogout();
+  if (justLoggedOutForInactivity) return;
 
-  // ── Guard 1: chưa đăng nhập → về login ──────────────────
-  if (!isPublic && !token) {
-    window.location.href = 'login.html';
-    return;
-  }
+  // ── Guard 1: chưa đăng nhập → về login, nhớ trang đang muốn vào ──
+  if (!AS.requirePageAuth(isPublic)) return;
 
   // ── Guard 2: đã đăng nhập mà vào login/register/trang chủ → redirect ─
-  if (['login.html', 'register.html', 'index.html', ''].includes(currentPage) && token && user) {
-    if (['admin', 'teacher'].includes(user.role)) {
-      window.location.href = '/admin/';
-    } else {
-      window.location.href = 'dashboard.html';
-    }
-    return;
-  }
+  if (isPublic && AS.redirectIfAuthenticated()) return;
 
   // ── Hiển thị thông báo từ URL reason (login.html) ────────
   if (currentPage === 'login.html') {

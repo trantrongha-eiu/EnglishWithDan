@@ -16,4 +16,7 @@ const task1AttemptSchema = new mongoose.Schema({
 // Auto-delete after 30 days
 task1AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
+// getProgress()/getHistory() filter by userId sorted by recency — previously unindexed.
+task1AttemptSchema.index({ userId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Task1Attempt', task1AttemptSchema);

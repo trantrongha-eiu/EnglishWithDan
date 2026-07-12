@@ -4,7 +4,7 @@
 ══════════════════════════════════════════════ */
 const API = 'https://englishwithdan.onrender.com/api';
 function authH() {
-    return { 'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-Type': 'application/json' };
+    return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' };
 }
 
 // ── UI State ──────────────────────────────────
@@ -24,7 +24,7 @@ let currentWord = null;
 let isFlipped = false;
 let hintUsed = false;
 let answered = false;
-let soundEnabled = true;
+// soundEnabled moved to js/dashboard-audio.js
 
 // ── Spaced Repetition & Mixed Mode ─────────────
 let wrongWordSet = new Set();   // word strings that were answered wrong this session
@@ -60,134 +60,14 @@ let pendingSaveWord = null;
 let selectedBookForSave = null;
 
 // ── Audio ──────────────────────────────────────
-const correctSound = new Audio('./sounds/correct.mp3');
-const wrongSound   = new Audio('./sounds/incorrect.mp3');
-correctSound.volume = 0.5;
-wrongSound.volume   = 0.5;
-
-/* ══════════════════════════════════════════════
-   SPEAK WORD — multi-layer fallback
-   Layer 1: Web Speech API (cần Google TTS / hệ thống TTS)
-   Layer 2: DictionaryAPI audio (MP3 có sẵn online)
-   Layer 3: Google Translate TTS (fallback cuối)
-══════════════════════════════════════════════ */
-let _ttsCache = {};   // word → audio URL đã tìm được
-
-async function speakWord(word) {
-    if (!word) return;
-    word = word.trim();
-
-    // ── Layer 1: Web Speech API ──────────────────
-    const synth = window.speechSynthesis;
-    if (synth) {
-        // Kiểm tra có voice tiếng Anh không
-        const voices = synth.getVoices();
-        const hasEnVoice = voices.some(v => v.lang.startsWith('en'));
-
-        if (hasEnVoice) {
-            synth.cancel();
-            const utt = new SpeechSynthesisUtterance(word);
-            utt.lang  = 'en-US';
-            utt.rate  = 0.85;
-            utt.pitch = 1;
-            // Chọn voice en-US nếu có
-            const enVoice = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang.startsWith('en'));
-            if (enVoice) utt.voice = enVoice;
-            synth.speak(utt);
-
-            // Nếu 1.5s sau vẫn đang "speaking" nhưng không thực sự phát → fallback
-            return new Promise(resolve => {
-                let timedOut = false;
-                const timer = setTimeout(async () => {
-                    timedOut = true;
-                    synth.cancel();
-                    await _speakFallback(word);
-                    resolve();
-                }, 1500);
-
-                utt.onstart = () => clearTimeout(timer);
-                utt.onend   = () => { clearTimeout(timer); resolve(); };
-                utt.onerror = async () => {
-                    clearTimeout(timer);
-                    if (!timedOut) { await _speakFallback(word); resolve(); }
-                };
-            });
-        }
-    }
-
-    // Không có Web Speech → fallback ngay
-    await _speakFallback(word);
-}
-
-async function _speakFallback(word) {
-    // ── Layer 2: Cache hit ────────────────────────
-    if (_ttsCache[word]) {
-        _playAudioUrl(_ttsCache[word]);
-        return;
-    }
-
-    // ── Layer 2: DictionaryAPI (MP3 thật, không CORS) ─
-    try {
-        const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-        if (res.ok) {
-            const data = await res.json();
-            let audioUrl = '';
-            for (const entry of data) {
-                for (const ph of (entry.phonetics || [])) {
-                    if (ph.audio && ph.audio.includes('.mp3')) {
-                        audioUrl = ph.audio.startsWith('http') ? ph.audio : 'https:' + ph.audio;
-                        break;
-                    }
-                }
-                if (audioUrl) break;
-            }
-            if (audioUrl) {
-                _ttsCache[word] = audioUrl;
-                _playAudioUrl(audioUrl);
-                return;
-            }
-        }
-    } catch { /* ignore */ }
-
-    // ── Layer 3: Web Speech không cần voice check (voices load trễ trên mobile) ──
-    try {
-        const synth2 = window.speechSynthesis;
-        if (synth2) {
-            synth2.cancel();
-            const utt2 = new SpeechSynthesisUtterance(word);
-            utt2.lang  = 'en-US';
-            utt2.rate  = 0.85;
-            synth2.speak(utt2);
-            await new Promise(resolve => {
-                utt2.onend   = resolve;
-                utt2.onerror = resolve;
-                setTimeout(resolve, 2000);
-            });
-            return;
-        }
-    } catch { /* ignore */ }
-
-    // ── Layer 4: Google Translate TTS (Audio element bypass CORS) ─────────────
-    const gtUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=${encodeURIComponent(word)}`;
-    _ttsCache[word] = gtUrl;
-    _playAudioUrl(gtUrl);
-}
-
-function _playAudioUrl(url) {
-    try {
-        const audio = new Audio(url);
-        audio.volume = 1;
-        audio.play().catch(() => {
-            // Nếu autoplay bị block, không làm gì (tránh crash)
-        });
-    } catch { }
-}
+// Sound effects + speakWord() TTS (with its multi-layer fallback) moved to
+// js/dashboard-audio.js — loaded before this file, see dashboard.html.
 
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = window.AuthService.getUser() || {};
     const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
     if (name) { const uEl = document.getElementById('userName'); if (uEl) uEl.textContent = `👋 ${name}`; }
     // Show avatar initial
@@ -210,9 +90,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     setupEmojiPicker();
-    await Promise.all([loadMyBooks(), loadUnits()]);
-    loadStreakAndUpdateMascot();
-    updateDifficultBadge();
+    // All four are independent fetches — was awaiting loadMyBooks/loadUnits
+    // first, then firing these two afterward for no reason (a network
+    // waterfall instead of a single parallel batch).
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), updateDifficultBadge()]);
 });
 
 /* ══════════════════════════════════════════════
@@ -274,35 +155,20 @@ function checkBookCompletion() {
 
 /* ══════════════════════════════════════════════
    HELPERS
+   toast() moved to js/shared/toast.js (single source of truth —
+   Phase 3 audit). Page must load shared/toast.js before this file.
 ══════════════════════════════════════════════ */
-function toast(msg, type = 'success') {
-    const el = document.getElementById('toast');
-    el.className = `show ${type}`;
-    document.getElementById('toast-msg').textContent = msg;
-    clearTimeout(el._t);
-    el._t = setTimeout(() => el.classList.remove('show'), 3000);
-}
 function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-// FIX: thay window.confirm bằng modal nội bộ
-function confirm2(title, msg, onOk) {
-    document.getElementById('confirm-title').textContent = title;
-    document.getElementById('confirm-msg').textContent   = msg;
-    document.getElementById('btn-confirm-ok').onclick = () => { closeModal('modal-confirm'); onOk(); };
-    openModal('modal-confirm');
-}
+// confirm2() moved to js/shared/confirm-dialog.js (single source of truth —
+// Phase 3 audit). dashboard.html's old static #modal-confirm markup is no
+// longer used (shared/confirm-dialog.js builds its own) but was left in
+// place rather than removed, to avoid touching unrelated markup.
 
 function pad(n) { return String(n).padStart(2, '0'); }
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-    const text = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
-    document.getElementById('soundToggle').textContent = text;
-    const mob = document.getElementById('soundToggleMob');
-    if (mob) mob.textContent = text;
-}
-function playCorrectSound() { if (soundEnabled) { correctSound.currentTime = 0; correctSound.play().catch(()=>{}); } }
-function playWrongSound()   { if (soundEnabled) { wrongSound.currentTime   = 0; wrongSound.play().catch(()=>{}); } }
+// toggleSound()/playCorrectSound()/playWrongSound() moved to
+// js/dashboard-audio.js alongside speakWord() and the sound-effect state.
 function shuffleArray(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -390,8 +256,8 @@ function renderBookSidebar() {
          ondrop="bookDrop(event,${i})"
          ondragend="bookDragEnd(event)">
       <span class="book-drag-handle" title="Kéo để sắp xếp">⠿</span>
-      <span class="book-emoji">${b.emoji}</span>
-      <span class="book-name">${b.name}</span>
+      <span class="book-emoji">${_esc(b.emoji)}</span>
+      <span class="book-name">${_esc(b.name)}</span>
       <span class="book-count">${b.totalWords}</span>
       <button class="book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
     </div>
@@ -444,12 +310,16 @@ function bookDrop(e, targetIdx) {
 }
 async function saveBookOrder() {
     try {
-        await fetch(`${API}/vocabbook/reorder`, {
+        const res = await fetch(`${API}/vocabbook/reorder`, {
             method: 'PUT',
             headers: authH(),
             body: JSON.stringify({ order: myBooks.map((b, i) => ({ _id: b._id, sortOrder: i })) })
         });
-    } catch (_) {}
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch (_) {
+        toast('Không lưu được thứ tự sổ từ vựng, đang tải lại danh sách...', 'error');
+        loadMyBooks();
+    }
 }
 
 function openBook(bookId) {
@@ -614,7 +484,7 @@ function renderWordsTable(words) {
           ${diffBadge}
           <button class="btn-audio" onclick="speakWord('${escH(w.word)}')" title="Pronounce">🔊</button>
         </div>
-        ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${w.phonetic}</div>` : ''}
+        ${w.phonetic ? `<div style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${_esc(w.phonetic)}</div>` : ''}
       </td>
       <td style="color:var(--text2)">${_esc(w.meaning || '–')}</td>
       <td style="max-width:240px">
@@ -919,8 +789,8 @@ function openMergeModal() {
         list.innerHTML = candidates.map(b => `
             <label class="merge-book-item" id="merge-item-${b._id}">
                 <input type="checkbox" value="${b._id}" onchange="toggleMergeItem('${b._id}', this.checked)">
-                <span style="font-size:18px">${b.emoji}</span>
-                <span style="font-size:13px;font-weight:600">${b.name}</span>
+                <span style="font-size:18px">${_esc(b.emoji)}</span>
+                <span style="font-size:13px;font-weight:600">${_esc(b.name)}</span>
                 <span class="merge-book-meta">${b.totalWords} từ</span>
             </label>`).join('');
     }
@@ -1196,9 +1066,9 @@ window.openSaveWordModal = async function (wordObj) {
         return `<div class="book-opt" id="bopt-${b._id}"
             onclick="${isFull ? '' : `selectBookForSave('${b._id}',this)`}"
             style="${isFull ? 'opacity:.45;cursor:not-allowed;pointer-events:none' : ''}">
-          <span class="book-opt-emoji">${b.emoji}</span>
+          <span class="book-opt-emoji">${_esc(b.emoji)}</span>
           <div class="book-opt-info">
-            <div class="book-opt-name">${b.name}</div>
+            <div class="book-opt-name">${_esc(b.name)}</div>
             <div class="book-opt-count" style="color:${countColor}">${countLabel}</div>
           </div>
           ${isFull ? '<span style="font-size:10px;color:#ef4444;font-weight:700;flex-shrink:0;padding:2px 6px;border:1px solid #fca5a5;border-radius:4px">FULL</span>' : ''}
@@ -1856,7 +1726,6 @@ function checkMultipleChoice(btn, selected, correct) {
 }
 function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-function _esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
 /* ── Flashcard ── */
 function showFillBlankQuestion() {
@@ -2335,9 +2204,9 @@ function _renderDifficultWords(words) {
         <div class="dw-item" id="dw-item-${w._id}">
             <div class="dw-item-header">
                 <div style="min-width:0">
-                    <span class="dw-word">${w.word}</span>
-                    ${w.phonetic    ? `<span class="dw-phonetic"> ${w.phonetic}</span>` : ''}
-                    ${w.partOfSpeech ? `<span class="dw-pos"> · ${w.partOfSpeech}</span>` : ''}
+                    <span class="dw-word">${_esc(w.word)}</span>
+                    ${w.phonetic    ? `<span class="dw-phonetic"> ${_esc(w.phonetic)}</span>` : ''}
+                    ${w.partOfSpeech ? `<span class="dw-pos"> · ${_esc(w.partOfSpeech)}</span>` : ''}
                 </div>
                 <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
                     <span class="dw-wrong-badge">🔥 ${w.wrongCount} lần</span>
@@ -2347,9 +2216,9 @@ function _renderDifficultWords(words) {
                     </div>
                 </div>
             </div>
-            <div class="dw-meaning" id="dw-meaning-${w._id}">${w.meaning || '<em style="color:var(--text3)">Chưa có nghĩa</em>'}</div>
-            ${w.example ? `<div class="dw-example">${w.example}</div>` : ''}
-            ${w.source  ? `<div class="dw-source"><i class="fas fa-tag" style="font-size:10px"></i> ${w.source}</div>` : ''}
+            <div class="dw-meaning" id="dw-meaning-${w._id}">${w.meaning ? _esc(w.meaning) : '<em style="color:var(--text3)">Chưa có nghĩa</em>'}</div>
+            ${w.example ? `<div class="dw-example">${_esc(w.example)}</div>` : ''}
+            ${w.source  ? `<div class="dw-source"><i class="fas fa-tag" style="font-size:10px"></i> ${_esc(w.source)}</div>` : ''}
             <div class="dw-edit-form" id="dw-edit-${w._id}" style="display:none">
                 <input class="dw-edit-input" id="dw-edit-meaning-${w._id}" value="${(w.meaning || '').replace(/"/g,'&quot;')}" placeholder="Nhập nghĩa của từ...">
                 <div style="display:flex;gap:6px;margin-top:8px">
@@ -2377,7 +2246,7 @@ async function saveDifficultWordEdit(id) {
             body: JSON.stringify({ meaning })
         });
         const el = document.getElementById(`dw-meaning-${id}`);
-        el.innerHTML = meaning || '<em style="color:var(--text3)">Chưa có nghĩa</em>';
+        el.innerHTML = meaning ? _esc(meaning) : '<em style="color:var(--text3)">Chưa có nghĩa</em>';
         document.getElementById(`dw-edit-${id}`).style.display = 'none';
         if (window._difficultWordsList) {
             const w = window._difficultWordsList.find(x => x._id === id);
@@ -2435,16 +2304,12 @@ function startDifficultWordsPractice() {
 /* ══════════════════════════════════════════════
    LOGOUT
 ══════════════════════════════════════════════ */
-function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = 'login.html';
-}
+// logout() moved to js/auth.js (single source of truth — Phase 3 audit
+// found this local copy never cleared 'lastLoginAt', unlike auth.js's).
 
 /* ══════════════════════════════════════════════
    EXPOSE globals
 ══════════════════════════════════════════════ */
-window.logout             = logout;
 window.loadMyBooks        = loadMyBooks;
 window.loadUnit           = loadUnit;
 window.showMode           = showMode;

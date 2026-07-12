@@ -23,3 +23,9 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Test output
+test-results/
+playwright-report/
+coverage/
+.nyc_output/

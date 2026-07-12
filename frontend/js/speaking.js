@@ -5,59 +5,36 @@
 
 const API = 'https://englishwithdan.onrender.com';
 
-// ──────────────────────────────────────────────────────
-// Toast
-// ──────────────────────────────────────────────────────
-function showToast(message, type = 'info') {
-  let c = document.getElementById('toast-container');
-  if (!c) {
-    c = document.createElement('div');
-    c.id = 'toast-container';
-    c.style.cssText =
-      'position:fixed;top:68px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
-    document.body.appendChild(c);
-  }
-  const t = document.createElement('div');
-  const colors = { info: '#3d8bff', error: '#e53935', success: '#22c55e', warn: '#f59e0b' };
-  t.style.cssText = `background:#fff;border-left:4px solid ${colors[type]||colors.info};border-radius:8px;
-    padding:12px 16px;font-size:13px;font-weight:500;color:#111;
-    box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:300px;line-height:1.4;`;
-  t.textContent = message;
-  c.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 3500);
-}
+// showToast() and escHtml() moved to js/shared/toast.js and
+// js/shared/utils.js (single source of truth — Phase 3 audit).
 
 // ──────────────────────────────────────────────────────
 // Auth
 // ──────────────────────────────────────────────────────
-function getToken() { return localStorage.getItem('token'); }
+// Delegates to AuthService (Phase 5) — kept as a local wrapper so the
+// existing call sites below don't need to change.
+function getToken() { return window.AuthService.getToken(); }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = 'login.html';
-}
+// logout() moved to js/auth.js (single source of truth — Phase 3 audit
+// found this local copy never cleared 'lastLoginAt', unlike auth.js's).
 
-function escHtml(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+// apiFetch keeps its own request-building (FormData-safe headers unchanged)
+// and delegates response-handling to js/shared/api-client.js. The
+// premium-expiry redirect (403 + requiresPremium) is speaking.html-specific
+// UI behavior, so it stays here: it inspects the normalized error's
+// .status/.body (attached by the shared handler) instead of re-parsing.
 async function apiFetch(path, opts = {}) {
-  const token = getToken();
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = { ...window.AuthService.authHeader() };
   if (!(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
   const res = await fetch(API + path, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
-  if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
-  const text = await res.text();
-  if (text.trimStart().startsWith('<')) throw new Error('Server không phản hồi đúng.');
-  let json;
-  try { json = JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
-  // Nếu hết hạn premium mid-session → chuyển về upgrade screen
-  if (res.status === 403 && json.requiresPremium) {
-    showScreen('screen-upgrade');
-    throw new Error(json.message || 'Cần nâng cấp Premium.');
+  try {
+    return await window.ApiClient.handleResponse(res);
+  } catch (err) {
+    if (err.status === 403 && err.body && err.body.requiresPremium) {
+      showScreen('screen-upgrade');
+    }
+    throw err;
   }
-  return json;
 }
 
 // ──────────────────────────────────────────────────────
@@ -81,18 +58,10 @@ const state = {
 // ──────────────────────────────────────────────────────
 // Helpers
 // ──────────────────────────────────────────────────────
-function fmtTime(secs) {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${String(s).padStart(2,'0')}`;
-}
-
-function clearAllTimers() {
-  clearInterval(state.elapsedTimer);
-  clearInterval(state.prepTimer);
-  clearInterval(state.speakTimer);
-  state.elapsedTimer = state.prepTimer = state.speakTimer = null;
-}
+// fmtTime() and clearAllTimers() moved to js/speaking-timer.js along with
+// the rest of the exam-timer subsystem (prep countdown, speak countdown,
+// elapsed timer) — kept together since they're all part of the same
+// cohesive concern and only touch the `state` object above.
 
 function bandColor(band) {
   if (band >= 7) return 'high';
@@ -120,23 +89,19 @@ function showScreen(id) {
 // Init
 // ──────────────────────────────────────────────────────
 (async function init() {
-  if (!getToken()) { window.location.href = 'login.html'; return; }
+  // Delegates to the same AuthService.requirePageAuth() used by auth.js's
+  // Guard 1 (Phase 5) — this used to be its own redundant `if(!token)`
+  // check with no next= support.
+  if (!window.AuthService.requirePageAuth(false)) return;
 
   // Premium gate: if localStorage shows free, re-verify with server
-  // (catches stale cache after admin upgrades the account)
-  let _u = JSON.parse(localStorage.getItem('user') || '{}');
-  if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
-    try {
-      const _r = await fetch(API + '/api/auth/me', { headers: { Authorization: 'Bearer ' + getToken() } });
-      const _d = await _r.json();
-      if (_d.success && _d.user) {
-        _u = _d.user;
-        const _c = JSON.parse(localStorage.getItem('user') || '{}');
-        _c.plan = _d.user.plan; _c.planExpiresAt = _d.user.planExpiresAt;
-        localStorage.setItem('user', JSON.stringify(_c));
-      }
-    } catch(e) {}
-    if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+  // (catches stale cache after admin upgrades the account). hasPremiumAccess/
+  // refreshPlan centralize logic that used to be hand-rolled here.
+  let _u = window.AuthService.getUser() || {};
+  if (!window.AuthService.hasPremiumAccess(_u)) {
+    const _refreshed = await window.AuthService.refreshPlan();
+    if (_refreshed) _u = _refreshed;
+    if (!window.AuthService.hasPremiumAccess(_u)) {
       showScreen('screen-upgrade');
       return;
     }
@@ -376,117 +341,8 @@ function clearTranscript() {
   if (btn) btn.disabled = true;
 }
 
-// ──────────────────────────────────────────────────────
-// Part 2 – Prep Timer (60s)
-// ──────────────────────────────────────────────────────
-function startPrepTimer() {
-  clearInterval(state.prepTimer);
-  state.prepSecondsLeft = 60;
-
-  const prepEl    = document.getElementById('p2-prep');
-  const clockEl   = document.getElementById('p2-prep-clock');
-  const btnRecord = document.getElementById('btn-record');
-
-  if (!prepEl) return;
-  prepEl.style.display = 'block';
-  if (clockEl)  clockEl.textContent = fmtTime(state.prepSecondsLeft);
-  if (btnRecord) { btnRecord.disabled = true; btnRecord.classList.add('btn-record--disabled'); }
-
-  state.prepTimer = setInterval(() => {
-    state.prepSecondsLeft--;
-    if (clockEl) clockEl.textContent = fmtTime(state.prepSecondsLeft);
-    if (state.prepSecondsLeft <= 0) {
-      clearInterval(state.prepTimer);
-      state.prepTimer = null;
-      hidePrepTimer();
-      showToast('⏰ Hết thời gian chuẩn bị — Bắt đầu nói!', 'info');
-      if (state.recognition && !state.isRecording) {
-        state.recognition.start();
-        state.isRecording = true;
-      }
-    }
-  }, 1000);
-}
-
-function skipPrep() {
-  clearInterval(state.prepTimer);
-  state.prepTimer = null;
-  hidePrepTimer();
-  if (state.recognition && !state.isRecording) {
-    state.recognition.start();
-    state.isRecording = true;
-  }
-}
-
-function hidePrepTimer() {
-  const prepEl    = document.getElementById('p2-prep');
-  const btnRecord = document.getElementById('btn-record');
-  if (prepEl)    prepEl.style.display = 'none';
-  if (btnRecord) { btnRecord.disabled = false; btnRecord.classList.remove('btn-record--disabled'); }
-}
-
-// ──────────────────────────────────────────────────────
-// Part 2 – Speaking Countdown (2 min)
-// ──────────────────────────────────────────────────────
-function startSpeakCountdown() {
-  if (state.currentQuestion?.part !== 2) return;
-  clearInterval(state.speakTimer);
-  state.speakSecondsLeft = 120;
-
-  const cdEl = document.getElementById('p2-speak-countdown');
-  const tmEl = document.getElementById('p2-speak-time');
-  if (cdEl) cdEl.classList.remove('hidden');
-  if (tmEl) tmEl.textContent = fmtTime(state.speakSecondsLeft);
-
-  state.speakTimer = setInterval(() => {
-    state.speakSecondsLeft--;
-    if (tmEl) tmEl.textContent = fmtTime(state.speakSecondsLeft);
-    if (state.speakSecondsLeft === 30) showToast('⚠️ Còn 30 giây!', 'warn');
-    if (state.speakSecondsLeft <= 0) {
-      clearInterval(state.speakTimer);
-      state.speakTimer = null;
-      if (state.isRecording && state.recognition) {
-        state.recognition.stop();
-        state.isRecording = false;
-      }
-      showToast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');
-      hideSpeakCountdown();
-    }
-  }, 1000);
-}
-
-function hideSpeakCountdown() {
-  const cdEl = document.getElementById('p2-speak-countdown');
-  if (cdEl) cdEl.classList.add('hidden');
-  clearInterval(state.speakTimer);
-  state.speakTimer = null;
-}
-
-// ──────────────────────────────────────────────────────
-// Elapsed timer
-// ──────────────────────────────────────────────────────
-function startElapsedTimer() {
-  clearInterval(state.elapsedTimer);
-  state.recordStartTime = Date.now();
-  const el = document.getElementById('rec-elapsed');
-  if (el) el.classList.remove('hidden');
-
-  state.elapsedTimer = setInterval(() => {
-    const secs = Math.floor((Date.now() - state.recordStartTime) / 1000);
-    const t = document.getElementById('rec-elapsed-time');
-    if (t) t.textContent = fmtTime(secs);
-  }, 1000);
-}
-
-function stopElapsedTimer() {
-  clearInterval(state.elapsedTimer);
-  state.elapsedTimer = null;
-}
-
-function getElapsedSeconds() {
-  if (!state.recordStartTime) return 0;
-  return Math.floor((Date.now() - state.recordStartTime) / 1000);
-}
+// Prep timer, speak countdown, and elapsed timer moved to
+// js/speaking-timer.js (loaded before this file — see speaking.html).
 
 // ──────────────────────────────────────────────────────
 // Web Speech API
@@ -1005,8 +861,7 @@ function closeMobilePdf() {
 // Navigation helper — free user quay lại upgrade screen
 // ──────────────────────────────────────────────────────
 function goBackFromHistory() {
-  const _u = JSON.parse(localStorage.getItem('user') || '{}');
-  if (_u.plan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+  if (!window.AuthService.hasPremiumAccess()) {
     showScreen('screen-upgrade');
   } else {
     showScreen('screen-home');
@@ -1027,7 +882,7 @@ async function openSpeakingUpgradeModal() {
   if (!_spUpgradeSettings) {
     try {
       const res = await fetch(`${API}/tuition/settings`, {
-        headers: { Authorization: `Bearer ${getToken()}` }
+        headers: window.AuthService.authHeader()
       });
       const d = await res.json();
       _spUpgradeSettings = d.settings || {};

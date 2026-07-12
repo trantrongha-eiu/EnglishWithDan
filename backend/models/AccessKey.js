@@ -32,6 +32,9 @@ const AccessKeySchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
+// GET /api/admin/keys filters {createdBy} for teacher role — previously unindexed.
+AccessKeySchema.index({ createdBy: 1, createdAt: -1 });
+
 // Virtual dùng để refPath biết ref đến model nào
 AccessKeySchema.virtual('testRefModel').get(function () {
   if (this.testType === 'reading')   return 'ReadingTest';

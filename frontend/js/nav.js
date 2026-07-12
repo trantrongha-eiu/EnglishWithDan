@@ -112,7 +112,7 @@
 
   // ── Populate avatar widget from localStorage ──────────────
   try {
-    var _u = JSON.parse(localStorage.getItem('user') || 'null');
+    var _u = window.AuthService ? window.AuthService.getUser() : JSON.parse(localStorage.getItem('user') || 'null');
     if (_u) {
       var _navAv = document.getElementById('navAvatar');
       if (_navAv) {
@@ -193,10 +193,12 @@
   });
 
   // ── Logout ────────────────────────────────────────────────
+  // window.logout is always present (auth.js loads before nav.js on every
+  // page that has both) — the local fallback body only exists in case a
+  // future page ever loads nav.js standalone.
   function doLogout() {
     if (typeof window.logout === 'function') { window.logout(); return; }
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    if (window.AuthService) { window.AuthService.clearSession(); }
     location.href = 'login.html';
   }
   document.getElementById('globalLogoutBtn').addEventListener('click', doLogout);
@@ -225,9 +227,9 @@
     });
   }
 
-  var token = localStorage.getItem('token');
+  var token = window.AuthService ? window.AuthService.getToken() : localStorage.getItem('token');
   if (token) {
-    var headers = { Authorization: 'Bearer ' + token };
+    var headers = window.AuthService ? window.AuthService.authHeader() : { Authorization: 'Bearer ' + token };
 
     fetch(API + '/user/messages/unread-count', { headers: headers })
       .then(function (r) { return r.json(); })
@@ -254,27 +256,20 @@
       })
       .catch(function () {});
 
-    // Refresh plan silently and show expiry warning if needed
-    fetch(API + '/auth/me', { headers: headers })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (!d.success || !d.user) return;
-        // Refresh inactivity timer so active users aren't falsely logged out
-        localStorage.setItem('lastLoginAt', Date.now().toString());
-        // Merge fresh plan data into localStorage
-        var _cached = {};
-        try { _cached = JSON.parse(localStorage.getItem('user') || '{}'); } catch(e) {}
-        _cached.plan = d.user.plan;
-        _cached.planExpiresAt = d.user.planExpiresAt;
-        _cached.planStartedAt = d.user.planStartedAt;
-        localStorage.setItem('user', JSON.stringify(_cached));
-        // Show expiry banner if premium and expiring within 7 days
-        if (d.user.plan === 'premium' && d.user.planExpiresAt) {
-          var daysLeft = Math.ceil((new Date(d.user.planExpiresAt) - Date.now()) / 86400000);
+    // Refresh plan silently and show expiry warning if needed.
+    // AuthService.refreshPlan() centralizes the "hit /auth/me, touch
+    // lastLoginAt, merge plan fields into the cached user" logic that used
+    // to live only here — nav.js now just decides whether to show the
+    // expiry banner from the result.
+    if (window.AuthService) {
+      window.AuthService.refreshPlan().then(function (u) {
+        if (!u) return;
+        if (u.plan === 'premium' && u.planExpiresAt) {
+          var daysLeft = Math.ceil((new Date(u.planExpiresAt) - Date.now()) / 86400000);
           if (daysLeft >= 0 && daysLeft <= 7) _showExpiryBanner(daysLeft);
         }
-      })
-      .catch(function () {});
+      });
+    }
   }
 
   function _showExpiryBanner(daysLeft) {

@@ -1,9 +1,6 @@
-const express  = require('express');
 const mongoose = require('mongoose');
-const cors     = require('cors');
-const helmet   = require('helmet');
-const mongoSanitize = require('./middleware/mongoSanitize');
 require('dotenv').config();
+const logger = require('./utils/logger');
 
 // Cloudinary config
 const cloudinary = require('cloudinary').v2;
@@ -13,80 +10,79 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const app = express();
+// App construction (middleware, CORS, routes, error handler) lives in
+// app.js so tests can import it directly without triggering the Mongo
+// connect/seed/cron/listen side effects below (see app.js's header comment).
+const app = require('./app');
+const tuitionCron = require('./cron/tuitionReminder');
 
-// ── Middleware ────────────────────────────────────────────────
-// Always-allowed origins: production custom domain (+ www) and local dev
-// servers. FRONTEND_URL can add more (e.g. a staging domain) as a
-// comma-separated list — it extends this list, it does not replace it.
-const DEFAULT_ALLOWED_ORIGINS = [
-  'https://ieltsthayha.com',
-  'https://www.ieltsthayha.com',
-  'http://localhost:3000',
-  'http://localhost:5173'
-];
-const envOrigins = process.env.FRONTEND_URL
-  ? process.env.FRONTEND_URL.split(',').map(o => o.trim().replace(/\/$/, ''))
-  : [];
-const allowedOrigins = [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...envOrigins])];
+// ── Process-level safety nets (Phase 11) ────────────────────────
+// An uncaught exception leaves the process in an unknown state — log it
+// with full detail, then exit so the platform (Render) restarts a clean
+// process, rather than continuing to serve requests from a possibly
+// corrupted state.
+process.on('uncaughtException', (err) => {
+  // errorMessage (not "message") avoids silently overwriting the log
+  // entry's own top-level `message` field via object spread in logger.js.
+  logger.error('process', 'Uncaught exception — exiting for a clean restart', {
+    errorMessage: err.message,
+    stack: err.stack,
+  });
+  process.exit(1);
+});
 
-// crossOriginResourcePolicy: 'same-origin' (Helmet's default) blocks the
-// browser from using cross-origin fetch responses independently of CORS —
-// this API is deliberately called from a different origin (the frontend),
-// so it must opt in to cross-origin.
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' }
-}));
-app.use(cors({
-  origin: (origin, callback) => {
-    // No literal '*' match: with credentials:true, wildcard origins must
-    // never be honored (the cors package would otherwise reflect back
-    // whatever Origin header the caller sent).
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.error(`[CORS] Rejected origin "${origin}" — allowed: ${allowedOrigins.join(', ')}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
-}));
-app.use(require('compression')());
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize);
-
-// Passport (for Google OAuth if configured)
-if (process.env.GOOGLE_CLIENT_ID) {
-  try {
-    const passport = require('passport');
-    app.use(passport.initialize());
-  } catch {
-    console.warn('[Server] passport not installed, Google OAuth disabled');
-  }
-}
+// An unhandled promise rejection reaching this point means some async
+// codepath is missing a .catch()/try-catch — genuinely worth knowing
+// about, but NOT treated as fatal like uncaughtException: this codebase
+// has a number of pre-existing, intentional fire-and-forget
+// `.catch(console.error)` patterns (e.g. auth.js's lastSeen update), and
+// making every unhandled rejection fatal risks turning a previously-
+// harmless one into a production crash loop. Log it for visibility and
+// keep serving.
+process.on('unhandledRejection', (reason) => {
+  logger.error('process', 'Unhandled promise rejection', {
+    errorMessage: reason?.message || String(reason),
+    stack: reason?.stack,
+  });
+});
 
 // ── DB ────────────────────────────────────────────────────────
+// Runtime connection-state visibility — the previous version only logged
+// the initial connect attempt's outcome; a mid-run disconnect or driver
+// error afterward went completely unlogged. These fire for the lifetime
+// of the process, not just at startup.
+mongoose.connection.on('error', (err) => {
+  logger.dbError('MongoDB connection error', { errorMessage: err.message });
+});
+mongoose.connection.on('disconnected', () => {
+  logger.dbError('MongoDB disconnected');
+});
+mongoose.connection.on('reconnected', () => {
+  logger.db('MongoDB reconnected');
+});
+
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
-    console.log('MongoDB Atlas connected');
-    console.log('OpenRouter key:', process.env.OPENROUTER_API_KEY ? 'YES ✓' : 'MISSING ✗');
-    console.log('Anthropic key:', process.env.ANTHROPIC_API_KEY  ? 'YES ✓' : 'MISSING ✗ (AI grading disabled)');
-    console.log('Google OAuth:',   process.env.GOOGLE_CLIENT_ID    ? 'YES ✓' : 'disabled');
-    console.log('Email:',          process.env.EMAIL_USER           ? 'YES ✓' : 'disabled');
+    logger.db('MongoDB Atlas connected');
+    logger.startup('Integration config loaded', {
+      openRouterKey: !!process.env.OPENROUTER_API_KEY,
+      anthropicKey: !!process.env.ANTHROPIC_API_KEY,
+      googleOAuth: !!process.env.GOOGLE_CLIENT_ID,
+      email: !!process.env.EMAIL_USER,
+    });
     // Auto-seed writing practice exercises if DB is empty
     try {
       const WPExercise = require('./models/WPExercise');
       const count = await WPExercise.countDocuments();
       if (count < 450) {
-        console.log(`[Seed] WPExercise has ${count}/450 exercises – running seed...`);
+        logger.startup(`WPExercise has ${count}/450 exercises – running seed...`);
         await require('./scripts/seedWritingPractice').runSeed();
-        console.log('[Seed] Done ✓');
+        logger.startup('WPExercise seed done');
       } else {
-        console.log(`[Seed] WPExercise already has ${count} exercises – skip`);
+        logger.startup(`WPExercise already has ${count} exercises – skip`);
       }
     } catch (e) {
-      console.error('[Seed] Error:', e.message);
+      logger.error('startup', 'WPExercise seed error', { errorMessage: e.message });
     }
     // Auto-seed Task 1 exercises
     try {
@@ -94,66 +90,70 @@ mongoose.connect(process.env.MONGO_URI)
       const { exercises: t1data, runSeed: runTask1Seed, runUpdate: runTask1Update } = require('./scripts/seedTask1Exercises');
       const t1count = await Task1Exercise.countDocuments();
       if (t1count < t1data.length) {
-        console.log(`[Task1Seed] Has ${t1count}/${t1data.length} – seeding...`);
+        logger.startup(`Task1Exercise has ${t1count}/${t1data.length} – seeding...`);
         await runTask1Seed();
-        console.log('[Task1Seed] Done ✓');
+        logger.startup('Task1Exercise seed done');
       } else {
-        console.log(`[Task1Seed] Already has ${t1count} exercises – updating core 36...`);
+        logger.startup(`Task1Exercise already has ${t1count} exercises – updating core 36...`);
         await runTask1Update();
       }
     } catch (e) {
-      console.error('[Task1Seed] Error:', e.message);
+      logger.error('startup', 'Task1Exercise seed error', { errorMessage: e.message });
     }
     // Auto-seed Task 2 topics (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runTask2Seed } = require('./scripts/seedTask2Exercises');
-      console.log('[Task2Seed] Seeding...');
+      logger.startup('Task2Topic seeding...');
       await runTask2Seed();
-      console.log('[Task2Seed] Done ✓');
+      logger.startup('Task2Topic seed done');
     } catch (e) {
-      console.error('[Task2Seed] Error:', e.message);
+      logger.error('startup', 'Task2Topic seed error', { errorMessage: e.message });
     }
     // Start tuition auto-reminder cron
     try {
-      require('./cron/tuitionReminder').start();
+      tuitionCron.start();
     } catch (e) {
-      console.error('[TuitionCron] Failed to start:', e.message);
+      logger.error('startup', 'TuitionCron failed to start', { errorMessage: e.message });
     }
   })
-  .catch(err => console.error('MongoDB error:', err));
-
-// ── Root ──────────────────────────────────────────────────────
-app.get('/', (_req, res) => res.send('EnglishWithDan API is running 🚀'));
-
-// ── Routes ───────────────────────────────────────────────────
-app.use('/api/auth',     require('./routes/auth'));
-app.use('/api/user',     require('./routes/user'));
-app.use('/api/vocab',    require('./routes/vocab'));
-app.use('/api/vocabbook',require('./routes/vocabBook'));
-app.use('/api/reading',  require('./routes/reading'));
-app.use('/api/admin',    require('./routes/admin'));
-app.use('/api/listening',require('./routes/listening'));
-app.use('/api/writing',  require('./routes/writing'));
-app.use('/api/speaking', require('./routes/speaking'));
-app.use('/api/contact',  require('./routes/contact'));
-app.use('/api/courses',         require('./routes/courses'));
-app.use('/api/writing-practice', require('./routes/writingPractice'));
-app.use('/api/task1',           require('./routes/task1Practice'));
-app.use('/api/task2',           require('./routes/task2Practice'));
-app.use('/api/task2template',   require('./routes/task2Template'));
-app.use('/api/difficult-words', require('./routes/difficultWords'));
-app.use('/api/tuition',        require('./routes/tuition'));
-app.use('/api/upgrade',        require('./routes/upgrade'));
-
-// ── 404 handler ──────────────────────────────────────────────
-app.use((_req, res) => res.status(404).json({ success: false, message: 'Route không tồn tại' }));
-
-// ── Global error handler ─────────────────────────────────────
-// eslint-disable-next-line no-unused-vars
-app.use((err, _req, res, _next) => {
-  console.error('[Server] Unhandled error:', err);
-  res.status(500).json({ success: false, message: 'Lỗi server' });
-});
+  .catch(err => logger.error('startup', 'MongoDB initial connection failed', { errorMessage: err.message }));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, () => logger.startup(`Server running on port ${PORT}`));
+
+// ── Graceful shutdown (Phase 11) ────────────────────────────────
+// Render sends SIGTERM on every deploy, restart, and manual scale event —
+// without this, in-flight requests get dropped mid-response instead of
+// completing, and the Mongo connection/cron timer are torn down abruptly
+// rather than cleanly.
+let shuttingDown = false;
+function shutdown(signal) {
+  if (shuttingDown) return; // ignore a second signal while already shutting down
+  shuttingDown = true;
+  logger.shutdown(`Received ${signal}, shutting down gracefully...`);
+
+  tuitionCron.stop();
+
+  server.close(async () => {
+    logger.shutdown('HTTP server closed (no longer accepting new connections)');
+    try {
+      await mongoose.connection.close(false);
+      logger.shutdown('MongoDB connection closed');
+    } catch (e) {
+      logger.error('shutdown', 'Error closing MongoDB connection', { errorMessage: e.message });
+    }
+    process.exit(0);
+  });
+
+  // Safety net — if something hangs (a stuck connection, a slow in-flight
+  // request), don't let the process hang forever; force-exit after a
+  // grace period. .unref() so this timer itself never keeps the process
+  // alive if shutdown completes normally first.
+  setTimeout(() => {
+    logger.error('shutdown', 'Graceful shutdown timed out — forcing exit');
+    process.exit(1);
+  }, 10000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

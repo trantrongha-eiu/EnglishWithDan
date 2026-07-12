@@ -1,23 +1,10 @@
 /* ══════════════════════════════════════════
    TOKENS
+   Moved to css/tokens.css (single source of truth —
+   see audit UI#1). Page must load tokens.css before
+   this file. --green/--brand2 kept as dashboard-specific
+   canonical tokens there since no other file used those names.
 ══════════════════════════════════════════ */
-:root{
-  --brand:#e53935; --brand2:#ff6b6b;
-  --blue:#3d8bff; --green:#22c55e; --yellow:#f59e0b; --purple:#a78bfa;
-  --bg:#f7f8fc; --surface:#fff; --surface2:#f3f4f6;
-  --border:#e5e7eb; --border2:#d1d5db;
-  --text:#111827; --text2:#6b7280; --text3:#9ca3af;
-  --radius:14px; --radius-sm:9px;
-  --shadow:0 2px 12px rgba(0,0,0,.07);
-  --shadow-md:0 6px 24px rgba(0,0,0,.1);
-}
-html[data-theme="dark"]{
-  --bg:#111827; --surface:#1f2937; --surface2:#374151;
-  --border:#374151; --border2:#4b5563;
-  --text:#f9fafb; --text2:#9ca3af; --text3:#6b7280;
-  --shadow:0 2px 12px rgba(0,0,0,.3);
-  --shadow-md:0 6px 24px rgba(0,0,0,.4);
-}
 /* ── Dark mode component overrides ── */
 [data-theme="dark"] .btn-ghost{background:var(--surface2);color:var(--text2)}
 [data-theme="dark"] .btn-ghost:hover{color:var(--text)}
@@ -329,17 +316,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
 }
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;white-space:nowrap}
-.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:#c62828}
-.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#2c78f0}
-.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#16a34a}
-.btn-ghost{background:#fff;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
-.btn-danger{background:#fce4e4;color:var(--brand);border:1px solid #fca5a5}.btn-danger:hover{background:#fecaca}
-[data-theme="dark"] .btn-danger{background:rgba(229,57,53,.18);border-color:#f87171}
-[data-theme="dark"] .btn-danger:hover{background:rgba(229,57,53,.28)}
-.btn-sm{padding:5px 11px;font-size:12px}
-.btn:disabled{opacity:.4;cursor:not-allowed}
+/* Buttons: moved to css/components.css (single source of truth — audit UI#2) */
 
 .bulk-bar{display:none;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
 .bulk-bar.show{display:flex}
@@ -554,27 +531,11 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .results-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
 
 /* ══════════════════════════════════════════
-   MODALS
+   MODALS: moved to css/components.css (single source of truth —
+   this file's own .modal-overlay/.modal-box/@keyframes pop was
+   shadowing components.css's version; removed as part of the
+   Phase 2 design-system audit).
 ══════════════════════════════════════════ */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.45);
-  display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;
-  backdrop-filter:blur(3px);
-}
-.modal-box{
-  background:var(--surface);border-radius:16px;
-  box-shadow:var(--shadow-md);animation:pop .18s ease;
-  max-height:90vh;overflow:hidden;display:flex;flex-direction:column;
-}
-@keyframes pop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-sm{width:min(420px,100%)}
-.modal-md{width:min(560px,100%)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0}
-.modal-header h3{font-size:17px;font-weight:700}
-.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text3);padding:4px;border-radius:6px}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:18px 24px;overflow-y:auto;flex:1}
-.modal-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
 
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px}

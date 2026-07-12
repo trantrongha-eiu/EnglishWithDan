@@ -1,2 +1,64 @@
+# ══════════════════════════════════════════════════════════════════════
+# EnglishWithDan — URL routing (Phase 4)
+#
+# Rules are matched top-to-bottom, first match wins — most specific first,
+# the 404 catch-all must stay last. Netlify/Render redirect syntax:
+#   SOURCE  DESTINATION  STATUS
+#   200 = rewrite (browser URL stays on SOURCE, content served from DESTINATION)
+#   301/302 = real redirect (browser URL changes to DESTINATION)
+#   404 = rewrite + set response status to 404 (for the catch-all)
+#
+# See docs note at the bottom for which routes still need feature work
+# before a redirect rule for them would be honest to add.
+# ══════════════════════════════════════════════════════════════════════
+
+# ── Admin SPA (pre-existing, unchanged, + routing audit fix) ──────────
+# /admin/* only matches paths that already have the trailing slash, so a
+# bare "/admin" (very typeable, no trailing slash) fell through all the way
+# to the 404 catch-all before this rule was added.
 /admin.html /admin/ 301
+/admin      /admin/ 301
 /admin/* /admin/index.html 200
+
+# ── Flagship persistent clean URLs ────────────────────────────────────
+# These are true rewrites: the browser's address bar keeps showing the
+# clean path forever (bookmarks/shares stay clean). This only works
+# because reading-v2.js / listening.html were updated to also read the ID
+# out of location.pathname, not just location.search — see js/shared/
+# route-params.js. Do not add more of these without doing the same
+# pathname-parsing work on the target page first (see migration notes).
+/reading/test/*      /reading.html    200
+/reading/review/*    /reading.html    200
+/listening/test/*    /listening.html  200
+
+# ── Dynamic resource links (redirect to the existing, working
+#    query-string URL — address bar normalizes after landing, but the
+#    link itself is permanent and always resolves correctly) ──────────
+/reading/practice/:id     /reading.html?passageId=:id           302
+/listening/practice/:id   /listening.html?sectionId=:id         302
+/writing/task1/:id        /writing.html?taskType=1&taskId=:id   302
+/writing/task2/:id        /writing.html?taskType=2&taskId=:id   302
+/writing/template/:type   /task2-template.html?type=:type       302
+
+# ── Clean top-level aliases (simple static rewrites, no parameters) ──
+/                /index.html            200
+/about           /about.html            200
+/courses         /courses.html          200
+/contact         /contact.html          200
+/login           /login.html            200
+/register        /register.html         200
+/terms           /terms.html            200
+/privacy         /privacy.html          200
+/dashboard       /dashboard.html        200
+/vocabulary      /dashboard.html        200
+/profile         /profile.html          200
+/inbox           /inbox.html            200
+/tuition         /tuition.html          200
+/reading         /reading.html          200
+/listening       /listening.html        200
+/writing         /writing.html          200
+/writing/practice /writing-practice.html 200
+/speaking        /speaking.html         200
+
+# ── 404 fallback — must stay last ─────────────────────────────────────
+/*  /404.html  404

@@ -24,4 +24,8 @@ const SpeakingAttemptSchema = new mongoose.Schema({
   status:       { type: String, enum: ['pending', 'analyzed', 'error'], default: 'pending' }
 }, { timestamps: true });
 
+// getHistory()/admin history both filter by userId sorted by recency —
+// previously unindexed.
+SpeakingAttemptSchema.index({ userId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('SpeakingAttempt', SpeakingAttemptSchema);

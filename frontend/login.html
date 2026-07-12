@@ -9,10 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
 
 <body>
+  <script src="js/shared/toast.js"></script>
+  <script src="js/shared/safe-redirect.js"></script>
+  <script src="js/shared/auth-service.js"></script>
   <div class="page-center">
     <div class="container">
         <div class="background-shapes">
@@ -187,31 +192,52 @@
             }
         }
 
-        // ── PATCH: Toast helper ───────────────────────────────
-        let _toastTimer = null;
-        function showToast(type, title, msg, duration = 5000) {
-            const toast   = document.getElementById('loginToast');
-            const icon    = document.getElementById('toastIcon');
-            const titleEl = document.getElementById('toastTitle');
-            const msgEl   = document.getElementById('toastMsg');
-            toast.className    = 'login-toast ' + type + ' show';
-            icon.textContent   = type === 'banned' ? '🚫' : '⚠️';
-            titleEl.textContent = title;
-            msgEl.textContent   = msg;
-            clearTimeout(_toastTimer);
-            if (duration > 0) _toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        // showToastWithTitle() moved to js/shared/toast.js (single source of
+        // truth — Phase 3 audit). login.html's old static #loginToast markup
+        // is no longer referenced but left in place to avoid touching
+        // unrelated HTML.
+        function showError(msg) { showToastWithTitle('error', 'Thông báo', msg); }
+
+        // ── Redirect-back support (Phase 4 routing / Phase 5 AuthService) ─
+        // Reads ?next=... — either a student page (set by
+        // AuthService.requirePageAuth when it bounced an unauthenticated
+        // visitor from a deep link) or an admin hash-route like
+        // /admin/#/writing-grades (set by admin-src's ProtectedRoute.jsx
+        // when a session expires mid-use). AuthService.getSafeNext()
+        // validates the shape before ever using it as a redirect target —
+        // never honor next= as-is, to avoid an open-redirect vector.
+        function getSafeNextUrl() {
+            return window.AuthService ? window.AuthService.getSafeNext() : null;
         }
-        function showError(msg) { showToast('error', 'Thông báo', msg); }
 
         // ── PATCH: Hiển thị lý do bị logout (inactive 10 ngày, hoặc bị ban) ─
         (function () {
             const reason = new URLSearchParams(window.location.search).get('reason');
             if (reason === 'inactive') {
-                showToast('error', 'Phiên đăng nhập hết hạn',
+                showToastWithTitle('error', 'Phiên đăng nhập hết hạn',
                     'Bạn đã không đăng nhập trong 10 ngày. Vui lòng đăng nhập lại.');
             } else if (reason === 'banned') {
-                showToast('banned', 'Tài khoản bị khóa',
+                showToastWithTitle('banned', 'Tài khoản bị khóa',
                     'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.', 0);
+            }
+        })();
+
+        // ── Google OAuth failure feedback (backend redirects here with
+        // ?error=... on every failure path — was previously silently
+        // dropped, leaving the user on a blank form with no explanation;
+        // security-audit finding, since oauth_state_mismatch is the signal
+        // for a possible login-CSRF/replay attempt and deserves visibility) ─
+        (function () {
+            const error = new URLSearchParams(window.location.search).get('error');
+            const messages = {
+                not_configured:       'Đăng nhập Google hiện chưa khả dụng.',
+                google_failed:        'Đăng nhập Google thất bại. Vui lòng thử lại.',
+                oauth_state_mismatch: 'Phiên đăng nhập Google đã hết hạn hoặc không hợp lệ. Vui lòng thử lại.',
+                banned:               'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.',
+                social_auth_failed:   'Đăng nhập Google thất bại. Vui lòng thử lại.',
+            };
+            if (error && messages[error]) {
+                showToastWithTitle('error', 'Đăng nhập Google thất bại', messages[error]);
             }
         })();
 
@@ -235,30 +261,28 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    // PATCH: Lưu thêm lastLoginAt cho tính năng auto logout 10 ngày
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('lastLoginAt', Date.now().toString());
-
-                    const role = data.user.role;
-                    if (role === 'admin' || role === 'teacher') {
-                        window.location.href = '/admin/';
-                    } else {
-                        window.location.href = 'dashboard.html';
-                    }
+                    // Session creation centralized in AuthService.login() —
+                    // writes token/user/lastLoginAt in one place instead of
+                    // this page hand-rolling the same 3 lines auth-callback.html
+                    // also used to (Phase 5).
+                    window.AuthService.login(data.token, data.user);
+                    // getPostLoginRedirect() centralizes the role-matched
+                    // next= handling that used to be duplicated inline here
+                    // and in auth-callback.html.
+                    window.location.href = window.AuthService.getPostLoginRedirect(data.user);
                 } else {
                     // PATCH: Phân biệt bị cấm vs lỗi thường
                     const isBanned = data.message && data.message.includes('bị cấm');
                     if (isBanned) {
-                        showToast('banned', 'Tài khoản bị khóa',
+                        showToastWithTitle('banned', 'Tài khoản bị khóa',
                             'Vui lòng liên hệ giáo viên để mở khóa.', 0);
                     } else {
-                        showToast('error', 'Đăng nhập thất bại', data.message || 'Vui lòng thử lại.');
+                        showToastWithTitle('error', 'Đăng nhập thất bại', data.message || 'Vui lòng thử lại.');
                     }
                 }
             } catch (err) {
                 console.error('Login error:', err);
-                showToast('error', 'Lỗi kết nối', 'Không kết nối được server! Vui lòng thử lại.');
+                showToastWithTitle('error', 'Lỗi kết nối', 'Không kết nối được server! Vui lòng thử lại.');
             } finally {
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
@@ -269,7 +293,9 @@
 
         // ── Google OAuth ─────────────────────────────────────
         document.querySelector('.btn-social.google').addEventListener('click', function () {
-            window.location.href = API + '/api/auth/google';
+            const next = getSafeNextUrl();
+            const qs = next ? ('?next=' + encodeURIComponent(next.url)) : '';
+            window.location.href = API + '/api/auth/google' + qs;
         });
         document.querySelector('.btn-social.facebook').addEventListener('click', function () {
             showError('Tính năng đăng nhập Facebook đang được phát triển!');
@@ -391,11 +417,16 @@
                 }
             } catch { showFmMsg('Không kết nối được server', true); }
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const yrEl = document.getElementById('footer-year');
+            if (yrEl) yrEl.textContent = new Date().getFullYear();
+        });
 </script>
 <script src="js/consult-modal.js"></script>
 
   <footer class="site-footer">
-    © 2025 EnglishWithDan – Daniel Hà English Center &nbsp;·&nbsp;
+    © <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center &nbsp;·&nbsp;
     <a href="tel:0914769618">0914 769 618</a> &nbsp;·&nbsp;
     <a href="/">Trang chủ</a>
   </footer>

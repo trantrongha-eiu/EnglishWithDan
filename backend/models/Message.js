@@ -17,5 +17,7 @@ const MessageSchema = new mongoose.Schema({
 // full collection scan.
 MessageSchema.index({ toId: 1, isBroadcast: 1, isRead: 1 });
 MessageSchema.index({ isBroadcast: 1, createdAt: -1 });
+// Admin "sent messages" view filters by fromId — previously unindexed.
+MessageSchema.index({ fromId: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Message', MessageSchema);

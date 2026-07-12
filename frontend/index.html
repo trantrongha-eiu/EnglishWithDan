@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/index.css">
+  <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
 </head>
 
@@ -420,7 +421,7 @@
 
       <div class="teacher-info">
         <div class="section-tag">Về giáo viên</div>
-        <h2>Trần Hà <br><em style="font-style:normal;color:var(--blue)">Thầy Daniel Hà</em></h2>
+        <h2>Thầy <em style="font-style:normal;color:var(--blue)">Daniel Hà</em></h2>
         <p class="teacher-name-en">IELTS Instructor & English Coach</p>
         <p>
           Thầy Daniel Hà là giảng viên IELTS với chứng chỉ Overall 8.0 (IDP & British Council), chứng chỉ giảng dạy
@@ -537,8 +538,7 @@
             <div class="ci-icon"><i class="fab fa-facebook-f"></i></div>
             <div>
               <div>Facebook</div>
-              <!-- THAY: link Facebook thật -->
-              <strong>facebook.com/EnglishWithDan</strong>
+              <strong><a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener" style="color:inherit">facebook.com/EnglishWithDan</a></strong>
             </div>
           </div>
           <div class="contact-info-item">
@@ -633,18 +633,18 @@
         <h4>Liên hệ</h4>
         <ul>
           <li><a href="tel:0914769618">📞 0914 769 618</a></li>
-          <!-- THAY: link Facebook, Zalo, Youtube thật -->
-          <li><a href="#">📘 Facebook</a></li>
-          <li><a href="#">💬 Zalo OA</a></li>
+          <li><a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener">📘 Facebook</a></li>
+          <li><a href="https://zalo.me/0914769618" target="_blank" rel="noopener">💬 Zalo OA</a></li>
+          <!-- THAY: link YouTube thật -->
           <li><a href="#">🎬 YouTube</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+      <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
       <div class="footer-socials">
-        <!-- THAY: href đúng -->
-        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+        <!-- THAY: link YouTube, TikTok thật -->
         <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
         <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
         <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
@@ -663,6 +663,8 @@
       const open = menu.classList.toggle('open');
       icon.className = open ? 'fas fa-times' : 'fas fa-bars';
     }
+    const yrEl = document.getElementById('footer-year');
+    if (yrEl) yrEl.textContent = new Date().getFullYear();
 
     /* ── Contact form submit ── */
     async function submitForm(e) {

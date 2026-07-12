@@ -1,16 +1,10 @@
-# React + Vite
+# Admin SPA (admin-src)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + Vite admin panel for EnglishWithDan. Builds into `frontend/admin/`, served by the backend as a static SPA.
 
-Currently, two official plugins are available:
+For setup, running locally, building, and how this app fits into the rest of the project, see the root docs:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- [`docs/DEVELOPER_GUIDE.md`](../docs/DEVELOPER_GUIDE.md) — local setup, running, building, testing
+- [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) — where the admin SPA sits in the overall system
+- [`docs/API_ADMIN.md`](../docs/API_ADMIN.md) — the admin-only API this app talks to
+- [`docs/CODING_STANDARDS.md`](../docs/CODING_STANDARDS.md) — conventions used in this codebase

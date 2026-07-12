@@ -36,4 +36,8 @@ const VocabBookSchema = new mongoose.Schema({
   sortOrder:{ type: Number, default: 0 }
 }, { timestamps: true });
 
+// Every book/word CRUD op filters by userId (see services/vocabBookService.js) —
+// was previously unindexed, forcing a full collection scan per request.
+VocabBookSchema.index({ userId: 1 });
+
 module.exports = mongoose.model('VocabBook', VocabBookSchema);

@@ -10,7 +10,11 @@ const SavedVocabSchema = new mongoose.Schema({
 const UserSchema = new mongoose.Schema({
   username:   { type: String, required: true, unique: true },
   email:      { type: String, required: true, unique: true },
-  password:   { type: String, default: '' }, // empty for social-only accounts
+  // select:false — schema-level defense-in-depth so a future query that
+  // forgets manual `.select('-password')` doesn't leak the bcrypt hash;
+  // the 2 call sites that legitimately need it (login, change-password)
+  // explicitly opt back in via `.select('+password')`.
+  password:   { type: String, default: '', select: false }, // empty for social-only accounts
   firstName:  { type: String, default: '' },
   lastName:   { type: String, default: '' },
   bio:        { type: String, default: '' },
@@ -44,6 +48,12 @@ const UserSchema = new mongoose.Schema({
   planStartedAt:  { type: Date, default: null },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
+
+// Admin "new this week"/role-filtered stats query by role sorted by createdAt;
+// online-users queries filter by lastSeen — both previously unindexed, forcing
+// a full collection scan on the User model.
+UserSchema.index({ role: 1, createdAt: -1 });
+UserSchema.index({ lastSeen: 1 });
 
 // Trả về ngày theo giờ Việt Nam (UTC+7), lưu dưới dạng UTC midnight
 function getVNDay(date) {

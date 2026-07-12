@@ -7,14 +7,17 @@ const API = 'https://englishwithdan.onrender.com';
 // ──────────────────────────────────────────────────────
 // Auth helpers
 // ──────────────────────────────────────────────────────
-function getToken() { return localStorage.getItem('token'); }
+// Delegates to AuthService (Phase 5) — kept as a local wrapper so the ~5
+// existing call sites below don't need to change.
+function getToken() { return window.AuthService ? window.AuthService.getToken() : localStorage.getItem('token'); }
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = 'login.html';
-}
+// logout() moved to js/auth.js (single source of truth — Phase 3 audit
+// found this local copy never cleared 'lastLoginAt', unlike auth.js's).
 
+// apiFetch keeps its own request-building (URL/header logic unchanged)
+// and delegates response-handling (401 check, cold-start detection, JSON
+// parsing, error normalization) to the shared js/shared/api-client.js —
+// single source of truth for that logic (Phase 3 audit).
 async function apiFetch(path, opts = {}) {
   const token = getToken();
   const res = await fetch(API + path, {
@@ -25,35 +28,13 @@ async function apiFetch(path, opts = {}) {
       ...(opts.headers || {})
     }
   });
-  if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
-  const text = await res.text();
-  if (text.trimStart().startsWith('<')) {
-    throw new Error('Server không phản hồi đúng. Vui lòng thử lại.');
-  }
-  try { return JSON.parse(text); } catch { throw new Error('Phản hồi không hợp lệ từ server.'); }
+  return window.ApiClient.handleResponse(res);
 }
 
-// ──────────────────────────────────────────────────────
-// Toast notification
-// ──────────────────────────────────────────────────────
-function showToast(msg, type = 'error', duration = 4000) {
-  let toast = document.getElementById('wt-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'wt-toast';
-    toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);z-index:99999;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;box-shadow:0 4px 18px rgba(0,0,0,.22);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;max-width:90vw;text-align:center;';
-    document.body.appendChild(toast);
-  }
-  clearTimeout(toast._hideTimer);
-  toast.textContent = msg;
-  toast.style.background = type === 'error' ? '#ef4444' : type === 'success' ? '#22c55e' : '#3b82f6';
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-  toast._hideTimer = setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(20px)';
-  }, duration);
-}
+// showToast() moved to js/shared/toast.js (single source of truth —
+// Phase 3 audit). Visual style/position is now the shared design
+// (icon + bordered card, bottom-right stack) instead of this file's own
+// bottom-center pill — a deliberate consistency normalization, not a bug.
 
 // ──────────────────────────────────────────────────────
 // State
@@ -88,10 +69,13 @@ function showScreen(id) {
 // Init
 // ──────────────────────────────────────────────────────
 (function init() {
-  const token = getToken();
-  if (!token) { window.location.href = 'login.html'; return; }
+  // Delegates to the same AuthService.requirePageAuth() used by auth.js's
+  // Guard 1 (Phase 5) — this used to be its own redundant `if(!token)`
+  // check with no next= support, duplicating (and slightly diverging from)
+  // the page-load guard that already ran before this script.
+  if (window.AuthService ? !window.AuthService.requirePageAuth(false) : !getToken()) return;
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
   const displayName = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : (user.username || '');
@@ -208,7 +192,7 @@ async function startExam() {
 // ──────────────────────────────────────────────────────
 function launchExam() {
   const exam = state.exam;
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
   const displayName = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : (user.username || 'Candidate');
@@ -252,9 +236,16 @@ function startTimer() {
   }, 1000);
 }
 
+// Cached across ticks — renderTimer() fires every second from the interval
+// in startTimer(), so re-querying these two ids each tick was wasted work.
+let _timerDisplayEl = null;
+let _examTimerEl = null;
+
 function renderTimer() {
-  const el = document.getElementById('timer-display');
-  const timerBar = document.getElementById('exam-timer');
+  if (!_timerDisplayEl) _timerDisplayEl = document.getElementById('timer-display');
+  if (!_examTimerEl) _examTimerEl = document.getElementById('exam-timer');
+  const el = _timerDisplayEl;
+  const timerBar = _examTimerEl;
   if (state.timerHidden) { el.textContent = '--:--'; return; }
 
   const m = Math.floor(state.secondsLeft / 60);
@@ -297,7 +288,7 @@ function switchTask(num) {
   const leftPanel = document.getElementById('exam-left-panel');
   if (num === 1) {
     leftPanel.innerHTML = `
-      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" style="max-width:100%;border-radius:8px;margin-bottom:12px" />` : ''}
+      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" loading="lazy" style="max-width:100%;border-radius:8px;margin-bottom:12px" />` : ''}
       <div class="task-prompt" style="white-space:pre-wrap">${escHtml(task.prompt || '')}</div>
     `;
   } else {
@@ -334,8 +325,13 @@ function countWords(text) {
 }
 
 let _saveDebounce = null;
+// Cached across keystrokes — onAnswerInput's chain (updateWordCount →
+// updateFooterWcSummary) re-queried these same 6 ids on every keystroke;
+// none of them are ever removed/recreated during an exam session.
+let _answerTextareaEl = null;
 function onAnswerInput() {
-  const text = document.getElementById('answer-textarea').value;
+  if (!_answerTextareaEl) _answerTextareaEl = document.getElementById('answer-textarea');
+  const text = _answerTextareaEl.value;
   state.answers[state.currentTask] = text;
   updateWordCount(text);
   clearTimeout(_saveDebounce);
@@ -343,6 +339,7 @@ function onAnswerInput() {
 }
 
 const _WC_TARGETS = { 1: 150, 2: 250 };
+let _wordCountEl = null, _wordCountTargetEl = null, _wcProgressBarEl = null;
 
 function updateWordCount(text) {
   const wc     = countWords(text);
@@ -354,14 +351,17 @@ function updateWordCount(text) {
   else if (pct >= 0.8)    color = '#f59e0b';
   else                    color = '#6b7280';
 
-  const wcEl = document.getElementById('word-count');
+  if (!_wordCountEl) _wordCountEl = document.getElementById('word-count');
+  const wcEl = _wordCountEl;
   if (wcEl) { wcEl.textContent = wc; wcEl.style.color = color; }
 
-  const targetEl = document.getElementById('word-count-target');
+  if (!_wordCountTargetEl) _wordCountTargetEl = document.getElementById('word-count-target');
+  const targetEl = _wordCountTargetEl;
   if (targetEl) { targetEl.textContent = `/ ${target} từ`; targetEl.style.color = color; }
 
   // Progress bar
-  const bar = document.getElementById('wc-progress-bar');
+  if (!_wcProgressBarEl) _wcProgressBarEl = document.getElementById('wc-progress-bar');
+  const bar = _wcProgressBarEl;
   if (bar) {
     bar.style.width = Math.min(pct * 100, 100).toFixed(1) + '%';
     bar.className = 'wc-progress-bar' + (wc >= target ? ' met' : pct >= 0.8 ? ' near' : '');
@@ -370,9 +370,12 @@ function updateWordCount(text) {
   updateFooterWcSummary();
 }
 
+let _footerWc1El = null, _footerWc2El = null;
 function updateFooterWcSummary() {
-  const wc1El = document.getElementById('footer-wc1');
-  const wc2El = document.getElementById('footer-wc2');
+  if (!_footerWc1El) _footerWc1El = document.getElementById('footer-wc1');
+  if (!_footerWc2El) _footerWc2El = document.getElementById('footer-wc2');
+  const wc1El = _footerWc1El;
+  const wc2El = _footerWc2El;
   if (!wc1El || !wc2El) return;
 
   const wc1 = countWords(state.answers[1] || '');
@@ -464,7 +467,7 @@ async function submitExam(statusOverride) {
       clearAutoSave();
       state.currentAttemptId = data.attemptId;
       // Done screen
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const user = (window.AuthService ? window.AuthService.getUser() : null) || {};
       const name = user.firstName
         ? `${user.firstName} ${user.lastName || ''}`.trim()
         : (user.username || '');
@@ -477,12 +480,12 @@ async function submitExam(statusOverride) {
       showScreen('screen-done');
     } else {
       state.isSubmitting = false;
-      showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'));
+      showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'), 'error');
     }
   } catch (e) {
     state.isSubmitting = false;
     overlay.style.display = 'none';
-    showToast('Lỗi nộp bài: ' + e.message);
+    showToast('Lỗi nộp bài: ' + e.message, 'error');
   }
 }
 
@@ -641,7 +644,7 @@ async function viewAttempt(id) {
       ${feedbackHtml}
       ${showT1Section ? `<div class="review-task-section">
         <h4>Task 1 – ${a.wordCount1 || 0} từ</h4>
-        ${t1Img ? `<img src="${escHtml(t1Img)}" style="max-width:100%;border-radius:6px;margin-bottom:8px" />` : ''}
+        ${t1Img ? `<img src="${escHtml(t1Img)}" loading="lazy" style="max-width:100%;border-radius:6px;margin-bottom:8px" />` : ''}
         ${t1Prompt ? `<div class="review-task-prompt">${escHtml(t1Prompt)}</div>` : ''}
         <div class="review-answer">${escHtml(a.task1Answer || '(Không có bài làm)')}</div>
         <div class="review-wc">Số từ: ${a.wordCount1 || 0}</div>
@@ -757,7 +760,7 @@ function _buildStudentFeedback(g) {
     : ob >= 6.0 ? 'img/band_6_7.jpg'
     : 'img/writingbelow60%25.jpg';
   const wImgHtml = wImgSrc
-    ? `<img src="${wImgSrc}" alt="" style="display:block;width:100%;max-width:260px;border-radius:12px;margin:0 auto 16px;object-fit:cover">`
+    ? `<img src="${wImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:260px;border-radius:12px;margin:0 auto 16px;object-fit:cover">`
     : '';
 
   return `<div class="fb-wrap">
@@ -789,7 +792,7 @@ async function downloadAttemptById(id) {
     if (!data.success) throw new Error(data.message);
     doDownload(data.attempt);
   } catch (e) {
-    showToast('Lỗi tải bài: ' + e.message);
+    showToast('Lỗi tải bài: ' + e.message, 'error');
   }
 }
 
@@ -864,30 +867,32 @@ async function loadWritingSamples() {
   sampleFilters.topic    = 'all';
   sampleFilters.taskType = 'all';
 
-  // Load filters (quarters + topics) once
-  try {
-    const fData = await apiFetch('/api/writing/sample-filters');
-    if (fData.success) {
-      const qChips = document.getElementById('wsampl-quarter-chips');
-      const tChips = document.getElementById('wsampl-topic-chips');
+  // Filters (quarters + topics) and the samples list don't depend on each
+  // other — fire both in parallel instead of waiting on filters first.
+  const filtersPromise = apiFetch('/api/writing/sample-filters').catch(() => null);
+  const samplesPromise = _fetchAndRenderSamples();
 
-      // Render quarter chips
-      qChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
-      fData.quarters.forEach(q => {
-        qChips.insertAdjacentHTML('beforeend',
-          `<span class="pv-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
-      });
+  const fData = await filtersPromise;
+  if (fData && fData.success) {
+    const qChips = document.getElementById('wsampl-quarter-chips');
+    const tChips = document.getElementById('wsampl-topic-chips');
 
-      // Render topic chips
-      tChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
-      fData.topics.forEach(t => {
-        tChips.insertAdjacentHTML('beforeend',
-          `<span class="pv-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
-      });
-    }
-  } catch (e) { /* filters optional */ }
+    // Render quarter chips
+    qChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('quarter','all',this)">Tất cả</span>`;
+    fData.quarters.forEach(q => {
+      qChips.insertAdjacentHTML('beforeend',
+        `<span class="pv-chip" data-val="${escHtml(q)}" onclick="setSampleFilter('quarter','${escHtml(q)}',this)">${escHtml(q)}</span>`);
+    });
 
-  await _fetchAndRenderSamples();
+    // Render topic chips
+    tChips.innerHTML = `<span class="pv-chip active" data-val="all" onclick="setSampleFilter('topic','all',this)">Tất cả</span>`;
+    fData.topics.forEach(t => {
+      tChips.insertAdjacentHTML('beforeend',
+        `<span class="pv-chip" data-val="${escHtml(t)}" onclick="setSampleFilter('topic','${escHtml(t)}',this)">${escHtml(t)}</span>`);
+    });
+  }
+
+  await samplesPromise;
 }
 
 async function _fetchAndRenderSamples() {
@@ -966,41 +971,17 @@ function closeWritingMobilePdf() {
 
 // ──────────────────────────────────────────────────────
 // Utility
+// escHtml() moved to js/shared/utils.js (single source of truth — Phase 3 audit).
 // ──────────────────────────────────────────────────────
-function escHtml(str) {
-  if (str == null) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 // ──────────────────────────────────────────────────────
 // Auto-save to localStorage
 // ──────────────────────────────────────────────────────
-const _AUTOSAVE_KEY = 'ews_writing_autosave';
-const _AUTOSAVE_MAX_AGE_MS = 4 * 60 * 60 * 1000; // 4 hours
-
-function saveToStorage() {
-  if (!state.exam) return;
-  try {
-    localStorage.setItem(_AUTOSAVE_KEY, JSON.stringify({
-      exam:        state.exam,
-      answers:     state.answers,
-      flags:       state.flags,
-      secondsLeft: state.secondsLeft,
-      savedAt:     Date.now()
-    }));
-    const lbl = document.getElementById('btn-autosave');
-    if (lbl) {
-      lbl.title = 'Đã lưu lúc ' + new Date().toLocaleTimeString('vi-VN');
-      lbl.classList.add('saved');
-      clearTimeout(lbl._t);
-      lbl._t = setTimeout(() => lbl.classList.remove('saved'), 2000);
-    }
-  } catch (_) {}
-}
+// saveToStorage(), _AUTOSAVE_KEY/_AUTOSAVE_MAX_AGE_MS, and the rest of the
+// exam-mode autosave/restore logic
+// moved to js/writing-autosave.js (loaded before this file — see
+// writing.html's script order; its init IIFE below calls
+// checkRestoreBanner() synchronously at load time).
 
 // ──────────────────────────────────────────────────────
 // Fullscreen  (đồng bộ với reading/listening)
@@ -1056,57 +1037,6 @@ function forceExit() {
   // Reset state (giữ autosave để restore sau)
   state.exam = null;
   showScreen('screen-key');
-}
-
-function loadFromStorage() {
-  try {
-    const raw = localStorage.getItem(_AUTOSAVE_KEY);
-    if (!raw) return null;
-    const saved = JSON.parse(raw);
-    if (!saved || !saved.exam) return null;
-    if (Date.now() - saved.savedAt > _AUTOSAVE_MAX_AGE_MS) {
-      localStorage.removeItem(_AUTOSAVE_KEY);
-      return null;
-    }
-    return saved;
-  } catch (_) { return null; }
-}
-
-function clearAutoSave() {
-  localStorage.removeItem(_AUTOSAVE_KEY);
-}
-
-function checkRestoreBanner() {
-  const saved = loadFromStorage();
-  const banner = document.getElementById('restore-banner');
-  const desc   = document.getElementById('restore-banner-desc');
-  if (!saved || !banner) return;
-
-  const mins = Math.floor(saved.secondsLeft / 60);
-  const secs = saved.secondsLeft % 60;
-  const wc1  = countWords(saved.answers[1] || '');
-  const wc2  = countWords(saved.answers[2] || '');
-  desc.textContent =
-    `${saved.exam.name}  •  Task 1: ${wc1} từ  |  Task 2: ${wc2} từ  •  Còn ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-  banner.style.display = 'block';
-}
-
-function restoreExam() {
-  const saved = loadFromStorage();
-  if (!saved) return;
-  state.exam        = saved.exam;
-  state.answers     = saved.answers  || { 1: '', 2: '' };
-  state.flags       = saved.flags    || { 1: false, 2: false };
-  state.secondsLeft = saved.secondsLeft || 3600;
-  state.totalSeconds = state.exam.duration ? state.exam.duration * 60 : 3600;
-  state.currentTask  = 1;
-  document.getElementById('restore-banner').style.display = 'none';
-  launchExam();
-}
-
-function discardSaved() {
-  clearAutoSave();
-  document.getElementById('restore-banner').style.display = 'none';
 }
 
 // ──────────────────────────────────────────────────────
@@ -1172,7 +1102,7 @@ function _renderTaskPage() {
   const cards = pageTasks.map((t, i) => {
     const idx = start + i + 1;
     const imgHtml = (taskType === 1 && t.imageUrl)
-      ? `<img src="${escHtml(t.imageUrl)}" alt="" class="wt-task-card-img" />`
+      ? `<img src="${escHtml(t.imageUrl)}" alt="" class="wt-task-card-img" loading="lazy" />`
       : '';
     const promptPreview = (t.prompt || '').slice(0, 200) + ((t.prompt || '').length > 200 ? '…' : '');
     return `<div class="wt-task-card" data-id="${escHtml(String(t._id))}">
@@ -1583,7 +1513,7 @@ function renderPracticeWriteScreen(taskType, task) {
   const leftPanel = document.getElementById('pw-left-panel');
   let html = '';
   if (taskType === 1 && task.imageUrl) {
-    html += `<img src="${task.imageUrl}" alt="Task 1 image" style="max-width:100%;border-radius:8px;margin-bottom:12px;border:1px solid #e5e7eb" />`;
+    html += `<img src="${task.imageUrl}" alt="Task 1 image" loading="lazy" style="max-width:100%;border-radius:8px;margin-bottom:12px;border:1px solid #e5e7eb" />`;
   }
   html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   leftPanel.innerHTML = html;
@@ -1639,23 +1569,32 @@ function copySampleSection(btn, idx) {
 }
 
 let _practiceSaveDebounce = null;
+// Cached across keystrokes — these 5 ids are static practice-mode markup
+// (never rebuilt via innerHTML), so re-querying them on every keystroke was
+// wasted work.
+let _pwTextareaEl = null, _pwWcEl = null, _pwWcInlineEl = null, _pwProgressBarEl = null, _pwSaveStatusEl = null;
 function onPracticeInput() {
-  const ta = document.getElementById('pw-textarea');
+  if (!_pwTextareaEl) _pwTextareaEl = document.getElementById('pw-textarea');
+  const ta = _pwTextareaEl;
   if (!ta) return;
   const words = ta.value.trim() === '' ? 0 : ta.value.trim().split(/\s+/).filter(w => w.length > 0).length;
   practiceState.wordCount = words;
   const minWords = practiceState.taskType === 1 ? 150 : 250;
   const pct = Math.min(100, (words / minWords) * 100);
-  document.getElementById('pw-wc').textContent = words;
-  const inlineN = document.getElementById('pw-wc-inline-n');
+  if (!_pwWcEl) _pwWcEl = document.getElementById('pw-wc');
+  _pwWcEl.textContent = words;
+  if (!_pwWcInlineEl) _pwWcInlineEl = document.getElementById('pw-wc-inline-n');
+  const inlineN = _pwWcInlineEl;
   if (inlineN) inlineN.textContent = words;
-  const bar = document.getElementById('pw-progress-bar');
+  if (!_pwProgressBarEl) _pwProgressBarEl = document.getElementById('pw-progress-bar');
+  const bar = _pwProgressBarEl;
   if (bar) {
     bar.style.width = pct + '%';
     bar.style.background = words >= minWords ? '#22c55e' : words >= minWords * 0.8 ? '#f59e0b' : '#3d8bff';
   }
   // Show unsaved indicator immediately
-  const si = document.getElementById('pw-save-status');
+  if (!_pwSaveStatusEl) _pwSaveStatusEl = document.getElementById('pw-save-status');
+  const si = _pwSaveStatusEl;
   if (si) { si.innerHTML = '<i class="fas fa-circle" style="font-size:7px;vertical-align:middle"></i> Chưa lưu'; si.style.color = '#f59e0b'; }
   // Debounced auto-save
   clearTimeout(_practiceSaveDebounce);

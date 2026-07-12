@@ -14,4 +14,7 @@ const writingPracticeAttemptSchema = new mongoose.Schema({
 // Auto-delete after 30 days
 writingPracticeAttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
+// getHistory()/getMyStats() filter by studentId sorted by recency — previously unindexed.
+writingPracticeAttemptSchema.index({ studentId: 1, createdAt: -1 });
+
 module.exports = mongoose.model('WritingPracticeAttempt', writingPracticeAttemptSchema);

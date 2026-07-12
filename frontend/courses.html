@@ -139,7 +139,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+      <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
       <div class="footer-socials">
         <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
@@ -149,9 +149,12 @@
     </div>
   </footer>
 
+  <script src="js/shared/utils.js"></script>
   <script>
     const API = 'https://englishwithdan.onrender.com/api';
     const LEVEL_COLOR = { red: 'lv-red', blue: 'lv-blue', green: 'lv-green', purple: 'lv-purple' };
+    const yrEl = document.getElementById('footer-year');
+    if (yrEl) yrEl.textContent = new Date().getFullYear();
 
     /* ── Static fallback courses (used when API returns empty or fails) ── */
     const STATIC_COURSES = [
@@ -165,22 +168,34 @@
 
     function buildCourseCard(c) {
       const lvClass = LEVEL_COLOR[c.levelColor] || 'lv-blue';
-      return `<div class="course-card" data-category="${c.category || ''}">
+      // Course content is admin/teacher-editable and this page is public —
+      // every field must be escaped before reaching innerHTML (security audit finding).
+      const category = escHtml(c.category || '');
+      const imageUrl = escHtml(c.imageUrl || '');
+      const title = escHtml(c.title || '');
+      const placeholder = escHtml(c.placeholder || '📚');
+      const level = escHtml(c.level || '');
+      const subtitle = escHtml(c.subtitle || '');
+      const description = escHtml(c.description || '');
+      const duration = escHtml(c.duration || '');
+      const classSize = escHtml(c.classSize || '');
+      const price = escHtml(c.price || 'Liên hệ tư vấn');
+      return `<div class="course-card" data-category="${category}">
     <div class="course-thumb">
-      ${c.imageUrl ? `<img src="${c.imageUrl}" alt="${c.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>` : ''}
-      <span class="course-placeholder" style="${c.imageUrl ? 'display:none' : ''}">${c.placeholder || '📚'}</span>
-      <span class="course-level ${lvClass}">${c.level || ''}</span>
+      ${c.imageUrl ? `<img src="${imageUrl}" alt="${title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>` : ''}
+      <span class="course-placeholder" style="${c.imageUrl ? 'display:none' : ''}">${placeholder}</span>
+      <span class="course-level ${lvClass}">${level}</span>
     </div>
     <div class="course-body">
-      <h3>${c.title}</h3>
-      <div class="course-target">Dành cho: ${c.subtitle || ''}</div>
-      <p>${c.description || ''}</p>
+      <h3>${title}</h3>
+      <div class="course-target">Dành cho: ${subtitle}</div>
+      <p>${description}</p>
       <div class="course-meta">
-        ${c.duration ? `<span><i class="fas fa-clock"></i> ${c.duration}</span>` : ''}
-        ${c.classSize ? `<span><i class="fas fa-users"></i> ${c.classSize}</span>` : ''}
+        ${c.duration ? `<span><i class="fas fa-clock"></i> ${duration}</span>` : ''}
+        ${c.classSize ? `<span><i class="fas fa-users"></i> ${classSize}</span>` : ''}
         <span><i class="fas fa-chalkboard-teacher"></i> Thầy Daniel</span>
       </div>
-      <div class="course-price">${c.price || 'Liên hệ tư vấn'}</div>
+      <div class="course-price">${price}</div>
       <div class="course-cta">
         <a href="contact.html" class="btn btn-primary"><i class="fas fa-phone-alt"></i> Tư vấn ngay</a>
         <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline">Zalo</a>

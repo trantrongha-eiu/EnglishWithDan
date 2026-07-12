@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="writing-practice.css"/>
   <link rel="stylesheet" href="css/mobile.css"/>
   <script src="js/theme.js"></script>
@@ -262,7 +264,11 @@
   </style>
 </head>
 <body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
 
 
 <div id="wp-toast"></div>
@@ -723,7 +729,6 @@
   </main>
 </div><!-- /wp-layout -->
 
-<script src="js/auth.js"></script>
 <script>
 // ════════════════════════════════════════════════════════
 //  CONFIG
@@ -750,12 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btn.innerHTML = _soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
 });
 
-function showToast(msg, type = 'warn', duration = 3000) {
-  const el = document.getElementById('wp-toast');
-  el.textContent = msg; el.className = 'show ' + type;
-  clearTimeout(el._t);
-  el._t = setTimeout(() => { el.className = ''; }, duration);
-}
+// showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 // ════════════════════════════════════════════════════════
 //  STATE
@@ -972,7 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initUser() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = window.AuthService.getUser() || {};
   const name = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : user.username || '';
@@ -1024,17 +1024,28 @@ function updateSessionStats() {
 
 async function saveBatch() {
   if (!sessionAttempts.length) return;
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token) return;
   const toSave = [...sessionAttempts];
   sessionAttempts = [];
+  await _saveBatchWithRetry(toSave, Date.now().toString());
+}
+// Cố ý KHÔNG tự động thử lại: /save-batch dùng insertMany (không idempotent),
+// gọi lại tự động có thể tạo bản ghi trùng lặp nếu request đầu đã thành công
+// ở server nhưng phản hồi bị mất trên client.
+async function _saveBatchWithRetry(toSave, sessionId) {
+  const token = window.AuthService.getToken();
+  if (!token) return;
   try {
-    await fetch(`${API}/api/task1/save-batch`, {
+    const res = await fetch(`${API}/api/task1/save-batch`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ attempts: toSave, sessionId: Date.now().toString() })
+      body: JSON.stringify({ attempts: toSave, sessionId })
     });
-  } catch {}
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+  } catch (e) {
+    if (typeof showToast === 'function') showToast('Không lưu được kết quả buổi luyện tập lên server.', 'warn');
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -1203,7 +1214,7 @@ async function loadExercises() {
   showState('loading');
   try {
     const params = new URLSearchParams({ level: currentLevel, skillType: currentSkill });
-    const token = localStorage.getItem('token');
+    const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/exercises?${params}`, {
       headers: token ? { 'Authorization': 'Bearer ' + token } : {}
     });
@@ -1524,7 +1535,7 @@ async function submitAnswer() {
   document.getElementById('checking-loader').classList.remove('hidden');
 
   try {
-    const token = localStorage.getItem('token');
+    const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/check`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
@@ -1772,7 +1783,7 @@ async function startTest() {
   startBtns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; });
   try {
     const params = new URLSearchParams({ level: testLevel, count: testCount });
-    const token = localStorage.getItem('token');
+    const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/test-questions?${params}`, {
       headers: token ? { 'Authorization': 'Bearer ' + token } : {}
     });
@@ -1960,7 +1971,7 @@ async function submitTest() {
     document.getElementById('test-results').style.display     = '';
     document.getElementById('test-score-header').innerHTML    = '<div class="wp-spinner"></div><p>Đang chấm bài...</p>';
 
-    const token = localStorage.getItem('token');
+    const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/check-test`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) },
@@ -2029,7 +2040,7 @@ function stopTestMode() {
 async function openHistory() {
   document.getElementById('t1-hist-overlay').classList.remove('hidden');
   const body = document.getElementById('t1-hist-body');
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token) {
     body.innerHTML = '<div class="t1-hist-empty"><div class="t1-hist-empty-icon">🔒</div><p>Vui lòng <a href="login.html" style="color:#e53935;font-weight:700">đăng nhập</a> để xem lịch sử luyện tập.</p></div>';
     return;

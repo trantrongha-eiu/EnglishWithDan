@@ -1,0 +1,334 @@
+/* ══════════════════════════════════════════════════════════════════════
+   EnglishWithDan — Shared Components
+   Token-driven, canonical definitions for Button, Card, Badge, Table,
+   Pagination, Tabs, Skeleton, Empty State, Spinner, and the Modal/Toast
+   visual shell. Consumes css/tokens.css — load tokens.css first.
+
+   This file replaces the duplicated .btn/.card/.badge/.toast/table
+   definitions that previously lived independently in dashboard.css and
+   mobile.css with different padding/radius/font-size (audit UI#2/#48).
+   Canonical dimensions below match dashboard.css's system (already the
+   more token-driven of the two) — see docs/design-system.md for the
+   full before/after and which pages have a visible sizing change.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-primary   { background: var(--brand); color: #fff; }
+.btn-primary:hover   { background: var(--brand-dark); }
+
+.btn-blue      { background: var(--blue); color: #fff; }
+.btn-blue:hover      { background: var(--blue-dark); }
+
+.btn-green     { background: var(--green); color: #fff; }
+.btn-green:hover     { background: #16a34a; }
+.btn-success   { background: var(--success); color: #fff; }
+.btn-success:hover   { background: #15803d; }
+
+/* Secondary / Ghost: same role, two names in use across the codebase — kept both. */
+.btn-secondary,
+.btn-ghost     { background: var(--surface); color: var(--text2); border: 1px solid var(--border); }
+.btn-secondary:hover,
+.btn-ghost:hover     { border-color: var(--border2); color: var(--text); }
+
+/* --brand-light is an rgba tint (not solid hex), so this adapts correctly
+   in dark mode automatically — no [data-theme="dark"] override needed. */
+.btn-danger    { background: var(--brand-light); color: var(--brand); border: 1px solid rgba(229,57,53,.35); }
+.btn-danger:hover    { background: rgba(229,57,53,.2); }
+
+.btn-sm   { padding: 5px 11px; font-size: var(--fs-micro); }
+.btn-lg   { padding: 13px 28px; font-size: 16px; }
+.btn-icon { padding: 8px; width: 36px; height: 36px; }
+.btn-full { width: 100%; }
+
+/* ── Inputs ─────────────────────────────────────────────────────────── */
+.form-group { margin-bottom: var(--space-4); }
+.form-label {
+  display: block;
+  font-size: var(--fs-body-sm);
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--fs-body);
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
+  transition: var(--transition);
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+.form-control::placeholder { color: var(--text2); }
+textarea.form-control { resize: vertical; min-height: 100px; }
+
+/* ── Cards ──────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-body { padding: 20px; }
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-4);
+}
+.stat-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: var(--transition);
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.stat-card .stat-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.stat-card .stat-value  { font-size: 28px; font-weight: 700; line-height: 1; }
+.stat-card .stat-label  { font-size: var(--fs-body-sm); color: var(--text2); }
+.stat-card .stat-change { font-size: var(--fs-caption); font-weight: 600; }
+.stat-card .stat-change.up   { color: var(--success); }
+.stat-card .stat-change.down { color: var(--danger); }
+
+/* ── Badges / Status labels ─────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+}
+.badge-primary { background: var(--brand-light);   color: var(--brand); }
+.badge-success { background: var(--success-light); color: var(--success); }
+.badge-warning { background: var(--warning-light); color: var(--warning); }
+.badge-danger  { background: var(--danger-light);  color: var(--danger); }
+
+/* ── Tables ─────────────────────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.responsive-table { min-width: 600px; width: 100%; border-collapse: collapse; }
+table.responsive-table th,
+table.responsive-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-body);
+}
+table.responsive-table thead th {
+  background: var(--bg);
+  font-weight: 600;
+  color: var(--text2);
+  font-size: var(--fs-body-sm);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+table.responsive-table tbody tr:hover { background: var(--bg); }
+
+/* ── Pagination ─────────────────────────────────────────────────────── */
+.pagination { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pagination button {
+  min-width: 34px; height: 34px; padding: 0 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.pagination button:hover:not(:disabled) { border-color: var(--border2); color: var(--text); }
+.pagination button.active { background: var(--brand); border-color: var(--brand); color: #fff; }
+.pagination button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Tabs ───────────────────────────────────────────────────────────── */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
+.tab-btn {
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-size: var(--fs-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+.tab-btn:hover  { color: var(--text); }
+.tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+/* ── Skeleton loading ───────────────────────────────────────────────── */
+@keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+.skeleton,
+.skeleton-cell {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+[data-theme="dark"] .skeleton,
+[data-theme="dark"] .skeleton-cell {
+  background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  background-size: 800px 100%;
+}
+
+/* ── Empty state ────────────────────────────────────────────────────── */
+.state-empty {
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  color: var(--text2);
+}
+.state-empty .empty-icon { font-size: 40px; margin-bottom: var(--space-3); opacity: .6; }
+.state-empty .empty-title { font-size: var(--fs-h3); font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.state-empty .empty-action { margin-top: var(--space-4); }
+
+/* ── Error state (inline) ───────────────────────────────────────────── */
+.state-error {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  color: var(--danger);
+}
+.state-error .retry-btn { margin-top: var(--space-3); }
+
+/* ── Spinner ────────────────────────────────────────────────────────── */
+/* 40px matches mobile.css's version, which was the one actually rendering
+   on all 12 pages (mobile.css loaded after this file and won the cascade)
+   — mobile.css's own duplicate .spinner has been removed, this is now
+   the only definition. */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+.spinner-sm { width: 18px; height: 18px; border-width: 2px; }
+
+/* ── Loading overlay (full-screen, e.g. "submitting exam…") ──────────── */
+.loading-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: var(--z-modal);
+}
+
+/* ── Modal shell (styling only — behavior stays per-page for now) ──────
+   Canonical values below match dashboard.css's implementation exactly
+   (it had the fuller header/body/footer structure of the two competing
+   systems found during the Phase 2 audit) — dashboard.css's own copy of
+   this block has been removed so this is now the only definition. */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-4);
+  backdrop-filter: blur(3px);
+}
+.modal-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  animation: modal-pop .18s ease;
+}
+@keyframes modal-pop { from { transform: scale(.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-sm { width: min(420px, 100%); }
+.modal-md { width: min(560px, 100%); }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 0;
+}
+.modal-header h3 { font-size: var(--fs-h3); font-weight: 700; }
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 20px; color: var(--text3); padding: 4px; border-radius: var(--radius-sm);
+}
+.modal-close:hover { color: var(--text); }
+.modal-body   { padding: 18px 24px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  padding: 14px 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+.modal-lg { width: min(880px, 100%); }
+
+/* ── Toast shell (styling only — see migration notes for JS unification plan) ── */
+.toast-container {
+  position: fixed;
+  bottom: var(--space-5); right: var(--space-5);
+  z-index: var(--z-toast);
+  display: flex; flex-direction: column; gap: 10px;
+  max-width: 360px;
+}
+.toast {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  animation: toast-in var(--duration-base) ease;
+  transition: var(--transition);
+}
+@keyframes toast-in { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.toast.hiding { animation: toast-out .3s ease forwards; }
+@keyframes toast-out { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(20px); } }
+.toast.success { border-left: 3px solid var(--success); }
+.toast.error   { border-left: 3px solid var(--danger); }
+.toast.warning { border-left: 3px solid var(--warning); }
+.toast.info    { border-left: 3px solid var(--blue); }
+.toast-icon  { font-size: 20px; flex-shrink: 0; }
+.toast-body  { flex: 1; }
+.toast-title { font-weight: 700; font-size: var(--fs-body-sm); margin-bottom: 2px; }
+.toast-msg   { font-size: var(--fs-caption); color: var(--text2); }
+
+/* ── Icon sizing (Font Awesome is the one icon system in use — see
+       docs/design-system.md "Icons" for the emoji-vs-icon guideline) ── */
+.icon-sm { font-size: 14px; }
+.icon-md { font-size: 18px; }
+.icon-lg { font-size: 24px; }

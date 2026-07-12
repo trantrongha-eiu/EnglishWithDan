@@ -3,96 +3,11 @@ import { API, apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import Pagination from '../components/Pagination';
-
-/* ── Searchable student picker ──────────────────────────────────────── */
-function StudentPicker({ students, value, onChange }) {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const wrapRef = useRef();
-
-  const selected = students.find(s => s._id === value) || null;
-  const filtered = search.trim()
-    ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
-    : students;
-
-  useEffect(() => {
-    function handle(e) {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setOpen(false); setSearch('');
-      }
-    }
-    document.addEventListener('mousedown', handle);
-    return () => document.removeEventListener('mousedown', handle);
-  }, []);
-
-  useEffect(() => { if (!value) { setSearch(''); setOpen(false); } }, [value]);
-
-  function pick(s) { onChange(s._id); setSearch(''); setOpen(false); }
-
-  const displayValue = open ? search : (selected ? `${selected.username} (${selected.email})` : '');
-
-  return (
-    <div ref={wrapRef} style={{ position: 'relative' }}>
-      <div style={{ position: 'relative' }}>
-        <input
-          className="form-input"
-          placeholder="Tìm và chọn học viên..."
-          value={displayValue}
-          onFocus={() => { setSearch(''); setOpen(true); }}
-          onChange={e => { setSearch(e.target.value); setOpen(true); }}
-          onKeyDown={e => { if (e.key === 'Escape') { setOpen(false); setSearch(''); } }}
-          autoComplete="off"
-          style={{ paddingRight: 28 }}
-        />
-        <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--text3)', fontSize: 10 }}>▼</span>
-      </div>
-      {/* hidden input for HTML5 required validation */}
-      <input type="text" value={value} required readOnly tabIndex={-1}
-        style={{ position: 'absolute', opacity: 0, height: 0, width: 0, pointerEvents: 'none' }} />
-      {open && (
-        <div style={{
-          position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, zIndex: 300,
-          background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8,
-          boxShadow: '0 8px 28px rgba(0,0,0,.18)', maxHeight: 280, overflowY: 'auto',
-        }}>
-          {filtered.length === 0
-            ? <div style={{ padding: '10px 14px', color: 'var(--text3)', fontSize: 13 }}>Không tìm thấy học viên</div>
-            : filtered.map(s => (
-              <div key={s._id}
-                onMouseDown={e => { e.preventDefault(); pick(s); }}
-                style={{
-                  padding: '9px 14px', cursor: 'pointer', fontSize: 13,
-                  background: s._id === value ? 'rgba(59,130,246,.12)' : undefined,
-                  borderBottom: '1px solid var(--border)',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,.08)'}
-                onMouseLeave={e => e.currentTarget.style.background = s._id === value ? 'rgba(59,130,246,.12)' : ''}
-              >
-                <strong style={{ color: '#3b82f6' }}>{s.username}</strong>
-                <span style={{ color: 'var(--text3)', fontSize: 12 }}>{s.email}</span>
-              </div>
-            ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-const PAGE = 30;
-const MONTHS = ['', 'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
-  'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
-const CUR_YEAR  = new Date().getFullYear();
-const CUR_MONTH = new Date().getMonth() + 1;
-const YEARS = Array.from({ length: 5 }, (_, i) => CUR_YEAR - 2 + i);
-
-function fmtVND(n) {
-  return Number(n || 0).toLocaleString('vi-VN') + ' ₫';
-}
-function fmtLabel(fee) {
-  if (fee.feeType === 'monthly') return `${MONTHS[fee.month] || fee.month}/${fee.year}`;
-  return fee.courseName || '(Khóa học)';
-}
+import StudentPicker from './tuition/StudentPicker';
+import SummaryTab from './tuition/SummaryTab';
+import SettingsTab from './tuition/SettingsTab';
+import { RemindModal, BulkRemindModal } from './tuition/RemindModals';
+import { PAGE, MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel } from './tuition/helpers';
 
 export default function Tuition() {
   const toast   = useToast();
@@ -656,251 +571,49 @@ export default function Tuition() {
 
       {/* ═══════════════ TAB: SUMMARY ═══════════════ */}
       {activeTab === 'summary' && (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <label style={{ fontWeight: 600 }}>Năm:</label>
-            <select className="form-input" style={{ width: 100 }} value={summaryYear}
-              onChange={e => setSummaryYear(e.target.value)}>
-              {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </div>
-
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>📅 Theo tháng ({summaryYear})</h3>
-          <div className="table-wrap" style={{ marginBottom: 28 }}>
-            <table className="table">
-              <thead>
-                <tr><th>THÁNG</th><th>TỔNG HỌC PHÍ</th><th>ĐÃ THU</th><th>CHƯA THU</th><th>SL HỌC VIÊN</th><th>ĐÃ ĐÓNG</th><th>CHƯA ĐÓNG</th><th>CHỜ XN</th></tr>
-              </thead>
-              <tbody>
-                {summary.length === 0
-                  ? <tr><td colSpan={8} className="table-empty">Không có dữ liệu</td></tr>
-                  : summary.map(s => (
-                    <tr key={`${s._id.year}-${s._id.month}`}>
-                      <td style={{ fontWeight: 700 }}>{MONTHS[s._id.month]}/{s._id.year}</td>
-                      <td style={{ fontWeight: 700, color: '#3b82f6' }}>{fmtVND(s.totalAmount)}</td>
-                      <td style={{ color: '#22c55e', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
-                      <td style={{ color: '#f59e0b', fontWeight: 600 }}>{fmtVND(s.unpaidAmount)}</td>
-                      <td>{s.totalCount}</td>
-                      <td>{s.paidCount}</td>
-                      <td>{s.unpaidCount}</td>
-                      <td>
-                        {s.pendingNotify > 0
-                          ? <span style={{ color: '#8b5cf6', fontWeight: 700 }}>{s.pendingNotify}</span>
-                          : '–'}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-
-          {courseSummary.length > 0 && (
-            <>
-              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>🎓 Theo khóa học</h3>
-              <div className="table-wrap">
-                <table className="table">
-                  <thead>
-                    <tr><th>KHÓA HỌC</th><th>TỔNG HỌC PHÍ</th><th>ĐÃ THU</th><th>SL</th><th>ĐÃ ĐÓNG</th></tr>
-                  </thead>
-                  <tbody>
-                    {courseSummary.map(s => (
-                      <tr key={s._id}>
-                        <td style={{ fontWeight: 600 }}>{s._id}</td>
-                        <td style={{ fontWeight: 700, color: '#3b82f6' }}>{fmtVND(s.totalAmount)}</td>
-                        <td style={{ color: '#22c55e', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
-                        <td>{s.totalCount}</td>
-                        <td>{s.paidCount}/{s.totalCount}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-        </>
+        <SummaryTab summary={summary} courseSummary={courseSummary} summaryYear={summaryYear} setSummaryYear={setSummaryYear} />
       )}
 
       {/* ═══════════════ TAB: SETTINGS ═══════════════ */}
       {activeTab === 'settings' && (
-        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-          {/* Bank form */}
-          <div style={{ flex: 1, minWidth: 300, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>🏦 Thông tin ngân hàng</h3>
-            {settings !== null ? (
-              <form onSubmit={saveSettings} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Tên ngân hàng</label>
-                  <input className="form-input" value={settingsForm.bankName} placeholder="VD: Vietcombank"
-                    onChange={e => setSettingsForm(f => ({ ...f, bankName: e.target.value }))} />
-                </div>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Số tài khoản</label>
-                  <input className="form-input" value={settingsForm.bankAccount} placeholder="VD: 1234567890"
-                    onChange={e => setSettingsForm(f => ({ ...f, bankAccount: e.target.value }))} />
-                </div>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Tên chủ tài khoản</label>
-                  <input className="form-input" value={settingsForm.accountName} placeholder="VD: NGUYEN VAN A"
-                    onChange={e => setSettingsForm(f => ({ ...f, accountName: e.target.value }))} />
-                </div>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Học phí mặc định / tháng (VND)</label>
-                  <input className="form-input" type="number" value={settingsForm.defaultMonthlyFee} placeholder="0"
-                    onChange={e => setSettingsForm(f => ({ ...f, defaultMonthlyFee: e.target.value }))} min={0} />
-                </div>
-                <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label">Hướng dẫn chuyển khoản</label>
-                  <textarea className="form-input" rows={3} value={settingsForm.paymentNote}
-                    placeholder="VD: Nội dung CK: [Tên] - [Tháng] - Học phí..."
-                    onChange={e => setSettingsForm(f => ({ ...f, paymentNote: e.target.value }))}
-                    style={{ resize: 'vertical', fontFamily: 'inherit' }} />
-                </div>
-                <button type="submit" className="btn btn-primary" disabled={savingSettings}>
-                  {savingSettings ? 'Đang lưu...' : '💾 Lưu cài đặt'}
-                </button>
-              </form>
-            ) : <div style={{ color: 'var(--text3)' }}>Đang tải...</div>}
-          </div>
-
-          {/* QR section */}
-          <div style={{ flex: 1, minWidth: 280, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>📷 Mã QR ngân hàng</h3>
-            {settings?.qrImageUrl ? (
-              <div style={{ textAlign: 'center' }}>
-                <img src={settings.qrImageUrl} alt="QR" style={{ maxWidth: 260, maxHeight: 260, borderRadius: 8, border: '1px solid var(--border)', marginBottom: 12 }} />
-                <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-                  <button className="btn btn-ghost" onClick={() => qrInputRef.current?.click()}>🔄 Đổi QR</button>
-                  <button className="btn btn-danger" onClick={removeQr}>🗑 Xóa QR</button>
-                </div>
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '40px 20px', border: '2px dashed var(--border)', borderRadius: 8 }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>📷</div>
-                <div style={{ color: 'var(--text3)', marginBottom: 16, fontSize: 14 }}>Chưa có mã QR</div>
-                <button className="btn btn-primary" onClick={() => qrInputRef.current?.click()}>
-                  {uploadingQr ? 'Đang tải...' : '📤 Tải lên mã QR'}
-                </button>
-              </div>
-            )}
-            <input ref={qrInputRef} type="file" accept="image/*" style={{ display: 'none' }}
-              onChange={e => { if (e.target.files[0]) uploadQr(e.target.files[0]); e.target.value = ''; }} />
-            <div style={{ marginTop: 16, padding: 12, background: 'rgba(59,130,246,.08)', borderRadius: 8, fontSize: 12, color: 'var(--text2)' }}>
-              💡 Học viên sẽ thấy mã QR này trong trang Học phí để quét và chuyển khoản.
-            </div>
-          </div>
-
-          {/* Auto-remind card */}
-          <div style={{ flex: '0 0 100%', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
-            <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700 }}>⏰ Nhắc nhở tự động hàng tháng</h3>
-            <p style={{ margin: '0 0 16px', fontSize: 13, color: 'var(--text3)' }}>
-              Hệ thống tự động gửi tin nhắn nhắc học viên vào ngày đã chọn mỗi tháng, cho đến tháng cuối bạn đặt.
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-end' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}>
-                <input type="checkbox" checked={settingsForm.autoRemindEnabled}
-                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEnabled: e.target.checked }))}
-                  style={{ width: 18, height: 18, accentColor: '#22c55e', cursor: 'pointer' }} />
-                <span style={{ fontWeight: 700, fontSize: 14 }}>Bật nhắc nhở tự động</span>
-              </label>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Ngày nhắc mỗi tháng</label>
-                <input className="form-input" type="number" min={1} max={28} style={{ width: 80 }}
-                  value={settingsForm.autoRemindDay}
-                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindDay: Number(e.target.value) }))} />
-              </div>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Tháng cuối</label>
-                <select className="form-input" style={{ width: 120 }} value={settingsForm.autoRemindEndMonth}
-                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEndMonth: e.target.value }))}>
-                  <option value="">--</option>
-                  {MONTHS.slice(1).map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
-                </select>
-              </div>
-
-              <div className="form-group" style={{ margin: 0 }}>
-                <label className="form-label">Năm cuối</label>
-                <select className="form-input" style={{ width: 100 }} value={settingsForm.autoRemindEndYear}
-                  onChange={e => setSettingsForm(f => ({ ...f, autoRemindEndYear: e.target.value }))}>
-                  <option value="">--</option>
-                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-              </div>
-
-              <button type="button" className="btn btn-primary" disabled={savingSettings}
-                onClick={() => saveSettings({ preventDefault: () => {} })}>
-                {savingSettings ? 'Đang lưu...' : '💾 Lưu cài đặt nhắc nhở'}
-              </button>
-            </div>
-
-            {settingsForm.autoRemindEnabled && (
-              <div style={{ marginTop: 14, padding: '10px 14px', background: 'rgba(34,197,94,.1)', border: '1px solid rgba(34,197,94,.3)', borderRadius: 8, fontSize: 13, color: '#15803d' }}>
-                ✅ Đang bật — gửi lúc 8:00 sáng ngày <strong>{settingsForm.autoRemindDay}</strong> mỗi tháng
-                {settingsForm.autoRemindEndMonth && settingsForm.autoRemindEndYear
-                  ? `, đến hết tháng ${settingsForm.autoRemindEndMonth}/${settingsForm.autoRemindEndYear}`
-                  : ' (không giới hạn)'}
-              </div>
-            )}
-          </div>
-        </div>
+        <SettingsTab
+          settings={settings}
+          settingsForm={settingsForm}
+          setSettingsForm={setSettingsForm}
+          savingSettings={savingSettings}
+          saveSettings={saveSettings}
+          uploadingQr={uploadingQr}
+          qrInputRef={qrInputRef}
+          uploadQr={uploadQr}
+          removeQr={removeQr}
+        />
       )}
 
       {/* ── Remind Modal ── */}
       {remindFee && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 28, width: 480, maxWidth: '95vw' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 700 }}>📩 Gửi nhắc nhở học phí</h3>
-            <p style={{ fontSize: 14, color: 'var(--text2)', marginBottom: 16 }}>
-              Gửi tới: <strong>{remindFee.studentId?.username}</strong> — {fmtLabel(remindFee)} — {fmtVND(remindFee.amount)}
-            </p>
-            <div className="form-group" style={{ margin: '0 0 16px' }}>
-              <label className="form-label">Nội dung (để trống dùng mặc định)</label>
-              <textarea className="form-input" rows={5} value={remindMsg} onChange={e => setRemindMsg(e.target.value)}
-                placeholder="Để trống để dùng nội dung mặc định..." style={{ resize: 'vertical', fontFamily: 'inherit' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-              <button className="btn btn-ghost" onClick={() => setRemindFee(null)}>Huỷ</button>
-              <button className="btn btn-primary" onClick={sendRemind} disabled={sendingRemind}>
-                {sendingRemind ? 'Đang gửi...' : '📤 Gửi nhắc nhở'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <RemindModal
+          remindFee={remindFee}
+          remindMsg={remindMsg}
+          setRemindMsg={setRemindMsg}
+          sendingRemind={sendingRemind}
+          onSend={sendRemind}
+          onClose={() => setRemindFee(null)}
+        />
       )}
 
       {/* ── Bulk Remind Modal ── */}
       {showBulkRemind && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 28, width: 480, maxWidth: '95vw' }}>
-            <h3 style={{ margin: '0 0 12px', fontSize: 16, fontWeight: 700 }}>📣 Nhắc hàng loạt học phí chưa đóng</h3>
-            <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-              <div className="form-group" style={{ margin: 0, flex: 1 }}>
-                <label className="form-label">Tháng</label>
-                <select className="form-input" value={bulkMonth} onChange={e => setBulkMonth(e.target.value)}>
-                  {MONTHS.slice(1).map((m, i) => <option key={i+1} value={i+1}>{m}</option>)}
-                </select>
-              </div>
-              <div className="form-group" style={{ margin: 0, flex: 1 }}>
-                <label className="form-label">Năm</label>
-                <select className="form-input" value={bulkYear} onChange={e => setBulkYear(e.target.value)}>
-                  {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
-              </div>
-            </div>
-            <div className="form-group" style={{ margin: '0 0 16px' }}>
-              <label className="form-label">Nội dung tùy chỉnh (để trống = mặc định)</label>
-              <textarea className="form-input" rows={4} value={bulkMsg} onChange={e => setBulkMsg(e.target.value)}
-                placeholder="Để trống dùng nội dung tự động..." style={{ resize: 'vertical', fontFamily: 'inherit' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-              <button className="btn btn-ghost" onClick={() => setShowBulkRemind(false)}>Huỷ</button>
-              <button className="btn btn-primary" onClick={sendBulkRemind} disabled={sendingBulk}>
-                {sendingBulk ? 'Đang gửi...' : `📤 Gửi cho tất cả chưa đóng tháng ${bulkMonth}/${bulkYear}`}
-              </button>
-            </div>
-          </div>
-        </div>
+        <BulkRemindModal
+          bulkMonth={bulkMonth}
+          setBulkMonth={setBulkMonth}
+          bulkYear={bulkYear}
+          setBulkYear={setBulkYear}
+          bulkMsg={bulkMsg}
+          setBulkMsg={setBulkMsg}
+          sendingBulk={sendingBulk}
+          onSend={sendBulkRemind}
+          onClose={() => setShowBulkRemind(false)}
+        />
       )}
     </>
   );

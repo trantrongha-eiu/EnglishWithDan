@@ -25,4 +25,9 @@ const task2AttemptSchema = new mongoose.Schema({
 // Auto-delete after 60 days
 task2AttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 24 * 60 * 60 });
 
+// getWrongQuestions() filters by {userId, topicId}; getHistory()/getProgress()
+// filter by userId sorted by recency — both previously unindexed.
+task2AttemptSchema.index({ userId: 1, topicId: 1 });
+task2AttemptSchema.index({ userId: 1, completedAt: -1 });
+
 module.exports = mongoose.model('Task2Attempt', task2AttemptSchema);

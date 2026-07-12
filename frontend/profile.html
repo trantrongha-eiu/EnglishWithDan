@@ -7,13 +7,17 @@
   <title>Hồ sơ – EnglishWithDan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/mobile.css">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
+  <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/shared/toast.js"></script>
 
   <!-- Main Content -->
   <div class="profile-layout">
@@ -328,18 +332,12 @@
     const API = 'https://englishwithdan.onrender.com';
 
     // ── Auth helpers (from auth.js) ───────────────────────────
-    function token() { return localStorage.getItem('token'); }
-    function headers() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token() }; }
+    function token() { return window.AuthService.getToken(); }
+    function headers() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
 
-    // ── Toast ─────────────────────────────────────────────────
-    function showToast(type, title, msg, duration = 4000) {
-      const icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
-      const el = document.createElement('div');
-      el.className = `toast ${type}`;
-      el.innerHTML = `<div class="toast-icon">${icons[type]||'ℹ️'}</div><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${msg}</div></div>`;
-      document.getElementById('toastContainer').appendChild(el);
-      if (duration > 0) setTimeout(() => { el.classList.add('hiding'); setTimeout(() => el.remove(), 300); }, duration);
-    }
+    // showToastWithTitle() moved to js/shared/toast.js (single source of
+    // truth — Phase 3 audit). This page's old #toastContainer element is
+    // no longer referenced but was left in place.
 
 
     // ── Tabs ──────────────────────────────────────────────────
@@ -396,7 +394,7 @@
           this.classList.add('active');
           applyAccent(this.dataset.primary, this.dataset.dark);
           localStorage.setItem(ACCENT_KEY, JSON.stringify({ primary: this.dataset.primary, dark: this.dataset.dark }));
-          showToast('success', 'Đã đổi màu', 'Màu chủ đề đã được cập nhật');
+          showToastWithTitle('success', 'Đã đổi màu', 'Màu chủ đề đã được cập nhật');
         });
       });
     }
@@ -663,7 +661,7 @@
         }
       } catch (err) {
         console.error(err);
-        showToast('error', 'Lỗi', 'Không thể tải thông tin profile');
+        showToastWithTitle('error', 'Lỗi', 'Không thể tải thông tin profile');
       }
     }
 
@@ -686,14 +684,14 @@
           msgEl.style.background = '#ecfdf5'; msgEl.style.color = '#065f46'; msgEl.style.border = '1px solid #6ee7b7';
           msgEl.textContent = 'Đã lưu thay đổi thành công!';
           setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
-          showToast('success', 'Thành công', 'Thông tin đã được cập nhật');
+          showToastWithTitle('success', 'Thành công', 'Thông tin đã được cập nhật');
           loadProfile();
         } else {
           msgEl.style.display = 'block';
           msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
           msgEl.textContent = data.message || 'Lỗi lưu thông tin';
         }
-      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
     }
 
     // ── Change password ───────────────────────────────────────
@@ -713,7 +711,7 @@
           msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
           msgEl.textContent = data.message;
           setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
-          showToast('success', 'Thành công', 'Mật khẩu đã được đổi');
+          showToastWithTitle('success', 'Thành công', 'Mật khẩu đã được đổi');
           document.getElementById('secCurrentPass').value = '';
           document.getElementById('secNewPass').value = '';
           document.getElementById('secConfirmPass').value = '';
@@ -721,7 +719,7 @@
           msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a';
           msgEl.textContent = data.message;
         }
-      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
     }
 
     // ── Upload avatar ─────────────────────────────────────────
@@ -753,14 +751,14 @@
       const file = input.files[0];
       if (!file) return;
       // Accept any size — we will compress on client side
-      if (!file.type.startsWith('image/')) { showToast('warning', 'Cảnh báo', 'Vui lòng chọn file ảnh'); return; }
+      if (!file.type.startsWith('image/')) { showToastWithTitle('warning', 'Cảnh báo', 'Vui lòng chọn file ảnh'); return; }
 
       try {
-        showToast('info', 'Đang xử lý...', 'Đang nén ảnh');
+        showToastWithTitle('info', 'Đang xử lý...', 'Đang nén ảnh');
         // Compress to max 600px, JPEG quality 0.85 — keeps under 200KB easily
         const imageBase64 = await compressImage(file, 600, 0.85);
 
-        showToast('info', 'Đang tải...', 'Vui lòng chờ');
+        showToastWithTitle('info', 'Đang tải...', 'Vui lòng chờ');
         const res  = await fetch(API + '/api/user/avatar', { method:'POST', headers: headers(), body: JSON.stringify({ imageBase64 }) });
         const data = await res.json();
         if (data.success) {
@@ -771,11 +769,11 @@
           img.src = data.avatar; img.alt = 'avatar';
           img.id = 'avatarDisplay';
           wrap.insertBefore(img, wrap.firstChild);
-          showToast('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
+          showToastWithTitle('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
         } else {
-          showToast('error', 'Lỗi', data.message || 'Upload thất bại');
+          showToastWithTitle('error', 'Lỗi', data.message || 'Upload thất bại');
         }
-      } catch { showToast('error', 'Lỗi', 'Không kết nối được server'); }
+      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
 
       // Reset input so user can re-select same file if needed
       input.value = '';

@@ -9,14 +9,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="listening.css" />
     <link rel="stylesheet" href="css/mobile.css" />
     <script src="js/theme.js"></script>
 </head>
 
 <body>
+<script src="js/shared/auth-service.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
+<script src="js/shared/route-params.js"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -599,6 +605,7 @@
         });
     </script>
 
+    <script src="js/listening-upgrade-modal.js"></script>
     <script>
         'use strict';
 
@@ -746,9 +753,11 @@
         // INIT
         // ══════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
-            if (!token) { window.location.href = 'login.html'; return; }
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            // Delegates to the same AuthService.requirePageAuth() used by
+            // auth.js's Guard 1 (Phase 5) — this used to be its own
+            // redundant `if(!token)` check with no next= support.
+            if (!window.AuthService.requirePageAuth(false)) return;
+            const user = window.AuthService.getUser() || {};
             const name = user.firstName ? `${user.firstName} ${user.lastName}` : user.username || '';
             const el = document.getElementById('userName');
             if (el && name) el.textContent = `👋 ${name}`;
@@ -793,7 +802,20 @@
             const modeParam      = params.get('mode') ?? params.get('tab');
             const partRaw        = params.get('part');
             const partParam      = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
-            if (sectionIdParam) {
+            // Clean path-based deep link (/listening/test/:id — see Phase 4
+            // routing notes). Routing audit finding: this block used to run
+            // unconditionally and always appended ?mode=full to whatever
+            // pathname was showing, dirtying the clean URL on every single
+            // visit (unlike reading-v2.js, which at least guarded its
+            // premium branch). Skip the query-string branches entirely here;
+            // renderTestList()'s own RouteParams match (below) auto-starts
+            // the right test once tests are loaded, exactly as before.
+            const _cleanLtTid = window.RouteParams ? window.RouteParams.match([
+                { pattern: /^\/listening\/test\/([^/?#]+)$/, param: 'testId' }
+            ]) : null;
+            if (_cleanLtTid) {
+                showScreen('list');
+            } else if (sectionIdParam) {
                 const partForSection = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
                 history.replaceState({ screen: 'list', mode: 'single', part: partForSection }, '', `?mode=single&part=${partForSection}`);
                 document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
@@ -818,9 +840,12 @@
         // ══════════════════════════════════════════════
         // AUTH
         // ══════════════════════════════════════════════
-        function getToken() { return localStorage.getItem('token'); }
-        function authH() { return { 'Authorization': `Bearer ${getToken()}`, 'Content-Type': 'application/json' }; }
-        function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = 'login.html'; }
+        // Delegates to AuthService (Phase 5) — kept as local wrappers so
+        // existing call sites below don't need to change.
+        function getToken() { return window.AuthService.getToken(); }
+        function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
+        // logout() moved to js/auth.js (single source of truth — Phase 3 audit
+        // found this local copy never cleared 'lastLoginAt', unlike auth.js's).
 
         // ══════════════════════════════════════════════
         // SCREENS
@@ -840,36 +865,46 @@
         }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toast(msg, type = 'success') {
-            const el = document.getElementById('toast');
-            el.className = `show ${type}`;
-            document.getElementById('toast-msg').innerHTML = msg;
-            clearTimeout(el._t);
-            el._t = setTimeout(() => el.classList.remove('show'), 3000);
-        }
+        // toast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
         // ══════════════════════════════════════════════
         // SCREEN: LIST
         // ══════════════════════════════════════════════
         let _userPlan = 'free';
-        const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000 };
-        let _upgradeSettings = null;
+        // UPGRADE_PRICES/_upgradeSettings moved to js/listening-upgrade-modal.js
         let _lsPage = 1;
         const LS_PAGE_SIZE = 9;
+        let _testListCache = null; // { tests, userPlan } — avoids refetching /listening/tests on every list-screen return
+        let _testListCacheAt = 0;
+        const TEST_LIST_CACHE_TTL_MS = 60000;
 
         async function loadTestList() {
+            // Reuse the last fetch if still fresh — list-screen re-entry doesn't need
+            // a fresh round-trip. Submit handler invalidates this cache so a just-
+            // completed test's "done" status is never shown stale.
+            if (_testListCache && (Date.now() - _testListCacheAt) < TEST_LIST_CACHE_TTL_MS) {
+                state.tests = _testListCache.tests;
+                _userPlan = _testListCache.userPlan;
+                const promoBanner = document.getElementById('premium-promo-banner');
+                if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+                _lsPage = 1;
+                rerenderLsFilteredTests();
+                return;
+            }
             try {
                 const res = await fetch(`${API}/listening/tests`, { headers: authH() });
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 state.tests = data.tests;
                 _userPlan = data.userPlan || 'free';
+                _testListCache = { tests: state.tests, userPlan: _userPlan };
+                _testListCacheAt = Date.now();
                 // Push fresh plan to localStorage so other pages stay in sync
                 try {
-                    var _lu = JSON.parse(localStorage.getItem('user') || '{}');
+                    var _lu = window.AuthService.getUser() || {};
                     _lu.plan = _userPlan;
                     if (data.planExpiresAt !== undefined) _lu.planExpiresAt = data.planExpiresAt;
-                    localStorage.setItem('user', JSON.stringify(_lu));
+                    window.AuthService.setUser(_lu);
                 } catch(e) {}
                 const promoBanner = document.getElementById('premium-promo-banner');
                 if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
@@ -877,7 +912,7 @@
                 rerenderLsFilteredTests();
             } catch (err) {
                 // Fallback to cached plan so premium users aren't locked out on transient network failures
-                try { _userPlan = JSON.parse(localStorage.getItem('user') || '{}').plan || 'free'; } catch(e) {}
+                try { _userPlan = (window.AuthService.getUser() || {}).plan || 'free'; } catch(e) {}
                 document.getElementById('tests-wrapper').innerHTML =
                     `<p class="ls-error-msg">Error loading tests: ${err.message}</p>`;
             }
@@ -917,8 +952,15 @@
                     <div class="test-group-title">${name}</div>
                     <div class="test-grid">${tests.map(renderTestCard).join('')}</div>
                 </div>`).join('');
-            // Auto-navigate if ?testId= present (shareable link to a specific test)
-            const _tid = new URLSearchParams(location.search).get('testId');
+            // Auto-navigate if ?testId= present (shareable link to a specific
+            // test), or if the clean path /listening/test/:id was used
+            // (served via a _redirects rewrite — see Phase 4 routing notes;
+            // js/shared/route-params.js reads it from location.pathname
+            // since a rewrite doesn't populate location.search).
+            const _cleanTid = window.RouteParams ? window.RouteParams.match([
+                { pattern: /^\/listening\/test\/([^/?#]+)$/, param: 'testId' }
+            ]) : null;
+            const _tid = (_cleanTid && _cleanTid.testId) || new URLSearchParams(location.search).get('testId');
             if (_tid) {
                 const allTests = groups.flatMap(g => g.tests);
                 const _t = allTests.find(t => String(t._id) === _tid);
@@ -965,9 +1007,15 @@
             rerenderLsFilteredTests();
         }
 
+        // Debounced — was rebuilding the whole filtered test list on every
+        // keystroke (same pattern as filterWords() in dashboard.js).
+        let _testFilterTimer = null;
         function applyTestFilters() {
-            _lsPage = 1;
-            rerenderLsFilteredTests();
+            clearTimeout(_testFilterTimer);
+            _testFilterTimer = setTimeout(() => {
+                _lsPage = 1;
+                rerenderLsFilteredTests();
+            }, 250);
         }
 
         function getLsFilteredTests() {
@@ -1029,94 +1077,21 @@
         // PLAN-GATED START
         // ══════════════════════════════════════════════
         function goToStartTest(testId) {
-            if (_userPlan !== 'premium') { openUpgradeModal(); return; }
+            // Was `_userPlan !== 'premium'` — see reading-v2.js's identical
+            // fix (Phase 5 audit finding): staff accounts were incorrectly
+            // blocked here even though startPracticeSection() already
+            // correctly used hasPremiumAccess().
+            if (!window.AuthService.hasPremiumAccess()) { openUpgradeModal(); return; }
             state.pendingTestId = testId;
             startTest(testId);
         }
 
-        // ══════════════════════════════════════════════
-        // PREMIUM UPGRADE MODAL
-        // ══════════════════════════════════════════════
-        async function openUpgradeModal() {
-            const modal = document.getElementById('modal-upgrade');
-            if (!modal) return;
-            modal.classList.remove('hidden');
-            const titleEl = document.getElementById('up-modal-title');
-            const descEl  = document.getElementById('up-modal-desc');
-            if (_userPlan === 'premium') {
-                if (titleEl) titleEl.textContent = 'Gia hạn Premium';
-                if (descEl)  descEl.textContent  = 'Gia hạn thêm thời gian Premium — ngày sẽ được cộng dồn vào thời hạn hiện tại của bạn';
-            } else {
-                if (titleEl) titleEl.textContent = 'Nâng cấp Premium';
-                if (descEl)  descEl.textContent  = 'Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary';
-            }
-            if (!_upgradeSettings) {
-                try {
-                    const res = await fetch(`${API}/tuition/settings`, { headers: authH() });
-                    const data = await res.json();
-                    _upgradeSettings = data.settings || {};
-                } catch { _upgradeSettings = {}; }
-                _renderUpgradeBankInfo();
-            }
-            selectUpgradePlan(1);
-        }
-        function closeUpgradeModal() {
-            const modal = document.getElementById('modal-upgrade');
-            if (modal) modal.classList.add('hidden');
-        }
-        function selectUpgradePlan(months) {
-            document.querySelectorAll('.up-plan-btn').forEach(b => b.classList.remove('active'));
-            const btn = document.querySelector(`.up-plan-btn[data-months="${months}"]`);
-            if (btn) btn.classList.add('active');
-            const amount = UPGRADE_PRICES[months] || 0;
-            const el = document.getElementById('up-total-price');
-            if (el) el.textContent = amount.toLocaleString('vi-VN') + ' ₫';
-        }
-        function _renderUpgradeBankInfo() {
-            const s = _upgradeSettings || {};
-            const el = document.getElementById('up-bank-info');
-            if (!el) return;
-            const rows = [];
-            if (s.bankName)    rows.push(`<div class="up-bank-row"><span class="up-bank-label">🏦 Ngân hàng</span><span class="up-bank-val">${s.bankName}</span></div>`);
-            if (s.accountName) rows.push(`<div class="up-bank-row"><span class="up-bank-label">👤 Chủ TK</span><span class="up-bank-val">${s.accountName}</span></div>`);
-            if (s.bankAccount) rows.push(`<div class="up-bank-row"><span class="up-bank-label">💳 Số TK</span><span class="up-bank-val up-acc-num">${s.bankAccount}<button onclick="copyUpgradeAccount('${s.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
-            if (s.paymentNote) rows.push(`<div class="up-bank-row"><span class="up-bank-label">📋 Nội dung CK</span><span class="up-bank-val">${s.paymentNote}</span></div>`);
-            el.innerHTML = rows.join('');
-            const qrEl = document.getElementById('up-qr-img');
-            if (qrEl) { qrEl.src = s.qrImageUrl || ''; qrEl.style.display = s.qrImageUrl ? 'block' : 'none'; }
-        }
-        function copyUpgradeAccount(num) {
-            if (navigator.clipboard) navigator.clipboard.writeText(num).then(() => toast('Đã sao chép số TK', 'success'));
-        }
-        async function submitUpgradeRequest() {
-            const activeBtn = document.querySelector('.up-plan-btn.active');
-            const months = activeBtn ? parseInt(activeBtn.dataset.months) : 1;
-            const submitBtn = document.getElementById('btn-upgrade-submit');
-            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...'; }
-            try {
-                const res = await fetch(`${API}/upgrade/request`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ months })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    closeUpgradeModal();
-                    toast('Yêu cầu đã gửi! Admin sẽ xác nhận trong 24 giờ.', 'success');
-                } else {
-                    toast(data.message || 'Lỗi gửi yêu cầu', 'error');
-                }
-            } catch { toast('Lỗi kết nối server', 'error'); }
-            finally {
-                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Tôi đã thanh toán'; }
-            }
-        }
+        // Premium upgrade modal (openUpgradeModal, closeUpgradeModal,
+        // selectUpgradePlan, submitUpgradeRequest, copyUpgradeAccount, and
+        // the UPGRADE_PRICES/_upgradeSettings state) moved to
+        // js/listening-upgrade-modal.js — loaded earlier in this page.
 
         window.goToStartTest = goToStartTest;
-        window.openUpgradeModal = openUpgradeModal;
-        window.closeUpgradeModal = closeUpgradeModal;
-        window.selectUpgradePlan = selectUpgradePlan;
-        window.submitUpgradeRequest = submitUpgradeRequest;
-        window.copyUpgradeAccount = copyUpgradeAccount;
 
         async function safeJson(res) {
             const text = await res.text();
@@ -1206,19 +1181,29 @@
             });
         }
 
+        // Cached seek-bar elements — onTimeUpdate fires many times/sec during
+        // playback, was re-querying these 3 ids on every tick.
+        let _audioSeekEl = null, _audioSeekRvEl = null, _audioSeekPrEl = null;
         function onTimeUpdate() {
             const t = audio.currentTime;
             setTimeDisplay('audio-current', t);
             setTimeDisplay('audio-current-rv', t);
             setTimeDisplay('audio-current-pr', t);
-            document.getElementById('audio-seek').value = t;
-            document.getElementById('audio-seek-rv').value = t;
-            const prSeek = document.getElementById('audio-seek-pr');
-            if (prSeek) prSeek.value = t;
+            if (!_audioSeekEl) _audioSeekEl = document.getElementById('audio-seek');
+            if (_audioSeekEl) _audioSeekEl.value = t;
+            if (!_audioSeekRvEl) _audioSeekRvEl = document.getElementById('audio-seek-rv');
+            if (_audioSeekRvEl) _audioSeekRvEl.value = t;
+            if (!_audioSeekPrEl) _audioSeekPrEl = document.getElementById('audio-seek-pr');
+            if (_audioSeekPrEl) _audioSeekPrEl.value = t;
         }
 
+        // Cached by id — setTimeDisplay is called from both the (low-frequency)
+        // loadedmetadata handler and the (high-frequency) onTimeUpdate above;
+        // memoizing here benefits every caller without changing the signature.
+        const _timeDisplayElCache = {};
         function setTimeDisplay(id, secs) {
-            const el = document.getElementById(id);
+            let el = _timeDisplayElCache[id];
+            if (el === undefined) { el = document.getElementById(id); _timeDisplayElCache[id] = el; }
             if (el) el.textContent = `${pad(Math.floor(secs / 60))}:${pad(Math.floor(secs % 60))}`;
         }
         function togglePlay() { if (audio.paused) audio.play(); else audio.pause(); }
@@ -1435,9 +1420,7 @@
         }
 
         // ── Helpers ───────────────────────────────────────────────
-        function escHtml(s) {
-            return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
+        // escHtml() moved to js/shared/utils.js (single source of truth — Phase 3 audit).
 
         // ── Group dispatcher ──────────────────────────────────────
         function renderQuestionGroup(group, gi, isReview) {
@@ -1516,7 +1499,7 @@
             const { imageUrl = '', dragDropConfig = {}, questions = [] } = group;
             const words = dragDropConfig.words || [];
             const imgHtml = imageUrl
-                ? `<div class="map-img-wrap"><img src="${escHtml(imageUrl)}" class="map-img" alt="Diagram"/></div>`
+                ? `<div class="map-img-wrap"><img src="${escHtml(imageUrl)}" class="map-img" alt="Diagram" loading="lazy"/></div>`
                 : '';
 
             // ── Drag-drop mode when word bank is configured ───────────
@@ -2606,6 +2589,7 @@
                 overlay.style.display = 'none';
                 if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
                 // refresh test list để cập nhật trạng thái đã làm
+                _testListCache = null; // force a fresh fetch so the new "done" status isn't stale
                 loadTestList();
                 document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
                 document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
@@ -3125,13 +3109,12 @@
             e.stopPropagation();
             const url = `${location.origin}/listening.html?testId=${testId}`;
             navigator.clipboard.writeText(url).then(
-                () => toast('<i class="fas fa-check"></i> Link bài thi đã được sao chép!', 'success'),
+                () => toast('Link bài thi đã được sao chép!', 'success'),
                 () => toast('Không thể sao chép link', 'error')
             );
         }
 
         // Expose globals
-        window.logout = logout;
         window.showScreen = showScreen;
         window.openModal = openModal; window.closeModal = closeModal;
         window.filterTests = filterTests; window.applyTestFilters = applyTestFilters;
@@ -3179,6 +3162,10 @@
     let _ltPracticeDoneMap  = {};    // sectionId → { count, lastScore, lastTotal }
     let _ltStatusFilter     = 'all'; // 'all' | 'done' | 'new'
     let _ltSearchVal        = '';    // current text search value
+    const LT_PRACTICE_PARTS = [1, 2, 3, 4, 'actual'];
+    let _ltCategoryCache      = {}; // partNum -> { sections, doneMap }
+    let _ltGlobalSearchActive = false;
+    let _ltGlobalSearchToken  = 0;
     let _ltPracticeElapsed  = 0;
     let _ltPracticeSubmitted= false; // true after submitLTPractice() so dict/highlight work in result view
     let _ltPracticeActive   = false; // true while practice screen is open (before submit)
@@ -3309,9 +3296,65 @@
         }
     }
 
+    // Debounced — _ltRunGlobalSearch() can trigger real network fetches
+    // (first search across a part not yet cached), so this was firing a
+    // fetch + full re-render on every keystroke.
+    let _ltFilterTimer = null;
     function filterLtPracticeCards(query) {
+        clearTimeout(_ltFilterTimer);
+        _ltFilterTimer = setTimeout(() => _runLtPracticeFilter(query), 250);
+    }
+
+    function _runLtPracticeFilter(query) {
         _ltSearchVal = (query || '').trim().toLowerCase();
         _ltPage = 1;
+        if (_ltSearchVal) {
+            _ltRunGlobalSearch();
+        } else {
+            _ltGlobalSearchActive = false;
+            const cur = _ltCategoryCache[_ltCurrentPart];
+            if (cur) { _ltAllSections = cur.sections; _ltPracticeDoneMap = cur.doneMap; }
+            rerenderLtSections();
+        }
+    }
+
+    // Tìm kiếm xuyên suốt toàn bộ đề (Section 1-4 + Actual Tests), không chỉ trong tab đang mở
+    async function _ltRunGlobalSearch() {
+        const token = ++_ltGlobalSearchToken;
+        const toFetch = LT_PRACTICE_PARTS.filter(p => !_ltCategoryCache[p]);
+        if (toFetch.length) {
+            const listEl = document.getElementById('lt-section-list');
+            if (listEl && !_ltGlobalSearchActive) {
+                listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i><div style="font-size:14px;margin-top:10px">Đang tìm trong toàn bộ đề...</div></div>`;
+            }
+            await Promise.all(toFetch.map(async part => {
+                try {
+                    const url = part === 'actual'
+                        ? `${API}/listening/practice/list?actualTest=true`
+                        : `${API}/listening/practice/list?part=${part}`;
+                    const res  = await fetch(url, { headers: authH() });
+                    const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+                    _ltCategoryCache[part] = { sections: data.sections || [], doneMap: data.doneMap || {} };
+                } catch (e) {
+                    _ltCategoryCache[part] = { sections: [], doneMap: {} };
+                }
+            }));
+        }
+        if (token !== _ltGlobalSearchToken) return; // một tìm kiếm mới hơn đã bắt đầu
+
+        _ltGlobalSearchActive = true;
+        const merged = new Map();
+        LT_PRACTICE_PARTS.forEach(part => {
+            (_ltCategoryCache[part]?.sections || []).forEach(s => {
+                const id = s._id?.toString();
+                const existing = merged.get(id);
+                if (!existing || (part === 'actual' && !existing.__isActual)) {
+                    merged.set(id, Object.assign({}, s, { __isActual: part === 'actual' }));
+                }
+            });
+        });
+        _ltPracticeDoneMap = Object.assign({}, ...LT_PRACTICE_PARTS.map(part => _ltCategoryCache[part]?.doneMap || {}));
+        _ltAllSections = [...merged.values()];
         rerenderLtSections();
     }
 
@@ -3341,7 +3384,7 @@
     }
 
     function _ltRenderSectionCard(s) {
-        const partNum   = _ltCurrentPart;
+        const partNum   = _ltGlobalSearchActive ? (s.__isActual ? 'actual' : s.partNumber) : _ltCurrentPart;
         const isActual  = partNum === 'actual';
         const clsMap    = { 1:'p1', 2:'p2', 3:'p3', 4:'p4' };
         const cls       = isActual ? 'at' : (clsMap[partNum] || 'p1');
@@ -3402,7 +3445,7 @@
                     ? '<i class="fas fa-clipboard-list" style="font-size:32px;color:#9ca3af"></i>'
                     : '<i class="fas fa-check-circle" style="font-size:32px;color:#9ca3af"></i>');
             const msg = _ltSearchVal
-                ? `Không tìm thấy bài nào khớp với "<strong>${_ltSearchVal}</strong>"`
+                ? `Không tìm thấy bài nào khớp với "<strong>${escHtml(_ltSearchVal)}</strong>"`
                 : _ltStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
                 : 'Đã làm tất cả bài trong mục này rồi!';
             listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><div style="margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div></div>`;
@@ -3515,6 +3558,8 @@
             }
 
             // Store for paginated filtering
+            _ltCategoryCache[partNum] = { sections, doneMap: data.doneMap || {} };
+            _ltGlobalSearchActive = false;
             _ltAllSections  = sections;
             _ltCurrentPart  = partNum;
             _ltStatusFilter = 'all';
@@ -3542,8 +3587,7 @@
 
     /* ── Start practice for one section ─────────────────────────────────── */
     async function startPracticeSection(sectionId, partNum, _silent = false) {
-        const _u = JSON.parse(localStorage.getItem('user') || '{}');
-        if (_userPlan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+        if (!window.AuthService.hasPremiumAccess()) {
             openUpgradeModal(); return;
         }
 
@@ -3640,7 +3684,7 @@
         audio.load();
         const prBtn = document.getElementById('play-btn-pr');
         if (prBtn) prBtn.innerHTML = '<i class="fas fa-play"></i>';
-        audio.onended = () => toast('<i class="fas fa-music"></i> Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
+        audio.onended = () => toast('Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
 
         // Title + footer
         document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${section.title || `Section ${partNum}`}`;
@@ -3651,10 +3695,17 @@
         // Stopwatch + progress
         _startLTPracticeTimer(_ltGetAllQs(_ltCleanSection).length);
 
-        // Listen for answer changes
+        // Listen for answer changes. Guard against re-adding on every call
+        // (this screen can be entered multiple times per page load) — same
+        // _handler-on-element pattern used by setupDictionaryDouble() above.
         const qi = document.getElementById('lt-practice-questions-inner');
         if (qi) {
+            if (qi._practiceAnswerHandler) {
+                qi.removeEventListener('click', qi._practiceAnswerHandler);
+                qi.removeEventListener('input', qi._practiceAnswerHandler);
+            }
             const onAnswer = () => setTimeout(_updateLTPracticeProgress, 40);
+            qi._practiceAnswerHandler = onAnswer;
             qi.addEventListener('click', onAnswer);
             qi.addEventListener('input', onAnswer);
         }
@@ -3749,7 +3800,7 @@
         const inner = document.getElementById('lt-practice-questions-inner');
         const ltPracImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 50 ? 'img/band_6_7.jpg' : 'img/belowband6.jpg';
         let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
-            <img src="${ltPracImgSrc}" alt="" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
+            <img src="${ltPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
                 <span>Kết quả: <strong>${correct}/${total}</strong> câu đúng (${pct}%)</span>
                 <span class="ls-rb-correct">● Đúng: ${correct}</span>
@@ -3805,23 +3856,36 @@
                 userAnswer:    q.userAnswer || ''
             }))
         );
-        fetch(`${API}/listening/practice/save`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', ...authH() },
-            body: JSON.stringify({
-                sectionId:    _ltPracticeSectionId,
-                sectionTitle: _ltOrigSection.title || '',
-                partNumber:   _ltPracticePartNum || 1,
-                answers:      answersToSave,
-                timeTaken:    elapsed
-            })
-        }).catch(() => { toast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error'); });
+        _ltSavePracticeResult({
+            sectionId:    _ltPracticeSectionId,
+            sectionTitle: _ltOrigSection.title || '',
+            partNumber:   _ltPracticePartNum || 1,
+            answers:      answersToSave,
+            timeTaken:    elapsed
+        });
 
         // Update footer
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
             <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     } // end _doSubmitLTPractice
+
+    // Lưu kết quả luyện tập lên server và báo lỗi rõ ràng nếu thất bại.
+    // Cố ý KHÔNG tự động thử lại: /listening/practice/save luôn tạo bản ghi mới
+    // (không idempotent), nên gọi lại tự động có thể tạo bản ghi trùng lặp nếu
+    // request đầu tiên thực ra đã thành công ở server nhưng phản hồi bị mất.
+    async function _ltSavePracticeResult(payload) {
+        try {
+            const res = await fetch(`${API}/listening/practice/save`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...authH() },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+        } catch (e) {
+            toast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
+        }
+    }
 
     /* ── Close practice → back to section list ───────────────────────────── */
     function closeLTPractice() {
@@ -4056,7 +4120,7 @@
     function copyLtPracticeLink(sectionId, partNum) {
         const url = `${location.origin}/listening.html?sectionId=${sectionId}&part=${partNum}`;
         navigator.clipboard.writeText(url).then(
-            () => toast('<i class="fas fa-check"></i> Link bài lẻ đã được sao chép!', 'success'),
+            () => toast('Link bài lẻ đã được sao chép!', 'success'),
             () => toast('Không thể sao chép link', 'error')
         );
     }

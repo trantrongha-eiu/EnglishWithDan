@@ -38,4 +38,8 @@ const task2TopicSchema = new mongoose.Schema({
   isActive:          { type: Boolean, default: true }
 }, { timestamps: true });
 
+// Matches listTopicsForWeek()/getExam()'s hot-path query+sort shape
+// (filter isActive [+week], sort orderIndex).
+task2TopicSchema.index({ isActive: 1, week: 1, orderIndex: 1 });
+
 module.exports = mongoose.model('Task2Topic', task2TopicSchema);

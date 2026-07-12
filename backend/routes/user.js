@@ -1,7 +1,6 @@
 const router   = require('express').Router();
 const auth     = require('../middleware/auth');
 const userCtrl = require('../controllers/user.controller');
-const Message  = require('../models/Message');
 
 router.get('/profile',         auth, userCtrl.getProfile);
 router.put('/profile',         auth, userCtrl.updateProfile);
@@ -10,93 +9,9 @@ router.post('/avatar',         auth, userCtrl.uploadAvatar);
 router.get('/stats',           auth, userCtrl.getStats);
 
 // ── INBOX ─────────────────────────────────────────────────────
-
-// GET /api/user/messages/unread-count
-router.get('/messages/unread-count', auth, async (req, res) => {
-  try {
-    const uid = req.user._id;
-    const [personal, broadcast] = await Promise.all([
-      Message.countDocuments({ toId: uid, isBroadcast: false, isRead: false, deletedBy: { $ne: uid } }),
-      Message.countDocuments({ isBroadcast: true, readBy: { $ne: uid }, deletedBy: { $ne: uid } })
-    ]);
-    res.json({ success: true, count: personal + broadcast });
-  } catch (err) {
-    console.error('[User] error:', err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// GET /api/user/messages
-router.get('/messages', auth, async (req, res) => {
-  try {
-    const uid = req.user._id;
-    const { page = 1, limit = 30 } = req.query;
-    const filter = {
-      $or: [
-        { toId: uid, isBroadcast: false },
-        { isBroadcast: true }
-      ],
-      deletedBy: { $ne: uid }
-    };
-    const [messages, total] = await Promise.all([
-      Message.find(filter).sort({ createdAt: -1 }).skip((+page - 1) * +limit).limit(+limit).lean(),
-      Message.countDocuments(filter)
-    ]);
-    const result = messages.map(m => ({
-      ...m,
-      isRead: m.isBroadcast
-        ? (m.readBy || []).some(id => id.toString() === uid.toString())
-        : m.isRead
-    }));
-    res.json({ success: true, messages: result, total });
-  } catch (err) {
-    console.error('[User] error:', err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// PATCH /api/user/messages/:id/read
-router.patch('/messages/:id/read', auth, async (req, res) => {
-  try {
-    const uid = req.user._id;
-    const msg = await Message.findById(req.params.id);
-    if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
-
-    if (msg.isBroadcast) {
-      if (!msg.readBy.some(id => id.toString() === uid.toString())) {
-        msg.readBy.push(uid);
-        await msg.save();
-      }
-    } else {
-      if (msg.toId.toString() !== uid.toString())
-        return res.status(403).json({ success: false, message: 'Không có quyền' });
-      msg.isRead = true;
-      await msg.save();
-    }
-    res.json({ success: true });
-  } catch (err) {
-    console.error('[User] error:', err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
-
-// DELETE /api/user/messages/:id  – soft delete cho user này
-router.delete('/messages/:id', auth, async (req, res) => {
-  try {
-    const uid = req.user._id;
-    const msg = await Message.findById(req.params.id);
-    if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
-    if (!msg.isBroadcast && msg.toId.toString() !== uid.toString())
-      return res.status(403).json({ success: false, message: 'Không có quyền xóa tin nhắn này' });
-    if (!msg.deletedBy.some(id => id.toString() === uid.toString())) {
-      msg.deletedBy.push(uid);
-      await msg.save();
-    }
-    res.json({ success: true });
-  } catch (err) {
-    console.error('[User] error:', err);
-    res.status(500).json({ success: false, message: 'Lỗi server' });
-  }
-});
+router.get('/messages/unread-count', auth, userCtrl.getUnreadMessageCount);
+router.get('/messages', auth, userCtrl.listMessages);
+router.patch('/messages/:id/read', auth, userCtrl.markMessageRead);
+router.delete('/messages/:id', auth, userCtrl.deleteMessage);
 
 module.exports = router;

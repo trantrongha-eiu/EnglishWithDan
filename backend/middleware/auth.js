@@ -1,5 +1,6 @@
 const jwt  = require('jsonwebtoken');
 const User = require('../models/User');
+const logger = require('../utils/logger');
 
 module.exports = async (req, res, next) => {
   try {
@@ -18,6 +19,11 @@ module.exports = async (req, res, next) => {
 
     // ── Chặn token cũ nếu tài khoản đã bị cấm sau khi login ──
     if (user.isBanned) {
+      // Worth a security-audit log line: a still-valid token was rejected
+      // because the account was banned after issuance. Routine 401s
+      // (expired/invalid tokens, extremely high-volume) are deliberately
+      // NOT logged here to avoid drowning this signal in noise.
+      logger.auth('Rejected request from banned user', { userId: String(user._id) });
       return res.status(403).json({
         success: false,
         message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.'

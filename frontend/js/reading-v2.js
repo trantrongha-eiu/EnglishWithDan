@@ -33,6 +33,13 @@ let _rdPracticePage = 1;
 const RD_PRACTICE_PAGE_SIZE = 15;
 let _allPracticePassages = [];
 let _currentPracticeCategory = '';
+const RD_PRACTICE_CATEGORIES = ['passage1', 'passage2', 'passage3', 'actual-test'];
+let _rdCategoryCache = {};      // category → { passages, doneMap }
+let _testsCache = null;         // { tests, userPlan, planExpiresAt } — avoids refetching /api/reading/tests on every list-screen return
+let _testsCacheAt = 0;
+const TESTS_CACHE_TTL_MS = 60000;
+let _rdGlobalSearchActive = false;
+let _rdGlobalSearchToken = 0;
 let _practiceMode = false;   // true khi đang luyện bài lẻ từ list screen
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
@@ -133,7 +140,12 @@ function _updatePracticeProgress() {
 ══════════════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
   if (!requireAuth()) return;
-  const userName = localStorage.getItem('userName') || 'bạn';
+  // Was localStorage.getItem('userName') — that key is never written
+  // anywhere in the app (confirmed project-wide, Phase 3 audit), so the
+  // greeting always silently fell back to "bạn". Fixed as part of
+  // centralizing session reads onto AuthService (Phase 5).
+  const _greetUser = window.AuthService.getUser();
+  const userName = (_greetUser && (_greetUser.firstName || _greetUser.username)) || 'bạn';
   const el = document.getElementById('userName');
   if (el) el.textContent = `👋 ${userName}`;
 
@@ -192,16 +204,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Check URL params on load
+  // Check URL params on load. Clean path-based deep links (/reading/test/:id,
+  // /reading/review/:id — served via _redirects rewrites, see Phase 4
+  // routing notes) are checked first via shared/route-params.js; when one
+  // matches, the address bar is already showing the correct clean URL, so
+  // the history.replaceState() calls below are skipped for that case
+  // rather than overwriting it with the old ?testId=/?review= form.
+  const cleanRoute = window.RouteParams ? window.RouteParams.match([
+    { pattern: /^\/reading\/test\/([^/?#]+)$/,   param: 'testId' },
+    { pattern: /^\/reading\/review\/([^/?#]+)$/, param: 'reviewId' }
+  ]) : null;
+
   const params = new URLSearchParams(location.search);
-  const reviewId       = params.get('review');
-  const testIdParam    = params.get('testId');
+  const reviewId       = (cleanRoute && cleanRoute.reviewId) || params.get('review');
+  const testIdParam    = (cleanRoute && cleanRoute.testId) || params.get('testId');
   const passageIdParam = params.get('passageId');
   const modeParam      = params.get('mode') ?? params.get('tab'); // ?mode=single/full; legacy ?tab=lele accepted
   const categoryParam  = params.get('category') || 'passage1';
+  const fromCleanPath  = !!cleanRoute;
 
   if (reviewId) {
-    history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
+    if (!fromCleanPath) history.replaceState({ screen: 'review', reviewId }, '', `?review=${reviewId}`);
     await loadReview(reviewId);
     return;
   }
@@ -212,12 +235,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const test = allTests.find(t => t._id === testIdParam);
     if (test) {
       if (_userPlan === 'premium') {
-        history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
+        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
         state.testId = test._id;
         state.testName = test.name;
         _doStartExam(test._id);
       } else {
-        history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
+        // Same fromCleanPath guard as the premium branch above — this was
+        // missing (routing audit finding), so a free user opening the
+        // clean /reading/test/:id link had it silently dirtied to
+        // reading.html?mode=full the moment the upgrade modal opened.
+        if (!fromCleanPath) history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
         openUpgradeModal();
       }
     }
@@ -267,6 +294,21 @@ async function loadTests(fromNav = false) {
   showScreen('list');
   const wrap = document.getElementById('tests-wrapper');
 
+  // Reuse the last fetch if still fresh — list-screen re-entry (back nav,
+  // closing a modal, exiting a practice) doesn't need a fresh round-trip.
+  // submitExam() invalidates this cache on successful submit so a just-
+  // completed test's lastAttempt badge is never shown stale.
+  if (_testsCache && (Date.now() - _testsCacheAt) < TESTS_CACHE_TTL_MS) {
+    allTests = _testsCache.tests;
+    _userPlan = _testsCache.userPlan;
+    const promoBanner = document.getElementById('premium-promo-banner');
+    if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+    _rdPage = 1;
+    rerenderFilteredTests();
+    checkResumeExam();
+    return;
+  }
+
   // Skeleton cards while loading
   const skCard = () => `
     <div class="test-card-skeleton">
@@ -283,12 +325,14 @@ async function loadTests(fromNav = false) {
     const res = await apiFetch('/api/reading/tests');
     allTests = res.tests || [];
     _userPlan = res.userPlan || 'free';
+    _testsCache = { tests: allTests, userPlan: _userPlan };
+    _testsCacheAt = Date.now();
     // Push fresh plan to localStorage so other pages stay in sync
     try {
-      var _ru = JSON.parse(localStorage.getItem('user') || '{}');
+      var _ru = window.AuthService.getUser() || {};
       _ru.plan = _userPlan;
       if (res.planExpiresAt !== undefined) _ru.planExpiresAt = res.planExpiresAt;
-      localStorage.setItem('user', JSON.stringify(_ru));
+      window.AuthService.setUser(_ru);
     } catch(e) {}
     const promoBanner = document.getElementById('premium-promo-banner');
     if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
@@ -297,7 +341,7 @@ async function loadTests(fromNav = false) {
     checkResumeExam();
   } catch (e) {
     // Fallback to cached plan so premium users aren't locked out on transient network failures
-    try { _userPlan = JSON.parse(localStorage.getItem('user') || '{}').plan || 'free'; } catch(ee) {}
+    try { _userPlan = (window.AuthService.getUser() || {}).plan || 'free'; } catch(ee) {}
     wrap.innerHTML = `
       <div class="loading-spinner">
         <div style="font-size:36px;margin-bottom:12px">😕</div>
@@ -436,7 +480,11 @@ function goToRdPage(p) {
    SCREEN 2 – START TEST (plan-gated)
 ══════════════════════════════════════════════════════════════════════ */
 function goToStartTest(testId, testName) {
-  if (_userPlan !== 'premium') {
+  // Was `_userPlan !== 'premium'` — that raw plan string never included
+  // the staff bypass hasPremiumAccess() applies, unlike startPractice()
+  // a few functions over, so admin/teacher accounts got the upgrade modal
+  // instead of starting the test (Phase 5 audit finding).
+  if (!window.AuthService.hasPremiumAccess()) {
     openUpgradeModal();
     return;
   }
@@ -696,6 +744,50 @@ function setReadingMode(mode, pushHistory = true) {
 
 function filterPracticeCards() {
   _rdPracticePage = 1;
+  const q = (document.getElementById('practice-search-input')?.value || '').trim();
+  if (q) {
+    _rdRunGlobalSearch();
+  } else {
+    _rdGlobalSearchActive = false;
+    const cur = _rdCategoryCache[_currentPracticeCategory];
+    if (cur) { _allPracticePassages = cur.passages; _practiceDoneMap = cur.doneMap; }
+    rerenderPracticePassages();
+  }
+}
+
+// Tìm kiếm xuyên suốt toàn bộ đề (Passage 1/2/3 + Actual Tests), không chỉ trong tab đang mở
+async function _rdRunGlobalSearch() {
+  const token = ++_rdGlobalSearchToken;
+  const toFetch = RD_PRACTICE_CATEGORIES.filter(c => !_rdCategoryCache[c]);
+  if (toFetch.length) {
+    const listEl = document.getElementById('practice-passage-list');
+    if (listEl && !_rdGlobalSearchActive) {
+      listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i><div style="font-size:14px;margin-top:10px">Đang tìm trong toàn bộ đề...</div></div>`;
+    }
+    await Promise.all(toFetch.map(async c => {
+      try {
+        const res = await apiFetch(`/api/reading/practice/list?category=${c}`);
+        _rdCategoryCache[c] = { passages: res.passages || [], doneMap: res.doneMap || {} };
+      } catch (e) {
+        _rdCategoryCache[c] = { passages: [], doneMap: {} };
+      }
+    }));
+  }
+  if (token !== _rdGlobalSearchToken) return; // một tìm kiếm mới hơn đã bắt đầu
+
+  _rdGlobalSearchActive = true;
+  const merged = new Map();
+  RD_PRACTICE_CATEGORIES.forEach(c => {
+    (_rdCategoryCache[c]?.passages || []).forEach(p => {
+      const id = p._id?.toString();
+      const existing = merged.get(id);
+      if (!existing || (c === 'actual-test' && !existing.__isActual)) {
+        merged.set(id, Object.assign({}, p, { __isActual: c === 'actual-test' }));
+      }
+    });
+  });
+  _practiceDoneMap = Object.assign({}, ...RD_PRACTICE_CATEGORIES.map(c => _rdCategoryCache[c]?.doneMap || {}));
+  _allPracticePassages = [...merged.values()];
   rerenderPracticePassages();
 }
 
@@ -773,7 +865,7 @@ function goToRdPracticePage(p) {
 }
 
 function _rdRenderPassageCard(p) {
-  const category  = _currentPracticeCategory;
+  const category  = _rdGlobalSearchActive ? (p.__isActual ? 'actual-test' : p.category) : _currentPracticeCategory;
   const isActual  = category === 'actual-test';
   const cls       = isActual ? 'at' : ({ passage1:'p1', passage2:'p2', passage3:'p3' }[category] || 'p1');
   const pNum      = isActual ? null : ({ passage1:'1', passage2:'2', passage3:'3' }[category] || '1');
@@ -877,6 +969,8 @@ async function loadPracticePassages(category, tabEl) {
     }
 
     // Store data for paginated rendering
+    _rdCategoryCache[category] = { passages, doneMap: res.doneMap || {} };
+    _rdGlobalSearchActive   = false;
     _allPracticePassages    = passages;
     _currentPracticeCategory = category;
     _practiceStatusFilter   = 'all';
@@ -900,8 +994,7 @@ async function loadPracticePassages(category, tabEl) {
 }
 
 async function startPractice(passageId, category, _silent = false) {
-  const _u = JSON.parse(localStorage.getItem('user') || '{}');
-  if (_userPlan !== 'premium' && !['admin', 'teacher'].includes(_u.role)) {
+  if (!window.AuthService.hasPremiumAccess()) {
     openUpgradeModal(); return;
   }
 
@@ -1017,10 +1110,19 @@ function _enterPracticeScreen(passage, category, passageId) {
     e.returnValue = '';
   };
 
-  // Listen for answer changes to update progress live and auto-save
+  // Listen for answer changes to update progress live and auto-save.
+  // Guard against re-adding on every call (this screen can be entered
+  // multiple times per page load) — same _handler-on-element pattern used
+  // by setupDictionaryDouble() in listening.html.
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
+    if (qi._practiceAnswerHandler) {
+      qi.removeEventListener('click', qi._practiceAnswerHandler);
+      qi.removeEventListener('input', qi._practiceAnswerHandler);
+      qi.removeEventListener('drop', qi._practiceAnswerHandler);
+    }
     const onAnswer = () => { setTimeout(_updatePracticeProgress, 40); savePracticeToStorage(); };
+    qi._practiceAnswerHandler = onAnswer;
     qi.addEventListener('click', onAnswer);
     qi.addEventListener('input', onAnswer);
     qi.addEventListener('drop', onAnswer);
@@ -1303,7 +1405,7 @@ function renderMapGroup(group, isReview, reviewMap) {
   const { imageUrl = '', dragDropConfig = {}, questions = [] } = group;
   const words = dragDropConfig.words || [];
   const imgHtml = imageUrl
-    ? `<div class="rq-map-img-wrap"><img class="rq-map-img" src="${escHtml(imageUrl)}" alt="Map/Diagram" /></div>`
+    ? `<div class="rq-map-img-wrap"><img class="rq-map-img" src="${escHtml(imageUrl)}" alt="Map/Diagram" loading="lazy" /></div>`
     : '';
 
   // Drag-drop mode when word bank is configured
@@ -1615,7 +1717,7 @@ function renderSingleQuestion(q, isReview, reviewMap) {
 
   // Individual map image (map-labelling with per-question image)
   const imgHtml = (type === 'map-labelling' && q.imageUrl)
-    ? `<div class="map-img-wrap"><img class="map-img" src="${escHtml(q.imageUrl)}" /></div>` : '';
+    ? `<div class="map-img-wrap"><img class="map-img" src="${escHtml(q.imageUrl)}" loading="lazy" /></div>` : '';
 
   const _ua = review?.userAnswer || '';
   const reviewFeedback = isReview && review
@@ -2270,6 +2372,7 @@ async function submitExam() {
     hideOverlay();
     if (!res.success) { showVocabToast('Lỗi nộp bài: ' + res.message); return; }
     clearExamStorage();
+    _testsCache = null; // force a fresh /api/reading/tests fetch next time so the new lastAttempt badge isn't stale
     showResult(res.result);
   } catch (e) {
     clearTimeout(submitTimeout);
@@ -2693,7 +2796,9 @@ function _doSubmitRetry() {
       <span style="font-style:italic">${encourage}</span>
     </div>`;
 
-    // Lưu kết quả lên server (fire-and-forget)
+    // Lưu kết quả lên server. Cố ý KHÔNG tự động thử lại: endpoint này luôn tạo
+    // bản ghi mới (không idempotent), nên gọi lại tự động có thể tạo bản ghi
+    // trùng lặp nếu request đầu đã thành công ở server nhưng phản hồi bị mất.
     apiFetch('/api/reading/practice/save', {
       method: 'POST',
       body: JSON.stringify({
@@ -2711,12 +2816,14 @@ function _doSubmitRetry() {
         skippedCount: skipped,
         timeTaken:    elapsed
       })
-    }).catch(() => {});
+    }).catch(() => {
+      showVocabToast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
+    });
   }
 
   const rdPracImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 50 ? 'img/band_6_7.jpg' : 'img/belowband6.jpg';
   const rdPracImgHtml = fromPractice
-    ? `<img src="${rdPracImgSrc}" alt="" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
+    ? `<img src="${rdPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
     : '';
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
@@ -3210,13 +3317,10 @@ async function saveWordToBook(bookId) {
   } catch { showVocabToast('Lỗi lưu từ'); }
 }
 
-function showVocabToast(msg, type = 'success') {
-  const toast = document.getElementById('vocab-toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.className = `vocab-toast ${type} show`;
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
+// showVocabToast() moved to js/shared/toast.js (single source of truth —
+// Phase 3 audit). reading.html's old static #vocab-toast element is no
+// longer referenced (shared/toast.js builds its own container) but was
+// left in the markup rather than removed, to avoid touching unrelated HTML.
 
 /* ══════════════════════════════════════════════════════════════════════
    HIGHLIGHT
@@ -3338,33 +3442,33 @@ function closeModal(id) { const m = document.getElementById(id); if (m) m.classL
 /* ══════════════════════════════════════════════════════════════════════
    AUTH HELPERS (uses auth.js)
 ══════════════════════════════════════════════════════════════════════ */
+// Delegates to the same AuthService.requirePageAuth() used by auth.js's
+// Guard 1 (Phase 5) — this used to be its own redundant `if(!token)` check
+// with no next= support, duplicating the page-load guard that already ran
+// before this script.
 function requireAuth() {
-  const token = localStorage.getItem('token');
-  if (!token) { window.location.href = 'login.html'; return false; }
-  return true;
+  return window.AuthService.requirePageAuth(false);
 }
-function logout() {
-  localStorage.removeItem('token'); localStorage.removeItem('userName');
-  window.location.href = 'login.html';
-}
+// logout() moved to js/auth.js (single source of truth — Phase 3 audit).
+// This local copy was a real bug: it cleared 'token' + 'userName' (a key
+// that is never actually set anywhere in the codebase — see fmtDuration
+// area) instead of 'token' + 'user', so the real user object was left in
+// localStorage after "logging out." auth.js's version clears the correct
+// keys plus 'lastLoginAt', which no local copy did.
+// apiFetch keeps its own request-building (URL-prefix handling unchanged)
+// and delegates response-handling to js/shared/api-client.js (Phase 3 audit).
 async function apiFetch(url, opts = {}) {
-  const token = localStorage.getItem('token');
   // Prepend API base for relative paths
   const fullUrl = url.startsWith('/api/') ? API + url.slice(4) : url;
   const res = await fetch(fullUrl, {
     ...opts,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      ...window.AuthService.authHeader(),
       ...(opts.headers || {})
     }
   });
-  if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
-  if (!res.ok) {
-    const isColdStart = res.status === 502 || res.status === 503;
-    throw new Error(isColdStart ? 'server-cold-start' : `HTTP ${res.status}`);
-  }
-  return res.json();
+  return window.ApiClient.handleResponse(res);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3402,14 +3506,9 @@ function copyRdPracticeLink(passageId, category) {
 
 /* ══════════════════════════════════════════════════════════════════════
    UTILITY
+   escHtml() / escHtmlNl() moved to js/shared/utils.js (single source of
+   truth — Phase 3 audit).
 ══════════════════════════════════════════════════════════════════════ */
-function escHtml(str) {
-  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-// Like escHtml but also converts \n → <br> (for explanation text)
-function escHtmlNl(str) {
-  return escHtml(str).replace(/\n/g, '<br>');
-}
 function fmtDuration(s) {
   if (!s) return '–';
   const m = Math.floor(s / 60), sec = s % 60;
@@ -3427,109 +3526,12 @@ document.addEventListener('click', e => {
   panel.classList.add('hidden');
 });
 
-/* ══════════════════════════════════════════════════════════════════════
-   PREMIUM UPGRADE MODAL
-══════════════════════════════════════════════════════════════════════ */
-const UPGRADE_PRICES = { 1: 90000, 3: 250000, 6: 500000, 12: 900000, 36: 2500000 };
-let _upgradeSettings = null;
-
-async function openUpgradeModal() {
-  const modal = document.getElementById('modal-upgrade');
-  if (!modal) return;
-  modal.classList.remove('hidden');
-  const titleEl = document.getElementById('up-modal-title');
-  const descEl  = document.getElementById('up-modal-desc');
-  if (_userPlan === 'premium') {
-    if (titleEl) titleEl.textContent = 'Gia hạn Premium';
-    if (descEl)  descEl.textContent  = 'Gia hạn thêm thời gian Premium — ngày sẽ được cộng dồn vào thời hạn hiện tại của bạn';
-  } else {
-    if (titleEl) titleEl.textContent = 'Nâng cấp Premium';
-    if (descEl)  descEl.textContent  = 'Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Vocabulary';
-  }
-  // Fetch bank info & QR once
-  if (!_upgradeSettings) {
-    try {
-      const res = await fetch(`${API}/tuition/settings`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
-      _upgradeSettings = data.settings || {};
-    } catch { _upgradeSettings = {}; }
-    _renderUpgradeBankInfo();
-  }
-  selectUpgradePlan(1);
-}
-
-function closeUpgradeModal() {
-  const modal = document.getElementById('modal-upgrade');
-  if (modal) modal.classList.add('hidden');
-}
-
-function selectUpgradePlan(months) {
-  document.querySelectorAll('.up-plan-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`.up-plan-btn[data-months="${months}"]`);
-  if (btn) btn.classList.add('active');
-  const amount = UPGRADE_PRICES[months] || 0;
-  const el = document.getElementById('up-total-price');
-  if (el) el.textContent = amount.toLocaleString('vi-VN') + ' ₫';
-  const el2 = document.getElementById('up-selected-months');
-  if (el2) el2.textContent = months;
-  // Update transfer content
-  const s = _upgradeSettings || {};
-  const contentEl = document.getElementById('up-transfer-content');
-  if (contentEl && s.paymentNote) {
-    contentEl.textContent = s.paymentNote;
-  }
-}
-
-function _renderUpgradeBankInfo() {
-  const s = _upgradeSettings || {};
-  const el = document.getElementById('up-bank-info');
-  if (!el) return;
-  const rows = [];
-  if (s.bankName)    rows.push(`<div class="up-bank-row"><span class="up-bank-label">🏦 Ngân hàng</span><span class="up-bank-val">${s.bankName}</span></div>`);
-  if (s.accountName) rows.push(`<div class="up-bank-row"><span class="up-bank-label">👤 Chủ TK</span><span class="up-bank-val">${s.accountName}</span></div>`);
-  if (s.bankAccount) rows.push(`<div class="up-bank-row"><span class="up-bank-label">💳 Số TK</span><span class="up-bank-val up-acc-num">${s.bankAccount}<button onclick="copyUpgradeAccount('${s.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
-  if (s.paymentNote) rows.push(`<div class="up-bank-row"><span class="up-bank-label">📋 Nội dung CK</span><span class="up-bank-val" id="up-transfer-content">${s.paymentNote}</span></div>`);
-  el.innerHTML = rows.join('');
-  const qrEl = document.getElementById('up-qr-img');
-  if (qrEl) { qrEl.src = s.qrImageUrl || ''; qrEl.style.display = s.qrImageUrl ? 'block' : 'none'; }
-}
-
-function copyUpgradeAccount(num) {
-  if (navigator.clipboard) navigator.clipboard.writeText(num).then(() => showVocabToast('Đã sao chép số tài khoản', 'success'));
-}
-
-async function submitUpgradeRequest() {
-  const activeBtn = document.querySelector('.up-plan-btn.active');
-  const months = activeBtn ? parseInt(activeBtn.dataset.months) : 1;
-  const submitBtn = document.getElementById('btn-upgrade-submit');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Đang gửi...'; }
-  try {
-    const res = await fetch(`${API}/upgrade/request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-      body: JSON.stringify({ months })
-    });
-    const data = await res.json();
-    if (data.success) {
-      closeUpgradeModal();
-      showVocabToast('Yêu cầu đã gửi! Admin sẽ xác nhận trong 24 giờ.', 'success');
-    } else {
-      showVocabToast(data.message || 'Lỗi gửi yêu cầu', 'error');
-    }
-  } catch {
-    showVocabToast('Lỗi kết nối server', 'error');
-  } finally {
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Tôi đã thanh toán'; }
-  }
-}
+// Premium upgrade modal (openUpgradeModal, closeUpgradeModal,
+// selectUpgradePlan, submitUpgradeRequest, copyUpgradeAccount, and the
+// UPGRADE_PRICES/_upgradeSettings state behind them) moved to
+// js/reading-upgrade-modal.js — loaded alongside this file, see
+// reading.html. Nothing else in this file touches that state.
 
 window.goToRdPage = goToRdPage;
 window.goToRdPracticePage = goToRdPracticePage;
 window.goToStartTest = goToStartTest;
-window.openUpgradeModal = openUpgradeModal;
-window.closeUpgradeModal = closeUpgradeModal;
-window.selectUpgradePlan = selectUpgradePlan;
-window.submitUpgradeRequest = submitUpgradeRequest;
-window.copyUpgradeAccount = copyUpgradeAccount;

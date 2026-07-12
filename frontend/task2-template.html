@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="writing-practice.css"/>
   <link rel="stylesheet" href="css/mobile.css"/>
   <script src="js/theme.js"></script>
@@ -336,7 +338,11 @@
   </style>
 </head>
 <body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
 
 <div id="wp-toast"></div>
 
@@ -436,7 +442,6 @@
   </div><!-- end .tpl-main -->
 </div><!-- end .tpl-layout -->
 
-<script src="js/auth.js"></script>
 <script>
 const API = 'https://englishwithdan.onrender.com';
 
@@ -453,11 +458,7 @@ function toggleWpSound() {
   if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
-function showToast(msg, type = 'warn', ms = 3000) {
-  const el = document.getElementById('wp-toast');
-  el.textContent = msg; el.className = 'show ' + type;
-  clearTimeout(el._t); el._t = setTimeout(() => { el.className = ''; }, ms);
-}
+// showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 function loadXPFromStorage() {
   const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0,"streak":0}');
@@ -472,7 +473,7 @@ function updateXPStorage(earned) {
   document.getElementById('header-streak').textContent = stored.streak || 0;
 }
 function initUser() {
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = window.AuthService.getUser() || {};
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
   if (name) document.getElementById('userName').textContent = '👋 ' + name;
   const icon = document.getElementById('sound-icon');
@@ -1359,16 +1360,11 @@ function checkTypeComplete() {
 }
 
 // ── Helpers ────────────────────────────────────────────────────
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function escAttr(str) {
-  return String(str).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-}
+// escHtml() / escAttr() moved to js/shared/utils.js (single source of truth — Phase 3 audit).
 
 // ── Template attempt save ──────────────────────────────────────
 async function saveTplAttemptToServer(typeId) {
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token || !typeId) return;
   const type = TPL_DATA[typeId];
   if (!type) return;
@@ -1414,7 +1410,7 @@ function openTplHistory() {
 async function loadTplHistory() {
   const body = document.getElementById('tpl-hist-body');
   body.innerHTML = '<div class="tpl-hist-loading"><div class="tpl-hist-loading-icon">⏳</div><p>Đang tải...</p></div>';
-  const token = localStorage.getItem('token');
+  const token = window.AuthService.getToken();
   if (!token) {
     body.innerHTML = `<div style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:12px">🔒</div><p style="color:#555;font-size:14px">Vui lòng đăng nhập để xem lịch sử luyện tập.</p><a href="login.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">Đăng nhập</a></div>`;
     return;

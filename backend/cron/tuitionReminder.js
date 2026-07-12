@@ -73,10 +73,18 @@ async function runReminders() {
   }
 }
 
+let task = null;
+
 function start() {
   // Run at 08:00 every day, check inside if today == autoRemindDay
-  cron.schedule('0 8 * * *', runReminders, { timezone: 'Asia/Ho_Chi_Minh' });
+  task = cron.schedule('0 8 * * *', runReminders, { timezone: 'Asia/Ho_Chi_Minh' });
   console.log('[TuitionCron] Auto-remind cron scheduled (08:00 ICT daily)');
 }
 
-module.exports = { start };
+// Lets graceful shutdown (Phase 11) stop the scheduled job so the process
+// doesn't hold a pending cron timer open while trying to exit.
+function stop() {
+  if (task) task.stop();
+}
+
+module.exports = { start, stop };

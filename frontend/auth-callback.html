@@ -7,6 +7,8 @@
   <title>Đang xử lý đăng nhập... - EnglishWithDan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/auth-callback.css">
+  <script src="js/shared/safe-redirect.js"></script>
+  <script src="js/shared/auth-service.js"></script>
 </head>
 <body>
   <div class="card" id="card">
@@ -36,16 +38,31 @@
 
       try {
         const user = JSON.parse(decodeURIComponent(userRaw));
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('lastLoginAt', Date.now().toString());
+        // Session creation centralized in AuthService.login() (Phase 5) —
+        // same call login.html's JWT flow uses, so there's exactly one
+        // place that decides what a "session" is made of.
+        window.AuthService.login(token, user);
 
-        const role = user.role;
-        if (role === 'admin' || role === 'teacher') {
-          window.location.href = 'admin/index.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
+        // Redirect-back support: backend/controllers/auth.controller.js's
+        // googleCallback forwards the OAuth `state` it received as `next`
+        // here — either a student page or an admin hash-route
+        // (/admin/#/...). getPostLoginRedirect() centralizes the same
+        // role-matched next= logic login.html's JWT flow uses (Phase 5).
+        // Must be computed BEFORE the history scrub below, since it reads
+        // next= from the current location.search.
+        const dest = window.AuthService.getPostLoginRedirect(user);
+
+        // Security (routing audit finding): the JWT and full user payload
+        // arrive in this page's URL (backend/controllers/auth.controller.js
+        // has no other way to hand them to a static page after the OAuth
+        // round trip). Once they're safely in localStorage, scrub them from
+        // this history entry immediately — otherwise the token sits in
+        // cleartext in browser history/sync forever, retrievable via Back.
+        // We're about to navigate away anyway, so this only affects what
+        // the *previous* entry looks like if the user later hits Back.
+        history.replaceState(null, '', 'auth-callback.html');
+
+        window.location.href = dest;
       } catch (err) {
         document.getElementById('card').innerHTML = `
           <h2 style="color:#ef4444">Lỗi xử lý phản hồi</h2>

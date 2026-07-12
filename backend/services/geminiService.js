@@ -1,7 +1,60 @@
 const { GoogleGenAI } = require('@google/genai');
+const logger = require('../utils/logger');
 
 const MODEL      = 'gemini-2.5-flash'; // essay / speaking (low frequency, high quality)
 const MODEL_FAST = 'gemini-2.0-flash'; // per-answer grading (1 500 RPD free vs 20 RPD)
+
+/**
+ * Classifies a Gemini API error as a quota/overload condition (retryable
+ * later by the caller) vs any other failure. Returns an Error with
+ * .isOverloaded = true and the given user-facing message for the former,
+ * or the original error unchanged for anything else. Was hand-duplicated
+ * identically across checkEssay/checkSpeaking/gradeT2Question.
+ */
+function classifyGeminiError(err, overloadMessage) {
+  const msg = (err.message || '').toLowerCase();
+  const isOverload =
+    err.status === 503 || err.status === 429 ||
+    msg.includes('overloaded') || msg.includes('resource_exhausted') ||
+    msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
+  if (!isOverload) return err;
+  const overloadErr = new Error(overloadMessage);
+  overloadErr.isOverloaded = true;
+  return overloadErr;
+}
+
+/**
+ * Extracts and parses the first {...} JSON object out of Gemini's raw text
+ * response. Throws if none is found or it doesn't parse. Was hand-
+ * duplicated identically across all three grading functions below.
+ */
+function extractJson(rawText) {
+  const jsonMatch = rawText && rawText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('no JSON object found in response');
+  return JSON.parse(jsonMatch[0]);
+}
+
+/**
+ * Races a Gemini call against a timeout so a hung provider request can't
+ * hold an Express request handler open indefinitely. The rejection is
+ * shaped like classifyGeminiError's overload errors (.isOverloaded = true)
+ * so it flows through the exact same "AI is temporarily unavailable" 503
+ * path callers already have — classifyGeminiError() passes an error with
+ * .isOverloaded already set straight through unchanged.
+ */
+function withTimeout(promise, ms, timeoutMessage) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      const err = new Error(timeoutMessage);
+      err.isOverloaded = true;
+      reject(err);
+    }, ms);
+    promise.then(
+      val => { clearTimeout(timer); resolve(val); },
+      err => { clearTimeout(timer); reject(err); }
+    );
+  });
+}
 
 // IELTS examiner persona — same calibration rules as the original Groq implementation
 const SYSTEM_INSTRUCTION = `You are an experienced, calibrated IELTS examiner (IDP/British Council certified). \
@@ -32,44 +85,36 @@ async function checkEssay(question, essay, _attempt = 0) {
 
   let rawText;
   try {
-    const result = await ai.models.generateContent({
-      model: MODEL,
-      contents: content,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        responseMimeType: 'application/json',
-        temperature: 0.4,
-        maxOutputTokens: 8192
-      }
-    });
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL,
+        contents: content,
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          responseMimeType: 'application/json',
+          temperature: 0.4,
+          maxOutputTokens: 8192
+        }
+      }),
+      45000,
+      'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.'
+    );
     rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
-    console.error('[Gemini] API error:', err.status, err.message || err);
+    logger.ai('checkEssay: Gemini API error', { status: err.status, errorMessage: err.message });
     // Detect quota / overload errors so caller can return 503 to admin
-    const msg = (err.message || '').toLowerCase();
-    const isOverload =
-      err.status === 503 || err.status === 429 ||
-      msg.includes('overloaded') || msg.includes('resource_exhausted') ||
-      msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
-    if (isOverload) {
-      const oe = new Error('AI đang quá tải hoặc hết quota, vui lòng thử lại sau ít phút.');
-      oe.isOverloaded = true;
-      throw oe;
-    }
-    throw err;
+    throw classifyGeminiError(err, 'AI đang quá tải hoặc hết quota, vui lòng thử lại sau ít phút.');
   }
 
   // Parse JSON — retry once automatically on failure
   try {
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('no JSON object found in response');
-    return JSON.parse(jsonMatch[0]);
+    return extractJson(rawText);
   } catch (parseErr) {
     if (_attempt < 1) {
-      console.error('[Gemini] JSON parse failed, retrying once…', parseErr.message);
+      logger.ai('checkEssay: JSON parse failed, retrying once', { errorMessage: parseErr.message });
       return checkEssay(question, essay, _attempt + 1);
     }
-    console.error('[Gemini] JSON parse failed after retry. Raw response:\n', rawText?.slice(0, 500));
+    logger.ai('checkEssay: JSON parse failed after retry', { rawTextPreview: rawText?.slice(0, 500) });
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
   }
 }
@@ -121,39 +166,31 @@ Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded
 
   let rawText;
   try {
-    const result = await ai.models.generateContent({
-      model: MODEL,
-      contents: content,
-      config: {
-        systemInstruction: SPEAKING_SYSTEM,
-        responseMimeType: 'application/json',
-        temperature: 0.35,
-        maxOutputTokens: 2048
-      }
-    });
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL,
+        contents: content,
+        config: {
+          systemInstruction: SPEAKING_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.35,
+          maxOutputTokens: 2048
+        }
+      }),
+      30000,
+      'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.'
+    );
     rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
-    console.error('[Gemini Speaking] API error:', err.status, err.message || err);
-    const msg = (err.message || '').toLowerCase();
-    const isOverload =
-      err.status === 503 || err.status === 429 ||
-      msg.includes('overloaded') || msg.includes('resource_exhausted') ||
-      msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
-    if (isOverload) {
-      const oe = new Error('AI đang quá tải, vui lòng thử lại sau ít phút.');
-      oe.isOverloaded = true;
-      throw oe;
-    }
-    throw err;
+    logger.ai('checkSpeaking: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại sau ít phút.');
   }
 
   try {
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('no JSON object found');
-    return JSON.parse(jsonMatch[0]);
+    return extractJson(rawText);
   } catch (parseErr) {
     if (_attempt < 1) {
-      console.error('[Gemini Speaking] JSON parse failed, retrying…', parseErr.message);
+      logger.ai('checkSpeaking: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return checkSpeaking(question, transcript, part, _attempt + 1);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
@@ -203,43 +240,35 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
 
   let rawText;
   try {
-    const result = await ai.models.generateContent({
-      model: MODEL_FAST,
-      contents: prompt,
-      config: {
-        systemInstruction: T2_GRADE_SYSTEM,
-        responseMimeType: 'application/json',
-        temperature: 0.2,
-        maxOutputTokens: 300
-      }
-    });
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL_FAST,
+        contents: prompt,
+        config: {
+          systemInstruction: T2_GRADE_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.2,
+          maxOutputTokens: 300
+        }
+      }),
+      30000,
+      'AI phản hồi quá lâu, vui lòng thử lại.'
+    );
     rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
   } catch (err) {
-    console.error('[Gemini T2Grade] API error:', err.status, err.message || err);
-    const msg = (err.message || '').toLowerCase();
-    const isOverload =
-      err.status === 503 || err.status === 429 ||
-      msg.includes('overloaded') || msg.includes('resource_exhausted') ||
-      msg.includes('quota') || msg.includes('unavailable') || msg.includes('too many');
-    if (isOverload) {
-      const oe = new Error('AI đang quá tải, vui lòng thử lại.');
-      oe.isOverloaded = true;
-      throw oe;
-    }
-    throw err;
+    logger.ai('gradeT2Question: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại.');
   }
 
   try {
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('no JSON found');
-    const parsed = JSON.parse(jsonMatch[0]);
+    const parsed = extractJson(rawText);
     // Normalise types in case Gemini returns strings
     parsed.isCorrect = parsed.isCorrect === true || parsed.isCorrect === 'true';
     parsed.score     = Math.min(100, Math.max(0, Number(parsed.score) || 0));
     return parsed;
   } catch (parseErr) {
     if (_attempt < 1) {
-      console.error('[Gemini T2Grade] JSON parse failed, retrying…', parseErr.message);
+      logger.ai('gradeT2Question: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return gradeT2Question({ type, questionText, modelAnswer, userAnswer }, _attempt + 1);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');

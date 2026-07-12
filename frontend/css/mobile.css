@@ -4,40 +4,26 @@
    listening, writing, speaking, admin, profile
    ═══════════════════════════════════════════════════ */
 
-/* ── CSS Variables ───────────────────────────────────── */
-:root {
-  --primary:     #f5576c;
-  --primary-dark:#d63651;
-  --accent:      #f093fb;
-  --success:     #10b981;
-  --warning:     #f59e0b;
-  --danger:      #ef4444;
-  --text:        #1f2937;
-  --text-light:  #6b7280;
-  --text2:       #6b7280;
-  --text3:       #9ca3af;
-  --border:      #e5e7eb;
-  --bg:          #f3f4f6;
-  --card:        #ffffff;
-  --surface2:    #f3f4f6;
-  --shadow:      0 4px 20px rgba(0,0,0,.08);
-  --radius:      12px;
-  --nav-height:  64px;
-  --sidebar-w:   260px;
-  --transition:  all .25s ease;
-}
+/* ── CSS Variables ─────────────────────────────────────
+   Neutral tokens (text/border/bg/surface2/shadow/radius) and semantic
+   status colors (success/warning/danger) moved to css/tokens.css —
+   single source of truth for the token-collision bug (audit UI#1) and
+   the inconsistent-green/red findings (audit UI#22/#23). This page
+   must load tokens.css before mobile.css.
 
-/* Dark mode variables */
-[data-theme="dark"] {
-  --text:       #f9fafb;
-  --text-light: #9ca3af;
-  --text2:      #9ca3af;
-  --text3:      #6b7280;
-  --border:     #374151;
-  --bg:         #111827;
-  --card:       #1f2937;
-  --surface2:   #374151;
-  --shadow:     0 4px 20px rgba(0,0,0,.4);
+   This block now only bridges names mobile.css's own rules reference
+   under a different name than the canonical token. --primary/--accent
+   aliasing to --brand is a deliberate, visible change: it retires the
+   pink gradient (previously only seen on profile/inbox/tuition, since
+   no page-specific stylesheet there overrode it) in favor of the red
+   already used on every other page — the audit's explicit color
+   recommendation. See docs/design-system.md "Color" for the full note. */
+:root {
+  --primary:      var(--brand);
+  --primary-dark: var(--brand-dark);
+  --accent:       var(--brand);
+  --text-light:   var(--text2);
+  --card:         var(--surface);
 }
 
 /* ── Reset & Base ────────────────────────────────────── */
@@ -368,161 +354,9 @@ img { max-width: 100%; height: auto; }
   min-height: 100vh;
 }
 
-/* ── Cards ───────────────────────────────────────────── */
-.card {
-  background: var(--card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-.card-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.card-body { padding: 20px; }
-
-/* ── Stat Cards ──────────────────────────────────────── */
-.stat-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: var(--transition);
-}
-.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-.stat-card .stat-icon {
-  width: 44px; height: 44px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-}
-.stat-card .stat-value { font-size: 28px; font-weight: 700; line-height: 1; }
-.stat-card .stat-label { font-size: 13px; color: var(--text-light); }
-.stat-card .stat-change { font-size: 12px; font-weight: 600; }
-.stat-card .stat-change.up   { color: var(--success); }
-.stat-card .stat-change.down { color: var(--danger); }
-
-/* ── Buttons ─────────────────────────────────────────── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: var(--transition);
-  white-space: nowrap;
-  text-decoration: none;
-}
-.btn:disabled { opacity: .6; cursor: not-allowed; }
-.btn-primary {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  color: white;
-  box-shadow: 0 4px 12px rgba(245,87,108,.3);
-}
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(245,87,108,.4); }
-.btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { background: var(--border); }
-.btn-danger { background: var(--danger); color: white; }
-.btn-danger:hover { background: #dc2626; }
-.btn-success { background: var(--success); color: white; }
-.btn-sm { padding: 6px 14px; font-size: 13px; }
-.btn-lg { padding: 14px 28px; font-size: 16px; }
-.btn-icon { padding: 8px; width: 36px; height: 36px; }
-.btn-full { width: 100%; }
-
-/* ── Forms ───────────────────────────────────────────── */
-.form-group { margin-bottom: 16px; }
-.form-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-.form-control {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 15px;
-  font-family: inherit;
-  background: var(--card);
-  color: var(--text);
-  transition: var(--transition);
-}
-.form-control:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(245,87,108,.15);
-}
-.form-control::placeholder { color: var(--text-light); }
-textarea.form-control { resize: vertical; min-height: 100px; }
-
-/* ── Badges ──────────────────────────────────────────── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 50px;
-  font-size: 12px;
-  font-weight: 600;
-}
-.badge-primary { background: rgba(245,87,108,.12); color: var(--primary); }
-.badge-success { background: rgba(16,185,129,.12);  color: var(--success); }
-.badge-warning { background: rgba(245,158,11,.12);  color: var(--warning); }
-.badge-danger  { background: rgba(239,68,68,.12);   color: var(--danger); }
-
-/* ── Toast Notifications ─────────────────────────────── */
-.toast-container {
-  position: fixed;
-  bottom: 20px; right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 360px;
-}
-.toast {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
-  animation: toastIn .3s ease;
-  transition: var(--transition);
-}
-.toast.hiding { animation: toastOut .3s ease forwards; }
-@keyframes toastIn  { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
-@keyframes toastOut { from { opacity:1; transform: translateX(0); }    to { opacity:0; transform: translateX(20px); } }
-.toast-icon { font-size: 20px; flex-shrink: 0; }
-.toast-body { flex: 1; }
-.toast-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-.toast-msg   { font-size: 13px; color: var(--text-light); }
-.toast.success { border-left: 3px solid var(--success); }
-.toast.error   { border-left: 3px solid var(--danger);  }
-.toast.warning { border-left: 3px solid var(--warning); }
-.toast.info    { border-left: 3px solid var(--primary); }
+/* ── Cards / Stat Cards / Buttons / Forms / Badges / Toast ────────────
+   Moved to css/components.css (single source of truth — audit UI#2,
+   #48). This page must also load components.css. */
 
 /* ── Exam / Test Specific ────────────────────────────── */
 
@@ -618,20 +452,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .fullscreen-exam .exam-body { flex: 1; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
 
 /* ── Loading Spinner ─────────────────────────────────── */
-.spinner {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.4);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 5000;
-}
+/* .spinner / .loading-overlay moved to css/components.css — this file's
+   own copy was silently shadowing it on all 12 pages (Phase 2 audit). */
 
 /* ── Streak badge ────────────────────────────────────── */
 .streak-badge {
@@ -647,25 +469,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   box-shadow: 0 4px 12px rgba(255,107,53,.3);
 }
 
-/* ── Table responsive ────────────────────────────────── */
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table.responsive-table { min-width: 600px; width: 100%; border-collapse: collapse; }
-table.responsive-table th,
-table.responsive-table td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-}
-table.responsive-table thead th {
-  background: var(--bg);
-  font-weight: 600;
-  color: var(--text-light);
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-table.responsive-table tbody tr:hover { background: var(--bg); }
+/* ── Table responsive ─────────────────────────────────
+   .table-wrap / table.responsive-table moved to css/components.css. */
 
 /* ══════════════════════════════════════════════════════
    RESPONSIVE BREAKPOINTS

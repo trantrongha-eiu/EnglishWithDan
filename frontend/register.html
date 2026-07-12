@@ -97,7 +97,7 @@
 
                 <label class="terms-checkbox">
                     <input type="checkbox" id="terms" required>
-                    <span>Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a></span>
+                    <span>Tôi đồng ý với <a href="terms.html" target="_blank" rel="noopener">Điều khoản dịch vụ</a> và <a href="privacy.html" target="_blank" rel="noopener">Chính sách bảo mật</a></span>
                 </label>
 
                 <button type="submit" class="btn-register">
@@ -199,23 +199,7 @@
     <div id="toast-container"></div>
 
     <script>
-        function showToast(message, type, duration) {
-            type = type || 'info';
-            duration = duration || 4000;
-            var icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
-            var container = document.getElementById('toast-container');
-            var toast = document.createElement('div');
-            toast.className = 'toast ' + type;
-            toast.innerHTML =
-                '<i class="fas ' + icons[type] + ' toast-icon"></i>' +
-                '<span class="toast-msg">' + message + '</span>' +
-                '<button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>';
-            container.appendChild(toast);
-            setTimeout(function () {
-                toast.classList.add('hide');
-                setTimeout(function () { toast.remove(); }, 300);
-            }, duration);
-        }
+        // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
         // Toggle hiển thị mật khẩu
         function togglePassword(fieldId) {
@@ -338,16 +322,21 @@
         });
 
         document.querySelector('.btn-social.google').addEventListener('click', function () {
-            showToast("Tính năng đăng ký Google đang được phát triển!", "info");
+            window.location.href = 'https://englishwithdan.onrender.com/api/auth/google';
         });
 
         document.querySelector('.btn-social.facebook').addEventListener('click', function () {
             showToast("Tính năng đăng ký Facebook đang được phát triển!", "info");
         });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const yrEl = document.getElementById('footer-year');
+            if (yrEl) yrEl.textContent = new Date().getFullYear();
+        });
     </script>
 
   <footer class="site-footer">
-    © 2025 EnglishWithDan – Daniel Hà English Center &nbsp;·&nbsp;
+    © <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center &nbsp;·&nbsp;
     <a href="tel:0914769618">0914 769 618</a> &nbsp;·&nbsp;
     <a href="/">Trang chủ</a>
   </footer>

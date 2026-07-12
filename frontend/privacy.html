@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chính Sách Bảo Mật – EnglishWithDan</title>
+  <meta name="description" content="Chính sách bảo mật và xử lý dữ liệu cá nhân của EnglishWithDan."/>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <!--
+    LEGAL REVIEW NEEDED: this page is an operational draft written to remove the
+    dead href="#" link on the registration form (audit finding UI#17 / UX#15).
+    It has NOT been reviewed by a lawyer and should not be treated as a final,
+    legally-binding Privacy Policy until it is. Replace this content, or have
+    counsel review it, before relying on it in a dispute. In particular, verify
+    it against real data flows (Cloudinary avatar storage, Google OAuth,
+    Gemini AI grading, Render/MongoDB hosting) before publishing as final.
+  -->
+  <style>
+    .legal-wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
+    .legal-wrap h1{font-size:clamp(28px,3.5vw,38px);margin:0 0 6px}
+    .legal-updated{color:var(--gray);font-size:13.5px;margin:0 0 40px}
+    .legal-wrap h2{font-size:19px;margin:36px 0 10px;color:var(--dark)}
+    .legal-wrap p, .legal-wrap li{font-size:15px;line-height:1.75;color:#374151}
+    .legal-wrap ul{padding-left:20px;margin:0 0 12px}
+    .legal-wrap a{color:var(--blue)}
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Trang chủ</a>
+    <a href="courses.html">Khóa học</a>
+    <a href="about.html">Về chúng tôi</a>
+    <a href="contact.html">Liên hệ</a>
+  </div>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+    <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
+  </div>
+  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
+  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
+  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+</div>
+
+<main class="legal-wrap">
+  <h1>Chính sách bảo mật</h1>
+  <p class="legal-updated">Cập nhật lần cuối: 2026-07-10 · Áp dụng cho website và ứng dụng học tập EnglishWithDan.</p>
+
+  <h2>1. Dữ liệu chúng tôi thu thập</h2>
+  <ul>
+    <li><strong>Thông tin tài khoản:</strong> họ tên, email, số điện thoại, mật khẩu (được mã hóa), ảnh đại diện (nếu tải lên).</li>
+    <li><strong>Dữ liệu học tập:</strong> bài làm Reading/Listening/Writing/Speaking, điểm số, lịch sử luyện tập, streak, sổ từ vựng.</li>
+    <li><strong>Dữ liệu thanh toán:</strong> thông tin học phí và trạng thái chuyển khoản (chúng tôi không lưu trữ số thẻ ngân hàng).</li>
+    <li><strong>Dữ liệu kỹ thuật:</strong> nhật ký đăng nhập, loại trình duyệt, để phục vụ bảo mật và khắc phục lỗi.</li>
+  </ul>
+
+  <h2>2. Cách chúng tôi sử dụng dữ liệu</h2>
+  <ul>
+    <li>Vận hành tài khoản, lưu tiến độ học tập và hiển thị lịch sử luyện tập của bạn.</li>
+    <li>Chấm điểm/gợi ý bài Writing và Speaking bằng công nghệ AI của bên thứ ba (Google Gemini) — bài làm dạng văn bản có thể được gửi đến dịch vụ này để phân tích.</li>
+    <li>Liên hệ tư vấn lộ trình học, nhắc học phí, hoặc hỗ trợ kỹ thuật khi cần.</li>
+    <li>Cải thiện chất lượng nội dung và trải nghiệm học tập.</li>
+  </ul>
+
+  <h2>3. Chia sẻ dữ liệu với bên thứ ba</h2>
+  <p>Chúng tôi sử dụng các dịch vụ hạ tầng sau để vận hành nền tảng, mỗi dịch vụ chỉ nhận dữ liệu cần thiết cho chức năng tương ứng:</p>
+  <ul>
+    <li><strong>Cloudinary</strong> — lưu trữ ảnh đại diện người dùng.</li>
+    <li><strong>Google OAuth</strong> — xác thực đăng nhập nếu bạn chọn "Đăng nhập bằng Google".</li>
+    <li><strong>Google Gemini AI</strong> — chấm điểm/gợi ý cho bài Writing và bản ghi Speaking.</li>
+    <li><strong>MongoDB / Render</strong> — lưu trữ cơ sở dữ liệu và vận hành máy chủ.</li>
+  </ul>
+  <p>Chúng tôi không bán dữ liệu cá nhân của bạn cho bên thứ ba vì mục đích quảng cáo.</p>
+
+  <h2>4. Lưu trữ và bảo mật</h2>
+  <p>Mật khẩu được mã hóa (hash) trước khi lưu trữ. Chúng tôi áp dụng các biện pháp bảo mật hợp lý để bảo vệ dữ liệu, tuy nhiên không có hệ thống nào an toàn tuyệt đối 100%.</p>
+
+  <h2>5. Quyền của bạn</h2>
+  <p>Bạn có thể yêu cầu xem, chỉnh sửa hoặc xóa dữ liệu cá nhân của mình bất cứ lúc nào bằng cách liên hệ với chúng tôi. Bạn cũng có thể tự cập nhật hồ sơ trong trang Tài khoản.</p>
+
+  <h2>6. Liên hệ</h2>
+  <p>Mọi câu hỏi về chính sách bảo mật, vui lòng liên hệ <a href="tel:0914769618">0914 769 618</a> hoặc <a href="mailto:englishwithdan@gmail.com">englishwithdan@gmail.com</a>.</p>
+</main>
+
+<footer class="footer">
+  <div class="footer-bottom">
+    <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const yrEl = document.getElementById('footer-year');
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('ham-icon');
+    const open = menu.classList.toggle('open');
+    icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+  }
+</script>
+<script src="js/consult-modal.js"></script>
+</body>
+</html>

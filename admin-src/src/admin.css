@@ -6,6 +6,26 @@
       padding: 0;
     }
 
+    /* ══════════════════════════════════════════════════════════════════
+       Admin design tokens — the same design language as the public site's
+       css/tokens.css, expressed under this app's own historical variable
+       names (--accent instead of --brand, etc.) since Users.jsx/Courses.jsx/
+       and 30+ other components already consume these names throughout
+       inline JSX styles; renaming them is a larger, separate migration
+       than Phase 2's CSS-consolidation scope.
+
+       Public tokens.css  →  admin.css (this file)
+       --brand   #e53935  →  --accent   #e53935  (identical)
+       --brand2  #ff6b6b  →  --accent2  #ff6b6b  (identical)
+       --blue    #3d8bff  →  --blue     #3d8bff  (identical)
+       --purple  #a78bfa  →  --purple   #a78bfa  (identical)
+       --danger  #dc2626  →  --danger   #f87171  (intentionally lighter —
+                                          tuned for readability on this
+                                          panel's dark-first background,
+                                          same role/hue family)
+       --green/--yellow differ similarly (dark-theme contrast tuning) —
+       not a naming inconsistency, a deliberate dark-first adaptation.
+       ══════════════════════════════════════════════════════════════════ */
     :root {
       --bg: #0f1117;
       --surface: #181c27;
@@ -21,6 +41,7 @@
       --green: #34d399;
       --yellow: #fbbf24;
       --purple: #a78bfa;
+      --danger: #f87171;
       --font: 'Plus Jakarta Sans', sans-serif;
       --mono: 'JetBrains Mono', monospace;
       --radius: 12px;
@@ -1419,6 +1440,7 @@ body { display: block; }
   --text2:    #5a6280;
   --text3:    #9298b0;
   --shadow:   0 4px 24px rgba(0,0,0,.07);
+  --danger:   #dc2626;
 }
 
 /* Fix hardcoded rgba values that invert in light mode */

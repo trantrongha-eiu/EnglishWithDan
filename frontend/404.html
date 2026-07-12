@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Không tìm thấy trang – EnglishWithDan</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <style>
+    .notfound-wrap{
+      min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:80px 24px; gap:6px;
+    }
+    .notfound-code{ font-size:15px; font-weight:700; letter-spacing:.08em; color:var(--brand); text-transform:uppercase; }
+    .notfound-title{ font-size:clamp(26px,4vw,36px); font-weight:800; color:var(--dark); margin:6px 0 10px; }
+    .notfound-msg{ color:var(--gray); font-size:15.5px; max-width:52ch; line-height:1.6; margin-bottom:28px; }
+    .notfound-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Trang chủ</a>
+    <a href="courses.html">Khóa học</a>
+    <a href="about.html">Về chúng tôi</a>
+    <a href="contact.html">Liên hệ</a>
+  </div>
+  <div class="nav-cta">
+    <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
+  </div>
+  <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html"    onclick="toggleMenu()">🏠 Trang chủ</a>
+  <a href="courses.html"  onclick="toggleMenu()">📚 Khóa học</a>
+  <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
+  <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
+  <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+</div>
+
+<main class="notfound-wrap">
+  <div class="notfound-code">Lỗi 404</div>
+  <h1 class="notfound-title">Không tìm thấy trang này</h1>
+  <p class="notfound-msg">
+    Đường dẫn bạn vừa mở không tồn tại hoặc đã được thay đổi — có thể bài học/đề thi này đã bị xoá,
+    hoặc liên kết đã hết hạn. Kiểm tra lại đường dẫn, hoặc quay về trang chủ để tiếp tục.
+  </p>
+  <div class="notfound-actions">
+    <a href="index.html" class="btn btn-primary"><i class="fas fa-house"></i> Về trang chủ</a>
+    <a href="dashboard.html" class="btn btn-outline"><i class="fas fa-layer-group"></i> Vào học ngay</a>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-bottom">
+    <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const yrEl = document.getElementById('footer-year');
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('ham-icon');
+    const open = menu.classList.toggle('open');
+    icon.className = open ? 'fas fa-times' : 'fas fa-bars';
+  }
+</script>
+</body>
+</html>

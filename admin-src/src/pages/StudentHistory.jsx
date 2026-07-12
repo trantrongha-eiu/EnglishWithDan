@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -58,7 +58,7 @@ export default function StudentHistory() {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = all.filter(h => {
+  const filtered = useMemo(() => all.filter(h => {
     if (skill && h.skill !== skill) return false;
     if (search) {
       const q = search.toLowerCase();
@@ -68,7 +68,7 @@ export default function StudentHistory() {
       return name.includes(q) || user.includes(q) || test.includes(q);
     }
     return true;
-  });
+  }), [all, skill, search]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage   = Math.min(page, totalPages);

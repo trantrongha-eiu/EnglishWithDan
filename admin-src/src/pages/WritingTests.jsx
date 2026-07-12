@@ -60,12 +60,12 @@ function Task1Modal({ task, onClose, onSaved }) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-      const r = await fetch(`${API}/admin/writing-task1/upload-image`, {
+      // Was a raw fetch() with a manually built Authorization header —
+      // bypassed apiFetch's 401 handling (Phase 5 audit finding).
+      const d = await apiFetch('/admin/writing-task1/upload-image', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ imageBase64: dataUrl }),
       });
-      const d = await r.json();
       if (!d.success) throw new Error(d.message);
       setForm(f => ({ ...f, imageUrl: d.url }));
       toast('Upload ảnh thành công');
@@ -600,7 +600,7 @@ export default function WritingTests() {
                   return (
                     <tr key={p._id}>
                       <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
-                      <td>{p.imageUrl ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
+                      <td>{/^https?:\/\//i.test(p.imageUrl || '') ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
                       <td>
                         {hasSample
                           ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>

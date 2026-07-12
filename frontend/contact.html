@@ -242,7 +242,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
+    <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved.</p>
     <div class="footer-socials">
       <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
       <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
@@ -261,6 +261,8 @@ function toggleMenu() {
   const open = menu.classList.toggle('open');
   icon.className = open ? 'fas fa-times' : 'fas fa-bars';
 }
+const yrEl = document.getElementById('footer-year');
+if (yrEl) yrEl.textContent = new Date().getFullYear();
 
 async function submitForm(e) {
   e.preventDefault();

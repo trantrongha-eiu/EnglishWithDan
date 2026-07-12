@@ -1,0 +1,155 @@
+name: CI
+
+# Phase 11 — production readiness. Runs on every push/PR: install, lint
+# (non-blocking — see comment below), test with coverage, and build the
+# admin SPA. No deployment step: Render auto-deploys from the connected
+# branch on its own, independent of this workflow (see docs/DEPLOYMENT.md).
+# This workflow exists to catch regressions BEFORE they reach that
+# auto-deploy, and as a required-status-check gate for branch protection
+# if/when that's enabled on GitHub.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend (install, lint, test, coverage)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        # Non-blocking: this ESLint config was just added on top of a
+        # pre-existing codebase (see backend/eslint.config.js's own
+        # comment) — a handful of known pre-existing findings (unused
+        # catch-block error vars, a couple of business-logic-adjacent
+        # warnings) are surfaced for visibility, not treated as build
+        # failures, since fixing them isn't in this phase's scope.
+        run: npm run lint || true
+
+      - name: Test with coverage
+        run: npm run test:ci
+        env:
+          NODE_ENV: test
+          # JWT_SECRET/MONGO_URI are provided by the test harness itself
+          # (tests/support/globalSetup.js starts an in-memory MongoDB and
+          # sets both) — no real secrets are used or needed in CI.
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          retention-days: 14
+
+  frontend:
+    name: Frontend shared-utils tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+  admin:
+    name: Admin SPA (install, lint, test, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: admin-src
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: admin-src/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-build
+          path: frontend/admin/
+          retention-days: 14
+
+  deployment-validation:
+    name: Deployment validation (app boots, health endpoint responds)
+    runs-on: ubuntu-latest
+    needs: [backend]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Boot the app and verify it responds
+        # Not a real deploy — this is the cheapest meaningful smoke check
+        # that doesn't need a real MongoDB Atlas cluster or real secrets:
+        # require app.js directly (no Mongo connect, no cron, no .listen()
+        # — see app.js's own header comment) and confirm Express itself
+        # constructs without throwing, and that GET / responds correctly.
+        # A full server.js boot (real Mongo, real seed scripts) is
+        # intentionally out of scope for CI — that's what the Render
+        # deploy itself + docs/RELEASE_CHECKLIST.md's manual smoke test
+        # cover, since it needs real production-shaped data/credentials.
+        run: |
+          node -e "
+            const request = require('supertest');
+            const app = require('./app');
+            request(app).get('/').expect(200).then(() => {
+              console.log('✓ App constructs and responds to GET /');
+              process.exit(0);
+            }).catch(err => {
+              console.error('✗ App failed to respond:', err.message);
+              process.exit(1);
+            });
+          "

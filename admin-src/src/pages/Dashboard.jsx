@@ -107,8 +107,10 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [dbStatus, setDbStatus] = useState(null);
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
+  // Was `user?.role === 'admin'`, re-deriving what AuthContext already
+  // computes as isAdmin — exactly the class of duplication this audit
+  // pass was checking for (Phase 5 audit finding).
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     apiFetch('/admin/stats').then(d => setStats(d.stats)).catch(() => {});

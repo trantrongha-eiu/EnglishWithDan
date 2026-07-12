@@ -41,4 +41,8 @@ const task1ExerciseSchema = new mongoose.Schema({
   tags: [{ type: String }]
 }, { timestamps: true });
 
+// Matches listExercises()/getMeta()'s hot-path query+sort shape
+// (filter isActive [+level/skillType/module], sort orderIndex).
+task1ExerciseSchema.index({ isActive: 1, orderIndex: 1 });
+
 module.exports = mongoose.model('Task1Exercise', task1ExerciseSchema);
