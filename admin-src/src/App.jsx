@@ -1,8 +1,8 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import { ToastProvider } from './contexts/ToastContext';
-import { ThemeProvider } from './contexts/ThemeContext';
-import { ConfirmProvider } from './components/ConfirmDialog';
+import { AuthProvider } from './contexts/AuthProvider';
+import { ToastProvider } from './contexts/ToastProvider';
+import { ThemeProvider } from './contexts/ThemeProvider';
+import { ConfirmProvider } from './components/ConfirmProvider';
 import ProtectedRoute from './routes/ProtectedRoute';
 import AdminLayout from './layouts/AdminLayout';
 

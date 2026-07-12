@@ -225,7 +225,6 @@ export default function WritingPractice() {
   const { isAdmin } = useAuth();
   const [tab, setTab] = useState('exercises');
   const [exercises, setExercises] = useState([]);
-  const [filteredEx, setFilteredEx] = useState([]);
   const [topics, setTopics] = useState([]);
   const [attempts, setAttempts] = useState([]);
   const [page, setPage] = useState(1);
@@ -248,18 +247,27 @@ export default function WritingPractice() {
   useEffect(() => { loadTopics(); loadEx(); }, []);
   useEffect(() => { if (tab === 'attempts' && attempts.length === 0) loadAttempts(); }, [tab]);
 
-  useEffect(() => {
-    setFilteredEx(exercises.filter(ex => {
-      if (levelFilter && ex.level !== levelFilter) return false;
-      if (typeFilter && ex.type !== typeFilter) return false;
-      if (topicFilter && ex.topicKey !== topicFilter) return false;
-      if (statusFilter === 'active' && ex.isActive === false) return false;
-      if (statusFilter === 'hidden' && ex.isActive !== false) return false;
-      if (exSearch && !ex.question?.toLowerCase().includes(exSearch.toLowerCase())) return false;
-      return true;
-    }));
-    setPage(1);
-  }, [exercises, levelFilter, typeFilter, topicFilter, statusFilter, exSearch]);
+  // Fully derivable from `exercises` + the filter fields — no need to
+  // store it as its own state or recompute it in an effect.
+  const filteredEx = exercises.filter(ex => {
+    if (levelFilter && ex.level !== levelFilter) return false;
+    if (typeFilter && ex.type !== typeFilter) return false;
+    if (topicFilter && ex.topicKey !== topicFilter) return false;
+    if (statusFilter === 'active' && ex.isActive === false) return false;
+    if (statusFilter === 'hidden' && ex.isActive !== false) return false;
+    if (exSearch && !ex.question?.toLowerCase().includes(exSearch.toLowerCase())) return false;
+    return true;
+  });
+
+  // Adjust-during-render (not an effect): reset to page 1 whenever the
+  // exercise list or any filter changes, in the same render rather than a
+  // post-commit effect.
+  const exFilterKey = [exercises, levelFilter, typeFilter, topicFilter, statusFilter, exSearch];
+  const [prevExFilterKey, setPrevExFilterKey] = useState(exFilterKey);
+  if (exFilterKey.some((v, i) => v !== prevExFilterKey[i])) {
+    setPrevExFilterKey(exFilterKey);
+    if (page !== 1) setPage(1);
+  }
 
   async function delEx(id) {
     confirm('Xóa bài tập này?', async () => {

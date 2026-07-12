@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { AuthProvider, useAuth } from './AuthContext';
+import { useAuth } from './AuthContext';
+import { AuthProvider } from './AuthProvider';
 
 function Consumer({ onRender }) {
   const auth = useAuth();

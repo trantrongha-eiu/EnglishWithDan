@@ -1,49 +1,9 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import { createContext, useContext } from 'react';
 
-const AuthContext = createContext(null);
-
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const t = localStorage.getItem('token');
-    const u = JSON.parse(localStorage.getItem('user') || 'null');
-    setToken(t);
-    setUser(u);
-    setLoading(false);
-  }, []);
-
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    // Was missing 'lastLoginAt' — asymmetric with the public site's
-    // AuthService.logout(), which clears it too (Phase 5 audit finding).
-    // Harmless to leave stale, but this keeps both apps' definition of
-    // "a cleared session" identical since they share the same localStorage.
-    localStorage.removeItem('lastLoginAt');
-    window.location.href = '/login.html';
-  }, []);
-
-  const isAdmin = user?.role === 'admin';
-  const isTeacher = user?.role === 'teacher' || user?.role === 'admin';
-
-  // Memoized so the ~23 consumers of useAuth()/useContext(AuthContext) don't
-  // all re-render whenever AuthProvider itself re-renders for an unrelated
-  // reason — previously a fresh object (and a fresh logout function) on
-  // every render defeated any possible bail-out for consumers.
-  const value = useMemo(
-    () => ({ user, token, loading, logout, isAdmin, isTeacher }),
-    [user, token, loading, logout, isAdmin, isTeacher]
-  );
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
+// AuthProvider lives in ./AuthProvider.jsx — split out so this file only
+// exports the context/hook (react-refresh/only-export-components wants a
+// file to export either components or non-components, not a mix).
+export const AuthContext = createContext(null);
 
 export function useAuth() {
   return useContext(AuthContext);

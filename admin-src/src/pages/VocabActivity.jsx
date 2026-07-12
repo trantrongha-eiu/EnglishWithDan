@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 
@@ -112,15 +112,23 @@ function VocabActivityModal({ student, onClose }) {
       .finally(() => setLoadingBooks(false));
   }, [student._id]);
 
-  useEffect(() => {
-    setLoadingChart(true);
+  const loadChart = useCallback(() => {
     const params = new URLSearchParams({ view, year: selYear });
     if (view === 'day') params.set('month', selMonth);
-    apiFetch(`/admin/vocab-activity/${student._id}?${params}`)
+    return apiFetch(`/admin/vocab-activity/${student._id}?${params}`)
       .then(d => setChartData(d.data || []))
       .catch(() => setChartData([]))
       .finally(() => setLoadingChart(false));
   }, [view, selMonth, selYear, student._id]);
+
+  // Flip loadingChart=true synchronously during render (not in an effect)
+  // the moment the query changes (loadChart's identity changes with it) —
+  // the effect below then runs loadChart(), which flips it back off once
+  // the fetch settles.
+  const [prevLoadChart, setPrevLoadChart] = useState(loadChart);
+  if (prevLoadChart !== loadChart) { setPrevLoadChart(loadChart); setLoadingChart(true); }
+
+  useEffect(() => { loadChart(); }, [loadChart]);
 
   const name = [student.firstName, student.lastName].filter(Boolean).join(' ') || student.username;
 

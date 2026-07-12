@@ -41,20 +41,18 @@ export default function StudentHistory() {
   const { isAdmin } = useAuth();
 
   const [all,     setAll]     = useState([]);
-  const [loading, setLoading] = useState(false);
+  // load() only ever runs once, from the mount effect below — starting
+  // true (instead of setState(true) synchronously inside the effect)
+  // shows the same loading state without tripping set-state-in-effect.
+  const [loading, setLoading] = useState(true);
   const [skill,   setSkill]   = useState('');
   const [search,  setSearch]  = useState('');
   const [page,    setPage]    = useState(1);
 
-  async function load() {
-    setLoading(true);
-    try {
-      const d = await apiFetch('/admin/recent-attempts?limit=300');
-      setAll(d.attempts || []);
-      setPage(1);
-    } catch (e) { toast(e.message, 'error'); }
-    finally { setLoading(false); }
-  }
+  const load = () => apiFetch('/admin/recent-attempts?limit=300')
+    .then(d => { setAll(d.attempts || []); setPage(1); })
+    .catch(e => toast(e.message, 'error'))
+    .finally(() => setLoading(false));
 
   useEffect(() => { load(); }, []);
 

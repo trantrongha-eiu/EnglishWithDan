@@ -115,7 +115,15 @@ export default function UpgradeRequests() {
       .catch(e => toast(e.message, 'error'));
   }
 
-  useEffect(() => { load(1); setPage(1); }, [statusFilter]);
+  // Adjust-during-render (not an effect): reset to page 1 whenever the
+  // status filter changes, in the same render rather than a post-commit
+  // effect.
+  const [prevStatusFilter, setPrevStatusFilter] = useState(statusFilter);
+  if (prevStatusFilter !== statusFilter) {
+    setPrevStatusFilter(statusFilter);
+    if (page !== 1) setPage(1);
+  }
+  useEffect(() => { load(1); }, [statusFilter]);
   useEffect(() => { load(page); }, [page]);
 
   function approve(request) {

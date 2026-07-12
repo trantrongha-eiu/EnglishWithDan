@@ -1,22 +1,8 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
 
-const Ctx = createContext();
+// ThemeProvider lives in ./ThemeProvider.jsx — split out so this file only
+// exports the context/hook (react-refresh/only-export-components wants a
+// file to export either components or non-components, not a mix).
+export const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem('admin-theme') || 'dark'
-  );
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('admin-theme', theme);
-  }, [theme]);
-
-  return (
-    <Ctx.Provider value={{ theme, toggle: () => setTheme(t => t === 'dark' ? 'light' : 'dark') }}>
-      {children}
-    </Ctx.Provider>
-  );
-}
-
-export const useTheme = () => useContext(Ctx);
+export const useTheme = () => useContext(ThemeContext);

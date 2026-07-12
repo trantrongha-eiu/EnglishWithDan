@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
@@ -300,8 +300,6 @@ export default function Users() {
   const [showCreate, setShowCreate] = useState(false);
   const [planUser, setPlanUser] = useState(null);
   const [onlineIds, setOnlineIds] = useState(new Set());
-  const timer = useRef(null);
-  const skipPageEffect = useRef(false);
 
   useEffect(() => {
     apiFetch('/admin/online-users').then(d => setOnlineIds(new Set((d.users || []).map(u => u._id)))).catch(() => {});
@@ -316,9 +314,18 @@ export default function Users() {
     apiFetch(`/admin/users?${params}`).then(d => { setUsers(d.users || []); setTotal(d.total || 0); }).catch(e => toast(e.message, 'error'));
   }
 
-  // Filter change → reset to page 1 and load once (skip the page effect that fires from setPage)
-  useEffect(() => { skipPageEffect.current = true; setPage(1); load(1); }, [search, roleFilter, statusFilter]);
-  useEffect(() => { if (skipPageEffect.current) { skipPageEffect.current = false; return; } load(page); }, [page]);
+  // Adjust-during-render (not an effect): reset to page 1 whenever a
+  // filter changes. A single combined effect below (keyed on filters AND
+  // page) then loads exactly once per change, whether it came from a
+  // filter edit (page reset bundled into the same commit) or a plain
+  // pagination click — no separate ref-based "skip the other effect" flag
+  // needed.
+  const [prevFilters, setPrevFilters] = useState([search, roleFilter, statusFilter]);
+  if (prevFilters[0] !== search || prevFilters[1] !== roleFilter || prevFilters[2] !== statusFilter) {
+    setPrevFilters([search, roleFilter, statusFilter]);
+    if (page !== 1) setPage(1);
+  }
+  useEffect(() => { load(page); }, [search, roleFilter, statusFilter, page]);
 
   async function toggleBan(id, username, isBanned) {
     confirm(`${isBanned ? 'Bỏ cấm' : 'Cấm'} tài khoản "${username}"?`, async () => {

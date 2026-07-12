@@ -250,19 +250,23 @@ export default function Task2Exercises() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({ page, limit: LIMIT });
-      if (weekFilter !== 'all') params.set('week', weekFilter);
-      if (typeFilter !== 'all') params.set('essayType', typeFilter);
-      if (search) params.set('search', search);
-      const data = await apiFetch(`/admin/task2/topics?${params}`);
-      setTopics(data.topics || []);
-      setTotal(data.total || 0);
-    } catch (e) { showToast(e.message, 'error'); }
-    finally { setLoading(false); }
+  const load = useCallback(() => {
+    const params = new URLSearchParams({ page, limit: LIMIT });
+    if (weekFilter !== 'all') params.set('week', weekFilter);
+    if (typeFilter !== 'all') params.set('essayType', typeFilter);
+    if (search) params.set('search', search);
+    return apiFetch(`/admin/task2/topics?${params}`)
+      .then(data => { setTopics(data.topics || []); setTotal(data.total || 0); })
+      .catch(e => showToast(e.message, 'error'))
+      .finally(() => setLoading(false));
   }, [page, weekFilter, typeFilter, search, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Flip loading=true synchronously during render (not in an effect) the
+  // moment the query changes (load's identity changes with it) — the
+  // effect below then runs load(), which flips it back off once the
+  // fetch settles.
+  const [prevLoad, setPrevLoad] = useState(load);
+  if (prevLoad !== load) { setPrevLoad(load); setLoading(true); }
 
   useEffect(() => { load(); }, [load]);
 
@@ -313,7 +317,7 @@ export default function Task2Exercises() {
     try {
       const data = await apiFetch(`/admin/task2/topics/${activeTopic._id}`);
       if (data.topic) setActiveTopic(data.topic);
-    } catch {}
+    } catch { /* keep showing the stale topic if the refetch fails */ }
     forceReload();
   }
 

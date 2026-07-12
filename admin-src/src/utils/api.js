@@ -44,7 +44,7 @@ export async function apiFetch(path, opts = {}) {
 
   let data;
   try { data = text ? JSON.parse(text) : {}; }
-  catch (e) { throw new Error('Phản hồi không hợp lệ từ server.'); }
+  catch (e) { throw new Error('Phản hồi không hợp lệ từ server.', { cause: e }); }
 
   if (!res.ok) {
     const err = new Error(data.message || `HTTP ${res.status}`);

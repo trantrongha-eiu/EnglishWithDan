@@ -98,7 +98,13 @@ export default function ListeningTests() {
     return true;
   });
 
-  useEffect(() => { setPage(1); }, [search, statusFilter]);
+  // Adjust-during-render (not an effect): reset to page 1 whenever the
+  // filters change, in the same render rather than a post-commit effect.
+  const [prevFilters, setPrevFilters] = useState([search, statusFilter]);
+  if (prevFilters[0] !== search || prevFilters[1] !== statusFilter) {
+    setPrevFilters([search, statusFilter]);
+    if (page !== 1) setPage(1);
+  }
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {

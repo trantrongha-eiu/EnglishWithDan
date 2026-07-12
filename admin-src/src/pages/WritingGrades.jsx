@@ -241,15 +241,16 @@ function GradeModal({ attemptId, onClose, onGraded }) {
     return String(Math.round((scores.reduce((x, y) => x + y, 0) / scores.length) * 2) / 2);
   }
 
-  async function refresh() {
-    try {
-      const d = await apiFetch(`/admin/writing-attempt/${attemptId}`);
-      setAttempt(d.attempt);
-      setAdminNote(d.attempt.grading?.adminNote || '');
-      setOverallBand(d.attempt.grading?.overallBand
-        ? String(d.attempt.grading.overallBand)
-        : calcBand(d.attempt));
-    } catch (e) { toast(e.message, 'error'); }
+  function refresh() {
+    return apiFetch(`/admin/writing-attempt/${attemptId}`)
+      .then(d => {
+        setAttempt(d.attempt);
+        setAdminNote(d.attempt.grading?.adminNote || '');
+        setOverallBand(d.attempt.grading?.overallBand
+          ? String(d.attempt.grading.overallBand)
+          : calcBand(d.attempt));
+      })
+      .catch(e => toast(e.message, 'error'));
   }
 
   useEffect(() => { refresh(); }, [attemptId]);
@@ -598,20 +599,19 @@ export default function WritingGrades() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [attempts, setAttempts]     = useState([]);
-  const [loading, setLoading]       = useState(false);
+  // Starts true: the mount effect below immediately kicks off a load.
+  const [loading, setLoading]       = useState(true);
   const [statusFilter, setStatusFilter]   = useState('');
   const [typeFilter, setTypeFilter]       = useState('');
   const [search, setSearch]               = useState('');
   const [selectedId, setSelectedId]       = useState(null);
   const [viewId, setViewId]               = useState(null);
 
-  async function load() {
-    setLoading(true);
-    try {
-      const d = await apiFetch('/admin/writing-history');
-      setAttempts(d.attempts || []);
-    } catch (e) { toast(e.message, 'error'); }
-    finally { setLoading(false); }
+  function load() {
+    return apiFetch('/admin/writing-history')
+      .then(d => setAttempts(d.attempts || []))
+      .catch(e => toast(e.message, 'error'))
+      .finally(() => setLoading(false));
   }
 
   useEffect(() => { load(); }, []);
@@ -621,6 +621,7 @@ export default function WritingGrades() {
       try {
         await apiFetch(`/admin/writing-attempts/${id}`, { method: 'DELETE' });
         toast('Đã xóa bài nộp');
+        setLoading(true);
         load();
       } catch (e) { toast(e.message, 'error'); }
     });
@@ -645,7 +646,7 @@ export default function WritingGrades() {
   return (
     <>
       {selectedId && (
-        <GradeModal attemptId={selectedId} onClose={() => setSelectedId(null)} onGraded={() => { load(); setSelectedId(null); }} />
+        <GradeModal attemptId={selectedId} onClose={() => setSelectedId(null)} onGraded={() => { setLoading(true); load(); setSelectedId(null); }} />
       )}
       {viewId && <ViewModal attemptId={viewId} onClose={() => setViewId(null)} />}
 

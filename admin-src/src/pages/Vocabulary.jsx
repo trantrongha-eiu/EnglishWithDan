@@ -8,18 +8,17 @@ const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
 function UnitModal({ unit, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ unitNumber: '', title: '', description: '', level: 'B1', isActive: true });
+  // Initialized once from `unit` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => unit ? {
+    unitNumber: unit.unitNumber ?? '',
+    title: unit.title || '',
+    description: unit.description || '',
+    level: unit.level || 'B1',
+    isActive: unit.isActive !== false
+  } : { unitNumber: '', title: '', description: '', level: 'B1', isActive: true });
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (unit) setForm({
-      unitNumber: unit.unitNumber ?? '',
-      title: unit.title || '',
-      description: unit.description || '',
-      level: unit.level || 'B1',
-      isActive: unit.isActive !== false
-    });
-  }, [unit]);
 
   const set = k => e => setForm(f => ({
     ...f,
@@ -476,7 +475,7 @@ export default function Vocabulary() {
   return (
     <>
       {(showUnitModal || editUnit) && (
-        <UnitModal unit={editUnit} onClose={() => { setShowUnitModal(false); setEditUnit(null); }} onSaved={load} />
+        <UnitModal key={editUnit?._id ?? 'new'} unit={editUnit} onClose={() => { setShowUnitModal(false); setEditUnit(null); }} onSaved={load} />
       )}
       {wordsUnit && (
         <WordsModal unit={wordsUnit} onClose={() => { setWordsUnit(null); load(); }} />

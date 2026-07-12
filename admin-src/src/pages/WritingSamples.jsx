@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { apiFetch, formatDate, API } from '../utils/api';
+import { apiFetch, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,22 +9,19 @@ const TASK_LABELS = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' };
 function SampleModal({ sample, onClose, onSaved }) {
   const toast = useToast();
   const fileRef = useRef();
-  const [form, setForm] = useState({
-    title: '', quarter: '', topic: '', taskType: 'task2', pdfUrl: '', isActive: true,
-  });
+  // Initialized once from `sample` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => sample ? {
+    title:    sample.title    || '',
+    quarter:  sample.quarter  || '',
+    topic:    sample.topic    || '',
+    taskType: sample.taskType || 'task2',
+    pdfUrl:   sample.pdfUrl   || '',
+    isActive: sample.isActive !== false,
+  } : { title: '', quarter: '', topic: '', taskType: 'task2', pdfUrl: '', isActive: true });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    if (sample) setForm({
-      title:    sample.title    || '',
-      quarter:  sample.quarter  || '',
-      topic:    sample.topic    || '',
-      taskType: sample.taskType || 'task2',
-      pdfUrl:   sample.pdfUrl   || '',
-      isActive: sample.isActive !== false,
-    });
-  }, [sample]);
 
   const set = k => e => setForm(f => ({
     ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
@@ -169,7 +166,7 @@ export default function WritingSamples() {
   return (
     <>
       {showCreate && <SampleModal onClose={() => setShowCreate(false)} onSaved={load} />}
-      {editItem   && <SampleModal sample={editItem} onClose={() => setEditItem(null)} onSaved={load} />}
+      {editItem   && <SampleModal key={editItem._id} sample={editItem} onClose={() => setEditItem(null)} onSaved={load} />}
 
       <div className="section-header">
         <h2 className="section-title">Bài mẫu Writing ({filtered.length})</h2>

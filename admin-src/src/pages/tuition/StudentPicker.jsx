@@ -10,6 +10,15 @@ export default function StudentPicker({ students, value, onChange }) {
   const [search, setSearch] = useState('');
   const wrapRef = useRef();
 
+  // Adjust-during-render (not an effect): when the parent clears the
+  // selection (value -> falsy), reset the picker's own search/open UI
+  // state in the same render rather than a post-commit effect.
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (!value) { setSearch(''); setOpen(false); }
+  }
+
   const selected = students.find(s => s._id === value) || null;
   const filtered = search.trim()
     ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
@@ -24,8 +33,6 @@ export default function StudentPicker({ students, value, onChange }) {
     document.addEventListener('mousedown', handle);
     return () => document.removeEventListener('mousedown', handle);
   }, []);
-
-  useEffect(() => { if (!value) { setSearch(''); setOpen(false); } }, [value]);
 
   function pick(s) { onChange(s._id); setSearch(''); setOpen(false); }
 

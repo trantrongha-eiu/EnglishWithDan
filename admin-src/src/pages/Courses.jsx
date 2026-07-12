@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiFetch, formatDate } from '../utils/api';
+import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
@@ -25,26 +25,25 @@ const BLANK = {
 
 function CourseModal({ course, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState(BLANK);
+  // Initialized once from `course` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => course ? {
+    title: course.title || '',
+    category: course.category || 'ielts',
+    levelColor: course.levelColor || 'blue',
+    level: course.level || '',
+    placeholder: course.placeholder || '📚',
+    subtitle: course.subtitle || '',
+    description: course.description || '',
+    duration: course.duration || '',
+    classSize: course.classSize || '',
+    price: course.price || '',
+    orderIndex: course.orderIndex ?? 0,
+    imageUrl: course.imageUrl || '',
+    isActive: course.isActive !== false,
+  } : BLANK);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (course) setForm({
-      title: course.title || '',
-      category: course.category || 'ielts',
-      levelColor: course.levelColor || 'blue',
-      level: course.level || '',
-      placeholder: course.placeholder || '📚',
-      subtitle: course.subtitle || '',
-      description: course.description || '',
-      duration: course.duration || '',
-      classSize: course.classSize || '',
-      price: course.price || '',
-      orderIndex: course.orderIndex ?? 0,
-      imageUrl: course.imageUrl || '',
-      isActive: course.isActive !== false,
-    });
-  }, [course]);
 
   async function save(e) {
     e.preventDefault();
@@ -194,7 +193,7 @@ export default function Courses() {
   return (
     <>
       {(showModal || editCourse) && (
-        <CourseModal course={editCourse} onClose={() => { setShowModal(false); setEditCourse(null); }} onSaved={load} />
+        <CourseModal key={editCourse?._id ?? 'new'} course={editCourse} onClose={() => { setShowModal(false); setEditCourse(null); }} onSaved={load} />
       )}
 
       <div className="section-header">

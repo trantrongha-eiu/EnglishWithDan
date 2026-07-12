@@ -66,8 +66,17 @@ export default function Tuition() {
   const [studentUnpaid, setStudentUnpaid] = useState(null); // { count, total }
 
   useEffect(() => { loadStudents(); }, []);
+
+  // Adjust-during-render (not an effect): reset to page 1 whenever the fee
+  // filters (or switching into the fees tab) change, in the same render
+  // rather than a post-commit effect.
+  const [prevFeesKey, setPrevFeesKey] = useState([filter, activeTab]);
+  if (activeTab === 'fees' && (prevFeesKey[0] !== filter || prevFeesKey[1] !== activeTab)) {
+    setPrevFeesKey([filter, activeTab]);
+    if (page !== 1) setPage(1);
+  }
   useEffect(() => {
-    if (activeTab === 'fees') { setPage(1); loadFees(1); }
+    if (activeTab === 'fees') loadFees(1);
   }, [filter, activeTab]);
   useEffect(() => { if (activeTab === 'summary') loadSummary(); }, [summaryYear, activeTab]);
   useEffect(() => { if (activeTab === 'settings') loadSettings(); }, [activeTab]);

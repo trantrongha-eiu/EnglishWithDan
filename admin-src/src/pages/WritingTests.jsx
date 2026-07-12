@@ -28,19 +28,18 @@ const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' }
 function Task1Modal({ task, onClose, onSaved }) {
   const toast = useToast();
   const imgFileRef = useRef();
-  const [form, setForm] = useState({ prompt: '', imageUrl: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
+  // Initialized once from `task` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => task ? {
+    prompt: task.prompt || '',
+    imageUrl: task.imageUrl || '',
+    instructions: task.instructions || DEFAULT_T1,
+    sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T1_SECTIONS,
+    isActive: task.isActive !== false,
+  } : { prompt: '', imageUrl: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    if (task) setForm({
-      prompt: task.prompt || '',
-      imageUrl: task.imageUrl || '',
-      instructions: task.instructions || DEFAULT_T1,
-      sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T1_SECTIONS,
-      isActive: task.isActive !== false,
-    });
-  }, [task]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const setSection = (i, content) => setForm(f => {
@@ -159,17 +158,16 @@ function Task1Modal({ task, onClose, onSaved }) {
 
 function Task2Modal({ task, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, isActive: true });
+  // Initialized once from `task` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => task ? {
+    prompt: task.prompt || '',
+    instructions: task.instructions || DEFAULT_T2,
+    sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T2_SECTIONS,
+    isActive: task.isActive !== false,
+  } : { prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (task) setForm({
-      prompt: task.prompt || '',
-      instructions: task.instructions || DEFAULT_T2,
-      sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T2_SECTIONS,
-      isActive: task.isActive !== false,
-    });
-  }, [task]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const setSection = (i, content) => setForm(f => {
@@ -247,18 +245,17 @@ function Task2Modal({ task, onClose, onSaved }) {
 function WritingSampleModal({ sample, onClose, onSaved }) {
   const toast = useToast();
   const fileRef = useRef();
-  const [form, setForm] = useState({ title: '', quarter: '', topic: '', taskType: 'task2' });
+  // Initialized once from `sample` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => sample ? {
+    title: sample.title || '',
+    quarter: sample.quarter || '',
+    topic: sample.topic || '',
+    taskType: sample.taskType || 'task2',
+  } : { title: '', quarter: '', topic: '', taskType: 'task2' });
   const [saving, setSaving] = useState(false);
   const [uploadStatus, setUploadStatus] = useState('');
-
-  useEffect(() => {
-    if (sample) setForm({
-      title: sample.title || '',
-      quarter: sample.quarter || '',
-      topic: sample.topic || '',
-      taskType: sample.taskType || 'task2',
-    });
-  }, [sample]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
@@ -368,12 +365,13 @@ function WritingSampleModal({ sample, onClose, onSaved }) {
 
 function WritingExamModal({ exam, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ name: '', duration: 60, isActive: true });
+  // Initialized once from `exam` — the parent remounts this modal (via a
+  // `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => exam
+    ? { name: exam.name || '', duration: exam.duration || 60, isActive: exam.isActive !== false }
+    : { name: '', duration: 60, isActive: true });
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (exam) setForm({ name: exam.name || '', duration: exam.duration || 60, isActive: exam.isActive !== false });
-  }, [exam]);
 
   const set = k => e => setForm(f => ({
     ...f,
@@ -516,13 +514,14 @@ export default function WritingTests() {
   return (
     <>
       {(showT1Modal || editTask1) && (
-        <Task1Modal task={editTask1} onClose={() => { setShowT1Modal(false); setEditTask1(null); }} onSaved={loadT1} />
+        <Task1Modal key={editTask1?._id ?? 'new'} task={editTask1} onClose={() => { setShowT1Modal(false); setEditTask1(null); }} onSaved={loadT1} />
       )}
       {(showT2Modal || editTask2) && (
-        <Task2Modal task={editTask2} onClose={() => { setShowT2Modal(false); setEditTask2(null); }} onSaved={loadT2} />
+        <Task2Modal key={editTask2?._id ?? 'new'} task={editTask2} onClose={() => { setShowT2Modal(false); setEditTask2(null); }} onSaved={loadT2} />
       )}
       {(showSampleModal || editSample) && (
         <WritingSampleModal
+          key={editSample?._id ?? 'new'}
           sample={editSample}
           onClose={() => { setShowSampleModal(false); setEditSample(null); }}
           onSaved={loadSamples}
@@ -530,6 +529,7 @@ export default function WritingTests() {
       )}
       {(showExamModal || editExam) && (
         <WritingExamModal
+          key={editExam?._id ?? 'new'}
           exam={editExam}
           onClose={() => { setShowExamModal(false); setEditExam(null); }}
           onSaved={loadExams}

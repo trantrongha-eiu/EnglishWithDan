@@ -236,7 +236,6 @@ export default function Passages() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [all, setAll] = useState([]);
-  const [filtered, setFiltered] = useState([]);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [cat, setCat] = useState('');
@@ -248,14 +247,13 @@ export default function Passages() {
   const load = () => apiFetch('/admin/passages?limit=500').then(d => setAll(d.passages || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
-  useEffect(() => {
-    setFiltered(all.filter(p =>
-      (!search || p.title?.toLowerCase().includes(search.toLowerCase())) &&
-      (!cat || p.category === cat) &&
-      (!diff || p.difficulty === diff)
-    ));
-  }, [all, search, cat, diff]);
-
+  // Fully derivable from `all` + the filter fields — no need to store it
+  // as its own state or recompute it in an effect.
+  const filtered = all.filter(p =>
+    (!search || p.title?.toLowerCase().includes(search.toLowerCase())) &&
+    (!cat || p.category === cat) &&
+    (!diff || p.difficulty === diff)
+  );
   const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {

@@ -39,7 +39,7 @@ export function CheckboxAnswerPicker({ options, optLabels, value, onChange }) {
           if (!opt?.trim()) return null;
           const letter = optLabels[i];
           let sel = false;
-          try { sel = JSON.parse(value || '[]').includes(letter); } catch {}
+          try { sel = JSON.parse(value || '[]').includes(letter); } catch { /* malformed value, treat as unselected */ }
           return (
             <label key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer', fontSize: 13 }}>
               <input type="checkbox" checked={sel} onChange={() => {

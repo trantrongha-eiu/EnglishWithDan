@@ -168,6 +168,19 @@ export function defaultGroup(type) {
   }
 }
 
+export function formatRanges(nums) {
+  if (!nums.length) return '';
+  const sorted = [...nums].sort((a, b) => a - b);
+  const ranges = [];
+  let start = sorted[0], end = sorted[0];
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] === end + 1) { end = sorted[i]; }
+    else { ranges.push(start === end ? `${start}` : `${start}–${end}`); start = end = sorted[i]; }
+  }
+  ranges.push(start === end ? `${start}` : `${start}–${end}`);
+  return ranges.join(', ');
+}
+
 export function autoQType(groupType, ctx) {
   if (['table', 'note-form', 'summary-completion', 'drag-drop'].includes(groupType)) return 'fill-blank';
   if (groupType === 'map') return 'map-labelling';

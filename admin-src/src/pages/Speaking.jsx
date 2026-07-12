@@ -124,18 +124,17 @@ function AttemptModal({ attempt, onClose }) {
 
 function QuestionModal({ question, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ topic: '', part: 1, question: '', cueCard: '', isActive: true });
+  // Initialized once from `question` — the parent remounts this modal (via
+  // a `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => question ? {
+    topic: question.topic || '',
+    part: question.part || 1,
+    question: question.question || '',
+    cueCard: question.cueCard || '',
+    isActive: question.isActive !== false,
+  } : { topic: '', part: 1, question: '', cueCard: '', isActive: true });
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (question) setForm({
-      topic: question.topic || '',
-      part: question.part || 1,
-      question: question.question || '',
-      cueCard: question.cueCard || '',
-      isActive: question.isActive !== false,
-    });
-  }, [question]);
 
   const set = k => e => setForm(f => ({
     ...f,
@@ -202,15 +201,16 @@ function QuestionModal({ question, onClose, onSaved }) {
 
 function MaterialModal({ material, onClose, onSaved }) {
   const toast = useToast();
-  const [form, setForm] = useState({ title: '', quarter: '', topic: '' });
+  // Initialized once from `material` — the parent remounts this modal (via
+  // a `key`) whenever the edit target changes, so no effect is needed to
+  // re-sync form state to a changing prop.
+  const [form, setForm] = useState(() => material
+    ? { title: material.title || '', quarter: material.quarter || '', topic: material.topic || '' }
+    : { title: '', quarter: '', topic: '' });
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState('');
   const fileRef = useRef();
-
-  useEffect(() => {
-    if (material) setForm({ title: material.title || '', quarter: material.quarter || '', topic: material.topic || '' });
-  }, [material]);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
@@ -389,10 +389,10 @@ export default function Speaking() {
   return (
     <>
       {(showQModal || editQuestion) && (
-        <QuestionModal question={editQuestion} onClose={() => { setShowQModal(false); setEditQuestion(null); }} onSaved={loadQ} />
+        <QuestionModal key={editQuestion?._id ?? 'new'} question={editQuestion} onClose={() => { setShowQModal(false); setEditQuestion(null); }} onSaved={loadQ} />
       )}
       {(showMModal || editMaterial) && (
-        <MaterialModal material={editMaterial} onClose={() => { setShowMModal(false); setEditMaterial(null); }} onSaved={loadM} />
+        <MaterialModal key={editMaterial?._id ?? 'new'} material={editMaterial} onClose={() => { setShowMModal(false); setEditMaterial(null); }} onSaved={loadM} />
       )}
       {selectedAttempt && (
         <AttemptModal attempt={selectedAttempt} onClose={() => setSelectedAttempt(null)} />

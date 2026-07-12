@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
@@ -14,10 +14,12 @@ export default function Messages() {
   const { isAdmin } = useAuth();
   const [searchParams] = useSearchParams();
 
-  // Compose state
-  const [showCompose, setShowCompose] = useState(false);
+  // Compose state — toId/showCompose read the ?to=userId URL param once,
+  // via lazy initializers, rather than an effect (searchParams is already
+  // available synchronously at first render).
+  const [showCompose, setShowCompose] = useState(() => !!searchParams.get('to'));
   const [students, setStudents] = useState([]);
-  const [form, setForm] = useState({ toId: '', subject: '', body: '', isBroadcast: false });
+  const [form, setForm] = useState(() => ({ toId: searchParams.get('to') || '', subject: '', body: '', isBroadcast: false }));
   const [sending, setSending] = useState(false);
   const [studentSearch, setStudentSearch] = useState('');
 
@@ -33,9 +35,6 @@ export default function Messages() {
     loadStudents();
     loadMessages(1);
     loadOnline();
-    // Pre-fill toId from URL ?to=userId
-    const toId = searchParams.get('to');
-    if (toId) { setForm(f => ({ ...f, toId })); setShowCompose(true); }
   }, []);
 
   async function loadStudents() {

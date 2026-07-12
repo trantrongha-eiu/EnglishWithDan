@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ConfirmProvider, useConfirm } from './ConfirmDialog';
+import { useConfirm } from './ConfirmDialog';
+import { ConfirmProvider } from './ConfirmProvider';
 
 function Consumer({ onOk }) {
   const confirm = useConfirm();

@@ -11,7 +11,7 @@
 import { useState } from 'react';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from './ConfirmDialog';
-import { GuideBox, formatRanges } from './questionGroupBuilder/Shared';
+import { GuideBox } from './questionGroupBuilder/Shared';
 import {
   TableConfig, NoteConfig, MatchingOptionsConfig, MatchingHeadingsConfig,
   DragDropConfig, SummaryConfig, MapConfig,
@@ -20,7 +20,7 @@ import { QuestionFormModal } from './questionGroupBuilder/QuestionFormModal';
 import { GroupTypePicker } from './questionGroupBuilder/GroupTypePicker';
 import {
   GROUP_LABEL, TYPE_LABEL,
-  defaultGroup, autoQType,
+  defaultGroup, autoQType, formatRanges,
 } from './questionGroupBuilder/constants';
 
 export default function QuestionGroupBuilder({ groups = [], onChange, context = 'reading', questionFrom = 1, questionTo = null }) {
