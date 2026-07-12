@@ -151,7 +151,21 @@ async function _openDirectPracticeTask(taskType, taskId) {
 
     history.replaceState({ screen: 'practice-write', taskType, taskId }, '',
       `writing.html?taskType=${taskType}&taskId=${encodeURIComponent(taskId)}`);
-    startPracticeTask(taskType, taskId, false);
+
+    // Reopening the same shareable link shouldn't wipe an in-progress draft
+    // for this exact task — startPracticeTask() always calls
+    // clearPracticeAutoSave() and starts blank, which is correct for a
+    // student picking a task from the list, but not for resuming via a
+    // link they already started writing from (see commit 3d9cf30, which
+    // fixed the same class of bug for browser back/forward navigation).
+    const isSameTask = (d) => d && String(d.task?._id) === String(taskId) && d.taskType === taskType;
+    let saved = loadPracticeFromStorage();
+    if (!isSameTask(saved)) saved = await loadDraftFromServer();
+    if (isSameTask(saved) && !practiceState.hasPending) {
+      _applyPracticeDraft(saved);
+    } else {
+      startPracticeTask(taskType, taskId, false);
+    }
   } catch (e) {
     showToast('Lỗi tải đề bài', 'error');
   }
@@ -1270,14 +1284,21 @@ function restorePracticeWrite() {
   const saved = loadPracticeFromStorage();
   if (!saved) return;
 
+  const banner = document.getElementById('practice-restore-banner');
+  if (banner) banner.style.display = 'none';
+
+  _applyPracticeDraft(saved);
+}
+
+// Shared by restorePracticeWrite() (restore banner) and _openDirectPracticeTask()
+// (teacher-shared link reopened with an in-progress draft) — puts a previously
+// saved draft back on screen instead of starting the task fresh.
+function _applyPracticeDraft(saved) {
   practiceState.taskType  = saved.taskType;
   practiceState.task      = saved.task;
   practiceState.tasks     = [saved.task];
   practiceState.wordCount = saved.wordCount || 0;
   practiceState.seconds   = saved.seconds   || 0;
-
-  const banner = document.getElementById('practice-restore-banner');
-  if (banner) banner.style.display = 'none';
 
   renderPracticeWriteScreen(saved.taskType, saved.task);
   const ta = document.getElementById('pw-textarea');
