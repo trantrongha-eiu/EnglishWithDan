@@ -1083,12 +1083,14 @@ body {
   gap: 12px;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
   flex-direction: column;
 }
 .pw-sample-section {
   border: 1.5px solid #bbf7d0;
   border-radius: 10px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .pw-sample-section-title {
   background: #dcfce7;
