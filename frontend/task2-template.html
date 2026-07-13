@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="writing-practice.css"/>
   <link rel="stylesheet" href="css/mobile.css"/>
+  <link rel="stylesheet" href="css/dictionary-popup.css"/>
   <script src="js/theme.js"></script>
   <style>
     #wp-toast{position:fixed;top:calc(var(--nav-height,64px) + 8px);left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,top .25s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
@@ -343,6 +344,7 @@
 <script src="js/nav.js"></script>
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
+<script src="js/shared/dictionary-lookup.js"></script>
 
 <div id="wp-toast"></div>
 
@@ -441,6 +443,38 @@
 
   </div><!-- end .tpl-main -->
 </div><!-- end .tpl-layout -->
+
+<!-- Dictionary lookup (double-click a word) -->
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="dict-body" class="dict-body"></div>
+</div>
+
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header">
+      <h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+            class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 const API = 'https://englishwithdan.onrender.com';
@@ -777,6 +811,9 @@ function _fallbackCopyTpl(url) {
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initUser();
+  // #tpl-content-area is a stable container that render() only ever
+  // innerHTML's into — one registration here covers every cloze type/card.
+  setupDictionaryDouble('tpl-content-area', 'task2-template');
   // Restore type from URL param
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');
