@@ -1629,6 +1629,7 @@ function renderPracticeWriteScreen(taskType, task) {
   // listener first), so calling it on every render here is safe.
   setupDictionaryDouble('pw-left-panel', 'writing-practice');
   setupDictionaryDouble('pw-textarea', 'writing-practice');
+  setupDictionaryDouble('pw-instructions-label', 'writing-practice');
 
   // Show/hide sample toggle bar based on whether sample exists
   const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());

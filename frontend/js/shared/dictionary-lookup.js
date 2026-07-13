@@ -82,7 +82,14 @@
       raw = target.value.substring(start2, end2);
     } else {
       var sel = window.getSelection();
-      raw = sel ? sel.toString() : '';
+      // Double-clicking a non-text element (e.g. the <img> chart in a Task 1
+      // prompt) doesn't clear a PREVIOUS text selection made elsewhere on the
+      // page — without this check, that stale selection would be picked up
+      // and reopen the popup with the old word instead of correctly doing
+      // nothing (there's no text under an image to look up).
+      if (sel && sel.rangeCount && target && target.contains(sel.anchorNode)) {
+        raw = sel.toString();
+      }
     }
     var word = raw.trim();
     if (!word || word.split(/\s+/).length > 3 || word.length < 2) return '';
