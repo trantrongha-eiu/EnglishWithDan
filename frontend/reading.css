@@ -968,15 +968,15 @@ body.eye-protection .split-questions {
 .q-options {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
 }
 
 .radio-opt {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 8px 12px;
-  border: 1.5px solid #e5e7eb;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
@@ -1778,15 +1778,15 @@ body.tool-hl .radio-dot { user-select: none; }
 .checkbox-opts {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
 }
 
 .checkbox-opt {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 8px 12px;
-  border: 1.5px solid #e5e7eb;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
