@@ -44,6 +44,14 @@
         </div>
       </div>
 
+      <!-- Restore banner for practice-mode drafts (Task 1/2 luyện tập lẻ),
+           mirrors #practice-restore-banner on screen-practice so it's also
+           visible on first landing, before the user clicks "Luyện tập lẻ" -->
+      <div id="key-practice-restore-banner" class="wr-restore-banner" style="display:none">
+        <p class="wr-restore-banner-title"><i class="fas fa-file-alt"></i> <span id="key-practice-restore-title-text">Bạn có bài luyện tập chưa nộp</span></p>
+        <div id="key-practice-restore-list"></div>
+      </div>
+
       <button class="btn-primary key-start-btn" id="btn-start" onclick="startExam()"><i class="fas fa-pen"></i> Bắt đầu làm bài</button>
       <div class="key-card-actions">
         <button class="btn-secondary" onclick="showPracticeMode()"><i class="fas fa-dumbbell"></i> Luyện tập lẻ</button>

@@ -1174,6 +1174,18 @@ function goToTaskPage(n) {
 const _PRACTICE_SAVE_PREFIX = 'ews_practice_autosave:';
 const _PRACTICE_MAX_AGE     = 24 * 60 * 60 * 1000; // 24h
 
+// Deferred init: shows the "unfinished practice draft" banner on the
+// landing screen (screen-key) right after login/page-load, not just after
+// clicking into "Luyện tập lẻ" — must run here (after _PRACTICE_SAVE_PREFIX
+// and practiceState are initialized), same TDZ reason as the deferred init
+// above, and skipped when a URL param already routes to a different screen.
+(function() {
+  var _p = new URLSearchParams(location.search);
+  var _tt = parseInt(_p.get('taskType'));
+  if ((_tt === 1 || _tt === 2) || _p.get('view') === 'samples') return;
+  checkPracticeRestoreBanner();
+})();
+
 function _practiceSaveKey(taskType, taskId) {
   return `${_PRACTICE_SAVE_PREFIX}${taskType}:${taskId}`;
 }
@@ -1263,7 +1275,13 @@ async function saveDraftToServer() {
         seconds:   practiceState.seconds
       })
     });
-  } catch (_) {}
+  } catch (err) {
+    // Server-side draft save failing silently used to be indistinguishable
+    // from it succeeding (the save indicator only reflects the localStorage
+    // write in savePracticeToStorage) — log so a stale/duplicate-key index
+    // or other server error is at least visible in devtools.
+    console.error('saveDraftToServer failed:', err);
+  }
 }
 
 async function loadDraftsFromServer() {
@@ -1305,18 +1323,15 @@ async function checkPracticeRestoreBanner() {
   const drafts = [...merged.values()].sort((a, b) => b.savedAt - a.savedAt);
   practiceState.restorableDrafts = drafts;
 
-  const banner    = document.getElementById('practice-restore-banner');
-  const listEl    = document.getElementById('practice-restore-list');
-  const titleTextEl = document.getElementById('practice-restore-title-text');
-  if (!banner || !listEl) return;
-  if (!drafts.length) { banner.style.display = 'none'; return; }
+  // Two banner instances share this state: one on screen-practice (shown
+  // after clicking "Luyện tập lẻ"), one on screen-key (the landing screen,
+  // so the notice appears right after login without an extra click).
+  const instances = [
+    { banner: 'practice-restore-banner', list: 'practice-restore-list', title: 'practice-restore-title-text' },
+    { banner: 'key-practice-restore-banner', list: 'key-practice-restore-list', title: 'key-practice-restore-title-text' }
+  ];
 
-  if (titleTextEl) {
-    titleTextEl.textContent = drafts.length > 1
-      ? `Bạn có ${drafts.length} bài luyện tập chưa nộp`
-      : 'Bạn có bài luyện tập chưa nộp';
-  }
-  listEl.innerHTML = drafts.map((d, i) => {
+  const itemsHtml = drafts.length ? drafts.map((d, i) => {
     const wc = d.wordCount || 0;
     const m  = String(Math.floor((d.seconds || 0) / 60)).padStart(2, '0');
     const s  = String((d.seconds || 0) % 60).padStart(2, '0');
@@ -1328,8 +1343,21 @@ async function checkPracticeRestoreBanner() {
           <button class="wr-restore-btn-secondary" onclick="discardPracticeAutoSave(${i})">Bỏ qua</button>
         </div>
       </div>`;
-  }).join('');
-  banner.style.display = 'block';
+  }).join('') : '';
+  const titleText = drafts.length > 1
+    ? `Bạn có ${drafts.length} bài luyện tập chưa nộp`
+    : 'Bạn có bài luyện tập chưa nộp';
+
+  for (const { banner: bannerId, list: listId, title: titleId } of instances) {
+    const banner = document.getElementById(bannerId);
+    const listEl = document.getElementById(listId);
+    const titleTextEl = document.getElementById(titleId);
+    if (!banner || !listEl) continue;
+    if (!drafts.length) { banner.style.display = 'none'; continue; }
+    if (titleTextEl) titleTextEl.textContent = titleText;
+    listEl.innerHTML = itemsHtml;
+    banner.style.display = 'block';
+  }
 }
 
 function restorePracticeWrite(idx) {
