@@ -497,6 +497,11 @@ function renderWordsTable(words) {
       </td>
     </tr>`;
     }).join('');
+    // Double-click a word/meaning/example to look it up and save it into
+    // another notebook — setupDictionaryDouble() is idempotent (it removes
+    // any previously-attached listener first), so re-calling it on every
+    // render here is safe.
+    setupDictionaryDouble('words-tbody', 'vocab-list');
 }
 
 /* ── Word search / filter ── */
@@ -1752,6 +1757,7 @@ function showFillBlankQuestion() {
     document.getElementById('fbBtnNext').style.display   = 'none';
     document.getElementById('quick-btns').style.display  = 'none';
     document.getElementById('fbInputArea').style.display = 'none';
+    setupDictionaryDouble('flashcard', 'vocab-flashcard');
 
     // FIX: re-enable buttons bị disable từ lần trước
     document.querySelectorAll('.btn-remembered,.btn-not-remembered').forEach(b => b.disabled = false);
@@ -1894,6 +1900,7 @@ function showTranslationQuestion() {
     document.getElementById('transExample').innerHTML =
         exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
             `<strong class="highlight-word">${wordEsc}</strong>`);
+    setupDictionaryDouble('transExample', 'vocab-quiz');
     document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;

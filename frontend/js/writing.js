@@ -673,6 +673,7 @@ async function viewAttempt(id) {
         <div class="review-wc">Số từ: ${a.wordCount2 || 0}</div>
       </div>` : ''}
     `;
+    setupDictionaryDouble('review-modal-body', 'writing-review');
   } catch (e) {
     document.getElementById('review-modal-body').innerHTML =
       `<p style="color:#e53935;padding:20px">${e.message}</p>`;
@@ -1623,6 +1624,11 @@ function renderPracticeWriteScreen(taskType, task) {
   }
   html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   leftPanel.innerHTML = html;
+  // Dictionary lookup only in practice/review, never during the timed real
+  // exam — setupDictionaryDouble() is idempotent (removes any previous
+  // listener first), so calling it on every render here is safe.
+  setupDictionaryDouble('pw-left-panel', 'writing-practice');
+  setupDictionaryDouble('pw-textarea', 'writing-practice');
 
   // Show/hide sample toggle bar based on whether sample exists
   const hasSample = Array.isArray(task.sampleSections) && task.sampleSections.some(s => s.content?.trim());
@@ -1640,6 +1646,7 @@ function renderPracticeWriteScreen(taskType, task) {
         </div>
         <div class="pw-sample-section-body">${escHtml(s.content)}</div>
       </div>`).join('');
+    setupDictionaryDouble('pw-sample-panel', 'writing-practice-sample');
   } else if (panel) {
     panel.innerHTML = '';
   }
