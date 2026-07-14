@@ -333,6 +333,11 @@ async function hideAdminSection(id) {
   await ListeningSection.findByIdAndUpdate(id, { isActive: false });
 }
 
+async function deleteAdminSectionPermanent(id) {
+  const section = await ListeningSection.findByIdAndDelete(id);
+  if (!section) throw new NotFoundError('Không tìm thấy section');
+}
+
 // ── Admin – Assemble test from 4 sections ────────────────────────────────
 async function assembleTest({ name, seriesName, testNumber, sectionIds }) {
   const idMap = sectionIds || {};
@@ -594,7 +599,7 @@ module.exports = {
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById,
-  listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection,
+  listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent,
   assembleTest,
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,

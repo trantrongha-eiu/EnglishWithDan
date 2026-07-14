@@ -168,6 +168,15 @@ exports.hideAdminSection = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
+// deleteAdminSectionPermanent throws NotFoundError instead of returning
+// null — same reasoning as deleteAdminTestPermanent above.
+exports.deleteAdminSectionPermanent = async (req, res) => {
+  try {
+    await listeningService.deleteAdminSectionPermanent(req.params.id);
+    res.json({ success: true, message: 'Đã xóa vĩnh viễn section' });
+  } catch (err) { res.status(err.statusCode || 500).json({ success: false, message: err.message }); }
+};
+
 exports.uploadSectionAudio = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'Không có file audio' });

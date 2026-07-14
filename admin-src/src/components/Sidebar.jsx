@@ -43,9 +43,14 @@ export default function Sidebar({ mobileOpen, onClose }) {
       apiFetch('/admin/online-users').then(d => setOnlineUsers((d.users || []).filter(u => u.role !== 'admin'))).catch(() => {});
     }
     function fetchPending() {
-      apiFetch('/admin/writing-history').then(d => {
-        const n = (d.attempts || []).filter(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done').length;
-        setPendingGrades(n);
+      // /admin/writing-history now paginates (default 30/page) instead of
+      // returning every attempt, so counting off d.attempts would undercount
+      // as soon as there are more than one page of submissions — use the
+      // dedicated counts endpoint instead, which aggregates over the whole
+      // collection regardless of page size.
+      apiFetch('/admin/writing-history/counts').then(d => {
+        const c = d.counts || {};
+        setPendingGrades((c.pending || 0) + (c.ai_done || 0));
       }).catch(() => {});
     }
     function fetchUpgrades() {

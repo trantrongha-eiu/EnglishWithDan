@@ -73,6 +73,7 @@ router.get('/admin/sections/:id', auth, teacherOnly, listeningController.getAdmi
 router.post('/admin/sections', auth, teacherOnly, listeningController.createAdminSection);
 router.put('/admin/sections/:id', auth, teacherOnly, listeningController.updateAdminSection);
 router.delete('/admin/sections/:id', auth, teacherOnly, listeningController.hideAdminSection);
+router.delete('/admin/sections/:id/permanent', auth, teacherOnly, listeningController.deleteAdminSectionPermanent);
 router.post('/admin/sections/:id/audio', auth, teacherOnly, upload.single('audio'), listeningController.uploadSectionAudio);
 
 // POST /api/listening/admin/assemble – tạo ListeningTest từ 4 ListeningSection

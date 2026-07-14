@@ -215,10 +215,10 @@ export default function ListeningSections() {
   }
 
   async function del(id, title) {
-    confirm(`Ẩn section "${title}"? (có thể khôi phục bằng cách bật lại)`, async () => {
+    confirm(`Xóa vĩnh viễn section "${title}"? Không thể phục hồi.`, async () => {
       try {
-        await apiFetch(`/listening/admin/sections/${id}`, { method: 'DELETE' });
-        toast('Đã ẩn section');
+        await apiFetch(`/listening/admin/sections/${id}/permanent`, { method: 'DELETE' });
+        toast('Đã xóa vĩnh viễn');
         load();
       } catch (e) { toast(e.message, 'error'); }
     });
@@ -338,7 +338,7 @@ export default function ListeningSections() {
                           {s.isActive !== false ? '🙈' : '👁'}
                         </button>
                         {isAdmin && <button className="btn btn-danger btn-sm btn-icon"
-                          onClick={() => del(s._id, s.title)}>🗑</button>}
+                          onClick={() => del(s._id, s.title)} title="Xóa vĩnh viễn">🗑</button>}
                       </div>
                     </td>
                   </tr>
