@@ -240,6 +240,7 @@ img { max-width: 100%; height: auto; }
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg);
+  color: var(--text);
   cursor: pointer;
   display: flex;
   align-items: center;

@@ -83,7 +83,7 @@ export default function ReadingTests() {
             const count = passageStats[key] ?? 0;
             return (
               <span key={n} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ fontWeight: 600, color: count === 0 ? 'var(--red)' : 'var(--text1)' }}>
+                <span style={{ fontWeight: 600, color: count === 0 ? 'var(--danger)' : 'var(--text)' }}>
                   {count === 0 ? '⚠️ ' : ''}Passage {n}:
                 </span>
                 <span className={`badge ${count === 0 ? 'badge-red' : count < 3 ? 'badge-blue' : 'badge-green'}`}>{count}</span>
@@ -91,7 +91,7 @@ export default function ReadingTests() {
             );
           })}
           {[1,2,3].some(n => (passageStats[`passage${n}`] ?? 0) === 0) && (
-            <span style={{ color: 'var(--red)', fontSize: 12 }}>— Cần ít nhất 1 bài/category để học sinh có thể bắt đầu thi</span>
+            <span style={{ color: 'var(--danger)', fontSize: 12 }}>— Cần ít nhất 1 bài/category để học sinh có thể bắt đầu thi</span>
           )}
         </div>
       )}

@@ -371,7 +371,7 @@ function ImportJsonModal({ onClose, onImported }) {
           </label>
 
           {result && (
-            <div style={{ padding: '12px 14px', borderRadius: 8, fontSize: 13, lineHeight: 1.6, background: result.ok ? 'rgba(52,211,153,.1)' : 'rgba(239,68,68,.1)', border: `1px solid ${result.ok ? 'rgba(52,211,153,.3)' : 'rgba(239,68,68,.3)'}`, color: result.ok ? 'var(--green)' : 'var(--red)' }}>
+            <div style={{ padding: '12px 14px', borderRadius: 8, fontSize: 13, lineHeight: 1.6, background: result.ok ? 'rgba(52,211,153,.1)' : 'rgba(239,68,68,.1)', border: `1px solid ${result.ok ? 'rgba(52,211,153,.3)' : 'rgba(239,68,68,.3)'}`, color: result.ok ? 'var(--green)' : 'var(--danger)' }}>
               <strong>{result.ok ? '✓' : '✗'} {result.message}</strong>
               {result.results?.length > 0 && (
                 <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 12 }}>

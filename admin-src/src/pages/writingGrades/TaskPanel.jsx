@@ -25,7 +25,7 @@ export function ResultBlock({ result, label, accentColor }) {
       <ScoreRow label="GRA" score={result.gra?.score} comment={result.gra?.comment} />
       {result.overallFeedback && (
         <div style={{ marginTop: 8, fontSize: 13, color: 'var(--text2)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
-          <strong style={{ color: 'var(--text1)' }}>Nhận xét chung:</strong> {result.overallFeedback}
+          <strong style={{ color: 'var(--text)' }}>Nhận xét chung:</strong> {result.overallFeedback}
         </div>
       )}
     </div>
@@ -79,7 +79,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
 
   return (
     <div style={{ border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
-      <div style={{ background: 'var(--bg2)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+      <div style={{ background: 'var(--surface2)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <span style={{ fontWeight: 700, fontSize: 15 }}>{title}</span>
         {wordCount > 0 && (
           <span style={{
@@ -120,7 +120,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
             </button>
           )}
         </div>
-        <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.75, color: 'var(--text1)', maxHeight: expanded ? 'none' : 140, overflow: 'hidden' }}>
+        <div style={{ fontSize: 13, whiteSpace: 'pre-wrap', lineHeight: 1.75, color: 'var(--text)', maxHeight: expanded ? 'none' : 140, overflow: 'hidden' }}>
           {hasAnswer ? answer : <span style={{ color: 'var(--text3)' }}>Không có bài làm</span>}
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
       )}
 
       {isConfirmed ? (
-        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg2)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
           <span style={{ fontSize: 11, color: 'var(--text3)' }}>Chấm lại để cập nhật phản hồi cho học sinh:</span>
           <button className="btn btn-sm btn-ghost" onClick={onGrade} disabled={isGrading || aiDisabled}
             title={aiDisabled ? 'AI đang quá tải — chờ vài phút rồi thử lại' : 'Chấm lại bằng AI, sau đó bấm Xác nhận để gửi cho học sinh'}>
@@ -147,7 +147,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
           )}
         </div>
       ) : (
-        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', background: 'var(--bg2)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
           <span style={{ fontSize: 11, color: 'var(--text3)', fontWeight: 600 }}>Phương thức:</span>
           <button className={`btn btn-sm ${mode === 'ai' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => onModeChange('ai')}>🤖 AI</button>
           <button className="btn btn-sm"
