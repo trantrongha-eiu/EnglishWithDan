@@ -44,9 +44,6 @@
         <div class="unit-picker-dd" id="unitPickerDdD"></div>
       </div>
       <select id="unitSelect" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
-      <button class="btn-start-unit" onclick="loadUnit()">
-        <i class="fas fa-play"></i> Start Learning
-      </button>
       <button class="btn-sound-toggle" onclick="toggleSound()" id="soundToggle">🔊 Sound: ON</button>
       <button class="btn-difficult-words" onclick="openDifficultWordsModal()" style="margin-top:8px">
         <i class="fas fa-fire"></i> Ôn lại từ hay sai
@@ -466,9 +463,6 @@
           <div class="unit-picker-dd" id="unitPickerDdM"></div>
         </div>
         <select id="unitSelectMob" style="display:none"><option value="">-- Chọn Paraphrase Unit --</option></select>
-        <button class="sheet-start-btn" onclick="loadUnitFromSheet()">
-          <i class="fas fa-play"></i> Start Learning
-        </button>
         <button class="sheet-sound-btn" onclick="toggleSound()" id="soundToggleMob">
           🔊 Sound: ON
         </button>
@@ -921,6 +915,9 @@
       if(s1)s1.value=val; if(s2)s2.value=val;
       _pickers.forEach(function(p){p.updateDisplay();});
       _pickers.forEach(function(p){p.close();});
+      if(!val) return;
+      loadUnit();
+      if(window.closeSheet) closeSheet(); // no-op if the mobile sheet isn't open
     }
     window._upSetUnits=function(units){
       _units=units.map(function(u){return{value:String(u.unitNumber),label:'Unit '+u.unitNumber+' – '+u.title};});
@@ -935,16 +932,6 @@
   window.syncSheetUnits = function(){
     var src=document.getElementById('unitSelect'), dest=document.getElementById('unitSelectMob');
     if(src&&dest){dest.innerHTML=src.innerHTML;dest.value=src.value;}
-  };
-
-  // ── Load unit từ sheet ──────────────────────────
-  window.loadUnitFromSheet = function(){
-    var mob = document.getElementById('unitSelectMob');
-    var src = document.getElementById('unitSelect');
-    if(mob && src) src.value = mob.value;
-    if(!src || !src.value){ loadUnit(); return; }
-    loadUnit();
-    closeSheet();
   };
 
   // ── Hiện hint trên welcome screen mobile ────────
