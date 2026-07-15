@@ -774,9 +774,11 @@ function _buildStudentFeedback(g) {
 
   const ob = g.overallBand != null ? Number(g.overallBand) : null;
   const wImgSrc = ob == null ? ''
-    : ob >= 7.0 ? 'img/aboveband7.jpg'
+    : ob >= 7.5 ? 'img/above7.5.jpg'
     : ob >= 6.0 ? 'img/band_6_7.jpg'
-    : 'img/writingbelow60%25.jpg';
+    : ob >= 5.0 ? 'img/writingbelow60%25.jpg'
+    : ob >= 4.0 ? 'img/writingbelow50%25.jpg'
+    : 'img/writingbelow45%25.jpg';
   const wImgHtml = wImgSrc
     ? `<img src="${wImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:260px;border-radius:12px;margin:0 auto 16px;object-fit:cover">`
     : '';

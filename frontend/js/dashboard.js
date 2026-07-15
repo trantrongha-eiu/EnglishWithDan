@@ -2084,9 +2084,11 @@ function showResults(mode) {
     // Vocab result image
     const vocabImgEl = document.getElementById('vocab-result-img');
     if (vocabImgEl) {
-        vocabImgEl.src = pct >= 70 ? 'img/aboveband7.jpg'
+        vocabImgEl.src = pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
+                       : pct >= 70 ? 'img/above7.5.jpg'
                        : pct >= 50 ? 'img/vocab50_70%25.jpg'
-                       :             'img/vocabbelow50%25.jpg';
+                       : pct >= 20 ? 'img/vocabbelow50%25.jpg'
+                       :             'img/verylowscore.jpg';
         vocabImgEl.style.display = 'block';
     }
 

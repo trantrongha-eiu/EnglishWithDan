@@ -1923,7 +1923,12 @@ function showTestResults(data) {
               : score >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!'
               : 'Học cho đàng hoàng zô coiii!';
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
-  const wpImgSrc = score >= 70 ? 'img/aboveband7.jpg' : score >= 60 ? 'img/band_6_7.jpg' : 'img/writingbelow60%25.jpg';
+  const wpImgSrc = score >= 90 ? 'img/vocab_writingabove90%25.jpg'
+                  : score >= 70 ? 'img/above7.5.jpg'
+                  : score >= 60 ? 'img/band_6_7.jpg'
+                  : score >= 50 ? 'img/writingbelow60%25.jpg'
+                  : score >= 45 ? 'img/writingbelow50%25.jpg'
+                  : 'img/writingbelow45%25.jpg';
   document.getElementById('test-score-header').innerHTML = `
     <img src="${wpImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
     <div class="wp-test-big-score">${emoji} ${score}%</div>

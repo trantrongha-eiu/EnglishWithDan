@@ -2425,9 +2425,12 @@ function showResult(r) {
   // Result image (full reading test only — passage practice uses inline rd-result-bar)
   const imgEl = document.getElementById('result-img');
   if (imgEl) {
-    const imgSrc = band >= 7.0 ? 'img/aboveband7.jpg'
+    const imgSrc = band >= 7.5 ? 'img/above7.5.jpg'
                  : band >= 6.0 ? 'img/band_6_7.jpg'
-                 :                'img/belowband6.jpg';
+                 : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
+                 : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
+                 : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
+                 :                'img/verylowscore.jpg';
     imgEl.src = imgSrc; imgEl.style.display = '';
   }
 
@@ -2821,7 +2824,12 @@ function _doSubmitRetry() {
     });
   }
 
-  const rdPracImgSrc = pct >= 70 ? 'img/aboveband7.jpg' : pct >= 50 ? 'img/band_6_7.jpg' : 'img/belowband6.jpg';
+  const rdPracImgSrc = pct >= 75 ? 'img/above7.5.jpg'
+                      : pct >= 60 ? 'img/band_6_7.jpg'
+                      : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
+                      : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
+                      : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
+                      : 'img/verylowscore.jpg';
   const rdPracImgHtml = fromPractice
     ? `<img src="${rdPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
     : '';
