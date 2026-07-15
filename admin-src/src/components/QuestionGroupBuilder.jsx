@@ -59,6 +59,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
   function duplicateGroup(gi) {
     const copy = JSON.parse(JSON.stringify(groups[gi]));
     copy.questions = [];
+    copy.interchangeableAnswers = false;
     if (copy.groupTitle) copy.groupTitle += ' (bản sao)';
     const next = [...groups];
     next.splice(gi + 1, 0, copy);
