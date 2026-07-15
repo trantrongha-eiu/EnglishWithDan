@@ -114,10 +114,34 @@ async function selectMsg(id) {
       </div>
     </div>
     <div class="detail-body">${esc(msg.body)}</div>
+    <div class="reply-box">
+      <textarea id="replyText" placeholder="Trả lời ${sender}..." rows="3"></textarea>
+      <button class="btn btn-primary" id="replySendBtn" onclick="replyMsg('${id}')"><i class="fas fa-reply"></i> Gửi phản hồi</button>
+    </div>
     <div class="detail-actions">
       <button class="btn btn-danger" onclick="deleteMsg('${id}')"><i class="fas fa-trash"></i> Xóa</button>
     </div>
   `;
+}
+
+async function replyMsg(id) {
+  const textarea = document.getElementById('replyText');
+  const btn = document.getElementById('replySendBtn');
+  const body = textarea.value.trim();
+  if (!body) { textarea.focus(); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+  try {
+    await apiFetch(`/user/messages/${id}/reply`, { method: 'POST', body: JSON.stringify({ body }) });
+    textarea.value = '';
+    if (window.showToast) window.showToast('Đã gửi phản hồi', 'success');
+  } catch (e) {
+    if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-reply"></i> Gửi phản hồi';
+  }
 }
 
 // showConfirm() moved to js/shared/confirm-dialog.js (single source of
@@ -149,5 +173,6 @@ async function deleteMsg(id) {
 // Expose for onclick
 window.selectMsg = selectMsg;
 window.deleteMsg = deleteMsg;
+window.replyMsg = replyMsg;
 
 load();

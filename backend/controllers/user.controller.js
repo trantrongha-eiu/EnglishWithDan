@@ -50,6 +50,13 @@ exports.getStats = catchAsync(async (req, res) => {
   res.json({ success: true, stats });
 });
 
+// ── GET /api/user/activity-heatmap ───────────────────────────
+exports.getActivityHeatmap = catchAsync(async (req, res) => {
+  const days = Math.min(400, Math.max(1, parseInt(req.query.days, 10) || 365));
+  const activity = await userService.getActivityHeatmap(req.user._id, days);
+  res.json({ success: true, activity });
+});
+
 // ── INBOX ─────────────────────────────────────────────────────
 // Deliberately NOT using catchAsync here: catchAsync responds with the raw
 // err.message, but these four routes always responded with the generic
@@ -92,4 +99,14 @@ exports.deleteMessage = messageGuard(async (req, res) => {
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
   if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền xóa tin nhắn này' });
   res.json({ success: true });
+});
+
+// ── POST /api/user/messages/:id/reply — học sinh phản hồi giáo viên ─
+exports.replyMessage = messageGuard(async (req, res) => {
+  const { body } = req.body;
+  const result = await userMessageService.replyToMessage(req.user._id, req.user.username, req.params.id, body);
+  if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+  if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền phản hồi tin nhắn này' });
+  res.status(201).json({ success: true, message: result.message });
 });

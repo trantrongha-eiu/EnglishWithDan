@@ -10,7 +10,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
   <link rel="stylesheet" href="css/main.css"/>
+  <script src="js/theme.js"></script>
   <!--
     LEGAL REVIEW NEEDED: this page is an operational draft written to remove the
     dead href="#" link on the registration form (audit finding UI#17 / UX#15).
@@ -24,8 +26,8 @@
     .legal-wrap{max-width:760px;margin:0 auto;padding:56px 24px 80px}
     .legal-wrap h1{font-size:clamp(28px,3.5vw,38px);margin:0 0 6px}
     .legal-updated{color:var(--gray);font-size:13.5px;margin:0 0 40px}
-    .legal-wrap h2{font-size:19px;margin:36px 0 10px;color:var(--dark)}
-    .legal-wrap p, .legal-wrap li{font-size:15px;line-height:1.75;color:#374151}
+    .legal-wrap h2{font-size:19px;margin:36px 0 10px;color:var(--text)}
+    .legal-wrap p, .legal-wrap li{font-size:15px;line-height:1.75;color:var(--text2)}
     .legal-wrap ul{padding-left:20px;margin:0 0 12px}
     .legal-wrap a{color:var(--blue)}
   </style>
@@ -43,6 +45,7 @@
     <a href="contact.html">Liên hệ</a>
   </div>
   <div class="nav-cta">
+    <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
     <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
     <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
   </div>
@@ -55,6 +58,7 @@
   <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
   <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
   <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+  <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
 </div>
 
 <main class="legal-wrap">

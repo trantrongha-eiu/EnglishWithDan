@@ -46,8 +46,12 @@ function startPrepTimer() {
       hidePrepTimer();
       showToast('⏰ Hết thời gian chuẩn bị — Bắt đầu nói!', 'info');
       if (state.recognition && !state.isRecording) {
-        state.recognition.start();
-        state.isRecording = true;
+        try {
+          state.recognition.start();
+          state.isRecording = true;
+        } catch (e) {
+          showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+        }
       }
     }
   }, 1000);
@@ -58,8 +62,12 @@ function skipPrep() {
   state.prepTimer = null;
   hidePrepTimer();
   if (state.recognition && !state.isRecording) {
-    state.recognition.start();
-    state.isRecording = true;
+    try {
+      state.recognition.start();
+      state.isRecording = true;
+    } catch (e) {
+      showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+    }
   }
 }
 

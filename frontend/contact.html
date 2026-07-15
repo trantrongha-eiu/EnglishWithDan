@@ -9,8 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
   <link rel="stylesheet" href="css/main.css"/>
   <link rel="stylesheet" href="css/contact.css">
+  <script src="js/theme.js"></script>
 </head>
 <body>
 
@@ -28,6 +30,7 @@
   </div>
 
   <div class="nav-cta">
+    <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
     <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
     <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
   </div>
@@ -43,6 +46,7 @@
   <a href="contact.html"  onclick="toggleMenu()" style="color:var(--blue)">📞 Liên hệ</a>
   <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
   <a href="#" onclick="openConsultModal();return false;" style="color:var(--red)">→ Tư vấn ngay</a>
+  <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
 </div>
 
 <!-- ════════════════════ PAGE HERO ════════════════════ -->
@@ -263,6 +267,19 @@ function toggleMenu() {
 }
 const yrEl = document.getElementById('footer-year');
 if (yrEl) yrEl.textContent = new Date().getFullYear();
+
+// Pre-select the course dropdown from a ?course= link (e.g. a "Tư vấn ngay"
+// button on a specific course card in courses.html) so visitors don't have
+// to re-pick what they already clicked through for.
+(function prefillCourseFromUrl() {
+  const param = new URLSearchParams(window.location.search).get('course');
+  if (!param) return;
+  const select = document.getElementById('f-course');
+  const target = param.trim().toLowerCase();
+  for (const opt of select.options) {
+    if (opt.value.trim().toLowerCase() === target) { select.value = opt.value; break; }
+  }
+})();
 
 async function submitForm(e) {
   e.preventDefault();

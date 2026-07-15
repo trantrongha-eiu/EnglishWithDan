@@ -57,4 +57,26 @@ async function deleteMessage(id, uid) {
   return { status: 'ok' };
 }
 
-module.exports = { getUnreadCount, listMessages, markRead, deleteMessage };
+// Student replies to a message they received — routes back to whoever sent
+// the original (works for both a personal message and a broadcast, since
+// broadcasts still carry a real fromId for the teacher/admin who sent it).
+async function replyToMessage(uid, uname, messageId, body) {
+  if (!body?.trim()) return { status: 'empty' };
+  const original = await Message.findById(messageId);
+  if (!original) return { status: 'not_found' };
+
+  const isRecipient = original.isBroadcast || (original.toId && original.toId.toString() === uid.toString());
+  if (!isRecipient) return { status: 'forbidden' };
+
+  const reply = await Message.create({
+    fromId:   uid,
+    fromName: uname,
+    toId:     original.fromId,
+    subject:  original.subject ? `Re: ${original.subject}` : 'Re: (không tiêu đề)',
+    body:     body.trim(),
+    parentId: original._id,
+  });
+  return { status: 'ok', message: reply };
+}
+
+module.exports = { getUnreadCount, listMessages, markRead, deleteMessage, replyToMessage };

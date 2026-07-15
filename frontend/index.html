@@ -13,8 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/index.css">
+  <script src="js/theme.js"></script>
   <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
 </head>
@@ -34,6 +36,7 @@
     </div>
 
     <div class="nav-cta">
+      <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
       <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Đăng ký</a>
       <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
       <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
@@ -51,6 +54,7 @@
     <a href="register.html" style="color:var(--blue)">→ Đăng ký miễn phí</a>
     <a href="login.html" style="color:var(--blue)">→ Đăng nhập</a>
     <a href="#" onclick="openConsultModal();return false;" style="color:var(--red)">→ Tư vấn ngay</a>
+    <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
   </div>
 
   <!-- ════════════════════ HERO ════════════════════ -->

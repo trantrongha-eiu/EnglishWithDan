@@ -10,6 +10,7 @@ const MessageSchema = new mongoose.Schema({
   isRead:      { type: Boolean, default: false }, // cho tin nhắn cá nhân
   readBy:      [{ type: mongoose.Schema.Types.ObjectId }], // theo dõi ai đã đọc broadcast
   deletedBy:   [{ type: mongoose.Schema.Types.ObjectId }], // soft-delete theo từng user
+  parentId:    { type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: null }, // tin nhắn gốc nếu đây là phản hồi
 }, { timestamps: true });
 
 // Serves GET /api/user/messages/unread-count and GET /api/user/messages (polled

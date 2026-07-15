@@ -1,6 +1,7 @@
 'use strict';
 
 // Extracted from controllers/user.controller.js, verbatim logic.
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const TestAttempt = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
@@ -116,4 +117,30 @@ async function getStats(userId) {
   };
 }
 
-module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats };
+// Daily activity counts (Reading/Listening/Writing/Speaking attempts merged)
+// for the last `days` days — powers the streak heatmap on profile.html.
+async function getActivityHeatmap(userId, days = 365) {
+  const uid = new mongoose.Types.ObjectId(userId);
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+  since.setHours(0, 0, 0, 0);
+
+  const byDay = { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } };
+
+  const [reading, listening, writing, speaking] = await Promise.all([
+    TestAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
+    ListeningAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
+    WritingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay]),
+    SpeakingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay])
+  ]);
+
+  const counts = {};
+  for (const arr of [reading, listening, writing, speaking]) {
+    for (const { _id, count } of arr) counts[_id] = (counts[_id] || 0) + count;
+  }
+  return Object.entries(counts)
+    .map(([date, count]) => ({ date, count }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap };

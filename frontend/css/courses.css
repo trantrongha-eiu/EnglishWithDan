@@ -287,3 +287,52 @@
         flex: unset
       }
     }
+
+    /* ── DARK MODE ── */
+    [data-theme="dark"] .subnav {
+      background: var(--surface);
+    }
+
+    [data-theme="dark"] .subnav-list a {
+      color: var(--text2);
+    }
+
+    [data-theme="dark"] .subnav-list a:hover {
+      color: var(--text);
+    }
+
+    [data-theme="dark"] .course-card {
+      background: var(--surface);
+    }
+
+    [data-theme="dark"] .course-thumb {
+      background: linear-gradient(135deg, var(--surface2), var(--surface));
+    }
+
+    [data-theme="dark"] .lv-red {
+      background: var(--brand-light);
+    }
+
+    [data-theme="dark"] .lv-blue {
+      background: rgba(61, 139, 255, .15);
+    }
+
+    [data-theme="dark"] .lv-green {
+      background: var(--success-light);
+    }
+
+    [data-theme="dark"] .lv-purple {
+      background: rgba(124, 58, 237, .15);
+    }
+
+    [data-theme="dark"] .course-body p {
+      color: var(--text2);
+    }
+
+    [data-theme="dark"] .course-meta span {
+      color: var(--text2);
+    }
+
+    [data-theme="dark"] .course-price {
+      color: var(--text);
+    }

@@ -69,7 +69,6 @@ let selectedBookForSave = null;
 document.addEventListener('DOMContentLoaded', async () => {
     const user = window.AuthService.getUser() || {};
     const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
-    if (name) { const uEl = document.getElementById('userName'); if (uEl) uEl.textContent = `👋 ${name}`; }
     // Show avatar initial
     const navAv = document.getElementById('navAvatar');
     if (navAv && name) navAv.textContent = name[0].toUpperCase();

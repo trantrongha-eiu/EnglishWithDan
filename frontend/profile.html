@@ -93,6 +93,19 @@
         </div>
       </div>
 
+      <!-- Activity heatmap -->
+      <div class="card mb-16" id="heatmapCard" style="display:none">
+        <div class="card-header">
+          <span style="font-weight:700;"><i class="fas fa-calendar-check"></i> Hoạt động học tập</span>
+        </div>
+        <div class="card-body">
+          <div class="heat-scroll"><div class="heat-grid" id="heatGrid"></div></div>
+          <div class="heat-legend">
+            Ít <span class="heat-cell" data-lvl="0"></span><span class="heat-cell" data-lvl="1"></span><span class="heat-cell" data-lvl="2"></span><span class="heat-cell" data-lvl="3"></span><span class="heat-cell" data-lvl="4"></span> Nhiều
+          </div>
+        </div>
+      </div>
+
       <!-- Tabs -->
       <div class="tabs">
         <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview', this)"><i class="fas fa-chart-bar"></i> Tổng quan</button>
@@ -779,8 +792,39 @@
       input.value = '';
     }
 
+    // ── Activity heatmap (GitHub-style, last ~52 weeks) ─────────
+    async function loadActivityHeatmap() {
+      try {
+        const res  = await fetch(API + '/api/user/activity-heatmap?days=371', { headers: headers() });
+        const data = await res.json();
+        if (!data.success) return;
+
+        const counts = {};
+        data.activity.forEach(d => { counts[d.date] = d.count; });
+
+        // Full weeks from the Sunday on/before 364 days ago, through today
+        const today = new Date(); today.setHours(0,0,0,0);
+        const start = new Date(today);
+        start.setDate(start.getDate() - 364);
+        start.setDate(start.getDate() - start.getDay());
+
+        const toLevel = n => n === 0 ? 0 : n === 1 ? 1 : n <= 2 ? 2 : n <= 4 ? 3 : 4;
+        let html = '';
+        let hasAny = false;
+        for (const cur = new Date(start); cur <= today; cur.setDate(cur.getDate() + 1)) {
+          const key = cur.toISOString().slice(0, 10);
+          const n = counts[key] || 0;
+          if (n > 0) hasAny = true;
+          html += `<span class="heat-cell" data-lvl="${toLevel(n)}" title="${key}: ${n} bài luyện tập"></span>`;
+        }
+        document.getElementById('heatGrid').innerHTML = html;
+        if (hasAny) document.getElementById('heatmapCard').style.display = 'block';
+      } catch { /* non-critical widget — fail silently */ }
+    }
+
     // ── Init ──────────────────────────────────────────────────
     loadProfile();
+    loadActivityHeatmap();
     goToHash(location.hash);
   </script>
 </body>

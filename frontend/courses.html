@@ -12,8 +12,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/courses.css">
+  <script src="js/theme.js"></script>
 </head>
 
 <body>
@@ -32,6 +34,7 @@
     </div>
 
     <div class="nav-cta">
+      <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
       <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
       <button class="btn btn-primary" onclick="openConsultModal()"><i class="fas fa-comments"></i> Tư vấn ngay</button>
     </div>
@@ -48,6 +51,7 @@
     <a href="contact.html" onclick="toggleMenu()">📞 Liên hệ</a>
     <a href="login.html" onclick="toggleMenu()">→ Luyện thi</a>
     <a href="#" onclick="openConsultModal();return false;" style="color:var(--red)">→ Tư vấn ngay</a>
+    <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
   </div>
 
   <!-- ════════════════════ PAGE HERO ════════════════════ -->
@@ -197,7 +201,7 @@
       </div>
       <div class="course-price">${price}</div>
       <div class="course-cta">
-        <a href="contact.html" class="btn btn-primary"><i class="fas fa-phone-alt"></i> Tư vấn ngay</a>
+        <a href="contact.html?course=${encodeURIComponent(c.title || '')}" class="btn btn-primary"><i class="fas fa-phone-alt"></i> Tư vấn ngay</a>
         <a href="https://zalo.me/0914769618" target="_blank" class="btn btn-outline">Zalo</a>
       </div>
     </div>

@@ -906,7 +906,7 @@ body.tool-hl .check-box { user-select: none; }
   position: fixed; z-index: 500;
   background: #fff; border: 1px solid #e5e7eb;
   border-radius: 16px; padding: 16px 18px 14px;
-  width: 320px; box-shadow: 0 12px 40px rgba(0,0,0,.18);
+  width: 320px; max-width: calc(100vw - 16px); box-shadow: 0 12px 40px rgba(0,0,0,.18);
   animation: pop .15s ease;
 }
 .dict-word {
@@ -1367,6 +1367,8 @@ body.tool-hl .check-box { user-select: none; }
   }
   .exam-topbar .exam-autosave-lbl { display: none; }
   .exam-topbar #btn-fullscreen { display: none; }
+  /* ...unless we're actually in fullscreen — keep the only exit control reachable */
+  :fullscreen #btn-fullscreen { display: inline-flex; }
 
   /* exam-toolbar: narrow on mobile */
   .exam-toolbar {

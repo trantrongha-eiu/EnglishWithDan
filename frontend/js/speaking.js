@@ -448,8 +448,12 @@ function toggleRecord() {
     state.recognition.stop();
     state.isRecording = false;
   } else {
-    state.recognition.start();
-    state.isRecording = true;
+    try {
+      state.recognition.start();
+      state.isRecording = true;
+    } catch (e) {
+      showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+    }
   }
 }
 

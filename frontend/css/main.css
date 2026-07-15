@@ -4,22 +4,26 @@
    https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap
 ══════════════════════════════════════ */
 
-/* ── TOKENS ── */
+/* ── TOKENS ──
+   --bg / --border / --radius / --radius-sm / --shadow / --shadow-lg now come
+   from css/tokens.css (load it before this file) so they adapt to dark mode.
+   --dark and --white stay literal on purpose: they're used inside sections
+   that are permanently dark (footer, page-hero, contact-section gradient)
+   regardless of theme, so they must NOT flip when [data-theme="dark"] is set.
+   Anywhere text/background is meant to adapt with the theme, use
+   var(--text)/var(--surface) from tokens.css instead — see overrides below. */
 :root {
   --blue:#3d8bff; --blue-dark:#2c78f0; --blue-light:#eff6ff;
   --red:#e53935;  --red-light:#fef2f2;
-  --dark:#0f172a; --gray:#64748b; --border:#e5e7eb;
-  --bg:#f8fafc;   --white:#fff;
-  --radius:14px;  --radius-sm:9px;
-  --shadow:0 2px 16px rgba(0,0,0,.07);
-  --shadow-lg:0 8px 40px rgba(0,0,0,.12);
+  --dark:#0f172a; --gray:#64748b;
+  --white:#fff;
   --font:'Plus Jakarta Sans',sans-serif;
 }
 
 /* ── RESET ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--dark);background:var(--white);line-height:1.6;font-size:15px}
+body{font-family:var(--font);color:var(--text);background:var(--surface);line-height:1.6;font-size:15px}
 img{max-width:100%;height:auto;display:block}
 a{text-decoration:none;color:inherit}
 ul{list-style:none}
@@ -199,3 +203,34 @@ button{font-family:inherit;cursor:pointer}
   .contact-section{padding:48px 20px}
   .page-hero{padding:36px 20px 28px}
 }
+
+/* ── DARK MODE TOGGLE (navbar) ── */
+.btn-dark-toggle{
+  width:38px;height:38px;flex-shrink:0;
+  border-radius:50%;border:1.5px solid var(--border);
+  background:none;color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;transition:all .15s;
+}
+.btn-dark-toggle:hover{background:var(--bg);border-color:var(--blue)}
+.mobile-menu a.mobile-dark-toggle{display:flex;align-items:center;gap:8px}
+
+/* ── DARK MODE ──
+   Only the pieces that are white/near-black by default get an override;
+   footer/page-hero/contact-section already have a permanent dark gradient
+   background with white text, so they're intentionally left alone. */
+[data-theme="dark"] .navbar{ background: rgba(31,41,55,.9); }
+[data-theme="dark"] .nav-links a:hover{ color: var(--text); }
+[data-theme="dark"] .btn-outline{ color: var(--text); border-color: var(--border); }
+[data-theme="dark"] .nav-hamburger{ color: var(--text); }
+[data-theme="dark"] .mobile-menu{ background: var(--surface); border-top-color: var(--border); }
+[data-theme="dark"] .mobile-menu a{ color: var(--text); border-bottom-color: var(--border); }
+[data-theme="dark"] .form-card{ background: var(--surface); }
+[data-theme="dark"] .form-card h3{ color: var(--text); }
+[data-theme="dark"] .form-group label{ color: var(--text); }
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea{ color: var(--text); border-color: var(--border); }
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus{ background: var(--surface); }

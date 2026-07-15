@@ -29,6 +29,10 @@
     .et-cause{background:#fff3e0;color:#e65100}
     .et-opinion{background:#f3e5f5;color:#6a1b9a}
     .et-discuss{background:#e3f2fd;color:#1565c0}
+    [data-theme="dark"] .et-adv{background:#14321a;color:#81c995}
+    [data-theme="dark"] .et-cause{background:#3a2508;color:#ffb74d}
+    [data-theme="dark"] .et-opinion{background:#2e1a3a;color:#ce93d8}
+    [data-theme="dark"] .et-discuss{background:#132b45;color:#90caf9}
 
     /* ── Navigation steps ── */
     .t2-nav{display:flex;gap:8px;padding:16px 20px;align-items:center;flex-wrap:wrap}
@@ -583,7 +587,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function initUser() {
   const user = window.AuthService.getUser() || {};
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
-  if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  if (name) {
+    const uEl = document.getElementById('userName');
+    if (uEl) uEl.textContent = '👋 ' + name;
+  }
   const icon = document.getElementById('sound-icon');
   if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();

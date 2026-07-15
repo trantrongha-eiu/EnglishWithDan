@@ -722,3 +722,13 @@
         [data-theme="dark"] .rq-ans-correct { color:#4ade80; }
         [data-theme="dark"] .mo-options-box { border-color:#374151; }
         [data-theme="dark"] .mo-options-title { background:#1e2d4a;color:#93c5fd;border-bottom-color:#374151; }
+
+        /* ── Dark mode: Matching Information/Features question rows ── */
+        [data-theme="dark"] .rq-chip-bank { background:#1a2030;border-color:#374151; }
+        [data-theme="dark"] .match-question-row { background:#1e2433;border-color:#374151; }
+        [data-theme="dark"] .match-q-text { color:#e5e7eb; }
+        [data-theme="dark"] .match-answer-badge { background:#374151;color:#f9fafb; }
+        [data-theme="dark"] .match-ans-correct { background:#14532d;color:#86efac; }
+        [data-theme="dark"] .match-ans-wrong { background:#7f1d1d;color:#fca5a5; }
+        [data-theme="dark"] .match-correct-ans { color:#4ade80; }
+        [data-theme="dark"] .match-reuse-note { background:#3f2d0a;border-color:#92400e;color:#fbbf24; }

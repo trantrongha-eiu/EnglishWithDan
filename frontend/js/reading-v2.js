@@ -3044,6 +3044,13 @@ let _dictWord = '';
 let _dictCurrentData = null;
 const _dictCache = new Map(); // word.toLowerCase() → { phonetic, partOfSpeech, primaryMeaning, otherMeanings[], examples[] }
 
+// Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
+function fetchWithTimeout(url, ms = 7000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+}
+
 document.addEventListener('dblclick', e => {
   if (state.tool !== 'dict' || (!state.isReview && !_practiceMode && !_retryState)) return;
   const sel = window.getSelection()?.toString().trim();
@@ -3065,9 +3072,9 @@ async function lookupWord(word, x, y) {
 
   const enc = encodeURIComponent;
   const [dictRes, transRes, memRes] = await Promise.allSettled([
-    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`).then(r => r.ok ? r.json() : null),
-    fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
-    fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.json())
+    fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`).then(r => r.ok ? r.json() : null),
+    fetchWithTimeout(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
+    fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.json())
   ]);
 
   let phonetic = '', partOfSpeech = '', examples = [];
@@ -3193,7 +3200,7 @@ async function translateSelected() {
   // Google Translate free endpoint — limit query to 500 chars to avoid URL overflow
   const query = text.length > 500 ? text.slice(0, 500) : text;
   try {
-    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(query)}`);
+    const res = await fetchWithTimeout(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(query)}`);
     const data = await res.json();
     const translated = data?.[0]?.map(s => s?.[0]).filter(Boolean).join('') || 'Không dịch được';
     resEl.textContent = translated;

@@ -32,6 +32,41 @@ router.get('/messages', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/messages/received – thư nhận được (phản hồi từ học sinh, thông báo thanh toán...)
+router.get('/messages/received', auth, teacherOnly, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const filter = { toId: req.user._id, deletedBy: { $ne: req.user._id } };
+    const [messages, total] = await Promise.all([
+      Message.find(filter)
+        .populate('fromId', 'username')
+        .sort({ createdAt: -1 })
+        .skip((+page - 1) * +limit)
+        .limit(+limit)
+        .lean(),
+      Message.countDocuments(filter)
+    ]);
+    res.json({ success: true, messages, total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/messages/received/:id – xóa thư đã nhận (soft-delete cho người xem này)
+router.delete('/messages/received/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const msg = await Message.findOne({ _id: req.params.id, toId: req.user._id });
+    if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+    if (!msg.deletedBy.some(id => id.toString() === req.user._id.toString())) {
+      msg.deletedBy.push(req.user._id);
+      await msg.save();
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/messages  – gửi thư mới
 router.post('/messages', auth, teacherOnly, async (req, res) => {
   try {

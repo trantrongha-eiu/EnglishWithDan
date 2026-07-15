@@ -1631,6 +1631,7 @@ body.tool-hl .radio-dot { user-select: none; }
   box-shadow: 0 12px 40px rgba(0,0,0,.18);
   padding: 16px 18px 14px;
   width: 320px;
+  max-width: calc(100vw - 16px);
   z-index: 300;
   border: 1px solid #e5e7eb;
   animation: modal-pop .15s ease;
@@ -1962,6 +1963,8 @@ body.tool-hl .check-box { user-select: none; }
   .exam-title-txt { max-width: 80px; }
   .exam-autosave-lbl { display: none; }
   #btn-fullscreen { display: none; }
+  /* ...unless we're actually in fullscreen — keep the only exit control reachable */
+  :fullscreen #btn-fullscreen { display: inline-flex; }
 }
 /* ══════════════════════════════════════════════════════════════════════
    READING – QUESTION GROUPS (thêm vào cuối reading.css)

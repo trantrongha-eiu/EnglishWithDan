@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8">
@@ -27,14 +27,14 @@
     .msg-item { padding: 14px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: .15s; display: flex; flex-direction: column; gap: 4px; }
     .msg-item:last-child { border-bottom: none; }
     .msg-item:hover { background: var(--surface2, rgba(0,0,0,.03)); }
-    .msg-item.selected { background: rgba(102,126,234,.08); }
+    .msg-item.selected { background: var(--brand-light); }
     .msg-item.unread .msg-sender { font-weight: 700; }
     .msg-item.unread .msg-preview { font-weight: 600; color: var(--text); }
     .msg-sender { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
     .msg-preview { font-size: 12px; color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .msg-subject { font-size: 12px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .msg-time { font-size: 11px; color: var(--text3); }
-    .dot-unread { width: 8px; height: 8px; border-radius: 50%; background: #667eea; flex-shrink: 0; }
+    .dot-unread { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex-shrink: 0; }
     .empty-state { padding: 40px 20px; text-align: center; color: var(--text3); }
     .empty-state i { font-size: 40px; margin-bottom: 12px; display: block; }
 
@@ -46,13 +46,19 @@
     .detail-subject { font-size: 18px; font-weight: 700; color: var(--text); margin: 0 0 8px; }
     .detail-meta { font-size: 13px; color: var(--text3); display: flex; gap: 16px; flex-wrap: wrap; }
     .detail-body { font-size: 15px; line-height: 1.7; color: var(--text); white-space: pre-wrap; flex: 1; }
+    .reply-box { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); padding-top: 16px; }
+    .reply-box textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 70px; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; transition: border-color .15s; }
+    .reply-box textarea:focus { border-color: var(--brand); }
+    .reply-box .btn-primary { align-self: flex-end; background: var(--brand); color: #fff; }
+    .reply-box .btn-primary:hover { background: var(--brand-dark); }
+    .reply-box .btn-primary:disabled { opacity: .6; cursor: default; }
     .detail-actions { display: flex; gap: 10px; }
     .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 18px; border-radius:10px; border:none; cursor:pointer; font-size:14px; font-weight:600; font-family:inherit; transition:.15s; }
     .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text2); }
     .btn-ghost:hover { background:var(--surface2,rgba(0,0,0,.05)); }
-    .btn-danger { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
-    .btn-danger:hover { background:#dc2626; color:#fff; }
-    .broadcast-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; background:rgba(102,126,234,.1); color:#667eea; border-radius:20px; font-size:12px; font-weight:600; }
+    .btn-danger { background:var(--danger-light); color:var(--danger); border:1px solid rgba(220,38,38,.35); }
+    .btn-danger:hover { background:var(--danger); color:#fff; }
+    .broadcast-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; background:var(--brand-light); color:var(--brand); border-radius:20px; font-size:12px; font-weight:600; }
   </style>
 </head>
 <body>

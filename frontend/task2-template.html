@@ -509,7 +509,10 @@ function updateXPStorage(earned) {
 function initUser() {
   const user = window.AuthService.getUser() || {};
   const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
-  if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  if (name) {
+    const uEl = document.getElementById('userName');
+    if (uEl) uEl.textContent = '👋 ' + name;
+  }
   const icon = document.getElementById('sound-icon');
   if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
@@ -1227,6 +1230,7 @@ function enterExamMode() {
   renderTplContent();
   _examTimerInterval = setInterval(tickExamTimer, 1000);
   updateExamBtn();
+  window.onbeforeunload = e => { if (_examMode) { e.preventDefault(); e.returnValue = ''; } };
   showToast('⏱ Bắt đầu thi thử! Không có gợi ý – nộp bài khi xong.', 'info', 3000);
 }
 
@@ -1235,6 +1239,7 @@ function exitExamMode() {
   _examTimerInterval = null;
   _examMode      = false;
   _examStartTime = null;
+  window.onbeforeunload = null;
   renderTplContent();
   updateExamBtn();
 }

@@ -121,8 +121,32 @@
     }
   });
 
-  window.openConsultModal = function () {
+  // Pre-select the course dropdown from a ?course= URL param (e.g. an ad
+  // landing link or a "Tư vấn ngay" button on a specific course card) so the
+  // visitor doesn't have to re-pick what they already clicked through for.
+  function prefillCourseFromUrl() {
+    var param = new URLSearchParams(window.location.search).get('course');
+    if (!param) return;
+    var select = document.getElementById('_cmCourse');
+    var target = param.trim().toLowerCase();
+    for (var i = 0; i < select.options.length; i++) {
+      if (select.options[i].value.trim().toLowerCase() === target) {
+        select.value = select.options[i].value;
+        return;
+      }
+    }
+  }
+
+  window.openConsultModal = function (course) {
     overlay.classList.add('open');
+    var select = document.getElementById('_cmCourse');
+    if (course) {
+      for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === course) { select.value = course; break; }
+      }
+    } else {
+      prefillCourseFromUrl();
+    }
     setTimeout(function () { document.getElementById('_cmName').focus(); }, 50);
   };
   window.closeConsultModal = function () {

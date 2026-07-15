@@ -798,7 +798,7 @@ function checkResumeTest() {
     const raw = localStorage.getItem(_WP_TEST_KEY);
     if (!raw) return;
     const data = JSON.parse(raw);
-    if (!data.exercises?.length || !data.idx) { clearTestStorage(); return; }
+    if (!data.exercises?.length || data.idx == null) { clearTestStorage(); return; }
     if (Date.now() - data.savedAt > 4 * 60 * 60 * 1000) { clearTestStorage(); return; }
     const intro = document.getElementById('test-intro');
     if (!intro) return;
@@ -1061,7 +1061,10 @@ function initUser() {
   const name = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : user.username || '';
-  if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  if (name) {
+    const uEl = document.getElementById('userName');
+    if (uEl) uEl.textContent = '👋 ' + name;
+  }
 }
 
 // logout() moved to js/auth.js (single source of truth — Phase 3 audit).

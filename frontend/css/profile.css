@@ -171,6 +171,17 @@ body { background: var(--bg); padding-top: var(--nav-height); }
 .streak-info h3 { font-size: 19px; font-weight: 800; margin: 0 0 2px; }
 .streak-info p { font-size: 12px; opacity: .9; margin: 0; }
 
+/* ── Activity heatmap ── */
+.heat-scroll { overflow-x: auto; padding-bottom: 4px; }
+.heat-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 11px); gap: 3px; width: max-content; }
+.heat-cell { width: 11px; height: 11px; border-radius: 2px; background: var(--surface2, var(--bg)); }
+.heat-cell[data-lvl="1"] { background: rgba(229,57,53,.28); }
+.heat-cell[data-lvl="2"] { background: rgba(229,57,53,.52); }
+.heat-cell[data-lvl="3"] { background: rgba(229,57,53,.76); }
+.heat-cell[data-lvl="4"] { background: #e53935; }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); margin-top: 8px; justify-content: flex-end; }
+.heat-legend .heat-cell { width: 10px; height: 10px; }
+
 /* ── Band score ── */
 .band-history { display: flex; flex-direction: column; gap: 10px; }
 .band-item {

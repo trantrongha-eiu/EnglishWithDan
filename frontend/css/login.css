@@ -575,10 +575,16 @@
             .social-login { grid-template-columns: 1fr; }
             .form-options { font-size: 13px; }
             .divider { margin: 18px 0; }
+            .fm-modal-box { padding: 28px 20px; }
+            .otp-row { gap: 6px; }
+            .otp-input { width: 40px; height: 48px; font-size: 18px; }
         }
 
         /* Very small phones */
         @media (max-width: 360px) {
             .login-card { padding: 24px 16px; }
             .welcome-text { font-size: 20px; }
+            .fm-modal-box { padding: 22px 14px; }
+            .otp-row { gap: 4px; }
+            .otp-input { width: 34px; height: 44px; font-size: 16px; }
         }

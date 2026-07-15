@@ -1013,7 +1013,10 @@ function initUser() {
   const name = user.firstName
     ? `${user.firstName} ${user.lastName || ''}`.trim()
     : user.username || '';
-  if (name) document.getElementById('userName').textContent = '👋 ' + name;
+  if (name) {
+    const uEl = document.getElementById('userName');
+    if (uEl) uEl.textContent = '👋 ' + name;
+  }
 }
 
 function loadXPFromStorage() {

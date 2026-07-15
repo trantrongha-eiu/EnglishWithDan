@@ -28,12 +28,19 @@ export default function Messages() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
 
+  // Received messages state (student replies, payment notices, ...)
+  const [box, setBox] = useState('sent'); // 'sent' | 'received'
+  const [received, setReceived] = useState([]);
+  const [receivedTotal, setReceivedTotal] = useState(0);
+  const [receivedPage, setReceivedPage] = useState(1);
+
   // Online users
   const [onlineIds, setOnlineIds] = useState(new Set());
 
   useEffect(() => {
     loadStudents();
     loadMessages(1);
+    loadReceived(1);
     loadOnline();
   }, []);
 
@@ -50,6 +57,30 @@ export default function Messages() {
       setMessages(d.messages || []);
       setTotal(d.total || 0);
     } catch (e) { toast(e.message, 'error'); }
+  }
+
+  async function loadReceived(p = receivedPage) {
+    try {
+      const d = await apiFetch(`/admin/messages/received?page=${p}&limit=${PAGE}`);
+      setReceived(d.messages || []);
+      setReceivedTotal(d.total || 0);
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  function replyTo(fromId) {
+    setForm(f => ({ ...f, toId: fromId, isBroadcast: false }));
+    setShowCompose(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function deleteReceived(id) {
+    confirm('Xóa tin nhắn này?', async () => {
+      try {
+        await apiFetch(`/admin/messages/received/${id}`, { method: 'DELETE' });
+        toast('Đã xóa');
+        loadReceived(receivedPage);
+      } catch (e) { toast(e.message, 'error'); }
+    });
   }
 
   async function loadOnline() {
@@ -101,7 +132,7 @@ export default function Messages() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">Hộp thư ({total})</h2>
+        <h2 className="section-title">Hộp thư</h2>
         <button className="btn btn-primary" onClick={() => setShowCompose(v => !v)}>
           {showCompose ? '✕ Đóng' : '✉️ Soạn thư'}
         </button>
@@ -170,42 +201,94 @@ export default function Messages() {
       {/* ── Online users quick panel ── */}
       <OnlinePanel onlineIds={onlineIds} students={students} onRefresh={loadOnline} />
 
-      {/* ── Sent messages table ── */}
-      <div className="table-wrap" style={{ marginTop: 20 }}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>NGƯỜI NHẬN</th><th>TIÊU ĐỀ</th><th>NỘI DUNG</th><th>THỜI GIAN</th><th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {messages.length === 0
-              ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
-              : messages.map(m => (
-                <tr key={m._id}>
-                  <td>
-                    {m.isBroadcast
-                      ? <span className="badge badge-blue">📢 Tất cả học sinh</span>
-                      : <strong>{m.toId?.username || '–'}</strong>}
-                  </td>
-                  <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {m.subject || <span style={{ color: 'var(--text3)' }}>(Không có tiêu đề)</span>}
-                  </td>
-                  <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text2)' }}>
-                    {m.body}
-                  </td>
-                  <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
-                  <td>
-                    {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteMsg(m._id)}>🗑</button>}
-                  </td>
+      {/* ── Sent / Received tabs ── */}
+      <div style={{ display: 'flex', gap: 8, marginTop: 20, marginBottom: 12 }}>
+        <button className={`btn btn-sm ${box === 'sent' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setBox('sent')}>
+          📤 Đã gửi ({total})
+        </button>
+        <button className={`btn btn-sm ${box === 'received' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setBox('received')}>
+          📥 Đã nhận ({receivedTotal})
+        </button>
+      </div>
+
+      {box === 'sent' ? (
+        <>
+          {/* ── Sent messages table ── */}
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>NGƯỜI NHẬN</th><th>TIÊU ĐỀ</th><th>NỘI DUNG</th><th>THỜI GIAN</th><th></th>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div style={{ marginTop: 12 }}>
-        <Pagination page={page} total={total} pageSize={PAGE} onPage={p => { setPage(p); loadMessages(p); }} />
-      </div>
+              </thead>
+              <tbody>
+                {messages.length === 0
+                  ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
+                  : messages.map(m => (
+                    <tr key={m._id}>
+                      <td>
+                        {m.isBroadcast
+                          ? <span className="badge badge-blue">📢 Tất cả học sinh</span>
+                          : <strong>{m.toId?.username || '–'}</strong>}
+                      </td>
+                      <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {m.subject || <span style={{ color: 'var(--text3)' }}>(Không có tiêu đề)</span>}
+                      </td>
+                      <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text2)' }}>
+                        {m.body}
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
+                      <td>
+                        {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteMsg(m._id)}>🗑</button>}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={page} total={total} pageSize={PAGE} onPage={p => { setPage(p); loadMessages(p); }} />
+          </div>
+        </>
+      ) : (
+        <>
+          {/* ── Received messages table (student replies, payment notices, ...) ── */}
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>NGƯỜI GỬI</th><th>TIÊU ĐỀ</th><th>NỘI DUNG</th><th>THỜI GIAN</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {received.length === 0
+                  ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
+                  : received.map(m => (
+                    <tr key={m._id} style={{ fontWeight: m.isRead ? 400 : 700 }}>
+                      <td><strong>{m.fromId?.username || m.fromName || '–'}</strong></td>
+                      <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {m.subject || <span style={{ color: 'var(--text3)' }}>(Không có tiêu đề)</span>}
+                      </td>
+                      <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text2)' }}>
+                        {m.body}
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
+                      <td style={{ display: 'flex', gap: 6 }}>
+                        {m.fromId?._id && (
+                          <button className="btn btn-ghost btn-sm" onClick={() => replyTo(m.fromId._id)} title="Trả lời">↩️</button>
+                        )}
+                        {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteReceived(m._id)}>🗑</button>}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={receivedPage} total={receivedTotal} pageSize={PAGE} onPage={p => { setReceivedPage(p); loadReceived(p); }} />
+          </div>
+        </>
+      )}
     </>
   );
 }

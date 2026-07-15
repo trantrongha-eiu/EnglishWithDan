@@ -12,13 +12,14 @@
   <link rel="stylesheet" href="css/tokens.css"/>
   <link rel="stylesheet" href="css/components.css"/>
   <link rel="stylesheet" href="css/main.css"/>
+  <script src="js/theme.js"></script>
   <style>
     .notfound-wrap{
       min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
       text-align:center; padding:80px 24px; gap:6px;
     }
     .notfound-code{ font-size:15px; font-weight:700; letter-spacing:.08em; color:var(--brand); text-transform:uppercase; }
-    .notfound-title{ font-size:clamp(26px,4vw,36px); font-weight:800; color:var(--dark); margin:6px 0 10px; }
+    .notfound-title{ font-size:clamp(26px,4vw,36px); font-weight:800; color:var(--text); margin:6px 0 10px; }
     .notfound-msg{ color:var(--gray); font-size:15.5px; max-width:52ch; line-height:1.6; margin-bottom:28px; }
     .notfound-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
   </style>
@@ -36,6 +37,7 @@
     <a href="contact.html">Liên hệ</a>
   </div>
   <div class="nav-cta">
+    <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
     <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Luyện thi</a>
   </div>
   <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars" id="ham-icon"></i></button>
@@ -47,6 +49,7 @@
   <a href="about.html"    onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
   <a href="contact.html"  onclick="toggleMenu()">📞 Liên hệ</a>
   <a href="login.html"    onclick="toggleMenu()">→ Luyện thi</a>
+  <a href="#" class="mobile-dark-toggle" onclick="toggleDark();return false;"><span class="dark-toggle-icon">🌙</span> Chế độ tối/sáng</a>
 </div>
 
 <main class="notfound-wrap">

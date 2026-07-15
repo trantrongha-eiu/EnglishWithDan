@@ -101,7 +101,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   display:flex;align-items:center;justify-content:space-between;
 }
 .btn-add-book{background:none;border:none;cursor:pointer;color:var(--brand);font-size:18px;padding:2px;border-radius:6px;transition:background .15s}
-.btn-add-book:hover{background:#fce4e4}
+.btn-add-book:hover{background:var(--brand-light)}
 
 .book-item{
   display:flex;align-items:center;gap:10px;
@@ -399,7 +399,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .vocab-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .vocab-num{background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px}
 .vocab-word-big{font-size:16px;font-weight:800;flex:1;color:var(--text)}
-.vocab-pos{font-size:11px;color:var(--purple);background:#f5f3ff;padding:2px 7px;border-radius:10px;font-weight:600}
+.vocab-pos{font-size:11px;color:var(--purple);background:rgba(167,139,250,.15);padding:2px 7px;border-radius:10px;font-weight:600}
 .vocab-phonetic{font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:4px}
 .vocab-meaning{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
 .vocab-example{font-size:12px;color:var(--text2);font-style:italic;line-height:1.5}
@@ -410,7 +410,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   color:var(--text2);margin-top:10px;width:100%;justify-content:center;
   transition:all .15s;
 }
-.btn-save-to-book:hover{border-color:var(--brand);color:var(--brand);background:#fce4e4}
+.btn-save-to-book:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
 
 /* Practice container */
 .practice-container{max-width:640px;margin:0 auto}
@@ -543,7 +543,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .form-input:focus{border-color:var(--blue)}
 .emoji-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 .emoji-opt{font-size:22px;padding:6px;border:2px solid transparent;border-radius:8px;cursor:pointer;transition:all .15s}
-.emoji-opt:hover,.emoji-opt.selected{border-color:var(--brand);background:#fce4e4}
+.emoji-opt:hover,.emoji-opt.selected{border-color:var(--brand);background:var(--brand-light)}
 
 .book-list-select{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
 .book-opt{
@@ -963,7 +963,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .para-copy-btn {
   background: none;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border2);
   border-radius: 6px;
   color: var(--text3);
   font-size: 14px;
@@ -971,7 +971,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   padding: 3px 8px;
   transition: background .15s, color .15s;
 }
-.para-copy-btn:hover { background: #e5e7eb; color: var(--text); }
+.para-copy-btn:hover { background: var(--surface2); color: var(--text); }
 
 .para-table-wrap { overflow-x: auto; }
 .para-table {

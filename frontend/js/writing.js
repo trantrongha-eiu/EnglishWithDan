@@ -1696,7 +1696,7 @@ function onPracticeInput() {
   const minWords = practiceState.taskType === 1 ? 150 : 250;
   const pct = Math.min(100, (words / minWords) * 100);
   if (!_pwWcEl) _pwWcEl = document.getElementById('pw-wc');
-  _pwWcEl.textContent = words;
+  if (_pwWcEl) _pwWcEl.textContent = words;
   if (!_pwWcInlineEl) _pwWcInlineEl = document.getElementById('pw-wc-inline-n');
   const inlineN = _pwWcInlineEl;
   if (inlineN) inlineN.textContent = words;
