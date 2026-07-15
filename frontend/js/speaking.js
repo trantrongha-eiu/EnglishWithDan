@@ -284,6 +284,9 @@ function setQuestion(q) {
   if (q.part === 2) {
     setTimeout(() => { if (state.currentQuestion === q) startPrepTimer(); }, 100);
   }
+
+  setupDictionaryDouble('question-card', 'speaking-question');
+  setupDictionaryDouble('transcript-textarea', 'speaking-transcript');
 }
 
 function readQuestion() {
@@ -579,6 +582,8 @@ function renderFeedback(fb) {
   } else {
     if (fbImprovements) fbImprovements.style.display = 'none';
   }
+
+  setupDictionaryDouble('feedback-results', 'speaking-feedback');
 }
 
 // ══════════════════════════════════════════════════════

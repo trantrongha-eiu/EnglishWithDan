@@ -96,12 +96,18 @@
     return word;
   }
 
-  function setupDictionaryDouble(containerId, source) {
+  // gate (optional): fn returning falsy skips the lookup entirely — used by
+  // Reading/Listening, where double-click lookup only fires while their own
+  // toolbar "Dict" tool is toggled on and a review/practice/retry screen is
+  // active. Callers that don't pass a gate get the old unconditional behavior.
+  function setupDictionaryDouble(containerId, source, gate) {
     var el = document.getElementById(containerId);
     if (!el) return;
     if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
     el._dictSource = source || 'other';
+    el._dictGate = gate || null;
     el._dictHandler = function (e) {
+      if (el._dictGate && !el._dictGate()) return;
       var word = _extractDoubleClickedWord(e);
       if (!word) return;
       _source = el._dictSource;

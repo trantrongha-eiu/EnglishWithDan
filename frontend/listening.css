@@ -984,6 +984,66 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .dict-ex-section      { border-top-color: #374151; }
 [data-theme="dark"] .dict-ex-item         { color: #9ca3af; border-left-color: #374151; }
 
+/* ── Vocab book-picker modal (shared markup — see css/dictionary-popup.css,
+      copied here rather than included as a file to avoid that file's own
+      #dict-popup-adjacent rules clashing with this page's pre-existing ones). */
+.dict-vocab-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 950; padding: 16px;
+}
+.dict-vocab-modal.hidden { display: none; }
+.dict-vocab-box {
+  background: #fff; border-radius: 14px; width: 100%; max-width: 380px;
+  max-height: 80vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+.dict-vocab-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; border-bottom: 1px solid #e5e7eb; flex-shrink: 0;
+}
+.dict-vocab-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: #111; }
+.dict-vocab-close {
+  background: none; border: none; cursor: pointer; color: #9ca3af;
+  font-size: 16px; padding: 4px 6px; border-radius: 6px;
+}
+.dict-vocab-close:hover { background: #f3f4f6; color: #374151; }
+.dict-vocab-body { padding: 8px 18px 18px; overflow-y: auto; }
+[data-theme="dark"] .dict-vocab-box       { background: #1f2937; }
+[data-theme="dark"] .dict-vocab-header    { border-bottom-color: #374151; }
+[data-theme="dark"] .dict-vocab-header h3 { color: #f9fafb; }
+[data-theme="dark"] .dict-vocab-close     { color: #6b7280; }
+[data-theme="dark"] .dict-vocab-close:hover { background: #374151; color: #e5e7eb; }
+
+.vb-pick-item { display: flex; align-items: center; gap: 12px; padding: 10px 8px; cursor: pointer; border-radius: 8px; transition: background .15s; }
+.vb-pick-item:hover { background: #f3f4f6; }
+.vb-pick-emoji { font-size: 22px; }
+.vb-pick-info { flex: 1; }
+.vb-pick-name { font-size: 14px; font-weight: 600; color: #1f2937; }
+.vb-pick-count { font-size: 12px; color: #9ca3af; }
+.vb-pick-arrow { font-size: 20px; color: #d1d5db; }
+[data-theme="dark"] .vb-pick-item:hover { background: #374151; }
+[data-theme="dark"] .vb-pick-name  { color: #f9fafb; }
+[data-theme="dark"] .vb-pick-count { color: #6b7280; }
+[data-theme="dark"] .vb-pick-arrow { color: #4b5563; }
+
+.rd-vocab-new-section { border-top: 1px solid #e5e7eb; padding: 12px 0 0; margin-top: 8px; }
+[data-theme="dark"] .rd-vocab-new-section { border-top-color: #374151; }
+.rd-vocab-new-label { font-size: 12px; color: #9ca3af; margin-bottom: 8px; }
+[data-theme="dark"] .rd-vocab-new-label { color: #6b7280; }
+.rd-vocab-input {
+  flex: 1; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px 12px;
+  font-size: 14px; font-family: inherit; outline: none; background: #fff;
+  color: #111; transition: border-color .15s;
+}
+.rd-vocab-input:focus { border-color: #3d8bff; }
+[data-theme="dark"] .rd-vocab-input { background: #111827; border-color: #374151; color: #e5e7eb; }
+.rd-vocab-create-btn {
+  background: #3d8bff; color: #fff; border: none; border-radius: 8px;
+  padding: 8px 14px; font-size: 13px; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.rd-vocab-create-btn:hover { background: #1d4ed8; }
+
 /* ══════════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════════ */

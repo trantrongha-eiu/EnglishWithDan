@@ -1387,6 +1387,8 @@ function renderStudyGrid() {
         section.innerHTML = renderParaphraseTable(paraWords, currentUnit.title);
         grid.parentElement.insertBefore(section, grid.nextSibling);
     }
+
+    setupDictionaryDouble('studyMode', 'vocab-study');
 }
 
 function renderParaphraseTable(words, title) {

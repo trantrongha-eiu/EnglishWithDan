@@ -23,6 +23,7 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/route-params.js"></script>
+<script src="js/shared/dictionary-lookup.js"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -390,6 +391,28 @@
         <div id="translate-result" class="translate-result"></div>
     </div>
 
+    <!-- Vocab book-picker modal -->
+    <div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+      <div class="dict-vocab-box">
+        <div class="dict-vocab-header">
+          <h3>📚 Lưu vào sổ từ vựng</h3>
+          <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="dict-vocab-body">
+          <div id="dict-vocab-book-list"></div>
+          <div class="rd-vocab-new-section">
+            <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+            <div style="display:flex;gap:8px">
+              <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+                class="rd-vocab-input"
+                onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+              <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══════════════════════════════════════════════
      MODAL – NÂNG CẤP PREMIUM (listening)
 ══════════════════════════════════════════════ -->
@@ -590,7 +613,7 @@
                 if (btn)  btn.title = fsEl ? 'Thoát toàn màn hình' : 'Toàn màn hình';
                 if (icon) icon.className = fsEl ? 'fas fa-compress' : 'fas fa-expand';
             });
-            const ids = ['dict-popup', 'translate-popup', 'modal-submit', 'modal-exit', 'modal-lt-practice-exit', 'modal-history', 'modal-lt-practice-history', 'toast', 'section-nav-fixed', 'settings-panel'];
+            const ids = ['dict-popup', 'translate-popup', 'dict-vocab-modal', 'modal-submit', 'modal-exit', 'modal-lt-practice-exit', 'modal-history', 'modal-lt-practice-history', 'toast', 'section-nav-fixed', 'settings-panel'];
             if (fsEl) {
                 ids.forEach(id => {
                     const el = document.getElementById(id);
@@ -762,7 +785,7 @@
             const el = document.getElementById('userName');
             if (el && name) el.textContent = `👋 ${name}`;
             setupHighlight();
-            setupDictionaryDouble('questions-panel');   // dict trong exam
+            setupDictionaryDouble('questions-panel', 'listening', _ltDictGate);   // dict trong exam
             setupAudioEvents();
             await loadTestList();
             checkResumeExam();
@@ -1379,7 +1402,7 @@
                     const panel = document.getElementById('questions-panel');
                     panel.innerHTML = partHlCache[idx];
                     setupDragDrop(panel);
-                    setupDictionaryDouble('questions-panel');
+                    setupDictionaryDouble('questions-panel', 'listening', _ltDictGate);
                     const section = getSortedSections(false)[idx];
                     (section?.questionGroups || []).forEach(g =>
                         (g.questions || []).forEach(q => restoreAnswer(q))
@@ -1416,7 +1439,7 @@
             refreshWordChips();
             setupDragDrop(panel);
             // re-attach dict to questions-panel sau khi re-render
-            setupDictionaryDouble('questions-panel');
+            setupDictionaryDouble('questions-panel', 'listening', _ltDictGate);
         }
 
         // ── Helpers ───────────────────────────────────────────────
@@ -1951,8 +1974,8 @@
             buildPartTabs('part-tabs-rv', true);
             renderReviewPartQuestions(0);
             renderQNav('q-nav-grid-rv', true);
-            setupDictionaryDouble('transcript-body');
-            setupDictionaryDouble('review-questions-inner');
+            setupDictionaryDouble('transcript-body', 'listening', _ltDictGate);
+            setupDictionaryDouble('review-questions-inner', 'listening', _ltDictGate);
             setTool('none');
             showScreen('review');
         }
@@ -2672,27 +2695,14 @@
         }
 
         // ══════════════════════════════════════════════
-        // DICTIONARY
+        // DICTIONARY — js/shared/dictionary-lookup.js does the actual lookup/
+        // render/save-to-vocab now; this page only supplies the gate (dict
+        // lookup fires only while the "Dict" toolbar tool is on, in review/
+        // lt-practice mode) via setupDictionaryDouble(containerId, source, gate).
         // ══════════════════════════════════════════════
-        let _ltDictData = null;
-        const _ltDictCache = new Map();
-
-        function setupDictionaryDouble(containerId) {
-            const el = document.getElementById(containerId);
-            if (!el) return;
-            if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
-            el._dictHandler = async e => {
-                if (state.tool !== 'dict') return;
-                const ltSubmitted = window.isLtPracticeSubmitted?.();
-                const ltActive    = window.isLtPracticeActive?.();
-                if (!state.isReview && !ltSubmitted && !ltActive) return;
-                const sel = window.getSelection();
-                const word = sel?.toString().trim();
-                if (!word || word.split(' ').length > 3 || word.length < 2) return;
-                e.preventDefault();
-                await lookupWord(word, e);
-            };
-            el.addEventListener('dblclick', el._dictHandler);
+        function _ltDictGate() {
+            return state.tool === 'dict' &&
+                (state.isReview || window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.());
         }
 
         // Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
@@ -2700,120 +2710,6 @@
             const ctrl = new AbortController();
             const t = setTimeout(() => ctrl.abort(), ms);
             return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
-        }
-
-        async function lookupWord(word, e) {
-            const key = word.toLowerCase();
-            const popup = document.getElementById('dict-popup');
-            state.dictWord = word;
-            const sel = window.getSelection();
-            let top = 200, left = 200;
-            if (sel?.rangeCount) {
-                const r = sel.getRangeAt(0).getBoundingClientRect();
-                top = Math.min(r.bottom + 8, window.innerHeight - 400);
-                left = Math.min(r.left, window.innerWidth - 330);
-                top = Math.max(top, 8); left = Math.max(left, 8);
-            }
-            popup.style.top = top + 'px'; popup.style.left = left + 'px';
-            document.getElementById('dict-word').textContent = word;
-            document.getElementById('dict-phonetic').textContent = '';
-            popup.classList.remove('hidden');
-
-            if (_ltDictCache.has(key)) { renderDictPopup(_ltDictCache.get(key)); return; }
-
-            document.getElementById('dict-body').innerHTML = '<div class="dict-loading">Đang tra...</div>';
-
-            const enc = encodeURIComponent;
-            const [dictRes, transRes, memRes] = await Promise.allSettled([
-                fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`).then(r => r.ok ? r.json() : null),
-                fetchWithTimeout(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
-                fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.json())
-            ]);
-
-            let phonetic = '', partOfSpeech = '', examples = [];
-
-            if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
-                const entry = dictRes.value[0];
-                phonetic     = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
-                partOfSpeech = entry?.meanings?.[0]?.partOfSpeech || '';
-                for (const m of (entry?.meanings || [])) {
-                    for (const d of (m.definitions || [])) {
-                        if (d.example && !examples.includes(d.example)) {
-                            examples.push(d.example);
-                            if (examples.length >= 3) break;
-                        }
-                    }
-                    if (examples.length >= 3) break;
-                }
-            }
-
-            let primaryMeaning = '';
-            if (transRes.status === 'fulfilled') {
-                primaryMeaning = transRes.value?.[0]?.[0]?.[0]?.trim() || '';
-            }
-
-            const otherMeanings = [];
-            if (memRes.status === 'fulfilled') {
-                const seen = new Set([primaryMeaning.toLowerCase()]);
-                const matches = (memRes.value?.matches || [])
-                    .filter(m => m.translation && typeof m.translation === 'string')
-                    .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
-                for (const m of matches) {
-                    const val = m.translation.trim();
-                    if (!val || val.length > 45 || seen.has(val.toLowerCase())) continue;
-                    if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue;
-                    seen.add(val.toLowerCase());
-                    otherMeanings.push(val);
-                    if (otherMeanings.length >= 3) break;
-                }
-            }
-
-            if (!primaryMeaning) primaryMeaning = 'Không tìm thấy';
-
-            const cached = { phonetic, partOfSpeech, primaryMeaning, otherMeanings, examples };
-            _ltDictCache.set(key, cached);
-            if (state.dictWord.toLowerCase() === key) renderDictPopup(cached);
-        }
-
-        function renderDictPopup(data) {
-            _ltDictData = data;
-            const meta = [data.phonetic, data.partOfSpeech].filter(Boolean).join('  ·  ');
-            document.getElementById('dict-phonetic').textContent = meta;
-
-            const chipsHtml = data.otherMeanings.length
-                ? `<div class="dict-chips-label">Nghĩa khác:</div>
-                   <div class="dict-chips-wrap">${data.otherMeanings.map(m =>
-                       `<button class="dict-meaning-chip" onclick="selectDictMeaning(this,'${m.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">${escHtml(m)}</button>`
-                     ).join('')}</div>`
-                : '';
-
-            const exHtml = data.examples.length
-                ? `<div class="dict-ex-section">
-                    ${data.examples.map(ex => `<div class="dict-ex-item">"${escHtml(ex)}"</div>`).join('')}
-                   </div>`
-                : '';
-
-            document.getElementById('dict-body').innerHTML = `
-                <div class="dict-primary-row">
-                  <span class="dict-primary-meaning" id="dict-primary-meaning">${escHtml(data.primaryMeaning)}</span>
-                  <button class="dict-save-btn" onclick="saveVocabWord()">＋ Lưu từ</button>
-                </div>
-                ${chipsHtml}${exHtml}`;
-        }
-
-        function selectDictMeaning(btn, val) {
-            const el = document.getElementById('dict-primary-meaning');
-            if (el) el.textContent = val;
-            btn.closest('.dict-chips-wrap').querySelectorAll('.dict-meaning-chip')
-                .forEach(b => b.classList.toggle('active', b === btn));
-        }
-
-        function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
-        function speakDictWord() {
-            if (!state.dictWord) return;
-            const u = new SpeechSynthesisUtterance(state.dictWord);
-            u.lang = 'en-US'; u.rate = 0.8;
-            window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
         }
 
         // ── Translate Popup ────────────────────────────────────────────────
@@ -2855,95 +2751,10 @@
 
         function closeTranslatePopup() { document.getElementById('translate-popup').classList.add('hidden'); }
 
-        async function saveVocabWord() {
-            if (!state.dictWord || !_ltDictData) return;
-            state.dictMeaning = document.getElementById('dict-primary-meaning')?.textContent?.trim()
-                || _ltDictData.primaryMeaning;
-            state.dictExample = _ltDictData.examples[0] || '';
-            state.dictPos     = _ltDictData.partOfSpeech;
-            closeDictPopup();
-            try {
-                const res = await fetch(`${API}/vocabbook`, { headers: authH() });
-                const data = await res.json();
-                if (!data.success) throw new Error(data.message);
-                openBookPicker(data.books);
-            } catch (err) { toast('Error: ' + err.message, 'error'); }
-        }
-
-        function openBookPicker(books) {
-            const existing = document.getElementById('book-picker-modal');
-            if (existing) existing.remove();
-            const modal = document.createElement('div');
-            modal.id = 'book-picker-modal';
-            modal.className = 'modal-overlay';
-            modal.innerHTML = `
-                <div class="modal-box modal-sm">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-                        <h3 style="margin:0">Lưu vào sổ từ vựng</h3>
-                        <button onclick="document.getElementById('book-picker-modal').remove()" class="ls-dict-close"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="ls-bp-word-preview">
-                        <strong>${state.dictWord}</strong>
-                        <span class="ls-bp-word-meaning"> – ${state.dictMeaning}</span>
-                    </div>
-                    <div id="bp-book-list">
-                    ${books.length ? books.map(b => `<div onclick="pickBook('${b._id}', this)" id="bp-${b._id}" class="ls-bp-book-item">
-                            <span style="font-size:20px">${b.emoji || '📖'}</span>
-                            <div style="flex:1"><div style="font-weight:700">${b.name}</div><div class="ls-bp-book-count">${b.totalWords ?? 0} words</div></div>
-                        </div>`).join('') : '<p class="ls-bp-empty">Chưa có sổ từ vựng nào.</p>'}
-                    </div>
-                    <div class="ls-bp-new-section">
-                        <div class="ls-bp-new-label">➕ Create new book &amp; save word</div>
-                        <div style="display:flex;gap:8px">
-                            <input id="bp-new-name" type="text" placeholder="Book name..." maxlength="40"
-                                class="ls-bp-input"
-                                onkeydown="if(event.key==='Enter') createBookAndSave()" />
-                            <button onclick="createBookAndSave()" class="ls-bp-create-btn">
-                                Create &amp; Save
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-            (document.fullscreenElement || document.body).appendChild(modal);
-            modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-            setTimeout(() => document.getElementById('bp-new-name')?.focus(), 50);
-        }
-
-        async function createBookAndSave() {
-            const nameEl = document.getElementById('bp-new-name');
-            const name = nameEl?.value.trim();
-            if (!name) { nameEl?.focus(); toast('Please enter a book name', 'info'); return; }
-            try {
-                const res1 = await fetch(`${API}/vocabbook`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ name, emoji: '📖' })
-                });
-                const d1 = await res1.json();
-                if (!d1.success) throw new Error(d1.message);
-                const bookId = d1.book._id;
-                const res2 = await fetch(`${API}/vocabbook/${bookId}/words`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, partOfSpeech: state.dictPos || '', source: 'listening' })
-                });
-                const d2 = await res2.json();
-                document.getElementById('book-picker-modal')?.remove();
-                toast(d2.success ? `Book "${name}" created and word saved!` : (d2.message || 'Error'), d2.success ? 'success' : 'error');
-            } catch (err) { toast('Error: ' + err.message, 'error'); }
-        }
-
-        async function pickBook(bookId, el) {
-            document.querySelectorAll('[id^="bp-"]').forEach(e => { e.style.borderColor = '#e5e7eb'; e.style.background = '#fff'; });
-            el.style.borderColor = '#e53935'; el.style.background = '#fef2f2';
-            try {
-                const res = await fetch(`${API}/vocabbook/${bookId}/words`, {
-                    method: 'POST', headers: authH(),
-                    body: JSON.stringify({ word: state.dictWord, meaning: state.dictMeaning, example: state.dictExample, partOfSpeech: state.dictPos || '', source: 'listening' })
-                });
-                const data = await res.json();
-                document.getElementById('book-picker-modal')?.remove();
-                toast(data.message || (data.success ? 'Word saved!' : 'Error'), data.success ? 'success' : 'error');
-            } catch (err) { toast('Error: ' + err.message, 'error'); }
-        }
+        // saveVocabWord/openBookPicker/createBookAndSave/pickBook moved to
+        // js/shared/dictionary-lookup.js (saveDictWordToVocab, openVocabBookPicker,
+        // createDictBookAndSave, saveDictWordToBook) — the dict-vocab-modal
+        // markup near #dict-popup uses those names now.
 
         // ══════════════════════════════════════════════
         // TOOL
@@ -3146,15 +2957,14 @@
         window.setToolExam = setToolExam;
         window.showHistoryModal = showHistoryModal;
         window.reviewFromHistory = reviewFromHistory;
-        window.closeDictPopup = closeDictPopup; window.speakDictWord = speakDictWord;
         window.translateSelected = translateSelected; window.closeTranslatePopup = closeTranslatePopup;
-        window.saveVocabWord = saveVocabWord; window.pickBook = pickBook; window.createBookAndSave = createBookAndSave;
         window.toggleSettings = toggleSettings; window.toggleEyeProtection = toggleEyeProtection; window.setFontSize = setFontSize;
         window.copyTestLink = copyTestLink;
         // Shared with block 3 (Bài lẻ)
         window.state = state; window.audio = audio; window.pad = pad; window.toast = toast;
         window.renderQuestionGroup = renderQuestionGroup; window.restoreAnswer = restoreAnswer;
         window.setupDragDrop = setupDragDrop; window.setupDictionaryDouble = setupDictionaryDouble;
+        window._ltDictGate = _ltDictGate;
     </script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
@@ -3678,7 +3488,7 @@
         _ltGetAllQs(_ltCleanSection).forEach(q => restoreAnswer(q));
         refreshWordChips();
         setupDragDrop(inner);
-        setupDictionaryDouble('lt-practice-questions');
+        setupDictionaryDouble('lt-practice-questions', 'listening', _ltDictGate);
 
         // Q-nav
         const nav = document.getElementById('lt-practice-q-nav');
@@ -3855,7 +3665,7 @@
                     l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
                 ).join('');
                 tp.style.display = '';
-                setupDictionaryDouble('lt-practice-transcript-body');
+                setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
             } else {
                 tp.style.display = 'none';
             }
@@ -4106,7 +3916,7 @@
                         l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
                     ).join('');
                     tp.style.display = '';
-                    setupDictionaryDouble('lt-practice-transcript-body');
+                    setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
                 } else {
                     tp.style.display = 'none';
                 }

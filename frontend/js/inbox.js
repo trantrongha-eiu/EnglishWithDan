@@ -122,6 +122,7 @@ async function selectMsg(id) {
       <button class="btn btn-danger" onclick="deleteMsg('${id}')"><i class="fas fa-trash"></i> Xóa</button>
     </div>
   `;
+  setupDictionaryDouble('msgDetail', 'inbox-message');
 }
 
 async function replyMsg(id) {

@@ -17,7 +17,7 @@
   <script src="js/theme.js"></script>
 </head>
 
-<body>
+<body id="pageBody">
 <script src="js/shared/auth-service.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
@@ -25,6 +25,7 @@
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/api-client.js"></script>
 <script src="js/shared/route-params.js"></script>
+<script src="js/shared/dictionary-lookup.js"></script>
 
   <!-- ════════════════════════════════════════════════════════
      SCREEN 1 – DANH SÁCH TEST
@@ -524,24 +525,22 @@
   </div>
 
   <!-- MODAL – CHỌN SỔ TỪ VỰNG -->
-  <div id="modal-vocab-picker" class="modal-overlay hidden">
-    <div class="modal-box modal-sm">
-      <div class="modal-header">
+  <div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+    <div class="dict-vocab-box">
+      <div class="dict-vocab-header">
         <h3>📚 Lưu vào sổ từ vựng</h3>
-        <button class="modal-close" onclick="closeModal('modal-vocab-picker')"><i class="fas fa-times"></i></button>
+        <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
       </div>
-      <div class="modal-body-scroll" style="max-height:320px;overflow-y:auto;padding:8px 0">
-        <div id="vocab-book-list"></div>
-      </div>
-      <div class="rd-vocab-new-section">
-        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
-        <div style="display:flex;gap:8px">
-          <input id="new-book-name" type="text" placeholder="Tên sổ mới..."
-            class="rd-vocab-input"
-            onkeydown="if(event.key==='Enter') createNewBookAndSave()" />
-          <button onclick="createNewBookAndSave()" class="rd-vocab-create-btn">
-            + Tạo &amp; lưu
-          </button>
+      <div class="dict-vocab-body">
+        <div id="dict-vocab-book-list"></div>
+        <div class="rd-vocab-new-section">
+          <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+          <div style="display:flex;gap:8px">
+            <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+              class="rd-vocab-input"
+              onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+            <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+          </div>
         </div>
       </div>
     </div>
@@ -697,7 +696,7 @@
     function handleKeyShortcuts(e) {
       if (e.key === 'Escape') {
         closeDictPopup(); closeTranslatePopup();
-        closeModal('modal-vocab-picker');
+        closeModal('dict-vocab-modal');
         const sp = document.getElementById('settings-panel');
         if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
         setTool('none'); return;
@@ -748,7 +747,7 @@
           icon.className = fsEl ? 'fas fa-compress' : 'fas fa-expand';
         }
       });
-      const ids = ['dict-popup', 'translate-popup', 'modal-vocab-picker', 'modal-history', 'modal-practice-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
+      const ids = ['dict-popup', 'translate-popup', 'dict-vocab-modal', 'modal-history', 'modal-practice-history', 'vocab-toast', 'settings-panel', 'modal-retry-exit'];
       if (fsEl) {
         ids.forEach(id => {
           const el = document.getElementById(id);

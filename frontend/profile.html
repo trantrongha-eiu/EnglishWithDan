@@ -12,12 +12,15 @@
   <link rel="stylesheet" href="css/mobile.css">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/dictionary-popup.css">
 </head>
 <body>
   <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/shared/utils.js"></script>
   <script src="js/shared/toast.js"></script>
+  <script src="js/shared/dictionary-lookup.js"></script>
 
   <!-- Main Content -->
   <div class="profile-layout">
@@ -26,7 +29,7 @@
     <aside class="profile-sidebar">
       <div class="profile-card">
         <div class="profile-card-cover"></div>
-        <div class="profile-card-body">
+        <div class="profile-card-body" id="profileCardBody">
           <div class="avatar-wrap">
             <div class="avatar-placeholder" id="avatarDisplay">?</div>
             <div class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()" title="Đổi ảnh">
@@ -547,6 +550,8 @@
           document.getElementById('editBio').value       = u.bio       || '';
           document.getElementById('bioCount').textContent = (u.bio||'').length;
           document.getElementById('editMotto').value     = u.studyMotto || '';
+          setupDictionaryDouble('profileCardBody', 'profile');
+          setupDictionaryDouble('tab-overview', 'profile');
           document.getElementById('mottoCount').textContent = (u.studyMotto||'').length;
           const tb = document.getElementById('editTargetBand');
           tb.value = u.targetBand != null ? String(u.targetBand) : '';
@@ -832,5 +837,39 @@
     loadActivityHeatmap();
     goToHash(location.hash);
   </script>
+
+  <!-- ═══════════════════════════════════════════
+       DICTIONARY LOOKUP (double-click a word)
+  ═══════════════════════════════════════════ -->
+  <div id="dict-popup" class="dict-popup hidden">
+    <div class="dict-header">
+      <span class="dict-word" id="dict-word"></span>
+      <span class="dict-phonetic" id="dict-phonetic"></span>
+      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+      <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="dict-body" class="dict-body"></div>
+  </div>
+
+  <div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+    <div class="dict-vocab-box">
+      <div class="dict-vocab-header">
+        <h3>📚 Lưu vào sổ từ vựng</h3>
+        <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="dict-vocab-body">
+        <div id="dict-vocab-book-list"></div>
+        <div class="rd-vocab-new-section">
+          <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+          <div style="display:flex;gap:8px">
+            <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40"
+              class="rd-vocab-input"
+              onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+            <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

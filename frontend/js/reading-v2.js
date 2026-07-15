@@ -584,6 +584,7 @@ function resumeExam() {
   switchPassage(0);
   buildQNavFooter();
   startTimer();
+  setTool('none'); // exam screen has no dict/highlight toolbar — clear any tool left active from a prior review/practice session
   showScreen('exam');
   window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
 }
@@ -1149,6 +1150,7 @@ function startExam(data) {
   switchPassage(0);
   buildQNavFooter();
   startTimer();
+  setTool('none'); // exam screen has no dict/highlight toolbar — clear any tool left active from a prior review/practice session
   showScreen('exam');
   saveExamToStorage();         // Save initial state immediately
   window.onbeforeunload = () => 'Bạn đang làm bài thi. Rời trang sẽ dừng bài.';
@@ -3053,12 +3055,11 @@ async function loadPracticeReview(attemptId) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   DICTIONARY (review only)
+   DICTIONARY (review only) — js/shared/dictionary-lookup.js does the actual
+   lookup/render/save-to-vocab now; this page only supplies the gate (dict
+   lookup fires only while the "Dict" toolbar tool is on, in review/practice/
+   retry mode) by attaching the shared handler to the whole page body.
 ══════════════════════════════════════════════════════════════════════ */
-let _dictWord = '';
-let _dictCurrentData = null;
-const _dictCache = new Map(); // word.toLowerCase() → { phonetic, partOfSpeech, primaryMeaning, otherMeanings[], examples[] }
-
 // Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
 function fetchWithTimeout(url, ms = 7000) {
   const ctrl = new AbortController();
@@ -3066,119 +3067,8 @@ function fetchWithTimeout(url, ms = 7000) {
   return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
 }
 
-document.addEventListener('dblclick', e => {
-  if (state.tool !== 'dict' || (!state.isReview && !_practiceMode && !_retryState)) return;
-  const sel = window.getSelection()?.toString().trim();
-  if (!sel || sel.split(' ').length > 3) return;
-  lookupWord(sel, e.clientX, e.clientY);
-});
-
-async function lookupWord(word, x, y) {
-  const key = word.toLowerCase();
-  _dictWord = word;
-  document.getElementById('dict-word').textContent = word;
-  document.getElementById('dict-phonetic').textContent = '';
-  positionDictPopup(x, y);
-  document.getElementById('dict-popup').classList.remove('hidden');
-
-  if (_dictCache.has(key)) { renderDictPopup(_dictCache.get(key)); return; }
-
-  document.getElementById('dict-body').innerHTML = '<div class="dict-loading">Đang tra...</div>';
-
-  const enc = encodeURIComponent;
-  const [dictRes, transRes, memRes] = await Promise.allSettled([
-    fetchWithTimeout(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`).then(r => r.ok ? r.json() : null),
-    fetchWithTimeout(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
-    fetchWithTimeout(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.json())
-  ]);
-
-  let phonetic = '', partOfSpeech = '', examples = [];
-
-  if (dictRes.status === 'fulfilled' && Array.isArray(dictRes.value)) {
-    const entry = dictRes.value[0];
-    phonetic     = entry?.phonetic || entry?.phonetics?.find(p => p.text)?.text || '';
-    partOfSpeech = entry?.meanings?.[0]?.partOfSpeech || '';
-    for (const m of (entry?.meanings || [])) {
-      for (const d of (m.definitions || [])) {
-        if (d.example && !examples.includes(d.example)) {
-          examples.push(d.example);
-          if (examples.length >= 3) break;
-        }
-      }
-      if (examples.length >= 3) break;
-    }
-  }
-
-  // Primary meaning: translate the WORD itself (short!)
-  let primaryMeaning = '';
-  if (transRes.status === 'fulfilled') {
-    primaryMeaning = transRes.value?.[0]?.[0]?.[0]?.trim() || '';
-  }
-
-  // Other meanings: MyMemory short Vietnamese chips
-  const otherMeanings = [];
-  if (memRes.status === 'fulfilled') {
-    const seen = new Set([primaryMeaning.toLowerCase()]);
-    const matches = (memRes.value?.matches || [])
-      .filter(m => m.translation && typeof m.translation === 'string')
-      .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
-    for (const m of matches) {
-      const val = m.translation.trim();
-      if (!val || val.length > 45 || seen.has(val.toLowerCase())) continue;
-      if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue; // skip non-Vietnamese
-      seen.add(val.toLowerCase());
-      otherMeanings.push(val);
-      if (otherMeanings.length >= 3) break;
-    }
-  }
-
-  if (!primaryMeaning) primaryMeaning = 'Không tìm thấy';
-
-  const cached = { phonetic, partOfSpeech, primaryMeaning, otherMeanings, examples };
-  _dictCache.set(key, cached);
-  if (_dictWord.toLowerCase() === key) renderDictPopup(cached);
-}
-
-function renderDictPopup(data) {
-  _dictCurrentData = data;
-  const meta = [data.phonetic, data.partOfSpeech].filter(Boolean).join('  ·  ');
-  document.getElementById('dict-phonetic').textContent = meta;
-
-  const chipsHtml = data.otherMeanings.length
-    ? `<div class="dict-chips-label">Nghĩa khác:</div>
-       <div class="dict-chips-wrap">${data.otherMeanings.map(m =>
-           `<button class="dict-meaning-chip" onclick="selectDictMeaning(this,'${m.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">${escHtml(m)}</button>`
-         ).join('')}</div>`
-    : '';
-
-  const exHtml = data.examples.length
-    ? `<div class="dict-ex-section">
-        ${data.examples.map(ex => `<div class="dict-ex-item">"${escHtml(ex)}"</div>`).join('')}
-       </div>`
-    : '';
-
-  document.getElementById('dict-body').innerHTML = `
-    <div class="dict-primary-row">
-      <span class="dict-primary-meaning" id="dict-primary-meaning">${escHtml(data.primaryMeaning)}</span>
-      <button class="dict-save-btn" onclick="saveVocab()"><i class="fas fa-plus"></i> Lưu từ</button>
-    </div>
-    ${chipsHtml}${exHtml}`;
-}
-
-function selectDictMeaning(btn, val) {
-  const el = document.getElementById('dict-primary-meaning');
-  if (el) el.textContent = val;
-  btn.closest('.dict-chips-wrap').querySelectorAll('.dict-meaning-chip')
-    .forEach(b => b.classList.toggle('active', b === btn));
-}
-
-function positionDictPopup(x, y) {
-  const popup = document.getElementById('dict-popup');
-  popup.style.left = Math.max(8, Math.min(x, window.innerWidth - 320)) + 'px';
-  popup.style.top = Math.max(8, Math.min(y + 12, window.innerHeight - 380)) + 'px';
-}
-
-function closeDictPopup() { document.getElementById('dict-popup').classList.add('hidden'); }
+setupDictionaryDouble('pageBody', 'reading',
+  () => state.tool === 'dict' && (state.isReview || _practiceMode || _retryState));
 
 /* ══════════════════════════════════════════════════════════════════════
    TRANSLATE POPUP  (T key / toolbar button)
@@ -3247,97 +3137,10 @@ document.addEventListener('mousedown', e => {
   }
 });
 
-function speakDictWord() {
-  const w = document.getElementById('dict-word').textContent;
-  if (w && window.speechSynthesis) {
-    const u = new SpeechSynthesisUtterance(w);
-    u.lang = 'en-US';
-    speechSynthesis.speak(u);
-  }
-}
-
-async function saveVocab() {
-  if (!_dictCurrentData || !_dictWord) return;
-  const meaning = document.getElementById('dict-primary-meaning')?.textContent?.trim()
-    || _dictCurrentData.primaryMeaning;
-  openVocabBookPicker({
-    word: _dictWord,
-    meaning,
-    example: _dictCurrentData.examples[0] || '',
-    phonetic: _dictCurrentData.phonetic,
-    partOfSpeech: _dictCurrentData.partOfSpeech,
-    source: 'reading'
-  });
-}
-
-/* ── Vocab Book Picker Modal ─────────────────────────────────────── */
-let _pendingVocabWord = null;
-
-async function openVocabBookPicker(wordData) {
-  _pendingVocabWord = wordData;
-  const modal = document.getElementById('modal-vocab-picker');
-  const listEl = document.getElementById('vocab-book-list');
-  listEl.innerHTML = '<div class="rd-vocab-loading">Đang tải sổ...</div>';
-  modal.classList.remove('hidden');
-  try {
-    const res = await apiFetch('/api/vocabbook/');
-    const books = res.books || [];
-    if (!books.length) {
-      listEl.innerHTML = '<div class="rd-vocab-loading">Chưa có sổ nào</div>';
-      return;
-    }
-    listEl.innerHTML = books.map(b =>
-      `<div class="vb-pick-item" onclick="saveWordToBook('${b._id}')">
-        <span class="vb-pick-emoji">${b.emoji || '📘'}</span>
-        <div class="vb-pick-info">
-          <div class="vb-pick-name">${escHtml(b.name)}</div>
-          <div class="vb-pick-count">${b.totalWords} từ</div>
-        </div>
-        <span class="vb-pick-arrow">›</span>
-      </div>`
-    ).join('');
-  } catch (e) {
-    const isColdStart = e.message === 'server-cold-start';
-    listEl.innerHTML = `<div class="rd-vocab-loading" style="color:${isColdStart ? '#f59e0b' : '#e53935'}">
-      ${isColdStart
-        ? '🔄 Server đang khởi động,<br>vui lòng thử lại sau vài giây.'
-        : 'Lỗi tải sổ từ vựng'}
-    </div>`;
-  }
-}
-
-async function createNewBookAndSave() {
-  const nameInput = document.getElementById('new-book-name');
-  const name = nameInput?.value?.trim();
-  if (!name) { if (nameInput) nameInput.focus(); return; }
-  try {
-    const res = await apiFetch('/api/vocabbook/', {
-      method: 'POST',
-      body: JSON.stringify({ name, emoji: '📘', color: '#3d8bff' })
-    });
-    if (!res.success) { showVocabToast(res.message); return; }
-    if (nameInput) nameInput.value = '';
-    await saveWordToBook(res.book._id);
-  } catch (e) {
-    showVocabToast(e.message === 'server-cold-start' ? 'Server đang khởi động, thử lại sau.' : 'Lỗi tạo sổ mới');
-  }
-}
-
-async function saveWordToBook(bookId) {
-  if (!_pendingVocabWord) return;
-  try {
-    const res = await apiFetch(`/api/vocabbook/${bookId}/words`, {
-      method: 'POST',
-      body: JSON.stringify(_pendingVocabWord)
-    });
-    closeModal('modal-vocab-picker');
-    const msg = res.success
-      ? `✓ Đã lưu "${_pendingVocabWord.word}" vào sổ`
-      : `ℹ️ ${res.message}`;
-    showVocabToast(msg, res.success ? 'success' : 'info');
-    _pendingVocabWord = null;
-  } catch { showVocabToast('Lỗi lưu từ'); }
-}
+// speakDictWord/saveVocab/openVocabBookPicker/createNewBookAndSave/saveWordToBook
+// moved to js/shared/dictionary-lookup.js (speakDictWord, saveDictWordToVocab,
+// openVocabBookPicker, createDictBookAndSave, saveDictWordToBook) — the
+// dict-vocab-modal markup above uses those names now.
 
 // showVocabToast() moved to js/shared/toast.js (single source of truth —
 // Phase 3 audit). reading.html's old static #vocab-toast element is no
@@ -3400,7 +3203,7 @@ function handleKeyShortcuts(e) {
   if (e.key === 'Escape') {
     closeDictPopup();
     closeTranslatePopup();
-    closeModal('modal-vocab-picker');
+    closeModal('dict-vocab-modal');
     const sp = document.getElementById('settings-panel');
     if (sp && !sp.classList.contains('hidden')) sp.classList.add('hidden');
     setTool('none');
