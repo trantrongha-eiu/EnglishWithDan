@@ -348,12 +348,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 }
 .dan-week-dot{
   width:100%;aspect-ratio:1;max-width:34px;border-radius:9px;
-  background:var(--surface2);border:1px solid var(--border);
+  background:var(--surface);border:1.5px solid var(--border2);
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;transition:all .15s;
+  font-size:13px;font-weight:700;color:var(--text2);
+  transition:all .15s;
 }
-.dan-week-day.today .dan-week-dot{border-color:var(--brand);border-width:1.5px}
-.dan-week-day.today{color:var(--brand)}
+.dan-week-day.today .dan-week-dot{border-color:var(--brand);border-width:2px;box-shadow:0 0 0 3px var(--brand-light)}
+.dan-week-day.today{color:var(--brand);font-weight:700}
 .dan-week-dot[data-lvl="1"]{background:rgba(229,57,53,.22);border-color:transparent}
 .dan-week-dot[data-lvl="2"]{background:rgba(229,57,53,.45);border-color:transparent}
 .dan-week-dot[data-lvl="3"]{background:rgba(229,57,53,.7);border-color:transparent}
