@@ -26,6 +26,18 @@ body.eye-protection .split-questions {
   background: #fdf6e3;
 }
 
+/* Eye protection is a light-mode paper/sepia accommodation. Without this
+   guard its cream background (higher specificity than the plain dark-mode
+   rules below) won these elements even in dark mode, while dark mode's own
+   text-color overrides stayed light-colored — light text on a light
+   background made the whole passage/questions panel unreadable. */
+[data-theme="dark"] body.eye-protection {
+  background: #111827 !important;
+  filter: none;
+}
+[data-theme="dark"] body.eye-protection .split-passage  { background: #1f2937; }
+[data-theme="dark"] body.eye-protection .split-questions { background: #111827; }
+
 /* ── Screens ── */
 .screen {
   display: none;

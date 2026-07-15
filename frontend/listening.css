@@ -2180,6 +2180,15 @@ body.eye-protection .questions-panel,
 body.eye-protection .transcript-body,
 body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 
+/* Eye protection is a light-mode paper accommodation. Without this guard its
+   cream !important background won over dark mode here too, while dark
+   mode's own text-color overrides stayed light-colored — light text on a
+   light background made the whole passage/questions panel unreadable. */
+[data-theme="dark"] body.eye-protection { background: #111827 !important; }
+[data-theme="dark"] body.eye-protection .questions-panel,
+[data-theme="dark"] body.eye-protection .transcript-body,
+[data-theme="dark"] body.eye-protection .review-questions-panel { background: transparent !important; }
+
 /* Dark mode: settings */
 [data-theme="dark"] .settings-panel { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .settings-row { color: #e5e7eb; }
