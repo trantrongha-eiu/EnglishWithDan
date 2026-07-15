@@ -10,6 +10,20 @@ async function forceCreatedAt(Model, id, isoUtc) {
   await Model.collection.updateOne({ _id: id }, { $set: { createdAt: new Date(isoUtc) } });
 }
 
+describe('userService.getStats — previousStreak', () => {
+  test('exposes previousStreak so the dashboard mascot can show the "just lost a streak" state', async () => {
+    const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
+    const user = await createStudent({ extra: { learningStreak: 12, lastActivityDate: daysAgo(3) } });
+
+    const stats = await userService.getStats(user._id);
+
+    // getStats() calls resetIfStale() internally, which should have just
+    // snapshotted the dead 12-day streak before zeroing learningStreak.
+    expect(stats.streak).toBe(0);
+    expect(stats.previousStreak).toBe(12);
+  });
+});
+
 describe('userService.getActivityHeatmap', () => {
   test('buckets an attempt by Vietnam calendar day, not UTC day', async () => {
     const user = await createStudent();

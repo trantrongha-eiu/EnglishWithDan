@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema({
   targetBand:   { type: Number, default: null, min: 4, max: 9 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
+  // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()
+  // — powers the "you just lost a streak" mascot state on the dashboard.
+  // Cleared back to 0 as soon as the student studies again (updateStreak()).
+  previousStreak:       { type: Number, default: 0 },
   lastActivityDate:     { type: Date, default: null },
   totalStudyMinutes:    { type: Number, default: 0 },
   // Password reset OTP
@@ -63,6 +67,9 @@ function getVNDay(date) {
 
 // Cập nhật streak khi user hoạt động
 UserSchema.methods.updateStreak = function () {
+  // Studying again ends the "just lost a streak" mascot state immediately,
+  // whether this continues a streak, restarts one, or is a same-day no-op.
+  this.previousStreak = 0;
   const today = getVNDay(new Date());
   if (!this.lastActivityDate) {
     this.learningStreak = 1;
@@ -90,6 +97,7 @@ UserSchema.methods.resetIfStale = function () {
   const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
   if (diff >= 2) {
     if (this.learningStreak === 0) return false; // already reset, skip redundant save
+    this.previousStreak = this.learningStreak;
     this.learningStreak = 0;
     return true;
   }

@@ -92,7 +92,7 @@ async function getStats(userId) {
       .limit(10)
       .lean(),
     // NOT leaned: resetIfStale()/save() below need a real Mongoose document.
-    User.findById(userId).select('learningStreak lastActivityDate totalStudyMinutes')
+    User.findById(userId).select('learningStreak previousStreak lastActivityDate totalStudyMinutes')
   ]);
 
   // Reset streak nếu học sinh bỏ lỡ >= 2 ngày, để hiển thị đúng khi mở trang
@@ -108,6 +108,7 @@ async function getStats(userId) {
 
   return {
     streak: user.learningStreak || 0,
+    previousStreak: user.previousStreak || 0,
     lastActivity: user.lastActivityDate,
     totalStudyMinutes: user.totalStudyMinutes || 0,
     reading: { total: readingAttempts.length, avgBand: avgReading, history: readingAttempts },

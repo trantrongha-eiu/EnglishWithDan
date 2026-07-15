@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), updateDifficultBadge()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge()]);
 });
 
 /* ══════════════════════════════════════════════
@@ -197,19 +197,104 @@ function getMascotEmoji(streak) {
     if (streak >= 3)  return '🐼😊';
     return '🐼';
 }
+
+// Sarcastic "Dan" (our panda mascot, named after thầy Daniel) reacting to a
+// dead streak — angry if you just torched a streak bigger than 10 days,
+// sad-but-forgiving otherwise. previousStreak comes from the backend and is
+// only non-zero right after resetIfStale() detects a missed-day reset; it
+// clears itself the moment the student studies again.
+const ANGRY_MSGS = [
+    n => `😡 Dan CỰC KỲ TỨC GIẬN vì bạn vừa làm bay màu ${n} ngày streak! ${n} NGÀY! Học 1 từ ngay đi, không Dan giận cả tuần cho xem.`,
+    n => `😤 ${n} ngày công sức... đi tong trong một nốt nhạc. Dan không khóc đâu, Dan chỉ đang tức giận dữ dội thôi.`,
+    n => `🔥💔 Streak ${n} ngày vừa nằm xuống. Dan đang thắp hương cho nó — còn bạn thì đang làm gì thế?`
+];
+const SAD_MSGS = [
+    '😢 Dan đang buồn thiu vì hôm nay chưa thấy bạn học từ nào cả...',
+    '🥺 0 ngày streak. Dan ngồi một mình cắn hạt dưa cả ngày, buồn ơi là buồn.',
+    '😭 Dan tưởng bạn quên mất Dan rồi... học 1 từ thôi là Dan vui liền!'
+];
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getMascotState(streak, previousStreak) {
+    if (streak === 0 && previousStreak > 10) {
+        return { mood: 'angry', img: 'img/loststreak.jpg', msg: pick(ANGRY_MSGS)(previousStreak) };
+    }
+    if (streak === 0) {
+        return { mood: 'sad', emoji: '🐼😢', msg: pick(SAD_MSGS) };
+    }
+    return { mood: 'happy', emoji: getMascotEmoji(streak), msg: getMascotMsg(streak) };
+}
+
+// Applies one mascot state to every matching {panda, num, msg, card} group
+// found on the page — dashboard.html has two copies (the welcome view's
+// "dan-*" banner and the book-content view's "mascot-*" banner) that both
+// need to reflect the same streak.
+function applyMascotState(streak, previousStreak) {
+    const state = getMascotState(streak, previousStreak);
+    const groups = [
+        { panda: 'mascot-panda', num: 'mascot-streak-num', msg: 'mascot-msg', card: null },
+        { panda: 'dan-mascot',   num: 'dan-streak-num',   msg: 'dan-streak-msg', card: 'dan-streak-card' }
+    ];
+    for (const g of groups) {
+        const pandaEl = document.getElementById(g.panda);
+        const numEl   = document.getElementById(g.num);
+        const msgEl   = document.getElementById(g.msg);
+        const cardEl  = g.card ? document.getElementById(g.card) : null;
+        if (numEl) numEl.textContent = streak;
+        if (msgEl) msgEl.textContent = state.msg;
+        if (pandaEl) {
+            pandaEl.innerHTML = state.img
+                ? `<img src="${state.img}" alt="Dan đang tức giận">`
+                : '';
+            if (!state.img) pandaEl.textContent = state.emoji;
+        }
+        if (cardEl) cardEl.classList.toggle('is-angry', state.mood === 'angry');
+        if (cardEl) cardEl.classList.toggle('is-sad', state.mood === 'sad');
+    }
+}
+
 async function loadStreakAndUpdateMascot() {
     try {
         const res  = await fetch(`${API}/user/stats`, { headers: authH() });
         const data = await res.json();
         if (!data.success) return;
         const streak = data.stats?.streak ?? 0;
-        const numEl  = document.getElementById('mascot-streak-num');
-        const msgEl  = document.getElementById('mascot-msg');
-        const pandaEl = document.getElementById('mascot-panda');
-        if (numEl)  numEl.textContent  = streak;
-        if (msgEl)  msgEl.textContent  = getMascotMsg(streak);
-        if (pandaEl) pandaEl.textContent = getMascotEmoji(streak);
+        const previousStreak = data.stats?.previousStreak ?? 0;
+        applyMascotState(streak, previousStreak);
     } catch { /* silent */ }
+}
+
+// Last 7 calendar days (VN time), rendered as a mini row of dots next to
+// the streak banner — reuses the same activity-heatmap endpoint that
+// powers profile.html's full GitHub-style calendar.
+const WEEK_DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+async function loadWeeklyProgress() {
+    const row = document.getElementById('dan-week-row');
+    if (!row) return;
+    try {
+        const res  = await fetch(`${API}/user/activity-heatmap?days=8`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) return;
+        const counts = {};
+        data.activity.forEach(d => { counts[d.date] = d.count; });
+
+        const localKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        const toLevel = n => n === 0 ? 0 : n === 1 ? 1 : n <= 2 ? 2 : n <= 4 ? 3 : 4;
+        const today = new Date();
+        let html = '';
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const key = localKey(d);
+            const n = counts[key] || 0;
+            const isToday = i === 0;
+            html += `<div class="dan-week-day${isToday ? ' today' : ''}">
+                <div class="dan-week-dot" data-lvl="${toLevel(n)}" title="${key}: ${n} bài">${n > 0 ? '✓' : ''}</div>
+                <span>${WEEK_DAY_LABELS[d.getDay()]}</span>
+            </div>`;
+        }
+        row.innerHTML = html;
+    } catch { /* non-critical widget — fail silently */ }
 }
 
 /* ══════════════════════════════════════════════
@@ -1383,6 +1468,18 @@ async function _reportSessionStreak() {
             if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
             const pandaEl = document.getElementById('mascot-panda');
             if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
+
+            // Streak just grew — also refresh the welcome-view banner (no
+            // "just lost" state possible right after a successful session).
+            const danNumEl = document.getElementById('dan-streak-num');
+            if (danNumEl) animateCount(danNumEl, d.streak, 500);
+            const danMsgEl = document.getElementById('dan-streak-msg');
+            if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
+            const danMascotEl = document.getElementById('dan-mascot');
+            if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
+            const danCardEl = document.getElementById('dan-streak-card');
+            if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
+            loadWeeklyProgress();
         }
     } catch { /* silent */ }
 }
