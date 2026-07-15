@@ -3017,8 +3017,15 @@ async function loadPracticeReview(attemptId) {
     const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
     const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
     const ts = String(attempt.timeTaken % 60).padStart(2, '0');
+    const rdHistImgSrc = pct >= 75 ? 'img/above7.5.jpg'
+                        : pct >= 60 ? 'img/band_6_7.jpg'
+                        : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
+                        : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
+                        : pct >= 20 ? 'img/listening_readingbelow40%25.jpg'
+                        : 'img/verylowscore.jpg';
     inner.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
+        <img src="${rdHistImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
         <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
           <span>Kết quả: <strong>${attempt.correctCount}/${attempt.totalQuestions}</strong> câu đúng (${pct}%)</span>
           <span class="rd-rb-correct">● Đúng: ${attempt.correctCount}</span>
