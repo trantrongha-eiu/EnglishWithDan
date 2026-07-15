@@ -1,6 +1,7 @@
 const userService = require('../../../services/userService');
 const WritingAttempt = require('../../../models/WritingAttempt');
 const SpeakingAttempt = require('../../../models/SpeakingAttempt');
+const VocabActivity = require('../../../models/VocabActivity');
 const { createStudent } = require('../../factories/userFactory');
 
 // createdAt is normally stamped by Mongoose's timestamps plugin at creation
@@ -63,5 +64,50 @@ describe('userService.getActivityHeatmap', () => {
     const activity = await userService.getActivityHeatmap(user._id, 30);
 
     expect(activity).toEqual([]);
+  });
+
+  // Regression: vocab practice (dashboard.html's main activity) logs to a
+  // separate VocabActivity collection, not one of the 4 "attempt" models —
+  // it was missing entirely from the heatmap, so a student who only ever
+  // studies vocab saw a real learningStreak but a totally blank calendar.
+  test('counts real vocab study actions (wordsStudied/wordsAdded)', async () => {
+    const user = await createStudent();
+    await VocabActivity.create({
+      userId: user._id, date: new Date('2021-03-10T00:00:00.000Z'),
+      wordsStudied: 7, wordsAdded: 2, viewCount: 4
+    });
+
+    const activity = await userService.getActivityHeatmap(user._id, 3000);
+    const byDate = Object.fromEntries(activity.map(a => [a.date, a.count]));
+
+    expect(byDate['2021-03-10']).toBe(9); // 7 studied + 2 added, viewCount excluded
+  });
+
+  test('a vocab day with only page views (no study/add) does not appear on the calendar', async () => {
+    const user = await createStudent();
+    await VocabActivity.create({
+      userId: user._id, date: new Date('2021-03-11T00:00:00.000Z'),
+      wordsStudied: 0, wordsAdded: 0, viewCount: 3
+    });
+
+    const activity = await userService.getActivityHeatmap(user._id, 3000);
+    const byDate = Object.fromEntries(activity.map(a => [a.date, a.count]));
+
+    expect(byDate['2021-03-11']).toBeUndefined();
+  });
+
+  test('sums vocab activity together with a skill attempt on the same Vietnam day', async () => {
+    const user = await createStudent();
+    const w = await WritingAttempt.create({ userId: user._id, task1Answer: 'x' });
+    await forceCreatedAt(WritingAttempt, w._id, '2021-05-01T10:00:00.000Z'); // 2021-05-01 17:00 VN
+    await VocabActivity.create({
+      userId: user._id, date: new Date('2021-05-01T00:00:00.000Z'), // already VN-day-aligned
+      wordsStudied: 5, wordsAdded: 0, viewCount: 1
+    });
+
+    const activity = await userService.getActivityHeatmap(user._id, 3000);
+    const byDate = Object.fromEntries(activity.map(a => [a.date, a.count]));
+
+    expect(byDate['2021-05-01']).toBe(6); // 1 writing attempt + 5 words studied
   });
 });

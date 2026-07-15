@@ -7,6 +7,7 @@ const TestAttempt = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const WritingAttempt = require('../models/WritingAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const cloudinaryService = require('./cloudinaryService');
 
@@ -118,8 +119,9 @@ async function getStats(userId) {
   };
 }
 
-// Daily activity counts (Reading/Listening/Writing/Speaking attempts merged)
-// for the last `days` days — powers the streak heatmap on profile.html.
+// Daily activity counts (Reading/Listening/Writing/Speaking attempts +
+// vocab practice merged) for the last `days` days — powers the streak
+// heatmap on profile.html and the weekly-progress banner on dashboard.html.
 async function getActivityHeatmap(userId, days = 365) {
   const uid = new mongoose.Types.ObjectId(userId);
   const since = new Date();
@@ -130,17 +132,30 @@ async function getActivityHeatmap(userId, days = 365) {
   // effectiveStreak() in routes/admin/_shared.js. Without it, Mongo groups by
   // UTC day, so anything studied 00:00–07:00 VN time lands on the wrong date.
   const byDay = { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: '+07:00' } }, count: { $sum: 1 } } };
+  // VocabActivity is already one pre-aggregated doc per (user, day) — count
+  // real study actions (wordsStudied/wordsAdded), not viewCount, so merely
+  // opening the vocab page doesn't light up the calendar (matches what
+  // actually drives learningStreak — see vocabBookService.completePractice).
+  const vocabByDay = {
+    $group: {
+      _id: { $dateToString: { format: '%Y-%m-%d', date: '$date', timezone: '+07:00' } },
+      count: { $sum: { $add: ['$wordsStudied', '$wordsAdded'] } }
+    }
+  };
 
-  const [reading, listening, writing, speaking] = await Promise.all([
+  const [reading, listening, writing, speaking, vocab] = await Promise.all([
     TestAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
     ListeningAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
     WritingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay]),
-    SpeakingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay])
+    SpeakingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay]),
+    VocabActivity.aggregate([{ $match: { userId: uid, date: { $gte: since } } }, vocabByDay])
   ]);
 
   const counts = {};
-  for (const arr of [reading, listening, writing, speaking]) {
-    for (const { _id, count } of arr) counts[_id] = (counts[_id] || 0) + count;
+  for (const arr of [reading, listening, writing, speaking, vocab]) {
+    for (const { _id, count } of arr) {
+      if (count > 0) counts[_id] = (counts[_id] || 0) + count;
+    }
   }
   return Object.entries(counts)
     .map(([date, count]) => ({ date, count }))

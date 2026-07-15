@@ -294,5 +294,24 @@ describe('vocabBookService', () => {
       const result = await vocabBookService.completePractice(teacher, 10);
       expect(result.status).toBe('not_student');
     });
+
+    it('logs the vocab activity under the Vietnam-local calendar day, not raw UTC', async () => {
+      const VocabActivity = require('../../../models/VocabActivity');
+      const student = await createStudent();
+
+      await vocabBookService.completePractice(student, 5);
+      // logActivity() inside completePractice is fire-and-forget — give its
+      // upsert a moment to land before asserting on it.
+      await new Promise(resolve => setTimeout(resolve, 50));
+
+      const docs = await VocabActivity.find({ userId: student._id });
+      expect(docs).toHaveLength(1);
+      expect(docs[0].wordsStudied).toBe(5);
+
+      const now = new Date();
+      const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      const expectedDay = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate()));
+      expect(docs[0].date.getTime()).toBe(expectedDay.getTime());
+    });
   });
 });

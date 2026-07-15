@@ -4,10 +4,14 @@
 const VocabBook = require('../models/VocabBook');
 const VocabActivity = require('../models/VocabActivity');
 
-// Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay (UTC)
+// Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay
+// (Vietnam local day — same convention as User.getVNDay/effectiveStreak; using
+// the server's raw UTC day here would misfile anything done 00:00–07:00 VN
+// time under the previous calendar day).
 function logActivity(userId, inc) {
   const now = new Date();
-  const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const vn = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+  const date = new Date(Date.UTC(vn.getUTCFullYear(), vn.getUTCMonth(), vn.getUTCDate()));
   VocabActivity.findOneAndUpdate(
     { userId, date },
     { $inc: inc },
