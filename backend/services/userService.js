@@ -125,7 +125,10 @@ async function getActivityHeatmap(userId, days = 365) {
   since.setDate(since.getDate() - days);
   since.setHours(0, 0, 0, 0);
 
-  const byDay = { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } };
+  // timezone: '+07:00' — bucket by Vietnam calendar day, same convention as
+  // effectiveStreak() in routes/admin/_shared.js. Without it, Mongo groups by
+  // UTC day, so anything studied 00:00–07:00 VN time lands on the wrong date.
+  const byDay = { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: '+07:00' } }, count: { $sum: 1 } } };
 
   const [reading, listening, writing, speaking] = await Promise.all([
     TestAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),

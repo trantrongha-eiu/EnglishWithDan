@@ -808,11 +808,16 @@
         start.setDate(start.getDate() - 364);
         start.setDate(start.getDate() - start.getDay());
 
+        // NOT toISOString() — that converts to UTC, which silently shifts
+        // every date back a day for any UTC+ timezone (e.g. Vietnam, UTC+7),
+        // making the whole grid off-by-one vs. the backend's VN-day buckets.
+        const localKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
         const toLevel = n => n === 0 ? 0 : n === 1 ? 1 : n <= 2 ? 2 : n <= 4 ? 3 : 4;
         let html = '';
         let hasAny = false;
         for (const cur = new Date(start); cur <= today; cur.setDate(cur.getDate() + 1)) {
-          const key = cur.toISOString().slice(0, 10);
+          const key = localKey(cur);
           const n = counts[key] || 0;
           if (n > 0) hasAny = true;
           html += `<span class="heat-cell" data-lvl="${toLevel(n)}" title="${key}: ${n} bài luyện tập"></span>`;

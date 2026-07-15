@@ -121,29 +121,41 @@
     }
   });
 
-  // Pre-select the course dropdown from a ?course= URL param (e.g. an ad
-  // landing link or a "Tư vấn ngay" button on a specific course card) so the
-  // visitor doesn't have to re-pick what they already clicked through for.
-  function prefillCourseFromUrl() {
-    var param = new URLSearchParams(window.location.search).get('course');
-    if (!param) return;
-    var select = document.getElementById('_cmCourse');
-    var target = param.trim().toLowerCase();
+  // Select a course by name in the dropdown. The list is a fixed set of
+  // 7 options, but course titles are actually admin-editable (GET
+  // /api/courses) — so a course added/renamed after this file was written
+  // won't be in the list. Rather than silently failing to preselect
+  // anything, add it as an extra option so the visitor's context (which
+  // course they clicked "Tư vấn ngay" on) isn't lost.
+  function selectOrAddCourseOption(select, name) {
+    var target = name.trim().toLowerCase();
+    if (!target) return;
     for (var i = 0; i < select.options.length; i++) {
       if (select.options[i].value.trim().toLowerCase() === target) {
         select.value = select.options[i].value;
         return;
       }
     }
+    var opt = document.createElement('option');
+    opt.value = name.trim();
+    opt.textContent = name.trim();
+    select.insertBefore(opt, select.options[1] || null);
+    select.value = opt.value;
+  }
+
+  // Pre-select the course dropdown from a ?course= URL param (e.g. an ad
+  // landing link or a "Tư vấn ngay" button on a specific course card) so the
+  // visitor doesn't have to re-pick what they already clicked through for.
+  function prefillCourseFromUrl() {
+    var param = new URLSearchParams(window.location.search).get('course');
+    if (!param) return;
+    selectOrAddCourseOption(document.getElementById('_cmCourse'), param);
   }
 
   window.openConsultModal = function (course) {
     overlay.classList.add('open');
-    var select = document.getElementById('_cmCourse');
     if (course) {
-      for (var i = 0; i < select.options.length; i++) {
-        if (select.options[i].value === course) { select.value = course; break; }
-      }
+      selectOrAddCourseOption(document.getElementById('_cmCourse'), course);
     } else {
       prefillCourseFromUrl();
     }
