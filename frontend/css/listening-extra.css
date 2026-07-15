@@ -501,6 +501,13 @@
         }
         #screen-practice .q-nav-btn:hover { border-color: #3d8bff; color: #3d8bff; }
         #screen-practice .q-nav-btn.q-nav-answered { background: #dbeafe; border-color: #3d8bff; color: #1d4ed8; }
+        /* Review-state colors — without these, the ID-scoped base rule above
+           (higher specificity than a plain .q-nav-btn.correct) always wins
+           and every button renders white regardless of the correct/wrong/
+           skipped class the JS assigns after grading a section practice. */
+        #screen-practice .q-nav-btn.correct { background: #dcfce7; border-color: #16a34a; color: #16a34a; }
+        #screen-practice .q-nav-btn.wrong    { background: #fee2e2; border-color: #e53935; color: #e53935; }
+        #screen-practice .q-nav-btn.skipped  { background: #f3f4f6; border-color: #d1d5db; color: #9ca3af; }
 
         /* ── Mobile: practice screen ─────────────────────────────────────── */
         @media (max-width: 768px) {
