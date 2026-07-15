@@ -207,7 +207,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
               )}
 
               {(hasAiResult || hasManualResult || isConfirmed) && (
-                <div style={{ border: `1px solid ${reEditing ? '#f59e0b' : 'var(--border)'}`, borderRadius: 10, padding: '16px 20px', marginTop: 4, background: reEditing ? '#fffbeb' : undefined }}>
+                <div style={{ border: `1px solid ${reEditing ? '#f59e0b' : 'var(--border)'}`, borderRadius: 10, padding: '16px 20px', marginTop: 4, background: reEditing ? '#fffbeb' : 'var(--surface)' }}>
                   <div style={{ fontWeight: 700, marginBottom: 14, fontSize: 15 }}>
                     {isEffectivelyConfirmed ? '✓ Điểm đã xác nhận' : reEditing ? '✏️ Chỉnh sửa điểm đã xác nhận' : 'Xác nhận điểm'}
                   </div>

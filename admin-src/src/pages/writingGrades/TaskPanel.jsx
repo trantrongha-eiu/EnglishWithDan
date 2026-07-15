@@ -9,7 +9,7 @@ function ScoreRow({ label, score, comment }) {
     <div style={{ display: 'flex', gap: 8, marginBottom: 5 }}>
       <span style={{ minWidth: 36, fontWeight: 700, color: 'var(--text3)', fontSize: 12 }}>{label}</span>
       <span style={{ background: bg, color, borderRadius: 4, padding: '0 7px', fontWeight: 700, fontSize: 13 }}>{score}</span>
-      {comment && <span style={{ color: 'var(--text2)', fontSize: 12, flex: 1 }}>{comment}</span>}
+      {comment && <span style={{ color: 'var(--text)', fontSize: 12, flex: 1 }}>{comment}</span>}
     </div>
   );
 }
@@ -17,14 +17,14 @@ function ScoreRow({ label, score, comment }) {
 export function ResultBlock({ result, label, accentColor }) {
   if (!result) return null;
   return (
-    <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: accentColor + '08' }}>
+    <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: 10 }}>{label}</div>
       <ScoreRow label="TA"  score={result.ta?.score}  comment={result.ta?.comment}  />
       <ScoreRow label="CC"  score={result.cc?.score}  comment={result.cc?.comment}  />
       <ScoreRow label="LR"  score={result.lr?.score}  comment={result.lr?.comment}  />
       <ScoreRow label="GRA" score={result.gra?.score} comment={result.gra?.comment} />
       {result.overallFeedback && (
-        <div style={{ marginTop: 8, fontSize: 13, color: 'var(--text2)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+        <div style={{ marginTop: 8, fontSize: 13, color: 'var(--text)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
           <strong style={{ color: 'var(--text)' }}>Nhận xét chung:</strong> {result.overallFeedback}
         </div>
       )}
@@ -38,7 +38,7 @@ export function ManualGradeForm({ value, onChange, disabled }) {
     else onChange({ ...value, [key]: val });
   };
   return (
-    <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,.05)', borderBottom: '1px solid var(--border)' }}>
+    <div style={{ padding: '12px 16px', background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: '#059669', textTransform: 'uppercase', marginBottom: 10 }}>
         ✏️ Chấm thủ công
       </div>
@@ -104,14 +104,14 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
       </div>
 
       {prompt && (
-        <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)', background: 'rgba(0,0,0,.02)' }}>
+        <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface2)' }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', marginBottom: 6 }}>Đề bài</div>
           {imageUrl && <img src={imageUrl} alt={title} style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 6, marginBottom: 8, display: 'block' }} />}
           <div style={{ fontSize: 13, color: 'var(--text2)', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{prompt}</div>
         </div>
       )}
 
-      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border)', background: 'var(--surface)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
           <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase' }}>Bài làm học sinh</span>
           {hasAnswer && (
