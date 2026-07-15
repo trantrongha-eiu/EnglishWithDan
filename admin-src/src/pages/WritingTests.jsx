@@ -3,6 +3,24 @@ import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import Pagination from '../components/Pagination';
+import SortSelect from '../components/SortSelect';
+import { useListFilter } from '../hooks/useListFilter';
+
+function ListFilterBar({ list, searchPlaceholder }) {
+  return (
+    <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>
+      <input className="form-input search-input" placeholder={searchPlaceholder} value={list.search}
+        onChange={e => list.setSearch(e.target.value)} style={{ maxWidth: 260 }} />
+      <select className="form-input" value={list.statusFilter} onChange={e => list.setStatusFilter(e.target.value)} style={{ width: 160 }}>
+        <option value="">Tất cả trạng thái</option>
+        <option value="active">Đang hoạt động</option>
+        <option value="hidden">Đang ẩn</option>
+      </select>
+      <SortSelect value={list.sortBy} onChange={list.setSortBy} />
+    </div>
+  );
+}
 
 function Tab({ label, active, onClick }) {
   return <button className={`inner-tab${active ? ' active' : ''}`} onClick={onClick}>{label}</button>;
@@ -440,6 +458,11 @@ export default function WritingTests() {
   const [editExam, setEditExam] = useState(null);
   const [showExamModal, setShowExamModal] = useState(false);
 
+  const examsList = useListFilter(exams, { searchKeys: ['name'] });
+  const task1List = useListFilter(task1, { searchKeys: ['prompt'], nameKey: 'prompt' });
+  const task2List = useListFilter(task2, { searchKeys: ['prompt'], nameKey: 'prompt' });
+  const samplesList = useListFilter(samples, { searchKeys: ['title', 'topic', 'quarter'], nameKey: 'title' });
+
   const loadT1 = () => apiFetch('/admin/writing-task1').then(d => setTask1(d.tasks || [])).catch(e => toast(e.message, 'error'));
   const loadT2 = () => apiFetch('/admin/writing-task2').then(d => setTask2(d.tasks || [])).catch(e => toast(e.message, 'error'));
 
@@ -556,13 +579,14 @@ export default function WritingTests() {
           <div style={{ fontSize: 13, color: 'var(--text2)', background: 'var(--surface2)', borderRadius: 8, padding: '10px 14px', marginBottom: 14, lineHeight: 1.6 }}>
             <strong>Đề thi Writing</strong> là container gắn với access key. Mỗi lần thi, hệ thống tự ghép 1 prompt Task 1 + 1 prompt Task 2 ngẫu nhiên từ pool. Cần ít nhất 1 đề đang kích hoạt để học sinh có thể bắt đầu.
           </div>
+          <ListFilterBar list={examsList} searchPlaceholder="Tìm tên đề..." />
           <div className="table-wrap">
             <table className="table">
               <thead><tr><th>TÊN ĐỀ</th><th>THỜI GIAN</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
               <tbody>
-                {exams.length === 0
-                  ? <tr><td colSpan={5} className="table-empty">Chưa có đề nào – nhấn "+ Thêm đề thi"</td></tr>
-                  : exams.map(ex => (
+                {examsList.paged.length === 0
+                  ? <tr><td colSpan={5} className="table-empty">{exams.length === 0 ? 'Chưa có đề nào – nhấn "+ Thêm đề thi"' : 'Không tìm thấy đề phù hợp'}</td></tr>
+                  : examsList.paged.map(ex => (
                     <tr key={ex._id}>
                       <td><strong>{ex.name}</strong></td>
                       <td style={{ fontSize: 13 }}>{ex.duration} phút</td>
@@ -585,131 +609,152 @@ export default function WritingTests() {
               </tbody>
             </table>
           </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={examsList.page} total={examsList.filteredCount} pageSize={examsList.pageSize} onPage={examsList.setPage} />
+          </div>
         </>
       )}
 
       {tab === 'task1' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
-            <tbody>
-              {task1.length === 0
-                ? <tr><td colSpan={6} className="table-empty">Chưa có prompt Task 1 nào</td></tr>
-                : task1.map(p => {
-                  const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
-                  return (
-                    <tr key={p._id}>
-                      <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
-                      <td>{/^https?:\/\//i.test(p.imageUrl || '') ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
-                      <td>
-                        {hasSample
-                          ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
-                          : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
-                      </td>
-                      <td>
-                        <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
-                          <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
-                        </span>
-                      </td>
-                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
-                      <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(1, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
-                      <td>
-                        <div className="row-actions">
-                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
-                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <ListFilterBar list={task1List} searchPlaceholder="Tìm prompt..." />
+          <div className="table-wrap">
+            <table className="table">
+              <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
+              <tbody>
+                {task1List.paged.length === 0
+                  ? <tr><td colSpan={6} className="table-empty">{task1.length === 0 ? 'Chưa có prompt Task 1 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
+                  : task1List.paged.map(p => {
+                    const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                    return (
+                      <tr key={p._id}>
+                        <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
+                        <td>{/^https?:\/\//i.test(p.imageUrl || '') ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
+                        <td>
+                          {hasSample
+                            ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
+                            : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                        </td>
+                        <td>
+                          <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                            <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                          </span>
+                        </td>
+                        <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                        <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(1, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
+                        <td>
+                          <div className="row-actions">
+                            <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask1(p)} title="Sửa">✏️</button>
+                            <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task1', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
+                            {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task1', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={task1List.page} total={task1List.filteredCount} pageSize={task1List.pageSize} onPage={task1List.setPage} />
+          </div>
+        </>
       )}
 
       {tab === 'task2' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead><tr><th>PROMPT</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
-            <tbody>
-              {task2.length === 0
-                ? <tr><td colSpan={6} className="table-empty">Chưa có prompt Task 2 nào</td></tr>
-                : task2.map(p => {
-                  const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
-                  return (
-                    <tr key={p._id}>
-                      <td style={{ maxWidth: 380 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>
-                      <td>
-                        {hasSample
-                          ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
-                          : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
-                      </td>
-                      <td>
-                        <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
-                          <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
-                        </span>
-                      </td>
-                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
-                      <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(2, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
-                      <td>
-                        <div className="row-actions">
-                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
-                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
-                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <ListFilterBar list={task2List} searchPlaceholder="Tìm prompt..." />
+          <div className="table-wrap">
+            <table className="table">
+              <thead><tr><th>PROMPT</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
+              <tbody>
+                {task2List.paged.length === 0
+                  ? <tr><td colSpan={6} className="table-empty">{task2.length === 0 ? 'Chưa có prompt Task 2 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
+                  : task2List.paged.map(p => {
+                    const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                    return (
+                      <tr key={p._id}>
+                        <td style={{ maxWidth: 380 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>
+                        <td>
+                          {hasSample
+                            ? <span className="badge badge-green" title="Đã có bài mẫu">📝 Có</span>
+                            : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                        </td>
+                        <td>
+                          <span className={`badge ${p.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                            <span className="dot" />{p.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                          </span>
+                        </td>
+                        <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(p.createdAt).split(' ')[0]}</td>
+                        <td><button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyPracticeLink(2, p._id)} title="Copy link chia sẻ cho học sinh">🔗</button></td>
+                        <td>
+                          <div className="row-actions">
+                            <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditTask2(p)} title="Sửa">✏️</button>
+                            <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive('task2', p._id, p.isActive !== false)} title={p.isActive !== false ? 'Ẩn' : 'Hiện'}>{p.isActive !== false ? '🙈' : '👁'}</button>
+                            {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del('task2', p._id, (p.prompt || '').slice(0, 40))}>🗑</button>}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={task2List.page} total={task2List.filteredCount} pageSize={task2List.pageSize} onPage={task2List.setPage} />
+          </div>
+        </>
       )}
 
       {tab === 'samples' && (
-        <div className="table-wrap">
-          <table className="table">
-            <thead>
-              <tr><th>TIÊU ĐỀ</th><th>KỲ</th><th>CHỦ ĐỀ</th><th>LOẠI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr>
-            </thead>
-            <tbody>
-              {samples.length === 0
-                ? <tr><td colSpan={7} className="table-empty">Chưa có bài mẫu nào</td></tr>
-                : samples.map(s => (
-                  <tr key={s._id}>
-                    <td><strong>{s.title}</strong></td>
-                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{s.quarter}</td>
-                    <td style={{ maxWidth: 200, fontSize: 13 }}>{(s.topic || '').slice(0, 60)}{(s.topic || '').length > 60 ? '…' : ''}</td>
-                    <td>
-                      <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 8, background: '#eff6ff', color: '#3d8bff' }}>
-                        {TASK_TYPE_LABEL[s.taskType] || s.taskType}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`badge ${s.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
-                        <span className="dot" />{s.isActive !== false ? 'Hoạt động' : 'Ẩn'}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(s.createdAt).split(' ')[0]}</td>
-                    <td>
-                      <div className="row-actions">
-                        {s.pdfUrl && (
-                          <a href={s.pdfUrl} target="_blank" rel="noreferrer"
-                            className="btn btn-ghost btn-sm btn-icon" title="Xem PDF">📄</a>
-                        )}
-                        <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditSample(s)} title="Sửa">✏️</button>
-                        <button className="btn btn-ghost btn-sm btn-icon"
-                          onClick={() => toggleSample(s._id, s.isActive !== false)}
-                          title={s.isActive !== false ? 'Ẩn' : 'Hiện'}>{s.isActive !== false ? '🙈' : '👁'}</button>
-                        {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delSample(s._id, s.title)}>🗑</button>}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <ListFilterBar list={samplesList} searchPlaceholder="Tìm tiêu đề, chủ đề, kỳ..." />
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr><th>TIÊU ĐỀ</th><th>KỲ</th><th>CHỦ ĐỀ</th><th>LOẠI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr>
+              </thead>
+              <tbody>
+                {samplesList.paged.length === 0
+                  ? <tr><td colSpan={7} className="table-empty">{samples.length === 0 ? 'Chưa có bài mẫu nào' : 'Không tìm thấy bài mẫu phù hợp'}</td></tr>
+                  : samplesList.paged.map(s => (
+                    <tr key={s._id}>
+                      <td><strong>{s.title}</strong></td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{s.quarter}</td>
+                      <td style={{ maxWidth: 200, fontSize: 13 }}>{(s.topic || '').slice(0, 60)}{(s.topic || '').length > 60 ? '…' : ''}</td>
+                      <td>
+                        <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 8, background: '#eff6ff', color: '#3d8bff' }}>
+                          {TASK_TYPE_LABEL[s.taskType] || s.taskType}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`badge ${s.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
+                          <span className="dot" />{s.isActive !== false ? 'Hoạt động' : 'Ẩn'}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(s.createdAt).split(' ')[0]}</td>
+                      <td>
+                        <div className="row-actions">
+                          {s.pdfUrl && (
+                            <a href={s.pdfUrl} target="_blank" rel="noreferrer"
+                              className="btn btn-ghost btn-sm btn-icon" title="Xem PDF">📄</a>
+                          )}
+                          <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditSample(s)} title="Sửa">✏️</button>
+                          <button className="btn btn-ghost btn-sm btn-icon"
+                            onClick={() => toggleSample(s._id, s.isActive !== false)}
+                            title={s.isActive !== false ? 'Ẩn' : 'Hiện'}>{s.isActive !== false ? '🙈' : '👁'}</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => delSample(s._id, s.title)}>🗑</button>}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Pagination page={samplesList.page} total={samplesList.filteredCount} pageSize={samplesList.pageSize} onPage={samplesList.setPage} />
+          </div>
+        </>
       )}
     </>
   );

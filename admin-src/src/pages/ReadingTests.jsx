@@ -5,8 +5,8 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
-
-const PAGE = 20;
+import SortSelect from '../components/SortSelect';
+import { useListFilter } from '../hooks/useListFilter';
 
 export default function ReadingTests() {
   const navigate = useNavigate();
@@ -14,10 +14,11 @@ export default function ReadingTests() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [tests, setTests] = useState([]);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [passageStats, setPassageStats] = useState(null);
-  const [page, setPage] = useState(1);
+  const {
+    search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
+    page, setPage, paged, filteredCount, pageSize,
+  } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
 
   const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => {
@@ -26,22 +27,6 @@ export default function ReadingTests() {
       .then(d => setPassageStats(d.stats))
       .catch(() => {});
   }, []);
-
-  const filtered = tests.filter(t => {
-    if (search && !t.name?.toLowerCase().includes(search.toLowerCase()) && !(t.seriesName || '').toLowerCase().includes(search.toLowerCase())) return false;
-    if (statusFilter === 'active' && t.isActive === false) return false;
-    if (statusFilter === 'hidden' && t.isActive !== false) return false;
-    return true;
-  });
-
-  // Adjust-during-render (not an effect): reset to page 1 whenever the
-  // filters change, in the same render rather than a post-commit effect.
-  const [prevFilters, setPrevFilters] = useState([search, statusFilter]);
-  if (prevFilters[0] !== search || prevFilters[1] !== statusFilter) {
-    setPrevFilters([search, statusFilter]);
-    if (page !== 1) setPage(1);
-  }
-  const paged = filtered.slice((page - 1) * PAGE, page * PAGE);
 
   async function toggleActive(id, isActive) {
     try {
@@ -71,7 +56,7 @@ export default function ReadingTests() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">Bộ đề Reading ({filtered.length})</h2>
+        <h2 className="section-title">Bộ đề Reading ({filteredCount})</h2>
         <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new')}>+ Thêm bộ đề</button>
       </div>
 
@@ -104,6 +89,7 @@ export default function ReadingTests() {
           <option value="active">Đang hoạt động</option>
           <option value="hidden">Đang ẩn</option>
         </select>
+        <SortSelect value={sortBy} onChange={setSortBy} />
       </div>
 
       <div className="table-wrap">
@@ -137,7 +123,7 @@ export default function ReadingTests() {
         </table>
       </div>
       <div style={{ marginTop: 12 }}>
-        <Pagination page={page} total={filtered.length} pageSize={PAGE} onPage={setPage} />
+        <Pagination page={page} total={filteredCount} pageSize={pageSize} onPage={setPage} />
       </div>
     </>
   );
