@@ -523,6 +523,63 @@
     </div>
   </section>
 
+  <!-- ════════════════════ STUDENT RESULTS ════════════════════ -->
+  <section id="results" class="results-section">
+    <div class="section-head" style="text-align:center;max-width:640px;margin:0 auto 48px">
+      <div class="section-tag">Kết quả thật</div>
+      <h2 class="section-title">Giấy báo điểm của học viên</h2>
+      <p class="section-sub">Không chỉ là lời nói — đây là giấy báo điểm IELTS thật của các học viên đã học cùng thầy Daniel Hà. Bấm vào ảnh để xem rõ hơn.</p>
+    </div>
+
+    <div class="results-grid">
+      <div class="result-card" onclick="openResultLightbox('img/AiVan7.5.jpg','Nguyễn Thị Ái Vân · Overall 7.5')">
+        <img src="img/AiVan7.5.jpg" alt="Giấy báo điểm IELTS Overall 7.5 của học viên Nguyễn Thị Ái Vân" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Nguyễn Thị Ái Vân</strong><span class="result-band">Overall 7.5</span></div>
+      </div>
+      <div class="result-card" onclick="openResultLightbox('img/Tue7.0.jpg','Lai Nhã Tuệ · Overall 7.0')">
+        <img src="img/Tue7.0.jpg" alt="Giấy báo điểm IELTS Overall 7.0 của học viên Lai Nhã Tuệ" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Lai Nhã Tuệ</strong><span class="result-band">Overall 7.0</span></div>
+      </div>
+      <div class="result-card" onclick="openResultLightbox('img/WeiCheng6.5.jpg','Ding Weicheng · Overall 6.5')">
+        <img src="img/WeiCheng6.5.jpg" alt="Giấy báo điểm IELTS Overall 6.5 của học viên Ding Weicheng" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Ding Weicheng</strong><span class="result-band">Overall 6.5</span></div>
+      </div>
+      <div class="result-card" onclick="openResultLightbox('img/Dieu6.5.jpg','Ngọc Diệu · Overall 6.5')">
+        <img src="img/Dieu6.5.jpg" alt="Tin nhắn học viên Ngọc Diệu báo điểm IELTS Overall 6.5 cho thầy Daniel Hà" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Ngọc Diệu</strong><span class="result-band">Overall 6.5</span></div>
+      </div>
+      <div class="result-card" onclick="openResultLightbox('img/An6.0.jpg','Võ Trần Bình An · Overall 6.0')">
+        <img src="img/An6.0.jpg" alt="Giấy báo điểm IELTS Overall 6.0 của học viên Võ Trần Bình An" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Võ Trần Bình An</strong><span class="result-band">Overall 6.0</span></div>
+      </div>
+      <div class="result-card" onclick="openResultLightbox('img/Nhu6.0.jpg','Võ Thị Huỳnh Như · Overall 6.0')">
+        <img src="img/Nhu6.0.jpg" alt="Giấy báo điểm IELTS Overall 6.0 của học viên Võ Thị Huỳnh Như" loading="lazy">
+        <div class="result-overlay"><i class="fas fa-search-plus"></i></div>
+        <div class="result-info"><strong>Võ Thị Huỳnh Như</strong><span class="result-band">Overall 6.0</span></div>
+      </div>
+    </div>
+
+    <div class="result-quote">
+      <i class="fas fa-quote-left"></i>
+      <p>"Em có điểm rồi nè thầy ơi, lên hẳn 1 band luôn á 😝🤪🤓"</p>
+      <span>— Ngọc Diệu, nhắn ngay cho thầy Daniel Hà khi vừa nhận kết quả</span>
+    </div>
+  </section>
+
+  <!-- Lightbox for result images -->
+  <div class="result-lightbox" id="result-lightbox" onclick="closeResultLightbox()">
+    <span class="result-lightbox-close" onclick="closeResultLightbox()" aria-label="Đóng">&times;</span>
+    <figure>
+      <img id="result-lightbox-img" src="" alt="">
+      <figcaption id="result-lightbox-caption"></figcaption>
+    </figure>
+  </div>
+
   <!-- ════════════════════ CONTACT FORM ════════════════════ -->
   <section id="contact" class="contact-section">
     <div class="contact-wrap">
@@ -730,6 +787,22 @@
         const ph = img.closest('.course-thumb').querySelector('.course-placeholder');
         if (ph) ph.style.display = 'none';
       });
+    });
+
+    /* ── Student result lightbox ── */
+    function openResultLightbox(src, caption) {
+      const box = document.getElementById('result-lightbox');
+      document.getElementById('result-lightbox-img').src = src;
+      document.getElementById('result-lightbox-caption').textContent = caption || '';
+      box.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeResultLightbox() {
+      document.getElementById('result-lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeResultLightbox();
     });
   </script>
   <script src="js/consult-modal.js"></script>
