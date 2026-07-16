@@ -123,7 +123,11 @@ function mapPassageGroups(groups, questionMapper) {
 
 async function listTestsForUser(userId) {
   const [tests, attempts] = await Promise.all([
-    ReadingTest.find({ isActive: true }).sort({ testNumber: -1 }).lean(),
+    // Sort by name with numeric collation (not testNumber, which is only
+    // meaningful within a fixed-size series like "Cam 20" and is otherwise
+    // an arbitrary/default value) so "Test 2" sorts before "Test 10" instead
+    // of lexicographically, matching what students expect to see.
+    ReadingTest.find({ isActive: true }).collation({ locale: 'en', numericOrdering: true }).sort({ name: 1 }).lean(),
     TestAttempt.find({ userId, status: 'completed' })
       .select('testId bandScore correctCount wrongCount skippedCount totalQuestions endTime duration').lean()
   ]);

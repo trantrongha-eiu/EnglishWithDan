@@ -39,4 +39,14 @@ describe('sortItems', () => {
     expect(sortItems(prompts, 'name-asc', { nameKey: 'prompt' }).map(p => p.prompt)).toEqual(['A prompt', 'B prompt']);
     expect(sortItems(prompts, 'date-asc', { dateKey: 'addedAt' }).map(p => p.addedAt)).toEqual([1, 2]);
   });
+
+  it('sorts embedded numbers naturally, not lexicographically (Test 2 before Test 10)', () => {
+    const tests = [
+      { name: 'Actual Test 10' }, { name: 'Actual Test 1' }, { name: 'Actual Test 13' },
+      { name: 'Actual Test 2' }, { name: 'Actual Test 3' },
+    ];
+    expect(sortItems(tests, 'name-asc').map(t => t.name)).toEqual([
+      'Actual Test 1', 'Actual Test 2', 'Actual Test 3', 'Actual Test 10', 'Actual Test 13',
+    ]);
+  });
 });

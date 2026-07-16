@@ -11,9 +11,9 @@ export function sortItems(items, sortBy, { nameKey = 'name', dateKey = 'createdA
   const arr = [...items];
   switch (sortBy) {
     case 'name-asc':
-      return arr.sort((a, b) => String(a[nameKey] || '').localeCompare(String(b[nameKey] || ''), 'vi'));
+      return arr.sort((a, b) => String(a[nameKey] || '').localeCompare(String(b[nameKey] || ''), 'vi', { numeric: true }));
     case 'name-desc':
-      return arr.sort((a, b) => String(b[nameKey] || '').localeCompare(String(a[nameKey] || ''), 'vi'));
+      return arr.sort((a, b) => String(b[nameKey] || '').localeCompare(String(a[nameKey] || ''), 'vi', { numeric: true }));
     case 'date-asc':
       return arr.sort((a, b) => new Date(a[dateKey] || 0) - new Date(b[dateKey] || 0));
     case 'date-desc':

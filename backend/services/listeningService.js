@@ -410,9 +410,13 @@ async function assembleTest({ name, seriesName, testNumber, sectionIds }) {
 // ── Student – test list / start / submit ─────────────────────────────────
 async function listStudentTests(userId) {
   const [tests, attempts] = await Promise.all([
+    // Sort by name with numeric collation (not testNumber, which is only
+    // meaningful within a fixed-size series like "Cam 20" and is otherwise
+    // an arbitrary/default value) so "Test 2" sorts before "Test 10" instead
+    // of lexicographically, matching what students expect to see.
     ListeningTest.aggregate([
       { $match: { isActive: true } },
-      { $sort: { testNumber: -1 } },
+      { $sort: { name: 1 } },
       { $addFields: {
         totalParts: { $size: { $ifNull: ['$sections', []] } },
         totalQuestions: {
@@ -422,7 +426,7 @@ async function listStudentTests(userId) {
         }
       } },
       { $project: { name: 1, testNumber: 1, seriesName: 1, audioDuration: 1, totalParts: 1, totalQuestions: 1 } }
-    ]),
+    ]).collation({ locale: 'en', numericOrdering: true }),
     ListeningAttempt.find({ userId, status: 'completed' })
       .select('testId bandScore correctCount wrongCount skippedCount submittedAt timeTaken').lean()
   ]);
