@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Essential Grammar – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="writing-practice.css"/>
+  <link rel="stylesheet" href="css/mobile.css"/>
+  <link rel="stylesheet" href="css/dictionary-popup.css"/>
+  <script src="js/theme.js"></script>
+  <style>
+    body{background:#f9fafb}
+    [data-theme="dark"] body{background:#0f172a}
+
+    /* ── Header ── */
+    .eg-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;
+      background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:60;flex-wrap:wrap}
+    [data-theme="dark"] .eg-header{background:#1e293b;border-color:#334155}
+    .eg-nav-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+    .eg-nav-link{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;font-size:12px;
+      font-weight:600;color:#374151;text-decoration:none;transition:background .15s,color .15s}
+    .eg-nav-link:hover{background:#f5f3ff;color:#6366f1}
+    [data-theme="dark"] .eg-nav-link{color:#9ca3af}
+    [data-theme="dark"] .eg-nav-link:hover{background:#1e1b4b;color:#a5b4fc}
+    .eg-header-right{display:flex;align-items:center;gap:8px}
+    .eg-dark-btn{background:none;border:1.5px solid #e5e7eb;border-radius:8px;width:32px;height:32px;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+    [data-theme="dark"] .eg-dark-btn{border-color:#334155}
+
+    /* ── Layout ── */
+    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - 53px)}
+    .eg-sidebar{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #e5e7eb;
+      position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto;
+      scrollbar-width:thin;scrollbar-color:#e5e7eb transparent;display:flex;flex-direction:column;z-index:20}
+    [data-theme="dark"] .eg-sidebar{background:#1e293b;border-color:#334155;scrollbar-color:#334155 transparent}
+
+    .eg-sidebar-top{padding:14px 14px 10px;border-bottom:1px solid #f3f4f6;flex-shrink:0}
+    [data-theme="dark"] .eg-sidebar-top{border-color:#334155}
+    .eg-search-box{position:relative}
+    .eg-search-input{width:100%;padding:8px 12px 8px 32px;border:1.5px solid #e5e7eb;border-radius:8px;
+      font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;background:#fff;color:#111827}
+    .eg-search-input:focus{border-color:#6366f1}
+    [data-theme="dark"] .eg-search-input{background:#0f172a;border-color:#334155;color:#e2e8f0}
+    .eg-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:12px}
+    .eg-progress-badge{margin-top:10px;display:flex;align-items:center;gap:8px}
+    .eg-progress-track{flex:1;height:6px;background:#f3f4f6;border-radius:3px;overflow:hidden}
+    [data-theme="dark"] .eg-progress-track{background:#334155}
+    .eg-progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:3px;transition:width .4s}
+    .eg-progress-text{font-size:11px;font-weight:700;color:#6b7280;white-space:nowrap}
+    [data-theme="dark"] .eg-progress-text{color:#94a3b8}
+
+    .eg-cat-list{flex:1;padding:6px 0}
+    .eg-cat-group{border-bottom:1px solid #f9fafb}
+    [data-theme="dark"] .eg-cat-group{border-color:#0f172a}
+    .eg-cat-header{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;border:none;
+      background:none;text-align:left;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;
+      color:#374151;transition:background .15s}
+    .eg-cat-header:hover{background:#f9fafb}
+    [data-theme="dark"] .eg-cat-header{color:#e2e8f0}
+    [data-theme="dark"] .eg-cat-header:hover{background:rgba(255,255,255,.04)}
+    .eg-cat-chevron{margin-left:auto;font-size:10px;color:#9ca3af;transition:transform .2s}
+    .eg-cat-group.collapsed .eg-cat-chevron{transform:rotate(-90deg)}
+    .eg-cat-count{font-size:10px;font-weight:600;color:#9ca3af;background:#f3f4f6;border-radius:8px;padding:1px 6px}
+    [data-theme="dark"] .eg-cat-count{background:#334155;color:#64748b}
+    .eg-lesson-list{display:flex;flex-direction:column;padding:0 6px 6px}
+    .eg-cat-group.collapsed .eg-lesson-list{display:none}
+    .eg-lesson-item{display:flex;align-items:center;gap:8px;padding:7px 10px 7px 22px;border-radius:8px;
+      border:none;background:none;text-align:left;cursor:pointer;font-family:inherit;font-size:12.5px;
+      color:#4b5563;transition:background .15s,color .15s;width:100%}
+    .eg-lesson-item:hover{background:#f5f3ff;color:#6366f1}
+    .eg-lesson-item.active{background:#ede9fe;color:#4338ca;font-weight:700}
+    [data-theme="dark"] .eg-lesson-item{color:#94a3b8}
+    [data-theme="dark"] .eg-lesson-item:hover{background:#1e1b4b;color:#a5b4fc}
+    [data-theme="dark"] .eg-lesson-item.active{background:#1e1b4b;color:#c4b5fd}
+    .eg-lesson-icon{flex-shrink:0;font-size:13px}
+    .eg-lesson-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .eg-lesson-done{flex-shrink:0;font-size:11px;color:#16a34a}
+    [data-theme="dark"] .eg-lesson-done{color:#4ade80}
+    .eg-no-results{padding:20px 14px;text-align:center;color:#9ca3af;font-size:12.5px}
+
+    /* ── Main ── */
+    .eg-main{flex:1;min-width:0;display:flex;flex-direction:column}
+    .eg-hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:22px 28px;color:#fff}
+    .eg-hero-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.85;margin-bottom:4px}
+    .eg-hero-title{font-size:22px;font-weight:900;margin:0;display:flex;align-items:center;gap:10px}
+    .eg-hero-status{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .eg-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:700}
+    .eg-status-done{background:rgba(34,197,94,.28);border-color:rgba(134,239,172,.5)}
+    .eg-content{max-width:760px;margin:0 auto;padding:20px 24px 40px;width:100%}
+
+    .eg-block{margin-bottom:22px}
+    .eg-block-label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;
+      text-transform:uppercase;letter-spacing:.06em;color:#6366f1;margin-bottom:10px}
+    [data-theme="dark"] .eg-block-label{color:#a5b4fc}
+
+    .eg-overview-text{font-size:14.5px;line-height:1.8;color:#374151}
+    [data-theme="dark"] .eg-overview-text{color:#cbd5e1}
+
+    .eg-formula-card{background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+    [data-theme="dark"] .eg-formula-card{background:#1e1b4b;border-color:#3730a3}
+    .eg-formula-label{font-size:11px;font-weight:700;color:#6d28d9;margin-bottom:4px}
+    [data-theme="dark"] .eg-formula-label{color:#c4b5fd}
+    .eg-formula-structure{font-size:14px;font-weight:700;color:#111827;font-family:'Courier New',monospace;margin-bottom:4px}
+    [data-theme="dark"] .eg-formula-structure{color:#f1f5f9}
+    .eg-formula-example{font-size:13px;color:#6b7280;font-style:italic}
+    [data-theme="dark"] .eg-formula-example{color:#94a3b8}
+
+    .eg-usage-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f3f4f6}
+    [data-theme="dark"] .eg-usage-item{border-color:#1e293b}
+    .eg-usage-item:last-child{border-bottom:none}
+    .eg-usage-bullet{flex-shrink:0;color:#6366f1;font-size:13px;margin-top:2px}
+    .eg-usage-title{font-size:13.5px;font-weight:700;color:#111827;margin-bottom:2px}
+    [data-theme="dark"] .eg-usage-title{color:#f1f5f9}
+    .eg-usage-desc{font-size:13px;color:#6b7280;line-height:1.6}
+    [data-theme="dark"] .eg-usage-desc{color:#94a3b8}
+
+    .eg-chip-wrap{display:flex;flex-wrap:wrap;gap:6px}
+    .eg-chip{background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;border-radius:20px;padding:4px 12px;font-size:12.5px;font-weight:600}
+    [data-theme="dark"] .eg-chip{background:#431407;border-color:#7c2d12;color:#fb923c}
+
+    .eg-example-item{background:#f9fafb;border:1px solid #f3f4f6;border-left:3px solid #6366f1;border-radius:8px;
+      padding:10px 14px;margin-bottom:8px}
+    [data-theme="dark"] .eg-example-item{background:#0f172a;border-color:#1e293b;border-left-color:#818cf8}
+    .eg-example-en{font-size:13.5px;color:#111827;margin-bottom:3px}
+    [data-theme="dark"] .eg-example-en{color:#e2e8f0}
+    .eg-example-vi{font-size:12.5px;color:#6b7280;font-style:italic}
+    [data-theme="dark"] .eg-example-vi{color:#94a3b8}
+
+    .eg-mistake-item{background:#fff;border:1.5px solid #f3f4f6;border-radius:10px;padding:10px 14px;margin-bottom:10px}
+    [data-theme="dark"] .eg-mistake-item{background:#0f172a;border-color:#1e293b}
+    .eg-mistake-wrong{font-size:13px;color:#dc2626;text-decoration:line-through;margin-bottom:3px;display:flex;gap:6px}
+    .eg-mistake-right{font-size:13.5px;color:#16a34a;font-weight:600;margin-bottom:5px;display:flex;gap:6px}
+    [data-theme="dark"] .eg-mistake-wrong{color:#f87171}
+    [data-theme="dark"] .eg-mistake-right{color:#4ade80}
+    .eg-mistake-note{font-size:12.5px;color:#6b7280;line-height:1.6}
+    [data-theme="dark"] .eg-mistake-note{color:#94a3b8}
+
+    .eg-tip-item{display:flex;gap:8px;padding:8px 0;font-size:13px;color:#374151;line-height:1.6}
+    [data-theme="dark"] .eg-tip-item{color:#cbd5e1}
+
+    .eg-cmp-table{width:100%;border-collapse:collapse;font-size:12.5px}
+    .eg-cmp-table th{background:#ede9fe;color:#4338ca;padding:8px 10px;text-align:left;font-weight:700;border:1px solid #ddd6fe}
+    [data-theme="dark"] .eg-cmp-table th{background:#1e1b4b;color:#c4b5fd;border-color:#3730a3}
+    .eg-cmp-table td{padding:8px 10px;border:1px solid #f3f4f6;color:#374151;vertical-align:top}
+    [data-theme="dark"] .eg-cmp-table td{border-color:#1e293b;color:#cbd5e1}
+    .eg-cmp-wrap{overflow-x:auto}
+
+    .eg-quiz-q{margin-bottom:18px}
+    .eg-quiz-question{font-size:13.5px;font-weight:700;color:#111827;margin-bottom:8px}
+    [data-theme="dark"] .eg-quiz-question{color:#f1f5f9}
+    .eg-quiz-options{display:flex;flex-direction:column;gap:7px}
+    .eg-quiz-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:9px;padding:9px 12px;cursor:pointer;
+      font-size:13px;text-align:left;transition:all .15s;width:100%;color:#374151}
+    .eg-quiz-option:hover{border-color:#6366f1;background:#f5f3ff}
+    [data-theme="dark"] .eg-quiz-option{background:#0f172a;border-color:#1e293b;color:#cbd5e1}
+    [data-theme="dark"] .eg-quiz-option:hover{background:#1e1b4b}
+    .eg-quiz-option.eg-correct{border-color:#16a34a;background:#dcfce7;color:#065f46;font-weight:600}
+    .eg-quiz-option.eg-wrong{border-color:#dc2626;background:#fee2e2;color:#991b1b;font-weight:600}
+    [data-theme="dark"] .eg-quiz-option.eg-correct{background:#052e16;color:#86efac}
+    [data-theme="dark"] .eg-quiz-option.eg-wrong{background:#1c0505;color:#fca5a5}
+    .eg-quiz-explanation{display:none;margin-top:8px;padding:8px 12px;background:#f0f9ff;border-radius:8px;
+      font-size:12.5px;color:#0369a1;line-height:1.6}
+    [data-theme="dark"] .eg-quiz-explanation{background:#0c1e30;color:#7dd3fc}
+    .eg-quiz-explanation.vis{display:block}
+
+    .eg-summary-box{background:linear-gradient(135deg,#ede9fe,#e0e7ff);border:1.5px solid #c4b5fd;border-radius:12px;
+      padding:14px 16px;font-size:13.5px;color:#3730a3;font-weight:600;line-height:1.7}
+    [data-theme="dark"] .eg-summary-box{background:linear-gradient(135deg,#1e1b4b,#1e293b);border-color:#3730a3;color:#a5b4fc}
+
+    /* ── Quiz progress + result banner ── */
+    .eg-quiz-progress{font-size:11.5px;font-weight:700;color:#9ca3af;margin-bottom:10px}
+    .eg-quiz-result{display:none;margin-top:6px;border-radius:10px;padding:12px 14px;font-size:13.5px;font-weight:700}
+    .eg-quiz-result.vis{display:block}
+    .eg-quiz-result.eg-qr-good{background:#dcfce7;color:#065f46;border:1.5px solid #86efac}
+    .eg-quiz-result.eg-qr-bad{background:#fef9c3;color:#854d0e;border:1.5px solid #fde047}
+    [data-theme="dark"] .eg-quiz-result.eg-qr-good{background:#052e16;color:#86efac;border-color:#166534}
+    [data-theme="dark"] .eg-quiz-result.eg-qr-bad{background:#422006;color:#fbbf24;border-color:#854d0e}
+
+    /* ── Practice exercises ── */
+    .eg-ex-item{background:#f9fafb;border:1.5px solid #f3f4f6;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+    [data-theme="dark"] .eg-ex-item{background:#0f172a;border-color:#1e293b}
+    .eg-ex-badge{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+      color:#7c3aed;background:#ede9fe;border-radius:10px;padding:2px 8px;margin-bottom:6px}
+    [data-theme="dark"] .eg-ex-badge{color:#c4b5fd;background:#1e1b4b}
+    .eg-ex-question{font-size:13.5px;font-weight:600;color:#111827;margin-bottom:8px;line-height:1.6}
+    [data-theme="dark"] .eg-ex-question{color:#f1f5f9}
+    .eg-ex-input{width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;
+      font-family:inherit;outline:none;background:#fff;color:#111827;resize:vertical;box-sizing:border-box}
+    .eg-ex-input:focus{border-color:#6366f1}
+    [data-theme="dark"] .eg-ex-input{background:#1e293b;border-color:#334155;color:#e2e8f0}
+    .eg-ex-reveal-btn{margin-top:8px;background:#6366f1;color:#fff;border:none;border-radius:8px;padding:7px 16px;
+      font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+    .eg-ex-reveal-btn:hover:not(:disabled){background:#4f46e5}
+    .eg-ex-reveal-btn:disabled{opacity:.5;cursor:not-allowed}
+    .eg-ex-answer-panel{display:none;margin-top:10px;padding:10px 12px;background:#f0f9ff;border-radius:8px;font-size:12.5px;line-height:1.7}
+    .eg-ex-answer-panel.vis{display:block}
+    [data-theme="dark"] .eg-ex-answer-panel{background:#0c1e30}
+    .eg-ex-user-answer{color:#6b7280;margin-bottom:4px}
+    [data-theme="dark"] .eg-ex-user-answer{color:#94a3b8}
+    .eg-ex-model-answer{color:#065f46;margin-bottom:4px}
+    [data-theme="dark"] .eg-ex-model-answer{color:#86efac}
+    .eg-ex-explanation{color:#0369a1}
+    [data-theme="dark"] .eg-ex-explanation{color:#7dd3fc}
+
+    /* ── Prev/Next footer ── */
+    .eg-nav-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 24px 32px;
+      max-width:760px;margin:0 auto;width:100%}
+    .eg-nav-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border:1.5px solid #e5e7eb;border-radius:10px;
+      background:#fff;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:#374151;
+      transition:all .15s;max-width:48%}
+    .eg-nav-btn:hover:not(:disabled){border-color:#6366f1;color:#6366f1}
+    .eg-nav-btn:disabled{opacity:.35;cursor:not-allowed}
+    [data-theme="dark"] .eg-nav-btn{background:#1e293b;border-color:#334155;color:#e2e8f0}
+    .eg-nav-btn-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+    .eg-nav-btn-sub{font-size:10px;color:#9ca3af;font-weight:500}
+
+    .eg-loading{padding:60px 20px;text-align:center;color:#9ca3af}
+    .eg-loading-icon{font-size:32px;margin-bottom:10px}
+
+    /* ── Mobile ── */
+    @media(max-width:768px){
+      #eg-sidebar{display:none}
+      .eg-hero{padding:16px 16px}
+      .eg-hero-title{font-size:18px}
+      .eg-content{padding:14px 16px 24px}
+      .eg-nav-footer{padding:12px 16px 24px}
+      .eg-nav-btn{font-size:12px;padding:9px 12px}
+    }
+  </style>
+</head>
+<body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
+<script src="js/shared/dictionary-lookup.js"></script>
+
+<!-- Compact in-page header (this page hides the global navbar) -->
+<header class="eg-header">
+  <nav class="eg-nav-group">
+    <a href="writing-practice.html" class="eg-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
+    <a href="task1-practice.html" class="eg-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
+    <a href="task2-practice.html" class="eg-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
+    <a href="task2-template.html" class="eg-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
+  </nav>
+  <div class="eg-header-right">
+    <button class="eg-dark-btn" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
+  </div>
+</header>
+
+<div class="eg-layout">
+  <!-- ── Desktop sidebar ── -->
+  <aside class="eg-sidebar" id="eg-sidebar"></aside>
+
+  <!-- ── Main content ── -->
+  <div class="eg-main">
+    <div id="eg-main-content">
+      <div class="eg-loading"><div class="eg-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải bài học...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile FAB + bottom sheet (lesson list) -->
+<button class="wp-mob-fab" id="eg-mob-fab" onclick="openEgSheet()" aria-label="Danh sách bài học"><i class="fas fa-list"></i></button>
+<div class="wp-mob-backdrop" id="eg-mob-backdrop" onclick="closeEgSheet()"></div>
+<div class="wp-mob-sheet" id="eg-mob-sheet">
+  <div class="wp-sheet-handle"><span class="wp-sheet-handle-bar"></span></div>
+  <div class="wp-sheet-title"><i class="fas fa-book"></i> Danh sách bài học</div>
+  <div class="wp-sheet-body">
+    <aside class="eg-sidebar" id="eg-sidebar-mobile" style="width:100%;position:static;height:auto;border:none"></aside>
+  </div>
+</div>
+
+<script>
+const API = 'https://englishwithdan.onrender.com';
+const LAST_LESSON_KEY = 'eg_last_lesson';
+const COLLAPSED_KEY = 'eg_collapsed_categories';
+
+const SCORE_KEY = 'eg_lesson_scores';
+const COMPLETE_THRESHOLD = 80;
+const EX_TYPE_LABELS = {
+  multiple_choice: 'Trắc nghiệm',
+  fill_blank: 'Điền từ',
+  error_correction: 'Sửa lỗi',
+  translation_vn_en: 'Dịch Việt → Anh',
+  translation_en_vn: 'Dịch Anh → Việt',
+  sentence_transformation: 'Biến đổi câu',
+  rewrite: 'Viết lại câu',
+  find_mistake: 'Tìm lỗi sai',
+  mini_dialogue: 'Hội thoại ngắn'
+};
+
+let allLessons = [];
+let categories = [];
+let currentKey = null;
+let searchTerm = '';
+let collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSED_KEY) || '[]'));
+let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
+let quizState = null; // { total, answered, correct, lessonKey } — reset per lesson render
+
+function getScore(key) { return scores[key] || null; }
+function isCompleted(key) { const s = scores[key]; return !!(s && s.completed); }
+
+function saveScore(key, score) {
+  const prev = scores[key] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
+  const bestScore = Math.max(prev.bestScore, score);
+  const completed = bestScore >= COMPLETE_THRESHOLD;
+  const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
+  scores[key] = { bestScore, latestScore: score, completed, completedAt };
+  localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+}
+
+function completedCount() {
+  return allLessons.filter(l => isCompleted(keyOf(l))).length;
+}
+
+function heroStatusHtml() {
+  const score = getScore(currentKey);
+  let html = '';
+  if (score && score.completed) html += '<span class="eg-status-badge eg-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
+  if (score) html += '<span class="eg-status-badge"><i class="fas fa-star"></i> Điểm cao nhất: ' + score.bestScore + '%</span>';
+  html += '<span class="eg-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + completedCount() + '/' + allLessons.length + ' bài (' + progressPct() + '%)</span>';
+  return html;
+}
+
+function keyOf(l) { return l.category + '||' + l.lessonKey; }
+
+async function initEssentialGrammar() {
+  try {
+    const res = await fetch(API + '/api/essential-grammar/lessons');
+    const data = await res.json();
+    if (!data.success) throw new Error('load failed');
+    allLessons = data.lessons || [];
+    categories = [...new Set(allLessons.map(l => l.category))];
+
+    const savedKey = localStorage.getItem(LAST_LESSON_KEY);
+    const savedLesson = savedKey && allLessons.find(l => keyOf(l) === savedKey);
+    currentKey = savedLesson ? savedKey : (allLessons[0] ? keyOf(allLessons[0]) : null);
+
+    renderSidebarShell();
+    if (currentKey) selectLesson(currentKey, true);
+  } catch (err) {
+    document.getElementById('eg-main-content').innerHTML =
+      '<div class="eg-loading"><div class="eg-loading-icon">⚠️</div>Không tải được nội dung. Vui lòng thử lại sau.</div>';
+    if (typeof showToast === 'function') showToast('Không tải được bài học', 'error');
+  }
+}
+
+// Sidebar is split into a static shell (search input + progress badge —
+// rendered once) and a dynamic list (re-rendered on search/collapse/score
+// change). Re-rendering the search <input> itself via innerHTML on every
+// keystroke destroys and recreates the DOM node, which drops focus after
+// the first character typed — so the list must update independently of it.
+function renderSidebarShell() {
+  const shellHtml = '<div class="eg-sidebar-top">'
+    + '<div class="eg-search-box"><i class="fas fa-search eg-search-icon"></i>'
+    + '<input class="eg-search-input" id="eg-search-input" placeholder="Tìm bài học..." value="' + escAttr(searchTerm) + '" oninput="onSearchInput(this.value)"/></div>'
+    + '<div class="eg-progress-badge"><div class="eg-progress-track"><div class="eg-progress-fill"></div></div>'
+    + '<span class="eg-progress-text"></span></div>'
+    + '</div>'
+    + '<div class="eg-cat-list"></div>';
+  document.getElementById('eg-sidebar').innerHTML = shellHtml;
+  document.getElementById('eg-sidebar-mobile').innerHTML = shellHtml;
+  renderSidebar();
+}
+
+function renderSidebar() {
+  const term = searchTerm.trim().toLowerCase();
+  let html = '';
+  let anyMatch = false;
+  categories.forEach(cat => {
+    const lessons = allLessons
+      .filter(l => l.category === cat)
+      .filter(l => !term || l.title.toLowerCase().includes(term) || cat.toLowerCase().includes(term))
+      .sort((a, b) => a.orderIndex - b.orderIndex);
+    if (!lessons.length) return;
+    anyMatch = true;
+    const isCollapsed = collapsed.has(cat) && !term;
+    html += '<div class="eg-cat-group' + (isCollapsed ? ' collapsed' : '') + '" data-cat="' + escAttr(cat) + '">'
+      + '<button class="eg-cat-header" onclick="toggleCategory(' + JSON.stringify(cat).replace(/"/g, '&quot;') + ')">'
+      + '<span>' + escHtml(cat) + '</span>'
+      + '<span class="eg-cat-count">' + lessons.length + '</span>'
+      + '<i class="fas fa-chevron-down eg-cat-chevron"></i>'
+      + '</button>'
+      + '<div class="eg-lesson-list">'
+      + lessons.map(l => {
+          const k = keyOf(l);
+          const active = k === currentKey ? ' active' : '';
+          const done = isCompleted(k) ? '<i class="fas fa-check-circle eg-lesson-done" title="Đã hoàn thành (≥80%)"></i>' : '';
+          return '<button class="eg-lesson-item' + active + '" onclick="selectLesson(' + JSON.stringify(k).replace(/"/g, '&quot;') + ')">'
+            + '<span class="eg-lesson-icon">' + (l.icon || '📘') + '</span>'
+            + '<span class="eg-lesson-title">' + escHtml(l.title) + '</span>' + done + '</button>';
+        }).join('')
+      + '</div></div>';
+  });
+  if (!anyMatch) html += '<div class="eg-no-results">Không tìm thấy bài học phù hợp.</div>';
+
+  document.querySelectorAll('.eg-cat-list').forEach(el => { el.innerHTML = html; });
+  document.querySelectorAll('.eg-progress-fill').forEach(el => { el.style.width = progressPct() + '%'; });
+  document.querySelectorAll('.eg-progress-text').forEach(el => { el.textContent = completedCount() + '/' + allLessons.length; });
+}
+
+function progressPct() {
+  if (!allLessons.length) return 0;
+  return Math.round((completedCount() / allLessons.length) * 100);
+}
+
+function onSearchInput(val) {
+  searchTerm = val;
+  renderSidebar();
+}
+
+function toggleCategory(cat) {
+  if (collapsed.has(cat)) collapsed.delete(cat); else collapsed.add(cat);
+  localStorage.setItem(COLLAPSED_KEY, JSON.stringify([...collapsed]));
+  renderSidebar();
+}
+
+function selectLesson(key, skipScroll) {
+  const lesson = allLessons.find(l => keyOf(l) === key);
+  if (!lesson) return;
+  currentKey = key;
+  localStorage.setItem(LAST_LESSON_KEY, key);
+  visited.add(key);
+  localStorage.setItem(VISITED_KEY, JSON.stringify([...visited]));
+  renderSidebar();
+  renderLessonContent(lesson);
+  closeEgSheet();
+  if (!skipScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderLessonContent(lesson) {
+  const idx = allLessons.findIndex(l => keyOf(l) === currentKey);
+  const prev = idx > 0 ? allLessons[idx - 1] : null;
+  const next = idx < allLessons.length - 1 ? allLessons[idx + 1] : null;
+
+  const quizBlock = lesson.blocks.find(b => b.type === 'quiz');
+  quizState = quizBlock ? { total: (quizBlock.data.questions || []).length, answered: 0, correct: 0, lessonKey: currentKey } : null;
+
+  let html = '<div class="eg-hero">'
+    + '<div class="eg-hero-cat">' + escHtml(lesson.category) + '</div>'
+    + '<h1 class="eg-hero-title">' + (lesson.icon || '📘') + ' ' + escHtml(lesson.title) + '</h1>'
+    + '<div class="eg-hero-status" id="eg-hero-status">' + heroStatusHtml() + '</div>'
+    + '</div>';
+  html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
+  html += '<div class="eg-nav-footer">'
+    + navFooterBtn(prev, 'prev')
+    + navFooterBtn(next, 'next')
+    + '</div>';
+
+  document.getElementById('eg-main-content').innerHTML = html;
+}
+
+function navFooterBtn(lesson, dir) {
+  const isPrev = dir === 'prev';
+  if (!lesson) return '<span></span>';
+  const key = keyOf(lesson);
+  const icon = isPrev ? '<i class="fas fa-arrow-left"></i>' : '<i class="fas fa-arrow-right"></i>';
+  const inner = '<span class="eg-nav-btn-label"><span class="eg-nav-btn-sub">' + (isPrev ? 'Bài trước' : 'Bài tiếp theo') + '</span><br>' + escHtml(lesson.title) + '</span>';
+  const order = isPrev ? icon + inner : inner + icon;
+  return '<button class="eg-nav-btn" onclick="selectLesson(' + JSON.stringify(key).replace(/"/g, '&quot;') + ')" style="' + (isPrev ? '' : 'margin-left:auto;text-align:right;justify-content:flex-end') + '">' + order + '</button>';
+}
+
+function renderBlock(block) {
+  switch (block.type) {
+    case 'overview': return renderOverviewBlock(block.data);
+    case 'formula': return renderFormulaBlock(block.data);
+    case 'usage': return renderUsageBlock(block.data);
+    case 'signal_words': return renderSignalWordsBlock(block.data);
+    case 'examples': return renderExamplesBlock(block.data);
+    case 'common_mistakes': return renderMistakesBlock(block.data);
+    case 'ielts_tips': return renderTipsBlock(block.data);
+    case 'comparison': return renderComparisonBlock(block.data);
+    case 'practice_exercises': return renderPracticeExercisesBlock(block.data);
+    case 'quiz': return renderQuizBlock(block.data);
+    case 'summary': return renderSummaryBlock(block.data);
+    default: return '';
+  }
+}
+
+function renderOverviewBlock(data) {
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-book-open"></i> Tổng quan</div>'
+    + '<div class="eg-overview-text">' + escHtml(data.text) + '</div></div>';
+}
+
+function renderFormulaBlock(data) {
+  const cards = (data.forms || []).map(f =>
+    '<div class="eg-formula-card">'
+    + '<div class="eg-formula-label">' + escHtml(f.label) + '</div>'
+    + '<div class="eg-formula-structure">' + escHtml(f.structure) + '</div>'
+    + '<div class="eg-formula-example">' + escHtml(f.example) + '</div>'
+    + '</div>'
+  ).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-calculator"></i> Công thức</div>' + cards + '</div>';
+}
+
+function renderUsageBlock(data) {
+  const items = (data.points || []).map(p =>
+    '<div class="eg-usage-item"><span class="eg-usage-bullet"><i class="fas fa-check"></i></span>'
+    + '<div><div class="eg-usage-title">' + escHtml(p.title) + '</div>'
+    + '<div class="eg-usage-desc">' + escHtml(p.description) + '</div></div></div>'
+  ).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-lightbulb"></i> Cách dùng</div>' + items + '</div>';
+}
+
+function renderSignalWordsBlock(data) {
+  const chips = (data.words || []).map(w => '<span class="eg-chip">' + escHtml(w) + '</span>').join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-tags"></i> Dấu hiệu nhận biết</div>'
+    + '<div class="eg-chip-wrap">' + chips + '</div></div>';
+}
+
+function renderExamplesBlock(data) {
+  const items = (data.items || []).map(ex =>
+    '<div class="eg-example-item"><div class="eg-example-en">' + escHtml(ex.en) + '</div>'
+    + '<div class="eg-example-vi">' + escHtml(ex.vi) + '</div></div>'
+  ).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-quote-left"></i> Ví dụ</div>' + items + '</div>';
+}
+
+function renderMistakesBlock(data) {
+  const items = (data.items || []).map(m =>
+    '<div class="eg-mistake-item">'
+    + '<div class="eg-mistake-wrong"><i class="fas fa-times"></i> ' + escHtml(m.wrong) + '</div>'
+    + '<div class="eg-mistake-right"><i class="fas fa-check"></i> ' + escHtml(m.right) + '</div>'
+    + '<div class="eg-mistake-note">' + escHtml(m.note) + '</div>'
+    + '</div>'
+  ).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-exclamation-triangle"></i> Lỗi thường gặp</div>' + items + '</div>';
+}
+
+function renderTipsBlock(data) {
+  const items = (data.tips || []).map(t =>
+    '<div class="eg-tip-item"><i class="fas fa-star" style="color:#f59e0b;margin-top:2px"></i><span>' + escHtml(t) + '</span></div>'
+  ).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-graduation-cap"></i> Mẹo cho IELTS</div>' + items + '</div>';
+}
+
+function renderComparisonBlock(data) {
+  const headers = (data.headers || []).map(h => '<th>' + escHtml(h) + '</th>').join('');
+  const rows = (data.rows || []).map(row => '<tr>' + row.map(c => '<td>' + escHtml(c) + '</td>').join('') + '</tr>').join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-not-equal"></i> ' + escHtml(data.title || 'So sánh') + '</div>'
+    + '<div class="eg-cmp-wrap"><table class="eg-cmp-table"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+}
+
+function renderPracticeExercisesBlock(data) {
+  const exercises = data.exercises || [];
+  const items = exercises.map((ex, i) => renderExerciseItem(ex, i)).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-dumbbell"></i> Luyện tập (' + exercises.length + ' bài)</div>'
+    + '<div class="eg-ex-list">' + items + '</div></div>';
+}
+
+function renderExerciseItem(ex, i) {
+  const label = EX_TYPE_LABELS[ex.type] || ex.type;
+  const questionHtml = escHtml(ex.question).replace(/\n/g, '<br>');
+  let body;
+  if (ex.type === 'multiple_choice') {
+    const options = (ex.options || []).map((opt, oi) =>
+      '<button class="eg-quiz-option" onclick="checkExerciseMC(this, ' + oi + ', ' + ex.answerIndex + ', ' + i + ')">' + escHtml(opt) + '</button>'
+    ).join('');
+    body = '<div class="eg-quiz-options">' + options + '</div>'
+      + '<div class="eg-quiz-explanation" id="eg-ex-exp-' + i + '"><i class="fas fa-info-circle"></i> ' + escHtml(ex.explanation) + '</div>';
+  } else {
+    const isLong = ex.type === 'translation_vn_en' || ex.type === 'translation_en_vn' || ex.type === 'mini_dialogue';
+    const inputTag = isLong
+      ? '<textarea class="eg-ex-input" id="eg-ex-input-' + i + '" rows="2" placeholder="Nhập câu trả lời của bạn..."></textarea>'
+      : '<input class="eg-ex-input" id="eg-ex-input-' + i + '" type="text" placeholder="Nhập câu trả lời của bạn..."/>';
+    body = inputTag
+      + '<button class="eg-ex-reveal-btn" data-idx="' + i + '" data-answer="' + escAttr(ex.answer) + '" data-explanation="' + escAttr(ex.explanation) + '" onclick="revealExerciseAnswer(this)">Xem đáp án</button>'
+      + '<div class="eg-ex-answer-panel" id="eg-ex-answer-' + i + '"></div>';
+  }
+  return '<div class="eg-ex-item">'
+    + '<div class="eg-ex-badge">' + escHtml(label) + '</div>'
+    + '<div class="eg-ex-question">' + (i + 1) + '. ' + questionHtml + '</div>'
+    + body
+    + '</div>';
+}
+
+function checkExerciseMC(btn, oi, answerIndex, i) {
+  const group = btn.closest('.eg-ex-item');
+  if (group.dataset.answered === '1') return;
+  group.dataset.answered = '1';
+  const options = group.querySelectorAll('.eg-quiz-option');
+  options.forEach((o, idx) => {
+    o.disabled = true;
+    if (idx === answerIndex) o.classList.add('eg-correct');
+    else if (idx === oi) o.classList.add('eg-wrong');
+  });
+  const exp = document.getElementById('eg-ex-exp-' + i);
+  if (exp) exp.classList.add('vis');
+}
+
+function revealExerciseAnswer(btn) {
+  const i = btn.dataset.idx;
+  const answer = btn.dataset.answer;
+  const explanation = btn.dataset.explanation;
+  const input = document.getElementById('eg-ex-input-' + i);
+  const userAnswer = input ? input.value.trim() : '';
+  const panel = document.getElementById('eg-ex-answer-' + i);
+  if (panel) {
+    panel.innerHTML = (userAnswer ? '<div class="eg-ex-user-answer"><strong>Bạn trả lời:</strong> ' + escHtml(userAnswer) + '</div>' : '')
+      + '<div class="eg-ex-model-answer"><strong>Đáp án gợi ý:</strong> ' + escHtml(answer) + '</div>'
+      + '<div class="eg-ex-explanation"><i class="fas fa-info-circle"></i> ' + escHtml(explanation) + '</div>';
+    panel.classList.add('vis');
+  }
+  btn.disabled = true;
+  if (input) input.disabled = true;
+}
+
+function renderQuizBlock(data) {
+  const total = (data.questions || []).length;
+  const questions = (data.questions || []).map((q, qi) => {
+    const options = (q.options || []).map((opt, oi) =>
+      '<button class="eg-quiz-option" onclick="checkQuizAnswer(this, ' + qi + ', ' + oi + ', ' + q.answerIndex + ')">' + escHtml(opt) + '</button>'
+    ).join('');
+    return '<div class="eg-quiz-q" data-qi="' + qi + '">'
+      + '<div class="eg-quiz-question">' + (qi + 1) + '. ' + escHtml(q.question) + '</div>'
+      + '<div class="eg-quiz-options">' + options + '</div>'
+      + '<div class="eg-quiz-explanation" id="eg-quiz-exp-' + qi + '"><i class="fas fa-info-circle"></i> ' + escHtml(q.explanation) + '</div>'
+      + '</div>';
+  }).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-puzzle-piece"></i> Mini Quiz</div>'
+    + '<div class="eg-quiz-progress" id="eg-quiz-progress">Đã trả lời: 0/' + total + '</div>'
+    + questions
+    + '<div class="eg-quiz-result" id="eg-quiz-result"></div>'
+    + '</div>';
+}
+
+function checkQuizAnswer(btn, qi, oi, answerIndex) {
+  const group = btn.closest('.eg-quiz-q');
+  if (group.dataset.answered === '1') return;
+  group.dataset.answered = '1';
+  const options = group.querySelectorAll('.eg-quiz-option');
+  options.forEach((o, i) => {
+    o.disabled = true;
+    if (i === answerIndex) o.classList.add('eg-correct');
+    else if (i === oi) o.classList.add('eg-wrong');
+  });
+  const exp = document.getElementById('eg-quiz-exp-' + qi);
+  if (exp) exp.classList.add('vis');
+
+  if (!quizState) return;
+  quizState.answered++;
+  if (oi === answerIndex) quizState.correct++;
+  const progressEl = document.getElementById('eg-quiz-progress');
+  if (progressEl) progressEl.textContent = 'Đã trả lời: ' + quizState.answered + '/' + quizState.total;
+  if (quizState.answered >= quizState.total) finalizeQuiz();
+}
+
+function finalizeQuiz() {
+  if (!quizState || !quizState.lessonKey) return;
+  const score = quizState.total > 0 ? Math.round((quizState.correct / quizState.total) * 100) : 0;
+  saveScore(quizState.lessonKey, score);
+  const result = document.getElementById('eg-quiz-result');
+  if (result) {
+    const passed = score >= COMPLETE_THRESHOLD;
+    result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
+    result.innerHTML = (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ')
+      + 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
+      + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
+  }
+  const heroStatus = document.getElementById('eg-hero-status');
+  if (heroStatus) heroStatus.innerHTML = heroStatusHtml();
+  renderSidebar();
+}
+
+function renderSummaryBlock(data) {
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-flag-checkered"></i> Tóm tắt</div>'
+    + '<div class="eg-summary-box">' + escHtml(data.text) + '</div></div>';
+}
+
+function openEgSheet() {
+  document.getElementById('eg-mob-sheet').classList.add('open');
+  document.getElementById('eg-mob-backdrop').classList.add('visible');
+  document.getElementById('eg-mob-fab').classList.add('open');
+}
+function closeEgSheet() {
+  document.getElementById('eg-mob-sheet').classList.remove('open');
+  document.getElementById('eg-mob-backdrop').classList.remove('visible');
+  document.getElementById('eg-mob-fab').classList.remove('open');
+}
+
+initEssentialGrammar();
+</script>
+</body>
+</html>

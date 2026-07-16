@@ -30,6 +30,7 @@
         { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
         { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing', badgeId: 'navTask2Badge' },
         { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
+        { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab' },
@@ -162,7 +163,7 @@
   };
 
   // Auto-hide on standalone practice pages
-  var PRACTICE_ONLY_PAGES = ['writing-practice.html', 'task1-practice.html', 'task2-practice.html', 'task2-template.html'];
+  var PRACTICE_ONLY_PAGES = ['writing-practice.html', 'task1-practice.html', 'task2-practice.html', 'task2-template.html', 'essential-grammar.html'];
   if (PRACTICE_ONLY_PAGES.indexOf(page) !== -1) {
     window.hideTopNav();
   }

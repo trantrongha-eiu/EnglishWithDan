@@ -109,6 +109,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'Task2Topic seed error', { errorMessage: e.message });
     }
+    // Auto-seed Essential Grammar handbook (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runEssentialGrammarSeed } = require('./scripts/seedEssentialGrammar');
+      logger.startup('EssentialGrammarLesson seeding...');
+      await runEssentialGrammarSeed();
+      logger.startup('EssentialGrammarLesson seed done');
+    } catch (e) {
+      logger.error('startup', 'EssentialGrammarLesson seed error', { errorMessage: e.message });
+    }
     // Start tuition auto-reminder cron
     try {
       tuitionCron.start();
