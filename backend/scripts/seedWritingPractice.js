@@ -293,8 +293,8 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng câu sau (thêm trạng từ + lý do):', question:'I study English.',
     baseText:'I study English.',
     hints:['usually / every day','in the evening','to improve / because'],
-    sampleAnswer:'I usually study English every day because I want to improve my communication skills.',
-    alternativeAnswers:[] },
+    sampleAnswer:'I usually study English in the evening because I want to improve my communication skills.',
+    alternativeAnswers:['I study English every day because I want to improve my communication skills.'] },
 
   { topicKey:'myself', level:'elementary', type:'expand', orderIndex:15,
     grammarPoint:'Add adjective + purpose clause',
@@ -400,7 +400,7 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng thành đoạn văn (3 câu):', question:'I try to improve myself every day.',
     baseText:'I try to improve myself every day.',
     hints:['not only...but also','For example','As a result'],
-    sampleAnswer:'I try to improve myself every day. I not only study hard but also practise sports and read books regularly. As a result, I am becoming more confident and knowledgeable.',
+    sampleAnswer:'I try to improve myself every day. I not only study hard but also play sports and read books regularly. As a result, I am becoming more confident and knowledgeable.',
     alternativeAnswers:[] },
 
   { topicKey:'myself', level:'intermediate', type:'expand', orderIndex:14,
@@ -659,8 +659,8 @@ const RAW_EXERCISES = [
   { topicKey:'family', level:'intermediate', type:'translation', orderIndex:3,
     grammarPoint:'If + clause, + will + V',
     instruction:'Dịch sang tiếng Anh:', question:'Nếu mọi thành viên tôn trọng nhau, gia đình sẽ luôn hạnh phúc.',
-    hints:['if every member respects each other','the family will','always be happy'],
-    sampleAnswer:'If every member respects each other, the family will always be happy.',
+    hints:['if all members respect each other','the family will','always be happy'],
+    sampleAnswer:'If all members respect each other, the family will always be happy.',
     alternativeAnswers:['If all family members respect each other, the family will always be happy.'] },
 
   { topicKey:'family', level:'intermediate', type:'translation', orderIndex:4,
@@ -1303,8 +1303,8 @@ const RAW_EXERCISES = [
     grammarPoint:'Add detail + reason + result',
     instruction:'Mở rộng câu sau:', question:'School is important.',
     baseText:'School is important.',
-    hints:['because','teaches us','As a result / Therefore'],
-    sampleAnswer:'School is important because it teaches us knowledge and life skills. As a result, we are better prepared for our future careers.',
+    hints:['because','gives us','As a result / Therefore'],
+    sampleAnswer:'School is important because it gives us knowledge and life skills. As a result, we are better prepared for our future careers.',
     alternativeAnswers:[] },
 
   { topicKey:'school', level:'elementary', type:'expand', orderIndex:15,
@@ -1319,8 +1319,8 @@ const RAW_EXERCISES = [
   { topicKey:'school', level:'intermediate', type:'translation', orderIndex:1,
     grammarPoint:'Relative clause: where',
     instruction:'Dịch sang tiếng Anh:', question:'Ngôi trường tôi học là nơi tôi có những kỷ niệm đẹp nhất.',
-    hints:['the school I attend','is the place where','I have my most beautiful memories'],
-    sampleAnswer:'The school I attend is the place where I have my most beautiful memories.',
+    hints:['the school I attend','is the place where','I have my happiest memories'],
+    sampleAnswer:'The school I attend is the place where I have my happiest memories.',
     alternativeAnswers:['My school is the place where I have my most cherished memories.'] },
 
   { topicKey:'school', level:'intermediate', type:'translation', orderIndex:2,
@@ -1411,7 +1411,7 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng thành đoạn văn (3 câu):', question:'Good teachers make a big difference.',
     baseText:'Good teachers make a big difference.',
     hints:['who','not only...but also','As a result'],
-    sampleAnswer:'Good teachers make a big difference in students\' lives. A great teacher is someone who not only delivers knowledge effectively but also motivates students to believe in themselves. As a result, students become more confident and eager to learn.',
+    sampleAnswer:'Good teachers make a big difference in students\' lives. A great teacher is someone who not only explains lessons clearly but also motivates students to believe in themselves. As a result, students become more confident and eager to learn.',
     alternativeAnswers:[] },
 
   { topicKey:'school', level:'intermediate', type:'expand', orderIndex:14,
@@ -1732,15 +1732,15 @@ const RAW_EXERCISES = [
     instruction:'Nối hai câu dùng mệnh đề quan hệ "which":', question:'We have been friends for ten years. This friendship means the world to me.',
     sentences:['We have been friends for ten years.','This friendship means the world to me.'],
     connector:'which',
-    sampleAnswer:'We have been friends for ten years, which means our friendship is very meaningful to me.',
-    alternativeAnswers:['We have been friends for ten years, which means the world to me.'] },
+    sampleAnswer:'We have been friends for ten years, which means the world to me.',
+    alternativeAnswers:['We have been friends for ten years, which means our friendship is very meaningful to me.'] },
 
   { topicKey:'friends', level:'intermediate', type:'expand', orderIndex:12,
     grammarPoint:'Relative clause + conditional',
     instruction:'Mở rộng thành đoạn văn (3 câu):', question:'True friendship is one of the most valuable things in life.',
     baseText:'True friendship is one of the most valuable things in life.',
     hints:['who / that','not only...but also','If we...we will'],
-    sampleAnswer:'True friendship is one of the most valuable things in life. A true friend is someone who not only supports you in good times but also stays by your side during hardships. If we nurture our friendships with honesty and care, we will have companions for life.',
+    sampleAnswer:'True friendship is one of the most valuable things in life. A true friend is someone who not only supports you in good times but also stays by your side during hardships. If we nurture our friendships with honesty and care, we will have friends for life.',
     alternativeAnswers:[] },
 
   { topicKey:'friends', level:'intermediate', type:'expand', orderIndex:13,
@@ -2000,8 +2000,8 @@ const RAW_EXERCISES = [
   { topicKey:'food', level:'intermediate', type:'translation', orderIndex:2,
     grammarPoint:'not only...but also',
     instruction:'Dịch sang tiếng Anh:', question:'Ăn uống lành mạnh không chỉ giúp cơ thể khỏe mạnh mà còn cải thiện tâm trạng.',
-    hints:['eating healthily not only keeps','the body healthy','but also improves','mood'],
-    sampleAnswer:'Eating healthily not only keeps the body healthy but also improves our mood.',
+    hints:['eating healthily not only keeps','our bodies healthy','but also improves','our mood'],
+    sampleAnswer:'Eating healthily not only keeps our bodies healthy but also improves our mood.',
     alternativeAnswers:['Eating a healthy diet not only keeps your body healthy but also improves your mood.'] },
 
   { topicKey:'food', level:'intermediate', type:'translation', orderIndex:3,
@@ -2042,10 +2042,10 @@ const RAW_EXERCISES = [
 
   { topicKey:'food', level:'intermediate', type:'combine', orderIndex:8,
     grammarPoint:'Relative clause: which',
-    instruction:'Nối hai câu dùng mệnh đề quan hệ "which":', question:'Banh mi has become popular worldwide. This makes Vietnamese food famous globally.',
-    sentences:['Banh mi has become popular worldwide.','This makes Vietnamese food famous globally.'],
+    instruction:'Nối hai câu dùng mệnh đề quan hệ "which":', question:'Banh mi has become popular worldwide. This shows how influential Vietnamese cuisine has become.',
+    sentences:['Banh mi has become popular worldwide.','This shows how influential Vietnamese cuisine has become.'],
     connector:'which',
-    sampleAnswer:'Banh mi has become popular worldwide, which makes Vietnamese food famous globally.',
+    sampleAnswer:'Banh mi has become popular worldwide, which shows how influential Vietnamese cuisine has become.',
     alternativeAnswers:[] },
 
   { topicKey:'food', level:'intermediate', type:'combine', orderIndex:9,
@@ -2660,7 +2660,7 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng câu sau:', question:'My favourite trip was to Hoi An.',
     baseText:'My favourite trip was to Hoi An.',
     hints:['which / where','We also','I felt / It was'],
-    sampleAnswer:'My favourite trip was to Hoi An, where I explored ancient streets and colourful lanterns. We also enjoyed delicious local food like Cao Lau. I felt so happy and wished I could stay longer.',
+    sampleAnswer:'My favourite trip was to Hoi An, where I explored ancient streets lit up with colourful lanterns. We also enjoyed delicious local food like Cao Lau. I felt so happy and wished I could stay longer.',
     alternativeAnswers:[] },
 
   // ─── TRAVEL – INTERMEDIATE (4T 1R 1F 5C 4E) ────────────────
@@ -2716,10 +2716,10 @@ const RAW_EXERCISES = [
 
   { topicKey:'travel', level:'intermediate', type:'combine', orderIndex:8,
     grammarPoint:'Relative clause: which',
-    instruction:'Nối hai câu dùng mệnh đề quan hệ "which":', question:'My trip to Sapa last year was unforgettable. It showed me the stunning beauty of the northern highlands.',
-    sentences:['My trip to Sapa last year was unforgettable.','It showed me the stunning beauty of the northern highlands.'],
+    instruction:'Nối hai câu dùng mệnh đề quan hệ "which":', question:'My trip to Sapa last year showed me the stunning beauty of the northern highlands. This made it unforgettable.',
+    sentences:['My trip to Sapa last year showed me the stunning beauty of the northern highlands.','This made it unforgettable.'],
     connector:'which',
-    sampleAnswer:'My trip to Sapa last year was unforgettable, which showed me the stunning beauty of the northern highlands.',
+    sampleAnswer:'My trip to Sapa last year showed me the stunning beauty of the northern highlands, which made it unforgettable.',
     alternativeAnswers:[] },
 
   { topicKey:'travel', level:'intermediate', type:'combine', orderIndex:9,
@@ -2751,7 +2751,7 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng thành đoạn văn (3 câu):', question:'Vietnam is a wonderful destination for travellers.',
     baseText:'Vietnam is a wonderful destination for travellers.',
     hints:['where / which','not only...but also','For example'],
-    sampleAnswer:'Vietnam is a wonderful destination for travellers. It is a country where not only breathtaking natural landscapes but also rich cultural heritage can be found. For example, visitors can explore the ancient town of Hoi An, the limestone islands of Ha Long Bay, and the vibrant streets of Ho Chi Minh City.',
+    sampleAnswer:'Vietnam is a wonderful destination for travellers. It is a country where visitors can find not only breathtaking natural landscapes but also a rich cultural heritage. For example, visitors can explore the ancient town of Hoi An, the limestone islands of Ha Long Bay, and the vibrant streets of Ho Chi Minh City.',
     alternativeAnswers:[] },
 
   { topicKey:'travel', level:'intermediate', type:'expand', orderIndex:13,
@@ -3096,7 +3096,7 @@ const RAW_EXERCISES = [
     instruction:'Mở rộng thành đoạn văn (3 câu):', question:'Reducing waste is a shared responsibility.',
     baseText:'Reducing waste is a shared responsibility.',
     hints:['For example','recycle / reuse','As a result','protect the environment'],
-    sampleAnswer:'Reducing waste is a shared responsibility that every individual and government must take seriously. For example, recycling aluminium cans uses 95% less energy than producing new ones from scratch, and composting food waste can greatly reduce landfill pressure. As a result, if more people adopt these habits, we can significantly lower pollution and preserve natural resources for future generations.',
+    sampleAnswer:'Reducing waste is a shared responsibility that every individual and government must take seriously. For example, recycling aluminium cans uses 95% less energy than producing new ones from scratch, and composting food waste can greatly reduce landfill pressure. As a result, adopting these habits on a larger scale could significantly lower pollution and help preserve natural resources for future generations.',
     alternativeAnswers:[] },
 
   { topicKey:'environment', level:'intermediate', type:'expand', orderIndex:14,
@@ -3146,7 +3146,7 @@ const RAW_EXERCISES = [
     instruction:'Dịch sang tiếng Anh:', question:'Tôi đi ngủ lúc mười giờ tối mỗi ngày.',
     hints:['go to bed at ten','every night'],
     sampleAnswer:'I go to bed at ten every night.',
-    alternativeAnswers:['I go to bed at ten o\'clock every night.','I sleep at ten every night.'] },
+    alternativeAnswers:['I go to bed at ten o\'clock every night.','I go to sleep at ten every night.'] },
 
   { topicKey:'health', level:'beginner', type:'translation', orderIndex:5,
     grammarPoint:'S + not + V + O + because',
@@ -3160,7 +3160,7 @@ const RAW_EXERCISES = [
     instruction:'Dịch sang tiếng Anh:', question:'Thể dục thể thao rất tốt cho sức khỏe.',
     hints:['sport is very good','for our health'],
     sampleAnswer:'Sport is very good for our health.',
-    alternativeAnswers:['Exercise is very good for our health.','Sports are very good for health.'] },
+    alternativeAnswers:['Exercise is very good for our health.','Sports are very good for your health.'] },
 
   { topicKey:'health', level:'beginner', type:'translation', orderIndex:7,
     grammarPoint:'S + wash + O + before + V-ing',
@@ -3245,7 +3245,7 @@ const RAW_EXERCISES = [
     instruction:'Dịch sang tiếng Anh:', question:'Ngủ đủ giấc rất quan trọng đối với sức khỏe tinh thần.',
     hints:['getting enough sleep is crucial','for mental health'],
     sampleAnswer:'Getting enough sleep is crucial for mental health.',
-    alternativeAnswers:['Getting enough sleep is important for mental health.','Sleeping enough is crucial for mental health.'] },
+    alternativeAnswers:['Getting enough sleep is important for mental health.','Getting sufficient sleep is crucial for mental health.'] },
 
   { topicKey:'health', level:'elementary', type:'translation', orderIndex:4,
     grammarPoint:'S + feel + adj + when + clause',
@@ -3257,9 +3257,9 @@ const RAW_EXERCISES = [
   { topicKey:'health', level:'elementary', type:'translation', orderIndex:5,
     grammarPoint:'S + need to + V + to + V',
     instruction:'Dịch sang tiếng Anh:', question:'Học sinh cần ngủ đủ giấc để học tốt hơn.',
-    hints:['students need to sleep enough','to study better'],
-    sampleAnswer:'Students need to sleep enough to study better.',
-    alternativeAnswers:['Students need to get enough sleep to study better.','Students need to sleep well to study better.'] },
+    hints:['students need to get enough sleep','to study better'],
+    sampleAnswer:'Students need to get enough sleep to study better.',
+    alternativeAnswers:['Students need to sleep enough to study better.','Students need to sleep well to study better.'] },
 
   { topicKey:'health', level:'elementary', type:'rearrange', orderIndex:6,
     grammarPoint:'V-ing + help + O + V',
@@ -3379,9 +3379,9 @@ const RAW_EXERCISES = [
 
   { topicKey:'health', level:'intermediate', type:'fill_blank', orderIndex:6,
     grammarPoint:'Relative pronouns',
-    instruction:'Điền vào chỗ trống:', question:'Exercise ___ is done regularly can help prevent many serious diseases. [that / who / when]',
+    instruction:'Điền vào chỗ trống:', question:'Exercise ___ becomes part of your daily routine can help prevent many serious diseases. [that / who / when]',
     options:['that','who','when'], blankAnswer:'that',
-    sampleAnswer:'Exercise that is done regularly can help prevent many serious diseases.',
+    sampleAnswer:'Exercise that becomes part of your daily routine can help prevent many serious diseases.',
     alternativeAnswers:[] },
 
   { topicKey:'health', level:'intermediate', type:'combine', orderIndex:7,
@@ -3479,6 +3479,9 @@ async function runSeed() {
   // Deactivate stale exercises that were replaced by a new question string
   const RETIRED = [
     { topicKey: 'environment', level: 'intermediate', question: 'Recycling is important.' },
+    { topicKey: 'food', level: 'intermediate', question: 'Banh mi has become popular worldwide. This makes Vietnamese food famous globally.' },
+    { topicKey: 'travel', level: 'intermediate', question: 'My trip to Sapa last year was unforgettable. It showed me the stunning beauty of the northern highlands.' },
+    { topicKey: 'health', level: 'intermediate', question: 'Exercise ___ is done regularly can help prevent many serious diseases. [that / who / when]' },
   ];
   for (const r of RETIRED) {
     await WPExercise.updateMany({ ...r, isActive: true }, { $set: { isActive: false } });
