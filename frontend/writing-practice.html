@@ -269,6 +269,7 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/score-message.js"></script>
 
 
 <div id="wp-toast"></div>
@@ -1917,11 +1918,7 @@ function showTestResults(data) {
   document.getElementById('test-results').style.display = '';
   const { correct, score, countable, results } = data;
   const expandCount = results.length - (countable || results.length);
-  const emoji = score >= 80 ? '😎' : score >= 60 ? '🤔' : score >= 40 ? '🥲' : '😤';
-  const msg   = score >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥'
-              : score >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
-              : score >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!'
-              : 'Học cho đàng hoàng zô coiii!';
+  const { emoji, message: msg } = getScoreMessage(score);
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
   const wpImgSrc = score >= 90 ? 'img/vocab_writingabove90%25.jpg'
                   : score >= 70 ? 'img/above7.5.jpg'

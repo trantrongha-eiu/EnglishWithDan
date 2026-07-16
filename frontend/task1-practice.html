@@ -271,6 +271,7 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/score-message.js"></script>
 
 
 <div id="wp-toast"></div>
@@ -2027,11 +2028,12 @@ async function submitTest() {
                     : data.score >= 50 ? 'img/writingbelow60%25.jpg'
                     : data.score >= 45 ? 'img/writingbelow50%25.jpg'
                     : 'img/writingbelow45%25.jpg';
+    const { emoji, message } = getScoreMessage(data.score);
     document.getElementById('test-score-header').innerHTML = `
       <img src="${t1ImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-      <div class="wp-done-icon">${data.score >= 70 ? '🎉' : data.score >= 40 ? '👍' : '📚'}</div>
+      <div class="wp-done-icon">${emoji}</div>
       <h2 class="${scoreClass}">${data.score}%</h2>
-      <p>Đúng ${data.correct} / ${data.total} câu</p>`;
+      <p>${message} Đúng ${data.correct} / ${data.total} câu</p>`;
 
     const list = document.getElementById('test-review-list');
     list.innerHTML = '';

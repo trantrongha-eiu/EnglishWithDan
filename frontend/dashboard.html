@@ -23,6 +23,7 @@
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/confirm-dialog.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/score-message.js"></script>
 
 <div class="app-layout">
 
@@ -373,6 +374,7 @@
                 <span class="res-correct">✓ Correct: <b id="correctCount">0</b></span>
                 <span class="res-wrong">✗ Wrong: <b id="wrongCount">0</b></span>
               </div>
+              <div id="resultScoreMsg" style="font-size:13px;color:var(--text2);margin:6px 0"></div>
               <img id="vocab-result-img" src="" alt="" style="display:none;width:100%;max-width:200px;border-radius:12px;margin:12px auto 4px;object-fit:cover">
               <div id="wrongRetryWrap" style="display:none;margin-bottom:10px;text-align:center">
                 <button class="btn btn-blue" onclick="retryWrongWords()" style="width:100%">

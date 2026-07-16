@@ -2057,6 +2057,11 @@ function showResults(mode) {
     document.getElementById('scorePercent').textContent    = pct + '%';
     document.getElementById('correctCount').textContent    = correctAnswers;
     document.getElementById('wrongCount').textContent      = wrongAnswers;
+    const scoreMsgEl = document.getElementById('resultScoreMsg');
+    if (scoreMsgEl) {
+        const { emoji, message } = getScoreMessage(pct);
+        scoreMsgEl.textContent = `${emoji} ${message}`;
+    }
 
     // Hiện nút ôn tập từ sai nếu có
     const wrongCount = wrongWordSet.size;

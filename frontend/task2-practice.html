@@ -344,6 +344,7 @@
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/api-client.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/score-message.js"></script>
 
 
 <div id="wp-toast"></div>
@@ -1638,7 +1639,7 @@ async function submitExam() {
 function renderExamDone() {
   const r = state.examResults;
   const scoreClass = r.score >= 70 ? 'wp-score-good' : r.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
-  const emoji = r.score >= 70 ? '🎉' : r.score >= 40 ? '👍' : '📚';
+  const { emoji, message } = getScoreMessage(r.score);
   const t2ExamImgSrc = r.score >= 90 ? 'img/vocab_writingabove90%25.jpg'
                       : r.score >= 70 ? 'img/above7.5.jpg'
                       : r.score >= 60 ? 'img/band_6_7.jpg'
@@ -1661,7 +1662,7 @@ function renderExamDone() {
       <img src="${t2ExamImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
       <div style="font-size:52px">${emoji}</div>
       <div class="t2-done-score ${scoreClass}">${r.score}%</div>
-      <div style="font-size:15px;color:#6b7280;margin-bottom:16px">Đúng ${r.correct} / ${r.total} câu</div>
+      <div style="font-size:15px;color:#6b7280;margin-bottom:16px">${message} Đúng ${r.correct} / ${r.total} câu</div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="wp-restart-btn" onclick="startExam()"><i class="fas fa-redo"></i> Thi lại</button>
         <button class="wp-more-btn"    onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Chọn lại</button>
