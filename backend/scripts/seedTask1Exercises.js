@@ -900,7 +900,7 @@ const sampleExercises = [
     instruction: 'Điền giới từ đúng vào tất cả chỗ trống:',
     sentenceWithBlanks: '___ 2005 ___ 2015, the unemployment rate fluctuated ___ 5% and 9%, finally settling ___ around 6%.',
     blanksCount: 4,
-    sampleAnswers: ['From 2005 to 2015, the unemployment rate fluctuated between 5% and 9%, finally settling at around 6%.'],
+    sampleAnswers: ['From, to, between, at'],
     primaryAnswer: 'From 2005 to 2015, the unemployment rate fluctuated between 5% and 9%, finally settling at around 6%.',
     grammarPoint: 'From...to... | fluctuate between...and... | settle at',
     explanation: '"fluctuate between A and B" = dao động. "settle at" = ổn định ở mức cuối.',

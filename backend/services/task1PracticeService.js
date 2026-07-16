@@ -31,6 +31,30 @@ function localCheck(exercise, userAnswer) {
   if (exercise.type === 'fill_blank') {
     const candidates = [...(exercise.sampleAnswers || [])];
     if (exercise.primaryAnswer) candidates.push(exercise.primaryAnswer);
+
+    if (exercise.blanksCount > 1) {
+      // Multi-blank sentences ask the student to type each missing word in
+      // order, comma-separated (see showFillBlankView's placeholder in
+      // task1-practice.html). Compare position-by-position instead of
+      // normalizing the whole string first — normalize() strips commas
+      // without adding a separator, so "from,to,of" silently became
+      // "fromtoof" and could never match either a comma-list or a
+      // full-sentence answer key.
+      const userParts = userAnswer.split(',').map(s => normalize(s)).filter(Boolean);
+      const isCorrect = candidates.some(c => {
+        const parts = c.includes(',')
+          ? c.split(',').map(s => normalize(s)).filter(Boolean)
+          : [normalize(c)];
+        if (parts.length > 1) return parts.length === userParts.length && parts.every((p, i) => p === userParts[i]);
+        // Also accept the whole reconstructed sentence typed out directly.
+        return parts[0] === normUser;
+      });
+      return {
+        isCorrect, score: isCorrect ? 100 : 0,
+        feedbackVi: isCorrect ? '✅ Chính xác!' : '❌ Chưa đúng — xem đáp án mẫu bên dưới.'
+      };
+    }
+
     const accepted = [...new Set(candidates)].map(normalize);
     const isCorrect = accepted.some(a => {
       if (a === normUser) return true;
