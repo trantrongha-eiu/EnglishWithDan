@@ -89,50 +89,58 @@
             </div>
           </div>
 
+          <!-- Top 10 streak leaderboard -->
+          <div class="dan-leaderboard-card" id="dan-leaderboard-card">
+            <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
+            <div class="dan-lb-list" id="dan-lb-list">
+              <div class="dan-lb-loading">Đang tải...</div>
+            </div>
+          </div>
+
           <!-- Feature guide cards -->
           <div class="welcome-feature-grid">
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-layer-group"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--blue"><i class="fas fa-layer-group"></i></div>
               <h4>Flashcard</h4>
               <p>Lật thẻ từng từ, đánh giá mức độ nhớ: <em>Chưa thuộc</em>, <em>So-so</em>, <em>Thuộc rồi</em>. Hệ thống tự ưu tiên từ yếu để ôn lại sớm hơn.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#f0fdf4;color:var(--green)"><i class="fas fa-check-circle"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--green"><i class="fas fa-check-circle"></i></div>
               <h4>Quiz trắc nghiệm</h4>
               <p>Chọn đáp án đúng trong 4 lựa chọn. Mỗi câu sai được tính thêm điểm <em>sai</em> để nhắc ôn lại qua Hard Words.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-sync-alt"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--amber"><i class="fas fa-sync-alt"></i></div>
               <h4>Điền vào chỗ trống</h4>
               <p>Đọc ví dụ và gõ từ tiếng Anh còn thiếu. Luyện spelling và nhớ nghĩa theo ngữ cảnh.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-headphones"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--purple"><i class="fas fa-headphones"></i></div>
               <h4>Nghe – Đoán từ</h4>
               <p>Nghe phát âm chuẩn và gõ từ bạn nghe được. Luyện tai và chính tả cùng lúc.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-language"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--pink"><i class="fas fa-language"></i></div>
               <h4>Dịch nghĩa</h4>
               <p>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh tương ứng. Kiểm tra khả năng sản xuất từ vựng chủ động.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-fire"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--orange"><i class="fas fa-fire"></i></div>
               <h4>Hard Words</h4>
               <p>Tổng hợp các từ hay sai nhiều nhất. Nhấn <strong>Ôn lại từ hay sai</strong> ở sidebar để luyện riêng nhóm này.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#ecfdf5;color:#059669"><i class="fas fa-file-import"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--emerald"><i class="fas fa-file-import"></i></div>
               <h4>Nhập hàng loạt</h4>
               <p>Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.</p>
             </div>
             <div class="welcome-feat-card">
-              <div class="welcome-feat-icon" style="background:#fffbeb;color:#b45309"><i class="fas fa-fire-alt"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--yellow"><i class="fas fa-fire-alt"></i></div>
               <h4>Streak hàng ngày</h4>
               <p>Học ít nhất một lần mỗi ngày để giữ streak. Panda sẽ cổ vũ bạn! Streak bị reset nếu bỏ một ngày.</p>
             </div>
             <div class="welcome-feat-card welcome-feat-card--highlight">
-              <div class="welcome-feat-icon" style="background:#f0fdf4;color:#059669"><i class="fas fa-book-open"></i></div>
+              <div class="welcome-feat-icon welcome-feat-icon--teal"><i class="fas fa-book-open"></i></div>
               <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
               <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
             </div>
@@ -236,6 +244,9 @@
       <div class="unit-header-bar">
         <button class="btn btn-ghost btn-sm" onclick="closeUnitView()">← Back</button>
         <h3 id="unitTitle">Unit …</h3>
+        <button class="btn btn-ghost btn-sm" id="btn-fullscreen-dash" onclick="toggleDashFullscreen()" title="Toàn màn hình">
+          <i class="fas fa-expand" id="fs-icon-dash"></i>
+        </button>
         <button class="btn btn-danger btn-sm" id="btnStopPractice" onclick="stopPractice()" style="display:none">
           <i class="fas fa-stop-circle"></i> Stop
         </button>
@@ -360,7 +371,7 @@
               <div id="resultModeTitle" style="font-size:13px;color:var(--text2);margin-bottom:8px"></div>
               <div class="score-ring-wrap">
                 <svg width="160" height="160" viewBox="0 0 160 160">
-                  <circle cx="80" cy="80" r="68" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+                  <circle class="score-ring-track" cx="80" cy="80" r="68" fill="none" stroke-width="10"/>
                   <circle id="scoreCircle" cx="80" cy="80" r="68" fill="none" stroke="#22c55e"
                     stroke-width="10" stroke-linecap="round"
                     stroke-dasharray="427.26" stroke-dashoffset="427.26"/>

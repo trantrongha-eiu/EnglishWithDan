@@ -48,6 +48,23 @@ function _clearAutoNext() {
     if (_autoNextTimer !== null) { clearTimeout(_autoNextTimer); _autoNextTimer = null; }
 }
 
+// ── Fullscreen toggle (unit study view) ───────
+function toggleDashFullscreen() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen && document.exitFullscreen();
+        return;
+    }
+    document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+}
+document.addEventListener('fullscreenchange', () => {
+    const icon = document.getElementById('fs-icon-dash');
+    if (!icon) return;
+    const isFs = !!document.fullscreenElement;
+    icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+    const btn = document.getElementById('btn-fullscreen-dash');
+    if (btn) btn.title = isFs ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+});
+
 function _countAnswer() {
     sessionAnsweredCount++;
     if (!_streakReportedThisSession && sessionAnsweredCount >= 5) {
@@ -92,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard()]);
 });
 
 /* ══════════════════════════════════════════════
@@ -264,6 +281,40 @@ async function loadStreakAndUpdateMascot() {
     } catch { /* silent */ }
 }
 
+const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
+async function loadStreakLeaderboard() {
+    const listEl = document.getElementById('dan-lb-list');
+    if (!listEl) return;
+    try {
+        const res  = await fetch(`${API}/user/streak-leaderboard`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'load failed');
+        const rows = data.leaderboard || [];
+        if (!rows.length) {
+            listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai đang giữ streak — hãy là người đầu tiên! 🔥</div>';
+            return;
+        }
+        const myId = window.AuthService?.getUser()?._id;
+        listEl.innerHTML = rows.map((r, i) => {
+            const rank = i + 1;
+            const medal = RANK_MEDAL[rank];
+            const avatar = r.avatar
+                ? `<img class="dan-lb-avatar" src="${_esc(r.avatar)}" alt="">`
+                : `<span class="dan-lb-avatar-placeholder">${_esc((r.name || '?')[0].toUpperCase())}</span>`;
+            return `
+                <div class="dan-lb-row${r._id === myId ? ' is-me' : ''}">
+                    <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
+                    ${avatar}
+                    <span class="dan-lb-name">${_esc(r.name)}${r._id === myId ? ' (Bạn)' : ''}</span>
+                    <span class="dan-lb-streak">🔥 ${r.streak}</span>
+                </div>`;
+        }).join('');
+    } catch {
+        listEl.innerHTML = '<div class="dan-lb-empty">Không tải được bảng xếp hạng</div>';
+    }
+}
+
 // Last 7 calendar days (VN time), rendered as a mini row of dots next to
 // the streak banner — reuses the same activity-heatmap endpoint that
 // powers profile.html's full GitHub-style calendar.
@@ -408,6 +459,7 @@ async function saveBookOrder() {
 
 function openBook(bookId) {
     const doOpen = async () => {
+        _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
         currentBookId = bookId;
         selectedWordIds.clear();
 
@@ -1244,6 +1296,7 @@ function practiceHardWords() {
 
 function closeUnitView() {
     const doClose = () => {
+        _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
         document.getElementById('view-unit').style.display   = 'none';
         document.getElementById('view-mybook').style.display = 'flex';
         const panel = document.getElementById('kbd-hint-panel');
@@ -1543,7 +1596,10 @@ function showQuestion(mode) {
 function updateProgress(prefix) {
     const total = currentMode === 'mixed' ? mixedQueue.length : practiceWords.length;
     const cur   = currentMode === 'mixed' ? mixedIndex : currentQuestionIndex;
-    const pct   = total ? (cur / total) * 100 : 0;
+    // (cur+1) to match the "N/total" text below — otherwise the bar always
+    // lagged one question behind (0% on question 1, never 100% until the
+    // results screen appeared).
+    const pct   = total ? ((cur + 1) / total) * 100 : 0;
     const fill  = document.getElementById(`${prefix}ProgressFill`);
     const txt   = document.getElementById(`${prefix}ProgressText`);
     if (fill) fill.style.width = pct + '%';
@@ -2426,6 +2482,7 @@ window.loadMyBooks        = loadMyBooks;
 window.loadUnit           = loadUnit;
 window.showMode           = showMode;
 window.toggleSound        = toggleSound;
+window.toggleDashFullscreen = toggleDashFullscreen;
 window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;
 window.openBook           = openBook;
