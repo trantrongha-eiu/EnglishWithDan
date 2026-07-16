@@ -10,6 +10,7 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const cloudinaryService = require('./cloudinaryService');
+const { effectiveStreak } = require('../utils/streak');
 
 async function getProfile(userId, currentPlan) {
   const user = await User.findById(userId).select('-password -resetOTP -resetOTPExpires').lean();
@@ -162,4 +163,27 @@ async function getActivityHeatmap(userId, days = 365) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap };
+// Top N students by current streak, for the student-facing leaderboard
+// widget. Uses effectiveStreak() (read-only) rather than the raw
+// learningStreak field — that field only gets zeroed lazily by
+// resetIfStale() whenever a student happens to load /user/stats, so a
+// student who lost their streak days ago but hasn't opened the app since
+// would otherwise still show their old count here.
+async function getStreakLeaderboard(limit = 10) {
+  const candidates = await User.find({ role: 'student', learningStreak: { $gt: 0 } })
+    .select('firstName lastName username avatar learningStreak lastActivityDate')
+    .lean();
+
+  return candidates
+    .map(u => ({
+      _id: u._id,
+      name: (`${u.firstName || ''} ${u.lastName || ''}`.trim()) || u.username,
+      avatar: u.avatar || '',
+      streak: effectiveStreak(u.learningStreak, u.lastActivityDate),
+    }))
+    .filter(u => u.streak > 0)
+    .sort((a, b) => b.streak - a.streak)
+    .slice(0, limit);
+}
+
+module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard };

@@ -57,6 +57,12 @@ exports.getActivityHeatmap = catchAsync(async (req, res) => {
   res.json({ success: true, activity });
 });
 
+// ── GET /api/user/streak-leaderboard ─────────────────────────
+exports.getStreakLeaderboard = catchAsync(async (req, res) => {
+  const leaderboard = await userService.getStreakLeaderboard(10);
+  res.json({ success: true, leaderboard });
+});
+
 // ── INBOX ─────────────────────────────────────────────────────
 // Deliberately NOT using catchAsync here: catchAsync responds with the raw
 // err.message, but these four routes always responded with the generic

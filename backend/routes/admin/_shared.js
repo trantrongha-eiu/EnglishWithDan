@@ -7,6 +7,7 @@
 
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const { effectiveStreak } = require('../../utils/streak');
 
 function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
@@ -24,20 +25,6 @@ async function uploadPdfBuffer(buffer, folder) {
   const dataUri = `data:application/pdf;base64,${buffer.toString('base64')}`;
   const result = await cloudinary.uploader.upload(dataUri, { folder, resource_type: 'raw' });
   return result.secure_url;
-}
-
-// Tính streak hiển thị đúng dựa trên lastActivityDate (không ghi DB)
-// Dùng múi giờ VN (UTC+7), cùng logic với User.resetIfStale
-function effectiveStreak(learningStreak, lastActivityDate) {
-  if (!lastActivityDate) return learningStreak || 0;
-  const toVNDay = d => {
-    const v = new Date(d.getTime() + 7 * 3600000);
-    return new Date(Date.UTC(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate()));
-  };
-  const today   = toVNDay(new Date());
-  const lastDay = toVNDay(new Date(lastActivityDate));
-  const diff    = Math.floor((today - lastDay) / 86400000);
-  return diff >= 2 ? 0 : (learningStreak || 0);
 }
 
 // Chỉ teacher và admin mới dùng được
