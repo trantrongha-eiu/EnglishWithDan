@@ -358,20 +358,24 @@ function renderTestList(tests) {
     wrap.innerHTML = '<div class="loading-spinner">Chưa có bộ đề nào</div>';
     return;
   }
-  // Group by testNumber range
+  // Group by seriesName (matches how the admin panel organizes tests) — the
+  // previous testNumber/5 bucketing lumped together unrelated series (most
+  // standalone tests default to testNumber 1) and never even showed which
+  // bucket a group was, just a repeated generic "Bộ đề" header.
   const groups = {};
+  const groupOrder = [];
   tests.forEach(t => {
-    const g = Math.ceil(t.testNumber / 5) * 5;
-    if (!groups[g]) groups[g] = [];
+    const g = t.seriesName || 'Đề lẻ';
+    if (!groups[g]) { groups[g] = []; groupOrder.push(g); }
     groups[g].push(t);
   });
   let html = '';
-  for (const g of Object.keys(groups).sort((a, b) => a - b)) {
+  for (const g of groupOrder) {
     const arr = groups[g];
     const done = arr.filter(t => t.lastAttempt).length;
     html += `<div class="test-group">
       <div class="test-group-title">
-        Bộ đề <span class="test-group-progress">${done}/${arr.length} đã làm</span>
+        ${escHtml(g)} <span class="test-group-progress">${done}/${arr.length} đã làm</span>
         <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:${Math.round(done / arr.length * 100)}%"></div></div>
       </div>
       <div class="test-grid">
@@ -390,7 +394,7 @@ function testCard(t) {
   return `<div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}">
     <div class="test-card-cover">
       <div class="test-cover-badge">IELTS</div>
-      <div class="test-cover-title">Test ${t.testNumber}</div>
+      <div class="test-cover-title"><i class="fas fa-book-open"></i></div>
       <div class="test-cover-sub">Reading Full</div>
       ${done ? `<div class="test-done-tick">✓</div>` : ''}
     </div>
