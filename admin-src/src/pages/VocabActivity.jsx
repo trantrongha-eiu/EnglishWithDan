@@ -267,6 +267,7 @@ export default function VocabActivity() {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('words-desc');
   const [selected, setSelected] = useState(null);
+  const [remindingId, setRemindingId] = useState(null);
 
   useEffect(() => {
     apiFetch('/admin/vocab-students')
@@ -274,15 +275,40 @@ export default function VocabActivity() {
       .catch(e => toast(e.message, 'error'));
   }, []);
 
+  const displayName = s => [s.firstName, s.lastName].filter(Boolean).join(' ') || s.username || '';
+
+  // Reuses the same messaging pipeline as Messages.jsx's compose form —
+  // a preset one-click nudge instead of opening the full compose UI.
+  async function remindStudent(s) {
+    setRemindingId(s._id);
+    try {
+      await apiFetch('/admin/messages', {
+        method: 'POST',
+        body: JSON.stringify({
+          toId: s._id,
+          subject: 'Nhắc nhở học từ vựng 📚',
+          body: `Chào ${displayName(s)}, đã lâu rồi bạn chưa ôn từ vựng. Hãy dành vài phút hôm nay để giữ chuỗi học và ôn lại những từ đã lưu nhé! 💪`,
+          isBroadcast: false,
+        }),
+      });
+      toast(`Đã gửi nhắc nhở tới ${displayName(s)}`);
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setRemindingId(null); }
+  }
+
   const sortFns = {
     'words-desc': (a, b) => (b.totalWords || 0) - (a.totalWords || 0),
     'views-desc': (a, b) => (b.totalViews || 0) - (a.totalViews || 0),
+    'streak-desc': (a, b) => (b.learningStreak || 0) - (a.learningStreak || 0),
     'recent': (a, b) => {
       const da = a.lastVocabActivity ? new Date(a.lastVocabActivity) : new Date(0);
       const db = b.lastVocabActivity ? new Date(b.lastVocabActivity) : new Date(0);
       return db - da;
     },
-    'name': (a, b) => (a.username || '').localeCompare(b.username || ''),
+    // Was comparing `username` while the column shows the composed
+    // first+last name (falling back to username) — "Tên A → Z" silently
+    // sorted by a different value than what's on screen.
+    'name': (a, b) => displayName(a).localeCompare(displayName(b), 'vi', { numeric: true }),
   };
 
   const filtered = students
@@ -337,6 +363,7 @@ export default function VocabActivity() {
         <select className="form-input" value={sort} onChange={e => setSort(e.target.value)} style={{ width: 190 }}>
           <option value="words-desc">Nhiều từ nhất</option>
           <option value="views-desc">Nhiều lượt xem nhất</option>
+          <option value="streak-desc">Chuỗi học dài nhất</option>
           <option value="recent">Hoạt động gần nhất</option>
           <option value="name">Tên A → Z</option>
         </select>
@@ -360,7 +387,7 @@ export default function VocabActivity() {
             {filtered.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có dữ liệu</td></tr>
               : filtered.map(s => {
-                const name = [s.firstName, s.lastName].filter(Boolean).join(' ') || s.username;
+                const name = displayName(s);
                 const mastered = (s.totalWords || 0) > 0
                   ? Math.round(((s.daThuoc || 0) / s.totalWords) * 100) : 0;
                 const dotColor = activityDotColor(s.lastVocabActivity);
@@ -421,10 +448,17 @@ export default function VocabActivity() {
                       </span>
                     </td>
                     <td>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setSelected(s)}
-                        style={{ whiteSpace: 'nowrap' }}>
-                        📊 Chi tiết
-                      </button>
+                      <div className="row-actions">
+                        <button className="btn btn-ghost btn-sm" onClick={() => setSelected(s)}
+                          style={{ whiteSpace: 'nowrap' }}>
+                          📊 Chi tiết
+                        </button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => remindStudent(s)}
+                          disabled={remindingId === s._id} title="Gửi tin nhắn nhắc học từ vựng"
+                          style={{ whiteSpace: 'nowrap' }}>
+                          {remindingId === s._id ? '⏳ Đang gửi...' : '🔔 Nhắc nhở'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

@@ -143,15 +143,20 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
     });
 
     // 6. Sắp xếp
+    const displayName = u => [u.firstName, u.lastName].filter(Boolean).join(' ') || u.username || '';
     const sortFns = {
-      'words-desc': (a, b) => b.totalWords   - a.totalWords,
-      'views-desc': (a, b) => b.totalViews   - a.totalViews,
-      'recent':     (a, b) => {
+      'words-desc':  (a, b) => b.totalWords - a.totalWords,
+      'views-desc':  (a, b) => b.totalViews - a.totalViews,
+      'streak-desc': (a, b) => (b.learningStreak || 0) - (a.learningStreak || 0),
+      'recent':      (a, b) => {
         const da = a.lastVocabActivity ? new Date(a.lastVocabActivity) : new Date(0);
         const db = b.lastVocabActivity ? new Date(b.lastVocabActivity) : new Date(0);
         return db - da;
       },
-      'name':       (a, b) => (a.username || '').localeCompare(b.username || ''),
+      // Was comparing `username` — the admin UI's "Tên A → Z" shows the
+      // composed first+last name (falling back to username), so this needs
+      // to match what's actually displayed.
+      'name': (a, b) => displayName(a).localeCompare(displayName(b), 'vi', { numeric: true }),
     };
     result.sort(sortFns[sort] || sortFns['words-desc']);
 
