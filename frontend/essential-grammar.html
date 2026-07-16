@@ -429,8 +429,6 @@ function selectLesson(key, skipScroll) {
   if (!lesson) return;
   currentKey = key;
   localStorage.setItem(LAST_LESSON_KEY, key);
-  visited.add(key);
-  localStorage.setItem(VISITED_KEY, JSON.stringify([...visited]));
   renderSidebar();
   renderLessonContent(lesson);
   closeEgSheet();
