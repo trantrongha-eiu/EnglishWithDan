@@ -14,6 +14,7 @@ const WritingAttempt  = require('../../models/WritingAttempt');
 const WritingPracticeAttempt = require('../../models/WritingPracticeAttempt');
 const Task1Attempt    = require('../../models/Task1Attempt');
 const Task2Attempt    = require('../../models/Task2Attempt');
+const SpeakingAttempt = require('../../models/SpeakingAttempt');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
@@ -148,7 +149,7 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing)
+// GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing + Speaking)
 router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
   try {
     const LIMIT = Math.min(parseInt(req.query.limit) || 80, 300);
@@ -160,7 +161,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     }
 
     const [reading, listening, writing, listeningPractice, readingPractice,
-           wpAttempts, task1Attempts, task2Attempts] = await Promise.all([
+           wpAttempts, task1Attempts, task2Attempts, speakingAttempts] = await Promise.all([
       TestAttempt.find({ status: 'completed' })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -200,6 +201,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ completedAt: -1 }).limit(LIMIT)
         .select('-questionsAttempted').lean()
+        .catch(() => []),
+      SpeakingAttempt.find()
+        .populate('userId', 'username firstName lastName')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-transcript').lean()
         .catch(() => [])
     ]);
 
@@ -288,6 +294,17 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correctCount,
         totalQuestions: h.totalQuestions,
         duration: null
+      })),
+      ...speakingAttempts.map(h => ({
+        _id: h._id, skill: 'speaking',
+        testName: h.topic || 'Speaking',
+        testMeta: `Part ${h.part}`,
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: h.aiFeedback?.overallBand ?? null,
+        correctCount: null,
+        totalQuestions: null,
+        duration: h.duration
       }))
     ];
 

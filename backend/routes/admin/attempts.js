@@ -13,6 +13,7 @@ const ReadingPracticeAttempt   = require('../../models/ReadingPracticeAttempt');
 const WritingPracticeAttempt   = require('../../models/WritingPracticeAttempt');
 const Task1Attempt    = require('../../models/Task1Attempt');
 const Task2Attempt    = require('../../models/Task2Attempt');
+const SpeakingAttempt = require('../../models/SpeakingAttempt');
 
 const router = express.Router();
 
@@ -103,6 +104,17 @@ router.delete('/task2-attempts/:id', auth, teacherOnly, async (req, res) => {
     const result = await Task2Attempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Task 2' });
     res.json({ success: true, message: 'Đã xóa bài Task 2' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/speaking-attempts/:id
+router.delete('/speaking-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await SpeakingAttempt.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Speaking' });
+    res.json({ success: true, message: 'Đã xóa bài Speaking' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -84,6 +84,7 @@ export default function StudentHistory() {
           'writing-practice':   `/admin/writing-practice-attempts/${id}`,
           'task1-practice':     `/admin/task1-attempts/${id}`,
           'task2-practice':     `/admin/task2-attempts/${id}`,
+          'speaking':           `/admin/speaking-attempts/${id}`,
         };
         const endpoint = endpointMap[skillName] || `/admin/${skillName}-attempts/${id}`;
         await apiFetch(endpoint, { method: 'DELETE' });
@@ -120,6 +121,7 @@ export default function StudentHistory() {
           <option value="writing-practice">✍ Writing lẻ</option>
           <option value="task1-practice">📊 Task 1 Practice</option>
           <option value="task2-practice">📝 Task 2 Practice</option>
+          <option value="speaking">🎤 Speaking</option>
         </select>
       </div>
 
