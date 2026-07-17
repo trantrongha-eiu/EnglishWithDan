@@ -18,25 +18,14 @@
     body{background:#f9fafb}
     [data-theme="dark"] body{background:#0f172a}
 
-    /* ── Header ── */
-    .eg-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;
-      background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:60;flex-wrap:wrap}
-    [data-theme="dark"] .eg-header{background:#1e293b;border-color:#334155}
-    .eg-nav-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-    .eg-nav-link{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;font-size:12px;
-      font-weight:600;color:#374151;text-decoration:none;transition:background .15s,color .15s}
-    .eg-nav-link:hover{background:#f5f3ff;color:#6366f1}
-    [data-theme="dark"] .eg-nav-link{color:#9ca3af}
-    [data-theme="dark"] .eg-nav-link:hover{background:#1e1b4b;color:#a5b4fc}
-    .eg-header-right{display:flex;align-items:center;gap:8px}
-    .eg-dark-btn{background:none;border:1.5px solid #e5e7eb;border-radius:8px;width:32px;height:32px;
-      display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
-    [data-theme="dark"] .eg-dark-btn{border-color:#334155}
+    /* ── Header: reuses the shared .wp-header/.t2-tpl-nav-group/.wp-header-right
+       shell from writing-practice.css so this page matches the other 4
+       "Luyện viết" pages exactly (was a bespoke .eg-header before). ── */
 
     /* ── Layout ── */
-    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - 53px)}
+    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - 52px)}
     .eg-sidebar{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #e5e7eb;
-      position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto;
+      position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;
       scrollbar-width:thin;scrollbar-color:#e5e7eb transparent;display:flex;flex-direction:column;z-index:20}
     [data-theme="dark"] .eg-sidebar{background:#1e293b;border-color:#334155;scrollbar-color:#334155 transparent}
 
@@ -80,8 +69,6 @@
     [data-theme="dark"] .eg-lesson-item.active{background:#1e1b4b;color:#c4b5fd}
     .eg-lesson-icon{flex-shrink:0;font-size:13px}
     .eg-lesson-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .eg-lesson-done{flex-shrink:0;font-size:11px;color:#16a34a}
-    [data-theme="dark"] .eg-lesson-done{color:#4ade80}
     .eg-no-results{padding:20px 14px;text-align:center;color:#9ca3af;font-size:12.5px}
 
     /* ── Main ── */
@@ -89,10 +76,6 @@
     .eg-hero{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:22px 28px;color:#fff}
     .eg-hero-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.85;margin-bottom:4px}
     .eg-hero-title{font-size:22px;font-weight:900;margin:0;display:flex;align-items:center;gap:10px}
-    .eg-hero-status{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-    .eg-status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:700}
-    .eg-status-done{background:rgba(34,197,94,.28);border-color:rgba(134,239,172,.5)}
     .eg-content{max-width:760px;margin:0 auto;padding:20px 24px 40px;width:100%}
 
     .eg-block{margin-bottom:22px}
@@ -243,16 +226,20 @@
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
 
-<!-- Compact in-page header (this page hides the global navbar) -->
-<header class="eg-header">
-  <nav class="eg-nav-group">
-    <a href="writing-practice.html" class="eg-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
-    <a href="task1-practice.html" class="eg-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
-    <a href="task2-practice.html" class="eg-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="eg-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
+<!-- Compact in-page header (this page hides the global navbar) — shares the
+     .wp-header shell with the other 4 "Luyện viết" pages -->
+<header class="wp-header">
+  <nav class="t2-tpl-nav-group">
+    <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
+    <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
+    <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
+    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
   </nav>
-  <div class="eg-header-right">
-    <button class="eg-dark-btn" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
+  <div class="wp-header-right">
+    <div class="wp-xp-badge" id="eg-header-progress"><i class="fas fa-graduation-cap"></i> <span id="header-eg-progress">0/37</span></div>
+    <span class="wp-username" id="userName">👋 Xin chào</span>
+    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
+    <button class="wp-logout-btn" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
   </div>
 </header>
 
@@ -306,6 +293,32 @@ let collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSED_KEY) || '[]'))
 let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
 let quizState = null; // { total, answered, correct, lessonKey } — reset per lesson render
 
+// Sound effects — same pattern as writing-practice.html/task1-practice.html/
+// task2-practice.html/task2-template.html (shared wp_sound key + sound files).
+const _sndCorrect = new Audio('./sounds/correct.mp3');
+const _sndWrong   = new Audio('./sounds/incorrect.mp3');
+_sndCorrect.volume = 0.5; _sndWrong.volume = 0.5;
+let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
+function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
+function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
+function toggleWpSound() {
+  _soundEnabled = !_soundEnabled;
+  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+}
+
+function initUser() {
+  const user = (window.AuthService && window.AuthService.getUser()) || {};
+  const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
+  if (name) {
+    const uEl = document.getElementById('userName');
+    if (uEl) uEl.textContent = '👋 ' + name;
+  }
+  const icon = document.getElementById('sound-icon');
+  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+}
+
 function getScore(key) { return scores[key] || null; }
 function isCompleted(key) { const s = scores[key]; return !!(s && s.completed); }
 
@@ -316,18 +329,24 @@ function saveScore(key, score) {
   const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
   scores[key] = { bestScore, latestScore: score, completed, completedAt };
   localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+  updateHeaderProgressBadge();
 }
 
 function completedCount() {
   return allLessons.filter(l => isCompleted(keyOf(l))).length;
 }
 
+function updateHeaderProgressBadge() {
+  const el = document.getElementById('header-eg-progress');
+  if (el) el.textContent = completedCount() + '/' + allLessons.length;
+}
+
 function heroStatusHtml() {
   const score = getScore(currentKey);
   let html = '';
-  if (score && score.completed) html += '<span class="eg-status-badge eg-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
-  if (score) html += '<span class="eg-status-badge"><i class="fas fa-star"></i> Điểm cao nhất: ' + score.bestScore + '%</span>';
-  html += '<span class="eg-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + completedCount() + '/' + allLessons.length + ' bài (' + progressPct() + '%)</span>';
+  if (score && score.completed) html += '<span class="wp-status-badge wp-status-on-gradient wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
+  if (score) html += '<span class="wp-status-badge wp-status-on-gradient"><i class="fas fa-star"></i> Điểm cao nhất: ' + score.bestScore + '%</span>';
+  html += '<span class="wp-status-badge wp-status-on-gradient"><i class="fas fa-chart-line"></i> Tiến trình: ' + completedCount() + '/' + allLessons.length + ' bài (' + progressPct() + '%)</span>';
   return html;
 }
 
@@ -347,6 +366,8 @@ async function initEssentialGrammar() {
 
     renderSidebarShell();
     if (currentKey) selectLesson(currentKey, true);
+    initUser();
+    updateHeaderProgressBadge();
   } catch (err) {
     document.getElementById('eg-main-content').innerHTML =
       '<div class="eg-loading"><div class="eg-loading-icon">⚠️</div>Không tải được nội dung. Vui lòng thử lại sau.</div>';
@@ -394,7 +415,7 @@ function renderSidebar() {
       + lessons.map(l => {
           const k = keyOf(l);
           const active = k === currentKey ? ' active' : '';
-          const done = isCompleted(k) ? '<i class="fas fa-check-circle eg-lesson-done" title="Đã hoàn thành (≥80%)"></i>' : '';
+          const done = isCompleted(k) ? '<i class="fas fa-check-circle wp-item-done-icon" title="Đã hoàn thành (≥80%)"></i>' : '';
           return '<button class="eg-lesson-item' + active + '" onclick="selectLesson(' + JSON.stringify(k).replace(/"/g, '&quot;') + ')">'
             + '<span class="eg-lesson-icon">' + (l.icon || '📘') + '</span>'
             + '<span class="eg-lesson-title">' + escHtml(l.title) + '</span>' + done + '</button>';
@@ -446,7 +467,7 @@ function renderLessonContent(lesson) {
   let html = '<div class="eg-hero">'
     + '<div class="eg-hero-cat">' + escHtml(lesson.category) + '</div>'
     + '<h1 class="eg-hero-title">' + (lesson.icon || '📘') + ' ' + escHtml(lesson.title) + '</h1>'
-    + '<div class="eg-hero-status" id="eg-hero-status">' + heroStatusHtml() + '</div>'
+    + '<div class="wp-status-row" id="eg-hero-status">' + heroStatusHtml() + '</div>'
     + '</div>';
   html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
   html += '<div class="eg-nav-footer">'
@@ -593,6 +614,7 @@ function checkExerciseMC(btn, oi, answerIndex, i) {
   });
   const exp = document.getElementById('eg-ex-exp-' + i);
   if (exp) exp.classList.add('vis');
+  if (oi === answerIndex) playOk(); else playWrong();
 }
 
 function revealExerciseAnswer(btn) {
@@ -643,6 +665,7 @@ function checkQuizAnswer(btn, qi, oi, answerIndex) {
   });
   const exp = document.getElementById('eg-quiz-exp-' + qi);
   if (exp) exp.classList.add('vis');
+  if (oi === answerIndex) playOk(); else playWrong();
 
   if (!quizState) return;
   quizState.answered++;

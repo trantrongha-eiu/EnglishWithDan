@@ -373,6 +373,7 @@
     <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
     <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
     <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
+    <a href="essential-grammar.html" class="t2-tpl-nav-link" title="Essential Grammar"><i class="fas fa-graduation-cap"></i><span>Ngữ pháp</span></a>
   </nav>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
@@ -401,6 +402,7 @@
         <a href="writing-practice.html" class="tpl-sb-nav-link"><i class="fas fa-house"></i> Giao tiếp</a>
         <a href="task1-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-chart-bar"></i> Task 1</a>
         <a href="task2-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-edit"></i> Task 2</a>
+        <a href="essential-grammar.html" class="tpl-sb-nav-link"><i class="fas fa-graduation-cap"></i> Ngữ pháp</a>
       </div>
     </div>
   </aside>
@@ -414,6 +416,7 @@
         <div>
           <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
           <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+          <div class="wp-status-row" id="tpl-type-status"></div>
         </div>
       </div>
     </div>
@@ -786,6 +789,41 @@ function saveTplScores() {
   localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
 }
 
+// ── Per-type completion tracking (bestScore/latestScore/completed/completedAt) ──
+// Shared model with essential-grammar.html/task1-practice.html/task2-practice.html/
+// writing-practice.html: a type "completes" once its live cloze-accuracy % reaches
+// 80%. bestScore is sticky (survives a manual reset of _tplScores for that type);
+// latestScore always reflects the current live accuracy.
+const TYPE_SCORE_KEY = 't2_tpl_type_scores';
+const TYPE_COMPLETE_THRESHOLD = 80;
+let _typeScores = JSON.parse(localStorage.getItem(TYPE_SCORE_KEY) || '{}');
+
+function getTypeScore(typeId) { return _typeScores[typeId] || null; }
+function isTypeCompleted(typeId) { const s = _typeScores[typeId]; return !!(s && s.completed); }
+
+function saveTypeScore(typeId, score) {
+  const prev = _typeScores[typeId] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
+  const bestScore = Math.max(prev.bestScore, score);
+  const completed = bestScore >= TYPE_COMPLETE_THRESHOLD;
+  const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
+  _typeScores[typeId] = { bestScore, latestScore: score, completed, completedAt };
+  localStorage.setItem(TYPE_SCORE_KEY, JSON.stringify(_typeScores));
+}
+
+function typeStatusHtml(typeId) {
+  const score = getTypeScore(typeId);
+  let html = '';
+  if (score && score.completed) html += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
+  if (score) html += '<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Điểm cao nhất: ' + score.bestScore + '%</span>';
+  const completedTypes = TPL_TYPES.filter(t => isTypeCompleted(t.id)).length;
+  html += '<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + completedTypes + '/' + TPL_TYPES.length + ' dạng bài</span>';
+  return html;
+}
+function updateTypeStatus() {
+  const el = document.getElementById('tpl-type-status');
+  if (el) el.innerHTML = typeStatusHtml(_tplActiveType);
+}
+
 // ── URL sharing ────────────────────────────────────────────────
 function _syncTplShareUrl() {
   const params = new URLSearchParams();
@@ -849,6 +887,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTabs();
   renderTplContent();
   updateOverallBadge();
+  updateTypeStatus();
   document.getElementById('tpl-switch-overlay').addEventListener('click', e => {
     if (e.target === e.currentTarget) cancelTypeSwitch();
   });
@@ -870,7 +909,8 @@ function renderTabs() {
       });
     }
     const pct = total ? Math.round(done / total * 100) : 0;
-    const isDone = total > 0 && done === total;
+    if (total > 0) saveTypeScore(t.id, pct);
+    const isDone = isTypeCompleted(t.id);
     const badge = isDone
       ? '<span class="t2-tab-done-badge">✓</span>'
       : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
@@ -1066,6 +1106,7 @@ function checkCloze(key, answersStr) {
 
   updateTplScore();
   updateOverallBadge();
+  updateTypeStatus();
   checkTypeComplete();
 }
 
@@ -1142,6 +1183,7 @@ function resetTplType() {
   });
   saveTplScores();
   updateOverallBadge();
+  updateTypeStatus();
   renderTplContent();
 }
 
@@ -1207,6 +1249,7 @@ function doSwitchType(typeId) {
   });
   renderTplContent();
   updateTplScore();
+  updateTypeStatus();
   _syncTplShareUrl();
 }
 

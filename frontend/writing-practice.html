@@ -280,7 +280,8 @@
   <nav class="t2-tpl-nav-group">
     <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
     <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-layer-group"></i><span>Templates</span></a>
+    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
+    <a href="essential-grammar.html" class="t2-tpl-nav-link" title="Essential Grammar"><i class="fas fa-graduation-cap"></i><span>Ngữ pháp</span></a>
   </nav>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
@@ -571,6 +572,7 @@
         <h2>Xuất sắc!</h2>
         <p id="done-summary"></p>
         <div class="wp-done-stats" id="done-stats"></div>
+        <div class="wp-status-row" id="done-topic-status" style="justify-content:center"></div>
         <button class="wp-restart-btn" onclick="restartExercises()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
         <button class="wp-more-btn"    onclick="tryMoreTopics()"><i class="fas fa-th"></i> Chọn chủ đề khác</button>
       </div>
@@ -733,6 +735,57 @@ let sessionXP    = 0;
 let sessionCorrect = 0;
 let sessionAttempts = []; // buffer – gửi lên admin khi hoàn thành toàn bộ bài
 let _isSubmitting = false;
+
+// ── Per-topic completion tracking (bestScore/latestScore/completed/completedAt) ──
+// Shared model with essential-grammar.html/task1-practice.html/task2-practice.html/
+// task2-template.html. A topic "completes" when a practice session ending with
+// that topic selected (currentTopic !== 'all') scores >=80% accuracy.
+const WP_TOPIC_IDS = ['myself','family','hobbies','school','friends','food','technology','travel','health','environment'];
+const TOPIC_SCORE_KEY = 'wp_topic_scores';
+const TOPIC_COMPLETE_THRESHOLD = 80;
+let _wpTopicScores = JSON.parse(localStorage.getItem(TOPIC_SCORE_KEY) || '{}');
+
+function isWpTopicCompleted(topic) { const s = _wpTopicScores[topic]; return !!(s && s.completed); }
+
+function saveWpTopicScore(topic, score) {
+  const prev = _wpTopicScores[topic] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
+  const bestScore = Math.max(prev.bestScore, score);
+  const completed = bestScore >= TOPIC_COMPLETE_THRESHOLD;
+  const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
+  _wpTopicScores[topic] = { bestScore, latestScore: score, completed, completedAt };
+  localStorage.setItem(TOPIC_SCORE_KEY, JSON.stringify(_wpTopicScores));
+}
+
+function wpTopicCompletedCount() {
+  return WP_TOPIC_IDS.filter(isWpTopicCompleted).length;
+}
+
+function updateWpTopicChecks() {
+  document.querySelectorAll('.wp-topic-btn[data-topic]').forEach(btn => {
+    const topic = btn.dataset.topic;
+    let icon = btn.querySelector('.wp-item-done-icon');
+    if (topic !== 'all' && isWpTopicCompleted(topic)) {
+      if (!icon) {
+        icon = document.createElement('i');
+        icon.className = 'fas fa-check-circle wp-item-done-icon';
+        icon.title = 'Đã hoàn thành (≥80%)';
+        btn.appendChild(icon);
+      }
+    } else if (icon) {
+      icon.remove();
+    }
+  });
+}
+
+function doneTopicStatusHtml() {
+  if (currentTopic === 'all') return '';
+  const s = _wpTopicScores[currentTopic];
+  let html = '';
+  if (s && s.completed) html += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
+  if (s) html += '<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Điểm cao nhất: ' + s.bestScore + '%</span>';
+  html += '<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + wpTopicCompletedCount() + '/' + WP_TOPIC_IDS.length + ' chủ đề</span>';
+  return html;
+}
 // Combo / timer / skip
 let comboStreak    = 0;
 let sessionStartTime = null;
@@ -1001,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
+  updateWpTopicChecks();
 
   // Read URL params to pre-configure filters (shareable links)
   const _wpp = new URLSearchParams(location.search);
@@ -1605,6 +1659,11 @@ function showDoneSummary() {
     `Bạn đã hoàn thành ${sessionDone} bài và kiếm được ${sessionXP} XP!`;
   document.getElementById('done-stats').innerHTML =
     `<span>🎯 Đúng: ${sessionCorrect}/${gradable}${expandNote} (${pct}%)</span><span>⭐ XP: ${sessionXP}</span><span>⏱ ${m}:${String(s).padStart(2,'0')}</span>`;
+
+  if (currentTopic !== 'all' && gradable > 0) saveWpTopicScore(currentTopic, pct);
+  const topicStatusEl = document.getElementById('done-topic-status');
+  if (topicStatusEl) topicStatusEl.innerHTML = doneTopicStatusHtml();
+  updateWpTopicChecks();
 
   const wrongAttempts = sessionAttempts.filter(a => a.isCorrect === false);
   const wrongCount = wrongAttempts.length;

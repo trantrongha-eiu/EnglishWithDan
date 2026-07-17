@@ -107,6 +107,26 @@ body {
 .exam-exit-btn:hover { background: #f3f4f6; }
 
 /* ══════════════════════════════════════════════
+   SHARED STATUS BADGES (completion / best-score / progress)
+   Used across all 5 "Luyện viết" pages for consistent
+   per-item completion feedback (skill/topic/type/lesson).
+══════════════════════════════════════════════ */
+.wp-status-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+}
+.wp-status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 20px; padding: 4px 12px; font-size: 11.5px; font-weight: 700;
+  background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;
+}
+.wp-status-badge.wp-status-done  { background: #dcfce7; color: #15803d; border-color: #86efac; }
+.wp-status-badge.wp-status-best  { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+/* On a colored/gradient surface (e.g. a lesson hero), use translucent white instead */
+.wp-status-badge.wp-status-on-gradient { background: rgba(255,255,255,.18); color: #fff; border-color: rgba(255,255,255,.3); }
+.wp-status-badge.wp-status-on-gradient.wp-status-done { background: rgba(34,197,94,.28); border-color: rgba(134,239,172,.5); color: #fff; }
+.wp-item-done-icon { color: #16a34a; font-size: 11px; flex-shrink: 0; margin-left: auto; }
+
+/* ══════════════════════════════════════════════
    NAV TABS (skill-tabs-bar)
 ══════════════════════════════════════════════ */
 .skill-tabs-bar {
@@ -958,6 +978,11 @@ body {
 [data-theme="dark"] .wp-logout-btn    { border-color: #374151; color: #9ca3af; }
 [data-theme="dark"] .exam-exit-btn   { color: #9ca3af; }
 [data-theme="dark"] .exam-exit-btn:hover { background: #374151; }
+
+[data-theme="dark"] .wp-status-badge { background: #334155; color: #cbd5e1; border-color: #475569; }
+[data-theme="dark"] .wp-status-badge.wp-status-done { background: #052e16; color: #4ade80; border-color: #166534; }
+[data-theme="dark"] .wp-status-badge.wp-status-best { background: #451a03; color: #fbbf24; border-color: #92400e; }
+[data-theme="dark"] .wp-item-done-icon { color: #4ade80; }
 
 [data-theme="dark"] .skill-tabs-bar   { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .site-nav-link    { color: #9ca3af; }

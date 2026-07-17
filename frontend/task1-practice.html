@@ -310,7 +310,8 @@
   <nav class="t2-tpl-nav-group">
     <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
     <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-layer-group"></i><span>Templates</span></a>
+    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
+    <a href="essential-grammar.html" class="t2-tpl-nav-link" title="Essential Grammar"><i class="fas fa-graduation-cap"></i><span>Ngữ pháp</span></a>
   </nav>
   <div class="wp-header-right">
     <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
@@ -633,6 +634,7 @@
         <h2 id="done-title">Xuất sắc!</h2>
         <p id="done-summary"></p>
         <div class="wp-done-stats" id="done-stats"></div>
+        <div class="wp-status-row" id="done-skill-status" style="justify-content:center"></div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0">
           <button id="done-retry-wrong-btn" class="wp-restart-btn" onclick="retryWrongT1()" style="display:none;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;color:#fff">
             <i class="fas fa-redo-alt"></i> <span id="done-retry-count">Làm lại câu sai</span>
@@ -860,6 +862,56 @@ const SKILL_LABELS = {
   paraphrase:'Paraphrase', overview:'Overview'
 };
 
+// ── Per-skill completion tracking (bestScore/latestScore/completed/completedAt) ──
+// Shared model with essential-grammar.html/task2-practice.html/task2-template.html/
+// writing-practice.html. A skill "completes" when a practice session ending with
+// that skill selected (currentSkill !== 'all') scores >=80% accuracy.
+const SKILL_SCORE_KEY = 't1_skill_scores';
+const SKILL_COMPLETE_THRESHOLD = 80;
+let _skillScores = JSON.parse(localStorage.getItem(SKILL_SCORE_KEY) || '{}');
+
+function isSkillCompleted(skill) { const s = _skillScores[skill]; return !!(s && s.completed); }
+
+function saveSkillScore(skill, score) {
+  const prev = _skillScores[skill] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
+  const bestScore = Math.max(prev.bestScore, score);
+  const completed = bestScore >= SKILL_COMPLETE_THRESHOLD;
+  const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
+  _skillScores[skill] = { bestScore, latestScore: score, completed, completedAt };
+  localStorage.setItem(SKILL_SCORE_KEY, JSON.stringify(_skillScores));
+}
+
+function skillCompletedCount() {
+  return Object.keys(SKILL_LABELS).filter(isSkillCompleted).length;
+}
+
+function updateSkillTabChecks() {
+  document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(btn => {
+    const skill = btn.dataset.skill;
+    let icon = btn.querySelector('.wp-item-done-icon');
+    if (skill !== 'all' && isSkillCompleted(skill)) {
+      if (!icon) {
+        icon = document.createElement('i');
+        icon.className = 'fas fa-check-circle wp-item-done-icon';
+        icon.title = 'Đã hoàn thành (≥80%)';
+        btn.appendChild(icon);
+      }
+    } else if (icon) {
+      icon.remove();
+    }
+  });
+}
+
+function doneSkillStatusHtml() {
+  if (currentSkill === 'all') return '';
+  const s = _skillScores[currentSkill];
+  let html = '';
+  if (s && s.completed) html += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
+  if (s) html += '<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Điểm cao nhất: ' + s.bestScore + '%</span>';
+  html += '<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + skillCompletedCount() + '/' + Object.keys(SKILL_LABELS).length + ' kỹ năng</span>';
+  return html;
+}
+
 // ════════════════════════════════════════════════════════
 //  SHAREABLE URL
 // ════════════════════════════════════════════════════════
@@ -963,6 +1015,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
+  updateSkillTabChecks();
 
   // Read URL params to pre-configure filters (shareable links)
   const _t1p = new URLSearchParams(location.search);
@@ -1673,6 +1726,11 @@ function showDoneSummary() {
   document.getElementById('done-summary').textContent = `Hoàn thành ${sessionDone} câu — tỉ lệ đúng ${pct}%`;
   document.getElementById('done-stats').innerHTML =
     `<span>✅ Đúng: ${sessionCorrect}</span><span>❌ Sai: ${wrongCount}</span><span>⭐ XP: +${sessionXP}</span>`;
+
+  if (currentSkill !== 'all' && sessionDone > 0) saveSkillScore(currentSkill, pct);
+  const skillStatusEl = document.getElementById('done-skill-status');
+  if (skillStatusEl) skillStatusEl.innerHTML = doneSkillStatusHtml();
+  updateSkillTabChecks();
 
   // Lưu cache TRƯỚC khi saveBatch() xóa sessionAttempts
   _wrongAttemptCache = wrongAttempts;
