@@ -118,6 +118,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'EssentialGrammarLesson seed error', { errorMessage: e.message });
     }
+    // Auto-seed Speaking question bank (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runSpeakingSeed } = require('./scripts/seedSpeakingQuestions');
+      logger.startup('SpeakingQuestion seeding...');
+      await runSpeakingSeed();
+      logger.startup('SpeakingQuestion seed done');
+    } catch (e) {
+      logger.error('startup', 'SpeakingQuestion seed error', { errorMessage: e.message });
+    }
     // Start tuition auto-reminder cron
     try {
       tuitionCron.start();
