@@ -174,7 +174,8 @@ Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded
           systemInstruction: SPEAKING_SYSTEM,
           responseMimeType: 'application/json',
           temperature: 0.35,
-          maxOutputTokens: 2048
+          maxOutputTokens: 2048,
+          thinkingConfig: { thinkingBudget: 0 }
         }
       }),
       30000,
