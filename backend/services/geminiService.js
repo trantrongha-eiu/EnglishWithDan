@@ -199,6 +199,65 @@ If the transcript has no genuine spoken answer to work with (empty, just repeats
   }
 }
 
+// ── Part 1 Sample Answer ───────────────────────────────────────────
+// O.R.E. (Opinion/answer -> Reason -> Example), 2-4 sentences, must
+// include a natural filler word/discourse marker — mirrors the coaching
+// rules this feature was built from. Part 1 only: that shape doesn't fit
+// Part 2's cue-card monologue or Part 3's discussion-style answers.
+const SAMPLE_ANSWER_SYSTEM = `You are an experienced IELTS Speaking coach writing a natural, spoken-sounding sample answer for a Part 1 question.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+async function generateSampleAnswer(question, part = 1, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  const content = `IELTS Speaking Part 1 question: "${question}"
+
+Write a natural, spoken-sounding sample answer following these rules:
+- Length: exactly 2-4 sentences. Never a one-word/one-line answer like "Yes." or "I like it." — the examiner needs to hear you speak. Never a long, over-prepared Part-2-style monologue either — Part 1 must stay short and conversational.
+- Structure: a direct opinion or answer first, then a brief Reason, then a short concrete Example — adapt naturally if the question is factual rather than opinion-based (a direct answer + brief elaboration + short example still works the same way).
+- Include at least one natural filler word or discourse marker somewhere in the answer (e.g. "Well,", "Actually,", "To be honest,", "I mean,", "You know,", "Honestly,", or any similarly natural spoken connector — it doesn't have to be from this exact list) so it sounds like real spontaneous speech, not a scripted essay.
+- Natural spoken English a real IELTS candidate would actually say out loud — not bookish, not overly formal, not obviously memorized.
+
+Return this exact JSON (no other text):
+{"sampleAnswer": "<the 2-4 sentence answer>"}`;
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL,
+        contents: content,
+        config: {
+          systemInstruction: SAMPLE_ANSWER_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.75,
+          maxOutputTokens: 1024,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      }),
+      20000,
+      'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generateSampleAnswer: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại sau ít phút.');
+  }
+
+  try {
+    return extractJson(rawText);
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateSampleAnswer: JSON parse failed, retrying', { errorMessage: parseErr.message });
+      return generateSampleAnswer(question, part, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+  }
+}
+
 // ── Task 2 Practice — Sentence-level AI grading ───────────────────────
 const T2_GRADE_SYSTEM = `Bạn là giáo viên tiếng Anh IELTS chuyên chấm bài tập câu.
 Chấm CÔNG BẰNG và LINH HOẠT — chấp nhận cách diễn đạt đồng nghĩa nếu đúng ngữ pháp và đúng nghĩa.
@@ -277,4 +336,4 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
   }
 }
 
-module.exports = { checkEssay, checkSpeaking, gradeT2Question };
+module.exports = { checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer };

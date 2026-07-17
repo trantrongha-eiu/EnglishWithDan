@@ -327,6 +327,14 @@ function setQuestion(q) {
     else             qCue.style.display = 'none';
   }
 
+  // Sample Answer — Part 1 only (2-4 sentence O.R.E. answers don't map onto
+  // Part 2's cue-card monologue or Part 3's discussion-style questions).
+  const sampleBtn = document.getElementById('q-sample-btn');
+  const sampleBox = document.getElementById('sample-answer-box');
+  if (sampleBtn) sampleBtn.style.display = q.part === 1 ? 'inline-flex' : 'none';
+  if (sampleBox) { sampleBox.style.display = 'none'; sampleBox.dataset.forQuestion = ''; }
+  _sampleAnswerText = '';
+
   readQuestion();
 
   if (q.part === 2) {
@@ -393,6 +401,53 @@ function readQuestion() {
   const q = state.currentQuestion;
   if (!q) return;
   speakText(q.question);
+}
+
+// ──────────────────────────────────────────────────────
+// Sample Answer (Part 1 only) — AI-generated 2-4 sentence model answer
+// following the Opinion/Reason/Example structure with a natural filler
+// word or discourse marker, per the coaching notes this was built from.
+// ──────────────────────────────────────────────────────
+let _sampleAnswerText = '';
+
+async function showSampleAnswer() {
+  const q = state.currentQuestion;
+  if (!q || q.part !== 1) return;
+
+  const box    = document.getElementById('sample-answer-box');
+  const textEl = document.getElementById('sample-answer-text');
+  const btn    = document.getElementById('q-sample-btn');
+  if (!box || !textEl || !btn) return;
+
+  // Toggle closed if it's already showing an answer for this exact question.
+  if (box.style.display === 'block' && box.dataset.forQuestion === q.question) {
+    box.style.display = 'none';
+    return;
+  }
+
+  box.dataset.forQuestion = q.question;
+  box.style.display = 'block';
+  textEl.innerHTML = '<div class="spinner"></div>';
+  btn.disabled = true;
+
+  try {
+    const data = await apiFetch('/api/speaking/sample-answer', {
+      method: 'POST',
+      body: JSON.stringify({ question: q.question, part: q.part }),
+    });
+    _sampleAnswerText = data.sampleAnswer || '';
+    textEl.textContent = _sampleAnswerText;
+  } catch (e) {
+    console.error('showSampleAnswer:', e);
+    showToast('Không thể tạo câu trả lời mẫu. Vui lòng thử lại.', 'error');
+    box.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function replaySampleAnswer() {
+  if (_sampleAnswerText) speakText(_sampleAnswerText);
 }
 
 function resetPractice() {

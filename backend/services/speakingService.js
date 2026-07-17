@@ -4,7 +4,7 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking } = require('./geminiService');
+const { checkSpeaking, generateSampleAnswer } = require('./geminiService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -36,6 +36,11 @@ async function listQuestions({ topic, part }) {
 // decides the HTTP status for those, since that's a request-flow decision.
 async function gradeSpeaking(questionText, transcript, partNum) {
   return checkSpeaking(questionText, transcript, partNum);
+}
+
+// Same error-propagation contract as gradeSpeaking above.
+async function getSampleAnswer(questionText, partNum) {
+  return generateSampleAnswer(questionText, partNum);
 }
 
 // Persistence failure here is logged but must never fail the request —
@@ -95,5 +100,5 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
-  getHistory, listMaterials, getMaterialFilters,
+  getHistory, listMaterials, getMaterialFilters, getSampleAnswer,
 };

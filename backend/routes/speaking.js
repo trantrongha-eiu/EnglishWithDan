@@ -21,10 +21,25 @@ const analyzeLimiter = rateLimit({
   skip: req => req.user?.role === 'admin'
 });
 
+// /sample-answer also calls Gemini — its own cap, separate from /analyze's
+// quota, so generating sample answers doesn't eat into a student's
+// analyze budget for the same session.
+const sampleAnswerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  keyGenerator: req => req.user?._id?.toString() || req.ip,
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Quá nhiều yêu cầu, vui lòng thử lại sau 15 phút.' });
+  },
+  skip: req => req.user?.role === 'admin'
+});
+
 router.get('/topics',           auth, premiumOnly, speakCtrl.getTopics);
 router.get('/random',           auth, premiumOnly, speakCtrl.getRandom);
 router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
 router.post('/analyze',         auth, premiumOnly, analyzeLimiter, speakCtrl.analyze);
+router.post('/sample-answer',   auth, premiumOnly, sampleAnswerLimiter, speakCtrl.sampleAnswer);
 router.get('/history',          auth,              speakCtrl.getHistory);   // free users vẫn xem được lịch sử cũ
 router.get('/materials',        auth, premiumOnly, speakCtrl.getMaterials);
 router.get('/material-filters', auth, premiumOnly, speakCtrl.getMaterialFilters);

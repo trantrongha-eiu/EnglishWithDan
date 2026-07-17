@@ -262,9 +262,21 @@
             <button class="q-read-btn" onclick="readQuestion()" title="Nghe câu hỏi">
               <i class="fas fa-volume-up"></i>
             </button>
+            <button class="q-sample-btn" id="q-sample-btn" onclick="showSampleAnswer()" title="Xem câu trả lời mẫu" style="display:none">
+              <i class="fas fa-lightbulb"></i> Sample Answer
+            </button>
           </div>
           <div class="q-text" id="q-text"></div>
           <div class="q-cue" id="q-cue" style="display:none"></div>
+          <div class="sample-answer-box" id="sample-answer-box" style="display:none">
+            <div class="sample-answer-header">
+              <span><i class="fas fa-lightbulb"></i> Câu trả lời mẫu</span>
+              <button class="q-read-btn" onclick="replaySampleAnswer()" title="Nghe câu trả lời mẫu">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            <div class="sample-answer-text" id="sample-answer-text"></div>
+          </div>
         </div>
 
         <!-- Part 2: Prep timer -->

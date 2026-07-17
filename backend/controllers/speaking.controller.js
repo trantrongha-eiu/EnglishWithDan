@@ -56,6 +56,31 @@ exports.analyze = catchAsync(async (req, res) => {
   res.json({ success: true, feedback });
 });
 
+// ── POST /api/speaking/sample-answer ─────────────────────────
+// Part 1 only — the O.R.E. 2-4 sentence shape doesn't fit Part 2/3.
+exports.sampleAnswer = catchAsync(async (req, res) => {
+  const { question, part } = req.body;
+  if (!question || !question.trim()) {
+    return res.status(400).json({ success: false, message: 'Thiếu câu hỏi' });
+  }
+
+  const partNum = part ? Number(part) : 1;
+  if (partNum !== 1) {
+    return res.status(400).json({ success: false, message: 'Câu trả lời mẫu chỉ hỗ trợ Part 1' });
+  }
+
+  try {
+    const data = await speakingService.getSampleAnswer(question.trim(), partNum);
+    res.json({ success: true, sampleAnswer: data.sampleAnswer });
+  } catch (aiErr) {
+    console.error('[Speaking] sampleAnswer Gemini error:', aiErr.message);
+    if (aiErr.isOverloaded) {
+      return res.status(503).json({ success: false, message: aiErr.message });
+    }
+    return res.status(500).json({ success: false, message: 'AI không thể tạo câu trả lời mẫu. Vui lòng thử lại.' });
+  }
+});
+
 // ── GET /api/speaking/history ────────────────────────────────
 exports.getHistory = catchAsync(async (req, res) => {
   const attempts = await speakingService.getHistory(req.user._id);
