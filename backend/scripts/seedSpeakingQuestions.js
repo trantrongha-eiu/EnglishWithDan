@@ -507,6 +507,380 @@ const part2Sets = [
       "What things can people do to help to protect nature?",
       "Do you think there is a need for new laws to protect nature?",
       "Are punishments or rewards more effective in encouraging people to protect nature?"
+    ]},
+  { topic: "Encouraging someone to do something", title: "Describe a time when you encouraged somebody to do something that he/she didn't want to do", bullets: [
+      "Who this person is", "What you encouraged him/her to do", "How he/she reacted",
+      "And explain when you encouraged him/her to do this"
+    ], part3: [
+      "In what situations do parents need to encourage their children to do something?",
+      "What ways can parents use to encourage children to do things they don't want to do?",
+      "Why do children often not want to do what their parents ask?",
+      "How can employees be encouraged to work hard?",
+      "Do you agree or disagree that the most important role of a boss is to encourage employees?",
+      "Are people at work more motivated by praise or money?"
+    ]},
+  { topic: "Food eaten at special occasions", title: "Describe a kind of food that you ate at special occasions", bullets: [
+      "What it is", "What occasion it was", "Why you would like to eat it",
+      "And explain how you feel about it"
+    ], part3: [
+      "Why is food important during special occasions in your country?",
+      "What kinds of food do people usually eat during festivals or family celebrations?",
+      "Do you think young people prefer traditional food or fast food? Why?",
+      "How have people's eating habits changed compared to the past?",
+      "Do you think eating together helps strengthen family relationships? Why?",
+      "Is it better to cook at home or eat at restaurants on special occasions?",
+      "What is special about the way this food is made?"
+    ]},
+  { topic: "A difficult decision with a good result", title: "Describe a difficult decision you made that had a good result", bullets: [
+      "What the decision was", "Why it was difficult to make the decision", "What helped you to decide",
+      "And explain why the decision you made had a good result"
+    ], part3: [
+      "Why do some people find it difficult to make important decisions?",
+      "Do young people make decisions differently from older people?",
+      "Who do people usually ask for advice when making important decisions?",
+      "Do you think people should always think carefully before making decisions?",
+      "Can difficult decisions help people grow as individuals? Why?",
+      "Do you prefer making decisions alone or with other people's advice?"
+    ]},
+  { topic: "A person working in the medical field", title: "Describe a person who has chosen a career in the medical field (e.g. doctor, nurse, vet)", bullets: [
+      "Who this person is", "What does this person do", "Why this person chose medical career",
+      "And explain how you felt about this person"
+    ], part3: [
+      "Why do some people choose to work in the medical field?",
+      "Do you think doctors and nurses are respected in society? Why?",
+      "What qualities should a person have to work in healthcare?",
+      "Is working in the medical field more stressful than other jobs? Why?",
+      "Should medical workers receive higher salaries? Why or why not?",
+      "Do you think young people today are interested in becoming doctors?",
+      "Why do some people want to be doctors?",
+      "Do you think it is difficult to become a doctor?",
+      "Do you think studying biology at school makes students healthier?"
+    ]},
+  { topic: "A good place to live", title: "Describe a place you have visited that you think is a good place to live", bullets: [
+      "Where it is", "What you know about this place", "What people can do there",
+      "And explain why you would recommend this place as a good place to live"
+    ], part3: [
+      "What factors make a place suitable for living?",
+      "Do young people and older people have different preferences about where to live?",
+      "Is it better to live in the city or in the countryside? Why?",
+      "How important is public transportation in a place to live?",
+      "Do you think people move more often nowadays? Why?",
+      "What can governments do to make cities better places to live?"
+    ]},
+  { topic: "A tall building you like or dislike", title: "Describe a tall building in your city you like or dislike", bullets: [
+      "Where it is", "What it is used for", "What it looks like",
+      "And explain why you like or dislike it"
+    ], part3: [
+      "Why do cities build more tall buildings nowadays?",
+      "Do tall buildings make cities look more attractive?",
+      "What are the advantages of living or working in tall buildings?",
+      "Are there any disadvantages to having too many tall buildings?",
+      "Do you think modern buildings are better than old buildings? Why?",
+      "Should cities preserve old buildings instead of replacing them?",
+      "Have you ever lived in a high-rise building?",
+      "What impact do you think climate has on architectural design?",
+      "Why do you think many Chinese people now live in high-rise buildings?",
+      "In the future, will Chinese people prefer high-rise buildings or houses?",
+      "Why do you think some people design their own homes?"
+    ]},
+  { topic: "A successful businessperson you know", title: "Describe a person you know about who runs a successful business", bullets: [
+      "How you knew him/her", "What business does this person do", "How long has this person run his/her business",
+      "And explain why you think his/her business is successful"
+    ], part3: [
+      "What qualities make someone a successful businessperson?",
+      "Do you think starting a business is risky? Why?",
+      "Why do some businesses succeed while others fail?",
+      "Is it better to work for a company or run your own business?",
+      "Do young people today prefer entrepreneurship? Why?",
+      "How important is customer service in business success?",
+      "Do you approve of the business model of small shops / small retail stores?"
+    ]},
+  { topic: "A person who enjoys growing plants", title: "Describe a person you know who enjoys growing plants", bullets: [
+      "How you know this person", "What plants this person enjoys growing", "Where this person grows plants",
+      "And explain why you think this person enjoys growing these plants"
+    ], part3: [
+      "Why do some people enjoy gardening?",
+      "Do you think growing plants is popular among young people?",
+      "What are the benefits of growing plants at home?",
+      "Should schools teach children how to grow plants? Why?",
+      "How can plants improve people's quality of life?",
+      "Is gardening easier now than in the past? Why?",
+      "Do you have a favourite type of plant to grow?",
+      "What preparations do you need for planting?",
+      "Do you think planting is easy or difficult?",
+      "What do you gain after solving problems in planting?"
+    ]},
+  { topic: "A live sport match you watched", title: "Describe a live sport match you have ever watched", bullets: [
+      "What it was", "When you watched it", "What it was like",
+      "And explain how you felt about it"
+    ], part3: [
+      "Why do many people enjoy watching sports?",
+      "Do you think watching live sports is better than watching on TV? Why?",
+      "How can sports events benefit a city or a country?",
+      "Why do some people become passionate sports fans?",
+      "Do international sports events help bring people together?",
+      "Should children be encouraged to play sports regularly? Why?",
+      "What are the advantages of watching sports events online?",
+      "What kinds of sports activities are suitable for children in China?"
+    ]},
+  { topic: "A piece of local news", title: "Describe a piece of local news that people are interested in", bullets: [
+      "What it was about", "Where you saw/heard it", "Who was involved",
+      "And explain why people were interested in it"
+    ], part3: [
+      "How do people usually get local news nowadays?",
+      "Do you think local news is more important than international news? Why?",
+      "Why are some news stories more popular than others?",
+      "Do social media affect the way people receive news?",
+      "Can news influence public opinion? How?",
+      "Do you think all news is reliable nowadays? Why or why not?",
+      "Do many people talk about local news?",
+      "Do young people or old people care more about local news?",
+      "Do people pay more attention to local news or national news?"
+    ]},
+  { topic: "A technology problem you encountered", title: "Describe a problem of technology you have encountered, like a computer or a cell phone", bullets: [
+      "What it was", "When and where you had this problem", "How the problem was solved",
+      "And explain how you felt when you had this problem"
+    ], part3: [
+      "What kinds of technological problems do people often face?",
+      "Do older people have more difficulty using technology than young people?",
+      "How has technology made people's lives easier?",
+      "Do you think people depend too much on technology nowadays?",
+      "What should people do when technology fails?",
+      "Will technology become more reliable in the future?"
+    ]},
+  { topic: "Getting up very early", title: "Describe a time when you had to get up very early", bullets: [
+      "Where you were", "What time you had to get up", "Why you had to get up so early",
+      "And explain how you felt about getting up very early"
+    ], part3: [
+      "Why do some people prefer waking up early?",
+      "Do young people and older people have different sleeping habits?",
+      "Is it healthier to wake up early? Why?",
+      "What jobs require people to wake up very early?",
+      "How can people develop good sleeping habits?",
+      "Do modern lifestyles affect people's sleep?"
+    ]},
+  { topic: "A home you like to visit but not live in", title: "Describe a home that you like to visit but did not want to live in", bullets: [
+      "Where it is", "What it is like", "What you visited it for",
+      "And explain why you would not like to live there"
+    ], part3: [
+      "What makes a home comfortable to live in?",
+      "Do people's housing preferences change as they get older?",
+      "Is it better to live in a house or an apartment? Why?",
+      "What factors do people consider when choosing a home?",
+      "Do modern homes differ from homes in the past?",
+      "How important is location when choosing a home?"
+    ]},
+  { topic: "A long-held ambition", title: "Describe an ambition you have had for a long time", bullets: [
+      "What it was", "How you got the desire to want to achieve it", "What you have to do to achieve it",
+      "And explain how you feel about it"
+    ], part3: [
+      "Why is it important for people to have ambitions?",
+      "Do young people have different ambitions from older people?",
+      "Can ambition help people become successful? Why?",
+      "What can stop people from achieving their ambitions?",
+      "Should parents influence their children's ambitions?",
+      "Is it easier to achieve ambitions nowadays?"
+    ]},
+  { topic: "A childhood friend you remember well", title: "Describe a friend from childhood who you remember very well", bullets: [
+      "Who the friend is", "How you met him/her", "What you used to do together",
+      "And explain why you remember this childhood friend so well"
+    ], part3: [
+      "Why are childhood friendships special?",
+      "Is it easy to maintain friendships as people get older?",
+      "Do children make friends more easily than adults?",
+      "What qualities are important in friendship?",
+      "Can online friendships replace real-life friendships?",
+      "How do friendships influence people's development?"
+    ]},
+  { topic: "A time you changed your plan", title: "Describe a time that you had to change your plan / you changed your mind", bullets: [
+      "When this happened", "What made you change the plan", "What the new plan was",
+      "And how you felt about the change"
+    ], part3: [
+      "Why do people sometimes change their plans?",
+      "Is it important to be flexible in life?",
+      "Do young people change plans more often than older people?",
+      "How do people feel when their plans suddenly change?",
+      "Can changing plans sometimes lead to better results?",
+      "How can people deal with unexpected changes?"
+    ]},
+  { topic: "An interesting video on social media", title: "Describe an interesting video you watched in social media", bullets: [
+      "When and where you saw it", "What it was about", "Why you think it is interesting",
+      "And explain how you felt about it"
+    ], part3: [
+      "Why do people spend so much time watching videos online?",
+      "What types of videos are popular nowadays?",
+      "Do social media videos influence people's opinions?",
+      "Are online videos educational? Why or why not?",
+      "Do you think social media has more advantages than disadvantages?",
+      "Should children's use of social media be controlled?"
+    ]},
+  { topic: "A time you changed your opinion", title: "Describe a time you changed your opinion", bullets: [
+      "When it was", "What was your opinion", "Why you changed your opinion",
+      "And explain how you felt about it"
+    ], part3: [
+      "Why do people change their opinions?",
+      "Is it easy for people to admit they were wrong?",
+      "Do older people change their opinions less often than young people?",
+      "Can other people influence our opinions? How?",
+      "Is it important to listen to different viewpoints?",
+      "Should people always stick to their own opinions?"
+    ]},
+  { topic: "A holiday place you would recommend", title: "Describe a place you went to on holiday that you would recommend", bullets: [
+      "Where you went", "Why you went to this place", "What you did",
+      "And explain why you would recommend this place for a holiday"
+    ], part3: [
+      "Why do people enjoy traveling?",
+      "What makes a place attractive to tourists?",
+      "Do people prefer traveling alone or with others? Why?",
+      "How has tourism changed in recent years?",
+      "What are the benefits of traveling?",
+      "Can tourism have negative effects on local communities?",
+      "Where do people prefer to travel to?",
+      "Is it difficult for young people to choose a travel destination?",
+      "How do people decide on their travel dates?"
+    ]},
+  { topic: "A place you found boring", title: "Describe a place you have been to and felt bored", bullets: [
+      "Where it was", "When you went there", "What you did there",
+      "And explain why you think it is boring"
+    ], part3: [
+      "Why do some people get bored easily?",
+      "What kinds of places do young people enjoy visiting?",
+      "Do people have different ideas of what is interesting?",
+      "How can tourist attractions become more appealing?",
+      "Is it important to try new experiences?",
+      "Do people today have less patience than in the past?",
+      "On what occasions do people feel bored?",
+      "Why do students find their teachers' lessons boring?",
+      "How to avoid feeling bored?",
+      "Why do some people find playing on their phones boring?"
+    ]},
+  { topic: "A person who achieved something difficult", title: "Describe a person you know who successfully achieved something difficult", bullets: [
+      "Who it is", "What he/she had achieved", "How difficult it was",
+      "And explain how you felt about it"
+    ], part3: [
+      "Why do some people succeed while others give up?",
+      "Is determination important for success?",
+      "Should parents teach children not to give up easily?",
+      "Can failure help people become successful?",
+      "What motivates people to achieve difficult goals?",
+      "Do successful people always work harder than others?"
+    ]},
+  { topic: "An environmental protection law", title: "Describe a law of environment protection that you would like to introduce", bullets: [
+      "What it is", "How you first learned about it", "Who benefits from it",
+      "And explain how you feel about this law"
+    ], part3: [
+      "Why is environmental protection important?",
+      "What environmental problems are common in cities?",
+      "Should governments or individuals take more responsibility?",
+      "How can schools teach children about environmental protection?",
+      "Do you think environmental laws are effective?",
+      "Should companies be punished for pollution?"
+    ]},
+  { topic: "An important decision you had to make", title: "Describe a time when you had to make an important decision", bullets: [
+      "What decision you had to make", "How you made the decision", "Why this decision was important",
+      "And explain whether you think it was a right decision"
+    ], part3: [
+      "What kinds of decisions do young people usually make?",
+      "Why do some people find decision-making difficult?",
+      "Do men and women make decisions differently?",
+      "Is it better to make decisions alone or ask for advice?",
+      "Can technology help people make decisions?",
+      "How can experience improve decision-making?"
+    ]},
+  { topic: "An animal story (movie or book)", title: "Describe a story you knew that involves an animal (like in a movie or a book)", bullets: [
+      "What the movie or book is about", "When and where you watched it", "Are there any other animals in the movie or book",
+      "And explain how you felt about this movie or book"
+    ], part3: [
+      "Why do children enjoy stories about animals?",
+      "What can people learn from animal stories?",
+      "Do films influence how people view animals?",
+      "Why are animals often used in stories?",
+      "Should children learn about animals at school?",
+      "Do people care more about animal welfare nowadays?"
+    ]},
+  { topic: "A person who didn't reply to your messages", title: "Describe a person who has not replied to your messages for a long time", bullets: [
+      "Who he/she is", "What message you sent him/her", "Did he/she finally reply you",
+      "And explain how you felt about him/her"
+    ], part3: [
+      "Why do people sometimes ignore messages?",
+      "Is online communication better than face-to-face communication?",
+      "Do young people communicate differently from older people?",
+      "How has technology changed communication?",
+      "Is it rude not to reply to messages? Why?",
+      "Can texting damage relationships?"
+    ]},
+  { topic: "An advertisement featuring a famous person", title: "Describe a piece of advertisement which is about a famous person", bullets: [
+      "What the advertisement is about", "When and where you saw it", "What the famous person does in the advertisement",
+      "And explain how you felt about it"
+    ], part3: [
+      "Why do companies use celebrities in advertisements?",
+      "Do celebrity advertisements influence consumers?",
+      "Are advertisements more creative nowadays?",
+      "What makes an advertisement effective?",
+      "Do children get influenced by advertisements easily?",
+      "Should there be stricter control of advertising?"
+    ]},
+  { topic: "A person good at learning languages", title: "Describe a person who is good at learning languages", bullets: [
+      "Who it is", "How you knew him/her", "What languages he/she has learnt",
+      "And explain why you think he/she is good at learning languages"
+    ], part3: [
+      "Why are some people better at learning languages than others?",
+      "Is it easier for children to learn languages?",
+      "What is the best way to learn a foreign language?",
+      "Why do people learn foreign languages?",
+      "Can technology help language learning?",
+      "Should schools teach more foreign languages?"
+    ]},
+  { topic: "An interesting building to visit", title: "Describe an interesting building that you would like to visit", bullets: [
+      "Where this interesting building is", "How you know about this building", "What you already know about it",
+      "And explain how you would feel if you visited this interesting building"
+    ], part3: []},
+  { topic: "A wild animal to learn more about", title: "Describe a wild animal you would like to learn more about", bullets: [
+      "Which wild animal it is", "What you already know about it", "How you would like to learn more about it",
+      "And explain why you would like to learn more about this wild animal"
+    ], part3: []},
+  { topic: "Trying an activity for the first time", title: "Describe an occasion when you felt excited about trying an activity for the first time", bullets: [
+      "What activity you did", "Where and when you did this", "How easy or difficult it was to do",
+      "And explain what was exciting about trying this activity for the first time"
+    ], part3: []},
+  { topic: "Waiting for something special to happen", title: "Describe a time when you had to wait for something special to happen", bullets: [
+      "What this special thing was", "Why you had to wait for it", "What you did while you were waiting",
+      "And explain how you felt about waiting for this special thing to happen"
+    ], part3: []},
+  { topic: "A power outage", title: "Describe an occasion when the electricity suddenly went off", bullets: [
+      "When and where it happened", "What you were doing", "How long the electricity went off for",
+      "And explain how you felt when the electricity suddenly went off"
+    ], part3: []},
+  { topic: "A far-away place to visit in future", title: "Describe a place which is far away that you would like to visit in the future", bullets: [
+      "Where it is", "How you would travel there", "What you would do there",
+      "And explain why you would really like to visit this place"
+    ], part3: []},
+  { topic: "A tradition in your country", title: "Describe a tradition in your country", bullets: [
+      "What it is", "When it will happen", "What people need to do",
+      "And explain how you feel about it"
+    ], part3: []},
+  { topic: "Repairing something broken at home", title: "Describe a time when something in your home broke and you tried to repair it", bullets: [
+      "What thing broke", "Why this thing broke", "What you did to try to repair it",
+      "And explain how successful you were at trying to repair this thing"
+    ], part3: []},
+  { topic: "A traditional product you like", title: "Describe a traditional product made in your country which you like", bullets: [
+      "What this product is", "When you first tried this product", "How this product is made",
+      "And explain why you like this traditional product"
+    ], part3: []},
+  { topic: "A time you changed a decision", title: "Describe a time when you changed a decision", bullets: [
+      "What decision you made", "Why you changed the decision", "Is it a good result",
+      "And explain how you felt about it"
+    ], part3: []},
+  { topic: "A special cake you received", title: "Describe a special cake you received from others", bullets: [
+      "When it happened", "Where it happened", "Who you got the cake from",
+      "And explain why it's a special cake"
+    ], part3: [
+      "What are the differences between special food in China and other countries?",
+      "Is there any food in your country that is eaten at special times or on special occasions?",
+      "Why are some people willing to spend a lot of money on meals on special days?",
+      "Do you think it's good to communicate when eating with your family?",
+      "In your country, do people nowadays cook at home as frequently as they did in the past?",
+      "What do you think of people using their mobile phones during a meal?"
     ]}
 ];
 
