@@ -149,9 +149,10 @@ body {
   color: #fff;
   flex-shrink: 0;
 }
-.sp-card-red   { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-.sp-card-blue  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-.sp-card-green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.sp-card-red    { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.sp-card-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.sp-card-green  { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.sp-card-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
 
 .sp-home-card-body { flex: 1; min-width: 0; }
 .sp-home-card-title {
@@ -1225,6 +1226,13 @@ body {
   line-height: 1.5;
   padding-top: 3px;
 }
+.seq-preview-text strong {
+  font-size: 11px;
+  font-weight: 700;
+  color: #e53935;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
 
 /* Screen layout */
 #screen-sequential.active {
@@ -1427,6 +1435,7 @@ body {
 [data-theme="dark"] .seq-preview-item:not(:last-child)::before { background: #374151; }
 [data-theme="dark"] .seq-preview-num      { background: #3b1a1a; color: #fca5a5; }
 [data-theme="dark"] .seq-preview-text     { color: #d1d5db; }
+[data-theme="dark"] .seq-preview-text strong { color: #fca5a5; }
 [data-theme="dark"] .seq-hint             { color: #9ca3af; }
 [data-theme="dark"] .seq-progress         { color: #9ca3af; }
 [data-theme="dark"] .seq-silence-hint     { background: #111827; color: #6b7280; }

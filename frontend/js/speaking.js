@@ -73,6 +73,8 @@ const state = {
   seqElapsedTimer:    null,
   seqRecordStartTime: null,
   seqTotalElapsed:    0,
+  seqIsFullMock:      false,
+  seqPreviewMode:     'topic', // 'topic' | 'fullmock' — which flow opened #seq-preview-modal
 };
 
 // ──────────────────────────────────────────────────────
@@ -134,6 +136,7 @@ function showScreen(id) {
   } else {
     setupRecognition();
   }
+  primeTtsVoice();
 
   // Enable analyze button on manual typing
   const ta = document.getElementById('transcript-textarea');
@@ -334,14 +337,62 @@ function setQuestion(q) {
   setupDictionaryDouble('transcript-textarea', 'speaking-transcript');
 }
 
+// ──────────────────────────────────────────────────────
+// Text-to-speech — shared by the single-question flow, sequential
+// mode, and the full mock test below. Left-to-its-defaults, most
+// browsers fall back to a robotic OS-level voice; explicitly picking
+// a known natural-sounding engine (when the browser offers one) and
+// a slightly faster, more conversational rate sounds far less robotic.
+// ──────────────────────────────────────────────────────
+let _ttsVoice = null;
+
+function primeTtsVoice() {
+  if (!('speechSynthesis' in window)) return;
+  const load = () => {
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length) _ttsVoice = pickNaturalVoice(voices);
+  };
+  load();
+  // Chrome loads voices asynchronously — getVoices() can return [] on the
+  // very first call, then fire this event once the real list is ready.
+  window.speechSynthesis.onvoiceschanged = load;
+}
+
+function pickNaturalVoice(voices) {
+  const preferredNames = [
+    'Google US English',
+    'Microsoft Aria Online (Natural) - English (United States)',
+    'Microsoft Jenny Online (Natural) - English (United States)',
+    'Microsoft Guy Online (Natural) - English (United States)',
+    'Samantha',
+    'Daniel',
+    'Karen',
+  ];
+  for (const name of preferredNames) {
+    const v = voices.find(v => v.name === name);
+    if (v) return v;
+  }
+  // Any locally-installed (non-network) English voice beats an unknown default.
+  const localEn = voices.find(v => v.lang?.startsWith('en') && v.localService);
+  if (localEn) return localEn;
+  return voices.find(v => v.lang?.startsWith('en')) || null;
+}
+
+function speakText(text) {
+  if (!text || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang  = 'en-US';
+  utter.rate  = 0.95;
+  utter.pitch = 1.0;
+  if (_ttsVoice) utter.voice = _ttsVoice;
+  window.speechSynthesis.speak(utter);
+}
+
 function readQuestion() {
   const q = state.currentQuestion;
-  if (!q || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(q.question);
-  utter.lang  = 'en-US';
-  utter.rate  = 0.85;
-  window.speechSynthesis.speak(utter);
+  if (!q) return;
+  speakText(q.question);
 }
 
 function resetPractice() {
@@ -658,11 +709,16 @@ function seqPartLabel(queue) {
   return parts.length > 1 ? parts.join('+') : String(parts[0]);
 }
 
+// state.seqPreviewMode tracks which flow opened the shared preview modal
+// ('topic' | 'fullmock') so its single "Bắt Đầu" button knows which start
+// function to dispatch to — see confirmStartFromPreview() below.
+
 function openTopicPreviewModal() {
   const topic = document.getElementById('sel-topic')?.value;
   const queue = state.lastQuestionList;
   if (!topic || topic === 'all' || queue.length < 2) return;
 
+  state.seqPreviewMode = 'topic';
   const title = document.getElementById('seq-preview-title');
   if (title) title.textContent = `Luyện PART ${seqPartLabel(queue)} — ${topic}`;
 
@@ -687,19 +743,26 @@ document.getElementById('seq-preview-modal')?.addEventListener('click', function
   if (e.target === this) closeSeqPreviewModal();
 });
 
-function startSequentialSession() {
-  if (state.lastQuestionList.length < 2) return;
-  closeSeqPreviewModal();
+function confirmStartFromPreview() {
+  if (state.seqPreviewMode === 'fullmock') startFullMockTest();
+  else startSequentialSession();
+}
 
-  state.seqQueue        = [...state.lastQuestionList];
+// Shared by both entry points: single-topic sequential practice and the
+// full mock test below. Fully replaces whatever sequential state existed
+// before (queue/index/answers/timers) and drives the screen-sequential UI
+// identically regardless of how the queue was composed.
+function beginSeqRun(queue, headerTitle) {
+  if (!queue.length) return;
+
+  state.seqQueue        = queue;
   state.seqIndex         = 0;
   state.seqAnswers       = [];
   state.seqActive        = true;
   state.seqTotalElapsed  = 0;
 
-  const topic = document.getElementById('sel-topic')?.value || '';
-  const headerTitle = document.getElementById('seq-header-title');
-  if (headerTitle) headerTitle.textContent = `PART ${seqPartLabel(state.seqQueue)} — ${topic}`;
+  const headerTitleEl = document.getElementById('seq-header-title');
+  if (headerTitleEl) headerTitleEl.textContent = headerTitle;
 
   const resultsEl = document.getElementById('seq-results');
   const bodyEl    = document.getElementById('seq-body');
@@ -709,6 +772,121 @@ function startSequentialSession() {
   showScreen('screen-sequential');
   setupSeqRecognition();
   loadSeqQuestion();
+}
+
+function startSequentialSession() {
+  if (state.lastQuestionList.length < 2) return;
+  closeSeqPreviewModal();
+  state.seqIsFullMock = false;
+  const topic = document.getElementById('sel-topic')?.value || '';
+  beginSeqRun([...state.lastQuestionList], `PART ${seqPartLabel(state.lastQuestionList)} — ${topic}`);
+}
+
+// ──────────────────────────────────────────────────────
+// Full mock test — random 3 Part 1 topics (~9-12 questions), 1 random
+// Part 2 cue card, and that same topic's Part 3 follow-ups. Composed
+// client-side from the already-seeded question bank (no new backend
+// endpoint needed) then handed to the exact same sequential-run engine
+// used for single-topic practice above.
+// ──────────────────────────────────────────────────────
+let _fullMockQueue = null;
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Random subset of size n, but keeping the items in their original relative
+// order — real Part 1 topics are seeded with follow-on questions ("Do you
+// wear a watch?" -> "What kind?"), so shuffling within a topic reads oddly.
+function pickRandomSubsetInOrder(arr, n) {
+  const idxs = shuffleArray(arr.map((_, i) => i)).slice(0, Math.min(n, arr.length)).sort((a, b) => a - b);
+  return idxs.map(i => arr[i]);
+}
+
+async function composeFullMockQueue() {
+  const [p1data, p2data, p3data] = await Promise.all([
+    apiFetch('/api/speaking/questions?part=1'),
+    apiFetch('/api/speaking/questions?part=2'),
+    apiFetch('/api/speaking/questions?part=3'),
+  ]);
+  const p1 = p1data.questions || [];
+  const p2 = p2data.questions || [];
+  const p3 = p3data.questions || [];
+  if (!p1.length || !p2.length) return [];
+
+  const byTopic = {};
+  p1.forEach(q => { (byTopic[q.topic] = byTopic[q.topic] || []).push(q); });
+  const chosenTopics = shuffleArray(Object.keys(byTopic)).slice(0, 3);
+  // Real IELTS Part 1 asks ~3-4 questions per topic, not every question the
+  // bank happens to have for it (some seeded topics have up to 11) — cap
+  // each topic to 3-4 so the whole Part 1 section lands around 9-12 total.
+  const part1Queue = chosenTopics.flatMap(t => {
+    const perTopic = Math.random() < 0.5 ? 3 : 4;
+    return pickRandomSubsetInOrder(byTopic[t], perTopic);
+  });
+
+  // Only pick a Part 2 cue card whose topic actually has Part 3 follow-ups
+  // seeded — a handful of topics in the bank don't, and a mock test must
+  // always include a real Part 3 section.
+  const p3Topics = new Set(p3.map(q => q.topic));
+  const eligibleCues = p2.filter(q => p3Topics.has(q.topic));
+  const cuePool = eligibleCues.length ? eligibleCues : p2;
+  const cue = cuePool[Math.floor(Math.random() * cuePool.length)];
+  const part3Queue = p3.filter(q => q.topic === cue.topic);
+
+  return [...part1Queue, cue, ...part3Queue];
+}
+
+async function openFullMockPreviewModal() {
+  const card = document.getElementById('btn-full-mock');
+  const descEl = card?.querySelector('.sp-home-card-desc');
+  const originalDesc = descEl?.textContent;
+  if (descEl) descEl.textContent = 'Đang tạo đề thi thử ngẫu nhiên...';
+  if (card) card.style.pointerEvents = 'none';
+
+  try {
+    const queue = await composeFullMockQueue();
+    if (queue.length < 3) {
+      showToast('Không đủ câu hỏi để tạo bài thi thử. Vui lòng thử lại sau.', 'error');
+      return;
+    }
+    _fullMockQueue = queue;
+    state.seqPreviewMode = 'fullmock';
+
+    const title = document.getElementById('seq-preview-title');
+    if (title) title.textContent = `Bài thi thử Speaking đầy đủ (${queue.length} câu hỏi)`;
+
+    const list = document.getElementById('seq-preview-list');
+    if (list) {
+      list.innerHTML = queue.map((q, i) => `
+        <div class="seq-preview-item">
+          <span class="seq-preview-num">${i + 1}</span>
+          <span class="seq-preview-text"><strong>Part ${q.part} · ${escHtml(q.topic)}</strong><br>${escHtml(q.question)}</span>
+        </div>`).join('');
+    }
+
+    document.getElementById('seq-preview-modal')?.classList.add('open');
+  } catch (e) {
+    console.error('openFullMockPreviewModal:', e);
+    showToast('Không thể tạo bài thi thử. Vui lòng thử lại.', 'error');
+  } finally {
+    if (descEl && originalDesc) descEl.textContent = originalDesc;
+    if (card) card.style.pointerEvents = '';
+  }
+}
+
+function startFullMockTest() {
+  if (!_fullMockQueue || _fullMockQueue.length < 3) return;
+  closeSeqPreviewModal();
+  state.seqIsFullMock = true;
+  const queue = _fullMockQueue;
+  _fullMockQueue = null;
+  beginSeqRun(queue, 'Bài thi thử Speaking đầy đủ');
 }
 
 function loadSeqQuestion() {
@@ -778,12 +956,8 @@ function onSeqManualInput() {
 
 function replaySeqQuestion() {
   const q = state.seqQueue[state.seqIndex];
-  if (!q || !('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(q.question);
-  utter.lang = 'en-US';
-  utter.rate = 0.85;
-  window.speechSynthesis.speak(utter);
+  if (!q) return;
+  speakText(q.question);
 }
 
 function setupSeqRecognition() {
@@ -897,14 +1071,25 @@ function exitSequentialSession() {
     try { state.seqRecognition.stop(); } catch (e) {}
   }
   window.speechSynthesis?.cancel();
-  showScreen('screen-practice');
+  // Full mock test was launched from the home card, not from browsing a
+  // topic — return there instead of the (unvisited) practice sidebar.
+  showScreen(state.seqIsFullMock ? 'screen-home' : 'screen-practice');
+  state.seqIsFullMock = false;
 }
 
 async function finishSequentialSession() {
   state.seqActive = false;
-  const topic = state.seqQueue[0]?.topic || '';
-  const partLabel = seqPartLabel(state.seqQueue);
-  const firstPart = state.seqQueue[0]?.part;
+
+  let topic, questionLabel, partForApi;
+  if (state.seqIsFullMock) {
+    topic = 'Full Mock Test';
+    questionLabel = `Bài thi thử Speaking đầy đủ — Part 1 + 2 + 3 (${state.seqAnswers.length} câu hỏi)`;
+    partForApi = 1;
+  } else {
+    topic = state.seqQueue[0]?.topic || '';
+    questionLabel = `PART ${seqPartLabel(state.seqQueue)} — ${topic} (${state.seqAnswers.length} câu hỏi)`;
+    partForApi = state.seqQueue[0]?.part;
+  }
 
   const combined = state.seqAnswers.map((a, i) =>
     `Q${i + 1} (Part ${a.part}): ${a.question}\nA${i + 1}: ${a.transcript || '(không trả lời)'}`
@@ -927,9 +1112,9 @@ async function finishSequentialSession() {
       method: 'POST',
       body: JSON.stringify({
         transcript: combined,
-        question:   `PART ${partLabel} — ${topic} (${state.seqAnswers.length} câu hỏi)`,
+        question:   questionLabel,
         topic,
-        part:       firstPart,
+        part:       partForApi,
         duration:   state.seqTotalElapsed,
       }),
     });

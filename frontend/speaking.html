@@ -144,6 +144,16 @@
         </div>
         <i class="fas fa-chevron-right sp-home-card-arrow"></i>
       </div>
+      <div class="sp-home-card" id="btn-full-mock" onclick="openFullMockPreviewModal()">
+        <div class="sp-home-card-icon-wrap sp-card-purple">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="sp-home-card-body">
+          <div class="sp-home-card-title">Thi thử đầy đủ</div>
+          <div class="sp-home-card-desc">Mô phỏng bài thi Speaking hoàn chỉnh — Part 1, 2, 3 random, AI chấm toàn bài</div>
+        </div>
+        <i class="fas fa-chevron-right sp-home-card-arrow"></i>
+      </div>
       <div class="sp-home-card" onclick="showScreen('screen-history');loadHistory()">
         <div class="sp-home-card-icon-wrap sp-card-blue">
           <i class="fas fa-history"></i>
@@ -621,7 +631,7 @@
     </div>
     <div class="sp-modal-footer">
       <button class="btn-secondary" onclick="closeSeqPreviewModal()">Thoát</button>
-      <button class="btn-primary" onclick="startSequentialSession()">Bắt Đầu</button>
+      <button class="btn-primary" onclick="confirmStartFromPreview()">Bắt Đầu</button>
     </div>
   </div>
 </div>
