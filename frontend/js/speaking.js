@@ -53,6 +53,7 @@ const state = {
   practiceInited:   false,
   partFilter:       '1',
   materialFilter:   { quarter: 'all', topic: 'all' },
+  _pendingTopicFromUrl: null,
 
   // Sequential (mock-test) topic practice — fully isolated from the fields above
   lastQuestionList:   [],
@@ -147,15 +148,18 @@ function showScreen(id) {
     });
   }
 
-  // Navigate to practice if URL param
-  const tabParam = new URLSearchParams(location.search).get('tab');
+  // Navigate to practice if URL param — also restores the exact Part/topic
+  // that was in the URL (?part=2&topic=Building), so reloading, sharing, or
+  // bookmarking a filtered view lands back on the same questions.
+  const urlParams = new URLSearchParams(location.search);
+  const tabParam = urlParams.get('tab');
   if (tabParam === 'materials') {
     showScreen('screen-materials');
     loadMaterialFilters();
     loadMaterials();
   } else if (tabParam === 'practice') {
     showScreen('screen-practice');
-    initPractice();
+    initPractice({ part: urlParams.get('part'), topic: urlParams.get('topic') });
   }
 })();
 
@@ -163,18 +167,50 @@ function showScreen(id) {
 // PRACTICE SCREEN
 // ══════════════════════════════════════════════════════
 
-function initPractice() {
+function initPractice(opts = {}) {
   if (state.practiceInited) return;
   state.practiceInited = true;
+
+  if (opts.part && ['1', '2', '3'].includes(opts.part)) {
+    state.partFilter = opts.part;
+    document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('ptab-' + opts.part)?.classList.add('active');
+  }
+  // Consumed once by loadTopics() below (applied only after the real topic
+  // list has loaded, so it can validate the URL's topic actually exists).
+  state._pendingTopicFromUrl = opts.topic || null;
+
   loadTopics();
 }
 
+// Keeps the address bar in sync with the current Part/topic selection —
+// replaceState (not pushState) so switching tabs/topics doesn't spam
+// browser history, it just makes the current view reloadable/shareable.
+function syncUrlState() {
+  const url = new URL(location.href);
+  url.searchParams.set('tab', 'practice');
+  url.searchParams.set('part', state.partFilter);
+  const topic = document.getElementById('sel-topic')?.value;
+  if (topic && topic !== 'all') url.searchParams.set('topic', topic);
+  else url.searchParams.delete('topic');
+  history.replaceState(null, '', url);
+}
+
 // ── Part filter ──
-function setPartFilter(part, el) {
+async function setPartFilter(part, el) {
   state.partFilter = part;
   document.querySelectorAll('.part-tab').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
-  loadTopics();
+  // Awaited so syncUrlState() below reads #sel-topic's settled value —
+  // loadTopics() repopulates (and can reset) it asynchronously.
+  await loadTopics();
+  syncUrlState();
+}
+
+// ── Topic filter (wraps loadQuestions() so #sel-topic's onchange also syncs the URL) ──
+function onTopicFilterChange() {
+  loadQuestions();
+  syncUrlState();
 }
 
 // ── Topics ──
@@ -183,7 +219,12 @@ async function loadTopics() {
     const qs = state.partFilter !== 'all' ? `?part=${state.partFilter}` : '';
     const data = await apiFetch(`/api/speaking/topics${qs}`);
     const sel = document.getElementById('sel-topic');
-    const prev = sel.value;
+    // A pending topic from the URL (first load only, cleared right after
+    // use) takes priority over preserving whatever was previously selected;
+    // only applied if it's actually a real topic for this part.
+    const pending = state._pendingTopicFromUrl;
+    state._pendingTopicFromUrl = null;
+    const prev = pending || sel.value;
     sel.innerHTML = '<option value="all">Tất cả chủ đề</option>';
     (data.topics || []).forEach(t => {
       const opt = document.createElement('option');
