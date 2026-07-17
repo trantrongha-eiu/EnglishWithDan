@@ -39,8 +39,8 @@ async function gradeSpeaking(questionText, transcript, partNum) {
 }
 
 // Same error-propagation contract as gradeSpeaking above.
-async function getSampleAnswer(questionText, partNum) {
-  return generateSampleAnswer(questionText, partNum);
+async function getSampleAnswer(questionText, partNum, cueCard) {
+  return generateSampleAnswer(questionText, partNum, cueCard);
 }
 
 // Persistence failure here is logged but must never fail the request —

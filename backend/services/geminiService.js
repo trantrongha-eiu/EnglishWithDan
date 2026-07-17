@@ -199,21 +199,53 @@ If the transcript has no genuine spoken answer to work with (empty, just repeats
   }
 }
 
-// ── Part 1 Sample Answer ───────────────────────────────────────────
-// O.R.E. (Opinion/answer -> Reason -> Example), 2-4 sentences, must
-// include a natural filler word/discourse marker — mirrors the coaching
-// rules this feature was built from. Part 1 only: that shape doesn't fit
-// Part 2's cue-card monologue or Part 3's discussion-style answers.
-const SAMPLE_ANSWER_SYSTEM = `You are an experienced IELTS Speaking coach writing a natural, spoken-sounding sample answer for a Part 1 question.
+// ── Sample Answer (Part 1 / 2 / 3) ─────────────────────────────────
+// Each part gets its own shape/rules since a real IELTS answer looks
+// completely different across them: Part 1 is 2-4 short conversational
+// sentences (O.R.E.), Part 2 is a ~2-minute cue-card monologue, Part 3
+// is a more developed discussion answer. Part 2/3 additionally target
+// Band 7.5+: a noticeably wide range of collocations plus 1-2 natural
+// (never forced) idioms.
+const SAMPLE_ANSWER_SYSTEM = `You are an experienced IELTS Speaking coach writing a natural, spoken-sounding sample answer.
 Respond ONLY with valid JSON — no markdown, no extra text.`;
 
-async function generateSampleAnswer(question, part = 1, _attempt = 0) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+function buildSampleAnswerPrompt(question, part, cueCard) {
+  if (part === 2) {
+    return `IELTS Speaking Part 2 cue card: "${question}"
+${cueCard ? `\n${cueCard}\n` : ''}
+Write a natural, spoken-sounding sample answer for this cue card, targeting IELTS Band 7.5+.
 
-  const ai = new GoogleGenAI({ apiKey });
+Rules:
+- Length: STRICTLY 180-220 words — count carefully, this is a hard limit, not a suggestion. Roughly what a fluent candidate would naturally say in a 1.5-2 minute talk. Do not just answer each bullet point mechanically one by one ("Firstly... Secondly... Thirdly..."); blend them into one flowing, natural narrative the way a real speaker would, with a short natural closing thought at the end (how you feel about it / why it stands out).
+- Output as ONE continuous block of speech with no paragraph breaks/blank lines — real spoken monologues don't pause into separate written paragraphs, they flow continuously from one idea to the next.
+- Cover every bullet point in "You should say:", but transition between them naturally.
+- Use a noticeably wide range of natural collocations (e.g. "make a lasting impression", "take a keen interest in", "strike a balance between") — several of them, spread across the answer, not clustered in one sentence.
+- Weave in 1-2 idioms naturally, only where they genuinely fit the content — never force one in, never over-explain it afterward.
+- Grammar range appropriate for Band 7.5+: varied tenses, at least one complex sentence (relative clause, conditional, or similar), natural cohesive devices — but it must still sound like natural spoken English, not a written essay read aloud.
 
-  const content = `IELTS Speaking Part 1 question: "${question}"
+Return this exact JSON (no other text):
+{"sampleAnswer": "<the full spoken-style answer>"}`;
+  }
+
+  if (part === 3) {
+    return `IELTS Speaking Part 3 discussion question: "${question}"
+
+Write a natural, spoken-sounding sample answer targeting IELTS Band 7.5+.
+
+Rules:
+- Length: about 4-7 sentences — noticeably more developed than a Part 1 answer (which is only 2-4 short sentences), since Part 3 expects real analysis and justification, but still sounds spoken, not like a written essay.
+- Give a clear stance or answer, develop it with reasoning and a concrete example, and where it fits naturally, briefly acknowledge a counterpoint or nuance (e.g. "That said,", "Having said that,", "Admittedly,") — a Band 7.5+ answer shows the ability to look at an idea from more than one angle, not just assert an opinion.
+- Use a noticeably wide range of natural collocations, several of them, not just one.
+- Weave in 1-2 idioms naturally, only where they genuinely fit — never forced.
+- Use sophisticated discourse markers/linking language suited to Part 3 where they fit naturally (e.g. "Generally speaking,", "On the whole,", "One reason for this is that...", "Having said that,", "Admittedly,"), alongside normal spoken connectors.
+- Grammar range appropriate for Band 7.5+: varied tenses, complex sentences (relative clauses, conditionals, passive where natural), hedging language ("tend to", "arguably", "it could be argued that") where it fits.
+
+Return this exact JSON (no other text):
+{"sampleAnswer": "<the answer>"}`;
+  }
+
+  // Part 1 (default)
+  return `IELTS Speaking Part 1 question: "${question}"
 
 Write a natural, spoken-sounding sample answer following these rules:
 - Length: exactly 2-4 sentences. Never a one-word/one-line answer like "Yes." or "I like it." — the examiner needs to hear you speak. Never a long, over-prepared Part-2-style monologue either — Part 1 must stay short and conversational.
@@ -223,6 +255,14 @@ Write a natural, spoken-sounding sample answer following these rules:
 
 Return this exact JSON (no other text):
 {"sampleAnswer": "<the 2-4 sentence answer>"}`;
+}
+
+async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+  const content = buildSampleAnswerPrompt(question, part, cueCard);
 
   let rawText;
   try {
@@ -252,7 +292,7 @@ Return this exact JSON (no other text):
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('generateSampleAnswer: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return generateSampleAnswer(question, part, _attempt + 1);
+      return generateSampleAnswer(question, part, cueCard, _attempt + 1);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
   }

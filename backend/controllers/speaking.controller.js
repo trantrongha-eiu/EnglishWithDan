@@ -57,20 +57,21 @@ exports.analyze = catchAsync(async (req, res) => {
 });
 
 // ── POST /api/speaking/sample-answer ─────────────────────────
-// Part 1 only — the O.R.E. 2-4 sentence shape doesn't fit Part 2/3.
+// Part 1/2/3 each get their own shape — see buildSampleAnswerPrompt()
+// in geminiService.js. Part 2 additionally needs the cue card text.
 exports.sampleAnswer = catchAsync(async (req, res) => {
-  const { question, part } = req.body;
+  const { question, part, cueCard } = req.body;
   if (!question || !question.trim()) {
     return res.status(400).json({ success: false, message: 'Thiếu câu hỏi' });
   }
 
   const partNum = part ? Number(part) : 1;
-  if (partNum !== 1) {
-    return res.status(400).json({ success: false, message: 'Câu trả lời mẫu chỉ hỗ trợ Part 1' });
+  if (![1, 2, 3].includes(partNum)) {
+    return res.status(400).json({ success: false, message: 'Part không hợp lệ' });
   }
 
   try {
-    const data = await speakingService.getSampleAnswer(question.trim(), partNum);
+    const data = await speakingService.getSampleAnswer(question.trim(), partNum, cueCard || '');
     res.json({ success: true, sampleAnswer: data.sampleAnswer });
   } catch (aiErr) {
     console.error('[Speaking] sampleAnswer Gemini error:', aiErr.message);

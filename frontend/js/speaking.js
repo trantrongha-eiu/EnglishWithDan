@@ -327,11 +327,10 @@ function setQuestion(q) {
     else             qCue.style.display = 'none';
   }
 
-  // Sample Answer — Part 1 only (2-4 sentence O.R.E. answers don't map onto
-  // Part 2's cue-card monologue or Part 3's discussion-style questions).
-  const sampleBtn = document.getElementById('q-sample-btn');
+  // Sample Answer — available for all 3 parts, each with its own shape
+  // (see showSampleAnswer()); reset whenever the question changes so a
+  // stale answer never carries over.
   const sampleBox = document.getElementById('sample-answer-box');
-  if (sampleBtn) sampleBtn.style.display = q.part === 1 ? 'inline-flex' : 'none';
   if (sampleBox) { sampleBox.style.display = 'none'; sampleBox.dataset.forQuestion = ''; }
   _sampleAnswerText = '';
 
@@ -412,7 +411,7 @@ let _sampleAnswerText = '';
 
 async function showSampleAnswer() {
   const q = state.currentQuestion;
-  if (!q || q.part !== 1) return;
+  if (!q) return;
 
   const box    = document.getElementById('sample-answer-box');
   const textEl = document.getElementById('sample-answer-text');
@@ -433,7 +432,7 @@ async function showSampleAnswer() {
   try {
     const data = await apiFetch('/api/speaking/sample-answer', {
       method: 'POST',
-      body: JSON.stringify({ question: q.question, part: q.part }),
+      body: JSON.stringify({ question: q.question, part: q.part, cueCard: q.cueCard || '' }),
     });
     _sampleAnswerText = data.sampleAnswer || '';
     textEl.textContent = _sampleAnswerText;
