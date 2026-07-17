@@ -195,6 +195,38 @@ async function loadTopics() {
 }
 
 // ── Questions ──
+// Renders a question list into #question-list — shared by loadQuestions()
+// (server-filtered by part/topic) and filterQuestionList() (client-side
+// text search over the already-cached state.lastQuestionList, no re-fetch).
+function renderQuestionItems(questions, emptyMessage) {
+  const list = document.getElementById('question-list');
+  if (!list) { updateSeqButtonVisibility(); return; }
+  if (!questions.length) {
+    list.innerHTML = `<div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">${emptyMessage || 'Không có câu hỏi'}</div>`;
+    updateSeqButtonVisibility();
+    return;
+  }
+
+  list.innerHTML = '';
+  questions.forEach(q => {
+    const item = document.createElement('div');
+    item.className = 'question-item';
+    item.dataset.id = q._id;
+    item.dataset.q  = JSON.stringify(q);
+
+    const badgeClass = `p${q.part}`;
+    item.innerHTML = `
+      <div class="q-item-meta">
+        <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
+        <span class="q-item-topic">${escHtml(q.topic)}</span>
+      </div>
+      <div class="q-item-text">${escHtml(q.question)}</div>`;
+    item.onclick = () => selectQuestion(q, item);
+    list.appendChild(item);
+  });
+  updateSeqButtonVisibility();
+}
+
 async function loadQuestions() {
   const topic = document.getElementById('sel-topic').value;
   const params = [];
@@ -204,43 +236,31 @@ async function loadQuestions() {
 
   const list = document.getElementById('question-list');
   if (list) list.innerHTML = '<div class="spinner"></div>';
+  const searchInput = document.getElementById('q-search-input');
+  if (searchInput) searchInput.value = ''; // reset search whenever the part/topic filter changes
 
   try {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
     const questions = data.questions || [];
     state.lastQuestionList = questions;
-
-    if (!list) { updateSeqButtonVisibility(); return; }
-    if (!questions.length) {
-      list.innerHTML = '<div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">Không có câu hỏi</div>';
-      updateSeqButtonVisibility();
-      return;
-    }
-
-    list.innerHTML = '';
-    questions.forEach(q => {
-      const item = document.createElement('div');
-      item.className = 'question-item';
-      item.dataset.id = q._id;
-      item.dataset.q  = JSON.stringify(q);
-
-      const badgeClass = `p${q.part}`;
-      item.innerHTML = `
-        <div class="q-item-meta">
-          <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
-          <span class="q-item-topic">${escHtml(q.topic)}</span>
-        </div>
-        <div class="q-item-text">${escHtml(q.question)}</div>`;
-      item.onclick = () => selectQuestion(q, item);
-      list.appendChild(item);
-    });
-    updateSeqButtonVisibility();
+    renderQuestionItems(questions);
   } catch (e) {
     if (list) list.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
     console.error('loadQuestions:', e);
     state.lastQuestionList = [];
     updateSeqButtonVisibility();
   }
+}
+
+// Client-side text search over the already-loaded list — no network call,
+// keeps the (up to 565-question) flat list actually browsable.
+function filterQuestionList() {
+  const q = (document.getElementById('q-search-input')?.value || '').trim().toLowerCase();
+  if (!q) { renderQuestionItems(state.lastQuestionList); return; }
+  const filtered = state.lastQuestionList.filter(item =>
+    item.question.toLowerCase().includes(q) || (item.topic || '').toLowerCase().includes(q)
+  );
+  renderQuestionItems(filtered, 'Không tìm thấy câu hỏi phù hợp');
 }
 
 function selectQuestion(q, itemEl) {
@@ -723,6 +743,9 @@ function loadSeqQuestion() {
   if (recIndicator) recIndicator.classList.remove('recording');
   if (recStatus)     { recStatus.classList.remove('live'); recStatus.textContent = 'Đang chuẩn bị...'; }
 
+  const manualInput = document.getElementById('seq-manual-input');
+  if (manualInput) manualInput.value = '';
+
   hideSeqPrepTimer();
   hideSeqSpeakCountdown();
   clearSeqSilenceTimer();
@@ -744,6 +767,13 @@ function toggleSeqQuestionText() {
   if (qText)        qText.style.display = state.seqTextRevealed ? 'block' : 'none';
   if (toggleIcon)   toggleIcon.className = state.seqTextRevealed ? 'fas fa-eye-slash' : 'fas fa-eye';
   if (toggleLabel)  toggleLabel.textContent = state.seqTextRevealed ? 'Ẩn câu hỏi' : 'Hiện câu hỏi';
+}
+
+// Typing a manual answer counts as "not silent" — cancel the 3s auto-advance
+// grace timer the same way real speech (onresult) does.
+function onSeqManualInput() {
+  const val = document.getElementById('seq-manual-input')?.value || '';
+  if (val.trim()) clearSeqSilenceTimer();
 }
 
 function replaySeqQuestion() {
@@ -838,7 +868,8 @@ function confirmSeqAnswer() {
   hideSeqPrepTimer();
   hideSeqSpeakCountdown();
 
-  const transcript = state.seqFinalTranscript.trim();
+  const manualVal = document.getElementById('seq-manual-input')?.value.trim() || '';
+  const transcript = state.seqFinalTranscript.trim() || manualVal;
   if (state.seqIsRecording && state.seqRecognition) {
     try { state.seqRecognition.stop(); } catch (e) {}
   }

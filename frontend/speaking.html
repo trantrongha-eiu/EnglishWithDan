@@ -221,6 +221,8 @@
             <i class="fas fa-random"></i> Random
           </button>
         </div>
+        <input type="text" class="sp-select full-width q-search-input" id="q-search-input"
+               placeholder="🔍 Tìm câu hỏi..." oninput="filterQuestionList()">
         <div class="question-list" id="question-list">
           <div class="spinner"></div>
         </div>
@@ -480,6 +482,15 @@
         </div>
       </div>
       <div class="transcript-interim" id="seq-transcript-interim"></div>
+    </div>
+
+    <!-- Manual typing fallback — mic may be unsupported/blocked; matches the
+         single-question flow's #transcript-textarea resilience. -->
+    <div class="seq-manual-fallback">
+      <label class="seq-manual-label" for="seq-manual-input">Hoặc gõ câu trả lời (nếu không ghi âm được)</label>
+      <textarea class="seq-manual-textarea" id="seq-manual-input"
+                placeholder="Gõ câu trả lời của bạn ở đây nếu micro không hoạt động..."
+                oninput="onSeqManualInput()"></textarea>
     </div>
 
     <div class="seq-confirm-row">
