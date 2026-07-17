@@ -420,6 +420,18 @@
         <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết!</h2>
         <p class="wp-welcome-sub">Cải thiện kỹ năng viết tiếng Anh qua các bài tập tương tác. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
 
+        <div style="margin-bottom:28px">
+          <button class="wp-welcome-start" onclick="startPractice()">
+            <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
+          </button>
+          <div style="margin-top:4px">
+            <button class="t1-hist-open-btn" onclick="openHistory()">
+              <i class="fas fa-history"></i> Xem lịch sử luyện tập
+            </button>
+          </div>
+          <p class="wp-welcome-hint">Chọn cấp độ &amp; chủ đề ở thanh bên trái trước khi bắt đầu</p>
+        </div>
+
         <div class="wp-welcome-cards">
           <div class="wp-welcome-card">
             <div class="wp-welcome-card-icon">✏️</div>
@@ -453,16 +465,6 @@
             <span>🔗 Nối câu</span>
           </div>
         </div>
-
-        <button class="wp-welcome-start" onclick="startPractice()">
-          <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
-        </button>
-        <div style="margin-top:4px">
-          <button class="t1-hist-open-btn" onclick="openHistory()">
-            <i class="fas fa-history"></i> Xem lịch sử luyện tập
-          </button>
-        </div>
-        <p class="wp-welcome-hint">Chọn cấp độ &amp; chủ đề ở thanh bên trái trước khi bắt đầu</p>
       </div>
 
       <div class="wp-state-loading hidden" id="state-loading">

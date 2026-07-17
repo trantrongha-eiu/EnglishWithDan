@@ -441,6 +441,21 @@
         <h2 class="wp-welcome-title">IELTS Task 1 Writing Practice</h2>
         <p class="wp-welcome-sub">Luyện từng kỹ năng riêng biệt để viết Task 1 đạt điểm cao. Chọn cấp độ và kỹ năng ở thanh bên, rồi bắt đầu!</p>
 
+        <div style="margin-bottom:28px">
+          <button class="wp-welcome-start" onclick="startPractice()">
+            <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
+          </button>
+          <div style="margin-top:4px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <button class="t1-hist-open-btn" onclick="openHistory()">
+              <i class="fas fa-history"></i> Xem lịch sử
+            </button>
+            <button class="t1-hist-open-btn" onclick="copyShareUrl()" id="copy-url-btn">
+              <i class="fas fa-link"></i> Sao chép link
+            </button>
+          </div>
+          <p class="wp-welcome-hint">Chọn cấp độ &amp; kỹ năng ở thanh bên trái trước khi bắt đầu</p>
+        </div>
+
         <div class="wp-welcome-cards">
           <div class="wp-welcome-card">
             <div class="wp-welcome-card-icon">📝</div>
@@ -476,19 +491,6 @@
             <span>✏️ Viết lại câu</span>
           </div>
         </div>
-
-        <button class="wp-welcome-start" onclick="startPractice()">
-          <i class="fas fa-play-circle"></i> Bắt đầu luyện tập
-        </button>
-        <div style="margin-top:4px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <button class="t1-hist-open-btn" onclick="openHistory()">
-            <i class="fas fa-history"></i> Xem lịch sử
-          </button>
-          <button class="t1-hist-open-btn" onclick="copyShareUrl()" id="copy-url-btn">
-            <i class="fas fa-link"></i> Sao chép link
-          </button>
-        </div>
-        <p class="wp-welcome-hint">Chọn cấp độ &amp; kỹ năng ở thanh bên trái trước khi bắt đầu</p>
       </div>
 
       <!-- Loading -->
