@@ -142,3 +142,134 @@ function getElapsedSeconds() {
   if (!state.recordStartTime) return 0;
   return Math.floor((Date.now() - state.recordStartTime) / 1000);
 }
+
+/* ──────────────────────────────────────────────────────
+   Sequential (mock-test) topic practice — mirrors the timers
+   above but targets seq- prefixed elements/state fields, fully
+   isolated from the single-question flow's timers.
+   ────────────────────────────────────────────────────── */
+
+// Part 2 – Prep Timer (60s)
+function startSeqPrepTimer() {
+  clearInterval(state.seqPrepTimer);
+  state.seqPrepSecondsLeft = 60;
+
+  const prepEl  = document.getElementById('seq-p2-prep');
+  const clockEl = document.getElementById('seq-p2-prep-clock');
+  if (!prepEl) return;
+  prepEl.style.display = 'block';
+  if (clockEl) clockEl.textContent = fmtTime(state.seqPrepSecondsLeft);
+
+  state.seqPrepTimer = setInterval(() => {
+    state.seqPrepSecondsLeft--;
+    if (clockEl) clockEl.textContent = fmtTime(state.seqPrepSecondsLeft);
+    if (state.seqPrepSecondsLeft <= 0) {
+      clearInterval(state.seqPrepTimer);
+      state.seqPrepTimer = null;
+      hideSeqPrepTimer();
+      showToast('⏰ Hết thời gian chuẩn bị — Bắt đầu nói!', 'info');
+      startSeqRecording();
+    }
+  }, 1000);
+}
+
+function skipSeqPrep() {
+  clearInterval(state.seqPrepTimer);
+  state.seqPrepTimer = null;
+  hideSeqPrepTimer();
+  startSeqRecording();
+}
+
+function hideSeqPrepTimer() {
+  const prepEl = document.getElementById('seq-p2-prep');
+  if (prepEl) prepEl.style.display = 'none';
+}
+
+// Part 2 – Speaking Countdown (2 min)
+function startSeqSpeakCountdown() {
+  clearInterval(state.seqSpeakTimer);
+  state.seqSpeakSecondsLeft = 120;
+
+  const cdEl = document.getElementById('seq-p2-speak-countdown');
+  const tmEl = document.getElementById('seq-p2-speak-time');
+  if (cdEl) cdEl.classList.remove('hidden');
+  if (tmEl) tmEl.textContent = fmtTime(state.seqSpeakSecondsLeft);
+
+  state.seqSpeakTimer = setInterval(() => {
+    state.seqSpeakSecondsLeft--;
+    if (tmEl) tmEl.textContent = fmtTime(state.seqSpeakSecondsLeft);
+    if (state.seqSpeakSecondsLeft === 30) showToast('⚠️ Còn 30 giây!', 'warn');
+    if (state.seqSpeakSecondsLeft <= 0) {
+      clearInterval(state.seqSpeakTimer);
+      state.seqSpeakTimer = null;
+      if (state.seqIsRecording && state.seqRecognition) {
+        try { state.seqRecognition.stop(); } catch (e) {}
+      }
+      showToast('⏰ Hết 2 phút — tự động chuyển câu tiếp theo.', 'info');
+      hideSeqSpeakCountdown();
+      confirmSeqAnswer();
+    }
+  }, 1000);
+}
+
+function hideSeqSpeakCountdown() {
+  const cdEl = document.getElementById('seq-p2-speak-countdown');
+  if (cdEl) cdEl.classList.add('hidden');
+  clearInterval(state.seqSpeakTimer);
+  state.seqSpeakTimer = null;
+}
+
+// Elapsed timer (per-question, accumulated into state.seqTotalElapsed on confirm)
+function startSeqElapsedTimer() {
+  clearInterval(state.seqElapsedTimer);
+  state.seqRecordStartTime = Date.now();
+  const el = document.getElementById('seq-rec-elapsed');
+  if (el) el.classList.remove('hidden');
+
+  const t = document.getElementById('seq-rec-elapsed-time');
+  state.seqElapsedTimer = setInterval(() => {
+    const secs = Math.floor((Date.now() - state.seqRecordStartTime) / 1000);
+    if (t) t.textContent = fmtTime(secs);
+  }, 1000);
+}
+
+function stopSeqElapsedTimer() {
+  clearInterval(state.seqElapsedTimer);
+  state.seqElapsedTimer = null;
+}
+
+function getSeqElapsedSeconds() {
+  if (!state.seqRecordStartTime) return 0;
+  return Math.floor((Date.now() - state.seqRecordStartTime) / 1000);
+}
+
+// Part 1/3 – "haven't said anything yet" 3s auto-advance grace timer.
+// Cancelled the moment any speech (interim or final) is detected — see
+// speaking.js's setupSeqRecognition() onresult handler.
+function startSeqSilenceTimer() {
+  clearInterval(state.seqSilenceTimer);
+  state.seqSilenceSecondsLeft = 3;
+
+  const hintEl  = document.getElementById('seq-silence-hint');
+  const countEl = document.getElementById('seq-silence-count');
+  if (hintEl) hintEl.classList.remove('hidden');
+  if (countEl) countEl.textContent = state.seqSilenceSecondsLeft;
+
+  state.seqSilenceTimer = setInterval(() => {
+    state.seqSilenceSecondsLeft--;
+    if (countEl) countEl.textContent = state.seqSilenceSecondsLeft;
+    if (state.seqSilenceSecondsLeft <= 0) {
+      clearInterval(state.seqSilenceTimer);
+      state.seqSilenceTimer = null;
+      if (hintEl) hintEl.classList.add('hidden');
+      confirmSeqAnswer();
+    }
+  }, 1000);
+}
+
+function clearSeqSilenceTimer() {
+  const hintEl = document.getElementById('seq-silence-hint');
+  if (hintEl) hintEl.classList.add('hidden');
+  clearInterval(state.seqSilenceTimer);
+  state.seqSilenceTimer = null;
+}

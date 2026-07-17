@@ -53,6 +53,26 @@ const state = {
   practiceInited:   false,
   partFilter:       'all',
   materialFilter:   { quarter: 'all', topic: 'all' },
+
+  // Sequential (mock-test) topic practice — fully isolated from the fields above
+  lastQuestionList:   [],
+  seqQueue:           [],
+  seqIndex:           0,
+  seqAnswers:         [],
+  seqRecognition:     null,
+  seqIsRecording:     false,
+  seqFinalTranscript: '',
+  seqActive:          false,
+  seqTextRevealed:    false,
+  seqSilenceTimer:    null,
+  seqSilenceSecondsLeft: 3,
+  seqPrepTimer:       null,
+  seqPrepSecondsLeft: 60,
+  seqSpeakTimer:      null,
+  seqSpeakSecondsLeft: 120,
+  seqElapsedTimer:    null,
+  seqRecordStartTime: null,
+  seqTotalElapsed:    0,
 };
 
 // ──────────────────────────────────────────────────────
@@ -188,10 +208,12 @@ async function loadQuestions() {
   try {
     const data = await apiFetch(`/api/speaking/questions${qs}`);
     const questions = data.questions || [];
+    state.lastQuestionList = questions;
 
-    if (!list) return;
+    if (!list) { updateSeqButtonVisibility(); return; }
     if (!questions.length) {
       list.innerHTML = '<div style="font-size:13px;color:#9ca3af;padding:12px 0;text-align:center">Không có câu hỏi</div>';
+      updateSeqButtonVisibility();
       return;
     }
 
@@ -212,9 +234,12 @@ async function loadQuestions() {
       item.onclick = () => selectQuestion(q, item);
       list.appendChild(item);
     });
+    updateSeqButtonVisibility();
   } catch (e) {
     if (list) list.innerHTML = '<div style="font-size:13px;color:#e53935;padding:8px 0">Lỗi tải câu hỏi</div>';
     console.error('loadQuestions:', e);
+    state.lastQuestionList = [];
+    updateSeqButtonVisibility();
   }
 }
 
@@ -584,6 +609,378 @@ function renderFeedback(fb) {
   }
 
   setupDictionaryDouble('feedback-results', 'speaking-feedback');
+}
+
+// ══════════════════════════════════════════════════════
+// SEQUENTIAL (MOCK-TEST) TOPIC PRACTICE
+// Fully isolated from the single-question flow above: its own
+// SpeechRecognition instance, its own timers, its own feedback
+// renderer — reuses only the existing /api/speaking/analyze
+// endpoint and the same score-card/fb-card CSS classes.
+// ══════════════════════════════════════════════════════
+
+function updateSeqButtonVisibility() {
+  const btn   = document.getElementById('btn-start-topic-session');
+  const label = document.getElementById('btn-seq-start-label');
+  if (!btn) return;
+  const topic = document.getElementById('sel-topic')?.value;
+  const n = state.lastQuestionList.length;
+  if (topic && topic !== 'all' && n >= 2) {
+    if (label) label.textContent = `Luyện topic này (${n} câu)`;
+    btn.style.display = 'flex';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function seqPartLabel(queue) {
+  const parts = [...new Set(queue.map(q => q.part))].sort();
+  return parts.length > 1 ? parts.join('+') : String(parts[0]);
+}
+
+function openTopicPreviewModal() {
+  const topic = document.getElementById('sel-topic')?.value;
+  const queue = state.lastQuestionList;
+  if (!topic || topic === 'all' || queue.length < 2) return;
+
+  const title = document.getElementById('seq-preview-title');
+  if (title) title.textContent = `Luyện PART ${seqPartLabel(queue)} — ${topic}`;
+
+  const list = document.getElementById('seq-preview-list');
+  if (list) {
+    list.innerHTML = queue.map((q, i) => `
+      <div class="seq-preview-item">
+        <span class="seq-preview-num">${i + 1}</span>
+        <span class="seq-preview-text">${escHtml(q.question)}</span>
+      </div>`).join('');
+  }
+
+  document.getElementById('seq-preview-modal')?.classList.add('open');
+}
+
+function closeSeqPreviewModal() {
+  document.getElementById('seq-preview-modal')?.classList.remove('open');
+}
+
+// Close modal on overlay click
+document.getElementById('seq-preview-modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeSeqPreviewModal();
+});
+
+function startSequentialSession() {
+  if (state.lastQuestionList.length < 2) return;
+  closeSeqPreviewModal();
+
+  state.seqQueue        = [...state.lastQuestionList];
+  state.seqIndex         = 0;
+  state.seqAnswers       = [];
+  state.seqActive        = true;
+  state.seqTotalElapsed  = 0;
+
+  const topic = document.getElementById('sel-topic')?.value || '';
+  const headerTitle = document.getElementById('seq-header-title');
+  if (headerTitle) headerTitle.textContent = `PART ${seqPartLabel(state.seqQueue)} — ${topic}`;
+
+  const resultsEl = document.getElementById('seq-results');
+  const bodyEl    = document.getElementById('seq-body');
+  if (resultsEl) resultsEl.style.display = 'none';
+  if (bodyEl)    bodyEl.style.display    = 'flex';
+
+  showScreen('screen-sequential');
+  setupSeqRecognition();
+  loadSeqQuestion();
+}
+
+function loadSeqQuestion() {
+  const q = state.seqQueue[state.seqIndex];
+  if (!q) { finishSequentialSession(); return; }
+
+  state.seqTextRevealed = false;
+
+  const progress = document.getElementById('seq-progress');
+  if (progress) progress.textContent = `${state.seqIndex + 1}/${state.seqQueue.length}`;
+
+  const partBadge   = document.getElementById('seq-q-part-badge');
+  const topicBadge  = document.getElementById('seq-q-topic-badge');
+  const qText       = document.getElementById('seq-q-text');
+  const qCue        = document.getElementById('seq-q-cue');
+  const toggleIcon  = document.getElementById('seq-toggle-icon');
+  const toggleLabel = document.getElementById('seq-toggle-label');
+  const interimEl   = document.getElementById('seq-transcript-interim');
+  const recIndicator = document.getElementById('seq-rec-indicator');
+  const recStatus     = document.getElementById('seq-rec-status');
+
+  if (partBadge)  partBadge.textContent  = `Part ${q.part}`;
+  if (topicBadge) topicBadge.textContent = q.topic || '';
+  if (qText) { qText.textContent = q.question; qText.style.display = 'none'; }
+  if (qCue) {
+    if (q.cueCard) { qCue.textContent = q.cueCard; qCue.style.display = 'block'; }
+    else             qCue.style.display = 'none';
+  }
+  if (toggleIcon)  toggleIcon.className = 'fas fa-eye';
+  if (toggleLabel) toggleLabel.textContent = 'Hiện câu hỏi';
+  if (interimEl)   interimEl.textContent = '';
+  if (recIndicator) recIndicator.classList.remove('recording');
+  if (recStatus)     { recStatus.classList.remove('live'); recStatus.textContent = 'Đang chuẩn bị...'; }
+
+  hideSeqPrepTimer();
+  hideSeqSpeakCountdown();
+  clearSeqSilenceTimer();
+
+  replaySeqQuestion();
+
+  if (q.part === 2) {
+    setTimeout(() => { if (state.seqActive && state.seqQueue[state.seqIndex] === q) startSeqPrepTimer(); }, 100);
+  } else {
+    startSeqRecording();
+  }
+}
+
+function toggleSeqQuestionText() {
+  state.seqTextRevealed = !state.seqTextRevealed;
+  const qText       = document.getElementById('seq-q-text');
+  const toggleIcon  = document.getElementById('seq-toggle-icon');
+  const toggleLabel = document.getElementById('seq-toggle-label');
+  if (qText)        qText.style.display = state.seqTextRevealed ? 'block' : 'none';
+  if (toggleIcon)   toggleIcon.className = state.seqTextRevealed ? 'fas fa-eye-slash' : 'fas fa-eye';
+  if (toggleLabel)  toggleLabel.textContent = state.seqTextRevealed ? 'Ẩn câu hỏi' : 'Hiện câu hỏi';
+}
+
+function replaySeqQuestion() {
+  const q = state.seqQueue[state.seqIndex];
+  if (!q || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(q.question);
+  utter.lang = 'en-US';
+  utter.rate = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
+function setupSeqRecognition() {
+  if (state.seqRecognition) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  state.seqRecognition = new SR();
+  state.seqRecognition.lang           = 'en-US';
+  state.seqRecognition.continuous     = true;
+  state.seqRecognition.interimResults = true;
+
+  state.seqRecognition.onstart = () => {
+    state.seqFinalTranscript = '';
+    state.seqIsRecording = true;
+    const recIndicator = document.getElementById('seq-rec-indicator');
+    const recStatus    = document.getElementById('seq-rec-status');
+    if (recIndicator) recIndicator.classList.add('recording');
+    if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
+    startSeqElapsedTimer();
+    const q = state.seqQueue[state.seqIndex];
+    if (q && q.part === 2) startSeqSpeakCountdown();
+    else startSeqSilenceTimer();
+  };
+
+  state.seqRecognition.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) state.seqFinalTranscript += t + ' ';
+      else interim += t;
+    }
+    const interimEl = document.getElementById('seq-transcript-interim');
+    if (interimEl) interimEl.textContent = interim;
+    if (state.seqFinalTranscript.trim() || interim.trim()) clearSeqSilenceTimer();
+  };
+
+  state.seqRecognition.onend = () => {
+    state.seqIsRecording = false;
+    stopSeqElapsedTimer();
+    hideSeqSpeakCountdown();
+    const recIndicator = document.getElementById('seq-rec-indicator');
+    const recStatus    = document.getElementById('seq-rec-status');
+    if (recIndicator) recIndicator.classList.remove('recording');
+    if (recStatus) {
+      recStatus.classList.remove('live');
+      recStatus.textContent = state.seqFinalTranscript.trim() ? '✓ Ghi âm hoàn tất' : 'Chưa ghi âm';
+    }
+  };
+
+  state.seqRecognition.onerror = (e) => {
+    console.error('Seq speech error:', e.error);
+    state.seqIsRecording = false;
+    stopSeqElapsedTimer();
+    const recIndicator = document.getElementById('seq-rec-indicator');
+    if (recIndicator) recIndicator.classList.remove('recording');
+    const recStatus = document.getElementById('seq-rec-status');
+    const msgs = {
+      'not-allowed': 'Bạn chưa cấp quyền micro.',
+      'no-speech':   'Không nhận được giọng nói.',
+      'network':     'Lỗi mạng khi nhận dạng giọng nói.',
+    };
+    if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+  };
+}
+
+function startSeqRecording() {
+  if (!state.seqRecognition) {
+    showToast('Trình duyệt không hỗ trợ ghi âm. Gõ câu trả lời rồi nhấn Ghi nhận câu trả lời.', 'warn');
+    return;
+  }
+  if (state.seqIsRecording) return;
+  try {
+    state.seqRecognition.start();
+  } catch (e) {
+    // Already starting/started — safe to ignore, user can still confirm manually.
+  }
+}
+
+function confirmSeqAnswer() {
+  if (!state.seqActive) return;
+  clearSeqSilenceTimer();
+  hideSeqPrepTimer();
+  hideSeqSpeakCountdown();
+
+  const transcript = state.seqFinalTranscript.trim();
+  if (state.seqIsRecording && state.seqRecognition) {
+    try { state.seqRecognition.stop(); } catch (e) {}
+  }
+  state.seqTotalElapsed += getSeqElapsedSeconds();
+  stopSeqElapsedTimer();
+
+  const q = state.seqQueue[state.seqIndex];
+  state.seqAnswers.push({ question: q.question, part: q.part, transcript });
+
+  state.seqIndex++;
+  if (state.seqIndex < state.seqQueue.length) {
+    loadSeqQuestion();
+  } else {
+    finishSequentialSession();
+  }
+}
+
+function exitSequentialSession() {
+  state.seqActive = false;
+  clearSeqSilenceTimer();
+  hideSeqPrepTimer();
+  hideSeqSpeakCountdown();
+  stopSeqElapsedTimer();
+  if (state.seqRecognition && state.seqIsRecording) {
+    try { state.seqRecognition.stop(); } catch (e) {}
+  }
+  window.speechSynthesis?.cancel();
+  showScreen('screen-practice');
+}
+
+async function finishSequentialSession() {
+  state.seqActive = false;
+  const topic = state.seqQueue[0]?.topic || '';
+  const partLabel = seqPartLabel(state.seqQueue);
+  const firstPart = state.seqQueue[0]?.part;
+
+  const combined = state.seqAnswers.map((a, i) =>
+    `Q${i + 1} (Part ${a.part}): ${a.question}\nA${i + 1}: ${a.transcript || '(không trả lời)'}`
+  ).join('\n\n');
+
+  const bodyEl       = document.getElementById('seq-body');
+  const resultsEl    = document.getElementById('seq-results');
+  const loadingEl    = document.getElementById('seq-feedback-loading');
+  const feedbackBody = document.getElementById('seq-feedback-body');
+  const actionsEl    = document.getElementById('seq-results-actions');
+
+  if (bodyEl)        bodyEl.style.display        = 'none';
+  if (resultsEl)      resultsEl.style.display      = 'block';
+  if (loadingEl)      loadingEl.style.display      = 'flex';
+  if (feedbackBody)   feedbackBody.style.display   = 'none';
+  if (actionsEl)       actionsEl.style.display       = 'none';
+
+  try {
+    const data = await apiFetch('/api/speaking/analyze', {
+      method: 'POST',
+      body: JSON.stringify({
+        transcript: combined,
+        question:   `PART ${partLabel} — ${topic} (${state.seqAnswers.length} câu hỏi)`,
+        topic,
+        part:       firstPart,
+        duration:   state.seqTotalElapsed,
+      }),
+    });
+    if (loadingEl)    loadingEl.style.display    = 'none';
+    if (feedbackBody) feedbackBody.style.display = 'block';
+    if (actionsEl)    actionsEl.style.display    = 'flex';
+    renderSeqFeedback(data.feedback || {});
+  } catch (e) {
+    console.error('finishSequentialSession:', e);
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (feedbackBody) {
+      feedbackBody.style.display = 'block';
+      feedbackBody.innerHTML = '<div class="fb-card"><p class="fb-card-text">Không thể phân tích. Vui lòng thử lại sau.</p></div>';
+    }
+    if (actionsEl) actionsEl.style.display = 'flex';
+    showToast('Không thể phân tích. Vui lòng thử lại sau.', 'error');
+  }
+}
+
+function renderSeqFeedback(fb) {
+  const scores = [
+    ['Band tổng thể',       fb.overall_band, ' score-overall'],
+    ['Fluency & Coherence', fb.fluency,       ''],
+    ['Lexical Resource',    fb.vocabulary,    ''],
+    ['Grammatical Range',   fb.grammar,       ''],
+    ['Pronunciation',       fb.pronunciation, ''],
+  ];
+  const scoreCards = scores.map(([label, val, extraClass]) => `
+    <div class="score-card${extraClass}">
+      <div class="score-label">${label}</div>
+      <div class="score-value" data-band="${val != null ? bandColor(val) : ''}">${val != null ? val : '—'}</div>
+    </div>`).join('');
+
+  let html = `
+    <div class="score-header"><i class="fas fa-chart-bar"></i> Kết quả đánh giá cả buổi</div>
+    <div class="score-grid">${scoreCards}</div>`;
+
+  if (fb.overall_feedback) {
+    html += `
+    <div class="fb-card">
+      <div class="fb-card-title"><i class="fas fa-comment-alt"></i> Nhận xét tổng thể</div>
+      <p class="fb-card-text">${escHtml(fb.overall_feedback)}</p>
+    </div>`;
+  }
+  if (fb.corrected) {
+    html += `
+    <div class="fb-card fb-card-green">
+      <div class="fb-card-title"><i class="fas fa-check-circle"></i> Phiên bản cải thiện</div>
+      <p class="fb-card-text">${escHtml(fb.corrected)}</p>
+    </div>`;
+  }
+  if (fb.strengths?.length) {
+    html += `
+    <div class="fb-card fb-card-blue">
+      <div class="fb-card-title"><i class="fas fa-star"></i> Điểm mạnh</div>
+      <ul class="fb-list">${fb.strengths.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul>
+    </div>`;
+  }
+  if (fb.errors?.length) {
+    html += `
+    <div class="fb-card fb-card-red">
+      <div class="fb-card-title"><i class="fas fa-times-circle"></i> Lỗi cần sửa</div>
+      ${fb.errors.map(err => `
+        <div class="error-item">
+          <span class="error-wrong">${escHtml(err.wrong)}</span>
+          <span class="error-arrow">→</span>
+          <span class="error-right">${escHtml(err.right)}</span>
+          ${err.tip ? `<div class="error-tip-row">💡 ${escHtml(err.tip)}</div>` : ''}
+        </div>`).join('')}
+    </div>`;
+  }
+  if (fb.improvements?.length) {
+    html += `
+    <div class="fb-card fb-card-yellow">
+      <div class="fb-card-title"><i class="fas fa-lightbulb"></i> Gợi ý cải thiện</div>
+      <ul class="fb-list">${fb.improvements.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>
+    </div>`;
+  }
+
+  const feedbackBody = document.getElementById('seq-feedback-body');
+  if (feedbackBody) feedbackBody.innerHTML = html;
+  setupDictionaryDouble('seq-feedback-body', 'speaking-seq-feedback');
 }
 
 // ══════════════════════════════════════════════════════

@@ -208,6 +208,9 @@
         <select class="sp-select full-width" id="sel-topic" onchange="loadQuestions()">
           <option value="all">Tất cả chủ đề</option>
         </select>
+        <button class="btn-seq-start" id="btn-start-topic-session" style="display:none" onclick="openTopicPreviewModal()">
+          <i class="fas fa-bullseye"></i> <span id="btn-seq-start-label">Luyện topic này</span>
+        </button>
       </div>
 
       <!-- Question list -->
@@ -414,6 +417,92 @@
 </div><!-- /screen-practice -->
 
 <!-- ═══════════════════════════════════════════
+     SCREEN 2b – SEQUENTIAL (mock-test) TOPIC PRACTICE
+═══════════════════════════════════════════ -->
+<div id="screen-sequential" class="screen">
+  <div class="sp-topbar">
+    <button class="sp-topbar-back" onclick="exitSequentialSession()">
+      <i class="fas fa-times"></i> Thoát
+    </button>
+    <span class="sp-topbar-title" id="seq-header-title">PART 1</span>
+    <span class="seq-progress" id="seq-progress">1/5</span>
+  </div>
+
+  <div class="seq-body" id="seq-body">
+    <p class="seq-hint">*Trả lời câu hỏi, sau đó nhấn <a href="javascript:void(0)" onclick="confirmSeqAnswer()">Ghi nhận câu trả lời</a> để sang câu tiếp theo.</p>
+
+    <div class="question-card" id="seq-question-card">
+      <div class="q-meta">
+        <span class="q-part-badge" id="seq-q-part-badge">Part 1</span>
+        <span class="q-topic-badge" id="seq-q-topic-badge"></span>
+      </div>
+      <div class="q-text seq-question-text" id="seq-q-text" style="display:none"></div>
+      <div class="q-cue" id="seq-q-cue" style="display:none"></div>
+    </div>
+
+    <!-- Part 2 prep timer (own ids, mirrors #p2-prep in screen-practice) -->
+    <div id="seq-p2-prep" class="p2-prep" style="display:none">
+      <div class="p2-prep-phase"><i class="fas fa-book-open"></i> Thời gian chuẩn bị (Part 2)</div>
+      <div class="p2-prep-clock" id="seq-p2-prep-clock">1:00</div>
+      <div class="p2-prep-hint">Đọc cue card và lập dàn ý trước khi nói</div>
+      <button class="p2-prep-skip" onclick="skipSeqPrep()">
+        Bỏ qua — Bắt đầu nói ngay <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <div class="seq-actions-row">
+      <button class="btn-secondary" onclick="replaySeqQuestion()"><i class="fas fa-volume-up"></i> Nghe lại</button>
+      <button class="btn-secondary" onclick="toggleSeqQuestionText()"><i class="fas fa-eye" id="seq-toggle-icon"></i> <span id="seq-toggle-label">Hiện câu hỏi</span></button>
+    </div>
+
+    <div class="seq-silence-hint hidden" id="seq-silence-hint">
+      <i class="fas fa-clock"></i> Chưa nói gì, qua câu mới sau <span id="seq-silence-count">3</span>s
+    </div>
+
+    <div class="record-section">
+      <div class="record-area">
+        <div class="btn-record" id="seq-rec-indicator">
+          <span class="rec-ring" id="seq-rec-ring"></span>
+          <i class="fas fa-microphone rec-mic"></i>
+        </div>
+        <div class="rec-info">
+          <div class="rec-status" id="seq-rec-status">Đang chuẩn bị...</div>
+          <div class="rec-timers">
+            <div class="rec-elapsed hidden" id="seq-rec-elapsed">
+              <i class="fas fa-circle" style="font-size:7px;color:#e53935;vertical-align:2px"></i>
+              <span id="seq-rec-elapsed-time">0:00</span>
+            </div>
+            <div class="p2-countdown hidden" id="seq-p2-speak-countdown">
+              <i class="fas fa-hourglass-half"></i>
+              <span id="seq-p2-speak-time">2:00</span> còn lại
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="transcript-interim" id="seq-transcript-interim"></div>
+    </div>
+
+    <div class="seq-confirm-row">
+      <button class="btn-primary" id="seq-btn-confirm" onclick="confirmSeqAnswer()">
+        <i class="fas fa-check"></i> Ghi nhận câu trả lời
+      </button>
+    </div>
+  </div><!-- /seq-body -->
+
+  <!-- Results view (shown after the last question) — reuses .feedback-section styling -->
+  <div class="seq-results feedback-section" id="seq-results" style="display:none">
+    <div class="feedback-loading" id="seq-feedback-loading">
+      <div class="spinner"></div>
+      <p>Gemini AI đang phân tích cả buổi luyện tập...</p>
+    </div>
+    <div id="seq-feedback-body" style="display:none"></div>
+    <div class="seq-results-actions" id="seq-results-actions" style="display:none">
+      <button class="btn-secondary" onclick="exitSequentialSession()">Về danh sách câu hỏi</button>
+    </div>
+  </div>
+</div><!-- /screen-sequential -->
+
+<!-- ═══════════════════════════════════════════
      SCREEN 3 – HISTORY
 ═══════════════════════════════════════════ -->
 <div id="screen-history" class="screen">
@@ -503,6 +592,25 @@
     </div>
     <div class="sp-modal-footer">
       <button class="btn-secondary" onclick="closeHistoryModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sequential-practice topic preview modal -->
+<div class="modal-overlay" id="seq-preview-modal">
+  <div class="sp-modal">
+    <div class="sp-modal-header">
+      <h3 id="seq-preview-title">Luyện Part 1</h3>
+      <button class="sp-modal-close" onclick="closeSeqPreviewModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="sp-modal-body">
+      <div class="seq-preview-list" id="seq-preview-list"></div>
+    </div>
+    <div class="sp-modal-footer">
+      <button class="btn-secondary" onclick="closeSeqPreviewModal()">Thoát</button>
+      <button class="btn-primary" onclick="startSequentialSession()">Bắt Đầu</button>
     </div>
   </div>
 </div>
