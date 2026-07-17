@@ -459,6 +459,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 html:fullscreen,
 html:-webkit-full-screen{background:var(--bg)}
 
+.mode-tabs-wrap{position:relative}
 .mode-tabs{display:flex;gap:4px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tab-btn{
   padding:11px 18px;border:none;background:none;cursor:pointer;
@@ -830,6 +831,15 @@ html:-webkit-full-screen{background:var(--bg)}
   /* Mode body padding nhỏ hơn */
   .mode-body{padding:16px}
 
+  /* mode-tabs (Study/Quiz/Flashcard/Listen/Translate/Mixed) overflows the
+     viewport on mobile with no hint that Translate/Mixed are reachable by
+     swiping — a static edge fade signals there's more to scroll to. */
+  .mode-tabs-wrap::after{
+    content:'';position:absolute;top:0;right:0;bottom:1px;width:28px;
+    background:linear-gradient(to right, transparent, var(--surface));
+    pointer-events:none;
+  }
+
   /* Welcome screen */
   #book-welcome{padding:24px 16px !important}
 
@@ -862,7 +872,7 @@ html:-webkit-full-screen{background:var(--bg)}
 
   /* Word table: hide checkbox + example + notes columns; enable h-scroll */
   .words-table-wrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .words-table{min-width:380px}
+  .words-table{min-width:360px}
   .words-table .cb-wrap,
   .words-table thead th:first-child{display:none}
   .words-table tbody td:nth-child(5),
@@ -885,6 +895,14 @@ html:-webkit-full-screen{background:var(--bg)}
 
   /* Toast above FAB */
   #toast{bottom:90px;right:16px;left:16px;max-width:100%}
+}
+
+/* On the narrowest common phones (375px) the word table's edit/delete
+   column overflows the viewport by ~30px with no scroll affordance —
+   tighten it enough to fit without needing horizontal scroll at all. */
+@media(max-width:400px){
+  .words-table tbody td:last-child{padding-left:4px;padding-right:6px;gap:2px}
+  .words-table tbody td:last-child .btn-sm{padding:5px 7px}
 }
 
 @media(min-width:769px){

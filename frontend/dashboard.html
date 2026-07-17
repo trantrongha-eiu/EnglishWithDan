@@ -251,13 +251,15 @@
           <i class="fas fa-stop-circle"></i> Stop
         </button>
       </div>
-      <div class="mode-tabs" id="mode-tabs">
-        <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Study</button>
-        <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Quiz</button>
-        <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
-        <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Listen</button>
-        <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Translate</button>
-        <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Mixed</button>
+      <div class="mode-tabs-wrap">
+        <div class="mode-tabs" id="mode-tabs">
+          <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Study</button>
+          <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Quiz</button>
+          <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
+          <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Listen</button>
+          <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Translate</button>
+          <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Mixed</button>
+        </div>
       </div>
       <div class="mode-body" id="mode-body">
         <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>

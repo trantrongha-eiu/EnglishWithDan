@@ -409,8 +409,36 @@ function renderBookSidebar() {
         addBtn.style.cursor  = atLimit ? 'not-allowed' : '';
     }
 
-    if (typeof syncSheetBooks === 'function') syncSheetBooks();
+    syncSheetBooks();
 }
+
+// Mirrors renderBookSidebar() into the mobile bottom sheet's own notebook
+// list (#sheet-book-list) — the desktop sidebar is hidden on mobile
+// (display:none), so this is the only way mobile users can pick/switch
+// notebooks. No drag-reorder here; that's a desktop-only affordance.
+function syncSheetBooks() {
+    const wrap = document.getElementById('sheet-book-list');
+    if (!wrap) return;
+
+    if (!myBooks.length) {
+        wrap.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:8px">📭</div>
+          <div style="font-size:13px">No notebooks yet</div>
+        </div>`;
+        return;
+    }
+
+    wrap.innerHTML = myBooks.map(b => `
+    <div class="sheet-book-item ${b._id === currentBookId ? 'active' : ''}" id="sbi-${b._id}"
+         onclick="openBook('${b._id}');closeSheet()">
+      <span class="book-emoji">${_esc(b.emoji)}</span>
+      <span class="book-name">${_esc(b.name)}</span>
+      <span class="sheet-book-count">${b.totalWords}</span>
+      <button class="sheet-book-menu-btn" onclick="event.stopPropagation();openBookMenu('${b._id}')" title="Options">⋯</button>
+    </div>
+  `).join('');
+}
+window.syncSheetBooks = syncSheetBooks;
 
 // ── Drag & drop reorder ───────────────────────
 let _dragBookIdx = null;
@@ -470,6 +498,9 @@ function openBook(bookId) {
         document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
         const item = document.getElementById(`bi-${bookId}`);
         if (item) item.classList.add('active');
+        document.querySelectorAll('.sheet-book-item').forEach(el => el.classList.remove('active'));
+        const sheetItem = document.getElementById(`sbi-${bookId}`);
+        if (sheetItem) sheetItem.classList.add('active');
 
         const content = document.getElementById('book-content');
         document.getElementById('view-mybook').style.display  = 'flex';
