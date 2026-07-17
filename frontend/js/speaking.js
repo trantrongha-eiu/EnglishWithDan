@@ -51,7 +51,7 @@ const state = {
   prepSecondsLeft:  60,
   speakSecondsLeft: 120,
   practiceInited:   false,
-  partFilter:       'all',
+  partFilter:       '1',
   materialFilter:   { quarter: 'all', topic: 'all' },
 
   // Sequential (mock-test) topic practice — fully isolated from the fields above

@@ -162,7 +162,8 @@ Return this exact JSON (no other text):
   ]
 }
 
-Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded average of the 4 scores.`;
+Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded average of the 4 scores.
+If the transcript has no genuine spoken answer to work with (empty, just repeats the question back, or is an explicit "no answer" placeholder), explain that ONLY in overall_feedback — set "corrected" to an empty string and "improvements" to an empty array instead of restating the same "no answer given" explanation in those fields too.`;
 
   let rawText;
   try {
