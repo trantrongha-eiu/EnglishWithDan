@@ -22,10 +22,12 @@
        shell from writing-practice.css so this page matches the other 4
        "Luyện viết" pages exactly (was a bespoke .eg-header before). ── */
 
-    /* ── Layout ── */
-    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - 52px)}
+    /* ── Layout ── (52px = shared .wp-header's own height; the header's
+       own top offset already accounts for --nav-height/--expiry-banner-height,
+       so this only needs to add the header's height on top of that) ── */
+    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px) - 52px)}
     .eg-sidebar{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #e5e7eb;
-      position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;
+      position:sticky;top:calc(var(--nav-height,64px) + var(--expiry-banner-height,0px) + 52px);height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px) - 52px);overflow-y:auto;
       scrollbar-width:thin;scrollbar-color:#e5e7eb transparent;display:flex;flex-direction:column;z-index:20}
     [data-theme="dark"] .eg-sidebar{background:#1e293b;border-color:#334155;scrollbar-color:#334155 transparent}
 

@@ -23,7 +23,11 @@ body {
   align-items: center;
   justify-content: space-between;
   position: sticky;
-  top: var(--nav-height, 64px);
+  /* + --expiry-banner-height so the premium-expiry banner (nav.js) pushes
+     this down instead of covering it — these 5 pages hide the global nav
+     (--nav-height becomes 0px), so this is otherwise the very first thing
+     the banner would land on top of. */
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px));
   z-index: 60;
   gap: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,.04);
@@ -162,7 +166,7 @@ body {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: calc(100vh - var(--nav-height, 64px) - 52px);
+  min-height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 52px);
   gap: 0;
 }
 
@@ -180,8 +184,8 @@ body {
   flex-direction: column;
   gap: 16px;
   position: sticky;
-  top: calc(var(--nav-height, 64px) + 52px);
-  height: calc(100vh - var(--nav-height, 64px) - 52px);
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
+  height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 52px);
 }
 
 .wp-sidebar-section {}
@@ -789,7 +793,7 @@ body {
 ══════════════════════════════════════════════ */
 .wp-stats-widget {
   position: fixed;
-  top: calc(var(--nav-height, 64px) + 52px);
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
   right: 0;
   background: #fff;
   border: 1px solid #f0f0f0;
@@ -820,9 +824,17 @@ body {
    MOBILE COMPONENTS
 ══════════════════════════════════════════════ */
 
-/* Mobile stats bar */
+/* Mobile stats bar — sticky positioning lives here unconditionally (not
+   just inside the mobile breakpoint below) since task2-practice.html shows
+   this bar at every width via display:flex!important, not only ≤768px;
+   inert when the element is actually display:none. + 52px for .wp-header's
+   own height — it always renders directly below the (also sticky) header,
+   same as .wp-sidebar/.wp-stats-widget already account for. */
 .wp-mobile-stats {
   display: none;
+  position: sticky;
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
+  z-index: 50;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
   padding: 8px 0;
@@ -947,10 +959,7 @@ body {
   .wp-fill-input   { font-size: 16px; }
 
   .wp-mobile-stats {
-    display: flex !important;
-    position: sticky;
-    top: var(--nav-height, 64px);
-    z-index: 50;
+    display: flex !important; /* position/top/z-index now live in the base rule above */
     box-shadow: 0 2px 8px rgba(0,0,0,.07);
   }
   .wp-mob-fab      { display: flex !important; }

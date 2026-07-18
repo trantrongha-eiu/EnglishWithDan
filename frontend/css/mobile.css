@@ -572,6 +572,17 @@ img { max-width: 100%; height: auto; }
 /* Sticky inner headers must sit below the fixed global nav */
 .has-global-nav .exam-bar   { top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px)); }
 .has-global-nav .main-header { top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px)); }
+/* Pages that call hideTopNav() (writing-practice/task1/task2/task2-template/
+   essential-grammar) never gain has-global-nav, so --nav-height is already
+   0 there — but nothing reserved space for the banner. Without this, the
+   page's own sticky header still has to jump down by --expiry-banner-height
+   to avoid the fixed banner, but its ORIGINAL (unstuck) flow position — and
+   therefore everything that naturally flows after it — doesn't move with
+   it, so the header ends up visually overlapping its own next sibling by
+   exactly the banner's height. Reserving the space at the body level up
+   front means the header's unstuck position already matches where it has
+   to stick, so nothing downstream drifts out of place. */
+body:not(.has-global-nav) { padding-top: var(--expiry-banner-height, 0px); }
 /* In native browser fullscreen the global nav is hidden – reset sticky tops */
 :fullscreen .exam-bar,    :-webkit-full-screen .exam-bar    { top: 0 !important; }
 :fullscreen .main-header, :-webkit-full-screen .main-header { top: 0 !important; }
