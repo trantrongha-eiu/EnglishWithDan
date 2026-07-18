@@ -33,7 +33,7 @@
         '</div>' +
         '<div class="modal-footer" style="justify-content:center">' +
           '<button class="btn btn-ghost" id="shared-confirm-cancel">Hủy</button>' +
-          '<button class="btn btn-danger" id="shared-confirm-ok"></button>' +
+          '<button class="btn" id="shared-confirm-ok"></button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(modal);
@@ -52,6 +52,10 @@
     document.getElementById('shared-confirm-msg').textContent = message;
     var okBtn = document.getElementById('shared-confirm-ok');
     okBtn.textContent = opts.confirmLabel || 'Xóa';
+    // Red/danger by default (matches every existing call site, all
+    // destructive deletes) — non-destructive confirmations (switch mode,
+    // restart, etc.) can opt into a neutral style via opts.confirmClass.
+    okBtn.className = 'btn ' + (opts.confirmClass || 'btn-danger');
     okBtn.onclick = function () { modal._close(); onOk(); };
     document.getElementById('shared-confirm-cancel').onclick = modal._close;
     modal.classList.remove('hidden');

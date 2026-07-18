@@ -34,16 +34,28 @@
     banned:  'fa-ban'
   };
 
+  // While a page has a scoped element in fullscreen (not document.
+  // documentElement — e.g. writing.js's #screen-exam, dashboard.js's
+  // #view-unit), anything appended to document.body renders invisible:
+  // only the fullscreen element's own subtree is painted. Keep the toast
+  // container inside whichever is currently active.
   function container() {
+    var target = document.fullscreenElement || document.body;
     var c = document.getElementById('toast-container');
     if (!c) {
       c = document.createElement('div');
       c.id = 'toast-container';
       c.className = 'toast-container';
-      document.body.appendChild(c);
+      target.appendChild(c);
+    } else if (c.parentNode !== target) {
+      target.appendChild(c); // re-parenting an existing node moves it
     }
     return c;
   }
+  document.addEventListener('fullscreenchange', function () {
+    var c = document.getElementById('toast-container');
+    if (c) container(); // no-op if already in the right place
+  });
 
   function render(type, title, message, duration) {
     var icon = ICONS[type] || ICONS.info;

@@ -275,7 +275,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 }
 .book-editable-name:focus{background:var(--surface2)}
 .btn-rename{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;font-size:13px}
-.btn-book-options{display:none;background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 8px;font-size:20px;line-height:1;border-radius:6px;transition:background .12s}
+/* Was display:none here with a mobile media query re-enabling it — meaning
+   the only way to reach Rename/Merge/Delete for the CURRENTLY OPEN book was
+   hovering over its row back in the sidebar (desktop) or the bottom sheet
+   (mobile). Visible on both now — it's the natural place to look for it
+   right next to the book's own name/topbar. */
+.btn-book-options{display:flex;align-items:center;background:none;border:none;cursor:pointer;color:var(--text3);padding:4px 8px;font-size:20px;line-height:1;border-radius:6px;transition:background .12s}
 .btn-book-options:hover{background:var(--surface2);color:var(--text)}
 
 .book-stats{display:flex;gap:16px;font-size:12px;flex-wrap:wrap}
@@ -453,11 +458,14 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .unit-header-bar h3{font-size:16px;font-weight:700;flex:1}
 
-/* Fullscreen targets <html> itself (fills the viewport already, unlike
-   reading/listening's per-screen fullscreen target), but pin the background
-   to the current theme as a safety net against any browser default backdrop. */
-html:fullscreen,
-html:-webkit-full-screen{background:var(--bg)}
+/* Fullscreen targets #view-unit itself (đồng bộ với writing's #screen-exam),
+   which hides the global nav + notebook sidebar since neither is a
+   descendant of it. Pin the background to the current theme as a safety
+   net against the browser's default fullscreen backdrop, and let it fill
+   the fullscreen viewport (the UA stylesheet stretches the element, but
+   height:100% above resolves against its normal-flow parent otherwise). */
+#view-unit:fullscreen,
+#view-unit:-webkit-full-screen{background:var(--bg);width:100vw;height:100vh}
 
 .mode-tabs-wrap{position:relative}
 .mode-tabs{display:flex;gap:4px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -866,9 +874,6 @@ html:-webkit-full-screen{background:var(--bg)}
   .book-topbar{padding:12px 16px;gap:8px}
   .book-stats{gap:10px}
   .book-action-bar{padding:8px 12px}
-
-  /* Show book options ⋯ button on mobile */
-  .btn-book-options{display:flex;align-items:center}
 
   /* Word table: hide checkbox + example + notes columns; enable h-scroll */
   .words-table-wrap{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}

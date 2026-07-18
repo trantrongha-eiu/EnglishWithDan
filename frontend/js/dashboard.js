@@ -49,20 +49,45 @@ function _clearAutoNext() {
 }
 
 // ── Fullscreen toggle (unit study view) ───────
+// Targets #view-unit itself (đồng bộ với reading/listening/writing's
+// per-screen fullscreen), not document.documentElement — the global nav
+// bar and the notebook sidebar are outside #view-unit, so this actually
+// hides them for a distraction-free study view instead of just dropping
+// the browser chrome while leaving the whole page layout in place.
 function toggleDashFullscreen() {
     if (document.fullscreenElement) {
         document.exitFullscreen && document.exitFullscreen();
         return;
     }
-    document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+    const el = document.getElementById('view-unit');
+    (el || document.documentElement).requestFullscreen && (el || document.documentElement).requestFullscreen();
 }
 document.addEventListener('fullscreenchange', () => {
     const icon = document.getElementById('fs-icon-dash');
-    if (!icon) return;
-    const isFs = !!document.fullscreenElement;
-    icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-    const btn = document.getElementById('btn-fullscreen-dash');
-    if (btn) btn.title = isFs ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+    if (icon) {
+        const isFs = !!document.fullscreenElement;
+        icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+        const btn = document.getElementById('btn-fullscreen-dash');
+        if (btn) btn.title = isFs ? 'Thoát toàn màn hình' : 'Toàn màn hình';
+    }
+    // Floating UI (quit-practice modal, dictionary popups, keyboard-shortcut
+    // hint) all live outside #view-unit, appended near the end of <body> —
+    // without moving them, they'd render invisible while #view-unit is the
+    // fullscreen element, since only its own subtree is painted. Mirrors
+    // writing.js's identical re-parenting for its own exam fullscreen.
+    const fsEl = document.fullscreenElement;
+    const floatingIds = ['modal-quit-practice', 'dict-popup', 'dict-vocab-modal', 'kbd-hint-panel'];
+    if (fsEl) {
+        floatingIds.forEach(id => {
+            const m = document.getElementById(id);
+            if (m && !fsEl.contains(m)) { m._fsPrev = m.parentNode; fsEl.appendChild(m); }
+        });
+    } else {
+        floatingIds.forEach(id => {
+            const m = document.getElementById(id);
+            if (m && m._fsPrev) { m._fsPrev.appendChild(m); m._fsPrev = null; }
+        });
+    }
 });
 
 function _countAnswer() {
@@ -1416,13 +1441,17 @@ function showMode(mode) {
     const inActiveSession = currentMode !== 'study' && currentQuestionIndex > 0 &&
         !document.getElementById('resultsMode')?.style.display?.includes('block');
     if (inActiveSession) {
+        // confirm2() hardcodes its button to "Confirm delete" (it's meant
+        // for the 4 actually-destructive call sites elsewhere in this
+        // file) — neither of these two is a delete, so they call
+        // confirmDialog() directly with a label that matches the action.
         if (mode !== currentMode) {
-            confirm2('Switch Learning Mode?', 'Your current progress will be lost. Do you want to switch?',
-                () => _activateModeNow(mode));
+            confirmDialog('Switch Learning Mode?', 'Your current progress will be lost. Do you want to switch?',
+                () => _activateModeNow(mode), { confirmLabel: 'Switch', confirmClass: 'btn-primary' });
         } else {
             // Re-clicking the same active tab → confirm restart
-            confirm2('Restart Practice?', 'This will reset your current progress. Restart?',
-                () => _activateModeNow(mode));
+            confirmDialog('Restart Practice?', 'This will reset your current progress. Restart?',
+                () => _activateModeNow(mode), { confirmLabel: 'Restart', confirmClass: 'btn-primary' });
         }
         return;
     }
