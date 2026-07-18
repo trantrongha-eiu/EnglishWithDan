@@ -52,6 +52,7 @@ const state = {
   speakSecondsLeft: 120,
   practiceInited:   false,
   partFilter:       '1',
+  _analyzing:       false,
   materialFilter:   { quarter: 'all', topic: 'all' },
   _pendingTopicFromUrl: null,
 
@@ -426,14 +427,26 @@ function pickNaturalVoice(voices) {
   return voices.find(v => v.lang?.startsWith('en')) || null;
 }
 
-function speakText(text) {
-  if (!text || !('speechSynthesis' in window)) return;
+// onEnd (optional) fires once the utterance finishes — used by sequential
+// mode to delay starting recording until the question has actually been
+// read aloud (see loadSeqQuestion()). Guarded against firing twice and
+// backstopped with a timeout in case onend/onerror never arrive (a known
+// flaky quirk in some browsers, e.g. after the tab was backgrounded).
+function speakText(text, onEnd) {
+  if (!text || !('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang  = 'en-US';
   utter.rate  = 0.95;
   utter.pitch = 1.0;
   if (_ttsVoice) utter.voice = _ttsVoice;
+  if (onEnd) {
+    let fired = false;
+    const fire = () => { if (!fired) { fired = true; onEnd(); } };
+    utter.onend = fire;
+    utter.onerror = fire;
+    setTimeout(fire, 10000);
+  }
   window.speechSynthesis.speak(utter);
 }
 
@@ -495,6 +508,7 @@ function resetPractice() {
   if (state.isRecording && state.recognition) state.recognition.stop();
   state.isRecording    = false;
   state.recordStartTime = null;
+  state._analyzing      = false;
 
   hidePrepTimer();
   hideSpeakCountdown();
@@ -655,6 +669,7 @@ function toggleRecord() {
 // AI Analysis
 // ──────────────────────────────────────────────────────
 async function analyzeTranscript() {
+  if (state._analyzing) return; // already in flight — ignore a double click
   const ta         = document.getElementById('transcript-textarea');
   const transcript = ta ? ta.value.trim() : '';
   if (!transcript) return;
@@ -665,7 +680,10 @@ async function analyzeTranscript() {
   const section  = document.getElementById('feedback-section');
   const loading  = document.getElementById('feedback-loading');
   const results  = document.getElementById('feedback-results');
+  const btnAnalyze = document.getElementById('btn-analyze');
 
+  state._analyzing = true;
+  if (btnAnalyze) btnAnalyze.disabled = true;
   if (section) section.style.display = 'block';
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
@@ -695,6 +713,9 @@ async function analyzeTranscript() {
     const scoreOverall = document.getElementById('score-overall');
     if (scoreOverall) scoreOverall.textContent = 'Lỗi';
     console.error('analyzeTranscript:', e);
+  } finally {
+    state._analyzing = false;
+    if (btnAnalyze) btnAnalyze.disabled = !ta?.value.trim();
   }
 }
 
@@ -989,6 +1010,11 @@ function loadSeqQuestion() {
   if (!q) { finishSequentialSession(); return; }
 
   state.seqTextRevealed = false;
+  // Reset synchronously (not just in seqRecognition.onstart) — otherwise a
+  // student who confirms/exits before recognition has actually started
+  // (widened by the TTS-first sequencing below) would carry the previous
+  // question's leftover transcript into this one.
+  state.seqFinalTranscript = '';
 
   const progress = document.getElementById('seq-progress');
   if (progress) progress.textContent = `${state.seqIndex + 1}/${state.seqQueue.length}`;
@@ -1019,16 +1045,30 @@ function loadSeqQuestion() {
   const manualInput = document.getElementById('seq-manual-input');
   if (manualInput) manualInput.value = '';
 
+  // Briefly disable "Ghi nhận câu trả lời" right after a new question loads
+  // so a leftover/rapid double-click from advancing the previous question
+  // doesn't immediately skip this one too.
+  const confirmBtn = document.getElementById('seq-btn-confirm');
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    setTimeout(() => { confirmBtn.disabled = false; }, 500);
+  }
+
   hideSeqPrepTimer();
   hideSeqSpeakCountdown();
   clearSeqSilenceTimer();
 
-  replaySeqQuestion();
-
   if (q.part === 2) {
+    speakText(q.question);
     setTimeout(() => { if (state.seqActive && state.seqQueue[state.seqIndex] === q) startSeqPrepTimer(); }, 100);
   } else {
-    startSeqRecording();
+    // Don't start recording (and its 3s silence auto-advance) until the
+    // question has actually finished being read aloud — otherwise the
+    // timer races the TTS and routinely skips the question before the
+    // student even hears it, let alone gets to answer.
+    speakText(q.question, () => {
+      if (state.seqActive && state.seqQueue[state.seqIndex] === q) startSeqRecording();
+    });
   }
 }
 
@@ -1327,12 +1367,17 @@ async function loadHistory() {
       const band = a.aiFeedback?.overallBand || 0;
       const card = document.createElement('div');
       card.className = 'history-card';
-      const badgeClass = `hbadge-p${a.part}`;
+      // Full Mock Test attempts always save part=1 (schema only allows a
+      // single part) even though they cover all 3 — badge them distinctly
+      // instead of showing a misleading "Part 1".
+      const isFullMock = a.topic === 'Full Mock Test';
+      const badgeClass = isFullMock ? 'hbadge-mock' : `hbadge-p${a.part}`;
+      const badgeLabel = isFullMock ? 'Mock Test' : `Part ${a.part}`;
       card.innerHTML = `
         <div class="history-card-top">
           <div class="history-card-meta">
-            <span class="history-part-badge ${badgeClass}">Part ${a.part}</span>
-            ${a.topic ? `<span class="history-topic-badge">${escHtml(a.topic)}</span>` : ''}
+            <span class="history-part-badge ${badgeClass}">${badgeLabel}</span>
+            ${a.topic && !isFullMock ? `<span class="history-topic-badge">${escHtml(a.topic)}</span>` : ''}
             <span class="history-date">${formatDate(a.createdAt)}</span>
           </div>
           ${band ? `<div class="history-band-badge">${band}</div>` : ''}
@@ -1371,17 +1416,17 @@ function openHistoryModal(attempt) {
   const title = document.getElementById('history-modal-title');
   const body  = document.getElementById('history-modal-body');
 
-  if (title) title.textContent = `Part ${attempt.part} · ${attempt.topic || 'Speaking'}`;
+  const isFullMock = attempt.topic === 'Full Mock Test';
+  if (title) title.textContent = isFullMock ? 'Bài thi thử Speaking đầy đủ' : `Part ${attempt.part} · ${attempt.topic || 'Speaking'}`;
 
   const fb   = attempt.aiFeedback || {};
   const band = fb.overallBand || 0;
-  const badgeClass = `hbadge-p${attempt.part}`;
 
   body.innerHTML = `
     <div class="modal-question-card">
       <div class="q-meta">
-        <span class="q-part-badge">Part ${attempt.part}</span>
-        ${attempt.topic ? `<span class="q-topic-badge">${escHtml(attempt.topic)}</span>` : ''}
+        <span class="q-part-badge">${isFullMock ? 'Mock Test' : `Part ${attempt.part}`}</span>
+        ${attempt.topic && !isFullMock ? `<span class="q-topic-badge">${escHtml(attempt.topic)}</span>` : ''}
       </div>
       <div class="q-text" style="font-size:15px">${escHtml(attempt.question || '')}</div>
     </div>

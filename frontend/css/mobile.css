@@ -564,10 +564,14 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ── Global nav helpers ──────────────────────────────── */
-.has-global-nav { padding-top: var(--nav-height, 64px); }
+/* The premium-expiry banner (nav.js) is a fixed element stacked below the
+   nav — --expiry-banner-height is 0px normally and set to the banner's
+   real (possibly two-line, on narrow screens) height while it's showing,
+   so it pushes content down instead of covering it. */
+.has-global-nav { padding-top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px)); }
 /* Sticky inner headers must sit below the fixed global nav */
-.has-global-nav .exam-bar   { top: var(--nav-height, 64px); }
-.has-global-nav .main-header { top: var(--nav-height, 64px); }
+.has-global-nav .exam-bar   { top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px)); }
+.has-global-nav .main-header { top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px)); }
 /* In native browser fullscreen the global nav is hidden – reset sticky tops */
 :fullscreen .exam-bar,    :-webkit-full-screen .exam-bar    { top: 0 !important; }
 :fullscreen .main-header, :-webkit-full-screen .main-header { top: 0 !important; }

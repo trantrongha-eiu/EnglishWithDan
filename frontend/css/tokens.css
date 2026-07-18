@@ -95,6 +95,7 @@
 
   /* ── Layout ─────────────────────────────────────────── */
   --nav-height: 64px;
+  --expiry-banner-height: 0px; /* set by nav.js while the premium-expiry banner is showing */
   --sidebar-w:  260px;
   --transition: all .25s ease;
 }

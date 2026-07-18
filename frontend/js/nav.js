@@ -284,11 +284,29 @@
       : ('Gói Premium còn ' + daysLeft + ' ngày. Gia hạn ngay để không bị gián đoạn!');
     var banner = document.createElement('div');
     banner.id = 'nav-expiry-banner';
-    banner.style.cssText = 'position:fixed;top:56px;left:0;right:0;z-index:997;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:' + bg + ';box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.style.cssText = 'position:fixed;top:var(--nav-height,64px);left:0;right:0;z-index:997;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:' + bg + ';box-shadow:0 2px 8px rgba(0,0,0,.15)';
     banner.innerHTML =
       '<span style="flex:1;text-align:center">' + msg + '</span>' +
       '<a href="profile.html#plan" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Gia hạn</a>' +
-      '<button onclick="(function(){sessionStorage.setItem(\'expiry-banner-dismissed\',\'1\');document.getElementById(\'nav-expiry-banner\').remove();})()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
+      '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     document.body.insertBefore(banner, document.getElementById('globalTopNav').nextSibling);
+
+    // A fixed-position banner would otherwise sit on top of whatever the
+    // page renders just below the nav (question cards, page headers, ...).
+    // Reserve real space for it — same idea as --nav-height/has-global-nav
+    // above — measured rather than hardcoded since the message wraps to
+    // two lines on narrow screens.
+    function applyOffset() {
+      document.documentElement.style.setProperty('--expiry-banner-height', banner.offsetHeight + 'px');
+    }
+    applyOffset();
+    window.addEventListener('resize', applyOffset);
+
+    banner.querySelector('button').addEventListener('click', function () {
+      sessionStorage.setItem('expiry-banner-dismissed', '1');
+      window.removeEventListener('resize', applyOffset);
+      document.documentElement.style.removeProperty('--expiry-banner-height');
+      banner.remove();
+    });
   }
 })();
