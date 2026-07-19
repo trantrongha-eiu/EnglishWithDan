@@ -253,7 +253,22 @@ function renderQuestionItems(questions, emptyMessage) {
   }
 
   list.innerHTML = '';
+  // Consecutive same-topic questions are already adjacent (loadQuestions()
+  // sorts server-side by part then topic; filterQuestionList() preserves
+  // that order) — group them under one shared header instead of repeating
+  // the topic badge on every single card.
+  let currentGroup = null;
+  let currentTopicKey = null;
   questions.forEach(q => {
+    const topicKey = `${q.part}::${q.topic}`;
+    if (topicKey !== currentTopicKey) {
+      currentTopicKey = topicKey;
+      currentGroup = document.createElement('div');
+      currentGroup.className = 'q-topic-group';
+      currentGroup.innerHTML = `<div class="q-topic-group-header">${escHtml(q.topic)}</div>`;
+      list.appendChild(currentGroup);
+    }
+
     const item = document.createElement('div');
     item.className = 'question-item';
     item.dataset.id = q._id;
@@ -263,11 +278,10 @@ function renderQuestionItems(questions, emptyMessage) {
     item.innerHTML = `
       <div class="q-item-meta">
         <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
-        <span class="q-item-topic">${escHtml(q.topic)}</span>
       </div>
       <div class="q-item-text">${escHtml(q.question)}</div>`;
     item.onclick = () => selectQuestion(q, item);
-    list.appendChild(item);
+    currentGroup.appendChild(item);
   });
   updateSeqButtonVisibility();
 }
