@@ -153,7 +153,7 @@ Return this exact JSON (no other text):
   "vocabulary": <integer 1–9>,
   "grammar": <integer 1–9>,
   "pronunciation": <integer 1–9>,
-  "corrected": "<natural improved version of the full response>",
+  "corrected": "<stronger, natural-sounding version of the response — see rules below>",
   "overall_feedback": "<2–3 sentences: key observations>",
   "strengths": ["<specific strength>", "<specific strength>"],
   "improvements": ["<actionable suggestion>", "<actionable suggestion>"],
@@ -163,7 +163,8 @@ Return this exact JSON (no other text):
 }
 
 Rules: max 4 errors, max 3 strengths, max 3 improvements. overall_band = rounded average of the 4 scores.
-If the transcript has no genuine spoken answer to work with (empty, just repeats the question back, or is an explicit "no answer" placeholder), explain that ONLY in overall_feedback — set "corrected" to an empty string and "improvements" to an empty array instead of restating the same "no answer given" explanation in those fields too.`;
+If the transcript has no genuine spoken answer to work with (empty, just repeats the question back, or is an explicit "no answer" placeholder), explain that ONLY in overall_feedback — set "corrected" to an empty string and "improvements" to an empty array instead of restating the same "no answer given" explanation in those fields too.
+"corrected" must never be just a grammar pass — if the response is a bare "yes"/"no" or otherwise too short/underdeveloped for Part ${part}, don't return it unchanged (a real answer for this part is never just 2-3 words). Expand it into a fuller, natural spoken answer that keeps the student's own stance/idea but adds the reasoning, example, or detail a real candidate would give (Part 1: a brief reason + example; Part 2: continue the cue-card monologue naturally; Part 3: reasoning plus a concrete example or brief counterpoint). Only leave it close to unchanged if it's already reasonably developed and just needs light grammar/wording fixes.`;
 
   let rawText;
   try {
