@@ -14,7 +14,8 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     grammar:          { type: Number, default: 0 },
     pronunciation:    { type: Number, default: 0 },
     overallFeedback:  { type: String, default: '' },
-    correctedVersion: { type: String, default: '' },
+    correctedVersion: { type: String, default: '' }, // Stage 1 (analyze) no longer populates this — kept for old attempts + optional future use
+    todaysFocus:      { type: String, default: '' },
     strengths:        [String],
     corrections:      [{ original: String, corrected: String, explanation: String }],
     suggestions:      [String],

@@ -49,18 +49,23 @@ exports.analyze = catchAsync(async (req, res) => {
     return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
   }
 
-  await speakingService.saveAttempt(req.user._id, {
+  const attemptId = await speakingService.saveAttempt(req.user._id, {
     questionId, topic, part: partNum, questionText, transcript, duration, feedback
   });
 
-  res.json({ success: true, feedback });
+  // attemptId lets the frontend key a locally-stored (IndexedDB) audio
+  // recording to this exact attempt, so History can offer same-device
+  // playback later — see js/speaking-audio-store.js.
+  res.json({ success: true, feedback, attemptId });
 });
 
 // ── POST /api/speaking/sample-answer ─────────────────────────
 // Part 1/2/3 each get their own shape — see buildSampleAnswerPrompt()
 // in geminiService.js. Part 2 additionally needs the cue card text.
+// questionId (optional) enables the sample-answer cache in SpeakingQuestion
+// — see speakingService.getSampleAnswer for the cache-aside logic.
 exports.sampleAnswer = catchAsync(async (req, res) => {
-  const { question, part, cueCard } = req.body;
+  const { questionId, question, part, cueCard } = req.body;
   if (!question || !question.trim()) {
     return res.status(400).json({ success: false, message: 'Thiếu câu hỏi' });
   }
@@ -71,7 +76,7 @@ exports.sampleAnswer = catchAsync(async (req, res) => {
   }
 
   try {
-    const data = await speakingService.getSampleAnswer(question.trim(), partNum, cueCard || '');
+    const data = await speakingService.getSampleAnswer(questionId || null, question.trim(), partNum, cueCard || '');
     res.json({ success: true, sampleAnswer: data.sampleAnswer });
   } catch (aiErr) {
     console.error('[Speaking] sampleAnswer Gemini error:', aiErr.message);
@@ -79,6 +84,34 @@ exports.sampleAnswer = catchAsync(async (req, res) => {
       return res.status(503).json({ success: false, message: aiErr.message });
     }
     return res.status(500).json({ success: false, message: 'AI không thể tạo câu trả lời mẫu. Vui lòng thử lại.' });
+  }
+});
+
+// ── POST /api/speaking/improve ────────────────────────────────
+// Stage 2 of the analysis split — rewrites the student's OWN transcript at
+// Band 7-8. Opt-in only (the "Improve my answer" button); never called from
+// the automatic analyze flow, so it never adds latency/cost to every
+// recording, only to the ones a student actually wants to see improved.
+exports.improveAnswer = catchAsync(async (req, res) => {
+  const { question, part, transcript } = req.body;
+  if (!transcript || !transcript.trim()) {
+    return res.status(400).json({ success: false, message: 'Transcript trống' });
+  }
+
+  const partNum = part ? Number(part) : 1;
+  if (![1, 2, 3].includes(partNum)) {
+    return res.status(400).json({ success: false, message: 'Part không hợp lệ' });
+  }
+
+  try {
+    const data = await speakingService.getImprovedAnswer(question || 'General speaking practice', partNum, transcript.trim());
+    res.json({ success: true, improvedAnswer: data.improvedAnswer });
+  } catch (aiErr) {
+    console.error('[Speaking] improveAnswer Gemini error:', aiErr.message);
+    if (aiErr.isOverloaded) {
+      return res.status(503).json({ success: false, message: aiErr.message });
+    }
+    return res.status(500).json({ success: false, message: 'AI không thể cải thiện câu trả lời. Vui lòng thử lại.' });
   }
 });
 

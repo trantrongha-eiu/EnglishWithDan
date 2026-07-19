@@ -311,6 +311,9 @@
                   <span id="p2-speak-time">2:00</span> còn lại
                 </div>
               </div>
+              <button class="btn-playback-recording hidden" id="btn-playback-recording" onclick="playbackRecording()" title="Nghe lại bài ghi âm của bạn (lưu trên thiết bị này)">
+                <i class="fas fa-play"></i> Nghe lại bản ghi âm
+              </button>
             </div>
           </div>
           <div class="transcript-interim" id="transcript-interim"></div>
@@ -389,12 +392,23 @@
               <p id="fb-overall-text" class="fb-card-text"></p>
             </div>
 
-            <!-- Corrected version -->
-            <div class="fb-card fb-card-green" id="fb-corrected-card">
+            <!-- Today's Focus — the ONE biggest thing to fix next -->
+            <div class="fb-card fb-card-focus" id="fb-focus-card">
               <div class="fb-card-title">
-                <i class="fas fa-check-circle"></i> Phiên bản cải thiện
+                <i class="fas fa-bullseye"></i> Trọng tâm hôm nay
               </div>
-              <p id="fb-corrected-text" class="fb-card-text"></p>
+              <p id="fb-focus-text" class="fb-card-text"></p>
+            </div>
+
+            <!-- Improve my answer — opt-in only, fetched on click (Stage 2) -->
+            <div class="fb-card fb-card-green" id="fb-improve-card">
+              <div class="fb-card-title fb-card-title-row">
+                <span><i class="fas fa-check-circle"></i> Cải thiện câu trả lời</span>
+                <button class="q-sample-btn" id="btn-improve-answer" onclick="showImprovedAnswer()" title="Xem câu trả lời của bạn ở trình độ Band 7-8">
+                  <i class="fas fa-magic"></i> Xem bản Band 7-8
+                </button>
+              </div>
+              <div id="fb-improve-text" class="fb-card-text" style="display:none"></div>
             </div>
 
             <!-- Strengths -->
@@ -682,6 +696,7 @@
 </div>
 
 <script src="js/speaking-timer.js"></script>
+<script src="js/speaking-audio-store.js"></script>
 <script src="js/speaking.js"></script>
 </body>
 </html>

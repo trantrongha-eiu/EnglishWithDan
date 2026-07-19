@@ -4,7 +4,7 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking, generateSampleAnswer } = require('./geminiService');
+const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require('./geminiService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -38,13 +38,40 @@ async function gradeSpeaking(questionText, transcript, partNum) {
   return checkSpeaking(questionText, transcript, partNum);
 }
 
-// Same error-propagation contract as gradeSpeaking above.
-async function getSampleAnswer(questionText, partNum, cueCard) {
-  return generateSampleAnswer(questionText, partNum, cueCard);
+// Cache-aside against SpeakingQuestion.sampleAnswer: serves a pre-generated
+// (or previously auto-cached) answer with zero Gemini calls whenever one
+// exists; only calls Gemini the first time a given question is ever
+// requested, then persists the result so every later view (any student,
+// any time) is instant and free. questionId is optional — falls back to a
+// plain, uncached generation for e.g. ad-hoc questions with no bank entry.
+async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
+  if (questionId) {
+    const cached = await SpeakingQuestion.findById(questionId).select('sampleAnswer').lean();
+    if (cached?.sampleAnswer) return { sampleAnswer: cached.sampleAnswer };
+  }
+
+  const data = await generateSampleAnswer(questionText, partNum, cueCard);
+
+  if (questionId && data.sampleAnswer) {
+    // Fire-and-forget — a failed cache write must never fail the response
+    // the student is already waiting on.
+    SpeakingQuestion.updateOne({ _id: questionId }, { $set: { sampleAnswer: data.sampleAnswer } })
+      .catch(err => console.error('[Speaking] sampleAnswer cache write failed:', err.message));
+  }
+
+  return data;
+}
+
+// Stage 2 — opt-in only, called from POST /api/speaking/improve, never from
+// the automatic analyze flow. Same error-propagation contract as above.
+async function getImprovedAnswer(questionText, partNum, transcript) {
+  return generateImprovedAnswer(questionText, partNum, transcript);
 }
 
 // Persistence failure here is logged but must never fail the request —
 // the student still gets their feedback even if saving the attempt fails.
+// Returns the saved attempt's _id (or null on failure) so the frontend can
+// key a locally-stored (IndexedDB) audio recording to this exact attempt.
 async function saveAttempt(userId, { questionId, topic, part, questionText, transcript, duration, feedback }) {
   try {
     const attempt = new SpeakingAttempt({
@@ -57,25 +84,28 @@ async function saveAttempt(userId, { questionId, topic, part, questionText, tran
       duration: duration || 0,
       status: 'analyzed',
       aiFeedback: {
-        overallBand: feedback.overall_band || 0,
+        overallBand: feedback.overallBand || 0,
         fluency: feedback.fluency || 0,
         vocabulary: feedback.vocabulary || 0,
         grammar: feedback.grammar || 0,
         pronunciation: feedback.pronunciation || 0,
-        overallFeedback: feedback.overall_feedback || '',
-        correctedVersion: feedback.corrected || '',
+        overallFeedback: feedback.overallFeedback || '',
+        correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
+        todaysFocus: feedback.todaysFocus || '',
         strengths: feedback.strengths || [],
-        corrections: (feedback.errors || []).map(e => ({
-          original: e.wrong,
-          corrected: e.right,
-          explanation: e.tip
+        corrections: (feedback.mistakes || []).map(m => ({
+          original: m.original,
+          corrected: m.corrected,
+          explanation: m.reason
         })),
         suggestions: feedback.improvements || []
       }
     });
     await attempt.save();
+    return attempt._id;
   } catch (saveErr) {
     console.error('[Speaking] Save attempt error:', saveErr.message);
+    return null;
   }
 }
 
@@ -100,5 +130,5 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
-  getHistory, listMaterials, getMaterialFilters, getSampleAnswer,
+  getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
 };

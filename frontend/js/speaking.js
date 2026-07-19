@@ -139,6 +139,7 @@ function showScreen(id) {
     setupRecognition();
   }
   primeTtsVoice();
+  window.SpeakingAudioStore?.pruneOldRecordings(); // best-effort, non-blocking housekeeping
 
   // Enable analyze button on manual typing
   const ta = document.getElementById('transcript-textarea');
@@ -500,7 +501,7 @@ async function showSampleAnswer() {
   try {
     const data = await apiFetch('/api/speaking/sample-answer', {
       method: 'POST',
-      body: JSON.stringify({ question: q.question, part: q.part, cueCard: q.cueCard || '' }),
+      body: JSON.stringify({ questionId: q._id, question: q.question, part: q.part, cueCard: q.cueCard || '' }),
     });
     _sampleAnswerText = data.sampleAnswer || '';
     textEl.textContent = _sampleAnswerText;
@@ -547,6 +548,11 @@ function resetPractice() {
   if (elapsed)    elapsed.classList.add('hidden');
   if (recIcon)    { recIcon.className = 'fas fa-microphone rec-mic'; }
   if (recLabel)   recLabel.textContent = 'Bắt đầu';
+
+  // New question → any previous recording no longer applies
+  _lastRecordingBlob = null;
+  const playbackBtn = document.getElementById('btn-playback-recording');
+  if (playbackBtn) playbackBtn.classList.add('hidden');
 }
 
 function retryQuestion() {
@@ -661,6 +667,59 @@ function setupRecognition() {
   };
 }
 
+// ──────────────────────────────────────────────────────
+// Raw audio capture (separate from SpeechRecognition, which does its own
+// internal audio handling but never exposes the stream/blob) — lets the
+// student play back their actual recording, stored locally via
+// js/speaking-audio-store.js. Best-effort throughout: if getUserMedia or
+// MediaRecorder isn't available/permitted, transcription still works
+// exactly as before, the student just doesn't get a playback button.
+// ──────────────────────────────────────────────────────
+let _mediaRecorder = null;
+let _mediaChunks = [];
+let _mediaStream = null;
+let _lastRecordingBlob = null;
+
+async function _startAudioCapture() {
+  if (!('MediaRecorder' in window) || !navigator.mediaDevices?.getUserMedia) return;
+  try {
+    _mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    _mediaChunks = [];
+    _mediaRecorder = new MediaRecorder(_mediaStream);
+    _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _mediaChunks.push(e.data); };
+    _mediaRecorder.start();
+  } catch (e) {
+    console.warn('_startAudioCapture:', e.message);
+    _mediaRecorder = null;
+  }
+}
+
+function _stopAudioCapture() {
+  return new Promise(resolve => {
+    if (!_mediaRecorder) { resolve(null); return; }
+    const recorder = _mediaRecorder;
+    recorder.onstop = () => {
+      const blob = _mediaChunks.length ? new Blob(_mediaChunks, { type: recorder.mimeType || 'audio/webm' }) : null;
+      _mediaStream?.getTracks().forEach(t => t.stop());
+      _mediaStream = null;
+      _mediaRecorder = null;
+      resolve(blob);
+    };
+    try { recorder.stop(); } catch (e) { resolve(null); }
+  });
+}
+
+function playbackRecording() {
+  if (!_lastRecordingBlob) return;
+  const url = URL.createObjectURL(_lastRecordingBlob);
+  const audio = new Audio(url);
+  audio.addEventListener('ended', () => URL.revokeObjectURL(url));
+  audio.play().catch(() => {
+    URL.revokeObjectURL(url);
+    showToast('Không thể phát lại bản ghi âm.', 'error');
+  });
+}
+
 function toggleRecord() {
   if (!state.recognition) {
     showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
@@ -669,10 +728,18 @@ function toggleRecord() {
   if (state.isRecording) {
     state.recognition.stop();
     state.isRecording = false;
+    _stopAudioCapture().then(blob => {
+      _lastRecordingBlob = blob;
+      const btn = document.getElementById('btn-playback-recording');
+      if (btn) btn.classList.toggle('hidden', !blob);
+    });
   } else {
     try {
       state.recognition.start();
       state.isRecording = true;
+      _lastRecordingBlob = null;
+      document.getElementById('btn-playback-recording')?.classList.add('hidden');
+      _startAudioCapture();
     } catch (e) {
       showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
     }
@@ -720,6 +787,12 @@ async function analyzeTranscript() {
     if (results) results.style.display = 'block';
 
     renderFeedback(data.feedback || {});
+
+    // Best-effort: key the locally-captured recording (if any) to this
+    // exact attempt so History can offer same-device playback later.
+    if (data.attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
+      window.SpeakingAudioStore.saveAudioRecording(data.attemptId, _lastRecordingBlob);
+    }
   } catch (e) {
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'block';
@@ -736,7 +809,7 @@ async function analyzeTranscript() {
 function renderFeedback(fb) {
   // Scores
   const scores = [
-    ['overall',       fb.overall_band],
+    ['overall',       fb.overallBand],
     ['fluency',       fb.fluency],
     ['vocabulary',    fb.vocabulary],
     ['grammar',       fb.grammar],
@@ -752,22 +825,29 @@ function renderFeedback(fb) {
   // Overall feedback
   const fbOverall = document.getElementById('fb-overall-card');
   const fbOverallText = document.getElementById('fb-overall-text');
-  if (fb.overall_feedback) {
-    if (fbOverallText) fbOverallText.textContent = fb.overall_feedback;
+  if (fb.overallFeedback) {
+    if (fbOverallText) fbOverallText.textContent = fb.overallFeedback;
     if (fbOverall) fbOverall.style.display = 'block';
   } else {
     if (fbOverall) fbOverall.style.display = 'none';
   }
 
-  // Corrected version
-  const fbCorrected = document.getElementById('fb-corrected-card');
-  const fbCorrectedText = document.getElementById('fb-corrected-text');
-  if (fb.corrected) {
-    if (fbCorrectedText) fbCorrectedText.textContent = fb.corrected;
-    if (fbCorrected) fbCorrected.style.display = 'block';
+  // Today's Focus — the one biggest thing to fix next
+  const fbFocus = document.getElementById('fb-focus-card');
+  const fbFocusText = document.getElementById('fb-focus-text');
+  if (fb.todaysFocus) {
+    if (fbFocusText) fbFocusText.textContent = fb.todaysFocus;
+    if (fbFocus) fbFocus.style.display = 'block';
   } else {
-    if (fbCorrected) fbCorrected.style.display = 'none';
+    if (fbFocus) fbFocus.style.display = 'none';
   }
+
+  // Improve my answer (Stage 2) — reset for this attempt; only fetched if
+  // the student clicks the button, never generated automatically.
+  const improveText = document.getElementById('fb-improve-text');
+  const improveBtn   = document.getElementById('btn-improve-answer');
+  if (improveText) { improveText.style.display = 'none'; improveText.textContent = ''; improveText.dataset.forTranscript = ''; }
+  if (improveBtn)  improveBtn.disabled = false;
 
   // Strengths
   const fbStrengths = document.getElementById('fb-strengths-card');
@@ -779,17 +859,17 @@ function renderFeedback(fb) {
     if (fbStrengths) fbStrengths.style.display = 'none';
   }
 
-  // Errors
+  // Mistakes
   const fbErrors = document.getElementById('fb-errors-card');
   const fbErrorsList = document.getElementById('fb-errors-list');
-  if (fb.errors?.length) {
+  if (fb.mistakes?.length) {
     if (fbErrorsList) {
-      fbErrorsList.innerHTML = fb.errors.map(err => `
+      fbErrorsList.innerHTML = fb.mistakes.map(m => `
         <div class="error-item">
-          <span class="error-wrong">${escHtml(err.wrong)}</span>
+          <span class="error-wrong">${escHtml(m.original)}</span>
           <span class="error-arrow">→</span>
-          <span class="error-right">${escHtml(err.right)}</span>
-          ${err.tip ? `<div class="error-tip-row">💡 ${escHtml(err.tip)}</div>` : ''}
+          <span class="error-right">${escHtml(m.corrected)}</span>
+          ${m.reason ? `<div class="error-tip-row">💡 ${escHtml(m.reason)}</div>` : ''}
         </div>`).join('');
     }
     if (fbErrors) fbErrors.style.display = 'block';
@@ -810,6 +890,48 @@ function renderFeedback(fb) {
   }
 
   setupDictionaryDouble('feedback-results', 'speaking-feedback');
+}
+
+// ──────────────────────────────────────────────────────
+// Improve My Answer (Stage 2) — opt-in only, mirrors showSampleAnswer()'s
+// fetch-and-toggle pattern. Reads the transcript live from the textarea
+// (not a snapshot from analyze time) so edits the student makes before
+// clicking are reflected.
+// ──────────────────────────────────────────────────────
+async function showImprovedAnswer() {
+  const q = state.currentQuestion;
+  const ta = document.getElementById('transcript-textarea');
+  const transcript = ta ? ta.value.trim() : '';
+  if (!q || !transcript) return;
+
+  const box = document.getElementById('fb-improve-text');
+  const btn = document.getElementById('btn-improve-answer');
+  if (!box || !btn) return;
+
+  // Toggle closed if already showing an answer for this exact transcript.
+  if (box.style.display === 'block' && box.dataset.forTranscript === transcript) {
+    box.style.display = 'none';
+    return;
+  }
+
+  box.dataset.forTranscript = transcript;
+  box.style.display = 'block';
+  box.innerHTML = '<div class="spinner"></div>';
+  btn.disabled = true;
+
+  try {
+    const data = await apiFetch('/api/speaking/improve', {
+      method: 'POST',
+      body: JSON.stringify({ question: q.question, part: q.part, transcript }),
+    });
+    box.textContent = data.improvedAnswer || '';
+  } catch (e) {
+    console.error('showImprovedAnswer:', e);
+    showToast('Không thể cải thiện câu trả lời. Vui lòng thử lại.', 'error');
+    box.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 // ══════════════════════════════════════════════════════
@@ -1285,7 +1407,7 @@ async function finishSequentialSession() {
 
 function renderSeqFeedback(fb) {
   const scores = [
-    ['Band tổng thể',       fb.overall_band, ' score-overall'],
+    ['Band tổng thể',       fb.overallBand, ' score-overall'],
     ['Fluency & Coherence', fb.fluency,       ''],
     ['Lexical Resource',    fb.vocabulary,    ''],
     ['Grammatical Range',   fb.grammar,       ''],
@@ -1301,18 +1423,18 @@ function renderSeqFeedback(fb) {
     <div class="score-header"><i class="fas fa-chart-bar"></i> Kết quả đánh giá cả buổi</div>
     <div class="score-grid">${scoreCards}</div>`;
 
-  if (fb.overall_feedback) {
+  if (fb.overallFeedback) {
     html += `
     <div class="fb-card">
       <div class="fb-card-title"><i class="fas fa-comment-alt"></i> Nhận xét tổng thể</div>
-      <p class="fb-card-text">${escHtml(fb.overall_feedback)}</p>
+      <p class="fb-card-text">${escHtml(fb.overallFeedback)}</p>
     </div>`;
   }
-  if (fb.corrected) {
+  if (fb.todaysFocus) {
     html += `
-    <div class="fb-card fb-card-green">
-      <div class="fb-card-title"><i class="fas fa-check-circle"></i> Phiên bản cải thiện</div>
-      <p class="fb-card-text">${escHtml(fb.corrected)}</p>
+    <div class="fb-card fb-card-focus">
+      <div class="fb-card-title"><i class="fas fa-bullseye"></i> Trọng tâm hôm nay</div>
+      <p class="fb-card-text">${escHtml(fb.todaysFocus)}</p>
     </div>`;
   }
   if (fb.strengths?.length) {
@@ -1322,16 +1444,16 @@ function renderSeqFeedback(fb) {
       <ul class="fb-list">${fb.strengths.map(s => `<li>${escHtml(s)}</li>`).join('')}</ul>
     </div>`;
   }
-  if (fb.errors?.length) {
+  if (fb.mistakes?.length) {
     html += `
     <div class="fb-card fb-card-red">
       <div class="fb-card-title"><i class="fas fa-times-circle"></i> Lỗi cần sửa</div>
-      ${fb.errors.map(err => `
+      ${fb.mistakes.map(m => `
         <div class="error-item">
-          <span class="error-wrong">${escHtml(err.wrong)}</span>
+          <span class="error-wrong">${escHtml(m.original)}</span>
           <span class="error-arrow">→</span>
-          <span class="error-right">${escHtml(err.right)}</span>
-          ${err.tip ? `<div class="error-tip-row">💡 ${escHtml(err.tip)}</div>` : ''}
+          <span class="error-right">${escHtml(m.corrected)}</span>
+          ${m.reason ? `<div class="error-tip-row">💡 ${escHtml(m.reason)}</div>` : ''}
         </div>`).join('')}
     </div>`;
   }
@@ -1425,7 +1547,7 @@ function renderHistoryScores(fb) {
   </div>`;
 }
 
-function openHistoryModal(attempt) {
+async function openHistoryModal(attempt) {
   const modal = document.getElementById('history-modal');
   const title = document.getElementById('history-modal-title');
   const body  = document.getElementById('history-modal-body');
@@ -1444,6 +1566,8 @@ function openHistoryModal(attempt) {
       </div>
       <div class="q-text" style="font-size:15px">${escHtml(attempt.question || '')}</div>
     </div>
+
+    <div id="history-audio-slot"></div>
 
     ${attempt.transcript ? `
     <div class="modal-transcript">
@@ -1468,6 +1592,12 @@ function openHistoryModal(attempt) {
     <div class="fb-card" style="margin-bottom:14px">
       <div class="fb-card-title"><i class="fas fa-comment-alt"></i> Nhận xét</div>
       <p class="fb-card-text">${escHtml(fb.overallFeedback || fb.feedback)}</p>
+    </div>` : ''}
+
+    ${fb.todaysFocus ? `
+    <div class="fb-card fb-card-focus" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-bullseye"></i> Trọng tâm hôm nay</div>
+      <p class="fb-card-text">${escHtml(fb.todaysFocus)}</p>
     </div>` : ''}
 
     ${fb.correctedVersion ? `
@@ -1502,6 +1632,21 @@ function openHistoryModal(attempt) {
   `;
 
   if (modal) modal.classList.add('open');
+
+  // Best-effort, async, non-blocking — only present if this exact browser/
+  // device made the recording (IndexedDB is local-only, never syncs).
+  if (window.SpeakingAudioStore && attempt._id) {
+    const blob = await window.SpeakingAudioStore.getAudioRecording(attempt._id);
+    const slot = document.getElementById('history-audio-slot');
+    if (blob && slot) {
+      const url = URL.createObjectURL(blob);
+      slot.innerHTML = `
+        <div class="modal-audio-playback">
+          <div class="modal-transcript-label">🔊 Bản ghi âm (chỉ có trên thiết bị này)</div>
+          <audio controls src="${url}"></audio>
+        </div>`;
+    }
+  }
 }
 
 function closeHistoryModal() {
