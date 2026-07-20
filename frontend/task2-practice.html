@@ -188,7 +188,6 @@
     .t2-ctx-divider{color:#d1d5db}
     .t2-ctx-name{font-weight:600;color:#374151;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     [data-theme="dark"] .t2-ctx-name{color:#cbd5e1}
-    .t2-ctx-level{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;text-transform:uppercase}
     /* ── Model answer toggle ── */
     .t2-toggle-model{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
     .t2-toggle-model:hover{border-color:#6366f1;color:#6366f1}
@@ -468,7 +467,7 @@ let state = {
   view: 'weeks',  // weeks | topics | select | practice | exam | vocab | done
   selectedWeek: null,
   selectedTopic: null,
-  selectedLevel: 'beginner',
+  selectedLevel: 'all',  // level picker removed from practice UI — always "all" now
   currentMode: 'practice',  // practice | exam | vocab | retry
   weeks: [],
   topics: [],
@@ -509,18 +508,16 @@ function _syncT2ShareUrl() {
   const params = new URLSearchParams();
   if (state.selectedWeek) params.set('week', state.selectedWeek);
   if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
-  if (state.selectedLevel && state.selectedLevel !== 'beginner') params.set('level', state.selectedLevel);
   if (state.currentMode && state.currentMode !== 'practice') params.set('mode', state.currentMode);
   const search = params.toString() ? '?' + params.toString() : location.pathname.split('?')[0];
   history.replaceState(null, '', location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : ''));
 }
 
 function copyT2ShareUrl() {
-  // Always include current level+mode in the copied URL
+  // Always include current mode in the copied URL
   const params = new URLSearchParams();
   if (state.selectedWeek) params.set('week', state.selectedWeek);
   if (state.selectedTopic?._id) params.set('topicId', state.selectedTopic._id);
-  if (state.selectedLevel) params.set('level', state.selectedLevel);
   if (state.currentMode) params.set('mode', state.currentMode);
   const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
   if (navigator.clipboard) {
@@ -700,9 +697,7 @@ async function loadWeeks() {
     const params = new URLSearchParams(location.search);
     const urlWeek    = parseInt(params.get('week')) || null;
     const urlTopicId = params.get('topicId');
-    const urlLevel   = params.get('level');
     const urlMode    = params.get('mode');
-    if (urlLevel) state.selectedLevel = urlLevel;
     if (urlMode)  state.currentMode   = urlMode;
 
     const hasToken = window.AuthService.isLoggedIn();
@@ -865,7 +860,7 @@ async function selectTopic(id) {
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
   state.draft = null;
-  const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, level: state.selectedLevel, mode: state.currentMode });
+  const _p = new URLSearchParams({ week: state.selectedWeek, topicId: id, mode: state.currentMode });
   history.pushState({ view: 'select', week: state.selectedWeek, topicId: id }, '', `task2-practice.html?${_p}`);
   if (window.AuthService.isLoggedIn()) {
     try {
@@ -898,14 +893,6 @@ function renderSelect() {
       <div class="t2-selector-title">${t.topicName}</div>
       <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || t.essayType}</span>
       <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${t.prompt}</div>
-
-      <div class="t2-selector-label">Cấp độ</div>
-      <div class="t2-btn-group">
-        <button class="t2-btn ${state.selectedLevel==='beginner'?'active':''}" onclick="setLevel('beginner')">🌱 Beginner</button>
-        <button class="t2-btn ${state.selectedLevel==='elementary'?'active':''}" onclick="setLevel('elementary')">📘 Elementary</button>
-        <button class="t2-btn ${state.selectedLevel==='intermediate'?'active':''}" onclick="setLevel('intermediate')">📗 Intermediate</button>
-        <button class="t2-btn ${state.selectedLevel==='all'?'active':''}" onclick="setLevel('all')">🎯 Tất cả</button>
-      </div>
 
       <div class="t2-selector-label">Chế độ</div>
       <div class="t2-btn-group">
@@ -957,7 +944,6 @@ function renderSelect() {
     </div>`;
 }
 function bindSelect() {}
-function setLevel(l) { state.selectedLevel = l; _syncT2ShareUrl(); render(); }
 function setMode2(m) { state.currentMode = m; _syncT2ShareUrl(); render(); }
 function setExamCount(n) { state.examCount = n; render(); }
 function setAutoNext(v) { state.autoNext = v; }
@@ -1087,7 +1073,6 @@ async function resumeSession() {
       return;
     }
     state.questions       = restoredQuestions;
-    state.selectedLevel   = draft.level || state.selectedLevel;
     state.currentMode     = draft.mode  || 'practice';
     state.sessionAttempts = draft.sessionAttempts || [];
     state.questionStatus  = draft.questionStatus  || new Array(restoredQuestions.length).fill('pending');
@@ -1136,8 +1121,6 @@ function renderPractice() {
   if (!q) return renderDone();
   const topic = state.selectedTopic;
   const pct = Math.round((state.currentIdx / state.questions.length) * 100);
-  const lvlColor = LEVEL_COLORS[state.selectedLevel] || '#6b7280';
-  const lvlLabel = { beginner:'Beginner', elementary:'Elementary', intermediate:'Intermediate', all:'Tất cả' }[state.selectedLevel] || state.selectedLevel;
   return `
     <div class="t2-nav" style="padding:8px 20px;display:flex;align-items:center;justify-content:space-between">
       <button class="t2-back-btn" onclick="quitPractice()"><i class="fas fa-times"></i> Thoát</button>
@@ -1149,8 +1132,7 @@ function renderPractice() {
       <span class="t2-ctx-name" title="${topic.topicName}">${topic.topicEmoji || ''} ${topic.topicName}</span>
       <span class="t2-ctx-divider">·</span>
       <span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>
-      <span class="t2-ctx-level" style="background:${lvlColor}22;color:${lvlColor}">${lvlLabel}</span>
-      ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase">Ôn câu sai</span>` : ''}
+      ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;margin-left:auto">Ôn câu sai</span>` : ''}
     </div>
     <div class="t2-prompt-box">
       <div class="t2-prompt-box-label">📋 Đề bài IELTS</div>
