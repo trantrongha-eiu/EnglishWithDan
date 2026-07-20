@@ -310,7 +310,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .mascot-panda:hover{animation:pandaWiggle .4s ease-in-out 3}
 .mascot-speech{display:flex;flex-direction:column;gap:2px}
 .mascot-streak-row{display:flex;align-items:center;gap:4px}
-.mascot-fire{font-size:15px}
+.mascot-fire{font-size:15px;color:#f97316}
 .mascot-streak-num{font-size:18px;font-weight:800;color:#f97316;line-height:1}
 .mascot-streak-label{font-size:11px;color:var(--text3);font-weight:600}
 .mascot-msg{font-size:12px;color:var(--text2);font-style:italic}
@@ -336,7 +336,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dan-mascot img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;border:2px solid var(--danger)}
 .dan-streak-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .dan-streak-badge{display:inline-flex;align-items:center;flex-wrap:wrap;gap:5px;width:fit-content;max-width:100%}
-.dan-fire{font-size:18px}
+.dan-fire{font-size:18px;color:#f97316}
 .dan-streak-num{font-size:24px;font-weight:900;color:#f97316;line-height:1}
 .dan-streak-card.is-sad .dan-streak-num,
 .dan-streak-card.is-sad .dan-fire{filter:grayscale(1);opacity:.55}
@@ -344,6 +344,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dan-streak-label{font-size:12px;color:var(--text3);font-weight:600;margin-left:2px}
 .dan-streak-msg{font-size:13px;color:var(--text2);line-height:1.5}
 .dan-streak-card.is-angry .dan-streak-msg{color:var(--danger);font-weight:600}
+
+/* Fire tier ladder (see getFireTier()/applyFireTier() in dashboard.js) —
+   30/60/100/150/200/300/400 each recolor the fire icon + streak number;
+   500+ ("legendary") gets an animated rainbow shimmer a flat color can't
+   express. Used on the homepage mascot card, the book-content mascot
+   banner, and each leaderboard row's fire badge. */
+/* Combined selectors (not a bare .fire-legendary rule) so this reliably
+   beats each element's own base color rule (e.g. .dan-lb-streak's
+   color:#f97316) regardless of source order/specificity ties. */
+.dan-fire.fire-legendary, .mascot-fire.fire-legendary,
+.dan-streak-num.fire-legendary, .mascot-streak-num.fire-legendary,
+.dan-lb-streak.fire-legendary{
+  background:linear-gradient(90deg,#f97316,#ef4444,#a855f7,#3b82f6,#10b981,#eab308,#f97316);
+  background-size:200% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:fireLegendaryShift 3s linear infinite;
+}
+@keyframes fireLegendaryShift{to{background-position:200% center}}
 
 /* Búa Daniel badge (inventory count, next to the fire streak badge) +
    "use hammer" button (shown only while eligible — see renderHammerUI()). */

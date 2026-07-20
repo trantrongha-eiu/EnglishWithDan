@@ -243,6 +243,38 @@ function getMascotEmoji(streak) {
     return '🐼';
 }
 
+// Fire tier ladder — every fire icon/number pairing (homepage mascot card,
+// book-content mascot banner, leaderboard rows) uses this so a student's
+// streak color stays consistent everywhere it's shown. 500+ ("legendary")
+// returns null color and instead relies on the .fire-legendary CSS class
+// for a gradient effect that a flat color can't express.
+const FIRE_TIERS = [
+    { min: 500, color: null,      cls: 'fire-legendary' }, // gradient
+    { min: 400, color: '#eab308', cls: '' },  // gold
+    { min: 300, color: '#10b981', cls: '' },  // emerald
+    { min: 200, color: '#06b6d4', cls: '' },  // cyan
+    { min: 150, color: '#3b82f6', cls: '' },  // blue
+    { min: 100, color: '#a855f7', cls: '' },  // purple
+    { min: 60,  color: '#dc2626', cls: '' },  // crimson
+    { min: 30,  color: '#ef4444', cls: '' },  // red
+];
+function getFireTier(streak) {
+    for (const tier of FIRE_TIERS) {
+        if (streak >= tier.min) return tier;
+    }
+    return { min: 0, color: null, cls: '' }; // default orange, from CSS
+}
+// Applies the tier color/class to a fire icon + its adjoining streak number.
+function applyFireTier(fireEl, numEl, streak) {
+    const tier = getFireTier(streak);
+    [fireEl, numEl].forEach(el => {
+        if (!el) return;
+        el.classList.remove('fire-legendary');
+        if (tier.cls) el.classList.add(tier.cls);
+        el.style.color = tier.cls ? '' : (tier.color || '');
+    });
+}
+
 // Sarcastic "Dan" (our panda mascot, named after thầy Daniel) reacting to a
 // dead streak — angry if you just torched a streak bigger than 10 days,
 // sad-but-forgiving otherwise. previousStreak comes from the backend and is
@@ -277,14 +309,15 @@ function getMascotState(streak, previousStreak) {
 function applyMascotState(streak, previousStreak) {
     const state = getMascotState(streak, previousStreak);
     const groups = [
-        { panda: 'mascot-panda', num: 'mascot-streak-num', msg: 'mascot-msg', card: null },
-        { panda: 'dan-mascot',   num: 'dan-streak-num',   msg: 'dan-streak-msg', card: 'dan-streak-card' }
+        { panda: 'mascot-panda', num: 'mascot-streak-num', msg: 'mascot-msg', card: null,             fire: 'mascot-fire' },
+        { panda: 'dan-mascot',   num: 'dan-streak-num',   msg: 'dan-streak-msg', card: 'dan-streak-card', fire: 'dan-fire' }
     ];
     for (const g of groups) {
         const pandaEl = document.getElementById(g.panda);
         const numEl   = document.getElementById(g.num);
         const msgEl   = document.getElementById(g.msg);
         const cardEl  = g.card ? document.getElementById(g.card) : null;
+        const fireEl  = document.getElementById(g.fire);
         if (numEl) numEl.textContent = streak;
         if (msgEl) msgEl.textContent = state.msg;
         if (pandaEl) {
@@ -295,6 +328,7 @@ function applyMascotState(streak, previousStreak) {
         }
         if (cardEl) cardEl.classList.toggle('is-angry', state.mood === 'angry');
         if (cardEl) cardEl.classList.toggle('is-sad', state.mood === 'sad');
+        applyFireTier(fireEl, numEl, streak);
     }
 }
 
@@ -359,12 +393,14 @@ async function loadStreakLeaderboard() {
             const avatar = r.avatar
                 ? `<img class="dan-lb-avatar" src="${_esc(r.avatar)}" alt="">`
                 : `<span class="dan-lb-avatar-placeholder">${_esc((r.name || '?')[0].toUpperCase())}</span>`;
+            const tier = getFireTier(r.streak);
+            const streakStyle = tier.cls ? '' : (tier.color ? ` style="color:${tier.color}"` : '');
             return `
                 <div class="dan-lb-row${r._id === myId ? ' is-me' : ''}">
                     <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
                     ${avatar}
                     <span class="dan-lb-name">${_esc(r.name)}${r._id === myId ? ' (Bạn)' : ''}</span>
-                    <span class="dan-lb-streak">🔥 ${r.streak}</span>
+                    <span class="dan-lb-streak${tier.cls ? ' ' + tier.cls : ''}"${streakStyle}><i class="fas fa-fire"></i> ${r.streak}</span>
                 </div>`;
         }).join('');
     } catch {
@@ -1630,6 +1666,7 @@ async function _reportSessionStreak() {
             if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
             const pandaEl = document.getElementById('mascot-panda');
             if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
+            applyFireTier(document.getElementById('mascot-fire'), numEl, d.streak);
 
             const danNumEl = document.getElementById('dan-streak-num');
             if (danNumEl) animateCount(danNumEl, d.streak, 500);
@@ -1637,6 +1674,7 @@ async function _reportSessionStreak() {
             if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
             const danMascotEl = document.getElementById('dan-mascot');
             if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
+            applyFireTier(document.getElementById('dan-fire'), danNumEl, d.streak);
             if (d.streak > 0) {
                 // Only a real streak (bonus>0 this call, or restored) ends the
                 // "just lost a streak" mascot state — a 0-bonus (<80%) session
