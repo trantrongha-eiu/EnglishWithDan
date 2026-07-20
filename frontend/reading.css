@@ -2187,8 +2187,10 @@ body.tool-hl .check-box { user-select: none; }
     position: static; flex: none; width: 100%;
     border-right: none; border-bottom: 1px solid #e5e7eb;
   }
-}
-@media (max-width: 560px) {
+  /* Stack the bank above the questions at the same breakpoint the image
+     stacks at — leaving these as a row down to a narrower breakpoint left
+     an in-between range where the group had already gone full-width/column
+     but the body was still a cramped row, overflowing its container. */
   .rq-map-dd-body { flex-direction: column; }
   .rq-map-dd-body .rq-sc-bank { flex-basis: auto; width: 100%; }
 }
