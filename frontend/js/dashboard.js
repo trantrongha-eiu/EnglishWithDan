@@ -294,10 +294,10 @@ function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function getMascotState(streak, previousStreak) {
     if (streak === 0 && previousStreak > 10) {
-        return { mood: 'angry', img: 'img/loststreak.jpg', msg: pick(ANGRY_MSGS)(previousStreak) };
+        return { mood: 'angry', img: 'img/loststreak.jpg', alt: 'Dan đang tức giận', msg: pick(ANGRY_MSGS)(previousStreak) };
     }
     if (streak === 0) {
-        return { mood: 'sad', emoji: '🐼😢', msg: pick(SAD_MSGS) };
+        return { mood: 'sad', img: 'img/listening_readingbelow40%25.jpg', alt: 'Dan đang buồn', msg: pick(SAD_MSGS) };
     }
     return { mood: 'happy', emoji: getMascotEmoji(streak), msg: getMascotMsg(streak) };
 }
@@ -322,7 +322,7 @@ function applyMascotState(streak, previousStreak) {
         if (msgEl) msgEl.textContent = state.msg;
         if (pandaEl) {
             pandaEl.innerHTML = state.img
-                ? `<img src="${state.img}" alt="Dan đang tức giận">`
+                ? `<img src="${state.img}" alt="${state.alt || ''}">`
                 : '';
             if (!state.img) pandaEl.textContent = state.emoji;
         }
