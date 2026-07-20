@@ -2165,17 +2165,20 @@ body.tool-hl .check-box { user-select: none; }
   .rq-map-questions { padding: 12px; }
 }
 
-/* ── Map drag-drop mode: image LEFT (sticky), questions+bank RIGHT (column) ── */
+/* ── Map drag-drop mode: image LEFT (sticky), then bank, then questions ── */
 .rq-map-dd-group { flex-direction: row; align-items: flex-start; }
 .rq-map-dd-body {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-start;
   gap: 14px;
   padding: 16px;
   min-width: 0;
 }
-.rq-map-dd-questions { display: flex; flex-direction: column; gap: 10px; }
+/* order:-1 puts the bank before the questions column, i.e. on the left. */
+.rq-map-dd-body .rq-sc-bank { position: static; flex: 0 0 220px; order: -1; }
+.rq-map-dd-questions { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
 .map-dd-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .map-dd-label { font-size: 13px; color: #4b5563; flex: 1; min-width: 0; }
 @media (max-width: 768px) {
@@ -2184,6 +2187,10 @@ body.tool-hl .check-box { user-select: none; }
     position: static; flex: none; width: 100%;
     border-right: none; border-bottom: 1px solid #e5e7eb;
   }
+}
+@media (max-width: 560px) {
+  .rq-map-dd-body { flex-direction: column; }
+  .rq-map-dd-body .rq-sc-bank { flex-basis: auto; width: 100%; }
 }
 
 /* ── MATCHING OPTIONS GROUP (BC/IDP layout) ─────────────────────────── */
@@ -2490,10 +2497,10 @@ body.tool-hl .check-box { user-select: none; }
 /* ── Matching Headings ────────────────────────────────────────────── */
 .rq-mh-questions { display: flex; flex-direction: column; gap: 8px; }
 
-/* ── Summary Completion ───────────────────────────────────────────── */
+/* ── Summary Completion (bank on the left) ───────────────────────── */
 .rq-summary-group {
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: 220px 1fr;
   gap: 20px;
   align-items: start;
 }
@@ -2507,6 +2514,7 @@ body.tool-hl .check-box { user-select: none; }
   border-radius: 10px;
 }
 .rq-sc-bank {
+  order: -1;
   border: 1.5px solid #e0e7ff;
   border-radius: 12px;
   overflow: hidden;
@@ -2548,7 +2556,7 @@ body.tool-hl .check-box { user-select: none; }
 .sc-drop { min-width: 90px; height: auto; justify-content: flex-start; vertical-align: middle; margin: 0 4px; padding: 4px 10px; }
 @media (max-width: 640px) {
   .rq-summary-group { grid-template-columns: 1fr; }
-  .rq-sc-bank { order: -1; position: static; }
+  .rq-sc-bank { position: static; }
   .rq-sc-bank-chips { flex-direction: row; flex-wrap: wrap; }
   .rq-sc-bank-chips .drag-chip { width: auto; }
 }

@@ -3166,6 +3166,13 @@ function setTool(tool) {
     if (td) td.classList.toggle('active', next === 'dict');
   });
   document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
+  // .radio-opt/.checkbox-opt default to user-select:none (see reading.css) so
+  // a quick answer-pick click doesn't flash a text selection. Lift that while
+  // Highlight OR Dict is active — the Dict tool's double-click word lookup
+  // reads window.getSelection(), which never populates while
+  // user-select:none is in effect. (Note: this 'tool-hl' is a body CLASS,
+  // unrelated to the '#tool-hl*' button ELEMENT IDs looped over above.)
+  document.body.classList.toggle('tool-hl', next === 'highlight' || next === 'dict');
 }
 
 document.addEventListener('mouseup', e => {

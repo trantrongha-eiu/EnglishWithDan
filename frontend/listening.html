@@ -2772,7 +2772,12 @@
                 document.getElementById('tool-dict-pr')?.classList.add('active');
             }
             document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
-            document.body.classList.toggle('tool-hl', next === 'highlight');
+            // .radio-opt/.checkbox-opt default to user-select:none (so a quick
+            // answer-pick click doesn't flash a text selection) — 'tool-hl'
+            // lifts that. The Dict tool needs it too: double-click word lookup
+            // reads window.getSelection(), which the browser never populates
+            // while user-select:none is in effect.
+            document.body.classList.toggle('tool-hl', next === 'highlight' || next === 'dict');
         }
 
         function setToolExam(tool) {
@@ -2782,7 +2787,7 @@
             if (next === 'highlight') document.getElementById('tool-hl-exam')?.classList.add('active');
             if (next === 'dict') document.getElementById('tool-dict-exam')?.classList.add('active');
             document.body.style.cursor = next === 'highlight' ? 'crosshair' : 'default';
-            document.body.classList.toggle('tool-hl', next === 'highlight');
+            document.body.classList.toggle('tool-hl', next === 'highlight' || next === 'dict');
         }
 
         // ══════════════════════════════════════════════
