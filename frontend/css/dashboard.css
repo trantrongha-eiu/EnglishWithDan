@@ -1229,7 +1229,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 /* Left = intro + streak mascot, middle = leaderboard, right = feature
    highlight cards stacked vertically. Collapses to a single column
    (left, then middle, then right, in source order) below 960px. */
-.dash-home-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start}
+.dash-home-grid{display:grid;grid-template-columns:1.2fr 1.2fr 0.85fr;gap:20px;align-items:start}
 .dash-home-col{display:flex;flex-direction:column;gap:16px}
 @media(max-width:1180px){.dash-home-grid{grid-template-columns:1fr}}
 
