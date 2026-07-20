@@ -22,6 +22,9 @@ const VocabActivitySchema = new mongoose.Schema({
   wordsAdded:   { type: Number, default: 0 },
   // Số lần cập nhật trạng thái học 1 từ (PATCH …/words/:wordId với status)
   wordsStudied: { type: Number, default: 0 },
+  // Tổng điểm streak (lửa) đã cộng trong ngày từ các buổi luyện từ vựng —
+  // dùng để giới hạn tối đa 5 lửa/ngày (vocabBookService.completePractice).
+  streakBonusEarned: { type: Number, default: 0 },
 }, { timestamps: true });
 
 // Đảm bảo (userId, date) là unique → upsert an toàn

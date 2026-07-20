@@ -94,7 +94,7 @@ async function getStats(userId) {
       .limit(10)
       .lean(),
     // NOT leaned: resetIfStale()/save() below need a real Mongoose document.
-    User.findById(userId).select('learningStreak previousStreak lastActivityDate totalStudyMinutes')
+    User.findById(userId).select('learningStreak previousStreak lastActivityDate totalStudyMinutes streakHammers streakLostAt')
   ]);
 
   // Reset streak nếu học sinh bỏ lỡ >= 2 ngày, để hiển thị đúng khi mở trang
@@ -113,6 +113,8 @@ async function getStats(userId) {
     previousStreak: user.previousStreak || 0,
     lastActivity: user.lastActivityDate,
     totalStudyMinutes: user.totalStudyMinutes || 0,
+    streakHammers: user.streakHammers || 0,
+    canUseHammer: user.canUseHammer(),
     reading: { total: readingAttempts.length, avgBand: avgReading, history: readingAttempts },
     listening: { total: listeningAttempts.length, avgBand: avgListening, history: listeningAttempts },
     writing: { total: writingAttempts.length, history: writingAttempts },
@@ -186,4 +188,15 @@ async function getStreakLeaderboard(limit = 10) {
     .slice(0, limit);
 }
 
-module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard };
+// Búa Daniel: spend 1 hammer to restore the streak lost within the last 3
+// days. NOT leaned — useHammerToRestore()/save() need a real document.
+async function useHammer(userId) {
+  const user = await User.findById(userId).select('learningStreak previousStreak streakLostAt streakHammers');
+  if (!user) return { status: 'not_eligible' };
+  const restored = user.useHammerToRestore();
+  if (!restored) return { status: 'not_eligible' };
+  await user.save();
+  return { status: 'ok', streak: user.learningStreak, streakHammers: user.streakHammers };
+}
+
+module.exports = { getProfile, updateProfile, changePassword, uploadAvatar, getStats, getActivityHeatmap, getStreakLeaderboard, useHammer };

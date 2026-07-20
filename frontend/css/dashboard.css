@@ -344,6 +344,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dan-streak-label{font-size:12px;color:var(--text3);font-weight:600;margin-left:2px}
 .dan-streak-msg{font-size:13px;color:var(--text2);line-height:1.5}
 .dan-streak-card.is-angry .dan-streak-msg{color:var(--danger);font-weight:600}
+
+/* Búa Daniel badge (inventory count, next to the fire streak badge) +
+   "use hammer" button (shown only while eligible — see renderHammerUI()). */
+.dan-hammer-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-left:8px;
+  background:#fffbeb;border:1px solid #fde68a;border-radius:20px;padding:2px 8px 2px 3px;
+  font-size:12px;font-weight:700;color:#b45309;
+}
+[data-theme="dark"] .dan-hammer-badge{background:rgba(180,83,9,.18);border-color:rgba(217,119,6,.4);color:#fbbf24}
+.dan-hammer-icon{width:16px;height:16px;border-radius:50%;object-fit:cover;display:block}
+.btn-use-hammer{
+  display:inline-flex;align-items:center;gap:8px;margin-top:10px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:var(--radius);
+  padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:filter .15s,box-shadow .15s;
+  box-shadow:0 2px 8px rgba(217,119,6,.3);
+}
+.btn-use-hammer:hover{filter:brightness(1.06)}
+.btn-use-hammer:disabled{opacity:.6;cursor:default}
+.btn-use-hammer .dan-hammer-icon{width:20px;height:20px}
 .dan-week{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .dan-week-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
 .dan-week-row{display:flex;gap:8px}
@@ -1246,6 +1265,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .welcome-feat-card--highlight:hover{border-color:#4ade80}
 [data-theme="dark"] .welcome-feat-card--highlight{background:linear-gradient(135deg,#052e16 0%,#1c1917 100%);border-color:#166534}
 .feat-badge-new{display:inline-block;background:#16a34a;color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;margin-left:5px;vertical-align:middle;letter-spacing:.03em}
+
+/* Búa Daniel feature card icon — a real photo instead of a pastel FA icon */
+.welcome-feat-icon-img{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:10px;margin-bottom:10px;overflow:hidden;
+  background:#fefce8;
+}
+.welcome-feat-icon-img img{width:100%;height:100%;object-fit:cover}
+[data-theme="dark"] .welcome-feat-icon-img{background:rgba(180,83,9,.18)}
 
 /* ── Help guide button in topbar ── */
 .btn-help-guide{

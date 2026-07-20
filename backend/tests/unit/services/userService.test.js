@@ -11,9 +11,10 @@ async function forceCreatedAt(Model, id, isoUtc) {
   await Model.collection.updateOne({ _id: id }, { $set: { createdAt: new Date(isoUtc) } });
 }
 
+function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d; }
+
 describe('userService.getStats — previousStreak', () => {
   test('exposes previousStreak so the dashboard mascot can show the "just lost a streak" state', async () => {
-    const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
     const user = await createStudent({ extra: { learningStreak: 12, lastActivityDate: daysAgo(3) } });
 
     const stats = await userService.getStats(user._id);
@@ -22,6 +23,53 @@ describe('userService.getStats — previousStreak', () => {
     // snapshotted the dead 12-day streak before zeroing learningStreak.
     expect(stats.streak).toBe(0);
     expect(stats.previousStreak).toBe(12);
+  });
+});
+
+describe('userService.getStats — búa Daniel fields', () => {
+  test('exposes streakHammers and canUseHammer', async () => {
+    const user = await createStudent({
+      extra: { learningStreak: 0, previousStreak: 8, lastActivityDate: daysAgo(3), streakHammers: 2, streakLostAt: daysAgo(1) }
+    });
+
+    const stats = await userService.getStats(user._id);
+
+    expect(stats.streakHammers).toBe(2);
+    expect(stats.canUseHammer).toBe(true);
+  });
+
+  test('canUseHammer is false with no hammers in inventory', async () => {
+    const user = await createStudent({
+      extra: { learningStreak: 0, previousStreak: 8, lastActivityDate: daysAgo(3), streakHammers: 0, streakLostAt: daysAgo(1) }
+    });
+
+    const stats = await userService.getStats(user._id);
+
+    expect(stats.canUseHammer).toBe(false);
+  });
+});
+
+describe('userService.useHammer', () => {
+  test('restores the streak and consumes 1 hammer when eligible', async () => {
+    const user = await createStudent({
+      extra: { learningStreak: 0, previousStreak: 9, streakLostAt: daysAgo(1), streakHammers: 1 }
+    });
+
+    const result = await userService.useHammer(user._id);
+
+    expect(result.status).toBe('ok');
+    expect(result.streak).toBe(9);
+    expect(result.streakHammers).toBe(0);
+  });
+
+  test('returns not_eligible and makes no changes when the student has no hammers', async () => {
+    const user = await createStudent({
+      extra: { learningStreak: 0, previousStreak: 9, streakLostAt: daysAgo(1), streakHammers: 0 }
+    });
+
+    const result = await userService.useHammer(user._id);
+
+    expect(result.status).toBe('not_eligible');
   });
 });
 

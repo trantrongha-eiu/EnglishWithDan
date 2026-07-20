@@ -79,10 +79,18 @@
                   <span class="dan-fire" id="dan-fire">🔥</span>
                   <span class="dan-streak-num" id="dan-streak-num">0</span>
                   <span class="dan-streak-label">ngày streak</span>
+                  <span class="dan-hammer-badge" id="dan-hammer-badge" style="display:none" title="Búa Daniel">
+                    <img src="img/buaDaniel.jpg" alt="Búa Daniel" class="dan-hammer-icon">
+                    <span id="dan-hammer-count">0</span>
+                  </span>
                 </div>
                 <div class="dan-streak-msg" id="dan-streak-msg">Đang tải...</div>
               </div>
             </div>
+            <button class="btn-use-hammer" id="btn-use-hammer" onclick="useHammer()" style="display:none">
+              <img src="img/buaDaniel.jpg" alt="" class="dan-hammer-icon">
+              Dùng búa Daniel — khôi phục streak vừa mất
+            </button>
             <div class="dan-week">
               <div class="dan-week-title">Tiến độ 7 ngày qua</div>
               <div class="dan-week-row" id="dan-week-row"></div>
@@ -136,13 +144,18 @@
             </div>
             <div class="welcome-feat-card">
               <div class="welcome-feat-icon welcome-feat-icon--yellow"><i class="fas fa-fire-alt"></i></div>
-              <h4>Streak hàng ngày</h4>
-              <p>Học ít nhất một lần mỗi ngày để giữ streak. Panda sẽ cổ vũ bạn! Streak bị reset nếu bỏ một ngày.</p>
+              <h4>Streak hàng ngày <span class="feat-badge-new">MỚI</span></h4>
+              <p>Luyện từ vựng đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong>, cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.</p>
             </div>
             <div class="welcome-feat-card welcome-feat-card--highlight">
               <div class="welcome-feat-icon welcome-feat-icon--teal"><i class="fas fa-book-open"></i></div>
               <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
               <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
+            </div>
+            <div class="welcome-feat-card welcome-feat-card--highlight">
+              <div class="welcome-feat-icon-img"><img src="img/buaDaniel.jpg" alt="Búa Daniel"></div>
+              <h4>Búa Daniel <span class="feat-badge-new">MỚI</span></h4>
+              <p>Học trọn 1 Paraphrase Unit đúng <strong>≥ 90%</strong> để nhận <strong>1 búa Daniel</strong> (mỗi unit chỉ 1 lần). Nếu lỡ bỏ học và mất streak, dùng búa trong vòng <strong>3 ngày</strong> để khôi phục lại đúng số ngày đã mất!</p>
             </div>
           </div>
 

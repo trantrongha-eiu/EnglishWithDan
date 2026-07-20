@@ -40,6 +40,17 @@ const UserSchema = new mongoose.Schema({
   // Cleared back to 0 as soon as the student studies again (updateStreak()).
   previousStreak:       { type: Number, default: 0 },
   lastActivityDate:     { type: Date, default: null },
+  // VN-day timestamp of the most recent streak-to-0 reset (whichever of
+  // resetIfStale()/updateStreak() detected it first) — powers the 3-day
+  // "búa Daniel" (streak-restore hammer) eligibility window.
+  streakLostAt:         { type: Date, default: null },
+  // Búa Daniel inventory — earned by clearing a Paraphrase Unit at >=90%
+  // accuracy (see vocabBookService.completePractice), spent via
+  // useHammerToRestore() to undo a streak loss within 3 days.
+  streakHammers:        { type: Number, default: 0 },
+  // Paraphrase VocabUnits already rewarded with a hammer — each unit only
+  // ever grants one, no matter how many times it's re-cleared at >=90%.
+  hammerAwardedUnits:   [{ type: mongoose.Schema.Types.ObjectId, ref: 'VocabUnit' }],
   totalStudyMinutes:    { type: Number, default: 0 },
   // Password reset OTP
   resetOTP:           { type: String, default: '' },
@@ -65,24 +76,42 @@ function getVNDay(date) {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 }
 
-// Cập nhật streak khi user hoạt động
-UserSchema.methods.updateStreak = function () {
+// Cập nhật streak khi user hoạt động. `bonus` is how much to add for today's
+// activity — defaults to 1 (flat, e.g. adding a word, reading/listening
+// attempts). Same-day repeat calls are a no-op by default (unchanged from
+// before), UNLESS `allowSameDayStack` is set — vocab practice sessions pass
+// an accuracy-derived amount (0/1/2) WITH allowSameDayStack:true, so several
+// sessions in one day can each add their own bonus, up to whatever daily cap
+// the caller (vocabBookService.completePractice) already enforced before
+// calling this. `lastActivityDate` always advances on a qualifying activity
+// call even when bonus is 0, so a low-accuracy session still keeps the
+// day-chain alive without growing it.
+UserSchema.methods.updateStreak = function (bonus = 1, { allowSameDayStack = false } = {}) {
   // Studying again ends the "just lost a streak" mascot state immediately,
   // whether this continues a streak, restarts one, or is a same-day no-op.
   this.previousStreak = 0;
   const today = getVNDay(new Date());
   if (!this.lastActivityDate) {
-    this.learningStreak = 1;
+    this.learningStreak = bonus;
     this.lastActivityDate = today;
     return;
   }
   const lastDay = getVNDay(new Date(this.lastActivityDate));
   const diff = Math.floor((today - lastDay) / (1000 * 60 * 60 * 24));
-  if (diff === 0) return; // same day
+  if (diff === 0) {
+    if (allowSameDayStack && bonus > 0) this.learningStreak += bonus;
+    return; // same day — lastActivityDate already today, nothing else to do
+  }
   if (diff === 1) {
-    this.learningStreak += 1;
+    this.learningStreak += bonus;
   } else {
-    this.learningStreak = 1; // reset streak
+    // A real gap (>=2 days) — the previous streak just died. Snapshot it
+    // (mirrors resetIfStale()) before restarting the chain with today's bonus.
+    if (this.learningStreak > 0) {
+      this.previousStreak = this.learningStreak;
+      this.streakLostAt = today;
+    }
+    this.learningStreak = bonus;
   }
   this.lastActivityDate = today;
 };
@@ -98,10 +127,36 @@ UserSchema.methods.resetIfStale = function () {
   if (diff >= 2) {
     if (this.learningStreak === 0) return false; // already reset, skip redundant save
     this.previousStreak = this.learningStreak;
+    this.streakLostAt = today;
     this.learningStreak = 0;
     return true;
   }
   return false;
+};
+
+// Búa Daniel: khôi phục streak vừa mất, chỉ trong vòng 3 ngày kể từ lúc mất.
+UserSchema.methods.canUseHammer = function () {
+  if (this.streakHammers <= 0) return false;
+  if (this.learningStreak !== 0 || this.previousStreak <= 0) return false;
+  if (!this.streakLostAt) return false;
+  const today = getVNDay(new Date());
+  const lostDay = getVNDay(new Date(this.streakLostAt));
+  const diff = Math.floor((today - lostDay) / (1000 * 60 * 60 * 24));
+  return diff <= 3;
+};
+
+UserSchema.methods.useHammerToRestore = function () {
+  if (!this.canUseHammer()) return false;
+  this.learningStreak = this.previousStreak;
+  this.previousStreak = 0;
+  this.streakLostAt = null;
+  this.streakHammers -= 1;
+  // Re-anchor the day-chain to today — otherwise the next resetIfStale()/
+  // getStats() call would still see the old stale lastActivityDate, decide
+  // the (just-restored) streak is stale all over again, and immediately
+  // re-zero it.
+  this.lastActivityDate = getVNDay(new Date());
+  return true;
 };
 
 module.exports = mongoose.model('User', UserSchema);

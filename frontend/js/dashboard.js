@@ -38,6 +38,9 @@ let sessionAnsweredCount = 0;
 let _streakReportedThisSession = false;
 let _persistedThisSession = false; // prevent double-counting wrongCount on multiple showResults calls
 
+// ── Búa Daniel (streak-restore hammer) ─────────
+let _hammerState = { streakHammers: 0, canUseHammer: false };
+
 // ── Vocab book practice tracking ───────────────
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
 let _isDifficultPractice = false; // true khi ôn từ hay sai
@@ -303,7 +306,36 @@ async function loadStreakAndUpdateMascot() {
         const streak = data.stats?.streak ?? 0;
         const previousStreak = data.stats?.previousStreak ?? 0;
         applyMascotState(streak, previousStreak);
+        _hammerState.streakHammers = data.stats?.streakHammers ?? 0;
+        _hammerState.canUseHammer  = data.stats?.canUseHammer ?? false;
+        renderHammerUI();
     } catch { /* silent */ }
+}
+
+// Búa Daniel badge (always shown when the student owns >=1) + the
+// "restore streak" button (shown only while actually eligible — see
+// User.canUseHammer() on the backend for the exact 3-day/streak-lost rule).
+function renderHammerUI() {
+    const badge   = document.getElementById('dan-hammer-badge');
+    const countEl = document.getElementById('dan-hammer-count');
+    const btn     = document.getElementById('btn-use-hammer');
+    if (badge) badge.style.display = _hammerState.streakHammers > 0 ? 'inline-flex' : 'none';
+    if (countEl) countEl.textContent = _hammerState.streakHammers;
+    if (btn) btn.style.display = _hammerState.canUseHammer ? 'inline-flex' : 'none';
+}
+
+async function useHammer() {
+    const btn = document.getElementById('btn-use-hammer');
+    if (btn) { btn.disabled = true; }
+    try {
+        const res = await fetch(`${API}/user/streak/use-hammer`, { method: 'POST', headers: authH() });
+        const d = await res.json();
+        if (!d.success) { toast(d.message || 'Không thể dùng búa lúc này', 'error'); return; }
+        toast(`🔨 Đã khôi phục streak ${d.streak} ngày!`, 'success');
+        await loadStreakAndUpdateMascot();
+        loadWeeklyProgress();
+    } catch { toast('Không thể dùng búa lúc này', 'error'); }
+    finally { if (btn) btn.disabled = false; }
 }
 
 const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
@@ -1566,17 +1598,32 @@ function openSaveWordFromUnit(wordText) {
 /* ══════════════════════════════════════════════
    PRACTICE
 ══════════════════════════════════════════════ */
+// A Paraphrase Unit session is one loaded via loadUnit() (not the personal
+// book, not the "Từ hay sai" retry list — both also set currentUnit but
+// _isBookPractice stays true for the book, and the retry unit has no real
+// backend _id) whose words include at least one paraphrase-type entry.
+function _isParaphraseUnitSession() {
+    return !_isBookPractice && !!currentUnit?._id &&
+        (currentUnit.words || []).some(w => w.type === 'paraphrase');
+}
+
 async function _reportSessionStreak() {
     if (_streakReportedThisSession) return;
     if (sessionAnsweredCount < 5) return;
     _streakReportedThisSession = true;
     try {
+        const isParaphrase = _isParaphraseUnitSession();
         const res = await fetch(`${API}/vocabbook/practice-complete`, {
             method: 'POST', headers: authH(),
-            body: JSON.stringify({ wordsAnswered: sessionAnsweredCount })
+            body: JSON.stringify({
+                wordsAnswered: sessionAnsweredCount,
+                correctAnswered: correctAnswers,
+                unitId: isParaphrase ? currentUnit._id : null,
+                unitType: isParaphrase ? 'paraphrase' : null
+            })
         });
         const d = await res.json();
-        if (d.success && d.streak) {
+        if (d.success) {
             const numEl = document.getElementById('mascot-streak-num');
             if (numEl) animateCount(numEl, d.streak, 500);
             const msgEl = document.getElementById('mascot-msg');
@@ -1584,16 +1631,25 @@ async function _reportSessionStreak() {
             const pandaEl = document.getElementById('mascot-panda');
             if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
 
-            // Streak just grew — also refresh the welcome-view banner (no
-            // "just lost" state possible right after a successful session).
             const danNumEl = document.getElementById('dan-streak-num');
             if (danNumEl) animateCount(danNumEl, d.streak, 500);
             const danMsgEl = document.getElementById('dan-streak-msg');
             if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
             const danMascotEl = document.getElementById('dan-mascot');
             if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
-            const danCardEl = document.getElementById('dan-streak-card');
-            if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
+            if (d.streak > 0) {
+                // Only a real streak (bonus>0 this call, or restored) ends the
+                // "just lost a streak" mascot state — a 0-bonus (<80%) session
+                // right after a gap can legitimately still land at streak 0.
+                const danCardEl = document.getElementById('dan-streak-card');
+                if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
+            }
+
+            _hammerState.streakHammers = d.streakHammers ?? _hammerState.streakHammers;
+            renderHammerUI();
+            if (d.hammerEarned) {
+                toast('🔨 Bạn vừa nhận 1 búa Daniel vì học Paraphrase Unit xuất sắc (>=90%)!', 'success');
+            }
             loadWeeklyProgress();
         }
     } catch { /* silent */ }
@@ -1837,7 +1893,6 @@ function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showM
 
 function checkMixedMC(btn, selected, correct) {
     if (answered) return; answered = true;
-    _countAnswer();
     document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1848,12 +1903,15 @@ function checkMixedMC(btn, selected, correct) {
         document.querySelectorAll('#mixAnswerOptions .answer-option')
             .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     }
+    // Called after correctAnswers/wrongAnswers are tallied for THIS answer —
+    // _reportSessionStreak() (triggered once sessionAnsweredCount hits 5)
+    // reads those counts, so it must see the current answer's result too.
+    _countAnswer();
     document.getElementById('mixBtnNext').style.display = 'flex';
 }
 
 function checkMixedListen() {
     if (answered) return; answered = true;
-    _countAnswer();
     const ua = document.getElementById('mixListenInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixListenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -1869,12 +1927,12 @@ function checkMixedListen() {
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
     }
+    _countAnswer();
     document.getElementById('mixBtnNext').style.display = 'flex';
 }
 
 function checkMixedTrans() {
     if (answered) return; answered = true;
-    _countAnswer();
     const ua    = document.getElementById('mixTransInput')?.value.trim().toLowerCase() || '';
     document.getElementById('mixTransInput').disabled = true;
     const caRaw = currentWord.meaning.toLowerCase();
@@ -1899,6 +1957,7 @@ function checkMixedTrans() {
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
     }
+    _countAnswer();
     document.getElementById('mixBtnNext').style.display = 'flex';
 }
 
@@ -1930,7 +1989,6 @@ function generateOptions(cw) {
 }
 function checkMultipleChoice(btn, selected, correct) {
     if (answered) return; answered = true;
-    _countAnswer();
     document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.disabled = true);
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
@@ -1941,6 +1999,7 @@ function checkMultipleChoice(btn, selected, correct) {
         document.querySelectorAll('#mcAnswerOptions .answer-option')
             .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     }
+    _countAnswer();
     document.getElementById('mcBtnNext').style.display = 'flex';
 }
 function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
@@ -1998,8 +2057,8 @@ function flipCard() {
 function markAsRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
-    _countAnswer();
     correctAnswers++; playCorrectSound();
+    _countAnswer();
     document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Great job! You remembered this word! 🎉</div>';
     disableFlashcardBtns();
     setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
@@ -2007,10 +2066,10 @@ function markAsRemembered() {
 function markAsNotRemembered() {
     if (!isFlipped) { toast('Flip the card first!', 'error'); return; }
     if (answered) return; answered = true;
-    _countAnswer();
     wrongAnswers++; playWrongSound();
     wrongWordSet.add(currentWord.word);
     requeueWrongWord(currentWord);
+    _countAnswer();
 
     // Hiện feedback + nút Tiếp theo ngay để học sinh tự review rồi bấm
     document.getElementById('fbFeedback').innerHTML =
@@ -2052,7 +2111,6 @@ function checkFillBlank() {
     const ca = currentWord.word.toLowerCase();
     if (!ua) { toast('Type a word first', 'error'); return; }
     answered = true;
-    _countAnswer();
     document.getElementById('fbInput').disabled = true;
     disableFlashcardBtns();
     if (ua === ca) {
@@ -2065,6 +2123,7 @@ function checkFillBlank() {
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
     }
+    _countAnswer();
     document.getElementById('fbBtnNext').style.display = 'flex';
 }
 
@@ -2084,7 +2143,6 @@ function showListeningQuestion() {
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
     if (answered) return; answered = true;
-    _countAnswer();
     const ua = document.getElementById('listenInput').value.trim().toLowerCase();
     document.getElementById('listenInput').disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
@@ -2100,6 +2158,7 @@ function checkListening() {
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
     }
+    _countAnswer();
     document.getElementById('listenBtnNext').style.display = 'flex';
 }
 
@@ -2124,7 +2183,6 @@ function showTranslationQuestion() {
 }
 function checkTranslation() {
     if (answered) return; answered = true;
-    _countAnswer();
     const ua     = document.getElementById('transInput').value.trim().toLowerCase();
     document.getElementById('transInput').disabled = true;
     const caRaw  = currentWord.meaning.toLowerCase();
@@ -2149,6 +2207,7 @@ function checkTranslation() {
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
     }
+    _countAnswer();
     document.getElementById('transBtnNext').style.display = 'flex';
 }
 

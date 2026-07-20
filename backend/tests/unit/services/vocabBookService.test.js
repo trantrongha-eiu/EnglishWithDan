@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const vocabBookService = require('../../../services/vocabBookService');
 const VocabBook = require('../../../models/VocabBook');
-const { createVocabBook } = require('../../factories/contentFactory');
+const { createVocabBook, createVocabUnit } = require('../../factories/contentFactory');
 const { createStudent } = require('../../factories/userFactory');
 
 function makeWords(n, prefix = 'word') {
@@ -275,23 +275,58 @@ describe('vocabBookService', () => {
   });
 
   describe('completePractice (student side-effects)', () => {
-    it('updates streak for a student with >=5 words answered', async () => {
+    it('applies +1 streak for 80-90% accuracy', async () => {
       const student = await createStudent();
-      const result = await vocabBookService.completePractice(student, 5);
+      // 4/5 = 80%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 4 });
       expect(result.status).toBe('ok');
+      expect(result.bonusApplied).toBe(1);
       expect(result.streak).toBe(1);
+    });
+
+    it('applies +2 streak for >=90% accuracy', async () => {
+      const student = await createStudent();
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      expect(result.bonusApplied).toBe(2);
+      expect(result.streak).toBe(2);
+    });
+
+    it('applies +0 streak for <80% accuracy, but still keeps the day-chain alive', async () => {
+      const student = await createStudent();
+      // 3/5 = 60%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 3 });
+      expect(result.bonusApplied).toBe(0);
+      expect(result.streak).toBe(0);
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.lastActivityDate).not.toBeNull(); // studied today, chain alive
+    });
+
+    it('caps total streak bonus at +5 per day across multiple sessions', async () => {
+      const student = await createStudent();
+      // 3 sessions at 100% (+2 each) in the same day would be +6 uncapped
+      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      const third = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      // 2 + 2 = 4 already earned today, only 1 of the requested 2 remains under the cap
+      expect(third.bonusApplied).toBe(1);
+      expect(third.streak).toBe(5);
+
+      const fourth = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      expect(fourth.bonusApplied).toBe(0); // cap fully spent
+      expect(fourth.streak).toBe(5);
     });
 
     it('returns too_few for fewer than 5 words answered', async () => {
       const student = await createStudent();
-      const result = await vocabBookService.completePractice(student, 4);
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 4, correctAnswered: 4 });
       expect(result.status).toBe('too_few');
     });
 
     it('returns not_student for a non-student role', async () => {
       const { createTeacher } = require('../../factories/userFactory');
       const teacher = await createTeacher();
-      const result = await vocabBookService.completePractice(teacher, 10);
+      const result = await vocabBookService.completePractice(teacher, { wordsAnswered: 10, correctAnswered: 10 });
       expect(result.status).toBe('not_student');
     });
 
@@ -299,7 +334,7 @@ describe('vocabBookService', () => {
       const VocabActivity = require('../../../models/VocabActivity');
       const student = await createStudent();
 
-      await vocabBookService.completePractice(student, 5);
+      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
       // logActivity() inside completePractice is fire-and-forget — give its
       // upsert a moment to land before asserting on it.
       await new Promise(resolve => setTimeout(resolve, 50));
@@ -307,11 +342,56 @@ describe('vocabBookService', () => {
       const docs = await VocabActivity.find({ userId: student._id });
       expect(docs).toHaveLength(1);
       expect(docs[0].wordsStudied).toBe(5);
+      expect(docs[0].streakBonusEarned).toBe(2);
 
       const now = new Date();
       const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000);
       const expectedDay = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate()));
       expect(docs[0].date.getTime()).toBe(expectedDay.getTime());
+    });
+
+    describe('Búa Daniel (streak-restore hammer)', () => {
+      it('awards 1 hammer for a paraphrase unit cleared at >=90% accuracy', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit();
+
+        const result = await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
+        });
+
+        expect(result.hammerEarned).toBe(true);
+        expect(result.streakHammers).toBe(1);
+      });
+
+      it('does not award a second hammer for re-clearing the same unit', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit();
+
+        await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
+        });
+        const second = await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
+        });
+
+        expect(second.hammerEarned).toBe(false);
+        expect(second.streakHammers).toBe(1);
+      });
+
+      it('does not award a hammer below 90% accuracy or for non-paraphrase sessions', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit();
+
+        const belowBar = await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 4, unitId: unit._id, unitType: 'paraphrase'
+        });
+        expect(belowBar.hammerEarned).toBe(false);
+
+        const notParaphrase = await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: null
+        });
+        expect(notParaphrase.hammerEarned).toBe(false);
+      });
     });
   });
 });

@@ -63,6 +63,15 @@ exports.getStreakLeaderboard = catchAsync(async (req, res) => {
   res.json({ success: true, leaderboard });
 });
 
+// ── POST /api/user/streak/use-hammer ─────────────────────────
+exports.useHammer = catchAsync(async (req, res) => {
+  const result = await userService.useHammer(req.user._id);
+  if (result.status === 'not_eligible') {
+    return res.status(400).json({ success: false, message: 'Bạn chưa đủ điều kiện dùng búa Daniel.' });
+  }
+  res.json({ success: true, streak: result.streak, streakHammers: result.streakHammers });
+});
+
 // ── INBOX ─────────────────────────────────────────────────────
 // Deliberately NOT using catchAsync here: catchAsync responds with the raw
 // err.message, but these four routes always responded with the generic

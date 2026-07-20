@@ -9,6 +9,7 @@ router.post('/avatar',         auth, userCtrl.uploadAvatar);
 router.get('/stats',           auth, userCtrl.getStats);
 router.get('/activity-heatmap', auth, userCtrl.getActivityHeatmap);
 router.get('/streak-leaderboard', auth, userCtrl.getStreakLeaderboard);
+router.post('/streak/use-hammer', auth, userCtrl.useHammer);
 
 // ── INBOX ─────────────────────────────────────────────────────
 router.get('/messages/unread-count', auth, userCtrl.getUnreadMessageCount);
