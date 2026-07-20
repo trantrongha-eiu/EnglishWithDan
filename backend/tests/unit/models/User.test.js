@@ -109,6 +109,15 @@ describe('User búa Daniel — canUseHammer() / useHammerToRestore()', () => {
     expect(user.canUseHammer()).toBe(false);
   });
 
+  // Exact boundary: the "within 3 days" rule uses diff <= 3, so the 3rd day
+  // itself must still be eligible — only the 4th day (tested above) cuts it off.
+  test('still eligible exactly on the 3rd day after the loss', async () => {
+    const user = await createStudent({
+      extra: { learningStreak: 0, previousStreak: 10, streakLostAt: daysAgo(3), streakHammers: 1 }
+    });
+    expect(user.canUseHammer()).toBe(true);
+  });
+
   test('eligible within 3 days, with a hammer in inventory — restores and consumes exactly 1 hammer', async () => {
     const user = await createStudent({
       extra: { learningStreak: 0, previousStreak: 10, streakLostAt: daysAgo(2), streakHammers: 3 }

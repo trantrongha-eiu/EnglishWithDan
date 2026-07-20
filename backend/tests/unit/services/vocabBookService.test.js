@@ -317,6 +317,20 @@ describe('vocabBookService', () => {
       expect(fourth.streak).toBe(5);
     });
 
+    it('the daily bonus cap resets on a new Vietnam calendar day, not a global lifetime cap', async () => {
+      const VocabActivity = require('../../../models/VocabActivity');
+      const student = await createStudent();
+      const now = new Date();
+      const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+      const todayVN = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate()));
+      const yesterdayVN = new Date(todayVN.getTime() - 24 * 60 * 60 * 1000);
+      // Yesterday's cap was already fully spent — should have zero bearing on today.
+      await VocabActivity.create({ userId: student._id, date: yesterdayVN, streakBonusEarned: 5 });
+
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      expect(result.bonusApplied).toBe(2); // full tier available today, unaffected by yesterday
+    });
+
     it('returns too_few for fewer than 5 words answered', async () => {
       const student = await createStudent();
       const result = await vocabBookService.completePractice(student, { wordsAnswered: 4, correctAnswered: 4 });
