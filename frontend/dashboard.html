@@ -60,102 +60,78 @@
     <div id="view-mybook" style="display:flex;flex-direction:column;height:100%">
 
       <div id="book-welcome" style="flex:1;overflow-y:auto;padding:40px 32px">
-        <div style="max-width:780px;margin:0 auto">
-          <!-- Title -->
-          <div style="text-align:center;margin-bottom:36px">
-            <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px">Sổ từ vựng thông minh</h3>
-            <p style="font-size:14px;color:var(--text2)">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên dưới</p>
-            <p style="font-size:13px;margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
-              <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ hoặc học Unit
-            </p>
-          </div>
+        <div style="max-width:1280px;margin:0 auto">
+          <div class="dash-home-grid">
+            <!-- Left column: intro + streak mascot -->
+            <div class="dash-home-col dash-home-col--left">
+              <div style="margin-bottom:20px">
+                <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px">Sổ từ vựng thông minh</h3>
+                <p style="font-size:14px;color:var(--text2)">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên cạnh</p>
+                <p style="font-size:13px;margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
+                  <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ hoặc học Unit
+                </p>
+              </div>
 
-          <!-- Streak mascot + weekly progress -->
-          <div class="dan-streak-card" id="dan-streak-card">
-            <div class="dan-streak-top">
-              <div class="dan-mascot" id="dan-mascot">🐼</div>
-              <div class="dan-streak-info">
-                <div class="dan-streak-badge">
-                  <span class="dan-fire" id="dan-fire">🔥</span>
-                  <span class="dan-streak-num" id="dan-streak-num">0</span>
-                  <span class="dan-streak-label">ngày streak</span>
-                  <span class="dan-hammer-badge" id="dan-hammer-badge" style="display:none" title="Búa Daniel">
-                    <img src="img/buaDaniel.jpg" alt="Búa Daniel" class="dan-hammer-icon">
-                    <span id="dan-hammer-count">0</span>
-                  </span>
+              <!-- Streak mascot + weekly progress -->
+              <div class="dan-streak-card" id="dan-streak-card">
+                <div class="dan-streak-top">
+                  <div class="dan-mascot" id="dan-mascot">🐼</div>
+                  <div class="dan-streak-info">
+                    <div class="dan-streak-badge">
+                      <span class="dan-fire" id="dan-fire">🔥</span>
+                      <span class="dan-streak-num" id="dan-streak-num">0</span>
+                      <span class="dan-streak-label">ngày streak</span>
+                      <span class="dan-hammer-badge" id="dan-hammer-badge" style="display:none" title="Búa Daniel">
+                        <img src="img/buaDaniel.jpg" alt="Búa Daniel" class="dan-hammer-icon">
+                        <span id="dan-hammer-count">0</span>
+                      </span>
+                    </div>
+                    <div class="dan-streak-msg" id="dan-streak-msg">Đang tải...</div>
+                  </div>
                 </div>
-                <div class="dan-streak-msg" id="dan-streak-msg">Đang tải...</div>
+                <button class="btn-use-hammer" id="btn-use-hammer" onclick="useHammer()" style="display:none">
+                  <img src="img/buaDaniel.jpg" alt="" class="dan-hammer-icon">
+                  Dùng búa Daniel — khôi phục streak vừa mất
+                </button>
+                <div class="dan-week">
+                  <div class="dan-week-title">Tiến độ 7 ngày qua</div>
+                  <div class="dan-week-row" id="dan-week-row"></div>
+                </div>
               </div>
             </div>
-            <button class="btn-use-hammer" id="btn-use-hammer" onclick="useHammer()" style="display:none">
-              <img src="img/buaDaniel.jpg" alt="" class="dan-hammer-icon">
-              Dùng búa Daniel — khôi phục streak vừa mất
-            </button>
-            <div class="dan-week">
-              <div class="dan-week-title">Tiến độ 7 ngày qua</div>
-              <div class="dan-week-row" id="dan-week-row"></div>
-            </div>
-          </div>
 
-          <!-- Top 10 streak leaderboard -->
-          <div class="dan-leaderboard-card" id="dan-leaderboard-card">
-            <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
-            <div class="dan-lb-list" id="dan-lb-list">
-              <div class="dan-lb-loading">Đang tải...</div>
+            <!-- Middle column: Top 10 streak leaderboard -->
+            <div class="dash-home-col dash-home-col--mid">
+              <div class="dan-leaderboard-card" id="dan-leaderboard-card">
+                <div class="dan-lb-title"><i class="fas fa-trophy"></i> Top 10 chuỗi học dài nhất</div>
+                <div class="dan-lb-list" id="dan-lb-list">
+                  <div class="dan-lb-loading">Đang tải...</div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Feature guide cards -->
-          <div class="welcome-feature-grid">
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--blue"><i class="fas fa-layer-group"></i></div>
-              <h4>Flashcard</h4>
-              <p>Lật thẻ từng từ, đánh giá mức độ nhớ: <em>Chưa thuộc</em>, <em>So-so</em>, <em>Thuộc rồi</em>. Hệ thống tự ưu tiên từ yếu để ôn lại sớm hơn.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--green"><i class="fas fa-check-circle"></i></div>
-              <h4>Quiz trắc nghiệm</h4>
-              <p>Chọn đáp án đúng trong 4 lựa chọn. Mỗi câu sai được tính thêm điểm <em>sai</em> để nhắc ôn lại qua Hard Words.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--amber"><i class="fas fa-sync-alt"></i></div>
-              <h4>Điền vào chỗ trống</h4>
-              <p>Đọc ví dụ và gõ từ tiếng Anh còn thiếu. Luyện spelling và nhớ nghĩa theo ngữ cảnh.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--purple"><i class="fas fa-headphones"></i></div>
-              <h4>Nghe – Đoán từ</h4>
-              <p>Nghe phát âm chuẩn và gõ từ bạn nghe được. Luyện tai và chính tả cùng lúc.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--pink"><i class="fas fa-language"></i></div>
-              <h4>Dịch nghĩa</h4>
-              <p>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh tương ứng. Kiểm tra khả năng sản xuất từ vựng chủ động.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--orange"><i class="fas fa-fire"></i></div>
-              <h4>Hard Words</h4>
-              <p>Tổng hợp các từ hay sai nhiều nhất. Nhấn <strong>Ôn lại từ hay sai</strong> ở sidebar để luyện riêng nhóm này.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--emerald"><i class="fas fa-file-import"></i></div>
-              <h4>Nhập hàng loạt</h4>
-              <p>Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.</p>
-            </div>
-            <div class="welcome-feat-card">
-              <div class="welcome-feat-icon welcome-feat-icon--yellow"><i class="fas fa-fire-alt"></i></div>
-              <h4>Streak hàng ngày <span class="feat-badge-new">MỚI</span></h4>
-              <p>Luyện từ vựng đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong>, cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.</p>
-            </div>
-            <div class="welcome-feat-card welcome-feat-card--highlight">
-              <div class="welcome-feat-icon welcome-feat-icon--teal"><i class="fas fa-book-open"></i></div>
-              <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
-              <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
-            </div>
-            <div class="welcome-feat-card welcome-feat-card--highlight">
-              <div class="welcome-feat-icon-img"><img src="img/buaDaniel.jpg" alt="Búa Daniel"></div>
-              <h4>Búa Daniel <span class="feat-badge-new">MỚI</span></h4>
-              <p>Học trọn 1 Paraphrase Unit đúng <strong>≥ 90%</strong> để nhận <strong>1 búa Daniel</strong> (mỗi unit chỉ 1 lần). Nếu lỡ bỏ học và mất streak, dùng búa trong vòng <strong>3 ngày</strong> để khôi phục lại đúng số ngày đã mất!</p>
+            <!-- Right column: feature highlight cards -->
+            <div class="dash-home-col dash-home-col--right">
+              <div class="welcome-feat-card">
+                <div class="welcome-feat-icon welcome-feat-icon--emerald"><i class="fas fa-file-import"></i></div>
+                <h4>Nhập hàng loạt</h4>
+                <p>Dán danh sách từ (định dạng <code>word: nghĩa</code>) — hệ thống tự tra ví dụ và phát âm từ từ điển, thêm vào sổ chỉ một click.</p>
+              </div>
+              <div class="welcome-feat-card">
+                <div class="welcome-feat-icon welcome-feat-icon--yellow"><i class="fas fa-fire-alt"></i></div>
+                <h4>Streak hàng ngày <span class="feat-badge-new">MỚI</span></h4>
+                <p>Luyện từ vựng đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong>, cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.</p>
+              </div>
+              <div class="welcome-feat-card welcome-feat-card--highlight">
+                <div class="welcome-feat-icon welcome-feat-icon--teal"><i class="fas fa-book-open"></i></div>
+                <h4>Cụm từ Paraphrase Cambridge <span class="feat-badge-new">MỚI</span></h4>
+                <p>Học các cụm paraphrase thường gặp trong bộ đề <strong>Cambridge IELTS 15–20</strong> — từ vựng huyền thoại xuất hiện trực tiếp trong đề thi thật. Chọn Paraphrase Unit ở sidebar để bắt đầu!</p>
+              </div>
+              <div class="welcome-feat-card welcome-feat-card--highlight">
+                <div class="welcome-feat-icon-img"><img src="img/buaDaniel.jpg" alt="Búa Daniel"></div>
+                <h4>Búa Daniel <span class="feat-badge-new">MỚI</span></h4>
+                <p>Học trọn 1 Paraphrase Unit đúng <strong>≥ 90%</strong> để nhận <strong>1 búa Daniel</strong> (mỗi unit chỉ 1 lần). Nếu lỡ bỏ học và mất streak, dùng búa trong vòng <strong>3 ngày</strong> để khôi phục lại đúng số ngày đã mất!</p>
+              </div>
             </div>
           </div>
 

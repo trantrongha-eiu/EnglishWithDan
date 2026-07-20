@@ -335,7 +335,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dan-streak-card.is-angry .dan-mascot{animation:pandaWiggle .5s ease-in-out infinite}
 .dan-mascot img{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;border:2px solid var(--danger)}
 .dan-streak-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.dan-streak-badge{display:inline-flex;align-items:center;gap:5px;width:fit-content}
+.dan-streak-badge{display:inline-flex;align-items:center;flex-wrap:wrap;gap:5px;width:fit-content;max-width:100%}
 .dan-fire{font-size:18px}
 .dan-streak-num{font-size:24px;font-weight:900;color:#f97316;line-height:1}
 .dan-streak-card.is-sad .dan-streak-num,
@@ -1225,8 +1225,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 [data-theme="dark"] .meaning-suggestion:hover{background:rgba(59,130,246,.22)!important;border-color:#3b82f6!important;color:#bfdbfe!important}
 [data-theme="dark"] .meaning-suggestion.selected{background:rgba(59,130,246,.28)!important;border-color:#60a5fa!important;color:#dbeafe!important}
 
-/* ── Welcome feature grid ── */
-.welcome-feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+/* ── Dashboard homepage: 3-column layout ── */
+/* Left = intro + streak mascot, middle = leaderboard, right = feature
+   highlight cards stacked vertically. Collapses to a single column
+   (left, then middle, then right, in source order) below 960px. */
+.dash-home-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start}
+.dash-home-col{display:flex;flex-direction:column;gap:16px}
+@media(max-width:1180px){.dash-home-grid{grid-template-columns:1fr}}
+
+/* ── Welcome feature cards (right column) ── */
 .welcome-feat-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   padding:18px 16px;transition:box-shadow .15s,border-color .15s;
