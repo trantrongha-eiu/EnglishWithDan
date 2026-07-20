@@ -63,36 +63,39 @@ describe('speakingService.listQuestions', () => {
 });
 
 describe('speakingService.saveAttempt', () => {
-  test('maps the feedback object onto aiFeedback fields, including error->correction mapping', async () => {
+  test('maps the feedback object onto aiFeedback fields, including mistake->correction mapping', async () => {
     const student = await createStudent();
     const feedback = {
-      overall_band: 7,
+      overallBand: 7,
       fluency: 6.5,
       vocabulary: 7,
       grammar: 6,
       pronunciation: 7.5,
-      overall_feedback: 'Good performance overall.',
-      corrected: 'Corrected transcript text.',
+      overallFeedback: 'Good performance overall.',
+      todaysFocus: 'Work on subject-verb agreement.',
       strengths: ['Clear pronunciation'],
-      errors: [
-        { wrong: 'He go to school', right: 'He goes to school', tip: 'Subject-verb agreement' },
+      mistakes: [
+        { original: 'He go to school', corrected: 'He goes to school', reason: 'Subject-verb agreement' },
       ],
       improvements: ['Use more linking words'],
     };
 
-    await speakingService.saveAttempt(student._id, {
+    const attemptId = await speakingService.saveAttempt(student._id, {
       questionId: null, topic: 'Travel', part: 2,
       questionText: 'Describe a memorable trip.', transcript: 'He go to school yesterday for a trip',
       duration: 45, feedback,
     });
 
+    expect(attemptId).not.toBeNull();
     const saved = await SpeakingAttempt.findOne({ userId: student._id }).lean();
     expect(saved).not.toBeNull();
     expect(saved.status).toBe('analyzed');
     expect(saved.aiFeedback.overallBand).toBe(7);
     expect(saved.aiFeedback.fluency).toBe(6.5);
     expect(saved.aiFeedback.overallFeedback).toBe('Good performance overall.');
-    expect(saved.aiFeedback.correctedVersion).toBe('Corrected transcript text.');
+    expect(saved.aiFeedback.todaysFocus).toBe('Work on subject-verb agreement.');
+    // Stage 1 no longer generates a corrected version — stays empty on save.
+    expect(saved.aiFeedback.correctedVersion).toBe('');
     expect(saved.aiFeedback.strengths).toEqual(['Clear pronunciation']);
     expect(saved.aiFeedback.suggestions).toEqual(['Use more linking words']);
     // corrections is a subdocument array (not {_id:false}), so each entry
@@ -102,14 +105,14 @@ describe('speakingService.saveAttempt', () => {
     ]);
   });
 
-  test('never throws even when persistence fails (invalid part enum)', async () => {
+  test('never throws even when persistence fails (invalid part enum) — resolves null', async () => {
     const student = await createStudent();
-    const feedback = { overall_band: 5, errors: [], strengths: [], improvements: [] };
+    const feedback = { overallBand: 5, mistakes: [], strengths: [], improvements: [] };
 
     await expect(speakingService.saveAttempt(student._id, {
       questionId: null, topic: 'Travel', part: 99, // not in enum [1,2,3] -> save() validation fails
       questionText: 'Q', transcript: 'T', duration: 10, feedback,
-    })).resolves.toBeUndefined();
+    })).resolves.toBeNull();
 
     const count = await SpeakingAttempt.countDocuments({ userId: student._id });
     expect(count).toBe(0); // the failed save left nothing behind
