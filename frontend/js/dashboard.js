@@ -44,6 +44,13 @@ let _hammerState = { streakHammers: 0, canUseHammer: false };
 // ── Vocab book practice tracking ───────────────
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
 let _isDifficultPractice = false; // true khi ôn từ hay sai
+// Separate from _isDifficultPractice above (which startPractice() resets on
+// every mode switch, for its own wrongCount-persistence purpose) — this one
+// stays true for the whole "Từ hay sai" sidebar session regardless of which
+// practice mode tab is active, so _activateModeNow() can reliably skip URL
+// syncing for it (an ephemeral, non-bookmarkable computed list, not a real
+// book/unit resource).
+let _isHardWordsSession = false;
 
 // ── Flashcard auto-advance timer ──────────────
 let _autoNextTimer = null;
@@ -138,6 +145,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
     await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard()]);
+
+    // Restore whichever book/unit the URL points at (deep link, bookmark,
+    // or a plain reload) — same "restore on load" idiom as reading-v2.js's
+    // testIdParam/passageIdParam handling. replaceState first so
+    // history.state is populated for THIS entry even on a bare load that
+    // never ran through pushState (a direct load's history.state is
+    // otherwise null, which popstate later needs to restore correctly).
+    const params    = new URLSearchParams(location.search);
+    const viewParam = params.get('view') || 'home';
+    const bookIdParam = params.get('bookId');
+    const unitParam = params.get('unit');
+    const modeParam = params.get('mode');
+    history.replaceState({ view: viewParam, bookId: bookIdParam, unit: unitParam, mode: modeParam }, '', location.href);
+    if (viewParam === 'book' && bookIdParam) {
+        openBook(bookIdParam, false);
+    } else if (viewParam === 'unit' && unitParam) {
+        loadUnit(unitParam, false, modeParam);
+    }
+});
+
+// Distinct from closeUnitView() (which returns to whatever book was open
+// before entering unit-practice, or the welcome screen if none) — this
+// unconditionally goes to the true homepage, which is what a popstate
+// targeting {view:'home'} means regardless of what currentBookId was.
+function goHomeView(push = true) {
+    const doGo = () => {
+        _clearAutoNext();
+        currentBookId = null;
+        document.querySelectorAll('.book-item, .sheet-book-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('view-unit').style.display = 'none';
+        document.getElementById('view-mybook').style.display = 'flex';
+        document.getElementById('book-welcome').style.display = 'flex';
+        document.getElementById('book-content').style.display = 'none';
+        if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
+        syncViewUrl(push ? 'push' : 'replace', { view: 'home' });
+    };
+    askQuitPractice(doGo);
+}
+
+window.addEventListener('popstate', (e) => {
+    const st = e.state || { view: 'home' };
+    if (st.view === 'book' && st.bookId) {
+        openBook(st.bookId, false);
+    } else if (st.view === 'unit' && st.unit) {
+        loadUnit(st.unit, false, st.mode);
+    } else {
+        goHomeView(false);
+    }
 });
 
 /* ══════════════════════════════════════════════
@@ -578,10 +633,35 @@ async function saveBookOrder() {
     }
 }
 
-function openBook(bookId) {
+// ──────────────────────────────────────────────────────
+// URL routing — mirrors reading/listening/speaking's own idiom: the
+// current view (home/book/unit, + bookId/unit/mode) is reflected in the
+// address bar so refresh, sharing, and browser back/forward all work.
+// mode: 'push' creates a new history entry (real navigation the user
+// should be able to back out of — opening a book/unit), 'replace' just
+// updates the current one (switching a practice-mode tab within an
+// already-open resource, or restoring state from a popstate event).
+// ──────────────────────────────────────────────────────
+function syncViewUrl(mode, st) {
+    let url;
+    if (st.view === 'home') {
+        url = location.pathname;
+    } else {
+        const params = new URLSearchParams({ view: st.view });
+        if (st.bookId) params.set('bookId', st.bookId);
+        if (st.unit)   params.set('unit', st.unit);
+        if (st.mode)   params.set('mode', st.mode);
+        url = `?${params}`;
+    }
+    if (mode === 'push') history.pushState(st, '', url);
+    else history.replaceState(st, '', url);
+}
+
+function openBook(bookId, push = true) {
     const doOpen = async () => {
         _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
         currentBookId = bookId;
+        _isHardWordsSession = false;
         selectedWordIds.clear();
 
         // Clear search when switching books
@@ -617,6 +697,7 @@ function openBook(bookId) {
         await refreshCurrentBook();
         content.classList.remove('loading');
         loadStreakAndUpdateMascot();
+        syncViewUrl(push ? 'push' : 'replace', { view: 'book', bookId });
     };
     askQuitPractice(doOpen);
 }
@@ -1386,6 +1467,7 @@ async function confirmSaveWord() {
 function openFlashcardMode() {
     if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
     _isBookPractice = true;
+    _isHardWordsSession = false;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
@@ -1396,6 +1478,7 @@ function openFlashcardMode() {
 function openPreviewMode() {
     if (!currentBookData?.words?.length) { toast('No words in this notebook yet', 'error'); return; }
     _isBookPractice = true;
+    _isHardWordsSession = false;
     currentUnit = { words: currentBookData.words, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
@@ -1410,6 +1493,7 @@ function practiceHardWords() {
         .sort((a, b) => (b.wrongCount || 0) - (a.wrongCount || 0));
     if (!hardWords.length) { toast('Chưa có từ nào sai từ 3 lần trở lên. Hãy tiếp tục luyện tập!', 'info'); return; }
     _isBookPractice = true;
+    _isHardWordsSession = true;
     currentUnit = { words: hardWords, title: currentBookData.name };
     document.getElementById('view-mybook').style.display = 'none';
     document.getElementById('view-unit').style.display   = 'flex';
@@ -1418,7 +1502,7 @@ function practiceHardWords() {
     showMode('mixed');
 }
 
-function closeUnitView() {
+function closeUnitView(push = true) {
     const doClose = () => {
         _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
         document.getElementById('view-unit').style.display   = 'none';
@@ -1434,6 +1518,8 @@ function closeUnitView() {
         if (_isBookPractice && currentBookId && currentBookData) {
             renderBookContent(currentBookData);
         }
+        syncViewUrl(push ? 'push' : 'replace',
+            currentBookId ? { view: 'book', bookId: currentBookId } : { view: 'home' });
     };
     askQuitPractice(doClose);
 }
@@ -1460,8 +1546,9 @@ async function loadUnits() {
     } catch { }
 }
 
-async function loadUnit() {
-    const num = document.getElementById('unitSelect').value;
+async function loadUnit(unitNumberOverride, push = true, modeOverride) {
+    const sel = document.getElementById('unitSelect');
+    const num = unitNumberOverride ?? sel?.value;
     if (!num) { toast('Vui lòng chọn một Paraphrase Unit trước', 'error'); return; }
     try {
         const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
@@ -1473,12 +1560,25 @@ async function loadUnit() {
         // Assign currentUnit only after user confirms (or if not mid-practice)
         askQuitPractice(() => {
             _isBookPractice = false;
+            _isDifficultPractice = false;
+            _isHardWordsSession = false;
             currentUnit = newUnit;
+            if (sel) sel.value = String(newUnit.unitNumber);
             document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
             document.getElementById('view-mybook').style.display = 'none';
             document.getElementById('view-unit').style.display   = 'flex';
             if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
-            _activateModeNow('study');
+            // Push (or replace, when restoring) THIS unit's own entry
+            // before _activateModeNow() runs — opening a unit is real
+            // navigation the user should be able to back out of. Order
+            // matters: _activateModeNow() below also syncs the URL, but
+            // only ever via replaceState, which updates whatever entry is
+            // currently on top — if that ran first, it would silently
+            // overwrite the *previous* entry (e.g. the book) instead of
+            // this unit's own, since nothing would have pushed a new one
+            // yet at that point.
+            syncViewUrl(push ? 'push' : 'replace', { view: 'unit', unit: newUnit.unitNumber, mode: modeOverride || 'study' });
+            _activateModeNow(modeOverride || 'study');
         });
     } catch { toast('Unable to load Unit', 'error'); }
 }
@@ -1502,6 +1602,17 @@ function _activateModeNow(mode) {
     if (mode === 'study') { document.getElementById('studyMode').style.display = 'block'; renderStudyGrid(); }
     else startPractice(mode);
     updateKbdHint();
+
+    // Reflect the active practice-mode tab in the URL — replaceState since
+    // switching tabs within an already-open resource is a filter change,
+    // not new navigation (matches reading/listening's own push-vs-replace
+    // split). Skipped for the ephemeral "Hard Words" retry list, which
+    // isn't a real bookmarkable resource.
+    if (currentUnit?.unitNumber) {
+        syncViewUrl('replace', { view: 'unit', unit: currentUnit.unitNumber, mode });
+    } else if (_isBookPractice && currentBookId && !_isHardWordsSession) {
+        syncViewUrl('replace', { view: 'book', bookId: currentBookId, mode });
+    }
 }
 
 function showMode(mode) {

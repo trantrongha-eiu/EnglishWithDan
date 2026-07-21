@@ -49,7 +49,7 @@
       </button>
       <p style="font-size:12px;color:var(--text3,#888)">Đã có Premium? <a href="login.html" style="color:#7c3aed;font-weight:600">Đăng nhập lại</a> để cập nhật.</p>
       <div style="margin-top:20px;border-top:1px solid var(--border,#e5e7eb);padding-top:16px">
-        <button onclick="showScreen('screen-history');loadHistory()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border,#e5e7eb);border-radius:10px;font-size:14px;color:var(--text2,#555);cursor:pointer;font-family:inherit">
+        <button onclick="goHistory()" style="width:100%;padding:10px;background:transparent;border:1px solid var(--border,#e5e7eb);border-radius:10px;font-size:14px;color:var(--text2,#555);cursor:pointer;font-family:inherit">
           📋 Xem lịch sử luyện tập cũ
         </button>
         <p style="font-size:11px;color:var(--text3,#888);margin:6px 0 0">Bài đã làm khi có Premium vẫn được lưu lại.</p>
@@ -134,7 +134,7 @@
       <p class="sp-home-subtitle">Luyện nói Part 1 · 2 · 3 với AI feedback từ Gemini</p>
     </div>
     <div class="sp-home-cards">
-      <div class="sp-home-card" onclick="showScreen('screen-practice');initPractice()">
+      <div class="sp-home-card" onclick="goPractice()">
         <div class="sp-home-card-icon-wrap sp-card-red">
           <i class="fas fa-microphone"></i>
         </div>
@@ -154,7 +154,7 @@
         </div>
         <i class="fas fa-chevron-right sp-home-card-arrow"></i>
       </div>
-      <div class="sp-home-card" onclick="showScreen('screen-history');loadHistory()">
+      <div class="sp-home-card" onclick="goHistory()">
         <div class="sp-home-card-icon-wrap sp-card-blue">
           <i class="fas fa-history"></i>
         </div>
@@ -164,7 +164,7 @@
         </div>
         <i class="fas fa-chevron-right sp-home-card-arrow"></i>
       </div>
-      <div class="sp-home-card" onclick="showScreen('screen-materials');loadMaterialFilters();loadMaterials()">
+      <div class="sp-home-card" onclick="goMaterials()">
         <div class="sp-home-card-icon-wrap sp-card-green">
           <i class="fas fa-book-open"></i>
         </div>
@@ -184,7 +184,7 @@
 <div id="screen-practice" class="screen">
   <!-- Topbar -->
   <div class="sp-topbar">
-    <button class="sp-topbar-back" onclick="showScreen('screen-home')">
+    <button class="sp-topbar-back" onclick="goHome()">
       <i class="fas fa-arrow-left"></i> Trang chủ
     </button>
     <span class="sp-topbar-title">
@@ -574,7 +574,7 @@
   <div class="sp-page-header">
     <div class="sp-page-header-inner">
       <h2 class="sp-page-header-title">📚 Tài liệu Speaking</h2>
-      <button class="btn-secondary" onclick="showScreen('screen-home')">
+      <button class="btn-secondary" onclick="goHome()">
         <i class="fas fa-arrow-left"></i> Quay lại
       </button>
     </div>

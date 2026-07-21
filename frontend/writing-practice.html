@@ -1051,14 +1051,12 @@ function _clearAutoAdvance() {
   if (cdBar) cdBar.style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initUser();
-  loadXPFromStorage();
-  loadMeta();
-  showState('welcome');
-  updateWpTopicChecks();
-
-  // Read URL params to pre-configure filters (shareable links)
+// Reads level/topic/type off the URL and applies them to filter state +
+// button active-classes — shared by the initial page load and the
+// popstate handler below (selectLevel/selectTopic/selectType now push a
+// new history entry per change, so browser back/forward needs to be able
+// to re-derive and re-apply the same filter state this function does).
+function _applyWpUrlFilters() {
   const _wpp = new URLSearchParams(location.search);
   const _wpLvl   = _wpp.get('level');
   const _wpTopic = _wpp.get('topic');
@@ -1086,9 +1084,35 @@ document.addEventListener('DOMContentLoaded', () => {
     _isWpDeepLink = true;
   }
   history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
-  // Deep link (e.g. shared/nav link with a level/topic/type in the URL) should jump
+  return _isWpDeepLink;
+}
+
+// Browser back/forward after a filter change (selectLevel/selectTopic/
+// selectType below now pushState instead of replaceState) — re-derive the
+// filter from the URL and reload the matching exercise set.
+window.addEventListener('popstate', () => {
+  // Mirrors selectLevel/selectTopic/selectType's own doChange() — a
+  // popstate has already changed the URL/browser state by the time this
+  // fires, so there's no confirm-before-navigating gate possible here
+  // (unlike the click handlers); save progress instead of losing it.
+  stopSessionTimer();
+  saveBatch();
+  _applyWpUrlFilters();
+  updateTopicCounts();
+  loadExercises();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  initUser();
+  loadXPFromStorage();
+  loadMeta();
+  showState('welcome');
+  updateWpTopicChecks();
+
+  // Read URL params to pre-configure filters (shareable links). Deep link
+  // (e.g. shared/nav link with a level/topic/type in the URL) should jump
   // straight into practice instead of stopping at the welcome screen.
-  if (_isWpDeepLink) loadExercises();
+  if (_applyWpUrlFilters()) loadExercises();
 
   // Init toggles from saved prefs
   document.getElementById('toggle-auto-advance').checked       = _wpAutoAdvance;
@@ -1195,7 +1219,7 @@ function selectLevel(level) {
     currentLevel = level;
     document.querySelectorAll('.wp-level-btn[data-level]').forEach(b =>
       b.classList.toggle('active', b.dataset.level === level));
-    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
+    history.pushState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     updateTopicCounts();
     loadExercises();
   };
@@ -1214,7 +1238,7 @@ function selectTopic(topic) {
     currentTopic = topic;
     document.querySelectorAll('.wp-topic-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.topic === topic));
-    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
+    history.pushState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     loadExercises();
   };
   if (sessionDone > 0) {
@@ -1232,7 +1256,7 @@ function selectType(type) {
     currentType = type;
     document.querySelectorAll('.wp-type-btn').forEach(b =>
       b.classList.toggle('active', b.dataset.type === type));
-    history.replaceState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
+    history.pushState(null, '', `writing-practice.html?level=${currentLevel}&topic=${currentTopic}&type=${currentType}`);
     loadExercises();
   };
   if (sessionDone > 0) {

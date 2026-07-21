@@ -917,10 +917,40 @@ function doneSkillStatusHtml() {
 // ════════════════════════════════════════════════════════
 //  SHAREABLE URL
 // ════════════════════════════════════════════════════════
-function _syncShareUrl() {
+function _syncShareUrl(push = false) {
   const params = `skill=${currentSkill}&mode=${currentMode}`;
-  history.replaceState(null, '', `task1-practice.html?${params}`);
+  const url = `task1-practice.html?${params}`;
+  if (push) history.pushState(null, '', url);
+  else history.replaceState(null, '', url);
 }
+
+// Reads skill/mode off the URL and applies them — shared by the initial
+// page load and the popstate handler below (selectSkill/_doSetMode now
+// push a new history entry per change via _syncShareUrl(true), so browser
+// back/forward needs to be able to re-derive and re-apply the same state).
+function _applyT1UrlFilters() {
+  const _t1p = new URLSearchParams(location.search);
+  const _t1Skill = _t1p.get('skill');
+  const _t1Mode  = _t1p.get('mode');
+  const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview'];
+  if (_validT1Skills.includes(_t1Skill)) {
+    currentSkill = _t1Skill;
+    document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
+      b.classList.toggle('active', b.dataset.skill === currentSkill));
+  }
+  _doSetMode(_t1Mode === 'test' ? 'test' : 'practice');
+}
+
+window.addEventListener('popstate', () => {
+  // Mirrors selectSkill/_doSetMode's own confirm-gated changes — a
+  // popstate has already changed the URL/browser state by the time this
+  // fires, so there's no confirm-before-navigating gate possible here;
+  // save progress instead of losing it.
+  stopTestTimer();
+  saveBatch();
+  _applyT1UrlFilters();
+  if (currentMode === 'practice') loadExercises();
+});
 
 function copyShareUrl() {
   const url = location.href;
@@ -1020,17 +1050,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateSkillTabChecks();
 
   // Read URL params to pre-configure filters (shareable links)
-  const _t1p = new URLSearchParams(location.search);
-  const _t1Skill = _t1p.get('skill');
-  const _t1Mode  = _t1p.get('mode');
-  const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview'];
-  if (_validT1Skills.includes(_t1Skill)) {
-    currentSkill = _t1Skill;
-    document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
-      b.classList.toggle('active', b.dataset.skill === currentSkill));
-  }
-  if (_t1Mode === 'test') _doSetMode('test');
-  _syncShareUrl();
+  _applyT1UrlFilters();
 
   // Restore toggle states
   document.getElementById('toggle-autonext').checked       = autoNext;
@@ -1135,16 +1155,19 @@ function setMode(mode) {
   const needConfirm = (currentMode === 'practice' && sessionDone > 0)
     || (currentMode === 'test' && testIdx > 0 && testIdx < testExercises.length);
   if (needConfirm) {
-    askWpQuit(() => { stopTestTimer(); saveBatch(); _doSetMode(mode); }, {
+    askWpQuit(() => { stopTestTimer(); saveBatch(); _doSetMode(mode, true); }, {
       title: 'Đổi chế độ?',
       sub: 'Tiến độ hiện tại sẽ bị mất.',
       confirmText: 'Đổi chế độ', continueText: 'Giữ nguyên'
     });
-  } else { _doSetMode(mode); }
+  } else { _doSetMode(mode, true); }
 }
-function _doSetMode(mode) {
+// push=true when this is a real user-initiated mode change (setMode above)
+// that should be back-button-able; false (default) when just restoring
+// state from the URL on load/popstate, which must not push a new entry.
+function _doSetMode(mode, push = false) {
   currentMode = mode;
-  _syncShareUrl();
+  _syncShareUrl(push);
   document.getElementById('btn-mode-practice').classList.toggle('active', mode === 'practice');
   document.getElementById('btn-mode-test').classList.toggle('active', mode === 'test');
   document.getElementById('practice-filters').style.display = mode === 'practice' ? '' : 'none';
@@ -1213,7 +1236,7 @@ function selectSkill(skill) {
     saveBatch(); currentSkill = skill;
     document.querySelectorAll('.t1-skill-tab').forEach(b =>
       b.classList.toggle('active', b.dataset.skill === skill));
-    _syncShareUrl();
+    _syncShareUrl(true);
     loadExercises();
   };
   if (sessionDone > 0) {

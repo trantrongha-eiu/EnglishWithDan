@@ -825,11 +825,31 @@ function updateTypeStatus() {
 }
 
 // ── URL sharing ────────────────────────────────────────────────
-function _syncTplShareUrl() {
+function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
   if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
-  history.replaceState(null, '', location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : ''));
+  const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
+  if (push) history.pushState(null, '', url);
+  else history.replaceState(null, '', url);
 }
+
+// Browser back/forward after switching template type (doSwitchType below
+// now pushes a new history entry per switch via _syncTplShareUrl(true)) —
+// re-derive the type from the URL and re-render without pushing again.
+window.addEventListener('popstate', () => {
+  const _urlParams = new URLSearchParams(location.search);
+  const _urlType   = _urlParams.get('type');
+  const nextType   = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
+  if (nextType === _tplActiveType) return;
+  saveTplAttemptToServer(_tplActiveType);
+  _tplActiveType = nextType;
+  document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tplType === nextType);
+  });
+  renderTplContent();
+  updateTplScore();
+  updateTypeStatus();
+});
 function copyTplShareUrl() {
   const params = new URLSearchParams();
   if (_tplActiveType) params.set('type', _tplActiveType);
@@ -1250,7 +1270,7 @@ function doSwitchType(typeId) {
   renderTplContent();
   updateTplScore();
   updateTypeStatus();
-  _syncTplShareUrl();
+  _syncTplShareUrl(true);
 }
 
 // ── Exam mode ──────────────────────────────────────────────────

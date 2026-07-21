@@ -150,26 +150,72 @@ function showScreen(id) {
     });
   }
 
-  // Navigate to practice if URL param — also restores the exact Part/topic
-  // that was in the URL (?part=2&topic=Building), so reloading, sharing, or
-  // bookmarking a filtered view lands back on the same questions.
+  // Navigate to the right screen/tab per the URL, also restoring the exact
+  // Part/topic that was in the URL (?part=2&topic=Building) so reloading,
+  // sharing, or bookmarking a filtered view lands back on the same
+  // questions. Whichever tab this resolves to, replaceState so
+  // `history.state` is populated for THIS entry (a direct load/bookmark
+  // never runs through pushState, so `history.state` would otherwise be
+  // null here) — popstate later relies on that to know what to restore.
   const urlParams = new URLSearchParams(location.search);
-  const tabParam = urlParams.get('tab');
+  const tabParam = urlParams.get('tab') || 'home';
+  const partParam = urlParams.get('part');
+  const topicParam = urlParams.get('topic');
+  history.replaceState({ tab: tabParam, part: partParam, topic: topicParam }, '', location.href);
+
   if (tabParam === 'materials') {
     showScreen('screen-materials');
     loadMaterialFilters();
     loadMaterials();
   } else if (tabParam === 'practice') {
     showScreen('screen-practice');
-    initPractice({ part: urlParams.get('part'), topic: urlParams.get('topic') });
+    initPractice({ part: partParam, topic: topicParam });
+  } else if (tabParam === 'history') {
+    showScreen('screen-history');
+    loadHistory();
   }
+  // else 'home' — screen-home is already the active screen in the static HTML.
+
+  window.addEventListener('popstate', (e) => {
+    const tab = e.state?.tab || 'home';
+    if (tab === 'practice') {
+      showScreen('screen-practice');
+      initPractice({ part: e.state?.part, topic: e.state?.topic });
+    } else if (tab === 'history') {
+      showScreen('screen-history');
+      loadHistory();
+    } else if (tab === 'materials') {
+      showScreen('screen-materials');
+      loadMaterialFilters();
+      loadMaterials();
+    } else {
+      showScreen('screen-home');
+    }
+  });
 })();
+
+// ──────────────────────────────────────────────────────
+// Tab navigation — every top-level screen reflected in the address bar
+// (?tab=practice/history/materials, bare path for home) so refresh,
+// sharing, and browser back/forward all work. Called from the home-screen
+// cards and each screen's own "back" button; the popstate listener above
+// mirrors the same dispatch for browser back/forward.
+// ──────────────────────────────────────────────────────
+function syncTabUrl(tab, push = true) {
+  const url = tab === 'home' ? location.pathname : `?tab=${tab}`;
+  if (push) history.pushState({ tab }, '', url);
+  else history.replaceState({ tab }, '', url);
+}
+function goHome() { showScreen('screen-home'); syncTabUrl('home'); }
+function goPractice() { showScreen('screen-practice'); syncTabUrl('practice'); initPractice(); }
+function goHistory() { showScreen('screen-history'); syncTabUrl('history'); loadHistory(); }
+function goMaterials() { showScreen('screen-materials'); syncTabUrl('materials'); loadMaterialFilters(); loadMaterials(); }
 
 // ══════════════════════════════════════════════════════
 // PRACTICE SCREEN
 // ══════════════════════════════════════════════════════
 
-function initPractice(opts = {}) {
+async function initPractice(opts = {}) {
   if (state.practiceInited) return;
   state.practiceInited = true;
 
@@ -182,7 +228,11 @@ function initPractice(opts = {}) {
   // list has loaded, so it can validate the URL's topic actually exists).
   state._pendingTopicFromUrl = opts.topic || null;
 
-  loadTopics();
+  await loadTopics();
+  // Refines the URL with the actual part/topic now that topics have
+  // loaded (goPractice()'s pushState above fires before this resolves) —
+  // replaceState since this is just adding detail, not new navigation.
+  syncUrlState();
 }
 
 // Keeps the address bar in sync with the current Part/topic selection —
@@ -1785,7 +1835,7 @@ function goBackFromHistory() {
   if (!window.AuthService.hasPremiumAccess()) {
     showScreen('screen-upgrade');
   } else {
-    showScreen('screen-home');
+    goHome();
   }
 }
 
