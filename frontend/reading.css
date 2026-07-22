@@ -67,43 +67,6 @@ body.eye-protection .split-questions {
 }
 
 /* ══════════════════════════════════════════════
-   SITE NAV (dùng chung cho reading & listening)
-══════════════════════════════════════════════ */
-.skill-tabs-bar {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.site-nav {
-  display: flex;
-  padding: 0 24px;
-  gap: 0;
-}
-
-.site-nav-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 18px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s;
-  white-space: nowrap;
-}
-
-.site-nav-link:hover {
-  color: #e53935;
-}
-
-.site-nav-link.active {
-  color: #e53935;
-  border-bottom-color: #e53935;
-}
-
-/* ══════════════════════════════════════════════
    SCREEN 1 – LIST
 ══════════════════════════════════════════════ */
 .list-container {
@@ -469,95 +432,6 @@ body.eye-protection .split-questions {
 }
 
 /* ══════════════════════════════════════════════
-   SCREEN 2 – KEY
-══════════════════════════════════════════════ */
-.key-overlay {
-  min-height: 100vh;
-  background: rgba(0, 0, 0, .45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.key-card {
-  background: #fff;
-  border-radius: 18px;
-  padding: 44px 36px;
-  max-width: 420px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, .18);
-}
-
-.key-card-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
-
-.key-card h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.key-desc {
-  color: #6b7280;
-  font-size: 13px;
-  margin-bottom: 8px;
-}
-
-.key-test-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #e53935;
-  margin-bottom: 18px;
-}
-
-.key-input {
-  width: 100%;
-  padding: 14px 18px;
-  font-size: 22px;
-  letter-spacing: 6px;
-  text-align: center;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  outline: none;
-  transition: border-color .2s;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: #1a1a2e;
-}
-
-.key-input:focus {
-  border-color: #e53935;
-}
-
-.key-msg {
-  font-size: 13px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin: 10px 0 4px;
-}
-
-.key-msg.error {
-  background: #fce4e4;
-  color: #c62828;
-}
-
-.key-msg.success {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.key-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-/* ══════════════════════════════════════════════
    SHARED EXAM ELEMENTS
 ══════════════════════════════════════════════ */
 
@@ -897,14 +771,6 @@ body.eye-protection .split-questions {
   font-weight: 700;
 }
 
-/* Paragraph labels for matching */
-.para-label {
-  font-weight: 700;
-  font-size: 13px;
-  color: #e53935;
-  margin-right: 4px;
-}
-
 /* Highlight */
 .hl {
   background: #fbbf24;
@@ -916,13 +782,6 @@ body.eye-protection .split-questions {
 /* ══════════════════════════════════════════════
    QUESTIONS
 ══════════════════════════════════════════════ */
-.q-section-title {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #1a237e;
-}
-
 .q-section-instruction {
   font-size: 13px;
   color: #6b7280;
@@ -1190,29 +1049,12 @@ body.tool-hl .radio-dot { user-select: none; }
   margin: 0 4px;
 }
 
-.drop-zone.drag-over {
-  border-color: #1565c0;
-  background: #dbeafe;
-}
-
 .drop-zone.filled {
   background: #e8f0fe;
   border-color: #1565c0;
   color: #1a237e;
   font-weight: 600;
   border-style: solid;
-}
-
-.drop-zone.correct-drop {
-  background: #e8f5e9;
-  border-color: #43a047;
-  color: #2e7d32;
-}
-
-.drop-zone.wrong-drop {
-  background: #fce4e4;
-  border-color: #e53935;
-  color: #c62828;
 }
 
 .drop-zone .clear-drop {
@@ -1228,26 +1070,6 @@ body.tool-hl .radio-dot { user-select: none; }
 
 .drop-zone .clear-drop:hover {
   color: #e53935;
-}
-
-/* ── Matching headings ── */
-.matching-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.matching-label {
-  font-weight: 700;
-  color: #e53935;
-  min-width: 24px;
-  padding-top: 2px;
-  font-size: 14px;
-}
-
-.matching-drop {
-  flex: 1;
 }
 
 /* ══════════════════════════════════════════════
@@ -1369,12 +1191,6 @@ body.tool-hl .radio-dot { user-select: none; }
 .result-left {
   text-align: center;
   max-width: 280px;
-}
-
-.result-mascot {
-  font-size: 80px;
-  margin-bottom: 16px;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.12));
 }
 
 .result-msg {
@@ -1769,10 +1585,6 @@ body.tool-hl .radio-dot { user-select: none; }
   border-left: 3px solid #dbeafe;
   padding-left: 8px;
 }
-/* Keep old classes for any residual usage */
-.btn-save-def { display: none; }
-.dict-pos-label,.dict-def-item,.dict-def-vi,.dict-def-example { display: none; }
-
 @keyframes slideUp {
   from { transform: translateY(12px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
@@ -2196,7 +2008,6 @@ body.tool-hl .check-box { user-select: none; }
 }
 
 /* ── MATCHING OPTIONS GROUP (BC/IDP layout) ─────────────────────────── */
-.matching-group-wrap { margin-bottom: 4px; }
 
 /* Numbered question rows */
 .match-question-row {
@@ -2290,24 +2101,6 @@ body.tool-hl .check-box { user-select: none; }
   font-size: 13px;
 }
 
-/* Options panel (A-F list) — pinned below questions */
-.match-options-panel {
-  margin-top: 16px;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 14px 16px;
-  background: #fafafa;
-}
-
-.match-options-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 8px;
-}
-
 .match-reuse-note {
   font-size: 12px;
   color: #e53935;
@@ -2315,31 +2108,6 @@ body.tool-hl .check-box { user-select: none; }
   margin-bottom: 10px;
   font-style: italic;
 }
-
-.match-options-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.match-option-item {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font-size: 14px;
-  color: #374151;
-  padding: 4px 0;
-  line-height: 1.5;
-}
-
-.match-option-letter {
-  font-weight: 700;
-  color: #1a237e;
-  min-width: 20px;
-  font-size: 14px;
-}
-
-.match-option-text { flex: 1; }
 
 /* ── INLINE INPUT (inside table/note/bullet) ────────────────────────── */
 .rq-inline-wrap {
@@ -2454,7 +2222,7 @@ body.tool-hl .check-box { user-select: none; }
 .drag-chip strong { font-weight: 700; color: #6d28d9; min-width: 16px; }
 
 /* ── Drop zones for new types ─────────────────────────────────────── */
-.rq-heading-drop, .rq-ending-drop, .rq-mo-drop, .sc-drop {
+.rq-heading-drop, .rq-mo-drop, .sc-drop {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2468,27 +2236,25 @@ body.tool-hl .check-box { user-select: none; }
   cursor: pointer;
   transition: all .2s;
 }
-.rq-heading-drop.filled, .rq-ending-drop.filled, .rq-mo-drop.filled, .sc-drop.filled {
+.rq-heading-drop.filled, .rq-mo-drop.filled, .sc-drop.filled {
   background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%);
   border: 2px solid #6366f1;
   color: #4338ca;
   font-weight: 600;
 }
-.rq-heading-drop.dragover, .rq-ending-drop.dragover, .rq-mo-drop.dragover, .sc-drop.dragover {
+.rq-heading-drop.dragover, .rq-mo-drop.dragover, .sc-drop.dragover {
   border-color: #7c3aed;
   background: #ede9fe;
   transform: scale(1.02);
   box-shadow: 0 0 0 3px rgba(124,58,237,.15);
 }
 .rq-heading-drop:not(.filled):not(.dragover):hover,
-.rq-ending-drop:not(.filled):not(.dragover):hover,
 .rq-mo-drop:not(.filled):not(.dragover):hover,
 .sc-drop:not(.filled):not(.dragover):hover {
   border-color: #818cf8;
   background: #ede9fe;
 }
 .rq-heading-drop em  { font-style: italic; color: #4338ca; }
-.rq-ending-drop strong { font-weight: 700; }
 .rq-mo-drop strong { font-weight: 700; color: #4338ca; }
 
 /* ── Matching Options ─────────────────────────────────────────────── */
@@ -2563,73 +2329,6 @@ body.tool-hl .check-box { user-select: none; }
   .rq-sc-bank-chips .drag-chip { width: auto; }
 }
 
-/* ── Sentence Endings ─────────────────────────────────────────────── */
-.rq-se-group { display: flex; flex-direction: column; gap: 14px; }
-.rq-se-questions { display: flex; flex-direction: column; gap: 8px; }
-.rq-se-endings {
-  background: #f8f9ff;
-  border: 1.5px solid #c7d2fe;
-  border-radius: 8px;
-  padding: 12px;
-}
-.se-endings-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  margin-bottom: 8px;
-}
-.se-endings-list { display: flex; flex-direction: column; gap: 6px; }
-.se-ending-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 4px 0;
-  transition: opacity .15s;
-}
-.se-ending-item.used { opacity: .35; }
-.se-ending-item .se-chip { flex-shrink: 0; min-width: 38px; }
-
-/* ══════════════════════════════════════════════
-   MOBILE HEADER & SKILL NAV
-══════════════════════════════════════════════ */
-
-/* Toggle button: hiện trên mobile, ẩn trên desktop */
-.hdr-skill-toggle {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 34px; height: 34px;
-  border: 1px solid #e5e7eb;
-  border-radius: 9px;
-  background: none;
-  font-size: 15px;
-  color: #6b7280;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background .15s, color .15s;
-}
-.hdr-skill-toggle:hover { background: #f3f4f6; color: #e53935; }
-.hdr-skill-toggle.active { background: #fef2f2; color: #e53935; border-color: #fca5a5; }
-
-@media (max-width: 640px) {
-  /* Skill nav ẩn mặc định trên mobile */
-  .skill-tabs-bar { display: none; }
-  .skill-tabs-bar.nav-open { display: block; }
-
-  /* Hiện toggle button */
-  .hdr-skill-toggle { display: flex; }
-
-  /* Ẩn username text, chỉ giữ emoji/icon */
-  .hdr-username { display: none !important; }
-
-  /* Buttons compact: ẩn label text, chỉ giữ icon */
-  .hdr-btn-text { display: none; }
-  .hdr-btn { padding: 6px 9px !important; }
-}
-.se-ending-text { font-size: 13px; color: #374151; line-height: 1.5; }
-
 /* ══════════════════════════════════════════════
    DARK MODE – panels & containers
 ══════════════════════════════════════════════ */
@@ -2642,9 +2341,6 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .exam-toolbar { background: #111827; border-bottom-color: #374151; }
 [data-theme="dark"] .passage-inner { color: #e5e7eb; }
 [data-theme="dark"] .question-group { background: #1f2937; border-color: #374151; }
-[data-theme="dark"] .q-box { background: #1f2937; border-color: #374151; }
-[data-theme="dark"] .qtype-header { color: #93c5fd; border-bottom-color: #374151; }
-[data-theme="dark"] .q-instruction { background: #111827; border-color: #374151; color: #9ca3af; }
 [data-theme="dark"] .settings-panel { background: #1f2937; border-color: #374151; }
 
 /* ── Fullscreen: convert fixed footer to flex child so clicks work ── */
@@ -2685,13 +2381,6 @@ body.tool-hl .check-box { user-select: none; }
 /* ══════════════════════════════════════════════
    DARK MODE – input fields
 ══════════════════════════════════════════════ */
-[data-theme="dark"] .key-input {
-  background: #1f2937;
-  color: #f9fafb;
-  border-color: #374151;
-}
-[data-theme="dark"] .key-input:focus { border-color: #e53935; }
-
 [data-theme="dark"] .fill-input {
   background: #1f2937;
   color: #f9fafb;
@@ -2759,9 +2448,6 @@ body.tool-hl .check-box { user-select: none; }
 /* ── Dark mode: matching options / headings ── */
 [data-theme="dark"] .match-question-row { background: #1e2433; border-color: #374151; }
 [data-theme="dark"] .match-q-text { color: #e5e7eb; }
-[data-theme="dark"] .match-options-panel { background: #1a2030; border-color: #374151; }
-[data-theme="dark"] .match-option-item { color: #d1d5db; }
-[data-theme="dark"] .match-option-letter { color: #93c5fd; }
 [data-theme="dark"] .match-select { background: #1f2937; color: #f9fafb; border-color: #374151; }
 [data-theme="dark"] .match-select:focus { border-color: #3b82f6; }
 
@@ -2771,7 +2457,6 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .word-chip:hover { background: #2563eb; color: #fff; }
 [data-theme="dark"] .drop-zone { background: #1a2030; border-color: #4b6cb7; color: #6b7280; }
 [data-theme="dark"] .drop-zone.filled { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
-[data-theme="dark"] .drop-zone.drag-over { border-color: #60a5fa; background: #1e3a5f; }
 
 /* ── Dark mode: inline input (table/note/bullet) ── */
 [data-theme="dark"] .rq-inline-input { color: #f9fafb; border-bottom-color: #4b6cb7; background: transparent; }
@@ -2785,33 +2470,15 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .mo-options-title { background: #1e2d4a; color: #93c5fd; border-bottom-color: #374151; }
 [data-theme="dark"] .mo-options-box .rq-chip-bank { border: none; }
 [data-theme="dark"] .rq-heading-drop,
-[data-theme="dark"] .rq-ending-drop,
 [data-theme="dark"] .rq-mo-drop,
 [data-theme="dark"] .sc-drop { border-color: #4b6cb7; color: #6b7280; }
 [data-theme="dark"] .rq-heading-drop.filled,
-[data-theme="dark"] .rq-ending-drop.filled,
 [data-theme="dark"] .rq-mo-drop.filled,
 [data-theme="dark"] .sc-drop.filled { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
 
-/* ── Dark mode: sentence endings / summary ── */
-[data-theme="dark"] .rq-se-endings { background: #1a2030; border-color: #374151; }
-[data-theme="dark"] .se-endings-label { color: #6b7280; }
-[data-theme="dark"] .se-ending-text { color: #d1d5db; }
+/* ── Dark mode: summary completion ── */
 [data-theme="dark"] .rq-summary-text { background: #1a2030; border-color: #374151; color: #d1d5db; }
 [data-theme="dark"] .rq-sc-bank { background: #1f2937; border-color: #374151; }
-
-/* ── Dark mode: two-col matching (MO) ── */
-[data-theme="dark"] .matching-group-wrap .match-question-row { background: #1e2433; border-color: #374151; }
-[data-theme="dark"] .mo-options-col { border-color: #374151; background: #1a2030; }
-[data-theme="dark"] .mo-opt-row { border-bottom-color: #374151; }
-[data-theme="dark"] .mo-opt-row:hover:not(.mo-opt-used) { background: #1e3a5f; }
-[data-theme="dark"] .mo-opt-text { color: #d1d5db; }
-[data-theme="dark"] .mo-q-row { background: #1e2433; border-color: #374151; }
-[data-theme="dark"] .mo-q-text { color: #d1d5db; }
-[data-theme="dark"] .mo-ans-drop { border-color: #374151; }
-[data-theme="dark"] .mo-ans-drop.filled { border-color: #3b82f6; background: #1e3a5f; }
-[data-theme="dark"] .mo-ans-placeholder { color: #4b5563; }
-[data-theme="dark"] .mo-ans-letter { color: #93c5fd; }
 
 /* ── Dark mode: toolbar buttons, passage tabs ── */
 [data-theme="dark"] .tool-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
@@ -3020,8 +2687,6 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .rq-ans-skip  { background: #1f2937; color: #9ca3af; }
 [data-theme="dark"] .rq-ans-correct { color: #4ade80; }
 [data-theme="dark"] .match-feedback { background: #1c1917; }
-[data-theme="dark"] .match-options-panel { background: #1a2030; border-color: #374151; }
-[data-theme="dark"] .match-options-label { color: #6b7280; }
 
 /* ── Dark-mode utility classes (replace inline styles) ── */
 

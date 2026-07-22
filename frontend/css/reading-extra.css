@@ -158,23 +158,6 @@
       }
     }
 
-    .exam-bar .profile-link {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      color: #6b7280;
-      font-size: 13px;
-      padding: 5px 10px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      transition: all .2s;
-    }
-
-    .exam-bar .profile-link:hover {
-      background: #f3f4f6;
-    }
-
     /* ── Reading mode tabs (Full đề / Bài lẻ) ──────────────────── */
     .rmode-tabs-bar {
       display: flex;
@@ -427,7 +410,7 @@
     }
     .pf-btn:hover { border-color: #d1d5db; color: #374151; }
     .pf-btn.pf-active { background: #eff6ff; border-color: #3d8bff; color: #1d4ed8; }
-    .plele-filter-bar .rd-done-count, .plele-filter-bar .ls-done-count { margin-left: 0; margin-top: 2px; }
+    .plele-filter-bar .rd-done-count { margin-left: 0; margin-top: 2px; }
 
     /* ── Done ribbon on practice cards ──────────────────────────────── */
     .practice-done-ribbon {
@@ -724,16 +707,6 @@
       color: #93c5fd;
     }
 
-    /* ── Dark mode: exam-title-txt and exam-bar profile link ───── */
-    [data-theme="dark"] .exam-bar .profile-link {
-      border-color: #374151;
-      color: #9ca3af;
-    }
-    [data-theme="dark"] .exam-bar .profile-link:hover {
-      background: #374151;
-      color: #f9fafb;
-    }
-
     /* ── Dark mode: toolbar background refinement ──────────────── */
     [data-theme="dark"] .tool-btn.active {
       background: #1e3a5f;
@@ -795,16 +768,3 @@
       color: #f9fafb;
     }
 
-    /* ── Mobile: practice tabs search row (reading & listening) ── */
-    @media (max-width: 640px) {
-      .plele-search-row {
-        margin-left: 0 !important;
-        width: 100%;
-        flex-shrink: 1 !important;
-      }
-      .plele-search-row input[type="search"] {
-        flex: 1;
-        width: auto !important;
-        min-width: 0;
-      }
-    }

@@ -3,10 +3,20 @@
    Supports: questionGroups (table, note-form, bullet-list, map,
              matching-options, plain) + legacy questions[] flat array
 ═══════════════════════════════════════════════════════════════════════ */
-console.log('[reading-v2.js] loaded – multi-answer-group cluster fix active');
 
 const API = 'https://englishwithdan.onrender.com/api';   // backend on Render
 const DURATION = 3600;  // 60 min in seconds
+
+// Escapes a value for embedding inside a single-quoted JS string literal
+// that itself sits inside a double-quoted HTML event-handler attribute
+// (e.g. onclick="fn('${escH(word)}')") — escHtml() (which only escapes
+// &/</>/") is NOT safe there: any drag-drop word/option/test name
+// containing an apostrophe (e.g. "don't", "it's" — common in real IELTS
+// passage word banks) breaks out of the JS string and leaves that
+// element's handler silently non-functional. `'` is escaped to `\'`
+// (a JS string escape, not an HTML entity) so it survives HTML
+// attribute parsing intact and is correctly unescaped by the JS engine.
+function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
 /* ── State ─────────────────────────────────────────────────────────── */
 const state = {
@@ -402,7 +412,7 @@ function testCard(t) {
       <div class="test-card-name">${escHtml(t.name)}</div>
       <div class="test-card-meta">40 câu · 60 phút</div>
       ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
-      <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escHtml(t.name)}')">
+      <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escH(t.name)}')">
         ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? 'Làm test mới' : 'Bắt đầu')}
       </button>
       <div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>
@@ -1425,8 +1435,8 @@ function renderMapGroup(group, isReview, reviewMap) {
       return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
         data-value="${escHtml(word)}" data-groupid="${groupId}" data-reuse="0"
         draggable="${isReview ? 'false' : 'true'}"
-        ondragstart="dragStart(event,'${escHtml(word)}')"
-        onclick="clickSCChip('${escHtml(word)}','${groupId}')">
+        ondragstart="dragStart(event,'${escH(word)}')"
+        onclick="clickSCChip('${escH(word)}','${groupId}')">
         <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
       </span>`;
     }).join('');
@@ -1507,8 +1517,8 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
       data-value="${escHtml(letter)}" data-groupid="${groupId}"
       data-reuse="${matchingReuseAllowed ? 1 : 0}"
       draggable="${isReview ? 'false' : 'true'}"
-      ondragstart="dragStart(event,'${escHtml(letter)}')"
-      onclick="clickMOChip('${escHtml(letter)}','${groupId}')">
+      ondragstart="dragStart(event,'${escH(letter)}')"
+      onclick="clickMOChip('${escH(letter)}','${groupId}')">
       <strong>${escHtml(letter)}</strong>${label}
     </span>`;
   }).join('');
@@ -1583,8 +1593,8 @@ function renderMatchingHeadingsGroup(group, isReview, reviewMap) {
     return `<span class="drag-chip mh-chip${isUsed ? ' used' : ''}"
       data-value="${escHtml(val)}" data-groupid="${groupId}"
       draggable="${isReview ? 'false' : 'true'}"
-      ondragstart="dragStart(event,'${escHtml(val)}')"
-      onclick="clickMHChip('${escHtml(val)}','${groupId}')">
+      ondragstart="dragStart(event,'${escH(val)}')"
+      onclick="clickMHChip('${escH(val)}','${groupId}')">
       <em>${escHtml(val)}.</em> ${escHtml(h.text || '')}
     </span>`;
   }).join('');
@@ -1647,8 +1657,8 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
     return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
       data-value="${escHtml(word)}" data-groupid="${groupId}"
       draggable="${isReview ? 'false' : 'true'}"
-      ondragstart="dragStart(event,'${escHtml(word)}')"
-      onclick="clickSCChip('${escHtml(word)}','${groupId}')">
+      ondragstart="dragStart(event,'${escH(word)}')"
+      onclick="clickSCChip('${escH(word)}','${groupId}')">
       <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
     </span>`;
   }).join('');
@@ -1834,8 +1844,8 @@ function renderWordBank(qNum, wordBank, isReview, review) {
   const chips = wordBank.map(w =>
     `<span class="word-chip ${current === w ? 'used' : ''}"
            draggable="true"
-           ondragstart="dragStart(event,'${escHtml(w)}')"
-           onclick="clickChip(${qNum},'${escHtml(w)}')">${escHtml(w)}</span>`
+           ondragstart="dragStart(event,'${escH(w)}')"
+           onclick="clickChip(${qNum},'${escH(w)}')">${escHtml(w)}</span>`
   ).join('');
   const dzContent = current
     ? `${escHtml(current)}<span class="clear-drop" onclick="clearDrop(${qNum})">✕</span>`
