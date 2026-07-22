@@ -1881,10 +1881,10 @@ function _renderSpBankInfo() {
   const el = document.getElementById('sp-up-bank-info');
   if (!el) return;
   const rows = [];
-  if (s.bankName)    rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">🏦 Ngân hàng</span><span class="sp-up-bank-val">${s.bankName}</span></div>`);
-  if (s.accountName) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">👤 Chủ TK</span><span class="sp-up-bank-val">${s.accountName}</span></div>`);
-  if (s.bankAccount) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">💳 Số TK</span><span class="sp-up-bank-val sp-up-acc-num">${s.bankAccount}<button onclick="copySpAccount('${s.bankAccount}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
-  if (s.paymentNote) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">📋 Nội dung CK</span><span class="sp-up-bank-val">${s.paymentNote}</span></div>`);
+  if (s.bankName)    rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">🏦 Ngân hàng</span><span class="sp-up-bank-val">${escHtml(s.bankName)}</span></div>`);
+  if (s.accountName) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">👤 Chủ TK</span><span class="sp-up-bank-val">${escHtml(s.accountName)}</span></div>`);
+  if (s.bankAccount) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">💳 Số TK</span><span class="sp-up-bank-val sp-up-acc-num">${escHtml(s.bankAccount)}<button onclick="copySpAccount('${escAttr(s.bankAccount)}')" title="Sao chép"><i class="fas fa-copy"></i></button></span></div>`);
+  if (s.paymentNote) rows.push(`<div class="sp-up-bank-row"><span class="sp-up-bank-label">📋 Nội dung CK</span><span class="sp-up-bank-val">${escHtml(s.paymentNote)}</span></div>`);
   el.innerHTML = rows.join('');
   const qrEl = document.getElementById('sp-up-qr-img');
   if (qrEl) { qrEl.src = s.qrImageUrl || ''; qrEl.style.display = s.qrImageUrl ? 'block' : 'none'; }
