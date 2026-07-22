@@ -16,17 +16,6 @@
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
   <style>
-    #wp-toast {
-      position: fixed; top: calc(var(--nav-height,64px) + 8px); left: 50%; transform: translateX(-50%);
-      padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 500;
-      color: #fff; z-index: 9999; opacity: 0; pointer-events: none;
-      transition: opacity .25s, top .25s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,.18);
-    }
-    #wp-toast.show { opacity: 1; top: calc(var(--nav-height,64px) + 14px); }
-    #wp-toast.warn  { background: #e65100; }
-    #wp-toast.error { background: #c62828; }
-    #wp-toast.info  { background: #1565c0; }
-
     /* ── Stop/Quit button ── */
     .wp-stop-btn {
       background: none; border: 1.5px solid #d1d5db; color: #9ca3af;
@@ -245,10 +234,6 @@
     .t1-hist-row-skills{font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
     .t1-hist-row-stats{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .t1-hist-row-count{font-size:12px;color:#6b7280}
-    .t1-hist-row-acc{font-size:12px;font-weight:700;padding:1px 8px;border-radius:20px}
-    .t1-hist-row-acc.good{background:#dcfce7;color:#15803d}
-    .t1-hist-row-acc.mid{background:#fef3c7;color:#92400e}
-    .t1-hist-row-acc.bad{background:#fee2e2;color:#b91c1c}
     .t1-hist-row-xp{font-size:12px;color:#f5576c;font-weight:700;margin-left:auto}
     .t1-hist-empty{text-align:center;padding:40px 20px;color:#9ca3af}
     .t1-hist-empty-icon{font-size:40px;margin-bottom:10px}
@@ -272,8 +257,6 @@
 <script src="js/shared/dictionary-lookup.js"></script>
 <script src="js/shared/score-message.js"></script>
 
-
-<div id="wp-toast"></div>
 
 <!-- ── Stats bar ── -->
 <header class="wp-header">
@@ -1431,7 +1414,7 @@ function showFillBlankView(ex) {
   document.getElementById('view-fill-blank').classList.remove('hidden');
   document.getElementById('fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
   document.getElementById('fill-sentence').innerHTML =
-    (ex.question || '').replace('___', '<span class="wp-blank-underline">___</span>');
+    _escHtml(ex.question || '').replace('___', '<span class="wp-blank-underline">___</span>');
   const opts = document.getElementById('fill-options');
   opts.innerHTML = '';
   (ex.options || []).forEach(opt => {
@@ -1452,9 +1435,9 @@ function showCombineView(ex) {
   document.getElementById('view-combine').classList.remove('hidden');
   document.getElementById('combine-label').textContent = ex.instruction || 'Nối hai câu thành một:';
   document.getElementById('combine-sentences').innerHTML =
-    (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${s}"</div>`).join('');
+    (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${_escHtml(s)}"</div>`).join('');
   document.getElementById('connector-hint').innerHTML = ex.connector
-    ? `<span class="wp-connector-badge">💡 Dùng: <strong>${ex.connector}</strong></span>` : '';
+    ? `<span class="wp-connector-badge">💡 Dùng: <strong>${_escHtml(ex.connector)}</strong></span>` : '';
   document.getElementById('combine-answer-box').value = '';
   document.getElementById('combine-answer-box').focus();
 }
@@ -1702,10 +1685,10 @@ function showDoneSummary() {
       ${wrongAttempts.map((a, i) => `
         <div class="wp-wr-item">
           <div class="wp-wr-num">❌ Câu ${i+1} — ${TYPE_LABELS[a.type] || a.type}</div>
-          <div class="wp-wr-q">${a.question || ''}</div>
-          <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="wp-wr-your">${a.userAnswer || '(bỏ trống)'}</span></div>
-          <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${a.sampleAnswer || ''}</span></div>
-          ${a.grammarPoint ? `<div class="wp-wr-gp">📌 ${a.grammarPoint}</div>` : ''}
+          <div class="wp-wr-q">${_escHtml(a.question || '')}</div>
+          <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="wp-wr-your">${_escHtml(a.userAnswer || '') || '(bỏ trống)'}</span></div>
+          <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${_escHtml(a.sampleAnswer || '')}</span></div>
+          ${a.grammarPoint ? `<div class="wp-wr-gp">📌 ${_escHtml(a.grammarPoint)}</div>` : ''}
         </div>`).join('')}`;
   } else if (sessionDone > 0) {
     reviewDiv.innerHTML = `<div style="text-align:center;color:#16a34a;font-weight:700;font-size:14px;margin-top:8px">🌟 Không có câu nào sai!</div>`;
@@ -1864,9 +1847,9 @@ function showTestQuestion(idx) {
     if (ex.type === 'combine') {
       document.getElementById('test-question').textContent = '';
       document.getElementById('test-combine-sentences').innerHTML =
-        (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${s}"</div>`).join('');
+        (ex.sentences || []).map(s => `<div class="wp-combine-sent">"${_escHtml(s)}"</div>`).join('');
       document.getElementById('test-connector-hint').innerHTML =
-        ex.connector ? `<span class="wp-connector-badge">💡 Dùng: <strong>${ex.connector}</strong></span>` : '';
+        ex.connector ? `<span class="wp-connector-badge">💡 Dùng: <strong>${_escHtml(ex.connector)}</strong></span>` : '';
     } else {
       document.getElementById('test-question').textContent = ex.type === 'expand' ? (ex.baseText || ex.question) : ex.question;
       document.getElementById('test-combine-sentences').innerHTML = '';
@@ -1934,7 +1917,7 @@ function showTestFill(ex) {
   document.getElementById('test-view-fill').classList.remove('hidden');
   document.getElementById('test-fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
   document.getElementById('test-fill-sentence').innerHTML =
-    (ex.question || '').replace('___', '<span class="wp-blank-underline">___</span>');
+    _escHtml(ex.question || '').replace('___', '<span class="wp-blank-underline">___</span>');
   const opts = document.getElementById('test-fill-options');
   opts.innerHTML = '';
   (ex.options || []).forEach(opt => {
@@ -2027,11 +2010,11 @@ function showTestResults(data) {
       <div class="wp-review-item ${r.isCorrect ? 'wp-review-correct' : r.isExpand ? 'wp-review-info' : 'wp-review-wrong'}">
         <div class="wp-review-num">${i + 1}</div>
         <div class="wp-review-body">
-          <div class="wp-review-q">${statusIcon} ${q}</div>
-          <div class="wp-review-your">📝 Bạn: <em>${r.userAnswer || '(bỏ qua)'}</em></div>
-          <div class="wp-review-ans">✅ Đáp án: <strong>${r.sampleAnswer}</strong></div>
-          ${r.grammarPoint ? `<div class="wp-review-gp">📌 ${r.grammarPoint}</div>` : ''}
-          ${r.explanation ? `<div class="wp-review-gp wp-review-gp-explain">💡 ${r.explanation}</div>` : ''}
+          <div class="wp-review-q">${statusIcon} ${_escHtml(q)}</div>
+          <div class="wp-review-your">📝 Bạn: <em>${_escHtml(r.userAnswer || '') || '(bỏ qua)'}</em></div>
+          <div class="wp-review-ans">✅ Đáp án: <strong>${_escHtml(r.sampleAnswer)}</strong></div>
+          ${r.grammarPoint ? `<div class="wp-review-gp">📌 ${_escHtml(r.grammarPoint)}</div>` : ''}
+          ${r.explanation ? `<div class="wp-review-gp wp-review-gp-explain">💡 ${_escHtml(r.explanation)}</div>` : ''}
         </div>
       </div>`;
   });
