@@ -1280,16 +1280,20 @@ body.tool-hl .check-box { user-select: none; }
   display: flex; flex-direction: row; align-items: flex-start;
 }
 .map-dd-group > .map-img-wrap {
-  flex: 0 0 55%; border-right: 1px solid #e5e7eb; border-bottom: none;
+  flex: 0 0 46%; border-right: 1px solid #e5e7eb; border-bottom: none;
 }
 .map-dd-body {
-  flex: 1; display: flex; flex-direction: row;
+  flex: 1; display: flex; flex-direction: row; flex-wrap: wrap;
   gap: 14px; padding: 16px; min-width: 0; align-items: flex-start;
 }
 /* order:-1 (also set generically on .dd-bank-col in listening-extra.css)
-   puts the bank before the questions column, i.e. on the left. */
-.map-dd-body .dd-bank-col { position: static; flex: 0 0 220px; order: -1; }
-.map-dd-questions { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
+   puts the bank before the questions column, i.e. on the left.
+   flex-wrap on .map-dd-body + a real min-width here means that once the
+   image (46%) + bank (220px) leave too little room for the questions
+   column, it wraps onto its own full-width row instead of being squeezed
+   into a sliver that breaks every word onto its own line. */
+.map-dd-body .dd-bank-col { position: static; flex: 0 1 220px; min-width: 180px; order: -1; }
+.map-dd-questions { display: flex; flex-direction: column; gap: 10px; flex: 1 1 260px; min-width: 260px; }
 .map-dd-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .map-dd-label { font-size: 13px; color: #4b5563; flex: 1; min-width: 0; }
 @media (max-width: 768px) {
