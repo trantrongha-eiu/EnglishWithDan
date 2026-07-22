@@ -16,14 +16,6 @@
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
   <style>
-    /* ── Toast ── */
-    #wp-toast{position:fixed;top:calc(var(--nav-height,64px) + 8px);left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,top .25s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
-    #wp-toast.show{opacity:1;top:calc(var(--nav-height,64px) + 14px)}
-    #wp-toast.warn{background:#e65100}
-    #wp-toast.error{background:#c62828}
-    #wp-toast.info{background:#1565c0}
-    #wp-toast.success{background:#15803d}
-
     /* ── Essay type badge colors ── */
     .et-badge{display:inline-block;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
     .et-adv{background:#e8f5e9;color:#2e7d32}
@@ -40,8 +32,6 @@
     .t2-nav-crumb{font-size:13px;color:#9ca3af}
     .t2-nav-crumb span{color:#6366f1;font-weight:700;cursor:pointer}
     .t2-nav-crumb span:hover{text-decoration:underline}
-    .t2-grammar-badge{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;border-radius:20px;padding:3px 11px;font-size:11px;font-weight:700;white-space:nowrap}
-    [data-theme="dark"] .t2-grammar-badge{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
 
     /* ── Week grid ── */
     .t2-week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:20px}
@@ -144,18 +134,6 @@
     .t2-vocab-ex{font-size:12px;color:#6b7280;line-height:1.5;font-style:italic}
     [data-theme="dark"] .t2-vocab-card{background:#1e293b;border-color:#334155}
     [data-theme="dark"] .t2-vocab-term{color:#f1f5f9}
-
-    /* ── Mode tabs inside page ── */
-    .t2-mode-tabs{display:flex;padding:0 20px 0;border-bottom:2px solid #e5e7eb;margin-bottom:0;gap:0}
-    .t2-mode-tab{padding:9px 18px;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-size:14px;font-weight:600;color:#6b7280;cursor:pointer;transition:color .15s,border-color .15s;display:inline-flex;align-items:center;gap:6px}
-    .t2-mode-tab.active{color:#6366f1;border-bottom-color:#6366f1}
-    .t2-mode-tab:hover{color:#6366f1}
-    [data-theme="dark"] .t2-mode-tabs{border-bottom-color:#1e293b}
-    [data-theme="dark"] .t2-mode-tab{color:#64748b}
-    [data-theme="dark"] .t2-mode-tab.active{color:#a5b4fc;border-bottom-color:#a5b4fc}
-
-    /* ── Test results ── */
-    .t2-review-item{border-radius:10px;padding:12px 16px;margin-bottom:10px;border-left:4px solid #e5e7eb}
 
     /* ── Done screen ── */
     .t2-done{text-align:center;padding:40px 20px;max-width:480px;margin:0 auto}
@@ -347,8 +325,6 @@
 <script src="js/shared/score-message.js"></script>
 
 
-<div id="wp-toast"></div>
-
 <!-- ── Quit modal ── -->
 <div class="t2-quit-overlay hidden" id="t2-quit-overlay">
   <div class="t2-quit-box">
@@ -453,6 +429,10 @@ function toggleWpSound() {
 }
 
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
+
+function _escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 const ESSAY_LABELS = { advantages_disadvantages:'Adv & Disadv', cause_effect:'Cause & Effect', cause_solution:'Cause & Solution', effect_solution:'Effect & Solution', agree_disagree:'Agree / Disagree', discuss_both_views:'Discuss Both Views' };
 const ESSAY_BADGE_CLASS = { advantages_disadvantages:'et-badge et-adv', cause_effect:'et-badge et-cause', cause_solution:'et-badge et-cause', effect_solution:'et-badge et-cause', agree_disagree:'et-badge et-opinion', discuss_both_views:'et-badge et-discuss' };
@@ -834,14 +814,14 @@ function renderTopics() {
         const hasDraft = draftTopicIds.has(t._id?.toString());
         return `
         <div class="t2-topic-card${hasDraft ? ' has-draft' : ''}" data-id="${t._id}">
-          <div class="t2-topic-emoji">${t.topicEmoji || '📝'}</div>
+          <div class="t2-topic-emoji">${_escHtml(t.topicEmoji || '📝')}</div>
           <div style="flex:1">
-            <div class="t2-topic-name">${t.topicName}</div>
+            <div class="t2-topic-name">${_escHtml(t.topicName)}</div>
             <div style="margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-              <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || t.essayType}</span>
+              <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
               ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
             </div>
-            <div class="t2-topic-prompt">${t.prompt}</div>
+            <div class="t2-topic-prompt">${_escHtml(t.prompt)}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
             ${isTopicCompleted(t._id) ? '<i class="fas fa-check-circle wp-item-done-icon" style="margin-left:0" title="Đã hoàn thành (≥80%)"></i>' : ''}
@@ -884,16 +864,16 @@ function renderSelect() {
   const t = state.selectedTopic;
   return `
     <div class="t2-nav" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <span onclick="goTopics()">Tuần ${state.selectedWeek}</span> › <b>${t.topicName}</b></div>
+      <div class="t2-nav-crumb"><span onclick="goWeeks()">Tuần</span> › <span onclick="goTopics()">Tuần ${state.selectedWeek}</span> › <b>${_escHtml(t.topicName)}</b></div>
       <button onclick="copyT2ShareUrl()" class="t2-back-btn" style="white-space:nowrap;font-size:12px;padding:4px 10px" title="Sao chép link bài luyện này">
         <i class="fas fa-link"></i> Sao chép link
       </button>
     </div>
     <div class="t2-selector-panel">
-      <div style="font-size:28px;margin-bottom:4px">${t.topicEmoji || '📝'}</div>
-      <div class="t2-selector-title">${t.topicName}</div>
-      <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || t.essayType}</span>
-      <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${t.prompt}</div>
+      <div style="font-size:28px;margin-bottom:4px">${_escHtml(t.topicEmoji || '📝')}</div>
+      <div class="t2-selector-title">${_escHtml(t.topicName)}</div>
+      <span class="${ESSAY_BADGE_CLASS[t.essayType] || 'et-badge'}">${ESSAY_LABELS[t.essayType] || _escHtml(t.essayType)}</span>
+      <div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>
 
       <div class="t2-selector-label">Chế độ</div>
       <div class="t2-btn-group">
@@ -1130,14 +1110,14 @@ function renderPractice() {
     <div class="t2-ctx-strip">
       <span class="t2-ctx-week">Tuần ${state.selectedWeek}</span>
       <span class="t2-ctx-divider">›</span>
-      <span class="t2-ctx-name" title="${topic.topicName}">${topic.topicEmoji || ''} ${topic.topicName}</span>
+      <span class="t2-ctx-name" title="${_escHtml(topic.topicName)}">${_escHtml(topic.topicEmoji || '')} ${_escHtml(topic.topicName)}</span>
       <span class="t2-ctx-divider">·</span>
       <span class="${ESSAY_BADGE_CLASS[topic.essayType] || 'et-badge'}" style="font-size:10px">${ESSAY_LABELS[topic.essayType] || ''}</span>
       ${state.currentMode === 'retry' ? `<span style="background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;margin-left:auto">Ôn câu sai</span>` : ''}
     </div>
     <div class="t2-prompt-box">
       <div class="t2-prompt-box-label">📋 Đề bài IELTS</div>
-      <p>${topic.prompt}</p>
+      <p>${_escHtml(topic.prompt)}</p>
     </div>
     <div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:${pct}%"></div></div>
     <div class="t2-q-dots" id="q-dots">
@@ -1186,18 +1166,18 @@ function renderPractice() {
 function renderQuestion(q) {
   const typeLbl = Q_LABELS[q.type] || q.type;
   const structureHint = q.sentenceStructure
-    ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${q.sentenceStructure}</span></div>`
+    ? `<div class="t2-structure-hint"><span class="t2-structure-hint-label">💡 Gợi ý:</span><span>${_escHtml(q.sentenceStructure)}</span></div>`
     : '';
 
   if (['essay_type_recognition', 'topic_sentence'].includes(q.type)) {
     const letters = ['A','B','C','D'];
     return `
     <div class="wp-task-label">${typeLbl}</div>
-    <div class="t2-question-text">${q.questionText}</div>
+    <div class="t2-question-text">${_escHtml(q.questionText)}</div>
     <div class="t2-mc-options">
       ${(q.options||[]).map((opt,i) => `
         <button class="t2-mc-option" data-idx="${i}" onclick="selectMC(${i}, this)">
-          <span class="t2-opt-letter">${letters[i]}</span><span>${opt}</span>
+          <span class="t2-opt-letter">${letters[i]}</span><span>${_escHtml(opt)}</span>
         </button>`).join('')}
     </div>
     <input type="hidden" id="mc-selected" value=""/>`;
@@ -1210,20 +1190,20 @@ function renderQuestion(q) {
     const displayText = q.questionText.replace(/\n?\[.*\]/s, '').trim();
     return `
     <div class="wp-task-label">${typeLbl}</div>
-    <div class="t2-question-text">${displayText}</div>
+    <div class="t2-question-text">${_escHtml(displayText)}</div>
     ${structureHint}
     <div class="wp-rearrange-answer" id="rearrange-answer" onclick="returnWord(event)">
       <span class="wp-rearrange-placeholder">Bấm vào các từ để sắp xếp...</span>
     </div>
     <div class="wp-rearrange-bank" id="rearrange-bank">
-      ${shuffled.map((w,i) => `<span class="wp-word-chip" data-index="${i}" data-word="${w}" data-used="false" onclick="selectWord(this)">${w}</span>`).join('')}
+      ${shuffled.map((w,i) => `<span class="wp-word-chip" data-index="${i}" data-word="${_escHtml(w)}" data-used="false" onclick="selectWord(this)">${_escHtml(w)}</span>`).join('')}
     </div>
     <input type="hidden" id="rearrange-input" value=""/>`;
   }
   if (q.type === 'fill_blank') {
     return `
     <div class="wp-task-label">${typeLbl}</div>
-    <div class="t2-question-text">${q.questionText}</div>
+    <div class="t2-question-text">${_escHtml(q.questionText)}</div>
     ${structureHint}
     <input class="wp-fill-input" id="fill-input" type="text" placeholder="Nhập từ cần điền..." onkeydown="handleEnter(event)" oninput="checkSubmitEnabled()"/>`;
   }
@@ -1231,7 +1211,7 @@ function renderQuestion(q) {
   const isLong = ['short_writing','paraphrase'].includes(q.type);
   return `
   <div class="wp-task-label">${typeLbl}</div>
-  <div class="t2-question-text">${q.questionText}</div>
+  <div class="t2-question-text">${_escHtml(q.questionText)}</div>
   ${structureHint}
   ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
   <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
@@ -1591,9 +1571,9 @@ function renderExam() {
       <span class="wp-ex-counter">${state.examIdx + 1} / ${state.examQuestions.length}</span>
       <span class="${timerCls}" id="exam-timer">⏱ ${timerTxt}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
-      ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${q.topicName}">${q.topicName}</span>` : ''}
+      ${q.topicName ? `<span style="font-size:11px;color:#6b7280;background:#f3f4f6;padding:2px 8px;border-radius:12px;margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px" title="${_escHtml(q.topicName)}">${_escHtml(q.topicName)}</span>` : ''}
     </div>
-    ${q.prompt ? `<div class="t2-prompt-box"><div class="t2-prompt-box-label">📋 Đề bài</div><p>${q.prompt}</p></div>` : ''}
+    ${q.prompt ? `<div class="t2-prompt-box"><div class="t2-prompt-box-label">📋 Đề bài</div><p>${_escHtml(q.prompt)}</p></div>` : ''}
     <div class="wp-card" style="margin:0 20px">
       ${renderQuestion(q)}
       <button class="wp-submit-btn" style="margin-top:12px;width:100%" onclick="examNext()">
@@ -1671,12 +1651,12 @@ function renderExamDone() {
     <div class="${item.isCorrect ? 'wp-wr-item-ok' : 'wp-wr-item'}">
       <div class="${item.isCorrect ? 'wp-wr-num-ok' : 'wp-wr-num'}">
         ${item.isCorrect ? '✅' : '❌'} Câu ${i+1} — ${Q_LABELS[item.type] || item.type}
-        <span class="wp-wr-skill">${item.level} · ${item.topicName || ''}</span>
+        <span class="wp-wr-skill">${item.level} · ${_escHtml(item.topicName || '')}</span>
       </div>
-      <div class="wp-wr-q">${item.questionText || ''}</div>
-      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${item.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${item.userAnswer || '(bỏ trống)'}</span></div>
-      ${!item.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${item.modelAnswer || ''}</span></div>` : ''}
-      ${item.explanationVi ? `<div class="wp-wr-gp">💡 ${item.explanationVi}</div>` : ''}
+      <div class="wp-wr-q">${_escHtml(item.questionText || '')}</div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${item.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${_escHtml(item.userAnswer || '') || '(bỏ trống)'}</span></div>
+      ${!item.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${_escHtml(item.modelAnswer || '')}</span></div>` : ''}
+      ${item.explanationVi ? `<div class="wp-wr-gp">💡 ${_escHtml(item.explanationVi)}</div>` : ''}
     </div>`).join('');
   return `
     <div style="text-align:center;padding:32px 20px 16px">
@@ -1709,15 +1689,15 @@ function renderVocab() {
   return `
     <div class="t2-nav"><div class="t2-nav-crumb"><button class="t2-back-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Quay lại</button></div></div>
     <div style="padding:0 20px 8px">
-      <h2 class="t2-page-h2" style="font-size:18px">📖 Từ vựng: ${t.topicEmoji} ${t.topicName}</h2>
+      <h2 class="t2-page-h2" style="font-size:18px">📖 Từ vựng: ${_escHtml(t.topicEmoji)} ${_escHtml(t.topicName)}</h2>
       <p class="t2-page-sub" style="font-size:13px">${state.vocab.length} từ / cụm từ quan trọng</p>
     </div>
     <div class="t2-vocab-grid">
       ${state.vocab.map(v => `
         <div class="t2-vocab-card">
-          <div class="t2-vocab-term">${v.term}</div>
-          <div class="t2-vocab-def">${v.definitionVi || ''}</div>
-          ${v.example ? `<div class="t2-vocab-ex">"${v.example}"</div>` : ''}
+          <div class="t2-vocab-term">${_escHtml(v.term)}</div>
+          <div class="t2-vocab-def">${_escHtml(v.definitionVi || '')}</div>
+          ${v.example ? `<div class="t2-vocab-ex">"${_escHtml(v.example)}"</div>` : ''}
         </div>`).join('')}
     </div>`;
 }
@@ -1744,10 +1724,10 @@ function renderDone() {
   const wrongReview = wrongAttempts.map((a, i) => `
     <div class="wp-wr-item">
       <div class="wp-wr-num">❌ Câu ${i+1} — ${Q_LABELS[a.type] || a.type}</div>
-      <div class="wp-wr-q" style="white-space:pre-line">${a.questionText || ''}</div>
-      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn trả lời:</span> <span class="wp-wr-your">${a.userAnswer || '(bỏ trống)'}</span></div>
-      <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án đúng:</span> <span class="wp-wr-ans">${a.modelAnswer || ''}</span></div>
-      ${a.feedbackVi ? `<div class="wp-wr-gp">${a.feedbackVi}</div>` : ''}
+      <div class="wp-wr-q" style="white-space:pre-line">${_escHtml(a.questionText || '')}</div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn trả lời:</span> <span class="wp-wr-your">${_escHtml(a.userAnswer || '') || '(bỏ trống)'}</span></div>
+      <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án đúng:</span> <span class="wp-wr-ans">${_escHtml(a.modelAnswer || '')}</span></div>
+      ${a.feedbackVi ? `<div class="wp-wr-gp">${_escHtml(a.feedbackVi)}</div>` : ''}
     </div>`).join('');
 
   return `
@@ -1755,7 +1735,7 @@ function renderDone() {
       <img src="${t2DoneImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
       <div class="t2-done-icon">${emoji}</div>
       <div class="t2-done-score ${scoreClass}">${pct}%</div>
-      <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${state.selectedTopic?.topicName || ''}</div>
+      <div class="t2-done-sub">Hoàn thành ${state.sessionDone} câu · ${_escHtml(state.selectedTopic?.topicName || '')}</div>
       <div class="wp-status-row" style="justify-content:center">${topicStatusHtml}</div>
       <div class="t2-done-stats">
         <div class="t2-done-stat"><div class="t2-done-stat-num wp-score-good">✅ ${state.sessionCorrect}</div><div class="t2-done-stat-lbl">Đúng</div></div>
@@ -1965,7 +1945,7 @@ async function openT2History() {
       const mode = a.sessionType === 'exam' ? '🎓 Thi thử' : '✏️ Luyện tập';
       return `<div class="t2-hist-entry">
         <div class="t2-hist-entry-date">${date} · ${mode}</div>
-        <div class="t2-hist-entry-name">${a.topicName || '–'}${a.week ? ` · W${a.week}` : ''}</div>
+        <div class="t2-hist-entry-name">${_escHtml(a.topicName || '–')}${a.week ? ` · W${a.week}` : ''}</div>
         <div class="t2-hist-entry-row">
           <span class="t2-hist-entry-count">${a.correctCount ?? '?'}/${a.totalQuestions ?? '?'} câu</span>
           <span class="t2-hist-entry-acc ${cls}">${acc}% đúng</span>
