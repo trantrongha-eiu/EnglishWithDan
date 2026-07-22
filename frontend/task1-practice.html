@@ -16,18 +16,6 @@
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
   <style>
-    /* ── Toast ── */
-    #wp-toast {
-      position:fixed;top:calc(var(--nav-height,64px) + 8px);left:50%;transform:translateX(-50%);
-      padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;
-      color:#fff;z-index:9999;opacity:0;pointer-events:none;
-      transition:opacity .25s,top .25s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18);
-    }
-    #wp-toast.show{opacity:1;top:calc(var(--nav-height,64px) + 14px)}
-    #wp-toast.warn{background:#e65100}
-    #wp-toast.error{background:#c62828}
-    #wp-toast.info{background:#1565c0}
-
     /* ── Quit modal ── */
     .wp-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000}
     .wp-quit-overlay.hidden{display:none}
@@ -101,17 +89,6 @@
     [data-theme="dark"] .wp-welcome-types-lbl{color:#7dd3fc}
     [data-theme="dark"] .wp-welcome-chips span{background:#0f2d45;border-color:#1e4060;color:#7dd3fc}
 
-    /* ── Task1 skill badge ── */
-    .t1-skill-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#3d8bff 0%,#2563eb 100%);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-
-    /* ── Grammar box ── */
-    .t1-grammar-box{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:10px;padding:10px 14px;margin:10px 0 0;font-size:13px}
-    .t1-grammar-box .t1-gb-label{font-weight:700;color:#0369a1;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
-    .t1-grammar-box .t1-gb-content{color:#1e40af;font-weight:500;line-height:1.5}
-    [data-theme="dark"] .t1-grammar-box{background:#0c1e30;border-color:#1e4060}
-    [data-theme="dark"] .t1-grammar-box .t1-gb-label{color:#7dd3fc}
-    [data-theme="dark"] .t1-grammar-box .t1-gb-content{color:#93c5fd}
-
     /* ── Multiple choice ── */
     .t1-mc-options{display:flex;flex-direction:column;gap:8px;margin:10px 0}
     .t1-mc-option{background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:14px;text-align:left;transition:all .2s;display:flex;align-items:flex-start;gap:10px;width:100%}
@@ -172,10 +149,6 @@
     .t1-ctx-note-lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#3d8bff;margin-bottom:2px}
     [data-theme="dark"] .t1-ctx-note{background:#0c1e30;border-color:#3d8bff;color:#93c5fd}
     [data-theme="dark"] .t1-ctx-note-lbl{color:#7dd3fc}
-
-    /* ── Module badge ── */
-    .t1-module-badge{display:inline-flex;align-items:center;gap:4px;background:#f3f4f6;color:#4b5563;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
-    [data-theme="dark"] .t1-module-badge{background:#1e293b;color:#94a3b8}
 
     /* ── Sidebar toggle switches ── */
     .t1-settings-section{margin-top:4px;padding:10px 0 2px;border-top:1px solid #f3f4f6}
@@ -274,8 +247,6 @@
 <script src="js/shared/dictionary-lookup.js"></script>
 <script src="js/shared/score-message.js"></script>
 
-
-<div id="wp-toast"></div>
 
 <!-- Quit overlay -->
 <div class="wp-quit-overlay hidden" id="wp-quit-overlay">
@@ -1015,7 +986,7 @@ function floatXP(amount) {
 }
 
 function _escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function buildAnswerDiff(userAnswer, sampleAnswer) {
   const norm = s => s.toLowerCase().replace(/[.,!?;:'"]/g, '').trim();
@@ -1472,7 +1443,7 @@ function showFillBlankView(ex) {
   // Sentence
   const sentence = ex.sentenceWithBlanks || ex.questionEn || '';
   document.getElementById('fill-sentence').innerHTML =
-    sentence.replace(/___/g, '<span class="wp-blank-underline">___</span>');
+    _escHtml(sentence).replace(/___/g, '<span class="wp-blank-underline">___</span>');
 
   // Hints — 2 chips for short answers (≤6 words), 3 for longer
   const hRow = document.getElementById('fill-hints-row');
@@ -1524,7 +1495,7 @@ function showMultipleChoiceView(ex) {
   (ex.options || []).forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 't1-mc-option';
-    btn.innerHTML = `<span class="t1-opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.innerHTML = `<span class="t1-opt-letter">${letters[i]}</span><span>${_escHtml(opt)}</span>`;
     btn.onclick = () => {
       container.querySelectorAll('.t1-mc-option').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
@@ -1682,7 +1653,7 @@ function showFeedback(userAnswer, data, ex) {
   } else {
     document.getElementById('comparison-box').style.display = '';
     document.getElementById('student-answer-display').innerHTML =
-      data.sampleAnswer ? buildAnswerDiff(userAnswer, data.sampleAnswer) : userAnswer;
+      data.sampleAnswer ? buildAnswerDiff(userAnswer, data.sampleAnswer) : _escHtml(userAnswer);
     document.getElementById('sample-answer-display').textContent = data.sampleAnswer || '—';
   }
 
@@ -1776,10 +1747,10 @@ function showDoneSummary() {
       ${wrongAttempts.map((a, i) => `
         <div class="wp-wr-item">
           <div class="wp-wr-num">❌ Câu ${i+1} — ${TYPE_LABELS[a.type] || a.type}<span class="wp-wr-skill">${SKILL_LABELS[a.skillType] || ''}</span></div>
-          <div class="wp-wr-q">${a.instruction ? a.instruction + ' ' : ''}${a.questionText || ''}</div>
-          <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="wp-wr-your">${a.userAnswer || '(bỏ trống)'}</span></div>
-          <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${a.sampleAnswer || ''}</span></div>
-          ${a.feedbackVi ? `<div class="wp-wr-gp">${a.feedbackVi}</div>` : ''}
+          <div class="wp-wr-q">${a.instruction ? _escHtml(a.instruction) + ' ' : ''}${_escHtml(a.questionText || '')}</div>
+          <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="wp-wr-your">${_escHtml(a.userAnswer || '') || '(bỏ trống)'}</span></div>
+          <div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${_escHtml(a.sampleAnswer || '')}</span></div>
+          ${a.feedbackVi ? `<div class="wp-wr-gp">${_escHtml(a.feedbackVi)}</div>` : ''}
         </div>`).join('')}`;
   } else {
     reviewDiv.innerHTML = `<div class="wp-wr-all-ok">🌟 Không có câu nào sai!</div>`;
@@ -1953,7 +1924,7 @@ function showTestQuestion(idx) {
     document.getElementById('test-fill-label').textContent = ex.instruction || 'Điền vào chỗ trống:';
     const sentence = ex.sentenceWithBlanks || ex.questionEn || '';
     document.getElementById('test-fill-sentence').innerHTML =
-      sentence.replace(/___/g, '<span class="wp-blank-underline">___</span>');
+      _escHtml(sentence).replace(/___/g, '<span class="wp-blank-underline">___</span>');
     document.getElementById('test-fill-input').value = '';
 
   } else if (ex.type === 'multiple_choice' || ex.type === 'paraphrase_choose') {
@@ -1967,7 +1938,7 @@ function showTestQuestion(idx) {
     (ex.options || []).forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 't1-mc-option';
-      btn.innerHTML = `<span class="t1-opt-letter">${letters[i]}</span><span>${opt}</span>`;
+      btn.innerHTML = `<span class="t1-opt-letter">${letters[i]}</span><span>${_escHtml(opt)}</span>`;
       btn.onclick = () => {
         document.querySelectorAll('#test-mc-options .t1-mc-option').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
@@ -2093,11 +2064,11 @@ async function submitTest() {
           ${r.isCorrect ? '✅' : '❌'} Câu ${i + 1} — ${TYPE_LABELS[r.type] || r.type}
           <span class="wp-wr-skill">${SKILL_LABELS[r.skillType] || ''}</span>
         </div>
-        ${r.instruction ? `<div class="wp-wr-instr">${r.instruction}</div>` : ''}
-        ${r.questionVi || r.questionEn ? `<div class="wp-wr-q-i">${r.questionVi || r.questionEn}</div>` : ''}
-        <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${r.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${r.userAnswer || '(bỏ trống)'}</span></div>
-        ${!r.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${r.sampleAnswer || ''}</span></div>` : ''}
-        ${r.grammarPoint ? `<div class="wp-wr-gp">💡 ${r.grammarPoint}</div>` : ''}`;
+        ${r.instruction ? `<div class="wp-wr-instr">${_escHtml(r.instruction)}</div>` : ''}
+        ${r.questionVi || r.questionEn ? `<div class="wp-wr-q-i">${_escHtml(r.questionVi || r.questionEn)}</div>` : ''}
+        <div class="wp-wr-row"><span class="wp-wr-lbl-you">Bạn:</span> <span class="${r.isCorrect ? 'wp-wr-ans' : 'wp-wr-your'}">${_escHtml(r.userAnswer || '') || '(bỏ trống)'}</span></div>
+        ${!r.isCorrect ? `<div class="wp-wr-row"><span class="wp-wr-lbl-ans">Đáp án:</span> <span class="wp-wr-ans">${_escHtml(r.sampleAnswer || '')}</span></div>` : ''}
+        ${r.grammarPoint ? `<div class="wp-wr-gp">💡 ${_escHtml(r.grammarPoint)}</div>` : ''}`;
       list.appendChild(div);
     });
   } catch (err) {
