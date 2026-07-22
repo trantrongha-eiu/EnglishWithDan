@@ -16,13 +16,6 @@
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
   <style>
-    #wp-toast{position:fixed;top:calc(var(--nav-height,64px) + 8px);left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:10px;font-size:14px;font-weight:500;color:#fff;z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,top .25s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.18)}
-    #wp-toast.show{opacity:1;top:calc(var(--nav-height,64px) + 14px)}
-    #wp-toast.warn{background:#e65100}
-    #wp-toast.error{background:#c62828}
-    #wp-toast.info{background:#1565c0}
-    #wp-toast.success{background:#15803d}
-
     .t2-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(2px)}
     .t2-quit-overlay.hidden{display:none}
     .t2-quit-box{background:#fff;border-radius:18px;width:320px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.28);animation:t2QuitIn .2s ease}
@@ -45,15 +38,7 @@
     .tpl-page-hero-inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .tpl-page-title{font-size:20px;font-weight:900;margin:0 0 3px}
     .tpl-page-sub{font-size:13px;opacity:.85;margin:0}
-    .tpl-overall-badge{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
 
-    .tpl-tabs-wrap{max-width:900px;margin:0 auto;background:#fff}
-    [data-theme="dark"] .tpl-tabs-wrap{background:#1e293b}
-
-    .t2-type-tabs-outer{display:flex;align-items:stretch;border-bottom:2px solid #e5e7eb;background:#fafafa}
-    [data-theme="dark"] .t2-type-tabs-outer{border-color:#334155;background:#0f172a}
-    .t2-type-tabs-wrap{display:flex;overflow-x:auto;flex:1;gap:0;border-bottom:none;padding:0 0 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:transparent}
-    .t2-type-tabs-wrap::-webkit-scrollbar{display:none}
     .t2-tpl-vi-btn-tab{flex-shrink:0;border:none;border-left:1px solid #e5e7eb;background:none;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s}
     .t2-tpl-vi-btn-tab:hover{background:#f0f0ff;color:#6366f1}
     .t2-tpl-vi-btn-tab.active{background:#ede9fe;color:#4338ca}
@@ -74,12 +59,6 @@
     [data-theme="dark"] .t2-tpl-exam-btn-tab{border-left-color:#7c2d12;background:#431407;color:#fb923c}
     [data-theme="dark"] .t2-tpl-exam-btn-tab:hover{background:#7c2d12}
     [data-theme="dark"] .t2-tpl-exam-btn-tab.active{background:#ea580c;color:#fff;border-left-color:#c2410c}
-
-    /* Back button (kept for exam bar usage) */
-    .t2-back-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid #e5e7eb;border-radius:8px;background:none;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:all .15s;font-family:inherit;flex-shrink:0}
-    .t2-back-btn:hover{border-color:#e53935;color:#e53935}
-    [data-theme="dark"] .t2-back-btn{border-color:#374151;color:#9ca3af}
-    [data-theme="dark"] .t2-back-btn:hover{border-color:#f87171;color:#f87171}
 
     /* Practice page nav links */
     /* .t2-tpl-nav-group / .t2-tpl-nav-link now defined in css/mobile.css (shared across all 4 Luyện viết pages) */
@@ -145,7 +124,6 @@
     .t2-cloze-input{border:1.5px solid #6366f1;border-radius:6px;padding:3px 8px;font-size:13px;width:130px;outline:none;font-family:inherit;transition:border-color .2s,box-shadow .2s;background:#fff;color:#111827;vertical-align:middle;margin:0 2px}
     .t2-cloze-input:focus{box-shadow:0 0 0 3px #e0e7ff}
     [data-theme="dark"] .t2-cloze-input{background:#1e293b;border-color:#818cf8;color:#f1f5f9}
-    .t2-blank-num{font-size:10px;font-weight:700;color:#6366f1;vertical-align:middle;margin-right:1px}
     .t2-cloze-vi{font-size:11.5px;color:#6b7280;margin-top:5px;font-style:italic;display:none;line-height:1.5}
     .t2-cloze-vi.vis{display:block}
     .t2-cloze-actions{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
@@ -346,8 +324,6 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
-
-<div id="wp-toast"></div>
 
 <!-- Type switch confirm modal -->
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
@@ -986,7 +962,7 @@ function renderTplContent() {
       const key = `${_tplActiveType}-${si}-${ii}`;
       const scoreState = _examMode ? '' : (_tplScores[key] || '');
       const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-      const answersStr = escAttr(answers.join('||'));
+      const answersStr = _escOnclickArg(answers.join('||'));
       const isMulti = answers.length > 1;
       const parts = item.en.split('___');
 
@@ -1218,7 +1194,7 @@ function switchTplType(typeId) {
     document.getElementById('tpl-switch-sub').innerHTML =
       `⏱️ Bạn đang ở <b>chế độ thi thử</b>.<br>Chuyển type sẽ <b>thoát khỏi chế độ thi thử</b>. Tiếp tục?`;
     const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> ${toMeta ? `Chuyển → ${toMeta.label}` : 'Chuyển type'}`;
+    if (confirmBtn) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> ${toMeta ? `Chuyển → ${escHtml(toMeta.label)}` : 'Chuyển type'}`;
     document.getElementById('tpl-switch-overlay').classList.remove('hidden');
     return;
   }
@@ -1236,9 +1212,9 @@ function switchTplType(typeId) {
       if (_tplScores[`${_tplActiveType}-${si}-${ii}`] === 'ok') done++;
     }));
     document.getElementById('tpl-switch-sub').innerHTML =
-      `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${fromMeta ? fromMeta.label : _tplActiveType}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
+      `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${escHtml(fromMeta ? fromMeta.label : _tplActiveType)}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
     const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn && toMeta) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> Chuyển → ${toMeta.label} · ${TPL_DATA[typeId]?.name || ''}`;
+    if (confirmBtn && toMeta) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> Chuyển → ${escHtml(toMeta.label)} · ${escHtml(TPL_DATA[typeId]?.name || '')}`;
     document.getElementById('tpl-switch-overlay').classList.remove('hidden');
   } else {
     doSwitchType(typeId);
@@ -1467,6 +1443,15 @@ function checkTypeComplete() {
 
 // ── Helpers ────────────────────────────────────────────────────
 // escHtml() / escAttr() moved to js/shared/utils.js (single source of truth — Phase 3 audit).
+// escAttr() HTML-entity-encodes ' as &#39;, which is correct for a plain attribute
+// value but breaks when the string is embedded inside an onclick/onkeydown's own
+// JS string literal: the browser's HTML parser decodes &#39; back to a raw ' before
+// the JS engine ever sees the handler, re-introducing the quote and breaking the
+// string. renderTplContent()'s answersStr is built for exactly that context, so
+// it needs the JS-string-safe form (' -> \') instead.
+function _escOnclickArg(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
 
 // ── Template attempt save ──────────────────────────────────────
 async function saveTplAttemptToServer(typeId) {
