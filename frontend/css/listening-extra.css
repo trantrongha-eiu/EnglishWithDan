@@ -163,22 +163,11 @@
         }
         /* ── Matching-options / chip bank ── */
         .rq-mo-group { display:flex;flex-direction:column;gap:12px; }
-        .rq-chip-bank { display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:linear-gradient(135deg,#f0f4ff 0%,#faf5ff 100%);border:1.5px solid #c4b5fd;border-radius:10px; }
         .drag-chip { display:inline-flex;align-items:center;gap:5px;padding:5px 13px;background:linear-gradient(135deg,#fff 0%,#f5f3ff 100%);border:1.5px solid #c4b5fd;border-radius:20px;font-size:13px;font-weight:500;cursor:grab;user-select:none;transition:all .2s;color:#5b21b6;box-shadow:0 1px 4px rgba(109,40,217,.1); }
         .drag-chip:hover { background:linear-gradient(135deg,#ede9fe 0%,#e0e7ff 100%);border-color:#7c3aed;transform:translateY(-2px);box-shadow:0 4px 12px rgba(109,40,217,.18); }
         .drag-chip.used { opacity:.3;pointer-events:none;filter:grayscale(.3); }
         .drag-chip.dragging { opacity:.5;transform:scale(.97); }
         .drag-chip strong { font-weight:700;color:#6d28d9; }
-        .rq-mo-questions { display:flex;flex-direction:column;gap:8px; }
-        .match-question-row { display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px; }
-        .match-q-left { display:flex;align-items:flex-start;gap:8px;flex:1;min-width:0; }
-        .match-q-num { font-weight:700;color:#6366f1;min-width:28px;flex-shrink:0; }
-        .match-q-text { font-size:14px;color:#374151; }
-        .match-q-right { display:flex;align-items:center;gap:8px; }
-        .match-answer-badge { display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 8px;border-radius:8px;font-size:15px;font-weight:700;background:#f3f4f6; }
-        .match-ans-correct { background:#dcfce7;color:#16a34a; }
-        .match-ans-wrong { background:#fee2e2;color:#dc2626; }
-        .match-correct-ans { font-size:12px;color:#16a34a;font-weight:600; }
         .match-reuse-note { font-size:12px;color:#6b7280;background:#fefce8;border:1px solid #fde68a;border-radius:6px;padding:6px 10px; }
         .match-feedback { font-size:12px;color:#6b7280;margin-top:4px;width:100%; }
         .drop-zone.rq-mo-drop { min-width:80px;padding:6px 12px;background:linear-gradient(135deg,#f5f3ff 0%,#eff6ff 100%);border:2px dashed #a5b4fc;border-radius:8px;font-size:13px;color:#a78bfa;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s; }
@@ -604,13 +593,10 @@
         .btn-icon-sm i                     { font-size: 15px; line-height: 1; display: flex; align-items: center; }
         .exam-exit-btn i                   { font-size: 15px; line-height: 1; }
         .exam-autosave-lbl i               { font-size: 12px; vertical-align: middle; margin-right: 3px; }
-        .exam-timer i                      { font-size: 14px; opacity: .85; }
         .audio-play-btn i                  { font-size: 16px; line-height: 1; }
         .audio-skip-btn i                  { font-size: 13px; line-height: 1; }
         .volume-icon i                     { font-size: 16px; line-height: 1; pointer-events: none; }
         .exam-audio-status i               { font-size: 13px; margin-right: 4px; }
-        .mode-tab i                        { font-size: 14px; margin-right: 4px; }
-        .lt-history-btn i                  { font-size: 13px; margin-right: 4px; }
 
         /* ── Dark mode: exam topbar buttons ───────────────── */
         [data-theme="dark"] .exam-exit-btn { color: #d1d5db; }
@@ -618,7 +604,6 @@
         [data-theme="dark"] .btn-icon-sm   { color: #d1d5db; border-color: #374151; }
         [data-theme="dark"] .btn-icon-sm:hover { background: #374151; color: #f9fafb; }
         [data-theme="dark"] .exam-autosave-lbl { color: #9ca3af; }
-        [data-theme="dark"] .exam-timer    { color: #d1d5db; }
 
         /* ── Dark mode: audio bar ──────────────────────────── */
         [data-theme="dark"] .audio-play-btn { background: #1e40af; border-color: #1d4ed8; }
@@ -655,11 +640,6 @@
         [data-theme="dark"] #btn-fullscreen.active,
         [data-theme="dark"] #btn-fullscreen-pr.active { background: #1e40af; color: #fff; border-color: #1e40af; }
 
-        /* ── Dark mode: section sub-tabs ─────────────────────── */
-        [data-theme="dark"] .lt-sub-tab    { color: #9ca3af; border-color: #374151; }
-        [data-theme="dark"] .lt-sub-tab:hover { background: #374151; color: #d1d5db; }
-        [data-theme="dark"] .lt-sub-tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
-
         /* ── Share button on card covers ─────────────────────── */
         .pc-share-btn {
             position: absolute;
@@ -688,19 +668,6 @@
         }
         .pc-share-btn:active { transform: scale(.96); }
 
-        /* ── Mobile: practice tabs search row ─────────────────── */
-        @media (max-width: 640px) {
-          .plele-search-row {
-            margin-left: 0 !important;
-            width: 100%;
-            flex-shrink: 1 !important;
-          }
-          .plele-search-row input[type="search"] {
-            flex: 1;
-            width: auto !important;
-            min-width: 0;
-          }
-        }
 
         /* ── Review: skip state (L2) ──────────────────────────── */
         .rq-ans-skip { background:#f3f4f6;color:#6b7280; }
@@ -731,11 +698,4 @@
         [data-theme="dark"] .mo-options-title { background:#1e2d4a;color:#93c5fd;border-bottom-color:#374151; }
 
         /* ── Dark mode: Matching Information/Features question rows ── */
-        [data-theme="dark"] .rq-chip-bank { background:#1a2030;border-color:#374151; }
-        [data-theme="dark"] .match-question-row { background:#1e2433;border-color:#374151; }
-        [data-theme="dark"] .match-q-text { color:#e5e7eb; }
-        [data-theme="dark"] .match-answer-badge { background:#374151;color:#f9fafb; }
-        [data-theme="dark"] .match-ans-correct { background:#14532d;color:#86efac; }
-        [data-theme="dark"] .match-ans-wrong { background:#7f1d1d;color:#fca5a5; }
-        [data-theme="dark"] .match-correct-ans { color:#4ade80; }
         [data-theme="dark"] .match-reuse-note { background:#3f2d0a;border-color:#92400e;color:#fbbf24; }

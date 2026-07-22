@@ -583,15 +583,6 @@
     <link rel="stylesheet" href="css/listening-extra.css">
 
     <script>
-        // ── Skill nav toggle (mobile) ──────────────────────────────────
-        function toggleSkillNav() {
-            const bar = document.getElementById('skill-tabs-bar');
-            const btn = document.getElementById('skillNavToggle');
-            if (!bar) return;
-            const open = bar.classList.toggle('nav-open');
-            btn.classList.toggle('active', open);
-        }
-
         // ── Fullscreen toggle ──────────────────────────────────────────
         function toggleFullscreen() {
             if (document.fullscreenElement) {
@@ -634,6 +625,18 @@
         'use strict';
 
         const API = 'https://englishwithdan.onrender.com/api';
+
+        // Escapes a value for embedding inside a single-quoted JS string
+        // literal that itself sits inside a double-quoted HTML event-handler
+        // attribute (e.g. onclick="fn('${escH(word)}')") — escHtml() (which
+        // only escapes &/</>/") is NOT safe there: a drag-drop word/option
+        // containing an apostrophe (e.g. "don't", "it's" — common in real
+        // IELTS word banks, and sentence-endings "letter" is admin-editable
+        // free text) breaks out of the JS string and leaves that element's
+        // handler silently non-functional. `'` is escaped to `\'` (a JS
+        // string escape, not an HTML entity) so it survives HTML attribute
+        // parsing intact and is correctly unescaped by the JS engine.
+        function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
         const state = {
             tests: [],
@@ -1001,9 +1004,8 @@
             const dateStr = t.lastAttempt?.submittedAt
                 ? new Date(t.lastAttempt.submittedAt).toLocaleDateString('en-GB')
                 : '';
-            const safeName = (t.name || '').replace(/'/g, "\\'");
             return `
-                <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${(t.name || '').toLowerCase().replace(/"/g, '')}">
+                <div class="test-card" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}">
                     <div class="test-card-cover ls-cover">
                         ${done ? '<div class="test-done-tick">✓</div>' : ''}
                         <button class="pc-share-btn" onclick="copyTestLink('${t._id}',event)" title="Sao chép link bài thi"><i class="fas fa-link"></i></button>
@@ -1012,7 +1014,7 @@
                         <div class="test-cover-sub">${t.totalParts} phần</div>
                     </div>
                     <div class="test-card-body">
-                        <div class="test-card-name">${t.name}</div>
+                        <div class="test-card-name">${escHtml(t.name)}</div>
                         <div class="test-card-meta"><i class="fas fa-music"></i> ${dur} · ${t.totalQuestions} câu</div>
                         ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot}${dateStr ? ` · ${dateStr}` : ''}</div>` : ''}
                         <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}')"><i class="fas ${_userPlan !== 'premium' ? 'fa-lock' : 'fa-headphones'}" style="font-size:11px"></i> ${_userPlan !== 'premium' ? 'Upgrade gói' : (done ? 'Làm lại' : 'Bắt đầu')}</button>
@@ -1428,8 +1430,8 @@
             let html = `
                 <div class="section-header-card">
                     <div class="section-part-label">Part ${section.partNumber}</div>
-                    <div class="section-title-text">${section.title}</div>
-                    ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
+                    <div class="section-title-text">${escHtml(section.title)}</div>
+                    ${section.description ? `<div class="section-desc">${escHtml(section.description)}</div>` : ''}
                     <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
                 </div>`;
             (section.questionGroups || []).forEach((group, gi) => {
@@ -1537,8 +1539,8 @@
                     return `<span class="drag-chip sc-chip${isUsed ? ' used' : ''}"
                         data-value="${escHtml(word)}" data-groupid="${groupId}" data-reuse="0"
                         draggable="${isReview ? 'false' : 'true'}"
-                        ondragstart="ltDragStart(event,'${escHtml(word)}')"
-                        onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                        ondragstart="ltDragStart(event,'${escH(word)}')"
+                        onclick="ltClickSCChip('${escH(word)}','${groupId}')">
                         <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
                     </span>`;
                 }).join('');
@@ -1617,8 +1619,8 @@
                     data-value="${letter}" data-groupid="${groupId}"
                     data-reuse="${matchingReuseAllowed ? 1 : 0}"
                     draggable="${isReview ? 'false' : 'true'}"
-                    ondragstart="ltDragStart(event,'${letter}')"
-                    onclick="${isReview ? '' : `ltClickMOChip('${letter}','${groupId}')`}">
+                    ondragstart="ltDragStart(event,'${escH(letter)}')"
+                    onclick="${isReview ? '' : `ltClickMOChip('${escH(letter)}','${groupId}')`}">
                     <span class="mo-opt-letter">${letter}</span>
                     <span class="mo-opt-text">${escHtml(opt)}</span>
                 </div>`;
@@ -1688,8 +1690,8 @@
                     data-value="${escHtml(word)}" data-groupid="${groupId}"
                     data-reuse="0"
                     draggable="${isReview ? 'false' : 'true'}"
-                    ondragstart="ltDragStart(event,'${escHtml(word)}')"
-                    onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                    ondragstart="ltDragStart(event,'${escH(word)}')"
+                    onclick="ltClickSCChip('${escH(word)}','${groupId}')">
                     <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i>${escHtml(word)}
                 </span>`;
             }).join('');
@@ -1739,8 +1741,8 @@
                     data-value="${escHtml(word)}" data-groupid="${groupId}"
                     data-reuse="0"
                     draggable="${isReview ? 'false' : 'true'}"
-                    ondragstart="ltDragStart(event,'${escHtml(word)}')"
-                    onclick="ltClickSCChip('${escHtml(word)}','${groupId}')">
+                    ondragstart="ltDragStart(event,'${escH(word)}')"
+                    onclick="ltClickSCChip('${escH(word)}','${groupId}')">
                     <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
                 </span>`;
             }).join('');
@@ -1868,9 +1870,9 @@
                     const qCA = (q.correctAnswer || '').trim().toUpperCase();
                     return `<div class="q-correct-ans ${ok ? 'right' : qUA ? 'wrong' : 'skip'}" style="margin-top:4px">
                         Q${q.questionNumber}: ${ok ? '✓ Đúng'
-                          : qUA ? `✗ Sai — Đáp án: <strong>${qCA}</strong>`
-                                : `⊘ Bỏ qua — Đáp án: <strong>${qCA}</strong>`}
-                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}`;
+                          : qUA ? `✗ Sai — Đáp án: <strong>${escHtml(qCA)}</strong>`
+                                : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(qCA)}</strong>`}
+                    </div>${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}`;
                 }).join('');
             }
 
@@ -1880,7 +1882,7 @@
             return `<div class="question-item" id="qi-${firstNum}" data-cluster-start="${firstNum}" data-cluster-end="${lastNum}">
                 <div class="q-header">
                     <span class="q-badge">${rangeLabel}</span>
-                    <div class="q-text">${cluster[0].questionText}</div>
+                    <div class="q-text">${escHtml(cluster[0].questionText || '')}</div>
                 </div>
                 <div class="checkbox-hint">Choose <strong>${letterWord}</strong> letters, A–${LETTERS[opts.length - 1] || 'E'}</div>
                 <div class="checkbox-opts">${optHtml}</div>
@@ -1910,14 +1912,14 @@
             const showText = !['sentence-completion', 'matching'].includes(q.type);
             const reviewExtra = isReview ? `
                 <div class="q-correct-ans ${ok ? 'right' : ua ? 'wrong' : 'skip'}">
-                    ${ok ? '✓ Đúng' : ua ? `✗ Sai — Đáp án: <strong>${ca}</strong>` : `⊘ Bỏ qua — Đáp án: <strong>${ca}</strong>`}
+                    ${ok ? '✓ Đúng' : ua ? `✗ Sai — Đáp án: <strong>${escHtml(ca)}</strong>` : `⊘ Bỏ qua — Đáp án: <strong>${escHtml(ca)}</strong>`}
                 </div>
-                ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${q.explanation}</div>` : ''}` : '';
+                ${q.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escHtml(q.explanation)}</div>` : ''}` : '';
 
             return `<div class="question-item" id="qi-${num}" data-qnum="${num}">
                 <div class="q-header">
                     <span class="q-badge">${num}</span>
-                    ${showText ? `<div class="q-text">${q.questionText}</div>` : ''}
+                    ${showText ? `<div class="q-text">${escHtml(q.questionText || '')}</div>` : ''}
                 </div>
                 ${inputHtml}${reviewExtra}
             </div>`;
@@ -1934,14 +1936,14 @@
                     const ok = !!q.isCorrect;
                     return `<span class="inline-answer-wrap" id="rv-q${num}" data-qnum="${num}">
                         <span class="q-badge-inline">${num}</span>
-                        <span class="inline-answer ${ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip'}">${ua || '–'}</span>
-                        ${!ok ? `<span class="inline-correct-ans">(${ca})</span>` : ''}
+                        <span class="inline-answer ${ok ? 'inline-correct' : ua ? 'inline-wrong' : 'inline-skip'}">${escHtml(ua || '–')}</span>
+                        ${!ok ? `<span class="inline-correct-ans">(${escHtml(ca)})</span>` : ''}
                     </span>`;
                 }
                 return `<span class="inline-input-wrap" id="q${num}" data-qnum="${num}">
                     <span class="q-badge-inline">${num}</span>
                     <input id="fi-${num}" class="fill-input-inline" type="text"
-                        value="${ua}" placeholder="..." autocomplete="off"
+                        value="${escAttr(ua)}" placeholder="..." autocomplete="off"
                         oninput="saveText(${num}, this.value)" />
                 </span>`;
             });
@@ -1993,8 +1995,8 @@
             let html = `
                 <div class="section-header-card">
                     <div class="section-part-label">Part ${section.partNumber}</div>
-                    <div class="section-title-text">${section.title}</div>
-                    ${section.description ? `<div class="section-desc">${section.description}</div>` : ''}
+                    <div class="section-title-text">${escHtml(section.title)}</div>
+                    ${section.description ? `<div class="section-desc">${escHtml(section.description)}</div>` : ''}
                     <div class="section-range">Câu ${section.questionRange?.start ?? ''}–${section.questionRange?.end ?? ''}</div>
                 </div>`;
 
@@ -2037,7 +2039,7 @@
                     if (letter === uaNorm) cls = 'selected';
                 }
                 return `<div class="radio-opt ${cls}" data-qnum="${num}" data-value="${letter}" ${isReview ? '' : `onclick="pickRadio(${num}, '${letter}')"`}>
-                    <span class="radio-dot"></span><label><strong>${letter}.</strong> ${displayText}</label>
+                    <span class="radio-dot"></span><label><strong>${letter}.</strong> ${escHtml(displayText)}</label>
                 </div>`;
             }).join('')}</div>`;
         }
@@ -2061,9 +2063,8 @@
                 } else {
                     if (uaLetters.includes(letter)) cls = 'selected';
                 }
-                const safeOpt = opt.replace(/'/g, "\\'");
                 return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
-                        <span class="check-box"></span><label><strong>${letter}</strong> ${opt.replace(/^[A-Ga-g]\s+/, '')}</label>
+                        <span class="check-box"></span><label><strong>${letter}</strong> ${escHtml(opt.replace(/^[A-Ga-g]\s+/, ''))}</label>
                     </div>`;
             }).join('')}</div>`;
         }
@@ -2076,7 +2077,7 @@
                 return `<span class="inline-answer ${cls}" style="display:inline-block;min-width:80px;padding:4px 14px;border-radius:6px;font-size:14px;font-weight:600;margin:4px 0">${escHtml(ua || '–')}</span>`;
             }
             return `<input id="fi-${num}" class="fill-input" type="text"
-                placeholder="Nhập câu trả lời..." value="${ua}" autocomplete="off"
+                placeholder="Nhập câu trả lời..." value="${escAttr(ua)}" autocomplete="off"
                 oninput="saveText(${num}, this.value)" />`;
         }
 
@@ -2084,17 +2085,22 @@
             const cls = isReview ? (ua.toLowerCase().trim() === ca.toLowerCase().trim() ? 'correct-drop' : ua ? 'wrong-drop' : 'skip-drop') : '';
             const dzHtml = `<div class="drop-zone ${ua ? 'filled' : ''} ${isReview ? cls : ''}" data-qnum="${num}"
                 ${isReview ? '' : `ondragover="dzOver(event)" ondrop="dzDrop(event,${num})" onclick="dzClick(event,${num})"`}>
-                ${ua ? `${ua}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
+                ${ua ? `${escHtml(ua)}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>` : '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;'}
             </div>`;
-            const filled = questionText.replace(/_{2,}|\[blank\]/i, dzHtml);
-            return `<div class="q-text" style="margin-top:-6px">${filled !== questionText ? filled : questionText + ' ' + dzHtml}</div>`;
+            // Escape the surrounding admin-authored text first, then splice in
+            // the (already-safe, self-built) drop-zone markup at the blank
+            // marker — this must happen in that order so dzHtml's real tags
+            // don't get escaped along with the text around them.
+            const safeText = escHtml(questionText || '');
+            const filled = safeText.replace(/_{2,}|\[blank\]/i, dzHtml);
+            return `<div class="q-text" style="margin-top:-6px">${filled !== safeText ? filled : safeText + ' ' + dzHtml}</div>`;
         }
 
         function renderWordBankHtml(words, startNum) {
             return `<div style="margin-bottom:16px">
                 <div class="word-bank-label">📦 Word Bank – kéo thả vào ô trống</div>
                 <div class="word-bank" id="bank-${startNum}">
-                    ${words.map(w => `<div class="word-chip" data-word="${w}" draggable="true">${w}</div>`).join('')}
+                    ${words.map(w => `<div class="word-chip" data-word="${escAttr(w)}" draggable="true">${escHtml(w)}</div>`).join('')}
                 </div>
             </div>`;
         }
@@ -2191,7 +2197,7 @@
 
             if (['sentence-completion', 'matching'].includes(q.type)) {
                 const dz = document.querySelector(`.drop-zone[data-qnum="${num}"]`);
-                if (dz) { dz.classList.add('filled'); dz.innerHTML = `${saved}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>`; }
+                if (dz) { dz.classList.add('filled'); dz.innerHTML = `${escHtml(saved)}<span class="clear-drop" onclick="clearDz(event,${num})"><i class="fas fa-times"></i></span>`; }
             } else if (['fill-blank', 'map-labelling', 'matching-info'].includes(q.type)) {
                 const inp = document.getElementById(`fi-${num}`);
                 if (inp) inp.value = saved;
@@ -2373,7 +2379,7 @@
             const ua = state.answers[qnum] || '';
             if (ua) {
                 dz.classList.add('filled');
-                dz.innerHTML = `${ua}<span class="clear-drop" onclick="clearDz(event,${qnum})"><i class="fas fa-times"></i></span>`;
+                dz.innerHTML = `${escHtml(ua)}<span class="clear-drop" onclick="clearDz(event,${qnum})"><i class="fas fa-times"></i></span>`;
             } else {
                 dz.classList.remove('filled');
                 dz.innerHTML = '&nbsp;&nbsp;kéo vào&nbsp;&nbsp;';
@@ -2828,7 +2834,7 @@
                     const bandClass = a.bandScore >= 7 ? 'ls-band-good' : a.bandScore >= 5.5 ? 'ls-band-mid' : 'ls-band-bad';
                     const attemptId = a._id || '';
                     return `<tr>
-                        <td>${a.testName || a.testId?.name || '–'}</td>
+                        <td>${escHtml(a.testName || a.testId?.name || '–')}</td>
                         <td>${date}</td>
                         <td>${mins}</td>
                         <td class="ls-td-correct">${a.correctCount ?? '–'}</td>
@@ -3513,7 +3519,7 @@
         audio.onended = () => toast('Audio đã kết thúc — hãy kiểm tra đáp án!', 'info');
 
         // Title + footer
-        document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${section.title || `Section ${partNum}`}`;
+        document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${escHtml(section.title || `Section ${partNum}`)}`;
         document.getElementById('lt-practice-footer-btns').innerHTML = `
             <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
             <button class="btn-primary" onclick="submitLTPractice()"><i class="fas fa-check"></i> Kiểm tra đáp án</button>`;
@@ -3875,7 +3881,7 @@
 
             // Show practice screen
             showScreen('practice');
-            document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Xem lại – ${section.title || `Section ${attempt.partNumber}`}`;
+            document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Xem lại – ${escHtml(section.title || `Section ${attempt.partNumber}`)}`;
 
             const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
             const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
