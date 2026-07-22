@@ -77,15 +77,15 @@ function getVNDay(date) {
 }
 
 // Cập nhật streak khi user hoạt động. `bonus` is how much to add for today's
-// activity — defaults to 1 (flat, e.g. adding a word, reading/listening
-// attempts). Same-day repeat calls are a no-op by default (unchanged from
-// before), UNLESS `allowSameDayStack` is set — vocab practice sessions pass
-// an accuracy-derived amount (0/1/2) WITH allowSameDayStack:true, so several
-// sessions in one day can each add their own bonus, up to whatever daily cap
-// the caller (vocabBookService.completePractice) already enforced before
-// calling this. `lastActivityDate` always advances on a qualifying activity
-// call even when bonus is 0, so a low-accuracy session still keeps the
-// day-chain alive without growing it.
+// activity — defaults to 1 (flat, e.g. adding a word). Same-day repeat calls
+// are a no-op by default (unchanged from before), UNLESS `allowSameDayStack`
+// is set — vocab practice, reading tests, and listening tests all pass an
+// accuracy-derived amount (0/1/2, see services/streakBonusService.js) WITH
+// allowSameDayStack:true, so several sessions in one day can each add their
+// own bonus, up to the shared +5/day cap the caller (reserveDailyStreakBonus)
+// already enforced before calling this. `lastActivityDate` always advances on
+// a qualifying activity call even when bonus is 0, so a low-accuracy session
+// still keeps the day-chain alive without growing it.
 UserSchema.methods.updateStreak = function (bonus = 1, { allowSameDayStack = false } = {}) {
   // Studying again ends the "just lost a streak" mascot state immediately,
   // whether this continues a streak, restarts one, or is a same-day no-op.

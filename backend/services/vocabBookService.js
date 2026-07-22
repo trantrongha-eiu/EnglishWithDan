@@ -3,44 +3,18 @@
 // Extracted from routes/vocabBook.js, verbatim logic.
 const VocabBook = require('../models/VocabBook');
 const VocabActivity = require('../models/VocabActivity');
+const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 
 // Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay
 // (Vietnam local day — same convention as User.getVNDay/effectiveStreak; using
 // the server's raw UTC day here would misfile anything done 00:00–07:00 VN
 // time under the previous calendar day).
-function todayVNDate() {
-  const now = new Date();
-  const vn = new Date(now.getTime() + 7 * 60 * 60 * 1000);
-  return new Date(Date.UTC(vn.getUTCFullYear(), vn.getUTCMonth(), vn.getUTCDate()));
-}
-
 function logActivity(userId, inc) {
   VocabActivity.findOneAndUpdate(
     { userId, date: todayVNDate() },
     { $inc: inc },
     { upsert: true, new: false }
   ).catch(() => {});
-}
-
-// Daily streak-bonus cap (max 5/day, see completePractice): reads how much
-// bonus has already been granted today, then atomically reserves
-// `appliedBonus` more. Not fully race-proof under truly concurrent requests
-// from the same user (read-then-write), but that's an accepted, low-stakes
-// gap consistent with how this app already trusts client-reported session
-// data elsewhere — a student isn't normally running two practice sessions
-// at the exact same instant.
-async function reserveDailyStreakBonus(userId, rawBonus) {
-  const date = todayVNDate();
-  const doc = await VocabActivity.findOneAndUpdate(
-    { userId, date },
-    { $setOnInsert: { userId, date } },
-    { upsert: true, new: true }
-  );
-  const appliedBonus = Math.max(0, Math.min(rawBonus, 5 - (doc.streakBonusEarned || 0)));
-  if (appliedBonus > 0) {
-    await VocabActivity.updateOne({ _id: doc._id }, { $inc: { streakBonusEarned: appliedBonus } });
-  }
-  return appliedBonus;
 }
 
 async function ensureDefaultBooks(userId) {
@@ -90,9 +64,8 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
 
   logActivity(user._id, { wordsStudied: wordsAnswered });
 
-  // Accuracy → streak bonus tier: <80% = 0, 80-90% = 1, >=90% = 2.
   const accuracy = Math.max(0, Math.min(1, correctAnswered / wordsAnswered));
-  const rawBonus = accuracy >= 0.9 ? 2 : accuracy >= 0.8 ? 1 : 0;
+  const rawBonus = bonusForAccuracy(accuracy);
   const appliedBonus = await reserveDailyStreakBonus(user._id, rawBonus);
 
   // Always called (even with bonus 0) so lastActivityDate still advances

@@ -148,3 +148,76 @@ describe('listeningService.savePractice', () => {
     expect(result.totalQuestions).toBe(2);
   });
 });
+
+// Same accuracy→streak-bonus tiering as vocabBookService.completePractice
+// (<80%=0, 80-90%=+1, >=90%=+2), sharing that service's +5/day cap.
+describe('listeningService.submitTest — streak bonus', () => {
+  async function makeTenQuestionTest() {
+    return createListeningTest({
+      sections: [{
+        partNumber: 1,
+        title: 'Part 1',
+        questionRange: { start: 1, end: 10 },
+        questionGroups: [{
+          groupType: 'plain',
+          interchangeableAnswers: false,
+          questions: Array.from({ length: 10 }, (_, i) => ({
+            questionNumber: i + 1, type: 'fill-blank', questionText: `Q${i + 1}`, correctAnswer: `ans${i + 1}`,
+          })),
+        }],
+      }],
+    });
+  }
+  function makeAnswers(correctN) {
+    const answers = {};
+    for (let i = 1; i <= 10; i++) answers[i] = i <= correctN ? `ans${i}` : 'wrong';
+    return answers;
+  }
+
+  test('>=90% accuracy adds +2 to the streak', async () => {
+    const student = await createStudent();
+    const test = await makeTenQuestionTest();
+
+    const result = await listeningService.submitTest(test._id.toString(), { answers: makeAnswers(9) }, student);
+
+    expect(result.bonusApplied).toBe(2);
+    expect(result.streak).toBe(2);
+  });
+
+  test('80-90% accuracy adds +1 to the streak', async () => {
+    const student = await createStudent();
+    const test = await makeTenQuestionTest();
+
+    const result = await listeningService.submitTest(test._id.toString(), { answers: makeAnswers(8) }, student);
+
+    expect(result.bonusApplied).toBe(1);
+    expect(result.streak).toBe(1);
+  });
+
+  test('below 80% accuracy adds no streak bonus', async () => {
+    const student = await createStudent();
+    const test = await makeTenQuestionTest();
+
+    const result = await listeningService.submitTest(test._id.toString(), { answers: makeAnswers(5) }, student);
+
+    expect(result.bonusApplied).toBe(0);
+    expect(result.streak).toBe(0);
+  });
+
+  test('shares the +5/day streak-bonus cap with vocab practice', async () => {
+    const student = await createStudent();
+    // Simulate the student already having earned 4/5 of today's shared streak
+    // bonus from vocab practice (VocabActivity is the same per-day counter
+    // reserveDailyStreakBonus uses for reading/listening/vocab alike).
+    const VocabActivity = require('../../../models/VocabActivity');
+    const { todayVNDate } = require('../../../services/streakBonusService');
+    await VocabActivity.create({ userId: student._id, date: todayVNDate(), streakBonusEarned: 4 });
+
+    const test = await makeTenQuestionTest();
+    // Wants +2 (100% accuracy), but only 1 is left in today's shared cap.
+    const result = await listeningService.submitTest(test._id.toString(), { answers: makeAnswers(10) }, student);
+
+    expect(result.bonusApplied).toBe(1);
+    expect(result.streak).toBe(1);
+  });
+});

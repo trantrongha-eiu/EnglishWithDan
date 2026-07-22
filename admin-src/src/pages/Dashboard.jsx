@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+import VisitsChart from '../components/VisitsChart';
 
 function bandBadge(score) {
   if (score == null) return '–';
@@ -107,6 +108,8 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [recent, setRecent] = useState([]);
   const [dbStatus, setDbStatus] = useState(null);
+  const [visits, setVisits] = useState([]);
+  const [visitsRange, setVisitsRange] = useState(30);
   // Was `user?.role === 'admin'`, re-deriving what AuthContext already
   // computes as isAdmin — exactly the class of duplication this audit
   // pass was checking for (Phase 5 audit finding).
@@ -124,6 +127,10 @@ export default function Dashboard() {
     }, 60000);
     return () => clearInterval(id);
   }, [isAdmin]);
+
+  useEffect(() => {
+    apiFetch(`/admin/stats/visits?days=${visitsRange}`).then(d => setVisits(d.visits || [])).catch(() => {});
+  }, [visitsRange]);
 
   const s = stats || {};
 
@@ -146,6 +153,8 @@ export default function Dashboard() {
         <StatCard color="red" icon="📄" label="Bài đọc / Từ vựng" value={s.passageCount}
           sub={s.vocabUnitCount != null ? `Vocab units: ${s.vocabUnitCount}` : undefined} />
       </div>
+
+      <VisitsChart visits={visits} range={visitsRange} onRangeChange={setVisitsRange} />
 
       <div className="section-header">
         <h2 className="section-title">Bài nộp gần nhất (tất cả kỹ năng)</h2>

@@ -18,6 +18,8 @@ const SpeakingAttempt = require('../../models/SpeakingAttempt');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
+const PageVisit        = require('../../models/PageVisit');
+const { getVNDay }     = require('../../utils/streak');
 
 const router = express.Router();
 
@@ -91,6 +93,32 @@ router.get('/stats', auth, teacherOnly, async (req, res) => {
         vocabUnitCount
       }
     });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/stats/visits – lượt truy cập theo ngày (dashboard traffic chart)
+router.get('/stats/visits', auth, teacherOnly, async (req, res) => {
+  try {
+    const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 90);
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const today = getVNDay(new Date());
+    const start = new Date(today.getTime() - (days - 1) * DAY_MS);
+
+    const rows = await PageVisit.find({ date: { $gte: start } }).select('date count').lean();
+    const countByDay = {};
+    rows.forEach(r => { countByDay[r.date.toISOString().slice(0, 10)] = r.count; });
+
+    // Always return one point per day in range (0 for days with no visits),
+    // so the chart doesn't silently skip gaps.
+    const visits = [];
+    for (let i = 0; i < days; i++) {
+      const key = new Date(start.getTime() + i * DAY_MS).toISOString().slice(0, 10);
+      visits.push({ date: key, count: countByDay[key] || 0 });
+    }
+
+    res.json({ success: true, visits });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

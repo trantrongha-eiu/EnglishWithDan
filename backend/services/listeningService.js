@@ -15,6 +15,7 @@ const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
+const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 
 function flattenQuestions(sections) {
   return sections.flatMap(s => s.questionGroups.flatMap(g => g.questions));
@@ -498,8 +499,14 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
   });
   await attempt.save();
 
+  let bonusApplied = 0;
   if (user.role === 'student') {
-    user.updateStreak();
+    // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
+    // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
+    const accuracy = total > 0 ? correct / total : 0;
+    const rawBonus = bonusForAccuracy(accuracy);
+    bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
+    user.updateStreak(bonusApplied, { allowSameDayStack: true });
     user.save().catch(() => {});
   }
 
@@ -510,7 +517,8 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
   return {
     attemptId: attempt._id, testName: test.name, totalQuestions: total,
     correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken,
-    questions: reviewed, sections: reviewSections, audioUrl: test.audioUrl
+    questions: reviewed, sections: reviewSections, audioUrl: test.audioUrl,
+    bonusApplied, streak: user.learningStreak,
   };
 }
 

@@ -10,6 +10,7 @@ const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
+const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 
 function safeQ(q) {
   return {
@@ -208,12 +209,21 @@ async function submitTest(attemptId, answers, user) {
   attempt.status = 'completed';
   await attempt.save();
 
+  let bonusApplied = 0;
   if (user.role === 'student') {
-    user.updateStreak();
+    // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
+    // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
+    const accuracy = attempt.totalQuestions > 0 ? correctCount / attempt.totalQuestions : 0;
+    const rawBonus = bonusForAccuracy(accuracy);
+    bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
+    user.updateStreak(bonusApplied, { allowSameDayStack: true });
     user.save().catch(() => {});
   }
 
-  return { attemptId: attempt._id, bandScore: attempt.bandScore, correctCount, wrongCount, skippedCount, totalQuestions: attempt.totalQuestions, duration };
+  return {
+    attemptId: attempt._id, bandScore: attempt.bandScore, correctCount, wrongCount, skippedCount,
+    totalQuestions: attempt.totalQuestions, duration, bonusApplied, streak: user.learningStreak,
+  };
 }
 
 async function getAttemptReview(attemptId, userId) {
