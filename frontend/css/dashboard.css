@@ -34,7 +34,6 @@
 
 /* Sidebar book list */
 [data-theme="dark"] .book-item.active{background:rgba(229,57,53,.2);color:var(--brand)}
-[data-theme="dark"] .hdr-nav-toggle.active{background:rgba(229,57,53,.2);color:var(--brand)}
 
 /* Book picker (Xem trước modal) */
 [data-theme="dark"] .book-opt:hover{background:rgba(61,139,255,.15)}
@@ -50,35 +49,6 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-
-/* ══════════════════════════════════════════
-   HEADER + NAV
-══════════════════════════════════════════ */
-.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:sticky;top:0;z-index:60}
-.logo{font-size:20px;font-weight:800;letter-spacing:-.5px;flex-shrink:0}
-.logo .d{color:#3d8bff}.logo .h{color:var(--brand)}
-.header-right{display:flex;align-items:center;gap:8px;min-width:0}
-.user-name{font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
-.btn-logout{background:none;border:1px solid var(--border);padding:6px 12px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;color:var(--text2);transition:all .15s;display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:inherit}
-.btn-logout:hover{border-color:var(--brand);color:var(--brand)}
-.hdr-nav-toggle{display:none;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;font-size:15px;color:var(--text2);cursor:pointer;flex-shrink:0;transition:background .15s,color .15s}
-.hdr-nav-toggle:hover{background:var(--surface2);color:var(--brand)}
-.hdr-nav-toggle.active{background:#fef2f2;color:var(--brand);border-color:#fca5a5}
-
-.main-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
-.nav-list{display:flex;gap:0;list-style:none;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.nav-list a{display:flex;align-items:center;gap:6px;padding:12px 18px;font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
-.nav-list a:hover{color:var(--text)}
-.nav-list a.active{color:var(--brand);border-bottom-color:var(--brand)}
-
-@media(max-width:640px){
-  .main-nav{display:none}
-  .main-nav.nav-open{display:block}
-  .hdr-nav-toggle{display:flex}
-  .user-name{display:none}
-  .btn-logout-text{display:none}
-  .btn-logout{padding:6px 9px}
-}
 
 /* ══════════════════════════════════════════
    MAIN LAYOUT (sidebar + content)
@@ -176,13 +146,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .up-item:hover{background:rgba(61,139,255,.08)}
 .up-item.up-active{background:rgba(61,139,255,.12);color:var(--blue);font-weight:600}
 .up-empty{padding:10px 12px;font-size:13px;color:var(--text3);text-align:center}
-.btn-start-unit{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  width:100%;margin-top:8px;padding:9px;
-  background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);
-  font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;
-}
-.btn-start-unit:hover{background:#2c78f0}
 .btn-difficult-words{
   display:flex;align-items:center;justify-content:center;gap:6px;
   width:100%;margin-top:6px;padding:8px;
@@ -843,15 +806,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 #unitPickerMobile .unit-picker-dd{ max-height:200px; }
 #unitPickerMobile .unit-picker-input{ margin-bottom:10px; }
-.sheet-start-btn{
-  width:100%;padding:12px;
-  background:linear-gradient(135deg,var(--blue) 0%,#2563eb 100%);
-  color:#fff;border:none;border-radius:var(--radius-sm);
-  font-size:14px;font-weight:700;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-bottom:10px;transition:opacity .15s;
-}
-.sheet-start-btn:hover{opacity:.9}
 .sheet-sound-btn{
   width:100%;padding:10px;
   background:var(--surface2);border:1px solid var(--border);

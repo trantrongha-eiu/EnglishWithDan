@@ -2656,7 +2656,7 @@ function _renderDifficultWords(words) {
             ${w.example ? `<div class="dw-example">${_esc(w.example)}</div>` : ''}
             ${w.source  ? `<div class="dw-source"><i class="fas fa-tag" style="font-size:10px"></i> ${_esc(w.source)}</div>` : ''}
             <div class="dw-edit-form" id="dw-edit-${w._id}" style="display:none">
-                <input class="dw-edit-input" id="dw-edit-meaning-${w._id}" value="${(w.meaning || '').replace(/"/g,'&quot;')}" placeholder="Nhập nghĩa của từ...">
+                <input class="dw-edit-input" id="dw-edit-meaning-${w._id}" value="${_esc(w.meaning || '')}" placeholder="Nhập nghĩa của từ...">
                 <div style="display:flex;gap:6px;margin-top:8px">
                     <button class="btn-primary" style="font-size:12px;padding:5px 14px" onclick="saveDifficultWordEdit('${w._id}')">Lưu</button>
                     <button class="btn-outline" style="font-size:12px;padding:5px 14px" onclick="cancelDifficultWordEdit('${w._id}')">Hủy</button>
