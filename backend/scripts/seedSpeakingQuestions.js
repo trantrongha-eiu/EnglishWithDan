@@ -208,10 +208,30 @@ const part1Groups = [
     "What kind of clothes do you like to wear?",
     "Do you wear different clothes on the weekend?"
   ]},
+  { topic: "Shoes", questions: [
+    { question: "How often do you buy shoes?", sampleAnswer:
+      "Honestly, I don't buy shoes very often. I usually only purchase new ones when my old pair wears out completely. I tend to invest in quality over quantity, so I'd rather buy one good pair that lasts a long time than several cheap ones. I probably buy new shoes two or three times a year at most, and usually during sales when I can get better value." },
+    { question: "Have you ever bought shoes online?", sampleAnswer:
+      "Yes, I have, a few times. I've found it quite convenient because you can compare prices easily and there's a much wider selection than in physical stores. However, I do prefer buying shoes in person when possible, simply because I like to try them on before committing. I've made the mistake of ordering online and getting a pair that didn't fit properly, which was frustrating." },
+    { question: "Do you prefer shoes that are comfortable or good-looking?", sampleAnswer:
+      "Personally, I prioritise comfort over appearance when it comes to shoes. I walk quite a lot throughout the day, so if my shoes are uncomfortable, it genuinely affects my mood and productivity. That said, I don't want to look scruffy either, so I try to find shoes that strike a good balance — comfortable enough for all-day wear but still reasonably stylish." },
+    { question: "Do most people in your country prefer comfortable or good-looking shoes?", sampleAnswer:
+      "I think it depends a lot on age and lifestyle. Younger people, especially in urban areas, tend to care more about appearance and follow the latest sneaker trends. Older people generally value comfort more. But overall, I'd say sneakers have become the default choice for most people my age because they manage to satisfy both criteria quite well." },
+    { question: "What is your favourite type of shoes?", sampleAnswer:
+      "Without a doubt, my favourite type is sneakers. They're incredibly versatile — I can wear them with jeans, shorts, or even smart-casual outfits. They're also comfortable enough for long days out. I've been wearing the same brand for years now and I genuinely think there's no better all-purpose shoe for someone with an active daily routine." }
+  ]},
   { topic: "Shopping", questions: [
     "Do you often go shopping?",
     "Do you prefer online or offline shopping?",
     "Do you compare prices before making a purchase?"
+  ]},
+  { topic: "Weekends", questions: [
+    { question: "Do you like quiet or noisy places?", sampleAnswer:
+      "Personally, I much prefer quiet places. I find that I think more clearly and feel less stressed when my environment is calm. After a long day at school or work, the last thing I want is to be in a loud, crowded place. I usually gravitate towards parks, libraries, or quiet cafés where I can decompress without feeling overstimulated. That said, I do enjoy a lively atmosphere occasionally, like at a live music event or a family gathering." },
+    { question: "Would you go to quiet or noisy places on weekends?", sampleAnswer:
+      "On weekends, I almost always choose quiet places. The week is usually so busy and stimulating that by the time the weekend arrives, I really crave some peace. I might go for a walk in a park, visit a quiet café, or just stay at home and read. I find that having this quiet downtime makes me much more productive and positive at the start of the next week." },
+    { question: "Are there any quiet places near where you live?", sampleAnswer:
+      "Yes, fortunately there are. There's a small park about ten minutes from my house that I visit quite regularly. Even though the surrounding area is fairly busy, the park itself has a lovely calm atmosphere — you can hear birds and feel a gentle breeze, which is a nice contrast to the traffic noise outside. There's also a local library nearby that's a great place to study in complete silence." }
   ]},
   { topic: "Space Travel", questions: [
     "Have you ever learnt anything about space and the stars when you were at school?",
@@ -889,7 +909,16 @@ function buildDocs() {
 
   for (const g of part1Groups) {
     for (const q of g.questions) {
-      docs.push({ topic: g.topic, part: 1, question: q, cueCard: '', isActive: true });
+      // Most Part 1 questions are plain strings — sampleAnswer stays empty
+      // and gets lazily filled by Gemini (see generateSampleAnswers.js). A
+      // few topics (e.g. "Shoes") ship hand-written model answers instead,
+      // represented as { question, sampleAnswer } so they're pre-cached and
+      // never hit the AI.
+      if (typeof q === 'string') {
+        docs.push({ topic: g.topic, part: 1, question: q, cueCard: '', isActive: true });
+      } else {
+        docs.push({ topic: g.topic, part: 1, question: q.question, cueCard: '', isActive: true, sampleAnswer: q.sampleAnswer || '' });
+      }
     }
   }
 
