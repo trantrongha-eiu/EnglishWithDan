@@ -56,6 +56,14 @@ const state = {
   materialFilter:   { quarter: 'all', topic: 'all' },
   _pendingTopicFromUrl: null,
 
+  // Speech recognition can stop itself mid-answer even with continuous:true
+  // (a well-known Chrome limitation, especially on longer Part 2 monologues)
+  // — see setupRecognition()'s onend for the auto-restart that keeps this
+  // from silently truncating the student's transcript.
+  finalTranscript:        '',
+  _userStoppedRecording:  false,
+  _restartAttempts:       0,
+
   // Sequential (mock-test) topic practice — fully isolated from the fields above
   lastQuestionList:   [],
   seqQueue:           [],
@@ -64,6 +72,8 @@ const state = {
   seqRecognition:     null,
   seqIsRecording:     false,
   seqFinalTranscript: '',
+  _seqUserStoppedRecording: false,
+  _seqRestartAttempts:      0,
   seqActive:          false,
   seqTextRevealed:    false,
   seqSilenceTimer:    null,
@@ -208,7 +218,12 @@ function syncTabUrl(tab, push = true) {
 }
 function goHome() { showScreen('screen-home'); syncTabUrl('home'); }
 function goPractice() { showScreen('screen-practice'); syncTabUrl('practice'); initPractice(); }
-function goHistory() { showScreen('screen-history'); syncTabUrl('history'); loadHistory(); }
+function goHistory(fromScreen) {
+  state._historyReturnScreen = fromScreen || null;
+  showScreen('screen-history');
+  syncTabUrl('history');
+  loadHistory();
+}
 function goMaterials() { showScreen('screen-materials'); syncTabUrl('materials'); loadMaterialFilters(); loadMaterials(); }
 
 // ══════════════════════════════════════════════════════
@@ -570,6 +585,7 @@ function replaySampleAnswer() {
 
 function resetPractice() {
   clearAllTimers();
+  state._userStoppedRecording = true; // abandon this session — don't let onend auto-restart it
   if (state.isRecording && state.recognition) state.recognition.stop();
   state.isRecording    = false;
   state.recordStartTime = null;
@@ -625,6 +641,38 @@ function clearTranscript() {
 // ──────────────────────────────────────────────────────
 // Web Speech API
 // ──────────────────────────────────────────────────────
+// Called when the recording session is truly over (student pressed Stop,
+// or the browser ended it and we've given up trying to seamlessly resume)
+// — resets the recording UI and finalizes the transcript into the textarea.
+function _finishRecordingUI() {
+  state.isRecording = false;
+  stopElapsedTimer();
+  hideSpeakCountdown();
+
+  const recIcon   = document.getElementById('rec-icon');
+  const recLabel  = document.getElementById('rec-label');
+  const recStatus = document.getElementById('rec-status');
+  const btnRecord = document.getElementById('btn-record');
+  const interimEl = document.getElementById('transcript-interim');
+  const ta        = document.getElementById('transcript-textarea');
+  const btn       = document.getElementById('btn-analyze');
+
+  if (recIcon)   recIcon.className  = 'fas fa-microphone rec-mic';
+  if (recLabel)  recLabel.textContent = 'Bắt đầu';
+  if (recStatus) recStatus.classList.remove('live');
+  if (btnRecord) btnRecord.classList.remove('recording');
+  if (interimEl) interimEl.textContent = '';
+
+  if (ta && !ta.value.trim() && state.finalTranscript.trim()) ta.value = state.finalTranscript.trim();
+
+  if (ta && ta.value.trim()) {
+    if (btn) btn.disabled = false;
+    if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất';
+  } else {
+    if (recStatus) recStatus.textContent = 'Ghi âm đã dừng';
+  }
+}
+
 function setupRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   state.recognition = new SR();
@@ -632,10 +680,7 @@ function setupRecognition() {
   state.recognition.continuous     = true;
   state.recognition.interimResults = true;
 
-  let finalTranscript = '';
-
   state.recognition.onstart = () => {
-    finalTranscript = '';
     const recIcon   = document.getElementById('rec-icon');
     const recLabel  = document.getElementById('rec-label');
     const recStatus = document.getElementById('rec-status');
@@ -646,21 +691,27 @@ function setupRecognition() {
     if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
     if (btnRecord) btnRecord.classList.add('recording');
 
-    startElapsedTimer();
-    startSpeakCountdown();
+    // Only (re)start the timers on the genuine first start of this session —
+    // state._restartAttempts is already >0 by the time onstart fires again
+    // after a transparent auto-restart (see onend below), so the elapsed/
+    // countdown timers keep running through the gap instead of resetting.
+    if (state._restartAttempts === 0) {
+      startElapsedTimer();
+      startSpeakCountdown();
+    }
   };
 
   state.recognition.onresult = (e) => {
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
-      if (e.results[i].isFinal) finalTranscript += t + ' ';
+      if (e.results[i].isFinal) state.finalTranscript += t + ' ';
       else interim += t;
     }
     const interimEl = document.getElementById('transcript-interim');
     if (interimEl) interimEl.textContent = interim;
 
-    const cleaned = finalTranscript.trim();
+    const cleaned = state.finalTranscript.trim();
     if (cleaned) {
       const ta = document.getElementById('transcript-textarea');
       if (ta) ta.value = cleaned;
@@ -670,50 +721,43 @@ function setupRecognition() {
   };
 
   state.recognition.onend = () => {
-    state.isRecording = false;
-    stopElapsedTimer();
-    hideSpeakCountdown();
-
-    const recIcon   = document.getElementById('rec-icon');
-    const recLabel  = document.getElementById('rec-label');
-    const recStatus = document.getElementById('rec-status');
-    const btnRecord = document.getElementById('btn-record');
-    const interimEl = document.getElementById('transcript-interim');
-    const ta        = document.getElementById('transcript-textarea');
-    const btn       = document.getElementById('btn-analyze');
-
-    if (recIcon)   recIcon.className  = 'fas fa-microphone rec-mic';
-    if (recLabel)  recLabel.textContent = 'Bắt đầu';
-    if (recStatus) recStatus.classList.remove('live');
-    if (btnRecord) btnRecord.classList.remove('recording');
-    if (interimEl) interimEl.textContent = '';
-
-    if (ta && !ta.value.trim() && finalTranscript.trim()) ta.value = finalTranscript.trim();
-
-    if (ta && ta.value.trim()) {
-      if (btn) btn.disabled = false;
-      if (recStatus) recStatus.textContent = '✓ Ghi âm hoàn tất';
-    } else {
-      if (recStatus) recStatus.textContent = 'Ghi âm đã dừng';
+    // Chrome can end a "continuous" recognition session on its own — a brief
+    // pause while thinking, or just a long Part 2 monologue, is enough to
+    // trigger it. That's not the student choosing to stop, so transparently
+    // resume instead of cutting their transcript off mid-answer. Capped at
+    // 6 attempts so a genuinely dead mic doesn't loop forever.
+    if (state.isRecording && !state._userStoppedRecording && state._restartAttempts < 6) {
+      state._restartAttempts++;
+      const recStatus = document.getElementById('rec-status');
+      if (recStatus) recStatus.textContent = '🔄 Đang kết nối lại micro...';
+      setTimeout(() => {
+        if (!state.isRecording || state._userStoppedRecording) return; // stopped while we waited
+        try {
+          state.recognition.start();
+        } catch (e) {
+          _finishRecordingUI();
+        }
+      }, 250);
+      return;
     }
+    _finishRecordingUI();
   };
 
   state.recognition.onerror = (e) => {
     console.error('Speech error:', e.error);
+    // "no-speech" fires during an ordinary pause (thinking, breathing) —
+    // not a real failure. Let onend's own restart-or-stop logic decide;
+    // treating it as fatal here would kill the recording on every pause.
+    if (e.error === 'no-speech') return;
+
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro. Vui lòng cho phép trong cài đặt trình duyệt.',
-      'no-speech':   'Không nhận được giọng nói. Thử lại nhé.',
       'network':     'Lỗi mạng khi nhận dạng giọng nói.',
     };
     const recStatus = document.getElementById('rec-status');
     if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
-    state.isRecording = false;
-    stopElapsedTimer();
-    document.getElementById('btn-record')?.classList.remove('recording');
-    const recIcon  = document.getElementById('rec-icon');
-    const recLabel = document.getElementById('rec-label');
-    if (recIcon)  recIcon.className  = 'fas fa-microphone rec-mic';
-    if (recLabel) recLabel.textContent = 'Bắt đầu';
+    state._userStoppedRecording = true; // a real error — don't let onend try to resume
+    _finishRecordingUI();
   };
 }
 
@@ -776,6 +820,7 @@ function toggleRecord() {
     return;
   }
   if (state.isRecording) {
+    state._userStoppedRecording = true;
     state.recognition.stop();
     state.isRecording = false;
     _stopAudioCapture().then(blob => {
@@ -785,6 +830,9 @@ function toggleRecord() {
     });
   } else {
     try {
+      state._userStoppedRecording = false;
+      state._restartAttempts = 0;
+      state.finalTranscript = '';
       state.recognition.start();
       state.isRecording = true;
       _lastRecordingBlob = null;
@@ -811,6 +859,7 @@ async function analyzeTranscript() {
   const section  = document.getElementById('feedback-section');
   const loading  = document.getElementById('feedback-loading');
   const results  = document.getElementById('feedback-results');
+  const errorBox = document.getElementById('feedback-error');
   const btnAnalyze = document.getElementById('btn-analyze');
 
   state._analyzing = true;
@@ -818,6 +867,7 @@ async function analyzeTranscript() {
   if (section) section.style.display = 'block';
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
+  if (errorBox) errorBox.classList.add('hidden');
   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
@@ -845,10 +895,14 @@ async function analyzeTranscript() {
     }
   } catch (e) {
     if (loading) loading.style.display = 'none';
-    if (results) results.style.display = 'block';
-    showToast('Không thể phân tích. Vui lòng thử lại sau.', 'error');
-    const scoreOverall = document.getElementById('score-overall');
-    if (scoreOverall) scoreOverall.textContent = 'Lỗi';
+    if (results) results.style.display = 'none';
+    const errorText = document.getElementById('feedback-error-text');
+    if (errorText) {
+      errorText.textContent = e?.coldStart
+        ? 'Server đang khởi động, vui lòng thử lại sau vài giây.'
+        : (e?.message || 'Không thể phân tích. Vui lòng thử lại sau.');
+    }
+    if (errorBox) errorBox.classList.remove('hidden');
     console.error('analyzeTranscript:', e);
   } finally {
     state._analyzing = false;
@@ -1281,6 +1335,20 @@ function replaySeqQuestion() {
   speakText(q.question);
 }
 
+// Mirrors _finishRecordingUI() for the sequential (mock-test) flow.
+function _finishSeqRecordingUI() {
+  state.seqIsRecording = false;
+  stopSeqElapsedTimer();
+  hideSeqSpeakCountdown();
+  const recIndicator = document.getElementById('seq-rec-indicator');
+  const recStatus    = document.getElementById('seq-rec-status');
+  if (recIndicator) recIndicator.classList.remove('recording');
+  if (recStatus) {
+    recStatus.classList.remove('live');
+    recStatus.textContent = state.seqFinalTranscript.trim() ? '✓ Ghi âm hoàn tất' : 'Chưa ghi âm';
+  }
+}
+
 function setupSeqRecognition() {
   if (state.seqRecognition) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1291,16 +1359,19 @@ function setupSeqRecognition() {
   state.seqRecognition.interimResults = true;
 
   state.seqRecognition.onstart = () => {
-    state.seqFinalTranscript = '';
     state.seqIsRecording = true;
     const recIndicator = document.getElementById('seq-rec-indicator');
     const recStatus    = document.getElementById('seq-rec-status');
     if (recIndicator) recIndicator.classList.add('recording');
     if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
-    startSeqElapsedTimer();
-    const q = state.seqQueue[state.seqIndex];
-    if (q && q.part === 2) startSeqSpeakCountdown();
-    else startSeqSilenceTimer();
+    // Only (re)start timers on the genuine first start — see the matching
+    // comment in setupRecognition(); same Chrome auto-stop concern applies here.
+    if (state._seqRestartAttempts === 0) {
+      startSeqElapsedTimer();
+      const q = state.seqQueue[state.seqIndex];
+      if (q && q.part === 2) startSeqSpeakCountdown();
+      else startSeqSilenceTimer();
+    }
   };
 
   state.seqRecognition.onresult = (e) => {
@@ -1316,31 +1387,40 @@ function setupSeqRecognition() {
   };
 
   state.seqRecognition.onend = () => {
-    state.seqIsRecording = false;
-    stopSeqElapsedTimer();
-    hideSeqSpeakCountdown();
-    const recIndicator = document.getElementById('seq-rec-indicator');
-    const recStatus    = document.getElementById('seq-rec-status');
-    if (recIndicator) recIndicator.classList.remove('recording');
-    if (recStatus) {
-      recStatus.classList.remove('live');
-      recStatus.textContent = state.seqFinalTranscript.trim() ? '✓ Ghi âm hoàn tất' : 'Chưa ghi âm';
+    // Same transparent-resume logic as the single-question flow's
+    // setupRecognition() — Chrome can end "continuous" recognition on its
+    // own mid-answer; don't let that silently truncate the transcript.
+    if (state.seqIsRecording && !state._seqUserStoppedRecording && state._seqRestartAttempts < 6) {
+      state._seqRestartAttempts++;
+      const recStatus = document.getElementById('seq-rec-status');
+      if (recStatus) recStatus.textContent = '🔄 Đang kết nối lại micro...';
+      setTimeout(() => {
+        if (!state.seqIsRecording || state._seqUserStoppedRecording) return;
+        try {
+          state.seqRecognition.start();
+        } catch (e) {
+          _finishSeqRecordingUI();
+        }
+      }, 250);
+      return;
     }
+    _finishSeqRecordingUI();
   };
 
   state.seqRecognition.onerror = (e) => {
     console.error('Seq speech error:', e.error);
-    state.seqIsRecording = false;
-    stopSeqElapsedTimer();
-    const recIndicator = document.getElementById('seq-rec-indicator');
-    if (recIndicator) recIndicator.classList.remove('recording');
+    // See setupRecognition()'s onerror — "no-speech" is a normal pause, not
+    // a failure; let onend's restart-or-stop logic handle it.
+    if (e.error === 'no-speech') return;
+
     const recStatus = document.getElementById('seq-rec-status');
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro.',
-      'no-speech':   'Không nhận được giọng nói.',
       'network':     'Lỗi mạng khi nhận dạng giọng nói.',
     };
     if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+    state._seqUserStoppedRecording = true;
+    _finishSeqRecordingUI();
   };
 }
 
@@ -1351,6 +1431,9 @@ function startSeqRecording() {
   }
   if (state.seqIsRecording) return;
   try {
+    state._seqUserStoppedRecording = false;
+    state._seqRestartAttempts = 0;
+    state.seqFinalTranscript = '';
     state.seqRecognition.start();
   } catch (e) {
     // Already starting/started — safe to ignore, user can still confirm manually.
@@ -1366,6 +1449,7 @@ function confirmSeqAnswer() {
   const manualVal = document.getElementById('seq-manual-input')?.value.trim() || '';
   const transcript = state.seqFinalTranscript.trim() || manualVal;
   if (state.seqIsRecording && state.seqRecognition) {
+    state._seqUserStoppedRecording = true; // moving to the next question — don't auto-restart this session
     try { state.seqRecognition.stop(); } catch (e) {}
   }
   state.seqTotalElapsed += getSeqElapsedSeconds();
@@ -1389,6 +1473,7 @@ function exitSequentialSession() {
   hideSeqSpeakCountdown();
   stopSeqElapsedTimer();
   if (state.seqRecognition && state.seqIsRecording) {
+    state._seqUserStoppedRecording = true; // exiting the session — don't auto-restart
     try { state.seqRecognition.stop(); } catch (e) {}
   }
   window.speechSynthesis?.cancel();
@@ -1834,6 +1919,10 @@ function closeMobilePdf() {
 function goBackFromHistory() {
   if (!window.AuthService.hasPremiumAccess()) {
     showScreen('screen-upgrade');
+  } else if (state._historyReturnScreen === 'screen-practice') {
+    state._historyReturnScreen = null;
+    showScreen('screen-practice');
+    syncTabUrl('practice');
   } else {
     goHome();
   }

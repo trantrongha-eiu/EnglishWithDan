@@ -191,7 +191,9 @@
     <span class="sp-topbar-title">
       <i class="fas fa-microphone"></i> Luyện Speaking
     </span>
-    <div></div>
+    <button class="sp-topbar-history" onclick="goHistory('screen-practice')" title="Xem lịch sử luyện tập">
+      <i class="fas fa-clock-rotate-left"></i> Lịch sử
+    </button>
   </div>
 
   <!-- No Speech API warning -->
@@ -345,6 +347,13 @@
           <div class="feedback-loading" id="feedback-loading">
             <div class="spinner"></div>
             <p>Gemini AI đang phân tích câu trả lời của bạn...</p>
+          </div>
+
+          <!-- Error state -->
+          <div class="feedback-error hidden" id="feedback-error">
+            <div class="feedback-error-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <p class="feedback-error-text" id="feedback-error-text">Không thể phân tích. Vui lòng thử lại sau.</p>
+            <button class="btn-primary" onclick="analyzeTranscript()"><i class="fas fa-redo"></i> Thử lại</button>
           </div>
 
           <!-- Results -->

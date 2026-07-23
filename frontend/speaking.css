@@ -220,6 +220,22 @@ body {
   align-items: center;
   gap: 8px;
 }
+.sp-topbar-history {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: background .15s;
+  font-family: inherit;
+}
+.sp-topbar-history:hover { background: #f3f4f6; }
 
 .sp-page-header {
   background: #fff;
@@ -867,6 +883,22 @@ body {
 }
 .feedback-loading .spinner { margin: 0; }
 
+.feedback-error {
+  text-align: center;
+  padding: 32px 20px;
+}
+.feedback-error-icon {
+  font-size: 36px;
+  color: #f59e0b;
+  margin-bottom: 12px;
+}
+.feedback-error-text {
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
 /* Score grid */
 .score-header {
   font-size: 12px;
@@ -1458,6 +1490,8 @@ body {
 [data-theme="dark"] .sp-topbar-back        { border-color: #374151; color: #e5e7eb; }
 [data-theme="dark"] .sp-topbar-back:hover  { background: #374151; }
 [data-theme="dark"] .sp-topbar-title       { color: #f9fafb; }
+[data-theme="dark"] .sp-topbar-history     { border-color: #374151; color: #e5e7eb; }
+[data-theme="dark"] .sp-topbar-history:hover { background: #374151; }
 
 [data-theme="dark"] .sp-page-header        { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .sp-page-header-title  { color: #f9fafb; }
@@ -1509,6 +1543,7 @@ body {
 
 [data-theme="dark"] .feedback-section     { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .feedback-loading p   { color: #6b7280; }
+[data-theme="dark"] .feedback-error-text  { color: #d1d5db; }
 [data-theme="dark"] .score-card           { background: #111827; border-color: #374151; }
 [data-theme="dark"] .score-value          { color: #f9fafb; }
 [data-theme="dark"] .fb-card              { border-color: #374151; background: #1f2937; }
@@ -1610,6 +1645,7 @@ body {
 @media (max-width: 480px) {
   .sp-topbar { padding: 0 14px; }
   .sp-topbar-back { padding: 6px 10px; font-size: 12px; }
+  .sp-topbar-history { padding: 6px 10px; font-size: 12px; }
   .sp-topbar-title { font-size: 13px; }
   .sp-page-header { padding: 14px 16px; }
   .sp-page-header-title { font-size: 16px; }
