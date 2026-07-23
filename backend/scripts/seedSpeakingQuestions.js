@@ -225,7 +225,7 @@ const part1Groups = [
     "Do you prefer online or offline shopping?",
     "Do you compare prices before making a purchase?"
   ]},
-  { topic: "Weekends", questions: [
+  { topic: "Quiet Places", questions: [
     { question: "Do you like quiet or noisy places?", sampleAnswer:
       "Personally, I much prefer quiet places. I find that I think more clearly and feel less stressed when my environment is calm. After a long day at school or work, the last thing I want is to be in a loud, crowded place. I usually gravitate towards parks, libraries, or quiet cafés where I can decompress without feeling overstimulated. That said, I do enjoy a lively atmosphere occasionally, like at a live music event or a family gathering." },
     { question: "Would you go to quiet or noisy places on weekends?", sampleAnswer:
