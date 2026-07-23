@@ -20,23 +20,43 @@ function bonusForAccuracy(accuracy) {
 }
 
 // Daily streak-bonus cap (max 5/day, shared across vocab/reading/listening):
-// reads how much bonus has already been granted today, then atomically
-// reserves `rawBonus` more. Not fully race-proof under truly concurrent
-// requests from the same user (read-then-write), but that's an accepted,
-// low-stakes gap consistent with how this app already trusts client-reported
-// session data elsewhere.
-async function reserveDailyStreakBonus(userId, rawBonus) {
+// reads how much bonus has already been granted today, then reserves
+// `rawBonus` more via an optimistic compare-and-swap — the increment only
+// commits if streakBonusEarned still matches the value we just read, so two
+// concurrent requests from the same user (e.g. finishing a reading test and
+// a listening test within the same second) can't both read the same "4 of 5
+// used" snapshot and each independently push it to 5, overshooting the cap
+// to 6. A losing request simply retries against the fresh value instead.
+async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
+  if (rawBonus <= 0) return 0;
   const date = todayVNDate();
-  const doc = await VocabActivity.findOneAndUpdate(
-    { userId, date },
-    { $setOnInsert: { userId, date } },
-    { upsert: true, new: true }
-  );
-  const appliedBonus = Math.max(0, Math.min(rawBonus, 5 - (doc.streakBonusEarned || 0)));
-  if (appliedBonus > 0) {
-    await VocabActivity.updateOne({ _id: doc._id }, { $inc: { streakBonusEarned: appliedBonus } });
+
+  try {
+    await VocabActivity.updateOne(
+      { userId, date },
+      { $setOnInsert: { userId, date } },
+      { upsert: true }
+    );
+  } catch (err) {
+    if (err.code !== 11000) throw err; // duplicate key = a concurrent upsert already created it
   }
-  return appliedBonus;
+
+  for (let i = 0; i < _retries; i++) {
+    const doc = await VocabActivity.findOne({ userId, date }).select('streakBonusEarned').lean();
+    const prevEarned = doc?.streakBonusEarned || 0;
+    const appliedBonus = Math.max(0, Math.min(rawBonus, 5 - prevEarned));
+    if (appliedBonus === 0) return 0;
+
+    const result = await VocabActivity.updateOne(
+      { userId, date, streakBonusEarned: prevEarned },
+      { $inc: { streakBonusEarned: appliedBonus } }
+    );
+    if (result.modifiedCount === 1) return appliedBonus;
+    // Another request updated streakBonusEarned between our read and write — retry with fresh data.
+  }
+  // Only reachable under sustained concurrent contention from the same user;
+  // treat as "no room left" rather than risk over-granting.
+  return 0;
 }
 
 module.exports = { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus };
