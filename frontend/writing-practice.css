@@ -12,32 +12,19 @@ body {
 }
 
 /* ══════════════════════════════════════════════
-   HEADER
+   MINI STATS WIDGET (fixed top-right corner)
+   XP/streak/sound-toggle float here instead of occupying
+   the shared global nav bar — all 5 "Luyện viết" pages now
+   use the site-wide nav (js/nav.js) like every other page.
 ══════════════════════════════════════════════ */
-.wp-header {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 0 16px 0 20px;
-  height: 52px;
+.wp-mini-stats {
+  position: fixed;
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 10px);
+  right: 14px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  /* + --expiry-banner-height so the premium-expiry banner (nav.js) pushes
-     this down instead of covering it — these 5 pages hide the global nav
-     (--nav-height becomes 0px), so this is otherwise the very first thing
-     the banner would land on top of. */
-  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px));
-  z-index: 60;
-  gap: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.04);
-}
-
-.wp-header-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
+  gap: 6px;
+  z-index: 56;
 }
 
 .wp-xp-badge {
@@ -65,34 +52,16 @@ body {
   flex-shrink: 0;
 }
 
-.wp-username {
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  flex-shrink: 1;
-  min-width: 0;
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .wp-logout-btn {
-  background: none;
+  background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
   font-size: 14px;
   color: #6b7280;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
 }
-
-.exam-exit-btn {
-  background: none; border: none; font-size: 18px;
-  cursor: pointer; color: #6b7280; padding: 4px 8px;
-  border-radius: 6px; transition: background .15s; line-height: 1;
-}
-.exam-exit-btn:hover { background: #f3f4f6; }
 
 /* ══════════════════════════════════════════════
    SHARED STATUS BADGES (completion / best-score / progress)
@@ -121,7 +90,7 @@ body {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 52px);
+  min-height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px));
   gap: 0;
 }
 
@@ -139,8 +108,8 @@ body {
   flex-direction: column;
   gap: 16px;
   position: sticky;
-  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
-  height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px) - 52px);
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px));
+  height: calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px));
 }
 
 .wp-sidebar-section {}
@@ -652,7 +621,9 @@ body {
 ══════════════════════════════════════════════ */
 .wp-stats-widget {
   position: fixed;
-  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
+  /* + 40px clears .wp-mini-stats (XP/streak/sound), which floats in the
+     same top-right corner above this widget whenever a session is active. */
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 40px);
   right: 0;
   background: #fff;
   border: 1px solid #f0f0f0;
@@ -686,13 +657,13 @@ body {
 /* Mobile stats bar — sticky positioning lives here unconditionally (not
    just inside the mobile breakpoint below) since task2-practice.html shows
    this bar at every width via display:flex!important, not only ≤768px;
-   inert when the element is actually display:none. + 52px for .wp-header's
-   own height — it always renders directly below the (also sticky) header,
-   same as .wp-sidebar/.wp-stats-widget already account for. */
+   inert when the element is actually display:none. + 40px clears
+   .wp-mini-stats (XP/streak/sound), which floats in the same top-right
+   corner above this bar — same offset .wp-stats-widget already uses. */
 .wp-mobile-stats {
   display: none;
   position: sticky;
-  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 52px);
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 40px);
   z-index: 50;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
@@ -812,7 +783,6 @@ body {
   .wp-main         { padding: 12px 14px; }
   .wp-card         { padding: 16px 14px; }
   .wp-question-text { font-size: 18px; }
-  .wp-username     { display: none; }
   /* Prevent iOS Safari auto-zoom when input/textarea is focused */
   .wp-answer-box   { font-size: 16px; }
   .wp-fill-input   { font-size: 16px; }
@@ -838,13 +808,9 @@ body {
 ══════════════════════════════════════════════ */
 [data-theme="dark"] body { background: #0f172a; color: #f9fafb; }
 
-[data-theme="dark"] .wp-header        { background: #1f2937; border-bottom-color: #374151; }
 [data-theme="dark"] .wp-xp-badge      { background: #451a03; color: #fde68a; border-color: #92400e; }
 [data-theme="dark"] .wp-streak-badge  { background: #431407; color: #fdba74; border-color: #7c2d12; }
-[data-theme="dark"] .wp-username      { color: #9ca3af; }
-[data-theme="dark"] .wp-logout-btn    { border-color: #374151; color: #9ca3af; }
-[data-theme="dark"] .exam-exit-btn   { color: #9ca3af; }
-[data-theme="dark"] .exam-exit-btn:hover { background: #374151; }
+[data-theme="dark"] .wp-logout-btn    { background: #1f2937; border-color: #374151; color: #9ca3af; }
 
 [data-theme="dark"] .wp-status-badge { background: #334155; color: #cbd5e1; border-color: #475569; }
 [data-theme="dark"] .wp-status-badge.wp-status-done { background: #052e16; color: #4ade80; border-color: #166534; }

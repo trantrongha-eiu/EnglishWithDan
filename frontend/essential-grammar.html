@@ -19,16 +19,12 @@
     body{background:#f9fafb}
     [data-theme="dark"] body{background:#0f172a}
 
-    /* ── Header: reuses the shared .wp-header/.t2-tpl-nav-group/.wp-header-right
-       shell from writing-practice.css so this page matches the other 4
-       "Luyện viết" pages exactly (was a bespoke .eg-header before). ── */
-
-    /* ── Layout ── (52px = shared .wp-header's own height; the header's
-       own top offset already accounts for --nav-height/--expiry-banner-height,
-       so this only needs to add the header's height on top of that) ── */
-    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px) - 52px)}
+    /* ── Layout ── this page uses the shared global nav (js/nav.js) like every
+       other page, so --nav-height/--expiry-banner-height already account for
+       everything above .eg-layout — no extra offset needed. ── */
+    .eg-layout{display:flex;align-items:flex-start;min-height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px))}
     .eg-sidebar{width:280px;flex-shrink:0;background:#fff;border-right:1px solid #e5e7eb;
-      position:sticky;top:calc(var(--nav-height,64px) + var(--expiry-banner-height,0px) + 52px);height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px) - 52px);overflow-y:auto;
+      position:sticky;top:calc(var(--nav-height,64px) + var(--expiry-banner-height,0px));height:calc(100vh - var(--nav-height,64px) - var(--expiry-banner-height,0px));overflow-y:auto;
       scrollbar-width:thin;scrollbar-color:#e5e7eb transparent;display:flex;flex-direction:column;z-index:20}
     [data-theme="dark"] .eg-sidebar{background:#1e293b;border-color:#334155;scrollbar-color:#334155 transparent}
 
@@ -229,22 +225,13 @@
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
 
-<!-- Compact in-page header (this page hides the global navbar) — shares the
-     .wp-header shell with the other 4 "Luyện viết" pages -->
-<header class="wp-header">
-  <nav class="t2-tpl-nav-group">
-    <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
-    <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
-    <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
-  </nav>
-  <div class="wp-header-right">
-    <div class="wp-xp-badge" id="eg-header-progress"><i class="fas fa-graduation-cap"></i> <span id="header-eg-progress">0/37</span></div>
-    <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
-    <button class="wp-logout-btn" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
-  </div>
-</header>
+<!-- ── Mini stats widget (lesson progress/sound) — floats top-right,
+     shared global nav (js/nav.js) now handles page navigation and dark
+     mode for this page ── -->
+<div class="wp-mini-stats">
+  <div class="wp-xp-badge" id="eg-header-progress"><i class="fas fa-graduation-cap"></i> <span id="header-eg-progress">0/37</span></div>
+  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
+</div>
 
 <div class="eg-layout">
   <!-- ── Desktop sidebar ── -->
@@ -312,12 +299,6 @@ function toggleWpSound() {
 }
 
 function initUser() {
-  const user = (window.AuthService && window.AuthService.getUser()) || {};
-  const name = user.firstName ? `${user.firstName} ${user.lastName||''}`.trim() : user.username || '';
-  if (name) {
-    const uEl = document.getElementById('userName');
-    if (uEl) uEl.textContent = '👋 ' + name;
-  }
   const icon = document.getElementById('sound-icon');
   if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }

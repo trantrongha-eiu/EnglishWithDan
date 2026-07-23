@@ -162,12 +162,6 @@
     document.documentElement.style.removeProperty('--nav-height');
   };
 
-  // Auto-hide on standalone practice pages
-  var PRACTICE_ONLY_PAGES = ['writing-practice.html', 'task1-practice.html', 'task2-practice.html', 'task2-template.html', 'essential-grammar.html'];
-  if (PRACTICE_ONLY_PAGES.indexOf(page) !== -1) {
-    window.hideTopNav();
-  }
-
   // ── Hamburger toggle ──────────────────────────────────────
   var ham = document.getElementById('globalHamburger');
   ham.addEventListener('click', function () {

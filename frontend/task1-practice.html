@@ -276,22 +276,13 @@
   </div>
 </div>
 
-<!-- ── Stats header ── -->
-<header class="wp-header">
-  <button class="exam-exit-btn" onclick="exitT1Practice()" title="Thoát"><i class="fas fa-times"></i></button>
-  <nav class="t2-tpl-nav-group">
-    <a href="writing-practice.html" class="t2-tpl-nav-link" title="Viết câu giao tiếp"><i class="fas fa-house"></i><span>Giao tiếp</span></a>
-    <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
-    <a href="essential-grammar.html" class="t2-tpl-nav-link" title="Essential Grammar"><i class="fas fa-graduation-cap"></i><span>Ngữ pháp</span></a>
-  </nav>
-  <div class="wp-header-right">
-    <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
-    <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-    <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up"></i></button>
-  </div>
-</header>
+<!-- ── Mini stats widget (XP/streak/sound) — floats top-right, shared
+     global nav (js/nav.js) now handles page navigation for this page ── -->
+<div class="wp-mini-stats">
+  <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
+  <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
+  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up"></i></button>
+</div>
 
 <!-- Desktop stats widget -->
 <div class="wp-stats-widget" id="t1-stats-widget" style="display:none">
@@ -958,17 +949,6 @@ document.getElementById('quit-leave-btn').onclick = () => {
   if (_quitCb) { _quitCb(); _quitCb = null; }
 };
 
-function exitT1Practice() {
-  if (sessionDone === 0) { window.location.href = 'dashboard.html'; return; }
-  askWpQuit(() => { window.location.href = 'dashboard.html'; }, {
-    mascot: '🚪',
-    title: 'Rời luyện tập?',
-    sub: 'Bạn có chắc muốn thoát không?',
-    confirmText: 'Thoát',
-    continueText: 'Tiếp tục học'
-  });
-}
-
 // ════════════════════════════════════════════════════════
 //  XP FLOAT
 // ════════════════════════════════════════════════════════
@@ -1015,7 +995,6 @@ function setShuffleMode(val) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initUser();
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
@@ -1038,17 +1017,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextExercise(); }
   });
 });
-
-function initUser() {
-  const user = window.AuthService.getUser() || {};
-  const name = user.firstName
-    ? `${user.firstName} ${user.lastName || ''}`.trim()
-    : user.username || '';
-  if (name) {
-    const uEl = document.getElementById('userName');
-    if (uEl) uEl.textContent = '👋 ' + name;
-  }
-}
 
 function loadXPFromStorage() {
   const stored = JSON.parse(localStorage.getItem('t1_progress') || '{"xp":0,"lastDate":""}');

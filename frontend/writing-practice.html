@@ -258,22 +258,13 @@
 <script src="js/shared/score-message.js"></script>
 
 
-<!-- ── Stats bar ── -->
-<header class="wp-header">
-  <button class="exam-exit-btn" onclick="exitWpPractice()" title="Thoát"><i class="fas fa-times"></i></button>
-  <nav class="t2-tpl-nav-group">
-    <a href="task1-practice.html" class="t2-tpl-nav-link" title="Task 1 Grammar"><i class="fas fa-chart-bar"></i><span>Task 1</span></a>
-    <a href="task2-practice.html" class="t2-tpl-nav-link" title="Task 2 Writing"><i class="fas fa-edit"></i><span>Task 2</span></a>
-    <a href="task2-template.html" class="t2-tpl-nav-link" title="Task 2 Templates"><i class="fas fa-book-open"></i><span>Templates</span></a>
-    <a href="essential-grammar.html" class="t2-tpl-nav-link" title="Essential Grammar"><i class="fas fa-graduation-cap"></i><span>Ngữ pháp</span></a>
-  </nav>
-  <div class="wp-header-right">
-    <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
-    <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-    <span class="wp-username" id="userName">👋 Xin chào</span>
-    <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
-  </div>
-</header>
+<!-- ── Mini stats widget (XP/streak/sound) — floats top-right, shared
+     global nav (js/nav.js) now handles page navigation for this page ── -->
+<div class="wp-mini-stats">
+  <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
+  <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
+  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
+</div>
 
 <!-- ── Mobile stats bar ── -->
 <div class="wp-mobile-stats" id="wp-mobile-stats">
@@ -1087,7 +1078,6 @@ window.addEventListener('popstate', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  initUser();
   loadXPFromStorage();
   loadMeta();
   showState('welcome');
@@ -1120,17 +1110,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextExercise(); }
   });
 });
-
-function initUser() {
-  const user = window.AuthService.getUser() || {};
-  const name = user.firstName
-    ? `${user.firstName} ${user.lastName || ''}`.trim()
-    : user.username || '';
-  if (name) {
-    const uEl = document.getElementById('userName');
-    if (uEl) uEl.textContent = '👋 ' + name;
-  }
-}
 
 // logout() moved to js/auth.js (single source of truth — Phase 3 audit).
 // This local copy was a real bug: it only ever cleared 'token', leaving
@@ -2148,17 +2127,6 @@ function cancelWpQuit() {
 function confirmWpQuit() {
   document.getElementById('wp-quit-overlay').classList.add('hidden');
   if (_wpQuitCb) { const cb = _wpQuitCb; _wpQuitCb = null; cb(); }
-}
-
-function exitWpPractice() {
-  if (sessionDone === 0) { saveBatch(); window.location.href = 'dashboard.html'; return; }
-  askWpQuit(() => { saveBatch(); window.location.href = 'dashboard.html'; }, {
-    mascot: '🚪',
-    title: 'Rời luyện tập?',
-    sub: 'Bạn có chắc muốn thoát không?',
-    confirmText: 'Thoát',
-    continueText: 'Tiếp tục học'
-  });
 }
 
 function stopPracticeMode() {
