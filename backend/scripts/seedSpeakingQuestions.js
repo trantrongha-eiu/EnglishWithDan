@@ -233,6 +233,14 @@ const part1Groups = [
     { question: "Are there any quiet places near where you live?", sampleAnswer:
       "Yes, fortunately there are. There's a small park about ten minutes from my house that I visit quite regularly. Even though the surrounding area is fairly busy, the park itself has a lovely calm atmosphere — you can hear birds and feel a gentle breeze, which is a nice contrast to the traffic noise outside. There's also a local library nearby that's a great place to study in complete silence." }
   ]},
+  { topic: "Public Places", questions: [
+    { question: "Have you ever talked with someone you don't know in a public place?", sampleAnswer:
+      "Yes, actually. I remember once I was waiting for the bus and the person next to me spontaneously started chatting about how delayed the service was. We ended up having quite a pleasant conversation for about twenty minutes. It was one of those rare interactions with a complete stranger that actually leaves you feeling good about people in general. I think those kinds of spontaneous connections are quite special, even if they're brief." },
+    { question: "Do you wear headphones in public places?", sampleAnswer:
+      "Yes, quite regularly actually. I usually put on headphones when I'm commuting or in a crowded public space like a shopping mall. It helps me block out the surrounding noise and creates a little bubble of personal space, which I find quite comforting. I mostly listen to music or podcasts during my commute. I'm aware that it makes me less approachable, but I think in busy urban environments it's become a perfectly normal and socially accepted thing to do." },
+    { question: "Do you like going to public places?", sampleAnswer:
+      "It depends on my mood and the type of place. I enjoy visiting parks, museums, and local markets because they have an interesting energy without being overwhelmingly crowded. I'm less fond of very busy places like shopping malls during peak hours — the noise and congestion can be quite draining. Overall, I think public spaces are an important part of city life; they give communities a shared space to connect and interact." }
+  ]},
   { topic: "Space Travel", questions: [
     "Have you ever learnt anything about space and the stars when you were at school?",
     "Would you like to know more about space and the stars?",
