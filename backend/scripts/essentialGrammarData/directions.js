@@ -243,6 +243,7 @@ module.exports = [
       { title: "Đưa ra điểm mốc/landmark để người nghe dễ nhận biết", description: "Keep going until you see a red-brick church — the hotel is right next to it." }
     ],
     signalWords: ["go straight on", "turn left/right", "take the first/second turning", "keep going/walking", "you'll see/find...", "it's on your left/right"],
+    image: { src: "img/directions.png", caption: "Từ vựng chỉ đường: biển báo/địa hình, động từ chỉ hướng, và giới từ vị trí thường gặp." },
     examples: [
       { en: "Go straight ahead for about 200 metres, then turn left onto Oak Street.", vi: "Đi thẳng khoảng 200 mét, sau đó rẽ trái vào đường Oak." },
       { en: "Don't take the motorway; instead, follow the signs for the town centre.", vi: "Đừng đi vào đường cao tốc; thay vào đó, hãy đi theo biển chỉ dẫn về trung tâm thị trấn." },

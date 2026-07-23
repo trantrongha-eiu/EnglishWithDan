@@ -107,6 +107,12 @@
     .eg-chip{background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;border-radius:20px;padding:4px 12px;font-size:12.5px;font-weight:600}
     [data-theme="dark"] .eg-chip{background:#431407;border-color:#7c2d12;color:#fb923c}
 
+    .eg-image-wrap{text-align:center}
+    .eg-image{max-width:100%;height:auto;border-radius:10px;border:1px solid #e5e7eb;background:#fff}
+    [data-theme="dark"] .eg-image{border-color:#334155}
+    .eg-image-caption{font-size:12px;color:#6b7280;margin-top:8px;line-height:1.5}
+    [data-theme="dark"] .eg-image-caption{color:#94a3b8}
+
     .eg-example-item{background:#f9fafb;border:1px solid #f3f4f6;border-left:3px solid #6366f1;border-radius:8px;
       padding:10px 14px;margin-bottom:8px}
     [data-theme="dark"] .eg-example-item{background:#0f172a;border-color:#1e293b;border-left-color:#818cf8}
@@ -478,6 +484,7 @@ function renderBlock(block) {
     case 'formula': return renderFormulaBlock(block.data);
     case 'usage': return renderUsageBlock(block.data);
     case 'signal_words': return renderSignalWordsBlock(block.data);
+    case 'image': return renderImageBlock(block.data);
     case 'examples': return renderExamplesBlock(block.data);
     case 'common_mistakes': return renderMistakesBlock(block.data);
     case 'ielts_tips': return renderTipsBlock(block.data);
@@ -518,6 +525,16 @@ function renderSignalWordsBlock(data) {
   const chips = (data.words || []).map(w => '<span class="eg-chip">' + escHtml(w) + '</span>').join('');
   return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-tags"></i> Dấu hiệu nhận biết</div>'
     + '<div class="eg-chip-wrap">' + chips + '</div></div>';
+}
+
+function renderImageBlock(data) {
+  const caption = data.caption
+    ? '<div class="eg-image-caption">' + escHtml(data.caption) + '</div>' : '';
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-image"></i> Hình minh họa</div>'
+    + '<div class="eg-image-wrap">'
+    + '<img class="eg-image" src="' + escHtml(data.src) + '" alt="' + escHtml(data.caption || '') + '" loading="lazy">'
+    + caption
+    + '</div></div>';
 }
 
 function renderExamplesBlock(data) {

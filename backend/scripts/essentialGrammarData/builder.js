@@ -19,7 +19,7 @@ const REQUIRED_EXERCISE_TYPES = [
 
 function lesson({
   category, lessonKey, title, icon, orderIndex,
-  overview, formula, usage, signalWords, examples, mistakes, tips, comparison, exercises, quiz, summary
+  overview, formula, usage, signalWords, examples, image, mistakes, tips, comparison, exercises, quiz, summary
 }) {
   const label = category + " / " + title;
 
@@ -54,6 +54,7 @@ function lesson({
   if (formula) blocks.push({ type: "formula", data: { forms: formula } });
   if (usage) blocks.push({ type: "usage", data: { points: usage } });
   if (signalWords) blocks.push({ type: "signal_words", data: { words: signalWords } });
+  if (image) blocks.push({ type: "image", data: image });
   blocks.push({ type: "examples", data: { items: examples } });
   blocks.push({ type: "common_mistakes", data: { items: mistakes } });
   if (tips) blocks.push({ type: "ielts_tips", data: { tips } });
