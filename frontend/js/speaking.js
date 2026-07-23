@@ -803,13 +803,38 @@ function _stopAudioCapture() {
   });
 }
 
+let _playbackAudio = null;
+
+function _setPlaybackBtnState(playing) {
+  const btn = document.getElementById('btn-playback-recording');
+  if (!btn) return;
+  btn.classList.toggle('playing', playing);
+  btn.innerHTML = playing
+    ? '<i class="fas fa-stop"></i> Đang phát...'
+    : '<i class="fas fa-play"></i> Nghe lại bản ghi âm';
+}
+
 function playbackRecording() {
+  // Second click while already playing = stop.
+  if (_playbackAudio) {
+    _playbackAudio.pause();
+    return;
+  }
   if (!_lastRecordingBlob) return;
   const url = URL.createObjectURL(_lastRecordingBlob);
   const audio = new Audio(url);
-  audio.addEventListener('ended', () => URL.revokeObjectURL(url));
-  audio.play().catch(() => {
+  _playbackAudio = audio;
+  _setPlaybackBtnState(true);
+
+  const cleanup = () => {
     URL.revokeObjectURL(url);
+    _playbackAudio = null;
+    _setPlaybackBtnState(false);
+  };
+  audio.addEventListener('ended', cleanup);
+  audio.addEventListener('pause', cleanup);
+  audio.play().catch(() => {
+    cleanup();
     showToast('Không thể phát lại bản ghi âm.', 'error');
   });
 }
