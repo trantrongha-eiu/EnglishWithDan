@@ -89,7 +89,7 @@
                 <h3 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px">Sổ từ vựng thông minh</h3>
                 <p style="font-size:14px;color:var(--text2)">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên cạnh</p>
                 <p style="font-size:13px;margin-top:6px;color:var(--blue);font-weight:600;display:none" id="mob-hint">
-                  <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ hoặc học Unit
+                  <i class="fas fa-hand-pointer"></i> Tap <strong>☰</strong> bên dưới để chọn sổ, học Unit, hoặc vào Classroom
                 </p>
               </div>
 
@@ -474,13 +474,16 @@
     <button class="sheet-close" onclick="closeSheet()">✕</button>
   </div>
 
-  <!-- Tabs: Sổ của tôi | Học Unit -->
+  <!-- Tabs: Sổ của tôi | Học Unit | Classroom -->
   <div class="sheet-tabs">
     <button class="sheet-tab active" id="sheetTab0" onclick="switchSheetTab(0)">
-      <i class="fas fa-book"></i> My Notebooks
+      <i class="fas fa-book"></i> Notebooks
     </button>
     <button class="sheet-tab" id="sheetTab1" onclick="switchSheetTab(1)">
-      <i class="fas fa-graduation-cap"></i> Học Paraphrase
+      <i class="fas fa-graduation-cap"></i> Paraphrase
+    </button>
+    <button class="sheet-tab" id="sheetTab2" onclick="switchSheetTab(2)">
+      <i class="fas fa-chalkboard"></i> Classroom
     </button>
   </div>
 
@@ -522,6 +525,16 @@
         <button class="sheet-sound-btn" onclick="toggleSound()" id="soundToggleMob">
           🔊 Sound: ON
         </button>
+      </div>
+    </div>
+
+    <!-- Panel 2: Classroom (Vocabulary Lessons giáo viên giao) -->
+    <div class="sheet-panel" id="sheetPanel2">
+      <div id="sheet-classroom-list">
+        <div style="padding:30px;text-align:center;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:8px">📭</div>
+          <div style="font-size:13px">Chưa có bài học nào</div>
+        </div>
       </div>
     </div>
 
@@ -912,7 +925,7 @@
 
   // ── Tabs ────────────────────────────────────────
   window.switchSheetTab = function(idx){
-    [0,1].forEach(function(i){
+    [0,1,2].forEach(function(i){
       document.getElementById('sheetTab'+i).classList.toggle('active', i===idx);
       document.getElementById('sheetPanel'+i).classList.toggle('active', i===idx);
     });

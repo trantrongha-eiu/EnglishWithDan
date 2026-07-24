@@ -53,6 +53,7 @@ async function loadClassroomAndTodaysLesson() {
         lessonState.publicLessons = [];
     }
     renderClassroomSidebar();
+    syncSheetClassroom();
     await renderTodaysLessonCard();
 }
 
@@ -107,6 +108,26 @@ function renderClassroomSidebar() {
     `).join('');
 }
 
+// Mirrors renderClassroomSidebar() into the mobile bottom sheet's
+// "Classroom" tab — the desktop sidebar is display:none on mobile
+// (same reasoning as dashboard.js's syncSheetBooks() for notebooks), so
+// without this, mobile students could only ever reach whichever lesson
+// happens to be "Today's Lesson" and had no way to browse the rest.
+function syncSheetClassroom() {
+    const list = document.getElementById('sheet-classroom-list');
+    if (!list) return;
+    if (!lessonState.publicLessons.length) {
+        list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📭</div><div style="font-size:13px">Chưa có bài học nào</div></div>';
+        return;
+    }
+    list.innerHTML = lessonState.publicLessons.map(l => `
+        <div class="classroom-item" onclick="openLesson('${l._id}');closeSheet()">
+            <span class="classroom-item-title">${escHtml(l.title)}</span>
+            <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
+        </div>
+    `).join('');
+}
+
 async function renderTodaysLessonCard() {
     const card = document.getElementById('todays-lesson-card');
     if (!card) return;
@@ -148,6 +169,14 @@ function openLesson(lessonId, push = true) {
         document.getElementById('view-mybook').style.display = 'none';
         document.getElementById('view-unit').style.display   = 'none';
         document.getElementById('view-lesson').style.display = 'flex';
+        // The FAB opens the notebook/paraphrase/classroom picker sheet —
+        // meaningless (and, worse, visually overlaps card content while
+        // scrolling) while already inside a lesson, so hide it for the
+        // duration; restored by closeLessonView(). Only relevant on mobile
+        // (.mob-fab is display:none on desktop regardless), but harmless to
+        // set unconditionally — the inline style just yields to that rule.
+        const fab = document.getElementById('mobFab');
+        if (fab) fab.style.display = 'none';
         if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
 
         document.querySelectorAll('.classroom-item').forEach(el => el.classList.remove('active'));
@@ -185,6 +214,8 @@ function closeLessonView() {
     // immediately instead of only after a full page reload.
     const doClose = () => {
         resetQuizState(); // stops the elapsed-time interval if a quiz was abandoned mid-run
+        const fab = document.getElementById('mobFab');
+        if (fab) fab.style.display = ''; // let the existing mobile/desktop media-query rules decide again
         if (typeof goHomeView === 'function') goHomeView();
         renderTodaysLessonCard();
     };
