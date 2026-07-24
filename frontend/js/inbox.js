@@ -58,13 +58,14 @@ function renderList() {
     const subj = m.subject ? esc(m.subject) : '(Không có tiêu đề)';
     const sel = m._id === selectedId ? ' selected' : '';
     const unr = unread ? ' unread' : '';
+    const hasGift = (m.giftHammers || m.giftStreakDays) && !m.giftClaimed;
     return `<div class="msg-item${unr}${sel}" onclick="selectMsg('${m._id}')" data-id="${m._id}">
       <div class="msg-sender">
         ${unread ? '<span class="dot-unread"></span>' : ''}
         ${sender}
         <span class="msg-time" style="margin-left:auto">${timeAgo(m.createdAt)}</span>
       </div>
-      <div class="msg-subject">${subj}</div>
+      <div class="msg-subject">${subj}${hasGift ? ' <span class="gift-tag">🎁 Có quà</span>' : ''}</div>
       <div class="msg-preview">${preview}</div>
     </div>`;
   }).join('');
@@ -114,6 +115,7 @@ async function selectMsg(id) {
       </div>
     </div>
     <div class="detail-body">${esc(msg.body)}</div>
+    ${renderGiftBox(msg)}
     <div class="reply-box">
       <textarea id="replyText" placeholder="Trả lời ${sender}..." rows="3"></textarea>
       <button class="btn btn-primary" id="replySendBtn" onclick="replyMsg('${id}')"><i class="fas fa-reply"></i> Gửi phản hồi</button>
@@ -123,6 +125,38 @@ async function selectMsg(id) {
     </div>
   `;
   setupDictionaryDouble('msgDetail', 'inbox-message');
+}
+
+function renderGiftBox(msg) {
+  if (!msg.giftHammers && !msg.giftStreakDays) return '';
+  const parts = [];
+  if (msg.giftHammers) parts.push(`<span class="gift-item"><img src="img/buaDaniel.jpg" alt="Búa Daniel"> ${msg.giftHammers} búa Daniel</span>`);
+  if (msg.giftStreakDays) parts.push(`<span class="gift-item">🔥 ${msg.giftStreakDays} ngày lửa streak</span>`);
+  if (msg.giftClaimed) {
+    return `<div class="gift-box gift-box-claimed">
+      <div class="gift-items">${parts.join('')}</div>
+      <span class="gift-claimed-label"><i class="fas fa-check-circle"></i> Đã nhận</span>
+    </div>`;
+  }
+  return `<div class="gift-box">
+    <div class="gift-items">${parts.join('')}</div>
+    <button class="btn btn-primary" id="claimGiftBtn" onclick="claimGift('${msg._id}')"><i class="fas fa-gift"></i> Nhận quà</button>
+  </div>`;
+}
+
+async function claimGift(id) {
+  const btn = document.getElementById('claimGiftBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang nhận...'; }
+  try {
+    const d = await apiFetch(`/user/messages/${id}/claim`, { method: 'POST' });
+    const msg = messages.find(m => m._id === id);
+    if (msg) msg.giftClaimed = true;
+    if (window.showToast) window.showToast(`Đã nhận quà: ${d.giftHammers ? d.giftHammers + ' búa' : ''}${d.giftHammers && d.giftStreakDays ? ', ' : ''}${d.giftStreakDays ? d.giftStreakDays + ' ngày lửa' : ''}`, 'success');
+    if (msg && msg._id === selectedId) selectMsg(id);
+  } catch (e) {
+    if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-gift"></i> Nhận quà'; }
+  }
 }
 
 async function replyMsg(id) {
@@ -175,5 +209,6 @@ async function deleteMsg(id) {
 window.selectMsg = selectMsg;
 window.deleteMsg = deleteMsg;
 window.replyMsg = replyMsg;
+window.claimGift = claimGift;
 
 load();

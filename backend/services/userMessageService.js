@@ -2,6 +2,7 @@
 
 // Extracted from the inbox routes in routes/user.js, verbatim logic.
 const Message = require('../models/Message');
+const User = require('../models/User');
 
 async function getUnreadCount(uid) {
   const [personal, broadcast] = await Promise.all([
@@ -24,7 +25,8 @@ async function listMessages(uid, page, limit) {
     ...m,
     isRead: m.isBroadcast
       ? (m.readBy || []).some(id => id.toString() === uid.toString())
-      : m.isRead
+      : m.isRead,
+    giftClaimed: (m.claimedBy || []).some(id => id.toString() === uid.toString())
   }));
   return { messages: result, total };
 }
@@ -79,4 +81,37 @@ async function replyToMessage(uid, uname, messageId, body) {
   return { status: 'ok', message: reply };
 }
 
-module.exports = { getUnreadCount, listMessages, markRead, deleteMessage, replyToMessage };
+// Student claims a búa/lửa gift attached to a message they received. Idempotent
+// per-user via claimedBy (mirrors readBy's broadcast dedupe pattern) so a
+// broadcast gift can be claimed once by every recipient, and a personal gift
+// can't be double-claimed by re-opening the message or retrying the request.
+async function claimGift(id, uid) {
+  const msg = await Message.findById(id);
+  if (!msg) return { status: 'not_found' };
+
+  const isRecipient = msg.isBroadcast || (msg.toId && msg.toId.toString() === uid.toString());
+  if (!isRecipient) return { status: 'forbidden' };
+
+  if (!msg.giftHammers && !msg.giftStreakDays) return { status: 'no_gift' };
+  if (msg.claimedBy.some(cid => cid.toString() === uid.toString())) return { status: 'already_claimed' };
+
+  const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers');
+  if (!user) return { status: 'not_found' };
+
+  if (msg.giftHammers) user.streakHammers += msg.giftHammers;
+  if (msg.giftStreakDays) user.applyGiftStreak(msg.giftStreakDays);
+  await user.save();
+
+  msg.claimedBy.push(uid);
+  await msg.save();
+
+  return {
+    status: 'ok',
+    giftHammers: msg.giftHammers,
+    giftStreakDays: msg.giftStreakDays,
+    streakHammers: user.streakHammers,
+    streak: user.learningStreak,
+  };
+}
+
+module.exports = { getUnreadCount, listMessages, markRead, deleteMessage, replyToMessage, claimGift };

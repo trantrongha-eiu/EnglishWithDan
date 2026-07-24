@@ -61,6 +61,18 @@
     .btn-danger { background:var(--danger-light); color:var(--danger); border:1px solid rgba(220,38,38,.35); }
     .btn-danger:hover { background:var(--danger); color:#fff; }
     .broadcast-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; background:var(--brand-light); color:var(--brand); border-radius:20px; font-size:12px; font-weight:600; }
+
+    /* Gift (búa/lửa) — admin compensation attached to a message */
+    .gift-tag { display:inline-block; padding:1px 8px; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#92400e; border-radius:10px; font-size:11px; font-weight:700; margin-left:6px; }
+    .gift-box { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:14px 16px; background:linear-gradient(135deg,#fef3c7,#fde68a); border:1.5px solid #f59e0b; border-radius:12px; }
+    .gift-box.gift-box-claimed { background:var(--surface2,rgba(0,0,0,.03)); border:1.5px solid var(--border); }
+    .gift-items { display:flex; gap:14px; flex-wrap:wrap; }
+    .gift-item { display:flex; align-items:center; gap:6px; font-weight:700; font-size:14px; color:#92400e; }
+    .gift-item img { width:22px; height:22px; border-radius:5px; vertical-align:middle; }
+    .gift-box-claimed .gift-item { color:var(--text2); }
+    .gift-claimed-label { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--text3); }
+    .gift-box #claimGiftBtn { background:#f59e0b; color:#fff; }
+    .gift-box #claimGiftBtn:hover { background:#d97706; }
   </style>
 </head>
 <body>

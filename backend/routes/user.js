@@ -17,5 +17,6 @@ router.get('/messages', auth, userCtrl.listMessages);
 router.patch('/messages/:id/read', auth, userCtrl.markMessageRead);
 router.delete('/messages/:id', auth, userCtrl.deleteMessage);
 router.post('/messages/:id/reply', auth, userCtrl.replyMessage);
+router.post('/messages/:id/claim', auth, userCtrl.claimGift);
 
 module.exports = router;

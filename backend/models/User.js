@@ -166,4 +166,23 @@ UserSchema.methods.useHammerToRestore = function () {
   return true;
 };
 
+// Admin compensation gift ("lửa") sent via inbox message — not tied to the
+// hammer's 3-day restore window. If the streak is currently in the "just
+// lost it" state (previousStreak snapshot present, learningStreak at 0),
+// the gift restores that snapshot plus the bonus; otherwise it just adds
+// on top of whatever streak the student already has. Re-anchors
+// lastActivityDate to today for the same reason useHammerToRestore() does —
+// otherwise resetIfStale() would immediately wipe the gifted days again.
+UserSchema.methods.applyGiftStreak = function (days) {
+  if (!days || days <= 0) return;
+  if (this.previousStreak > 0 && this.learningStreak === 0) {
+    this.learningStreak = this.previousStreak + days;
+    this.previousStreak = 0;
+    this.streakLostAt = null;
+  } else {
+    this.learningStreak += days;
+  }
+  this.lastActivityDate = getVNDay(new Date());
+};
+
 module.exports = mongoose.model('User', UserSchema);

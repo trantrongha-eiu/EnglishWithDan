@@ -19,7 +19,8 @@ export default function Messages() {
   // available synchronously at first render).
   const [showCompose, setShowCompose] = useState(() => !!searchParams.get('to'));
   const [students, setStudents] = useState([]);
-  const [form, setForm] = useState(() => ({ toId: searchParams.get('to') || '', subject: '', body: '', isBroadcast: false }));
+  const [form, setForm] = useState(() => ({ toId: searchParams.get('to') || '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' }));
+  const [showGift, setShowGift] = useState(false);
   const [sending, setSending] = useState(false);
   const [studentSearch, setStudentSearch] = useState('');
 
@@ -97,14 +98,18 @@ export default function Messages() {
       await apiFetch('/admin/messages', {
         method: 'POST',
         body: JSON.stringify({
-          toId:        form.isBroadcast ? undefined : form.toId,
-          subject:     form.subject,
-          body:        form.body,
-          isBroadcast: form.isBroadcast,
+          toId:           form.isBroadcast ? undefined : form.toId,
+          subject:        form.subject,
+          body:           form.body,
+          isBroadcast:    form.isBroadcast,
+          giftHammers:    +form.giftHammers || 0,
+          giftStreakDays: +form.giftStreakDays || 0,
         })
       });
-      toast(form.isBroadcast ? 'Đã gửi thông báo đến tất cả học sinh' : 'Đã gửi tin nhắn');
-      setForm({ toId: '', subject: '', body: '', isBroadcast: false });
+      const giftMsg = (+form.giftHammers || +form.giftStreakDays) ? ' kèm quà' : '';
+      toast((form.isBroadcast ? 'Đã gửi thông báo đến tất cả học sinh' : 'Đã gửi tin nhắn') + giftMsg);
+      setForm({ toId: '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' });
+      setShowGift(false);
       setShowCompose(false);
       loadMessages(1);
       setPage(1);
@@ -188,6 +193,24 @@ export default function Messages() {
               />
             </div>
 
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 14 }}>
+              <input type="checkbox" checked={showGift} onChange={e => setShowGift(e.target.checked)} />
+              <span>🎁 Gửi kèm quà (búa Daniel / lửa streak) — dùng để đền bù học sinh gặp lỗi</span>
+            </label>
+
+            {showGift && (
+              <div style={{ display: 'flex', gap: 14, padding: 14, background: 'rgba(245,158,11,.08)', border: '1px solid rgba(245,158,11,.35)', borderRadius: 10 }}>
+                <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                  <label className="form-label">🔨 Số búa Daniel</label>
+                  <input type="number" min="0" className="form-input" value={form.giftHammers} onChange={set('giftHammers')} placeholder="0" />
+                </div>
+                <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                  <label className="form-label">🔥 Số ngày lửa (streak)</label>
+                  <input type="number" min="0" className="form-input" value={form.giftStreakDays} onChange={set('giftStreakDays')} placeholder="0" />
+                </div>
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowCompose(false)}>Huỷ</button>
               <button type="submit" className="btn btn-primary" disabled={sending}>
@@ -233,6 +256,13 @@ export default function Messages() {
                       </td>
                       <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {m.subject || <span style={{ color: 'var(--text3)' }}>(Không có tiêu đề)</span>}
+                        {(m.giftHammers > 0 || m.giftStreakDays > 0) && (
+                          <div style={{ marginTop: 4 }}>
+                            <span className="badge" style={{ background: 'rgba(245,158,11,.15)', color: '#b45309', fontSize: 11 }}>
+                              🎁 {m.giftHammers > 0 ? `${m.giftHammers} búa ` : ''}{m.giftStreakDays > 0 ? `${m.giftStreakDays} lửa` : ''}
+                            </span>
+                          </div>
+                        )}
                       </td>
                       <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text2)' }}>
                         {m.body}

@@ -125,3 +125,19 @@ exports.replyMessage = messageGuard(async (req, res) => {
   if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền phản hồi tin nhắn này' });
   res.status(201).json({ success: true, message: result.message });
 });
+
+// ── POST /api/user/messages/:id/claim — nhận quà (búa/lửa) đính kèm ─
+exports.claimGift = messageGuard(async (req, res) => {
+  const result = await userMessageService.claimGift(req.params.id, req.user._id);
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+  if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền nhận quà từ tin nhắn này' });
+  if (result.status === 'no_gift') return res.status(400).json({ success: false, message: 'Tin nhắn này không có quà đính kèm' });
+  if (result.status === 'already_claimed') return res.status(409).json({ success: false, message: 'Bạn đã nhận quà này rồi' });
+  res.json({
+    success: true,
+    giftHammers: result.giftHammers,
+    giftStreakDays: result.giftStreakDays,
+    streakHammers: result.streakHammers,
+    streak: result.streak,
+  });
+});

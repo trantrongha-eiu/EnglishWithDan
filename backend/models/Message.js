@@ -11,6 +11,13 @@ const MessageSchema = new mongoose.Schema({
   readBy:      [{ type: mongoose.Schema.Types.ObjectId }], // theo dõi ai đã đọc broadcast
   deletedBy:   [{ type: mongoose.Schema.Types.ObjectId }], // soft-delete theo từng user
   parentId:    { type: mongoose.Schema.Types.ObjectId, ref: 'Message', default: null }, // tin nhắn gốc nếu đây là phản hồi
+  // Admin compensation gift attached to this message (búa Daniel / lửa streak).
+  // claimedBy mirrors readBy — an array (not a bool) so the same field works
+  // for both a personal message (at most 1 entry) and a broadcast gift sent
+  // to everyone (each recipient claims independently).
+  giftHammers:    { type: Number, default: 0 },
+  giftStreakDays: { type: Number, default: 0 },
+  claimedBy:      [{ type: mongoose.Schema.Types.ObjectId }],
 }, { timestamps: true });
 
 // Serves GET /api/user/messages/unread-count and GET /api/user/messages (polled

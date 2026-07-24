@@ -70,17 +70,22 @@ router.delete('/messages/received/:id', auth, teacherOnly, async (req, res) => {
 // POST /api/admin/messages  – gửi thư mới
 router.post('/messages', auth, teacherOnly, async (req, res) => {
   try {
-    const { toId, subject, body, isBroadcast } = req.body;
+    const { toId, subject, body, isBroadcast, giftHammers, giftStreakDays } = req.body;
     if (!body?.trim()) return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
     if (!isBroadcast && !toId) return res.status(400).json({ success: false, message: 'Vui lòng chọn người nhận' });
 
+    const hammers = Math.max(0, Math.floor(Number(giftHammers) || 0));
+    const streakDays = Math.max(0, Math.floor(Number(giftStreakDays) || 0));
+
     const msg = new Message({
-      fromId:      req.user._id,
-      fromName:    req.user.username,
-      toId:        isBroadcast ? null : toId,
-      subject:     subject?.trim() || '',
-      body:        body.trim(),
-      isBroadcast: !!isBroadcast,
+      fromId:         req.user._id,
+      fromName:       req.user.username,
+      toId:           isBroadcast ? null : toId,
+      subject:        subject?.trim() || '',
+      body:           body.trim(),
+      isBroadcast:    !!isBroadcast,
+      giftHammers:    hammers,
+      giftStreakDays: streakDays,
     });
     await msg.save();
     res.status(201).json({ success: true, message: msg });
