@@ -181,6 +181,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .lesson-results-stat-value{font-size:24px;font-weight:800;color:var(--text)}
 .lesson-results-stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
 
+table.lesson-history-table{width:100%;border-collapse:collapse}
+.lesson-history-table thead th{
+  padding:9px 14px;text-align:left;font-size:11px;font-weight:700;
+  color:var(--text3);text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid var(--border);background:var(--surface2);
+}
+.lesson-history-table tbody td{padding:9px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
+.lesson-history-table tbody tr:last-child td{border-bottom:none}
+
 /* ── Custom unit picker ── */
 .unit-picker{position:relative;width:100%;margin-bottom:0}
 .unit-picker-input{

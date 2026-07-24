@@ -1,6 +1,7 @@
 const svc = require('../../../services/vocabularyLessonService');
 const VocabularyLesson = require('../../../models/VocabularyLesson');
 const VocabularyLessonAttempt = require('../../../models/VocabularyLessonAttempt');
+const VocabularyLessonAttemptLog = require('../../../models/VocabularyLessonAttemptLog');
 const VocabularyLessonImportLog = require('../../../models/VocabularyLessonImportLog');
 const { createTeacher, createStudent } = require('../../factories/userFactory');
 
@@ -213,7 +214,7 @@ describe('duplicateLesson', () => {
 });
 
 describe('deleteLesson', () => {
-  test('cascade-deletes attempts but leaves import history intact', async () => {
+  test('cascade-deletes attempts and the attempt-history log, but leaves import history intact', async () => {
     const teacher = await createTeacher();
     const student = await createStudent();
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
@@ -223,6 +224,7 @@ describe('deleteLesson', () => {
     await svc.deleteLesson(lesson._id);
 
     expect(await VocabularyLessonAttempt.countDocuments({ lessonId: lesson._id })).toBe(0);
+    expect(await VocabularyLessonAttemptLog.countDocuments({ lessonId: lesson._id })).toBe(0);
     expect(await VocabularyLessonImportLog.countDocuments({ lessonId: lesson._id })).toBe(1);
     expect(await VocabularyLesson.findById(lesson._id)).toBeNull();
   });
@@ -287,6 +289,33 @@ describe('submitAttempt / getAttempt', () => {
 
     const attempt = await svc.submitAttempt(student._id, lesson._id, { correctCount: 999, totalCount: 2, timeSpent: 10 });
     expect(attempt.score).toBe(100);
+  });
+
+  test('also writes a history-log row alongside the aggregate row, every submission (not just the first)', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 30, wrongWords: ['renewable'] });
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 20, wrongWords: [] });
+
+    const logs = await VocabularyLessonAttemptLog.find({ userId: student._id, lessonId: lesson._id }).lean();
+    expect(logs).toHaveLength(2); // one per submission, unlike the single aggregate row
+    expect(logs.some(l => l.score === 50 && l.correct === 1 && l.wrong === 1)).toBe(true);
+    expect(logs.some(l => l.score === 100 && l.correct === 2 && l.wrong === 0)).toBe(true);
+  });
+
+  test('caps and stringifies a malicious/oversized wrongWords payload instead of trusting it raw', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    const hugeArray = Array.from({ length: 500 }, (_, i) => ({ toString: () => `word${i}` })); // non-string entries too
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 0, totalCount: 2, timeSpent: 5, wrongWords: hugeArray });
+
+    const log = await VocabularyLessonAttemptLog.findOne({ userId: student._id, lessonId: lesson._id }).lean();
+    expect(log.wrongWords.length).toBeLessThanOrEqual(300);
+    expect(typeof log.wrongWords[0]).toBe('string');
   });
 });
 
@@ -388,5 +417,163 @@ describe('import limits', () => {
     await expect(svc.reimportLesson(lesson._id, teacher._id, lessonWithWordCount(301, lesson.title))).rejects.toThrow(/300/);
     const unchanged = await VocabularyLesson.findById(lesson._id).lean();
     expect(unchanged.words).toHaveLength(2); // untouched
+  });
+});
+
+describe('getAttemptHistory', () => {
+  test('returns this user+lesson\'s submissions newest-first, without exposing wrongWords', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 30, wrongWords: ['renewable'] });
+    await new Promise(r => setTimeout(r, 5));
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 20, wrongWords: [] });
+
+    const history = await svc.getAttemptHistory(student._id, lesson._id);
+    expect(history).toHaveLength(2);
+    expect(history[0].score).toBe(100); // most recent first
+    expect(history[1].score).toBe(50);
+    expect(history[0].wrongWords).toBeUndefined();
+    expect(history[0].createdAt).toBeDefined();
+  });
+
+  test('is scoped to exactly (userId, lessonId) — never leaks another student\'s or another lesson\'s rows', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const lessonA = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const lessonB = await svc.importLesson(teacher._id, GOOD_LESSON.replace('Week 12 - Environment', 'Week 13'));
+
+    await svc.submitAttempt(studentA._id, lessonA._id, { correctCount: 1, totalCount: 2, timeSpent: 1 });
+    await svc.submitAttempt(studentB._id, lessonA._id, { correctCount: 1, totalCount: 2, timeSpent: 1 });
+    await svc.submitAttempt(studentA._id, lessonB._id, { correctCount: 1, totalCount: 2, timeSpent: 1 });
+
+    expect(await svc.getAttemptHistory(studentA._id, lessonA._id)).toHaveLength(1);
+  });
+
+  test('respects the limit parameter', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    for (let i = 0; i < 5; i++) {
+      await svc.submitAttempt(student._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 1 });
+    }
+    expect(await svc.getAttemptHistory(student._id, lesson._id, 3)).toHaveLength(3);
+  });
+});
+
+describe('getLessonStudentBreakdown', () => {
+  test('one row per student who has attempted, with populated name fields', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent({ firstName: 'Nguyen', lastName: 'A' });
+    const studentB = await createStudent({ firstName: 'Tran', lastName: 'B' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 10 });
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 10 });
+
+    const rows = await svc.getLessonStudentBreakdown(lesson._id);
+    expect(rows).toHaveLength(2);
+    const a = rows.find(r => String(r.userId) === String(studentA._id));
+    expect(a.firstName).toBe('Nguyen');
+    expect(a.bestScore).toBe(100);
+    expect(a.attemptCount).toBe(1);
+  });
+
+  test('returns an empty list for a lesson nobody has attempted yet', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    expect(await svc.getLessonStudentBreakdown(lesson._id)).toEqual([]);
+  });
+});
+
+describe('getMostMissedWords', () => {
+  test('counts wrongWords across all students/attempts for the lesson, most-missed first', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 0, totalCount: 2, timeSpent: 1, wrongWords: ['sustainable', 'renewable'] });
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 1, wrongWords: ['renewable'] });
+
+    const missed = await svc.getMostMissedWords(lesson._id);
+    expect(missed[0]).toEqual({ word: 'renewable', count: 2 });
+    expect(missed.some(m => m.word === 'sustainable' && m.count === 1)).toBe(true);
+  });
+
+  test('is case-insensitive when grouping the same word', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 0, totalCount: 2, timeSpent: 1, wrongWords: ['Sustainable'] });
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 0, totalCount: 2, timeSpent: 1, wrongWords: ['sustainable'] });
+
+    const missed = await svc.getMostMissedWords(lesson._id);
+    expect(missed).toHaveLength(1);
+    expect(missed[0].count).toBe(2);
+  });
+
+  test('empty list when nobody has missed anything yet', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    expect(await svc.getMostMissedWords(lesson._id)).toEqual([]);
+  });
+});
+
+describe('listAdminLessons — averageScore / lastActivity', () => {
+  test('averageScore is the mean bestScore across attempt rows; null when nobody has attempted', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    let rows = await svc.listAdminLessons();
+    expect(rows.find(r => String(r._id) === String(lesson._id)).averageScore).toBeNull();
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 }); // 100
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 1 }); // 50
+
+    rows = await svc.listAdminLessons();
+    const row = rows.find(r => String(r._id) === String(lesson._id));
+    expect(row.averageScore).toBe(75);
+    expect(row.completedCount).toBe(2);
+    expect(row.lastActivity).toBeTruthy();
+  });
+});
+
+describe('exportLessonStudentsCsv', () => {
+  test('produces a header row plus one row per student, CRLF-separated', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent({ firstName: 'Nguyen', lastName: 'Van A', username: 'nguyenvana' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 42 });
+
+    const { title, csv } = await svc.exportLessonStudentsCsv(lesson._id);
+    expect(title).toBe('Week 12 - Environment');
+    const lines = csv.split('\r\n');
+    expect(lines).toHaveLength(2); // header + 1 student
+    expect(lines[0]).toContain('Student');
+    expect(lines[1]).toContain('Nguyen Van A');
+    expect(lines[1]).toContain('100'); // score
+  });
+
+  test('neutralizes a formula-leading name (CSV/Excel injection guard)', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent({ firstName: '=cmd|"/c calc"!A1', lastName: '' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 1 });
+
+    const { csv } = await svc.exportLessonStudentsCsv(lesson._id);
+    expect(csv).toContain("\"'=cmd"); // leading quote defuses the formula
+  });
+
+  test('empty class still produces a valid header-only CSV', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const { csv } = await svc.exportLessonStudentsCsv(lesson._id);
+    expect(csv.split('\r\n')).toHaveLength(1);
   });
 });

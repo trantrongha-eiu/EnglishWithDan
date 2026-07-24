@@ -182,3 +182,89 @@ describe('Full happy path: import → publish → student reads → submits atte
     expect(res.status).toBe(404);
   });
 });
+
+describe('Analytics endpoints', () => {
+  async function setUpPublishedLesson() {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const teacherToken = signTokenFor(teacher);
+    const studentToken = signTokenFor(student);
+    const importRes = await request(app)
+      .post('/api/vocabulary-lessons/admin/import')
+      .set('Authorization', `Bearer ${teacherToken}`)
+      .send({ text: GOOD_LESSON });
+    const lessonId = importRes.body.lesson._id;
+    await request(app).patch(`/api/vocabulary-lessons/admin/${lessonId}/publish`).set('Authorization', `Bearer ${teacherToken}`).send({ published: true });
+    return { teacher, student, teacherToken, studentToken, lessonId };
+  }
+
+  test('student cannot reach any /admin/:id/... analytics route (403)', async () => {
+    const { student, studentToken, lessonId } = await setUpPublishedLesson();
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/students`).set('Authorization', `Bearer ${studentToken}`)).status).toBe(403);
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/students/${student._id}/history`).set('Authorization', `Bearer ${studentToken}`)).status).toBe(403);
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/missed-words`).set('Authorization', `Bearer ${studentToken}`)).status).toBe(403);
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/export.csv`).set('Authorization', `Bearer ${studentToken}`)).status).toBe(403);
+  });
+
+  test('GET /:id/attempt/history returns the student\'s own submissions, newest first', async () => {
+    const { studentToken, lessonId } = await setUpPublishedLesson();
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 0, totalCount: 1, timeSpent: 5, wrongWords: ['sustainable'] });
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 1, totalCount: 1, timeSpent: 3 });
+
+    const res = await request(app).get(`/api/vocabulary-lessons/${lessonId}/attempt/history`).set('Authorization', `Bearer ${studentToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.history).toHaveLength(2);
+    expect(res.body.history[0].score).toBe(100);
+    expect(res.body.history[0].wrongWords).toBeUndefined();
+  });
+
+  test('GET /admin/:id/students returns the class breakdown', async () => {
+    const { teacherToken, studentToken, student, lessonId } = await setUpPublishedLesson();
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+
+    const res = await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/students`).set('Authorization', `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.students).toHaveLength(1);
+    expect(res.body.students[0].userId).toBe(String(student._id));
+    expect(res.body.students[0].bestScore).toBe(100);
+  });
+
+  test('GET /admin/:id/students/:userId/history — same shape as the student\'s own history route', async () => {
+    const { teacherToken, studentToken, student, lessonId } = await setUpPublishedLesson();
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+
+    const res = await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/students/${student._id}/history`).set('Authorization', `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.history).toHaveLength(1);
+    expect(res.body.history[0].score).toBe(100);
+  });
+
+  test('GET /admin/:id/missed-words aggregates wrongWords across the class', async () => {
+    const { teacherToken, studentToken, lessonId } = await setUpPublishedLesson();
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 0, totalCount: 1, timeSpent: 5, wrongWords: ['sustainable'] });
+
+    const res = await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/missed-words`).set('Authorization', `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.words).toEqual([{ word: 'sustainable', count: 1 }]);
+  });
+
+  test('GET /admin/:id/export.csv returns a CSV attachment, not JSON', async () => {
+    const { teacherToken, studentToken, lessonId } = await setUpPublishedLesson();
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+
+    const res = await request(app).get(`/api/vocabulary-lessons/admin/${lessonId}/export.csv`).set('Authorization', `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/text\/csv/);
+    expect(res.headers['content-disposition']).toMatch(/attachment/);
+    expect(res.text).toContain('Student');
+  });
+
+  test('all analytics routes 404 for a nonexistent lesson id, not a raw CastError 500', async () => {
+    const teacher = await createTeacher();
+    const token = signTokenFor(teacher);
+    const fakeId = '000000000000000000000000';
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${fakeId}/students`).set('Authorization', `Bearer ${token}`)).status).toBe(404);
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${fakeId}/missed-words`).set('Authorization', `Bearer ${token}`)).status).toBe(404);
+    expect((await request(app).get(`/api/vocabulary-lessons/admin/${fakeId}/export.csv`).set('Authorization', `Bearer ${token}`)).status).toBe(404);
+  });
+});

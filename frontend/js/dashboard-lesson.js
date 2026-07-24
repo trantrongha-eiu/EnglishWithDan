@@ -578,7 +578,12 @@ async function finishLessonQuiz() {
         await fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, {
             method: 'POST',
             headers: authH(),
-            body: JSON.stringify({ correctCount: q.correct, totalCount: total, timeSpent: timeSpentSec }),
+            body: JSON.stringify({
+                correctCount: q.correct,
+                totalCount: total,
+                timeSpent: timeSpentSec,
+                wrongWords: q.wrongWords.map(w => w.word),
+            }),
         });
     } catch (err) { console.error('finishLessonQuiz submit:', err); }
 
@@ -589,15 +594,26 @@ async function finishLessonQuiz() {
 /* ──────────────────────────────────────────────
    RESULTS TAB
 ────────────────────────────────────────────── */
+function formatHistoryDate(iso) {
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 async function renderResultsTab() {
     const container = document.getElementById('lesson-tab-results');
     if (!container) return;
     container.innerHTML = '<div class="classroom-empty">Đang tải...</div>';
 
     let attempt = null;
+    let history = [];
     try {
-        const res = await fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, { headers: authH() });
-        if (res.ok) { const d = await res.json(); attempt = d.attempt; }
+        const [attemptRes, historyRes] = await Promise.all([
+            fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, { headers: authH() }),
+            fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt/history`, { headers: authH() }),
+        ]);
+        if (attemptRes.ok) { const d = await attemptRes.json(); attempt = d.attempt; }
+        if (historyRes.ok) { const d = await historyRes.json(); history = d.history || []; }
     } catch (err) { /* best-effort */ }
 
     const session = (lessonState.lastSession && lessonState.lastSession.lessonId === lessonState.currentLesson._id)
@@ -642,6 +658,26 @@ async function renderResultsTab() {
             <div class="lesson-results-stat-row">
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value" style="color:var(--blue)">${attempt.bestScore}%</div><div class="lesson-results-stat-label">Best Score</div></div>
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value">${attempt.attemptCount}</div><div class="lesson-results-stat-label">Attempt Count</div></div>
+            </div>`;
+    }
+
+    if (history.length) {
+        html += `
+            <div style="margin-bottom:20px">
+                <div style="font-weight:700;margin-bottom:10px"><i class="fas fa-history"></i> Lịch sử làm bài</div>
+                <div class="table-wrap" style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+                    <table class="lesson-history-table">
+                        <thead><tr><th>Lần làm</th><th>Điểm</th><th>Thời gian</th></tr></thead>
+                        <tbody>
+                            ${history.map(h => `
+                                <tr>
+                                    <td>${formatHistoryDate(h.createdAt)}</td>
+                                    <td>${h.score}%</td>
+                                    <td>${mm(h.timeSpent)}</td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
             </div>`;
     }
 

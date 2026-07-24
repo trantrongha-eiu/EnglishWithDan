@@ -38,12 +38,23 @@ exports.submitAttempt = async (req, res) => {
   try {
     const lesson = await vocabularyLessonService.getPublicLesson(req.params.id);
     if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
-    const { correctCount, totalCount, timeSpent } = req.body;
+    const { correctCount, totalCount, timeSpent, wrongWords } = req.body;
     if (typeof totalCount !== 'number' || totalCount <= 0) {
       return res.status(400).json({ success: false, message: 'Thiếu totalCount' });
     }
-    const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent });
+    const attempt = await vocabularyLessonService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongWords });
     res.json({ success: true, attempt });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.getMyAttemptHistory = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getPublicLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const history = await vocabularyLessonService.getAttemptHistory(req.user._id, req.params.id, 20);
+    res.json({ success: true, history });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -166,6 +177,57 @@ exports.getImportHistoryEntry = async (req, res) => {
     const entry = await vocabularyLessonService.getImportHistoryEntry(req.params.id);
     if (!entry) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, entry });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ── Admin: Analytics (per-lesson class breakdown, per-student history,
+// most-missed words, CSV export) ──────────────────────────────────
+exports.getLessonStudentBreakdown = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getAdminLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const students = await vocabularyLessonService.getLessonStudentBreakdown(req.params.id);
+    res.json({ success: true, students });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.getStudentAttemptHistoryAdmin = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getAdminLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const history = await vocabularyLessonService.getAttemptHistory(req.params.userId, req.params.id, 50);
+    res.json({ success: true, history });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.getMostMissedWords = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getAdminLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const words = await vocabularyLessonService.getMostMissedWords(req.params.id, 10);
+    res.json({ success: true, words });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+exports.exportLessonStudentsCsv = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getAdminLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const { title, csv } = await vocabularyLessonService.exportLessonStudentsCsv(req.params.id);
+    // Strip to a filesystem/header-safe filename — the lesson title is
+    // admin-authored free text and must never flow raw into a header value.
+    const safeName = title.replace(/[^a-zA-Z0-9_\- ]/g, '').trim().slice(0, 60) || 'lesson';
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${safeName}.csv"`);
+    res.send('﻿' + csv); // BOM so Excel opens UTF-8 (Vietnamese names) correctly
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

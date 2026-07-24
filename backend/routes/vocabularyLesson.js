@@ -62,12 +62,24 @@ router.patch('/admin/:id/publish', auth, teacherOnly, adminWriteLimiter, ctrl.se
 router.post('/admin/:id/duplicate', auth, teacherOnly, ctrl.duplicateLesson);
 
 // ══════════════════════════════════════════════════════
+// ADMIN — Analytics (đọc only, không cần rate limit như nhóm ghi ở trên).
+// Đường dẫn 2-3 segment dưới "/admin/:id/..." nên không xung đột với
+// "/admin/:id" (1 segment) hay "/admin/:id/reimport|publish|duplicate"
+// (segment cuối khác tên) ở trên.
+// ══════════════════════════════════════════════════════
+router.get('/admin/:id/students', auth, teacherOnly, ctrl.getLessonStudentBreakdown);
+router.get('/admin/:id/students/:userId/history', auth, teacherOnly, ctrl.getStudentAttemptHistoryAdmin);
+router.get('/admin/:id/missed-words', auth, teacherOnly, ctrl.getMostMissedWords);
+router.get('/admin/:id/export.csv', auth, teacherOnly, ctrl.exportLessonStudentsCsv);
+
+// ══════════════════════════════════════════════════════
 // PUBLIC — chi tiết 1 bài học, phải đứng SAU khối /admin ở trên
 // ══════════════════════════════════════════════════════
 router.get('/:id', auth, ctrl.getPublicLesson);
 
-// Tiến độ học — 2 segment nên không xung đột thứ tự với "/:id" hay "/admin/*" ở trên.
+// Tiến độ học — 2-3 segment nên không xung đột thứ tự với "/:id" hay "/admin/*" ở trên.
 router.get('/:id/attempt', auth, ctrl.getAttempt);
 router.post('/:id/attempt', auth, ctrl.submitAttempt);
+router.get('/:id/attempt/history', auth, ctrl.getMyAttemptHistory);
 
 module.exports = router;

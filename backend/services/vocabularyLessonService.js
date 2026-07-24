@@ -1,9 +1,13 @@
 'use strict';
 
+const mongoose = require('mongoose');
 const VocabularyLesson = require('../models/VocabularyLesson');
 const VocabularyLessonAttempt = require('../models/VocabularyLessonAttempt');
+const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const VocabularyLessonImportLog = require('../models/VocabularyLessonImportLog');
 const parser = require('./vocabularyLessonParser');
+
+const MAX_WRONG_WORDS_LOGGED = 300; // matches MAX_WORDS_PER_LESSON — never more wrong words than a lesson can have
 
 // ══════════════════════════════════════════════════════
 // Student-facing reads (published lessons only)
@@ -32,23 +36,50 @@ async function getAttempt(userId, lessonId) {
   return VocabularyLessonAttempt.findOne({ userId, lessonId }).lean();
 }
 
-async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent }) {
+async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongWords }) {
   const total = Math.max(0, Number(totalCount) || 0);
   const correct = Math.max(0, Math.min(Number(correctCount) || 0, total));
+  const wrong = total - correct;
   const score = total > 0 ? Math.round((correct / total) * 100) : 0;
   const spent = Math.max(0, Math.round(Number(timeSpent) || 0));
+  // Client-supplied, so bounded + coerced to plain strings before it ever
+  // reaches an aggregation ($unwind over an attacker-controlled array of
+  // arbitrary type would be an easy DoS/garbage-in vector for getMostMissedWords()).
+  const safeWrongWords = Array.isArray(wrongWords)
+    ? wrongWords.slice(0, MAX_WRONG_WORDS_LOGGED).map(w => String(w).slice(0, 200))
+    : [];
 
   const existing = await VocabularyLessonAttempt.findOne({ userId, lessonId }).select('bestScore').lean();
   const bestScore = Math.max(score, existing?.bestScore || 0);
 
-  return VocabularyLessonAttempt.findOneAndUpdate(
-    { userId, lessonId },
-    {
-      $set: { score, completed: true, bestScore, lastAttempt: new Date() },
-      $inc: { attemptCount: 1, timeSpent: spent },
-    },
-    { upsert: true, new: true }
-  );
+  // Two independent writes: the aggregate row (Best Score/Attempt Count —
+  // read on every Results-tab load) and a new history-log row (only read
+  // when a history/analytics view is explicitly opened). Neither depends on
+  // the other's result, so run them concurrently rather than sequentially.
+  const [attempt] = await Promise.all([
+    VocabularyLessonAttempt.findOneAndUpdate(
+      { userId, lessonId },
+      {
+        $set: { score, completed: true, bestScore, lastAttempt: new Date() },
+        $inc: { attemptCount: 1, timeSpent: spent },
+      },
+      { upsert: true, new: true }
+    ),
+    VocabularyLessonAttemptLog.create({
+      userId, lessonId, score, correct, wrong, total, timeSpent: spent, wrongWords: safeWrongWords,
+    }),
+  ]);
+  return attempt;
+}
+
+// Shared by the student's own "past attempts" view and the admin's
+// per-student drill-down — same shape either way, just different callers.
+async function getAttemptHistory(userId, lessonId, limit = 20) {
+  return VocabularyLessonAttemptLog.find({ userId, lessonId })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .select('-wrongWords -__v -userId -lessonId')
+    .lean();
 }
 
 // ══════════════════════════════════════════════════════
@@ -124,19 +155,97 @@ async function listAdminLessons() {
     { $project: { title: 1, description: 1, difficulty: 1, order: 1, published: 1, createdBy: 1, createdAt: 1, wordCount: { $size: '$words' } } },
     { $sort: { createdAt: -1 } },
     {
+      // One lookup for every per-lesson attempt-row-derived stat
+      // (completedCount/averageScore/lastActivity) instead of a separate
+      // $lookup per stat — cheaper, and keeps them trivially consistent
+      // with each other (same underlying row set).
       $lookup: {
         from: VocabularyLessonAttempt.collection.name,
-        let: { lessonId: '$_id' },
-        pipeline: [
-          { $match: { $expr: { $and: [{ $eq: ['$lessonId', '$$lessonId'] }, { $eq: ['$completed', true] }] } } },
-          { $count: 'count' },
-        ],
-        as: '_completed',
+        localField: '_id',
+        foreignField: 'lessonId',
+        as: '_attempts',
       },
     },
-    { $addFields: { completedCount: { $ifNull: [{ $arrayElemAt: ['$_completed.count', 0] }, 0] } } },
-    { $project: { _completed: 0 } },
+    {
+      $addFields: {
+        completedCount: { $size: { $filter: { input: '$_attempts', as: 'a', cond: { $eq: ['$$a.completed', true] } } } },
+        averageScore: {
+          $cond: [
+            { $gt: [{ $size: '$_attempts' }, 0] },
+            { $round: [{ $avg: '$_attempts.bestScore' }, 0] },
+            null,
+          ],
+        },
+        lastActivity: { $max: '$_attempts.lastAttempt' },
+      },
+    },
+    { $project: { _attempts: 0 } },
   ]);
+}
+
+// ══════════════════════════════════════════════════════
+// Admin analytics — per-lesson class breakdown, per-student history, and
+// "most missed words". All read-only, all derived from
+// VocabularyLessonAttempt (the aggregate row) / VocabularyLessonAttemptLog
+// (the per-submission history) — neither is touched by these functions.
+// ══════════════════════════════════════════════════════
+
+async function getLessonStudentBreakdown(lessonId) {
+  const rows = await VocabularyLessonAttempt.find({ lessonId })
+    .populate('userId', 'username firstName lastName')
+    .sort({ lastAttempt: -1 })
+    .lean();
+  return rows
+    .filter(r => r.userId) // drop rows whose user was since deleted
+    .map(r => ({
+      userId:       r.userId._id,
+      username:     r.userId.username,
+      firstName:    r.userId.firstName,
+      lastName:     r.userId.lastName,
+      score:        r.score,
+      bestScore:    r.bestScore,
+      attemptCount: r.attemptCount,
+      lastAttempt:  r.lastAttempt,
+      timeSpent:    r.timeSpent,
+    }));
+}
+
+async function getMostMissedWords(lessonId, limit = 10) {
+  return VocabularyLessonAttemptLog.aggregate([
+    { $match: { lessonId: new mongoose.Types.ObjectId(lessonId) } },
+    { $unwind: '$wrongWords' },
+    { $group: { _id: { $toLower: '$wrongWords' }, count: { $sum: 1 }, sample: { $first: '$wrongWords' } } },
+    { $sort: { count: -1 } },
+    { $limit: limit },
+    { $project: { _id: 0, word: '$sample', count: 1 } },
+  ]);
+}
+
+function csvField(v) {
+  const s = String(v ?? '');
+  // OWASP CSV-injection guard: a field opened by Excel/Sheets that starts
+  // with =, +, -, or @ can be interpreted as a formula. Student
+  // names/usernames are user-controlled (registration), so neutralize
+  // before quoting.
+  const safe = /^[=+\-@]/.test(s) ? `'${s}` : s;
+  return `"${safe.replace(/"/g, '""')}"`;
+}
+
+async function exportLessonStudentsCsv(lessonId) {
+  const lesson = await VocabularyLesson.findById(lessonId).select('title').lean();
+  const rows = await getLessonStudentBreakdown(lessonId);
+  const header = ['Student', 'Username', 'Last Score', 'Best Score', 'Attempts', 'Time Spent (s)', 'Last Attempt'].map(csvField).join(',');
+  const body = rows.map(r => {
+    const name = [r.firstName, r.lastName].filter(Boolean).join(' ') || r.username || '';
+    return [
+      csvField(name), csvField(r.username), r.score, r.bestScore, r.attemptCount, r.timeSpent,
+      csvField(r.lastAttempt ? new Date(r.lastAttempt).toISOString() : ''),
+    ].join(',');
+  });
+  return {
+    title: lesson?.title || 'lesson',
+    csv: [header, ...body].join('\r\n'),
+  };
 }
 
 async function getAdminLesson(id) {
@@ -230,7 +339,10 @@ async function deleteLesson(id) {
     // No orphaned progress rows pointing at a lesson that no longer exists.
     // Import history is deliberately left untouched — recovering the raw
     // text of a deleted lesson is exactly what it's for.
-    await VocabularyLessonAttempt.deleteMany({ lessonId: id });
+    await Promise.all([
+      VocabularyLessonAttempt.deleteMany({ lessonId: id }),
+      VocabularyLessonAttemptLog.deleteMany({ lessonId: id }),
+    ]);
   }
   return lesson;
 }
@@ -293,6 +405,7 @@ module.exports = {
   getPublicLesson,
   getAttempt,
   submitAttempt,
+  getAttemptHistory,
   listAdminLessons,
   getAdminLesson,
   importLesson,
@@ -303,4 +416,7 @@ module.exports = {
   duplicateLesson,
   listImportHistory,
   getImportHistoryEntry,
+  getLessonStudentBreakdown,
+  getMostMissedWords,
+  exportLessonStudentsCsv,
 };

@@ -1,10 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch, formatDate } from '../utils/api';
+import { apiFetch, formatDate, API, authHeaders } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import LessonPreview from '../components/LessonPreview';
+
+// CSV export isn't JSON, so it can't go through apiFetch() — fetch it as a
+// blob directly and trigger a browser download via a throwaway <a>.
+async function downloadCsv(path, filenameFallback) {
+  const res = await fetch(`${API}${path}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error('Export thất bại');
+  const blob = await res.blob();
+  const match = (res.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = match?.[1] || filenameFallback;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
 const DIFFICULTY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const PREFILL_KEY = 'vocabLessonImportPrefill';
@@ -197,6 +214,136 @@ function ImportHistoryModal({ onClose }) {
   );
 }
 
+function studentDisplayName(s) {
+  return [s.firstName, s.lastName].filter(Boolean).join(' ') || s.username || '(không tên)';
+}
+
+function LessonStudentsModal({ lessonId, lessonTitle, onClose }) {
+  const toast = useToast();
+  const [loading, setLoading] = useState(true);
+  const [students, setStudents] = useState([]);
+  const [missedWords, setMissedWords] = useState([]);
+  const [detailStudent, setDetailStudent] = useState(null); // { userId, name } once a row is clicked
+  const [detailHistory, setDetailHistory] = useState(null);
+  const [exporting, setExporting] = useState(false);
+
+  useEffect(() => {
+    Promise.all([
+      apiFetch(`/vocabulary-lessons/admin/${lessonId}/students`),
+      apiFetch(`/vocabulary-lessons/admin/${lessonId}/missed-words`),
+    ])
+      .then(([s, w]) => { setStudents(s.students || []); setMissedWords(w.words || []); })
+      .catch(e => toast(e.message, 'error'))
+      .finally(() => setLoading(false));
+  }, [lessonId]);
+
+  async function openStudentHistory(student) {
+    setDetailStudent({ userId: student.userId, name: studentDisplayName(student) });
+    setDetailHistory(null);
+    try {
+      const d = await apiFetch(`/vocabulary-lessons/admin/${lessonId}/students/${student.userId}/history`);
+      setDetailHistory(d.history || []);
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  async function doExport() {
+    setExporting(true);
+    try {
+      await downloadCsv(`/vocabulary-lessons/admin/${lessonId}/export.csv`, `${lessonTitle}.csv`);
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setExporting(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 680, maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">👥 {lessonTitle}</h3>
+          <button className="modal-close" onClick={() => (detailStudent ? setDetailStudent(null) : onClose())} aria-label="Đóng">✕</button>
+        </div>
+
+        {detailStudent ? (
+          <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
+            <button className="btn btn-ghost btn-sm" style={{ marginBottom: 12 }} onClick={() => setDetailStudent(null)}>← Quay lại danh sách</button>
+            <div style={{ fontWeight: 700, marginBottom: 10 }}>{detailStudent.name} — Lịch sử làm bài</div>
+            {detailHistory === null ? (
+              <div style={{ color: 'var(--text2)' }}>Đang tải...</div>
+            ) : detailHistory.length === 0 ? (
+              <div style={{ color: 'var(--text2)' }}>Chưa có lần làm nào</div>
+            ) : (
+              <div className="table-wrap">
+                <table className="table">
+                  <thead><tr><th>NGÀY GIỜ</th><th>ĐIỂM</th><th>ĐÚNG/SAI</th><th>THỜI GIAN</th></tr></thead>
+                  <tbody>
+                    {detailHistory.map(h => (
+                      <tr key={h._id}>
+                        <td>{formatDate(h.createdAt)}</td>
+                        <td>{h.score}%</td>
+                        <td>{h.correct}/{h.wrong + h.correct}</td>
+                        <td>{h.timeSpent}s</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
+            {loading ? (
+              <div style={{ color: 'var(--text2)' }}>Đang tải...</div>
+            ) : (
+              <>
+                {missedWords.length > 0 && (
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>
+                      Từ hay sai nhất
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {missedWords.map(w => (
+                        <span key={w.word} className="badge badge-red" title={`${w.count} lượt sai`}>{w.word} ×{w.count}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {students.length === 0 ? (
+                  <div style={{ color: 'var(--text2)' }}>Chưa có học sinh nào làm bài học này</div>
+                ) : (
+                  <div className="table-wrap">
+                    <table className="table">
+                      <thead><tr><th>HỌC SINH</th><th>GẦN NHẤT</th><th>BEST</th><th>SỐ LẦN</th><th>HOẠT ĐỘNG</th></tr></thead>
+                      <tbody>
+                        {students.map(s => (
+                          <tr key={s.userId} style={{ cursor: 'pointer' }} onClick={() => openStudentHistory(s)}>
+                            <td>{studentDisplayName(s)}</td>
+                            <td>{s.score}%</td>
+                            <td><strong>{s.bestScore}%</strong></td>
+                            <td>{s.attemptCount}</td>
+                            <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(s.lastAttempt)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {!detailStudent && (
+          <div style={{ padding: '12px 24px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn btn-ghost btn-sm" onClick={doExport} disabled={exporting || students.length === 0}>
+              {exporting ? 'Đang xuất...' : '⬇ Export CSV'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function VocabularyLessons() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -208,6 +355,7 @@ export default function VocabularyLessons() {
   const [editLesson, setEditLesson] = useState(null);
   const [previewId, setPreviewId] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [studentsLesson, setStudentsLesson] = useState(null);
 
   const load = () => apiFetch('/vocabulary-lessons/admin')
     .then(d => setLessons(d.lessons || []))
@@ -248,6 +396,13 @@ export default function VocabularyLessons() {
       {editLesson && <LessonMetaModal lesson={editLesson} onClose={() => setEditLesson(null)} onSaved={load} />}
       {previewId && <PreviewModal lessonId={previewId} onClose={() => setPreviewId(null)} />}
       {showHistory && <ImportHistoryModal onClose={() => setShowHistory(false)} />}
+      {studentsLesson && (
+        <LessonStudentsModal
+          lessonId={studentsLesson._id}
+          lessonTitle={studentsLesson.title}
+          onClose={() => setStudentsLesson(null)}
+        />
+      )}
 
       <div className="section-header">
         <h2 className="section-title">Vocabulary Lessons ({filtered.length})</h2>
@@ -264,12 +419,12 @@ export default function VocabularyLessons() {
 
       <div className="table-wrap">
         <table className="table">
-          <thead><tr><th>TIÊU ĐỀ</th><th>DIFFICULTY</th><th>ORDER</th><th>SỐ TỪ</th><th>HOÀN THÀNH</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+          <thead><tr><th>TIÊU ĐỀ</th><th>DIFFICULTY</th><th>ORDER</th><th>SỐ TỪ</th><th>HOÀN THÀNH</th><th>ĐIỂM TB</th><th>HOẠT ĐỘNG</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={8} className="table-empty">Đang tải...</td></tr>
+              <tr><td colSpan={10} className="table-empty">Đang tải...</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={8} className="table-empty">Chưa có bài học nào</td></tr>
+              <tr><td colSpan={10} className="table-empty">Chưa có bài học nào</td></tr>
             ) : filtered.map(l => (
               <tr key={l._id}>
                 <td>
@@ -280,6 +435,8 @@ export default function VocabularyLessons() {
                 <td>{l.order ?? 0}</td>
                 <td>{l.wordCount ?? 0}</td>
                 <td>{l.completedCount ?? 0}</td>
+                <td>{l.averageScore != null ? `${l.averageScore}%` : '–'}</td>
+                <td style={{ fontSize: 12, color: 'var(--text3)' }}>{l.lastActivity ? formatDate(l.lastActivity) : '–'}</td>
                 <td>
                   <span className={`badge ${l.published ? 'badge-green' : 'badge-gray'}`}>
                     <span className="dot" />{l.published ? 'Published' : 'Draft'}
@@ -288,6 +445,7 @@ export default function VocabularyLessons() {
                 <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(l.createdAt).split(' ')[0]}</td>
                 <td>
                   <div className="row-actions">
+                    <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setStudentsLesson(l)} title="Xem điểm học sinh">👥</button>
                     <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setPreviewId(l._id)} title="Preview">👁</button>
                     <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setEditLesson(l)} title="Sửa thông tin">✏️</button>
                     <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/vocabulary-lessons/import?lessonId=${l._id}`)} title="Sửa nội dung (re-import)">📋</button>
