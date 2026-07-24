@@ -945,9 +945,22 @@ async function runSeed() {
   const SpeakingQuestion = require('../models/SpeakingQuestion');
   const docs = buildDocs();
 
-  const ops = docs.map(d => ({
-    replaceOne: { filter: { topic: d.topic, part: d.part, question: d.question }, replacement: d, upsert: true }
-  }));
+  // updateOne + $set/$setOnInsert instead of replaceOne: a full replaceOne
+  // wipes sampleAnswer back to the seed's own default (empty for most
+  // questions) on every server restart, silently destroying anything
+  // Gemini generated on demand (services/speakingService.js's cache-aside)
+  // or a bulk-generation script wrote afterwards — sampleAnswer must only
+  // ever be set here on first insert, never overwritten on an existing doc.
+  const ops = docs.map(d => {
+    const { sampleAnswer, ...rest } = d;
+    return {
+      updateOne: {
+        filter: { topic: d.topic, part: d.part, question: d.question },
+        update: { $set: rest, $setOnInsert: { sampleAnswer: sampleAnswer || '' } },
+        upsert: true
+      }
+    };
+  });
 
   const result = await SpeakingQuestion.bulkWrite(ops);
   console.log(`[SpeakingSeed] upserted ${result.upsertedCount}, modified ${result.modifiedCount} questions (${docs.length} total)`);
