@@ -696,7 +696,23 @@ async function finishLessonQuiz() {
     } catch (err) { console.error('finishLessonQuiz submit:', err); }
 
     if (typeof loadStreakAndUpdateMascot === 'function') loadStreakAndUpdateMascot();
+    if (lessonState.lastSession.score === 100 && typeof spawnConfetti === 'function') {
+        setTimeout(() => spawnConfetti(100), 400); // same trigger/delay as Notebook practice's results screen
+    }
     switchLessonTab('results');
+}
+
+// Same 5-tier score->image mapping as Notebook/Unit practice's results
+// screen (dashboard.js's showResults()) — reusing the exact same asset
+// files so a Lesson quiz result feels consistent with the rest of the
+// vocab dashboard instead of introducing a second, different set of mood
+// images.
+function getVocabResultImage(pct) {
+    return pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
+         : pct >= 70 ? 'img/above7.5.jpg'
+         : pct >= 50 ? 'img/vocab50_70%25.jpg'
+         : pct >= 20 ? 'img/vocabbelow50%25.jpg'
+         :             'img/verylowscore.jpg';
 }
 
 /* ──────────────────────────────────────────────
@@ -748,6 +764,14 @@ async function renderResultsTab() {
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value" style="color:var(--brand)">${session.wrong}</div><div class="lesson-results-stat-label">Wrong</div></div>
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value">${mm(session.timeSpentSec)}</div><div class="lesson-results-stat-label">Time</div></div>
             </div>`;
+        if (typeof getScoreMessage === 'function') {
+            const { emoji, message } = getScoreMessage(session.score);
+            html += `
+                <div style="text-align:center;margin-bottom:16px">
+                    <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${emoji} ${escHtml(message)}</div>
+                    <img src="${getVocabResultImage(session.score)}" alt="" style="width:100%;max-width:200px;border-radius:12px;object-fit:cover">
+                </div>`;
+        }
         if (session.wrongWords.length) {
             html += `
                 <div class="fb-card" style="border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:20px">
