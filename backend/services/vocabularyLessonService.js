@@ -82,6 +82,48 @@ async function getAttemptHistory(userId, lessonId, limit = 20) {
     .lean();
 }
 
+// Same >=5-question floor the site already uses elsewhere (dashboard.js's
+// streak-bonus eligibility) — stops a 1-word quiz from gaming the board.
+const MIN_QUIZ_LEADERBOARD_QUESTIONS = 5;
+
+// Global (cross-lesson) "who's best at Vocabulary Lesson quizzes" board —
+// ranked by accuracy first, then speed as the tiebreaker, matching how a
+// timed quiz leaderboard normally reads. Each student's single best
+// qualifying attempt represents them (not an average across lessons of
+// very different sizes/difficulty, which wouldn't be a fair comparison).
+async function getQuizLeaderboard(limit = 10) {
+  const rows = await VocabularyLessonAttemptLog.aggregate([
+    { $match: { total: { $gte: MIN_QUIZ_LEADERBOARD_QUESTIONS } } },
+    { $sort: { score: -1, timeSpent: 1 } },
+    { $group: { _id: '$userId', score: { $first: '$score' }, timeSpent: { $first: '$timeSpent' }, total: { $first: '$total' } } },
+    {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: '_user',
+      },
+    },
+    { $unwind: '$_user' },
+    { $match: { '_user.role': 'student' } }, // exclude teacher/admin test attempts from a student-facing board
+    { $sort: { score: -1, timeSpent: 1 } },
+    { $limit: limit },
+    {
+      $project: {
+        _id: 0,
+        userId: '$_id',
+        score: 1,
+        timeSpent: 1,
+        total: 1,
+        name: { $trim: { input: { $concat: [{ $ifNull: ['$_user.firstName', ''] }, ' ', { $ifNull: ['$_user.lastName', ''] }] } } },
+        username: '$_user.username',
+        avatar: '$_user.avatar',
+      },
+    },
+  ]);
+  return rows.map(r => ({ ...r, name: r.name || r.username }));
+}
+
 // ══════════════════════════════════════════════════════
 // Import limits — protect the parser/DB from pathological pastes with
 // friendly, specific errors instead of relying on MongoDB's own 16MB/
@@ -406,6 +448,7 @@ module.exports = {
   getAttempt,
   submitAttempt,
   getAttemptHistory,
+  getQuizLeaderboard,
   listAdminLessons,
   getAdminLesson,
   importLesson,

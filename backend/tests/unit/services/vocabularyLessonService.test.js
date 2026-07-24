@@ -3,7 +3,7 @@ const VocabularyLesson = require('../../../models/VocabularyLesson');
 const VocabularyLessonAttempt = require('../../../models/VocabularyLessonAttempt');
 const VocabularyLessonAttemptLog = require('../../../models/VocabularyLessonAttemptLog');
 const VocabularyLessonImportLog = require('../../../models/VocabularyLessonImportLog');
-const { createTeacher, createStudent } = require('../../factories/userFactory');
+const { createTeacher, createStudent, createAdmin } = require('../../factories/userFactory');
 
 const GOOD_LESSON = `@lesson
 title=Week 12 - Environment
@@ -575,5 +575,95 @@ describe('exportLessonStudentsCsv', () => {
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
     const { csv } = await svc.exportLessonStudentsCsv(lesson._id);
     expect(csv.split('\r\n')).toHaveLength(1);
+  });
+});
+
+describe('getQuizLeaderboard', () => {
+  test('ranks by score desc, then time asc as the tiebreaker', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent({ firstName: 'A', lastName: 'Student' });
+    const studentB = await createStudent({ firstName: 'B', lastName: 'Student' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 4, totalCount: 5, timeSpent: 30 }); // 80%, 30s
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 9, totalCount: 10, timeSpent: 20 }); // 90%, 20s
+
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board[0].userId.toString()).toBe(String(studentB._id)); // higher score wins
+    expect(board[1].userId.toString()).toBe(String(studentA._id));
+  });
+
+  test('same score: faster time ranks higher', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 40 });
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 15 });
+
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board[0].userId.toString()).toBe(String(studentB._id)); // same 100%, but faster
+    expect(board[1].userId.toString()).toBe(String(studentA._id));
+  });
+
+  test('excludes attempts with fewer than 5 questions (anti-gaming floor)', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 }); // 100% but only 2 questions
+    expect(await svc.getQuizLeaderboard(10)).toEqual([]);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 10 }); // qualifies
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board).toHaveLength(1);
+    expect(board[0].total).toBe(5);
+  });
+
+  test('represents each student by their single best qualifying attempt, not every attempt', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 3, totalCount: 5, timeSpent: 30 }); // 60%
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 10 }); // 100% — this one should represent them
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 4, totalCount: 5, timeSpent: 5 });  // 80%
+
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board).toHaveLength(1);
+    expect(board[0].score).toBe(100);
+    expect(board[0].timeSpent).toBe(10);
+  });
+
+  test('excludes teacher/admin attempts from the student-facing board', async () => {
+    const teacher = await createTeacher();
+    const admin = await createAdmin();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 1 });
+    await svc.submitAttempt(admin._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 1 });
+
+    expect(await svc.getQuizLeaderboard(10)).toEqual([]);
+  });
+
+  test('falls back to username when the student has no first/last name set', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent({ firstName: '', lastName: '', username: 'nonameuser' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 5 });
+
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board[0].name).toBe('nonameuser');
+  });
+
+  test('respects the limit parameter', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    for (let i = 0; i < 3; i++) {
+      const s = await createStudent();
+      await svc.submitAttempt(s._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 5 });
+    }
+    expect(await svc.getQuizLeaderboard(2)).toHaveLength(2);
   });
 });

@@ -22,6 +22,15 @@ exports.getPublicLesson = async (req, res) => {
   }
 };
 
+exports.getQuizLeaderboard = async (req, res) => {
+  try {
+    const leaderboard = await vocabularyLessonService.getQuizLeaderboard(10);
+    res.json({ success: true, leaderboard });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 exports.getAttempt = async (req, res) => {
   try {
     // Progress is only meaningful for a lesson the student can actually see.

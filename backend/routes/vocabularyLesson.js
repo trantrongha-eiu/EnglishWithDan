@@ -32,9 +32,13 @@ const adminWriteLimiter = rateLimit({
 });
 
 // ══════════════════════════════════════════════════════
-// PUBLIC (học sinh – cần đăng nhập) — danh sách trước
+// PUBLIC (học sinh – cần đăng nhập) — danh sách trước.
+// "/leaderboard" phải đứng TRƯỚC "/:id" ở cuối file, nếu không sẽ bị
+// "/:id" nuốt mất và coi "leaderboard" là 1 lessonId (cùng lỗi route-
+// ordering như "/admin/import-history" vs "/admin/:id").
 // ══════════════════════════════════════════════════════
 router.get('/', auth, ctrl.listPublicLessons);
+router.get('/leaderboard', auth, ctrl.getQuizLeaderboard);
 
 // ══════════════════════════════════════════════════════
 // ADMIN — Parse / Import (không lưu gì cho tới khi hợp lệ)

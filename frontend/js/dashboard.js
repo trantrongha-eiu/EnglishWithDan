@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,
     // or a plain reload) — same "restore on load" idiom as reading-v2.js's

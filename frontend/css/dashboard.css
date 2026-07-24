@@ -456,6 +456,8 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 }
 .dan-lb-name{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dan-lb-streak{font-size:13px;font-weight:800;color:#f97316;flex-shrink:0;display:flex;align-items:center;gap:3px}
+.dan-lb-quiz-score{font-size:13px;font-weight:800;color:var(--blue);flex-shrink:0;display:flex;align-items:baseline;gap:4px}
+.dan-lb-quiz-time{font-size:11px;font-weight:600;color:var(--text3)}
 @media(max-width:640px){.dan-leaderboard-card{padding:14px 16px}}
 
 .book-action-bar{
@@ -578,6 +580,10 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;background:var(--brand);border-radius:3px;transition:width .4s}
 .progress-text{font-size:12px;color:var(--text2);margin-top:6px;text-align:right;font-weight:600}
+.practice-progress-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.practice-progress-meta .progress-text{margin-top:0}
+.quiz-elapsed-time{font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:5px}
+.quiz-elapsed-time i{color:var(--brand)}
 
 /* Question card */
 .question-card{
@@ -648,6 +654,13 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .feedback-correct{background:#f0fdf4;color:#166534;border:1px solid #86efac}
 .feedback-wrong{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
 .feedback-hint{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+
+.quiz-answer-detail{
+  margin-top:10px;padding:11px 14px;border-radius:var(--radius-sm);
+  background:var(--surface2);border:1px solid var(--border);
+  font-size:13px;color:var(--text);line-height:1.6;
+}
+.quiz-answer-example{margin-top:4px;color:var(--text2);font-style:italic}
 
 .btn-next{
   display:flex;align-items:center;justify-content:center;gap:6px;
@@ -1264,14 +1277,20 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 [data-theme="dark"] .meaning-suggestion.selected{background:rgba(59,130,246,.28)!important;border-color:#60a5fa!important;color:#dbeafe!important}
 
 /* ── Dashboard homepage: 3-column layout ── */
-/* Left = intro + streak mascot, middle = leaderboard, right = feature
-   highlight cards stacked vertically. Collapses to a single column
-   (left, then middle, then right, in source order) below 960px. */
+/* Left = intro + streak mascot, middle = streak leaderboard, right = quiz
+   leaderboard. Collapses to a single column (left, then middle, then
+   right, in source order) below 1180px. */
 .dash-home-grid{display:grid;grid-template-columns:1.2fr 1.2fr 0.85fr;gap:20px;align-items:start}
 .dash-home-col{display:flex;flex-direction:column;gap:16px}
 @media(max-width:1180px){.dash-home-grid{grid-template-columns:1fr}}
 
-/* ── Welcome feature cards (right column) ── */
+/* Feature highlight cards — moved below the mascot/leaderboards grid so
+   those two boards (streak + quiz) stay the visual focus of the home
+   screen; this is a plain responsive multi-column row, not tied to
+   .dash-home-grid's 3-column layout. */
+.welcome-feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
+
+/* ── Welcome feature cards ── */
 .welcome-feat-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   padding:18px 16px;transition:box-shadow .15s,border-color .15s;

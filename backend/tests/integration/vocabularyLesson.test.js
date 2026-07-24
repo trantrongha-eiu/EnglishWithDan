@@ -268,3 +268,29 @@ describe('Analytics endpoints', () => {
     expect((await request(app).get(`/api/vocabulary-lessons/admin/${fakeId}/export.csv`).set('Authorization', `Bearer ${token}`)).status).toBe(404);
   });
 });
+
+describe('GET /leaderboard', () => {
+  test('requires auth, and is not swallowed by "/:id" (route-ordering)', async () => {
+    expect((await request(app).get('/api/vocabulary-lessons/leaderboard')).status).toBe(401);
+
+    const student = await createStudent();
+    const res = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${signTokenFor(student)}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.leaderboard)).toBe(true);
+  });
+
+  test('reflects a real qualifying submission', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const teacherToken = signTokenFor(teacher);
+    const studentToken = signTokenFor(student);
+
+    const importRes = await request(app).post('/api/vocabulary-lessons/admin/import').set('Authorization', `Bearer ${teacherToken}`).send({ text: GOOD_LESSON });
+    const lessonId = importRes.body.lesson._id;
+    await request(app).patch(`/api/vocabulary-lessons/admin/${lessonId}/publish`).set('Authorization', `Bearer ${teacherToken}`).send({ published: true });
+    await request(app).post(`/api/vocabulary-lessons/${lessonId}/attempt`).set('Authorization', `Bearer ${studentToken}`).send({ correctCount: 5, totalCount: 5, timeSpent: 12 });
+
+    const res = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${studentToken}`);
+    expect(res.body.leaderboard.some(r => r.userId === String(student._id) && r.score === 100)).toBe(true);
+  });
+});

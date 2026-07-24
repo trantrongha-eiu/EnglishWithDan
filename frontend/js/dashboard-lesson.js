@@ -33,6 +33,8 @@ const lessonState = {
         rearrangeTokens: null,  // { remaining: [...], picked: [...] } while a rearrange question is in progress
         currentOptions: null,   // the current MCQ-family question's option list, kept here (not re-serialized
         currentAnswer: null,    // into the DOM) so answer checking never round-trips lesson text through HTML/JS source — see answerWordChoice().
+        currentWord: null,      // the current question's full word object — used by showQuizFeedback() to show meaning+example after any answer.
+        timerInterval: null,    // setInterval id for the live elapsed-time display; always cleared via resetQuizState()/startLessonQuiz() before being reassigned.
     },
     lastSession: null,      // { lessonId, score, correct, wrong, total, timeSpentSec, wrongWords } — set right after finishing a quiz, read once by the Results tab
 };
@@ -52,6 +54,42 @@ async function loadClassroomAndTodaysLesson() {
     }
     renderClassroomSidebar();
     await renderTodaysLessonCard();
+}
+
+// Home screen's "Top 10 Quiz điểm cao" card — mirrors loadStreakLeaderboard()
+// in dashboard.js (same row markup classes, RANK_MEDAL, avatar-or-initial
+// pattern) but ranks by quiz score/time instead of streak length.
+async function loadQuizLeaderboard() {
+    const listEl = document.getElementById('quiz-lb-list');
+    if (!listEl) return;
+    try {
+        const res = await fetch(`${API}/vocabulary-lessons/leaderboard`, { headers: authH() });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'load failed');
+        const rows = data.leaderboard || [];
+        if (!rows.length) {
+            listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai làm Quiz đủ điều kiện xếp hạng — hãy là người đầu tiên! ⏱</div>';
+            return;
+        }
+        const myId = window.AuthService?.getUser()?._id;
+        const mm = sec => `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+        listEl.innerHTML = rows.map((r, i) => {
+            const rank = i + 1;
+            const medal = typeof RANK_MEDAL !== 'undefined' ? RANK_MEDAL[rank] : null;
+            const avatar = r.avatar
+                ? `<img class="dan-lb-avatar" src="${escHtml(r.avatar)}" alt="">`
+                : `<span class="dan-lb-avatar-placeholder">${escHtml((r.name || '?')[0].toUpperCase())}</span>`;
+            return `
+                <div class="dan-lb-row${r.userId === myId ? ' is-me' : ''}">
+                    <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
+                    ${avatar}
+                    <span class="dan-lb-name">${escHtml(r.name)}${r.userId === myId ? ' (Bạn)' : ''}</span>
+                    <span class="dan-lb-quiz-score">${r.score}% <span class="dan-lb-quiz-time">· ${mm(r.timeSpent)}</span></span>
+                </div>`;
+        }).join('');
+    } catch {
+        listEl.innerHTML = '<div class="dan-lb-empty">Không tải được bảng xếp hạng</div>';
+    }
 }
 
 function renderClassroomSidebar() {
@@ -146,6 +184,7 @@ function closeLessonView() {
     // server-side) — refresh the card so the student sees updated progress
     // immediately instead of only after a full page reload.
     const doClose = () => {
+        resetQuizState(); // stops the elapsed-time interval if a quiz was abandoned mid-run
         if (typeof goHomeView === 'function') goHomeView();
         renderTodaysLessonCard();
     };
@@ -212,11 +251,22 @@ function renderLearnTab() {
    one random type assigned per word, in shuffled word order.
 ────────────────────────────────────────────── */
 function resetQuizState() {
+    if (lessonState.quiz.timerInterval) clearInterval(lessonState.quiz.timerInterval);
     lessonState.quiz = {
         queue: [], index: 0, correct: 0, wrong: 0, wrongWords: [],
         startTime: null, answered: false, rearrangeTokens: null,
-        currentOptions: null, currentAnswer: null,
+        currentOptions: null, currentAnswer: null, currentWord: null, timerInterval: null,
     };
+}
+
+// Live "⏱ m:ss" display while a quiz is running — driven by startLessonQuiz()'s
+// setInterval, reads the DOM element fresh every tick so it survives
+// renderQuizQuestion() rebuilding the whole question card each question.
+function updateQuizTimerDisplay() {
+    const el = document.getElementById('quizElapsedTime');
+    if (!el || !lessonState.quiz.startTime) return;
+    const sec = Math.floor((Date.now() - lessonState.quiz.startTime) / 1000);
+    el.textContent = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
 }
 
 // Minimum options a Multiple-Choice-family question must have (1 correct +
@@ -284,6 +334,8 @@ function startLessonQuiz() {
     lessonState.quiz.wrong = 0;
     lessonState.quiz.wrongWords = [];
     lessonState.quiz.startTime = Date.now();
+    if (lessonState.quiz.timerInterval) clearInterval(lessonState.quiz.timerInterval); // e.g. "Làm lại Quiz" without leaving the lesson
+    lessonState.quiz.timerInterval = setInterval(updateQuizTimerDisplay, 1000);
     renderQuizQuestion();
 }
 
@@ -295,12 +347,17 @@ function renderQuizQuestion() {
     const words = lessonState.currentLesson.words;
     const container = document.getElementById('lesson-tab-quiz');
 
+    lessonState.quiz.currentWord = q.word;
+
     const progressPct = Math.round((index / queue.length) * 100);
     const shell = (bodyHtml) => `
         <div class="practice-container">
             <div class="practice-progress">
                 <div class="progress-bar"><div class="progress-fill" style="width:${progressPct}%"></div></div>
-                <div class="progress-text">${index + 1}/${queue.length}</div>
+                <div class="practice-progress-meta">
+                    <span class="quiz-elapsed-time" id="quizElapsedTime"><i class="fas fa-stopwatch"></i> 0:00</span>
+                    <span class="progress-text">${index + 1}/${queue.length}</span>
+                </div>
             </div>
             <div class="question-card">${bodyHtml}</div>
         </div>`;
@@ -316,6 +373,7 @@ function renderQuizQuestion() {
             <div class="answer-options" id="qOptions">
                 ${options.map((o, i) => `<button class="answer-option" data-idx="${i}">${escHtml(o)}</button>`).join('')}
             </div>
+            <div id="qFeedback"></div>
             <button class="btn-next" id="qBtnNext" style="display:none" onclick="nextQuizQuestion()">Next <i class="fas fa-arrow-right"></i></button>
         `);
         bindAnswerOptionListeners();
@@ -329,6 +387,7 @@ function renderQuizQuestion() {
             <div class="answer-options" id="qOptions">
                 ${options.map((o, i) => `<button class="answer-option" data-idx="${i}">${escHtml(o)}</button>`).join('')}
             </div>
+            <div id="qFeedback"></div>
             <button class="btn-next" id="qBtnNext" style="display:none" onclick="nextQuizQuestion()">Next <i class="fas fa-arrow-right"></i></button>
         `);
         bindAnswerOptionListeners();
@@ -459,7 +518,7 @@ function bindAnswerOptionListeners() {
 function answerWordChoice(btn) {
     if (lessonState.quiz.answered) return;
     lessonState.quiz.answered = true;
-    const { currentOptions, currentAnswer } = lessonState.quiz;
+    const { currentOptions, currentAnswer, currentWord } = lessonState.quiz;
     const chosen = currentOptions[Number(btn.dataset.idx)];
     const correct = chosen === currentAnswer;
     document.querySelectorAll('#qOptions .answer-option').forEach(b => {
@@ -467,6 +526,7 @@ function answerWordChoice(btn) {
         if (currentOptions[Number(b.dataset.idx)] === currentAnswer) b.classList.add('correct');
         else if (b === btn) b.classList.add('wrong');
     });
+    showQuizFeedback(correct, currentWord, currentAnswer);
     recordAnswer(correct);
     document.getElementById('qBtnNext').style.display = 'flex';
 }
@@ -480,7 +540,7 @@ function checkFillQuiz() {
     const correct = val.toLowerCase() === q.word.word.toLowerCase();
     lessonState.quiz.answered = true;
     if (input) input.disabled = true;
-    showQuizFeedback(correct, q.word.word);
+    showQuizFeedback(correct, q.word, q.word.word);
     recordAnswer(correct);
     document.getElementById('qBtnNext').style.display = 'flex';
 }
@@ -494,17 +554,26 @@ function checkListenQuiz() {
     const correct = val.toLowerCase() === q.word.word.toLowerCase();
     lessonState.quiz.answered = true;
     if (input) input.disabled = true;
-    showQuizFeedback(correct, q.word.word);
+    showQuizFeedback(correct, q.word, q.word.word);
     recordAnswer(correct);
     document.getElementById('qBtnNext').style.display = 'flex';
 }
 
-function showQuizFeedback(correct, answer) {
+// Always shows meaning + example alongside the correct/wrong verdict — a
+// student should see the reinforcement regardless of question type or
+// whether they got it right, not just a bare "correct/wrong" verdict.
+function showQuizFeedback(correct, word, answerText) {
     const el = document.getElementById('qFeedback');
     if (!el) return;
-    el.innerHTML = correct
+    const verdict = correct
         ? `<div class="feedback-correct"><i class="fas fa-check-circle"></i> Chính xác!</div>`
-        : `<div class="feedback-wrong"><i class="fas fa-times-circle"></i> Chưa đúng — đáp án: <b>${escHtml(answer)}</b></div>`;
+        : `<div class="feedback-wrong"><i class="fas fa-times-circle"></i> Chưa đúng — đáp án: <b>${escHtml(answerText)}</b></div>`;
+    const detail = word ? `
+        <div class="quiz-answer-detail">
+            <div><b>Nghĩa:</b> ${escHtml(word.meaning)}</div>
+            ${word.example ? `<div class="quiz-answer-example">"${escHtml(word.example)}"</div>` : ''}
+        </div>` : '';
+    el.innerHTML = verdict + detail;
 }
 
 function renderRearrangeTiles() {
@@ -535,10 +604,11 @@ function unpickRearrangeTile(i) {
 
 function checkRearrangeQuiz() {
     if (lessonState.quiz.answered) return;
+    const q = lessonState.quiz.queue[lessonState.quiz.index];
     const rt = lessonState.quiz.rearrangeTokens;
     const correct = rt.picked.join(' ') === rt.original.join(' ');
     lessonState.quiz.answered = true;
-    showQuizFeedback(correct, rt.original.join(' '));
+    showQuizFeedback(correct, q.word, rt.original.join(' '));
     recordAnswer(correct);
     const nextBtn = document.getElementById('qBtnNext');
     if (nextBtn) nextBtn.style.display = 'flex';
@@ -546,8 +616,14 @@ function checkRearrangeQuiz() {
 
 function recordAnswer(correct) {
     const q = lessonState.quiz.queue[lessonState.quiz.index];
-    if (correct) lessonState.quiz.correct++;
-    else { lessonState.quiz.wrong++; lessonState.quiz.wrongWords.push(q.word); }
+    if (correct) {
+        lessonState.quiz.correct++;
+        if (typeof playCorrectSound === 'function') playCorrectSound();
+    } else {
+        lessonState.quiz.wrong++;
+        lessonState.quiz.wrongWords.push(q.word);
+        if (typeof playWrongSound === 'function') playWrongSound();
+    }
 }
 
 function nextQuizQuestion() {
@@ -560,6 +636,7 @@ function nextQuizQuestion() {
 }
 
 async function finishLessonQuiz() {
+    if (lessonState.quiz.timerInterval) { clearInterval(lessonState.quiz.timerInterval); lessonState.quiz.timerInterval = null; }
     const q = lessonState.quiz;
     const total = q.queue.length;
     const timeSpentSec = Math.max(1, Math.round((Date.now() - q.startTime) / 1000));
