@@ -129,15 +129,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* Classroom section trong sidebar (Vocabulary Lessons giáo viên giao) */
 .classroom-section{padding:12px 18px 14px}
 .classroom-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
-.classroom-item{
-  display:flex;align-items:center;gap:8px;justify-content:space-between;
-  padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;
-  font-size:13px;font-weight:500;color:var(--text2);
-  border-left:3px solid transparent;transition:background .15s,color .15s;
-}
-.classroom-item:hover{background:var(--surface2);color:var(--text)}
-.classroom-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
-.classroom-item-title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .classroom-item-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(167,139,250,.15);padding:2px 7px;border-radius:10px;flex-shrink:0}
 .classroom-empty{padding:8px 10px;font-size:12px;color:var(--text3)}
 
@@ -643,6 +634,8 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   transition:border-color .15s;
 }
 .text-input:focus,.fb-input:focus,.listen-input:focus,.trans-input:focus{border-color:var(--blue)}
+.fb-meaning-hint{margin-top:8px;font-size:13px;color:var(--text2);font-style:italic}
+.fb-meaning-hint i{color:#f59e0b;margin-right:4px;font-style:normal}
 .fb-input-row{display:flex;gap:8px;margin-top:12px}
 .btn-check{background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
 .btn-check:hover{background:#2c78f0}

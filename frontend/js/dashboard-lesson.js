@@ -96,16 +96,7 @@ async function loadQuizLeaderboard() {
 function renderClassroomSidebar() {
     const list = document.getElementById('classroom-list-sidebar');
     if (!list) return;
-    if (!lessonState.publicLessons.length) {
-        list.innerHTML = '<div class="classroom-empty">Chưa có bài học nào</div>';
-        return;
-    }
-    list.innerHTML = lessonState.publicLessons.map(l => `
-        <div class="classroom-item" id="ci-${l._id}" onclick="openLesson('${l._id}')">
-            <span class="classroom-item-title">${escHtml(l.title)}</span>
-            <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
-        </div>
-    `).join('');
+    buildClassroomPicker(list, {});
 }
 
 // Mirrors renderClassroomSidebar() into the mobile bottom sheet's
@@ -116,16 +107,56 @@ function renderClassroomSidebar() {
 function syncSheetClassroom() {
     const list = document.getElementById('sheet-classroom-list');
     if (!list) return;
-    if (!lessonState.publicLessons.length) {
-        list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📭</div><div style="font-size:13px">Chưa có bài học nào</div></div>';
-        return;
-    }
-    list.innerHTML = lessonState.publicLessons.map(l => `
-        <div class="classroom-item" onclick="openLesson('${l._id}');closeSheet()">
-            <span class="classroom-item-title">${escHtml(l.title)}</span>
-            <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
+    buildClassroomPicker(list, { heading: 'Chọn bài Quiz', closeSheetOnPick: true, mobileInput: true });
+}
+
+// Renders the Classroom section as a collapsed picker (input + dropdown
+// list) instead of an always-expanded stack of lesson cards — same
+// interaction/visual pattern as the "Học Paraphrase" Unit picker right
+// above it in the sidebar: click the 📖 icon, a list drops down, pick a
+// lesson. Rebuilds the container's markup from scratch each call (called
+// once per page load from loadClassroomAndTodaysLesson()), so no stale
+// listener buildup across re-renders.
+function buildClassroomPicker(container, opts) {
+    const lessons = lessonState.publicLessons;
+    const inputClass = 'unit-picker-input' + (opts.mobileInput ? ' up-mob' : '');
+    container.innerHTML = `
+        ${opts.heading ? `<h4><i class="fas fa-book"></i> ${escHtml(opts.heading)}</h4>` : ''}
+        <div class="unit-picker">
+            <div style="position:relative">
+                <input class="${inputClass}" placeholder="-- Chọn bài Quiz --" autocomplete="off" readonly>
+                <i class="fas fa-book unit-picker-caret" style="font-style:normal"></i>
+            </div>
+            <div class="unit-picker-dd"></div>
         </div>
-    `).join('');
+    `;
+    const inp = container.querySelector('.unit-picker-input');
+    const dd = container.querySelector('.unit-picker-dd');
+    let isOpen = false;
+    function render() {
+        dd.innerHTML = !lessons.length
+            ? '<div class="up-empty">Chưa có bài học nào</div>'
+            : lessons.map(l => `
+                <div class="up-item" data-id="${l._id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(l.title)}</span>
+                    <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
+                </div>
+            `).join('');
+    }
+    function open() { render(); dd.style.display = 'block'; isOpen = true; }
+    function close() { dd.style.display = 'none'; isOpen = false; }
+    inp.addEventListener('click', () => (isOpen ? close() : open()));
+    dd.addEventListener('mousedown', e => {
+        const item = e.target.closest('.up-item');
+        if (!item) return;
+        e.preventDefault();
+        close();
+        openLesson(item.dataset.id);
+        if (opts.closeSheetOnPick && window.closeSheet) closeSheet();
+    });
+    document.addEventListener('mousedown', e => {
+        if (isOpen && !container.contains(e.target)) close();
+    });
 }
 
 async function renderTodaysLessonCard() {
@@ -178,9 +209,6 @@ function openLesson(lessonId, push = true) {
         const fab = document.getElementById('mobFab');
         if (fab) fab.style.display = 'none';
         if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
-
-        document.querySelectorAll('.classroom-item').forEach(el => el.classList.remove('active'));
-        document.getElementById(`ci-${lessonId}`)?.classList.add('active');
 
         document.getElementById('lesson-title').textContent = 'Đang tải...';
         try {
@@ -287,6 +315,7 @@ function resetQuizState() {
         queue: [], index: 0, correct: 0, wrong: 0, wrongWords: [],
         startTime: null, answered: false, rearrangeTokens: null,
         currentOptions: null, currentAnswer: null, currentWord: null, timerInterval: null,
+        submitted: false,   // guards finishLessonQuiz() against double-submit (rapid double-tap on the last question's Next button)
     };
 }
 
@@ -323,12 +352,24 @@ function eligibleTypesFor(word, allWords) {
     return types;
 }
 
+// mcq ("Multiple Choice — chọn từ đúng") is the format students practice most
+// often elsewhere on the site, so it's weighted to show up in ~60% of
+// questions rather than an even 1/N split across all eligible types; the
+// remaining 40% is split evenly across whichever other types are eligible.
+const MCQ_TARGET_WEIGHT = 0.6;
+
+function pickWeightedType(eligible) {
+    if (eligible.includes('mcq') && Math.random() < MCQ_TARGET_WEIGHT) return 'mcq';
+    const rest = eligible.filter(t => t !== 'mcq');
+    return rest[Math.floor(Math.random() * rest.length)];
+}
+
 function buildQuizQueue(words) {
     const shuffled = [...words];
     shuffleArray(shuffled);
     return shuffled.map(word => {
         const eligible = eligibleTypesFor(word, words);
-        return { type: eligible[Math.floor(Math.random() * eligible.length)], word };
+        return { type: pickWeightedType(eligible), word };
     });
 }
 
@@ -423,10 +464,11 @@ function renderQuizQuestion() {
         `);
         bindAnswerOptionListeners();
     } else if (q.type === 'fill') {
-        const { sentence } = buildFillBlank(q.word);
+        const { sentence, meaning } = buildFillBlank(q.word);
         container.innerHTML = shell(`
             <div class="question-number">Fill in the Blank</div>
             <div class="question-text">${escHtml(sentence)}</div>
+            <div class="fb-meaning-hint"><i class="fas fa-lightbulb"></i> Gợi ý (nghĩa): ${escHtml(meaning)}</div>
             <div class="fb-input-row">
                 <input class="text-input" id="qFillInput" placeholder="Nhập từ còn thiếu..." onkeypress="if(event.key==='Enter')checkFillQuiz()">
                 <button class="btn-check" onclick="checkFillQuiz()">Check</button>
@@ -525,10 +567,10 @@ function buildTranslateEnViQuestion(word, allWords) {
 
 function buildFillBlank(word) {
     const re = new RegExp(`\\b${word.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-    if (re.test(word.example)) {
-        return { sentence: word.example.replace(re, '_____') };
-    }
-    return { sentence: `${word.definition} → _____` };
+    const sentence = re.test(word.example)
+        ? word.example.replace(re, '_____')
+        : `${word.definition} → _____`;
+    return { sentence, meaning: word.meaning };
 }
 
 /* ── Answer handlers ── */
@@ -667,6 +709,8 @@ function nextQuizQuestion() {
 }
 
 async function finishLessonQuiz() {
+    if (lessonState.quiz.submitted) return; // rapid double-tap on the last question's Next button — only submit once
+    lessonState.quiz.submitted = true;
     if (lessonState.quiz.timerInterval) { clearInterval(lessonState.quiz.timerInterval); lessonState.quiz.timerInterval = null; }
     const q = lessonState.quiz;
     const total = q.queue.length;
