@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,
     // or a plain reload) — same "restore on load" idiom as reading-v2.js's
@@ -157,11 +157,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const bookIdParam = params.get('bookId');
     const unitParam = params.get('unit');
     const modeParam = params.get('mode');
-    history.replaceState({ view: viewParam, bookId: bookIdParam, unit: unitParam, mode: modeParam }, '', location.href);
+    const lessonIdParam = params.get('lessonId');
+    history.replaceState({ view: viewParam, bookId: bookIdParam, unit: unitParam, mode: modeParam, lessonId: lessonIdParam }, '', location.href);
     if (viewParam === 'book' && bookIdParam) {
         openBook(bookIdParam, false);
     } else if (viewParam === 'unit' && unitParam) {
         loadUnit(unitParam, false, modeParam);
+    } else if (viewParam === 'lesson' && lessonIdParam) {
+        openLesson(lessonIdParam, false);
     }
 });
 
@@ -175,6 +178,7 @@ function goHomeView(push = true) {
         currentBookId = null;
         document.querySelectorAll('.book-item, .sheet-book-item').forEach(el => el.classList.remove('active'));
         document.getElementById('view-unit').style.display = 'none';
+        document.getElementById('view-lesson').style.display = 'none';
         document.getElementById('view-mybook').style.display = 'flex';
         document.getElementById('book-welcome').style.display = 'flex';
         document.getElementById('book-content').style.display = 'none';
@@ -190,6 +194,8 @@ window.addEventListener('popstate', (e) => {
         openBook(st.bookId, false);
     } else if (st.view === 'unit' && st.unit) {
         loadUnit(st.unit, false, st.mode);
+    } else if (st.view === 'lesson' && st.lessonId) {
+        openLesson(st.lessonId, false);
     } else {
         goHomeView(false);
     }
@@ -648,9 +654,10 @@ function syncViewUrl(mode, st) {
         url = location.pathname;
     } else {
         const params = new URLSearchParams({ view: st.view });
-        if (st.bookId) params.set('bookId', st.bookId);
-        if (st.unit)   params.set('unit', st.unit);
-        if (st.mode)   params.set('mode', st.mode);
+        if (st.bookId)   params.set('bookId', st.bookId);
+        if (st.unit)     params.set('unit', st.unit);
+        if (st.mode)     params.set('mode', st.mode);
+        if (st.lessonId) params.set('lessonId', st.lessonId);
         url = `?${params}`;
     }
     if (mode === 'push') history.pushState(st, '', url);
@@ -678,6 +685,7 @@ function openBook(bookId, push = true) {
         const content = document.getElementById('book-content');
         document.getElementById('view-mybook').style.display  = 'flex';
         document.getElementById('view-unit').style.display    = 'none';
+        document.getElementById('view-lesson').style.display  = 'none';
         document.getElementById('book-welcome').style.display = 'none';
         content.style.display = 'flex';
         if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
@@ -1566,6 +1574,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
             if (sel) sel.value = String(newUnit.unitNumber);
             document.getElementById('unitTitle').textContent     = `Unit ${currentUnit.unitNumber}: ${currentUnit.title}`;
             document.getElementById('view-mybook').style.display = 'none';
+            document.getElementById('view-lesson').style.display = 'none';
             document.getElementById('view-unit').style.display   = 'flex';
             if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
             // Push (or replace, when restoring) THIS unit's own entry

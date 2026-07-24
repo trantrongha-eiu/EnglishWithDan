@@ -15,6 +15,8 @@ const TITLES = {
   '/writing-tests':          'Đề Writing',
   '/speaking':               'Speaking',
   '/vocabulary':             'Từ vựng (Units)',
+  '/vocabulary-lessons':        'Vocabulary Lessons',
+  '/vocabulary-lessons/import': 'Import Lesson',
   '/writing-practice':       'Luyện viết (Writing Practice)',
   '/task1-exercises':        'Task 1 Grammar Exercises',
   '/task2-exercises':        'Task 2 Writing Exercises',

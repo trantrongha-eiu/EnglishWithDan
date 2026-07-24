@@ -92,6 +92,7 @@ app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/user',     require('./routes/user'));
 app.use('/api/vocab',    require('./routes/vocab'));
 app.use('/api/vocabbook',require('./routes/vocabBook'));
+app.use('/api/vocabulary-lessons', require('./routes/vocabularyLesson'));
 app.use('/api/reading',  require('./routes/reading'));
 app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/listening',require('./routes/listening'));

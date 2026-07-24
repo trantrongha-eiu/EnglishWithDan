@@ -126,6 +126,61 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .unit-section{padding:12px 18px 0}
 .unit-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
 
+/* Classroom section trong sidebar (Vocabulary Lessons giáo viên giao) */
+.classroom-section{padding:12px 18px 14px}
+.classroom-section h4{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
+.classroom-item{
+  display:flex;align-items:center;gap:8px;justify-content:space-between;
+  padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--text2);
+  border-left:3px solid transparent;transition:background .15s,color .15s;
+}
+.classroom-item:hover{background:var(--surface2);color:var(--text)}
+.classroom-item.active{background:#fef2f2;color:var(--brand);border-left-color:var(--brand);font-weight:700}
+.classroom-item-title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.classroom-item-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(167,139,250,.15);padding:2px 7px;border-radius:10px;flex-shrink:0}
+.classroom-empty{padding:8px 10px;font-size:12px;color:var(--text3)}
+
+/* Today's Lesson card (homepage) */
+.todays-lesson-card{
+  display:flex;align-items:center;gap:18px;
+  background:linear-gradient(135deg,#eff6ff 0%,#f5f0ff 100%);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 22px;margin-bottom:20px;
+}
+[data-theme="dark"] .todays-lesson-card{background:linear-gradient(135deg,#1a2233 0%,#241a33 100%)}
+.todays-lesson-icon{font-size:32px;color:var(--blue);flex-shrink:0}
+.todays-lesson-info{flex:1;min-width:0}
+.todays-lesson-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+.todays-lesson-title{font-size:16px;font-weight:800;color:var(--text);margin:2px 0}
+.todays-lesson-meta{font-size:12px;color:var(--text2);margin-bottom:8px}
+.todays-lesson-progress-row{display:flex;align-items:center;gap:10px}
+.todays-lesson-progress-text{font-size:12px;font-weight:700;color:var(--text2);flex-shrink:0}
+
+/* Rearrange quiz type — click letters/words in order to rebuild the answer */
+.rearrange-slots{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:10px;border:1.5px dashed var(--border2);border-radius:var(--radius-sm);margin-bottom:14px}
+.rearrange-slot-tile{
+  background:var(--brand-light,#fef2f2);border:1px solid var(--brand);color:var(--brand);
+  padding:7px 12px;border-radius:var(--radius-sm);font-weight:700;font-size:14px;cursor:pointer;
+}
+.rearrange-tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.rearrange-tile{
+  background:var(--surface);border:1.5px solid var(--border);color:var(--text);
+  padding:9px 14px;border-radius:var(--radius-sm);font-weight:700;font-size:15px;cursor:pointer;
+  font-family:inherit;transition:all .15s;
+}
+.rearrange-tile:hover{border-color:var(--blue);color:var(--blue)}
+.rearrange-tile:disabled{opacity:.35;cursor:not-allowed}
+
+/* Results tab */
+.lesson-results-stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.lesson-results-stat{
+  flex:1;min-width:110px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;text-align:center;
+}
+.lesson-results-stat-value{font-size:24px;font-weight:800;color:var(--text)}
+.lesson-results-stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
 /* ── Custom unit picker ── */
 .unit-picker{position:relative;width:100%;margin-bottom:0}
 .unit-picker-input{
