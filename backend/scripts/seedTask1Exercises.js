@@ -1355,6 +1355,121 @@ const sampleExercises = [
     explanation: 'Cả "illustrates" và "depicts" đều là thay thế học thuật tốt cho "shows".',
     orderIndex: 83, xpReward: 5
   },
+
+  // ─── MODULE 3: PARAPHRASE — Viết phần mở bài (Introduction) ─────────
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Câu mở bài (Introduction) trong IELTS Task 1 KHÔNG được làm gì?',
+    questionEn: 'What should a Task 1 Introduction NEVER do?',
+    options: [
+      'Chép nguyên văn đề bài (copy the question word-for-word)',
+      'Diễn đạt lại đề bài bằng từ ngữ của riêng mình (paraphrase)',
+      'Nêu loại biểu đồ (chart type)',
+      'Giữ lại mốc thời gian nếu đề bài có'
+    ],
+    correctOptionIndex: 0,
+    grammarPoint: 'Introduction = paraphrase đề bài bằng từ ngữ riêng, KHÔNG copy nguyên văn',
+    explanation: 'Chép nguyên văn đề bài sẽ bị giám khảo trừ điểm Task Achievement. Introduction luôn phải là câu paraphrase.',
+    orderIndex: 102, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'translation',
+    instruction: 'Viết câu mở bài (paraphrase) cho đề bài Task 1 sau:',
+    questionEn: 'ORIGINAL: "The chart shows the participation by young people in sports by gender in Great Britain in 1999."',
+    sampleAnswers: [
+      'The bar chart depicts how many youngsters participated in physical activities by two different sexes in Great Britain in 1999.',
+      'The bar chart illustrates the number of young people who took part in sports, broken down by gender, in the UK in 1999.',
+      'The bar chart compares young people of two different sexes in terms of their participation in sports in Great Britain in 1999.'
+    ],
+    primaryAnswer: 'The bar chart depicts how many youngsters participated in physical activities by two different sexes in Great Britain in 1999.',
+    grammarPoint: 'participation (n) → participated in/engaged in/took part in ; by gender → by men and women/by 2 different sexes',
+    explanation: 'Đổi danh từ "participation" → động từ "participated in" (Cách 2 – noun→verb). "by gender" → "by two different sexes".',
+    hints: ['participated in', 'physical activities', 'by two different sexes', 'in 1999'],
+    orderIndex: 103, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Câu nào là cách PARAPHRASE TỐT NHẤT cho câu gốc?',
+    questionEn: 'ORIGINAL: "The chart shows the participation by young people in sports by gender in Great Britain in 1999."',
+    options: [
+      'The chart shows the participation by young people in sports by gender in Great Britain in 1999.',
+      'The bar chart illustrates how many young people participated in sports by gender in Great Britain in 1999.',
+      'The chart is about sports in Britain.',
+      'Young people liked sports a lot in 1999 in Great Britain, which is shown by the chart clearly.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: 'Paraphrase tốt: đổi từ khóa + giữ đủ ý (chart type, subject, breakdown, place, time)',
+    explanation: 'Đáp án 1: copy nguyên văn. Đáp án 3: quá ngắn, thiếu thông tin. Đáp án 4: informal, dài dòng. Đáp án 2 đúng.',
+    orderIndex: 104, xpReward: 8
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'translation',
+    instruction: 'Viết câu mở bài (paraphrase) cho đề bài Task 1 sau (2 biểu đồ tròn):',
+    questionEn: 'ORIGINAL: "The two pie charts below show changes in world population by region between 1900 and 2000."',
+    sampleAnswers: [
+      'The two pie charts illustrate alterations in the global population by region over a 100-year period, from 1900 to 2000.',
+      'The two pie charts compare five different regions in terms of their share of the world population in 1900 and 2000.',
+      'The two pie charts give information about how the distribution of the world population by region changed between 1900 and 2000.'
+    ],
+    primaryAnswer: 'The two pie charts illustrate alterations in the global population by region over a 100-year period, from 1900 to 2000.',
+    grammarPoint: 'changes (n) → alterations ; between...and... → over a 100-year period, from...to... ; by region → by different regions/areas',
+    explanation: '"changes" → "alterations" (đồng nghĩa). "between 1900 and 2000" → "over a 100-year period, from 1900 to 2000" (thêm khoảng thời gian).',
+    hints: ['two pie charts', 'illustrate/compare', 'alterations', 'by region', 'from 1900 to 2000'],
+    orderIndex: 105, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'elementary', type: 'fill_blank',
+    instruction: 'Điền từ đồng nghĩa phù hợp để paraphrase từ khóa "proportion" (dữ liệu %) trong câu mở bài:',
+    sentenceWithBlanks: 'The bar chart illustrates the ___ of British teenagers who owned a smartphone in 2015.',
+    blanksCount: 1,
+    sampleAnswers: ['percentage', 'rate'],
+    primaryAnswer: 'percentage',
+    grammarPoint: 'proportion → percentage/rate (khi paraphrase từ khóa số liệu %)',
+    explanation: '"proportion" (tỷ lệ) có thể paraphrase bằng "percentage" hoặc "rate" khi đề bài dùng số liệu %.',
+    hints: ['percentage', 'rate'],
+    orderIndex: 106, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'fill_blank',
+    instruction: 'Điền từ để hoàn thành cấu trúc liệt kê "namely" trong câu mở bài:',
+    sentenceWithBlanks: 'The bar chart compares three different areas, ___ Agriculture, Manufacturing, and Business and Financial Services.',
+    blanksCount: 1,
+    sampleAnswers: ['namely'],
+    primaryAnswer: 'namely',
+    grammarPoint: '"namely + A, B, and C" = liệt kê cụ thể — rất hữu ích khi paraphrase Introduction Task 1',
+    explanation: '"namely" (cụ thể là) dùng để liệt kê các đối tượng ngay sau khi nhắc đến số lượng ("three different areas").',
+    hints: ['namely'],
+    orderIndex: 107, xpReward: 5
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'translation',
+    instruction: 'Viết lại câu mở bài sau bằng CÁCH 3 (cấu trúc "compare(s)...in terms of"):',
+    questionEn: 'ORIGINAL: "The chart shows the average number of commuters travelling each day by car, bus or train in the UK between 1970 and 2000."',
+    sampleAnswers: [
+      'The chart compares three different means of transport in the UK in terms of the average number of daily commuters between 1970 and 2000.',
+      'The chart compares car, bus and train in terms of how many people commuted by each one every day in the UK from 1970 to 2000.'
+    ],
+    primaryAnswer: 'The chart compares three different means of transport in the UK in terms of the average number of daily commuters between 1970 and 2000.',
+    grammarPoint: 'Cách 3: compare(s) + [các đối tượng] + in terms of + [khía cạnh so sánh]',
+    explanation: '"in terms of" = về mặt/xét theo khía cạnh — dùng khi biểu đồ so sánh nhiều đối tượng dựa trên 1 tiêu chí.',
+    hints: ['compares', 'three different means of transport', 'in terms of', 'daily commuters'],
+    orderIndex: 108, xpReward: 15
+  },
+  {
+    skillType: 'paraphrase', module: 3, level: 'beginner', type: 'multiple_choice',
+    instruction: 'Chọn cách viết lại ĐÚNG dùng cấu trúc "how much" (danh từ không đếm được):',
+    questionEn: 'ORIGINAL: "The chart illustrates the amount of electricity produced from three sources in 2010."',
+    options: [
+      'The chart illustrates the amount of electricity produced from three sources in 2010.',
+      'The chart illustrates how much electricity was produced from three sources in 2010.',
+      'The chart illustrates how many electricity was produced from three sources in 2010.',
+      'The chart shows electricity in 2010.'
+    ],
+    correctOptionIndex: 1,
+    grammarPoint: '"the amount of" → "how much + S + V" (danh từ không đếm được, khác với "how many" cho danh từ đếm được)',
+    explanation: '"electricity" là danh từ không đếm được → dùng "how much", KHÔNG dùng "how many".',
+    orderIndex: 109, xpReward: 8
+  },
   {
     skillType: 'data_description', module: 1, level: 'intermediate', type: 'translation',
     instruction: 'Dịch câu sau mô tả bảng số liệu (table) với nhiều dữ liệu:',

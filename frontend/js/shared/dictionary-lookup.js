@@ -69,9 +69,18 @@
   // #words-tbody (dashboard.js) renders a row-select checkbox in every row.
   var TEXT_INPUT_TYPES = { text: 1, search: 1, url: 1, tel: 1, password: 1 };
 
+  // Quiz answer/tile buttons across the site (Notebook MC+Mixed, Vocabulary
+  // Lesson mcq/translate/rearrange) render each choice as a <button> —
+  // Chromium never populates window.getSelection() from a double-click
+  // inside a <button> (unlike the <label>-based options Reading/Listening
+  // use, where native word-selection works fine), so without this special
+  // case double-click lookup silently did nothing on every quiz answer.
+  var ANSWER_BUTTON_SELECTOR = '.answer-option, .rearrange-tile, .rearrange-slot-tile';
+
   function _extractDoubleClickedWord(e) {
     var target = e.target;
     var raw = '';
+    var answerBtn = target && target.closest ? target.closest(ANSWER_BUTTON_SELECTOR) : null;
     if (target && target.tagName === 'TEXTAREA') {
       var start = target.selectionStart, end = target.selectionEnd;
       if (start == null || end == null || start === end) return '';
@@ -80,6 +89,8 @@
       var start2 = target.selectionStart, end2 = target.selectionEnd;
       if (start2 == null || end2 == null || start2 === end2) return '';
       raw = target.value.substring(start2, end2);
+    } else if (answerBtn) {
+      raw = answerBtn.textContent || '';
     } else {
       var sel = window.getSelection();
       // Double-clicking a non-text element (e.g. the <img> chart in a Task 1

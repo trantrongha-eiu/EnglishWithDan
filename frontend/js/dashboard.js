@@ -2045,13 +2045,14 @@ function showMixedQuestion() {
           </div>`;
         setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
     }
+    setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz');
 }
 
 function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showMixedQuestion(); }
 
 function checkMixedMC(btn, selected, correct) {
     if (answered) return; answered = true;
-    document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.disabled = true);
+    document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.classList.add('opt-locked'));
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
     } else {
@@ -2133,6 +2134,7 @@ function showMultipleChoiceQuestion() {
         `<button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`
     ).join('');
     document.getElementById('mcBtnNext').style.display = 'none';
+    setupDictionaryDouble('multipleChoiceMode', 'vocab-quiz');
 }
 function generateOptions(cw) {
     const opts  = [cw.meaning];
@@ -2147,7 +2149,10 @@ function generateOptions(cw) {
 }
 function checkMultipleChoice(btn, selected, correct) {
     if (answered) return; answered = true;
-    document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.disabled = true);
+    // .opt-locked (class, not the native `disabled` attribute) — disabling
+    // for real would stop the button from ever firing dblclick again,
+    // breaking double-click word lookup on the option just answered.
+    document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.classList.add('opt-locked'));
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
     } else {
@@ -2297,6 +2302,7 @@ function showListeningQuestion() {
     document.getElementById('listenBtnNext').style.display = 'none';
     // FIX: bỏ auto-play speakWord() — người dùng tự bấm nút "Phát Âm Thanh"
     // Thiết bị Android không Google TTS sẽ crash/im lặng nếu auto-play
+    setupDictionaryDouble('listeningMode', 'vocab-quiz');
 }
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
@@ -2531,7 +2537,7 @@ document.addEventListener('keydown', e => {
     if (['1','2','3','4'].includes(e.key)) {
         if ((currentMode === 'multipleChoice' || currentMode === 'mixed') && !answered) {
             const opts = document.querySelectorAll(
-                '#mcAnswerOptions .answer-option:not(:disabled), #mixAnswerOptions .answer-option:not(:disabled)'
+                '#mcAnswerOptions .answer-option:not(.opt-locked), #mixAnswerOptions .answer-option:not(.opt-locked)'
             );
             const idx = parseInt(e.key) - 1;
             if (opts[idx]) { opts[idx].click(); }

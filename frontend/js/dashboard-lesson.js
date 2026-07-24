@@ -260,6 +260,16 @@ function isQuizInProgress() {
 }
 
 function switchLessonTab(tab) {
+    // A mid-run quiz must not be escapable into the Learn tab (which shows
+    // every word's meaning/example) or Results — that's a direct answer-key
+    // peek. Only switching to 'quiz' itself is ever allowed while in progress;
+    // leaving the lesson entirely still goes through openLesson()/
+    // closeLessonView()'s own confirm2() abandon-quiz guard, which is a
+    // separate, explicit "give up" action rather than a free peek.
+    if (tab !== 'quiz' && isQuizInProgress()) {
+        if (typeof toast === 'function') toast('Hoàn thành Quiz trước khi xem tab khác!', 'error');
+        return;
+    }
     document.querySelectorAll('#lesson-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     ['learn', 'quiz', 'results'].forEach(t => {
         const el = document.getElementById(`lesson-tab-${t}`);
@@ -302,6 +312,7 @@ function renderLearnTab() {
     grid.querySelectorAll('.btn-save-to-book[data-word-idx]').forEach(btn => {
         btn.addEventListener('click', () => speakWord(words[Number(btn.dataset.wordIdx)]?.word));
     });
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-learn-grid', 'vocab-lesson-learn');
 }
 
 /* ──────────────────────────────────────────────
@@ -507,6 +518,7 @@ function renderQuizQuestion() {
         `);
         renderRearrangeTiles();
     }
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-tab-quiz', 'vocab-lesson-quiz');
 }
 
 /* ── Question generators ── */
@@ -595,7 +607,12 @@ function answerWordChoice(btn) {
     const chosen = currentOptions[Number(btn.dataset.idx)];
     const correct = chosen === currentAnswer;
     document.querySelectorAll('#qOptions .answer-option').forEach(b => {
-        b.disabled = true;
+        // opt-locked (a class, not the native `disabled` attribute) — a real
+        // `disabled` button stops firing ALL future mouse events, including
+        // the dblclick a student uses to look up a word in the option they
+        // just answered. lessonState.quiz.answered already blocks re-answering,
+        // so disabling isn't needed for correctness, only to stop re-clicking.
+        b.classList.add('opt-locked');
         if (currentOptions[Number(b.dataset.idx)] === currentAnswer) b.classList.add('correct');
         else if (b === btn) b.classList.add('wrong');
     });
@@ -707,6 +724,26 @@ function nextQuizQuestion() {
         renderQuizQuestion();
     }
 }
+
+// Enter advances to the next question once one's been answered (qBtnNext
+// visible) — mirrors dashboard.js's own Notebook-quiz keyboard shortcut.
+// Scoped to only fire while the Lesson Quiz tab is actually the visible one,
+// so it can't steal Enter from unrelated inputs elsewhere on dashboard.html.
+// The fill/listen inputs' own onkeypress="if(...)checkFillQuiz()" still runs
+// first (keypress fires after this keydown listener within the same
+// keystroke), so the very first Enter always just submits the answer —
+// qBtnNext isn't visible yet at that point, this listener only takes over
+// on the next Enter press.
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const quizTab = document.getElementById('lesson-tab-quiz');
+    if (!quizTab || quizTab.style.display === 'none') return;
+    const nextBtn = document.getElementById('qBtnNext');
+    if (nextBtn && nextBtn.style.display !== 'none') {
+        e.preventDefault();
+        nextQuizQuestion();
+    }
+});
 
 async function finishLessonQuiz() {
     if (lessonState.quiz.submitted) return; // rapid double-tap on the last question's Next button — only submit once
@@ -860,4 +897,5 @@ async function renderResultsTab() {
     html += `<button class="btn-next" onclick="switchLessonTab('quiz')"><i class="fas fa-redo"></i> Làm lại Quiz</button>`;
     html += '</div>';
     container.innerHTML = html;
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-tab-results', 'vocab-lesson-results');
 }
