@@ -60,14 +60,14 @@ router.get('/users/:id', auth, teacherOnly, async (req, res) => {
 // POST /api/admin/users – tạo tài khoản mới (chỉ admin)
 router.post('/users', auth, adminOnly, async (req, res) => {
   try {
-    const { username, email, password, role = 'student', firstName = '', lastName = '' } = req.body;
+    const { username, email, password, role = 'student', firstName = '', lastName = '', className = '' } = req.body;
     if (!username || !email || !password)
       return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ username, email và mật khẩu.' });
     const existing = await User.findOne({ $or: [{ email }, { username }] });
     if (existing)
       return res.status(400).json({ success: false, message: 'Username hoặc email đã tồn tại.' });
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, email, password: hashed, role, firstName, lastName });
+    const user = await User.create({ username, email, password: hashed, role, firstName, lastName, className });
     logger.security('Admin created a user account', { actorId: String(req.user._id), targetId: String(user._id), role });
     const safe = user.toObject();
     delete safe.password;
@@ -80,8 +80,9 @@ router.post('/users', auth, adminOnly, async (req, res) => {
 // PUT /api/admin/users/:id – sửa thông tin user (chỉ admin)
 router.put('/users/:id', auth, adminOnly, async (req, res) => {
   try {
-    const { username, email, firstName, lastName, role, isBanned, newPassword } = req.body;
+    const { username, email, firstName, lastName, role, isBanned, newPassword, className } = req.body;
     const update = { username, email, firstName, lastName, role };
+    if (className !== undefined) update.className = className;
     if (isBanned !== undefined) update.isBanned = isBanned;
     if (newPassword) {
       update.password = await bcrypt.hash(newPassword, 10);

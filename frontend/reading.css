@@ -1842,6 +1842,14 @@ body.tool-hl .check-box { user-select: none; }
 .tfng-opt.correct-ans { border-color: #43a047 !important; background: #e8f5e9 !important; color: #2e7d32 !important; }
 .tfng-opt.wrong-ans   { border-color: #e53935 !important; background: #fce4e4 !important; color: #c62828 !important; }
 
+/* TRUE/FALSE/NOT GIVEN buttons and the retry-footer action buttons
+   (Chọn bài khác / Kiểm tra đáp án) read as oversized on narrow phone
+   screens — trim vertical padding specifically for mobile. */
+@media (max-width: 640px) {
+  .tfng-opt { padding: 7px 10px; min-width: 88px; }
+  .btn-ghost, .btn-primary { padding: 6px 14px; }
+}
+
 /* ── TABLE GROUP (like Image 1) ─────────────────────────────────────── */
 .rq-table-wrap {
   overflow-x: auto;

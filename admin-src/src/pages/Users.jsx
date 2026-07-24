@@ -200,14 +200,14 @@ function CreateUserModal({ onClose, onSaved }) {
 function UserModal({ userId, onClose, onSaved }) {
   const toast = useToast();
   const { isAdmin } = useAuth();
-  const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', isBanned: false, newPassword: '' });
+  const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', className: '', isBanned: false, newPassword: '' });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
     apiFetch(`/admin/users/${userId}`).then(d => {
       const u = d.user;
-      setForm({ username: u.username || '', email: u.email || '', role: u.role || 'student', firstName: u.firstName || '', lastName: u.lastName || '', isBanned: !!u.isBanned, newPassword: '' });
+      setForm({ username: u.username || '', email: u.email || '', role: u.role || 'student', firstName: u.firstName || '', lastName: u.lastName || '', className: u.className || '', isBanned: !!u.isBanned, newPassword: '' });
     }).catch(e => toast(e.message, 'error'));
   }, [userId]);
 
@@ -252,6 +252,10 @@ function UserModal({ userId, onClose, onSaved }) {
               <label className="form-label">Tên</label>
               <input className="form-input" value={form.lastName} onChange={set('lastName')} />
             </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Lớp (dùng để lọc bài Quiz từ vựng phù hợp)</label>
+            <input className="form-input" placeholder="VD: 6, 6.5, 7..." value={form.className} onChange={set('className')} />
           </div>
           {isAdmin && (
             <div className="form-group">
@@ -378,12 +382,12 @@ export default function Users() {
         <table className="table">
           <thead>
             <tr>
-              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
+              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>LỚP</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
             </tr>
           </thead>
           <tbody>
             {users.length === 0
-              ? <tr><td colSpan={9} className="table-empty">Không có người dùng</td></tr>
+              ? <tr><td colSpan={10} className="table-empty">Không có người dùng</td></tr>
               : users.map(u => {
                 const ls = formatLastSeen(u.lastSeen);
                 return (
@@ -398,6 +402,7 @@ export default function Users() {
                   </td>
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{u.email}</td>
                   <td>{[u.firstName, u.lastName].filter(Boolean).join(' ') || '–'}</td>
+                  <td>{u.className ? <span className="badge badge-purple">{u.className}</span> : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
                   <td>{roleBadge(u.role)}</td>
                   <td>{planBadge(u.plan, u.planExpiresAt)}</td>
                   <td>

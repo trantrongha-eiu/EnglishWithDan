@@ -896,8 +896,19 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   .mob-backdrop.active,
   .mob-sheet.active{display:flex}
 
-  /* Thêm padding bottom để content không bị FAB che */
+  /* Thêm padding bottom để content không bị FAB che. .app-layout itself
+     never scrolls (it's the outer flex shell) — the actual scrolling
+     happens inside #book-welcome/#book-content, which need their own
+     clearance for the fixed-position FAB (56px + 24px bottom offset). */
   .app-layout{padding-bottom:80px}
+  #book-welcome,#book-content{padding-bottom:100px}
+
+  /* Both Top-10 leaderboards stacking at full length back-to-back made the
+     Home page an extremely long scroll on mobile before reaching anything
+     else below them — cap each to ~5 rows' worth of height with its own
+     inner scroll instead, so the page scroll stays short while all 10 rows
+     remain reachable inline. */
+  .dan-lb-list{max-height:290px;overflow-y:auto}
 
   /* Mode body padding nhỏ hơn */
   .mode-body{padding:16px}

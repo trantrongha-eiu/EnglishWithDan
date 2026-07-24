@@ -33,6 +33,13 @@ const UserSchema = new mongoose.Schema({
   // Profile customization
   studyMotto:   { type: String, default: '', maxlength: 80 },
   targetBand:   { type: Number, default: null, min: 4, max: 9 },
+  // Free-text class label ("6", "6.5", ...) assigned by admin/teacher —
+  // scopes which Vocabulary Lessons a student sees (see
+  // vocabularyLessonService.listPublicLessons). Empty = unassigned; an
+  // unassigned student still sees every lesson (both class-scoped and
+  // unscoped) so nobody is locked out before admin gets around to
+  // assigning classes to existing students.
+  className:    { type: String, default: '', trim: true, maxlength: 40 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
   // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()

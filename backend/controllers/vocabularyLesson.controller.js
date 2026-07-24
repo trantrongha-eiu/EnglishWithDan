@@ -5,7 +5,7 @@ const vocabularyLessonService = require('../services/vocabularyLessonService');
 // ── Student-facing ──────────────────────────────────────────────
 exports.listPublicLessons = async (req, res) => {
   try {
-    const lessons = await vocabularyLessonService.listPublicLessons();
+    const lessons = await vocabularyLessonService.listPublicLessons(req.user.className);
     res.json({ success: true, lessons });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

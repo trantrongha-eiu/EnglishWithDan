@@ -29,6 +29,11 @@ const VocabularyLessonSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   difficulty:  { type: String, enum: DIFFICULTY_LEVELS, default: 'B1' },
   order:       { type: Number, default: 0 },   // thứ tự hiển thị trong Classroom / Today's Lesson
+  // Free-text class label ("6", "6.5", ...) this lesson was taught to —
+  // empty means visible to every student regardless of their own class
+  // (keeps lessons created before this field existed working unchanged).
+  // Matched against User.className in listPublicLessons().
+  targetClass: { type: String, default: '', trim: true, maxlength: 40 },
   published:   { type: Boolean, default: false },
   createdBy:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   words:       [LessonWordSchema],

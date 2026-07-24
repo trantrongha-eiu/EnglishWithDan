@@ -13,10 +13,24 @@ const MAX_WRONG_WORDS_LOGGED = 300; // matches MAX_WORDS_PER_LESSON — never mo
 // Student-facing reads (published lessons only)
 // ══════════════════════════════════════════════════════
 
-async function listPublicLessons() {
+// studentClass: the requesting student's User.className (may be '' if the
+// admin hasn't assigned them one yet). A lesson is visible when EITHER side
+// is unscoped (lesson.targetClass === '' or student has no class yet) OR
+// both match exactly — this is what keeps existing lessons/students working
+// unchanged the moment this field is introduced, rather than everyone
+// suddenly seeing nothing until admin manually assigns every class.
+async function listPublicLessons(studentClass) {
+  const match = { published: true };
+  if (studentClass) {
+    // targetClass may be entirely absent on documents created before this
+    // field existed (Mongoose schema defaults only apply to docs created
+    // through the model, not already-existing ones) — treat "missing" the
+    // same as "" (unscoped/visible to everyone).
+    match.$or = [{ targetClass: '' }, { targetClass: { $exists: false } }, { targetClass: studentClass }];
+  }
   return VocabularyLesson.aggregate([
-    { $match: { published: true } },
-    { $project: { title: 1, description: 1, difficulty: 1, order: 1, createdAt: 1, wordCount: { $size: '$words' } } },
+    { $match: match },
+    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, createdAt: 1, wordCount: { $size: '$words' } } },
     { $sort: { order: 1, createdAt: -1 } },
   ]);
 }
@@ -194,7 +208,7 @@ function throwValidationError(result) {
 
 async function listAdminLessons() {
   return VocabularyLesson.aggregate([
-    { $project: { title: 1, description: 1, difficulty: 1, order: 1, published: 1, createdBy: 1, createdAt: 1, wordCount: { $size: '$words' } } },
+    { $project: { title: 1, description: 1, difficulty: 1, order: 1, targetClass: 1, published: 1, createdBy: 1, createdAt: 1, wordCount: { $size: '$words' } } },
     { $sort: { createdAt: -1 } },
     {
       // One lookup for every per-lesson attempt-row-derived stat
@@ -369,6 +383,7 @@ async function updateLessonMeta(id, payload) {
     if (Number.isNaN(Number(payload.order))) throw new Error('"order" phải là số');
     lesson.order = Number(payload.order);
   }
+  if (payload.targetClass != null) lesson.targetClass = String(payload.targetClass).trim();
   if (typeof payload.published === 'boolean') lesson.published = payload.published;
 
   await lesson.save();

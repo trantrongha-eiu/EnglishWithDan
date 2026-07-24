@@ -33,6 +33,7 @@ function LessonMetaModal({ lesson, onClose, onSaved }) {
     description: lesson.description || '',
     difficulty: lesson.difficulty,
     order: lesson.order ?? 0,
+    targetClass: lesson.targetClass || '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -79,6 +80,10 @@ function LessonMetaModal({ lesson, onClose, onSaved }) {
               <label className="form-label">Order</label>
               <input className="form-input" type="number" value={form.order} onChange={set('order')} />
             </div>
+          </div>
+          <div className="form-group">
+            <label className="form-label">Lớp (để trống = hiện cho mọi học sinh)</label>
+            <input className="form-input" placeholder="VD: 6, 6.5, 7..." value={form.targetClass} onChange={set('targetClass')} />
           </div>
           <div style={{ fontSize: 12, color: 'var(--text3)' }}>
             Muốn sửa danh sách từ vựng? Dùng "📋 Sửa nội dung" ở bảng danh sách để paste lại lesson.
@@ -419,12 +424,12 @@ export default function VocabularyLessons() {
 
       <div className="table-wrap">
         <table className="table">
-          <thead><tr><th>TIÊU ĐỀ</th><th>DIFFICULTY</th><th>ORDER</th><th>SỐ TỪ</th><th>HOÀN THÀNH</th><th>ĐIỂM TB</th><th>HOẠT ĐỘNG</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
+          <thead><tr><th>TIÊU ĐỀ</th><th>DIFFICULTY</th><th>LỚP</th><th>ORDER</th><th>SỐ TỪ</th><th>HOÀN THÀNH</th><th>ĐIỂM TB</th><th>HOẠT ĐỘNG</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th></th></tr></thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={10} className="table-empty">Đang tải...</td></tr>
+              <tr><td colSpan={11} className="table-empty">Đang tải...</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={10} className="table-empty">Chưa có bài học nào</td></tr>
+              <tr><td colSpan={11} className="table-empty">Chưa có bài học nào</td></tr>
             ) : filtered.map(l => (
               <tr key={l._id}>
                 <td>
@@ -432,6 +437,7 @@ export default function VocabularyLessons() {
                   {l.description && <div style={{ fontSize: 11, color: 'var(--text3)' }}>{l.description.slice(0, 60)}</div>}
                 </td>
                 <td><span className="badge badge-blue">{l.difficulty}</span></td>
+                <td>{l.targetClass ? <span className="badge badge-purple">{l.targetClass}</span> : <span style={{ color: 'var(--text3)', fontSize: 12 }}>Tất cả</span>}</td>
                 <td>{l.order ?? 0}</td>
                 <td>{l.wordCount ?? 0}</td>
                 <td>{l.completedCount ?? 0}</td>

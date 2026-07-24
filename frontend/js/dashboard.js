@@ -40,6 +40,23 @@ let _persistedThisSession = false; // prevent double-counting wrongCount on mult
 
 // ── Búa Daniel (streak-restore hammer) ─────────
 let _hammerState = { streakHammers: 0, canUseHammer: false };
+// _reportSessionStreak() fires as soon as sessionAnsweredCount hits 5 — for
+// any unit longer than 5 words that's mid-quiz, long before the student
+// reaches the Results screen. A transient toast shown at that moment is
+// gone by the time they actually get there, so a hammer award needs to be
+// announced ON the Results screen instead of immediately: if resultsMode
+// is already visible when the award arrives, show the banner right away;
+// otherwise stash it and showResults() shows it when it renders.
+let _pendingHammerAnnouncement = false;
+function announceHammerEarned() {
+    const banner = document.getElementById('hammer-earned-banner');
+    const resultsVisible = document.getElementById('resultsMode')?.style.display !== 'none';
+    if (banner && resultsVisible) {
+        banner.style.display = 'block';
+    } else {
+        _pendingHammerAnnouncement = true;
+    }
+}
 
 // ── Vocab book practice tracking ───────────────
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
@@ -1807,6 +1824,7 @@ async function _reportSessionStreak() {
             renderHammerUI();
             if (d.hammerEarned) {
                 toast('🔨 Bạn vừa nhận 1 búa Daniel vì học Paraphrase Unit xuất sắc (>=90%)!', 'success');
+                announceHammerEarned();
             }
             loadWeeklyProgress();
         }
@@ -2381,6 +2399,14 @@ function showResults(mode) {
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';
+
+    // Reset any hammer banner left over from a previous "Restart" run in the
+    // same session, then show it immediately if a hammer was already
+    // awarded earlier this session (long unit — the report fired mid-quiz,
+    // well before this screen existed).
+    const hammerBanner = document.getElementById('hammer-earned-banner');
+    if (hammerBanner) hammerBanner.style.display = _pendingHammerAnnouncement ? 'block' : 'none';
+    _pendingHammerAnnouncement = false;
 
     _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ
 
