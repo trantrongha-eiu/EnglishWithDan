@@ -20,7 +20,7 @@ function AudioUploadModal({ test, onClose, onUploaded }) {
     try {
       const fd = new FormData();
       fd.append('audio', file);
-      const res = await fetch(`${API}/listening/admin/tests/${test._id}/audio`, {
+      const res = await fetch(`${API}/admin/listening/tests/${test._id}/audio`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: fd,
@@ -89,12 +89,12 @@ export default function ListeningTests() {
     page, setPage, paged, filteredCount, pageSize,
   } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
 
-  const load = () => apiFetch('/listening/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
+  const load = () => apiFetch('/admin/listening/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
 
   async function toggleActive(id, isActive) {
     try {
-      await apiFetch(`/listening/admin/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
+      await apiFetch(`/admin/listening/tests/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn' : 'Đã hiện');
       load();
     } catch (e) { toast(e.message, 'error'); }
@@ -102,7 +102,7 @@ export default function ListeningTests() {
 
   async function del(id, name) {
     confirm(`Xóa vĩnh viễn đề listening "${name}"? Không thể khôi phục!`, async () => {
-      try { await apiFetch(`/listening/admin/tests/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
+      try { await apiFetch(`/admin/listening/tests/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
       catch (e) { toast(e.message, 'error'); }
     });
   }

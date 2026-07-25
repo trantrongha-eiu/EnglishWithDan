@@ -305,7 +305,7 @@ export function MapConfig({ imageUrl, dragDropConfig, onImageChange, onDragDropC
         reader.readAsDataURL(file);
       });
       const endpoint = context === 'listening'
-        ? '/listening/admin/upload-map-image'
+        ? '/admin/listening/upload-map-image'
         : '/admin/passages/upload-map-image';
       const d = await apiFetch(endpoint, {
         method: 'POST',

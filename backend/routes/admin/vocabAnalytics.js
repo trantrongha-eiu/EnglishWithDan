@@ -69,7 +69,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
       : {};
 
     const users = await User.find({ role: 'student', ...searchFilter })
-      .select('username email firstName lastName createdAt learningStreak lastActivityDate previousStreak isBanned')
+      .select('username email firstName lastName createdAt learningStreak lastActivityDate previousStreak isBanned studyReminderCount')
       .lean();
 
     const userIds = users.map(u => u._id);
@@ -129,6 +129,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
         isBanned:     u.isBanned,
         learningStreak: effectiveStreak(u.learningStreak, u.lastActivityDate),
         previousStreak: u.previousStreak || 0,
+        studyReminderCount: u.studyReminderCount || 0,
         // Vocab book stats
         totalBooks:   b.totalBooks  || 0,
         totalWords:   b.totalWords  || 0,

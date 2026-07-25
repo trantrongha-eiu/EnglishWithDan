@@ -29,7 +29,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
     try {
       const formData = new FormData();
       formData.append('audio', file);
-      const res = await fetch(`${API}/listening/admin/upload-audio`, {
+      const res = await fetch(`${API}/admin/listening/upload-audio`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: formData,
@@ -164,7 +164,7 @@ export default function ListeningSectionEdit() {
 
   useEffect(() => {
     if (!savedId) return;
-    apiFetch(`/listening/admin/sections/${savedId}`)
+    apiFetch(`/admin/listening/sections/${savedId}`)
       .then(d => {
         const s = d.section;
         setMeta({
@@ -202,11 +202,11 @@ export default function ListeningSectionEdit() {
       try {
         const payload = { ...meta, questionGroups };
         if (!savedId) {
-          const d = await apiFetch('/listening/admin/sections', { method: 'POST', body: JSON.stringify(payload) });
+          const d = await apiFetch('/admin/listening/sections', { method: 'POST', body: JSON.stringify(payload) });
           setSavedId(d.section._id);
           navigate(`/listening-sections/${d.section._id}`, { replace: true });
         } else {
-          await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          await apiFetch(`/admin/listening/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         }
         setIsDirty(false);
         setAutoSaveMsg('Đã lưu ✓');
@@ -224,11 +224,11 @@ export default function ListeningSectionEdit() {
     try {
       const payload = { ...meta, questionGroups };
       if (!savedId) {
-        const d = await apiFetch('/listening/admin/sections', { method: 'POST', body: JSON.stringify(payload) });
+        const d = await apiFetch('/admin/listening/sections', { method: 'POST', body: JSON.stringify(payload) });
         setSavedId(d.section._id);
         toast('Đã tạo section Listening ✓');
       } else {
-        await apiFetch(`/listening/admin/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        await apiFetch(`/admin/listening/sections/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã lưu section ✓');
       }
       setIsDirty(false);

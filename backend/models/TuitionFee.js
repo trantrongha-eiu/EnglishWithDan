@@ -13,7 +13,13 @@ const TuitionFeeSchema = new mongoose.Schema({
   // admin marks paid
   isPaid:      { type: Boolean, default: false },
   paidDate:    { type: Date },
-  // student pressed "Tôi đã chuyển khoản"
+  // Reads as "we notified the student" but means the OPPOSITE: true once the
+  // STUDENT presses "Tôi đã chuyển khoản" (self-reporting a transfer) to
+  // notify the ADMIN — a distinct, unverified signal from isPaid (which only
+  // an admin can set, after actually confirming the money arrived). Flagged
+  // as a naming trap in the 2026-07-25 admin panel audit (docs/
+  // ADMIN_PANEL_AUDIT.md #1/#8) — not renamed here since it's a live
+  // production field on real fee records; this comment is the fix.
   studentNotified:   { type: Boolean, default: false },
   studentNotifiedAt: { type: Date },
   // notes

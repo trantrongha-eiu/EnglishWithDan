@@ -23,13 +23,13 @@ import VocabularyLessons from './pages/VocabularyLessons';
 import VocabularyLessonImport from './pages/VocabularyLessonImport';
 import WritingPractice from './pages/WritingPractice';
 import Task1Exercises from './pages/Task1Exercises';
-import Task2Exercises from './pages/Task2Exercises';
+import Task2Topics from './pages/Task2Topics';
 import Task2Templates from './pages/Task2Templates';
 import StudentHistory from './pages/StudentHistory';
 import VocabActivity from './pages/VocabActivity';
+import StudentDetail from './pages/StudentDetail';
 import Messages from './pages/Messages';
 import WritingGrades from './pages/WritingGrades';
-import WritingSamples from './pages/WritingSamples';
 import Tuition from './pages/Tuition';
 import UpgradeRequests from './pages/UpgradeRequests';
 import NotFound from './pages/NotFound';
@@ -65,13 +65,17 @@ export default function App() {
                 <Route path="vocabulary-lessons/import" element={<VocabularyLessonImport />} />
                 <Route path="writing-practice" element={<WritingPractice />} />
                 <Route path="task1-exercises" element={<Task1Exercises />} />
-                <Route path="task2-exercises" element={<Task2Exercises />} />
+                <Route path="task2-exercises" element={<Task2Topics />} />
                 <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="history" element={<StudentHistory />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />
+                <Route path="students/:id" element={<StudentDetail />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="writing-grades" element={<WritingGrades />} />
-                <Route path="writing-samples" element={<WritingSamples />} />
+                {/* Bài mẫu Writing was consolidated into WritingTests.jsx's "📄 Bài mẫu"
+                    tab (was a second, drifted-UI page managing the exact same
+                    WritingSample data) — redirect old bookmarks/links instead of 404ing. */}
+                <Route path="writing-samples" element={<Navigate to="/writing-tests" replace />} />
                 <Route path="tuition" element={<ProtectedRoute role="admin"><Tuition /></ProtectedRoute>} />
                 <Route path="upgrade-requests" element={<ProtectedRoute role="admin"><UpgradeRequests /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />

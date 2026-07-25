@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+// `questionSchema` below is one of three overlapping-looking "sentence
+// exercise" systems (the other two: WPExercise.js, Task1Exercise.js) —
+// `type` values intentionally overlap across all three since that's just
+// question FORMAT. These questions are specifically tied to ONE Task 2
+// essay topic (always nested under a Task2Topic doc) — see
+// docs/EXERCISE_SYSTEMS.md for the full placement rule + examples.
 const questionSchema = new mongoose.Schema({
   questionId:       { type: String },
   level:            { type: String, enum: ['beginner', 'elementary', 'intermediate'], required: true },

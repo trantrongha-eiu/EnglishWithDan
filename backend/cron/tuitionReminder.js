@@ -3,6 +3,7 @@ const TuitionFee      = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
+const { buildReminderBody } = require('../services/tuitionService');
 
 async function runReminders() {
   try {
@@ -49,22 +50,13 @@ async function runReminders() {
       byStudent[sid].fees.push(fee);
     });
 
-    const msgs = Object.values(byStudent).map(({ student, fees }) => {
-      const total = fees.reduce((s, f) => s + (f.amount || 0), 0);
-      const lines = fees.map(f => {
-        const label = f.feeType === 'monthly'
-          ? `Tháng ${f.month}/${f.year}`
-          : `Khóa "${f.courseName}"`;
-        return `• ${label}: ${Number(f.amount).toLocaleString('vi-VN')} VND`;
-      }).join('\n');
-      return {
-        fromId:   admin._id,
-        fromName: admin.username,
-        toId:     student._id,
-        subject:  `📅 Nhắc nhở học phí tháng ${currentMonth}/${currentYear}`,
-        body: `📅 Nhắc nhở học phí định kỳ\n\nBạn đang có ${fees.length} khoản học phí chưa thanh toán:\n${lines}\n\nTổng cộng: ${Number(total).toLocaleString('vi-VN')} VND\n\nVui lòng vào trang Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`,
-      };
-    });
+    const msgs = Object.values(byStudent).map(({ student, fees }) => ({
+      fromId:   admin._id,
+      fromName: admin.username,
+      toId:     student._id,
+      subject:  `📅 Nhắc nhở học phí tháng ${currentMonth}/${currentYear}`,
+      body:     buildReminderBody(fees),
+    }));
 
     await Message.insertMany(msgs);
     console.log(`[TuitionCron] Sent ${msgs.length} auto-reminders (day ${today}/${currentMonth}/${currentYear})`);

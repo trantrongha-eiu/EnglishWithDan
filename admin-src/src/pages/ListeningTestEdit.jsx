@@ -28,7 +28,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
     try {
       const formData = new FormData();
       formData.append('audio', file);
-      const res = await fetch(`${API}/listening/admin/upload-audio`, {
+      const res = await fetch(`${API}/admin/listening/upload-audio`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: formData,
@@ -173,7 +173,7 @@ export default function ListeningTestEdit() {
 
   useEffect(() => {
     if (!savedId) return;
-    apiFetch(`/listening/admin/tests/${savedId}`)
+    apiFetch(`/admin/listening/tests/${savedId}`)
       .then(d => {
         const t = d.test;
         setMeta({ name: t.name || '', seriesName: t.seriesName || '', testNumber: t.testNumber || 1, audioUrl: t.audioUrl || '', audioDuration: t.audioDuration || 0, isActive: t.isActive !== false });
@@ -189,11 +189,11 @@ export default function ListeningTestEdit() {
     try {
       const payload = { ...meta, sections: buildSections(sections) };
       if (!savedId) {
-        const d = await apiFetch('/listening/admin/tests', { method: 'POST', body: JSON.stringify(payload) });
+        const d = await apiFetch('/admin/listening/tests', { method: 'POST', body: JSON.stringify(payload) });
         setSavedId(d.test._id);
         toast('Đã tạo đề Listening');
       } else {
-        await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+        await apiFetch(`/admin/listening/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         toast('Đã lưu đề Listening');
       }
       setIsDirty(false);
@@ -228,11 +228,11 @@ export default function ListeningTestEdit() {
       try {
         const payload = { ...meta, sections: buildSections(sections) };
         if (!savedId) {
-          const d = await apiFetch('/listening/admin/tests', { method: 'POST', body: JSON.stringify(payload) });
+          const d = await apiFetch('/admin/listening/tests', { method: 'POST', body: JSON.stringify(payload) });
           setSavedId(d.test._id);
           navigate(`/listening-tests/${d.test._id}`, { replace: true });
         } else {
-          await apiFetch(`/listening/admin/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          await apiFetch(`/admin/listening/tests/${savedId}`, { method: 'PUT', body: JSON.stringify(payload) });
         }
         setIsDirty(false);
         setAutoSaveMsg('Đã lưu ✓');

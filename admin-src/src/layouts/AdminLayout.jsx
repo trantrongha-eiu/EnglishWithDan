@@ -25,7 +25,6 @@ const TITLES = {
   '/writing-grades':         'Chấm bài Writing',
   '/vocab-activity':         'Hoạt động từ vựng',
   '/messages':               'Hộp thư',
-  '/writing-samples':        'Bài mẫu Writing',
   '/tuition':                'Quản lý học phí',
   '/upgrade-requests':       'Yêu cầu nâng cấp Premium',
 };
@@ -39,6 +38,7 @@ export default function AdminLayout() {
     || (pathname.startsWith('/reading-tests/')   ? 'Chỉnh sửa đề Reading'   : null)
     || (pathname.startsWith('/listening-tests/') ? 'Chỉnh sửa đề Listening' : null)
     || (pathname.startsWith('/listening-sections/') ? 'Chỉnh sửa bài Listening' : null)
+    || (pathname.startsWith('/students/') ? 'Chi tiết học sinh' : null)
     || 'Admin';
 
   return (

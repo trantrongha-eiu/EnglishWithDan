@@ -506,11 +506,15 @@ export default function WritingTests() {
     } catch (e) { toast(e.message, 'error'); }
   }
 
+  // Hits the /permanent hard-delete route, not the plain DELETE route (which
+  // only sets isActive:false — the same effect the 🙈/👁 toggle button right
+  // next to this one already has). The two buttons doing the same thing under
+  // different labels was confusing; this one now actually deletes.
   function delSample(id, title) {
-    confirm(`Xóa bài mẫu "${title}"?`, async () => {
+    confirm(`Xóa vĩnh viễn bài mẫu "${title}"? Không thể khôi phục.`, async () => {
       try {
-        await apiFetch(`/admin/writing/samples/${id}`, { method: 'DELETE' });
-        toast('Đã xóa');
+        await apiFetch(`/admin/writing/samples/${id}/permanent`, { method: 'DELETE' });
+        toast('Đã xóa vĩnh viễn');
         setSamples(a => a.filter(x => x._id !== id));
       } catch (e) { toast(e.message, 'error'); }
     });

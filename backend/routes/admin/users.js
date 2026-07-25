@@ -122,9 +122,14 @@ router.put('/users/:id/ban', auth, adminOnly, async (req, res) => {
 
 // POST /api/admin/users/:id/remind – nhắc nhở học tập (vocab/bài tập thiếu),
 // gửi qua hộp thư + cộng dồn studyReminderCount cho cảnh báo nổi ở nav.js.
+// This is the ONE tracked reminder endpoint in the app — every "nudge a
+// student" admin button (Users.jsx, VocabActivity.jsx) should route through
+// here (with its own subject/body preset) rather than hitting the generic
+// POST /admin/messages directly, so studyReminderCount/the escalation
+// banner stay accurate regardless of which page sent the reminder.
 router.post('/users/:id/remind', auth, teacherOnly, async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, subject } = req.body;
     const student = await User.findById(req.params.id);
     if (!student) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
 
@@ -137,7 +142,7 @@ router.post('/users/:id/remind', auth, teacherOnly, async (req, res) => {
       fromId:   req.user._id,
       fromName: req.user.username,
       toId:     student._id,
-      subject:  '⚠️ Nhắc nhở học tập',
+      subject:  subject?.trim() || '⚠️ Nhắc nhở học tập',
       body,
     });
 

@@ -15,8 +15,7 @@ Every route below requires, at minimum, the base `auth` middleware (valid JWT �
 
 **Findings from an independent re-read of all 125 routes in this directory (this phase, not carried over from a prior audit's claims):**
 - **No route under `/api/admin` is missing role gating.** Every single route has at least `auth` plus an explicit role check. There is no endpoint reachable by an authenticated `student`.
-- **Two routes deliberately bypass the shared middleware and inline their own role+ownership check instead**, and are worth flagging so they aren't mistaken for a gap: `PATCH /api/admin/keys/:id/deactivate` and `DELETE /api/admin/keys/:id` (both in `accessKeys.js`) use bare `auth` in their middleware chain, then check `req.user.role` by hand inside the handler. This is intentional — `teacherOnly` would either block every teacher from deactivating/deleting a key (via its blanket DELETE-blocks-teacher rule) or require restructuring the shared middleware, and the actual desired rule is finer-grained: a teacher may deactivate/delete a key **they created**, but not one created by someone else; an admin may act on any key. The code comment in `accessKeys.js` states this explicitly. Net effect is still fully gated — no unauthenticated or student access — just via inline logic instead of the shared helper. See the [Access Keys](#access-keys) section for the exact per-route logic.
-- **Routes correctly scoped to `adminOnly` beyond the obvious (user delete/ban/role-change)**: `GET /api/admin/db-status` (exposes MongoDB Atlas storage/index size — infra-level detail, not a teaching-workflow need); all four routes in `billing.js` (`PUT /users/:id/plan`, and all three `upgrade-requests` routes) because they directly grant or revoke paid access — a financial action; `POST /api/admin/reseed-task2-week12` and `POST /api/admin/fix-task1-context` in `task2Topics.js` because they are one-off, destructive maintenance scripts (delete-then-reinsert / bulk-mutate content) rather than routine content editing.
+- **Routes correctly scoped to `adminOnly` beyond the obvious (user delete/ban/role-change)**: `GET /api/admin/db-status` (exposes MongoDB Atlas storage/index size — infra-level detail, not a teaching-workflow need); all four routes in `premium.js` (`PUT /users/:id/plan`, and all three `upgrade-requests` routes) because they directly grant or revoke paid access — a financial action; `POST /api/admin/reseed-task2-week12` and `POST /api/admin/fix-task1-context` in `task2Topics.js` because they are one-off, destructive maintenance scripts (delete-then-reinsert / bulk-mutate content) rather than routine content editing.
 
 No route in this directory is rate-limited except `POST /writing-attempts/:id/ai-grade` (see [Writing Grading (AI)](#writing-grading-ai)) — the one endpoint that calls the Gemini API with the system's largest prompt.
 
@@ -24,14 +23,14 @@ No route in this directory is rate-limited except `POST /writing-attempts/:id/ai
 - [Shared Middleware & Helpers (`_shared.js`)](#shared-middleware--helpers-_sharedjs)
 - [Router Mounting (`index.js`)](#router-mounting)
 - [Users](#users)
-- [Billing / Upgrade Requests](#billing--upgrade-requests)
+- [Premium / Upgrade Requests](#premium--upgrade-requests)
 - [Stats](#stats)
-- [Access Keys](#access-keys)
 - [Delete Exam Attempts](#delete-exam-attempts)
 - [Messages](#messages)
 - [Writing Grading (AI)](#writing-grading-ai)
 - [Vocab Analytics](#vocab-analytics)
 - [Passages / Reading Tests / Listening Tests](#passages--reading-tests--listening-tests)
+- [Listening (admin CRUD)](#listening-admin-crud)
 - [Writing Content](#writing-content)
 - [Writing Practice (WP)](#writing-practice-wp)
 - [Writing Samples (PDF)](#writing-samples-pdf)
@@ -60,7 +59,7 @@ No endpoints — mounts the 17 route-bearing files below onto one router, in thi
 
 ```
 router.use(require('./passages'));         // Passages, Reading Tests, Listening Tests dropdown
-router.use(require('./accessKeys'));       // Access Keys
+router.use(require('./listening'));        // Listening Tests, Practice Sections (admin CRUD) — moved here 2026-07-25, see below
 router.use(require('./stats'));            // Stats, db-status, history, recent-attempts, listening-history
 router.use(require('./writingContent'));   // Writing Tests dropdown, Writing Exams, Writing History, Task1/Task2 pools
 router.use(require('./speaking'));         // Speaking Questions, Materials, History
@@ -279,9 +278,9 @@ Since every file's routes are string-literal paths (no overlapping wildcard segm
 
 ---
 
-## Billing / Upgrade Requests
+## Premium / Upgrade Requests
 
-`backend/routes/admin/billing.js` — 4 endpoints, **all `adminOnly`**. Every route here either grants premium access directly or approves/rejects a paid-upgrade request — a financial action, so `teacherOnly` was never on the table.
+`backend/routes/admin/premium.js` (named `billing.js` until 2026-07-25 — renamed, see `docs/ADMIN_PANEL_AUDIT.md` #8; it never handled actual payment/invoice records, only `User.plan`/`UpgradeRequest`, which is why it caused confusion with the unrelated `TuitionFee`/`tuition.js` billing system) — 4 endpoints, **all `adminOnly`**. Every route here either grants premium access directly or approves/rejects a paid-upgrade request — a financial action, so `teacherOnly` was never on the table. The two premium-granting routes (direct grant, and upgrade-request approval) now share a `grantPremium(userId, months)` helper in this file instead of each hand-rolling the same `User.findByIdAndUpdate` shape.
 
 ### PUT /api/admin/users/:id/plan
 **Auth:** Bearer token required
@@ -526,113 +525,6 @@ Since every file's routes are string-literal paths (no overlapping wildcard segm
 **Error responses**
 - `401`, `403`
 - `500` — only for errors outside the inner swallowed try/catch (effectively unreachable in normal operation)
-
----
-
-## Access Keys
-
-`backend/routes/admin/accessKeys.js` — 4 endpoints. `GET`/`POST` use `teacherOnly`; the two mutation routes below **deliberately bypass `teacherOnly`/`adminOnly`** in favor of inline role+ownership logic — see the [Permission model](#permission-model-specific-to-this-directory) section above for why. Access keys let a student redeem a one-time code for access to a specific test without a full account/enrollment flow; per `docs/ARCHITECTURE.md`, the `AccessKey` collection is currently generated-but-never-redeemed in practice (flagged there as orphaned functionality).
-
-### GET /api/admin/keys
-**Auth:** Bearer token required
-**Permissions:** teacherOnly
-**Rate limit:** none
-
-**Request**
-- None
-
-**Response**
-```json
-{
-  "success": true,
-  "keys": [
-    { "_id": "665f7...", "key": "A1B2-C3D4", "testType": "reading", "testId": { "_id": "665f8...", "name": "Orange Test 20" }, "createdBy": { "username": "teacher_minh" }, "maxUses": 1, "currentUses": 0, "isActive": true, "isValid": true, "expiresAt": null }
-  ]
-}
-```
-
-**Validation**
-- Scoping: `admin` sees every key; `teacher` only sees keys where `createdBy === req.user._id`.
-- `testId` is manually resolved (not a Mongoose `.populate()`) because it uses a dynamic `refPath` virtual that only real (non-virtual) populate can't resolve directly — the route batch-fetches per test-type model instead of one `findById` per key, to avoid N+1 queries.
-
-**Error responses**
-- `401`, `403`
-- `500` — unexpected error
-
----
-
-### POST /api/admin/keys/generate
-**Auth:** Bearer token required
-**Permissions:** teacherOnly
-**Rate limit:** none
-
-**Request**
-- Body:
-```json
-{ "count": 5, "testId": "665f8...", "testType": "reading", "expiryDays": 30, "maxUses": 1 }
-```
-(all fields optional except that `count` defaults to 1, `testType` defaults to `null` meaning "any test", `maxUses` defaults to 1)
-
-**Response**
-```json
-{ "success": true, "keys": ["A1B2-C3D4", "E5F6-G7H8", "I9J0-K1L2", "M3N4-O5P6", "Q7R8-S9T0"] }
-```
-
-**Validation**
-- `count` must be between 1 and 100 (400 otherwise).
-- `testType` must be one of `'reading'`, `'listening'`, `'writing'`, or `null` (400 otherwise) — note `'speaking'` is a valid schema enum value on the model but is **not** in this route's `validTypes` allowlist, so generating a speaking-scoped key isn't currently possible through this endpoint.
-- Each key is `crypto.randomBytes(4)` hex, formatted `XXXX-XXXX` — not sequential/guessable.
-- `createdBy` is always `req.user._id` — a teacher can only ever generate keys attributed to themselves.
-
-**Error responses**
-- `401`, `403`
-- `400` — `count` out of range, or invalid `testType`
-- `500` — unexpected error
-
----
-
-### PATCH /api/admin/keys/:id/deactivate
-**Auth:** Bearer token required
-**Permissions:** Inline role check (not `teacherOnly`/`adminOnly`) — `teacher` or `admin`, **and** if the caller is a `teacher`, the key's `createdBy` must equal `req.user._id`. Deliberately not using the shared `teacherOnly` middleware: that middleware blocks every `DELETE` for role `teacher`, but a teacher **is** allowed to deactivate a key they created — only cross-teacher/cross-admin key access is blocked, and it's blocked by the ownership check below, not by role alone.
-**Rate limit:** none
-
-**Request**
-- Path params: `id`
-
-**Response**
-```json
-{ "success": true, "message": "Đã vô hiệu hoá key" }
-```
-
-**Validation**
-- 403 if role isn't `teacher`/`admin`. 404 if the key doesn't exist. 403 (distinct message) if a `teacher` targets a key they didn't create. `admin` bypasses the ownership check entirely.
-
-**Error responses**
-- `401` — no/invalid token
-- `403` — role not teacher/admin, or teacher targeting another user's key
-- `404` — key not found
-- `500` — unexpected error
-
----
-
-### DELETE /api/admin/keys/:id
-**Auth:** Bearer token required
-**Permissions:** Inline role check (not `teacherOnly`/`adminOnly`) — same rule as deactivate above: `teacher` or `admin`, with a `teacher` restricted to keys they created. Same intentional deviation from `teacherOnly` for the same reason (a teacher must be allowed to delete their own keys; `teacherOnly` would block all teachers from any `DELETE`).
-**Rate limit:** none
-
-**Request**
-- Path params: `id`
-
-**Response**
-```json
-{ "success": true, "message": "Đã xóa key" }
-```
-
-**Validation**
-- Same 404/ownership logic as deactivate. This is a hard delete (`findByIdAndDelete`), no soft-delete.
-
-**Error responses**
-- `401`, `403` (role or ownership), `404`, `500`
 
 ---
 
@@ -1224,7 +1116,7 @@ Since every file's routes are string-literal paths (no overlapping wildcard segm
 **Rate limit:** none
 
 **Request**
-- None (used to populate the Access Key generation dropdown)
+- None (lightweight name-only list; not currently called from anywhere in `admin-src` — originally fed the now-removed Access Key generation dropdown, see `docs/ADMIN_PANEL_AUDIT.md` #5)
 
 **Response**
 ```json
@@ -1239,6 +1131,39 @@ Since every file's routes are string-literal paths (no overlapping wildcard segm
 
 ---
 
+## Listening (admin CRUD)
+
+`backend/routes/admin/listening.js` — 19 endpoints, **all `teacherOnly`**, mounted at `/api/admin/listening/*`. Full CRUD for `ListeningTest`s and `ListeningSection`s (practice sections), audio/map-image upload, transcript editing, the "assemble 4 sections into 1 test" endpoint, and admin attempt history — the Listening equivalent of the [Passages / Reading Tests](#passages--reading-tests--listening-tests) section above.
+
+**Moved here 2026-07-25** (admin panel audit finding #7) from `backend/routes/listening.js`, where it used to live mixed in with the student-facing Listening routes under `/api/listening/admin/*` — an inconsistent namespace compared to every other content type's admin routes (e.g. Reading's equivalent is `/api/admin/tests`, not `/api/reading/admin/tests`). Every handler is unchanged; only the path prefix moved (`/admin/tests` → `/listening/tests`, `/admin/sections` → `/listening/sections`, etc. — the leading `/admin` was dropped since it's now redundant, this file only mounts inside the admin router). `backend/routes/listening.js` still exists and is still mounted at `/api/listening`, now containing only the 3 student-facing routes (`GET /tests`, `GET /practice/list`, `GET /practice/by-id/:id`).
+
+Full per-endpoint request/response documentation already exists — it was written before this move and lives in [`docs/API.md`'s Listening section](API.md#listening) (that doc mixes student+admin routes by feature area rather than admin-only; this file only covers `/api/admin/*`, hence the pointer instead of duplicating it here). Endpoint list, for reference:
+
+```
+GET    /api/admin/listening/tests
+GET    /api/admin/listening/tests/:id
+POST   /api/admin/listening/tests
+PUT    /api/admin/listening/tests/:id
+DELETE /api/admin/listening/tests/:id            (soft — isActive:false)
+DELETE /api/admin/listening/tests/:id/permanent  (hard delete)
+POST   /api/admin/listening/tests/:id/audio
+POST   /api/admin/listening/upload-audio
+POST   /api/admin/listening/upload-map-image
+PUT    /api/admin/listening/tests/:id/transcript
+GET    /api/admin/listening/attempts
+GET    /api/admin/listening/attempts/stats
+GET    /api/admin/listening/sections
+GET    /api/admin/listening/sections/:id
+POST   /api/admin/listening/sections
+PUT    /api/admin/listening/sections/:id
+DELETE /api/admin/listening/sections/:id            (soft)
+DELETE /api/admin/listening/sections/:id/permanent  (hard delete)
+POST   /api/admin/listening/sections/:id/audio
+POST   /api/admin/listening/assemble
+```
+
+---
+
 ## Writing Content
 
 `backend/routes/admin/writingContent.js` — 21 endpoints, **all `teacherOnly`**, covering Writing Exams (Task 1 + Task 2 paired), Writing History (student submissions), and standalone Writing Task 1/Task 2 practice pools. Every `DELETE` in this file is, per the shared-middleware rule, effectively admin-only in practice.
@@ -1246,7 +1171,7 @@ Since every file's routes are string-literal paths (no overlapping wildcard segm
 ### GET /api/admin/writing-tests
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** none (dropdown source for Access Key generation)
+**Request:** none (lightweight name-only list; not currently called from anywhere in `admin-src` — originally fed the now-removed Access Key generation dropdown, see `docs/ADMIN_PANEL_AUDIT.md` #5)
 **Response**
 ```json
 { "success": true, "exams": [ { "_id": "66600...", "name": "Academic Writing Test 1" } ] }

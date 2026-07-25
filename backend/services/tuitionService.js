@@ -1,14 +1,33 @@
 'use strict';
 
-// Extracted from routes/tuition.js, verbatim logic — including the two
-// reminder message templates below, which look like duplication but are
-// actually different wording for the single-reminder vs bulk-reminder
-// case; they are intentionally NOT unified into one builder.
+// Extracted from routes/tuition.js, verbatim logic.
 const cloudinaryService = require('./cloudinaryService');
 const TuitionFee = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message = require('../models/Message');
 const User = require('../models/User');
+
+// Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
+// below, and cron/tuitionReminder.js's daily auto-remind — so there's one
+// wording to update instead of three drifted copies. buildReminderBody picks
+// the single-fee wording when there's exactly one fee (the common case for
+// a per-fee or per-month-bulk reminder) and an itemized multi-fee wording
+// otherwise (the cron's "everything this student owes" case).
+function feeLabel(fee) {
+  return fee.feeType === 'monthly' ? `tháng ${fee.month}/${fee.year}` : `khóa "${fee.courseName}"`;
+}
+function fmtVNDAmount(amount) {
+  return Number(amount || 0).toLocaleString('vi-VN');
+}
+function buildReminderBody(fees) {
+  if (fees.length === 1) {
+    const fee = fees[0];
+    return `📢 Nhắc nhở học phí\n\nBạn còn khoản học phí chưa thanh toán:\n• Kỳ: ${feeLabel(fee)}\n• Số tiền: ${fmtVNDAmount(fee.amount)} VND\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`;
+  }
+  const lines = fees.map(f => `• ${feeLabel(f)}: ${fmtVNDAmount(f.amount)} VND`).join('\n');
+  const total = fees.reduce((s, f) => s + (f.amount || 0), 0);
+  return `📢 Nhắc nhở học phí\n\nBạn đang có ${fees.length} khoản học phí chưa thanh toán:\n${lines}\n\nTổng cộng: ${fmtVNDAmount(total)} VND\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`;
+}
 
 async function getSettings() {
   return TuitionSettings.getSingleton();
@@ -180,16 +199,12 @@ async function deleteFee(id) {
 async function sendReminder(feeId, customMessage, sender) {
   const fee = await TuitionFee.findById(feeId).populate('studentId', 'username email').lean();
   if (!fee) return null;
-  const monthLabel = fee.feeType === 'monthly' ? `tháng ${fee.month}/${fee.year}` : `khóa "${fee.courseName}"`;
-  const amount = fee.amount.toLocaleString('vi-VN');
-  const body = customMessage ||
-    `📢 Nhắc nhở học phí\n\nBạn còn khoản học phí chưa thanh toán:\n• Loại: ${fee.feeType === 'monthly' ? 'Học phí tháng' : 'Học phí khóa học'}\n• Kỳ: ${monthLabel}\n• Số tiền: ${amount} VND\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`;
   await Message.create({
     fromId: sender._id,
     fromName: sender.username,
     toId: fee.studentId._id,
-    subject: `Nhắc nhở học phí ${monthLabel}`,
-    body,
+    subject: `Nhắc nhở học phí ${feeLabel(fee)}`,
+    body: customMessage || buildReminderBody([fee]),
   });
   return true;
 }
@@ -199,17 +214,12 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
     .populate('studentId', 'username _id').lean();
   if (!fees.length) return 0;
   const monthLabel = `tháng ${month}/${year}`;
-  const msgs = fees.map(fee => {
-    const amount = fee.amount.toLocaleString('vi-VN');
-    const body = customMessage ||
-      `📢 Nhắc nhở học phí\n\nBạn còn khoản học phí ${monthLabel} chưa thanh toán: ${amount} VND.\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin và xác nhận.`;
-    return {
-      fromId: sender._id, fromName: sender.username,
-      toId: fee.studentId._id,
-      subject: `Nhắc nhở học phí ${monthLabel}`,
-      body,
-    };
-  });
+  const msgs = fees.map(fee => ({
+    fromId: sender._id, fromName: sender.username,
+    toId: fee.studentId._id,
+    subject: `Nhắc nhở học phí ${monthLabel}`,
+    body: customMessage || buildReminderBody([fee]),
+  }));
   await Message.insertMany(msgs);
   return msgs.length;
 }
@@ -256,4 +266,5 @@ module.exports = {
   createFee, updateFee, deleteFee,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
+  buildReminderBody,
 };

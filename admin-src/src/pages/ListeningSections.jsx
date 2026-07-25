@@ -20,7 +20,7 @@ function AssembleModal({ sections, onClose, onSuccess }) {
     if (!Object.values(picks).some(v => v)) { toast('Chọn ít nhất 1 section', 'error'); return; }
     setSaving(true);
     try {
-      const d = await apiFetch('/listening/admin/assemble', {
+      const d = await apiFetch('/admin/listening/assemble', {
         method: 'POST',
         body: JSON.stringify({ ...form, sectionIds: picks }),
       });
@@ -126,7 +126,7 @@ function AudioUploadModal({ section, onClose, onUploaded }) {
     try {
       const fd = new FormData();
       fd.append('audio', file);
-      const res = await fetch(`${API}/listening/admin/sections/${section._id}/audio`, {
+      const res = await fetch(`${API}/admin/listening/sections/${section._id}/audio`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: fd,
@@ -192,7 +192,7 @@ export default function ListeningSections() {
   const [showAssemble, setShowAssemble] = useState(false);
 
   const load = () =>
-    apiFetch('/listening/admin/sections')
+    apiFetch('/admin/listening/sections')
       .then(d => setSections(d.sections || []))
       .catch(e => toast(e.message, 'error'));
 
@@ -208,7 +208,7 @@ export default function ListeningSections() {
 
   async function toggleActive(id, isActive) {
     try {
-      await apiFetch(`/listening/admin/sections/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
+      await apiFetch(`/admin/listening/sections/${id}`, { method: 'PUT', body: JSON.stringify({ isActive: !isActive }) });
       toast(isActive ? 'Đã ẩn section' : 'Đã hiện section');
       load();
     } catch (e) { toast(e.message, 'error'); }
@@ -217,7 +217,7 @@ export default function ListeningSections() {
   async function del(id, title) {
     confirm(`Xóa vĩnh viễn section "${title}"? Không thể phục hồi.`, async () => {
       try {
-        await apiFetch(`/listening/admin/sections/${id}/permanent`, { method: 'DELETE' });
+        await apiFetch(`/admin/listening/sections/${id}/permanent`, { method: 'DELETE' });
         toast('Đã xóa vĩnh viễn');
         load();
       } catch (e) { toast(e.message, 'error'); }

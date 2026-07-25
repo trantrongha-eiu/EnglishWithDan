@@ -178,9 +178,39 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
 });
 
 // GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing + Speaking)
+// Fans out across 9 heterogeneous attempt collections (no single-collection
+// union to page against), so this can't do textbook skip/limit pagination —
+// each collection is queried for its own top-LIMIT rows, merged, sorted,
+// then capped again in JS. What THIS fixes (StudentHistory.jsx admin-panel
+// audit finding, 2026-07-25): the header used to show `filtered.length`
+// (rows that happened to survive the cap) as if it were a true total, and
+// once real attempt volume exceeded the cap, older rows just silently
+// vanished with no indication anything was missing. Now `total` below is a
+// real countDocuments() sum across all 9 collections (cheap — no document
+// bodies fetched), and the frontend shows an explicit "loaded N of total"
+// state with a "load more" action instead of a silently-wrong number.
+//
+// Optional ?userId= filter (added for StudentDetail.jsx's "Lịch sử làm bài"
+// tab, audit finding #4) scopes every collection to one student instead of
+// the site-wide feed — same handler, same merge/sort logic, just an extra
+// $match clause per collection. WritingPracticeAttempt keys its owning
+// field `studentId`, not `userId` — every other collection uses `userId`.
 router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
   try {
-    const LIMIT = Math.min(parseInt(req.query.limit) || 80, 300);
+    const LIMIT = Math.min(parseInt(req.query.limit) || 80, 2000);
+    const uid = req.query.userId || null;
+    const counts = await Promise.all([
+      TestAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }),
+      ListeningAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }).catch(() => 0),
+      WritingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      WritingPracticeAttempt.countDocuments({ ...(uid && { studentId: uid }) }).catch(() => 0),
+      Task1Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      SpeakingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+    ]);
+    const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
       if (!u || typeof u !== 'object') return { displayName: '–' };
       const first = (u.firstName || '').trim();
@@ -190,47 +220,47 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
 
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts] = await Promise.all([
-      TestAttempt.find({ status: 'completed' })
+      TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
         .sort({ endTime: -1 }).limit(LIMIT)
         .select('-answers -passagesUsed').lean(),
-      ListeningAttempt.find({ status: 'completed' })
+      ListeningAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
         .catch(() => []),
-      WritingAttempt.find()
+      WritingAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
         .catch(() => []),
-      ListeningPracticeAttempt.find()
+      ListeningPracticeAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
         .catch(() => []),
-      ReadingPracticeAttempt.find()
+      ReadingPracticeAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
         .select('-answers').lean()
         .catch(() => []),
-      WritingPracticeAttempt.find()
+      WritingPracticeAttempt.find({ ...(uid && { studentId: uid }) })
         .populate('studentId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-userAnswer').lean()
         .catch(() => []),
-      Task1Attempt.find()
+      Task1Attempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-userAnswer -feedback').lean()
         .catch(() => []),
-      Task2Attempt.find()
+      Task2Attempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ completedAt: -1 }).limit(LIMIT)
         .select('-questionsAttempted').lean()
         .catch(() => []),
-      SpeakingAttempt.find()
+      SpeakingAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-transcript').lean()
@@ -337,7 +367,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     ];
 
     rows.sort((a, b) => new Date(b.date) - new Date(a.date));
-    res.json({ success: true, attempts: rows.slice(0, LIMIT * 3) });
+    // `total` is the real grand-total across all 9 collections (see above) —
+    // `attempts.length` is just how many of the most recent ones this
+    // request actually returned, which callers should treat as "loaded so
+    // far," not "all of them," whenever attempts.length < total.
+    res.json({ success: true, attempts: rows.slice(0, LIMIT), total });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

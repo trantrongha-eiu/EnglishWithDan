@@ -414,7 +414,14 @@ export default function Users() {
       {remindUser && <RemindModal userId={remindUser._id} username={remindUser.username} onClose={() => setRemindUser(null)} onSaved={() => load(page)} />}
 
       <div className="section-header">
-        <h2 className="section-title">Người dùng ({total})</h2>
+        <div>
+          <h2 className="section-title">Người dùng ({total})</h2>
+          {!roleFilter && (
+            <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
+              Bao gồm cả student, teacher, admin — lọc theo "Role" bên dưới để xem riêng số học sinh
+            </div>
+          )}
+        </div>
         {isAdmin && <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ Tạo tài khoản</button>}
       </div>
 
@@ -482,10 +489,11 @@ export default function Users() {
                   <td style={{ fontSize: 12, color: ls.color, whiteSpace: 'nowrap' }}>{ls.text}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/students/${u._id}`)} title="Xem lịch sử làm bài + hoạt động từ vựng">👁 Chi tiết</button>}
                       {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
                       {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
-                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setRemindUser(u)} title="Nhắc nhở học tập">🔔 Nhắc nhở</button>}
-                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn" aria-label="Gửi tin nhắn">✉️</button>
+                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setRemindUser(u)} title="Nhắc nhở học tập — tính vào cột NHẮC NHỞ, hiện banner cảnh báo cho học sinh khi đủ 3 lần">🔔 Nhắc nhở</button>}
+                      <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn tự do — KHÔNG tính vào cột NHẮC NHỞ, dùng nút 🔔 Nhắc nhở nếu muốn nhắc nhở chính thức" aria-label="Gửi tin nhắn">✉️</button>
                       {isAdmin && (
                         <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}
                           onClick={() => toggleBan(u._id, u.username, u.isBanned)}>

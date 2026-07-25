@@ -1,5 +1,11 @@
 'use strict';
 // Extracted from backend/routes/admin.js — Plan Management and Upgrade Requests sections.
+// Named billing.js until 2026-07-25 (admin panel audit finding #8) — renamed
+// because it handles zero actual payment/invoice records despite the name;
+// this file only ever mutates User.plan/planExpiresAt (premium subscription
+// status) and the UpgradeRequest queue. Real tuition/fee billing is a
+// completely separate, unrelated system: TuitionFee/TuitionSettings models,
+// backend/routes/tuition.js, backend/services/tuitionService.js.
 
 const express = require('express');
 const auth    = require('../../middleware/auth');
@@ -10,6 +16,22 @@ const User           = require('../../models/User');
 const UpgradeRequest = require('../../models/UpgradeRequest');
 
 const router = express.Router();
+
+// Applies `months` of premium to a user, stacking on remaining time if their
+// plan hasn't expired yet (via computePlanExpiry). Shared by the direct
+// admin-grant route below and the upgrade-request approval route further
+// down — previously each hand-rolled its own findByIdAndUpdate with the
+// same {plan, planExpiresAt, planStartedAt} shape, which could drift.
+async function grantPremium(userId, months) {
+  const existing = await User.findById(userId).select('planExpiresAt');
+  if (!existing) return null;
+  const planExpiresAt = computePlanExpiry(existing.planExpiresAt, months);
+  return User.findByIdAndUpdate(
+    userId,
+    { plan: 'premium', planExpiresAt, planStartedAt: new Date() },
+    { new: true }
+  ).select('username email plan planExpiresAt role');
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // PLAN MANAGEMENT (admin only)
@@ -22,17 +44,15 @@ router.put('/users/:id/plan', auth, adminOnly, async (req, res) => {
     if (!['free', 'premium'].includes(plan)) {
       return res.status(400).json({ success: false, message: 'Plan không hợp lệ' });
     }
-    const update = { plan };
+
+    let user;
     if (plan === 'premium' && months) {
-      const existing = await User.findById(req.params.id).select('planExpiresAt');
-      update.planExpiresAt = computePlanExpiry(existing?.planExpiresAt, months);
-      update.planStartedAt = new Date();
-    } else if (plan === 'free') {
-      update.planExpiresAt = null;
-      update.planStartedAt = null;
+      user = await grantPremium(req.params.id, months);
+    } else {
+      const update = plan === 'free' ? { plan, planExpiresAt: null, planStartedAt: null } : { plan };
+      user = await User.findByIdAndUpdate(req.params.id, update, { new: true })
+        .select('username email plan planExpiresAt role');
     }
-    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true })
-      .select('username email plan planExpiresAt role');
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy user' });
     res.json({ success: true, user });
   } catch (err) {
@@ -69,25 +89,22 @@ router.get('/upgrade-requests', auth, adminOnly, async (req, res) => {
 router.put('/upgrade-requests/:id/approve', auth, adminOnly, async (req, res) => {
   try {
     const { adminNote } = req.body;
-    // Only username/planExpiresAt are used below — field-limit the populate so
-    // it doesn't pull the full User document (password hash, resetOTP, etc.)
-    const request = await UpgradeRequest.findById(req.params.id).populate('userId', 'username planExpiresAt');
+    // Only username is used below — field-limit the populate so it doesn't
+    // pull the full User document (password hash, resetOTP, etc.)
+    const request = await UpgradeRequest.findById(req.params.id).populate('userId', 'username');
     if (!request) return res.status(404).json({ success: false, message: 'Không tìm thấy yêu cầu' });
     if (request.status !== 'pending') {
       return res.status(400).json({ success: false, message: 'Yêu cầu đã được xử lý' });
     }
-    // Tính ngày hết hạn plan (cộng thêm từ hiện tại hoặc từ ngày hết hạn cũ nếu còn hạn)
-    const user = request.userId;
-    const newExpiry = computePlanExpiry(user.planExpiresAt, request.months);
 
-    await User.findByIdAndUpdate(user._id, { plan: 'premium', planExpiresAt: newExpiry, planStartedAt: new Date() });
+    const updatedUser = await grantPremium(request.userId._id, request.months);
     request.status = 'approved';
     request.adminNote = adminNote || '';
     request.reviewedBy = req.user._id;
     request.reviewedAt = new Date();
     await request.save();
 
-    res.json({ success: true, message: `Đã nâng cấp Premium cho ${user.username} đến ${newExpiry.toLocaleDateString('vi-VN')}` });
+    res.json({ success: true, message: `Đã nâng cấp Premium cho ${updatedUser.username} đến ${updatedUser.planExpiresAt.toLocaleDateString('vi-VN')}` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

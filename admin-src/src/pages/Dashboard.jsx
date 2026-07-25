@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import VisitsChart from '../components/VisitsChart';
@@ -179,7 +180,11 @@ export default function Dashboard() {
                   ? `${h.correctCount}/${h.totalQuestions}` : '–';
                 return (
                   <tr key={h._id}>
-                    <td><strong>{h.userId?.displayName || '–'}</strong></td>
+                    <td>
+                      {h.userId?._id
+                        ? <Link to={`/students/${h.userId._id}`} style={{ fontWeight: 700, color: 'var(--text)' }}>{h.userId?.displayName || '–'}</Link>
+                        : <strong>{h.userId?.displayName || '–'}</strong>}
+                    </td>
                     <td>{skillBadge(h.skill)}</td>
                     <td>{h.testName || '–'}</td>
                     <td>{formatDate(h.date)}</td>

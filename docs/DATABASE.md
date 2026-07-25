@@ -11,7 +11,6 @@ Grouping matches ARCHITECTURE.md's Database architecture section exactly: **Iden
 - **`userId`/`studentId` naming is inconsistent, on purpose or not.** Most models that belong to a student use `userId` (`VocabBook`, `TestAttempt`, `DifficultWord`, `TuitionFee` uses `studentId`, `WritingPracticeAttempt` uses `studentId`, `Task2Draft` uses `userId`). There's no single convention — if you're writing a query or an aggregation that joins across attempt types, double-check the field name per model rather than assuming `userId` everywhere.
 - **TTL auto-expiry is used for exactly two kinds of collection**: high-volume practice-drill attempts that don't need to be retained forever (`Task1Attempt` 30d, `Task2Attempt` 60d, `Task2TemplateAttempt` 30d, `WritingPracticeAttempt` 30d), and autosave drafts that are meaningless once stale (`WritingDraft` 30d from last save, `Task2Draft` 7d from last save). Notably, the higher-stakes attempt types — `TestAttempt` (reading), `ListeningAttempt`, `WritingAttempt`, `SpeakingAttempt`, `ReadingPracticeAttempt`, `ListeningPracticeAttempt` — have **no** TTL and are retained indefinitely (subject to manual admin deletion via `routes/admin/attempts.js`). That split looks deliberate: the ones without TTL are the ones shown back to the student as history/feedback and reviewed by teachers (writing/speaking grading in particular depends on them persisting), while the TTL'd ones are disposable drill exhaust.
 - **Deleting a `User` doesn't cascade.** `DELETE /api/admin/users/:id` (`backend/routes/admin/users.js`) is a plain `User.findByIdAndDelete` — no corresponding cleanup of that user's `TestAttempt`/`WritingAttempt`/`VocabBook`/`TuitionFee`/`Message`/etc. documents. Consistent with ARCHITECTURE.md's "no transactions anywhere" — there's no multi-collection cleanup step at all, transactional or otherwise. In practice this means a deleted user leaves orphaned child documents with a `userId` that no longer resolves; nothing in the codebase queries for or reports on this, so it's silent.
-- **`AccessKey` is genuinely orphaned** — confirmed here, not just asserted. `routes/admin/accessKeys.js` generates keys and lets teachers/admins list/deactivate/delete them, and the schema tracks `currentUses`/`maxUses`/`isValid`, but a full grep of `backend/` for `AccessKey` turns up only that one route file and the model itself — **no route anywhere validates a student-submitted key or increments `currentUses`**. The feature was built (generation + management UI) but redemption was never wired up. See `docs/MAINTENANCE.md` for the tracked-debt framing ARCHITECTURE.md points to.
 - **`WPLesson` is effectively write-only.** `WPExercise.lessonId` refs it, and `services/writingPracticeService.js` and `scripts/seedWritingPractice.js` both create/upsert `WPLesson` docs as a side effect of importing exercises (dedup key: `topicKey`+`level`) — but a repo-wide grep for `lessonId` turns up only the write sites; nothing ever `.populate('lessonId')`s or otherwise reads a `WPLesson`'s own fields (`titleVi`, `lessonType`, `grammarFocus`, `difficulty`) back out. The collection accumulates real documents, they're just never read. Less clear-cut than `AccessKey` (there's no unused *feature* here, just unused *fields*), but worth knowing before assuming lesson metadata is used anywhere in what students see.
 - **Content models are almost entirely unindexed beyond `{isActive}`-shaped compound indexes** (or nothing at all — see `WritingExam`, `WritingTask1`, `WritingTask2`, `SpeakingQuestion`, `SpeakingMaterial`, `WritingSample`, `WPLesson`, `Course`). This tracks with them being low-cardinality, admin-curated collections (dozens to low hundreds of documents) rather than something a missing index would meaningfully slow down — different from the attempt/user collections, where every index earns its keep against real per-request query volume (see the indexing pass called out in README's history, phase 3).
 - **Soft-delete (`isActive: false`) and hard-delete (`findByIdAndDelete`) coexist per-model, not per-collection-type.** `Passage`/`ReadingTest` support both (deactivate via `isActive`, or a real admin hard-delete). Attempts are hard-deleted only. There's no single rule; check the specific route before assuming which one a "delete" button actually does.
@@ -85,7 +84,7 @@ Passage.findOne({ _id: id, isActive: true }).lean()          // standalone pract
 
 **Key fields:** `name`, `seriesName`, `testNumber`, `isActive`.
 
-**Relationships:** References nothing. Referenced by `TestAttempt.testId` and by `AccessKey.testId` (dynamically, via `refPath`, when `testType: 'reading'`).
+**Relationships:** References nothing. Referenced by `TestAttempt.testId`.
 
 **Indexes:** `{ isActive: 1, testNumber: -1 }`.
 
@@ -103,7 +102,7 @@ ReadingTest.findById(testId)
 
 **Key fields:** `name`, `testNumber`, `audioUrl`/`audioFileName`/`audioDuration` (Cloudinary-hosted audio), `sections[]` (embedded `ListeningSectionSchema` — one per Part 1–4, each with its own `questionGroups[]`), `isActive`. Virtual `totalQuestions` flattens the nested groups to a count.
 
-**Relationships:** References nothing. Referenced by `ListeningAttempt.testId` and by `AccessKey.testId` (via `refPath`, `testType: 'listening'`).
+**Relationships:** References nothing. Referenced by `ListeningAttempt.testId`.
 
 **Indexes:** `{ isActive: 1, testNumber: -1 }`.
 
@@ -141,7 +140,7 @@ ListeningSection.find({ _id: { $in: requestedIds } }).lean()
 
 **Key fields:** `task1.imageUrl`/`task1.prompt`/`task1.instructions`, `task2.prompt`/`task2.instructions`, `duration` (minutes), `isActive`.
 
-**Relationships:** References nothing. Referenced by `WritingAttempt.examId` and `AccessKey.testId` (via `refPath`, `testType: 'writing'`).
+**Relationships:** References nothing. Referenced by `WritingAttempt.examId`.
 
 **Indexes:** None beyond the default `_id` index.
 
@@ -625,7 +624,7 @@ DifficultWord.findOneAndUpdate({ userId, word }, { $inc: { wrongCount: 1 }, last
 
 ## Operations
 
-The business-operations side of the schema — tuition billing, upgrade requests, access keys, in-app messaging, and autosave drafts. Mixed bag deliberately grouped together in ARCHITECTURE.md rather than split further.
+The business-operations side of the schema — tuition billing, upgrade requests, in-app messaging, and autosave drafts. Mixed bag deliberately grouped together in ARCHITECTURE.md rather than split further.
 
 ### TuitionFee
 
@@ -685,23 +684,6 @@ UpgradeRequest.findOne({ userId, status: 'pending' })            // duplicate-re
 UpgradeRequest.findOne({ userId }).sort({ createdAt: -1 })        // student's latest request status
 ```
 
-### AccessKey
-
-**Purpose:** Designed as a redeemable one-time/limited-use code granting access to a specific test (or any test of a type, or anything at all) without a premium plan. **Confirmed orphaned** — see "Patterns across the schema" above for the grep evidence. Document it as it exists in the schema, but be aware the redemption half of the feature was never built.
-
-**Key fields:** `key` (unique, uppercase), `testType` (enum `reading`/`listening`/`writing`/`speaking`/`null`), `testId` (dynamic `refPath: 'testRefModel'` — resolves to `ReadingTest`/`ListeningTest`/`WritingExam` depending on `testType`; the virtual `testRefModel` getter deliberately falls back to `'ReadingTest'` for `speaking`/`null` cases since there's no dedicated ref target and `testId` is always `null` there in practice — see the schema's own comment on why that's currently harmless), `createdBy` (ref `User`), `expiresAt`, `maxUses`/`currentUses` (tracked in the schema but `currentUses` is never incremented by any code path), virtual `isValid` (computed from `isActive`+`currentUses`/`maxUses`+`expiresAt`, but never consulted since nothing redeems a key).
-
-**Relationships:** References `User` (`createdBy`) and, dynamically, `ReadingTest`/`ListeningTest`/`WritingExam` (`testId` via `refPath`). Referenced by nothing.
-
-**Indexes:** `{ createdBy: 1, createdAt: -1 }` (plus the implicit unique index on `key`).
-
-**Lifecycle:** Created (generated, up to 100 at a time) and deactivated/hard-deleted by teachers/admins via `routes/admin/accessKeys.js`. No student-facing create/read/update path exists at all. No TTL.
-
-**Common queries:**
-```js
-AccessKey.find(filter).populate('createdBy', 'username').sort({ createdAt: -1 })   // admin key list
-AccessKey.findByIdAndUpdate(req.params.id, { isActive: false })                     // deactivate
-```
 
 ### Message
 

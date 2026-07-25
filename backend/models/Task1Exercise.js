@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+// One of three overlapping-looking "sentence exercise" systems (the other
+// two: WPExercise.js, Task2Topic.js's questions subschema) — `type` values
+// intentionally overlap across all three since that's just question
+// FORMAT. This one is specifically for Task 1 skills (describing charts/
+// graphs/maps/processes), scoped by skillType+module below — see
+// docs/EXERCISE_SYSTEMS.md for the full placement rule + examples.
 const task1ExerciseSchema = new mongoose.Schema({
   skillType: {
     type: String,

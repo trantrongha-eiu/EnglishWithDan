@@ -14,7 +14,7 @@ const express = require('express');
 const router = express.Router();
 
 router.use(require('./passages'));         // Passages, Reading Tests, Listening Tests dropdown
-router.use(require('./accessKeys'));       // Access Keys
+router.use(require('./listening'));        // Listening Tests, Practice Sections (admin CRUD)
 router.use(require('./stats'));            // Stats, db-status, history, recent-attempts, listening-history
 router.use(require('./writingContent'));   // Writing Tests dropdown, Writing Exams, Writing History, Task1/Task2 pools
 router.use(require('./speaking'));         // Speaking Questions, Materials, History
@@ -29,6 +29,6 @@ router.use(require('./task1Exercises'));   // Task 1 Exercises CRUD
 router.use(require('./task2Topics'));      // Task 2 Topics CRUD + maintenance endpoints
 router.use(require('./task2Templates'));   // Task 2 Templates CRUD
 router.use(require('./messages'));         // Messages
-router.use(require('./billing'));          // Plan Management, Upgrade Requests
+router.use(require('./premium'));          // Plan Management, Upgrade Requests (renamed from billing.js — no payment/invoice logic here, see file header)
 
 module.exports = router;

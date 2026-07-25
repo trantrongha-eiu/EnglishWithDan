@@ -231,7 +231,14 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
 }
 
 
-export default function Task2Exercises() {
+// Named Task2Exercises.jsx until 2026-07-25 (admin panel audit finding #8) —
+// renamed because it doesn't manage a flat "exercises" list like its sibling
+// Task1Exercises.jsx; it manages Topics with nested Questions
+// (Task2Topic.questions), a different shape entirely. See
+// docs/EXERCISE_SYSTEMS.md for how this fits alongside WPExercise/
+// Task1Exercise. Route path (/task2-exercises) and nav label ("Task 2
+// Writing") are unchanged — this rename is dev-facing only.
+export default function Task2Topics() {
   const [topics, setTopics]           = useState([]);
   const [total, setTotal]             = useState(0);
   const [page, setPage]               = useState(1);

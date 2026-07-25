@@ -127,6 +127,15 @@ router.delete('/task2/topics/:topicId/questions/:qid', auth, teacherOnly, async 
   }
 });
 
+// ── Manual, one-off maintenance tools — no admin-src UI calls either of
+// these two routes on purpose (flagged in the 2026-07-25 admin panel audit,
+// docs/ADMIN_PANEL_AUDIT.md #11, as "no frontend caller"; confirmed here as
+// intentional, not orphaned dead code). They're meant to be triggered
+// manually (curl/Postman) by whoever is fixing that specific one-off data
+// issue, not routine content editing — that's also why they're adminOnly
+// rather than teacherOnly (see docs/API_ADMIN.md's permission-model notes).
+// ──────────────────────────────────────────────────────────────────────────
+
 // POST /api/admin/reseed-task2-week12 — delete duplicates + re-insert fresh week-12 topics
 router.post('/reseed-task2-week12', auth, adminOnly, async (req, res) => {
   try {

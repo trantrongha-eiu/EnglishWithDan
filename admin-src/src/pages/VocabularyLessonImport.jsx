@@ -4,6 +4,7 @@ import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import LessonPreview from '../components/LessonPreview';
+import ImportStatusBox from '../components/ImportStatusBox';
 
 // Copied verbatim into the admin's clipboard — the site never calls an AI
 // API itself, this is only ever pasted by a human into ChatGPT/Gemini.
@@ -156,20 +157,14 @@ export default function VocabularyLessonImport() {
       </div>
 
       {result && !result.valid && (
-        <div style={{ padding: '14px 16px', borderRadius: 8, background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.3)', marginBottom: 20 }}>
-          <strong style={{ color: 'var(--danger)' }}>✗ {result.errors.length} lỗi — chưa thể import:</strong>
-          <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 13, color: 'var(--danger)' }}>
-            {result.errors.map((e, i) => <li key={i}>{e}</li>)}
-          </ul>
+        <div style={{ marginBottom: 20 }}>
+          <ImportStatusBox tone="error" title={`✗ ${result.errors.length} lỗi — chưa thể import:`} items={result.errors} />
         </div>
       )}
 
       {result?.valid && result.warnings?.length > 0 && (
-        <div style={{ padding: '14px 16px', borderRadius: 8, background: 'rgba(245,158,11,.1)', border: '1px solid rgba(245,158,11,.3)', marginBottom: 20 }}>
-          <strong style={{ color: '#b45309' }}>⚠ {result.warnings.length} cảnh báo — vẫn import được:</strong>
-          <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 13, color: '#b45309' }}>
-            {result.warnings.map((w, i) => <li key={i}>{w}</li>)}
-          </ul>
+        <div style={{ marginBottom: 20 }}>
+          <ImportStatusBox tone="warning" title={`⚠ ${result.warnings.length} cảnh báo — vẫn import được:`} items={result.warnings} />
         </div>
       )}
 

@@ -3,6 +3,7 @@ import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import ImportStatusBox from '../components/ImportStatusBox';
 
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
@@ -371,18 +372,14 @@ function ImportJsonModal({ onClose, onImported }) {
           </label>
 
           {result && (
-            <div style={{ padding: '12px 14px', borderRadius: 8, fontSize: 13, lineHeight: 1.6, background: result.ok ? 'rgba(52,211,153,.1)' : 'rgba(239,68,68,.1)', border: `1px solid ${result.ok ? 'rgba(52,211,153,.3)' : 'rgba(239,68,68,.3)'}`, color: result.ok ? 'var(--green)' : 'var(--danger)' }}>
-              <strong>{result.ok ? '✓' : '✗'} {result.message}</strong>
-              {result.results?.length > 0 && (
-                <ul style={{ margin: '8px 0 0', paddingLeft: 20, fontSize: 12 }}>
-                  {result.results.map((r, i) => (
-                    <li key={i} style={{ color: r.status === 'created' ? 'var(--green)' : r.status === 'updated' ? 'var(--blue)' : 'var(--text3)' }}>
-                      Unit {r.unitNumber}: {r.status} {r.wordCount != null ? `(${r.wordCount} từ)` : ''} {r.reason || ''}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <ImportStatusBox
+              tone={result.ok ? 'success' : 'error'}
+              title={`${result.ok ? '✓' : '✗'} ${result.message}`}
+              items={result.results?.map(r => ({
+                text: `Unit ${r.unitNumber}: ${r.status} ${r.wordCount != null ? `(${r.wordCount} từ)` : ''} ${r.reason || ''}`,
+                color: r.status === 'created' ? 'var(--green)' : r.status === 'updated' ? 'var(--blue)' : 'var(--text3)',
+              }))}
+            />
           )}
         </div>
 

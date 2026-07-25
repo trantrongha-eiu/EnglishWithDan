@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 
 const PAGE_SIZE = 25;
+const INITIAL_LOAD = 300;
+const LOAD_MORE_STEP = 300;
 
 function bandBadge(score) {
   if (score == null) return '–';
@@ -41,20 +44,42 @@ export default function StudentHistory() {
   const { isAdmin } = useAuth();
 
   const [all,     setAll]     = useState([]);
+  // Real grand-total across all 9 attempt collections, from the backend
+  // (see routes/admin/stats.js's recent-attempts handler) — independent of
+  // how many rows this page has actually loaded into `all` so far. Used to
+  // show "loaded N/total" honestly instead of the old behavior where rows
+  // past the fetch cap just silently disappeared with no indication.
+  const [total,   setTotal]   = useState(0);
   // load() only ever runs once, from the mount effect below — starting
   // true (instead of setState(true) synchronously inside the effect)
   // shows the same loading state without tripping set-state-in-effect.
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadLimit, setLoadLimit] = useState(INITIAL_LOAD);
   const [skill,   setSkill]   = useState('');
   const [search,  setSearch]  = useState('');
   const [page,    setPage]    = useState(1);
 
-  const load = () => apiFetch('/admin/recent-attempts?limit=300')
-    .then(d => { setAll(d.attempts || []); setPage(1); })
-    .catch(e => toast(e.message, 'error'))
-    .finally(() => setLoading(false));
+  function load(limit = loadLimit) {
+    return apiFetch(`/admin/recent-attempts?limit=${limit}`)
+      .then(d => { setAll(d.attempts || []); setTotal(d.total ?? (d.attempts || []).length); setPage(1); })
+      .catch(e => toast(e.message, 'error'))
+      .finally(() => { setLoading(false); setLoadingMore(false); });
+  }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(INITIAL_LOAD); }, []);
+
+  function loadMore() {
+    const next = loadLimit + LOAD_MORE_STEP;
+    setLoadingMore(true);
+    setLoadLimit(next);
+    load(next);
+  }
+
+  function refresh() {
+    setLoading(true);
+    load(loadLimit);
+  }
 
   const filtered = useMemo(() => all.filter(h => {
     if (skill && h.skill !== skill) return false;
@@ -90,18 +115,39 @@ export default function StudentHistory() {
         await apiFetch(endpoint, { method: 'DELETE' });
         toast('Đã xóa');
         setAll(a => a.filter(x => x._id !== id));
+        setTotal(t => Math.max(0, t - 1));
       } catch (e) { toast(e.message, 'error'); }
     });
   }
 
+  const hasMore = all.length < total;
+
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">Lịch sử làm bài ({filtered.length})</h2>
-        <button className="btn btn-ghost btn-sm" onClick={load} disabled={loading}>
+        <h2 className="section-title">
+          Lịch sử làm bài ({filtered.length}{(skill || search) ? ` / ${all.length} đã tải` : ''})
+        </h2>
+        <button className="btn btn-ghost btn-sm" onClick={refresh} disabled={loading}>
           {loading ? '⏳' : '🔄'} Làm mới
         </button>
       </div>
+
+      {hasMore && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16,
+          padding: '10px 14px', background: 'var(--surface2)', border: '1px solid var(--border)',
+          borderRadius: 8, fontSize: 13, color: 'var(--text2)',
+        }}>
+          <span>
+            Đang hiển thị <strong>{all.length}</strong> / <strong>{total}</strong> bản ghi gần nhất — còn {total - all.length} bản ghi cũ hơn chưa tải.
+            {(skill || search) && ' Tìm kiếm/lọc chỉ áp dụng trên phần đã tải — tải thêm nếu không thấy kết quả cần tìm.'}
+          </span>
+          <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }} onClick={loadMore} disabled={loadingMore}>
+            {loadingMore ? '⏳ Đang tải...' : `Tải thêm ${LOAD_MORE_STEP}`}
+          </button>
+        </div>
+      )}
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <input
@@ -150,7 +196,9 @@ export default function StudentHistory() {
                   return (
                     <tr key={h._id}>
                       <td>
-                        <strong>{name}</strong>
+                        {h.userId?._id
+                          ? <Link to={`/students/${h.userId._id}`} style={{ fontWeight: 700, color: 'var(--text)' }}>{name}</Link>
+                          : <strong>{name}</strong>}
                         {h.userId?.username && name !== h.userId.username && (
                           <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{h.userId.username}</div>
                         )}

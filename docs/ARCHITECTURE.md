@@ -161,7 +161,7 @@ High-level shape:
 - **Content** (admin/teacher-authored, read by students): `Passage`, `ReadingTest`, `ListeningTest`, `ListeningSection`, `WritingExam`, `WritingTask1`, `WritingTask2`, `Task1Exercise`, `Task2Topic`, `Task2Template`, `SpeakingQuestion`, `SpeakingMaterial`, `WritingSample`, `WPTopic`/`WPLesson`/`WPExercise`, `Course`
 - **Attempts** (student-generated, one per exam/practice session): `TestAttempt`, `ListeningAttempt`, `WritingAttempt`, `SpeakingAttempt`, `Task1Attempt`, `Task2Attempt`, `Task2TemplateAttempt`, `ReadingPracticeAttempt`, `ListeningPracticeAttempt`, `WritingPracticeAttempt` — several of these have TTL indexes (auto-delete after a retention window) rather than growing unbounded forever
 - **Vocabulary**: `VocabBook`, `VocabUnit`, `VocabActivity`, `DifficultWord`
-- **Operations**: `TuitionFee`, `TuitionSettings`, `UpgradeRequest`, `AccessKey` (currently orphaned — generated but never redeemed, see `docs/MAINTENANCE.md`), `Message` (in-app inbox), `WritingDraft`/`Task2Draft` (autosave)
+- **Operations**: `TuitionFee`, `TuitionSettings`, `UpgradeRequest`, `Message` (in-app inbox), `WritingDraft`/`Task2Draft` (autosave)
 
 **No transactions anywhere in the codebase** — every multi-document write either doesn't need cross-document atomicity, or (for the cases that do, like the OTP-attempt-lockout counter) uses a single atomic `findOneAndUpdate` instead of a multi-step transaction. Worth knowing before reaching for `session.startTransaction()` as a first instinct — check whether the simpler atomic-update pattern already covers the case.
 

@@ -1432,21 +1432,23 @@ Route ordering note: this wildcard route is registered last among `/practice/*` 
 
 ## Listening
 
-### GET /api/listening/admin/tests
+Admin routes below live in `backend/routes/admin/listening.js` (moved there 2026-07-25 from `backend/routes/listening.js` for namespace consistency with every other content type's admin routes — see `docs/API_ADMIN.md`'s Listening section). Student-facing routes (`GET /api/listening/tests`, `/practice/list`, `/practice/by-id/:id`) remain in `backend/routes/listening.js`.
+
+### GET /api/admin/listening/tests
 **Auth:** Bearer token required · **Permissions:** teacher or admin · **Rate limit:** none
 **Response:** `{ "success": true, "tests": [ { "name": "...", "testNumber": 1, "totalQuestions": 40, "totalParts": 4, "sections": [...] } ] }`
 **Error responses:** 500 `{ success:false, message: err.message }` (raw Mongoose error text, not a generic message).
 
 ---
 
-### GET /api/listening/admin/tests/:id
+### GET /api/admin/listening/tests/:id
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Response:** `{ "success": true, "test": { /* full ListeningTest incl. correctAnswer */ } }`
 **Error responses:** 404 `{ success:false, message:'Không tìm thấy' }` (via `NotFoundError`, `err.statusCode`); 500 on other errors.
 
 ---
 
-### POST /api/listening/admin/tests
+### POST /api/admin/listening/tests
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Body — full `ListeningTest` shape (`name`, `sections`, etc.), passed straight into `new ListeningTest(body)`.
 **Response** (201): `{ "success": true, "test": { /* created doc */ } }`
@@ -1455,7 +1457,7 @@ Route ordering note: this wildcard route is registered last among `/practice/*` 
 
 ---
 
-### PUT /api/listening/admin/tests/:id
+### PUT /api/admin/listening/tests/:id
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Path param `id`; body — partial/full `ListeningTest` fields. Uses `findByIdAndUpdate(..., { new:true, runValidators:true })`.
 **Response:** `{ "success": true, "test": { ... } }`
@@ -1463,21 +1465,21 @@ Route ordering note: this wildcard route is registered last among `/practice/*` 
 
 ---
 
-### DELETE /api/listening/admin/tests/:id
+### DELETE /api/admin/listening/tests/:id
 **Auth:** Bearer token required · **Permissions:** teacher or admin (soft delete) — **teachers are explicitly blocked from this DELETE** by the route's own `teacherOnly` middleware (`req.method === 'DELETE'` check), so only `admin` can actually reach the controller.
 **Response:** `{ "success": true, "message": "Đã ẩn đề nghe" }` — sets `isActive:false`, does not remove the document.
 **Error responses:** 403 `{ success:false, message:'Giáo viên không có quyền xóa nội dung' }` for teachers; 500 generic for others.
 
 ---
 
-### DELETE /api/listening/admin/tests/:id/permanent
+### DELETE /api/admin/listening/tests/:id/permanent
 **Auth:** Bearer token required · **Permissions:** admin only (same teacher-DELETE block as above)
 **Response:** `{ "success": true, "message": "Đã xóa vĩnh viễn đề nghe" }`
 **Error responses:** 403 for teachers; 404 `{ success:false, message:'Không tìm thấy đề nghe' }` (via `NotFoundError`) if the id doesn't exist; 500 generic.
 
 ---
 
-### POST /api/listening/admin/tests/:id/audio
+### POST /api/admin/listening/tests/:id/audio
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** `multipart/form-data`, field `audio` (multer memory storage, 200MB limit, mimetype must start with `audio/` or be `video/mp4`).
 **Response:** `{ "success": true, "message": "Upload audio thành công", "audioUrl": "https://res.cloudinary.com/...", "audioDuration": 1834 }`
@@ -1486,7 +1488,7 @@ Route ordering note: this wildcard route is registered last among `/practice/*` 
 
 ---
 
-### POST /api/listening/admin/upload-audio
+### POST /api/admin/listening/upload-audio
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 Same multer constraints as above; standalone (not attached to a test yet).
 **Response:** `{ "success": true, "audioUrl": "...", "audioDuration": 1834, "originalName": "part1.mp3" }`
@@ -1494,7 +1496,7 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### POST /api/listening/admin/upload-map-image
+### POST /api/admin/listening/upload-map-image
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Body: `{ "imageBase64": "data:image/png;base64,..." }`
 **Response:** `{ "success": true, "url": "https://res.cloudinary.com/..." }`
@@ -1503,7 +1505,7 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### PUT /api/listening/admin/tests/:id/transcript
+### PUT /api/admin/listening/tests/:id/transcript
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Body: `{ "sectionTranscripts": [{ "partNumber": 1, "transcript": "..." }] }`
 **Response:** `{ "success": true, "message": "Đã cập nhật transcript" }`
@@ -1512,7 +1514,7 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### GET /api/listening/admin/attempts
+### GET /api/admin/listening/attempts
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Query: `testId`, `userId`, `page` (default 1), `limit` (default 50).
 **Response:** `{ "success": true, "attempts": [ /* populated user + test */ ], "total": 214, "page": 1, "limit": 50 }`
@@ -1520,7 +1522,7 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### GET /api/listening/admin/attempts/stats
+### GET /api/admin/listening/attempts/stats
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Query: `testId` (optional — omit for all-tests stats).
 **Response:** `{ "success": true, "overview": { "totalAttempts": 214, "avgBand": 6.3, ... }, "byTest": [...], "topStudents": [...] }`
@@ -1544,21 +1546,21 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### GET /api/listening/admin/sections
+### GET /api/admin/listening/sections
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Response:** `{ "success": true, "sections": [ /* all ListeningSection docs, active+inactive, sorted by part then newest */ ] }`
 **Error responses:** 500 generic.
 
 ---
 
-### GET /api/listening/admin/sections/:id
+### GET /api/admin/listening/sections/:id
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Response:** `{ "success": true, "section": { ... } }`
 **Error responses:** 404 `{ success:false, message:'Không tìm thấy' }`; 500 generic.
 
 ---
 
-### POST /api/listening/admin/sections
+### POST /api/admin/listening/sections
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Body — full `ListeningSection` shape.
 **Response** (200, not 201 — unlike `admin/tests`): `{ "success": true, "section": { ... } }`
@@ -1566,7 +1568,7 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### PUT /api/listening/admin/sections/:id
+### PUT /api/admin/listening/sections/:id
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** `findByIdAndUpdate(..., { new:true, runValidators:true })` — no explicit not-found check, so an unmatched `id` returns `{ success:true, section: null }`, **not a 404**.
 **Response:** `{ "success": true, "section": { ... } | null }`
@@ -1574,14 +1576,14 @@ Same multer constraints as above; standalone (not attached to a test yet).
 
 ---
 
-### DELETE /api/listening/admin/sections/:id
+### DELETE /api/admin/listening/sections/:id
 **Auth:** Bearer token required · **Permissions:** admin only in practice (teacher DELETE is blocked by `teacherOnly`)
 **Response:** `{ "success": true }` — soft delete (`isActive:false`); no `message` field, unlike the equivalent test-hide endpoint.
 **Error responses:** 403 for teachers; 500 generic.
 
 ---
 
-### POST /api/listening/admin/sections/:id/audio
+### POST /api/admin/listening/sections/:id/audio
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 Same multer audio constraints as the test-audio upload.
 **Response:** `{ "success": true, "audioUrl": "...", "duration": 128, "section": { ... } }`
@@ -1589,7 +1591,7 @@ Same multer audio constraints as the test-audio upload.
 
 ---
 
-### POST /api/listening/admin/assemble
+### POST /api/admin/listening/assemble
 **Auth:** Bearer token required · **Permissions:** teacher or admin
 **Request:** Body: `{ "name": "IELTS Listening Test 5", "seriesName": "Cambridge 18", "testNumber": 5, "sectionIds": { "1": "id1", "2": "id2", "3": "id3", "4": "id4" } }` — any subset of parts 1–4 may be supplied; missing parts get an empty placeholder section.
 **Response:** `{ "success": true, "test": { ... }, "message": "Đã tạo đề Listening từ bài lẻ. Upload audio tại trang Đề Listening." }`
