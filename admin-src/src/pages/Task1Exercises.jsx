@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination';
 
 const LIMIT = 20;
 const LEVELS = ['beginner', 'elementary', 'intermediate'];
-const SKILL_TYPES = ['noun_phrase', 'data_description', 'comparison', 'paraphrase', 'trend_language', 'overview'];
+const SKILL_TYPES = ['noun_phrase', 'data_description', 'comparison', 'paraphrase', 'trend_language', 'overview', 'introduction'];
 const EX_TYPES = ['fill_blank', 'translation', 'rearrange', 'multiple_choice', 'error_correction', 'paraphrase_choose', 'data_transform'];
 
 const SKILL_LABELS = {
@@ -17,6 +17,7 @@ const SKILL_LABELS = {
   paraphrase: 'Paraphrase',
   trend_language: 'Trend Language',
   overview: 'Overview',
+  introduction: 'Introduction',
 };
 
 const TYPE_LABELS = {

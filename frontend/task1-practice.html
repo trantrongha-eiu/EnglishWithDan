@@ -345,6 +345,7 @@
           <button class="t1-skill-tab"        data-skill="comparison"       onclick="selectSkill('comparison')">⚖️ So sánh</button>
           <button class="t1-skill-tab"        data-skill="trend_language"   onclick="selectSkill('trend_language')">📈 Xu hướng</button>
           <button class="t1-skill-tab"        data-skill="paraphrase"       onclick="selectSkill('paraphrase')">✏️ Paraphrase</button>
+          <button class="t1-skill-tab"        data-skill="introduction"     onclick="selectSkill('introduction')">📝 Introduction</button>
           <button class="t1-skill-tab"        data-skill="overview"         onclick="selectSkill('overview')">🔭 Overview</button>
         </div>
         <div class="t1-settings-section">
@@ -824,7 +825,7 @@ const TYPE_LABELS = {
 const SKILL_LABELS = {
   noun_phrase:'Noun Phrase', data_description:'Mô tả Data',
   comparison:'So sánh', trend_language:'Xu hướng',
-  paraphrase:'Paraphrase', overview:'Overview'
+  paraphrase:'Paraphrase', overview:'Overview', introduction:'Introduction'
 };
 
 // ── Per-skill completion tracking (bestScore/latestScore/completed/completedAt) ──
@@ -895,7 +896,7 @@ function _applyT1UrlFilters() {
   const _t1p = new URLSearchParams(location.search);
   const _t1Skill = _t1p.get('skill');
   const _t1Mode  = _t1p.get('mode');
-  const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview'];
+  const _validT1Skills = ['all','noun_phrase','data_description','comparison','trend_language','paraphrase','overview','introduction'];
   if (_validT1Skills.includes(_t1Skill)) {
     currentSkill = _t1Skill;
     document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
@@ -2190,6 +2191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="t1-skill-tab"        data-skill="comparison"       onclick="mobSetSkill('comparison')">⚖️ So sánh</button>
         <button class="t1-skill-tab"        data-skill="trend_language"   onclick="mobSetSkill('trend_language')">📈 Xu hướng</button>
         <button class="t1-skill-tab"        data-skill="paraphrase"       onclick="mobSetSkill('paraphrase')">✏️ Paraphrase</button>
+        <button class="t1-skill-tab"        data-skill="introduction"     onclick="mobSetSkill('introduction')">📝 Introduction</button>
         <button class="t1-skill-tab"        data-skill="overview"         onclick="mobSetSkill('overview')">🔭 Overview</button>
       </div></div>
 

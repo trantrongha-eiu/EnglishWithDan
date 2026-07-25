@@ -100,7 +100,7 @@ async function getMeta() {
   ]);
 
   const levels = ['beginner', 'elementary', 'intermediate'];
-  const skills = ['noun_phrase', 'data_description', 'comparison', 'trend_language', 'paraphrase', 'overview'];
+  const skills = ['noun_phrase', 'data_description', 'comparison', 'trend_language', 'paraphrase', 'overview', 'introduction'];
 
   const counts = {};
   levels.forEach(l => {

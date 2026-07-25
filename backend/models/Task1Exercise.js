@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 const task1ExerciseSchema = new mongoose.Schema({
   skillType: {
     type: String,
-    enum: ['noun_phrase', 'data_description', 'comparison', 'paraphrase', 'trend_language', 'overview'],
+    enum: ['noun_phrase', 'data_description', 'comparison', 'paraphrase', 'trend_language', 'overview', 'introduction'],
     required: true
   },
   module: { type: Number, enum: [1, 2, 3, 4], required: true },

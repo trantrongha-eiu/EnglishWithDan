@@ -9,7 +9,7 @@ Thứ quyết định là *nội dung/ngữ cảnh* bài tập đang luyện k�
 | Hệ thống | Model | Trang admin | Dùng khi... |
 |---|---|---|---|
 | **WPExercise** | `backend/models/WPExercise.js` | Writing Practice → tab "Bài tập" (`/admin/wp-exercises`) | Kỹ năng viết câu **chung chung, không gắn riêng Task 1 hay Task 2** — luyện ngữ pháp/cấu trúc câu (thì, liên từ, mệnh đề...) mà học sinh dùng được ở bất kỳ dạng bài nào. Gắn với 1 `WPLesson` (chủ đề bài học) qua `lessonId`. |
-| **Task1Exercise** | `backend/models/Task1Exercise.js` | Task 1 Grammar Exercises (`/admin/task1/exercises`) | Kỹ năng **riêng cho Task 1** — mô tả biểu đồ/bảng/bản đồ/quy trình. Phân loại theo `skillType` (noun_phrase, data_description, comparison, paraphrase, trend_language, overview) + `module` (1-4), không liên quan chủ đề Task 2 nào. |
+| **Task1Exercise** | `backend/models/Task1Exercise.js` | Task 1 Grammar Exercises (`/admin/task1/exercises`) | Kỹ năng **riêng cho Task 1** — mô tả biểu đồ/bảng/bản đồ/quy trình. Phân loại theo `skillType` (noun_phrase, data_description, comparison, paraphrase, trend_language, overview, introduction) + `module` (1-4), không liên quan chủ đề Task 2 nào. |
 | **Task2Topic.questions** | `backend/models/Task2Topic.js` | Task 2 Writing Exercises (`/admin/task2/topics/:id/questions`) | Câu hỏi **gắn với 1 chủ đề luận Task 2 cụ thể** (VD "Environment", "Technology") — luôn nằm lồng bên trong 1 `Task2Topic`, dùng để xây kỹ năng viết về đúng chủ đề đó. |
 
 `Task2Templates.jsx` (`/admin/task2/templates`) không nằm trong nhóm này — đây là
