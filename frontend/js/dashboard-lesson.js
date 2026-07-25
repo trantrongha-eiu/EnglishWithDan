@@ -133,15 +133,32 @@ function buildClassroomPicker(container, opts) {
     const inp = container.querySelector('.unit-picker-input');
     const dd = container.querySelector('.unit-picker-dd');
     let isOpen = false;
+    // Grouped by targetClass so a student picking from a list that spans
+    // several classes can actually tell which quiz is theirs — previously
+    // every lesson (own class + other classes + unscoped) was one flat list
+    // with only a difficulty badge, no class indicator at all.
     function render() {
-        dd.innerHTML = !lessons.length
-            ? '<div class="up-empty">Chưa có bài học nào</div>'
-            : lessons.map(l => `
+        if (!lessons.length) { dd.innerHTML = '<div class="up-empty">Chưa có bài học nào</div>'; return; }
+        const groups = new Map();
+        lessons.forEach(l => {
+            const key = l.targetClass || '';
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(l);
+        });
+        const keys = [...groups.keys()].sort((a, b) => {
+            if (a === '') return 1;
+            if (b === '') return -1;
+            return a.localeCompare(b, 'vi', { numeric: true });
+        });
+        dd.innerHTML = keys.map(key => `
+            <div class="up-group-label">${key ? `Lớp ${escHtml(key)}` : 'Chung (mọi lớp)'}</div>
+            ${groups.get(key).map(l => `
                 <div class="up-item" data-id="${l._id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
                     <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(l.title)}</span>
                     <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
                 </div>
-            `).join('');
+            `).join('')}
+        `).join('');
     }
     function open() { render(); dd.style.display = 'block'; isOpen = true; }
     function close() { dd.style.display = 'none'; isOpen = false; }

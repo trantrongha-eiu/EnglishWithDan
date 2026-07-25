@@ -201,6 +201,8 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 .up-item:hover{background:rgba(61,139,255,.08)}
 .up-item.up-active{background:rgba(61,139,255,.12);color:var(--blue);font-weight:600}
 .up-empty{padding:10px 12px;font-size:13px;color:var(--text3);text-align:center}
+.up-group-label{padding:7px 12px 4px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0;background:var(--bg)}
+.up-group-label:not(:first-child){border-top:1px solid var(--border);margin-top:2px}
 .btn-difficult-words{
   display:flex;align-items:center;justify-content:center;gap:6px;
   width:100%;margin-top:6px;padding:8px;
