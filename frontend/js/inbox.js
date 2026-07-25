@@ -105,7 +105,14 @@ async function selectMsg(id) {
 
   const sender = msg.isBroadcast ? '📢 Thông báo chung' : esc(msg.fromName || 'Giáo viên');
   const subj = msg.subject ? esc(msg.subject) : '(Không có tiêu đề)';
-  document.getElementById('msgDetail').innerHTML = `
+  const detailEl = document.getElementById('msgDetail');
+  // Mobile-only: CSS hides .msg-detail below 680px until it gets .active
+  // (see inbox.html's @media block) — the panel used to never actually
+  // toggle that class, so nothing ever appeared on a phone. Desktop is
+  // unaffected (.active has no rule outside that media query).
+  detailEl.classList.add('active');
+  detailEl.innerHTML = `
+    <button class="mobile-back-btn" onclick="backToList()"><i class="fas fa-arrow-left"></i> Danh sách tin nhắn</button>
     <div class="detail-head">
       <h2 class="detail-subject">${subj}</h2>
       <div class="detail-meta">
@@ -125,6 +132,12 @@ async function selectMsg(id) {
     </div>
   `;
   setupDictionaryDouble('msgDetail', 'inbox-message');
+}
+
+// Mobile-only "back" button inside the detail panel — removes .active so
+// the CSS media query switches back to showing the message list.
+function backToList() {
+  document.getElementById('msgDetail').classList.remove('active');
 }
 
 function renderGiftBox(msg) {
@@ -190,7 +203,9 @@ async function deleteMsg(id) {
       selectedId = null;
       renderList();
       updateBadge();
-      document.getElementById('msgDetail').innerHTML = `
+      const detailEl = document.getElementById('msgDetail');
+      detailEl.classList.remove('active');
+      detailEl.innerHTML = `
         <div class="detail-placeholder">
           <i class="fas fa-envelope-open-text"></i>
           <p>Chọn một tin nhắn để đọc</p>
@@ -210,5 +225,6 @@ window.selectMsg = selectMsg;
 window.deleteMsg = deleteMsg;
 window.replyMsg = replyMsg;
 window.claimGift = claimGift;
+window.backToList = backToList;
 
 load();

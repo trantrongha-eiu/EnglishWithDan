@@ -228,6 +228,21 @@ function syncTabUrl(tab, push = true) {
   else history.replaceState({ tab }, '', url);
 }
 function goHome() { showScreen('screen-home'); syncTabUrl('home'); }
+
+// Guards the single-question practice screen's "Trang chủ" back button —
+// previously wired straight to goHome(), which discarded an in-progress or
+// just-finished recording/transcript with zero warning (student UI audit,
+// 2026-07-25). Only prompts when there's actually something to lose.
+function confirmGoHome() {
+  const hasTranscript = document.getElementById('transcript-textarea')?.value.trim();
+  if (!state.isRecording && !hasTranscript) { goHome(); return; }
+  confirmDialog(
+    'Thoát luyện tập?',
+    'Câu trả lời hiện tại chưa được lưu — thoát ra sẽ mất toàn bộ.',
+    () => { if (state.isRecording) toggleRecord(); goHome(); },
+    { confirmLabel: 'Thoát', confirmClass: 'btn-danger' }
+  );
+}
 function goPractice() { showScreen('screen-practice'); syncTabUrl('practice'); initPractice(); }
 function goHistory(fromScreen) {
   state._historyReturnScreen = fromScreen || null;
@@ -1547,6 +1562,23 @@ function confirmSeqAnswer() {
   } else {
     finishSequentialSession();
   }
+}
+
+// Guards the sequential (multi-part mock test) screen's "Thoát" button —
+// previously wired straight to exitSequentialSession(), discarding the
+// whole in-progress Part 1-3 session on a single click with zero warning
+// (student UI audit, 2026-07-25 — flagged Cao since a full mock test can
+// represent 10-15+ minutes of answered questions). Once the session has
+// already finished (results screen showing, seqActive is false), there's
+// nothing left to lose, so exit immediately without nagging.
+function confirmExitSequential() {
+  if (!state.seqActive) { exitSequentialSession(); return; }
+  confirmDialog(
+    'Thoát bài thi thử?',
+    'Bạn đang làm dở bài thi thử nhiều phần — thoát ra bây giờ sẽ mất toàn bộ tiến độ, không thể khôi phục.',
+    exitSequentialSession,
+    { confirmLabel: 'Thoát', confirmClass: 'btn-danger' }
+  );
 }
 
 function exitSequentialSession() {

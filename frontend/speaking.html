@@ -23,6 +23,7 @@
 <script src="js/nav.js"></script>
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
+<script src="js/shared/confirm-dialog.js"></script>
 <script src="js/shared/api-client.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
 
@@ -185,7 +186,7 @@
 <div id="screen-practice" class="screen">
   <!-- Topbar -->
   <div class="sp-topbar">
-    <button class="sp-topbar-back" onclick="goHome()">
+    <button class="sp-topbar-back" onclick="confirmGoHome()">
       <i class="fas fa-arrow-left"></i> Trang chủ
     </button>
     <span class="sp-topbar-title">
@@ -468,7 +469,7 @@
 ═══════════════════════════════════════════ -->
 <div id="screen-sequential" class="screen">
   <div class="sp-topbar">
-    <button class="sp-topbar-back" onclick="exitSequentialSession()">
+    <button class="sp-topbar-back" onclick="confirmExitSequential()">
       <i class="fas fa-times"></i> Thoát
     </button>
     <span class="sp-topbar-title" id="seq-header-title">PART 1</span>

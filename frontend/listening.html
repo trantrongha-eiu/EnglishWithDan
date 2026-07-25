@@ -23,6 +23,7 @@
 <script src="js/nav.js"></script>
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
+<script src="js/shared/api-client.js"></script>
 <script src="js/shared/route-params.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
 
@@ -1119,12 +1120,12 @@
 
         window.goToStartTest = goToStartTest;
 
+        // Delegates to js/shared/api-client.js so a 401 here (e.g. an expired
+        // session during a 40-60min listening exam) triggers the same
+        // logout+redirect-to-login as every other page, instead of silently
+        // surfacing as a generic error forever (student UI audit, 2026-07-25).
         async function safeJson(res) {
-            const text = await res.text();
-            if (text.trimStart().startsWith('<')) {
-                throw new Error(`HTTP ${res.status} – URL: ${res.url} – Response: ${text.slice(0, 120)}`);
-            }
-            return JSON.parse(text);
+            return window.ApiClient.handleResponse(res);
         }
 
         // ══════════════════════════════════════════════
@@ -2612,7 +2613,7 @@
                     signal: controller.signal
                 });
                 clearTimeout(submitTimeout);
-                const data = await res.json();
+                const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
                 const r = data.result;
                 state.reviewResult = r;
@@ -2823,7 +2824,7 @@
             tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Đang tải...</td></tr>';
             try {
                 const res = await fetch(`${API}/listening/history`, { headers: authH() });
-                const data = await res.json();
+                const data = await safeJson(res);
                 if (!data.success || !data.attempts?.length) {
                     tbody.innerHTML = '<tr><td colspan="8" class="ls-no-history">Chưa có lịch sử làm bài.</td></tr>';
                     return;
@@ -3165,7 +3166,7 @@
                         ? `${API}/listening/practice/list?actualTest=true`
                         : `${API}/listening/practice/list?part=${part}`;
                     const res  = await fetch(url, { headers: authH() });
-                    const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+                    const data = await safeJson(res);
                     _ltCategoryCache[part] = { sections: data.sections || [], doneMap: data.doneMap || {} };
                 } catch (e) {
                     _ltCategoryCache[part] = { sections: [], doneMap: {} };
@@ -3369,7 +3370,7 @@
                 ? `${API}/listening/practice/list?actualTest=true`
                 : `${API}/listening/practice/list?part=${partNum}`;
             const res = await fetch(url, { headers: authH() });
-            const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+            const data = await safeJson(res);
             if (!data.success) throw new Error(data.message);
             const sections = data.sections || [];
             _ltPracticeDoneMap = data.doneMap || {};
@@ -3437,7 +3438,7 @@
         });
         try {
             const res  = await fetch(`${API}/listening/practice/by-id/${sectionId}`, { headers: authH() });
-            const data = await (async () => { const t = await res.text(); return JSON.parse(t); })();
+            const data = await safeJson(res);
             if (!data.success || !data.section) { toast('Không tải được bài luyện tập', 'error'); return; }
             if (!_silent) {
                 history.pushState(
@@ -3718,7 +3719,7 @@
                 headers: { 'Content-Type': 'application/json', ...authH() },
                 body: JSON.stringify(payload)
             });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+            await safeJson(res);
         } catch (e) {
             toast('Không thể lưu kết quả lên server. Vui lòng chụp màn hình lưu lại.', 'error');
         }
@@ -3810,7 +3811,7 @@
         openModal('modal-lt-practice-history');
         try {
             const res = await fetch(`${API}/listening/practice/history`, { headers: authH() });
-            const data = await res.json();
+            const data = await safeJson(res);
             const attempts = data.attempts || [];
             const partLabel = { 1: 'S1', 2: 'S2', 3: 'S3', 4: 'S4' };
             tbody.innerHTML = attempts.map(h => {
@@ -3842,7 +3843,7 @@
         closeModal('modal-lt-practice-history');
         try {
             const res  = await fetch(`${API}/listening/practice/history/${attemptId}`, { headers: authH() });
-            const data = await res.json();
+            const data = await safeJson(res);
             if (!data.success || !data.section) return;
             const { attempt, section } = data;
 

@@ -4,7 +4,7 @@
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Practice – EnglishWithDan</title>
+  <title>Luyện viết câu giao tiếp – EnglishWithDan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -392,8 +392,8 @@
 
       <div class="wp-state-welcome" id="state-welcome">
         <div class="wp-welcome-icon">✍️</div>
-        <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết!</h2>
-        <p class="wp-welcome-sub">Cải thiện kỹ năng viết tiếng Anh qua các bài tập tương tác. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
+        <h2 class="wp-welcome-title">Chào mừng đến với Luyện viết câu giao tiếp!</h2>
+        <p class="wp-welcome-sub">Cải thiện kỹ năng viết câu tiếng Anh thông dụng qua các bài tập tương tác — khác với bài thi Writing thật hoặc luyện Task 1 riêng. Chọn cấp độ và chủ đề phù hợp ở thanh bên, rồi bắt đầu!</p>
 
         <div style="margin-bottom:28px">
           <button class="wp-welcome-start" onclick="startPractice()">
@@ -692,8 +692,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (icon) icon.className = _wpSoundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   // #wp-main is a stable container across every state/mode — one
   // registration here covers all of them via event bubbling.
-  setupDictionaryDouble('wp-main', 'writing-practice');
+  // Gated by _wpDictGate so double-click lookup is disabled during an active
+  // "Chế độ Thi thử" test session — the page promises no hints during a
+  // timed test, but the dictionary previously had no gate at all here
+  // (student UI audit, 2026-07-25).
+  setupDictionaryDouble('wp-main', 'writing-practice', _wpDictGate);
 });
+
+// Blocks dictionary lookup only while the timed test screen is actually
+// showing — #test-in-progress starts as display:none in markup and is only
+// ever un-hidden while a test is in progress, so this reflects "test in
+// progress" without needing separate state tracking.
+function _wpDictGate() {
+  if (currentMode !== 'test') return true;
+  const el = document.getElementById('test-in-progress');
+  return !el || el.style.display === 'none';
+}
 
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 

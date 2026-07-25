@@ -245,6 +245,15 @@ body.eye-protection .split-questions {
 .test-card-skeleton .sk-title { width: 70%; }
 .test-card-skeleton .sk-meta  { width: 45%; }
 .test-card-skeleton .sk-btn   { height: 34px; border-radius: 8px; margin-top: 4px; }
+/* Dark mode: skeleton had a hardcoded light background/gradient, causing a
+   white flash every time the test list loads in dark mode (student UI
+   audit, 2026-07-25). */
+[data-theme="dark"] .sk-shimmer {
+  background: linear-gradient(90deg, #1f2937 25%, #283548 50%, #1f2937 75%);
+  background-size: 1200px 100%;
+}
+[data-theme="dark"] .test-card-skeleton { background: #1f2937; border-color: #374151; }
+[data-theme="dark"] .test-card-skeleton .sk-cover { background: #374151; }
 
 /* ── Resume banner ── */
 #resume-banner {
@@ -258,7 +267,10 @@ body.eye-protection .split-questions {
   font-size: 13px;
   color: #92400e;
   position: sticky;
-  top: 0;
+  /* Composes with nav.js's fixed nav + premium-expiry banner heights
+     (student UI audit, 2026-07-25) — top:0 let the nav bar cover this
+     banner completely once the page scrolled. */
+  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px));
   z-index: 50;
 }
 #resume-banner strong { color: #1f2937; }
@@ -423,6 +435,8 @@ body.eye-protection .split-questions {
 .btn-redo-test:hover {
   background: #fce4e4;
 }
+[data-theme="dark"] .btn-redo-test { background: #1f2937; color: #f87171; border-color: #f87171; }
+[data-theme="dark"] .btn-redo-test:hover { background: #451a1a; }
 
 .loading-spinner {
   text-align: center;
@@ -631,6 +645,9 @@ body.eye-protection .split-questions {
   color: #fff;
   border-color: #e53935;
 }
+[data-theme="dark"] .fs-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
+[data-theme="dark"] .fs-btn.active,
+[data-theme="dark"] .fs-btn:hover { background: #e53935; color: #fff; border-color: #e53935; }
 
 /* Toolbar */
 .exam-toolbar {

@@ -17,8 +17,18 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); }
 
     /* Layout */
-    .inbox-layout { max-width: 960px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 300px 1fr; gap: 20px; min-height: calc(100vh - 64px); }
-    @media (max-width: 680px) { .inbox-layout { grid-template-columns: 1fr; } .msg-detail { display: none; } .msg-detail.active { display: flex; } }
+    .inbox-layout { max-width: 960px; margin: 0 auto; padding: 24px 16px; display: grid; grid-template-columns: 300px 1fr; gap: 20px; min-height: calc(100vh - var(--nav-height, 64px)); }
+    .mobile-back-btn { display: none; }
+    @media (max-width: 680px) {
+      .inbox-layout { grid-template-columns: 1fr; }
+      .msg-detail { display: none; }
+      .msg-detail.active { display: flex; }
+      .mobile-back-btn {
+        display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+        background: none; border: none; color: var(--brand); font-size: 13px; font-weight: 600;
+        font-family: inherit; cursor: pointer; padding: 0 0 4px;
+      }
+    }
 
     /* Message list */
     .msg-list-panel { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
