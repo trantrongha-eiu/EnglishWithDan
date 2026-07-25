@@ -87,6 +87,13 @@ export default function StudentDetail() {
   const [tab, setTab] = useState('history');
 
   const [user, setUser] = useState(null);
+  // Starting true (instead of setState(true) synchronously inside the
+  // effects below) shows the same loading state without tripping
+  // react-hooks/set-state-in-effect — same pattern as StudentHistory.jsx.
+  // Only correct because this page always fully remounts when navigating
+  // to a different student (every link into it is from a different route,
+  // there's no in-page "next/prev student" control) — [id] never actually
+  // changes on an already-mounted instance.
   const [loadingUser, setLoadingUser] = useState(true);
 
   const [attempts, setAttempts] = useState([]);
@@ -97,7 +104,6 @@ export default function StudentDetail() {
   const [vocabStudent, setVocabStudent] = useState(null);
 
   useEffect(() => {
-    setLoadingUser(true);
     apiFetch(`/admin/users/${id}`)
       .then(d => setUser(d.user))
       .catch(e => toast(e.message, 'error'))
@@ -105,7 +111,6 @@ export default function StudentDetail() {
   }, [id]);
 
   useEffect(() => {
-    setLoadingAttempts(true);
     apiFetch(`/admin/recent-attempts?userId=${id}&limit=500`)
       .then(d => { setAttempts(d.attempts || []); setAttemptsTotal(d.total ?? (d.attempts || []).length); })
       .catch(e => toast(e.message, 'error'))

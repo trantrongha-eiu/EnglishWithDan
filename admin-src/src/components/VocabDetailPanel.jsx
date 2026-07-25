@@ -106,7 +106,13 @@ export default function VocabDetailPanel({ student }) {
   const [selMonth, setSelMonth] = useState(new Date().getMonth() + 1);
   const [selYear, setSelYear] = useState(new Date().getFullYear());
   const [loadingBooks, setLoadingBooks] = useState(true);
-  const [loadingChart, setLoadingChart] = useState(false);
+  // Starts true for the initial mount fetch; every SUBSEQUENT fetch (view/
+  // month/year changed) sets this back to true from the button/select
+  // onChange handlers below, not from inside loadChart()/its effect — a
+  // handler is a normal event callback, not an effect, so setState there
+  // doesn't trip react-hooks/set-state-in-effect the way doing it
+  // synchronously inside the effect-triggered loadChart() did.
+  const [loadingChart, setLoadingChart] = useState(true);
 
   const yearRange = Array.from({ length: 3 }, (_, i) => new Date().getFullYear() - i);
 
@@ -117,16 +123,14 @@ export default function VocabDetailPanel({ student }) {
       .finally(() => setLoadingBooks(false));
   }, [student._id]);
 
-  // setLoadingChart(true) lives inside the callback (effect-triggered),
-  // not in the render body — the previous version set it via an "adjust
-  // state during render" comparison trick (`if (prevLoadChart !==
-  // loadChart) {...}`), which turned out to loop infinitely under
-  // React StrictMode's double-render (caught while testing this component
-  // in dev mode — a pre-existing bug in the original VocabActivity.jsx
-  // modal this was extracted from, never caught because it had only ever
-  // been tested against production builds, which don't double-render).
+  // Doesn't set setLoadingChart(true) itself — see the state's own comment
+  // above. (Earlier version set it via an "adjust state during render"
+  // comparison trick, which turned out to loop infinitely under React
+  // StrictMode's double-render — caught while testing this component in
+  // dev mode, a pre-existing bug in the original VocabActivity.jsx modal
+  // this was extracted from, never caught because it had only ever been
+  // tested against production builds, which don't double-render.)
   const loadChart = useCallback(() => {
-    setLoadingChart(true);
     const params = new URLSearchParams({ view, year: selYear });
     if (view === 'day') params.set('month', selMonth);
     return apiFetch(`/admin/vocab-activity/${student._id}?${params}`)
@@ -210,14 +214,14 @@ export default function VocabDetailPanel({ student }) {
               <button key={v}
                 className={`btn btn-sm ${view === v ? 'btn-primary' : 'btn-ghost'}`}
                 style={{ fontSize: 12, padding: '3px 10px' }}
-                onClick={() => setView(v)}>{lbl}</button>
+                onClick={() => { setLoadingChart(true); setView(v); }}>{lbl}</button>
             ))}
           </div>
           {view !== 'year' && (
             <div style={{ display: 'flex', gap: 6 }}>
               {view === 'day' && (
                 <select className="form-input" value={selMonth}
-                  onChange={e => setSelMonth(Number(e.target.value))}
+                  onChange={e => { setLoadingChart(true); setSelMonth(Number(e.target.value)); }}
                   style={{ width: 110, padding: '3px 8px', fontSize: 12 }}>
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
@@ -225,7 +229,7 @@ export default function VocabDetailPanel({ student }) {
                 </select>
               )}
               <select className="form-input" value={selYear}
-                onChange={e => setSelYear(Number(e.target.value))}
+                onChange={e => { setLoadingChart(true); setSelYear(Number(e.target.value)); }}
                 style={{ width: 80, padding: '3px 8px', fontSize: 12 }}>
                 {yearRange.map(y => <option key={y} value={y}>{y}</option>)}
               </select>

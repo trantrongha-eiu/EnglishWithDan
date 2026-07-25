@@ -60,8 +60,11 @@ describe('DELETE on a teacherOnly route — teachers are explicitly blocked from
     const test = await createListeningTest();
     const teacher = await createTeacher();
     const token = signTokenFor(teacher);
+    // Moved from /api/listening/admin/tests to /api/admin/listening/tests
+    // (admin panel audit finding #7 — namespace consistency with every
+    // other content type's admin routes).
     const res = await request(app)
-      .delete(`/api/listening/admin/tests/${test._id}`)
+      .delete(`/api/admin/listening/tests/${test._id}`)
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(403);
   });
