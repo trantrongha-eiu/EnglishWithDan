@@ -230,6 +230,7 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/sound-effects.js"></script>
 
 <!-- ── Mini stats widget (lesson progress/sound) — floats top-right,
      shared global nav (js/nav.js) now handles page navigation and dark
@@ -289,24 +290,12 @@ let collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSED_KEY) || '[]'))
 let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
 let quizState = null; // { total, answered, correct, lessonKey } — reset per lesson render
 
-// Sound effects — same pattern as writing-practice.html/task1-practice.html/
-// task2-practice.html/task2-template.html (shared wp_sound key + sound files).
-const _sndCorrect = new Audio('./sounds/correct.mp3');
-const _sndWrong   = new Audio('./sounds/incorrect.mp3');
-_sndCorrect.volume = 0.5; _sndWrong.volume = 0.5;
-let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
-function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
-function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
-function toggleWpSound() {
-  _soundEnabled = !_soundEnabled;
-  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-}
+// playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
+// (single source of truth — student UI audit Nhóm 2, 2026-07-25).
 
 function initUser() {
   const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+  if (icon) icon.className = isSoundEnabled() ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
 function getScore(key) { return scores[key] || null; }

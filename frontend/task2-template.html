@@ -38,6 +38,12 @@
     .tpl-page-hero-inner{max-width:900px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .tpl-page-title{font-size:20px;font-weight:900;margin:0 0 3px}
     .tpl-page-sub{font-size:13px;opacity:.85;margin:0}
+    /* Cloze answers only ever live in localStorage (student UI audit, Nhóm 2,
+       2026-07-25) — no server sync for the per-item state — so callers need
+       to know clearing site data loses progress. .tpl-page-hero doesn't
+       change with dark mode, so white-on-gradient works in both themes. */
+    .tpl-cache-warning{font-size:11px;opacity:.8;margin:5px 0 0;display:flex;align-items:center;gap:5px}
+    .tpl-cache-warning i{color:#fde68a}
 
     .t2-tpl-vi-btn-tab{flex-shrink:0;border:none;border-left:1px solid #e5e7eb;background:none;padding:6px 14px;font-size:11px;font-weight:700;color:#6b7280;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:background .15s,color .15s}
     .t2-tpl-vi-btn-tab:hover{background:#f0f0ff;color:#6366f1}
@@ -324,6 +330,7 @@
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
+<script src="js/shared/sound-effects.js"></script>
 
 <!-- Type switch confirm modal -->
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
@@ -385,6 +392,7 @@
         <div>
           <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
           <p class="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
+          <p class="tpl-cache-warning"><i class="fas fa-triangle-exclamation"></i> Tiến độ điền từ được lưu trên trình duyệt này — xoá cache/dữ liệu trình duyệt hoặc đổi thiết bị sẽ mất tiến độ.</p>
           <div class="wp-status-row" id="tpl-type-status"></div>
         </div>
       </div>
@@ -451,18 +459,8 @@
 <script>
 const API = 'https://englishwithdan.onrender.com';
 
-const _sndCorrect = new Audio('./sounds/correct.mp3');
-const _sndWrong   = new Audio('./sounds/incorrect.mp3');
-_sndCorrect.volume = 0.5; _sndWrong.volume = 0.5;
-let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
-function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
-function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
-function toggleWpSound() {
-  _soundEnabled = !_soundEnabled;
-  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-}
+// playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
+// (single source of truth — student UI audit Nhóm 2, 2026-07-25).
 
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
@@ -480,7 +478,7 @@ function updateXPStorage(earned) {
 }
 function initUser() {
   const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+  if (icon) icon.className = isSoundEnabled() ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
 }
 
@@ -1363,11 +1361,10 @@ function submitExam() {
   if (pct >= 80) updateXPStorage(20);
 }
 
-function fmtTime(secs) {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+// Delegates to js/shared/utils.js (single source of truth — student UI
+// audit Nhóm 2, 2026-07-25; was duplicated with task2-practice.html's
+// _fmtExamTime, which additionally zero-padded minutes — now standard).
+function fmtTime(secs) { return fmtMMSS(secs); }
 
 // ── XP pop ─────────────────────────────────────────────────────
 function awardTplXP(card) {

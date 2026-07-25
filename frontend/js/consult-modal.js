@@ -26,6 +26,17 @@
     ._cm-msg.success{background:#ecfdf5;color:#065f46;border:1px solid #6ee7b7;display:block;}
     ._cm-msg.error{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;display:block;}
     @media(max-width:520px){._cm-row{grid-template-columns:1fr;}}
+    [data-theme="dark"] #_cmCard{background:#1f2937;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+    [data-theme="dark"] ._cm-header{border-bottom-color:#374151;}
+    [data-theme="dark"] ._cm-header h3{color:#f9fafb;}
+    [data-theme="dark"] ._cm-close{color:#9ca3af;}
+    [data-theme="dark"] ._cm-close:hover{background:#374151;color:#e5e7eb;}
+    [data-theme="dark"] ._cm-body>p{color:#9ca3af;}
+    [data-theme="dark"] ._cm-group label{color:#d1d5db;}
+    [data-theme="dark"] ._cm-group input,[data-theme="dark"] ._cm-group select,[data-theme="dark"] ._cm-group textarea{background:#111827;border-color:#374151;color:#f9fafb;}
+    [data-theme="dark"] ._cm-group input:focus,[data-theme="dark"] ._cm-group select:focus,[data-theme="dark"] ._cm-group textarea:focus{border-color:#60a5fa;}
+    [data-theme="dark"] ._cm-msg.success{background:#052e16;color:#86efac;border-color:#166534;}
+    [data-theme="dark"] ._cm-msg.error{background:#2d1515;color:#fca5a5;border-color:#991b1b;}
   `;
   document.head.appendChild(css);
 

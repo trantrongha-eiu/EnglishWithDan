@@ -1523,6 +1523,11 @@ body {
 [data-theme="dark"] .q-topic-group-header  { color: #fbbf24; }
 
 [data-theme="dark"] .practice-main         { background: #111827; }
+/* .practice-empty-title had no dark override — near-black #111 text on
+   the #111827 dark background made it invisible (student UI audit,
+   Nhóm 2, 2026-07-25). .practice-empty-desc's #6b7280 is already
+   dark-mode-safe (same muted gray reused as-is elsewhere in dark mode). */
+[data-theme="dark"] .practice-empty-title  { color: #f9fafb; }
 [data-theme="dark"] .question-card         { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .q-text               { color: #f9fafb; }
 [data-theme="dark"] .q-cue                { background: #111827; color: #d1d5db; }
@@ -1559,6 +1564,11 @@ body {
 [data-theme="dark"] .score-value          { color: #f9fafb; }
 [data-theme="dark"] .fb-card              { border-color: #374151; background: #1f2937; }
 [data-theme="dark"] .fb-card-text         { color: #d1d5db; }
+/* Plain/default fb-card (e.g. "Nhận xét tổng thể") has no color variant
+   class, so it fell through to the light-mode #374151 title color on top
+   of the dark #1f2937 card — nearly unreadable (student UI audit,
+   Nhóm 2, 2026-07-25). */
+[data-theme="dark"] .fb-card-title        { color: #e5e7eb; }
 [data-theme="dark"] .fb-list li           { color: #d1d5db; }
 [data-theme="dark"] .fb-card-green        { background: #052e16; border-color: #166534; }
 [data-theme="dark"] .fb-card-green .fb-card-title { color: #4ade80; }

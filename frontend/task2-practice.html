@@ -323,6 +323,7 @@
 <script src="js/shared/api-client.js"></script>
 <script src="js/shared/dictionary-lookup.js"></script>
 <script src="js/shared/score-message.js"></script>
+<script src="js/shared/sound-effects.js"></script>
 
 
 <!-- ── Quit modal ── -->
@@ -406,18 +407,8 @@
 // ════════════════════════════════════════════════════════
 const API = 'https://englishwithdan.onrender.com';
 
-const _sndCorrect = new Audio('./sounds/correct.mp3');
-const _sndWrong   = new Audio('./sounds/incorrect.mp3');
-_sndCorrect.volume = 0.5; _sndWrong.volume = 0.5;
-let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
-function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
-function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
-function toggleWpSound() {
-  _soundEnabled = !_soundEnabled;
-  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-}
+// playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
+// (single source of truth — student UI audit Nhóm 2, 2026-07-25).
 
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
@@ -557,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initUser() {
   const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _soundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
+  if (icon) icon.className = isSoundEnabled() ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
 }
 
@@ -1468,9 +1459,9 @@ function quitPractice() {
 // ════════════════════════════════════════════════════════
 //  EXAM MODE
 // ════════════════════════════════════════════════════════
-function _fmtExamTime(s) {
-  return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-}
+// Delegates to js/shared/utils.js (single source of truth — student UI
+// audit Nhóm 2, 2026-07-25; was duplicated with task2-template.html's fmtTime).
+function _fmtExamTime(s) { return fmtMMSS(s); }
 
 function startExamTimer(totalSeconds) {
   stopExamTimer();

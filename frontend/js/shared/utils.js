@@ -58,4 +58,18 @@
       t = setTimeout(function () { fn.apply(ctx, args); }, wait);
     };
   };
+
+  /**
+   * fmtMMSS(totalSeconds) — "m:ss" with zero-padded seconds, "mm" minutes
+   * also zero-padded. Consolidates task2-template.html's fmtTime() (didn't
+   * pad minutes) and task2-practice.html's _fmtExamTime() (padded both) —
+   * the more complete behavior (both padded) was kept as canonical, same
+   * precedent as escapeHtml above (student UI audit, Nhóm 2, 2026-07-25).
+   */
+  window.fmtMMSS = function (totalSeconds) {
+    var s = Math.max(0, Math.floor(totalSeconds));
+    var m = Math.floor(s / 60);
+    var rem = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(rem).padStart(2, '0');
+  };
 })();
