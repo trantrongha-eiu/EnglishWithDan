@@ -8,6 +8,7 @@ const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
 const logger  = require('../../utils/logger');
 
 const User = require('../../models/User');
+const Message = require('../../models/Message');
 
 const router = express.Router();
 
@@ -114,6 +115,46 @@ router.put('/users/:id/ban', auth, adminOnly, async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
     logger.security(isBanned ? 'Admin banned a user' : 'Admin unbanned a user', { actorId: String(req.user._id), targetId: String(user._id) });
     res.json({ success: true, user, message: isBanned ? 'Đã cấm tài khoản' : 'Đã mở khóa tài khoản' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/users/:id/remind – nhắc nhở học tập (vocab/bài tập thiếu),
+// gửi qua hộp thư + cộng dồn studyReminderCount cho cảnh báo nổi ở nav.js.
+router.post('/users/:id/remind', auth, teacherOnly, async (req, res) => {
+  try {
+    const { message } = req.body;
+    const student = await User.findById(req.params.id);
+    if (!student) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+
+    student.studyReminderCount = (student.studyReminderCount || 0) + 1;
+    await student.save();
+
+    const body = message?.trim() ||
+      'Thầy/Cô nhận thấy bạn chưa hoàn thành đủ bài tập từ vựng/bài tập gần đây. Hãy dành thời gian ôn tập và làm bài đầy đủ để không bị tụt lại nhé!';
+    await Message.create({
+      fromId:   req.user._id,
+      fromName: req.user.username,
+      toId:     student._id,
+      subject:  '⚠️ Nhắc nhở học tập',
+      body,
+    });
+
+    res.json({ success: true, studyReminderCount: student.studyReminderCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/users/:id/reset-reminders – xóa cảnh báo nhắc nhở tích lũy
+// (dùng khi học sinh đã bắt kịp bài, tắt banner cảnh báo trên mọi trang)
+router.post('/users/:id/reset-reminders', auth, teacherOnly, async (req, res) => {
+  try {
+    const student = await User.findByIdAndUpdate(req.params.id, { studyReminderCount: 0 }, { new: true })
+      .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
+    if (!student) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+    res.json({ success: true, user: student });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

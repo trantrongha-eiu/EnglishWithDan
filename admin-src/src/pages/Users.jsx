@@ -131,6 +131,50 @@ function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSa
   );
 }
 
+function RemindModal({ userId, username, onClose, onSaved }) {
+  const toast = useToast();
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function send() {
+    setLoading(true);
+    try {
+      const d = await apiFetch(`/admin/users/${userId}/remind`, { method: 'POST', body: JSON.stringify({ message }) });
+      toast(`Đã nhắc nhở ${username} (lần thứ ${d.studyReminderCount})`);
+      onSaved();
+      onClose();
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setLoading(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">🔔 Nhắc nhở học tập — {username}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <p style={{ fontSize: 13, color: 'var(--text2)', margin: 0 }}>
+            Gửi tin nhắn nhắc nhở về việc học từ vựng / làm bài tập chưa đầy đủ. Nếu học sinh bị nhắc nhở từ 3 lần trở lên, một cảnh báo sẽ tự động hiện nổi bật trên mọi trang mỗi khi họ truy cập.
+          </p>
+          <div className="form-group" style={{ margin: 0 }}>
+            <label className="form-label">Nội dung (để trống dùng mặc định)</label>
+            <textarea className="form-input" rows={4} value={message} onChange={e => setMessage(e.target.value)}
+              placeholder="Để trống để dùng nội dung mặc định..." style={{ resize: 'vertical', fontFamily: 'inherit' }} />
+          </div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+            <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+            <button className="btn btn-primary" onClick={send} disabled={loading}>
+              {loading ? 'Đang gửi...' : '📤 Gửi nhắc nhở'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CreateUserModal({ onClose, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState({ username: '', email: '', password: '', role: 'student', firstName: '', lastName: '' });
@@ -303,6 +347,7 @@ export default function Users() {
   const [editId, setEditId] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [planUser, setPlanUser] = useState(null);
+  const [remindUser, setRemindUser] = useState(null);
   const [onlineIds, setOnlineIds] = useState(new Set());
 
   useEffect(() => {
@@ -351,11 +396,22 @@ export default function Users() {
     });
   }
 
+  async function resetReminders(id, username) {
+    confirm(`Xóa cảnh báo nhắc nhở tích lũy của "${username}"? Banner cảnh báo trên các trang của học sinh sẽ tắt.`, async () => {
+      try {
+        await apiFetch(`/admin/users/${id}/reset-reminders`, { method: 'POST' });
+        toast('Đã xóa cảnh báo nhắc nhở');
+        load(page);
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   return (
     <>
       {editId && <UserModal userId={editId} onClose={() => setEditId(null)} onSaved={() => load(page)} />}
       {showCreate && <CreateUserModal onClose={() => setShowCreate(false)} onSaved={() => load(page)} />}
       {planUser && <PlanModal userId={planUser._id} username={planUser.username} currentPlan={planUser.plan} planExpiresAt={planUser.planExpiresAt} onClose={() => setPlanUser(null)} onSaved={() => load(page)} />}
+      {remindUser && <RemindModal userId={remindUser._id} username={remindUser.username} onClose={() => setRemindUser(null)} onSaved={() => load(page)} />}
 
       <div className="section-header">
         <h2 className="section-title">Người dùng ({total})</h2>
@@ -382,12 +438,12 @@ export default function Users() {
         <table className="table">
           <thead>
             <tr>
-              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>LỚP</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
+              <th>USERNAME</th><th>EMAIL</th><th>HỌ TÊN</th><th>LỚP</th><th>NHẮC NHỞ</th><th>ROLE</th><th>GÓI</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>ONLINE GẦN NHẤT</th><th>THAO TÁC</th>
             </tr>
           </thead>
           <tbody>
             {users.length === 0
-              ? <tr><td colSpan={10} className="table-empty">Không có người dùng</td></tr>
+              ? <tr><td colSpan={11} className="table-empty">Không có người dùng</td></tr>
               : users.map(u => {
                 const ls = formatLastSeen(u.lastSeen);
                 return (
@@ -403,6 +459,18 @@ export default function Users() {
                   <td style={{ fontSize: 12, color: 'var(--text3)' }}>{u.email}</td>
                   <td>{[u.firstName, u.lastName].filter(Boolean).join(' ') || '–'}</td>
                   <td>{u.className ? <span className="badge badge-purple">{u.className}</span> : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}</td>
+                  <td>
+                    {u.studyReminderCount > 0 ? (
+                      <span
+                        className={`badge ${u.studyReminderCount >= 3 ? 'badge-red' : 'badge-gray'}`}
+                        style={{ cursor: 'pointer' }}
+                        title="Bấm để xóa cảnh báo nhắc nhở"
+                        onClick={() => resetReminders(u._id, u.username)}
+                      >
+                        {u.studyReminderCount >= 3 ? '⚠️ ' : ''}{u.studyReminderCount} lần ✕
+                      </span>
+                    ) : <span style={{ color: 'var(--text3)', fontSize: 12 }}>–</span>}
+                  </td>
                   <td>{roleBadge(u.role)}</td>
                   <td>{planBadge(u.plan, u.planExpiresAt)}</td>
                   <td>
@@ -416,6 +484,7 @@ export default function Users() {
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
                       {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
+                      {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setRemindUser(u)} title="Nhắc nhở học tập">🔔 Nhắc nhở</button>}
                       <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/messages?to=${u._id}`)} title="Gửi tin nhắn" aria-label="Gửi tin nhắn">✉️</button>
                       {isAdmin && (
                         <button className={`btn btn-sm ${u.isBanned ? 'btn-primary' : 'btn-warning'}`}

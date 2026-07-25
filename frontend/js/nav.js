@@ -263,6 +263,10 @@
           var daysLeft = Math.ceil((new Date(u.planExpiresAt) - Date.now()) / 86400000);
           if (daysLeft >= 0 && daysLeft <= 7) _showExpiryBanner(daysLeft);
         }
+        // Deliberately not sessionStorage-dismissed like the expiry banner —
+        // the whole point is it keeps showing on every visit until an admin
+        // clears studyReminderCount (student caught up on their work).
+        if ((u.studyReminderCount || 0) >= 3) _showStudyWarningBanner(u.studyReminderCount);
       });
     }
   }
@@ -300,6 +304,40 @@
       sessionStorage.setItem('expiry-banner-dismissed', '1');
       window.removeEventListener('resize', applyOffset);
       document.documentElement.style.removeProperty('--expiry-banner-height');
+      banner.remove();
+    });
+  }
+
+  // Student has been poked by an admin (missing vocab practice / incomplete
+  // homework) 3+ times — see routes/admin/users.js's POST /:id/remind.
+  // Fixed + reuses the SAME --expiry-banner-height var the premium-expiry
+  // banner (and a dozen page-specific stylesheets' sticky-header/padding
+  // rules) already read, additively, rather than introducing a second CSS
+  // var nothing else would know to account for. If the expiry banner is
+  // also showing, this stacks directly below it. No dismiss-persistence on
+  // purpose — closing it only hides it for this page view; it reappears on
+  // the next page load until an admin resets the counter.
+  function _showStudyWarningBanner(count) {
+    var baseOffset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--expiry-banner-height')) || 0;
+    var banner = document.createElement('div');
+    banner.id = 'nav-study-warning-banner';
+    banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b91c1c,#dc2626);box-shadow:0 2px 8px rgba(0,0,0,.15)';
+    banner.innerHTML =
+      '<span style="flex:1;text-align:center">⚠️ Bạn đã bị nhắc nhở <strong>' + count + ' lần</strong> về việc học từ vựng / làm bài tập chưa đầy đủ. Hãy chăm chỉ ôn tập nhé!</span>' +
+      '<a href="inbox.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
+      '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
+    var afterEl = document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
+    document.body.insertBefore(banner, afterEl.nextSibling);
+
+    function applyOffset() {
+      document.documentElement.style.setProperty('--expiry-banner-height', (baseOffset + banner.offsetHeight) + 'px');
+    }
+    applyOffset();
+    window.addEventListener('resize', applyOffset);
+
+    banner.querySelector('button').addEventListener('click', function () {
+      window.removeEventListener('resize', applyOffset);
+      document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
       banner.remove();
     });
   }

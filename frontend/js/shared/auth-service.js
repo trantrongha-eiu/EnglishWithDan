@@ -89,6 +89,7 @@
         u.plan = d.user.plan;
         u.planExpiresAt = d.user.planExpiresAt;
         u.planStartedAt = d.user.planStartedAt;
+        u.studyReminderCount = d.user.studyReminderCount || 0;
         setUser(u);
         return u;
       })

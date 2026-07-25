@@ -35,7 +35,8 @@ function userPayload(user) {
     avatar: user.avatar || '',
     plan: user.plan || 'free',
     planExpiresAt: user.planExpiresAt || null,
-    planStartedAt: user.planStartedAt || null
+    planStartedAt: user.planStartedAt || null,
+    studyReminderCount: user.studyReminderCount || 0
   };
 }
 

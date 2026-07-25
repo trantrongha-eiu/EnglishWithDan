@@ -5,6 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
+import StudentPicker from './tuition/StudentPicker';
 
 const PAGE = 20;
 
@@ -22,7 +23,6 @@ export default function Messages() {
   const [form, setForm] = useState(() => ({ toId: searchParams.get('to') || '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' }));
   const [showGift, setShowGift] = useState(false);
   const [sending, setSending] = useState(false);
-  const [studentSearch, setStudentSearch] = useState('');
 
   // Sent messages state
   const [messages, setMessages] = useState([]);
@@ -129,11 +129,6 @@ export default function Messages() {
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
-  const filteredStudents = students.filter(s =>
-    !studentSearch || (s.username || '').toLowerCase().includes(studentSearch.toLowerCase()) ||
-    (s.email || '').toLowerCase().includes(studentSearch.toLowerCase())
-  );
-
   return (
     <>
       <div className="section-header">
@@ -157,21 +152,11 @@ export default function Messages() {
             {!form.isBroadcast && (
               <div className="form-group" style={{ margin: 0 }}>
                 <label className="form-label">Người nhận</label>
-                <input
-                  className="form-input"
-                  placeholder="Tìm học sinh..."
-                  value={studentSearch}
-                  onChange={e => setStudentSearch(e.target.value)}
-                  style={{ marginBottom: 6 }}
+                <StudentPicker
+                  students={students}
+                  value={form.toId}
+                  onChange={toId => setForm(f => ({ ...f, toId }))}
                 />
-                <select className="form-input" value={form.toId} onChange={set('toId')} required={!form.isBroadcast}>
-                  <option value="">-- Chọn học sinh --</option>
-                  {filteredStudents.map(s => (
-                    <option key={s._id} value={s._id}>
-                      {onlineIds.has(s._id) ? '🟢 ' : ''}{s.username} ({s.email})
-                    </option>
-                  ))}
-                </select>
               </div>
             )}
 

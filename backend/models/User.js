@@ -40,6 +40,12 @@ const UserSchema = new mongoose.Schema({
   // unscoped) so nobody is locked out before admin gets around to
   // assigning classes to existing students.
   className:    { type: String, default: '', trim: true, maxlength: 40 },
+  // Cumulative count of admin "study reminder" pokes (missing vocab
+  // practice / incomplete homework) — see routes/admin/users.js's
+  // POST /:id/remind. Once this reaches 3, nav.js shows a persistent
+  // warning banner on every page the student visits until an admin resets
+  // it back to 0 (POST /:id/reset-reminders).
+  studyReminderCount: { type: Number, default: 0 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
   // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()
