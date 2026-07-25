@@ -108,6 +108,45 @@ describe('tuitionService', () => {
       expect(unpaid.isPaid).toBe(false);
       expect(unpaid.paidDate).toBeUndefined();
     });
+
+    it('messages the student on the false→true isPaid transition when a sender is given', async () => {
+      const student = await createStudent();
+      const admin = await createAdmin();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 5, year: 2026, amount: 500000, isPaid: false,
+      });
+
+      await tuitionService.updateFee(fee._id, { isPaid: true }, admin);
+
+      const messages = await Message.find({ fromId: admin._id, toId: student._id });
+      expect(messages).toHaveLength(1);
+      expect(messages[0].body).toMatch(/xác nhận thanh toán/i);
+    });
+
+    it('does NOT message again on a later edit while isPaid stays true', async () => {
+      const student = await createStudent();
+      const admin = await createAdmin();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 6, year: 2026, amount: 500000, isPaid: true, paidDate: new Date(),
+      });
+
+      await tuitionService.updateFee(fee._id, { note: 'edited after paid' }, admin);
+
+      const messages = await Message.find({ fromId: admin._id, toId: student._id });
+      expect(messages).toHaveLength(0);
+    });
+
+    it('does NOT message when no sender is passed', async () => {
+      const student = await createStudent();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 7, year: 2026, amount: 500000, isPaid: false,
+      });
+
+      await tuitionService.updateFee(fee._id, { isPaid: true });
+
+      const messages = await Message.find({ toId: student._id });
+      expect(messages).toHaveLength(0);
+    });
   });
 
   describe('listFees', () => {

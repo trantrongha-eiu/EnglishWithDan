@@ -61,7 +61,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   background:var(--surface);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;
-  position:sticky;top:var(--nav-height, 64px);height:calc(100vh - var(--nav-height, 64px));
+  /* Composes with nav.js's fixed premium-expiry/study-warning banners
+     (student UI audit, Nhóm 3, 2026-07-25) — omitting --expiry-banner-height
+     let those banners overlap the top of this sticky sidebar while scrolled. */
+  position:sticky;top:calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px));
+  height:calc(100vh - var(--nav-height, 64px) - var(--expiry-banner-height, 0px));
   overflow-y:auto;
 }
 .sidebar-head{
@@ -267,6 +271,14 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 }
 .sheet-difficult-btn:hover{background:#fff0de}
 [data-theme="dark"] .sheet-difficult-btn{background:#2a1800;color:#fb923c;border-color:#92400e}
+[data-theme="dark"] .sheet-difficult-btn:hover{background:#3d2200}
+
+/* Was inline style="background:..." on the element itself — inline styles
+   always beat [data-theme="dark"] selectors, so this never had a dark
+   variant at all (student UI audit, Nhóm 3, 2026-07-25). */
+.hammer-earned-banner{margin:10px 0;padding:12px 14px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:12px;text-align:center;font-weight:700;color:#92400e;font-size:14px}
+.hammer-earned-banner .hammer-earned-icon{width:26px;height:26px;vertical-align:middle;margin-right:6px;border-radius:6px}
+[data-theme="dark"] .hammer-earned-banner{background:linear-gradient(135deg,#451a03,#78350f);border-color:#92400e;color:#fde68a}
 .btn-sound-toggle{
   display:flex;align-items:center;justify-content:center;gap:6px;
   width:100%;margin-top:6px;padding:8px;

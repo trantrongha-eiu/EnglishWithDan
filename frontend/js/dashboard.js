@@ -205,6 +205,19 @@ function goHomeView(push = true) {
     askQuitPractice(doGo);
 }
 
+// Sidebar nav links / mobile hamburger menu (both rendered by the
+// page-agnostic js/nav.js, which has no knowledge of this page's quiz/
+// practice state) navigate away as a real page load with zero warning
+// otherwise — the native browser confirm is the only hook that can catch
+// every such exit path (plus tab close/refresh) in one place (student UI
+// audit, Nhóm 3, 2026-07-25).
+window.addEventListener('beforeunload', (e) => {
+    if (_isActivePractice()) { // already covers both Unit practice and Lesson quiz
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
 window.addEventListener('popstate', (e) => {
     const st = e.state || { view: 'home' };
     if (st.view === 'book' && st.bookId) {
@@ -1928,6 +1941,14 @@ function restartPractice() {
 let _quitCallback = null;
 
 function _isActivePractice() {
+    // A Lesson quiz (dashboard-lesson.js's separate state/engine) also
+    // counts as "active practice to warn about" — closes the gap where
+    // the browser Back button (popstate → goHomeView/loadUnit/openBook,
+    // all of which already route through askQuitPractice()) silently
+    // abandoned a mid-run Lesson quiz with no warning at all (student UI
+    // audit, Nhóm 3, 2026-07-25). openLesson()/closeLessonView()'s own
+    // confirm2() guard still handles their own direct exit buttons.
+    if (typeof isQuizInProgress === 'function' && isQuizInProgress()) return true;
     if (currentMode === 'study') return false;
     const resultsEl = document.getElementById('resultsMode');
     if (resultsEl && resultsEl.style.display === 'block') return false;
@@ -1940,6 +1961,22 @@ function askQuitPractice(onQuit) {
     if (!_isActivePractice()) { onQuit(); return; }
 
     _quitCallback = onQuit;
+
+    // Lesson quiz doesn't share Unit-practice's currentMode/practiceWords/
+    // wrongWordSet globals used below — build its own message instead of
+    // falling through to an empty one.
+    if (typeof isQuizInProgress === 'function' && isQuizInProgress()) {
+        const q = lessonState.quiz;
+        const remaining = Math.max(0, q.queue.length - q.index);
+        const titleEl = document.getElementById('quit-title');
+        const subEl   = document.getElementById('quit-sub');
+        const emoji   = document.getElementById('quit-mascot-emoji');
+        if (titleEl) titleEl.textContent = 'Bạn đang làm dở quiz!';
+        if (subEl)   subEl.textContent   = remaining > 0 ? `Còn ${remaining} câu chưa làm — tiến độ sẽ không được lưu` : 'Tiến độ lần này sẽ không được lưu';
+        if (emoji)   emoji.textContent   = '🐼';
+        openModal('modal-quit-practice');
+        return;
+    }
 
     const remaining = currentMode === 'mixed'
         ? Math.max(0, mixedQueue.length - mixedIndex)

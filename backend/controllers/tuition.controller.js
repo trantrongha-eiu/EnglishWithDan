@@ -75,7 +75,7 @@ exports.createFee = guard('POST / error:', async (req, res) => {
 });
 
 exports.updateFee = guard('error:', async (req, res) => {
-  const fee = await tuitionService.updateFee(req.params.id, req.body);
+  const fee = await tuitionService.updateFee(req.params.id, req.body, req.user);
   if (!fee) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   res.json({ success: true, fee });
 });

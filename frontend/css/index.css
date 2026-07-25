@@ -1430,3 +1430,28 @@
       background: var(--surface2)
     }
 
+    /* AI-writing feature section — was hardcoded inline style="background:
+       white"/hex text colors with zero dark variant, so these blocks stayed
+       glaring white cards on an otherwise dark page (student UI audit,
+       Nhóm 3, 2026-07-25). */
+    .ai-writing-section { background: linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%); }
+    [data-theme="dark"] .ai-writing-section { background: linear-gradient(135deg,#0c1e30 0%,#0a1f14 100%); }
+
+    .ai-card { background: #fff; }
+    .ai-card h4 { color: #1f2937; }
+    .ai-card p { color: #6b7280; }
+    [data-theme="dark"] .ai-card { background: #1f2937; }
+    [data-theme="dark"] .ai-card h4 { color: #f9fafb; }
+    [data-theme="dark"] .ai-card p { color: #9ca3af; }
+
+    .ai-example-card { background: #fff; }
+    [data-theme="dark"] .ai-example-card { background: #1f2937; }
+    .ai-ex-row { border-bottom: 1px solid #f3f4f6; }
+    [data-theme="dark"] .ai-ex-row { border-bottom-color: #374151; }
+    .ai-ex-text { color: #374151; }
+    [data-theme="dark"] .ai-ex-text { color: #e5e7eb; }
+    .ai-ex-tag { background: #fef3c7; color: #92400e; }
+    [data-theme="dark"] .ai-ex-tag { background: #451a03; color: #fde68a; }
+    .ai-ex-fix { color: #047857; background: #ecfdf5; }
+    [data-theme="dark"] .ai-ex-fix { color: #86efac; background: #052e16; }
+

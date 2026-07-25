@@ -160,7 +160,7 @@ async function createFee({ studentId, feeType, month, year, courseName, amount, 
   return fee.populate('studentId', 'username email firstName lastName');
 }
 
-async function updateFee(id, body) {
+async function updateFee(id, body, sender) {
   const { amount, isPaid, note, courseName, month, year } = body;
   const fee = await TuitionFee.findById(id);
   if (!fee) return null;
@@ -168,6 +168,7 @@ async function updateFee(id, body) {
   const amountChanged = amount !== undefined && Number(amount) !== fee.amount;
   const monthChanged  = month  !== undefined && Number(month)  !== fee.month;
   const yearChanged   = year   !== undefined && Number(year)   !== fee.year;
+  const justMarkedPaid = isPaid === true && !fee.isPaid; // false→true transition only
 
   if (amount     !== undefined) fee.amount     = Number(amount);
   if (isPaid     !== undefined) {
@@ -189,6 +190,23 @@ async function updateFee(id, body) {
   }
 
   await fee.save();
+
+  // Previously the student only found out payment was confirmed by
+  // revisiting the page and seeing the badge change — no message either
+  // direction, unlike notifyPayment() below (student→admin). Mirrors that
+  // with an admin→student confirmation, firing only on the actual
+  // false→true transition so routine later edits don't re-notify (student
+  // UI audit, Nhóm 3, 2026-07-25).
+  if (justMarkedPaid && sender) {
+    await Message.create({
+      fromId: sender._id,
+      fromName: sender.username,
+      toId: fee.studentId,
+      subject: `Đã xác nhận thanh toán học phí ${feeLabel(fee)}`,
+      body: `✅ Học phí của bạn đã được xác nhận thanh toán:\n• Kỳ: ${feeLabel(fee)}\n• Số tiền: ${fmtVNDAmount(fee.amount)} VND\n\nCảm ơn bạn! 🙏`,
+    });
+  }
+
   return fee.populate('studentId', 'username email firstName lastName');
 }
 
