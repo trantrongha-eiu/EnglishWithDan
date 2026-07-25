@@ -63,6 +63,17 @@ const state = {
   finalTranscript:        '',
   _userStoppedRecording:  false,
   _restartAttempts:       0,
+  // True from the moment the record button is clicked until start()/stop()
+  // actually settles (onstart/onerror/onend, all async). Without this, a
+  // second click landing in that gap — a fast double-tap, or just an
+  // impatient click before the icon visibly changes on a slow device/first
+  // permission prompt — used to be read as "stop" and cancel the session
+  // before it ever began, with no visible error (see toggleRecord()).
+  _recordBusy:            false,
+  // Bumped on every start attempt so a stale watchdog timeout (see
+  // toggleRecord()) can tell it's no longer about the current attempt and
+  // skip firing, instead of misfiring against a later session.
+  _recordWatchdogToken:   0,
 
   // Sequential (mock-test) topic practice — fully isolated from the fields above
   lastQuestionList:   [],
@@ -588,6 +599,7 @@ function resetPractice() {
   state._userStoppedRecording = true; // abandon this session — don't let onend auto-restart it
   if (state.isRecording && state.recognition) state.recognition.stop();
   state.isRecording    = false;
+  state._recordBusy    = false; // force-stopping here, outside toggleRecord()'s own flow
   state.recordStartTime = null;
   state._analyzing      = false;
 
@@ -610,7 +622,7 @@ function resetPractice() {
   if (fbSection)  fbSection.style.display = 'none';
   if (interim)    interim.textContent = '';
   if (recStatus)  { recStatus.textContent = 'Nhấn để ghi âm'; recStatus.classList.remove('live'); }
-  if (btnRecord)  btnRecord.classList.remove('recording');
+  if (btnRecord)  { btnRecord.classList.remove('recording'); btnRecord.disabled = false; }
   if (elapsed)    elapsed.classList.add('hidden');
   if (recIcon)    { recIcon.className = 'fas fa-microphone rec-mic'; }
   if (recLabel)   recLabel.textContent = 'Bắt đầu';
@@ -646,6 +658,7 @@ function clearTranscript() {
 // — resets the recording UI and finalizes the transcript into the textarea.
 function _finishRecordingUI() {
   state.isRecording = false;
+  state._recordBusy = false;
   stopElapsedTimer();
   hideSpeakCountdown();
 
@@ -660,7 +673,7 @@ function _finishRecordingUI() {
   if (recIcon)   recIcon.className  = 'fas fa-microphone rec-mic';
   if (recLabel)  recLabel.textContent = 'Bắt đầu';
   if (recStatus) recStatus.classList.remove('live');
-  if (btnRecord) btnRecord.classList.remove('recording');
+  if (btnRecord) { btnRecord.classList.remove('recording'); btnRecord.disabled = false; }
   if (interimEl) interimEl.textContent = '';
 
   if (ta && !ta.value.trim() && state.finalTranscript.trim()) ta.value = state.finalTranscript.trim();
@@ -689,15 +702,19 @@ function setupRecognition() {
     if (recIcon)   recIcon.className  = 'fas fa-stop rec-mic';
     if (recLabel)  recLabel.textContent = 'Dừng';
     if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
-    if (btnRecord) btnRecord.classList.add('recording');
+    if (btnRecord) { btnRecord.classList.add('recording'); btnRecord.disabled = false; }
+    state._recordBusy = false;
 
-    // Only (re)start the timers on the genuine first start of this session —
+    // Only (re)start the timers — and the raw-audio capture for the
+    // playback button — on the genuine first start of this session.
     // state._restartAttempts is already >0 by the time onstart fires again
     // after a transparent auto-restart (see onend below), so the elapsed/
-    // countdown timers keep running through the gap instead of resetting.
+    // countdown timers keep running through the gap instead of resetting,
+    // and we don't re-acquire a second audio-capture stream mid-answer.
     if (state._restartAttempts === 0) {
       startElapsedTimer();
       startSpeakCountdown();
+      _startAudioCapture();
     }
   };
 
@@ -753,9 +770,15 @@ function setupRecognition() {
     const msgs = {
       'not-allowed': 'Bạn chưa cấp quyền micro. Vui lòng cho phép trong cài đặt trình duyệt.',
       'network':     'Lỗi mạng khi nhận dạng giọng nói.',
+      'audio-capture': 'Không tìm thấy micro, hoặc micro đang được ứng dụng khác sử dụng.',
     };
+    const message = msgs[e.error] || `Lỗi ghi âm (${e.error}). Vui lòng thử lại.`;
     const recStatus = document.getElementById('rec-status');
-    if (recStatus) recStatus.textContent = msgs[e.error] || `Lỗi: ${e.error}`;
+    if (recStatus) recStatus.textContent = message;
+    // Previously only the small status line above changed — easy to miss,
+    // and exactly why "bấm mic nhưng không ghi âm được" looked like nothing
+    // happened at all. A toast makes a real failure impossible to miss.
+    showToast(message, 'error');
     state._userStoppedRecording = true; // a real error — don't let onend try to resume
     _finishRecordingUI();
   };
@@ -844,7 +867,15 @@ function toggleRecord() {
     showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
     return;
   }
+  // See state._recordBusy's comment — ignore clicks while the previous
+  // start/stop is still settling instead of racing it.
+  if (state._recordBusy) return;
+
+  const btnRecord = document.getElementById('btn-record');
+
   if (state.isRecording) {
+    state._recordBusy = true;
+    if (btnRecord) btnRecord.disabled = true;
     state._userStoppedRecording = true;
     state.recognition.stop();
     state.isRecording = false;
@@ -852,8 +883,13 @@ function toggleRecord() {
       _lastRecordingBlob = blob;
       const btn = document.getElementById('btn-playback-recording');
       if (btn) btn.classList.toggle('hidden', !blob);
+    }).finally(() => {
+      state._recordBusy = false;
+      if (btnRecord) btnRecord.disabled = false;
     });
   } else {
+    state._recordBusy = true;
+    if (btnRecord) btnRecord.disabled = true;
     try {
       state._userStoppedRecording = false;
       state._restartAttempts = 0;
@@ -862,8 +898,30 @@ function toggleRecord() {
       state.isRecording = true;
       _lastRecordingBlob = null;
       document.getElementById('btn-playback-recording')?.classList.add('hidden');
-      _startAudioCapture();
+      // _startAudioCapture() itself is fired from onstart, not here —
+      // starting it only after SpeechRecognition confirms it has acquired
+      // the mic avoids two near-simultaneous getUserMedia calls contending
+      // for the same device on some browser/OS combos. state._recordBusy/
+      // btnRecord.disabled are also cleared there, not here — the click
+      // isn't "done" until the engine confirms it's actually live.
+
+      // Backstop for when the browser's speech engine never calls back at
+      // all (e.g. can't reach its recognition service — same class of
+      // "browser API just hangs" issue speakText() above already guards
+      // against with its own 10s timeout). Without this, that failure mode
+      // would leave the button disabled forever with zero feedback, which
+      // is worse than the original bug.
+      const watchdogToken = ++state._recordWatchdogToken;
+      setTimeout(() => {
+        if (state._recordWatchdogToken !== watchdogToken || !state._recordBusy) return; // already resolved
+        state._userStoppedRecording = true;
+        try { state.recognition.stop(); } catch (e) {}
+        showToast('Không thể kết nối micro (quá thời gian chờ). Vui lòng kiểm tra kết nối mạng và thử lại.', 'error');
+        _finishRecordingUI();
+      }, 8000);
     } catch (e) {
+      state._recordBusy = false;
+      if (btnRecord) btnRecord.disabled = false;
       showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
     }
   }
