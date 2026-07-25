@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
+import { useConfirm } from '../components/ConfirmDialog';
 
 function VaChart({ data, view }) {
   if (!data || data.length === 0) {
@@ -263,11 +264,13 @@ function activityDotColor(lastActivity) {
 
 export default function VocabActivity() {
   const toast = useToast();
+  const confirm = useConfirm();
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('words-desc');
   const [selected, setSelected] = useState(null);
   const [remindingId, setRemindingId] = useState(null);
+  const [streakActionId, setStreakActionId] = useState(null);
 
   useEffect(() => {
     apiFetch('/admin/vocab-students')
@@ -294,6 +297,30 @@ export default function VocabActivity() {
       toast(`Đã gửi nhắc nhở tới ${displayName(s)}`);
     } catch (err) { toast(err.message, 'error'); }
     finally { setRemindingId(null); }
+  }
+
+  // Both mutate the row in-place from the response instead of a full
+  // reload — same as other admin tables here (e.g. Tuition's togglePaid).
+  function resetStreak(s) {
+    confirm(`Xóa streak hiện tại (${s.learningStreak} ngày) của ${displayName(s)}? Có thể khôi phục lại sau bằng nút "Phục hồi streak".`, async () => {
+      setStreakActionId(s._id);
+      try {
+        const d = await apiFetch(`/admin/vocab-students/${s._id}/reset-streak`, { method: 'POST' });
+        setStudents(list => list.map(x => x._id === s._id ? { ...x, learningStreak: d.learningStreak, previousStreak: d.previousStreak } : x));
+        toast(`Đã xóa streak của ${displayName(s)}`);
+      } catch (err) { toast(err.message, 'error'); }
+      finally { setStreakActionId(null); }
+    });
+  }
+
+  async function restoreStreak(s) {
+    setStreakActionId(s._id);
+    try {
+      const d = await apiFetch(`/admin/vocab-students/${s._id}/restore-streak`, { method: 'POST' });
+      setStudents(list => list.map(x => x._id === s._id ? { ...x, learningStreak: d.learningStreak, previousStreak: 0 } : x));
+      toast(`Đã khôi phục streak của ${displayName(s)} (${d.learningStreak} ngày)`);
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setStreakActionId(null); }
   }
 
   const sortFns = {
@@ -457,6 +484,18 @@ export default function VocabActivity() {
                           disabled={remindingId === s._id} title="Gửi tin nhắn nhắc học từ vựng"
                           style={{ whiteSpace: 'nowrap' }}>
                           {remindingId === s._id ? '⏳ Đang gửi...' : '🔔 Nhắc nhở'}
+                        </button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => resetStreak(s)}
+                          disabled={streakActionId === s._id || !(s.learningStreak > 0)}
+                          title="Xóa streak hiện tại (có thể khôi phục lại)"
+                          style={{ whiteSpace: 'nowrap', color: 'var(--danger, #ef4444)' }}>
+                          🗑️ Xóa streak
+                        </button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => restoreStreak(s)}
+                          disabled={streakActionId === s._id || !(s.previousStreak > 0)}
+                          title={s.previousStreak > 0 ? `Khôi phục streak ${s.previousStreak} ngày` : 'Không có streak nào để khôi phục'}
+                          style={{ whiteSpace: 'nowrap' }}>
+                          ♻️ Phục hồi streak
                         </button>
                       </div>
                     </td>

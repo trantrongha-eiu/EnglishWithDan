@@ -5,6 +5,7 @@ const express  = require('express');
 const mongoose = require('mongoose');
 const auth     = require('../../middleware/auth');
 const { teacherOnly, escapeRegex, effectiveStreak } = require('./_shared');
+const { getVNDay } = require('../../utils/streak');
 
 const VocabBook     = require('../../models/VocabBook');
 const VocabActivity = require('../../models/VocabActivity');
@@ -68,7 +69,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
       : {};
 
     const users = await User.find({ role: 'student', ...searchFilter })
-      .select('username email firstName lastName createdAt learningStreak lastActivityDate isBanned')
+      .select('username email firstName lastName createdAt learningStreak lastActivityDate previousStreak isBanned')
       .lean();
 
     const userIds = users.map(u => u._id);
@@ -127,6 +128,7 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
         createdAt:    u.createdAt,
         isBanned:     u.isBanned,
         learningStreak: effectiveStreak(u.learningStreak, u.lastActivityDate),
+        previousStreak: u.previousStreak || 0,
         // Vocab book stats
         totalBooks:   b.totalBooks  || 0,
         totalWords:   b.totalWords  || 0,
@@ -175,6 +177,53 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
     }
 
     res.json({ success: true, students: result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/admin/vocab-students/:userId/reset-streak
+ * Xóa (zero) streak hiện tại của học sinh, đồng thời lưu giá trị cũ vào
+ * previousStreak/streakLostAt để "Phục hồi streak" có thể hoàn tác — cùng
+ * cơ chế snapshot mà resetIfStale()/useHammerToRestore() (User.js) đã dùng
+ * cho việc mất streak tự nhiên, chỉ khác là admin bấm tay thay vì tự động.
+ */
+router.post('/vocab-students/:userId/reset-streak', auth, teacherOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select('learningStreak previousStreak streakLostAt');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+    if (user.learningStreak > 0) {
+      user.previousStreak = user.learningStreak;
+      user.learningStreak = 0;
+      user.streakLostAt = getVNDay(new Date());
+      await user.save();
+    }
+    res.json({ success: true, learningStreak: user.learningStreak, previousStreak: user.previousStreak });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+/**
+ * POST /api/admin/vocab-students/:userId/restore-streak
+ * Khôi phục streak từ snapshot previousStreak — giống useHammerToRestore()
+ * nhưng không tốn búa và không giới hạn cửa sổ 3 ngày (chủ động của admin,
+ * ví dụ khi lỗi hệ thống làm mất streak oan hoặc vừa "Xóa streak" nhầm).
+ */
+router.post('/vocab-students/:userId/restore-streak', auth, teacherOnly, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select('learningStreak previousStreak streakLostAt lastActivityDate');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+    if (!user.previousStreak || user.previousStreak <= 0) {
+      return res.status(400).json({ success: false, message: 'Không có streak nào để khôi phục' });
+    }
+    user.learningStreak = user.previousStreak;
+    user.previousStreak = 0;
+    user.streakLostAt = null;
+    user.lastActivityDate = getVNDay(new Date());
+    await user.save();
+    res.json({ success: true, learningStreak: user.learningStreak });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
