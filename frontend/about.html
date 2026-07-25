@@ -232,43 +232,10 @@
 
     <div class="form-card">
       <h3><i class="fas fa-paper-plane" style="color:var(--blue)"></i> Gửi thông tin tư vấn</h3>
-      <form id="consultForm" onsubmit="submitForm(event)">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="f-name">Họ &amp; tên <span style="color:var(--red)">*</span></label>
-            <input type="text" id="f-name" placeholder="Nguyễn Văn A" required/>
-          </div>
-          <div class="form-group">
-            <label for="f-phone">Số điện thoại <span style="color:var(--red)">*</span></label>
-            <input type="tel" id="f-phone" placeholder="0912 345 678" required/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="f-email">Email</label>
-          <input type="email" id="f-email" placeholder="example@gmail.com"/>
-        </div>
-        <div class="form-group">
-          <label for="f-course">Khóa học quan tâm</label>
-          <select id="f-course">
-            <option value="">-- Chọn khóa học --</option>
-            <option>IELTS Mất Gốc → 6.0+</option>
-            <option>IELTS 3.0 → 6.0+</option>
-            <option>IELTS 6.0 → 7.0+</option>
-            <option>IELTS Speaking Chuyên Sâu</option>
-            <option>Giao Tiếp Tiếng Anh Cơ Bản</option>
-            <option>Tiếng Anh Giao Tiếp Văn Phòng</option>
-            <option>Chưa biết – cần tư vấn</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="f-msg">Tin nhắn thêm</label>
-          <textarea id="f-msg" placeholder="Trình độ hiện tại, mục tiêu, thời gian học..."></textarea>
-        </div>
-        <button type="submit" class="form-submit" id="submit-btn">
-          <i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn
-        </button>
-        <div id="form-msg"></div>
-      </form>
+      <p style="color:var(--gray);font-size:14px;line-height:1.7;margin:0 0 22px">Để lại thông tin, thầy Daniel Hà sẽ liên hệ tư vấn lộ trình học phù hợp — hoàn toàn miễn phí, không áp lực.</p>
+      <button type="button" class="form-submit" onclick="openConsultModal()">
+        <i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn
+      </button>
     </div>
   </div>
 </section>
@@ -322,8 +289,6 @@
 </footer>
 
 <script>
-const API = 'https://englishwithdan.onrender.com/api';
-
 function toggleMenu() {
   const menu = document.getElementById('mobile-menu');
   const icon = document.getElementById('ham-icon');
@@ -333,45 +298,8 @@ function toggleMenu() {
 const yrEl = document.getElementById('footer-year');
 if (yrEl) yrEl.textContent = new Date().getFullYear();
 
-async function submitForm(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const msg = document.getElementById('form-msg');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-  msg.textContent = '';
-  msg.className = '';
-
-  const body = {
-    name:    document.getElementById('f-name').value.trim(),
-    phone:   document.getElementById('f-phone').value.trim(),
-    email:   document.getElementById('f-email').value.trim(),
-    course:  document.getElementById('f-course').value,
-    message: document.getElementById('f-msg').value.trim()
-  };
-
-  try {
-    const res  = await fetch(`${API}/contact`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    if (data.success) {
-      msg.textContent = '✅ ' + data.message;
-      msg.className = 'success';
-      document.getElementById('consultForm').reset();
-    } else {
-      throw new Error(data.message);
-    }
-  } catch (err) {
-    msg.textContent = '❌ ' + (err.message || 'Lỗi gửi form, thử lại sau.');
-    msg.className = 'error';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Gửi đăng ký tư vấn';
-  }
-}
+// "Đăng ký tư vấn" form moved to js/shared/consult-modal.js's shared popup
+// (single source of truth — student UI audit, Nhóm 4, 2026-07-26).
 </script>
 <script src="js/consult-modal.js"></script>
   <a href="https://zalo.me/0914769618" target="_blank" class="zalo-float" title="Chat Zalo ngay">

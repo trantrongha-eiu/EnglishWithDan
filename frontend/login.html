@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 
 <head>
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/login.css">
+    <script src="js/theme.js"></script>
 </head>
 
 <body>
@@ -19,6 +20,7 @@
   <script src="js/shared/toast.js"></script>
   <script src="js/shared/safe-redirect.js"></script>
   <script src="js/shared/auth-service.js"></script>
+  <button class="btn-dark-toggle" onclick="toggleDark()" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>
   <div class="page-center">
     <div class="container">
         <div class="background-shapes">
@@ -103,25 +105,25 @@
 
         <!-- ── Forgot Password Modal ── -->
         <div id="forgotModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-          <div class="fm-modal-box" style="background:white; border-radius:20px; padding:36px 32px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:slideInLeft .4s ease-out;">
+          <div class="fm-modal-box">
             <div style="text-align:center; margin-bottom:24px;">
               <div style="font-size:48px; margin-bottom:8px;">🔐</div>
-              <h3 id="fmTitle" style="font-size:22px; font-weight:700; color:#1f2937; margin-bottom:6px;">Quên mật khẩu?</h3>
-              <p id="fmSubtitle" style="color:#6b7280; font-size:14px;">Nhập email để nhận mã xác nhận OTP</p>
+              <h3 id="fmTitle" class="fm-title">Quên mật khẩu?</h3>
+              <p id="fmSubtitle" class="fm-subtitle">Nhập email để nhận mã xác nhận OTP</p>
             </div>
 
             <!-- Step 1: Email -->
             <div id="fmStep1">
               <div class="form-group">
-                <label style="display:block;font-size:14px;font-weight:500;color:#374151;margin-bottom:8px;">Email đã đăng ký</label>
-                <input id="fmEmail" type="email" placeholder="yourname@email.com" style="width:100%;padding:13px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;font-family:Poppins,sans-serif;outline:none;transition:border .3s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                <label>Email đã đăng ký</label>
+                <input id="fmEmail" type="email" placeholder="yourname@email.com" class="fm-input">
               </div>
-              <button onclick="fmSendOTP()" style="width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;" id="fmSendBtn">Gửi mã OTP</button>
+              <button onclick="fmSendOTP()" class="fm-btn-primary" id="fmSendBtn">Gửi mã OTP</button>
             </div>
 
             <!-- Step 2: OTP -->
             <div id="fmStep2" style="display:none;">
-              <p style="font-size:14px;color:#6b7280;text-align:center;margin-bottom:16px;">Nhập mã 6 chữ số đã gửi đến <strong id="fmEmailDisplay"></strong></p>
+              <p class="fm-hint">Nhập mã 6 chữ số đã gửi đến <strong id="fmEmailDisplay"></strong></p>
               <div class="otp-row" style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;">
                 <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
                 <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
@@ -130,21 +132,21 @@
                 <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
                 <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
               </div>
-              <button onclick="fmVerifyOTP()" style="width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;">Xác nhận</button>
-              <p style="text-align:center;margin-top:12px;font-size:13px;color:#6b7280;">Không nhận được? <button onclick="fmSendOTP(true)" style="background:none;border:none;color:#667eea;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">Gửi lại</button></p>
+              <button onclick="fmVerifyOTP()" class="fm-btn-primary">Xác nhận</button>
+              <p class="fm-resend-hint">Không nhận được? <button onclick="fmSendOTP(true)" class="fm-link-btn">Gửi lại</button></p>
             </div>
 
             <!-- Step 3: New password -->
             <div id="fmStep3" style="display:none;">
               <div class="form-group" style="margin-bottom:16px;">
-                <label style="display:block;font-size:14px;font-weight:500;color:#374151;margin-bottom:8px;">Mật khẩu mới</label>
-                <input id="fmNewPass" type="password" placeholder="Ít nhất 6 ký tự" style="width:100%;padding:13px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;font-family:Poppins,sans-serif;outline:none;transition:border .3s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                <label>Mật khẩu mới</label>
+                <input id="fmNewPass" type="password" placeholder="Ít nhất 6 ký tự" class="fm-input">
               </div>
               <div class="form-group" style="margin-bottom:20px;">
-                <label style="display:block;font-size:14px;font-weight:500;color:#374151;margin-bottom:8px;">Xác nhận mật khẩu</label>
-                <input id="fmConfirmPass" type="password" placeholder="Nhập lại mật khẩu" style="width:100%;padding:13px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;font-family:Poppins,sans-serif;outline:none;transition:border .3s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+                <label>Xác nhận mật khẩu</label>
+                <input id="fmConfirmPass" type="password" placeholder="Nhập lại mật khẩu" class="fm-input">
               </div>
-              <button onclick="fmResetPassword()" style="width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:Poppins,sans-serif;">Đặt lại mật khẩu</button>
+              <button onclick="fmResetPassword()" class="fm-btn-primary">Đặt lại mật khẩu</button>
             </div>
 
             <div id="fmMsg" style="display:none;padding:12px 16px;border-radius:10px;margin-top:16px;font-size:14px;"></div>

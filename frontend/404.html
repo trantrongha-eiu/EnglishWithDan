@@ -21,7 +21,11 @@
     }
     .notfound-code{ font-size:15px; font-weight:700; letter-spacing:.08em; color:var(--brand); text-transform:uppercase; }
     .notfound-title{ font-size:clamp(26px,4vw,36px); font-weight:800; color:var(--text); margin:6px 0 10px; }
-    .notfound-msg{ color:var(--gray); font-size:15.5px; max-width:52ch; line-height:1.6; margin-bottom:28px; }
+    /* --gray is a plain :root value from main.css, never redefined for dark
+       mode (unlike tokens.css's --text2/--text3) — stayed a fixed mid-gray
+       and looked dim against the dark background (student UI audit, Nhóm 4,
+       2026-07-26). --text2 is nearly the same shade in light mode too. */
+    .notfound-msg{ color:var(--text2); font-size:15.5px; max-width:52ch; line-height:1.6; margin-bottom:28px; }
     .notfound-actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
   </style>
 </head>

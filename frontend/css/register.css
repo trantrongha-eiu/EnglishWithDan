@@ -236,7 +236,9 @@
             padding: 13px 15px 13px 42px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            font-size: 14px;
+            /* <16px triggers iOS Safari's auto-zoom-on-focus (student UI
+               audit, Nhóm 4, 2026-07-26). */
+            font-size: 16px;
             transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
         }
@@ -595,7 +597,7 @@
             .subtitle { font-size: 13px; margin-bottom: 18px; }
             .form-row { grid-template-columns: 1fr; gap: 0; }
             .form-group { margin-bottom: 14px; }
-            .form-group input { padding: 11px 15px 11px 40px; font-size: 14px; }
+            .form-group input { padding: 11px 15px 11px 40px; font-size: 16px; }
             .btn-register { padding: 13px; font-size: 14px; }
             .social-login { grid-template-columns: 1fr; }
             .divider { margin: 16px 0; }
@@ -607,3 +609,34 @@
             .welcome-text { font-size: 18px; }
             .tagline { font-size: 11px; }
         }
+
+        /* ── Dark-mode toggle button (fixed, top-right) ── */
+        .btn-dark-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(255,255,255,.25); backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,.4); color: #fff;
+            font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s, transform .2s;
+        }
+        .btn-dark-toggle:hover { background: rgba(255,255,255,.4); transform: scale(1.06); }
+
+        /* ══════════════════════════════════════════════
+           DARK MODE — auth pages had zero theme support at all
+           (student UI audit, Nhóm 4, 2026-07-26). Keeps the pink/purple
+           brand identity exactly as in light mode — only the white card/
+           form surfaces switch to a dark surface.
+        ══════════════════════════════════════════════ */
+        [data-theme="dark"] .register-card { background: #1f2937; }
+        [data-theme="dark"] .welcome-text { color: #f9fafb; }
+        [data-theme="dark"] .form-group label { color: #d1d5db; }
+        [data-theme="dark"] .form-group input {
+            background: #111827; border-color: #374151; color: #f9fafb;
+        }
+        [data-theme="dark"] .divider::before,
+        [data-theme="dark"] .divider::after { background: #374151; }
+        [data-theme="dark"] .btn-social { background: #111827; border-color: #374151; color: #e5e7eb; }
+        [data-theme="dark"] .btn-social:hover { border-color: #4b5563; }
+        [data-theme="dark"] .login-prompt { border-top-color: #374151; }
+        [data-theme="dark"] .terms-checkbox { color: #9ca3af; }

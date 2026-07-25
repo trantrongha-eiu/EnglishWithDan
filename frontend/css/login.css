@@ -230,7 +230,9 @@
             padding: 14px 15px 14px 45px;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            font-size: 15px;
+            /* <16px triggers iOS Safari's auto-zoom-on-focus (student UI
+               audit, Nhóm 4, 2026-07-26). */
+            font-size: 16px;
             transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
         }
@@ -527,6 +529,32 @@
         }
         .otp-input:focus { border-color: #f5576c; box-shadow: 0 0 0 3px rgba(245,87,108,.15); }
 
+        /* ── Forgot-password modal (was fully inline-styled — moved to
+           classes so [data-theme="dark"] overrides above can apply; inline
+           style always beats an external selector) ── */
+        .fm-modal-box {
+            background: #fff; border-radius: 20px; padding: 36px 32px;
+            width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            animation: slideInLeft .4s ease-out;
+        }
+        .fm-title { font-size: 22px; font-weight: 700; color: #1f2937; margin-bottom: 6px; }
+        .fm-subtitle { color: #6b7280; font-size: 14px; }
+        .fm-hint { font-size: 14px; color: #6b7280; text-align: center; margin-bottom: 16px; }
+        .fm-input {
+            width: 100%; padding: 13px 16px; border: 2px solid #e5e7eb; border-radius: 12px;
+            font-size: 16px; font-family: 'Poppins', sans-serif; outline: none; transition: border .3s;
+        }
+        /* Was inline onfocus/onblur JS setting this.style.borderColor directly
+           — moved to CSS now that .fm-input is a real class. */
+        .fm-input:focus { border-color: #667eea; }
+        .fm-btn-primary {
+            width: 100%; padding: 14px; background: linear-gradient(135deg,#667eea,#764ba2);
+            color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; font-family: 'Poppins', sans-serif;
+        }
+        .fm-resend-hint { text-align: center; margin-top: 12px; font-size: 13px; color: #6b7280; }
+        .fm-link-btn { background: none; border: none; color: #667eea; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; }
+
         /* ── Site footer ── */
         .site-footer {
             text-align: center;
@@ -570,7 +598,7 @@
             .welcome-text { font-size: 22px; }
             .subtitle { font-size: 14px; margin-bottom: 20px; }
             .form-group { margin-bottom: 16px; }
-            .form-group input { padding: 13px 14px 13px 42px; font-size: 15px; }
+            .form-group input { padding: 13px 14px 13px 42px; font-size: 16px; }
             .btn-login { padding: 14px; font-size: 15px; }
             .social-login { grid-template-columns: 1fr; }
             .form-options { font-size: 13px; }
@@ -588,3 +616,42 @@
             .otp-row { gap: 4px; }
             .otp-input { width: 34px; height: 44px; font-size: 16px; }
         }
+
+        /* ── Dark-mode toggle button (fixed, top-right) ── */
+        .btn-dark-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(255,255,255,.25); backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,.4); color: #fff;
+            font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .2s, transform .2s;
+        }
+        .btn-dark-toggle:hover { background: rgba(255,255,255,.4); transform: scale(1.06); }
+
+        /* ══════════════════════════════════════════════
+           DARK MODE — auth pages had zero theme support at all
+           (student UI audit, Nhóm 4, 2026-07-26). Keeps the pink/purple
+           brand identity (gradient background, accent colors) exactly as
+           in light mode — only the white card/form/modal surfaces switch
+           to a dark surface so they don't look out of place next to the
+           rest of the (theme-aware) site.
+        ══════════════════════════════════════════════ */
+        [data-theme="dark"] .login-card,
+        [data-theme="dark"] .fm-modal-box { background: #1f2937; }
+        [data-theme="dark"] .welcome-text,
+        [data-theme="dark"] .fm-title { color: #f9fafb; }
+        [data-theme="dark"] .form-group label { color: #d1d5db; }
+        [data-theme="dark"] .form-group input,
+        [data-theme="dark"] .fm-input,
+        [data-theme="dark"] .otp-input {
+            background: #111827; border-color: #374151; color: #f9fafb;
+        }
+        [data-theme="dark"] .divider::before,
+        [data-theme="dark"] .divider::after { background: #374151; }
+        [data-theme="dark"] .btn-social { background: #111827; border-color: #374151; color: #e5e7eb; }
+        [data-theme="dark"] .btn-social:hover { border-color: #4b5563; }
+        [data-theme="dark"] .register-prompt { border-top-color: #374151; }
+        [data-theme="dark"] .remember-me { color: #9ca3af; }
+        [data-theme="dark"] .login-toast.error  { background:#2d1515; color:#fca5a5; border-color:#7f1d1d; }
+        [data-theme="dark"] .login-toast.banned { background:#2a1800; color:#fdba74; border-color:#92400e; }
