@@ -101,15 +101,24 @@ async function getAttemptHistory(userId, lessonId, limit = 20) {
 const MIN_QUIZ_LEADERBOARD_QUESTIONS = 5;
 
 // Global (cross-lesson) "who's best at Vocabulary Lesson quizzes" board —
-// ranked by accuracy first, then speed as the tiebreaker, matching how a
-// timed quiz leaderboard normally reads. Each student's single best
-// qualifying attempt represents them (not an average across lessons of
-// very different sizes/difficulty, which wouldn't be a fair comparison).
+// ranked by a student's AVERAGE score across every qualifying attempt
+// (sum of scores / number of attempts), with average time spent as the
+// tiebreaker for equal averages — so two students tied on accuracy are
+// split by who's faster on average, same idea as the old single-best-
+// attempt board's score-then-time ordering. Was previously each student's
+// single best attempt; changed to a true average per product decision
+// (2026-07-26) so consistent performers rank above a one-off lucky score.
 async function getQuizLeaderboard(limit = 10) {
   const rows = await VocabularyLessonAttemptLog.aggregate([
     { $match: { total: { $gte: MIN_QUIZ_LEADERBOARD_QUESTIONS } } },
-    { $sort: { score: -1, timeSpent: 1 } },
-    { $group: { _id: '$userId', score: { $first: '$score' }, timeSpent: { $first: '$timeSpent' }, total: { $first: '$total' } } },
+    {
+      $group: {
+        _id: '$userId',
+        avgScore: { $avg: '$score' },
+        avgTimeSpent: { $avg: '$timeSpent' },
+        attempts: { $sum: 1 },
+      },
+    },
     {
       $lookup: {
         from: 'users',
@@ -120,15 +129,15 @@ async function getQuizLeaderboard(limit = 10) {
     },
     { $unwind: '$_user' },
     { $match: { '_user.role': 'student' } }, // exclude teacher/admin test attempts from a student-facing board
-    { $sort: { score: -1, timeSpent: 1 } },
+    { $sort: { avgScore: -1, avgTimeSpent: 1 } },
     { $limit: limit },
     {
       $project: {
         _id: 0,
         userId: '$_id',
-        score: 1,
-        timeSpent: 1,
-        total: 1,
+        score: { $round: ['$avgScore', 0] },
+        timeSpent: { $round: ['$avgTimeSpent', 0] },
+        attempts: 1,
         name: { $trim: { input: { $concat: [{ $ifNull: ['$_user.firstName', ''] }, ' ', { $ifNull: ['$_user.lastName', ''] }] } } },
         username: '$_user.username',
         avatar: '$_user.avatar',

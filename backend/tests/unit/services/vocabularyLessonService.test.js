@@ -618,22 +618,24 @@ describe('getQuizLeaderboard', () => {
     await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 10 }); // qualifies
     const board = await svc.getQuizLeaderboard(10);
     expect(board).toHaveLength(1);
-    expect(board[0].total).toBe(5);
+    expect(board[0].attempts).toBe(1); // only the qualifying attempt counted, the 2-question one didn't
   });
 
-  test('represents each student by their single best qualifying attempt, not every attempt', async () => {
+  test('ranks by the AVERAGE score across every qualifying attempt, not just the best one', async () => {
     const teacher = await createTeacher();
     const student = await createStudent();
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
 
     await svc.submitAttempt(student._id, lesson._id, { correctCount: 3, totalCount: 5, timeSpent: 30 }); // 60%
-    await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 10 }); // 100% — this one should represent them
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 10 }); // 100%
     await svc.submitAttempt(student._id, lesson._id, { correctCount: 4, totalCount: 5, timeSpent: 5 });  // 80%
+    // average score = (60+100+80)/3 = 80, average time = (30+10+5)/3 = 15
 
     const board = await svc.getQuizLeaderboard(10);
     expect(board).toHaveLength(1);
-    expect(board[0].score).toBe(100);
-    expect(board[0].timeSpent).toBe(10);
+    expect(board[0].score).toBe(80);
+    expect(board[0].timeSpent).toBe(15);
+    expect(board[0].attempts).toBe(3);
   });
 
   test('excludes teacher/admin attempts from the student-facing board', async () => {
