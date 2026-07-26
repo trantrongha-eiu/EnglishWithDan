@@ -331,6 +331,17 @@ function heroStatusHtml() {
 
 function keyOf(l) { return l.category + '||' + l.lessonKey; }
 
+// lessonKey is a unique slug (e.g. "present-simple") across every category
+// in the seed data — see backend/scripts/essentialGrammarData/*.js — so it
+// doubles as a clean, shareable URL identifier on its own without needing
+// the category too.
+function lessonKeyFromUrl() {
+  return new URLSearchParams(location.search).get('lesson');
+}
+function lessonUrl(lesson) {
+  return 'essential-grammar.html?lesson=' + encodeURIComponent(lesson.lessonKey);
+}
+
 async function initEssentialGrammar() {
   try {
     const res = await fetch(API + '/api/essential-grammar/lessons');
@@ -339,14 +350,36 @@ async function initEssentialGrammar() {
     allLessons = data.lessons || [];
     categories = [...new Set(allLessons.map(l => l.category))];
 
+    // A deep link (?lesson=...) takes priority over the last-viewed lesson
+    // saved in localStorage — a shared/bookmarked URL should always open
+    // that exact lesson, not silently redirect to whatever was last open
+    // on this device.
+    const urlKey = lessonKeyFromUrl();
+    const urlLesson = urlKey && allLessons.find(l => l.lessonKey === urlKey);
     const savedKey = localStorage.getItem(LAST_LESSON_KEY);
     const savedLesson = savedKey && allLessons.find(l => keyOf(l) === savedKey);
-    currentKey = savedLesson ? savedKey : (allLessons[0] ? keyOf(allLessons[0]) : null);
+    const initialLesson = urlLesson || savedLesson || allLessons[0] || null;
+    currentKey = initialLesson ? keyOf(initialLesson) : null;
+
+    // Normalize the URL for this initial render (adds ?lesson=... if it
+    // was missing/stale) without adding a history entry — same idiom as
+    // dashboard.js's replaceState-on-load — so popstate has a well-formed
+    // starting point to compare against.
+    if (initialLesson) history.replaceState({ lessonKey: initialLesson.lessonKey }, '', lessonUrl(initialLesson));
 
     renderSidebarShell();
-    if (currentKey) selectLesson(currentKey, true);
+    if (currentKey) selectLesson(currentKey, true, false);
     initUser();
     updateHeaderProgressBadge();
+
+    // Browser back/forward between lessons — the URL bar has already
+    // moved by the time this fires, so just sync the UI to it, no further
+    // history manipulation.
+    window.addEventListener('popstate', () => {
+      const key = lessonKeyFromUrl();
+      const lesson = key && allLessons.find(l => l.lessonKey === key);
+      if (lesson) selectLesson(keyOf(lesson), true, false);
+    });
   } catch (err) {
     document.getElementById('eg-main-content').innerHTML =
       '<div class="eg-loading"><div class="eg-loading-icon">⚠️</div>Không tải được nội dung. Vui lòng thử lại sau.</div>';
@@ -424,11 +457,16 @@ function toggleCategory(cat) {
   renderSidebar();
 }
 
-function selectLesson(key, skipScroll) {
+function selectLesson(key, skipScroll, pushHistory = true) {
   const lesson = allLessons.find(l => keyOf(l) === key);
   if (!lesson) return;
   currentKey = key;
   localStorage.setItem(LAST_LESSON_KEY, key);
+  // pushHistory is false for the initial page render and for popstate
+  // restores (initEssentialGrammar already set/synced the URL for those);
+  // every real user navigation — sidebar click, prev/next footer button —
+  // uses the default true and gets its own history entry.
+  if (pushHistory) history.pushState({ lessonKey: lesson.lessonKey }, '', lessonUrl(lesson));
   renderSidebar();
   renderLessonContent(lesson);
   closeEgSheet();
