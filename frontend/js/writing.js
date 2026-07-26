@@ -37,6 +37,25 @@ async function apiFetch(path, opts = {}) {
 // bottom-center pill — a deliberate consistency normalization, not a bug.
 
 // ──────────────────────────────────────────────────────
+// Free-plan quota upsell (backend/middleware/dailyLimit.js) — /start and
+// /practice/submit respond 403 requiresPremium:true when a free user hits
+// their daily cap. Returns true if it handled the error (caller should
+// skip its own generic toast), false for any other error.
+// ──────────────────────────────────────────────────────
+function _handleQuotaError(e) {
+  if (e?.status === 403 && e.body?.requiresPremium) {
+    confirmDialog(
+      e.body.code === 'DAILY_LIMIT_REACHED' ? 'Đã hết lượt miễn phí hôm nay' : 'Cần nâng cấp Premium',
+      e.body.message || 'Nâng cấp Premium để dùng không giới hạn.',
+      () => { location.href = 'profile.html#plan'; },
+      { confirmLabel: 'Nâng cấp ngay', confirmClass: 'btn-primary' }
+    );
+    return true;
+  }
+  return false;
+}
+
+// ──────────────────────────────────────────────────────
 // State
 // ──────────────────────────────────────────────────────
 const state = {
@@ -198,7 +217,7 @@ async function startExam() {
 
     launchExam();
   } catch (e) {
-    showToast(e.message, 'error');
+    if (!_handleQuotaError(e)) showToast(e.message, 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-pen"></i> Bắt đầu làm bài'; }
   }
@@ -1797,7 +1816,7 @@ async function submitPractice() {
     document.getElementById('pw-done-label').textContent = `Đã nộp ${label}`;
     showScreen('screen-practice-done');
   } catch (e) {
-    showToast(e.message || 'Nộp bài thất bại', 'error');
+    if (!_handleQuotaError(e)) showToast(e.message || 'Nộp bài thất bại', 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Nộp bài'; }
   }

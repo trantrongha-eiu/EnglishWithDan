@@ -528,7 +528,19 @@
                 flex-wrap: wrap;
                 gap: 10px;
             }
-            .plele-cat-tabs { flex-direction: row; flex-wrap: wrap; flex: 1; }
+            /* Was flex-wrap with width:auto — each button's width was
+               purely content-driven, so which buttons paired up on a row
+               depended on measured text width at render time. That's not
+               stable: whether the webfont has finished loading yet (FOUT
+               fallback-font metrics vs. final font) shifts label widths
+               enough to flip a button from "2 fit per row" to "1 per row",
+               so the same list rendered a broken single-column-ish layout
+               right after returning from a practice session vs. a clean
+               2-column grid on first load (reported: section tabs "lệch"
+               after exiting Bài lẻ practice). An explicit 2-column grid
+               fixes each button's width to the column, independent of its
+               label's measured text width. */
+            .plele-cat-tabs { display: grid; grid-template-columns: 1fr 1fr; flex: 1; }
             .plele-tab { width: auto; }
             .plele-filter-bar {
                 flex-direction: row;

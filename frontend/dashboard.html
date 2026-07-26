@@ -67,6 +67,16 @@
 
       <div id="book-welcome" style="flex:1;overflow-y:auto;padding:40px 32px">
         <div style="max-width:1280px;margin:0 auto">
+          <!-- Premium promo banner (free-plan users only — see dashboard.js) -->
+          <div id="dash-premium-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(79,70,229,.06));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap">
+            <div style="font-size:22px">⭐</div>
+            <div style="flex:1;min-width:220px">
+              <div style="font-size:13px;font-weight:700;color:#7c3aed;margin-bottom:2px">Nâng cấp Premium để mở khóa toàn bộ tính năng</div>
+              <div style="font-size:12px;color:var(--text2,#555)">Full test Reading · Listening · thi thử Writing/Speaking không giới hạn · ngân hàng đề cập nhật thường xuyên</div>
+            </div>
+            <a href="profile.html#plan" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-decoration:none">Upgrade Premium</a>
+          </div>
+
           <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
           <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
             <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
@@ -520,7 +530,7 @@
         <h4><i class="fas fa-book-open"></i> Select a Unit to study</h4>
         <div class="unit-picker" id="unitPickerMobile">
           <div style="position:relative">
-            <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off">
+            <input class="unit-picker-input up-mob" id="unitPickerInputM" placeholder="-- Chọn Paraphrase Unit --" autocomplete="off" readonly inputmode="none">
             <span class="unit-picker-caret">▾</span>
           </div>
           <div class="unit-picker-dd" id="unitPickerDdM"></div>
@@ -975,7 +985,14 @@
         });
       }
       function openDD(){inp.value='';inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';render('');dd.style.display='block';isOpen=true;}
-      function closeDD(){dd.style.display='none';isOpen=false;inp.value=_lbl(_val);inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';}
+      // blur() on close — the dropdown-item mousedown handler below calls
+      // e.preventDefault() (so the click reliably registers instead of the
+      // input blurring first and closing the dropdown out from under the
+      // tap), which left the input focused after picking. Harmless on
+      // desktop, but leaving a text input focused is bad practice on
+      // mobile even with readonly/inputmode=none preventing the keyboard
+      // (unitPickerInputM) — blur explicitly once the pick is done.
+      function closeDD(){dd.style.display='none';isOpen=false;inp.value=_lbl(_val);inp.placeholder=_lbl(_val)||'-- Chọn Paraphrase Unit --';inp.blur();}
       inp.addEventListener('focus',openDD);
       inp.addEventListener('input',function(){if(!isOpen){isOpen=true;dd.style.display='block';}render(inp.value);});
       inp.addEventListener('keydown',function(e){if(e.key==='Escape')closeDD();});

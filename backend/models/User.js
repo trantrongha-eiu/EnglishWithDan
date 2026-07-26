@@ -74,6 +74,19 @@ const UserSchema = new mongoose.Schema({
   plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
   planExpiresAt:  { type: Date, default: null },
   planStartedAt:  { type: Date, default: null },
+  // Daily usage counters for free-plan quotas on Writing (see
+  // middleware/dailyLimit.js) — reset whenever `date` (VN-day boundary,
+  // same convention as lastActivityDate/getVNDay) no longer matches today.
+  // Never consulted for premium/admin/teacher, who bypass the limit
+  // entirely, so this stays all-zero for them. Reading/Listening practice
+  // stay fully premium-locked at the frontend instead of a quota (decided
+  // 2026-07-26 — they were already a hard lock, so a daily quota would have
+  // been a relaxation, not a restriction).
+  freeUsage: {
+    date:            { type: Date, default: null },
+    writingExam:     { type: Number, default: 0 },
+    writingPractice: { type: Number, default: 0 },
+  },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 

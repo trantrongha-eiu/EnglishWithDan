@@ -138,6 +138,16 @@ let selectedBookForSave = null;
 document.addEventListener('DOMContentLoaded', async () => {
     const user = window.AuthService.getUser() || {};
     const name = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.username || '';
+
+    // Premium upsell banner — free-plan students only (staff always have
+    // premium-equivalent access via hasPremiumAccess()). Same visual as
+    // reading.html/listening.html's #premium-promo-banner, but this one is
+    // dashboard-specific per the product ask ("thông báo nổi ngay trên
+    // dashboard"), not a global nav.js banner shown on every page.
+    const dashPremiumBanner = document.getElementById('dash-premium-banner');
+    if (dashPremiumBanner && !window.AuthService.hasPremiumAccess(user)) {
+        dashPremiumBanner.style.display = 'flex';
+    }
     // Show avatar initial
     const navAv = document.getElementById('navAvatar');
     if (navAv && name) navAv.textContent = name[0].toUpperCase();

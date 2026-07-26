@@ -433,8 +433,17 @@ body {
 
 /* ══════════════════════════════════════════════
    REVIEW MODAL  (xem lại bài làm)
+   Scoped to this page's own open/close-by-ID modals (not the bare
+   .modal-overlay class) — js/shared/confirm-dialog.js also creates an
+   element with class="modal-overlay" (its shared #shared-confirm-modal,
+   loaded on this page for the free-plan daily-quota upsell prompt) and
+   shows/hides it by toggling .hidden, not .open. A bare `.modal-overlay {
+   display: none }` rule here used to always win (this stylesheet loads
+   after components.css) and left that shared modal permanently
+   display:none regardless of .hidden — caught via live browser testing.
 ══════════════════════════════════════════════ */
-.modal-overlay {
+#wr-history-modal, #practice-exit-modal, #practice-submit-modal,
+#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
@@ -444,7 +453,8 @@ body {
   justify-content: center;
   padding: 16px;
 }
-.modal-overlay.open { display: flex; }
+#wr-history-modal.open, #practice-exit-modal.open, #practice-submit-modal.open,
+#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open { display: flex; }
 
 .review-modal {
   background: #fff;
