@@ -45,14 +45,7 @@ function startPrepTimer() {
       state.prepTimer = null;
       hidePrepTimer();
       showToast('⏰ Hết thời gian chuẩn bị — Bắt đầu nói!', 'info');
-      if (state.recognition && !state.isRecording) {
-        try {
-          state.recognition.start();
-          state.isRecording = true;
-        } catch (e) {
-          showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
-        }
-      }
+      _startRecordingGuarded();
     }
   }, 1000);
 }
@@ -61,14 +54,7 @@ function skipPrep() {
   clearInterval(state.prepTimer);
   state.prepTimer = null;
   hidePrepTimer();
-  if (state.recognition && !state.isRecording) {
-    try {
-      state.recognition.start();
-      state.isRecording = true;
-    } catch (e) {
-      showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
-    }
-  }
+  _startRecordingGuarded();
 }
 
 function hidePrepTimer() {
@@ -243,12 +229,14 @@ function getSeqElapsedSeconds() {
   return Math.floor((Date.now() - state.seqRecordStartTime) / 1000);
 }
 
-// Part 1/3 – "haven't said anything yet" 3s auto-advance grace timer.
+// Part 1/3 – "haven't said anything yet" auto-advance grace timer.
 // Cancelled the moment any speech (interim or final) is detected — see
-// speaking.js's setupSeqRecognition() onresult handler.
+// speaking.js's setupSeqRecognition() onresult handler. Was 3s, which
+// fired before most students had even taken a breath to start answering —
+// widened to 6s (student UI audit follow-up, 2026-07-26).
 function startSeqSilenceTimer() {
   clearInterval(state.seqSilenceTimer);
-  state.seqSilenceSecondsLeft = 3;
+  state.seqSilenceSecondsLeft = 6;
 
   const hintEl  = document.getElementById('seq-silence-hint');
   const countEl = document.getElementById('seq-silence-count');

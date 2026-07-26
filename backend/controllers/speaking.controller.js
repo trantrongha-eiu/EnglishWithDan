@@ -87,6 +87,34 @@ exports.sampleAnswer = catchAsync(async (req, res) => {
   }
 });
 
+// ── POST /api/speaking/hints ──────────────────────────────────
+// Vocab/idea hints derived from the sample answer — a lighter-touch nudge
+// than the full "Sample Answer" reveal. Same request shape/validation as
+// sampleAnswer above; see speakingService.getSpeakingHints for the
+// cache-aside logic (never returns the sample-answer text itself).
+exports.hints = catchAsync(async (req, res) => {
+  const { questionId, question, part, cueCard } = req.body;
+  if (!question || !question.trim()) {
+    return res.status(400).json({ success: false, message: 'Thiếu câu hỏi' });
+  }
+
+  const partNum = part ? Number(part) : 1;
+  if (![1, 2, 3].includes(partNum)) {
+    return res.status(400).json({ success: false, message: 'Part không hợp lệ' });
+  }
+
+  try {
+    const data = await speakingService.getSpeakingHints(questionId || null, question.trim(), partNum, cueCard || '');
+    res.json({ success: true, hints: data.hints });
+  } catch (aiErr) {
+    console.error('[Speaking] hints Gemini error:', aiErr.message);
+    if (aiErr.isOverloaded) {
+      return res.status(503).json({ success: false, message: aiErr.message });
+    }
+    return res.status(500).json({ success: false, message: 'AI không thể tạo gợi ý. Vui lòng thử lại.' });
+  }
+});
+
 // ── POST /api/speaking/improve ────────────────────────────────
 // Stage 2 of the analysis split — rewrites the student's OWN transcript at
 // Band 7-8. Opt-in only (the "Improve my answer" button); never called from

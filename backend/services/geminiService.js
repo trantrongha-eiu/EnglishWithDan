@@ -394,6 +394,80 @@ async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt =
   }
 }
 
+// ── Speaking Hints (vocab + ideas, derived from the sample answer) ────
+// Deliberately NOT a fresh "write me an answer" generation — takes the
+// existing sample answer as source material and extracts a lighter-touch
+// nudge (a few vocab phrases + idea prompts) without handing over full
+// sentences, so a student can build an original answer instead of just
+// memorizing/reciting the sample. See speakingService.getSpeakingHints for
+// the cache-aside logic (persists onto the same SpeakingQuestion doc).
+const HINTS_SYSTEM = `You are an experienced IELTS Speaking coach. You will be given a model sample answer and must extract study hints from it — useful vocabulary and the underlying ideas — WITHOUT quoting full sentences, so a student can build their own original answer instead of memorizing yours.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildHintsPrompt(question, part, sampleAnswerText) {
+  return `IELTS Speaking Part ${part} question: "${question}"
+
+Model sample answer (reference only — never quote it back verbatim):
+"""
+${sampleAnswerText}
+"""
+
+From this sample answer, extract STUDY HINTS a student can use to build their OWN original answer:
+- vocab: 4-6 useful words/collocations/phrases actually used in (or naturally fitting) the sample answer — short phrases only (2-4 words each), e.g. "strike a balance", "a great way to unwind". No full sentences.
+- ideas: 2-4 short idea prompts capturing the STRUCTURE of the answer's content, written as brief fragments (NOT full sentences, NOT the sample's exact wording) — e.g. "why it helps you relax after a long day", "a specific time you did this recently". These should point the student toward the same ideas without giving them the exact words to say.
+
+Return this exact JSON (no other text):
+{"vocab": ["...", "..."], "ideas": ["...", "..."]}`;
+}
+
+async function generateSpeakingHints(question, part = 1, sampleAnswerText, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+  const content = buildHintsPrompt(question, part, sampleAnswerText);
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        // MODEL not MODEL_FAST — unlike gradeT2Question (runs on every
+        // practice attempt), this is cached once per question forever,
+        // same call-frequency profile as generateSampleAnswer above, not a
+        // per-answer grading call.
+        model: MODEL,
+        contents: content,
+        config: {
+          systemInstruction: HINTS_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.5,
+          maxOutputTokens: 500,
+          thinkingConfig: { thinkingBudget: 0 }
+        }
+      }),
+      20000,
+      'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generateSpeakingHints: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại sau ít phút.');
+  }
+
+  try {
+    const parsed = extractJson(rawText);
+    parsed.vocab = Array.isArray(parsed.vocab) ? parsed.vocab.slice(0, 8).map(String) : [];
+    parsed.ideas = Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5).map(String) : [];
+    return parsed;
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateSpeakingHints: JSON parse failed, retrying', { errorMessage: parseErr.message });
+      return generateSpeakingHints(question, part, sampleAnswerText, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+  }
+}
+
 // ── Task 2 Practice — Sentence-level AI grading ───────────────────────
 const T2_GRADE_SYSTEM = `Bạn là giáo viên tiếng Anh IELTS chuyên chấm bài tập câu.
 Chấm CÔNG BẰNG và LINH HOẠT — chấp nhận cách diễn đạt đồng nghĩa nếu đúng ngữ pháp và đúng nghĩa.
@@ -472,4 +546,4 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
   }
 }
 
-module.exports = { checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer };
+module.exports = { checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints };

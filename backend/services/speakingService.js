@@ -4,7 +4,7 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require('./geminiService');
+const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints } = require('./geminiService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -66,6 +66,37 @@ async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
 // the automatic analyze flow. Same error-propagation contract as above.
 async function getImprovedAnswer(questionText, partNum, transcript) {
   return generateImprovedAnswer(questionText, partNum, transcript);
+}
+
+// Cache-aside against SpeakingQuestion.hints — mirrors getSampleAnswer's
+// pattern. Derives hints from the sample answer (generating + caching that
+// too, internally, if it isn't cached yet) without ever exposing the full
+// sample-answer text through this endpoint — a student who's only opened
+// "Hints" never sees the sample answer unless they separately click that
+// button too.
+async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
+  let sourceSampleAnswer = null;
+  if (questionId) {
+    const cached = await SpeakingQuestion.findById(questionId).select('sampleAnswer hints').lean();
+    if (cached?.hints && (cached.hints.vocab?.length || cached.hints.ideas?.length)) {
+      return { hints: cached.hints };
+    }
+    sourceSampleAnswer = cached?.sampleAnswer || null;
+  }
+
+  if (!sourceSampleAnswer) {
+    const sampleData = await getSampleAnswer(questionId, questionText, partNum, cueCard);
+    sourceSampleAnswer = sampleData.sampleAnswer;
+  }
+
+  const hints = await generateSpeakingHints(questionText, partNum, sourceSampleAnswer);
+
+  if (questionId && (hints.vocab?.length || hints.ideas?.length)) {
+    SpeakingQuestion.updateOne({ _id: questionId }, { $set: { hints } })
+      .catch(err => console.error('[Speaking] hints cache write failed:', err.message));
+  }
+
+  return { hints };
 }
 
 // Persistence failure here is logged but must never fail the request —
@@ -131,4 +162,5 @@ async function getMaterialFilters() {
 module.exports = {
   listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
+  getSpeakingHints,
 };

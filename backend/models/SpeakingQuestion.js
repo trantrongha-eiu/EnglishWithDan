@@ -11,7 +11,15 @@ const SpeakingQuestionSchema = new mongoose.Schema({
   // instead of calling Gemini, so repeat views of the same question across
   // every student cost zero extra AI calls. See scripts/generateSampleAnswers.js
   // for bulk pre-generation across the whole question bank.
-  sampleAnswer: { type: String, default: '' }
+  sampleAnswer: { type: String, default: '' },
+  // Vocab/idea hints derived FROM sampleAnswer (not a fresh generation) —
+  // a lighter-touch nudge students can use instead of jumping straight to
+  // the full sample answer. Same lazy-cache-once-per-question pattern as
+  // sampleAnswer; see speakingService.getSpeakingHints.
+  hints: {
+    vocab: { type: [String], default: [] },
+    ideas: { type: [String], default: [] }
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('SpeakingQuestion', SpeakingQuestionSchema);

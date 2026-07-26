@@ -266,12 +266,22 @@
             <button class="q-read-btn" onclick="readQuestion()" title="Nghe câu hỏi">
               <i class="fas fa-volume-up"></i>
             </button>
+            <button class="q-hints-btn" id="q-hints-btn" onclick="showHints()" title="Gợi ý từ vựng &amp; ý tưởng — không lộ hết câu trả lời mẫu">
+              <i class="fas fa-tags"></i> Hints
+            </button>
             <button class="q-sample-btn" id="q-sample-btn" onclick="showSampleAnswer()" title="Xem câu trả lời mẫu">
               <i class="fas fa-lightbulb"></i> Sample Answer
             </button>
           </div>
           <div class="q-text" id="q-text"></div>
           <div class="q-cue" id="q-cue" style="display:none"></div>
+          <div class="hints-box" id="hints-box" style="display:none">
+            <div class="hints-header"><i class="fas fa-tags"></i>&nbsp;Gợi ý từ vựng &amp; ý tưởng</div>
+            <div class="hints-section-label">Từ vựng gợi ý</div>
+            <div class="hint-chips" id="hints-vocab"></div>
+            <div class="hints-section-label">Ý tưởng gợi ý</div>
+            <div id="hints-ideas"></div>
+          </div>
           <div class="sample-answer-box" id="sample-answer-box" style="display:none">
             <div class="sample-answer-header">
               <span><i class="fas fa-lightbulb"></i> Câu trả lời mẫu</span>
@@ -477,7 +487,7 @@
   </div>
 
   <div class="seq-body" id="seq-body">
-    <p class="seq-hint">*Trả lời câu hỏi, sau đó nhấn <a href="javascript:void(0)" onclick="confirmSeqAnswer()">Ghi nhận câu trả lời</a> để sang câu tiếp theo.</p>
+    <p class="seq-hint">*Trả lời câu hỏi, sau đó nhấn nút "Ghi nhận câu trả lời" bên dưới để sang câu tiếp theo.</p>
 
     <div class="question-card" id="seq-question-card">
       <div class="q-meta">
@@ -504,7 +514,7 @@
     </div>
 
     <div class="seq-silence-hint hidden" id="seq-silence-hint">
-      <i class="fas fa-clock"></i> Chưa nói gì, qua câu mới sau <span id="seq-silence-count">3</span>s
+      <i class="fas fa-clock"></i> Chưa nói gì, qua câu mới sau <span id="seq-silence-count">6</span>s
     </div>
 
     <div class="record-section">
@@ -640,7 +650,7 @@
   <div class="sp-modal">
     <div class="sp-modal-header">
       <h3 id="history-modal-title">Chi tiết bài luyện</h3>
-      <button class="sp-modal-close" onclick="closeHistoryModal()">
+      <button class="sp-modal-close" onclick="closeHistoryModal()" aria-label="Đóng">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -658,7 +668,7 @@
   <div class="sp-modal">
     <div class="sp-modal-header">
       <h3 id="seq-preview-title">Luyện Part 1</h3>
-      <button class="sp-modal-close" onclick="closeSeqPreviewModal()">
+      <button class="sp-modal-close" onclick="closeSeqPreviewModal()" aria-label="Đóng">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -680,7 +690,7 @@
     <span class="dict-word" id="dict-word"></span>
     <span class="dict-phonetic" id="dict-phonetic"></span>
     <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
-    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()" aria-label="Đóng"><i class="fas fa-times"></i></button>
   </div>
   <div id="dict-body" class="dict-body"></div>
 </div>
@@ -689,7 +699,7 @@
   <div class="dict-vocab-box">
     <div class="dict-vocab-header">
       <h3>📚 Lưu vào sổ từ vựng</h3>
-      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()" aria-label="Đóng"><i class="fas fa-times"></i></button>
     </div>
     <div class="dict-vocab-body">
       <div id="dict-vocab-book-list"></div>

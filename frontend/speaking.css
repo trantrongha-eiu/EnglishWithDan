@@ -478,6 +478,7 @@ body {
 .q-meta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 14px;
 }
@@ -566,6 +567,73 @@ body {
   line-height: 1.7;
   white-space: pre-wrap;
 }
+
+/* Hints (vocab/ideas derived from the sample answer, without revealing it)
+   — deliberately blue, not amber, so it reads as a lighter-touch nudge
+   distinct from the full "Sample Answer" reveal. */
+.q-hints-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.q-hints-btn:hover { background: #dbeafe; }
+.q-hints-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.hints-box {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 0 10px 10px 0;
+}
+.hints-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1d4ed8;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  margin-bottom: 10px;
+}
+.hints-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  margin: 10px 0 6px;
+}
+.hints-section-label:first-of-type { margin-top: 0; }
+.hint-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.hint-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 600;
+}
+.hint-ideas-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13.5px;
+  color: #374151;
+  line-height: 1.8;
+}
+.hints-empty { font-size: 13px; color: #9ca3af; }
 
 .q-text {
   font-size: 18px;
@@ -803,7 +871,7 @@ body {
 }
 .transcript-hint {
   font-size: 11px;
-  color: #d1d5db;
+  color: #9ca3af;
 }
 
 .transcript-textarea {
@@ -1415,12 +1483,10 @@ body {
   color: #6b7280;
   text-align: center;
 }
-.seq-hint a { color: #e53935; font-weight: 600; text-decoration: none; }
-.seq-hint a:hover { text-decoration: underline; }
-
 .seq-actions-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
@@ -1539,8 +1605,23 @@ body {
 [data-theme="dark"] .sample-answer-header { color: #fbbf24; }
 [data-theme="dark"] .sample-answer-header .q-read-btn { border-color: #92400e; color: #fbbf24; }
 [data-theme="dark"] .sample-answer-text   { color: #d1d5db; }
+[data-theme="dark"] .q-hints-btn          { background: #1e3a5f; color: #93c5fd; border-color: #1d4ed8; }
+[data-theme="dark"] .q-hints-btn:hover    { background: #234876; }
+[data-theme="dark"] .hints-box            { background: #111f30; border-color: #3b82f6; }
+[data-theme="dark"] .hints-header         { color: #93c5fd; }
+[data-theme="dark"] .hints-section-label  { color: #9ca3af; }
+[data-theme="dark"] .hint-chip            { background: #1e293b; border-color: #1d4ed8; color: #93c5fd; }
+[data-theme="dark"] .hint-ideas-list      { color: #d1d5db; }
+[data-theme="dark"] .hints-empty          { color: #6b7280; }
 [data-theme="dark"] .q-topic-badge        { background: #374151; color: #9ca3af; }
 [data-theme="dark"] .q-part-badge         { background: #3b1a1a; color: #fca5a5; border-color: #7f1d1d; }
+[data-theme="dark"] .q-item-badge.p1      { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .q-item-badge.p2      { background: #052e16; color: #86efac; }
+[data-theme="dark"] .q-item-badge.p3      { background: #1e1b4b; color: #a5b4fc; }
+[data-theme="dark"] .hbadge-p1            { background: #1e3a5f; color: #93c5fd; }
+[data-theme="dark"] .hbadge-p2            { background: #052e16; color: #86efac; }
+[data-theme="dark"] .hbadge-p3            { background: #1e1b4b; color: #a5b4fc; }
+[data-theme="dark"] .hbadge-mock          { background: #451a03; color: #fbbf24; }
 
 [data-theme="dark"] .p2-prep              { background: linear-gradient(135deg, #1e3a5f, #1a3050); border-color: #3b82f6; }
 [data-theme="dark"] .p2-prep-phase        { color: #93c5fd; }
@@ -1556,6 +1637,7 @@ body {
 [data-theme="dark"] .transcript-hint      { color: #4b5563; }
 [data-theme="dark"] .btn-clear            { background: #111827; border-color: #374151; color: #6b7280; }
 [data-theme="dark"] .btn-clear:hover      { background: #2d1515; color: #f87171; border-color: #ef4444; }
+[data-theme="dark"] .btn-analyze:disabled { background: #1f2937; color: #4b5563; }
 
 [data-theme="dark"] .feedback-section     { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .feedback-loading p   { color: #6b7280; }
@@ -1663,6 +1745,12 @@ body {
   .sp-home-body { padding: 40px 16px 60px; }
   .sp-home-title { font-size: 26px; }
   .sp-home-icon  { font-size: 52px; }
+
+  /* Touch targets — 32px is below the ~40-44px comfortable-tap minimum;
+     .btn-record already gets similar mobile treatment, these were missed
+     (student UI audit follow-up, 2026-07-26). */
+  .q-read-btn, .sp-modal-close { width: 40px; height: 40px; }
+  .btn-random-sm { min-height: 36px; }
 }
 
 @media (max-width: 480px) {

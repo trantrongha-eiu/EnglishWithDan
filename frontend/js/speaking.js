@@ -482,6 +482,10 @@ function setQuestion(q) {
   if (sampleBox) { sampleBox.style.display = 'none'; sampleBox.dataset.forQuestion = ''; }
   _sampleAnswerText = '';
 
+  // Hints box — same reset-on-question-change rule as the sample answer above.
+  const hintsBox = document.getElementById('hints-box');
+  if (hintsBox) { hintsBox.style.display = 'none'; hintsBox.dataset.forQuestion = ''; }
+
   readQuestion();
 
   if (q.part === 2) {
@@ -607,6 +611,61 @@ async function showSampleAnswer() {
 
 function replaySampleAnswer() {
   if (_sampleAnswerText) speakText(_sampleAnswerText);
+}
+
+// ──────────────────────────────────────────────────────
+// Hints (vocab + ideas derived from the sample answer, without revealing
+// it) — a lighter-touch nudge a student can reach for before jumping
+// straight to the full Sample Answer. Mirrors showSampleAnswer()'s
+// toggle-closed/loading/error handling exactly.
+// ──────────────────────────────────────────────────────
+async function showHints() {
+  const q = state.currentQuestion;
+  if (!q) return;
+
+  const box   = document.getElementById('hints-box');
+  const btn   = document.getElementById('q-hints-btn');
+  if (!box || !btn) return;
+
+  if (box.style.display === 'block' && box.dataset.forQuestion === q.question) {
+    box.style.display = 'none';
+    return;
+  }
+
+  box.dataset.forQuestion = q.question;
+  box.style.display = 'block';
+  document.getElementById('hints-vocab').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('hints-ideas').innerHTML = '';
+  btn.disabled = true;
+
+  try {
+    const data = await apiFetch('/api/speaking/hints', {
+      method: 'POST',
+      body: JSON.stringify({ questionId: q._id, question: q.question, part: q.part, cueCard: q.cueCard || '' }),
+    });
+    renderHints(data.hints);
+  } catch (e) {
+    console.error('showHints:', e);
+    showToast('Không thể tạo gợi ý. Vui lòng thử lại.', 'error');
+    box.style.display = 'none';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderHints(hints) {
+  const vocabEl = document.getElementById('hints-vocab');
+  const ideasEl = document.getElementById('hints-ideas');
+  const vocab = hints?.vocab || [];
+  const ideas = hints?.ideas || [];
+
+  vocabEl.innerHTML = vocab.length
+    ? vocab.map(v => `<span class="hint-chip">${escHtml(v)}</span>`).join('')
+    : '<span class="hints-empty">Không có gợi ý từ vựng.</span>';
+
+  ideasEl.innerHTML = ideas.length
+    ? `<ul class="hint-ideas-list">${ideas.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>`
+    : '<span class="hints-empty">Không có gợi ý ý tưởng.</span>';
 }
 
 function resetPractice() {
@@ -877,6 +936,56 @@ function playbackRecording() {
   });
 }
 
+// Shared guarded-start — used by toggleRecord()'s start branch AND the
+// Part 2 prep-timer's auto-start/skip (startPrepTimer/skipPrep in
+// speaking-timer.js). Those two used to call state.recognition.start() and
+// set state.isRecording = true directly, bypassing the _recordBusy race
+// guard built for toggleRecord() — leaving a window where the record button
+// still showed "Bắt đầu" (idle) but state.isRecording was already true, so a
+// student clicking it there silently STOPPED a recording they didn't know
+// had started (student UI audit follow-up, 2026-07-26). Self-contained/
+// idempotent — safe to call from any of the three sites with no pre-check.
+function _startRecordingGuarded() {
+  if (!state.recognition || state.isRecording || state._recordBusy) return;
+  const btnRecord = document.getElementById('btn-record');
+  state._recordBusy = true;
+  if (btnRecord) btnRecord.disabled = true;
+  try {
+    state._userStoppedRecording = false;
+    state._restartAttempts = 0;
+    state.finalTranscript = '';
+    state.recognition.start();
+    state.isRecording = true;
+    _lastRecordingBlob = null;
+    document.getElementById('btn-playback-recording')?.classList.add('hidden');
+    // _startAudioCapture() itself is fired from onstart, not here —
+    // starting it only after SpeechRecognition confirms it has acquired
+    // the mic avoids two near-simultaneous getUserMedia calls contending
+    // for the same device on some browser/OS combos. state._recordBusy/
+    // btnRecord.disabled are also cleared there, not here — the click
+    // isn't "done" until the engine confirms it's actually live.
+
+    // Backstop for when the browser's speech engine never calls back at
+    // all (e.g. can't reach its recognition service — same class of
+    // "browser API just hangs" issue speakText() above already guards
+    // against with its own 10s timeout). Without this, that failure mode
+    // would leave the button disabled forever with zero feedback, which
+    // is worse than the original bug.
+    const watchdogToken = ++state._recordWatchdogToken;
+    setTimeout(() => {
+      if (state._recordWatchdogToken !== watchdogToken || !state._recordBusy) return; // already resolved
+      state._userStoppedRecording = true;
+      try { state.recognition.stop(); } catch (e) {}
+      showToast('Không thể kết nối micro (quá thời gian chờ). Vui lòng kiểm tra kết nối mạng và thử lại.', 'error');
+      _finishRecordingUI();
+    }, 8000);
+  } catch (e) {
+    state._recordBusy = false;
+    if (btnRecord) btnRecord.disabled = false;
+    showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
+  }
+}
+
 function toggleRecord() {
   if (!state.recognition) {
     showToast('Trình duyệt không hỗ trợ ghi âm. Bạn có thể gõ câu trả lời vào ô bên dưới.', 'warn');
@@ -886,9 +995,8 @@ function toggleRecord() {
   // start/stop is still settling instead of racing it.
   if (state._recordBusy) return;
 
-  const btnRecord = document.getElementById('btn-record');
-
   if (state.isRecording) {
+    const btnRecord = document.getElementById('btn-record');
     state._recordBusy = true;
     if (btnRecord) btnRecord.disabled = true;
     state._userStoppedRecording = true;
@@ -903,42 +1011,7 @@ function toggleRecord() {
       if (btnRecord) btnRecord.disabled = false;
     });
   } else {
-    state._recordBusy = true;
-    if (btnRecord) btnRecord.disabled = true;
-    try {
-      state._userStoppedRecording = false;
-      state._restartAttempts = 0;
-      state.finalTranscript = '';
-      state.recognition.start();
-      state.isRecording = true;
-      _lastRecordingBlob = null;
-      document.getElementById('btn-playback-recording')?.classList.add('hidden');
-      // _startAudioCapture() itself is fired from onstart, not here —
-      // starting it only after SpeechRecognition confirms it has acquired
-      // the mic avoids two near-simultaneous getUserMedia calls contending
-      // for the same device on some browser/OS combos. state._recordBusy/
-      // btnRecord.disabled are also cleared there, not here — the click
-      // isn't "done" until the engine confirms it's actually live.
-
-      // Backstop for when the browser's speech engine never calls back at
-      // all (e.g. can't reach its recognition service — same class of
-      // "browser API just hangs" issue speakText() above already guards
-      // against with its own 10s timeout). Without this, that failure mode
-      // would leave the button disabled forever with zero feedback, which
-      // is worse than the original bug.
-      const watchdogToken = ++state._recordWatchdogToken;
-      setTimeout(() => {
-        if (state._recordWatchdogToken !== watchdogToken || !state._recordBusy) return; // already resolved
-        state._userStoppedRecording = true;
-        try { state.recognition.stop(); } catch (e) {}
-        showToast('Không thể kết nối micro (quá thời gian chờ). Vui lòng kiểm tra kết nối mạng và thử lại.', 'error');
-        _finishRecordingUI();
-      }, 8000);
-    } catch (e) {
-      state._recordBusy = false;
-      if (btnRecord) btnRecord.disabled = false;
-      showToast('Không thể bắt đầu ghi âm, thử lại.', 'error');
-    }
+    _startRecordingGuarded();
   }
 }
 
@@ -1395,6 +1468,13 @@ function loadSeqQuestion() {
   hideSeqPrepTimer();
   hideSeqSpeakCountdown();
   clearSeqSilenceTimer();
+  // Elapsed badge otherwise kept showing the PREVIOUS question's frozen
+  // time for a moment after confirming an answer, until the next
+  // question's recording actually starts (student UI audit follow-up,
+  // 2026-07-26) — mirrors resetPractice()'s equivalent reset for the
+  // single-question flow.
+  stopSeqElapsedTimer();
+  document.getElementById('seq-rec-elapsed')?.classList.add('hidden');
 
   if (q.part === 2) {
     speakText(q.question);
