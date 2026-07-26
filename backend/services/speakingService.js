@@ -5,6 +5,7 @@ const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
 const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints } = require('./geminiService');
+const { checkSpeakingGroq } = require('./groqService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -34,8 +35,26 @@ async function listQuestions({ topic, part }) {
 
 // Lets AI errors (including .isOverloaded) propagate — the controller
 // decides the HTTP status for those, since that's a request-flow decision.
+// Falls back to Groq (see groqService.checkSpeakingGroq — same prompt/
+// schema as Gemini) ONLY when Gemini specifically reports itself
+// overloaded/out of quota, not for other failures (a malformed transcript
+// should fail the same way regardless of which engine graded it, not
+// silently retry against a second engine). If Groq isn't configured, or
+// also fails, the student sees Gemini's original "AI đang quá tải" message
+// rather than a confusing second error.
 async function gradeSpeaking(questionText, transcript, partNum) {
-  return checkSpeaking(questionText, transcript, partNum);
+  try {
+    return await checkSpeaking(questionText, transcript, partNum);
+  } catch (geminiErr) {
+    if (!geminiErr.isOverloaded || !process.env.GROQ_API_KEY) throw geminiErr;
+    try {
+      console.warn('[Speaking] Gemini overloaded — falling back to Groq');
+      return await checkSpeakingGroq(questionText, transcript, partNum);
+    } catch (groqErr) {
+      console.error('[Speaking] Groq fallback also failed:', groqErr.message);
+      throw geminiErr;
+    }
+  }
 }
 
 // Cache-aside against SpeakingQuestion.sampleAnswer: serves a pre-generated

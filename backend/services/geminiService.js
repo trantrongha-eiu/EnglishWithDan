@@ -143,17 +143,12 @@ Important:
 
 Identify the single most important weakness preventing the student from reaching the next band.`;
 
-/**
- * Analyze an IELTS speaking transcript with Gemini. Stage 1 only — scores +
- * short feedback, no rewritten answer (see generateImprovedAnswer).
- */
-async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
-
-  const ai = new GoogleGenAI({ apiKey });
-
-  const content = `Question
+// Extracted so services/groqService.js's fallback (used when Gemini is
+// overloaded — see speakingService.gradeSpeaking) grades against the exact
+// same prompt/schema instead of a hand-copied near-duplicate that could
+// silently drift out of sync.
+function buildSpeakingGradingPrompt(question, transcript, part) {
+  return `Question
 ${question}
 
 IELTS Part
@@ -186,6 +181,19 @@ Rules:
 - todaysFocus: maximum 1 sentence
 - overallBand = rounded average of the 4 scores
 If there's no genuine answer to grade (empty, just repeats the question, or an explicit "no answer" placeholder), say so only in overallFeedback, set strengths/mistakes/improvements to [], and todaysFocus to "Hãy trả lời câu hỏi để nhận đánh giá." — don't repeat the explanation in other fields.`;
+}
+
+/**
+ * Analyze an IELTS speaking transcript with Gemini. Stage 1 only — scores +
+ * short feedback, no rewritten answer (see generateImprovedAnswer).
+ */
+async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  const content = buildSpeakingGradingPrompt(question, transcript, part);
 
   let rawText;
   try {
@@ -546,4 +554,9 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
   }
 }
 
-module.exports = { checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints };
+module.exports = {
+  checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints,
+  // Exported for services/groqService.js's Gemini-overload fallback only —
+  // not meant as general-purpose utilities for other callers.
+  SPEAKING_SYSTEM, buildSpeakingGradingPrompt, extractJson,
+};

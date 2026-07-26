@@ -72,7 +72,7 @@ is not the how-to.
 | `GEMINI_API_KEY` | Optional | Google Gemini — AI essay/speaking/Task 2 grading | `backend/services/geminiService.js`, `backend/config/index.js` | AI grading features fail/are disabled at call time; failures are logged via `logger.ai(...)`. `GET /health` reports `dependencies.gemini` as `configured`/`not_configured` by **key presence only** — it deliberately never makes a live Gemini call (that costs money per call), so a present-but-invalid key will show as `configured` even though it doesn't actually work. |
 | `ANTHROPIC_API_KEY` | Optional | Anthropic API access (secondary/alternate AI provider) | `backend/config/index.js` | Whatever feature routes through this provider is disabled/fails. |
 | `OPENROUTER_API_KEY` | Optional | OpenRouter API access (alternate AI provider) | `backend/server.js` (startup log), `backend/config/index.js` | Disabled/fails for whatever routes through it. This is the one secret in this table that **has** been rotated. |
-| `GROQ_API_KEY` | Optional | Groq API access (alternate AI provider) | `backend/config/index.js` | Disabled/fails for whatever routes through it. |
+| `GROQ_API_KEY` | Optional | Groq — fallback Speaking grading engine, used ONLY when Gemini reports itself overloaded/out of quota | `backend/services/groqService.js`, `backend/services/speakingService.js` (`gradeSpeaking`), `backend/config/index.js` | Speaking grading just surfaces Gemini's original "AI đang quá tải" error on overload instead of retrying via Groq — no other feature is affected. |
 
 ## Google OAuth login (optional)
 
