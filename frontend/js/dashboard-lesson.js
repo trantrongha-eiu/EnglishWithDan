@@ -119,15 +119,19 @@ function syncSheetClassroom() {
 // listener buildup across re-renders.
 function buildClassroomPicker(container, opts) {
     const lessons = lessonState.publicLessons;
-    const inputClass = 'unit-picker-input' + (opts.mobileInput ? ' up-mob' : '');
+    // up-mob on both the input AND the dropdown — same enlarged, touch-
+    // friendly sizing as the Paraphrase unit picker right above this one
+    // in the mobile sheet (css/dashboard.css), so the two pickers read as
+    // one consistent component instead of two differently-sized ones.
+    const mobCls = opts.mobileInput ? ' up-mob' : '';
     container.innerHTML = `
         ${opts.heading ? `<h4><i class="fas fa-book"></i> ${escHtml(opts.heading)}</h4>` : ''}
         <div class="unit-picker">
             <div style="position:relative">
-                <input class="${inputClass}" placeholder="-- Chọn bài Quiz --" autocomplete="off" readonly>
+                <input class="unit-picker-input${mobCls}" placeholder="-- Chọn bài Quiz --" autocomplete="off" readonly inputmode="none">
                 <i class="fas fa-book unit-picker-caret" style="font-style:normal"></i>
             </div>
-            <div class="unit-picker-dd"></div>
+            <div class="unit-picker-dd${mobCls}"></div>
         </div>
     `;
     const inp = container.querySelector('.unit-picker-input');
