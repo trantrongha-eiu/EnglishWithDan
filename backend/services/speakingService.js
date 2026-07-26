@@ -5,7 +5,9 @@ const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
 const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints } = require('./geminiService');
-const { checkSpeakingGroq } = require('./groqService');
+const {
+  checkSpeakingGroq, generateSampleAnswerGroq, generateSpeakingHintsGroq, generateImprovedAnswerGroq
+} = require('./groqService');
 
 async function listTopics(part) {
   const filter = { isActive: true };
@@ -35,26 +37,32 @@ async function listQuestions({ topic, part }) {
 
 // Lets AI errors (including .isOverloaded) propagate — the controller
 // decides the HTTP status for those, since that's a request-flow decision.
-// Falls back to Groq (see groqService.checkSpeakingGroq — same prompt/
-// schema as Gemini) ONLY when Gemini specifically reports itself
-// overloaded/out of quota, not for other failures (a malformed transcript
-// should fail the same way regardless of which engine graded it, not
-// silently retry against a second engine). If Groq isn't configured, or
-// also fails, the student sees Gemini's original "AI đang quá tải" message
-// rather than a confusing second error.
-async function gradeSpeaking(questionText, transcript, partNum) {
+// Falls back to Groq (same prompt/schema as Gemini, see groqService.js)
+// ONLY when Gemini specifically reports itself overloaded/out of quota,
+// not for other failures (a malformed transcript should fail the same way
+// regardless of which engine handled it, not silently retry against a
+// second engine). If Groq isn't configured, or also fails, the student
+// sees Gemini's original "AI đang quá tải" message rather than a
+// confusing second error. Used by every Speaking AI call below (analyze,
+// sample answer, hints, improve) — previously only analyze had this
+// fallback, so Gemini running out of quota still broke the other three.
+async function _withGroqFallback(geminiFn, groqFn, label, args) {
   try {
-    return await checkSpeaking(questionText, transcript, partNum);
+    return await geminiFn(...args);
   } catch (geminiErr) {
     if (!geminiErr.isOverloaded || !process.env.GROQ_API_KEY) throw geminiErr;
     try {
-      console.warn('[Speaking] Gemini overloaded — falling back to Groq');
-      return await checkSpeakingGroq(questionText, transcript, partNum);
+      console.warn(`[Speaking] Gemini overloaded — falling back to Groq (${label})`);
+      return await groqFn(...args);
     } catch (groqErr) {
-      console.error('[Speaking] Groq fallback also failed:', groqErr.message);
+      console.error(`[Speaking] Groq fallback also failed (${label}):`, groqErr.message);
       throw geminiErr;
     }
   }
+}
+
+async function gradeSpeaking(questionText, transcript, partNum) {
+  return _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum]);
 }
 
 // Cache-aside against SpeakingQuestion.sampleAnswer: serves a pre-generated
@@ -69,7 +77,9 @@ async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
     if (cached?.sampleAnswer) return { sampleAnswer: cached.sampleAnswer };
   }
 
-  const data = await generateSampleAnswer(questionText, partNum, cueCard);
+  const data = await _withGroqFallback(
+    generateSampleAnswer, generateSampleAnswerGroq, 'sampleAnswer', [questionText, partNum, cueCard]
+  );
 
   if (questionId && data.sampleAnswer) {
     // Fire-and-forget — a failed cache write must never fail the response
@@ -84,7 +94,9 @@ async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
 // Stage 2 — opt-in only, called from POST /api/speaking/improve, never from
 // the automatic analyze flow. Same error-propagation contract as above.
 async function getImprovedAnswer(questionText, partNum, transcript) {
-  return generateImprovedAnswer(questionText, partNum, transcript);
+  return _withGroqFallback(
+    generateImprovedAnswer, generateImprovedAnswerGroq, 'improve', [questionText, partNum, transcript]
+  );
 }
 
 // Cache-aside against SpeakingQuestion.hints — mirrors getSampleAnswer's
@@ -108,7 +120,9 @@ async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
     sourceSampleAnswer = sampleData.sampleAnswer;
   }
 
-  const hints = await generateSpeakingHints(questionText, partNum, sourceSampleAnswer);
+  const hints = await _withGroqFallback(
+    generateSpeakingHints, generateSpeakingHintsGroq, 'hints', [questionText, partNum, sourceSampleAnswer]
+  );
 
   if (questionId && (hints.vocab?.length || hints.ideas?.length)) {
     SpeakingQuestion.updateOne({ _id: questionId }, { $set: { hints } })
@@ -148,6 +162,7 @@ async function saveAttempt(userId, { questionId, topic, part, questionText, tran
           corrected: m.corrected,
           explanation: m.reason
         })),
+        vocabUpgrades: feedback.vocabUpgrades || [],
         suggestions: feedback.improvements || []
       }
     });

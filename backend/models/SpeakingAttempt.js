@@ -18,6 +18,7 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     todaysFocus:      { type: String, default: '' },
     strengths:        [String],
     corrections:      [{ original: String, corrected: String, explanation: String }],
+    vocabUpgrades:    [{ original: String, upgrade: String, reason: String }],
     suggestions:      [String],
     feedback:         { type: String, default: '' }  // legacy field
   },

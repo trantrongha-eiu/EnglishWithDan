@@ -244,6 +244,7 @@ Return exactly this JSON schema:
   "todaysFocus": "",
   "strengths": [],
   "mistakes": [],
+  "vocabUpgrades": [],
   "improvements": []
 }
 
@@ -252,10 +253,11 @@ Rules:
 - overallFeedback: maximum 2 short sentences
 - strengths: 1-2 items, each quoting a specific word/phrase the candidate actually used — never a generic statement like "good vocabulary" with no example.
 - mistakes: find and QUOTE REAL errors from the transcript — grammar, word choice, tense, article, preposition, or awkward phrasing. Each item: {"original": "<exact wording copied from the transcript>", "corrected": "<the fixed version>", "reason": "<short reason, in Vietnamese>"}. Almost every transcript below Band 8 has at least 1-2 genuine examples — look carefully instead of defaulting to none. Maximum 3 items. Only use an empty array if the transcript is truly too short/broken to extract a clean example (explain why in overallFeedback instead). NEVER include a placeholder item with blank "original"/"corrected"/"reason" — omit it entirely rather than padding the array.
-- improvements: 2-3 concrete, actionable suggestions tied to what actually happened in this transcript — not generic advice like "practice more" that would apply to any answer.
+- vocabUpgrades: 1-2 items — simple/basic words or phrases the candidate used CORRECTLY (not errors — those belong in mistakes) that could be swapped for a more sophisticated synonym or collocation to raise Lexical Resource. Each item: {"original": "<the plain word/phrase actually in the transcript>", "upgrade": "<a more advanced, natural synonym or collocation>", "reason": "<short reason in Vietnamese, e.g. why it sounds more natural/precise/idiomatic>"}. Must be genuinely present in the transcript — never invent a word the candidate didn't say. Empty array only if the transcript is too short/broken to extract one, or already consistently uses sophisticated vocabulary (Band 8+).
+- improvements: 2-3 concrete, actionable suggestions tied to what actually happened in this transcript — not generic advice like "practice more" that would apply to any answer. At least one of these must be a specific sentence-structure or cohesive-device suggestion (e.g. a relative clause, a linking phrase, a way to extend a short answer into a longer turn) that would help the candidate sustain a longer, more fluent turn and raise Grammatical Range or Fluency — tie it to their actual answer, not abstract advice like "use more complex sentences".
 - todaysFocus: maximum 1 sentence, must name the ONE specific thing to fix next (quote an example if it helps), not a general encouragement.
 - overallBand = rounded average of the 4 scores
-If there's no genuine answer to grade (empty, just repeats the question, or an explicit "no answer" placeholder), say so only in overallFeedback, set strengths/mistakes/improvements to [], and todaysFocus to "Hãy trả lời câu hỏi để nhận đánh giá." — don't repeat the explanation in other fields.`;
+If there's no genuine answer to grade (empty, just repeats the question, or an explicit "no answer" placeholder), say so only in overallFeedback, set strengths/mistakes/vocabUpgrades/improvements to [], and todaysFocus to "Hãy trả lời câu hỏi để nhận đánh giá." — don't repeat the explanation in other fields.`;
 }
 
 /**
@@ -280,7 +282,7 @@ async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
           systemInstruction: SPEAKING_SYSTEM,
           responseMimeType: 'application/json',
           temperature: 0.3,
-          maxOutputTokens: 768,
+          maxOutputTokens: 1024, // was 768 — the added vocabUpgrades field pushed responses close enough to the cap to trigger the JSON-parse-failure retry more often, adding latency (raised, not the retry logic, since a mid-array truncation is still possible in principle)
           thinkingConfig: { thinkingBudget: 0 }
         }
       }),
@@ -633,5 +635,9 @@ module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints,
   // Exported for services/groqService.js's Gemini-overload fallback only —
   // not meant as general-purpose utilities for other callers.
-  SPEAKING_SYSTEM, buildSpeakingGradingPrompt, extractJson,
+  SPEAKING_SYSTEM, buildSpeakingGradingPrompt,
+  SAMPLE_ANSWER_SYSTEM, buildSampleAnswerPrompt,
+  HINTS_SYSTEM, buildHintsPrompt,
+  IMPROVE_ANSWER_SYSTEM, buildImproveAnswerPrompt,
+  extractJson,
 };

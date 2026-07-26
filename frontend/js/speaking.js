@@ -1152,6 +1152,26 @@ function renderFeedback(fb) {
     if (fbErrors) fbErrors.style.display = 'none';
   }
 
+  // Vocabulary upgrades — basic-but-correct words the candidate used that
+  // could be swapped for something more sophisticated (distinct from
+  // mistakes above, which are actual errors).
+  const fbVocab = document.getElementById('fb-vocab-card');
+  const fbVocabList = document.getElementById('fb-vocab-list');
+  if (fb.vocabUpgrades?.length) {
+    if (fbVocabList) {
+      fbVocabList.innerHTML = fb.vocabUpgrades.map(v => `
+        <div class="vocab-item">
+          <span class="vocab-original">${escHtml(v.original)}</span>
+          <span class="error-arrow">→</span>
+          <span class="vocab-upgrade">${escHtml(v.upgrade)}</span>
+          ${v.reason ? `<div class="vocab-tip-row">💡 ${escHtml(v.reason)}</div>` : ''}
+        </div>`).join('');
+    }
+    if (fbVocab) fbVocab.style.display = 'block';
+  } else {
+    if (fbVocab) fbVocab.style.display = 'none';
+  }
+
   // Improvements
   const fbImprovements = document.getElementById('fb-improvements-card');
   const fbImprovementsList = document.getElementById('fb-improvements-list');
@@ -1787,6 +1807,19 @@ function renderSeqFeedback(fb) {
         </div>`).join('')}
     </div>`;
   }
+  if (fb.vocabUpgrades?.length) {
+    html += `
+    <div class="fb-card fb-card-green">
+      <div class="fb-card-title"><i class="fas fa-arrow-up"></i> Nâng cấp từ vựng</div>
+      ${fb.vocabUpgrades.map(v => `
+        <div class="vocab-item">
+          <span class="vocab-original">${escHtml(v.original)}</span>
+          <span class="error-arrow">→</span>
+          <span class="vocab-upgrade">${escHtml(v.upgrade)}</span>
+          ${v.reason ? `<div class="vocab-tip-row">💡 ${escHtml(v.reason)}</div>` : ''}
+        </div>`).join('')}
+    </div>`;
+  }
   if (fb.improvements?.length) {
     html += `
     <div class="fb-card fb-card-yellow">
@@ -1951,6 +1984,18 @@ async function openHistoryModal(attempt) {
           <span class="error-arrow">→</span>
           <span class="error-right">${escHtml(c.corrected)}</span>
           ${c.explanation ? `<div class="error-tip-row">💡 ${escHtml(c.explanation)}</div>` : ''}
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${fb.vocabUpgrades?.length ? `
+    <div class="fb-card fb-card-green" style="margin-bottom:14px">
+      <div class="fb-card-title"><i class="fas fa-arrow-up"></i> Nâng cấp từ vựng</div>
+      ${fb.vocabUpgrades.map(v=>`
+        <div class="vocab-item">
+          <span class="vocab-original">${escHtml(v.original)}</span>
+          <span class="error-arrow">→</span>
+          <span class="vocab-upgrade">${escHtml(v.upgrade)}</span>
+          ${v.reason ? `<div class="vocab-tip-row">💡 ${escHtml(v.reason)}</div>` : ''}
         </div>`).join('')}
     </div>` : ''}
 
