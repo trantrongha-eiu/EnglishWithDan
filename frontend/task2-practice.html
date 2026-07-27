@@ -244,9 +244,6 @@
     [data-theme="dark"] .t2-selector-prompt{background:#0c1e30;border-color:#1e4060;color:#93c5fd}
     [data-theme="dark"] .t2-selector-label{color:#94a3b8}
 
-    /* ── Show stats bar on all screen sizes (task2 has no sidebar widget) ── */
-    .wp-mobile-stats{display:flex}
-
     /* ── History modal (task2) ── */
     .t2-hist-modal{background:#fff;border-radius:16px;width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
     .t2-hist-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f3f4f6}
@@ -279,8 +276,8 @@
     [data-theme="dark"] .t2-hist-entry-count{color:#64748b}
 
     /* ── Task2: override shared writing-practice.css to match purple theme ── */
-    /* Show stats bar on all sizes (no sidebar widget on this page) */
-    .wp-mobile-stats { display: flex !important; }
+    /* Desktop stats widget (Task 2 override: 3 boxes in a row, like task1) */
+    #t2-stats-widget .wp-stats-row{flex-wrap:nowrap}
 
     /* Purple progress bar */
     .wp-progress-bar { background: linear-gradient(90deg, #6366f1, #8b5cf6) !important; }
@@ -348,6 +345,25 @@
   <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
   <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
   <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
+</div>
+
+<!-- Desktop stats widget -->
+<div class="wp-stats-widget" id="t2-stats-widget" style="display:none">
+  <div class="wp-stats-widget-title"><i class="fas fa-chart-bar"></i> Phiên học</div>
+  <div class="wp-stats-row">
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-done">0</div>
+      <div class="wp-stat-label">Bài làm</div>
+    </div>
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-xp">0</div>
+      <div class="wp-stat-label">XP</div>
+    </div>
+    <div class="wp-stat-box">
+      <div class="wp-stat-num" id="widget-correct">–</div>
+      <div class="wp-stat-label">Đúng</div>
+    </div>
+  </div>
 </div>
 
 <!-- ── Mobile stats bar ── -->
@@ -605,12 +621,18 @@ function updateSessionStats() {
   const el = document.getElementById('mob-stat-done');
   const xpEl = document.getElementById('mob-stat-xp');
   const okEl = document.getElementById('mob-stat-correct');
-  if (el) el.textContent = state.sessionDone;
-  if (okEl) okEl.textContent = state.sessionDone > 0
+  const pct = state.sessionDone > 0
     ? Math.round((state.sessionCorrect / state.sessionDone) * 100) + '%' : '–';
-  if (xpEl) {
-    const stored = JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0}');
-    xpEl.textContent = stored.xp || 0;
+  const xp = (JSON.parse(localStorage.getItem('t2_progress') || '{"xp":0}').xp) || 0;
+  if (el) el.textContent = state.sessionDone;
+  if (okEl) okEl.textContent = pct;
+  if (xpEl) xpEl.textContent = xp;
+
+  const wd = document.getElementById('widget-done');
+  if (wd) {
+    wd.textContent = state.sessionDone;
+    document.getElementById('widget-xp').textContent      = xp;
+    document.getElementById('widget-correct').textContent = pct;
   }
 }
 
@@ -629,6 +651,13 @@ function render() {
     case 'vocab':    app.innerHTML = renderVocab();    break;
     case 'done':     app.innerHTML = renderDone();     break;
   }
+  // Session stats (BÀI LÀM/XP/ĐÚNG) only mean something once a practice
+  // session is actually running — outside 'practice'/'done' they'd just be
+  // stale zeros floating over the weeks/topics picker, which is the bug this
+  // guards against. Desktop widget is fixed top-right (like task1/writing);
+  // mobile bar's own visibility still comes from the shared CSS media query.
+  const widget = document.getElementById('t2-stats-widget');
+  if (widget) widget.style.display = (state.view === 'practice' || state.view === 'done') ? '' : 'none';
 }
 
 // ════════════════════════════════════════════════════════
