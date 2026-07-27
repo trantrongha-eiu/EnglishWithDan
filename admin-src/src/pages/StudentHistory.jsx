@@ -4,6 +4,7 @@ import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import Pagination from '../components/Pagination';
 
 const PAGE_SIZE = 25;
 const INITIAL_LOAD = 300;
@@ -228,15 +229,7 @@ export default function StudentHistory() {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="pagination" style={{ marginTop: 12 }}>
-          <button className="btn btn-ghost btn-sm" disabled={safePage <= 1} onClick={() => setPage(p => p - 1)}>‹ Trước</button>
-          <span style={{ fontSize: 13, color: 'var(--text2)', padding: '0 12px' }}>
-            Trang {safePage}/{totalPages}
-          </span>
-          <button className="btn btn-ghost btn-sm" disabled={safePage >= totalPages} onClick={() => setPage(p => p + 1)}>Sau ›</button>
-        </div>
-      )}
+      <Pagination page={safePage} total={filtered.length} pageSize={PAGE_SIZE} onPage={setPage} />
     </>
   );
 }

@@ -3,6 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import VocabDetailPanel from '../components/VocabDetailPanel';
+import Pagination from '../components/Pagination';
+
+const PAGE_SIZE = 25;
 
 // Unified "Chi tiết học sinh" page (2026-07-25, admin panel audit finding
 // #4) — an admin previously had to check 3 unlinked pages (Users.jsx for
@@ -100,6 +103,7 @@ export default function StudentDetail() {
   const [attemptsTotal, setAttemptsTotal] = useState(0);
   const [loadingAttempts, setLoadingAttempts] = useState(true);
   const [skillFilter, setSkillFilter] = useState('');
+  const [page, setPage] = useState(1);
 
   const [vocabStudent, setVocabStudent] = useState(null);
 
@@ -126,6 +130,9 @@ export default function StudentDetail() {
   }, [id]);
 
   const filteredAttempts = skillFilter ? attempts.filter(a => a.skill === skillFilter) : attempts;
+  const pageCount = Math.max(1, Math.ceil(filteredAttempts.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
+  const pagedAttempts = filteredAttempts.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
   const ls = user ? formatLastSeen(user.lastSeen) : null;
   const name = user ? ([user.firstName, user.lastName].filter(Boolean).join(' ') || user.username) : '';
 
@@ -185,7 +192,7 @@ export default function StudentDetail() {
       {tab === 'history' && (
         <>
           <div className="filter-bar" style={{ marginBottom: 16 }}>
-            <select className="form-input" value={skillFilter} onChange={e => setSkillFilter(e.target.value)} style={{ width: 200 }}>
+            <select className="form-input" value={skillFilter} onChange={e => { setSkillFilter(e.target.value); setPage(1); }} style={{ width: 200 }}>
               <option value="">Tất cả kỹ năng</option>
               <option value="reading">Reading (đề thi)</option>
               <option value="reading-practice">📄 Reading lẻ</option>
@@ -213,9 +220,9 @@ export default function StudentDetail() {
               <tbody>
                 {loadingAttempts
                   ? <tr><td colSpan={6} className="table-empty">Đang tải...</td></tr>
-                  : filteredAttempts.length === 0
+                  : pagedAttempts.length === 0
                     ? <tr><td colSpan={6} className="table-empty">Không có dữ liệu</td></tr>
-                    : filteredAttempts.map(h => {
+                    : pagedAttempts.map(h => {
                       const isWriting = h.skill === 'writing';
                       return (
                         <tr key={h._id}>
@@ -238,6 +245,7 @@ export default function StudentDetail() {
               </tbody>
             </table>
           </div>
+          <Pagination page={safePage} total={filteredAttempts.length} pageSize={PAGE_SIZE} onPage={setPage} />
         </>
       )}
 
