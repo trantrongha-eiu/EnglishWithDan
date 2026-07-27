@@ -438,6 +438,7 @@ function startLessonQuiz() {
     lessonState.quiz.wrong = 0;
     lessonState.quiz.wrongWords = [];
     lessonState.quiz.startTime = Date.now();
+    lessonState.quiz.submitted = false; // "Làm lại Quiz" reuses this state object — must re-arm the double-submit guard from the previous attempt
     if (lessonState.quiz.timerInterval) clearInterval(lessonState.quiz.timerInterval); // e.g. "Làm lại Quiz" without leaving the lesson
     lessonState.quiz.timerInterval = setInterval(updateQuizTimerDisplay, 1000);
     renderQuizQuestion();
