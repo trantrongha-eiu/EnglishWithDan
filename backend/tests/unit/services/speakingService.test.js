@@ -1,11 +1,17 @@
-// Unit tests for services/speakingService.js. gradeSpeaking() is a thin
-// delegate to geminiService.checkSpeaking and is deliberately NOT exercised
-// here — no real/mocked Gemini call is made in this file.
+// Unit tests for services/speakingService.js.
 const speakingService = require('../../../services/speakingService');
 const SpeakingAttempt = require('../../../models/SpeakingAttempt');
 const SpeakingMaterial = require('../../../models/SpeakingMaterial');
 const { createStudent } = require('../../factories/userFactory');
 const { createSpeakingQuestion } = require('../../factories/contentFactory');
+
+// gradeSpeaking()/retryGrading() delegate to these — mocked so tests never
+// make a real network call, and so both the overallBand-recompute and the
+// broadened Groq-fallback trigger can be exercised deterministically.
+jest.mock('../../../services/geminiService');
+jest.mock('../../../services/groqService');
+const geminiService = require('../../../services/geminiService');
+const groqService = require('../../../services/groqService');
 
 describe('speakingService.listTopics', () => {
   test('returns sorted distinct topics, filtered by part when given', async () => {
@@ -173,6 +179,141 @@ describe('speakingService pending attempt flow', () => {
     const saved = await SpeakingAttempt.findById(pendingId).lean();
     expect(saved.status).toBe('error');
     expect(saved.transcript).toBe('transcript'); // the student's answer is not lost
+  });
+});
+
+describe('speakingService.gradeSpeaking', () => {
+  const ORIGINAL_GROQ_KEY = process.env.GROQ_API_KEY;
+  afterEach(() => {
+    jest.clearAllMocks();
+    if (ORIGINAL_GROQ_KEY === undefined) delete process.env.GROQ_API_KEY;
+    else process.env.GROQ_API_KEY = ORIGINAL_GROQ_KEY;
+  });
+
+  test('recomputes overallBand as the rounded average of the 4 sub-scores, ignoring a divergent self-reported value', async () => {
+    // Gemini reports overallBand: 0 despite valid, non-zero sub-scores —
+    // exactly the "band 0.0 despite a real grade" bug from the audit.
+    geminiService.checkSpeaking.mockResolvedValue({
+      overallBand: 0, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: 'ok', strengths: [], mistakes: [], improvements: [],
+    });
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(result.overallBand).toBe(6);
+  });
+
+  test('rounds a mixed average to the nearest 0.5 (same convention as Writing grading)', async () => {
+    geminiService.checkSpeaking.mockResolvedValue({
+      overallBand: 9, fluency: 6, vocabulary: 7, grammar: 6, pronunciation: 6.5, // avg 6.375 -> 6.5
+      overallFeedback: '', strengths: [], mistakes: [], improvements: [],
+    });
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(result.overallBand).toBe(6.5);
+  });
+
+  test('falls back to Groq on a plain (non-overloaded) Gemini error when GROQ_API_KEY is set', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    const plainErr = new Error('Malformed JSON response');
+    geminiService.checkSpeaking.mockRejectedValue(plainErr);
+    groqService.checkSpeakingGroq.mockResolvedValue({
+      overallBand: 0, fluency: 7, vocabulary: 7, grammar: 7, pronunciation: 7,
+      overallFeedback: 'from groq', strengths: [], mistakes: [], improvements: [],
+    });
+
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(groqService.checkSpeakingGroq).toHaveBeenCalled();
+    expect(result.overallFeedback).toBe('from groq');
+    expect(result.overallBand).toBe(7); // recomputed after the fallback result too
+  });
+
+  test('falls back to Groq on an isOverloaded Gemini error (existing behavior preserved)', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    const overloadedErr = new Error('AI đang quá tải');
+    overloadedErr.isOverloaded = true;
+    geminiService.checkSpeaking.mockRejectedValue(overloadedErr);
+    groqService.checkSpeakingGroq.mockResolvedValue({
+      overallBand: 5, fluency: 5, vocabulary: 5, grammar: 5, pronunciation: 5,
+      overallFeedback: 'from groq', strengths: [], mistakes: [], improvements: [],
+    });
+
+    const result = await speakingService.gradeSpeaking('Q', 'transcript', 1);
+    expect(groqService.checkSpeakingGroq).toHaveBeenCalled();
+    expect(result.overallBand).toBe(5);
+  });
+
+  test('propagates the original Gemini error when GROQ_API_KEY is not set (no fallback attempted)', async () => {
+    delete process.env.GROQ_API_KEY;
+    const plainErr = new Error('Malformed JSON response');
+    geminiService.checkSpeaking.mockRejectedValue(plainErr);
+
+    await expect(speakingService.gradeSpeaking('Q', 'transcript', 1)).rejects.toThrow('Malformed JSON response');
+    expect(groqService.checkSpeakingGroq).not.toHaveBeenCalled();
+  });
+
+  test('propagates the ORIGINAL Gemini error (not the Groq one) when Groq fallback also fails', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    geminiService.checkSpeaking.mockRejectedValue(new Error('Gemini failed'));
+    groqService.checkSpeakingGroq.mockRejectedValue(new Error('Groq also failed'));
+
+    await expect(speakingService.gradeSpeaking('Q', 'transcript', 1)).rejects.toThrow('Gemini failed');
+  });
+});
+
+describe('speakingService.retryGrading', () => {
+  afterEach(() => jest.clearAllMocks());
+
+  test('returns not_found for a nonexistent attempt or one belonging to a different user', async () => {
+    const student = await createStudent();
+    const other = await createStudent();
+    const attempt = await SpeakingAttempt.create({ userId: other._id, part: 1, question: 'Q', transcript: 't', status: 'error' });
+
+    const result = await speakingService.retryGrading(attempt._id, student._id);
+    expect(result.status).toBe('not_found');
+  });
+
+  test('refuses to re-grade an already-analyzed attempt', async () => {
+    const student = await createStudent();
+    const attempt = await SpeakingAttempt.create({
+      userId: student._id, part: 1, question: 'Q', transcript: 't', status: 'analyzed',
+      aiFeedback: { overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6 },
+    });
+
+    const result = await speakingService.retryGrading(attempt._id, student._id);
+    expect(result.status).toBe('already_analyzed');
+    expect(geminiService.checkSpeaking).not.toHaveBeenCalled();
+  });
+
+  test('re-grades a pending/error attempt against its own stored transcript and finalizes it', async () => {
+    process.env.GROQ_API_KEY = process.env.GROQ_API_KEY || 'test-key';
+    const student = await createStudent();
+    const attempt = await SpeakingAttempt.create({
+      userId: student._id, part: 2, question: 'Describe a trip.', transcript: 'my stored transcript', status: 'error',
+    });
+    geminiService.checkSpeaking.mockResolvedValue({
+      overallBand: 0, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: 'retried ok', strengths: [], mistakes: [], improvements: [],
+    });
+
+    const result = await speakingService.retryGrading(attempt._id, student._id);
+    expect(result.status).toBe('ok');
+    expect(geminiService.checkSpeaking).toHaveBeenCalledWith('Describe a trip.', 'my stored transcript', 2);
+
+    const saved = await SpeakingAttempt.findById(attempt._id).lean();
+    expect(saved.status).toBe('analyzed');
+    expect(saved.aiFeedback.overallBand).toBe(6);
+  });
+
+  test('marks the attempt error again (not deleted) when the re-grade also fails', async () => {
+    delete process.env.GROQ_API_KEY;
+    const student = await createStudent();
+    const attempt = await SpeakingAttempt.create({
+      userId: student._id, part: 1, question: 'Q', transcript: 't', status: 'pending',
+    });
+    geminiService.checkSpeaking.mockRejectedValue(new Error('still failing'));
+
+    await expect(speakingService.retryGrading(attempt._id, student._id)).rejects.toThrow('still failing');
+
+    const saved = await SpeakingAttempt.findById(attempt._id).lean();
+    expect(saved.status).toBe('error');
   });
 });
 

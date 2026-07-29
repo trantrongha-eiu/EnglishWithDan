@@ -37,22 +37,22 @@ async function listQuestions({ topic, part }) {
 
 // Lets AI errors (including .isOverloaded) propagate — the controller
 // decides the HTTP status for those, since that's a request-flow decision.
-// Falls back to Groq (same prompt/schema as Gemini, see groqService.js)
-// ONLY when Gemini specifically reports itself overloaded/out of quota,
-// not for other failures (a malformed transcript should fail the same way
-// regardless of which engine handled it, not silently retry against a
-// second engine). If Groq isn't configured, or also fails, the student
-// sees Gemini's original "AI đang quá tải" message rather than a
-// confusing second error. Used by every Speaking AI call below (analyze,
-// sample answer, hints, improve) — previously only analyze had this
-// fallback, so Gemini running out of quota still broke the other three.
+// Falls back to Groq (same prompt/schema as Gemini, see groqService.js) on
+// ANY Gemini failure — overloaded/out of quota, network error, or a
+// JSON-parse failure that survived Gemini's own retry — not just the
+// overload case. A second engine attempt costs nothing extra on the happy
+// path (Gemini succeeding), and a failure this app can recover from beats
+// one it can't, regardless of why Gemini specifically failed. If Groq
+// isn't configured, or also fails, the student sees Gemini's original
+// error message rather than a confusing second one. Used by every Speaking
+// AI call below (analyze, sample answer, hints, improve).
 async function _withGroqFallback(geminiFn, groqFn, label, args) {
   try {
     return await geminiFn(...args);
   } catch (geminiErr) {
-    if (!geminiErr.isOverloaded || !process.env.GROQ_API_KEY) throw geminiErr;
+    if (!process.env.GROQ_API_KEY) throw geminiErr;
     try {
-      console.warn(`[Speaking] Gemini overloaded — falling back to Groq (${label})`);
+      console.warn(`[Speaking] Gemini failed (${geminiErr.message}) — falling back to Groq (${label})`);
       return await groqFn(...args);
     } catch (groqErr) {
       console.error(`[Speaking] Groq fallback also failed (${label}):`, groqErr.message);
@@ -61,8 +61,29 @@ async function _withGroqFallback(geminiFn, groqFn, label, args) {
   }
 }
 
+// Same rounding convention as Writing's server-side recompute (see
+// backend/routes/admin/writingGrading.js: "bandScore in JSON is ignored —
+// server recalculates from (ta+cc+lr+gra)/4 rounded to nearest 0.5").
+// Gemini is asked to self-report overallBand as the average of the 4
+// sub-scores, but nothing enforces that arithmetic on its side — a slip
+// there (band 0 despite valid sub-scores) previously persisted straight to
+// the DB and rendered as a real "0.0" band everywhere it was read. Applied
+// once here, immediately after grading succeeds, so the live response
+// returned to the student and the version later persisted by
+// mapFeedbackToAiFeedback are always the same number — never two
+// different "overall band"s for the same attempt.
+function roundToHalfBand(n) {
+  return Math.round(n * 2) / 2;
+}
+
 async function gradeSpeaking(questionText, transcript, partNum) {
-  return _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum]);
+  const feedback = await _withGroqFallback(checkSpeaking, checkSpeakingGroq, 'analyze', [questionText, transcript, partNum]);
+  const fluency = feedback.fluency || 0;
+  const vocabulary = feedback.vocabulary || 0;
+  const grammar = feedback.grammar || 0;
+  const pronunciation = feedback.pronunciation || 0;
+  feedback.overallBand = roundToHalfBand((fluency + vocabulary + grammar + pronunciation) / 4);
+  return feedback;
 }
 
 // Cache-aside against SpeakingQuestion.sampleAnswer: serves a pre-generated
@@ -132,6 +153,9 @@ async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
   return { hints };
 }
 
+// overallBand is already recomputed by gradeSpeaking() above by the time
+// this runs — trust it as-is rather than a second, potentially-divergent
+// recompute here.
 function mapFeedbackToAiFeedback(feedback) {
   return {
     overallBand: feedback.overallBand || 0,
@@ -232,6 +256,29 @@ async function markAttemptError(attemptId) {
   }
 }
 
+// Re-grades an already-submitted attempt against its own stored transcript
+// — no new recording/transcript needed from the client. Used by the
+// history tab's "Thử chấm lại" button for attempts stuck 'pending' (swept
+// to 'error' after a while by attemptTimeoutSweep.js) or that already
+// failed grading once. Refuses to touch an 'analyzed' row — retrying a
+// successful grade isn't a "retry", it's a silent re-grade a student never
+// asked for. AI errors propagate the same way analyze()'s do, so the
+// controller can apply the same isOverloaded -> 503 handling.
+async function retryGrading(attemptId, userId) {
+  const attempt = await SpeakingAttempt.findOne({ _id: attemptId, userId });
+  if (!attempt) return { status: 'not_found' };
+  if (attempt.status === 'analyzed') return { status: 'already_analyzed' };
+
+  try {
+    const feedback = await gradeSpeaking(attempt.question, attempt.transcript, attempt.part);
+    await finalizeAttempt(attempt._id, feedback);
+    return { status: 'ok', feedback, attemptId: attempt._id };
+  } catch (aiErr) {
+    await markAttemptError(attempt._id);
+    throw aiErr;
+  }
+}
+
 async function getHistory(userId) {
   return SpeakingAttempt.find({ userId }).sort({ createdAt: -1 }).limit(30).lean();
 }
@@ -253,7 +300,7 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
-  createPendingAttempt, finalizeAttempt, markAttemptError,
+  createPendingAttempt, finalizeAttempt, markAttemptError, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints,
 };

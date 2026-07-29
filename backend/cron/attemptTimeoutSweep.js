@@ -1,6 +1,7 @@
 const cron           = require('node-cron');
 const TestAttempt     = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
+const SpeakingAttempt = require('../models/SpeakingAttempt');
 
 // Audit finding: a Reading/Listening attempt that's started but never
 // submitted (tab closed, browser crash, student gives up) stays
@@ -18,10 +19,21 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 // duration lookup.
 const STALE_AFTER_MS = 2 * 60 * 60 * 1000; // 2 hours
 
+// Speaking's grading is synchronous within a single HTTP request (unlike
+// Reading/Listening's exam-duration model) — a 'pending' row normally
+// resolves in well under a minute. It only stays 'pending' if the request
+// that created it never got to finish (server restart/deploy mid-grade —
+// see server.js's 10s force-kill window vs Gemini's up-to-~60s worst case).
+// A much shorter window than Reading/Listening's, so students see a
+// definitive "failed, please retry" state quickly rather than an
+// indefinite "still grading" that will never resolve on its own.
+const SPEAKING_STALE_AFTER_MS = 10 * 60 * 1000; // 10 minutes
+
 async function sweepStaleAttempts() {
   const cutoff = new Date(Date.now() - STALE_AFTER_MS);
+  const speakingCutoff = new Date(Date.now() - SPEAKING_STALE_AFTER_MS);
   try {
-    const [reading, listening] = await Promise.all([
+    const [reading, listening, speaking] = await Promise.all([
       TestAttempt.updateMany(
         { status: 'in-progress', startTime: { $lt: cutoff } },
         { $set: { status: 'timeout', endTime: new Date() } }
@@ -30,9 +42,13 @@ async function sweepStaleAttempts() {
         { status: 'in-progress', startTime: { $lt: cutoff } },
         { $set: { status: 'timeout', submittedAt: new Date() } }
       ),
+      SpeakingAttempt.updateMany(
+        { status: 'pending', createdAt: { $lt: speakingCutoff } },
+        { $set: { status: 'error' } }
+      ),
     ]);
-    if (reading.modifiedCount || listening.modifiedCount) {
-      console.log(`[AttemptTimeoutSweep] Marked ${reading.modifiedCount} Reading + ${listening.modifiedCount} Listening stale attempt(s) as timeout`);
+    if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount) {
+      console.log(`[AttemptTimeoutSweep] Marked ${reading.modifiedCount} Reading + ${listening.modifiedCount} Listening stale attempt(s) as timeout, ${speaking.modifiedCount} Speaking stuck attempt(s) as error`);
     }
   } catch (e) {
     console.error('[AttemptTimeoutSweep] Error:', e.message);

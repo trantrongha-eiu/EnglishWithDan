@@ -154,6 +154,30 @@ exports.improveAnswer = catchAsync(async (req, res) => {
   }
 });
 
+// ── POST /api/speaking/:attemptId/retry ──────────────────────
+// Re-grades a stuck ('pending', normally already swept to 'error' by
+// attemptTimeoutSweep.js) or failed ('error') attempt against its own
+// stored transcript — no new recording needed. Refuses to touch an
+// already-'analyzed' attempt.
+exports.retry = catchAsync(async (req, res) => {
+  try {
+    const result = await speakingService.retryGrading(req.params.attemptId, req.user._id);
+    if (result.status === 'not_found') {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy lượt làm bài' });
+    }
+    if (result.status === 'already_analyzed') {
+      return res.status(409).json({ success: false, message: 'Bài này đã được chấm điểm' });
+    }
+    res.json({ success: true, feedback: result.feedback, attemptId: result.attemptId });
+  } catch (aiErr) {
+    console.error('[Speaking] retry Gemini error:', aiErr.message);
+    if (aiErr.isOverloaded) {
+      return res.status(503).json({ success: false, message: aiErr.message });
+    }
+    return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
+  }
+});
+
 // ── GET /api/speaking/history ────────────────────────────────
 exports.getHistory = catchAsync(async (req, res) => {
   const attempts = await speakingService.getHistory(req.user._id);
