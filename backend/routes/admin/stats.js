@@ -250,9 +250,16 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-userAnswer').lean()
         .catch(() => []),
+      // Task1Attempt stores ONE row per individual question (saveBatch()
+      // insertMany's the whole practice session's questions as separate
+      // docs), unlike every sibling collection here which is already
+      // one-doc-per-session — so LIMIT raw docs here is only a handful of
+      // real sessions. Fetch a much larger raw window; grouped down to
+      // LIMIT sessions below, same ratio the student's own history view
+      // uses (task1-practice.html's renderHistory(): 200 raw -> 40 shown).
       Task1Attempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
-        .sort({ createdAt: -1 }).limit(LIMIT)
+        .sort({ createdAt: -1 }).limit(Math.min(LIMIT * 15, 3000))
         .select('-userAnswer -feedback').lean()
         .catch(() => []),
       Task2Attempt.find({ ...(uid && { userId: uid }) })
@@ -266,6 +273,45 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .select('-transcript').lean()
         .catch(() => [])
     ]);
+
+    // Group Task1Attempt's flat per-question docs into per-session rows —
+    // same grouping the student's own history view already does client-side
+    // (task1-practice.html's renderHistory(): group by sessionId, fallback
+    // to an hour bucket for older docs saved before sessionId existed).
+    // Grouped by userId too since, unlike that student-only view, this
+    // endpoint can span every student — sessionId (a client Date.now()
+    // string) is not guaranteed unique across different students.
+    const TASK1_SKILL_LABELS = {
+      noun_phrase: 'Noun Phrase', data_description: 'Mô tả Data',
+      comparison: 'So sánh', trend_language: 'Xu hướng',
+      paraphrase: 'Paraphrase', overview: 'Overview', introduction: 'Introduction'
+    };
+    const task1Sessions = {};
+    for (const h of task1Attempts) {
+      const uidKey = h.userId?._id ? String(h.userId._id) : String(h.userId || '');
+      const sessKey = uidKey + '::' + (h.sessionId || new Date(h.createdAt).toISOString().slice(0, 13));
+      if (!task1Sessions[sessKey]) task1Sessions[sessKey] = { _id: h._id, userId: h.userId, date: h.createdAt, attempts: [] };
+      task1Sessions[sessKey].attempts.push(h);
+      if (new Date(h.createdAt) > new Date(task1Sessions[sessKey].date)) task1Sessions[sessKey].date = h.createdAt;
+    }
+    const task1SessionRows = Object.values(task1Sessions)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, LIMIT)
+      .map(s => {
+        const correctCount = s.attempts.filter(a => a.isCorrect).length;
+        const skillLabels = [...new Set(s.attempts.map(a => TASK1_SKILL_LABELS[a.skillType] || a.skillType).filter(Boolean))];
+        return {
+          _id: s._id, skill: 'task1-practice',
+          testName: skillLabels.slice(0, 3).join(', ') || 'Task 1',
+          testMeta: skillLabels.length > 3 ? `+${skillLabels.length - 3} loại khác` : '',
+          userId: normUser(s.userId),
+          date: s.date,
+          bandScore: null,
+          correctCount,
+          totalQuestions: s.attempts.length,
+          duration: null
+        };
+      });
 
     const rows = [
       ...reading.map(h => ({
@@ -331,17 +377,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         totalQuestions: null,
         duration: null
       })),
-      ...task1Attempts.map(h => ({
-        _id: h._id, skill: 'task1-practice',
-        testName: [h.skillType, h.module != null ? `M${h.module}` : ''].filter(Boolean).join(' ') || 'Task 1',
-        testMeta: `${h.isCorrect ? '✓' : '✗'} · ${h.score != null ? h.score + ' pts' : ''}`.trim().replace(/·\s*$/, ''),
-        userId: normUser(h.userId),
-        date: h.createdAt,
-        bandScore: null,
-        correctCount: h.isCorrect ? 1 : 0,
-        totalQuestions: 1,
-        duration: null
-      })),
+      ...task1SessionRows,
       ...task2Attempts.map(h => ({
         _id: h._id, skill: 'task2-practice',
         testName: h.topicName || '–',
