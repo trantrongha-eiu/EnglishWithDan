@@ -224,6 +224,7 @@ export default function StudentDetail() {
                     ? <tr><td colSpan={6} className="table-empty">Không có dữ liệu</td></tr>
                     : pagedAttempts.map(h => {
                       const isWriting = h.skill === 'writing';
+                      const isSpeaking = h.skill === 'speaking';
                       return (
                         <tr key={h._id}>
                           <td>{skillBadge(h.skill)}</td>
@@ -234,8 +235,8 @@ export default function StudentDetail() {
                           <td style={{ fontSize: 12 }}>{formatDate(h.date)}</td>
                           <td>{formatDur(h.duration)}</td>
                           <td>{h.correctCount != null ? `${h.correctCount}/${h.totalQuestions}` : '–'}</td>
-                          <td>{isWriting && h.bandScore == null
-                            ? <span style={{ color: 'var(--text3)', fontSize: 12 }}>Chờ chấm</span>
+                          <td>{(isWriting || isSpeaking) && h.bandScore == null
+                            ? <span style={{ color: 'var(--text3)', fontSize: 12 }}>{h.status === 'error' ? 'Lỗi chấm bài' : 'Chờ chấm'}</span>
                             : bandBadge(h.bandScore)}
                           </td>
                         </tr>

@@ -173,8 +173,9 @@ export default function Dashboard() {
               ? <tr><td colSpan={7} className="table-empty">Chưa có dữ liệu</td></tr>
               : recent.map(h => {
                 const isWriting = h.skill === 'writing';
-                const scoreEl = isWriting
-                  ? (h.bandScore != null ? bandBadge(h.bandScore) : <span style={{ color: 'var(--text3)' }}>Chờ chấm</span>)
+                const isSpeaking = h.skill === 'speaking';
+                const scoreEl = (isWriting || isSpeaking)
+                  ? (h.bandScore != null ? bandBadge(h.bandScore) : <span style={{ color: 'var(--text3)' }}>{h.status === 'error' ? 'Lỗi chấm bài' : 'Chờ chấm'}</span>)
                   : bandBadge(h.bandScore);
                 const correct = (h.correctCount != null && h.totalQuestions != null)
                   ? `${h.correctCount}/${h.totalQuestions}` : '–';

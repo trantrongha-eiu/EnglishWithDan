@@ -395,7 +395,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         testMeta: `Part ${h.part}`,
         userId: normUser(h.userId),
         date: h.createdAt,
-        bandScore: h.aiFeedback?.overallBand ?? null,
+        // aiFeedback.overallBand schema-defaults to 0 (not null) on a
+        // still-pending/failed row — only trust it once grading actually
+        // completed, mirroring Writing's ungraded-row handling below.
+        bandScore: h.status === 'analyzed' ? (h.aiFeedback?.overallBand ?? null) : null,
+        status: h.status,
         correctCount: null,
         totalQuestions: null,
         duration: h.duration
