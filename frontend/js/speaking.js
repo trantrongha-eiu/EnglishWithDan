@@ -1041,23 +1041,38 @@ async function analyzeTranscript() {
   if (errorBox) errorBox.classList.add('hidden');
   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+  const questionId = state.currentQuestion?._id;
+
   try {
-    const data = await apiFetch('/api/speaking/analyze', {
-      method: 'POST',
-      body: JSON.stringify({
-        transcript,
-        question,
-        questionId: state.currentQuestion?._id,
-        topic:      state.currentQuestion?.topic,
-        part:       state.currentQuestion?.part,
-        duration,
+    // Fetched in parallel with /analyze (not awaited first) so the
+    // encouragement comparison below never adds perceptible latency to the
+    // slow path — history is normally far faster than Gemini grading, and
+    // this fetch naturally captures the "before" state since it races
+    // ahead of (not after) the new attempt being saved server-side.
+    const [data, histData] = await Promise.all([
+      apiFetch('/api/speaking/analyze', {
+        method: 'POST',
+        body: JSON.stringify({
+          transcript,
+          question,
+          questionId,
+          topic: state.currentQuestion?.topic,
+          part:  state.currentQuestion?.part,
+          duration,
+        }),
       }),
-    });
+      questionId ? apiFetch('/api/speaking/history').catch(() => null) : Promise.resolve(null),
+    ]);
 
     if (loading) loading.style.display = 'none';
     if (results) results.style.display = 'block';
 
-    renderFeedback(data.feedback || {});
+    let previousBand = null;
+    if (histData && questionId) {
+      const prev = (histData.attempts || []).find(a => a.status === 'analyzed' && String(a.questionId) === String(questionId));
+      previousBand = prev?.aiFeedback?.overallBand ?? null;
+    }
+    renderFeedback(data.feedback || {}, previousBand);
 
     // Best-effort: key the locally-captured recording (if any) to this
     // exact attempt so History can offer same-device playback later.
@@ -1081,7 +1096,7 @@ async function analyzeTranscript() {
   }
 }
 
-function renderFeedback(fb) {
+function renderFeedback(fb, previousBand) {
   // Scores
   const scores = [
     ['overall',       fb.overallBand],
@@ -1096,6 +1111,26 @@ function renderFeedback(fb) {
     el.textContent = val != null ? val : '—';
     el.dataset.band = val != null ? bandColor(val) : '';
   });
+
+  // Comparison against this same question's own previous attempt — a
+  // light, positive-framed encouragement signal (not a streak/mascot
+  // system). Only shown when both bands exist and a real prior attempt on
+  // this exact question was found.
+  const compareNote = document.getElementById('fb-compare-note');
+  if (compareNote) {
+    if (previousBand != null && fb.overallBand != null) {
+      const diff = Math.round((fb.overallBand - previousBand) * 2) / 2;
+      let text;
+      if (diff > 0) text = `🔼 Cải thiện +${diff} band so với lần trước (${previousBand} → ${fb.overallBand})`;
+      else if (diff < 0) text = `So với lần trước: ${previousBand} → ${fb.overallBand} — cùng câu hỏi này, thử lại nhé!`;
+      else text = `So với lần trước: giữ nguyên ${fb.overallBand} band cho câu hỏi này`;
+      compareNote.textContent = text;
+      compareNote.className = diff > 0 ? 'fb-compare-up' : diff < 0 ? 'fb-compare-down' : 'fb-compare-flat';
+      compareNote.style.display = 'block';
+    } else {
+      compareNote.style.display = 'none';
+    }
+  }
 
   // Overall feedback
   const fbOverall = document.getElementById('fb-overall-card');
@@ -1879,7 +1914,9 @@ async function loadHistory() {
       const statusNote = a.status === 'pending'
         ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>'
         : a.status === 'error'
-          ? '<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.</div>'
+          ? `<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.
+              <button class="history-retry-btn" onclick="event.stopPropagation();retrySpeakingGrading('${a._id}', this)"><i class="fas fa-rotate-right"></i> Thử chấm lại</button>
+            </div>`
           : '';
       card.innerHTML = `
         <div class="history-card-top">
@@ -1898,8 +1935,35 @@ async function loadHistory() {
       list.appendChild(card);
     });
   } catch (e) {
-    container.innerHTML = '<div class="history-empty">Lỗi tải lịch sử. Vui lòng thử lại.</div>';
+    container.innerHTML = `
+      <div class="state-error">
+        <p style="font-size:15px;font-weight:600;margin-bottom:4px">Lỗi tải lịch sử</p>
+        <p style="font-size:13px;color:var(--text3,#6b7280)">Vui lòng kiểm tra kết nối mạng và thử lại.</p>
+        <button class="btn-primary retry-btn" onclick="loadHistory()"><i class="fas fa-rotate-right"></i> Thử lại</button>
+      </div>`;
     console.error('loadHistory:', e);
+  }
+}
+
+// Re-grades a stuck/failed attempt against its own stored transcript (no
+// new recording needed) — the history card's "Thử chấm lại" action.
+// Refetches the whole list on success/failure rather than hand-patching
+// one card in place, since the raw feedback shape this endpoint returns
+// (fb.mistakes/fb.improvements) differs from the persisted aiFeedback
+// shape (fb.corrections/fb.suggestions) the history cards render from —
+// simplest correct option, and history lists are short/cheap to refetch.
+async function retrySpeakingGrading(attemptId, btn) {
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang chấm lại...';
+  try {
+    await apiFetch(`/api/speaking/${attemptId}/retry`, { method: 'POST' });
+    toast('Đã chấm lại thành công!', 'success');
+    loadHistory();
+  } catch (e) {
+    toast(e.message || 'Chấm lại thất bại, vui lòng thử lại sau.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = original;
   }
 }
 
@@ -1943,7 +2007,10 @@ async function openHistoryModal(attempt) {
     <div id="history-audio-slot"></div>
 
     ${attempt.status === 'pending' ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>' : ''}
-    ${attempt.status === 'error' ? '<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.</div>' : ''}
+    ${attempt.status === 'error' ? `
+    <div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.
+      <button class="history-retry-btn" onclick="closeHistoryModal();retrySpeakingGrading('${attempt._id}', this)"><i class="fas fa-rotate-right"></i> Thử chấm lại</button>
+    </div>` : ''}
 
     ${attempt.transcript ? `
     <div class="modal-transcript">
