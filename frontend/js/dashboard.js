@@ -1803,6 +1803,46 @@ function _isParaphraseUnitSession() {
         (currentUnit.words || []).some(w => w.type === 'paraphrase');
 }
 
+// Shared UI refresh after any POST /vocabbook/practice-complete call —
+// updates both mascot widgets, the hammer count, and weekly progress from
+// the response. Extracted so other practice surfaces on this page (e.g.
+// dashboard-lesson.js's vocabulary-lesson quiz) can report their own
+// session numbers through the same endpoint and get the same feedback,
+// without duplicating this ~30-line UI block per caller.
+function _applyStreakResult(d) {
+    if (!d.success) return;
+    const numEl = document.getElementById('mascot-streak-num');
+    if (numEl) animateCount(numEl, d.streak, 500);
+    const msgEl = document.getElementById('mascot-msg');
+    if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
+    const pandaEl = document.getElementById('mascot-panda');
+    if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
+    applyFireTier(document.getElementById('mascot-fire'), numEl, d.streak);
+
+    const danNumEl = document.getElementById('dan-streak-num');
+    if (danNumEl) animateCount(danNumEl, d.streak, 500);
+    const danMsgEl = document.getElementById('dan-streak-msg');
+    if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
+    const danMascotEl = document.getElementById('dan-mascot');
+    if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
+    applyFireTier(document.getElementById('dan-fire'), danNumEl, d.streak);
+    if (d.streak > 0) {
+        // Only a real streak (bonus>0 this call, or restored) ends the
+        // "just lost a streak" mascot state — a 0-bonus (<80%) session
+        // right after a gap can legitimately still land at streak 0.
+        const danCardEl = document.getElementById('dan-streak-card');
+        if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
+    }
+
+    _hammerState.streakHammers = d.streakHammers ?? _hammerState.streakHammers;
+    renderHammerUI();
+    if (d.hammerEarned) {
+        toast('🔨 Bạn vừa nhận 1 búa Daniel vì học Paraphrase Unit xuất sắc (>=90%)!', 'success');
+        announceHammerEarned();
+    }
+    loadWeeklyProgress();
+}
+
 async function _reportSessionStreak() {
     if (_streakReportedThisSession) return;
     if (sessionAnsweredCount < 5) return;
@@ -1819,38 +1859,7 @@ async function _reportSessionStreak() {
             })
         });
         const d = await res.json();
-        if (d.success) {
-            const numEl = document.getElementById('mascot-streak-num');
-            if (numEl) animateCount(numEl, d.streak, 500);
-            const msgEl = document.getElementById('mascot-msg');
-            if (msgEl) msgEl.textContent = getMascotMsg(d.streak);
-            const pandaEl = document.getElementById('mascot-panda');
-            if (pandaEl) pandaEl.textContent = getMascotEmoji(d.streak);
-            applyFireTier(document.getElementById('mascot-fire'), numEl, d.streak);
-
-            const danNumEl = document.getElementById('dan-streak-num');
-            if (danNumEl) animateCount(danNumEl, d.streak, 500);
-            const danMsgEl = document.getElementById('dan-streak-msg');
-            if (danMsgEl) danMsgEl.textContent = getMascotMsg(d.streak);
-            const danMascotEl = document.getElementById('dan-mascot');
-            if (danMascotEl) { danMascotEl.innerHTML = ''; danMascotEl.textContent = getMascotEmoji(d.streak); }
-            applyFireTier(document.getElementById('dan-fire'), danNumEl, d.streak);
-            if (d.streak > 0) {
-                // Only a real streak (bonus>0 this call, or restored) ends the
-                // "just lost a streak" mascot state — a 0-bonus (<80%) session
-                // right after a gap can legitimately still land at streak 0.
-                const danCardEl = document.getElementById('dan-streak-card');
-                if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
-            }
-
-            _hammerState.streakHammers = d.streakHammers ?? _hammerState.streakHammers;
-            renderHammerUI();
-            if (d.hammerEarned) {
-                toast('🔨 Bạn vừa nhận 1 búa Daniel vì học Paraphrase Unit xuất sắc (>=90%)!', 'success');
-                announceHammerEarned();
-            }
-            loadWeeklyProgress();
-        }
+        _applyStreakResult(d);
     } catch { /* silent */ }
 }
 

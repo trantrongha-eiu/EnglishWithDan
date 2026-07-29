@@ -798,6 +798,24 @@ async function finishLessonQuiz() {
         });
     } catch (err) { console.error('finishLessonQuiz submit:', err); }
 
+    // Report this quiz to the SAME streak/XP endpoint Notebook/Paraphrase
+    // practice already uses — previously this only called
+    // loadStreakAndUpdateMascot(), a read-only refresh, so finishing a
+    // lesson quiz never actually granted the streak bonus (audit finding:
+    // "Vocabulary Lesson quiz doesn't award streak/XP"). Reuses
+    // dashboard.js's _applyStreakResult() for the UI update so the mascot/
+    // hammer/weekly-progress feedback is identical to every other practice
+    // surface on this page. total < 5 is a no-op server-side (same rule
+    // Notebook practice already follows), so no separate guard needed here.
+    try {
+        const res = await fetch(`${API}/vocabbook/practice-complete`, {
+            method: 'POST',
+            headers: authH(),
+            body: JSON.stringify({ wordsAnswered: total, correctAnswered: q.correct, unitId: null, unitType: null }),
+        });
+        const d = await res.json();
+        if (typeof _applyStreakResult === 'function') _applyStreakResult(d);
+    } catch (err) { console.error('finishLessonQuiz streak report:', err); }
     if (typeof loadStreakAndUpdateMascot === 'function') loadStreakAndUpdateMascot();
     if (lessonState.lastSession.score === 100 && typeof spawnConfetti === 'function') {
         setTimeout(() => spawnConfetti(100), 400); // same trigger/delay as Notebook practice's results screen
