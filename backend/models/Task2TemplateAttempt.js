@@ -6,6 +6,10 @@ const task2TemplateAttemptSchema = new mongoose.Schema({
   templateName: { type: String },
   totalItems:   { type: Number, default: 0 },
   correctItems: { type: Number, default: 0 },
+  // Optional — absent on every attempt saved before the memorization-modes
+  // feature. Defaults to 'cloze' so old rows and old callers (which never
+  // send this field) keep meaning exactly what they always meant.
+  mode:         { type: String, enum: ['cloze', 'translation', 'chunks', 'build', 'dictation'], default: 'cloze' },
   createdAt:    { type: Date, default: Date.now }
 });
 

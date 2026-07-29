@@ -321,6 +321,104 @@
     .tpl-hist-empty-icon{font-size:40px;margin-bottom:10px}
     .tpl-hist-loading{text-align:center;padding:32px;color:#9ca3af}
     .tpl-hist-loading-icon{font-size:32px;margin-bottom:8px}
+    .tpl-hist-mode-badge{font-size:10px;font-weight:700;color:#6366f1;background:#ede9fe;border-radius:10px;padding:1px 7px;margin-left:6px}
+    [data-theme="dark"] .tpl-hist-mode-badge{color:#a5b4fc;background:#1e1b4b}
+
+    /* ══════════════════════════════════════════════
+       MEMORIZATION MODES — segmented tab bar (Phase 1)
+    ══════════════════════════════════════════════ */
+    .t2-mode-tabs{display:flex;gap:5px;padding:12px 18px 0;flex-wrap:wrap}
+    .t2-mode-tab{display:flex;align-items:center;gap:6px;padding:8px 15px;min-height:36px;
+      border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12.5px;font-weight:700;
+      color:#6b7280;cursor:pointer;font-family:inherit;
+      transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .t2-mode-tab:hover{border-color:#c4b5fd;color:#6366f1;transform:translateY(-1px)}
+    .t2-mode-tab:focus-visible{outline:2px solid #6366f1;outline-offset:2px}
+    .t2-mode-tab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent;color:#fff;box-shadow:0 4px 14px rgba(99,102,241,.35)}
+    .t2-mode-tab--soon{opacity:.6}
+    .t2-mode-tab--soon:hover{transform:none;border-color:#e5e7eb;color:#6b7280}
+    .t2-mode-tab-soon-pill{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;
+      background:#f3f4f6;color:#9ca3af;border-radius:7px;padding:1px 5px;margin-left:1px}
+    [data-theme=dark] .t2-mode-tab{background:#1e293b;border-color:#334155;color:#94a3b8}
+    [data-theme=dark] .t2-mode-tab:hover{border-color:#4c1d95;color:#a5b4fc}
+    [data-theme=dark] .t2-mode-tab-soon-pill{background:#334155;color:#64748b}
+    @media(max-width:600px){
+      .t2-mode-tabs{padding:9px 12px 0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+      .t2-mode-tabs::-webkit-scrollbar{display:none}
+      .t2-mode-tab{padding:8px 12px;font-size:11.5px;flex-shrink:0}
+    }
+
+    /* Smooth mode-content mount animation — applied to the render() output
+       wrapper on every mode (including Cloze's own .t2-tpl-content), so
+       switching between any two modes always fades/slides in consistently. */
+    @keyframes t2ModeEnter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .t2-mode-enter{animation:t2ModeEnter .22s cubic-bezier(.16,1,.3,1)}
+
+    /* ── Mode 1: Sentence Translation ── */
+    .t2-trans-progress-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 0;font-size:12px;color:#9ca3af;font-weight:700}
+    .t2-trans-card{background:#fff;border:1.5px solid #e5e7eb;border-radius:14px;padding:20px;margin:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+    [data-theme=dark] .t2-trans-card{background:#1e293b;border-color:#334155}
+    .t2-trans-vi{font-size:15px;font-weight:600;color:#111827;line-height:1.7;margin-bottom:14px;padding:12px 14px;background:#f5f3ff;border-left:3px solid #8b5cf6;border-radius:8px}
+    [data-theme=dark] .t2-trans-vi{background:#1e1b4b;color:#e2e8f0}
+    .t2-trans-input{width:100%;min-height:88px;border:1.5px solid #d1d5db;border-radius:12px;padding:13px 15px;
+      font-size:14px;font-family:inherit;line-height:1.6;resize:vertical;outline:none;
+      transition:border-color .2s ease,box-shadow .2s ease;background:#fff;color:#111827;box-sizing:border-box}
+    .t2-trans-input:focus{border-color:#6366f1;box-shadow:0 0 0 4px rgba(99,102,241,.12)}
+    .t2-trans-input:disabled{background:#f9fafb;color:#6b7280}
+    [data-theme=dark] .t2-trans-input{background:#0f172a;border-color:#334155;color:#f1f5f9}
+    [data-theme=dark] .t2-trans-input:disabled{background:#1e293b}
+    .t2-trans-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .t2-trans-btn{border:none;border-radius:9px;padding:9px 16px;min-height:38px;font-size:12.5px;font-weight:700;
+      cursor:pointer;font-family:inherit;transition:transform .15s ease,box-shadow .15s ease;display:flex;align-items:center;gap:6px}
+    .t2-trans-btn:active{transform:scale(.96)}
+    .t2-trans-btn--check{background:#6366f1;color:#fff}
+    .t2-trans-btn--check:hover{background:#4f46e5;box-shadow:0 4px 12px rgba(99,102,241,.3)}
+    .t2-trans-btn--hint,.t2-trans-btn--skip{background:none;border:1.5px solid #d1d5db;color:#6b7280}
+    .t2-trans-btn--hint:hover{border-color:#f59e0b;color:#f59e0b}
+    .t2-trans-btn--skip:hover{border-color:#9ca3af;color:#374151}
+    .t2-trans-btn--next{background:#16a34a;color:#fff}
+    .t2-trans-btn--next:hover{background:#15803d;box-shadow:0 4px 12px rgba(22,163,74,.3)}
+    [data-theme=dark] .t2-trans-btn--hint,[data-theme=dark] .t2-trans-btn--skip{border-color:#334155;color:#94a3b8}
+    .t2-trans-result{margin-top:14px;padding:13px 15px;border-radius:10px;font-size:14px;line-height:1.9;display:none}
+    .t2-trans-result.vis{display:block;animation:t2ModeEnter .2s ease}
+    .t2-trans-result--perfect{background:#f0fdf4;border:1.5px solid #86efac}
+    .t2-trans-result--ok{background:#fefce8;border:1.5px solid #fde047}
+    [data-theme=dark] .t2-trans-result--perfect{background:#052e16;border-color:#166534}
+    [data-theme=dark] .t2-trans-result--ok{background:#422006;border-color:#854d0e}
+    .t2-diff-correct{color:#16a34a;font-weight:700}
+    .t2-diff-wrong{color:#dc2626;font-weight:700;text-decoration:line-through;text-decoration-color:#fca5a5}
+    .t2-diff-missing{color:#b45309;font-weight:700;background:#fef3c7;border-radius:4px;padding:0 4px}
+    .t2-diff-extra{color:#9ca3af;text-decoration:line-through}
+    [data-theme=dark] .t2-diff-correct{color:#4ade80}
+    [data-theme=dark] .t2-diff-wrong{color:#fca5a5}
+    [data-theme=dark] .t2-diff-missing{color:#fbbf24;background:#451a03}
+    [data-theme=dark] .t2-diff-extra{color:#64748b}
+    .t2-trans-answer{margin-top:10px;font-size:13px;color:#374151;padding-top:10px;border-top:1px dashed #e5e7eb}
+    [data-theme=dark] .t2-trans-answer{color:#cbd5e1;border-color:#334155}
+    .t2-trans-xp-pop{position:absolute;font-size:16px;font-weight:900;color:#f59e0b;text-shadow:0 1px 6px rgba(0,0,0,.18);pointer-events:none;z-index:9999;animation:tplXpPop .85s ease forwards;white-space:nowrap}
+    .t2-perfect-particle{position:fixed;font-size:20px;pointer-events:none;z-index:10050;animation:t2ParticleBurst .9s ease-out forwards}
+    @keyframes t2ParticleBurst{0%{opacity:1;transform:translate(0,0) scale(.6) rotate(0deg)}100%{opacity:0;transform:var(--pend,translate(0,-120px)) scale(1) rotate(180deg)}}
+
+    /* ── "Coming soon" placeholder for Chunks/Build/Dictation ── */
+    .t2-soon-card{margin:40px auto;max-width:400px;text-align:center;padding:36px 24px;
+      background:linear-gradient(135deg,#ede9fe,#e0e7ff);border-radius:16px;border:1.5px solid #c4b5fd}
+    [data-theme=dark] .t2-soon-card{background:linear-gradient(135deg,#1e1b4b,#1e293b);border-color:#3730a3}
+    .t2-soon-icon{font-size:40px;margin-bottom:12px}
+    .t2-soon-title{font-size:16px;font-weight:800;color:#3730a3;margin-bottom:6px}
+    [data-theme=dark] .t2-soon-title{color:#a5b4fc}
+    .t2-soon-sub{font-size:12.5px;color:#6b7280;line-height:1.6}
+    [data-theme=dark] .t2-soon-sub{color:#94a3b8}
+
+    /* ── Per-type sidebar mode-progress dots ── */
+    .t2-tab-mode-dots{display:flex;gap:3px;margin-top:5px}
+    .t2-tab-mode-dot{width:6px;height:6px;border-radius:50%;background:#e5e7eb;flex-shrink:0;transition:background .2s ease}
+    [data-theme=dark] .t2-tab-mode-dot{background:#334155}
+
+    @media(max-width:600px){
+      .t2-trans-card{margin:10px 11px;padding:15px}
+      .t2-trans-vi{font-size:14px;padding:10px 12px}
+      .t2-trans-input{font-size:16px} /* prevent iOS auto-zoom */
+    }
   </style>
 </head>
 <body>
@@ -367,7 +465,10 @@
     <div class="tpl-sidebar-top">
       <div class="tpl-sidebar-brand"><i class="fas fa-book-open"></i> Task 2 Writing</div>
       <div class="tpl-sidebar-subtitle">7 dạng bài IELTS Task 2</div>
-      <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px">
+        <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
+        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🗣 Dịch câu: 0/0</span>
+      </div>
     </div>
     <nav id="tpl-type-tabs" class="tpl-type-nav"></nav>
     <div class="tpl-sidebar-footer">
@@ -398,14 +499,43 @@
       </div>
     </div>
 
-    <!-- Toolbar -->
-    <div class="tpl-toolbar">
+    <!-- Learning mode tabs — Cloze is the original mode; Translation is new
+         and fully working; Chunks/Build/Dictation are placeholders (tab
+         structure exists now so later phases only need to fill the panel,
+         not touch this bar again). -->
+    <div class="t2-mode-tabs" id="tpl-mode-tabs" role="tablist" aria-label="Chế độ học">
+      <button class="t2-mode-tab active" data-mode="cloze" onclick="switchTplMode('cloze')" role="tab" aria-selected="true">
+        <i class="fas fa-pen"></i> Cloze
+      </button>
+      <button class="t2-mode-tab" data-mode="translation" onclick="switchTplMode('translation')" role="tab" aria-selected="false">
+        <i class="fas fa-language"></i> Dịch câu
+      </button>
+      <button class="t2-mode-tab t2-mode-tab--soon" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
+        <i class="fas fa-layer-group"></i> Chunks <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
+      </button>
+      <button class="t2-mode-tab t2-mode-tab--soon" data-mode="build" onclick="switchTplMode('build')" role="tab" aria-selected="false">
+        <i class="fas fa-puzzle-piece"></i> Build <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
+      </button>
+      <button class="t2-mode-tab t2-mode-tab--soon" data-mode="dictation" onclick="switchTplMode('dictation')" role="tab" aria-selected="false">
+        <i class="fas fa-headphones"></i> Dictation <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
+      </button>
+    </div>
+
+    <!-- Toolbar (Cloze mode) -->
+    <div class="tpl-toolbar" id="tpl-toolbar-cloze">
       <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
         <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
       </button>
       <button class="t2-tpl-vi-btn-tab" id="tpl-vi-btn" onclick="toggleTplVi()">
         🇻🇳 <span id="tpl-vi-label">Tiếng Việt</span>
       </button>
+      <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
+        <i class="fas fa-history"></i> Lịch sử
+      </button>
+    </div>
+
+    <!-- Toolbar (Translation mode — no exam/VI-toggle, VI is the prompt itself) -->
+    <div class="tpl-toolbar" id="tpl-toolbar-translation" style="display:none">
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
@@ -735,10 +865,14 @@ let TPL_DATA = {
 
 // ── State ──────────────────────────────────────────────────────
 let _tplActiveType = 'type01';
+let _tplActiveMode = 'cloze'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation'
 let _tplShowVi     = false;
 let _tplScores     = {};
 let _pendingTypeId   = null;
 let _pendingExamSwitch = false;
+
+// Modes not yet implemented (Phase 1) — their tab is visible but inert.
+const TPL_MODES_SOON = new Set(['chunks', 'build', 'dictation']);
 
 // Exam mode state
 let _examMode          = false;
@@ -785,6 +919,49 @@ function updateTypeStatus() {
   if (el) el.innerHTML = typeStatusHtml(_tplActiveType);
 }
 
+// ── Per-mode progress (Translation/Chunks/Build/Dictation) ──────
+// Separate localStorage key from tpl_scores/t2_tpl_type_scores (Cloze) —
+// Cloze's own storage/behavior is untouched by any of this. Shape:
+//   { type01: { translation: { "0-0": {status,attempts,lastPracticed}, ... },
+//               chunks: {}, build: {}, dictation: {} }, ... }
+const MODE_PROGRESS_KEY = 't2_tpl_mode_progress';
+let _modeProgress = {};
+try {
+  const savedModeProgress = localStorage.getItem(MODE_PROGRESS_KEY);
+  if (savedModeProgress) _modeProgress = JSON.parse(savedModeProgress);
+} catch (e) {}
+
+function saveModeProgress() {
+  localStorage.setItem(MODE_PROGRESS_KEY, JSON.stringify(_modeProgress));
+}
+
+function setModeItemResult(mode, typeId, si, ii, status) {
+  if (!_modeProgress[typeId]) _modeProgress[typeId] = {};
+  if (!_modeProgress[typeId][mode]) _modeProgress[typeId][mode] = {};
+  const key = `${si}-${ii}`;
+  const prev = _modeProgress[typeId][mode][key];
+  _modeProgress[typeId][mode][key] = {
+    status, attempts: (prev?.attempts || 0) + 1, lastPracticed: new Date().toISOString()
+  };
+  saveModeProgress();
+}
+
+// % of typeId's items marked 'ok' for the given mode. Mirrors the
+// done/total calc already duplicated for Cloze (renderTabs/renderTplContent/
+// updateTplScore) — kept as a separate small helper since it reads a
+// different store (_modeProgress, not _tplScores).
+function modeCompletionPct(mode, typeId) {
+  const type = TPL_DATA[typeId];
+  if (!type) return 0;
+  let done = 0, total = 0;
+  const modeData = _modeProgress[typeId]?.[mode] || {};
+  type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+    total++;
+    if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
+  }));
+  return total ? Math.round(done / total * 100) : 0;
+}
+
 // ── URL sharing ────────────────────────────────────────────────
 function _syncTplShareUrl(push = false) {
   const params = new URLSearchParams();
@@ -802,7 +979,7 @@ window.addEventListener('popstate', () => {
   const _urlType   = _urlParams.get('type');
   const nextType   = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
   if (nextType === _tplActiveType) return;
-  saveTplAttemptToServer(_tplActiveType);
+  saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
   _tplActiveType = nextType;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === nextType);
@@ -868,6 +1045,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTabs();
   renderTplContent();
   updateOverallBadge();
+  updateModeOverallBadge();
   updateTypeStatus();
   document.getElementById('tpl-switch-overlay').addEventListener('click', e => {
     if (e.target === e.currentTarget) cancelTypeSwitch();
@@ -895,6 +1073,17 @@ function renderTabs() {
     const badge = isDone
       ? '<span class="t2-tab-done-badge">✓</span>'
       : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
+    // Mini mode-progress dots — Cloze (type color) + Dịch câu (purple).
+    // Chunks/Build/Dictation get a placeholder dot too so the row shape
+    // won't shift once those modes ship real progress.
+    const transPct = modeCompletionPct('translation', t.id);
+    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}%`;
+    const dots = `<div class="t2-tab-mode-dots" title="${escAttr(dotTitle)}">
+        <span class="t2-tab-mode-dot" style="${pct > 0 ? `background:${t.color||'#6366f1'}` : ''}"></span>
+        <span class="t2-tab-mode-dot" style="${transPct > 0 ? 'background:#8b5cf6' : ''}"></span>
+        <span class="t2-tab-mode-dot"></span>
+        <span class="t2-tab-mode-dot"></span>
+      </div>`;
     return `
     <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
       onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${t.color||'#6366f1'}">
@@ -905,6 +1094,7 @@ function renderTabs() {
         <div class="t2-tab-label">${escHtml(t.label)}</div>
         <div class="t2-tab-sub">${escHtml(t.sub)}</div>
         ${total > 0 ? `<div class="t2-tab-prog"><div class="t2-tab-prog-fill" style="width:${pct}%;background:${t.color||'#6366f1'}"></div></div>` : ''}
+        ${dots}
       </div>
       ${badge}
     </button>`;
@@ -913,6 +1103,11 @@ function renderTabs() {
 
 // ── Render content ─────────────────────────────────────────────
 function renderTplContent() {
+  // Dispatch to the active mode — everything below this guard is the
+  // original Cloze renderer, unchanged, still the default/fallback mode.
+  if (_tplActiveMode === 'translation') { renderTranslationMode(); return; }
+  if (TPL_MODES_SOON.has(_tplActiveMode)) { renderSoonMode(_tplActiveMode); return; }
+
   const type = TPL_DATA[_tplActiveType];
   if (!type) return;
   const area = document.getElementById('tpl-content-area');
@@ -1025,7 +1220,7 @@ function renderTplContent() {
 
   area.innerHTML = `
     ${examBar}
-    <div class="t2-tpl-content">${infoCard}${sectionsHtml}</div>
+    <div class="t2-tpl-content t2-mode-enter">${infoCard}${sectionsHtml}</div>
     ${_examMode ? '' : `<div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
       🎉 Xuất sắc! Bạn đã hoàn thành <b>${escHtml(type.name)}</b>! Nhấn "Làm lại" để ôn tiếp.
     </div>`}
@@ -1223,7 +1418,7 @@ function cancelTypeSwitch() {
 }
 
 function doSwitchType(typeId) {
-  saveTplAttemptToServer(_tplActiveType);
+  saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
   _tplActiveType = typeId;
   document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tplType === typeId);
@@ -1232,6 +1427,293 @@ function doSwitchType(typeId) {
   updateTplScore();
   updateTypeStatus();
   _syncTplShareUrl(true);
+}
+
+// ── Learning mode switch (Cloze / Translation / Chunks / Build / Dictation) ──
+function switchTplMode(mode) {
+  if (mode === _tplActiveMode) return;
+  if (_examMode) exitExamMode(); // exam mode only exists for Cloze
+  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // save the session we're leaving
+  _tplActiveMode = mode;
+  document.querySelectorAll('.t2-mode-tab').forEach(btn => {
+    const isActive = btn.dataset.mode === mode;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+  const cloTb = document.getElementById('tpl-toolbar-cloze');
+  const traTb = document.getElementById('tpl-toolbar-translation');
+  if (cloTb) cloTb.style.display = mode === 'cloze' ? '' : 'none';
+  if (traTb) traTb.style.display = mode === 'translation' ? '' : 'none';
+  renderTplContent();
+}
+
+function renderSoonMode(mode) {
+  const area = document.getElementById('tpl-content-area');
+  if (!area) return;
+  const meta = {
+    chunks:    { icon: 'fa-layer-group',  title: 'Chunks — Học theo cụm từ', sub: 'Ghi nhớ template bằng flashcard lật cụm từ Anh–Việt, có hàng đợi ôn lại các cụm sai. Đang được phát triển!' },
+    build:     { icon: 'fa-puzzle-piece', title: 'Build the Sentence',        sub: 'Kéo-thả các cụm từ để dựng lại câu đúng thứ tự. Đang được phát triển!' },
+    dictation: { icon: 'fa-headphones',   title: 'Dictation Mode',            sub: 'Nghe và gõ lại chính xác từng câu. Đang được phát triển!' },
+  }[mode] || { icon: 'fa-hourglass-half', title: 'Sắp ra mắt', sub: 'Chế độ học mới đang được phát triển.' };
+  area.innerHTML = `
+    <div class="t2-mode-enter">
+      <div class="t2-soon-card">
+        <div class="t2-soon-icon"><i class="fas ${meta.icon}"></i></div>
+        <div class="t2-soon-title">${escHtml(meta.title)}</div>
+        <div class="t2-soon-sub">${escHtml(meta.sub)}</div>
+      </div>
+    </div>`;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = '0%';
+}
+
+// ── Mode 1: Sentence-by-Sentence Translation ─────────────────────
+let _transIdx = 0; // index into the active type's flattened item list
+
+function _tplFlatItems(typeId) {
+  const type = TPL_DATA[typeId];
+  if (!type) return [];
+  const flat = [];
+  type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => flat.push({ si, ii, item })));
+  return flat;
+}
+
+// Reconstructs the full correct English sentence from a Cloze item by
+// splicing its answer(s) back into the blanks — reuses TPL_DATA exactly as
+// Cloze does, no new content authored for Translation mode.
+function _fullEnglishSentence(item) {
+  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+  const parts = item.en.split('___');
+  let out = parts[0];
+  answers.forEach((a, i) => { out += a + (parts[i + 1] || ''); });
+  return out;
+}
+
+function renderTranslationMode() {
+  const flat = _tplFlatItems(_tplActiveType);
+  const area = document.getElementById('tpl-content-area');
+  if (!area) return;
+  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
+  if (_transIdx >= flat.length) _transIdx = 0;
+
+  const modeData = _modeProgress[_tplActiveType]?.translation || {};
+  let done = 0;
+  flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
+  const pct = Math.round(done / flat.length * 100);
+
+  const { si, ii, item } = flat[_transIdx];
+  const key = `${si}-${ii}`;
+  const alreadyOk = modeData[key]?.status === 'ok';
+  const target = _fullEnglishSentence(item);
+
+  area.innerHTML = `
+    <div class="t2-mode-enter">
+      <div class="t2-trans-progress-hdr">
+        <span>Câu ${_transIdx + 1} / ${flat.length}</span>
+        <span id="trans-done-count">${done}/${flat.length} đã đúng · ${pct}%</span>
+      </div>
+      <div class="t2-trans-card">
+        <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
+        <textarea class="t2-trans-input" id="trans-input" placeholder="Nhập câu tiếng Anh..." ${alreadyOk ? 'disabled' : ''}
+          onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkTranslation()}"
+        >${alreadyOk ? escHtml(target) : ''}</textarea>
+        <div class="t2-trans-actions" id="trans-actions">
+          ${!alreadyOk ? `
+            <button class="t2-trans-btn t2-trans-btn--check" onclick="checkTranslation()"><i class="fas fa-check"></i> Kiểm tra</button>
+            <button class="t2-trans-btn t2-trans-btn--hint" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>
+            <button class="t2-trans-btn t2-trans-btn--skip" onclick="skipTranslation()"><i class="fas fa-forward"></i> Bỏ qua</button>
+          ` : `
+            <button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
+          `}
+        </div>
+        <div class="t2-trans-result" id="trans-result"></div>
+      </div>
+    </div>`;
+
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+
+  if (alreadyOk) {
+    const resultEl = document.getElementById('trans-result');
+    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
+    resultEl.innerHTML = `✅ Đã trả lời đúng câu này.<div class="t2-trans-answer"><b>Đáp án:</b> ${escHtml(target)}</div>`;
+  } else {
+    setTimeout(() => document.getElementById('trans-input')?.focus(), 50);
+  }
+}
+
+// Word-level diff between the target sentence and what the student typed.
+// Normalizes case/whitespace/trailing punctuation (spec: ignore minor
+// punctuation, case, extra spaces), aligns tokens via LCS, then merges
+// adjacent missing+extra pairs into a single "wrong" (substituted word)
+// rather than showing them as two separate diff ops — matches the spec's
+// Correct/Incorrect/Missing/Extra categories. Reused by Dictation Mode later.
+function _diffNormalizeToken(w) { return w.toLowerCase().replace(/^[.,!?;:"'’]+|[.,!?;:"'’]+$/g, ''); }
+function _diffTokenize(s) { return (s || '').trim().split(/\s+/).filter(Boolean); }
+
+function diffWords(target, typed) {
+  const aOrig = _diffTokenize(target), bOrig = _diffTokenize(typed);
+  const a = aOrig.map(_diffNormalizeToken), b = bOrig.map(_diffNormalizeToken);
+  const n = a.length, m = b.length;
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const ops = [];
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { ops.push({ type: 'correct', word: bOrig[j] }); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ type: 'missing', word: aOrig[i] }); i++; }
+    else { ops.push({ type: 'extra', word: bOrig[j] }); j++; }
+  }
+  while (i < n) { ops.push({ type: 'missing', word: aOrig[i] }); i++; }
+  while (j < m) { ops.push({ type: 'extra', word: bOrig[j] }); j++; }
+
+  const tokens = [];
+  for (let k = 0; k < ops.length; k++) {
+    const cur = ops[k], nxt = ops[k + 1];
+    if (nxt && ((cur.type === 'missing' && nxt.type === 'extra') || (cur.type === 'extra' && nxt.type === 'missing'))) {
+      const missingTok = cur.type === 'missing' ? cur : nxt;
+      const extraTok   = cur.type === 'extra'   ? cur : nxt;
+      tokens.push({ type: 'wrong', word: extraTok.word, expected: missingTok.word });
+      k++;
+    } else {
+      tokens.push(cur);
+    }
+  }
+
+  const correctCount = tokens.filter(t => t.type === 'correct').length;
+  const isPerfect = tokens.length > 0 && tokens.every(t => t.type === 'correct');
+  const accuracy = a.length ? Math.round(correctCount / a.length * 100) : 100;
+  return { tokens, isPerfect, accuracy };
+}
+
+function renderDiffHtml(diff) {
+  return diff.tokens.map(t => {
+    const esc = escHtml(t.word);
+    if (t.type === 'correct') return `<span class="t2-diff-correct">${esc}</span>`;
+    if (t.type === 'missing') return `<span class="t2-diff-missing">${esc}</span>`;
+    if (t.type === 'extra')   return `<span class="t2-diff-extra">${esc}</span>`;
+    return `<span class="t2-diff-wrong" title="Đáp án: ${escAttr(t.expected)}">${esc}</span>`;
+  }).join(' ');
+}
+
+// checkTranslation() updates the result card in place (not a full re-render,
+// so the textarea/buttons don't flash) — this keeps the "X/N đã đúng" header
+// and the top progress bar in sync with that same in-place update, so
+// progress visibly moves the instant Check is pressed, not only after Next.
+function _updateTransProgressHeader(flat) {
+  const modeData = _modeProgress[_tplActiveType]?.translation || {};
+  let done = 0;
+  flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
+  const pct = flat.length ? Math.round(done / flat.length * 100) : 0;
+  const countEl = document.getElementById('trans-done-count');
+  if (countEl) countEl.textContent = `${done}/${flat.length} đã đúng · ${pct}%`;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = pct + '%';
+}
+
+function checkTranslation() {
+  const flat = _tplFlatItems(_tplActiveType);
+  const { si, ii, item } = flat[_transIdx];
+  const input = document.getElementById('trans-input');
+  if (!input) return;
+  const typed = input.value.trim();
+  if (!typed) { showToast('Vui lòng nhập câu trả lời!', 'warn', 2000); return; }
+
+  const target = _fullEnglishSentence(item);
+  const diff = diffWords(target, typed);
+  const resultEl   = document.getElementById('trans-result');
+  const actionsEl  = document.getElementById('trans-actions');
+  input.disabled = true;
+
+  if (diff.isPerfect) {
+    setModeItemResult('translation', _tplActiveType, si, ii, 'ok');
+    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
+    resultEl.innerHTML = `🎉 <b>Hoàn hảo!</b><div style="margin-top:6px">${renderDiffHtml(diff)}</div>`;
+    playOk();
+    updateXPStorage(5);
+    _spawnTransXpPop(resultEl, '+5 XP ⭐');
+    _spawnPerfectParticles(resultEl);
+  } else {
+    setModeItemResult('translation', _tplActiveType, si, ii, 'err');
+    resultEl.className = 't2-trans-result t2-trans-result--ok vis';
+    resultEl.innerHTML = `${renderDiffHtml(diff)}<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(target)}</div>`;
+    playWrong();
+    if (diff.accuracy >= 60) updateXPStorage(1);
+  }
+
+  actionsEl.innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
+  _updateTransProgressHeader(flat);
+  updateModeOverallBadge();
+  renderTabs();
+}
+
+function showTranslationHint() {
+  const flat = _tplFlatItems(_tplActiveType);
+  const target = _fullEnglishSentence(flat[_transIdx].item);
+  const words = target.split(' ');
+  const hintWords = words.slice(0, Math.max(1, Math.ceil(words.length / 3))).join(' ');
+  showToast(`💡 Gợi ý: "${hintWords}…"`, 'info', 3000);
+}
+
+function skipTranslation() {
+  const flat = _tplFlatItems(_tplActiveType);
+  const { si, ii } = flat[_transIdx];
+  setModeItemResult('translation', _tplActiveType, si, ii, 'skip');
+  nextTranslation();
+}
+
+function nextTranslation() {
+  const flat = _tplFlatItems(_tplActiveType);
+  if (!flat.length) return;
+  _transIdx = (_transIdx + 1) % flat.length;
+  renderTranslationMode();
+}
+
+function _spawnTransXpPop(anchorEl, text) {
+  const rect = anchorEl.getBoundingClientRect();
+  const pop = document.createElement('div');
+  pop.className = 't2-trans-xp-pop';
+  pop.textContent = text;
+  pop.style.cssText = `left:${rect.left + window.scrollX + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 6}px;`;
+  document.body.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+function _spawnPerfectParticles(anchorEl) {
+  const rect = anchorEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2, cy = rect.top + 20;
+  const emojis = ['🎉', '✨', '⭐', '🎊', '💫'];
+  for (let k = 0; k < 8; k++) {
+    const p = document.createElement('div');
+    p.className = 't2-perfect-particle';
+    p.textContent = emojis[k % emojis.length];
+    const angle = (Math.PI * 2 * k) / 8 + Math.random() * 0.4;
+    const dist = 70 + Math.random() * 40;
+    p.style.left = cx + 'px'; p.style.top = cy + 'px';
+    p.style.setProperty('--pend', `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist - 40}px)`);
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 950);
+  }
+}
+
+function updateModeOverallBadge() {
+  const el = document.getElementById('tpl-mode-badge');
+  if (!el) return;
+  let done = 0, total = 0;
+  TPL_TYPES.forEach(t => {
+    const type = TPL_DATA[t.id];
+    if (!type) return;
+    const modeData = _modeProgress[t.id]?.translation || {};
+    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+      total++;
+      if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
+    }));
+  });
+  el.textContent = `🗣 Dịch câu: ${done}/${total}`;
 }
 
 // ── Exam mode ──────────────────────────────────────────────────
@@ -1437,27 +1919,35 @@ function _escOnclickArg(s) {
 }
 
 // ── Template attempt save ──────────────────────────────────────
-async function saveTplAttemptToServer(typeId) {
+async function saveTplAttemptToServer(typeId, mode = 'cloze') {
   const token = window.AuthService.getToken();
   if (!token || !typeId) return;
   const type = TPL_DATA[typeId];
   if (!type) return;
   let total = 0, correct = 0;
-  type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-    total++;
-    if (_tplScores[`${typeId}-${si}-${ii}`] === 'ok') correct++;
-  }));
+  if (mode === 'cloze') {
+    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+      total++;
+      if (_tplScores[`${typeId}-${si}-${ii}`] === 'ok') correct++;
+    }));
+  } else {
+    const modeData = _modeProgress[typeId]?.[mode] || {};
+    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+      total++;
+      if (modeData[`${si}-${ii}`]?.status === 'ok') correct++;
+    }));
+  }
   if (correct === 0) return; // Không lưu nếu chưa làm gì
   const typeMeta = TPL_TYPES.find(t => t.id === typeId);
   try {
     await fetch(`${API}/api/task2template/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ templateType: typeId, templateName: typeMeta?.label || type.name || typeId, totalItems: total, correctItems: correct })
+      body: JSON.stringify({ templateType: typeId, templateName: typeMeta?.label || type.name || typeId, totalItems: total, correctItems: correct, mode })
     });
   } catch {}
 }
-window.addEventListener('beforeunload', () => saveTplAttemptToServer(_tplActiveType));
+window.addEventListener('beforeunload', () => saveTplAttemptToServer(_tplActiveType, _tplActiveMode));
 
 // ── Template history modal ────────────────────────────────────
 function openTplHistory() {
@@ -1504,13 +1994,18 @@ async function loadTplHistory() {
     const totalCorrect  = attempts.reduce((s, a) => s + (a.correctItems || 0), 0);
     const totalItems    = attempts.reduce((s, a) => s + (a.totalItems || 0), 0);
 
+    const MODE_LABELS = { translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
     const rows = attempts.slice(0, 40).map(a => {
       const acc = a.totalItems > 0 ? Math.round((a.correctItems / a.totalItems) * 100) : 0;
       const badgeCls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
       const date = new Date(a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+      // Old attempts (saved before the memorization-modes feature) have no
+      // `mode` field at all — render exactly as before, no badge.
+      const modeBadge = a.mode && a.mode !== 'cloze'
+        ? `<span class="tpl-hist-mode-badge">${escHtml(MODE_LABELS[a.mode] || a.mode)}</span>` : '';
       return `<div class="tpl-hist-entry">
         <div class="tpl-hist-date">${date}</div>
-        <div class="tpl-hist-name">${escHtml(a.templateName || a.templateType || '–')}</div>
+        <div class="tpl-hist-name">${escHtml(a.templateName || a.templateType || '–')}${modeBadge}</div>
         <div class="tpl-hist-row">
           <span class="tpl-hist-score">${a.correctItems}/${a.totalItems} mẫu</span>
           <span class="tpl-hist-badge tpl-hist-badge--${badgeCls}">${acc}%</span>
