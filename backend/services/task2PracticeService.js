@@ -270,7 +270,19 @@ async function saveAttempt(userId, body) {
   // question is still confirmed to be a real question on the given topic,
   // closing the "claim an inflated correctCount/totalQuestions" vector.
   const topic = topicId ? await Task2Topic.findById(topicId).lean() : null;
-  const qMap = topic ? Object.fromEntries((topic.questions || []).map(q => [(q._id ? q._id.toString() : q.questionId), q])) : {};
+  // Index by BOTH keys — the frontend sends q.questionId when present
+  // (task2-practice.html's `q.questionId || q._id`), but every seeded
+  // question also has a Mongo _id, so a single either/or key silently
+  // dropped every submitted answer here (saveAttempt always saw q._id
+  // win the ternary, never matching the questionId the client actually
+  // sent) — every session's correctCount/totalQuestions saved as 0/0.
+  const qMap = {};
+  if (topic) {
+    for (const q of (topic.questions || [])) {
+      if (q._id) qMap[q._id.toString()] = q;
+      if (q.questionId) qMap[q.questionId] = q;
+    }
+  }
 
   const verified = (questionsAttempted || []).map(qa => {
     const q = qMap[qa.questionId];
