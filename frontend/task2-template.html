@@ -419,6 +419,49 @@
       .t2-trans-vi{font-size:14px;padding:10px 12px}
       .t2-trans-input{font-size:16px} /* prevent iOS auto-zoom */
     }
+
+    /* ── Mode 2: Chunks — flip flashcard (perspective + rotateY, same
+       technique dashboard.css's .flashcard/.flipped already established) ── */
+    .t2-flip-wrap{perspective:1200px;margin:18px 16px 0;cursor:pointer;user-select:none}
+    .t2-flip-card{position:relative;min-height:190px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.2,.2,1)}
+    .t2-flip-card.flipped{transform:rotateY(180deg)}
+    .t2-flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:26px 22px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+      border:1.5px solid #e5e7eb;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .t2-flip-front{background:#f5f3ff}
+    .t2-flip-back{background:#fff;transform:rotateY(180deg)}
+    [data-theme=dark] .t2-flip-front{background:#1e1b4b;border-color:#3730a3}
+    [data-theme=dark] .t2-flip-back{background:#1e293b;border-color:#334155}
+    .t2-flip-hint{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#8b5cf6;margin-bottom:10px}
+    .t2-flip-text{font-size:16px;font-weight:600;color:#111827;line-height:1.7}
+    [data-theme=dark] .t2-flip-text{color:#e2e8f0}
+    .t2-flip-chunks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+    .t2-chunk-pill{background:#ede9fe;color:#4338ca;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;
+      animation:t2ChunkStagger .3s cubic-bezier(.16,1,.3,1) backwards}
+    .t2-chunk-pill:nth-child(1){animation-delay:.03s} .t2-chunk-pill:nth-child(2){animation-delay:.08s}
+    .t2-chunk-pill:nth-child(3){animation-delay:.13s} .t2-chunk-pill:nth-child(4){animation-delay:.18s}
+    .t2-chunk-pill:nth-child(5){animation-delay:.23s} .t2-chunk-pill:nth-child(6){animation-delay:.28s}
+    @keyframes t2ChunkStagger{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+    [data-theme=dark] .t2-chunk-pill{background:#312e81;color:#c7d2fe}
+    .t2-chunk-actions{display:flex;gap:10px;justify-content:center;margin:18px 16px 0}
+    .t2-chunk-actions.hidden{display:none}
+    .t2-chunk-btn--no{background:#fee2e2;color:#b91c1c}
+    .t2-chunk-btn--no:hover{background:#fecaca}
+    .t2-chunk-btn--yes{background:#dcfce7;color:#15803d}
+    .t2-chunk-btn--yes:hover{background:#bbf7d0}
+    [data-theme=dark] .t2-chunk-btn--no{background:#450a0a;color:#fca5a5}
+    [data-theme=dark] .t2-chunk-btn--yes{background:#052e16;color:#4ade80}
+    .t2-chunk-flip-cta{text-align:center;font-size:11.5px;color:#9ca3af;margin-top:14px;transition:opacity .15s ease}
+    .t2-chunk-flip-cta.hidden{opacity:0;pointer-events:none}
+    .t2-chunk-done-card{background:linear-gradient(135deg,#d1fae5,#a7f3d0)!important;border-color:#34d399!important}
+    .t2-chunk-done-card .t2-soon-title{color:#065f46!important}
+    [data-theme=dark] .t2-chunk-done-card{background:linear-gradient(135deg,#052e16,#064e3b)!important;border-color:#065f46!important}
+    [data-theme=dark] .t2-chunk-done-card .t2-soon-title{color:#6ee7b7!important}
+    @media(max-width:600px){
+      .t2-flip-wrap{margin:12px 11px 0}
+      .t2-flip-face{padding:20px 16px}
+      .t2-flip-card{min-height:170px}
+    }
   </style>
 </head>
 <body>
@@ -467,7 +510,7 @@
       <div class="tpl-sidebar-subtitle">7 dạng bài IELTS Task 2</div>
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px">
         <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
-        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🗣 Dịch câu: 0/0</span>
+        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🗣 0/0   ·   🔗 0/0</span>
       </div>
     </div>
     <nav id="tpl-type-tabs" class="tpl-type-nav"></nav>
@@ -510,8 +553,8 @@
       <button class="t2-mode-tab" data-mode="translation" onclick="switchTplMode('translation')" role="tab" aria-selected="false">
         <i class="fas fa-language"></i> Dịch câu
       </button>
-      <button class="t2-mode-tab t2-mode-tab--soon" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
-        <i class="fas fa-layer-group"></i> Chunks <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
+      <button class="t2-mode-tab" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
+        <i class="fas fa-layer-group"></i> Chunks
       </button>
       <button class="t2-mode-tab t2-mode-tab--soon" data-mode="build" onclick="switchTplMode('build')" role="tab" aria-selected="false">
         <i class="fas fa-puzzle-piece"></i> Build <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
@@ -534,8 +577,8 @@
       </button>
     </div>
 
-    <!-- Toolbar (Translation mode — no exam/VI-toggle, VI is the prompt itself) -->
-    <div class="tpl-toolbar" id="tpl-toolbar-translation" style="display:none">
+    <!-- Toolbar (every non-Cloze mode — no exam/VI-toggle, each mode has its own way of showing VI) -->
+    <div class="tpl-toolbar" id="tpl-toolbar-other" style="display:none">
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
@@ -872,7 +915,7 @@ let _pendingTypeId   = null;
 let _pendingExamSwitch = false;
 
 // Modes not yet implemented (Phase 1) — their tab is visible but inert.
-const TPL_MODES_SOON = new Set(['chunks', 'build', 'dictation']);
+const TPL_MODES_SOON = new Set(['build', 'dictation']);
 
 // Exam mode state
 let _examMode          = false;
@@ -1073,15 +1116,16 @@ function renderTabs() {
     const badge = isDone
       ? '<span class="t2-tab-done-badge">✓</span>'
       : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
-    // Mini mode-progress dots — Cloze (type color) + Dịch câu (purple).
-    // Chunks/Build/Dictation get a placeholder dot too so the row shape
-    // won't shift once those modes ship real progress.
-    const transPct = modeCompletionPct('translation', t.id);
-    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}%`;
+    // Mini mode-progress dots — Cloze (type color) + Dịch câu (purple) +
+    // Chunks (indigo). Build/Dictation get a placeholder dot too so the
+    // row shape won't shift once those modes ship real progress.
+    const transPct  = modeCompletionPct('translation', t.id);
+    const chunksPct = modeCompletionPct('chunks', t.id);
+    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}% · Chunks ${chunksPct}%`;
     const dots = `<div class="t2-tab-mode-dots" title="${escAttr(dotTitle)}">
         <span class="t2-tab-mode-dot" style="${pct > 0 ? `background:${t.color||'#6366f1'}` : ''}"></span>
         <span class="t2-tab-mode-dot" style="${transPct > 0 ? 'background:#8b5cf6' : ''}"></span>
-        <span class="t2-tab-mode-dot"></span>
+        <span class="t2-tab-mode-dot" style="${chunksPct > 0 ? 'background:#4f46e5' : ''}"></span>
         <span class="t2-tab-mode-dot"></span>
       </div>`;
     return `
@@ -1106,6 +1150,7 @@ function renderTplContent() {
   // Dispatch to the active mode — everything below this guard is the
   // original Cloze renderer, unchanged, still the default/fallback mode.
   if (_tplActiveMode === 'translation') { renderTranslationMode(); return; }
+  if (_tplActiveMode === 'chunks') { renderChunksMode(); return; }
   if (TPL_MODES_SOON.has(_tplActiveMode)) { renderSoonMode(_tplActiveMode); return; }
 
   const type = TPL_DATA[_tplActiveType];
@@ -1440,10 +1485,10 @@ function switchTplMode(mode) {
     btn.classList.toggle('active', isActive);
     btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
   });
-  const cloTb = document.getElementById('tpl-toolbar-cloze');
-  const traTb = document.getElementById('tpl-toolbar-translation');
-  if (cloTb) cloTb.style.display = mode === 'cloze' ? '' : 'none';
-  if (traTb) traTb.style.display = mode === 'translation' ? '' : 'none';
+  const cloTb   = document.getElementById('tpl-toolbar-cloze');
+  const otherTb = document.getElementById('tpl-toolbar-other');
+  if (cloTb)   cloTb.style.display   = mode === 'cloze' ? '' : 'none';
+  if (otherTb) otherTb.style.display = mode === 'cloze' ? 'none' : '';
   renderTplContent();
 }
 
@@ -1700,21 +1745,179 @@ function _spawnPerfectParticles(anchorEl) {
   }
 }
 
+// Icons for every mode that has REAL progress to show — grows as later
+// phases ship (Build/Dictation get added here once they're wired up).
+const ACTIVE_PROGRESS_MODES = [
+  { mode: 'translation', icon: '🗣' },
+  { mode: 'chunks',      icon: '🔗' },
+];
 function updateModeOverallBadge() {
   const el = document.getElementById('tpl-mode-badge');
   if (!el) return;
-  let done = 0, total = 0;
-  TPL_TYPES.forEach(t => {
-    const type = TPL_DATA[t.id];
-    if (!type) return;
-    const modeData = _modeProgress[t.id]?.translation || {};
-    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-      total++;
-      if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
-    }));
+  const parts = ACTIVE_PROGRESS_MODES.map(({ mode, icon }) => {
+    let done = 0, total = 0;
+    TPL_TYPES.forEach(t => {
+      const type = TPL_DATA[t.id];
+      if (!type) return;
+      const modeData = _modeProgress[t.id]?.[mode] || {};
+      type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
+        total++;
+        if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
+      }));
+    });
+    return `${icon} ${done}/${total}`;
   });
-  el.textContent = `🗣 Dịch câu: ${done}/${total}`;
+  el.textContent = parts.join('   ·   ');
 }
+
+// ── Mode 2: Chunks — sentence flashcards with EN-side phrase chunking ──
+// (VI/EN chunk-level pairing was deliberately NOT auto-generated — the
+// dataset only has whole-sentence VI translations, and heuristically
+// guessing per-chunk Vietnamese boundaries risks teaching students an
+// inaccurate translation. Flashcards flip at the sentence level instead;
+// the English back face highlights chunk boundaries so students still get
+// the phrase-structure cue, just without fabricated Vietnamese content.)
+const CHUNK_BOUNDARY_WORDS = new Set([
+  'of', 'in', 'on', 'for', 'with', 'to', 'from', 'at', 'by',
+  'that', 'which', 'and', 'but', 'because', 'so', 'while', 'although',
+  'as', 'if', 'than', 'after', 'before', 'when',
+]);
+// Splits an English sentence into 2-6-word chunks at natural phrase
+// boundaries (prepositions/conjunctions/commas). A visual memorization aid,
+// not a claim of grammatically exact phrase structure — reused by Build
+// mode (Phase 3) for its reorderable blocks.
+function chunkSentence(sentence) {
+  const words = sentence.trim().split(/\s+/);
+  const chunks = [];
+  let current = [];
+  words.forEach((w, idx) => {
+    const bare = w.toLowerCase().replace(/[.,!?;:"']/g, '');
+    if (idx > 0 && CHUNK_BOUNDARY_WORDS.has(bare) && current.length >= 2) {
+      chunks.push(current.join(' ')); current = [w];
+    } else {
+      current.push(w);
+      if (/,$/.test(w) && current.length >= 3) { chunks.push(current.join(' ')); current = []; }
+    }
+  });
+  if (current.length) chunks.push(current.join(' '));
+  // Fold any stray 1-word fragment into its neighbor.
+  const merged = [];
+  chunks.forEach(c => {
+    if (merged.length && c.split(' ').length <= 1) merged[merged.length - 1] += ' ' + c;
+    else merged.push(c);
+  });
+  return merged.length ? merged : [sentence];
+}
+
+let _chunkQueue = []; // session-scoped review queue: [{si, ii}, ...]
+let _chunkQueueType = null; // which typeId _chunkQueue was built for
+let _chunkIdx = 0;
+let _chunkFlipped = false;
+let _chunkSessionRemembered = 0;
+
+function _restartChunkQueue() {
+  _chunkQueueType = null; // forces renderChunksMode() to rebuild fresh
+  renderChunksMode();
+}
+
+function renderChunksMode() {
+  const area = document.getElementById('tpl-content-area');
+  if (!area) return;
+  const flat = _tplFlatItems(_tplActiveType);
+  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
+
+  if (_chunkQueueType !== _tplActiveType) {
+    _chunkQueue = flat.map(({ si, ii }) => ({ si, ii }));
+    _chunkIdx = 0;
+    _chunkQueueType = _tplActiveType;
+    _chunkSessionRemembered = 0;
+  }
+  _chunkFlipped = false;
+
+  const modeData = _modeProgress[_tplActiveType]?.chunks || {};
+  const remembered = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = (flat.length ? Math.round(remembered / flat.length * 100) : 0) + '%';
+
+  if (_chunkIdx >= _chunkQueue.length) {
+    area.innerHTML = `
+      <div class="t2-mode-enter">
+        <div class="t2-soon-card t2-chunk-done-card">
+          <div class="t2-soon-icon">🎉</div>
+          <div class="t2-soon-title">Hoàn thành phiên ôn Chunks!</div>
+          <div class="t2-soon-sub">Bạn đã nhớ ${remembered}/${flat.length} thẻ của dạng bài này.</div>
+          <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="_restartChunkQueue()"><i class="fas fa-redo"></i> Ôn lại từ đầu</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const { si, ii } = _chunkQueue[_chunkIdx];
+  const item = TPL_DATA[_tplActiveType].sections[si].items[ii];
+  const target = _fullEnglishSentence(item);
+  const chunks = chunkSentence(target);
+
+  area.innerHTML = `
+    <div class="t2-mode-enter">
+      <div class="t2-trans-progress-hdr">
+        <span>Thẻ ${_chunkIdx + 1} / ${_chunkQueue.length}</span>
+        <span id="chunk-done-count">${remembered}/${flat.length} đã nhớ</span>
+      </div>
+      <div class="t2-flip-wrap" onclick="flipChunkCard()">
+        <div class="t2-flip-card" id="chunk-flip-card">
+          <div class="t2-flip-face t2-flip-front">
+            <div class="t2-flip-hint">Tiếng Việt — bấm để lật</div>
+            <div class="t2-flip-text">${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
+          </div>
+          <div class="t2-flip-face t2-flip-back">
+            <div class="t2-flip-hint">English</div>
+            <div class="t2-flip-chunks">${chunks.map(c => `<span class="t2-chunk-pill">${escHtml(c)}</span>`).join('')}</div>
+          </div>
+        </div>
+      </div>
+      <div class="t2-chunk-actions hidden" id="chunk-actions">
+        <button class="t2-trans-btn t2-chunk-btn--no" onclick="event.stopPropagation();answerChunk(false)"><i class="fas fa-xmark"></i> Chưa nhớ</button>
+        <button class="t2-trans-btn t2-chunk-btn--yes" onclick="event.stopPropagation();answerChunk(true)"><i class="fas fa-check"></i> Tôi nhớ</button>
+      </div>
+      <div class="t2-chunk-flip-cta" id="chunk-flip-cta">Bấm vào thẻ hoặc phím Space để lật</div>
+    </div>`;
+}
+
+function flipChunkCard() {
+  _chunkFlipped = !_chunkFlipped;
+  document.getElementById('chunk-flip-card')?.classList.toggle('flipped', _chunkFlipped);
+  document.getElementById('chunk-actions')?.classList.toggle('hidden', !_chunkFlipped);
+  document.getElementById('chunk-flip-cta')?.classList.toggle('hidden', _chunkFlipped);
+}
+
+// Review queue: "remembered" retires the card for this session; "not yet"
+// re-inserts it 3 cards later (spec: wrong -> repeat after 3 templates) so
+// it comes back around before the session ends instead of only ever being
+// seen once.
+function answerChunk(remembered) {
+  if (!_chunkFlipped) return;
+  const { si, ii } = _chunkQueue[_chunkIdx];
+  setModeItemResult('chunks', _tplActiveType, si, ii, remembered ? 'ok' : 'err');
+  if (remembered) {
+    _chunkSessionRemembered++;
+    playOk();
+  } else {
+    playWrong();
+    const reinsertAt = Math.min(_chunkQueue.length, _chunkIdx + 1 + 3);
+    _chunkQueue.splice(reinsertAt, 0, { si, ii });
+  }
+  _chunkIdx++;
+  updateModeOverallBadge();
+  renderTabs();
+  renderChunksMode();
+}
+
+document.addEventListener('keydown', (e) => {
+  if (_tplActiveMode !== 'chunks' || !document.getElementById('chunk-flip-card')) return;
+  if (e.key === ' ') { e.preventDefault(); flipChunkCard(); }
+  else if (_chunkFlipped && (e.key === 'y' || e.key === 'Y' || e.key === 'Enter')) { answerChunk(true); }
+  else if (_chunkFlipped && (e.key === 'n' || e.key === 'N')) { answerChunk(false); }
+});
 
 // ── Exam mode ──────────────────────────────────────────────────
 function toggleExamMode() {
