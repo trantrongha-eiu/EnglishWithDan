@@ -17,8 +17,10 @@
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/index.css">
   <script src="js/theme.js"></script>
+  <script src="js/shared/visit-tracker.js"></script>
   <script src="js/shared/auth-service.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/shared/utils.js"></script>
 </head>
 
 <body>
@@ -262,144 +264,9 @@
       <p class="section-sub">Từ mất gốc hoàn toàn đến mục tiêu 7.5+, chúng tôi có chương trình phù hợp cho mọi cấp độ.
       </p>
     </div>
-    <div class="courses-grid">
+    <div class="courses-grid" id="courses-grid">
 
-      <!-- 1 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH: ảnh liên quan IELTS mất gốc -->
-          <img src="img/course-starter.jpg" alt="IELTS Mất Gốc" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(22,163,74,.13);"><i class="fas fa-seedling" style="font-size:40px;color:#16a34a;"></i></span></span>
-          <span class="course-level lv-red">Mất gốc</span>
-        </div>
-        <div class="course-body">
-          <h3>IELTS Mất Gốc → 6.0+</h3>
-          <div class="course-target">Dành cho: Học viên chưa có nền tảng</div>
-          <p>Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.
-          </p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 6–8 tháng</span>
-            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH -->
-          <img src="img/course-3to6.jpg" alt="IELTS 3 to 6" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(37,99,235,.13);"><i class="fas fa-chart-line" style="font-size:40px;color:#2563eb;"></i></span></span>
-          <span class="course-level lv-blue">Cơ bản → Nâng cao</span>
-        </div>
-        <div class="course-body">
-          <h3>IELTS 3.0 → 6.0+</h3>
-          <div class="course-target">Dành cho: Band 3.0–4.5</div>
-          <p>Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.
-          </p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 4–5 tháng</span>
-            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 8 người</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH -->
-          <img src="img/course-6to7.jpg" alt="IELTS 6 to 7" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(217,119,6,.13);"><i class="fas fa-medal" style="font-size:40px;color:#d97706;"></i></span></span>
-          <span class="course-level lv-green">Nâng cao</span>
-        </div>
-        <div class="course-body">
-          <h3>IELTS 6.0 → 7.0+</h3>
-          <div class="course-target">Dành cho: Band 5.5–6.5</div>
-          <p>Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening.
-            Mục tiêu 7.0–7.5.</p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 3–4 tháng</span>
-            <span><i class="fas fa-users"></i> 1–1 hoặc nhóm nhỏ</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH -->
-          <img src="img/course-speaking.jpg" alt="IELTS Speaking" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(124,58,237,.13);"><i class="fas fa-microphone" style="font-size:40px;color:#7c3aed;"></i></span></span>
-          <span class="course-level lv-purple">Chuyên sâu</span>
-        </div>
-        <div class="course-body">
-          <h3>IELTS Speaking Chuyên Sâu</h3>
-          <div class="course-target">Dành cho: Học viên muốn đột phá Speaking</div>
-          <p>Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.
-          </p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 6–8 tuần</span>
-            <span><i class="fas fa-user"></i> 1–1 hoặc nhóm 4</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH -->
-          <img src="img/course-comm.jpg" alt="Giao tiếp cơ bản" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(37,99,235,.13);"><i class="fas fa-comments" style="font-size:40px;color:#2563eb;"></i></span></span>
-          <span class="course-level lv-blue">Giao tiếp</span>
-        </div>
-        <div class="course-body">
-          <h3>Giao Tiếp Tiếng Anh Cơ Bản</h3>
-          <div class="course-target">Dành cho: Người mất gốc hoặc mới bắt đầu</div>
-          <p>Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.</p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 3 tháng</span>
-            <span><i class="fas fa-users"></i> Nhóm nhỏ ≤ 10</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6 -->
-      <div class="course-card">
-        <div class="course-thumb">
-          <!-- THAY ẢNH -->
-          <img src="img/course-business.jpg" alt="Giao tiếp văn phòng" onerror="this.style.display='none'" />
-          <span class="course-placeholder"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:rgba(22,163,74,.13);"><i class="fas fa-briefcase" style="font-size:40px;color:#16a34a;"></i></span></span>
-          <span class="course-level lv-green">Business</span>
-        </div>
-        <div class="course-body">
-          <h3>Tiếng Anh Giao Tiếp Văn Phòng</h3>
-          <div class="course-target">Dành cho: Người đi làm, dân văn phòng</div>
-          <p>Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.
-          </p>
-          <div class="course-meta">
-            <span><i class="fas fa-clock"></i> 2–3 tháng</span>
-            <span><i class="fas fa-users"></i> Nhóm hoặc 1–1</span>
-          </div>
-          <div class="course-cta">
-            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
-          </div>
-        </div>
-      </div>
+      <!-- Populated by loadCoursesFromAPI() below; empty until then. -->
 
     </div>
   </section>
@@ -567,7 +434,7 @@
     <div class="result-quote">
       <i class="fas fa-quote-left"></i>
       <p>"Em có điểm rồi nè thầy ơi, lên hẳn 1 band luôn á 😝🤪🤓"</p>
-      <span>— Ngọc Diệu, nhắn ngay cho thầy Daniel Hà khi vừa nhận kết quả</span>
+      <span>— Ngọc Diệu, nhắn ngay cho thầy Dan khi vừa nhận kết quả</span>
     </div>
   </section>
 
@@ -781,13 +648,67 @@
       });
     }, { passive: true });
 
-    /* ── Course placeholder emoji hide khi img load thành công ── */
-    document.querySelectorAll('.course-thumb img').forEach(img => {
-      img.addEventListener('load', () => {
-        const ph = img.closest('.course-thumb').querySelector('.course-placeholder');
-        if (ph) ph.style.display = 'none';
-      });
-    });
+    /* ── Courses — admin-editable via /api/courses (Courses.jsx), same
+         data source and pattern as courses.html's loadCoursesFromAPI().
+         STATIC_COURSES is only the offline/API-failure fallback — keep it
+         in sync with backend/scripts/seedCourses.js's seed content. ── */
+    const STATIC_COURSES = [
+      { title: 'IELTS Mất Gốc → 6.0+', subtitle: 'Học viên chưa có nền tảng', description: 'Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.', imageUrl: 'img/course-starter.jpg', placeholder: '🌱', level: 'Mất gốc', levelColor: 'red', duration: '6–8 tháng', classSize: 'Nhóm nhỏ ≤ 8 người' },
+      { title: 'IELTS 3.0 → 6.0+', subtitle: 'Band 3.0–4.5', description: 'Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.', imageUrl: 'img/course-3to6.jpg', placeholder: '📈', level: 'Cơ bản → Nâng cao', levelColor: 'blue', duration: '4–5 tháng', classSize: 'Nhóm nhỏ ≤ 8 người' },
+      { title: 'IELTS 6.0 → 7.0+', subtitle: 'Band 5.5–6.5', description: 'Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening. Mục tiêu 7.0–7.5.', imageUrl: 'img/course-6to7.jpg', placeholder: '🚀', level: 'Nâng cao', levelColor: 'green', duration: '3–4 tháng', classSize: '1–1 hoặc nhóm nhỏ' },
+      { title: 'IELTS Speaking Chuyên Sâu', subtitle: 'Học viên muốn đột phá Speaking', description: 'Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.', imageUrl: 'img/course-speaking.jpg', placeholder: '🎤', level: 'Chuyên sâu', levelColor: 'purple', duration: '6–8 tuần', classSize: '1–1 hoặc nhóm 4' },
+      { title: 'Giao Tiếp Tiếng Anh Cơ Bản', subtitle: 'Người mất gốc hoặc mới bắt đầu', description: 'Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.', imageUrl: 'img/course-comm.jpg', placeholder: '💬', level: 'Giao tiếp', levelColor: 'blue', duration: '3 tháng', classSize: 'Nhóm nhỏ ≤ 10' },
+      { title: 'Tiếng Anh Giao Tiếp Văn Phòng', subtitle: 'Người đi làm, dân văn phòng', description: 'Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.', imageUrl: 'img/course-business.jpg', placeholder: '💼', level: 'Business', levelColor: 'green', duration: '2–3 tháng', classSize: 'Nhóm hoặc 1–1' },
+    ];
+    const COURSE_CIRCLE_BG = { red: 'rgba(220,38,38,.13)', blue: 'rgba(37,99,235,.13)', green: 'rgba(22,163,74,.13)', purple: 'rgba(124,58,237,.13)' };
+
+    function buildCourseCard(c) {
+      // Course content is admin/teacher-editable and this is a public page —
+      // every field must be escaped before reaching innerHTML (same rule
+      // courses.html's buildCourseCard() already follows).
+      const title       = escHtml(c.title || '');
+      const subtitle    = escHtml(c.subtitle || '');
+      const description = escHtml(c.description || '');
+      const duration    = escHtml(c.duration || '');
+      const classSize   = escHtml(c.classSize || '');
+      const level       = escHtml(c.level || '');
+      const placeholder = escHtml(c.placeholder || '📚');
+      const imageUrl    = escHtml(c.imageUrl || '');
+      const lvClass     = 'lv-' + (['red', 'blue', 'green', 'purple'].includes(c.levelColor) ? c.levelColor : 'blue');
+      const circleBg    = COURSE_CIRCLE_BG[c.levelColor] || COURSE_CIRCLE_BG.blue;
+      return `<div class="course-card">
+        <div class="course-thumb">
+          ${c.imageUrl ? `<img src="${imageUrl}" alt="${title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>` : ''}
+          <span class="course-placeholder" style="${c.imageUrl ? 'display:none' : 'display:flex'}"><span style="display:inline-flex;align-items:center;justify-content:center;width:88px;height:88px;border-radius:22px;background:${circleBg};font-size:40px;">${placeholder}</span></span>
+          <span class="course-level ${lvClass}">${level}</span>
+        </div>
+        <div class="course-body">
+          <h3>${title}</h3>
+          <div class="course-target">Dành cho: ${subtitle}</div>
+          <p>${description}</p>
+          <div class="course-meta">
+            ${c.duration ? `<span><i class="fas fa-clock"></i> ${duration}</span>` : ''}
+            ${c.classSize ? `<span><i class="fas fa-users"></i> ${classSize}</span>` : ''}
+          </div>
+          <div class="course-cta">
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    async function loadCoursesFromAPI() {
+      const grid = document.getElementById('courses-grid');
+      if (!grid) return;
+      let list = STATIC_COURSES;
+      try {
+        const res = await fetch(`${API}/courses`);
+        const data = await res.json();
+        if (data.success && data.courses && data.courses.length > 0) list = data.courses;
+      } catch {}
+      grid.innerHTML = list.map(buildCourseCard).join('');
+    }
+    loadCoursesFromAPI();
 
     /* ── Student result lightbox ── */
     function openResultLightbox(src, caption) {
