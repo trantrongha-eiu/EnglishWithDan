@@ -462,6 +462,37 @@
       .t2-flip-face{padding:20px 16px}
       .t2-flip-card{min-height:170px}
     }
+
+    /* ── Mode 3: Build the Sentence — tap-to-place chips ── */
+    .t2-build-answer-area{min-height:64px;border:2px dashed #d1d5db;border-radius:12px;padding:12px 14px;
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;transition:border-color .2s ease,background .2s ease}
+    [data-theme=dark] .t2-build-answer-area{border-color:#334155}
+    .t2-build-placeholder{color:#9ca3af;font-size:13px;font-style:italic}
+    .t2-build-chip{background:#6366f1;color:#fff;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:600;
+      cursor:pointer;transition:transform .15s ease,background .15s ease;animation:t2ChunkStagger .25s cubic-bezier(.16,1,.3,1)}
+    .t2-build-chip:hover{background:#4f46e5;transform:translateY(-1px)}
+    .t2-build-bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding-top:14px;border-top:1px dashed #e5e7eb}
+    [data-theme=dark] .t2-build-bank{border-color:#334155}
+    .t2-build-bank-chip{background:#f3f4f6;color:#374151;border:1.5px solid #e5e7eb;border-radius:9px;padding:7px 12px;
+      font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:36px;
+      transition:transform .15s ease,background .15s ease,border-color .15s ease,opacity .2s ease}
+    .t2-build-bank-chip:hover:not(:disabled){border-color:#a5b4fc;background:#eef2ff;transform:translateY(-1px)}
+    .t2-build-bank-chip:disabled{opacity:.25;cursor:default}
+    [data-theme=dark] .t2-build-bank-chip{background:#0f172a;border-color:#334155;color:#cbd5e1}
+    [data-theme=dark] .t2-build-bank-chip:hover:not(:disabled){border-color:#4c1d95;background:#1e1b4b}
+    .t2-build-success{border-color:#16a34a!important;background:#f0fdf4;animation:t2BuildGlow .6s ease}
+    [data-theme=dark] .t2-build-success{background:#052e16}
+    @keyframes t2BuildGlow{0%,100%{box-shadow:0 0 0 rgba(22,163,74,0)}50%{box-shadow:0 0 0 6px rgba(22,163,74,.15)}}
+    .t2-build-shake{animation:t2BuildShake .4s ease;border-color:#dc2626!important}
+    @keyframes t2BuildShake{
+      10%,90%{transform:translateX(-2px)} 20%,80%{transform:translateX(4px)}
+      30%,50%,70%{transform:translateX(-8px)} 40%,60%{transform:translateX(8px)}
+    }
+    .t2-build-hard-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280;margin-left:auto;cursor:pointer;user-select:none}
+    [data-theme=dark] .t2-build-hard-toggle{color:#94a3b8}
+    @media(max-width:600px){
+      .t2-build-hard-toggle{margin-left:0;width:100%;order:3}
+    }
   </style>
 </head>
 <body>
@@ -556,8 +587,8 @@
       <button class="t2-mode-tab" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
         <i class="fas fa-layer-group"></i> Chunks
       </button>
-      <button class="t2-mode-tab t2-mode-tab--soon" data-mode="build" onclick="switchTplMode('build')" role="tab" aria-selected="false">
-        <i class="fas fa-puzzle-piece"></i> Build <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
+      <button class="t2-mode-tab" data-mode="build" onclick="switchTplMode('build')" role="tab" aria-selected="false">
+        <i class="fas fa-puzzle-piece"></i> Build
       </button>
       <button class="t2-mode-tab t2-mode-tab--soon" data-mode="dictation" onclick="switchTplMode('dictation')" role="tab" aria-selected="false">
         <i class="fas fa-headphones"></i> Dictation <span class="t2-mode-tab-soon-pill">Sắp ra mắt</span>
@@ -915,7 +946,7 @@ let _pendingTypeId   = null;
 let _pendingExamSwitch = false;
 
 // Modes not yet implemented (Phase 1) — their tab is visible but inert.
-const TPL_MODES_SOON = new Set(['build', 'dictation']);
+const TPL_MODES_SOON = new Set(['dictation']);
 
 // Exam mode state
 let _examMode          = false;
@@ -1117,16 +1148,17 @@ function renderTabs() {
       ? '<span class="t2-tab-done-badge">✓</span>'
       : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
     // Mini mode-progress dots — Cloze (type color) + Dịch câu (purple) +
-    // Chunks (indigo). Build/Dictation get a placeholder dot too so the
-    // row shape won't shift once those modes ship real progress.
+    // Chunks (indigo) + Build (blue). Dictation gets a placeholder dot too
+    // so the row shape won't shift once that mode ships real progress.
     const transPct  = modeCompletionPct('translation', t.id);
     const chunksPct = modeCompletionPct('chunks', t.id);
-    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}% · Chunks ${chunksPct}%`;
+    const buildPct  = modeCompletionPct('build', t.id);
+    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}% · Chunks ${chunksPct}% · Build ${buildPct}%`;
     const dots = `<div class="t2-tab-mode-dots" title="${escAttr(dotTitle)}">
         <span class="t2-tab-mode-dot" style="${pct > 0 ? `background:${t.color||'#6366f1'}` : ''}"></span>
         <span class="t2-tab-mode-dot" style="${transPct > 0 ? 'background:#8b5cf6' : ''}"></span>
         <span class="t2-tab-mode-dot" style="${chunksPct > 0 ? 'background:#4f46e5' : ''}"></span>
-        <span class="t2-tab-mode-dot"></span>
+        <span class="t2-tab-mode-dot" style="${buildPct > 0 ? 'background:#0ea5e9' : ''}"></span>
       </div>`;
     return `
     <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
@@ -1151,6 +1183,7 @@ function renderTplContent() {
   // original Cloze renderer, unchanged, still the default/fallback mode.
   if (_tplActiveMode === 'translation') { renderTranslationMode(); return; }
   if (_tplActiveMode === 'chunks') { renderChunksMode(); return; }
+  if (_tplActiveMode === 'build') { renderBuildMode(); return; }
   if (TPL_MODES_SOON.has(_tplActiveMode)) { renderSoonMode(_tplActiveMode); return; }
 
   const type = TPL_DATA[_tplActiveType];
@@ -1496,9 +1529,7 @@ function renderSoonMode(mode) {
   const area = document.getElementById('tpl-content-area');
   if (!area) return;
   const meta = {
-    chunks:    { icon: 'fa-layer-group',  title: 'Chunks — Học theo cụm từ', sub: 'Ghi nhớ template bằng flashcard lật cụm từ Anh–Việt, có hàng đợi ôn lại các cụm sai. Đang được phát triển!' },
-    build:     { icon: 'fa-puzzle-piece', title: 'Build the Sentence',        sub: 'Kéo-thả các cụm từ để dựng lại câu đúng thứ tự. Đang được phát triển!' },
-    dictation: { icon: 'fa-headphones',   title: 'Dictation Mode',            sub: 'Nghe và gõ lại chính xác từng câu. Đang được phát triển!' },
+    dictation: { icon: 'fa-headphones', title: 'Dictation Mode', sub: 'Nghe và gõ lại chính xác từng câu. Đang được phát triển!' },
   }[mode] || { icon: 'fa-hourglass-half', title: 'Sắp ra mắt', sub: 'Chế độ học mới đang được phát triển.' };
   area.innerHTML = `
     <div class="t2-mode-enter">
@@ -1750,6 +1781,7 @@ function _spawnPerfectParticles(anchorEl) {
 const ACTIVE_PROGRESS_MODES = [
   { mode: 'translation', icon: '🗣' },
   { mode: 'chunks',      icon: '🔗' },
+  { mode: 'build',       icon: '🧩' },
 ];
 function updateModeOverallBadge() {
   const el = document.getElementById('tpl-mode-badge');
@@ -1918,6 +1950,179 @@ document.addEventListener('keydown', (e) => {
   else if (_chunkFlipped && (e.key === 'y' || e.key === 'Y' || e.key === 'Enter')) { answerChunk(true); }
   else if (_chunkFlipped && (e.key === 'n' || e.key === 'N')) { answerChunk(false); }
 });
+
+// ── Mode 3: Build the Sentence — tap-to-place (not native drag/drop) ──
+// Deliberately reuses task2-practice.html's proven "rearrange" question
+// interaction (tap a bank chip to place it, tap a placed chip to return
+// it) rather than real Pointer-Events dragging — confirmed with the user:
+// this pattern already works reliably across mouse+touch in production,
+// whereas real drag-and-drop would be net-new, higher-risk code with no
+// precedent in this app. Chunk pieces come from chunkSentence() (Phase 2,
+// shared/reused here) so no new sentence-splitting logic was needed.
+let _buildQueue = [];
+let _buildQueueType = null;
+let _buildIdx = 0;
+let _buildBank = [];          // [{id, text, used}] — shuffled pieces for the current round
+let _buildAnswer = [];        // ids, in the order the student tapped them
+let _buildTargetPieces = [];  // correct-order texts for the current round
+let _buildRoundKey = null;    // `${si}-${ii}-${hardMode}` — regenerate only when this changes
+let _buildHardMode = false;   // false = chunks (default), true = individual words
+
+function _restartBuildQueue() {
+  _buildQueueType = null;
+  renderBuildMode();
+}
+
+function _newBuildRound(item) {
+  const target = _fullEnglishSentence(item);
+  const pieces = _buildHardMode
+    ? target.replace(/[.,!?]+$/, '').split(/\s+/)
+    : chunkSentence(target).map(c => c.trim());
+  _buildTargetPieces = pieces;
+  const shuffled = pieces.map((text, id) => ({ id, text }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  _buildBank = shuffled.map(p => ({ ...p, used: false }));
+  _buildAnswer = [];
+}
+
+function renderBuildMode() {
+  const area = document.getElementById('tpl-content-area');
+  if (!area) return;
+  const flat = _tplFlatItems(_tplActiveType);
+  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
+
+  if (_buildQueueType !== _tplActiveType) {
+    _buildQueue = flat.map(({ si, ii }) => ({ si, ii }));
+    _buildIdx = 0;
+    _buildQueueType = _tplActiveType;
+    _buildRoundKey = null;
+  }
+
+  const modeData = _modeProgress[_tplActiveType]?.build || {};
+  const done = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = (flat.length ? Math.round(done / flat.length * 100) : 0) + '%';
+
+  if (_buildIdx >= _buildQueue.length) {
+    area.innerHTML = `
+      <div class="t2-mode-enter">
+        <div class="t2-soon-card t2-chunk-done-card">
+          <div class="t2-soon-icon">🏗️</div>
+          <div class="t2-soon-title">Hoàn thành phiên Build!</div>
+          <div class="t2-soon-sub">Bạn đã dựng đúng ${done}/${flat.length} câu của dạng bài này.</div>
+          <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="_restartBuildQueue()"><i class="fas fa-redo"></i> Chơi lại</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const { si, ii } = _buildQueue[_buildIdx];
+  const item = TPL_DATA[_tplActiveType].sections[si].items[ii];
+  const roundKey = `${si}-${ii}-${_buildHardMode}`;
+  if (_buildRoundKey !== roundKey) { _newBuildRound(item); _buildRoundKey = roundKey; }
+
+  const answerHtml = _buildAnswer.length
+    ? _buildAnswer.map((bid, pos) => {
+        const piece = _buildBank.find(b => b.id === bid);
+        return `<span class="t2-build-chip" onclick="removeBuildPiece(${pos})">${escHtml(piece ? piece.text : '')}</span>`;
+      }).join('')
+    : `<span class="t2-build-placeholder">Bấm vào các cụm bên dưới để xếp câu...</span>`;
+
+  const bankHtml = _buildBank.map(b => `
+    <button class="t2-build-bank-chip ${b.used ? 'used' : ''}" ${b.used ? 'disabled' : ''} onclick="addBuildPiece(${b.id})">${escHtml(b.text)}</button>
+  `).join('');
+
+  const allPlaced = _buildAnswer.length === _buildBank.length;
+
+  area.innerHTML = `
+    <div class="t2-mode-enter">
+      <div class="t2-trans-progress-hdr">
+        <span>Câu ${_buildIdx + 1} / ${_buildQueue.length}</span>
+        <span>${done}/${flat.length} đã đúng</span>
+      </div>
+      <div class="t2-trans-card">
+        <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
+        <div class="t2-build-answer-area" id="build-answer-area">${answerHtml}</div>
+        <div class="t2-build-bank" id="build-bank">${bankHtml}</div>
+        <div class="t2-trans-actions">
+          <button class="t2-trans-btn t2-trans-btn--check" onclick="checkBuild()" ${allPlaced ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>
+          <button class="t2-trans-btn t2-trans-btn--skip" onclick="resetBuildRound()"><i class="fas fa-rotate-left"></i> Xếp lại</button>
+          <label class="t2-build-hard-toggle">
+            <input type="checkbox" ${_buildHardMode ? 'checked' : ''} onchange="toggleBuildHardMode(this.checked)"> Từng từ (khó)
+          </label>
+        </div>
+        <div class="t2-trans-result" id="build-result"></div>
+      </div>
+    </div>`;
+}
+
+function addBuildPiece(id) {
+  const piece = _buildBank.find(b => b.id === id);
+  if (!piece || piece.used) return;
+  piece.used = true;
+  _buildAnswer.push(id);
+  renderBuildMode();
+}
+
+function removeBuildPiece(pos) {
+  const id = _buildAnswer[pos];
+  _buildAnswer.splice(pos, 1);
+  const piece = _buildBank.find(b => b.id === id);
+  if (piece) piece.used = false;
+  renderBuildMode();
+}
+
+function resetBuildRound() {
+  _buildAnswer = [];
+  _buildBank.forEach(b => { b.used = false; });
+  renderBuildMode();
+}
+
+function toggleBuildHardMode(checked) {
+  _buildHardMode = checked;
+  _buildRoundKey = null; // force regeneration at the new granularity
+  renderBuildMode();
+}
+
+function checkBuild() {
+  const { si, ii } = _buildQueue[_buildIdx];
+  const userOrder = _buildAnswer.map(id => _buildBank.find(b => b.id === id)?.text || '');
+  const norm = s => s.toLowerCase().replace(/[.,!?;:"'’]/g, '').trim();
+  const isCorrect = userOrder.length === _buildTargetPieces.length &&
+    userOrder.every((t, i) => norm(t) === norm(_buildTargetPieces[i]));
+
+  const resultEl    = document.getElementById('build-result');
+  const answerArea   = document.getElementById('build-answer-area');
+  document.querySelectorAll('#build-bank button, .t2-trans-btn').forEach(b => { b.disabled = true; });
+
+  if (isCorrect) {
+    setModeItemResult('build', _tplActiveType, si, ii, 'ok');
+    answerArea.classList.add('t2-build-success');
+    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
+    resultEl.innerHTML = `🎉 <b>Chính xác!</b>`;
+    playOk();
+    updateXPStorage(5);
+    _spawnTransXpPop(resultEl, '+5 XP ⭐');
+    _spawnPerfectParticles(resultEl);
+    setTimeout(() => { _buildIdx++; _buildRoundKey = null; renderBuildMode(); }, 900);
+  } else {
+    setModeItemResult('build', _tplActiveType, si, ii, 'err');
+    answerArea.classList.add('t2-build-shake');
+    setTimeout(() => answerArea.classList.remove('t2-build-shake'), 500);
+    resultEl.className = 't2-trans-result t2-trans-result--ok vis';
+    resultEl.innerHTML = `❌ Chưa đúng thứ tự.<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(_buildTargetPieces.join(' '))}</div>`;
+    playWrong();
+    // Review queue: wrong -> repeat after 3 templates (same rule as Chunks).
+    const reinsertAt = Math.min(_buildQueue.length, _buildIdx + 1 + 3);
+    _buildQueue.splice(reinsertAt, 0, { si, ii });
+    setTimeout(() => { _buildIdx++; _buildRoundKey = null; renderBuildMode(); }, 2200);
+  }
+  updateModeOverallBadge();
+  renderTabs();
+}
 
 // ── Exam mode ──────────────────────────────────────────────────
 function toggleExamMode() {
