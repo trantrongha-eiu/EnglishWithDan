@@ -21,6 +21,7 @@ import Speaking from './pages/Speaking';
 import Vocabulary from './pages/Vocabulary';
 import VocabularyLessons from './pages/VocabularyLessons';
 import VocabularyLessonImport from './pages/VocabularyLessonImport';
+import EssentialGrammarLessons from './pages/EssentialGrammarLessons';
 import WritingPractice from './pages/WritingPractice';
 import Task1Exercises from './pages/Task1Exercises';
 import Task2Topics from './pages/Task2Topics';
@@ -63,6 +64,7 @@ export default function App() {
                 <Route path="vocabulary" element={<Vocabulary />} />
                 <Route path="vocabulary-lessons" element={<VocabularyLessons />} />
                 <Route path="vocabulary-lessons/import" element={<VocabularyLessonImport />} />
+                <Route path="essential-grammar" element={<EssentialGrammarLessons />} />
                 <Route path="writing-practice" element={<WritingPractice />} />
                 <Route path="task1-exercises" element={<Task1Exercises />} />
                 <Route path="task2-exercises" element={<Task2Topics />} />

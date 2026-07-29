@@ -478,8 +478,21 @@ function renderLessonContent(lesson) {
   const prev = idx > 0 ? allLessons[idx - 1] : null;
   const next = idx < allLessons.length - 1 ? allLessons[idx + 1] : null;
 
-  const quizBlock = lesson.blocks.find(b => b.type === 'quiz');
-  quizState = quizBlock ? { total: (quizBlock.data.questions || []).length, answered: 0, correct: 0, lessonKey: currentKey } : null;
+  // Lesson-wide gradeable total — every 'quiz' block's questions PLUS every
+  // 'multiple_choice' item inside every 'practice_exercises' block, so one
+  // lesson-level attempt (not per-block) rolls up everything checkable in
+  // the lesson. Non-MC exercise types (fill_blank, translation_*, etc.) are
+  // self-check only and never contribute here.
+  const quizTotal = lesson.blocks
+    .filter(b => b.type === 'quiz')
+    .reduce((n, b) => n + (b.data.questions || []).length, 0);
+  const exerciseMcTotal = lesson.blocks
+    .filter(b => b.type === 'practice_exercises')
+    .reduce((n, b) => n + (b.data.exercises || []).filter(ex => ex.type === 'multiple_choice').length, 0);
+  const gradeableTotal = quizTotal + exerciseMcTotal;
+  quizState = gradeableTotal > 0
+    ? { total: gradeableTotal, answered: 0, correct: 0, wrongTexts: [], lessonId: lesson._id, lessonKey: currentKey, startTime: Date.now() }
+    : null;
 
   let html = '<div class="eg-hero">'
     + '<div class="eg-hero-cat">' + escHtml(lesson.category) + '</div>'
@@ -611,7 +624,7 @@ function renderExerciseItem(ex, i) {
   let body;
   if (ex.type === 'multiple_choice') {
     const options = (ex.options || []).map((opt, oi) =>
-      '<button class="eg-quiz-option" onclick="checkExerciseMC(this, ' + oi + ', ' + ex.answerIndex + ', ' + i + ')">' + escHtml(opt) + '</button>'
+      '<button class="eg-quiz-option" data-question="' + escAttr(ex.question) + '" onclick="checkExerciseMC(this, ' + oi + ', ' + ex.answerIndex + ', ' + i + ')">' + escHtml(opt) + '</button>'
     ).join('');
     body = '<div class="eg-quiz-options">' + options + '</div>'
       + '<div class="eg-quiz-explanation" id="eg-ex-exp-' + i + '"><i class="fas fa-info-circle"></i> ' + escHtml(ex.explanation) + '</div>';
@@ -644,6 +657,12 @@ function checkExerciseMC(btn, oi, answerIndex, i) {
   const exp = document.getElementById('eg-ex-exp-' + i);
   if (exp) exp.classList.add('vis');
   if (oi === answerIndex) playOk(); else playWrong();
+
+  if (!quizState) return;
+  quizState.answered++;
+  if (oi === answerIndex) quizState.correct++;
+  else quizState.wrongTexts.push(btn.dataset.question || '');
+  if (quizState.answered >= quizState.total) finalizeQuiz();
 }
 
 function revealExerciseAnswer(btn) {
@@ -667,7 +686,7 @@ function renderQuizBlock(data) {
   const total = (data.questions || []).length;
   const questions = (data.questions || []).map((q, qi) => {
     const options = (q.options || []).map((opt, oi) =>
-      '<button class="eg-quiz-option" onclick="checkQuizAnswer(this, ' + qi + ', ' + oi + ', ' + q.answerIndex + ')">' + escHtml(opt) + '</button>'
+      '<button class="eg-quiz-option" data-question="' + escAttr(q.question) + '" onclick="checkQuizAnswer(this, ' + qi + ', ' + oi + ', ' + q.answerIndex + ')">' + escHtml(opt) + '</button>'
     ).join('');
     return '<div class="eg-quiz-q" data-qi="' + qi + '">'
       + '<div class="eg-quiz-question">' + (qi + 1) + '. ' + escHtml(q.question) + '</div>'
@@ -699,6 +718,7 @@ function checkQuizAnswer(btn, qi, oi, answerIndex) {
   if (!quizState) return;
   quizState.answered++;
   if (oi === answerIndex) quizState.correct++;
+  else quizState.wrongTexts.push(btn.dataset.question || '');
   const progressEl = document.getElementById('eg-quiz-progress');
   if (progressEl) progressEl.textContent = 'Đã trả lời: ' + quizState.answered + '/' + quizState.total;
   if (quizState.answered >= quizState.total) finalizeQuiz();
@@ -719,6 +739,25 @@ function finalizeQuiz() {
   const heroStatus = document.getElementById('eg-hero-status');
   if (heroStatus) heroStatus.innerHTML = heroStatusHtml();
   renderSidebar();
+
+  // Best-effort sync to the backend so admin gets visibility into
+  // attempts/scores (audit fix — previously 100% localStorage-only, zero
+  // backend footprint). Intentionally does not block/replace the
+  // localStorage-driven UX above: a logged-out visitor still gets the full
+  // local experience, just with nothing to sync.
+  if (quizState.lessonId && window.AuthService && window.AuthService.getToken()) {
+    const timeSpent = Math.max(1, Math.round((Date.now() - quizState.startTime) / 1000));
+    fetch(API + '/api/essential-grammar/' + quizState.lessonId + '/attempt', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, window.AuthService.authHeader()),
+      body: JSON.stringify({
+        correctCount: quizState.correct,
+        totalCount: quizState.total,
+        timeSpent,
+        wrongQuestions: quizState.wrongTexts,
+      }),
+    }).catch(() => {});
+  }
 }
 
 function renderSummaryBlock(data) {

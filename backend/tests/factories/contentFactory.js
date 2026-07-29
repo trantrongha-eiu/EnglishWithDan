@@ -24,6 +24,7 @@ const Course = require('../../models/Course');
 const TuitionFee = require('../../models/TuitionFee');
 const UpgradeRequest = require('../../models/UpgradeRequest');
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
+const EssentialGrammarLesson = require('../../models/EssentialGrammarLesson');
 
 let counter = 0;
 function unique(prefix) {
@@ -297,6 +298,29 @@ async function createSpeakingQuestion(overrides = {}) {
   });
 }
 
+async function createEssentialGrammarLesson(overrides = {}) {
+  return EssentialGrammarLesson.create({
+    category:   overrides.category || 'Tenses',
+    lessonKey:  overrides.lessonKey || unique('lesson-'),
+    title:      overrides.title || unique('Lesson '),
+    icon:       overrides.icon || '📘',
+    summary:    overrides.summary || '',
+    orderIndex: overrides.orderIndex ?? 0,
+    isActive:   overrides.isActive ?? true,
+    blocks: overrides.blocks || [
+      {
+        type: 'quiz',
+        data: {
+          questions: [
+            { question: 'She ___ to school every day.', options: ['go', 'goes', 'going', 'went'], answerIndex: 1, explanation: 'Present simple, 3rd person singular.' },
+            { question: 'I ___ coffee every morning.', options: ['drink', 'drinks', 'drank', 'drinking'], answerIndex: 0, explanation: 'Present simple.' },
+          ],
+        },
+      },
+    ],
+  });
+}
+
 module.exports = {
   unique,
   defaultQuestion, defaultListeningQuestion,
@@ -307,4 +331,5 @@ module.exports = {
   createCourse, createTuitionFee, createUpgradeRequest, createSpeakingQuestion,
   createCompletedTestAttempt, createReadingPracticeAttempt,
   createListeningAttempt, createWritingAttempt, createSpeakingAttempt,
+  createEssentialGrammarLesson,
 };
