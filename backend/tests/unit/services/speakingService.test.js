@@ -119,6 +119,63 @@ describe('speakingService.saveAttempt', () => {
   });
 });
 
+describe('speakingService pending attempt flow', () => {
+  // Regression coverage for the bug where a Part 2/3 submission that hit
+  // Gemini's JSON-truncation retry (or failed outright) never appeared in
+  // admin/student history at all — analyze() used to call gradeSpeaking()
+  // and only ever save an attempt AFTER it succeeded.
+  test('createPendingAttempt persists immediately with status pending, before any feedback exists', async () => {
+    const student = await createStudent();
+    const pendingId = await speakingService.createPendingAttempt(student._id, {
+      questionId: null, topic: 'Travel', part: 2,
+      questionText: 'Describe a memorable trip.', transcript: 'Some long part 2 transcript...',
+      duration: 90,
+    });
+
+    expect(pendingId).not.toBeNull();
+    const saved = await SpeakingAttempt.findById(pendingId).lean();
+    expect(saved.status).toBe('pending');
+    expect(saved.transcript).toBe('Some long part 2 transcript...');
+    expect(saved.aiFeedback.overallBand).toBe(0);
+  });
+
+  test('finalizeAttempt fills in feedback and flips status to analyzed on the SAME document', async () => {
+    const student = await createStudent();
+    const pendingId = await speakingService.createPendingAttempt(student._id, {
+      questionId: null, topic: 'Travel', part: 2,
+      questionText: 'Describe a memorable trip.', transcript: 'transcript', duration: 90,
+    });
+
+    const finalId = await speakingService.finalizeAttempt(pendingId, {
+      overallBand: 6.5, fluency: 6, vocabulary: 7, grammar: 6, pronunciation: 6.5,
+      overallFeedback: 'Solid attempt.', strengths: ['Good range'], mistakes: [], improvements: [],
+    });
+
+    expect(String(finalId)).toBe(String(pendingId));
+    const count = await SpeakingAttempt.countDocuments({ userId: student._id });
+    expect(count).toBe(1); // finalize updates in place, does not create a second row
+
+    const saved = await SpeakingAttempt.findById(pendingId).lean();
+    expect(saved.status).toBe('analyzed');
+    expect(saved.aiFeedback.overallBand).toBe(6.5);
+    expect(saved.aiFeedback.overallFeedback).toBe('Solid attempt.');
+  });
+
+  test('markAttemptError flips a pending attempt to error instead of leaving/deleting it', async () => {
+    const student = await createStudent();
+    const pendingId = await speakingService.createPendingAttempt(student._id, {
+      questionId: null, topic: 'Travel', part: 2,
+      questionText: 'Describe a memorable trip.', transcript: 'transcript', duration: 90,
+    });
+
+    await speakingService.markAttemptError(pendingId);
+
+    const saved = await SpeakingAttempt.findById(pendingId).lean();
+    expect(saved.status).toBe('error');
+    expect(saved.transcript).toBe('transcript'); // the student's answer is not lost
+  });
+});
+
 describe('speakingService.getHistory', () => {
   test('returns only the requesting user\'s attempts, most recent first', async () => {
     const student = await createStudent();

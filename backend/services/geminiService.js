@@ -282,7 +282,7 @@ async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
           systemInstruction: SPEAKING_SYSTEM,
           responseMimeType: 'application/json',
           temperature: 0.3,
-          maxOutputTokens: 1024, // was 768 — the added vocabUpgrades field pushed responses close enough to the cap to trigger the JSON-parse-failure retry more often, adding latency (raised, not the retry logic, since a mid-array truncation is still possible in principle)
+          maxOutputTokens: 2048, // was 1024 (before that 768) — still not enough headroom for Part 2/3 transcripts, whose longer answers produce richer strengths/mistakes/vocabUpgrades arrays that were hitting the cap and triggering the parse-failure retry (each retry adds a full ~30s round trip, and a second truncation drops the attempt entirely — see backend/controllers/speaking.controller.js's analyze(), which never calls saveAttempt() if grading throws)
           thinkingConfig: { thinkingBudget: 0 }
         }
       }),

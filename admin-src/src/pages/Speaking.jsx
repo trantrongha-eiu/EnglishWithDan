@@ -42,6 +42,17 @@ function AttemptModal({ attempt, onClose }) {
             <strong>Câu hỏi:</strong> {attempt.question || '—'}
           </div>
 
+          {attempt.status === 'pending' && (
+            <div style={{ background:'#fffbeb', border:'1px solid #fde68a', color:'#92400e', borderRadius:10, padding:'10px 14px', fontSize:13 }}>
+              ⏳ AI đang chấm bài, chưa có điểm/nhận xét — tải lại trang sau ít phút.
+            </div>
+          )}
+          {attempt.status === 'error' && (
+            <div style={{ background:'#fef2f2', border:'1px solid #fecaca', color:'#991b1b', borderRadius:10, padding:'10px 14px', fontSize:13 }}>
+              ⚠️ AI chấm bài thất bại cho lượt này — học sinh chưa nhận được điểm/nhận xét.
+            </div>
+          )}
+
           {/* Scores */}
           {fb.overallBand > 0 && (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(80px,1fr))', gap:10 }}>
@@ -538,11 +549,19 @@ export default function Speaking() {
                           <td><span className="badge badge-blue">Part {a.part}</span></td>
                           <td style={{ fontSize:12, color:'var(--text2,#555)', maxWidth:100, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{a.topic || '—'}</td>
                           <td style={{ fontSize:12, maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{a.question}</td>
-                          <BandCell v={fb.overallBand} />
-                          <BandCell v={fb.fluency} />
-                          <BandCell v={fb.vocabulary} />
-                          <BandCell v={fb.grammar} />
-                          <BandCell v={fb.pronunciation} />
+                          {a.status === 'pending' ? (
+                            <td colSpan={5} style={{ textAlign:'center', fontSize:12, color:'#f59e0b' }}>⏳ Đang chấm bài...</td>
+                          ) : a.status === 'error' ? (
+                            <td colSpan={5} style={{ textAlign:'center', fontSize:12, color:'#dc2626' }}>⚠️ Lỗi chấm bài</td>
+                          ) : (
+                            <>
+                              <BandCell v={fb.overallBand} />
+                              <BandCell v={fb.fluency} />
+                              <BandCell v={fb.vocabulary} />
+                              <BandCell v={fb.grammar} />
+                              <BandCell v={fb.pronunciation} />
+                            </>
+                          )}
                           <td style={{ fontSize:11, whiteSpace:'nowrap' }}>{formatDate(a.createdAt).split(' ')[0]}</td>
                           <td>
                             <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setSelectedAttempt(a); }}>Chi tiết</button>

@@ -132,6 +132,27 @@ async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
   return { hints };
 }
 
+function mapFeedbackToAiFeedback(feedback) {
+  return {
+    overallBand: feedback.overallBand || 0,
+    fluency: feedback.fluency || 0,
+    vocabulary: feedback.vocabulary || 0,
+    grammar: feedback.grammar || 0,
+    pronunciation: feedback.pronunciation || 0,
+    overallFeedback: feedback.overallFeedback || '',
+    correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
+    todaysFocus: feedback.todaysFocus || '',
+    strengths: feedback.strengths || [],
+    corrections: (feedback.mistakes || []).map(m => ({
+      original: m.original,
+      corrected: m.corrected,
+      explanation: m.reason
+    })),
+    vocabUpgrades: feedback.vocabUpgrades || [],
+    suggestions: feedback.improvements || []
+  };
+}
+
 // Persistence failure here is logged but must never fail the request —
 // the student still gets their feedback even if saving the attempt fails.
 // Returns the saved attempt's _id (or null on failure) so the frontend can
@@ -147,30 +168,67 @@ async function saveAttempt(userId, { questionId, topic, part, questionText, tran
       transcript,
       duration: duration || 0,
       status: 'analyzed',
-      aiFeedback: {
-        overallBand: feedback.overallBand || 0,
-        fluency: feedback.fluency || 0,
-        vocabulary: feedback.vocabulary || 0,
-        grammar: feedback.grammar || 0,
-        pronunciation: feedback.pronunciation || 0,
-        overallFeedback: feedback.overallFeedback || '',
-        correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
-        todaysFocus: feedback.todaysFocus || '',
-        strengths: feedback.strengths || [],
-        corrections: (feedback.mistakes || []).map(m => ({
-          original: m.original,
-          corrected: m.corrected,
-          explanation: m.reason
-        })),
-        vocabUpgrades: feedback.vocabUpgrades || [],
-        suggestions: feedback.improvements || []
-      }
+      aiFeedback: mapFeedbackToAiFeedback(feedback)
     });
     await attempt.save();
     return attempt._id;
   } catch (saveErr) {
     console.error('[Speaking] Save attempt error:', saveErr.message);
     return null;
+  }
+}
+
+// Persisted BEFORE calling Gemini so the submission is visible to the
+// student and admin immediately (status: 'pending') instead of only
+// appearing once grading finishes — Part 2/3's longer transcripts are the
+// ones most likely to hit Gemini's JSON-truncation retry path (up to ~60s)
+// or fail outright, and previously nothing was saved until grading
+// succeeded, so a slow/failed grade meant the attempt was invisible or
+// silently lost. Same never-throw contract as saveAttempt.
+async function createPendingAttempt(userId, { questionId, topic, part, questionText, transcript, duration }) {
+  try {
+    const attempt = new SpeakingAttempt({
+      userId,
+      questionId: questionId || null,
+      topic: topic || '',
+      part,
+      question: questionText,
+      transcript,
+      duration: duration || 0,
+      status: 'pending'
+    });
+    await attempt.save();
+    return attempt._id;
+  } catch (err) {
+    console.error('[Speaking] Create pending attempt error:', err.message);
+    return null;
+  }
+}
+
+// Fills in a pending attempt once grading succeeds. Returns the attempt's
+// _id (or null on failure) — same contract as saveAttempt.
+async function finalizeAttempt(attemptId, feedback) {
+  try {
+    const updated = await SpeakingAttempt.findByIdAndUpdate(
+      attemptId,
+      { status: 'analyzed', aiFeedback: mapFeedbackToAiFeedback(feedback) },
+      { new: true, runValidators: true }
+    );
+    return updated ? updated._id : null;
+  } catch (err) {
+    console.error('[Speaking] Finalize attempt error:', err.message);
+    return null;
+  }
+}
+
+// Marks a pending attempt as failed grading — keeps the transcript on
+// record (visible to admin as "grading failed") instead of vanishing.
+// Best-effort: never throws.
+async function markAttemptError(attemptId) {
+  try {
+    await SpeakingAttempt.findByIdAndUpdate(attemptId, { status: 'error' });
+  } catch (err) {
+    console.error('[Speaking] Mark attempt error failed:', err.message);
   }
 }
 
@@ -195,6 +253,7 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, getRandomQuestion, listQuestions, gradeSpeaking, saveAttempt,
+  createPendingAttempt, finalizeAttempt, markAttemptError,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints,
 };

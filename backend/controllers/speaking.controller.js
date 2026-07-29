@@ -38,20 +38,31 @@ exports.analyze = catchAsync(async (req, res) => {
   const partNum = part ? Number(part) : 1;
   const questionText = question || 'General speaking practice';
 
+  // Persisted BEFORE grading (status: 'pending') so the submission is
+  // visible to the student/admin right away — Part 2/3's longer
+  // transcripts are most likely to hit Gemini's JSON-truncation retry
+  // (up to ~60s) or fail outright, and previously nothing was saved until
+  // grading succeeded, so a slow/failed grade meant the attempt was
+  // invisible or silently lost. May be null (never blocks grading below).
+  const pendingId = await speakingService.createPendingAttempt(req.user._id, {
+    questionId, topic, part: partNum, questionText, transcript, duration
+  });
+
   let feedback;
   try {
     feedback = await speakingService.gradeSpeaking(questionText, transcript.trim(), partNum);
   } catch (aiErr) {
     console.error('[Speaking] Gemini error:', aiErr.message);
+    if (pendingId) await speakingService.markAttemptError(pendingId);
     if (aiErr.isOverloaded) {
       return res.status(503).json({ success: false, message: aiErr.message });
     }
     return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
   }
 
-  const attemptId = await speakingService.saveAttempt(req.user._id, {
-    questionId, topic, part: partNum, questionText, transcript, duration, feedback
-  });
+  const attemptId = pendingId
+    ? await speakingService.finalizeAttempt(pendingId, feedback)
+    : await speakingService.saveAttempt(req.user._id, { questionId, topic, part: partNum, questionText, transcript, duration, feedback });
 
   // attemptId lets the frontend key a locally-stored (IndexedDB) audio
   // recording to this exact attempt, so History can offer same-device

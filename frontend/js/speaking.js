@@ -1872,6 +1872,15 @@ async function loadHistory() {
       const isFullMock = a.topic === 'Full Mock Test';
       const badgeClass = isFullMock ? 'hbadge-mock' : `hbadge-p${a.part}`;
       const badgeLabel = isFullMock ? 'Mock Test' : `Part ${a.part}`;
+      // A submission can sit as 'pending' while Gemini is still grading
+      // (Part 2/3's longer transcripts take longest) or end up 'error' if
+      // grading ultimately failed — either way the attempt itself was
+      // saved immediately, so show it rather than a blank/missing card.
+      const statusNote = a.status === 'pending'
+        ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>'
+        : a.status === 'error'
+          ? '<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.</div>'
+          : '';
       card.innerHTML = `
         <div class="history-card-top">
           <div class="history-card-meta">
@@ -1882,6 +1891,7 @@ async function loadHistory() {
           ${band ? `<div class="history-band-badge">${band}</div>` : ''}
         </div>
         <div class="history-question">${escHtml(a.question || 'Không có câu hỏi')}</div>
+        ${statusNote}
         ${renderHistoryScores(a.aiFeedback)}`;
 
       card.onclick = () => openHistoryModal(a);
@@ -1931,6 +1941,9 @@ async function openHistoryModal(attempt) {
     </div>
 
     <div id="history-audio-slot"></div>
+
+    ${attempt.status === 'pending' ? '<div class="history-status-note history-status-pending">⏳ Đang chấm bài, vui lòng quay lại sau ít phút...</div>' : ''}
+    ${attempt.status === 'error' ? '<div class="history-status-note history-status-error">⚠️ Chấm bài thất bại cho lượt này.</div>' : ''}
 
     ${attempt.transcript ? `
     <div class="modal-transcript">

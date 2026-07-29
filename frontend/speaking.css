@@ -1265,6 +1265,19 @@ body {
   overflow: hidden;
 }
 
+.history-status-note {
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.history-status-pending { background: #fffbeb; color: #92400e; }
+.history-status-error   { background: #fef2f2; color: #991b1b; }
+[data-theme="dark"] .history-status-pending { background: #451a03; color: #fde68a; }
+[data-theme="dark"] .history-status-error   { background: #450a0a; color: #fca5a5; }
+
 .history-scores {
   display: flex;
   gap: 10px;
