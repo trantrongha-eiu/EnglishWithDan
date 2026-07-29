@@ -643,6 +643,7 @@
             tests: [],
             currentTestId: null,
             currentTest: null,
+            attemptId: null,      // ListeningAttempt._id created by /start — sent back on /submit so it updates that same row instead of inserting a second one
             pendingTestId: null,   // testId đang chờ xác thực key
             answers: {},
             dragItem: null,
@@ -674,6 +675,7 @@
                 localStorage.setItem(_LS_KEY, JSON.stringify({
                     currentTestId: state.currentTestId,
                     currentTest: state.currentTest,
+                    attemptId: state.attemptId,
                     answers: state.answers,
                     partIdx: state.partIdx,
                     audioTime: audio.currentTime,
@@ -720,6 +722,7 @@
             const t = data.currentTest;
             state.currentTestId = data.currentTestId;
             state.currentTest = t;
+            state.attemptId = data.attemptId || t.attemptId || null;
             state.answers = data.answers || {};
             state.partIdx = data.partIdx || 0;
             state.submitted = false;
@@ -1143,6 +1146,7 @@
                 const t = data.test;
                 state.currentTestId = testId;
                 state.currentTest = t;
+                state.attemptId = t.attemptId || null;
                 state.answers = {};
                 state.partIdx = 0;
                 state.submitted = false;
@@ -2609,7 +2613,7 @@
             try {
                 const res = await fetch(`${API}/listening/tests/${state.currentTestId}/submit`, {
                     method: 'POST', headers: authH(),
-                    body: JSON.stringify({ answers: state.answers, startTime: state.startTime }),
+                    body: JSON.stringify({ answers: state.answers, startTime: state.startTime, attemptId: state.attemptId }),
                     signal: controller.signal
                 });
                 clearTimeout(submitTimeout);

@@ -445,9 +445,21 @@ async function listStudentTests(userId) {
   }));
 }
 
-async function startTest(id) {
+async function startTest(id, userId) {
   const test = await ListeningTest.findOne({ _id: id, isActive: true });
   if (!test) return null;
+
+  // Persisted immediately (status: 'in-progress') so an abandoned mock test
+  // leaves a record instead of vanishing entirely — previously nothing was
+  // saved until submitTest() ran, so a student who started and never
+  // finished left zero trace anywhere (audit finding). Mirrors Reading's
+  // TestAttempt, which has done this from the start.
+  const totalQuestions = test.sections.reduce((sum, s) =>
+    sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
+  const attempt = await ListeningAttempt.create({
+    userId, testId: test._id, testName: test.name, totalQuestions, startTime: new Date()
+  });
+
   const sections = test.sections.map(s => ({
     partNumber: s.partNumber, title: s.title, description: s.description, questionRange: s.questionRange,
     questionGroups: s.questionGroups.map(g => ({
@@ -463,10 +475,10 @@ async function startTest(id) {
       }))
     }))
   }));
-  return { _id: test._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections };
+  return { _id: test._id, attemptId: attempt._id, name: test.name, audioUrl: test.audioUrl, audioDuration: test.audioDuration, sections };
 }
 
-async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
+async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId }, user) {
   const test = await ListeningTest.findById(id);
   if (!test) return null;
 
@@ -482,7 +494,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
   const total = flattenQuestions(test.sections).length;
   const bandScore = calcBandScore(correct);
 
-  const attempt = new ListeningAttempt({
+  const fields = {
     userId: user._id || user.id,
     testId: test._id,
     testName: test.name,
@@ -496,8 +508,22 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
     submittedAt: now,
     timeTaken,
     status: 'completed'
-  });
-  await attempt.save();
+  };
+
+  // Update the SAME row startTest() created (status: 'in-progress' -> 'completed')
+  // instead of inserting a second row — keeps exactly one attempt per
+  // session, matching Reading's TestAttempt pattern. Falls back to a fresh
+  // insert if no matching in-progress row is found (e.g. attemptId missing —
+  // an in-flight session from just before this fix deployed), so submission
+  // never breaks even for a session that started under the old behavior.
+  let attempt = attemptId
+    ? await ListeningAttempt.findOneAndUpdate(
+        { _id: attemptId, userId: fields.userId, status: 'in-progress' },
+        fields,
+        { new: true }
+      )
+    : null;
+  if (!attempt) attempt = await ListeningAttempt.create(fields);
 
   let bonusApplied = 0;
   if (user.role === 'student') {
@@ -524,7 +550,10 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw }, user) {
 
 // ── Student – history ─────────────────────────────────────────────────────
 async function getHistory(userId) {
-  return ListeningAttempt.find({ userId })
+  // Excludes 'in-progress' rows now that startTest() persists one before
+  // the student has answered anything — matches Reading's getHistory(),
+  // which has always filtered to status: 'completed' for the same reason.
+  return ListeningAttempt.find({ userId, status: { $ne: 'in-progress' } })
     .select('testName bandScore correctCount wrongCount skippedCount totalQuestions timeTaken submittedAt status testId')
     .populate('testId', 'name testNumber')
     .sort({ submittedAt: -1 })

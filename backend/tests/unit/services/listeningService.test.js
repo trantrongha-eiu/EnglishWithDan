@@ -4,6 +4,7 @@
 // savePractice) added so the server never trusts client-supplied results.
 const mongoose = require('mongoose');
 const listeningService = require('../../../services/listeningService');
+const ListeningAttempt = require('../../../models/ListeningAttempt');
 const { createStudent } = require('../../factories/userFactory');
 const { createListeningTest, createListeningSection } = require('../../factories/contentFactory');
 
@@ -37,6 +38,90 @@ describe('listeningService.flattenQuestions', () => {
     ];
     const flat = listeningService.flattenQuestions(sections);
     expect(flat.map(q => q.questionNumber)).toEqual([1, 2, 3, 4]);
+  });
+});
+
+describe('listeningService.startTest / submitTest — attempt persistence', () => {
+  // Regression coverage for the audit finding "an abandoned Listening mock
+  // test leaves no record at all" — startTest() previously persisted
+  // nothing; submitTest() always inserted a brand-new document. Now
+  // startTest() writes a status:'in-progress' row immediately, and
+  // submitTest() updates that SAME row instead of inserting a second one.
+  async function makeSimpleTest() {
+    return createListeningTest({
+      sections: [{
+        partNumber: 1, title: 'Part 1', questionRange: { start: 1, end: 2 },
+        questionGroups: [{
+          groupType: 'plain', interchangeableAnswers: false,
+          questions: [
+            { questionNumber: 1, type: 'fill-blank', questionText: 'Q1', correctAnswer: 'yes' },
+            { questionNumber: 2, type: 'fill-blank', questionText: 'Q2', correctAnswer: 'no' },
+          ],
+        }],
+      }],
+    });
+  }
+
+  test('startTest() persists an in-progress attempt immediately, before any answer is submitted', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const started = await listeningService.startTest(test._id.toString(), student._id);
+    expect(started.attemptId).toBeTruthy();
+
+    const saved = await ListeningAttempt.findById(started.attemptId).lean();
+    expect(saved).not.toBeNull();
+    expect(saved.status).toBe('in-progress');
+    expect(saved.userId.toString()).toBe(student._id.toString());
+    expect(saved.totalQuestions).toBe(2);
+  });
+
+  test('submitTest() with the attemptId from startTest() updates that same row rather than inserting a second one', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const started = await listeningService.startTest(test._id.toString(), student._id);
+    const result = await listeningService.submitTest(
+      test._id.toString(),
+      { answers: { 1: 'yes', 2: 'no' }, attemptId: started.attemptId },
+      student
+    );
+
+    expect(result.attemptId.toString()).toBe(started.attemptId.toString());
+    const count = await ListeningAttempt.countDocuments({ userId: student._id, testId: test._id });
+    expect(count).toBe(1); // not 2 — the in-progress row was updated, not left behind
+
+    const saved = await ListeningAttempt.findById(started.attemptId).lean();
+    expect(saved.status).toBe('completed');
+    expect(saved.correctCount).toBe(2);
+  });
+
+  test('submitTest() without a matching attemptId still succeeds (back-compat for a session started before this fix)', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const result = await listeningService.submitTest(
+      test._id.toString(),
+      { answers: { 1: 'yes', 2: 'no' } }, // no attemptId at all
+      student
+    );
+
+    expect(result).not.toBeNull();
+    expect(result.correctCount).toBe(2);
+    const saved = await ListeningAttempt.findById(result.attemptId).lean();
+    expect(saved.status).toBe('completed');
+  });
+
+  test("getHistory() excludes in-progress rows (a student's own history shouldn't show unfinished attempts)", async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    await listeningService.startTest(test._id.toString(), student._id); // left in-progress on purpose
+    await listeningService.submitTest(test._id.toString(), { answers: { 1: 'yes', 2: 'no' } }, student);
+
+    const history = await listeningService.getHistory(student._id);
+    expect(history).toHaveLength(1);
+    expect(history[0].status).toBe('completed');
   });
 });
 

@@ -206,7 +206,7 @@ exports.listStudentTests = async (req, res) => {
 
 exports.startTest = async (req, res) => {
   try {
-    const test = await listeningService.startTest(req.params.id);
+    const test = await listeningService.startTest(req.params.id, req.user._id || req.user.id);
     if (!test) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
     res.json({ success: true, test });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }

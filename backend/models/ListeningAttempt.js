@@ -40,8 +40,12 @@ const ListeningAttemptSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ['completed', 'timeout'],
-    default: 'completed'
+    // 'in-progress' is written at /start (audit fix — previously nothing
+    // was persisted until /submit, so an abandoned mock test left zero
+    // trace anywhere, including admin). Matches TestAttempt's (Reading)
+    // enum/default exactly.
+    enum: ['in-progress', 'completed', 'timeout'],
+    default: 'in-progress'
   }
 }, { timestamps: true });
 
