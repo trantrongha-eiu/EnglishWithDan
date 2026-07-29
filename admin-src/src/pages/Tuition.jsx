@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { API, apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import Pagination from '../components/Pagination';
 import StudentPicker from './tuition/StudentPicker';
@@ -12,6 +13,7 @@ import { PAGE, MONTHS, CUR_YEAR, CUR_MONTH, YEARS, fmtVND, fmtLabel } from './tu
 export default function Tuition() {
   const toast   = useToast();
   const confirm = useConfirm();
+  const { isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState('fees');
 
   // ── Fee list state ──
@@ -564,7 +566,7 @@ export default function Tuition() {
                           <button className="btn btn-ghost btn-sm" title="Nhắc nhở" onClick={() => { setRemindFee(f); setRemindMsg(''); }}>📩</button>
                           <button className="btn btn-ghost btn-sm" title="Copy sang tháng tiếp" onClick={() => openCopy(f)}>📋</button>
                           <button className="btn btn-ghost btn-sm" title="Sửa" onClick={() => openEdit(f)}>✏️</button>
-                          <button className="btn btn-danger btn-sm" title="Xóa" onClick={() => deleteFee(f._id)}>🗑</button>
+                          {isAdmin && <button className="btn btn-danger btn-sm" title="Xóa" onClick={() => deleteFee(f._id)}>🗑</button>}
                         </div>
                       </td>
                     </tr>

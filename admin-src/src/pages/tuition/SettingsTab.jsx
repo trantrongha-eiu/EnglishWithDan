@@ -2,11 +2,13 @@
 // QR upload, auto-remind schedule). Takes its slice of Tuition's state and
 // the mutator callbacks as props; no state of its own.
 import { MONTHS, YEARS } from './helpers';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function SettingsTab({
   settings, settingsForm, setSettingsForm, savingSettings, saveSettings,
   uploadingQr, qrInputRef, uploadQr, removeQr,
 }) {
+  const { isAdmin } = useAuth();
   return (
     <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start' }}>
       {/* Bank form */}
@@ -56,7 +58,7 @@ export default function SettingsTab({
             <img src={settings.qrImageUrl} alt="QR" style={{ maxWidth: 260, maxHeight: 260, borderRadius: 8, border: '1px solid var(--border)', marginBottom: 12 }} />
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
               <button className="btn btn-ghost" onClick={() => qrInputRef.current?.click()}>🔄 Đổi QR</button>
-              <button className="btn btn-danger" onClick={removeQr}>🗑 Xóa QR</button>
+              {isAdmin && <button className="btn btn-danger" onClick={removeQr}>🗑 Xóa QR</button>}
             </div>
           </div>
         ) : (
