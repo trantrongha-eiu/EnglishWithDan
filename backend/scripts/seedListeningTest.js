@@ -1,13 +1,15 @@
-// One-off content seed — inserts "Cam 15 - Test 2" as a normal ListeningTest
-// document so it shows up in admin's Đề Listening list exactly like every
-// other hand-entered test (Cam 20, Actual Tests, ...): editable name,
+// Generic one-off content seed — inserts the TEST doc below as a normal
+// ListeningTest so it shows up in admin's Đề Listening list exactly like
+// every other hand-entered test (Cam 20, Actual Tests, ...): editable name,
 // editable questions, and ready for the admin to attach the full-test audio
-// and the Part 2 map image via the existing admin UI (the schema only
-// supports one audio file per test, not per-part — same as all existing
-// tests, so audio is left blank here for admin to upload).
+// and any map images via the existing admin UI (the schema only supports
+// one audio file per test, not per-part — same as all existing tests, so
+// audio is left blank here for admin to upload).
 //
-// Run once: `node scripts/seedCam15Test2Listening.js` from backend/.
-// Safe to re-run — skips if a test with this name already exists.
+// Reused per test: edit TEST below to the next test's content, then run
+// `node scripts/seedListeningTest.js` from backend/. Safe to re-run — skips
+// if a test with this exact name already exists. Each past run's content is
+// preserved in git history (see log for prior seeds under this filename).
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
@@ -308,11 +310,11 @@ const TEST = {
 async function runSeed() {
   const existing = await ListeningTest.findOne({ name: TEST.name }).lean();
   if (existing) {
-    console.log(`[SeedCam15Test2] "${TEST.name}" already exists (_id=${existing._id}) – skip`);
+    console.log(`[SeedListeningTest] "${TEST.name}" already exists (_id=${existing._id}) – skip`);
     return existing;
   }
   const doc = await ListeningTest.create(TEST);
-  console.log(`[SeedCam15Test2] Inserted "${TEST.name}" (_id=${doc._id}, ${doc.totalQuestions} questions)`);
+  console.log(`[SeedListeningTest] Inserted "${TEST.name}" (_id=${doc._id}, ${doc.totalQuestions} questions)`);
   return doc;
 }
 
@@ -324,7 +326,7 @@ if (require.main === module) {
     } finally {
       await mongoose.disconnect();
     }
-  })().catch(e => { console.error('[SeedCam15Test2] FAILED', e); process.exit(1); });
+  })().catch(e => { console.error('[SeedListeningTest] FAILED', e); process.exit(1); });
 }
 
 module.exports = { runSeed, TEST };
