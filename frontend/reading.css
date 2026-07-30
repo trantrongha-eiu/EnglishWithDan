@@ -976,6 +976,7 @@ body.tool-hl .radio-dot { user-select: none; }
   font-size: 13px;
   line-height: 1.55;
   color: #374151;
+  white-space: pre-line;
 }
 
 .q-explanation strong {
