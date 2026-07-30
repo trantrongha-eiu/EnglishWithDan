@@ -269,11 +269,18 @@ export default function Task2Topics() {
   }, [page, weekFilter, typeFilter, search, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Flip loading=true synchronously during render (not in an effect) the
-  // moment the query changes (load's identity changes with it) — the
-  // effect below then runs load(), which flips it back off once the
-  // fetch settles.
-  const [prevLoad, setPrevLoad] = useState(load);
-  if (prevLoad !== load) { setPrevLoad(load); setLoading(true); }
+  // moment the query changes — the effect below then runs load(), which
+  // flips it back off once the fetch settles. Compares the actual query
+  // values (like ReadingTests.jsx/WritingGrades.jsx do), not load's own
+  // function identity — useCallback's memoized reference is only a
+  // performance hint, not a correctness guarantee, and comparing it
+  // directly caused an infinite render loop ("Too many re-renders") in
+  // production, crashing this page.
+  const [prevQuery, setPrevQuery] = useState([page, weekFilter, typeFilter, search, tick]);
+  if (prevQuery[0] !== page || prevQuery[1] !== weekFilter || prevQuery[2] !== typeFilter || prevQuery[3] !== search || prevQuery[4] !== tick) {
+    setPrevQuery([page, weekFilter, typeFilter, search, tick]);
+    setLoading(true);
+  }
 
   useEffect(() => { load(); }, [load]);
 
