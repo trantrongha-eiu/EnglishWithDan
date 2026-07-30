@@ -20,74 +20,57 @@ const Passage = require('../models/Passage');
 const PASSAGES = [
   // ── PASSAGE 1 (Q1–13) ───────────────────────────────────────────
   {
-    title: 'The Davies Sisters',
+    title: 'Do animals dream?',
     category: 'passage1',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 1'],
+    tags: ['Cam 21', 'Cam 21 - Test 2'],
     questionRange: { start: 1, end: 13 },
-    content: `<p><strong>The Davies Sisters</strong></p>
-<p><em>Between 1908 and 1924, Gwendoline and Margaret Davies amassed one of the largest collections of late-nineteenth and early-twentieth-century French paintings in Britain</em></p>
-<p>Gwendoline (1882-1951) and Margaret (1884-1963) Davies were the granddaughters of David Davies, a Welshman who amassed a fortune in the shipping and mining industries. In 1907, when Gwendoline came into her inheritance (Margaret would follow in 1909), the sisters were said to be the wealthiest unmarried women in Britain. Their religious upbringing in rural Wales gave them a deep sense of social responsibility and they chose to use their inheritance for cultural and philanthropic* purposes.</p>
-<p>While there was no real family history of art collecting, the sisters' education was rigorously geared toward such pursuits. Their London school focused on cultural rather than academic study, and they travelled extensively with their governess, Jane Blaker, visiting art galleries and making extensive notes on the collections there.</p>
-<p>The sisters began to make regular art purchases from 1908, which roughly coincided with the dates of their inheritance. They took advice from various people, including the art dealer Hugh Blaker (the brother of Jane Blaker) and David Croal Thompson, who was also an art dealer. While it was long assumed that these men were largely responsible for the nature of the sisters' collection, it has recently been accepted that Gwendoline and Margaret retained a far more active role in the process.</p>
-<p>The sisters' journals reveal their preference for Old Master** paintings. Yet they initially made very few attempts to secure any such works. While the sisters were wealthy in relative terms, their income was nothing compared to the fortunes of American art collectors of this period, such as J. Pierpont Morgan. Quite simply, high quality Old Master works were, if not beyond their means, then beyond what they were willing to pay for them. Instead, their early purchases were of the fashionable, safe variety, and included, for example, paintings by the French artist Jean-Baptiste-Camille Corot.</p>
-<p>However, it was only a few years before their collecting took a new direction and they turned to the work of the French Impressionists***. We know that Hugh Blaker, as a champion of contemporary French art had a hand in the decision, and we know also that they would have seen examples on their various trips to Paris. Whatever the precise reason for this change, their first purchases of Impressionist art, made in October 1912, were scenes of Venice by the French artist Claude Monet. Over the next 12 years, the sisters amassed the bulk of their Impressionist collection, including six further works by Monet, two more by Manet, and three by Renoir, including his well-known painting La Parisienne.</p>
-<p>The First World War (1914-1918) played a part in the development of the sisters' collection. Their initial response to the war effort was to finance the safe passage of artists from occupied Belgium to Wales, as a humanitarian act, but also with the hope of establishing a vibrant artists' community in the area. Later in the conflict, both sisters decided to volunteer at a canteen for troops at Troyes, in northern France; Gwendoline in 1916, followed by Margaret in 1917.</p>
-<p>It was tedious and distressing work, which would have a permanent effect on Gwendoline's health. Yet on one of numerous trips to nearby Paris, she visited the Bernheim-Jeune Gallery. Here she acquired two works by Cézanne – Provençal Landscape and The François Zola Dam. The paintings were shipped directly to Bath, England, where they became the first works by Cézanne to go on display in a public gallery in Britain.</p>
-<p>Commentators have often described the sisters as unlikely pioneer collectors. Much is made of their isolation in rural Wales and the fact that they didn't make friends with artists or gallery owners. Yet they didn't feel obliged to follow fashionable tastes and were free to pursue their own preferences. Although they relied on a trusted circle of advisers, they made frequent trips to London and Paris, and also regularly had paintings sent to their home for consideration.</p>
-<p>By the early 1920s, Gwendoline felt increasingly uncomfortable buying art works when faced with the poverty and social upheaval created by the First World War. Her philanthropic pursuits then became focused almost exclusively on social causes and the development of the sisters' home at Gregynog Hall into a conference center and venue for the Gregynog Festival of Music and Poetry. Gwendoline made her final art purchase in March 1926. Margaret also stopped collecting around this time, but started again in the 1930s acquiring, on a relatively small scale, work by contemporary British artists.</p>
-<p>The sisters collected French Impressionist paintings at a time when such art was routinely ignored by individuals and institutions alike. The Gwendoline and Margaret Davies collection, donated in 1951 and 1963 respectively to the National Museum Wales, contains major examples of work by leading French Impressionists. In collecting paintings that they loved, the sisters created a lasting and meaningful cultural legacy for the people of Wales and beyond.</p>
-<p style="font-size:.9em">
-<em>* philanthropic: seeking to promote the welfare of others, often by charitable funding</em><br>
-<em>** Old Master: a highly respected artist of great skill who worked in Europe before about 1800</em><br>
-<em>*** Impressionist: an artist with a style of painting that developed in France in the late 1800s by Renoir, including his well-known painting La Parisienne</em>
-</p>`,
+    content: `<p><strong>Do animals dream?</strong></p>
+<p>Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don't hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.</p>
+<p>There's some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.</p>
+<p>But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.</p>
+<p>That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don't have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It's thought that they don't experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.</p>
+<p>Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.</p>
+<p>However, we still don't understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don't know if there is an internal experience of chasing rabbits that comes along with that.</p>
+<p>Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.</p>
+<p>Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.</p>
+<p>The trouble is that we will never be able to experience any animal's dreams. That goes for other humans' dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.</p>
+<p>It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams.</p>`,
     questionGroups: [
       {
-        groupType: 'note-form',
-        groupTitle: 'Questions 1–7',
-        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
-        noteConfig: {
-          title: 'Gwendoline and Margaret Davies',
-          lines: [
-            'Family and early life',
-            "●   their grandfather's wealth came from __Q1__ and transportation businesses",
-            '●   their upbringing gave them a sense of social responsibility',
-            '●   their __Q2__ was designed to give them an interest in activities such as collecting art',
-            '●   their governess took them on trips to art galleries',
-            '●   they took lengthy __Q3__ about the things they saw in art galleries',
-            'The sisters as art collectors',
-            '●   their __Q4__ showed they liked Old Master paintings, but they were expensive to buy',
-            '●   their early purchases were safe, popular paintings',
-            '●   the first Impressionist paintings they bought showed places in __Q5__.',
-            'Impact of First World War',
-            '●   they helped bring artists from Belgium to Wales',
-            '●   they worked in a __Q6__ for soldiers in France',
-            'Opinions about the sisters as art collectors',
-            '●   were not considered typical collectors - they lived in isolation in the countryside and did not have any __Q7__ who were artists',
+        groupType: 'table',
+        groupTitle: 'Questions 1–5 — Research into sleep and dreaming',
+        instruction: 'Complete the table below.  Choose ONE WORD ONLY from the passage for each answer.',
+        tableConfig: {
+          headers: ['', 'Research findings', 'Comment'],
+          rows: [
+            ['Humans', '●   humans experience REM sleep and non-REM sleep<br>●   in REM sleep, the eyes and muscles move', ''],
+            ['__Q1__', '●   similar brain patterns were observed when active and sleeping', 'indicative of dreaming'],
+            ['Pigeons', '●   when sleeping, pigeons displayed activity in parts of the brain that deal with __Q2__ input', 'may have been dreaming of flying'],
+            ['Whales and dolphins', "●   still have __Q3__ their brain awake when they sleep<br>●   don't experience REM sleep, as this could affect their sensitivity to __Q4__", 'their dreams are probably not very __Q5__'],
           ],
         },
         questions: [
-          { questionNumber: 1, type: 'fill-blank', questionText: 'Question 1', correctAnswer: 'mining' },
-          { questionNumber: 2, type: 'fill-blank', questionText: 'Question 2', correctAnswer: 'education' },
-          { questionNumber: 3, type: 'fill-blank', questionText: 'Question 3', correctAnswer: 'notes' },
-          { questionNumber: 4, type: 'fill-blank', questionText: 'Question 4', correctAnswer: 'journals' },
-          { questionNumber: 5, type: 'fill-blank', questionText: 'Question 5', correctAnswer: 'Venice' },
-          { questionNumber: 6, type: 'fill-blank', questionText: 'Question 6', correctAnswer: 'canteen' },
-          { questionNumber: 7, type: 'fill-blank', questionText: 'Question 7', correctAnswer: 'friends' },
+          { questionNumber: 1, type: 'fill-blank', questionText: 'Question 1', correctAnswer: 'rats' },
+          { questionNumber: 2, type: 'fill-blank', questionText: 'Question 2', correctAnswer: 'visual' },
+          { questionNumber: 3, type: 'fill-blank', questionText: 'Question 3', correctAnswer: 'half' },
+          { questionNumber: 4, type: 'fill-blank', questionText: 'Question 4', correctAnswer: 'temperature' },
+          { questionNumber: 5, type: 'fill-blank', questionText: 'Question 5', correctAnswer: 'vivid' },
         ],
       },
       {
         groupType: 'plain',
-        groupTitle: 'Questions 8–13',
+        groupTitle: 'Questions 6–13',
         instruction: 'Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
         questions: [
-          { questionNumber: 8, type: 'true-false-ng', questionText: "8   The Davies sisters' childhood influenced the way they decided to use their wealth.", correctAnswer: 'TRUE' },
-          { questionNumber: 9, type: 'true-false-ng', questionText: "9   The Jean-Baptiste-Camille Corot paintings in the Davies sisters' collection were purchased from a gallery in France.", correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 10, type: 'true-false-ng', questionText: "10   Hugh Blaker opposed the Davies sisters' decision to buy art by French Impressionists.", correctAnswer: 'FALSE' },
-          { questionNumber: 11, type: 'true-false-ng', questionText: '11   The exhibition of Cezanne paintings at the Bath gallery was very popular with the public.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 12, type: 'true-false-ng', questionText: '12   The impact of the First World War encouraged Gwendoline to reconsider her interest in collecting art.', correctAnswer: 'TRUE' },
-          { questionNumber: 13, type: 'true-false-ng', questionText: '13   The Davies sisters bought French Impressionist art during a period when very few people were doing so.', correctAnswer: 'TRUE' },
+          { questionNumber: 6, type: 'true-false-ng', questionText: '6   Dreaming about past experiences helps us to create lasting memories of them.', correctAnswer: 'TRUE' },
+          { questionNumber: 7, type: 'true-false-ng', questionText: '7   It is now possible to tell what type of dream a dog is having.', correctAnswer: 'FALSE' },
+          { questionNumber: 8, type: 'true-false-ng', questionText: "8   David Scheel's documentary was influential on other research into the sleeping patterns of octopuses.", correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 9, type: 'true-false-ng', questionText: '9   While it was asleep, the octopus called Costello reacted as if it was hunting.', correctAnswer: 'FALSE' },
+          { questionNumber: 10, type: 'true-false-ng', questionText: "10   Scheel believes more research into octopuses' dreams should be carried out.", correctAnswer: 'TRUE' },
+          { questionNumber: 11, type: 'true-false-ng', questionText: '11   We may soon be able to share the dreams of other human beings.', correctAnswer: 'FALSE' },
+          { questionNumber: 12, type: 'true-false-ng', questionText: '12   Hearing may be an important part of the dreams of some animals.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 13, type: 'true-false-ng', questionText: '13   Interest in the reasons why humans dream has increased greatly in recent times.', correctAnswer: 'NOT GIVEN' },
         ],
       },
     ],
@@ -95,77 +78,94 @@ const PASSAGES = [
 
   // ── PASSAGE 2 (Q14–26) ──────────────────────────────────────────
   {
-    title: 'Why we need silence',
+    title: 'Mapungubwe',
     category: 'passage2',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 1'],
+    tags: ['Cam 21', 'Cam 21 - Test 2'],
     questionRange: { start: 14, end: 26 },
-    content: `<p><strong>Why we need silence</strong></p>
+    content: `<p><strong>Mapungubwe</strong></p>
+<p><em>Located in southern Africa just below the Limpopo River, the kingdom of Mapungubwe, flourished between the 11th and 13th century CE</em></p>
 <p><strong>A</strong><br>
-Humans are finely attuned to noise, and for good reason. From an evolutionary perspective, sounds give us vital information, helping us navigate the world and avoid danger. To help ensure loud or unexpected noises get the attention they deserve, our internal chemistry alters in response to them. Our blood pressure goes up, muscles tense and glands release hormones that prepare us for fight or flight. In the short term, this is a good thing. When we are exposed to too much noise over the long term, however, those responses can lead to a multitude of health issues, from sleep disturbance to even cardiovascular disease.</p>
+Mapungubwe, which was one of the first states in southern Africa, was formed by Bantu-speaking peoples who were farmers. The area controlled by the rulers of Mapungubwe had at its heart a large sandstone plateau, which was easily defended due to its inaccessibility. As with other kingdoms in the region of southern Africa, cattle herding and other types of farming brought plenty of food and a surplus that could be traded for needed goods. Archaeology has revealed extensive layers of bones and manure, which indicate that from the 9th century CE there were large cattle herds, the traditional source of political power in southern African communities. The archaeological record for the 10th century shows a marked increase in the number of domesticated cattle in the area as well as cotton cultivation and weaving, as indicated by abundant finds of spindle whorls.</p>
 <p><strong>B</strong><br>
-The World Health Organization has recently designated excessive noise as an 'underestimated threat' to public health, and has said that people living in cities such as Mumbai, Tokyo and Buenos Aires are being exposed to far more than the recommended 40 decibels of noise at night. A report from the European Environment Agency concluded that noise was an ongoing and widespread issue in Europe, with at least 1 in 5 people consistently exposed to levels considered harmful to health. 'There are no "earlids" that can protect your brain from noise,' says Nick Antonio, an acoustic consultant who has contributed to the British and international standards for noise.</p>
+The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people. The chief or king of Mapungubwe was likely the wealthiest individual in the society, and would have owned more cattle and precious materials than anyone else. The king and his advisers dwelt in a stone enclosure composed of stone walls and housing built on the highest level of the community's territory, a natural sandstone hill which is some 30 metres high and 100 metres in length. Occupation on the hill dates from the 11th century and the entire complex was surrounded by a wooden palisade*, as indicated by postholes made in the rock. The rest of the community lived in mud and thatch housing spread out below the hill, although there is one stone structure here. This settlement, known as Babandyanalo, covers around 5 hectares (12.3 acres) and predates the hilltop structures.</p>
 <p><strong>C</strong><br>
-The good news is that several cities have been working to turn the volume down. One of the first to do so was London. 'By providing recommendations for quieter buses, reducing noise from roads and also controlling noise from aircraft, they were able to make the city quieter,' says Antonio. Other cities have introduced noise-reducing road coatings, for instance, alongside greenery that muffles sound. Some solutions are more specific: Washington DC's ban on petrol-powered leaf blowers came into effect recently, while in New York City, legislation has been approved to fine people who modify their vehicles to make them noisier. 'People are seeing the benefits of these more quiet environments in their cities,' Antonio says. 'I expect we will see much more of this in the future.'</p>
+The kings of Mapungubwe were buried at the top of the hill site in a demarcated area away from the dwellings, while other members of the community were buried at the surrounding valley level. A wooden staircase connected the two levels, the sockets for the steps being clearly visible in the sandstone cliff face. There were some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king. There are many other smaller but still impressive sites across the Mapungubwe plateau, which are located anywhere from 15 to 100 kilometres from the major hill site. Containing stone residences and walls, they likely belonged to local chiefs who acted as servants to the king.</p>
 <p><strong>D</strong><br>
-Researchers are also seeking to understand what aspects of silent experiences are most beneficial to our health. One of the best-researched is the flotation tank: a lightproof, soundproof tank of salt water in which a person floats as a form of deep relaxation. While some people experience altered perception in the tanks, involving subtle humming sounds and visual effects, these effects are benign and do not detract from the benefits of the experience, says Justin Feinstein, a clinical neuropsychologist. 'When you don't have external sensory stimuli coming in, the brain tries to fill the void to make sense of this dark and silent world,' he explains. 'In these tanks, some people can even hear the sound of their eyes blinking,' says Feinstein. 'But it is the ability to focus on the breath that helps people reach a relaxed or meditative state.'</p>
+The Mapungubwe plateau has a very high number of carnivore animal remains and ivory splinters, suggesting that the skins of these large animals and ivory elephant tusks were accumulated, probably for trade with coastal areas reached by the Limpopo River. The presence of glass beads, almost certainly from India, indicate there was trade of some sort with other states on the coast who, in turn, traded with merchants travelling from India by sea. Mapungubwe also benefitted from locally-sourced copper and the gold trade as it passed from the kingdom of Great Zimbabwe (12-15th century), situated to the north of Mapungubwe, to the coastal city of Kosala. It is likely that trade links led to a strengthening of political authority in order to control and even monopolise these lucrative interregional connections.</p>
 <p><strong>E</strong><br>
-To further explore flotation tanks as a therapeutic tool, Feinstein and his colleagues recruited 50 people with a variety of conditions related to stress and had them answer a questionnaire prior to and following a flotation session. Participants reported decreases in muscle tension, pain and symptoms of their conditions after a single, 1-hour float, alongside an increase in feelings of relaxation and overall wellbeing.</p>
-<p>Less is known about what effects sensory deprivation can have on the brain. To investigate, Feinstein's team had 48 people participate in either three 90-minute float sessions or three 90-minute periods of relaxing on a chair which reclined. Participants had their brains scanned using functional magnetic resonance imaging at the beginning and end of the trial. Float sessions uniquely decreased activity in the default mode network (DMN), a collection of brain regions commonly linked with depression. Feinstein says it is an exciting finding, because flotation tanks seem to offer a way of 'resetting' our nervous system to prevent it from getting out of balance.</p>
+Archaeological discoveries reveal that pottery was produced on a scale large enough to suggest the presence of professional potters, and is another indicator of the prosperity of Mapungubwe society. Archaeological finds include spherical vessels with short necks, beakers, and bowls, many of which have decorative stamps. There are also ceramic discs, and whistles. In addition, cattle, sheep, and goat figurines, and small figures of highly stylised humans with elongated bodies and short limbs have been found. The figures may have been used in ceremonies as offerings to ancestors, but their precise function is not known. Other discoveries include small jewellery items made from locally sourced copper.</p>
 <p><strong>F</strong><br>
-Neurobiologist Tai Dotan Ben-Soussan is also an advocate of silence as a therapy. 'When we find ways to be quiet, we are not only quiet in our environment, but quiet in our inner selves,' she explains. 'This allows us to be more aware of what is happening around us and what the situation may require from us so we can provide [a more] adequate response.'</p>
-<p>Not everyone will benefit from silence to the same extent, but Ben-Soussan says one characteristic is key: the person must need to want to engage in the experience. 'We see from animal models and human studies that volition and intentionality is important,' she says. 'When people do not want silence, it can be very distressing.'</p>
+Beautifully decorated artefacts made of gold have also been found at Mapungubwe. A type of decoration, found nowhere else except Great Zimbabwe, involved the crafting of gold into small rectangular sheets and carving geometrical patterns into it. These sheets were then used to cover wooden objects (which have not survived) using small tacks, also made of gold. One such object that has been discovered may have been a sceptre, while additional evidence of local gold-working is a rhinoceros figurine made from small hammered sheets, and thousands of small gold beads. These objects were all found at the royal burial site and date to c. 1150. They are the first known indicators that gold had an intrinsic value of its own (as opposed to that of a currency) in southern Africa.</p>
 <p><strong>G</strong><br>
-Eric Pfeifer, a psychotherapy researcher, also concedes that some people may not benefit from silence, particularly those who are in a heightened state of stress. 'People in these states may not be able to relax or calm down in a silent condition,' he says. Professional guidance can be useful, he adds, allowing people to approach silence slowly so that they can gradually enjoy the benefits. And Pfeifer is convinced that silence is more attainable in everyday life than people think. First, complete silence isn't necessary. In a recent study, he found that participants reported more relaxation and less boredom when they sat quietly in an outdoor garden compared with a completely silent room. Second, Pfeifer believes we don't need a lot of silence to gain benefits. 'You don't need to spend hours in silence,' he says. 'It is likely better to have more frequency of silence for a few minutes at a time than a longer period of silence only once a week. Just finding those places in your daily life where you can find some silence ... can make a big difference.'</p>`,
+The kingdom of Mapungubwe was already in decline by the late 13th century, probably because overpopulation placed too much stress on local resources, a situation that may have been brought to a crisis point by a series of droughts. Trade routes may also have shifted northwards. Certainly, the areas that now prospered were to the north, such as Great Zimbabwe.</p>
+<p style="font-size:.9em">
+<em>* palisade: typically a row of closely placed, high vertical wooden or iron posts used as a means of defence</em>
+</p>`,
     questionGroups: [
       {
         groupType: 'plain',
-        groupTitle: 'Questions 14–17',
-        instruction: 'Reading Passage 2 has seven sections, A-G. Which section contains the following information? Write the correct letter, A-G.',
+        groupTitle: 'Questions 14–19',
+        instruction: 'Reading Passage 2 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G.',
         questions: [
-          { questionNumber: 14, type: 'matching-info', questionText: '14   examples of strategies to decrease the noise that the public are exposed to', correctAnswer: 'C' },
-          { questionNumber: 15, type: 'matching-info', questionText: '15   data indicating the extent of the problem of excessive noise', correctAnswer: 'B' },
-          { questionNumber: 16, type: 'matching-info', questionText: '16   a description of physiological changes in our bodies when we hear sudden noises', correctAnswer: 'A' },
-          { questionNumber: 17, type: 'matching-info', questionText: '17   evidence that a relatively quiet environment can be more beneficial than a totally silent one', correctAnswer: 'G' },
+          { questionNumber: 14, type: 'matching-info', questionText: '14   a mention of the uncertainty regarding the purpose of certain objects', correctAnswer: 'E' },
+          { questionNumber: 15, type: 'matching-info', questionText: '15   the likelihood that a climatic factor increased the problems Mapungubwe faced', correctAnswer: 'G' },
+          { questionNumber: 16, type: 'matching-info', questionText: "16   a mention of the location where members of the king's family are thought to have lived", correctAnswer: 'C' },
+          { questionNumber: 17, type: 'matching-info', questionText: '17   a reference to people who brought goods by ship', correctAnswer: 'D' },
+          { questionNumber: 18, type: 'matching-info', questionText: '18   an estimate of the size to which the Mapungubwe community grew', correctAnswer: 'B' },
+          { questionNumber: 19, type: 'matching-info', questionText: '19   a mention of agricultural produce being exchanged for other items', correctAnswer: 'A' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Questions 20 and 21',
+        instruction: 'Choose TWO letters, A-E. The archaeological record reveals information about gold and the kingdom of Mapungubwe. Which TWO pieces of information are mentioned by the writer?',
+        questions: [
+          {
+            questionNumber: 20, type: 'multi-answer-group',
+            questionText: 'Which TWO pieces of information are mentioned by the writer?',
+            options: [
+              'A   Not everyone in Mapungubwe used gold as a form of payment.',
+              'B   Items of gold were placed close to where Mapungubwe kings were buried.',
+              'C   The most valuable item discovered in Mapungubwe was a sceptre made of gold.',
+              'D   The way gold was decorated in Mapungubwe was also practised in another kingdom.',
+              'E   Working with gold was a respected occupation in the Mapungubwe community.',
+            ],
+            correctAnswer: 'B',
+          },
+          {
+            questionNumber: 21, type: 'multi-answer-group',
+            questionText: 'Question 21',
+            options: [
+              'A   Not everyone in Mapungubwe used gold as a form of payment.',
+              'B   Items of gold were placed close to where Mapungubwe kings were buried.',
+              'C   The most valuable item discovered in Mapungubwe was a sceptre made of gold.',
+              'D   The way gold was decorated in Mapungubwe was also practised in another kingdom.',
+              'E   Working with gold was a respected occupation in the Mapungubwe community.',
+            ],
+            correctAnswer: 'D',
+          },
         ],
       },
       {
         groupType: 'note-form',
-        groupTitle: 'Questions 18–21',
+        groupTitle: 'Questions 22–26',
         instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.',
         noteConfig: {
-          title: 'Flotation Tanks',
+          title: 'Archaeological discoveries',
           lines: [
-            'According to Justin Feinstein, flotation tanks allow people to concentrate on their own __Q18__, which helps them relax and enables them to meditate.',
-            'Feinstein and his colleagues conducted an experiment in which 50 people, who were all suffering from stress and related issues, were given a __Q19__ to complete before and after using a flotation tank. Participants reported a reduction in their symptoms after an hour in the tank, together with signs of relaxation and improved general __Q20__.',
-            'In another experiment, the researchers had 48 people spend periods of 90 minutes either lying back in a chair or floating in a tank. Brain scans then revealed that those people who had been in a tank had decreased activity in parts of the brain associated with __Q21__.',
+            "The Mapungubwe community's __Q22__ is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps.",
+            'Other finds include round ceramic objects, __Q23__ and figures of various animals, as well as models of people with stretched __Q24__.',
+            'It is possible that these had a role in ceremonies to honour __Q25__.',
+            'In addition, pieces of __Q26__ made from a local metal have been found at the site.',
           ],
         },
         questions: [
-          { questionNumber: 18, type: 'fill-blank', questionText: 'Question 18', correctAnswer: 'breath' },
-          { questionNumber: 19, type: 'fill-blank', questionText: 'Question 19', correctAnswer: 'questionnaire' },
-          { questionNumber: 20, type: 'fill-blank', questionText: 'Question 20', correctAnswer: 'wellbeing' },
-          { questionNumber: 21, type: 'fill-blank', questionText: 'Question 21', correctAnswer: 'depression' },
-        ],
-      },
-      {
-        groupType: 'matching-options',
-        groupTitle: 'Questions 22–26',
-        instruction: 'Look at the following statements (Questions 22-26) and the list of people below. Match each statement with the correct person, A, B, C or D. NB You may use any letter more than once.',
-        matchingOptionsTitle: 'List of People',
-        matchingOptions: [
-          'Nick Antonio',
-          'Justin Feinstein',
-          'Tai Dotan Ben-Soussan',
-          'Eric Pfeifer',
-        ],
-        matchingReuseAllowed: true,
-        questions: [
-          { questionNumber: 22, type: 'matching-info', questionText: '22   It is unpleasant and upsetting for people to be placed in a silent environment against their will.', correctAnswer: 'C' },
-          { questionNumber: 23, type: 'matching-info', questionText: '23   The trend towards creating quieter urban locations is likely to increase in the coming years.', correctAnswer: 'A' },
-          { questionNumber: 24, type: 'matching-info', questionText: '24   When our body\'s senses are completely deprived of input, our minds compensate for this by creating the illusion of images and sounds.', correctAnswer: 'B' },
-          { questionNumber: 25, type: 'matching-info', questionText: '25   Even a short amount of silent time can have a positive impact.', correctAnswer: 'D' },
-          { questionNumber: 26, type: 'matching-info', questionText: '26   External and internal quietness makes us more conscious of events occurring in our surroundings and helps us react appropriately to these events.', correctAnswer: 'C' },
+          { questionNumber: 22, type: 'fill-blank', questionText: 'Question 22', correctAnswer: 'prosperity' },
+          { questionNumber: 23, type: 'fill-blank', questionText: 'Question 23', correctAnswer: 'whistles' },
+          { questionNumber: 24, type: 'fill-blank', questionText: 'Question 24', correctAnswer: 'bodies' },
+          { questionNumber: 25, type: 'fill-blank', questionText: 'Question 25', correctAnswer: 'ancestors' },
+          { questionNumber: 26, type: 'fill-blank', questionText: 'Question 26', correctAnswer: 'jewellery/jewelry' },
         ],
       },
     ],
@@ -173,108 +173,120 @@ Eric Pfeifer, a psychotherapy researcher, also concedes that some people may not
 
   // ── PASSAGE 3 (Q27–40) ──────────────────────────────────────────
   {
-    title: 'Book review: The World of Sugar by Ulbe Bosma',
+    title: 'Artificial Intelligence',
     category: 'passage3',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 1'],
+    tags: ['Cam 21', 'Cam 21 - Test 2'],
     questionRange: { start: 27, end: 40 },
-    content: `<p><strong>Book review: The World of Sugar by Ulbe Bosma</strong></p>
-<p>Ulbe Bosma's The World of Sugar is a genuinely global history. Bosma discusses all the sugar-growing places of the world, beginning with Cuba and Java, the largest exporters of the early 20th century. But this is a history not just of cane sugar but also of beet sugar, an equally important form of traded sugar over the last hundred years. Beet sugar is grown mainly in Europe and the United States. It has also been massively subsidised and sold at artificially low prices on world markets, threatening the livelihood of producers of cane sugar.</p>
-<p>Bosma's discussion of the sugar market in Britain gives a sense of the book's range. The sweet-toothed British first bought cane sugar from their own slavery-dependent colonial plantations. Following the abolition of slavery in the British Empire, cane sugar was imported to Britain from places which retained the practice, such as Cuba and Brazil. Towards the end of the 19th century, the British started to import beet sugar from continental Europe. Only in the 20th century was there a move to develop a national beet sugar industry.</p>
-<p>The book provides a global labour history, investigating the wide range of labour regimes associated with growing sugar. Contrary to popular belief, cane sugar production was never just restricted to large, dedicated plantations owned by rich men. For example, in Java, a huge exporter of sugar in the early 20th century, sugar cane was grown together with rice in an extraordinarily labour-intensive way by small farmers.</p>
-<p>The World of Sugar is also a story of similarity and continuity in sugar cultivation. For example, imported labour has been used for much large-scale production. German beet fields employed Polish workers; Mexicans and many others, including Sicilians, were vital to US sugar production. Cane cutting, Bosma shows, remains a poorly paid and brutal business to this day in many places in the world. But as well as this, the book is about the continuity of the use of traditional methods on small farms. In the mid 20th-century, this type of sugar production dominated in South Asia and Latin America.</p>
-<p>This is also a history of capitalists and sugar dynasties, as well as corporations that in some cases have remained influential over very long periods. Great firms and great interests have had profound influence on the policies of states. In many places – not just the British Caribbean but Cuba and the Philippines too – a powerful sugar bourgeoisie played a major role in politics and their interests were consequently protected by trade barriers and subsidies. In the battle for control of the industry, it was inevitably the poor countries which came off worse. All this is explored by Bosma with wonderful subtlety and control.</p>
-<p>But sugar production was never just a matter of agriculture. It also involved the extraction, close to the place of harvest, of sucrose from the sugar plant, a process which required machinery powered by humans, animals, wind or steam. Further processes involved boiling (from the 19th century, this often involved vacuum systems) and the separation of sugar from other materials in a process known as refinement. From very early on, sugar production was an energy-intensive industrial process, mostly taking place in the countryside and in refineries in centres of consumption, both small and large. The growth of the industry entailed a very rapid diffusion of ideas and techniques from one country to another. Cuba, for example, developed an extraordinarily dense system of railways to transport workers and cane, as well as steam-powered sugar factories. Particular varieties of cane sugar and beet sugar spread very rapidly across the world, in accordance with local needs and demands.</p>
-<p>Where once only tiny quantities of sugar could be produced, now new techniques, varieties, fertilisers, irrigation systems and much more have turned gleaming white sugar into a ubiquitous chemical. Over the same time, there has been a massive increase in consumption. Once regarded as a luxury, sugar came to be promoted as a valuable source of energy. But as the consumption of sugar has increased, so has the harm it does, whether to people's teeth or weight. In the face of appalling obstruction from the sugar industry to attempts to reduce consumption, some countries have been forced to tax sugar in order to bring that about. The sugar industry has a history of attacking its critics and, when it comes to obesity, of trying to blame fats, and lack of exercise and self-control. And the recent past has seen worrying new developments in mass sweetening. High-fructose corn syrup made from maize using an enzymatic process invented in Japan in the 1960s has a similar number of calories to table sugar but is far cheaper to produce. It is now widely consumed, having been adopted in the making of soft drinks and a large number of processed foods, and is regarded as a leading cause of obesity.</p>
-<p>This is a wonderfully rich book, a model of global history, the history of production and the history of capitalism. Bosma avoids outbursts of emotion, celebratory or critical, even if they might have made his analysis of the multiple tragedies involving sugar all the more powerful. He shows that we could always have done without sugar and that today we have many alternative sources of sweetness. Yet many of the poorest people in the world still depend on it to make a living.</p>`,
+    content: `<p><strong>Artificial Intelligence</strong></p>
+<p>In many countries in the West, hysteria about the future of artificial intelligence (AI) is everywhere. There seems to be no shortage of sensationalist news about how AI could cure diseases, accelerate human innovation and improve human creativity. Just looking at the media headlines, you might think that we are already living in a future where AI has infiltrated every aspect of society.</p>
+<p>While it is undeniable that AI has opened up a wealth of promising opportunities, it has also led to the emergence of a mindset that can be best described as 'AI solutionism'. This is the philosophy that, given enough data, machine learning algorithms can solve all of humanity's problems. But, in fact, instead of supporting AI progress, this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles and setting unrealistic expectations about what AI can really do for humanity.</p>
+<p>In only a few years, AI solutionism has made its way from the technology evangelists' mouths in Silicon Valley in California to the minds of government officials and policymakers around the world. The pendulum has swung from the dystopian notion that AI will destroy humanity to the utopian belief that our algorithmic saviour is here.</p>
+<p>We are now seeing governments pledge support to national AI initiatives and compete in a technological race to dominate the burgeoning machine-learning sector. While many politicians proclaim the transformative effects of the coming 'AI revolution', they fail to realise the complexity around deploying advanced machine learning systems in the real world.</p>
+<p>One of the most promising varieties of AI technologies are neural networks. This form of machine learning is loosely modelled on the neuronal structure of the human brain, but on a much smaller scale. But what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you'll find a solution. Similarly, adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair.</p>
+<p>AI systems need a lot of data to function, but the public sector typically does not have the appropriate data infrastructure to support advanced machine learning. Most of the data remains stored in offline archives. The few digitised sources of data that exist tend to be buried in bureaucracy. More often than not, data is spread across different government departments that each require special permissions to be accessed. Above all, the public sector typically lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence.</p>
+<p>For these reasons, the sensationalism over AI has attracted many critics. Stuart Russell, a professor of computer science at the University of California, Berkeley, has long advocated a more sensible and realistic approach that focuses on simple everyday applications of AI instead of the hypothetical takeover by super-intelligent robots. Similarly, Rodney Brooks, professor of robotics at Massachusetts Institute of Technology, writes that 'almost all innovations in robotics and AI take far, far, longer to be really widely deployed than people in the field and outside the field imagine'.</p>
+<p>One of the many difficulties in deploying machine learning systems is that AI is extremely susceptible to adversarial attacks. This means that a malicious AI can target another AI to make it behave in a certain way, such as forcing it to make wrong predictions. Many researchers have warned against the rolling out of AI without appropriate security standards and defence mechanisms. Still, AI security remains an often overlooked topic when machine learning systems are installed.</p>
+<p>If we are to reap the benefits and minimise the potential harms of AI, we must start thinking about how machine learning can be meaningfully applied to specific areas of government, business and society. This means we need to have a discussion about AI ethics and the distrust that many people have towards machine learning.</p>
+<p>Most importantly, we need to be aware of the limitations of AI and where people still need to take the lead. Instead of painting an unrealistic picture of the power of AI, it is important to take a step back and separate the actual technological capabilities of AI from fantasy.</p>
+<p>The medical profession has also recognised the drawbacks to AI. The IBM Watson for Oncology programme was a piece of AI that was meant to help doctors treat cancer. Even though it was developed to deliver the best recommendations, human experts found it hard to trust the machine. As a result, the AI programme was abandoned in most hospitals where it was trialled.</p>
+<p>Similar difficulties arose in the legal domain when algorithms were used in courts in the US to sentence criminals. An algorithm calculated risk assessment scores and advised judges on the sentencing. The system was found to amplify structural racial discrimination and was later abandoned.</p>
+<p>There are some crucial lessons here for everyone aiming to boost investments in national AI programmes. These examples demonstrate that there is no AI solution for everything. Using AI simply for the sake of AI may not always be productive or useful, and not every issue is best addressed by applying machine intelligence to it. All solutions come with a cost and not everything that can be automated should be.</p>`,
     questionGroups: [
       {
         groupType: 'plain',
-        groupTitle: 'Questions 27–30',
+        groupTitle: 'Questions 27–29',
         instruction: 'Choose the correct letter, A, B, C or D.',
         questions: [
           {
             questionNumber: 27, type: 'multiple-choice',
-            questionText: '27   What does the reviewer suggest about the cultivation and trading of sugar in the first paragraph?',
+            questionText: '27   What is the writer doing in the first paragraph?',
             options: [
-              'A   Sugar has played a major role in international relations.',
-              'B   Beet sugar has been made more internationally competitive.',
-              'C   Cane sugar is thought to be of superior quality to beet sugar.',
-              'D   New locations for cultivating sugar have increased production.',
+              'A   predicting the future impact of AI',
+              'B   describing a public perception of AI',
+              'C   outlining some possible benefits of AI',
+              'D   highlighting the breadth of the influence of AI',
             ],
             correctAnswer: 'B',
           },
           {
             questionNumber: 28, type: 'multiple-choice',
-            questionText: '28   In the second paragraph, when discussing the sugar market in Britain, the reviewer stresses',
+            questionText: '28   When discussing AI solutionism in the second paragraph, the writer',
             options: [
-              'A   how the sources used changed over time.',
-              'B   how developments in agriculture affected trade.',
-              'C   the increased demand for sugar over the years.',
-              'D   the growing support for ethical methods of cultivation.',
+              'A   points out a risk involved.',
+              'B   specifies its probable origins.',
+              'C   mentions its chief supporters.',
+              'D   weighs up some pros and cons.',
             ],
             correctAnswer: 'A',
           },
           {
             questionNumber: 29, type: 'multiple-choice',
-            questionText: '29   What is the reviewer doing in the third paragraph?',
+            questionText: '29   In the fourth paragraph, the writer suggests that many politicians may',
             options: [
-              'A   describing an efficient approach to sugar cultivation',
-              'B   explaining why the use of sugar plantations declined',
-              'C   addressing a misconception about the growing of sugar cane',
-              'D   evaluating different approaches to the cultivation of sugar cane',
+              'A   have failed to appreciate the true potential of AI initiatives.',
+              'B   have misunderstood the function of the machine-learning sector.',
+              'C   be unaware of the challenges of implementing national AI initiatives.',
+              'D   be too keen to enter the race to dominate the machine-learning sector.',
             ],
             correctAnswer: 'C',
-          },
-          {
-            questionNumber: 30, type: 'multiple-choice',
-            questionText: "30   In the final paragraph, what does the reviewer suggest is the overall message of Bosma's book?",
-            options: [
-              'A   Sugar is a harmful and unnecessary product.',
-              'B   Economic pressure is needed to control sugar production.',
-              'C   Conditions for workers in sugar production should be improved.',
-              'D   Intensive marketing of sugar has had disastrous consequences.',
-            ],
-            correctAnswer: 'A',
           },
         ],
       },
       {
         groupType: 'summary-completion',
-        groupTitle: 'Questions 31–36',
+        groupTitle: 'Questions 30–35',
         instruction: 'Complete the summary using the list of words, A-I, below.',
         summaryConfig: {
-          text: 'Sugar cultivation and production<br><br>The book The World of Sugar points out the similarities in the way that sugar was cultivated around the world. In the big industries in both Germany and the US, sugar farming depended on __Q31__. However, in other parts of the world such as South Asia and Latin America, __Q32__ continued.<br><br>Sugar production has also involved __Q33__ who were eager to protect their markets. In countries such as Cuba the sugar industry therefore had a major influence on __Q34__.<br><br>To support the interests of sugar producers, __Q35__ were established. As a result of this, __Q36__ were penalised.',
+          text: 'AI in government, medicine and the law<br><br>Neural networks are a promising area of AI technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote __Q30__.<br><br>Most public sector organisations have not set up the necessary __Q31__ to manage the huge amount of data required to enable AI to function. Complex bureaucracy is another issue, as each person involved needs __Q32__ to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the __Q33__ to take full advantage of machine intelligence.<br><br>The medical profession experimented with an AI programme, but their experts had little faith in its __Q34__, and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing __Q35__ within the legal profession.',
           wordBank: [
-            { letter: 'A', word: 'national governments' },
-            { letter: 'B', word: 'agricultural developments' },
-            { letter: 'C', word: 'less wealthy nations' },
-            { letter: 'D', word: 'untrained workers' },
-            { letter: 'E', word: 'small-scale cultivation' },
-            { letter: 'F', word: 'outdated methods' },
-            { letter: 'G', word: 'financial controls' },
-            { letter: 'H', word: 'migrant workers' },
-            { letter: 'I', word: 'powerful individuals and businesses' },
+            { letter: 'A', word: 'reliability' },
+            { letter: 'B', word: 'funding' },
+            { letter: 'C', word: 'skills' },
+            { letter: 'D', word: 'prejudices' },
+            { letter: 'E', word: 'computers' },
+            { letter: 'F', word: 'equality' },
+            { letter: 'G', word: 'framework' },
+            { letter: 'H', word: 'confidentiality' },
+            { letter: 'I', word: 'approval' },
           ],
         },
         questions: [
-          { questionNumber: 31, type: 'fill-blank', questionText: 'Question 31', correctAnswer: 'migrant workers' },
-          { questionNumber: 32, type: 'fill-blank', questionText: 'Question 32', correctAnswer: 'small-scale cultivation' },
-          { questionNumber: 33, type: 'fill-blank', questionText: 'Question 33', correctAnswer: 'powerful individuals and businesses' },
-          { questionNumber: 34, type: 'fill-blank', questionText: 'Question 34', correctAnswer: 'national governments' },
-          { questionNumber: 35, type: 'fill-blank', questionText: 'Question 35', correctAnswer: 'financial controls' },
-          { questionNumber: 36, type: 'fill-blank', questionText: 'Question 36', correctAnswer: 'less wealthy nations' },
+          { questionNumber: 30, type: 'fill-blank', questionText: 'Question 30', correctAnswer: 'equality' },
+          { questionNumber: 31, type: 'fill-blank', questionText: 'Question 31', correctAnswer: 'framework' },
+          { questionNumber: 32, type: 'fill-blank', questionText: 'Question 32', correctAnswer: 'approval' },
+          { questionNumber: 33, type: 'fill-blank', questionText: 'Question 33', correctAnswer: 'skills' },
+          { questionNumber: 34, type: 'fill-blank', questionText: 'Question 34', correctAnswer: 'reliability' },
+          { questionNumber: 35, type: 'fill-blank', questionText: 'Question 35', correctAnswer: 'prejudices' },
         ],
       },
       {
         groupType: 'plain',
-        groupTitle: 'Questions 37–40',
-        instruction: 'Do the following statements agree with the views of the writer in Reading Passage 3? Write YES if the statement agrees with the views of the writer, NO if the statement contradicts the views of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
+        groupTitle: 'Questions 36–39',
+        instruction: 'Do the following statements agree with the claims of the writer in Reading Passage 3? Write YES if the statement agrees with the claims of the writer, NO if the statement contradicts the claims of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
         questions: [
-          { questionNumber: 37, type: 'yes-no-ng', questionText: '37   Sugar has now become available in large quantities due to a range of agricultural developments.', correctAnswer: 'YES' },
-          { questionNumber: 38, type: 'yes-no-ng', questionText: '38   Advertisers initially marketed sugar as a luxury product.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 39, type: 'yes-no-ng', questionText: '39   The invention of high-fructose corn syrup was a positive development.', correctAnswer: 'NO' },
-          { questionNumber: 40, type: 'yes-no-ng', questionText: '40   High-fructose corn syrup is an ingredient in many processed foods.', correctAnswer: 'YES' },
+          { questionNumber: 36, type: 'yes-no-ng', questionText: "36   Stuart Russell's proposals regarding the use of AI are impractical.", correctAnswer: 'NO' },
+          { questionNumber: 37, type: 'yes-no-ng', questionText: "37   Rodney Brooks' view has attracted unfair criticism from supporters of AI.", correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 38, type: 'yes-no-ng', questionText: '38   Nowadays, the need to protect AI systems is always taken into account when they are set up.', correctAnswer: 'NO' },
+          { questionNumber: 39, type: 'yes-no-ng', questionText: "39   In order to benefit from AI and minimise the harms, we have to explore people's concerns about its use.", correctAnswer: 'YES' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Question 40',
+        instruction: 'Choose the correct letter, A, B, C or D.',
+        questions: [
+          {
+            questionNumber: 40, type: 'multiple-choice',
+            questionText: '40   What would be a suitable subtitle for Reading Passage 3?',
+            options: [
+              'A   How to make the most of what AI has to offer',
+              'B   Why AI may not be the answer to our problems',
+              'C   Why governments should not invest in AI systems',
+              'D   How AI could improve the efficiency of the public sector',
+            ],
+            correctAnswer: 'B',
+          },
         ],
       },
     ],
