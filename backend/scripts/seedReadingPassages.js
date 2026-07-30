@@ -20,57 +20,65 @@ const Passage = require('../models/Passage');
 const PASSAGES = [
   // ── PASSAGE 1 (Q1–13) ───────────────────────────────────────────
   {
-    title: 'Do animals dream?',
+    title: 'Saving the saiga',
     category: 'passage1',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 2'],
+    tags: ['Cam 21', 'Cam 21 - Test 3'],
     questionRange: { start: 1, end: 13 },
-    content: `<p><strong>Do animals dream?</strong></p>
-<p>Studies using electrodes attached to the heads of sleepers have shown that when we sleep, we do so in two ways that alternate throughout the night. The first is rapid eye movement (REM) or active sleep. During this stage our eyes move, even though our eyelids are closed. Our muscles also twitch slightly, though they are largely paralysed so we don't hurt ourselves. In contrast, we also engage in non-REM sleep, during which we barely move at all. Most dream states, and certainly those with the most vivid dreams, happen during REM sleep.</p>
-<p>There's some evidence that other mammals may also dream. For example, researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze.</p>
-<p>But finding evidence of dreaming in non-mammals has proved more difficult. Their brains are very different from those of humans, and it can often be difficult to record their activity while they are sleeping. Recently, however, researchers succeeded in recording brain activity in sleeping pigeons. As in mammals, the recordings revealed both REM and non-REM sleep. Intriguingly, REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying, which suggests that this may possibly be what the pigeons were dreaming about.</p>
-<p>That said, dreaming and REM sleep are unlikely to be universal in the animal kingdom. For example, sponges don't have brains, so they lack the machinery for dreaming. There are also some animals with unusual sleep patterns. These include whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake. They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid. This is surprising because we tend to think of whales and dolphins as having complex inner lives. It's thought that they don't experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature.</p>
-<p>Nevertheless, in many cases REM sleep does seem to have benefits. Growing evidence from birds and mammals suggests that REM sleep and dreaming are important for forming memories and learning. It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage. As soon as animals evolved moderately complex lifestyles, they would have needed to dream in order to manage these lifestyles.</p>
-<p>However, we still don't understand how this outward behaviour relates to internal experience. It seems impossible to know what it is like to be a rat or a pigeon, let alone imagine their dreamscapes. We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don't know if there is an internal experience of chasing rabbits that comes along with that.</p>
-<p>Another non-human dreamer offers insight here. In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room. At one point, in the middle of the night, Heidi seemed to dream: her limbs and head moved, and her skin rapidly changed colour, as though she was pursuing a crab.</p>
-<p>Similarly, a report recently emerged of a sleeping octopus apparently having a nightmare. Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator. The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams.</p>
-<p>The trouble is that we will never be able to experience any animal's dreams. That goes for other humans' dreams too. But we can try to imagine what these dreamscapes are like by meeting animals on their own terms. For example, vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations.</p>
-<p>It is likely that dreaming has served multiple purposes since the first complex animals evolved. And if this is the case, it is possible that better understanding of these purposes might shed light on the true purpose of our own dreams.</p>`,
+    content: `<p><strong>Saving the saiga</strong></p>
+<p>The saiga, a species of antelope native to Central Asia, once roamed the vast grasslands of this region in enormous herds, many millions strong. Regrettably, such spectacular sights are a thing of the past. Today, the saiga is largely confined to a single country: Kazakhstan. This country is estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest.</p>
+<p>The saiga is perfectly adapted to the tough conditions of the remote wilderness of the steppes of Central Asia. One such adaptation is its bizarre bulbous nose, which enables the animal to survive the extreme seasonal temperature swings of the region. The swollen nostrils of the nose serve several purposes: they filter out dust and cool the blood during hot, dry summers, and they warm the cold air before it enters the saiga's lungs in winter. Other seasonal adaptations include a heavy winter coat that the saiga sheds when the weather warms up.</p>
+<p>Despite these superb adaptations to harsh conditions, the saiga has no defence against the threats posed by humans. It was almost driven to extinction by hunters in the 19th century. Legal protection ensured its survival for a while, and numbers steadily recovered throughout most of the 20th century. But the respite was only temporary. In the ten years following the break-up of the former Soviet Union in 1991, over 95% of the global population was lost – one of the fastest examples of species loss ever recorded for a mammal.</p>
+<p>The dramatic decline during this decade was due to illegal poaching on an industrial scale. Male saiga are a particular target, because their horns are highly prized by traditional medicine practitioners. Poaching reached epidemic levels after misguided conservationists tried to relieve the pressure on threatened African rhinos by actively encouraging the use of saiga horns in traditional medicine as an alternative to those of rhinos. Male saiga were almost wiped out, leading to a population crash from which the species has been struggling to recover ever since.</p>
+<p>Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement. Physical barriers such as railways, pipelines and fences can block the seasonal migration routes of this transboundary species. In the worst cases, herds may starve to death after being trapped.</p>
+<p>Then there is the risk of disease. In 2015, an outbreak of haemorrhagic septicaemia, caused by the normally harmless bacterium Pasteurella multocida, killed over 75% of the global adult saiga population in just three weeks. In 2017, 60% of the Mongolian saiga population – a subspecies found nowhere else in the world – was killed by a virus that spilled over from livestock. These so-called mass mortality events represent an unpredictable and serious threat to the species.</p>
+<p>Climate change poses a further threat. Although well adapted to cold winters and hot summers, saiga struggle to cope with temperature extremes and unpredictable fluctuations in climate. Experts believe that unusually warm weather may have triggered the 2015 mass mortality event. The steppe region has also become increasingly arid in recent years, and many of the smaller streams that the species normally depended on have dried up and vanished.</p>
+<p>Recent efforts to save the saiga have been spearheaded by the Altyn Dala Conservation Initiative, a project led by the Association for the Conservation of Biodiversity of Kazakhstan, working in partnership with the Kazakh government's Committee for Forestry and Wildlife, Frankfurt Zoological Society and Fauna and Flora, an international conservation charity. Its purpose is to protect and restore Kazakhstan's steppe, semi-desert and desert ecosystems and the many species they support, including the critically endangered saiga. In 2022 the United Nations recognised the initiative as a World Restoration Flagship project, an accolade reserved for the ten best examples of large-scale ecosystem restoration around the globe.</p>
+<p>So, how many saiga are there now? By 2000, the global saiga population had hit an all-time low of just 21,000 individuals. There was some recovery in the first decade of the new millennium but this was then crushed by devastating mass mortality events that saw the loss of hundreds of thousands of the species. But thanks to the intervention of the Altyn Dala Conservation Initiative, the most recent episodes in the ongoing story of the saiga have been relatively uplifting. Three years ago, the Ustyurt Plateau population in Kazakhstan experienced its largest mass birth of saiga calves in many years. An aerial census two years ago recorded an estimated 842,000 saiga across Kazakhstan as a whole, and according to an aerial survey earlier this year, the saiga population in Kazakhstan now exceeds 1.9 million. The world's strangest-looking antelope remains critically endangered, but the direction of travel is positive.</p>`,
     questionGroups: [
       {
-        groupType: 'table',
-        groupTitle: 'Questions 1–5 — Research into sleep and dreaming',
-        instruction: 'Complete the table below.  Choose ONE WORD ONLY from the passage for each answer.',
-        tableConfig: {
-          headers: ['', 'Research findings', 'Comment'],
-          rows: [
-            ['Humans', '●   humans experience REM sleep and non-REM sleep<br>●   in REM sleep, the eyes and muscles move', ''],
-            ['__Q1__', '●   similar brain patterns were observed when active and sleeping', 'indicative of dreaming'],
-            ['Pigeons', '●   when sleeping, pigeons displayed activity in parts of the brain that deal with __Q2__ input', 'may have been dreaming of flying'],
-            ['Whales and dolphins', "●   still have __Q3__ their brain awake when they sleep<br>●   don't experience REM sleep, as this could affect their sensitivity to __Q4__", 'their dreams are probably not very __Q5__'],
+        groupType: 'note-form',
+        groupTitle: 'Questions 1–7',
+        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
+        noteConfig: {
+          title: 'The saiga',
+          lines: [
+            'Adaptations',
+            '●   has a large bulbous nose with swollen nostrils that',
+            '○   keep __Q1__ out',
+            '○   lower the temperature of its __Q2__ in summer',
+            '○   warm the air entering its lungs in winter',
+            '●   grows a thick __Q3__ in winter, which it loses in spring',
+            'Reasons for population decline',
+            '●   poaching, especially for the __Q4__ of male saiga',
+            '●   expansion of farms and settlements, causing',
+            "○   reduction in the size of the saiga's __Q5__.",
+            '○   loss of access to the __Q6__ which they use for migration',
+            '●   various forms of disease, leading to mass mortality events',
+            '●   climate change, causing the disappearance of __Q7__ which the saiga relied on',
           ],
         },
         questions: [
-          { questionNumber: 1, type: 'fill-blank', questionText: 'Question 1', correctAnswer: 'rats' },
-          { questionNumber: 2, type: 'fill-blank', questionText: 'Question 2', correctAnswer: 'visual' },
-          { questionNumber: 3, type: 'fill-blank', questionText: 'Question 3', correctAnswer: 'half' },
-          { questionNumber: 4, type: 'fill-blank', questionText: 'Question 4', correctAnswer: 'temperature' },
-          { questionNumber: 5, type: 'fill-blank', questionText: 'Question 5', correctAnswer: 'vivid' },
+          { questionNumber: 1, type: 'fill-blank', questionText: 'Question 1', correctAnswer: 'dust' },
+          { questionNumber: 2, type: 'fill-blank', questionText: 'Question 2', correctAnswer: 'blood' },
+          { questionNumber: 3, type: 'fill-blank', questionText: 'Question 3', correctAnswer: 'coat' },
+          { questionNumber: 4, type: 'fill-blank', questionText: 'Question 4', correctAnswer: 'horns' },
+          { questionNumber: 5, type: 'fill-blank', questionText: 'Question 5', correctAnswer: 'habitat' },
+          { questionNumber: 6, type: 'fill-blank', questionText: 'Question 6', correctAnswer: 'routes' },
+          { questionNumber: 7, type: 'fill-blank', questionText: 'Question 7', correctAnswer: 'streams' },
         ],
       },
       {
         groupType: 'plain',
-        groupTitle: 'Questions 6–13',
+        groupTitle: 'Questions 8–13',
         instruction: 'Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
         questions: [
-          { questionNumber: 6, type: 'true-false-ng', questionText: '6   Dreaming about past experiences helps us to create lasting memories of them.', correctAnswer: 'TRUE' },
-          { questionNumber: 7, type: 'true-false-ng', questionText: '7   It is now possible to tell what type of dream a dog is having.', correctAnswer: 'FALSE' },
-          { questionNumber: 8, type: 'true-false-ng', questionText: "8   David Scheel's documentary was influential on other research into the sleeping patterns of octopuses.", correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 9, type: 'true-false-ng', questionText: '9   While it was asleep, the octopus called Costello reacted as if it was hunting.', correctAnswer: 'FALSE' },
-          { questionNumber: 10, type: 'true-false-ng', questionText: "10   Scheel believes more research into octopuses' dreams should be carried out.", correctAnswer: 'TRUE' },
-          { questionNumber: 11, type: 'true-false-ng', questionText: '11   We may soon be able to share the dreams of other human beings.', correctAnswer: 'FALSE' },
-          { questionNumber: 12, type: 'true-false-ng', questionText: '12   Hearing may be an important part of the dreams of some animals.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 13, type: 'true-false-ng', questionText: '13   Interest in the reasons why humans dream has increased greatly in recent times.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 8, type: 'true-false-ng', questionText: '8   Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan.', correctAnswer: 'FALSE' },
+          { questionNumber: 9, type: 'true-false-ng', questionText: '9   For most of the 20th century, the population of saiga were falling.', correctAnswer: 'FALSE' },
+          { questionNumber: 10, type: 'true-false-ng', questionText: '10   Efforts to protect rhinos in Africa had a significant effect on saiga populations.', correctAnswer: 'TRUE' },
+          { questionNumber: 11, type: 'true-false-ng', questionText: '11   Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 12, type: 'true-false-ng', questionText: '12   The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals.', correctAnswer: 'TRUE' },
+          { questionNumber: 13, type: 'true-false-ng', questionText: "13   The Altyn Dala Conservation Initiative's recognition as a World Restoration Flagship project attracted additional international funding for the scheme.", correctAnswer: 'NOT GIVEN' },
         ],
       },
     ],
@@ -78,94 +86,63 @@ const PASSAGES = [
 
   // ── PASSAGE 2 (Q14–26) ──────────────────────────────────────────
   {
-    title: 'Mapungubwe',
+    title: 'The problems of getting around the city of Dar es Salaam',
     category: 'passage2',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 2'],
+    tags: ['Cam 21', 'Cam 21 - Test 3'],
     questionRange: { start: 14, end: 26 },
-    content: `<p><strong>Mapungubwe</strong></p>
-<p><em>Located in southern Africa just below the Limpopo River, the kingdom of Mapungubwe, flourished between the 11th and 13th century CE</em></p>
-<p><strong>A</strong><br>
-Mapungubwe, which was one of the first states in southern Africa, was formed by Bantu-speaking peoples who were farmers. The area controlled by the rulers of Mapungubwe had at its heart a large sandstone plateau, which was easily defended due to its inaccessibility. As with other kingdoms in the region of southern Africa, cattle herding and other types of farming brought plenty of food and a surplus that could be traded for needed goods. Archaeology has revealed extensive layers of bones and manure, which indicate that from the 9th century CE there were large cattle herds, the traditional source of political power in southern African communities. The archaeological record for the 10th century shows a marked increase in the number of domesticated cattle in the area as well as cotton cultivation and weaving, as indicated by abundant finds of spindle whorls.</p>
-<p><strong>B</strong><br>
-The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people. The chief or king of Mapungubwe was likely the wealthiest individual in the society, and would have owned more cattle and precious materials than anyone else. The king and his advisers dwelt in a stone enclosure composed of stone walls and housing built on the highest level of the community's territory, a natural sandstone hill which is some 30 metres high and 100 metres in length. Occupation on the hill dates from the 11th century and the entire complex was surrounded by a wooden palisade*, as indicated by postholes made in the rock. The rest of the community lived in mud and thatch housing spread out below the hill, although there is one stone structure here. This settlement, known as Babandyanalo, covers around 5 hectares (12.3 acres) and predates the hilltop structures.</p>
-<p><strong>C</strong><br>
-The kings of Mapungubwe were buried at the top of the hill site in a demarcated area away from the dwellings, while other members of the community were buried at the surrounding valley level. A wooden staircase connected the two levels, the sockets for the steps being clearly visible in the sandstone cliff face. There were some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king. There are many other smaller but still impressive sites across the Mapungubwe plateau, which are located anywhere from 15 to 100 kilometres from the major hill site. Containing stone residences and walls, they likely belonged to local chiefs who acted as servants to the king.</p>
-<p><strong>D</strong><br>
-The Mapungubwe plateau has a very high number of carnivore animal remains and ivory splinters, suggesting that the skins of these large animals and ivory elephant tusks were accumulated, probably for trade with coastal areas reached by the Limpopo River. The presence of glass beads, almost certainly from India, indicate there was trade of some sort with other states on the coast who, in turn, traded with merchants travelling from India by sea. Mapungubwe also benefitted from locally-sourced copper and the gold trade as it passed from the kingdom of Great Zimbabwe (12-15th century), situated to the north of Mapungubwe, to the coastal city of Kosala. It is likely that trade links led to a strengthening of political authority in order to control and even monopolise these lucrative interregional connections.</p>
-<p><strong>E</strong><br>
-Archaeological discoveries reveal that pottery was produced on a scale large enough to suggest the presence of professional potters, and is another indicator of the prosperity of Mapungubwe society. Archaeological finds include spherical vessels with short necks, beakers, and bowls, many of which have decorative stamps. There are also ceramic discs, and whistles. In addition, cattle, sheep, and goat figurines, and small figures of highly stylised humans with elongated bodies and short limbs have been found. The figures may have been used in ceremonies as offerings to ancestors, but their precise function is not known. Other discoveries include small jewellery items made from locally sourced copper.</p>
-<p><strong>F</strong><br>
-Beautifully decorated artefacts made of gold have also been found at Mapungubwe. A type of decoration, found nowhere else except Great Zimbabwe, involved the crafting of gold into small rectangular sheets and carving geometrical patterns into it. These sheets were then used to cover wooden objects (which have not survived) using small tacks, also made of gold. One such object that has been discovered may have been a sceptre, while additional evidence of local gold-working is a rhinoceros figurine made from small hammered sheets, and thousands of small gold beads. These objects were all found at the royal burial site and date to c. 1150. They are the first known indicators that gold had an intrinsic value of its own (as opposed to that of a currency) in southern Africa.</p>
-<p><strong>G</strong><br>
-The kingdom of Mapungubwe was already in decline by the late 13th century, probably because overpopulation placed too much stress on local resources, a situation that may have been brought to a crisis point by a series of droughts. Trade routes may also have shifted northwards. Certainly, the areas that now prospered were to the north, such as Great Zimbabwe.</p>
-<p style="font-size:.9em">
-<em>* palisade: typically a row of closely placed, high vertical wooden or iron posts used as a means of defence</em>
-</p>`,
+    content: `<p><strong>The problems of getting around the city of Dar es Salaam</strong></p>
+<p>Dar es Salaam in Tanzania is one of the fastest growing cities in Africa. Its population has increased eightfold since 1980 and swells by half a million people every year. United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035. Daniel Hoornweg for the Global Cities Institute forecasts the city could be home to an incredible 73.7 million people by 2100.</p>
+<p>Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city, where the journey to and from the centre regularly takes over two hours. It can be longer if rain turns the dirt roads to mud.</p>
+<p>Even in the middle of the day, traffic frequently slows to a stop without warning. It is not unusual for cars and minibuses to queue for 20 minutes at a key intersection. A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city. Outside the centre many rely on boda boda (motorbike taxis) to navigate the narrow side streets and potholed mud roads that make up much of the metropolis. Their safety record is scandalous.</p>
+<p>Dar es Salaam's reliance on four arterial roads into the city is a legacy of the colonial government that planned the city at the start of the 20th century to cater for a population of 35,000. Most of the current growth is made up of young people arriving from the countryside to find work, and as the population has exploded, Dar es Salaam has grown around those four highways. Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy.</p>
+<p>But Dar es Salaam is pinning its hopes on a solution that could offer a different model for Africa's megacities, giving them an alternative to a future controlled by the private car. Unlike many cities on the continent, Dar es Salaam isn't trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus.</p>
+<p>The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages. Ticket purchase and control takes place at stations prior to boarding and the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies.</p>
+<p>'The new buses are much, much better,' says Paulas George, a young IT worker. He takes the bus every day and it has cut his journey time by two-thirds. He says it is not perfect, though, complaining that drivers often refuse to turn on the air conditioning to save fuel.</p>
+<p>That is not the only problem. A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity. Smartcards can't be used as the mechanical readers aren't working either, forcing passengers to buy individual paper tickets for every journey. Each is printed with a scannable QR code, but there are no scanners. Staff stand by the gates and tear tickets as people enter. As a result, queues are considerable at peak times.</p>
+<p>Morogoro Road to the north-west of the city was phase I of the BRT project. Phases II and III will install bus lanes along Nyerere Road to the south-west and Kilwa Road to the south. Construction on both routes is due to start imminently. Phase IV, towards Bagamoyo in the north, is in the preliminary design stage. 'Much of the city will have access to a world-class transport system within the space of a few years,' says Chris Kost, the Africa director of ITDP (the Institute for Transportation and Development Policy). All phases are being planned to high standards and, once complete, a third of city residents will be within a short walk of the BRT network.</p>
+<p>The ITDP regrets Africa's obsession with metros. 'With a metro, an international firm will often just parachute in its own system,' says Kost. 'Bus rapid transit allows existing stakeholders to get involved. That's what we did in Dar es Salaam and what we're planning in Nairobi, where the bus bodies will be built in the city and local operators will look after tickets, fare collection and IT ...Bus rapid transit has been transformational for Dar es Salaam. For millions of people in African cities, this is their best hope of ever being connected.'</p>`,
     questionGroups: [
       {
         groupType: 'plain',
-        groupTitle: 'Questions 14–19',
-        instruction: 'Reading Passage 2 has seven paragraphs, A-G. Which paragraph contains the following information? Write the correct letter, A-G.',
+        groupTitle: 'Questions 14–18',
+        instruction: 'Do the following statements agree with the information given in Reading Passage 2? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
         questions: [
-          { questionNumber: 14, type: 'matching-info', questionText: '14   a mention of the uncertainty regarding the purpose of certain objects', correctAnswer: 'E' },
-          { questionNumber: 15, type: 'matching-info', questionText: '15   the likelihood that a climatic factor increased the problems Mapungubwe faced', correctAnswer: 'G' },
-          { questionNumber: 16, type: 'matching-info', questionText: "16   a mention of the location where members of the king's family are thought to have lived", correctAnswer: 'C' },
-          { questionNumber: 17, type: 'matching-info', questionText: '17   a reference to people who brought goods by ship', correctAnswer: 'D' },
-          { questionNumber: 18, type: 'matching-info', questionText: '18   an estimate of the size to which the Mapungubwe community grew', correctAnswer: 'B' },
-          { questionNumber: 19, type: 'matching-info', questionText: '19   a mention of agricultural produce being exchanged for other items', correctAnswer: 'A' },
-        ],
-      },
-      {
-        groupType: 'plain',
-        groupTitle: 'Questions 20 and 21',
-        instruction: 'Choose TWO letters, A-E. The archaeological record reveals information about gold and the kingdom of Mapungubwe. Which TWO pieces of information are mentioned by the writer?',
-        questions: [
-          {
-            questionNumber: 20, type: 'multi-answer-group',
-            questionText: 'Which TWO pieces of information are mentioned by the writer?',
-            options: [
-              'A   Not everyone in Mapungubwe used gold as a form of payment.',
-              'B   Items of gold were placed close to where Mapungubwe kings were buried.',
-              'C   The most valuable item discovered in Mapungubwe was a sceptre made of gold.',
-              'D   The way gold was decorated in Mapungubwe was also practised in another kingdom.',
-              'E   Working with gold was a respected occupation in the Mapungubwe community.',
-            ],
-            correctAnswer: 'B',
-          },
-          {
-            questionNumber: 21, type: 'multi-answer-group',
-            questionText: 'Question 21',
-            options: [
-              'A   Not everyone in Mapungubwe used gold as a form of payment.',
-              'B   Items of gold were placed close to where Mapungubwe kings were buried.',
-              'C   The most valuable item discovered in Mapungubwe was a sceptre made of gold.',
-              'D   The way gold was decorated in Mapungubwe was also practised in another kingdom.',
-              'E   Working with gold was a respected occupation in the Mapungubwe community.',
-            ],
-            correctAnswer: 'D',
-          },
+          { questionNumber: 14, type: 'true-false-ng', questionText: '14   The population of Dar es Salaam is rising more rapidly than was previously predicted.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 15, type: 'true-false-ng', questionText: '15   Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city.', correctAnswer: 'FALSE' },
+          { questionNumber: 16, type: 'true-false-ng', questionText: '16   Residents have been consulted about their views on the suburban rail line in Dar es Salaam.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 17, type: 'true-false-ng', questionText: '17   The majority of the present residential development in Dar es Salaam is unplanned.', correctAnswer: 'TRUE' },
+          { questionNumber: 18, type: 'true-false-ng', questionText: "18   Dar es Salaam's authorities have decided to follow the public transport plan adopted by a large number of African cities.", correctAnswer: 'FALSE' },
         ],
       },
       {
         groupType: 'note-form',
-        groupTitle: 'Questions 22–26',
-        instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer.',
+        groupTitle: 'Questions 19–26',
+        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
         noteConfig: {
-          title: 'Archaeological discoveries',
+          title: "Dar es Salaam's DART Bus Rapid Transit system",
           lines: [
-            "The Mapungubwe community's __Q22__ is indicated by the amount of professionally made pottery discovered at the site. Many of these objects, such as beakers and bowls, are highly decorated and have been marked with stamps.",
-            'Other finds include round ceramic objects, __Q23__ and figures of various animals, as well as models of people with stretched __Q24__.',
-            'It is possible that these had a role in ceremonies to honour __Q25__.',
-            'In addition, pieces of __Q26__ made from a local metal have been found at the site.',
+            'Features',
+            '●   the buses use designated __Q19__ to cut down on delays',
+            '●   passengers pay fares before __Q20__.',
+            '●   passengers in __Q21__ can use every part of the system',
+            'Problems',
+            '●   the temperature control is sometimes not activated in order to reduce __Q22__ use',
+            '●   insufficient number of vehicles are available due to the effects of a severe __Q23__.',
+            '●   passengers are unable to use __Q24__ because some equipment is out of action',
+            '●   tickets have to be checked manually at station __Q25__.',
+            '●   __Q26__ frequently build up during rush hours',
           ],
         },
         questions: [
-          { questionNumber: 22, type: 'fill-blank', questionText: 'Question 22', correctAnswer: 'prosperity' },
-          { questionNumber: 23, type: 'fill-blank', questionText: 'Question 23', correctAnswer: 'whistles' },
-          { questionNumber: 24, type: 'fill-blank', questionText: 'Question 24', correctAnswer: 'bodies' },
-          { questionNumber: 25, type: 'fill-blank', questionText: 'Question 25', correctAnswer: 'ancestors' },
-          { questionNumber: 26, type: 'fill-blank', questionText: 'Question 26', correctAnswer: 'jewellery/jewelry' },
+          { questionNumber: 19, type: 'fill-blank', questionText: 'Question 19', correctAnswer: 'lanes' },
+          { questionNumber: 20, type: 'fill-blank', questionText: 'Question 20', correctAnswer: 'boarding' },
+          { questionNumber: 21, type: 'fill-blank', questionText: 'Question 21', correctAnswer: 'wheelchairs' },
+          { questionNumber: 22, type: 'fill-blank', questionText: 'Question 22', correctAnswer: 'fuel' },
+          { questionNumber: 23, type: 'fill-blank', questionText: 'Question 23', correctAnswer: 'flood' },
+          { questionNumber: 24, type: 'fill-blank', questionText: 'Question 24', correctAnswer: 'smartcards' },
+          { questionNumber: 25, type: 'fill-blank', questionText: 'Question 25', correctAnswer: 'gates' },
+          { questionNumber: 26, type: 'fill-blank', questionText: 'Question 26', correctAnswer: 'queues' },
         ],
       },
     ],
@@ -173,120 +150,103 @@ The kingdom of Mapungubwe was already in decline by the late 13th century, proba
 
   // ── PASSAGE 3 (Q27–40) ──────────────────────────────────────────
   {
-    title: 'Artificial Intelligence',
+    title: 'Rethinking the Past',
     category: 'passage3',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 2'],
+    tags: ['Cam 21', 'Cam 21 - Test 3'],
     questionRange: { start: 27, end: 40 },
-    content: `<p><strong>Artificial Intelligence</strong></p>
-<p>In many countries in the West, hysteria about the future of artificial intelligence (AI) is everywhere. There seems to be no shortage of sensationalist news about how AI could cure diseases, accelerate human innovation and improve human creativity. Just looking at the media headlines, you might think that we are already living in a future where AI has infiltrated every aspect of society.</p>
-<p>While it is undeniable that AI has opened up a wealth of promising opportunities, it has also led to the emergence of a mindset that can be best described as 'AI solutionism'. This is the philosophy that, given enough data, machine learning algorithms can solve all of humanity's problems. But, in fact, instead of supporting AI progress, this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles and setting unrealistic expectations about what AI can really do for humanity.</p>
-<p>In only a few years, AI solutionism has made its way from the technology evangelists' mouths in Silicon Valley in California to the minds of government officials and policymakers around the world. The pendulum has swung from the dystopian notion that AI will destroy humanity to the utopian belief that our algorithmic saviour is here.</p>
-<p>We are now seeing governments pledge support to national AI initiatives and compete in a technological race to dominate the burgeoning machine-learning sector. While many politicians proclaim the transformative effects of the coming 'AI revolution', they fail to realise the complexity around deploying advanced machine learning systems in the real world.</p>
-<p>One of the most promising varieties of AI technologies are neural networks. This form of machine learning is loosely modelled on the neuronal structure of the human brain, but on a much smaller scale. But what many politicians do not understand is that simply adding a neural network to a problem will not automatically mean that you'll find a solution. Similarly, adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair.</p>
-<p>AI systems need a lot of data to function, but the public sector typically does not have the appropriate data infrastructure to support advanced machine learning. Most of the data remains stored in offline archives. The few digitised sources of data that exist tend to be buried in bureaucracy. More often than not, data is spread across different government departments that each require special permissions to be accessed. Above all, the public sector typically lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence.</p>
-<p>For these reasons, the sensationalism over AI has attracted many critics. Stuart Russell, a professor of computer science at the University of California, Berkeley, has long advocated a more sensible and realistic approach that focuses on simple everyday applications of AI instead of the hypothetical takeover by super-intelligent robots. Similarly, Rodney Brooks, professor of robotics at Massachusetts Institute of Technology, writes that 'almost all innovations in robotics and AI take far, far, longer to be really widely deployed than people in the field and outside the field imagine'.</p>
-<p>One of the many difficulties in deploying machine learning systems is that AI is extremely susceptible to adversarial attacks. This means that a malicious AI can target another AI to make it behave in a certain way, such as forcing it to make wrong predictions. Many researchers have warned against the rolling out of AI without appropriate security standards and defence mechanisms. Still, AI security remains an often overlooked topic when machine learning systems are installed.</p>
-<p>If we are to reap the benefits and minimise the potential harms of AI, we must start thinking about how machine learning can be meaningfully applied to specific areas of government, business and society. This means we need to have a discussion about AI ethics and the distrust that many people have towards machine learning.</p>
-<p>Most importantly, we need to be aware of the limitations of AI and where people still need to take the lead. Instead of painting an unrealistic picture of the power of AI, it is important to take a step back and separate the actual technological capabilities of AI from fantasy.</p>
-<p>The medical profession has also recognised the drawbacks to AI. The IBM Watson for Oncology programme was a piece of AI that was meant to help doctors treat cancer. Even though it was developed to deliver the best recommendations, human experts found it hard to trust the machine. As a result, the AI programme was abandoned in most hospitals where it was trialled.</p>
-<p>Similar difficulties arose in the legal domain when algorithms were used in courts in the US to sentence criminals. An algorithm calculated risk assessment scores and advised judges on the sentencing. The system was found to amplify structural racial discrimination and was later abandoned.</p>
-<p>There are some crucial lessons here for everyone aiming to boost investments in national AI programmes. These examples demonstrate that there is no AI solution for everything. Using AI simply for the sake of AI may not always be productive or useful, and not every issue is best addressed by applying machine intelligence to it. All solutions come with a cost and not everything that can be automated should be.</p>`,
+    content: `<p><strong>Rethinking the Past</strong></p>
+<p>It is by now a truism that the story of human evolution is being rethought. Discoveries have come thick and fast over the last decade or so, and these have forced us to rethink many crucial points, such as how old our species is – about 300,000 years old as opposed to 200,000 – and what extinct hominins, such as our cousins the Neanderthals, were really like. But because there are so many species and eras involved, it's hard to discern the common threads linking them.</p>
+<p>However, I do think it's possible to draw out some overall messages from the blizzard of archaeological finds in recent years. Two things stand out to me. One is the growing evidence that many supposedly 'advanced' behaviours, such as architecture and art, can be traced much further back in time than we thought, often to hominin species that existed before modern humans. And the other is that we have badly misunderstood gender roles in prehistoric societies, imposing patriarchal values onto cultures that had very different ideas about how women should behave.</p>
+<p>Let's start with architecture. At Kalambo Falls in Zambia, researchers found buried logs that had been shaped with stone tools so that they interlocked. They seem to have once been part of a larger structure, perhaps a building. This would be unsurprising if they weren't 476,000 years old. That's almost 200,000 years before our species, Homo sapiens, evolved. Extinct hominins also managed to settle in extreme places. For instance, we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions 200,000 years ago – upending the old notion that such environments were only settled by modern humans around 3,600 years ago.</p>
+<p>Art also seems to have been invented by older hominins. We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells. By far the most contentious claim in this area is that Homo naledi made art. H. naledi lived around 250,000 years ago, making it a contemporary of our species. However, it had quite a small brain, typical of older hominins – and was therefore, according to palaeoanthropological dogma, incapable of complex behaviours. Nevertheless, in the Rising Star cave system in South Africa where the H. naledi remains were found, researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated.</p>
+<p>To say these claims about H. naledi are controversial is to understate the situation. Many experts say the evidence presented so far is completely inadequate to support them. The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper. My views on the H. naledi controversy are complicated. I do think more evidence is needed: in particular with regard to the dating of the etchings. At the same time, I think the species' small brains are a distraction. Palaeoanthropologists got fixated on brain size because it was what they could see: if what you have is skeletons, then all you know about brains are their shapes and sizes. But other properties, such as the brain's internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains.</p>
+<p>In a sense, we shouldn't be surprised that so many of these behaviours had their origins in older, extinct hominins. Evolution usually works by incremental steps and so does technology. The first birds weren't great at flying, and the first mobile phones weren't great at, well, anything really. The idea that there was a sudden explosion of intelligence and creativity at some point in our evolution isn't inherently ridiculous: sometimes a system hits a tipping point and undergoes runaway change. But there was never that much evidence that human evolution worked this way. Instead, it seems the Neanderthals and many others all walked so we could run.</p>
+<p>One way or another, the H. naledi story is going to be an example of letting our preconceptions get in the way of the evidence. The same is true for our ideas about gender in prehistory. Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today's researchers are trying to unpick this stuff, and there have been some significant steps in recent years.</p>
+<p>Perhaps the most dramatic was the demolition of 'Man the Hunter'. This was the idea, promoted for decades, that in most prehistoric societies the men went out to hunt and the women looked after the home. However, a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them. In line with this, it emerged that an ancient spear-throwing tool called an atlatl enables women to launch projectiles at the same speed as men. We have also seen growing evidence of women occupying positions of authority in ancient societies. The Viking queen Thyra may have helped unify Denmark in the 900s. Going further back, an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed.</p>
+<p>It seems that the more we find out about past societies, the more our preconceptions about the ways society 'has to be' turn out to be wrong. Inequality, authoritarianism and patriarchy aren't inevitable. They're choices, and prehistory shows us that we can choose differently.</p>`,
     questionGroups: [
       {
         groupType: 'plain',
-        groupTitle: 'Questions 27–29',
+        groupTitle: 'Questions 27–30',
         instruction: 'Choose the correct letter, A, B, C or D.',
         questions: [
           {
             questionNumber: 27, type: 'multiple-choice',
-            questionText: '27   What is the writer doing in the first paragraph?',
+            questionText: '27   What is the writer doing in the second paragraph?',
             options: [
-              'A   predicting the future impact of AI',
-              'B   describing a public perception of AI',
-              'C   outlining some possible benefits of AI',
-              'D   highlighting the breadth of the influence of AI',
+              'A   pinpointing some key changes in our understanding of prehistory',
+              'B   outlining some aspects of prehistory which are still poorly understood',
+              'C   summarising some attitudes towards recent archaeological revelations',
+              'D   giving an overview of some current disagreements among archaeologists',
             ],
-            correctAnswer: 'B',
+            correctAnswer: 'A',
           },
           {
             questionNumber: 28, type: 'multiple-choice',
-            questionText: '28   When discussing AI solutionism in the second paragraph, the writer',
+            questionText: '28   In the sixth paragraph, the writer mentions mobile phones to make the point that',
             options: [
-              'A   points out a risk involved.',
-              'B   specifies its probable origins.',
-              'C   mentions its chief supporters.',
-              'D   weighs up some pros and cons.',
+              'A   most developments happen in a gradual way.',
+              'B   innovation can come from a variety of sources.',
+              'C   not all technological advancements are positive.',
+              'D   the path of evolution can often be unpredictable.',
             ],
             correctAnswer: 'A',
           },
           {
             questionNumber: 29, type: 'multiple-choice',
-            questionText: '29   In the fourth paragraph, the writer suggests that many politicians may',
+            questionText: "29   In the seventh paragraph, the phrase 'unpick this stuff' refers to the task of",
             options: [
-              'A   have failed to appreciate the true potential of AI initiatives.',
-              'B   have misunderstood the function of the machine-learning sector.',
-              'C   be unaware of the challenges of implementing national AI initiatives.',
-              'D   be too keen to enter the race to dominate the machine-learning sector.',
+              'A   assessing the impact of certain recent research findings.',
+              'B   questioning the authenticity of evidence used in earlier research.',
+              'C   conducting research into how prehistoric societies were organised.',
+              'D   reevaluating research influenced by outdated beliefs about society.',
             ],
-            correctAnswer: 'C',
+            correctAnswer: 'D',
           },
-        ],
-      },
-      {
-        groupType: 'summary-completion',
-        groupTitle: 'Questions 30–35',
-        instruction: 'Complete the summary using the list of words, A-I, below.',
-        summaryConfig: {
-          text: 'AI in government, medicine and the law<br><br>Neural networks are a promising area of AI technology for governments. However, many politicians overestimate their capabilities, believing that the mere addition of a neural network will produce solutions and promote __Q30__.<br><br>Most public sector organisations have not set up the necessary __Q31__ to manage the huge amount of data required to enable AI to function. Complex bureaucracy is another issue, as each person involved needs __Q32__ to access the relevant data, which is often spread across different departments. But the main problem is that few public sector employees have the __Q33__ to take full advantage of machine intelligence.<br><br>The medical profession experimented with an AI programme, but their experts had little faith in its __Q34__, and the programme was abandoned. US courts also abandoned the use of algorithms when it was found that these reflected and magnified the existing __Q35__ within the legal profession.',
-          wordBank: [
-            { letter: 'A', word: 'reliability' },
-            { letter: 'B', word: 'funding' },
-            { letter: 'C', word: 'skills' },
-            { letter: 'D', word: 'prejudices' },
-            { letter: 'E', word: 'computers' },
-            { letter: 'F', word: 'equality' },
-            { letter: 'G', word: 'framework' },
-            { letter: 'H', word: 'confidentiality' },
-            { letter: 'I', word: 'approval' },
-          ],
-        },
-        questions: [
-          { questionNumber: 30, type: 'fill-blank', questionText: 'Question 30', correctAnswer: 'equality' },
-          { questionNumber: 31, type: 'fill-blank', questionText: 'Question 31', correctAnswer: 'framework' },
-          { questionNumber: 32, type: 'fill-blank', questionText: 'Question 32', correctAnswer: 'approval' },
-          { questionNumber: 33, type: 'fill-blank', questionText: 'Question 33', correctAnswer: 'skills' },
-          { questionNumber: 34, type: 'fill-blank', questionText: 'Question 34', correctAnswer: 'reliability' },
-          { questionNumber: 35, type: 'fill-blank', questionText: 'Question 35', correctAnswer: 'prejudices' },
-        ],
-      },
-      {
-        groupType: 'plain',
-        groupTitle: 'Questions 36–39',
-        instruction: 'Do the following statements agree with the claims of the writer in Reading Passage 3? Write YES if the statement agrees with the claims of the writer, NO if the statement contradicts the claims of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
-        questions: [
-          { questionNumber: 36, type: 'yes-no-ng', questionText: "36   Stuart Russell's proposals regarding the use of AI are impractical.", correctAnswer: 'NO' },
-          { questionNumber: 37, type: 'yes-no-ng', questionText: "37   Rodney Brooks' view has attracted unfair criticism from supporters of AI.", correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 38, type: 'yes-no-ng', questionText: '38   Nowadays, the need to protect AI systems is always taken into account when they are set up.', correctAnswer: 'NO' },
-          { questionNumber: 39, type: 'yes-no-ng', questionText: "39   In order to benefit from AI and minimise the harms, we have to explore people's concerns about its use.", correctAnswer: 'YES' },
-        ],
-      },
-      {
-        groupType: 'plain',
-        groupTitle: 'Question 40',
-        instruction: 'Choose the correct letter, A, B, C or D.',
-        questions: [
           {
-            questionNumber: 40, type: 'multiple-choice',
-            questionText: '40   What would be a suitable subtitle for Reading Passage 3?',
+            questionNumber: 30, type: 'multiple-choice',
+            questionText: '30   What does the writer suggest in the final paragraph?',
             options: [
-              'A   How to make the most of what AI has to offer',
-              'B   Why AI may not be the answer to our problems',
-              'C   Why governments should not invest in AI systems',
-              'D   How AI could improve the efficiency of the public sector',
+              'A   Studying past societies could help us create a fairer society today.',
+              'B   We should not judge past societies by the standards of modern society.',
+              'C   We still have much to learn about how societies have evolved over history.',
+              'D   There is more than one way to interpret evidence about societies in prehistoric times.',
             ],
-            correctAnswer: 'B',
+            correctAnswer: 'A',
           },
+        ],
+      },
+      {
+        groupType: 'matching-options',
+        groupTitle: 'Questions 31–34',
+        instruction: 'Complete each sentence with the correct ending, A-F, below.  Write the correct letter, A-F, in boxes 31-34 on your answer sheet.',
+        matchingOptions: [
+          'Homo sapiens emerged at an earlier point in time than experts previously believed.',
+          'previous assumptions about who had power in the prehistoric world were inaccurate.',
+          'gender roles in extinct hominin species were different from those in Homo sapiens societies.',
+          'experts may have been mistaken about who looked for food in early human communities.',
+          'Homo sapiens was probably not the only species capable of sophisticated workmanship.',
+          'other species managed to survive in harsh environments before the arrival of Homo sapiens.',
+        ],
+        questions: [
+          { questionNumber: 31, type: 'matching-info', questionText: '31   The findings at Kalambo Falls revealed that', correctAnswer: 'E' },
+          { questionNumber: 32, type: 'matching-info', questionText: '32   Evidence from high-altitude regions suggests that', correctAnswer: 'F' },
+          { questionNumber: 33, type: 'matching-info', questionText: '33   An academic publication from June 2023 shows that', correctAnswer: 'D' },
+          { questionNumber: 34, type: 'matching-info', questionText: '34   Analysis of a 4000-year-old Iberian leader indicates that', correctAnswer: 'B' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Questions 35–40',
+        instruction: 'Do the following statements agree with the views of the writer in Reading Passage 3? Write YES if the statement agrees with the views of the writer, NO if the statement contradicts the views of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
+        questions: [
+          { questionNumber: 35, type: 'yes-no-ng', questionText: "35   It seems likely that the Neanderthals' cave paintings were the first examples of artwork ever created.", correctAnswer: 'NO' },
+          { questionNumber: 36, type: 'yes-no-ng', questionText: '36   It is very rare to find prehistoric artwork carved onto shells.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 37, type: 'yes-no-ng', questionText: '37   The methods which the researchers used to examine the Rising Star cave system were rather unconventional.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 38, type: 'yes-no-ng', questionText: '38   It is unclear how old the etchings in the Rising Star cave system are.', correctAnswer: 'YES' },
+          { questionNumber: 39, type: 'yes-no-ng', questionText: '39   The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them.', correctAnswer: 'YES' },
+          { questionNumber: 40, type: 'yes-no-ng', questionText: '40   The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art.', correctAnswer: 'NO' },
         ],
       },
     ],
