@@ -28,7 +28,7 @@ const NAV = [
   { to: '/history',         icon: '🕓', label: 'Lịch sử làm bài' },
   { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
-  { to: '/messages',        icon: '✉️', label: 'Hộp thư' },
+  { to: '/messages',        icon: '✉️', label: 'Hộp thư', messagesBadge: true },
   { to: '/tuition',         icon: '💰', label: 'Học phí', tuitionBadge: true },
 ];
 
@@ -38,6 +38,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const [pendingGrades, setPendingGrades] = useState(0);
   const [pendingUpgrades, setPendingUpgrades] = useState(0);
   const [pendingTuition, setPendingTuition] = useState(0);
+  const [pendingMessages, setPendingMessages] = useState(0);
 
   useEffect(() => {
     function fetchOnline() {
@@ -60,11 +61,15 @@ export default function Sidebar({ mobileOpen, onClose }) {
     function fetchTuition() {
       apiFetch('/tuition/admin-summary').then(d => setPendingTuition(d.unpaidStudentCount || 0)).catch(() => {});
     }
+    function fetchMessages() {
+      apiFetch('/admin/messages/unread-count').then(d => setPendingMessages(d.count || 0)).catch(() => {});
+    }
     fetchOnline();
     fetchPending();
     fetchUpgrades();
     fetchTuition();
-    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); }, 60_000);
+    fetchMessages();
+    const id = setInterval(() => { fetchOnline(); fetchPending(); fetchUpgrades(); fetchTuition(); fetchMessages(); }, 60_000);
     return () => clearInterval(id);
   }, []);
 
@@ -123,6 +128,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 )}
                 {item.tuitionBadge && pendingTuition > 0 && (
                   <span className="nav-badge">{pendingTuition > 99 ? '99+' : pendingTuition}</span>
+                )}
+                {item.messagesBadge && pendingMessages > 0 && (
+                  <span className="nav-badge">{pendingMessages > 99 ? '99+' : pendingMessages}</span>
                 )}
               </NavLink>
             );

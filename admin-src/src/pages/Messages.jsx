@@ -23,6 +23,12 @@ export default function Messages() {
   const [form, setForm] = useState(() => ({ toId: searchParams.get('to') || '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' }));
   const [showGift, setShowGift] = useState(false);
   const [sending, setSending] = useState(false);
+  // Set when editing an already-sent message (via the ✏️ button on the Sent
+  // tab) instead of composing a new one — only subject/body are editable
+  // once a message has gone out (recipient/broadcast/gift are immutable:
+  // a gift may already be claimed, and re-targeting a sent message makes
+  // no sense), so the compose form hides those fields while this is set.
+  const [editingId, setEditingId] = useState(null);
 
   // Sent messages state
   const [messages, setMessages] = useState([]);
@@ -69,9 +75,24 @@ export default function Messages() {
   }
 
   function replyTo(fromId) {
+    setEditingId(null);
     setForm(f => ({ ...f, toId: fromId, isBroadcast: false }));
     setShowCompose(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function startEdit(m) {
+    setEditingId(m._id);
+    setForm(f => ({ ...f, subject: m.subject || '', body: m.body }));
+    setShowCompose(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function closeCompose() {
+    setShowCompose(false);
+    setEditingId(null);
+    setForm({ toId: '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' });
+    setShowGift(false);
   }
 
   async function deleteReceived(id) {
@@ -91,26 +112,44 @@ export default function Messages() {
     } catch { /* ignore */ }
   }
 
-  async function send(e) {
+  function send(e) {
     e.preventDefault();
+    // No confirmation needed for editing an existing message or for a
+    // personal message — broadcasting to every student is the one
+    // irreversible, wide-blast-radius action here (unlike delete, which
+    // already goes through useConfirm()), so it gets its own gate.
+    if (!editingId && form.isBroadcast) {
+      confirm(`Gửi thông báo này đến TẤT CẢ học sinh? Không thể thu hồi sau khi đã gửi.`, doSend);
+    } else {
+      doSend();
+    }
+  }
+
+  async function doSend() {
     setSending(true);
     try {
-      await apiFetch('/admin/messages', {
-        method: 'POST',
-        body: JSON.stringify({
-          toId:           form.isBroadcast ? undefined : form.toId,
-          subject:        form.subject,
-          body:           form.body,
-          isBroadcast:    form.isBroadcast,
-          giftHammers:    +form.giftHammers || 0,
-          giftStreakDays: +form.giftStreakDays || 0,
-        })
-      });
-      const giftMsg = (+form.giftHammers || +form.giftStreakDays) ? ' kèm quà' : '';
-      toast((form.isBroadcast ? 'Đã gửi thông báo đến tất cả học sinh' : 'Đã gửi tin nhắn') + giftMsg);
-      setForm({ toId: '', subject: '', body: '', isBroadcast: false, giftHammers: '', giftStreakDays: '' });
-      setShowGift(false);
-      setShowCompose(false);
+      if (editingId) {
+        await apiFetch(`/admin/messages/${editingId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ subject: form.subject, body: form.body })
+        });
+        toast('Đã lưu thay đổi');
+      } else {
+        await apiFetch('/admin/messages', {
+          method: 'POST',
+          body: JSON.stringify({
+            toId:           form.isBroadcast ? undefined : form.toId,
+            subject:        form.subject,
+            body:           form.body,
+            isBroadcast:    form.isBroadcast,
+            giftHammers:    +form.giftHammers || 0,
+            giftStreakDays: +form.giftStreakDays || 0,
+          })
+        });
+        const giftMsg = (+form.giftHammers || +form.giftStreakDays) ? ' kèm quà' : '';
+        toast((form.isBroadcast ? 'Đã gửi thông báo đến tất cả học sinh' : 'Đã gửi tin nhắn') + giftMsg);
+      }
+      closeCompose();
       loadMessages(1);
       setPage(1);
     } catch (err) { toast(err.message, 'error'); }
@@ -133,7 +172,7 @@ export default function Messages() {
     <>
       <div className="section-header">
         <h2 className="section-title">Hộp thư</h2>
-        <button className="btn btn-primary" onClick={() => setShowCompose(v => !v)}>
+        <button className="btn btn-primary" onClick={() => (showCompose ? closeCompose() : setShowCompose(true))}>
           {showCompose ? '✕ Đóng' : '✉️ Soạn thư'}
         </button>
       </div>
@@ -141,9 +180,14 @@ export default function Messages() {
       {/* ── Compose panel ── */}
       {showCompose && (
         <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 24, marginBottom: 24 }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Soạn tin nhắn mới</h3>
+          <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>{editingId ? '✏️ Sửa tin nhắn' : 'Soạn tin nhắn mới'}</h3>
           <form onSubmit={send} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
+            {/* Recipient/broadcast/gift are fixed at send-time — only
+                subject/body can be corrected afterward (see the PUT route's
+                comment for why: a gift may already be claimed, and
+                re-targeting a sent message doesn't make sense). */}
+            {!editingId && (<>
             <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 14 }}>
               <input type="checkbox" checked={form.isBroadcast} onChange={set('isBroadcast')} />
               <span>📢 Gửi đến <strong>tất cả học sinh</strong> (thông báo chung)</span>
@@ -159,6 +203,7 @@ export default function Messages() {
                 />
               </div>
             )}
+            </>)}
 
             <div className="form-group" style={{ margin: 0 }}>
               <label className="form-label">Tiêu đề (không bắt buộc)</label>
@@ -178,6 +223,7 @@ export default function Messages() {
               />
             </div>
 
+            {!editingId && (<>
             <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 14 }}>
               <input type="checkbox" checked={showGift} onChange={e => setShowGift(e.target.checked)} />
               <span>🎁 Gửi kèm quà (búa Daniel / lửa streak) — dùng để đền bù học sinh gặp lỗi</span>
@@ -195,11 +241,12 @@ export default function Messages() {
                 </div>
               </div>
             )}
+            </>)}
 
             <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setShowCompose(false)}>Huỷ</button>
+              <button type="button" className="btn btn-ghost" onClick={closeCompose}>Huỷ</button>
               <button type="submit" className="btn btn-primary" disabled={sending}>
-                {sending ? 'Đang gửi...' : '📤 Gửi'}
+                {sending ? (editingId ? 'Đang lưu...' : 'Đang gửi...') : (editingId ? '💾 Lưu thay đổi' : '📤 Gửi')}
               </button>
             </div>
           </form>
@@ -226,12 +273,12 @@ export default function Messages() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>NGƯỜI NHẬN</th><th>TIÊU ĐỀ</th><th>NỘI DUNG</th><th>THỜI GIAN</th><th></th>
+                  <th>NGƯỜI NHẬN</th><th>TIÊU ĐỀ</th><th>NỘI DUNG</th><th>TRẠNG THÁI</th><th>THỜI GIAN</th><th></th>
                 </tr>
               </thead>
               <tbody>
                 {messages.length === 0
-                  ? <tr><td colSpan={5} className="table-empty">Chưa có tin nhắn nào</td></tr>
+                  ? <tr><td colSpan={6} className="table-empty">Chưa có tin nhắn nào</td></tr>
                   : messages.map(m => (
                     <tr key={m._id}>
                       <td>
@@ -252,8 +299,18 @@ export default function Messages() {
                       <td style={{ maxWidth: 300, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: 'var(--text2)' }}>
                         {m.body}
                       </td>
+                      <td style={{ fontSize: 12 }}>
+                        {m.isBroadcast
+                          ? <span style={{ color: (m.readBy?.length || 0) > 0 ? 'var(--green)' : 'var(--text3)' }}>
+                              👁 {m.readBy?.length || 0} đã đọc
+                            </span>
+                          : m.isRead
+                            ? <span style={{ color: 'var(--green)' }}>✓ Đã đọc</span>
+                            : <span style={{ color: 'var(--text3)' }}>○ Chưa đọc</span>}
+                      </td>
                       <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(m.createdAt)}</td>
-                      <td>
+                      <td style={{ display: 'flex', gap: 6 }}>
+                        <button className="btn btn-ghost btn-sm" onClick={() => startEdit(m)} title="Sửa">✏️</button>
                         {isAdmin && <button className="btn btn-danger btn-sm" onClick={() => deleteMsg(m._id)}>🗑</button>}
                       </td>
                     </tr>

@@ -32,6 +32,22 @@ router.get('/messages', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// GET /api/admin/messages/unread-count – số thư nhận được (từ học sinh) chưa
+// đọc — dùng cho badge trên sidebar, cùng ý nghĩa "isRead" mà GET
+// /messages/received đã trả về cho từng dòng, chỉ gộp lại thành 1 số.
+router.get('/messages/unread-count', auth, teacherOnly, async (req, res) => {
+  try {
+    const count = await Message.countDocuments({
+      toId: req.user._id,
+      isRead: false,
+      deletedBy: { $ne: req.user._id },
+    });
+    res.json({ success: true, count });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // GET /api/admin/messages/received – thư nhận được (phản hồi từ học sinh, thông báo thanh toán...)
 router.get('/messages/received', auth, teacherOnly, async (req, res) => {
   try {
@@ -89,6 +105,25 @@ router.post('/messages', auth, teacherOnly, async (req, res) => {
     });
     await msg.save();
     res.status(201).json({ success: true, message: msg });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PUT /api/admin/messages/:id  – sửa tiêu đề/nội dung thư đã gửi (chỉ sửa lỗi
+// chính tả — không cho đổi người nhận/broadcast/quà đính kèm sau khi đã gửi,
+// vì quà đã có thể được nhận và đổi người nhận sau khi gửi không có ý nghĩa gì).
+router.put('/messages/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const { subject, body } = req.body;
+    if (!body?.trim()) return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+    const msg = await Message.findOneAndUpdate(
+      { _id: req.params.id, fromId: req.user._id },
+      { subject: subject?.trim() || '', body: body.trim() },
+      { new: true }
+    ).populate('toId', 'username');
+    if (!msg) return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
+    res.json({ success: true, message: msg });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
