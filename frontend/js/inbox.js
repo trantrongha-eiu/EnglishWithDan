@@ -4,6 +4,9 @@ function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 
 
 let messages = [];
 let selectedId = null;
+let currentPage = 1;
+let totalMessages = 0;
+let loadingMore = false;
 
 // apiFetch keeps its own request-building and delegates response-handling
 // (including the 401 check this file previously lacked entirely) to
@@ -36,12 +39,38 @@ function formatFull(dateStr) {
 
 async function load() {
   try {
-    const data = await apiFetch('/user/messages?limit=50');
+    const data = await apiFetch('/user/messages?page=1&limit=50');
     messages = data.messages || [];
+    totalMessages = data.total || messages.length;
+    currentPage = 1;
     renderList();
     updateBadge();
   } catch (e) {
     document.getElementById('msgList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+// Audit finding: only the first 50 messages ever loaded (limit=50, `total`
+// returned but discarded) — a student with tuition reminders + study
+// nudges + broadcasts piling up could have older messages permanently
+// unreachable. Appends the next page instead of replacing, so scroll
+// position / selection aren't disturbed.
+async function loadMoreMessages() {
+  if (loadingMore || messages.length >= totalMessages) return;
+  loadingMore = true;
+  const btn = document.getElementById('loadMoreBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
+  try {
+    const nextPage = currentPage + 1;
+    const data = await apiFetch(`/user/messages?page=${nextPage}&limit=50`);
+    messages = messages.concat(data.messages || []);
+    totalMessages = data.total || totalMessages;
+    currentPage = nextPage;
+    renderList();
+  } catch (e) {
+    if (window.showToast) window.showToast('Không tải thêm được: ' + e.message, 'error');
+  } finally {
+    loadingMore = false;
   }
 }
 
@@ -51,7 +80,7 @@ function renderList() {
     list.innerHTML = '<div class="empty-state"><i class="fas fa-envelope-open"></i><p>Hộp thư trống</p></div>';
     return;
   }
-  list.innerHTML = messages.map(m => {
+  const items = messages.map(m => {
     const unread = !m.isRead;
     const sender = m.isBroadcast ? '📢 Thông báo chung' : esc(m.fromName || 'Giáo viên');
     const preview = esc(m.body.slice(0, 80));
@@ -69,6 +98,12 @@ function renderList() {
       <div class="msg-preview">${preview}</div>
     </div>`;
   }).join('');
+  const loadMore = messages.length < totalMessages
+    ? `<button class="btn btn-ghost" id="loadMoreBtn" onclick="loadMoreMessages()" style="width:100%;margin-top:8px">
+        <i class="fas fa-chevron-down"></i> Xem thêm (${messages.length}/${totalMessages})
+      </button>`
+    : '';
+  list.innerHTML = items + loadMore;
 }
 
 function updateBadge() {
@@ -200,6 +235,7 @@ async function deleteMsg(id) {
     try {
       await apiFetch(`/user/messages/${id}`, { method: 'DELETE' });
       messages = messages.filter(m => m._id !== id);
+      totalMessages = Math.max(0, totalMessages - 1);
       selectedId = null;
       renderList();
       updateBadge();
