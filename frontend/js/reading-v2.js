@@ -2270,6 +2270,7 @@ function buildQNavFooter() {
     return `<span class="q-nav-passage-label">${label}</span>${btns}`;
   });
   nav.innerHTML = parts.join('');
+  updateProgressPill();
 }
 
 function updateQNavFooter() {
@@ -2284,6 +2285,30 @@ function updateQNavBtn(qNum) {
   const ans = state.answers[qNum];
   const answered = ans !== undefined && ans !== '' && ans !== '[]';
   btn.classList.toggle('answered', answered);
+  updateProgressPill();
+}
+
+// Mirrors listening.html's updateFooter() pill logic — reading-v2.js never
+// had this wired up, so the exam-progress-pill sat frozen at its "0/40"
+// HTML placeholder no matter how many questions were answered.
+function updateProgressPill() {
+  const allQ = state.passages.flatMap(p => getAllQuestionsFromPassage(p));
+  const total = allQ.length;
+  const answered = allQ.filter(q => {
+    const a = state.answers[q.questionNumber];
+    return a !== undefined && a !== '' && a !== '[]';
+  }).length;
+  const progAns = document.getElementById('prog-answered');
+  const progTot = document.getElementById('prog-total');
+  if (progAns) progAns.textContent = answered;
+  if (progTot) progTot.textContent = total;
+  const pill = document.getElementById('exam-progress-pill');
+  if (pill) {
+    const pct = total > 0 ? (answered / total) * 100 : 0;
+    if (pct === 100) { pill.style.background = '#ecfdf5'; pill.style.color = '#065f46'; pill.style.borderColor = '#6ee7b7'; }
+    else if (pct > 50) { pill.style.background = '#fffbeb'; pill.style.color = '#92400e'; pill.style.borderColor = '#fde68a'; }
+    else { pill.style.background = ''; pill.style.color = ''; pill.style.borderColor = ''; }
+  }
 }
 
 /* Find a question element by number — works for both plain (id="qN") and cluster (id="qi-N") */

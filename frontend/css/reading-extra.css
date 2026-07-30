@@ -518,17 +518,17 @@
     [data-theme="dark"] .rmode-tab { color: #9ca3af; }
     [data-theme="dark"] .rmode-tab.rmode-active { border-bottom-color: #60a5fa; color: #60a5fa; }
     [data-theme="dark"] .rmode-tab:hover:not(.rmode-active) { color: #d1d5db; }
-    [data-theme="dark"] .rmode-tabs-bar { border-bottom-color: #374151; }
+    [data-theme="dark"] .rmode-tabs-bar { border-bottom-color: var(--border2, #333333); }
 
-    [data-theme="dark"] .plele-tab { background: #1f2937; border-color: #374151; color: #9ca3af; }
+    [data-theme="dark"] .plele-tab { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); color: #9ca3af; }
     [data-theme="dark"] .plele-tab:hover { border-color: #4b5563; color: #d1d5db; }
     [data-theme="dark"] .plele-tab.plele-active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
     [data-theme="dark"] .plele-tab.plele-active .plele-range { color: #60a5fa; }
     [data-theme="dark"] .plele-range { color: #6b7280; }
-    [data-theme="dark"] .plele-cat-tabs { border-bottom-color: #374151; }
-    [data-theme="dark"] .plele-filter-bar { border-top-color: #374151; }
+    [data-theme="dark"] .plele-cat-tabs { border-bottom-color: var(--border2, #333333); }
+    [data-theme="dark"] .plele-filter-bar { border-top-color: var(--border2, #333333); }
 
-    [data-theme="dark"] .pf-btn { background: #1f2937; border-color: #374151; color: #9ca3af; }
+    [data-theme="dark"] .pf-btn { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); color: #9ca3af; }
     [data-theme="dark"] .pf-btn:hover { border-color: #4b5563; color: #d1d5db; }
     [data-theme="dark"] .pf-btn.pf-active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
 
@@ -560,14 +560,14 @@
       .pf-btn { text-align: center; }
     }
 
-    [data-theme="dark"] .practice-card { background: #1f2937; border-color: #374151; }
+    [data-theme="dark"] .practice-card { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
     [data-theme="dark"] .practice-card:hover { border-color: #4b5563; }
     [data-theme="dark"] .practice-card-title { color: #f9fafb; }
     [data-theme="dark"] .practice-card-qtypes { color: #9ca3af; }
 
     [data-theme="dark"] .practice-stopwatch {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #d1d5db;
     }
     [data-theme="dark"] .practice-stopwatch.sw-medium {
@@ -582,8 +582,8 @@
     }
 
     [data-theme="dark"] .practice-progress-txt {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #9ca3af;
     }
 
@@ -610,8 +610,8 @@
     }
     .q-nav-passage-label:first-child { margin-left: 0; }
     [data-theme="dark"] .q-nav-passage-label {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #6b7280;
     }
 
@@ -630,8 +630,8 @@
     }
     .list-filter .test-search-input:focus { border-color: #3d8bff; }
     [data-theme="dark"] .list-filter .test-search-input {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #d1d5db;
     }
 
@@ -680,8 +680,8 @@
       border-color: #1e40af;
     }
     [data-theme="dark"] .fs-btn {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #9ca3af;
     }
     [data-theme="dark"] .fs-btn.active,
@@ -693,7 +693,7 @@
 
     /* ── Dark mode: exam-exit-btn & btn-icon-sm hover ──────────── */
     [data-theme="dark"] .exam-exit-btn { color: #9ca3af; }
-    [data-theme="dark"] .exam-exit-btn:hover { background: #374151; color: #f9fafb; }
+    [data-theme="dark"] .exam-exit-btn:hover { background: var(--border2, #333333); color: #f9fafb; }
     [data-theme="dark"] .btn-icon-sm:hover { color: #f9fafb; }
 
     /* ── Dark mode: settings-row icon color ───────────────────── */
@@ -715,7 +715,7 @@
     }
 
     /* ── Dark mode: vb-pick-item ──────────────────────────────── */
-    [data-theme="dark"] .vb-pick-item:hover { background: #1f2937; }
+    [data-theme="dark"] .vb-pick-item:hover { background: var(--surface, #0d0d0d); }
     [data-theme="dark"] .vb-pick-name { color: #f9fafb; }
     [data-theme="dark"] .vb-pick-count { color: #6b7280; }
     [data-theme="dark"] .vb-pick-arrow { color: #4b5563; }
@@ -724,8 +724,8 @@
 
     /* ── Practice search input dark mode ──────────────────────── */
     [data-theme="dark"] #practice-search-input {
-      background: #1f2937;
-      border-color: #374151;
+      background: var(--surface, #0d0d0d);
+      border-color: var(--border2, #333333);
       color: #d1d5db;
     }
     [data-theme="dark"] #practice-search-input::placeholder { color: #6b7280; }
@@ -764,7 +764,7 @@
     }
     [data-theme="dark"] #btn-fullscreen:hover,
     [data-theme="dark"] #btn-fullscreen-rt:hover {
-      background: #374151;
+      background: var(--border2, #333333);
       color: #f9fafb;
     }
 

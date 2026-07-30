@@ -63,13 +63,13 @@
 
 
             <!-- Premium promo banner -->
-            <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(79,70,229,.06));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap">
+            <div id="premium-promo-banner" style="display:none;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;flex-wrap:wrap">
               <div style="font-size:22px">⭐</div>
               <div style="flex:1;min-width:200px">
-                <div style="font-size:13px;font-weight:700;color:#7c3aed;margin-bottom:2px">Nâng cấp Premium để làm bài thi IELTS thật</div>
+                <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để làm bài thi IELTS thật</div>
                 <div style="font-size:12px;color:var(--text2,#555)">Ngân hàng đề Reading · Listening · Writing · Vocabulary — cập nhật thường xuyên</div>
               </div>
-              <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+              <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
             </div>
 
             <!-- Resume banner – shown when an unfinished exam is found in localStorage -->
@@ -420,7 +420,7 @@
 ══════════════════════════════════════════════ -->
     <div id="modal-upgrade" class="modal-overlay hidden" onclick="if(event.target===this)closeUpgradeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px">
       <div style="background:var(--card,#fff);border-radius:20px;width:100%;max-width:520px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.25)">
-        <div style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:24px 28px 20px;color:#fff;position:relative">
+        <div style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));padding:24px 28px 20px;color:#fff;position:relative">
           <button onclick="closeUpgradeModal()" style="position:absolute;top:14px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
           <div style="font-size:28px;margin-bottom:6px">⭐</div>
           <h3 id="up-modal-title" style="margin:0 0 4px;font-size:20px;font-weight:700">Nâng cấp Premium</h3>
@@ -431,21 +431,21 @@
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
             <button class="up-plan-btn" data-months="1" onclick="selectUpgradePlan(1)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
               <div style="font-size:15px;font-weight:700;color:var(--text,#111)">1 tháng</div>
-              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">90.000 ₫</div>
+              <div style="font-size:13px;color:var(--brand,#e53935);font-weight:600;margin-top:4px">90.000 ₫</div>
             </button>
             <button class="up-plan-btn" data-months="3" onclick="selectUpgradePlan(3)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center">
               <div style="font-size:15px;font-weight:700;color:var(--text,#111)">3 tháng</div>
-              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">250.000 ₫</div>
+              <div style="font-size:13px;color:var(--brand,#e53935);font-weight:600;margin-top:4px">250.000 ₫</div>
             </button>
             <button class="up-plan-btn" data-months="6" onclick="selectUpgradePlan(6)" style="border:2px solid var(--border,#e5e7eb);border-radius:12px;padding:12px 8px;cursor:pointer;background:var(--card,#fff);transition:.15s;text-align:center;position:relative">
               <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap">Tiết kiệm nhất</div>
               <div style="font-size:15px;font-weight:700;color:var(--text,#111)">6 tháng</div>
-              <div style="font-size:13px;color:#7c3aed;font-weight:600;margin-top:4px">500.000 ₫</div>
+              <div style="font-size:13px;color:var(--brand,#e53935);font-weight:600;margin-top:4px">500.000 ₫</div>
             </button>
           </div>
           <div style="background:var(--bg,#f9fafb);border-radius:12px;padding:14px 16px;margin-bottom:16px;text-align:center">
             <span style="font-size:13px;color:var(--text2,#555)">Tổng thanh toán:</span>
-            <span id="up-total-price" style="font-size:22px;font-weight:800;color:#7c3aed;margin-left:10px">90.000 ₫</span>
+            <span id="up-total-price" style="font-size:22px;font-weight:800;color:var(--brand,#e53935);margin-left:10px">90.000 ₫</span>
           </div>
           <div id="up-bank-info" style="font-size:13px;line-height:2;margin-bottom:10px"></div>
           <div style="text-align:center;margin-bottom:12px">
@@ -453,7 +453,7 @@
           </div>
         </div>
         <div style="padding:0 28px 24px;display:flex;flex-direction:column;gap:10px">
-          <button id="btn-upgrade-submit" onclick="submitUpgradeRequest()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
+          <button id="btn-upgrade-submit" onclick="submitUpgradeRequest()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">
             Tôi đã thanh toán
           </button>
           <p style="margin:0;font-size:12px;color:var(--text3,#888);text-align:center">Sau khi thanh toán, Admin sẽ xác nhận và nâng cấp tài khoản của bạn trong vòng 24 giờ.</p>
@@ -461,13 +461,13 @@
       </div>
     </div>
     <style>
-      .up-plan-btn.active { border-color: #7c3aed !important; background: #f5f3ff !important; }
+      .up-plan-btn.active { border-color: var(--brand,#e53935) !important; background: var(--brand-light,rgba(229,57,53,.12)) !important; }
       .up-bank-row { display:flex; align-items:center; gap:10px; }
       .up-bank-label { color:var(--text3,#888); min-width:110px; font-size:12px; }
       .up-bank-val { font-weight:700; color:var(--text,#111); }
       .up-acc-num { font-family:monospace; font-size:16px; color:#1d4ed8; }
       .up-acc-num button { background:none; border:none; cursor:pointer; color:#64748b; margin-left:6px; }
-      .btn-upgrade-lock { background: linear-gradient(135deg,#7c3aed,#4f46e5) !important; color:#fff !important; }
+      .btn-upgrade-lock { background: linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828)) !important; color:#fff !important; }
     </style>
 
     <!-- Modal: History -->
@@ -2957,7 +2957,13 @@
         window.openModal = openModal; window.closeModal = closeModal;
         window.filterTests = filterTests; window.applyTestFilters = applyTestFilters;
         window.goToLsPage = goToLsPage;
-        window.goToLtPracticePage = goToLtPracticePage;
+        // goToLtPracticePage lives in Block 3 (below) and doesn't need exposing
+        // here — it's a plain top-level function declaration, so it's already
+        // global by the time Block 3 runs. Exporting it from THIS block threw
+        // "goToLtPracticePage is not defined" on every page load (it isn't
+        // defined yet when this script block executes) and silently aborted
+        // every line after it in this "Expose globals" list, including the
+        // state/audio/renderer sharing Block 3 actually depends on.
         window.startAudioPlay = startAudioPlay; window.startReadingTime = startReadingTime;
         window.togglePlay = togglePlay; window.skipAudio = skipAudio;
         window.onSeekInput = onSeekInput; window.setSpeed = setSpeed;

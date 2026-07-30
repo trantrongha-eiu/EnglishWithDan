@@ -511,10 +511,10 @@
         .pf-btn:hover { border-color:#d1d5db; color:#374151; }
         .pf-btn.pf-active { background:#eff6ff; border-color:#3d8bff; color:#1d4ed8; }
         .plele-filter-bar .ls-done-count { margin-left:0; margin-top:2px; }
-        [data-theme="dark"] .pf-btn { color:#9ca3af; border-color:#374151; }
+        [data-theme="dark"] .pf-btn { color:#9ca3af; border-color:var(--border2, #333333); }
         [data-theme="dark"] .pf-btn:hover { color:#d1d5db; border-color:#4b5563; }
         [data-theme="dark"] .pf-btn.pf-active { background:#1e3a5f; border-color:#3d8bff; color:#93c5fd; }
-        [data-theme="dark"] .plele-filter-bar { border-top-color:#374151; }
+        [data-theme="dark"] .plele-filter-bar { border-top-color:var(--border2, #333333); }
 
         /* ── Bài lẻ sidebar → stacked horizontal bar on narrow screens ─── */
         @media (max-width: 900px) {
@@ -576,7 +576,7 @@
             white-space: nowrap;
         }
         .q-nav-section-label:first-child { margin-left: 0; }
-        [data-theme="dark"] .q-nav-section-label { background: #1f2937; border-color: #374151; color: #6b7280; }
+        [data-theme="dark"] .q-nav-section-label { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); color: #6b7280; }
 
         /* ── Full-mode test search input (đồng bộ với reading) ── */
         .list-filter .test-search-input {
@@ -593,8 +593,8 @@
         }
         .list-filter .test-search-input:focus { border-color: #3d8bff; }
         [data-theme="dark"] .list-filter .test-search-input {
-            background: #1f2937;
-            border-color: #374151;
+            background: var(--surface, #0d0d0d);
+            border-color: var(--border2, #333333);
             color: #d1d5db;
         }
 
@@ -612,43 +612,43 @@
 
         /* ── Dark mode: exam topbar buttons ───────────────── */
         [data-theme="dark"] .exam-exit-btn { color: #d1d5db; }
-        [data-theme="dark"] .exam-exit-btn:hover { background: #374151; color: #f9fafb; }
-        [data-theme="dark"] .btn-icon-sm   { color: #d1d5db; border-color: #374151; }
-        [data-theme="dark"] .btn-icon-sm:hover { background: #374151; color: #f9fafb; }
+        [data-theme="dark"] .exam-exit-btn:hover { background: var(--border2, #333333); color: #f9fafb; }
+        [data-theme="dark"] .btn-icon-sm   { color: #d1d5db; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .btn-icon-sm:hover { background: var(--border2, #333333); color: #f9fafb; }
         [data-theme="dark"] .exam-autosave-lbl { color: #9ca3af; }
 
         /* ── Dark mode: audio bar ──────────────────────────── */
         [data-theme="dark"] .audio-play-btn { background: #1e40af; border-color: #1d4ed8; }
         [data-theme="dark"] .audio-play-btn:hover { background: #1d4ed8; }
-        [data-theme="dark"] .audio-skip-btn { color: #d1d5db; border-color: #374151; }
-        [data-theme="dark"] .audio-skip-btn:hover { background: #374151; }
+        [data-theme="dark"] .audio-skip-btn { color: #d1d5db; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .audio-skip-btn:hover { background: var(--border2, #333333); }
         [data-theme="dark"] .volume-icon   { color: #9ca3af; }
         [data-theme="dark"] .volume-icon:hover { color: #d1d5db; }
 
         /* ── Dark mode: tool buttons (review + practice) ──── */
-        [data-theme="dark"] .tool-btn      { color: #9ca3af; border-color: #374151; }
-        [data-theme="dark"] .tool-btn:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .tool-btn      { color: #9ca3af; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .tool-btn:hover { background: var(--border2, #333333); color: #d1d5db; }
         [data-theme="dark"] .tool-btn.active { background: #1e40af; color: #fff; border-color: #1e40af; }
-        [data-theme="dark"] .tool-btn-rv   { color: #9ca3af; border-color: #374151; }
-        [data-theme="dark"] .tool-btn-rv:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .tool-btn-rv   { color: #9ca3af; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .tool-btn-rv:hover { background: var(--border2, #333333); color: #d1d5db; }
         [data-theme="dark"] .tool-btn-rv.active { background: #1e40af; color: #fff; border-color: #1e40af; }
 
         /* ── Dark mode: mode tabs ──────────────────────────── */
-        [data-theme="dark"] .mode-tab      { color: #9ca3af; border-color: #374151; }
-        [data-theme="dark"] .mode-tab:hover { background: #374151; color: #d1d5db; }
+        [data-theme="dark"] .mode-tab      { color: #9ca3af; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .mode-tab:hover { background: var(--border2, #333333); color: #d1d5db; }
         [data-theme="dark"] .mode-tab.active { background: #1e40af; color: #fff; border-color: #1e40af; }
 
         /* ── Dark mode: practice cards ─────────────────────── */
         [data-theme="dark"] .btn-do-test   { background: #1e40af; border-color: #1d4ed8; color: #fff; }
         [data-theme="dark"] .btn-do-test:hover { background: #1d4ed8; }
-        [data-theme="dark"] .btn-redo-test { color: #93c5fd; border-color: #374151; }
-        [data-theme="dark"] .btn-redo-test:hover { background: #374151; }
+        [data-theme="dark"] .btn-redo-test { color: #93c5fd; border-color: var(--border2, #333333); }
+        [data-theme="dark"] .btn-redo-test:hover { background: var(--border2, #333333); }
 
         /* ── Dark mode: fullscreen btn ─────────────────────── */
         [data-theme="dark"] #btn-fullscreen,
-        [data-theme="dark"] #btn-fullscreen-pr { color: #d1d5db; border-color: #374151; }
+        [data-theme="dark"] #btn-fullscreen-pr { color: #d1d5db; border-color: var(--border2, #333333); }
         [data-theme="dark"] #btn-fullscreen:hover,
-        [data-theme="dark"] #btn-fullscreen-pr:hover { background: #374151; }
+        [data-theme="dark"] #btn-fullscreen-pr:hover { background: var(--border2, #333333); }
         [data-theme="dark"] #btn-fullscreen.active,
         [data-theme="dark"] #btn-fullscreen-pr.active { background: #1e40af; color: #fff; border-color: #1e40af; }
 
@@ -690,24 +690,24 @@
         .mo-options-box .mo-options-col { border:none;border-radius:0; }
 
         /* ── Dark mode: drag & drop group (L3) ────────────────── */
-        [data-theme="dark"] .dd-text-col { background:#1a2030;border-color:#374151;color:#d1d5db; }
-        [data-theme="dark"] .dd-bank-col { background:#1f2937;border-color:#374151; }
+        [data-theme="dark"] .dd-text-col { background:#1a2030;border-color:var(--border2, #333333);color:#d1d5db; }
+        [data-theme="dark"] .dd-bank-col { background:var(--surface, #0d0d0d);border-color:var(--border2, #333333); }
         [data-theme="dark"] .rq-drag-drop-group .dd-bank-header { background:linear-gradient(135deg,#312e81 0%,#4c1d95 100%); }
         [data-theme="dark"] .rq-summary-group { background:transparent; }
-        [data-theme="dark"] .rq-summary-text { background:#1a2030;border-color:#374151;color:#d1d5db; }
-        [data-theme="dark"] .rq-sc-bank { background:#1f2937;border-color:#374151; }
+        [data-theme="dark"] .rq-summary-text { background:#1a2030;border-color:var(--border2, #333333);color:#d1d5db; }
+        [data-theme="dark"] .rq-sc-bank { background:var(--surface, #0d0d0d);border-color:var(--border2, #333333); }
         [data-theme="dark"] .drag-chip { background:#1e3a5f;border-color:#3b82f6;color:#93c5fd; }
         [data-theme="dark"] .drag-chip:hover { background:#2563eb;border-color:#2563eb;color:#fff; }
         [data-theme="dark"] .drag-chip.used { opacity:.45; }
         [data-theme="dark"] .sc-drop { background:linear-gradient(135deg,#1e1b4b 0%,#1e3a5f 100%);border-color:#4f46e5;color:#a78bfa; }
         [data-theme="dark"] .sc-drop.filled { background:linear-gradient(135deg,#312e81 0%,#1e3a5f 100%);border-color:#6366f1;color:#c4b5fd; }
         [data-theme="dark"] .sc-drop.dragover { border-color:#7c3aed;background:#312e81; }
-        [data-theme="dark"] .rq-ans-skip { background:#1f2937;color:#9ca3af; }
+        [data-theme="dark"] .rq-ans-skip { background:var(--surface, #0d0d0d);color:#9ca3af; }
         [data-theme="dark"] .rq-ans-ok { background:#14532d;color:#86efac; }
         [data-theme="dark"] .rq-ans-wrong { background:#7f1d1d;color:#fca5a5; }
         [data-theme="dark"] .rq-ans-correct { color:#4ade80; }
-        [data-theme="dark"] .mo-options-box { border-color:#374151; }
-        [data-theme="dark"] .mo-options-title { background:#1e2d4a;color:#93c5fd;border-bottom-color:#374151; }
+        [data-theme="dark"] .mo-options-box { border-color:var(--border2, #333333); }
+        [data-theme="dark"] .mo-options-title { background:#1e2d4a;color:#93c5fd;border-bottom-color:var(--border2, #333333); }
 
         /* ── Dark mode: Matching Information/Features question rows ── */
         [data-theme="dark"] .match-reuse-note { background:#3f2d0a;border-color:#92400e;color:#fbbf24; }
