@@ -20,65 +20,79 @@ const Passage = require('../models/Passage');
 const PASSAGES = [
   // ── PASSAGE 1 (Q1–13) ───────────────────────────────────────────
   {
-    title: 'Saving the saiga',
+    title: 'The problems and benefits created by the spread of the water hyacinth in Kenya',
     category: 'passage1',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 3'],
+    tags: ['Cam 21', 'Cam 21 - Test 4'],
     questionRange: { start: 1, end: 13 },
-    content: `<p><strong>Saving the saiga</strong></p>
-<p>The saiga, a species of antelope native to Central Asia, once roamed the vast grasslands of this region in enormous herds, many millions strong. Regrettably, such spectacular sights are a thing of the past. Today, the saiga is largely confined to a single country: Kazakhstan. This country is estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest.</p>
-<p>The saiga is perfectly adapted to the tough conditions of the remote wilderness of the steppes of Central Asia. One such adaptation is its bizarre bulbous nose, which enables the animal to survive the extreme seasonal temperature swings of the region. The swollen nostrils of the nose serve several purposes: they filter out dust and cool the blood during hot, dry summers, and they warm the cold air before it enters the saiga's lungs in winter. Other seasonal adaptations include a heavy winter coat that the saiga sheds when the weather warms up.</p>
-<p>Despite these superb adaptations to harsh conditions, the saiga has no defence against the threats posed by humans. It was almost driven to extinction by hunters in the 19th century. Legal protection ensured its survival for a while, and numbers steadily recovered throughout most of the 20th century. But the respite was only temporary. In the ten years following the break-up of the former Soviet Union in 1991, over 95% of the global population was lost – one of the fastest examples of species loss ever recorded for a mammal.</p>
-<p>The dramatic decline during this decade was due to illegal poaching on an industrial scale. Male saiga are a particular target, because their horns are highly prized by traditional medicine practitioners. Poaching reached epidemic levels after misguided conservationists tried to relieve the pressure on threatened African rhinos by actively encouraging the use of saiga horns in traditional medicine as an alternative to those of rhinos. Male saiga were almost wiped out, leading to a population crash from which the species has been struggling to recover ever since.</p>
-<p>Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement. Physical barriers such as railways, pipelines and fences can block the seasonal migration routes of this transboundary species. In the worst cases, herds may starve to death after being trapped.</p>
-<p>Then there is the risk of disease. In 2015, an outbreak of haemorrhagic septicaemia, caused by the normally harmless bacterium Pasteurella multocida, killed over 75% of the global adult saiga population in just three weeks. In 2017, 60% of the Mongolian saiga population – a subspecies found nowhere else in the world – was killed by a virus that spilled over from livestock. These so-called mass mortality events represent an unpredictable and serious threat to the species.</p>
-<p>Climate change poses a further threat. Although well adapted to cold winters and hot summers, saiga struggle to cope with temperature extremes and unpredictable fluctuations in climate. Experts believe that unusually warm weather may have triggered the 2015 mass mortality event. The steppe region has also become increasingly arid in recent years, and many of the smaller streams that the species normally depended on have dried up and vanished.</p>
-<p>Recent efforts to save the saiga have been spearheaded by the Altyn Dala Conservation Initiative, a project led by the Association for the Conservation of Biodiversity of Kazakhstan, working in partnership with the Kazakh government's Committee for Forestry and Wildlife, Frankfurt Zoological Society and Fauna and Flora, an international conservation charity. Its purpose is to protect and restore Kazakhstan's steppe, semi-desert and desert ecosystems and the many species they support, including the critically endangered saiga. In 2022 the United Nations recognised the initiative as a World Restoration Flagship project, an accolade reserved for the ten best examples of large-scale ecosystem restoration around the globe.</p>
-<p>So, how many saiga are there now? By 2000, the global saiga population had hit an all-time low of just 21,000 individuals. There was some recovery in the first decade of the new millennium but this was then crushed by devastating mass mortality events that saw the loss of hundreds of thousands of the species. But thanks to the intervention of the Altyn Dala Conservation Initiative, the most recent episodes in the ongoing story of the saiga have been relatively uplifting. Three years ago, the Ustyurt Plateau population in Kazakhstan experienced its largest mass birth of saiga calves in many years. An aerial census two years ago recorded an estimated 842,000 saiga across Kazakhstan as a whole, and according to an aerial survey earlier this year, the saiga population in Kazakhstan now exceeds 1.9 million. The world's strangest-looking antelope remains critically endangered, but the direction of travel is positive.</p>`,
+    content: `<p><strong>The problems and benefits created by the spread of the water hyacinth in Kenya</strong></p>
+<p>Water hyacinth (Eichhornia crassipes), an aquatic plant native to South America, first appeared in countries in Africa in the early 1900s. Scientists there called it the 'world's worst aquatic weed', after it spread from the southernmost tip of Africa in the early 1900s and started obstructing major dams and rivers.</p>
+<p>In east Africa the plant arrived with Belgian colonists in Rwanda, who liked the look of its glossy leaves and delicate purple flowers floating in their ponds. But by the 1980s, it had 'escaped' out of the country via the Kagera river and made its way downstream to Lake Victoria. There, with no natural predators and perfect temperature conditions, the plant began spreading in the open water, blocking fishing routes and providing a new habitat for disease-carrying mosquitoes.</p>
+<p>For the women who smoke fish from the lake to sell it has meant declining income, as the boats that once brought the fish to shore by the hundreds struggle to navigate through the mass of plants. But water hyacinth isn't their only headache. In order to smoke the fish that they buy, they must gather huge quantities of firewood, sometimes walking as far as 10km each way to collect enough to complete their work. And each day as they cook, they breathe in the thick, grey smoke. About three out of four families in Kenya depend on wood or charcoal to cook their daily meals, and the rate is even higher in rural areas, Kenya's latest demographic and health survey shows. Using solid fuels like these for cooking increases indoor pollution. The World Health Organization estimates that about 14,300 Kenyans die annually as a result of indoor air pollution – most of which is caused by cooking and heating sources.</p>
+<p>Some years ago, on the shores of Lake Victoria, huge piles of water hyacinth that villagers had taken out of the water in an attempt to clear it were a common sight. But buried in those decaying waxy leaves was a renewable energy gold mine. It turns out the floating plant isn't just good at spreading – its foliage also contains a high ratio of carbon to nitrogen. It's a magic combination that has captivated researchers' imaginations since as early as the 1980s when, across the world, they began to explore its potential as a biofuel. Just about 4kg of the dried plant would be enough to cater for a large family's daily energy needs, early research predicted.</p>
+<p>In 2014, Nigerian academics announced they had got better yields of biofuel gas when they mixed the plant with chicken manure. A few years later, Kenyan scientists confirmed what their Nigerian peers and others had already found: manure worked to improve the process of converting the weed into gas.</p>
+<p>In 2018, the technology came to a village on the shore of Lake Victoria, called Dunga. The project promised a two-for-one solution to the dual menaces of the water hyacinth and dependence on firewood. The community received a pair of donated biogas digesters – machines that would transform a mix of water hyacinth and cow dung into biogas for cooking.</p>
+<p>The digesters work a bit like a stomach. The mixture goes in one end – think of it as a mouth – and over the next 20 to 30 days, it goes through a fermentation process and breaks down, giving off gas that comes out the other end. From there, the clean-burning gas is passed through pipes to the point of use, just like traditional domestic gas. In Dunga, the machines produce enough gas to serve about 60% of the village's population. It is used in domestic stoves and for other household tasks such as purifying water and incubating chicks.</p>
+<p>The project is testing whether biogas can provide an effective alternative to firewood and charcoal in rural Kenyan communities. Results indicate that the programme seems to be working. The women who smoke the lake fish are already getting sick less often. Besides, they don't have to devote a lot of time every day to gathering firewood, which is a great relief. As a result, they're able to make more money for their families from other enterprises.</p>
+<p>Kanyiva Muindi is an epidemiologist and air pollution research fellow at the African Population and Health Research Centre in Nairobi. She says families who switch to the smokeless cooking method could expect fewer respiratory diseases. Women, young girls and children are particularly vulnerable because they are the ones who cook in the kitchen or outside over fires.</p>
+<p>How much better the biogas stoves will be for the community's health still needs more research, says Dominic Kahumbu Wanjihia, Biogas International's chief executive. But unless the price of the machines drops, it's pretty clear that most communities will never be able to afford any, since they sell for about $750.</p>
+<p>Kanyiva says affordability is a challenge worth addressing, given the huge health and environmental dangers posed by 'dirty' fuels such as wood, charcoal and kerosene. If biogas could become affordable on a large scale, she says it 'would be life-changing for millions on the African continent and beyond'.</p>`,
     questionGroups: [
       {
-        groupType: 'note-form',
+        groupType: 'plain',
         groupTitle: 'Questions 1–7',
-        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
-        noteConfig: {
-          title: 'The saiga',
-          lines: [
-            'Adaptations',
-            '●   has a large bulbous nose with swollen nostrils that',
-            '○   keep __Q1__ out',
-            '○   lower the temperature of its __Q2__ in summer',
-            '○   warm the air entering its lungs in winter',
-            '●   grows a thick __Q3__ in winter, which it loses in spring',
-            'Reasons for population decline',
-            '●   poaching, especially for the __Q4__ of male saiga',
-            '●   expansion of farms and settlements, causing',
-            "○   reduction in the size of the saiga's __Q5__.",
-            '○   loss of access to the __Q6__ which they use for migration',
-            '●   various forms of disease, leading to mass mortality events',
-            '●   climate change, causing the disappearance of __Q7__ which the saiga relied on',
-          ],
-        },
+        instruction: 'Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
         questions: [
-          { questionNumber: 1, type: 'fill-blank', questionText: 'Question 1', correctAnswer: 'dust' },
-          { questionNumber: 2, type: 'fill-blank', questionText: 'Question 2', correctAnswer: 'blood' },
-          { questionNumber: 3, type: 'fill-blank', questionText: 'Question 3', correctAnswer: 'coat' },
-          { questionNumber: 4, type: 'fill-blank', questionText: 'Question 4', correctAnswer: 'horns' },
-          { questionNumber: 5, type: 'fill-blank', questionText: 'Question 5', correctAnswer: 'habitat' },
-          { questionNumber: 6, type: 'fill-blank', questionText: 'Question 6', correctAnswer: 'routes' },
-          { questionNumber: 7, type: 'fill-blank', questionText: 'Question 7', correctAnswer: 'streams' },
+          { questionNumber: 1, type: 'true-false-ng', questionText: '1   Water hyacinth was introduced as a decorative plant in east Africa.', correctAnswer: 'TRUE' },
+          { questionNumber: 2, type: 'true-false-ng', questionText: '2   Fishermen took some water hyacinth plants to Lake Victoria.', correctAnswer: 'FALSE' },
+          { questionNumber: 3, type: 'true-false-ng', questionText: '3   It is now difficult to force boats through the thick water hyacinth on Lake Victoria.', correctAnswer: 'TRUE' },
+          { questionNumber: 4, type: 'true-false-ng', questionText: '4   Chemicals produced by the water hyacinth plants are affecting the numbers of fish in Lake Victoria.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 5, type: 'true-false-ng', questionText: "5   Cooking with charcoal has been proved to be even worse for people's health than cooking with wood.", correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 6, type: 'true-false-ng', questionText: '6   People found it impossible to remove much water hyacinth from Lake Victoria.', correctAnswer: 'FALSE' },
+          { questionNumber: 7, type: 'true-false-ng', questionText: '7   Scientists started investigating the possibility of using water hyacinth to generate biogas in the last century.', correctAnswer: 'TRUE' },
         ],
       },
       {
-        groupType: 'plain',
-        groupTitle: 'Questions 8–13',
-        instruction: 'Do the following statements agree with the information given in Reading Passage 1? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
+        groupType: 'note-form',
+        groupTitle: 'Questions 8–10',
+        instruction: 'Complete the flow-chart below.  Choose NO MORE THAN TWO WORDS from the passage for each answer.',
+        noteConfig: {
+          title: 'Generating biogas for domestic use in Dunga',
+          lines: [
+            'First, place water hyacinth together with some __Q8__ into a digester',
+            '↓',
+            'Leave the mixture until the __Q9__ is completed',
+            '↓',
+            'Capture the gas emitted by the digester and use __Q10__ to transport it to individual homes',
+            '↓',
+            'Then use the gas for cooking as well as making water fit for human consumption',
+          ],
+        },
         questions: [
-          { questionNumber: 8, type: 'true-false-ng', questionText: '8   Today, numbers of saiga are distributed evenly across four nations in Central Asia: Kazakhstan, Russia, Mongolia and Uzbekistan.', correctAnswer: 'FALSE' },
-          { questionNumber: 9, type: 'true-false-ng', questionText: '9   For most of the 20th century, the population of saiga were falling.', correctAnswer: 'FALSE' },
-          { questionNumber: 10, type: 'true-false-ng', questionText: '10   Efforts to protect rhinos in Africa had a significant effect on saiga populations.', correctAnswer: 'TRUE' },
-          { questionNumber: 11, type: 'true-false-ng', questionText: '11   Unpredictable fluctuations in climate are threatening the wildlife of Central Asia more than in other parts of the world.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 12, type: 'true-false-ng', questionText: '12   The Altyn Dala Conservation Initiative was formed for the benefit of a number of different animals.', correctAnswer: 'TRUE' },
-          { questionNumber: 13, type: 'true-false-ng', questionText: "13   The Altyn Dala Conservation Initiative's recognition as a World Restoration Flagship project attracted additional international funding for the scheme.", correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 8, type: 'fill-blank', questionText: 'Question 8', correctAnswer: 'cow dung' },
+          { questionNumber: 9, type: 'fill-blank', questionText: 'Question 9', correctAnswer: 'fermentation/fermentation process' },
+          { questionNumber: 10, type: 'fill-blank', questionText: 'Question 10', correctAnswer: 'pipes' },
+        ],
+      },
+      {
+        groupType: 'note-form',
+        groupTitle: 'Questions 11–13',
+        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
+        noteConfig: {
+          title: 'Cooking with biogas in Dunga',
+          lines: [
+            'Benefits for the women in the village of cooking with biogas',
+            '●   no need for them to spend so much __Q11__ collecting fuel',
+            '●   they can focus on different tasks that bring in __Q12__.',
+            '●   they are less likely to experience certain diseases connected to burning wood',
+            'Drawbacks of changing to biogas',
+            '●   the __Q13__ of the digesters is beyond the reach of most villages',
+          ],
+        },
+        questions: [
+          { questionNumber: 11, type: 'fill-blank', questionText: 'Question 11', correctAnswer: 'time' },
+          { questionNumber: 12, type: 'fill-blank', questionText: 'Question 12', correctAnswer: 'money' },
+          { questionNumber: 13, type: 'fill-blank', questionText: 'Question 13', correctAnswer: 'price' },
         ],
       },
     ],
@@ -86,63 +100,103 @@ const PASSAGES = [
 
   // ── PASSAGE 2 (Q14–26) ──────────────────────────────────────────
   {
-    title: 'The problems of getting around the city of Dar es Salaam',
+    title: "How could multilingualism benefit India's poorest schoolchildren?",
     category: 'passage2',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 3'],
+    tags: ['Cam 21', 'Cam 21 - Test 4'],
     questionRange: { start: 14, end: 26 },
-    content: `<p><strong>The problems of getting around the city of Dar es Salaam</strong></p>
-<p>Dar es Salaam in Tanzania is one of the fastest growing cities in Africa. Its population has increased eightfold since 1980 and swells by half a million people every year. United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035. Daniel Hoornweg for the Global Cities Institute forecasts the city could be home to an incredible 73.7 million people by 2100.</p>
-<p>Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city, where the journey to and from the centre regularly takes over two hours. It can be longer if rain turns the dirt roads to mud.</p>
-<p>Even in the middle of the day, traffic frequently slows to a stop without warning. It is not unusual for cars and minibuses to queue for 20 minutes at a key intersection. A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city. Outside the centre many rely on boda boda (motorbike taxis) to navigate the narrow side streets and potholed mud roads that make up much of the metropolis. Their safety record is scandalous.</p>
-<p>Dar es Salaam's reliance on four arterial roads into the city is a legacy of the colonial government that planned the city at the start of the 20th century to cater for a population of 35,000. Most of the current growth is made up of young people arriving from the countryside to find work, and as the population has exploded, Dar es Salaam has grown around those four highways. Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy.</p>
-<p>But Dar es Salaam is pinning its hopes on a solution that could offer a different model for Africa's megacities, giving them an alternative to a future controlled by the private car. Unlike many cities on the continent, Dar es Salaam isn't trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus.</p>
-<p>The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages. Ticket purchase and control takes place at stations prior to boarding and the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies.</p>
-<p>'The new buses are much, much better,' says Paulas George, a young IT worker. He takes the bus every day and it has cut his journey time by two-thirds. He says it is not perfect, though, complaining that drivers often refuse to turn on the air conditioning to save fuel.</p>
-<p>That is not the only problem. A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity. Smartcards can't be used as the mechanical readers aren't working either, forcing passengers to buy individual paper tickets for every journey. Each is printed with a scannable QR code, but there are no scanners. Staff stand by the gates and tear tickets as people enter. As a result, queues are considerable at peak times.</p>
-<p>Morogoro Road to the north-west of the city was phase I of the BRT project. Phases II and III will install bus lanes along Nyerere Road to the south-west and Kilwa Road to the south. Construction on both routes is due to start imminently. Phase IV, towards Bagamoyo in the north, is in the preliminary design stage. 'Much of the city will have access to a world-class transport system within the space of a few years,' says Chris Kost, the Africa director of ITDP (the Institute for Transportation and Development Policy). All phases are being planned to high standards and, once complete, a third of city residents will be within a short walk of the BRT network.</p>
-<p>The ITDP regrets Africa's obsession with metros. 'With a metro, an international firm will often just parachute in its own system,' says Kost. 'Bus rapid transit allows existing stakeholders to get involved. That's what we did in Dar es Salaam and what we're planning in Nairobi, where the bus bodies will be built in the city and local operators will look after tickets, fare collection and IT ...Bus rapid transit has been transformational for Dar es Salaam. For millions of people in African cities, this is their best hope of ever being connected.'</p>`,
+    content: `<p><strong>How could multilingualism benefit India's poorest schoolchildren?</strong></p>
+<p>The crowded and bustling streets of Delhi teem with life. Stop to listen and, above the din of rickshaws and buses, you'll hear a multitude of languages, as more than 20 million people go about their daily lives. Many were born and raised here, and many millions more have recently made India's capital their home, having moved from surrounding neighbourhoods, cities and states or across the country, often in the hope of gaining better jobs and a better life. Some arrive speaking fluent Hindi, the dominant language in Delhi (and the official language of government), but many arrive speaking any number of India's 22 officially recognised languages, let alone the hundreds of regional languages in a country of more than 1.3 billion people.</p>
+<p>A team of researchers led by Professor Ianthi Tsimpli of Cambridge University is currently working on a project collecting data on 1,000 primary-age children in Delhi and the cities of Hyderabad and Bihar. The overriding aim of the four-year project, called 'Multilingualism and Multiliteracy', is to find out why in a country where multilingualism is so common (more than 255 million people in India speak at least two languages, and nearly 90 million speak three or more languages), the many benefits of speaking more than one language, observed in schools in Europe for instance, do not apply to many of India's schoolchildren.</p>
+<p>'Each year across India, 600,000 children are tested, and year after year over 50% of children in Standard 5 [ten-year-olds] cannot read a Standard 2 [seven-year-olds] task fluently, and just under 50% of them cannot solve a Standard 2 subtraction task,' says Tsimpli. She explains that low educational achievement can lead to many of these students dropping out of school – a problem disproportionately affecting female students.</p>
+<p>Tsimpli and her colleagues are investigating whether these low learning outcomes could be caused by an Indian school system where the language that children are taught in often differs from the language used at home. The research project, which focuses on 8 to 11-year-old schoolchildren in rural and urban areas, collects data on whether the schoolchildren live in slum* or non-slum areas. Many of the children have moved from remote, rural areas to urban areas. They are so poor they have to live in slums and, as a result of migration, they may speak languages that are different from the regional language.</p>
+<p>Having already tested 1,000 children, the researchers will now embark on retesting them. They intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves. It's possible that one of the causes of low performance is the lack of pupil-centred teaching methods; in many Indian primary schools the teacher dominates and there is little room for independent learning.</p>
+<p>Although the findings are at a preliminary stage, Tsimpli and her team have found that the medium of instruction used in schools, especially English, may hold back those children who have little familiarity with, or exposure to, the language before starting school and outside of school life. According to Tsimpli, most of the evidence from this and other projects shows that English instruction for children from low socio-economic areas might not be the best way for them to learn, at least in the first three years of primary education.</p>
+<p>'What we would recommend for everyone, not just low socio-economic status children, would be to start learning in the language they feel comfortable learning in ... English can still be used, but perhaps not as the medium of instruction in primary schools. It could, for example, be one of the subjects that are being taught alongside other subjects. We are not suggesting that English be withdrawn – that ship has sailed – but we perhaps have to think more about learner needs. There is perhaps too much uniformity in teaching and less tailoring to the children's language abilities and needs,' says Tsimpli.</p>
+<p>While the preliminary results show there is no difference in general intelligence among boys and girls from slum areas versus those from urban poor backgrounds, an unanticipated finding has been that children from slum backgrounds do not seem to lag behind children from other urban poor backgrounds – and in some cases outperform them (e.g. in numeracy and literacy tasks). According to the researchers, this unexpected finding may be down to the life experiences of children growing up in slums. They are likely to mature faster and come into closer contact with the numeracy skills essential for day-to-day survival.</p>
+<p>The project has already caught the attention of government ministers, who are keen to use the findings of the study to inform and adjust school policy in Delhi and the wider state. 'They are as keen as us to understand how the challenging context of deprivation can be attenuated when focusing on the languages children learn and use while at school. Our findings don't mean you're doomed if you're poor. It may be that these low learning outcomes are because of the way education is provided in India, with a huge focus on Hindi and English as the mediums of instruction, to the potential detriment of children unfamiliar with those languages,' explains Tsimpli.</p>
+<p>'Language is central to the way knowledge is transferred – so the medium of instruction is obviously hugely influential. We hope to ... show that problem solving, numeracy and literacy can and do improve in children who are educated in a language of instruction they know. The trick may be to bridge school skills with life skills and make use of the richness of a child's life experience to help them learn in the most effective ways possible,' says Tsimpli.</p>
+<p style="font-size:.9em">
+<em>* slum: a very densely populated area in which the infrastructure is incomplete and services inadequate or non-existent</em>
+</p>`,
     questionGroups: [
       {
-        groupType: 'plain',
-        groupTitle: 'Questions 14–18',
-        instruction: 'Do the following statements agree with the information given in Reading Passage 2? Write TRUE if the statement agrees with the information, FALSE if the statement contradicts the information, NOT GIVEN if there is no information on this.',
-        questions: [
-          { questionNumber: 14, type: 'true-false-ng', questionText: '14   The population of Dar es Salaam is rising more rapidly than was previously predicted.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 15, type: 'true-false-ng', questionText: '15   Most of the residents of Dar es Salaam live in high-rise blocks on the edge of the city.', correctAnswer: 'FALSE' },
-          { questionNumber: 16, type: 'true-false-ng', questionText: '16   Residents have been consulted about their views on the suburban rail line in Dar es Salaam.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 17, type: 'true-false-ng', questionText: '17   The majority of the present residential development in Dar es Salaam is unplanned.', correctAnswer: 'TRUE' },
-          { questionNumber: 18, type: 'true-false-ng', questionText: "18   Dar es Salaam's authorities have decided to follow the public transport plan adopted by a large number of African cities.", correctAnswer: 'FALSE' },
-        ],
-      },
-      {
-        groupType: 'note-form',
-        groupTitle: 'Questions 19–26',
-        instruction: 'Complete the notes below.  Choose ONE WORD ONLY from the passage for each answer.',
-        noteConfig: {
-          title: "Dar es Salaam's DART Bus Rapid Transit system",
-          lines: [
-            'Features',
-            '●   the buses use designated __Q19__ to cut down on delays',
-            '●   passengers pay fares before __Q20__.',
-            '●   passengers in __Q21__ can use every part of the system',
-            'Problems',
-            '●   the temperature control is sometimes not activated in order to reduce __Q22__ use',
-            '●   insufficient number of vehicles are available due to the effects of a severe __Q23__.',
-            '●   passengers are unable to use __Q24__ because some equipment is out of action',
-            '●   tickets have to be checked manually at station __Q25__.',
-            '●   __Q26__ frequently build up during rush hours',
+        groupType: 'summary-completion',
+        groupTitle: 'Questions 14–19',
+        instruction: 'Complete the summary using the list of words, A-J, below.',
+        summaryConfig: {
+          text: 'Multilingualism in Delhi<br><br>The city of Delhi has a __Q14__ and as you walk through its streets you hear people speaking a variety of languages. Some of them have spent their entire life in Delhi, while others are __Q15__. Whether they have come from a __Q16__ or have travelled from the other side of India, they have all come in search of things such as improved __Q17__.<br><br>A team of researchers led by Professor Ianthi Tsimpli of Cambridge University is collecting data on primary-age schoolchildren in Delhi and other Indian cities. The __Q18__ of the research is to discover why multilingual Indian schoolchildren do not experience __Q19__ to those that multilingual schoolchildren in Europe experience.',
+          wordBank: [
+            { letter: 'A', word: 'basic outlook' },
+            { letter: 'B', word: 'employment opportunities' },
+            { letter: 'C', word: 'wealthy visitors' },
+            { letter: 'D', word: 'distant country' },
+            { letter: 'E', word: 'primary objective' },
+            { letter: 'F', word: 'similar advantages' },
+            { letter: 'G', word: 'thriving economy' },
+            { letter: 'H', word: 'nearby district' },
+            { letter: 'I', word: 'dense population' },
+            { letter: 'J', word: 'new immigrants' },
           ],
         },
         questions: [
-          { questionNumber: 19, type: 'fill-blank', questionText: 'Question 19', correctAnswer: 'lanes' },
-          { questionNumber: 20, type: 'fill-blank', questionText: 'Question 20', correctAnswer: 'boarding' },
-          { questionNumber: 21, type: 'fill-blank', questionText: 'Question 21', correctAnswer: 'wheelchairs' },
-          { questionNumber: 22, type: 'fill-blank', questionText: 'Question 22', correctAnswer: 'fuel' },
-          { questionNumber: 23, type: 'fill-blank', questionText: 'Question 23', correctAnswer: 'flood' },
-          { questionNumber: 24, type: 'fill-blank', questionText: 'Question 24', correctAnswer: 'smartcards' },
-          { questionNumber: 25, type: 'fill-blank', questionText: 'Question 25', correctAnswer: 'gates' },
-          { questionNumber: 26, type: 'fill-blank', questionText: 'Question 26', correctAnswer: 'queues' },
+          { questionNumber: 14, type: 'fill-blank', questionText: 'Question 14', correctAnswer: 'dense population' },
+          { questionNumber: 15, type: 'fill-blank', questionText: 'Question 15', correctAnswer: 'new immigrants' },
+          { questionNumber: 16, type: 'fill-blank', questionText: 'Question 16', correctAnswer: 'nearby district' },
+          { questionNumber: 17, type: 'fill-blank', questionText: 'Question 17', correctAnswer: 'employment opportunities' },
+          { questionNumber: 18, type: 'fill-blank', questionText: 'Question 18', correctAnswer: 'primary objective' },
+          { questionNumber: 19, type: 'fill-blank', questionText: 'Question 19', correctAnswer: 'similar advantages' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Questions 20–23',
+        instruction: 'Do the following statements agree with the claims of the writer in Reading Passage 2? Write YES if the statement agrees with the claims of the writer, NO if the statement contradicts the claims of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
+        questions: [
+          { questionNumber: 20, type: 'yes-no-ng', questionText: '20   Ten-year-old Indian schoolchildren tend to perform better in literacy tests than in numeracy tests.', correctAnswer: 'NO' },
+          { questionNumber: 21, type: 'yes-no-ng', questionText: '21   Tsimpli had problems convincing some female students to take part in the study.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 22, type: 'yes-no-ng', questionText: '22   Tsimpli and her team wanted to know if there is a connection between poor academic performance and being taught in an unfamiliar language.', correctAnswer: 'YES' },
+          { questionNumber: 23, type: 'yes-no-ng', questionText: '23   The researchers have decided against investigating the impact teaching methodology may have on learning outcomes.', correctAnswer: 'NO' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Questions 24–26',
+        instruction: 'Choose the correct letter, A, B, C or D.',
+        questions: [
+          {
+            questionNumber: 24, type: 'multiple-choice',
+            questionText: '24   What point does the writer make about primary schools in India in the sixth paragraph?',
+            options: [
+              'A   Exposure to English outside of school is of limited benefit.',
+              'B   Children learn English more easily when they are well motivated.',
+              'C   Poor children may be disadvantaged further by being instructed in English.',
+              'D   There is little consistency across schools with regard to instruction in English.',
+            ],
+            correctAnswer: 'C',
+          },
+          {
+            questionNumber: 25, type: 'multiple-choice',
+            questionText: "25   What is Tsimpli suggesting when she uses the phrase 'that ship has sailed'?",
+            options: [
+              'A   The findings of the report may be of little help to some Indian schoolchildren.',
+              'B   Instruction in English could be better adapted to the needs of schoolchildren.',
+              'C   Schools have had limited success in teaching English as a separate subject.',
+              'D   It is too late to remove English completely as a language of instruction in schools.',
+            ],
+            correctAnswer: 'D',
+          },
+          {
+            questionNumber: 26, type: 'multiple-choice',
+            questionText: '26   In the eighth paragraph, what do we learn has surprised researchers?',
+            options: [
+              'A   Boys and girls from low socio-economic groups have similar general intelligence levels.',
+              'B   The age at which children move into a slum does not affect their academic performance.',
+              'C   Slum children and children from other urban poor backgrounds have similar life experiences.',
+              'D   The literacy and numeracy skills of slum children are not lower than those of children from other urban poor backgrounds.',
+            ],
+            correctAnswer: 'D',
+          },
         ],
       },
     ],
@@ -150,103 +204,114 @@ const PASSAGES = [
 
   // ── PASSAGE 3 (Q27–40) ──────────────────────────────────────────
   {
-    title: 'Rethinking the Past',
+    title: 'The Globemakers: The Curious Story of an Ancient Craft',
     category: 'passage3',
     isActualTest: true,
-    tags: ['Cam 21', 'Cam 21 - Test 3'],
+    tags: ['Cam 21', 'Cam 21 - Test 4'],
     questionRange: { start: 27, end: 40 },
-    content: `<p><strong>Rethinking the Past</strong></p>
-<p>It is by now a truism that the story of human evolution is being rethought. Discoveries have come thick and fast over the last decade or so, and these have forced us to rethink many crucial points, such as how old our species is – about 300,000 years old as opposed to 200,000 – and what extinct hominins, such as our cousins the Neanderthals, were really like. But because there are so many species and eras involved, it's hard to discern the common threads linking them.</p>
-<p>However, I do think it's possible to draw out some overall messages from the blizzard of archaeological finds in recent years. Two things stand out to me. One is the growing evidence that many supposedly 'advanced' behaviours, such as architecture and art, can be traced much further back in time than we thought, often to hominin species that existed before modern humans. And the other is that we have badly misunderstood gender roles in prehistoric societies, imposing patriarchal values onto cultures that had very different ideas about how women should behave.</p>
-<p>Let's start with architecture. At Kalambo Falls in Zambia, researchers found buried logs that had been shaped with stone tools so that they interlocked. They seem to have once been part of a larger structure, perhaps a building. This would be unsurprising if they weren't 476,000 years old. That's almost 200,000 years before our species, Homo sapiens, evolved. Extinct hominins also managed to settle in extreme places. For instance, we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions 200,000 years ago – upending the old notion that such environments were only settled by modern humans around 3,600 years ago.</p>
-<p>Art also seems to have been invented by older hominins. We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells. By far the most contentious claim in this area is that Homo naledi made art. H. naledi lived around 250,000 years ago, making it a contemporary of our species. However, it had quite a small brain, typical of older hominins – and was therefore, according to palaeoanthropological dogma, incapable of complex behaviours. Nevertheless, in the Rising Star cave system in South Africa where the H. naledi remains were found, researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated.</p>
-<p>To say these claims about H. naledi are controversial is to understate the situation. Many experts say the evidence presented so far is completely inadequate to support them. The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper. My views on the H. naledi controversy are complicated. I do think more evidence is needed: in particular with regard to the dating of the etchings. At the same time, I think the species' small brains are a distraction. Palaeoanthropologists got fixated on brain size because it was what they could see: if what you have is skeletons, then all you know about brains are their shapes and sizes. But other properties, such as the brain's internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains.</p>
-<p>In a sense, we shouldn't be surprised that so many of these behaviours had their origins in older, extinct hominins. Evolution usually works by incremental steps and so does technology. The first birds weren't great at flying, and the first mobile phones weren't great at, well, anything really. The idea that there was a sudden explosion of intelligence and creativity at some point in our evolution isn't inherently ridiculous: sometimes a system hits a tipping point and undergoes runaway change. But there was never that much evidence that human evolution worked this way. Instead, it seems the Neanderthals and many others all walked so we could run.</p>
-<p>One way or another, the H. naledi story is going to be an example of letting our preconceptions get in the way of the evidence. The same is true for our ideas about gender in prehistory. Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today's researchers are trying to unpick this stuff, and there have been some significant steps in recent years.</p>
-<p>Perhaps the most dramatic was the demolition of 'Man the Hunter'. This was the idea, promoted for decades, that in most prehistoric societies the men went out to hunt and the women looked after the home. However, a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them. In line with this, it emerged that an ancient spear-throwing tool called an atlatl enables women to launch projectiles at the same speed as men. We have also seen growing evidence of women occupying positions of authority in ancient societies. The Viking queen Thyra may have helped unify Denmark in the 900s. Going further back, an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed.</p>
-<p>It seems that the more we find out about past societies, the more our preconceptions about the ways society 'has to be' turn out to be wrong. Inequality, authoritarianism and patriarchy aren't inevitable. They're choices, and prehistory shows us that we can choose differently.</p>`,
+    content: `<p><strong>The Globemakers: The Curious Story of an Ancient Craft</strong></p>
+<p><em>A review of Peter Bellerby's book The Globemakers</em></p>
+<p>In 2008, Peter Bellerby, who lived in London, wanted to give his father a model globe for his eightieth birthday. What seemed simple enough to start with triggered an almost obsessive, decade-long journey, marked by a series of obstacles that would have deterred anyone less determined. It ended with his establishing the world's only bespoke globemaking company.</p>
+<p>The first surprise in The Globemakers, Bellerby's account of this impulsive enterprise, is that obtaining such a globe was not simply a matter of a quick online order and a repressed sigh at the shipping costs. After all, contrary to stubbornly held popular views of our ancestors' geographical ignorance, we have known that the world is spherical since at least the 6th century BCE. The ancient Greek philosopher Plato in his work Phaedo likened it to a leather ball, while the accolade of producing the first recorded globe goes to the ancient Greek philosopher Crates of Mallus, who is said to have made one in around 150 BCE. Surely, Bellerby reasoned, a good-quality globe wouldn't be difficult to find.</p>
+<p>Nearly two millennia later, however, it seemed that the art of globemaking had been largely forgotten. Bellerby came across shoddy commercial versions designed for school classrooms and genuine antiques in auction houses that would have bust his budget. Even his trips to Morocco and India, where surely the knowledge of artisan cartographers* had been preserved, drew a blank.</p>
+<p>Not one to be easily thwarted, Bellerby decided to make his own good-quality globe. In the process, almost everything that could possibly go wrong did so. Even the shape of the Earth posed a problem, as it is not quite a perfect sphere, but oblate (slightly flattened at the poles). Having decided to compromise and opt for two half-spherical pieces that could be fitted together, he was unable to discover anyone capable of casting moulds with sufficient accuracy to ensure that he would not be left with two half-spheres that were not quite the same circumference. Even after he eventually resolved this issue, extracting these from the moulds resulted in piles of cracked plaster of Paris** and clouds of choking dust in the workshop he had set up at the rear of his house.</p>
+<p>This series of abortive experiments taught Bellerby a lot about the challenges of making globes, which he communicates here to the reader. Finding just the right way to prise the globes from the mould – a high-end air compressor finally did the trick – and locating the right paper and inks with which to make the gores (the sections of flat sheet mapping that are pasted onto the spherical globe) without the ink seeping out to create a mushy, unreadable mess took months and an alarming chunk out of his bank balance. Bellerby's frustration at the painstaking process of attaching the gores to the globe surface – after having found a glue with precisely the right adhesive qualities – is palpable. Right at the end of the process, he learnt that the paper had stretched slightly and so the final one overlapped the first by a centimetre (which may not seem a great deal, but when that represents 2 per cent of the Earth's diameter, it's equivalent to obliterating the Himalayas or wiping out Chile).</p>
+<p>Bellerby's account of the technical challenges of globe production is interspersed with a series of interludes on great globemakers of the past and cartographic history in general. Purists might wish for more map-making details, but Bellerby clearly found a kindred spirit in Martin Behaim. He was the Nuremberg entrepreneur who in 1492 created the Erdapfel, the world's oldest surviving globe, beautifully finished by a workshop of painters and other craftsmen, only to find that the explorer Christopher Columbus had stumbled upon the Americas the very same year, rendering his masterpiece instantly out of date. Something of Bellerby's unflinching ambition is reflected in the even more heroic efforts of the Italian cartographer Vincenzo Coronelli, who, in the seventeenth century, created two globes for Louis XIV of France. It took him twenty years to complete the monstrous pair, whose vast bulk – each with a diameter of around four metres – can still be admired in the National Library of France in Paris.</p>
+<p>Although a celebration of the revival of an ancient craft, Bellerby's book is also a lament for the fading away of centuries-old traditions. When he embarked on his globemaking odyssey, he struggled to find artisans with the skills to make the right moulds for the globes or foundries that could shape the meridians (the metal frames which girdle globes) in just the right way. Although he finally located the right craftsmen, some simply dropping in, serendipitously, to his workshop (by now in more suitable premises than his back room), many of these have now retired or passed away. Bellerby's father finally did receive his eightieth birthday present, albeit two years late.</p>
+<p>Bellerby went on to found a company which now turns out over six hundred globes a year for customers who can have their own tiny village marked or more unusual requests fulfilled. His book, beautifully illustrated with photographs of the various stages of his venture and a few illustrations of historic globes and maps, is hardly a blueprint for commercial success. But it is more than enough to stir up admiration for the craftsmanship of the great mapmakers of the past and the obsessive determination of a modern successor who revived their almost moribund art.</p>
+<p style="font-size:.9em">
+<em>* cartographer: someone involved in the science or practice of drawing maps</em><br>
+<em>** plaster of Paris: a quick-setting plaster consisting of a fine white powder that hardens when moistened and allowed to dry</em>
+</p>`,
     questionGroups: [
       {
+        groupType: 'summary-completion',
+        groupTitle: 'Questions 27–32',
+        instruction: 'Complete the summary using the list of words, A-J, below.',
+        summaryConfig: {
+          text: "A birthday gift<br><br>Peter Bellerby's plan to give his father a globe for his birthday was an unexpectedly __Q27__ for which he had to overcome __Q28__.<br><br>He soon learnt that a straightforward __Q29__ would not be possible. Some __Q30__ that had been intended for __Q31__ were available, as were some expensive antique globes, but these were beyond his budget. He even travelled to places where people might still have the __Q32__, but Bellerby could not find what he wanted.",
+          wordBank: [
+            { letter: 'A', word: 'educational use' },
+            { letter: 'B', word: 'rare materials' },
+            { letter: 'C', word: 'inferior makes' },
+            { letter: 'D', word: 'product exchange markets' },
+            { letter: 'E', word: 'necessary skills' },
+            { letter: 'F', word: 'international' },
+            { letter: 'G', word: 'challenging task' },
+            { letter: 'H', word: 'memorable object' },
+            { letter: 'I', word: 'internet purchase' },
+            { letter: 'J', word: 'numerous problems' },
+          ],
+        },
+        questions: [
+          { questionNumber: 27, type: 'fill-blank', questionText: 'Question 27', correctAnswer: 'challenging task' },
+          { questionNumber: 28, type: 'fill-blank', questionText: 'Question 28', correctAnswer: 'numerous problems' },
+          { questionNumber: 29, type: 'fill-blank', questionText: 'Question 29', correctAnswer: 'internet purchase' },
+          { questionNumber: 30, type: 'fill-blank', questionText: 'Question 30', correctAnswer: 'inferior makes' },
+          { questionNumber: 31, type: 'fill-blank', questionText: 'Question 31', correctAnswer: 'educational use' },
+          { questionNumber: 32, type: 'fill-blank', questionText: 'Question 32', correctAnswer: 'necessary skills' },
+        ],
+      },
+      {
         groupType: 'plain',
-        groupTitle: 'Questions 27–30',
+        groupTitle: 'Questions 33–36',
+        instruction: 'Do the following statements agree with the claims of the writer in Reading Passage 3? Write YES if the statement agrees with the claims of the writer, NO if the statement contradicts the claims of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
+        questions: [
+          { questionNumber: 33, type: 'yes-no-ng', questionText: '33   The assumption today that people in the past knew very little about geography is correct.', correctAnswer: 'NO' },
+          { questionNumber: 34, type: 'yes-no-ng', questionText: '34   Plato was criticised for saying the world was shaped like a leather ball.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 35, type: 'yes-no-ng', questionText: '35   The globe made by Crates of Mallus was an accurate representation of the known world.', correctAnswer: 'NOT GIVEN' },
+          { questionNumber: 36, type: 'yes-no-ng', questionText: '36   Bellerby assumed he would have few problems locating a well-made globe.', correctAnswer: 'YES' },
+        ],
+      },
+      {
+        groupType: 'plain',
+        groupTitle: 'Questions 37–40',
         instruction: 'Choose the correct letter, A, B, C or D.',
         questions: [
           {
-            questionNumber: 27, type: 'multiple-choice',
-            questionText: '27   What is the writer doing in the second paragraph?',
+            questionNumber: 37, type: 'multiple-choice',
+            questionText: '37   When Bellerby had to attach the gores to the globe surface,',
             options: [
-              'A   pinpointing some key changes in our understanding of prehistory',
-              'B   outlining some aspects of prehistory which are still poorly understood',
-              'C   summarising some attitudes towards recent archaeological revelations',
-              'D   giving an overview of some current disagreements among archaeologists',
+              'A   he decided it was best to work quickly.',
+              'B   he became aware of an unexpected issue.',
+              'C   he was worried about the quality of his materials.',
+              'D   he nearly gave up the whole project.',
             ],
-            correctAnswer: 'A',
+            correctAnswer: 'B',
           },
           {
-            questionNumber: 28, type: 'multiple-choice',
-            questionText: '28   In the sixth paragraph, the writer mentions mobile phones to make the point that',
+            questionNumber: 38, type: 'multiple-choice',
+            questionText: '38   The reviewer mentions other globe makers of the past because',
             options: [
-              'A   most developments happen in a gradual way.',
-              'B   innovation can come from a variety of sources.',
-              'C   not all technological advancements are positive.',
-              'D   the path of evolution can often be unpredictable.',
+              'A   Bellerby was particularly inspired by them.',
+              'B   their achievements are not widely known.',
+              'C   Bellerby had something in common with each of them.',
+              'D   their difficulties could have been avoided.',
             ],
-            correctAnswer: 'A',
+            correctAnswer: 'C',
           },
           {
-            questionNumber: 29, type: 'multiple-choice',
-            questionText: "29   In the seventh paragraph, the phrase 'unpick this stuff' refers to the task of",
+            questionNumber: 39, type: 'multiple-choice',
+            questionText: '39   What point is made about Bellerby in the seventh paragraph?',
             options: [
-              'A   assessing the impact of certain recent research findings.',
-              'B   questioning the authenticity of evidence used in earlier research.',
-              'C   conducting research into how prehistoric societies were organised.',
-              'D   reevaluating research influenced by outdated beliefs about society.',
+              'A   He had long working relationships with numerous craftsmen.',
+              'B   He understands the lack of interest in traditional crafts.',
+              'C   He appreciates the importance of careful planning.',
+              'D   He regrets the loss of many globe-making skills.',
             ],
             correctAnswer: 'D',
           },
           {
-            questionNumber: 30, type: 'multiple-choice',
-            questionText: '30   What does the writer suggest in the final paragraph?',
+            questionNumber: 40, type: 'multiple-choice',
+            questionText: "40   What does the reviewer say about Bellerby's book in the final paragraph?",
             options: [
-              'A   Studying past societies could help us create a fairer society today.',
-              'B   We should not judge past societies by the standards of modern society.',
-              'C   We still have much to learn about how societies have evolved over history.',
-              'D   There is more than one way to interpret evidence about societies in prehistoric times.',
+              'A   It does not tell you how to create a profitable business.',
+              'B   It overlooks some important mapmakers.',
+              'C   It fails to discuss the future of globe-making.',
+              'D   It does not give enough details about individual customers.',
             ],
             correctAnswer: 'A',
           },
-        ],
-      },
-      {
-        groupType: 'matching-options',
-        groupTitle: 'Questions 31–34',
-        instruction: 'Complete each sentence with the correct ending, A-F, below.  Write the correct letter, A-F, in boxes 31-34 on your answer sheet.',
-        matchingOptions: [
-          'Homo sapiens emerged at an earlier point in time than experts previously believed.',
-          'previous assumptions about who had power in the prehistoric world were inaccurate.',
-          'gender roles in extinct hominin species were different from those in Homo sapiens societies.',
-          'experts may have been mistaken about who looked for food in early human communities.',
-          'Homo sapiens was probably not the only species capable of sophisticated workmanship.',
-          'other species managed to survive in harsh environments before the arrival of Homo sapiens.',
-        ],
-        questions: [
-          { questionNumber: 31, type: 'matching-info', questionText: '31   The findings at Kalambo Falls revealed that', correctAnswer: 'E' },
-          { questionNumber: 32, type: 'matching-info', questionText: '32   Evidence from high-altitude regions suggests that', correctAnswer: 'F' },
-          { questionNumber: 33, type: 'matching-info', questionText: '33   An academic publication from June 2023 shows that', correctAnswer: 'D' },
-          { questionNumber: 34, type: 'matching-info', questionText: '34   Analysis of a 4000-year-old Iberian leader indicates that', correctAnswer: 'B' },
-        ],
-      },
-      {
-        groupType: 'plain',
-        groupTitle: 'Questions 35–40',
-        instruction: 'Do the following statements agree with the views of the writer in Reading Passage 3? Write YES if the statement agrees with the views of the writer, NO if the statement contradicts the views of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.',
-        questions: [
-          { questionNumber: 35, type: 'yes-no-ng', questionText: "35   It seems likely that the Neanderthals' cave paintings were the first examples of artwork ever created.", correctAnswer: 'NO' },
-          { questionNumber: 36, type: 'yes-no-ng', questionText: '36   It is very rare to find prehistoric artwork carved onto shells.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 37, type: 'yes-no-ng', questionText: '37   The methods which the researchers used to examine the Rising Star cave system were rather unconventional.', correctAnswer: 'NOT GIVEN' },
-          { questionNumber: 38, type: 'yes-no-ng', questionText: '38   It is unclear how old the etchings in the Rising Star cave system are.', correctAnswer: 'YES' },
-          { questionNumber: 39, type: 'yes-no-ng', questionText: '39   The means used to publicise the findings from the Rising Star cave system added to the controversy that surrounds them.', correctAnswer: 'YES' },
-          { questionNumber: 40, type: 'yes-no-ng', questionText: '40   The size of H. naledi brains is a key factor in the question of whether these hominins were able to produce art.', correctAnswer: 'NO' },
         ],
       },
     ],
