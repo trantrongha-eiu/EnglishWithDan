@@ -21,6 +21,7 @@
   <script src="js/nav.js"></script>
   <script src="js/shared/utils.js"></script>
   <script src="js/shared/toast.js"></script>
+  <script src="js/shared/api-client.js"></script>
   <script src="js/shared/dictionary-lookup.js"></script>
 
   <!-- Main Content -->
@@ -524,8 +525,8 @@
     async function loadProfile() {
       try {
         const [profileResult, statsResult] = await Promise.allSettled([
-          fetch(API + '/api/user/profile', { headers: headers() }).then(r => r.json()),
-          fetch(API + '/api/user/stats',   { headers: headers() }).then(r => r.json())
+          fetch(API + '/api/user/profile', { headers: headers() }).then(r => window.ApiClient.handleResponse(r)),
+          fetch(API + '/api/user/stats',   { headers: headers() }).then(r => window.ApiClient.handleResponse(r))
         ]);
         const pd = profileResult.status === 'fulfilled' ? profileResult.value : {};
         const sd = statsResult.status === 'fulfilled' ? statsResult.value : {};
@@ -718,10 +719,10 @@
         studyMotto: document.getElementById('editMotto').value.trim(),
         targetBand: tbVal === '' ? null : parseFloat(tbVal)
       };
+      const msgEl = document.getElementById('editMsg');
       try {
         const res  = await fetch(API + '/api/user/profile', { method:'PUT', headers: headers(), body: JSON.stringify(body) });
-        const data = await res.json();
-        const msgEl = document.getElementById('editMsg');
+        const data = await window.ApiClient.handleResponse(res);
         if (data.success) {
           msgEl.style.display = 'block';
           msgEl.style.background = '#ecfdf5'; msgEl.style.color = '#065f46'; msgEl.style.border = '1px solid #6ee7b7';
@@ -729,12 +730,12 @@
           setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
           showToastWithTitle('success', 'Thành công', 'Thông tin đã được cập nhật');
           loadProfile();
-        } else {
-          msgEl.style.display = 'block';
-          msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
-          msgEl.textContent = data.message || 'Lỗi lưu thông tin';
         }
-      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
+      } catch (err) {
+        msgEl.style.display = 'block';
+        msgEl.style.background = '#fce4e4'; msgEl.style.color = '#c62828'; msgEl.style.border = '1px solid #ef9a9a';
+        msgEl.textContent = err.message || 'Lỗi lưu thông tin';
+      }
     }
 
     // ── Change password ───────────────────────────────────────
@@ -749,20 +750,18 @@
 
       try {
         const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify({ currentPassword, newPassword }) });
-        const data = await res.json();
-        if (data.success) {
-          msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
-          msgEl.textContent = data.message;
-          setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
-          showToastWithTitle('success', 'Thành công', 'Mật khẩu đã được đổi');
-          document.getElementById('secCurrentPass').value = '';
-          document.getElementById('secNewPass').value = '';
-          document.getElementById('secConfirmPass').value = '';
-        } else {
-          msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a';
-          msgEl.textContent = data.message;
-        }
-      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
+        const data = await window.ApiClient.handleResponse(res);
+        msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
+        msgEl.textContent = data.message;
+        setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
+        showToastWithTitle('success', 'Thành công', 'Mật khẩu đã được đổi');
+        document.getElementById('secCurrentPass').value = '';
+        document.getElementById('secNewPass').value = '';
+        document.getElementById('secConfirmPass').value = '';
+      } catch (err) {
+        msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a';
+        msgEl.textContent = err.message || 'Không kết nối được server';
+      }
     }
 
     // ── Upload avatar ─────────────────────────────────────────
@@ -803,20 +802,16 @@
 
         showToastWithTitle('info', 'Đang tải...', 'Vui lòng chờ');
         const res  = await fetch(API + '/api/user/avatar', { method:'POST', headers: headers(), body: JSON.stringify({ imageBase64 }) });
-        const data = await res.json();
-        if (data.success) {
-          const wrap = document.querySelector('.avatar-wrap');
-          const existing = wrap.querySelector('img, .avatar-placeholder');
-          if (existing) existing.remove();
-          const img = document.createElement('img');
-          img.src = data.avatar; img.alt = 'avatar';
-          img.id = 'avatarDisplay';
-          wrap.insertBefore(img, wrap.firstChild);
-          showToastWithTitle('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
-        } else {
-          showToastWithTitle('error', 'Lỗi', data.message || 'Upload thất bại');
-        }
-      } catch { showToastWithTitle('error', 'Lỗi', 'Không kết nối được server'); }
+        const data = await window.ApiClient.handleResponse(res);
+        const wrap = document.querySelector('.avatar-wrap');
+        const existing = wrap.querySelector('img, .avatar-placeholder');
+        if (existing) existing.remove();
+        const img = document.createElement('img');
+        img.src = data.avatar; img.alt = 'avatar';
+        img.id = 'avatarDisplay';
+        wrap.insertBefore(img, wrap.firstChild);
+        showToastWithTitle('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
+      } catch (err) { showToastWithTitle('error', 'Lỗi', err.message || 'Upload thất bại'); }
 
       // Reset input so user can re-select same file if needed
       input.value = '';
@@ -826,7 +821,7 @@
     async function loadActivityHeatmap() {
       try {
         const res  = await fetch(API + '/api/user/activity-heatmap?days=371', { headers: headers() });
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         if (!data.success) return;
 
         const counts = {};

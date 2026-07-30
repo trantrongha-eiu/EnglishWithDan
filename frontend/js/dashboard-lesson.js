@@ -45,8 +45,7 @@ const lessonState = {
 async function loadClassroomAndTodaysLesson() {
     try {
         const res = await fetch(`${API}/vocabulary-lessons`, { headers: authH() });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         lessonState.publicLessons = data.lessons || [];
     } catch (err) {
         console.error('loadClassroomAndTodaysLesson:', err);
@@ -65,8 +64,7 @@ async function loadQuizLeaderboard() {
     if (!listEl) return;
     try {
         const res = await fetch(`${API}/vocabulary-lessons/leaderboard`, { headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'load failed');
+        const data = await window.ApiClient.handleResponse(res);
         const rows = data.leaderboard || [];
         if (!rows.length) {
             listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai làm Quiz đủ điều kiện xếp hạng — hãy là người đầu tiên! ⏱</div>';
@@ -196,7 +194,8 @@ async function renderTodaysLessonCard() {
     let attempt = null;
     try {
         const res = await fetch(`${API}/vocabulary-lessons/${today._id}/attempt`, { headers: authH() });
-        if (res.ok) { const d = await res.json(); attempt = d.attempt; }
+        const d = await window.ApiClient.handleResponse(res);
+        attempt = d.attempt;
     } catch (err) { /* best-effort — progress bar just shows 0% */ }
 
     const bestScore = attempt?.bestScore || 0;
@@ -234,8 +233,7 @@ function openLesson(lessonId, push = true) {
         document.getElementById('lesson-title').textContent = 'Đang tải...';
         try {
             const res = await fetch(`${API}/vocabulary-lessons/${lessonId}`, { headers: authH() });
-            if (!res.ok) throw new Error(res.status === 404 ? 'Không tìm thấy bài học' : `HTTP ${res.status}`);
-            const data = await res.json();
+            const data = await window.ApiClient.handleResponse(res);
             lessonState.currentLesson = data.lesson;
             document.getElementById('lesson-title').textContent = data.lesson.title;
             resetQuizState();
@@ -786,7 +784,7 @@ async function finishLessonQuiz() {
     };
 
     try {
-        await fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, {
+        const res = await fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, {
             method: 'POST',
             headers: authH(),
             body: JSON.stringify({
@@ -796,6 +794,7 @@ async function finishLessonQuiz() {
                 wrongWords: q.wrongWords.map(w => w.word),
             }),
         });
+        await window.ApiClient.handleResponse(res);
     } catch (err) { console.error('finishLessonQuiz submit:', err); }
 
     // Report this quiz to the SAME streak/XP endpoint Notebook/Paraphrase
@@ -813,7 +812,7 @@ async function finishLessonQuiz() {
             headers: authH(),
             body: JSON.stringify({ wordsAnswered: total, correctAnswered: q.correct, unitId: null, unitType: null }),
         });
-        const d = await res.json();
+        const d = await window.ApiClient.handleResponse(res);
         if (typeof _applyStreakResult === 'function') _applyStreakResult(d);
     } catch (err) { console.error('finishLessonQuiz streak report:', err); }
     if (typeof loadStreakAndUpdateMascot === 'function') loadStreakAndUpdateMascot();

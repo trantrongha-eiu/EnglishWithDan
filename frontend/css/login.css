@@ -638,20 +638,20 @@
            rest of the (theme-aware) site.
         ══════════════════════════════════════════════ */
         [data-theme="dark"] .login-card,
-        [data-theme="dark"] .fm-modal-box { background: #1f2937; }
+        [data-theme="dark"] .fm-modal-box { background: var(--surface, #0d0d0d); }
         [data-theme="dark"] .welcome-text,
         [data-theme="dark"] .fm-title { color: #f9fafb; }
         [data-theme="dark"] .form-group label { color: #d1d5db; }
         [data-theme="dark"] .form-group input,
         [data-theme="dark"] .fm-input,
         [data-theme="dark"] .otp-input {
-            background: #111827; border-color: #374151; color: #f9fafb;
+            background: var(--bg, #000000); border-color: var(--border2, #333333); color: #f9fafb;
         }
         [data-theme="dark"] .divider::before,
-        [data-theme="dark"] .divider::after { background: #374151; }
-        [data-theme="dark"] .btn-social { background: #111827; border-color: #374151; color: #e5e7eb; }
+        [data-theme="dark"] .divider::after { background: var(--border2, #333333); }
+        [data-theme="dark"] .btn-social { background: var(--bg, #000000); border-color: var(--border2, #333333); color: #e5e7eb; }
         [data-theme="dark"] .btn-social:hover { border-color: #4b5563; }
-        [data-theme="dark"] .register-prompt { border-top-color: #374151; }
+        [data-theme="dark"] .register-prompt { border-top-color: var(--border2, #333333); }
         [data-theme="dark"] .remember-me { color: #9ca3af; }
         [data-theme="dark"] .login-toast.error  { background:#2d1515; color:#fca5a5; border-color:#7f1d1d; }
         [data-theme="dark"] .login-toast.banned { background:#2a1800; color:#fdba74; border-color:#92400e; }

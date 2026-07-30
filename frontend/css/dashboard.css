@@ -499,7 +499,7 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 /* Skeleton shimmer */
 @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skeleton-cell{height:14px;border-radius:6px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:800px 100%;animation:shimmer 1.4s infinite linear}
-[data-theme="dark"] .skeleton-cell{background:linear-gradient(90deg,#374151 25%,#4b5563 50%,#374151 75%);background-size:800px 100%}
+[data-theme="dark"] .skeleton-cell{background:linear-gradient(90deg,var(--border2, #333333) 25%,#4b5563 50%,var(--border2, #333333) 75%);background-size:800px 100%}
 
 /* Smooth book switch */
 #book-content{transition:opacity .15s ease}
@@ -714,7 +714,7 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 .score-ring-wrap{position:relative;margin:20px auto;width:160px;height:160px}
 .score-ring-wrap svg{transform:rotate(-90deg)}
 .score-ring-track{stroke:#e5e7eb}
-[data-theme="dark"] .score-ring-track{stroke:#374151}
+[data-theme="dark"] .score-ring-track{stroke:var(--border2, #333333)}
 .score-ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .score-pct{font-size:28px;font-weight:800;color:var(--text)}
 .score-lbl{font-size:12px;color:var(--text2)}

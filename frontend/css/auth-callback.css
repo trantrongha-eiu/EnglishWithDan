@@ -28,11 +28,11 @@
     /* Zero theme support before this (student UI audit, Nhóm 4,
        2026-07-26) — page is transient (auto-redirects), so no toggle
        button here, just respects whatever theme is already set. */
-    [data-theme="dark"] .card { background: #1f2937; }
+    [data-theme="dark"] .card { background: var(--surface, #0d0d0d); }
     /* :not(.error-state) so this doesn't fight .error-state h2's red at
        equal specificity (source order would otherwise let this win). */
     [data-theme="dark"] .card:not(.error-state) h2 { color: #f9fafb; }
-    [data-theme="dark"] .spinner { border-color: #374151; border-top-color: #f5576c; }
+    [data-theme="dark"] .spinner { border-color: var(--border2, #333333); border-top-color: #f5576c; }
     .btn {
       margin-top: 20px;
       display: inline-block; padding: 12px 28px;

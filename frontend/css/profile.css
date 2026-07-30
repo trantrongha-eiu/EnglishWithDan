@@ -93,7 +93,7 @@ body { background: var(--bg); padding-top: var(--nav-height); }
   background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;
 }
 [data-theme=dark] .plan-tag--premium { background: linear-gradient(135deg, #451a03, #78350f); color: #fde68a; border-color: #92400e; }
-[data-theme=dark] .plan-tag--free { background: #0f172a; color: #94a3b8; border-color: #334155; }
+[data-theme=dark] .plan-tag--free { background: var(--bg, #000000); color: #94a3b8; border-color: var(--border2, #333333); }
 [data-theme=dark] .plan-tag--expired { background: #1c0505; color: #f87171; border-color: #7f1d1d; }
 
 .plan-dates { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }

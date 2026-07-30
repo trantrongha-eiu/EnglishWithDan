@@ -436,7 +436,7 @@ function applyMascotState(streak, previousStreak) {
 async function loadStreakAndUpdateMascot() {
     try {
         const res  = await fetch(`${API}/user/stats`, { headers: authH() });
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         if (!data.success) return;
         const streak = data.stats?.streak ?? 0;
         const previousStreak = data.stats?.previousStreak ?? 0;
@@ -464,12 +464,11 @@ async function useHammer() {
     if (btn) { btn.disabled = true; }
     try {
         const res = await fetch(`${API}/user/streak/use-hammer`, { method: 'POST', headers: authH() });
-        const d = await res.json();
-        if (!d.success) { toast(d.message || 'Không thể dùng búa lúc này', 'error'); return; }
+        const d = await window.ApiClient.handleResponse(res);
         toast(`🔨 Đã khôi phục streak ${d.streak} ngày!`, 'success');
         await loadStreakAndUpdateMascot();
         loadWeeklyProgress();
-    } catch { toast('Không thể dùng búa lúc này', 'error'); }
+    } catch (err) { toast(err.message || 'Không thể dùng búa lúc này', 'error'); }
     finally { if (btn) btn.disabled = false; }
 }
 
@@ -480,8 +479,7 @@ async function loadStreakLeaderboard() {
     if (!listEl) return;
     try {
         const res  = await fetch(`${API}/user/streak-leaderboard`, { headers: authH() });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message || 'load failed');
+        const data = await window.ApiClient.handleResponse(res);
         const rows = data.leaderboard || [];
         if (!rows.length) {
             listEl.innerHTML = '<div class="dan-lb-empty">Chưa có ai đang giữ streak — hãy là người đầu tiên! 🔥</div>';
@@ -518,7 +516,7 @@ async function loadWeeklyProgress() {
     if (!row) return;
     try {
         const res  = await fetch(`${API}/user/activity-heatmap?days=8`, { headers: authH() });
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         if (!data.success) return;
         const counts = {};
         data.activity.forEach(d => { counts[d.date] = d.count; });
@@ -548,18 +546,12 @@ async function loadWeeklyProgress() {
 async function loadMyBooks() {
     try {
         const res  = await fetch(`${API}/vocabbook`, { headers: authH() });
-        if (res.status === 401) { logout(); return; }
-        if (!res.ok) {
-            const isColdStart = res.status === 502 || res.status === 503;
-            throw new Error(isColdStart ? 'cold-start' : `HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
+        const data = await window.ApiClient.handleResponse(res);
         myBooks = data.books;
         renderBookSidebar();
     } catch (err) {
         console.error('loadMyBooks:', err);
-        const isColdStart = err.message === 'cold-start';
+        const isColdStart = err.coldStart;
         const wrap = document.getElementById('book-list-sidebar');
         if (wrap) {
             wrap.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">
@@ -672,7 +664,7 @@ async function saveBookOrder() {
             headers: authH(),
             body: JSON.stringify({ order: myBooks.map((b, i) => ({ _id: b._id, sortOrder: i })) })
         });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        await window.ApiClient.handleResponse(res);
     } catch (_) {
         toast('Không lưu được thứ tự sổ từ vựng, đang tải lại danh sách...', 'error');
         loadMyBooks();
@@ -753,13 +745,7 @@ function openBook(bookId, push = true) {
 async function refreshCurrentBook() {
     try {
         const res  = await fetch(`${API}/vocabbook/${currentBookId}`, { headers: authH() });
-        if (res.status === 401) { logout(); return; }
-        if (!res.ok) {
-            const isColdStart = res.status === 502 || res.status === 503;
-            throw new Error(isColdStart ? 'Server is starting up, please try again.' : `Server error (${res.status})`);
-        }
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
+        const data = await window.ApiClient.handleResponse(res);
         currentBookData = data.book;
         renderBookContent(data.book);
     } catch (err) { toast('Error loading notebook: ' + err.message, 'error'); }
@@ -937,7 +923,7 @@ async function updateWordStatus(wordId, status, selectEl) {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ status })
         });
-        if (!res.ok) throw new Error('Server error');
+        await window.ApiClient.handleResponse(res);
         // Confetti only after server confirms — not on optimistic update
         if (w && status === 'da-thuoc') checkBookCompletion();
     } catch {
@@ -983,12 +969,12 @@ function deleteWord(wordId) {
     confirm2('Delete Word', 'Are you sure you want to delete this word?', async () => {
         try {
             const res = await fetch(`${API}/vocabbook/${currentBookId}/words/${wordId}`, { method: 'DELETE', headers: authH() });
-            if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Delete failed', 'error'); return; }
+            await window.ApiClient.handleResponse(res);
             selectedWordIds.delete(wordId);
             updateBulkBar();
             toast('Word deleted');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-        } catch { toast('Delete failed', 'error'); }
+        } catch (err) { toast(err.message || 'Delete failed', 'error'); }
     });
 }
 
@@ -1021,8 +1007,7 @@ async function saveEditWord() {
                 note:        document.getElementById('ew-note').value.trim(),
             })
         });
-        const data = await res.json();
-        if (!data.success) { toast(data.message || 'Error saving word', 'error'); return; }
+        await window.ApiClient.handleResponse(res);
         closeModal('modal-edit-word');
         toast('Word updated ✅');
         await refreshCurrentBook();
@@ -1080,12 +1065,12 @@ async function bulkDelete() {
                 method: 'DELETE', headers: authH(),
                 body: JSON.stringify({ wordIds: [...selectedWordIds] })
             });
-            if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Delete failed', 'error'); return; }
+            await window.ApiClient.handleResponse(res);
             selectedWordIds.clear();
             updateBulkBar();
             toast('Deleted');
             await Promise.all([refreshCurrentBook(), loadMyBooks()]);
-        } catch { toast('Delete failed', 'error'); }
+        } catch (err) { toast(err.message || 'Delete failed', 'error'); }
     });
 }
 
@@ -1098,14 +1083,14 @@ async function renameBook() {
         const res = await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
         });
-        if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Error renaming', 'error'); return; }
+        await window.ApiClient.handleResponse(res);
         // Update local state so flashcard/practice titles reflect new name immediately
         if (currentBookData) currentBookData.name = name;
         const bEntry = myBooks.find(x => x._id === currentBookId);
         if (bEntry) bEntry.name = name;
         toast('Notebook renamed');
         await loadMyBooks();
-    } catch { toast('Error renaming', 'error'); }
+    } catch (err) { toast(err.message || 'Error renaming', 'error'); }
 }
 
 /* ── Book menu – action sheet ── */
@@ -1146,7 +1131,7 @@ function deleteBookFromMenu() {
         async () => {
             try {
                 const res = await fetch(`${API}/vocabbook/${_menuBookId}`, { method: 'DELETE', headers: authH() });
-                if (!res.ok) { const d = await res.json().catch(() => ({})); toast(d.message || 'Xóa thất bại', 'error'); return; }
+                await window.ApiClient.handleResponse(res);
                 if (currentBookId === _menuBookId) {
                     currentBookId = null;
                     document.getElementById('book-content').style.display  = 'none';
@@ -1154,7 +1139,7 @@ function deleteBookFromMenu() {
                 }
                 toast('Đã xóa sổ');
                 await loadMyBooks();
-            } catch { toast('Xóa thất bại', 'error'); }
+            } catch (err) { toast(err.message || 'Xóa thất bại', 'error'); }
         }
     );
 }
@@ -1212,8 +1197,7 @@ async function confirmMerge() {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ sourceIds: checkedIds })
         });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
+        const data = await window.ApiClient.handleResponse(res);
 
         closeModal('modal-merge-books');
 
@@ -1261,8 +1245,7 @@ async function createBook() {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ name, emoji: selectedEmoji, color: '#3d8bff' })
         });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.message);
+        const data = await window.ApiClient.handleResponse(res);
         closeModal('modal-add-book');
         toast('Notebook created');
         await loadMyBooks();
@@ -1429,7 +1412,7 @@ async function addWordManual() {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ word, meaning, example, note, source: 'manual', phonetic: _lookupPhonetic, partOfSpeech: _lookupPartOfSpeech })
         });
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         if (!data.success) { toast(data.message, 'error'); return; }
         closeModal('modal-add-word');
         toast(data.message);
@@ -1497,7 +1480,7 @@ async function confirmSaveWord() {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ ...w, note })
         });
-        const data = await res.json();
+        const data = await window.ApiClient.handleResponse(res);
         closeModal('modal-save-word');
         toast(data.message, data.success ? 'success' : 'error');
         if (data.success) {
@@ -1578,8 +1561,7 @@ function closeUnitView(push = true) {
 async function loadUnits() {
     try {
         const res   = await fetch(`${API}/vocab/units`, { headers: authH() });
-        if (!res.ok) return;
-        const units = await res.json();
+        const units = await window.ApiClient.handleResponse(res);
         if (!Array.isArray(units)) return;
         const sel   = document.getElementById('unitSelect');
         sel.innerHTML = '<option value="">-- Chọn Paraphrase Unit --</option>';
@@ -1600,9 +1582,9 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
     if (!num) { toast('Vui lòng chọn một Paraphrase Unit trước', 'error'); return; }
     try {
         const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
-        const newUnit = await res.json();
-        if (!res.ok || !newUnit.words) {
-            toast(newUnit.message || 'Unable to load Unit', 'error');
+        const newUnit = await window.ApiClient.handleResponse(res);
+        if (!newUnit.words) {
+            toast('Unable to load Unit', 'error');
             return;
         }
         // Assign currentUnit only after user confirms (or if not mid-practice)
@@ -1629,7 +1611,7 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
             syncViewUrl(push ? 'push' : 'replace', { view: 'unit', unit: newUnit.unitNumber, mode: modeOverride || 'study' });
             _activateModeNow(modeOverride || 'study');
         });
-    } catch { toast('Unable to load Unit', 'error'); }
+    } catch (err) { toast(err.message || 'Unable to load Unit', 'error'); }
 }
 
 /* ══════════════════════════════════════════════
@@ -1858,7 +1840,7 @@ async function _reportSessionStreak() {
                 unitType: isParaphrase ? 'paraphrase' : null
             })
         });
-        const d = await res.json();
+        const d = await window.ApiClient.handleResponse(res);
         _applyStreakResult(d);
     } catch { /* silent */ }
 }
@@ -2675,10 +2657,11 @@ async function _reportDifficultWords() {
         ? (currentBookData?.name || 'Sổ cá nhân')
         : (_isDifficultPractice ? 'Từ hay sai' : `Unit ${currentUnit?.unitNumber || ''}`);
     try {
-        await fetch(`${API}/difficult-words/report`, {
+        const res = await fetch(`${API}/difficult-words/report`, {
             method: 'POST', headers: authH(),
             body: JSON.stringify({ words, source })
         });
+        await window.ApiClient.handleResponse(res);
         updateDifficultBadge();
     } catch {}
 }
@@ -2686,7 +2669,7 @@ async function _reportDifficultWords() {
 /* Update badge count on the sidebar button */
 async function updateDifficultBadge() {
     try {
-        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => r.json());
+        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r));
         const count = (data.words || []).length;
         ['difficultCountBadge', 'difficultCountBadgeMob'].forEach(id => {
             const el = document.getElementById(id);
@@ -2704,7 +2687,7 @@ async function openDifficultWordsModal() {
     body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
     document.getElementById('btn-practice-difficult').style.display = 'none';
     try {
-        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => r.json());
+        const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r));
         _renderDifficultWords(data.words || []);
     } catch {
         body.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)">Không thể tải danh sách. Vui lòng thử lại.</div>';
@@ -2774,10 +2757,11 @@ function cancelDifficultWordEdit(id) {
 async function saveDifficultWordEdit(id) {
     const meaning = document.getElementById(`dw-edit-meaning-${id}`).value.trim();
     try {
-        await fetch(`${API}/difficult-words/${id}`, {
+        const res = await fetch(`${API}/difficult-words/${id}`, {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ meaning })
         });
+        await window.ApiClient.handleResponse(res);
         const el = document.getElementById(`dw-meaning-${id}`);
         el.innerHTML = meaning ? _esc(meaning) : '<em style="color:var(--text3)">Chưa có nghĩa</em>';
         document.getElementById(`dw-edit-${id}`).style.display = 'none';
@@ -2792,7 +2776,8 @@ async function saveDifficultWordEdit(id) {
 async function deleteDifficultWord(id) {
     confirm2('Xóa khỏi danh sách', 'Bạn đã nhớ từ này rồi và muốn xóa khỏi danh sách hay sai?', async () => {
         try {
-            await fetch(`${API}/difficult-words/${id}`, { method: 'DELETE', headers: authH() });
+            const res = await fetch(`${API}/difficult-words/${id}`, { method: 'DELETE', headers: authH() });
+            await window.ApiClient.handleResponse(res);
             document.getElementById(`dw-item-${id}`)?.remove();
             window._difficultWordsList = (window._difficultWordsList || []).filter(w => w._id !== id);
             const remaining = window._difficultWordsList.length;
@@ -3073,13 +3058,12 @@ async function confirmBulkImport() {
             headers: authH(),
             body: JSON.stringify({ words: toAdd })
         });
-        const data = await res.json();
-        if (!data.success) { toast(data.message || 'Lỗi thêm từ', 'error'); return; }
+        const data = await window.ApiClient.handleResponse(res);
         toast(data.message, 'success');
         closeModal('modal-bulk-import');
         await refreshCurrentBook();
-    } catch (e) {
-        toast('Lỗi kết nối', 'error');
+    } catch (err) {
+        toast(err.message || 'Lỗi kết nối', 'error');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-plus"></i> Thêm vào sổ';

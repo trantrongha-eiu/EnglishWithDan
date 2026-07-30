@@ -29,15 +29,15 @@
     .wp-quit-continue:hover{background:#15803d}
     .wp-quit-leave{background:none;color:#6b7280;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer}
     .wp-quit-leave:hover{border-color:#e53935;color:#e53935}
-    [data-theme="dark"] .wp-quit-box{background:#1e293b}
+    [data-theme="dark"] .wp-quit-box{background:var(--surface, #0d0d0d)}
     [data-theme="dark"] .wp-quit-top{background:linear-gradient(135deg,#1c2618 0%,#2a3820 100%)}
     [data-theme="dark"] .wp-quit-title{color:#fbbf24}
-    [data-theme="dark"] .wp-quit-leave{border-color:#374151;color:#9ca3af}
+    [data-theme="dark"] .wp-quit-leave{border-color:var(--border2, #333333);color:#9ca3af}
 
     /* ── Stop button ── */
     .wp-stop-btn{background:none;border:1.5px solid #d1d5db;color:#9ca3af;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:border-color .2s,color .2s}
     .wp-stop-btn:hover{border-color:#e53935;color:#e53935}
-    [data-theme="dark"] .wp-stop-btn{border-color:#374151;color:#64748b}
+    [data-theme="dark"] .wp-stop-btn{border-color:var(--border2, #333333);color:#64748b}
 
     /* ── Test countdown timer ── */
     .wp-test-timer{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:8px;padding:3px 10px;font-size:13px;font-weight:700;color:#15803d;font-variant-numeric:tabular-nums;transition:background .3s,color .3s,border-color .3s}
@@ -62,7 +62,7 @@
     .wp-skip-btn{background:none;border:1.5px solid #d1d5db;color:#9ca3af;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:border-color .2s,color .2s}
     .wp-skip-btn:hover{border-color:#f59e0b;color:#d97706}
     .wp-skip-btn.hidden{display:none}
-    [data-theme="dark"] .wp-skip-btn{border-color:#374151;color:#6b7280}
+    [data-theme="dark"] .wp-skip-btn{border-color:var(--border2, #333333);color:#6b7280}
 
     /* ── Welcome ── */
     .wp-state-welcome{text-align:center;padding:28px 16px 20px;max-width:600px;margin:0 auto}
@@ -83,7 +83,7 @@
     .wp-welcome-hint{font-size:12px;color:#9ca3af;margin-top:10px}
     @media(max-width:480px){.wp-welcome-cards{grid-template-columns:1fr}}
     [data-theme="dark"] .wp-welcome-title{color:#f1f5f9}
-    [data-theme="dark"] .wp-welcome-card{background:#1e293b;border-color:#334155}
+    [data-theme="dark"] .wp-welcome-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333)}
     [data-theme="dark"] .wp-welcome-card-title{color:#f1f5f9}
     [data-theme="dark"] .wp-welcome-types{background:#0c1e30;border-color:#1e4060}
     [data-theme="dark"] .wp-welcome-types-lbl{color:#7dd3fc}
@@ -100,16 +100,16 @@
     .t1-mc-option.selected .t1-opt-letter{background:#3d8bff;color:#fff}
     .t1-mc-option.correct .t1-opt-letter{background:#16a34a;color:#fff}
     .t1-mc-option.wrong .t1-opt-letter{background:#dc2626;color:#fff}
-    [data-theme="dark"] .t1-mc-option{background:#1e293b;border-color:#334155;color:#f1f5f9}
+    [data-theme="dark"] .t1-mc-option{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#f1f5f9}
     [data-theme="dark"] .t1-mc-option:hover{border-color:#3d8bff;background:#0c1e30}
     [data-theme="dark"] .t1-mc-option.selected{border-color:#3d8bff;background:#0c1e30}
-    [data-theme="dark"] .t1-mc-option .t1-opt-letter{background:#334155;color:#94a3b8}
+    [data-theme="dark"] .t1-mc-option .t1-opt-letter{background:var(--border2, #333333);color:#94a3b8}
 
     /* ── Skill tabs in sidebar ── */
     .t1-skill-tab{background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;transition:all .2s;text-align:left;width:100%}
     .t1-skill-tab.active{border-color:#e53935;color:#e53935;background:#fff0f0}
     .t1-skill-tab:hover{border-color:#e53935;color:#e53935}
-    [data-theme="dark"] .t1-skill-tab{border-color:#334155;color:#64748b}
+    [data-theme="dark"] .t1-skill-tab{border-color:var(--border2, #333333);color:#64748b}
     [data-theme="dark"] .t1-skill-tab.active{border-color:#f87171;color:#f87171;background:#2d1111}
     .t1-skill-list{display:flex;flex-direction:column;gap:6px}
 
@@ -152,7 +152,7 @@
 
     /* ── Sidebar toggle switches ── */
     .t1-settings-section{margin-top:4px;padding:10px 0 2px;border-top:1px solid #f3f4f6}
-    [data-theme="dark"] .t1-settings-section{border-color:#1e293b}
+    [data-theme="dark"] .t1-settings-section{border-color:var(--surface, #0d0d0d)}
     .t1-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;cursor:pointer}
     .t1-toggle-row:hover .t1-toggle-label{color:#e53935}
     .t1-toggle-label{font-size:12px;font-weight:600;color:#4b5563;display:flex;align-items:center;gap:6px;user-select:none}
@@ -163,7 +163,7 @@
     .t1-slider:before{position:absolute;content:"";height:12px;width:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
     .t1-switch input:checked+.t1-slider{background:#3d8bff}
     .t1-switch input:checked+.t1-slider:before{transform:translateX(16px)}
-    [data-theme="dark"] .t1-slider{background:#334155}
+    [data-theme="dark"] .t1-slider{background:var(--border2, #333333)}
 
     /* ── Auto-next countdown bar ── */
     @keyframes t1CountdownBar{from{width:100%}to{width:0%}}
@@ -182,7 +182,7 @@
     /* ── History button ── */
     .t1-hist-open-btn{background:none;border:1.5px solid #d1d5db;border-radius:10px;padding:9px 22px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s;margin-top:8px}
     .t1-hist-open-btn:hover{border-color:#e53935;color:#e53935;background:#fff0f0}
-    [data-theme="dark"] .t1-hist-open-btn{border-color:#334155;color:#64748b}
+    [data-theme="dark"] .t1-hist-open-btn{border-color:var(--border2, #333333);color:#64748b}
     [data-theme="dark"] .t1-hist-open-btn:hover{border-color:#f87171;color:#f87171;background:#2d1111}
 
     /* ── History modal ── */
@@ -210,14 +210,14 @@
     .t1-hist-row-xp{font-size:12px;color:#d97706;font-weight:700;margin-left:auto}
     .t1-hist-empty{text-align:center;padding:40px 20px;color:#9ca3af}
     .t1-hist-empty-icon{font-size:40px;margin-bottom:10px}
-    [data-theme="dark"] .t1-hist-modal{background:#1e293b}
-    [data-theme="dark"] .t1-hist-header{border-color:#334155}
+    [data-theme="dark"] .t1-hist-modal{background:var(--surface, #0d0d0d)}
+    [data-theme="dark"] .t1-hist-header{border-color:var(--border2, #333333)}
     [data-theme="dark"] .t1-hist-header h3{color:#f1f5f9}
     [data-theme="dark"] .t1-hist-close{color:#64748b}
     [data-theme="dark"] .t1-hist-close:hover{color:#f1f5f9}
-    [data-theme="dark"] .t1-hist-stat{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t1-hist-stat{background:var(--bg, #000000);border-color:var(--border2, #333333)}
     [data-theme="dark"] .t1-hist-num{color:#f1f5f9}
-    [data-theme="dark"] .t1-hist-row{background:#0f172a;border-color:#334155}
+    [data-theme="dark"] .t1-hist-row{background:var(--bg, #000000);border-color:var(--border2, #333333)}
     [data-theme="dark"] .t1-hist-row-skills{color:#94a3b8}
     [data-theme="dark"] .t1-hist-row-count{color:#64748b}
 

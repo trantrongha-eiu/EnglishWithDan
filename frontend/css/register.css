@@ -628,15 +628,15 @@
            brand identity exactly as in light mode — only the white card/
            form surfaces switch to a dark surface.
         ══════════════════════════════════════════════ */
-        [data-theme="dark"] .register-card { background: #1f2937; }
+        [data-theme="dark"] .register-card { background: var(--surface, #0d0d0d); }
         [data-theme="dark"] .welcome-text { color: #f9fafb; }
         [data-theme="dark"] .form-group label { color: #d1d5db; }
         [data-theme="dark"] .form-group input {
-            background: #111827; border-color: #374151; color: #f9fafb;
+            background: var(--bg, #000000); border-color: var(--border2, #333333); color: #f9fafb;
         }
         [data-theme="dark"] .divider::before,
-        [data-theme="dark"] .divider::after { background: #374151; }
-        [data-theme="dark"] .btn-social { background: #111827; border-color: #374151; color: #e5e7eb; }
+        [data-theme="dark"] .divider::after { background: var(--border2, #333333); }
+        [data-theme="dark"] .btn-social { background: var(--bg, #000000); border-color: var(--border2, #333333); color: #e5e7eb; }
         [data-theme="dark"] .btn-social:hover { border-color: #4b5563; }
-        [data-theme="dark"] .login-prompt { border-top-color: #374151; }
+        [data-theme="dark"] .login-prompt { border-top-color: var(--border2, #333333); }
         [data-theme="dark"] .terms-checkbox { color: #9ca3af; }
