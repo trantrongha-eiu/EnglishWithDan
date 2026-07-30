@@ -222,6 +222,9 @@ export default function VocabActivity() {
                             {(s.learningStreak || 0) > 0 && (
                               <span style={{ fontSize: 11, color: '#fbbf24', marginLeft: 4 }}>🔥{s.learningStreak}</span>
                             )}
+                            {(s.streakHammers || 0) > 0 && (
+                              <span style={{ fontSize: 11, color: 'var(--text2)', marginLeft: 4 }} title="Búa Daniel — dùng để tự khôi phục streak">🔨{s.streakHammers}</span>
+                            )}
                           </div>
                           <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{s.username}</div>
                         </div>
