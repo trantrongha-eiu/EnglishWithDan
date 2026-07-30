@@ -559,6 +559,16 @@
         .practice-card[data-done="1"] { border-color: #86efac; }
         [data-theme="dark"] .practice-card[data-done="1"] { border-color: #166534; }
 
+        /* Base practice card dark styling — was missing here entirely (only
+           the .redo button and [data-done] border had dark rules), so these
+           cards stayed on their light-mode white background/dark text in
+           dark mode while reading.html's identical cards went true-black.
+           Matches reading-extra.css's .practice-card dark rules exactly. */
+        [data-theme="dark"] .practice-card { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
+        [data-theme="dark"] .practice-card:hover { border-color: #4b5563; }
+        [data-theme="dark"] .practice-card-title { color: #f9fafb; }
+        [data-theme="dark"] .practice-card-qtypes { color: #9ca3af; }
+
         /* ── Q-nav section group label (S1/S2/S3/S4) ────────── */
         .q-nav-section-label {
             display: inline-flex;

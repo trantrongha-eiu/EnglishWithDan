@@ -1941,18 +1941,23 @@ body.tool-hl .check-box { user-select: none; }
 
 .rq-bullet-list ul { list-style: none; padding: 0; margin: 0; }
 
+/* Was `display: flex` — with a mix of plain text and the __QN__ inline
+   blank widget as children, flexbox split the item into separate flex
+   items (intro text / blank / trailing text) that each wrapped their own
+   text independently instead of flowing as one paragraph, so long lines
+   rendered with words visually out of order around the blank. A bullet
+   marker doesn't need flex — position it absolutely and let the rest flow
+   as normal inline text. */
 .rq-bullet-item {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 8px 0;
+  position: relative;
+  padding: 8px 0 8px 18px;
   border-bottom: 1px solid #f3f4f6;
   font-size: 14px;
   color: #374151;
   line-height: 1.9;
 }
 
-.rq-bullet-item::before { content: '•'; color: #1565c0; font-weight: 700; flex-shrink: 0; }
+.rq-bullet-item::before { content: '•'; color: #1565c0; font-weight: 700; position: absolute; left: 0; top: 8px; }
 .rq-bullet-item:last-child { border-bottom: none; }
 
 /* ── MAP GROUP ──────────────────────────────────────────────────────── */
@@ -2135,10 +2140,14 @@ body.tool-hl .check-box { user-select: none; }
 }
 
 /* ── INLINE INPUT (inside table/note/bullet) ────────────────────────── */
+/* inline-flex here used to make this atomic badge+input unit render out of
+   DOM order whenever it didn't fit the remaining width on its line — a
+   known inline-flex line-wrapping quirk (surrounding words that come AFTER
+   it in the text would jump ahead of it visually, reading as nonsense).
+   inline-block + vertical-align wraps as a normal inline unit instead. */
 .rq-inline-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  display: inline-block;
+  white-space: nowrap;
   vertical-align: middle;
 }
 
@@ -2153,7 +2162,8 @@ body.tool-hl .check-box { user-select: none; }
   border-radius: 50%;
   font-size: 10px;
   font-weight: 700;
-  flex-shrink: 0;
+  vertical-align: middle;
+  margin-right: 5px;
 }
 
 .rq-inline-input {
@@ -2168,6 +2178,7 @@ body.tool-hl .check-box { user-select: none; }
   color: #111827;
   outline: none;
   cursor: text;
+  vertical-align: middle;
   transition: border-color .15s;
 }
 
