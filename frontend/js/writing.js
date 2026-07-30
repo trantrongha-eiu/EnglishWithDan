@@ -307,8 +307,15 @@ function toggleHideTimer() {
 function switchTask(num) {
   if (num < 1 || num > 2) return;
 
-  // Save current answer
-  state.answers[state.currentTask] = document.getElementById('answer-textarea').value;
+  // Save current answer — skip when num already equals currentTask (the
+  // initial render call from launchExam()/restoreExam(), not a real user
+  // switch). At that point the textarea still holds whatever was left over
+  // from the previous screen, not this task's answer, so saving it here
+  // would clobber a just-restored answer with an empty string before it's
+  // ever displayed (see restoreExam() in writing-autosave.js).
+  if (num !== state.currentTask) {
+    state.answers[state.currentTask] = document.getElementById('answer-textarea').value;
+  }
 
   state.currentTask = num;
   const exam = state.exam;
