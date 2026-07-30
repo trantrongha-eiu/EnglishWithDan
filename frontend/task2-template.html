@@ -268,7 +268,11 @@
       .tpl-layout{flex-direction:column}
       .tpl-sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:2px solid #e5e7eb}
       .tpl-sidebar-top,.tpl-sidebar-footer{display:none}
-      .tpl-type-nav{display:flex;flex-direction:row;overflow-x:auto;padding:0;scrollbar-width:none}
+      .tpl-type-nav{display:flex;flex-direction:row;overflow-x:auto;padding:0;scrollbar-width:none;
+        /* Right-edge fade — visual hint that there's more to scroll (Type 05-07
+           were otherwise clipped with no affordance on narrow screens). */
+        -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent 100%);
+        mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent 100%)}
       .tpl-type-nav::-webkit-scrollbar{display:none}
       .t2-type-tab-btn{flex-direction:column;align-items:center;border-left:none;
         border-bottom:3px solid transparent;padding:7px 10px;min-width:70px;max-width:86px;gap:3px;flex-shrink:0}
@@ -338,7 +342,11 @@
     [data-theme=dark] .t2-mode-tab{background:#1e293b;border-color:#334155;color:#94a3b8}
     [data-theme=dark] .t2-mode-tab:hover{border-color:#4c1d95;color:#a5b4fc}
     @media(max-width:600px){
-      .t2-mode-tabs{padding:9px 12px 0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+      .t2-mode-tabs{padding:9px 12px 0;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;
+        /* Same right-edge scroll hint as .tpl-type-nav above — Dictation was
+           otherwise clipped off-screen with no affordance on narrow screens. */
+        -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent 100%);
+        mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent 100%)}
       .t2-mode-tabs::-webkit-scrollbar{display:none}
       .t2-mode-tab{padding:8px 12px;font-size:11.5px;flex-shrink:0}
     }
