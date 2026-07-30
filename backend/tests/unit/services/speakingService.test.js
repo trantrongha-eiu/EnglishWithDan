@@ -111,6 +111,38 @@ describe('speakingService.saveAttempt', () => {
     ]);
   });
 
+  test('coerces object-shaped strengths/improvements to plain strings instead of "[object Object]"', async () => {
+    // Regression test: the AI occasionally returns {"phrase":..,"reason":..}
+    // instead of a plain string for strengths/improvements (the prompt's
+    // "quoting a specific word/phrase" wording reads similarly to the
+    // structured mistakes/vocabUpgrades rules). The frontend renders these
+    // with a bare `${s}`, so an un-coerced object silently rendered as the
+    // literal text "[object Object]" in the student UI.
+    const student = await createStudent();
+    const feedback = {
+      overallBand: 6, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
+      overallFeedback: 'ok', todaysFocus: 'ok',
+      strengths: [
+        { phrase: "Used 'largely because' correctly", reason: 'adds reasoning' },
+        'Already a plain string',
+      ],
+      mistakes: [],
+      improvements: [{ suggestion: 'Use more linking words' }],
+    };
+
+    await speakingService.saveAttempt(student._id, {
+      questionId: null, topic: 'Travel', part: 2,
+      questionText: 'Describe a memorable trip.', transcript: 'Some transcript',
+      duration: 45, feedback,
+    });
+
+    const saved = await SpeakingAttempt.findOne({ userId: student._id }).lean();
+    expect(saved.aiFeedback.strengths).toEqual([
+      "Used 'largely because' correctly", 'Already a plain string',
+    ]);
+    expect(saved.aiFeedback.suggestions).toEqual(['Use more linking words']);
+  });
+
   test('never throws even when persistence fails (invalid part enum) — resolves null', async () => {
     const student = await createStudent();
     const feedback = { overallBand: 5, mistakes: [], strengths: [], improvements: [] };

@@ -153,6 +153,28 @@ async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
   return { hints };
 }
 
+// The prompt asks for strengths/improvements as plain text strings, but the
+// model occasionally returns objects instead (e.g. {"phrase":"...","reason":
+// "..."}) — likely because the strengths rule mentions "quoting a specific
+// word/phrase", which reads similarly to the mistakes/vocabUpgrades rules
+// that DO want structured objects. The frontend renders these with a bare
+// `${s}`, so an object silently became the literal text "[object Object]"
+// instead of throwing anywhere. Coerce defensively so bad output degrades
+// to *some* readable string rather than corrupting the UI.
+function coerceToStringItems(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(item => {
+    if (typeof item === 'string') return item.trim();
+    if (item && typeof item === 'object') {
+      const candidate = item.text || item.phrase || item.point || item.strength
+        || item.suggestion || item.content || item.description
+        || Object.values(item).find(v => typeof v === 'string');
+      return (candidate || '').trim();
+    }
+    return item == null ? '' : String(item);
+  }).filter(Boolean);
+}
+
 // overallBand is already recomputed by gradeSpeaking() above by the time
 // this runs — trust it as-is rather than a second, potentially-divergent
 // recompute here.
@@ -166,14 +188,14 @@ function mapFeedbackToAiFeedback(feedback) {
     overallFeedback: feedback.overallFeedback || '',
     correctedVersion: '', // Stage 1 no longer generates this — stays empty unless a caller later chooses to persist a fetched improved answer
     todaysFocus: feedback.todaysFocus || '',
-    strengths: feedback.strengths || [],
+    strengths: coerceToStringItems(feedback.strengths),
     corrections: (feedback.mistakes || []).map(m => ({
       original: m.original,
       corrected: m.corrected,
       explanation: m.reason
     })),
     vocabUpgrades: feedback.vocabUpgrades || [],
-    suggestions: feedback.improvements || []
+    suggestions: coerceToStringItems(feedback.improvements)
   };
 }
 
