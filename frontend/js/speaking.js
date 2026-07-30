@@ -874,7 +874,13 @@ let _lastRecordingBlob = null;
 async function _startAudioCapture() {
   if (!('MediaRecorder' in window) || !navigator.mediaDevices?.getUserMedia) return;
   try {
-    _mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Explicit constraints (not just `audio: true`) — without these, some
+    // browsers/devices don't enable echo cancellation by default, so the
+    // recording picks up its own speaker output as a faint echo, especially
+    // noticeable on laptops without headphones (student report).
+    _mediaStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+    });
     _mediaChunks = [];
     _mediaRecorder = new MediaRecorder(_mediaStream);
     _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _mediaChunks.push(e.data); };
