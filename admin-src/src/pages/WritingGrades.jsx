@@ -125,7 +125,7 @@ export default function WritingGrades() {
           <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
             {pending > 0 && <span style={{ color: 'var(--accent2)' }}>{pending} chờ chấm</span>}
             {pending > 0 && aiDone > 0 && ' · '}
-            {aiDone > 0 && <span style={{ color: '#3d8bff' }}>{aiDone} AI đã chấm, chờ xác nhận</span>}
+            {aiDone > 0 && <span style={{ color: 'var(--blue)' }}>{aiDone} AI đã chấm, chờ xác nhận</span>}
             {pending === 0 && aiDone === 0 && <span>Tất cả đã xác nhận ✓</span>}
           </div>
         </div>

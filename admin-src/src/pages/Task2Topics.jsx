@@ -12,7 +12,7 @@ const ESSAY_COLORS = { advantages_disadvantages:'#4CAF50', cause_effect:'#FF9800
 const Q_TYPES = ['essay_type_recognition','fill_blank','rearrange','translation','error_correction','topic_sentence','short_writing','paraphrase'];
 const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Điền chỗ trống', rearrange:'Sắp xếp từ', translation:'Dịch câu', error_correction:'Sửa lỗi', topic_sentence:'Chọn topic sentence', short_writing:'Viết đoạn', paraphrase:'Paraphrase' };
 const LEVELS = ['beginner','elementary','intermediate'];
-const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
+const LEVEL_COLORS = { beginner:'var(--green)', elementary:'var(--blue)', intermediate:'#a855f7' };
 
 const defaultTopic = { week: 1, block: 'advantages_disadvantages', topicName: '', topicEmoji: '📝', essayType: 'advantages_disadvantages', prompt: '', hintAdvantages: '', hintDisadvantages: '', isActive: true };
 const defaultQ = { level: 'beginner', type: 'essay_type_recognition', questionText: '', options: '', baseWords: '', correctAnswer: '', explanationVi: '', modelAnswer: '', fallbackKeywords: '', orderIndex: 0, isActive: true };
@@ -195,7 +195,7 @@ function QuestionModal({ topicId, question, onClose, onSaved }) {
             <div>
               <label className="form-label">Từ để sắp xếp — baseWords (cách nhau bởi dấu cách hoặc phẩy)</label>
               <input className="form-input" value={form.baseWords || ''} onChange={e => set('baseWords', e.target.value)} placeholder="One of the most advantages of smartphones is their convenience" />
-              <div style={{ fontSize:11, color:'#9ca3af', marginTop:3 }}>Các từ này sẽ hiển thị dưới dạng chip để học sinh sắp xếp. Nếu để trống, hệ thống tự tạo từ Đáp án đúng.</div>
+              <div style={{ fontSize:11, color:'var(--text3)', marginTop:3 }}>Các từ này sẽ hiển thị dưới dạng chip để học sinh sắp xếp. Nếu để trống, hệ thống tự tạo từ Đáp án đúng.</div>
             </div>
           )}
           <div>
@@ -383,7 +383,7 @@ export default function Task2Topics() {
             </thead>
             <tbody>
               {topics.length === 0 && (
-                <tr><td colSpan={6} style={{ textAlign:'center', color:'#9ca3af', padding:32 }}>Chưa có topic nào</td></tr>
+                <tr><td colSpan={6} style={{ textAlign:'center', color:'var(--text3)', padding:32 }}>Chưa có topic nào</td></tr>
               )}
               {topics.map(t => (
                 <Fragment key={t._id}>
@@ -391,7 +391,7 @@ export default function Task2Topics() {
                     <td><span style={{ fontWeight:700, color:'#6366f1' }}>W{t.week}</span></td>
                     <td>
                       <div style={{ fontWeight:600 }}>{t.topicEmoji} {t.topicName}</div>
-                      <div style={{ fontSize:11, color:'#9ca3af', marginTop:2 }}>{(t.questions||[]).length} câu hỏi</div>
+                      <div style={{ fontSize:11, color:'var(--text3)', marginTop:2 }}>{(t.questions||[]).length} câu hỏi</div>
                     </td>
                     <td>
                       <span style={{ background: ESSAY_COLORS[t.essayType] + '20', color: ESSAY_COLORS[t.essayType], borderRadius:20, padding:'2px 10px', fontSize:12, fontWeight:700 }}>
@@ -407,7 +407,7 @@ export default function Task2Topics() {
                       </div>
                     </td>
                     <td style={{ textAlign:'center' }}>
-                      <span style={{ color: t.isActive ? '#22c55e' : '#ef4444', fontWeight:700 }}>{t.isActive ? '✓ Active' : '✗ Ẩn'}</span>
+                      <span style={{ color: t.isActive ? 'var(--green)' : 'var(--danger)', fontWeight:700 }}>{t.isActive ? '✓ Active' : '✗ Ẩn'}</span>
                     </td>
                     <td style={{ textAlign:'right' }}>
                       <div style={{ display:'flex', gap:5, justifyContent:'flex-end', flexWrap:'wrap' }}>
@@ -436,7 +436,7 @@ export default function Task2Topics() {
                               onClick={() => { setEditingQ(null); setShowQModal(true); }}>+ Thêm câu hỏi</button>
                           </div>
                           {(activeTopic.questions||[]).length === 0 ? (
-                            <div style={{ textAlign:'center', color:'#9ca3af', padding:'16px 0' }}>Chưa có câu hỏi nào. Nhấn "+ Thêm câu hỏi" để bắt đầu.</div>
+                            <div style={{ textAlign:'center', color:'var(--text3)', padding:'16px 0' }}>Chưa có câu hỏi nào. Nhấn "+ Thêm câu hỏi" để bắt đầu.</div>
                           ) : (
                             <table className="data-table" style={{ background:'var(--surface)' }}>
                               <thead>
@@ -457,7 +457,7 @@ export default function Task2Topics() {
                                       <div style={{ fontSize:13, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{q.questionText}</div>
                                     </td>
                                     <td style={{ textAlign:'center' }}>
-                                      <span style={{ color: q.isActive !== false ? '#22c55e' : '#9ca3af', fontSize:11, fontWeight:700 }}>
+                                      <span style={{ color: q.isActive !== false ? 'var(--green)' : 'var(--text3)', fontSize:11, fontWeight:700 }}>
                                         {q.isActive !== false ? '● Hiện' : '○ Ẩn'}
                                       </span>
                                     </td>

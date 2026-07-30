@@ -25,9 +25,9 @@ function formatLastSeen(date) {
   const mins  = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
   const days  = Math.floor(diff / 86_400_000);
-  if (mins < 2)   return { text: 'Vừa online', color: '#22c55e' };
-  if (mins < 60)  return { text: `${mins} phút trước`, color: '#4ade80' };
-  if (hours < 24) return { text: `${hours} giờ trước`, color: '#fbbf24' };
+  if (mins < 2)   return { text: 'Vừa online', color: 'var(--green)' };
+  if (mins < 60)  return { text: `${mins} phút trước`, color: 'var(--green)' };
+  if (hours < 24) return { text: `${hours} giờ trước`, color: 'var(--yellow)' };
   if (days < 7)   return { text: `${days} ngày trước`, color: 'var(--text2)' };
   return { text: formatDate(date).split(' ')[0], color: 'var(--text3)' };
 }
@@ -43,7 +43,7 @@ function planBadge(plan, expiresAt) {
     const exp = expiresAt ? new Date(expiresAt) : null;
     const days = exp ? Math.ceil((exp - new Date()) / 86400000) : null;
     const expired = days !== null && days <= 0;
-    const urgentColor = !expired && days !== null && days <= 7 ? '#f59e0b' : null;
+    const urgentColor = !expired && days !== null && days <= 7 ? 'var(--yellow)' : null;
     const countStr = days === null ? '' : expired ? ' (Hết hạn)' : days === 0 ? ' (Hết hạn hôm nay)' : ` (còn ${days} ngày)`;
     return (
       <span className={`badge ${expired ? 'badge-gray' : 'badge-blue'}`}
@@ -62,15 +62,15 @@ function bandBadge(score) {
 }
 
 const SKILL_META = {
-  'reading':           { color: '#3d8bff', label: 'Reading' },
-  'listening':         { color: '#34d399', label: 'Listening' },
-  'writing':           { color: '#fbbf24', label: 'Writing' },
-  'speaking':          { color: '#a78bfa', label: 'Speaking' },
+  'reading':           { color: 'var(--blue)', label: 'Reading' },
+  'listening':         { color: 'var(--green)', label: 'Listening' },
+  'writing':           { color: 'var(--yellow)', label: 'Writing' },
+  'speaking':          { color: 'var(--purple)', label: 'Speaking' },
   'reading-practice':  { color: '#93c5fd', label: '📄 Reading lẻ' },
   'listening-practice':{ color: '#6ee7b7', label: '🎵 Listening lẻ' },
   'writing-practice':  { color: '#f97316', label: '✍ Writing lẻ' },
   'task1-practice':    { color: '#fb923c', label: '📊 Task 1' },
-  'task2-practice':    { color: '#ef4444', label: '📝 Task 2' },
+  'task2-practice':    { color: 'var(--danger)', label: '📝 Task 2' },
 };
 
 function skillBadge(skill) {

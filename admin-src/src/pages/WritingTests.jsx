@@ -727,7 +727,7 @@ export default function WritingTests() {
                       <td style={{ fontSize: 12, color: 'var(--text3)' }}>{s.quarter}</td>
                       <td style={{ maxWidth: 200, fontSize: 13 }}>{(s.topic || '').slice(0, 60)}{(s.topic || '').length > 60 ? '…' : ''}</td>
                       <td>
-                        <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 8, background: '#eff6ff', color: '#3d8bff' }}>
+                        <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 8, background: '#eff6ff', color: 'var(--blue)' }}>
                           {TASK_TYPE_LABEL[s.taskType] || s.taskType}
                         </span>
                       </td>

@@ -87,7 +87,7 @@ export default function SettingsTab({
           <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none' }}>
             <input type="checkbox" checked={settingsForm.autoRemindEnabled}
               onChange={e => setSettingsForm(f => ({ ...f, autoRemindEnabled: e.target.checked }))}
-              style={{ width: 18, height: 18, accentColor: '#22c55e', cursor: 'pointer' }} />
+              style={{ width: 18, height: 18, accentColor: 'var(--green)', cursor: 'pointer' }} />
             <span style={{ fontWeight: 700, fontSize: 14 }}>Bật nhắc nhở tự động</span>
           </label>
 

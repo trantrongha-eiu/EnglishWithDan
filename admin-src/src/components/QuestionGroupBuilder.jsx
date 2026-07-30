@@ -256,7 +256,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
         <div key={gi} id={`qgroup-${gi}`} style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: 14, marginBottom: 14, background: 'var(--bg)', scrollMarginTop: 8 }}>
           {/* Group header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
-            <span style={{ background: '#3d8bff', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, flexShrink: 0 }}>
+            <span style={{ background: 'var(--blue)', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, flexShrink: 0 }}>
               {GROUP_LABEL[g.groupType] || g.groupType}
             </span>
             <span style={{ fontSize: 12, color: 'var(--text3)' }}>Nhóm {gi + 1}</span>
@@ -355,7 +355,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
                       const isMapDD = g.groupType === 'map' && (g.dragDropConfig?.words || []).filter(Boolean).length > 0;
                       return (
                       <tr key={qi}>
-                        <td style={{ fontWeight: 700, color: isDup(q.questionNumber) ? '#ef4444' : 'inherit' }}>
+                        <td style={{ fontWeight: 700, color: isDup(q.questionNumber) ? 'var(--danger)' : 'inherit' }}>
                           {isMapDD
                             ? <><span style={{ color: 'var(--blue)', fontSize: 15 }}>{String.fromCharCode(97 + qi)}</span><span style={{ color: 'var(--text3)', fontSize: 10, marginLeft: 3 }}>Q{q.questionNumber}</span></>
                             : q.questionNumber}
@@ -392,7 +392,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
         <div style={{ marginTop: 10, padding: '8px 12px', background: 'var(--surface2)', borderRadius: 6, fontSize: 12, color: 'var(--text3)' }}>
           Tổng: <strong>{totalQs}</strong> câu hỏi trong <strong>{groups.length}</strong> nhóm
           {questionTo && <span style={{ marginLeft: 8 }}>| Phạm vi câu {questionFrom}–{questionTo} ({questionTo - questionFrom + 1} câu)</span>}
-          {hasWarnings && <span style={{ marginLeft: 8, color: hasErrors ? '#ef4444' : '#d97706', fontWeight: 700 }}>{hasErrors ? '🔴 Có lỗi cần sửa!' : '🟡 Có cảnh báo'}</span>}
+          {hasWarnings && <span style={{ marginLeft: 8, color: hasErrors ? 'var(--danger)' : '#d97706', fontWeight: 700 }}>{hasErrors ? '🔴 Có lỗi cần sửa!' : '🟡 Có cảnh báo'}</span>}
         </div>
       )}
 
@@ -405,7 +405,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
           </div>
           {dupNums.length > 0 && (
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 6 }}>
-              <span style={{ color: '#ef4444', fontWeight: 700, flexShrink: 0 }}>🔴</span>
+              <span style={{ color: 'var(--danger)', fontWeight: 700, flexShrink: 0 }}>🔴</span>
               <span style={{ color: '#7f1d1d', fontWeight: 600 }}>
                 Số câu bị trùng: {dupNums.map(n => `Câu ${n}`).join(', ')}
               </span>
@@ -424,7 +424,7 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
             <div key={i}
               onClick={() => document.getElementById(`qgroup-${w.gi}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
               style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: i < groupWarnings.length - 1 ? 5 : 0, cursor: 'pointer' }}>
-              <span style={{ color: w.level === 'error' ? '#ef4444' : '#d97706', fontWeight: 700, flexShrink: 0 }}>
+              <span style={{ color: w.level === 'error' ? 'var(--danger)' : '#d97706', fontWeight: 700, flexShrink: 0 }}>
                 {w.level === 'error' ? '🔴' : '🟡'}
               </span>
               <span style={{ color: w.level === 'error' ? '#7f1d1d' : '#78350f', fontWeight: 600, textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: 2 }}>

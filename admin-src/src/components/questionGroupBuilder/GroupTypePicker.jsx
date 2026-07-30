@@ -20,7 +20,7 @@ export function GroupTypePicker({ context, onSelect, onClose }) {
             <div key={gt.value}
               onClick={() => onSelect(gt.value)}
               style={{ border: '1.5px solid var(--border)', borderRadius: 10, padding: '12px 14px', cursor: 'pointer', transition: 'border-color .15s, background .15s', display: 'flex', flexDirection: 'column', gap: 4 }}
-              onMouseOver={e => { e.currentTarget.style.borderColor = '#3d8bff'; e.currentTarget.style.background = 'rgba(61,139,255,.06)'; }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--blue)'; e.currentTarget.style.background = 'rgba(61,139,255,.06)'; }}
               onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = ''; }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -34,7 +34,7 @@ export function GroupTypePicker({ context, onSelect, onClose }) {
                   <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {gt.supports.map((s, i) => (
                       <li key={i} style={{ fontSize: 10, color: 'var(--text2)', lineHeight: 1.4, display: 'flex', gap: 5 }}>
-                        <span style={{ color: '#22c55e', flexShrink: 0 }}>✓</span>
+                        <span style={{ color: 'var(--green)', flexShrink: 0 }}>✓</span>
                         <span>{s}</span>
                       </li>
                     ))}

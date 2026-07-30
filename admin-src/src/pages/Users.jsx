@@ -14,9 +14,9 @@ function formatLastSeen(date) {
   const mins  = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
   const days  = Math.floor(diff / 86_400_000);
-  if (mins < 2)   return { text: 'Vừa online', color: '#22c55e' };
-  if (mins < 60)  return { text: `${mins} phút trước`, color: '#4ade80' };
-  if (hours < 24) return { text: `${hours} giờ trước`, color: '#fbbf24' };
+  if (mins < 2)   return { text: 'Vừa online', color: 'var(--green)' };
+  if (mins < 60)  return { text: `${mins} phút trước`, color: 'var(--green)' };
+  if (hours < 24) return { text: `${hours} giờ trước`, color: 'var(--yellow)' };
   if (days < 7)   return { text: `${days} ngày trước`, color: 'var(--text2)' };
   return { text: formatDate(date).split(' ')[0], color: 'var(--text3)' };
 }
@@ -38,7 +38,7 @@ function planBadge(plan, expiresAt) {
     const exp = expiresAt ? new Date(expiresAt) : null;
     const days = exp ? daysLeft(exp) : null;
     const expired = days !== null && days <= 0;
-    const urgentColor = !expired && days !== null && days <= 7 ? '#f59e0b' : null;
+    const urgentColor = !expired && days !== null && days <= 7 ? 'var(--yellow)' : null;
     const expStr = exp ? exp.toLocaleDateString('vi-VN') : '';
     const countStr = days === null ? '' : expired ? ' (Hết hạn)' : days === 0 ? ' (Hết hạn hôm nay)' : ` (còn ${days} ngày)`;
     return (
@@ -94,7 +94,7 @@ function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSa
               {planBadge(currentPlan, planExpiresAt)}
             </div>
             {exp && (
-              <div style={{ fontSize: 12, color: days !== null && days <= 7 ? '#f59e0b' : 'var(--text2)' }}>
+              <div style={{ fontSize: 12, color: days !== null && days <= 7 ? 'var(--yellow)' : 'var(--text2)' }}>
                 HSD: {exp.toLocaleDateString('vi-VN')}
                 {days !== null && days > 0 && ` — còn ${days} ngày`}
                 {days !== null && days <= 0 && ' — Đã hết hạn'}
@@ -111,7 +111,7 @@ function PlanModal({ userId, username, currentPlan, planExpiresAt, onClose, onSa
               <button key={o.months} className="btn btn-primary" disabled={loading} onClick={() => setPlan('premium', o.months)}
                 style={{ position: 'relative', padding: '10px 12px', textAlign: 'left', lineHeight: 1.4 }}>
                 {o.badge && (
-                  <span style={{ position: 'absolute', top: -7, right: 8, background: '#f59e0b', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10 }}>
+                  <span style={{ position: 'absolute', top: -7, right: 8, background: 'var(--yellow)', color: '#fff', fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10 }}>
                     {o.badge}
                   </span>
                 )}
@@ -458,7 +458,7 @@ export default function Users() {
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       {onlineIds.has(u._id) && (
-                        <span title="Đang online" style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', flexShrink: 0, boxShadow: '0 0 4px #22c55e' }} />
+                        <span title="Đang online" style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', flexShrink: 0, boxShadow: '0 0 4px #22c55e' }} />
                       )}
                       <strong>{u.username}</strong>
                     </div>

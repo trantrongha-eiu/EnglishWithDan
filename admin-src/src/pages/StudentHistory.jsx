@@ -17,15 +17,15 @@ function bandBadge(score) {
 }
 
 const SKILL_META = {
-  'reading':           { color: '#3d8bff', label: 'Reading' },
-  'listening':         { color: '#34d399', label: 'Listening' },
-  'writing':           { color: '#fbbf24', label: 'Writing' },
-  'speaking':          { color: '#a78bfa', label: 'Speaking' },
+  'reading':           { color: 'var(--blue)', label: 'Reading' },
+  'listening':         { color: 'var(--green)', label: 'Listening' },
+  'writing':           { color: 'var(--yellow)', label: 'Writing' },
+  'speaking':          { color: 'var(--purple)', label: 'Speaking' },
   'reading-practice':  { color: '#93c5fd', label: '📄 Reading lẻ' },
   'listening-practice':{ color: '#6ee7b7', label: '🎵 Listening lẻ' },
   'writing-practice':  { color: '#f97316', label: '✍ Writing lẻ' },
   'task1-practice':    { color: '#fb923c', label: '📊 Task 1' },
-  'task2-practice':    { color: '#ef4444', label: '📝 Task 2' },
+  'task2-practice':    { color: 'var(--danger)', label: '📝 Task 2' },
 };
 
 function skillBadge(skill) {

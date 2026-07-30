@@ -80,7 +80,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
           onDrop={onDrop}
           onClick={() => !uploading && inputRef.current.click()}
           style={{
-            border: `2px dashed ${dragging ? 'var(--blue)' : 'rgba(255,255,255,.18)'}`,
+            border: `2px dashed ${dragging ? 'var(--blue)' : 'var(--border2)'}`,
             borderRadius: 8,
             padding: '28px 20px',
             textAlign: 'center',
@@ -250,7 +250,7 @@ export default function ListeningSectionEdit() {
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center' }}>
           {autoSaveMsg
             ? <span style={{ fontSize: 12, color: autoSaveMsg === 'Đã lưu ✓' ? '#16a34a' : '#6b7280', fontWeight: 600 }}>{autoSaveMsg}</span>
-            : isDirty && <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>● Chưa lưu</span>}
+            : isDirty && <span style={{ fontSize: 12, color: 'var(--yellow)', fontWeight: 600 }}>● Chưa lưu</span>}
           <button className="btn btn-ghost" onClick={goBack}>Huỷ</button>
           <button className="btn btn-primary" onClick={saveAll} disabled={saving}
             style={isDirty ? { boxShadow: '0 0 0 2px #fde68a' } : {}}>
@@ -346,10 +346,10 @@ export default function ListeningSectionEdit() {
           <span style={{ fontWeight: 700, color: 'var(--text3)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.4px' }}>Tổng quan</span>
           {meta.audioUrl
             ? <span style={{ color: '#16a34a', fontWeight: 600 }}>✅ Audio đã upload</span>
-            : <span style={{ color: '#ef4444', fontWeight: 600 }}>❌ Chưa upload audio</span>}
+            : <span style={{ color: 'var(--danger)', fontWeight: 600 }}>❌ Chưa upload audio</span>}
           {(() => {
             const expected = (meta.questionRange.end || 10) - (meta.questionRange.start || 1) + 1;
-            const color = totalQs === expected ? '#16a34a' : totalQs > 0 ? '#d97706' : '#ef4444';
+            const color = totalQs === expected ? '#16a34a' : totalQs > 0 ? '#d97706' : 'var(--danger)';
             return <span style={{ color, fontWeight: 600 }}>{totalQs}/{expected} câu</span>;
           })()}
         </div>

@@ -12,10 +12,10 @@ function bandBadge(score) {
 
 function skillBadge(skill) {
   const map = {
-    reading: { label: 'Reading', bg: '#3d8bff22', color: '#3d8bff' },
-    listening: { label: 'Listening', bg: '#34d39922', color: '#34d399' },
-    writing: { label: 'Writing', bg: '#fbbf2422', color: '#fbbf24' },
-    speaking: { label: 'Speaking', bg: '#a78bfa22', color: '#a78bfa' },
+    reading: { label: 'Reading', bg: '#3d8bff22', color: 'var(--blue)' },
+    listening: { label: 'Listening', bg: '#34d39922', color: 'var(--green)' },
+    writing: { label: 'Writing', bg: '#fbbf2422', color: 'var(--yellow)' },
+    speaking: { label: 'Speaking', bg: '#a78bfa22', color: 'var(--purple)' },
   };
   const s = map[skill] || { label: skill, bg: '#55587822', color: '#8b92a8' };
   return (
@@ -45,9 +45,9 @@ function StatCard({ color, icon, label, value, sub }) {
 // ── Storage meter ──────────────────────────────────────────────────────────
 
 function pctColor(pct) {
-  if (pct >= 90) return '#ef4444';
-  if (pct >= 70) return '#fbbf24';
-  return '#34d399';
+  if (pct >= 90) return 'var(--danger)';
+  if (pct >= 70) return 'var(--yellow)';
+  return 'var(--green)';
 }
 
 function fmtBytes(b) {

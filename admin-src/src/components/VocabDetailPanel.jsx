@@ -38,7 +38,7 @@ export function VaChart({ data, view }) {
   const toH = v => (v / niceMax) * chartH;
   const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => ({ val: Math.round(niceMax * f), y: padT + chartH * (1 - f) }));
   const today = new Date().getDate();
-  const COLORS = ['#3d8bff', '#34d399', '#a78bfa'];
+  const COLORS = ['var(--blue)', 'var(--green)', 'var(--purple)'];
   const hasAny = data.some(d => (d.viewCount || 0) > 0 || (d.wordsAdded || 0) > 0 || (d.wordsStudied || 0) > 0);
 
   return (
@@ -142,10 +142,10 @@ export default function VocabDetailPanel({ student }) {
   useEffect(() => { loadChart(); }, [loadChart]);
 
   const miniStats = [
-    { label: 'Sổ từ vựng',     val: student.totalBooks ?? 0,                               color: '#3d8bff' },
-    { label: 'Tổng từ đã lưu', val: (student.totalWords ?? 0).toLocaleString('vi-VN'),     color: '#34d399' },
-    { label: 'Lượt truy cập',  val: (student.totalViews ?? 0).toLocaleString('vi-VN'),     color: '#fbbf24' },
-    { label: 'Từ đã ôn',       val: (student.totalStudied ?? 0).toLocaleString('vi-VN'),   color: '#a78bfa' },
+    { label: 'Sổ từ vựng',     val: student.totalBooks ?? 0,                               color: 'var(--blue)' },
+    { label: 'Tổng từ đã lưu', val: (student.totalWords ?? 0).toLocaleString('vi-VN'),     color: 'var(--green)' },
+    { label: 'Lượt truy cập',  val: (student.totalViews ?? 0).toLocaleString('vi-VN'),     color: 'var(--yellow)' },
+    { label: 'Từ đã ôn',       val: (student.totalStudied ?? 0).toLocaleString('vi-VN'),   color: 'var(--purple)' },
   ];
 
   return (
@@ -236,9 +236,9 @@ export default function VocabDetailPanel({ student }) {
             </div>
           )}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: 12, fontSize: 11, color: 'var(--text3)' }}>
-            <span><span style={{ color: '#3d8bff' }}>■</span> Lượt xem</span>
-            <span><span style={{ color: '#34d399' }}>■</span> Từ thêm</span>
-            <span><span style={{ color: '#a78bfa' }}>■</span> Từ ôn</span>
+            <span><span style={{ color: 'var(--blue)' }}>■</span> Lượt xem</span>
+            <span><span style={{ color: 'var(--green)' }}>■</span> Từ thêm</span>
+            <span><span style={{ color: 'var(--purple)' }}>■</span> Từ ôn</span>
           </div>
         </div>
         {loadingChart

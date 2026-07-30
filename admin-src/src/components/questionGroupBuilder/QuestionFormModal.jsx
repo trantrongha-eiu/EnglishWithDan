@@ -36,8 +36,8 @@ export function QuestionFormModal({ qForm, setQForm, groupType, context, onSave,
                 {positionLabel ? <span>Vị trí <span style={{ color: 'var(--blue)', fontWeight: 800, fontSize: 16 }}>{positionLabel}</span></span> : 'Câu số *'}
               </label>
               <input className="form-input" type="number" min={1} value={qForm.questionNumber} onChange={setF('questionNumber')}
-                style={{ borderColor: isDup ? '#ef4444' : '' }} />
-              {isDup && <div style={{ fontSize: 10, color: '#ef4444', marginTop: 2, fontWeight: 600 }}>⚠ Số câu đã tồn tại!</div>}
+                style={{ borderColor: isDup ? 'var(--danger)' : '' }} />
+              {isDup && <div style={{ fontSize: 10, color: 'var(--danger)', marginTop: 2, fontWeight: 600 }}>⚠ Số câu đã tồn tại!</div>}
               {positionLabel && <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>Số câu IELTS (25, 26…)</div>}
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>

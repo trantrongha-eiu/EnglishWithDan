@@ -31,11 +31,11 @@ const TYPE_LABELS = {
 };
 
 const TYPE_COLORS = {
-  fill_blank: '#fbbf24',
-  translation: '#3d8bff',
-  rearrange: '#a78bfa',
-  multiple_choice: '#34d399',
-  error_correction: '#f87171',
+  fill_blank: 'var(--yellow)',
+  translation: 'var(--blue)',
+  rearrange: 'var(--purple)',
+  multiple_choice: 'var(--green)',
+  error_correction: 'var(--danger)',
   paraphrase_choose: '#fb923c',
   data_transform: '#38bdf8',
 };

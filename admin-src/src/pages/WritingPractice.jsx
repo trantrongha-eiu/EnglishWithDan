@@ -81,7 +81,7 @@ function levelBadge(l) {
 }
 
 function typeBadge(t) {
-  const map = { translation: '#3d8bff', rearrange: '#a78bfa', fill_blank: '#fbbf24', expand: '#34d399', combine: '#f97316' };
+  const map = { translation: 'var(--blue)', rearrange: 'var(--purple)', fill_blank: 'var(--yellow)', expand: 'var(--green)', combine: '#f97316' };
   return <span style={{ background: (map[t] || '#555') + '22', color: map[t] || '#888', padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600 }}>{t}</span>;
 }
 

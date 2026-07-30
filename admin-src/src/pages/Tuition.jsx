@@ -327,7 +327,7 @@ export default function Tuition() {
               padding: '8px 18px', border: 'none', background: 'none', cursor: 'pointer',
               fontWeight: 600, fontSize: 14,
               borderBottom: activeTab === t.key ? '2px solid #3b82f6' : '2px solid transparent',
-              color: activeTab === t.key ? '#3b82f6' : 'var(--text2)',
+              color: activeTab === t.key ? 'var(--blue)' : 'var(--text2)',
             }}
           >{t.label}</button>
         ))}
@@ -398,10 +398,10 @@ export default function Tuition() {
           {/* Quick stats */}
           <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
             {[
-              { label: 'Tổng học phí', val: fmtVND(totalAmount), color: '#3b82f6' },
-              { label: 'Đã thu', val: fmtVND(paidAmount), color: '#22c55e' },
-              { label: 'Chưa thu', val: fmtVND(unpaidAmount), color: '#f59e0b' },
-              { label: 'Chờ xác nhận', val: pendingNotify, color: '#8b5cf6', unit: 'học viên' },
+              { label: 'Tổng học phí', val: fmtVND(totalAmount), color: 'var(--blue)' },
+              { label: 'Đã thu', val: fmtVND(paidAmount), color: 'var(--green)' },
+              { label: 'Chưa thu', val: fmtVND(unpaidAmount), color: 'var(--yellow)' },
+              { label: 'Chờ xác nhận', val: pendingNotify, color: 'var(--purple)', unit: 'học viên' },
             ].map(s => (
               <div key={s.label} style={{ flex: 1, minWidth: 140, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 16px' }}>
                 <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 4 }}>{s.label}</div>
@@ -421,7 +421,7 @@ export default function Tuition() {
                 {/* Copy/Edit mode: show student name (locked). Create mode: show picker */}
                 {(editFee || isCopy) ? (
                   <div style={{ fontSize: 14, fontWeight: 600 }}>
-                    Học viên: <span style={{ color: '#3b82f6' }}>
+                    Học viên: <span style={{ color: 'var(--blue)' }}>
                       {editFee
                         ? (editFee.studentId?.username)
                         : (students.find(s => s._id === formData.studentId)?.username || formData.studentId)}
@@ -545,9 +545,9 @@ export default function Tuition() {
                       <td style={{ fontWeight: 700, color: 'var(--text)' }}>{fmtVND(f.amount)}</td>
                       <td style={{ textAlign: 'center' }}>
                         <input type="checkbox" checked={f.isPaid} onChange={() => togglePaid(f)}
-                          style={{ width: 17, height: 17, cursor: 'pointer', accentColor: '#22c55e' }} />
+                          style={{ width: 17, height: 17, cursor: 'pointer', accentColor: 'var(--green)' }} />
                         {f.isPaid && f.paidDate && (
-                          <div style={{ fontSize: 10, color: '#22c55e', marginTop: 2 }}>
+                          <div style={{ fontSize: 10, color: 'var(--green)', marginTop: 2 }}>
                             {formatDate(f.paidDate).split(' ')[0]}
                           </div>
                         )}

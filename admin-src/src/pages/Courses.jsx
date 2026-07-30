@@ -154,7 +154,7 @@ function catLabel(c) {
   return CATEGORIES.find(x => x.value === c)?.label || c || '–';
 }
 
-const LEVEL_COLOR_MAP = { red: '#ef4444', blue: '#3d8bff', green: '#34d399', purple: '#a78bfa' };
+const LEVEL_COLOR_MAP = { red: 'var(--danger)', blue: 'var(--blue)', green: 'var(--green)', purple: 'var(--purple)' };
 
 export default function Courses() {
   const toast = useToast();

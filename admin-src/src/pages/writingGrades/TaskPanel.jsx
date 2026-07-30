@@ -89,7 +89,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
           }}>{wordCount}w {wordCount < minWords ? `(thiếu ${minWords - wordCount}w)` : ''}</span>
         )}
         {displayBand != null && (
-          <span style={{ background: '#3d8bff22', color: '#3d8bff', borderRadius: 5, padding: '1px 9px', fontSize: 13, fontWeight: 700 }}>
+          <span style={{ background: '#3d8bff22', color: 'var(--blue)', borderRadius: 5, padding: '1px 9px', fontSize: 13, fontWeight: 700 }}>
             Band {displayBand}
           </span>
         )}
@@ -97,7 +97,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
           <span style={{
             marginLeft: 'auto', fontSize: 11,
             background: mode === 'manual' ? 'rgba(16,185,129,.12)' : 'rgba(61,139,255,.1)',
-            color: mode === 'manual' ? '#059669' : '#3d8bff',
+            color: mode === 'manual' ? '#059669' : 'var(--blue)',
             borderRadius: 4, padding: '1px 7px', fontWeight: 600
           }}>{mode === 'manual' ? '✏️ Thủ công' : '🤖 AI'}</span>
         )}
@@ -127,7 +127,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
 
       {isConfirmed && <ResultBlock result={confirmedResult} label="✓ Kết quả đã xác nhận" accentColor="#059669" />}
       {!isConfirmed && mode === 'ai' && aiResult?.bandScore != null && (
-        <ResultBlock result={aiResult} label="Kết quả AI Grading" accentColor="#3d8bff" />
+        <ResultBlock result={aiResult} label="Kết quả AI Grading" accentColor="var(--blue)" />
       )}
       {!isConfirmed && mode === 'manual' && (
         <ManualGradeForm value={manualData || EMPTY_MANUAL()} onChange={onManualChange} disabled={false} />

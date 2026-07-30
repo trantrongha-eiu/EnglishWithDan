@@ -550,7 +550,7 @@ export default function Speaking() {
                           <td style={{ fontSize:12, color:'var(--text2,#555)', maxWidth:100, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{a.topic || '—'}</td>
                           <td style={{ fontSize:12, maxWidth:220, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{a.question}</td>
                           {a.status === 'pending' ? (
-                            <td colSpan={5} style={{ textAlign:'center', fontSize:12, color:'#f59e0b' }}>⏳ Đang chấm bài...</td>
+                            <td colSpan={5} style={{ textAlign:'center', fontSize:12, color:'var(--yellow)' }}>⏳ Đang chấm bài...</td>
                           ) : a.status === 'error' ? (
                             <td colSpan={5} style={{ textAlign:'center', fontSize:12, color:'#dc2626' }}>⚠️ Lỗi chấm bài</td>
                           ) : (

@@ -49,7 +49,7 @@ function TplMetaModal({ template, onClose, onSaved }) {
             <div>
               <label className="form-label">Type ID *</label>
               <input className="form-input" value={form.typeId} onChange={e => set('typeId', e.target.value)} placeholder="type07" disabled={isEdit} />
-              {isEdit && <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Không đổi được typeId</div>}
+              {isEdit && <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>Không đổi được typeId</div>}
             </div>
             <div>
               <label className="form-label">Tên đầy đủ *</label>
@@ -115,7 +115,7 @@ function SectionModal({ section, onClose, onSaved }) {
           <input className="form-input" value={title} onChange={e => setTitle(e.target.value)}
             placeholder="① Introduction – Mở bài" autoFocus
             onKeyDown={e => e.key === 'Enter' && save()} />
-          <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Ví dụ: ① Introduction – Mở bài, ② Body 1 – Advantages · Ưu điểm</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>Ví dụ: ① Introduction – Mở bài, ② Body 1 – Advantages · Ưu điểm</div>
         </div>
         <div className="modal-footer">
           <button className="btn btn-ghost" onClick={onClose}>Hủy</button>
@@ -158,7 +158,7 @@ function ItemModal({ item, onClose, onSaved }) {
             <textarea className="form-input" rows={3} value={form.en}
               onChange={e => set('en', e.target.value)}
               placeholder="In recent years, (noun phrase) has become an increasingly ___ feature of modern life." />
-            <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 3 }}>Dùng ___ (ba dấu gạch) để đánh dấu chỗ trống</div>
+            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 3 }}>Dùng ___ (ba dấu gạch) để đánh dấu chỗ trống</div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div>
@@ -398,7 +398,7 @@ export default function Task2Templates() {
             <tbody>
               {templates.length === 0 && (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', color: '#9ca3af', padding: 40 }}>
+                  <td colSpan={7} style={{ textAlign: 'center', color: 'var(--text3)', padding: 40 }}>
                     Chưa có template nào.{' '}
                     <button className="btn btn-primary" style={{ marginLeft: 8 }} onClick={() => seedTemplates(false)}>📥 Seed 7 template mặc định</button>
                   </td>
@@ -410,7 +410,7 @@ export default function Task2Templates() {
                     <td><span style={{ fontWeight: 700, color: '#6366f1', fontFamily: 'monospace' }}>{tpl.typeId}</span></td>
                     <td>
                       <div style={{ fontWeight: 600 }}>{tpl.name}</div>
-                      <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{tpl.sub}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 1 }}>{tpl.sub}</div>
                     </td>
                     <td><span style={{ fontSize: 12, color: '#6b7280' }}>{tpl.label}</span></td>
                     <td style={{ textAlign: 'center' }}>
@@ -420,7 +420,7 @@ export default function Task2Templates() {
                       <span style={{ fontWeight: 700, color: '#059669' }}>{totalItems(tpl)}</span>
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      <span style={{ color: tpl.isActive ? '#22c55e' : '#ef4444', fontWeight: 700 }}>{tpl.isActive ? '✓' : '✗'}</span>
+                      <span style={{ color: tpl.isActive ? 'var(--green)' : 'var(--danger)', fontWeight: 700 }}>{tpl.isActive ? '✓' : '✗'}</span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <div style={{ display: 'flex', gap: 5, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
@@ -448,7 +448,7 @@ export default function Task2Templates() {
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
                             <div style={{ fontWeight: 700, color: '#6366f1', fontSize: 15 }}>
                               📋 {activeTpl.typeId} — {activeTpl.name}
-                              {savingTpl && <span style={{ marginLeft: 10, fontSize: 12, color: '#9ca3af' }}>Đang lưu...</span>}
+                              {savingTpl && <span style={{ marginLeft: 10, fontSize: 12, color: 'var(--text3)' }}>Đang lưu...</span>}
                             </div>
                             <button className="btn btn-primary" style={{ fontSize: 13, padding: '6px 14px' }}
                               onClick={() => { setEditingSecIdx(null); setShowSection(true); }}>
@@ -457,7 +457,7 @@ export default function Task2Templates() {
                           </div>
 
                           {(activeTpl.sections || []).length === 0 && (
-                            <div style={{ textAlign: 'center', color: '#9ca3af', padding: 24 }}>Chưa có section nào. Nhấn "+ Thêm Section" để bắt đầu.</div>
+                            <div style={{ textAlign: 'center', color: 'var(--text3)', padding: 24 }}>Chưa có section nào. Nhấn "+ Thêm Section" để bắt đầu.</div>
                           )}
 
                           {(activeTpl.sections || []).map((sec, si) => (
@@ -469,7 +469,7 @@ export default function Task2Templates() {
                                   <button className="btn btn-ghost btn-sm btn-icon" title="Xuống" onClick={() => moveSectionDown(si)} disabled={si === activeTpl.sections.length - 1} style={{ padding: '1px 5px', fontSize: 10 }}>▼</button>
                                 </div>
                                 <div style={{ fontWeight: 700, flex: 1, fontSize: 13, color: 'var(--text)' }}>{sec.title}</div>
-                                <span style={{ fontSize: 11, color: '#9ca3af' }}>{(sec.items || []).length} câu</span>
+                                <span style={{ fontSize: 11, color: 'var(--text3)' }}>{(sec.items || []).length} câu</span>
                                 <button className="btn btn-primary" style={{ fontSize: 11, padding: '4px 10px' }}
                                   onClick={() => { setEditingItem({ secIdx: si, itemIdx: null, item: null }); setShowItem(true); }}>
                                   + Câu
@@ -482,7 +482,7 @@ export default function Task2Templates() {
 
                               {/* Items table */}
                               {(sec.items || []).length === 0 ? (
-                                <div style={{ padding: '12px 14px', color: '#9ca3af', fontSize: 13 }}>Chưa có câu nào trong section này.</div>
+                                <div style={{ padding: '12px 14px', color: 'var(--text3)', fontSize: 13 }}>Chưa có câu nào trong section này.</div>
                               ) : (
                                 <table className="data-table" style={{ margin: 0 }}>
                                   <thead>
@@ -496,12 +496,12 @@ export default function Task2Templates() {
                                   <tbody>
                                     {sec.items.map((item, ii) => (
                                       <tr key={ii}>
-                                        <td style={{ color: '#9ca3af', fontSize: 12 }}>{ii + 1}</td>
+                                        <td style={{ color: 'var(--text3)', fontSize: 12 }}>{ii + 1}</td>
                                         <td style={{ maxWidth: 400 }}>
                                           <div style={{ fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                             {item.en.replace('___', '[ ___ ]')}
                                           </div>
-                                          {item.vi && <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2, fontStyle: 'italic', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.vi}</div>}
+                                          {item.vi && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2, fontStyle: 'italic', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.vi}</div>}
                                         </td>
                                         <td>
                                           <span style={{ background: '#dcfce7', color: '#166534', borderRadius: 6, padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>{item.answer}</span>

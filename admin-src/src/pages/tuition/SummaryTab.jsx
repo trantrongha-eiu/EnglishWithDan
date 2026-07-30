@@ -26,15 +26,15 @@ export default function SummaryTab({ summary, courseSummary, summaryYear, setSum
               : summary.map(s => (
                 <tr key={`${s._id.year}-${s._id.month}`}>
                   <td style={{ fontWeight: 700 }}>{MONTHS[s._id.month]}/{s._id.year}</td>
-                  <td style={{ fontWeight: 700, color: '#3b82f6' }}>{fmtVND(s.totalAmount)}</td>
-                  <td style={{ color: '#22c55e', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
-                  <td style={{ color: '#f59e0b', fontWeight: 600 }}>{fmtVND(s.unpaidAmount)}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--blue)' }}>{fmtVND(s.totalAmount)}</td>
+                  <td style={{ color: 'var(--green)', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
+                  <td style={{ color: 'var(--yellow)', fontWeight: 600 }}>{fmtVND(s.unpaidAmount)}</td>
                   <td>{s.totalCount}</td>
                   <td>{s.paidCount}</td>
                   <td>{s.unpaidCount}</td>
                   <td>
                     {s.pendingNotify > 0
-                      ? <span style={{ color: '#8b5cf6', fontWeight: 700 }}>{s.pendingNotify}</span>
+                      ? <span style={{ color: 'var(--purple)', fontWeight: 700 }}>{s.pendingNotify}</span>
                       : '–'}
                   </td>
                 </tr>
@@ -55,8 +55,8 @@ export default function SummaryTab({ summary, courseSummary, summaryYear, setSum
                 {courseSummary.map(s => (
                   <tr key={s._id}>
                     <td style={{ fontWeight: 600 }}>{s._id}</td>
-                    <td style={{ fontWeight: 700, color: '#3b82f6' }}>{fmtVND(s.totalAmount)}</td>
-                    <td style={{ color: '#22c55e', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--blue)' }}>{fmtVND(s.totalAmount)}</td>
+                    <td style={{ color: 'var(--green)', fontWeight: 600 }}>{fmtVND(s.paidAmount)}</td>
                     <td>{s.totalCount}</td>
                     <td>{s.paidCount}/{s.totalCount}</td>
                   </tr>

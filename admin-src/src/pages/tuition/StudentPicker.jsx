@@ -76,7 +76,7 @@ export default function StudentPicker({ students, value, onChange }) {
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,.08)'}
                 onMouseLeave={e => e.currentTarget.style.background = s._id === value ? 'rgba(59,130,246,.12)' : ''}
               >
-                <strong style={{ color: '#3b82f6' }}>{s.username}</strong>
+                <strong style={{ color: 'var(--blue)' }}>{s.username}</strong>
                 <span style={{ color: 'var(--text3)', fontSize: 12 }}>{s.email}</span>
               </div>
             ))}

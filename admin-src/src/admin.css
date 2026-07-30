@@ -1273,8 +1273,13 @@
       .section-header { flex-wrap: wrap; gap: 8px; }
       .section-actions { flex-wrap: wrap; }
 
-      /* Override inline grid columns only for FORM grids, not filter/action rows */
-      .form-group [style*="grid-template-columns"],
+      /* Override inline grid columns for FORM/editor grids, not filter/action
+         rows (those use .filter-bar flex, not grid). Scoped to .content so it
+         covers full-page editors (ListeningTestEdit, Task2Topics, Vocabulary,
+         ...) in addition to modals — previously only modal/form-group grids
+         collapsed on mobile, so every inline multi-column grid on a
+         full-page editor stayed cramped/overflowing on phones. */
+      .content [style*="grid-template-columns"],
       .modal [style*="grid-template-columns"],
       .modal-box [style*="grid-template-columns"] {
         grid-template-columns: 1fr !important;
@@ -1561,9 +1566,24 @@ body { display: block; }
   --border2:  #c6cce0;
   --text:     #1a1d2e;
   --text2:    #5a6280;
-  --text3:    #9298b0;
+  --text3:    #6b7280; /* darker than the original #9298b0 — that was ~2.9:1 on
+                           white (fails WCAG AA even for large text); this
+                           hits ~4.8:1 while staying visibly more muted than
+                           --text2/--text */
   --shadow:   0 4px 24px rgba(0,0,0,.07);
   --danger:   #dc2626;
+  /* --blue/--green/--yellow/--purple/--accent2 below are deliberately darker
+     than their dark-theme values: the dark-theme shades are pastel/light so
+     they pop against a near-black background, but that same hex used as text
+     on a white surface drops under ~2:1 contrast (WCAG AA needs 4.5:1) —
+     e.g. dark-theme --green #34d399 on white is ~1.9:1. These replacements
+     are same-hue, higher-contrast picks so status colors stay legible when
+     switched to light mode. */
+  --blue:     #1d4ed8;
+  --green:    #047857;
+  --yellow:   #b45309;
+  --purple:   #7c3aed;
+  --accent2:  #c62828;
 }
 
 /* Fix hardcoded rgba values that invert in light mode */
@@ -1581,6 +1601,14 @@ body { display: block; }
 [data-theme="light"] .sidebar-overlay {
   background: rgba(0,0,0,.4);
 }
+
+/* Badge text colors are hardcoded pastel shades tuned for the dark surface
+   (e.g. badge-blue #6aabff is ~2.6:1 on white) — darken for light mode. */
+[data-theme="light"] .badge-blue   { color: #1d4ed8; background: rgba(29,78,216,.1); }
+[data-theme="light"] .badge-green  { color: #047857; background: rgba(4,120,87,.1); }
+[data-theme="light"] .badge-yellow { color: #b45309; background: rgba(180,83,9,.12); }
+[data-theme="light"] .badge-purple { color: #7c3aed; background: rgba(124,58,237,.1); }
+[data-theme="light"] .badge-red    { color: #c62828; background: rgba(198,40,40,.1); }
 
 /* Theme toggle button size */
 .theme-toggle { font-size: 16px; }
