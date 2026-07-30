@@ -18,10 +18,27 @@
 (function () {
   'use strict';
 
+  function ensureHiddenRule() {
+    // The modal is shown/hidden purely by toggling this class, but a
+    // generic `.hidden { display: none }` utility isn't defined on every
+    // page that loads this shared script (only dashboard.css/speaking.css
+    // happen to define one) — on pages like inbox.html/writing.html that
+    // don't, toggling the class was a no-op and the dialog could never
+    // close. Inject the rule ourselves so this component works on any page
+    // regardless of what else is loaded, per its own "safe to use on any
+    // page" contract.
+    if (document.getElementById('shared-confirm-modal-style')) return;
+    var style = document.createElement('style');
+    style.id = 'shared-confirm-modal-style';
+    style.textContent = '#shared-confirm-modal.hidden { display: none !important; }';
+    document.head.appendChild(style);
+  }
+
   function ensureModal() {
     var modal = document.getElementById('shared-confirm-modal');
     if (modal) return modal;
 
+    ensureHiddenRule();
     modal = document.createElement('div');
     modal.id = 'shared-confirm-modal';
     modal.className = 'modal-overlay hidden';
