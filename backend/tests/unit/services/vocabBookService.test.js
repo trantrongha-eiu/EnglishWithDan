@@ -95,6 +95,56 @@ describe('vocabBookService', () => {
       const result = await vocabBookService.addWord(fakeId, student, { word: 'apple' });
       expect(result.status).toBe('not_found');
     });
+
+    it('adding a single word does not grant a streak on its own (anti-farming: needs 35/day)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+      await vocabBookService.addWord(book._id, student, { word: 'apple', meaning: 'táo' });
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.learningStreak).toBe(0);
+      expect(fresh.lastActivityDate).toBeNull();
+    });
+
+    it('streak unlocks once 35 words have been added across separate calls the same day', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+
+      // 34 words via one bulk call — not enough yet.
+      await vocabBookService.bulkAddWords(book._id, student, makeWords(34, 'bulk'));
+      const fresh1 = await require('../../../models/User').findById(student._id);
+      expect(fresh1.learningStreak).toBe(0);
+
+      // One more word (35th today, from an unrelated single addWord call) crosses the line.
+      await vocabBookService.addWord(book._id, student, { word: 'lastone', meaning: 'm' });
+      const fresh2 = await require('../../../models/User').findById(student._id);
+      expect(fresh2.learningStreak).toBe(1);
+    });
+  });
+
+  describe('updateWord', () => {
+    it('changing one word\'s status does not grant a streak on its own', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'da-thuoc' });
+      expect(result.status2).toBe('ok');
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.learningStreak).toBe(0);
+    });
+
+    it('does not grant a streak when nothing but non-status fields change', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
+      const wordId = book.words[0]._id;
+
+      await vocabBookService.updateWord(book._id, wordId, student._id, student, { note: 'a note' });
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.learningStreak).toBe(0);
+    });
   });
 
   describe('deleteBook', () => {
@@ -275,26 +325,55 @@ describe('vocabBookService', () => {
   });
 
   describe('completePractice (student side-effects)', () => {
-    it('applies +1 streak for 80-90% accuracy', async () => {
+    // Streak credit requires >= VOCAB_STREAK_WORD_THRESHOLD (35) words
+    // engaged in the Vietnam calendar day, summed across every add/update/
+    // practice call that day — a single 5-word quiz (the minimum a call
+    // will even accept) is well below that on its own, so most of these
+    // tests answer 35 words in one call to cross the threshold immediately.
+
+    it('a single sub-threshold session (< 35 words that day) earns no streak at all', async () => {
       const student = await createStudent();
-      // 4/5 = 80%
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 4 });
+      // 100% accuracy would normally be +2, but only 10 words this day — no streak yet.
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 10, correctAnswered: 10 });
+      expect(result.status).toBe('ok');
+      expect(result.bonusApplied).toBe(0);
+      expect(result.streak).toBe(0);
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.lastActivityDate).toBeNull(); // day doesn't count as "studied" yet
+    });
+
+    it('streak unlocks once cumulative words that day cross the threshold, across separate sessions', async () => {
+      const student = await createStudent();
+      const first = await vocabBookService.completePractice(student, { wordsAnswered: 20, correctAnswered: 20 });
+      expect(first.bonusApplied).toBe(0); // 20/35 so far — not enough yet
+
+      // +15 more this call brings the day's total to 35 — now it counts.
+      const second = await vocabBookService.completePractice(student, { wordsAnswered: 15, correctAnswered: 15 });
+      expect(second.bonusApplied).toBe(2);
+      expect(second.streak).toBe(2);
+    });
+
+    it('applies +1 streak for 80-90% accuracy once the day\'s 35-word threshold is met', async () => {
+      const student = await createStudent();
+      // 28/35 = 80%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 28 });
       expect(result.status).toBe('ok');
       expect(result.bonusApplied).toBe(1);
       expect(result.streak).toBe(1);
     });
 
-    it('applies +2 streak for >=90% accuracy', async () => {
+    it('applies +2 streak for >=90% accuracy once the day\'s 35-word threshold is met', async () => {
       const student = await createStudent();
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       expect(result.bonusApplied).toBe(2);
       expect(result.streak).toBe(2);
     });
 
-    it('applies +0 streak for <80% accuracy, but still keeps the day-chain alive', async () => {
+    it('applies +0 streak for <80% accuracy, but still keeps the day-chain alive once past the word threshold', async () => {
       const student = await createStudent();
-      // 3/5 = 60%
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 3 });
+      // 21/35 = 60%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 21 });
       expect(result.bonusApplied).toBe(0);
       expect(result.streak).toBe(0);
 
@@ -304,15 +383,16 @@ describe('vocabBookService', () => {
 
     it('caps total streak bonus at +5 per day across multiple sessions', async () => {
       const student = await createStudent();
-      // 3 sessions at 100% (+2 each) in the same day would be +6 uncapped
-      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
-      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
-      const third = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      // Each session alone is >= 35 words, so every one independently clears
+      // the word threshold; 3 sessions at 100% (+2 each) would be +6 uncapped.
+      await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
+      await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
+      const third = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       // 2 + 2 = 4 already earned today, only 1 of the requested 2 remains under the cap
       expect(third.bonusApplied).toBe(1);
       expect(third.streak).toBe(5);
 
-      const fourth = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      const fourth = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       expect(fourth.bonusApplied).toBe(0); // cap fully spent
       expect(fourth.streak).toBe(5);
     });
@@ -327,7 +407,7 @@ describe('vocabBookService', () => {
       // Yesterday's cap was already fully spent — should have zero bearing on today.
       await VocabActivity.create({ userId: student._id, date: yesterdayVN, streakBonusEarned: 5 });
 
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       expect(result.bonusApplied).toBe(2); // full tier available today, unaffected by yesterday
     });
 
@@ -348,14 +428,11 @@ describe('vocabBookService', () => {
       const VocabActivity = require('../../../models/VocabActivity');
       const student = await createStudent();
 
-      await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5 });
-      // logActivity() inside completePractice is fire-and-forget — give its
-      // upsert a moment to land before asserting on it.
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
 
       const docs = await VocabActivity.find({ userId: student._id });
       expect(docs).toHaveLength(1);
-      expect(docs[0].wordsStudied).toBe(5);
+      expect(docs[0].wordsStudied).toBe(35);
       expect(docs[0].streakBonusEarned).toBe(2);
 
       const now = new Date();

@@ -3,7 +3,7 @@
 // Extracted from routes/vocabBook.js, verbatim logic.
 const VocabBook = require('../models/VocabBook');
 const VocabActivity = require('../models/VocabActivity');
-const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
+const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
 
 // Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay
 // (Vietnam local day — same convention as User.getVNDay/effectiveStreak; using
@@ -62,15 +62,20 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   if (user.role !== 'student') return { status: 'not_student' };
   if (wordsAnswered < 5) return { status: 'too_few' };
 
-  logActivity(user._id, { wordsStudied: wordsAnswered });
+  // Only counts toward the streak once today's cumulative word-engagement
+  // (this call plus any earlier add/update/practice activity today) reaches
+  // VOCAB_STREAK_WORD_THRESHOLD — see reachedDailyWordThreshold().
+  const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: wordsAnswered });
 
   const accuracy = Math.max(0, Math.min(1, correctAnswered / wordsAnswered));
   const rawBonus = bonusForAccuracy(accuracy);
-  const appliedBonus = await reserveDailyStreakBonus(user._id, rawBonus);
+  const appliedBonus = qualifiesToday ? await reserveDailyStreakBonus(user._id, rawBonus) : 0;
 
-  // Always called (even with bonus 0) so lastActivityDate still advances
-  // today — a sub-80% session keeps the day-chain alive without growing it.
-  user.updateStreak(appliedBonus, { allowSameDayStack: true });
+  // Always called once qualified (even with bonus 0) so lastActivityDate
+  // still advances today — a sub-80% session keeps the day-chain alive
+  // without growing it. Below the word threshold, skip entirely: today
+  // shouldn't count as "studied" yet.
+  if (qualifiesToday) user.updateStreak(appliedBonus, { allowSameDayStack: true });
 
   // Búa Daniel: clearing a Paraphrase Unit at >=90% earns 1 hammer, but only
   // the first time that specific unit is ever cleared at that bar.
@@ -167,9 +172,10 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
   await book.save();
 
   if (user.role === 'student') {
-    logActivity(user._id, { wordsAdded: 1 });
-    user.updateStreak();
-    await user.save();
+    if (await reachedDailyWordThreshold(user._id, { wordsAdded: 1 })) {
+      user.updateStreak();
+      await user.save();
+    }
   }
 
   return { status: 'ok', bookName: book.name, word: book.words[book.words.length - 1] };
@@ -195,9 +201,10 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
   await book.save();
 
   if (hadStatusChange && user.role === 'student') {
-    logActivity(user._id, { wordsStudied: 1 });
-    user.updateStreak();
-    await user.save();
+    if (await reachedDailyWordThreshold(user._id, { wordsStudied: 1 })) {
+      user.updateStreak();
+      await user.save();
+    }
   }
 
   return { status2: 'ok', word: wordDoc };
@@ -245,9 +252,10 @@ async function bulkAddWords(bookId, user, words) {
   if (addedCount > 0) {
     await book.save();
     if (user.role === 'student') {
-      logActivity(user._id, { wordsAdded: addedCount });
-      user.updateStreak();
-      await user.save();
+      if (await reachedDailyWordThreshold(user._id, { wordsAdded: addedCount })) {
+        user.updateStreak();
+        await user.save();
+      }
     }
   }
 

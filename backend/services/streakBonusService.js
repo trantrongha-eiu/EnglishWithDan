@@ -19,6 +19,31 @@ function bonusForAccuracy(accuracy) {
   return accuracy >= 0.9 ? 2 : accuracy >= 0.8 ? 1 : 0;
 }
 
+// Minimum words a student must engage with (added + status-updated +
+// answered in practice, summed over the whole Vietnam calendar day) before
+// that day counts as "đã học" for streak purposes. Added because adding a
+// single throwaway word — or flipping one word's status — used to be enough
+// to claim a full day's streak on its own, which several students were
+// farming daily for zero real study.
+const VOCAB_STREAK_WORD_THRESHOLD = 35;
+
+// Increments today's word-engagement counters and reports whether today's
+// running total has reached VOCAB_STREAK_WORD_THRESHOLD — true both on the
+// call that first crosses it and on every qualifying call afterward the
+// same day, so callers can gate `user.updateStreak()` behind this without
+// separately tracking "did we already unlock today". `wordsInc` is a partial
+// $inc object using VocabActivity's own field names, e.g. { wordsAdded: 1 }
+// or { wordsStudied: wordsAnswered }.
+async function reachedDailyWordThreshold(userId, wordsInc) {
+  const date = todayVNDate();
+  const doc = await VocabActivity.findOneAndUpdate(
+    { userId, date },
+    { $inc: wordsInc },
+    { upsert: true, new: true }
+  );
+  return (doc.wordsAdded || 0) + (doc.wordsStudied || 0) >= VOCAB_STREAK_WORD_THRESHOLD;
+}
+
 // Daily streak-bonus cap (max 5/day, shared across vocab/reading/listening):
 // reads how much bonus has already been granted today, then reserves
 // `rawBonus` more via an optimistic compare-and-swap — the increment only
@@ -59,4 +84,7 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
   return 0;
 }
 
-module.exports = { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus };
+module.exports = {
+  todayVNDate, bonusForAccuracy, reserveDailyStreakBonus,
+  reachedDailyWordThreshold, VOCAB_STREAK_WORD_THRESHOLD,
+};
