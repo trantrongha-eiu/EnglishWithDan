@@ -4,6 +4,8 @@ import { apiFetch, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import Pagination from '../components/Pagination';
+import { useListFilter } from '../hooks/useListFilter';
 
 function AssembleModal({ sections, onClose, onSuccess }) {
   const toast = useToast();
@@ -186,7 +188,6 @@ export default function ListeningSections() {
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
   const [sections, setSections] = useState([]);
-  const [search, setSearch] = useState('');
   const [partFilter, setPartFilter] = useState('all');
   const [audioSection, setAudioSection] = useState(null);
   const [showAssemble, setShowAssemble] = useState(false);
@@ -198,13 +199,15 @@ export default function ListeningSections() {
 
   useEffect(() => { load(); }, []);
 
-  const filtered = sections.filter(s => {
-    const matchPart = partFilter === 'all'
-      || (partFilter === 'actual' ? s.isActualTest : String(s.partNumber) === partFilter);
-    const matchSearch = !search ||
-      s.title?.toLowerCase().includes(search.toLowerCase());
-    return matchPart && matchSearch;
-  });
+  // partFilter (Section 1-4 / Actual) isn't a search/status/sort concern, so
+  // it's applied before handing off to useListFilter — which then owns
+  // search + pagination (this page previously rendered every filtered row
+  // with no pagination "footer" at all, unlike every sibling list page).
+  const partFiltered = sections.filter(s => partFilter === 'all'
+    || (partFilter === 'actual' ? s.isActualTest : String(s.partNumber) === partFilter));
+  const {
+    search, setSearch, page, setPage, paged, filteredCount, pageSize,
+  } = useListFilter(partFiltered, { searchKeys: ['title'] });
 
   async function toggleActive(id, isActive) {
     try {
@@ -248,7 +251,7 @@ export default function ListeningSections() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Bài lẻ Listening ({filtered.length})</h2>
+        <h2 className="section-title">Bài lẻ Listening ({filteredCount})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => setShowAssemble(true)}>🎧 Tạo Full Test</button>
           <button className="btn btn-primary" onClick={() => navigate('/listening-sections/new')}>+ Thêm section</button>
@@ -284,9 +287,9 @@ export default function ListeningSections() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0
+            {paged.length === 0
               ? <tr><td colSpan={8} className="table-empty">Không có section nào</td></tr>
-              : filtered.map(s => {
+              : paged.map(s => {
                 const pc = PART_COLOR[s.partNumber] || PART_COLOR[1];
                 return (
                   <tr key={s._id}>
@@ -346,6 +349,9 @@ export default function ListeningSections() {
               })}
           </tbody>
         </table>
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <Pagination page={page} total={filteredCount} pageSize={pageSize} onPage={setPage} />
       </div>
     </>
   );
