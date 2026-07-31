@@ -6,15 +6,42 @@
 // one audio file per test, not per-part — same as all existing tests, so
 // audio is left blank here for admin to upload).
 //
+// IMPORTANT — always seeds BOTH the bundled test AND the 4 standalone
+// sections, do not remove the section-seeding half below. The admin's real
+// workflow is: (1) enter each Part as its own ListeningSection with its own
+// audio under "Bài lẻ Listening", (2) use "Tạo Full Test" to copy 4 chosen
+// sections into one ListeningTest, (3) upload one more combined audio to
+// that ListeningTest. AssembleModal (admin-src/src/pages/ListeningSections.jsx)
+// confirms the two collections are independent copies with NO reference
+// back from ListeningTest to the sections it came from. An earlier version
+// of this script only inserted the ListeningTest, silently skipping step
+// (1) — the admin had no way to upload per-part audio because the sections
+// never existed as their own documents (see git history: fix commit
+// "backfill standalone ListeningSection docs for seeded tests" had to
+// retroactively create 92 of these). Keep both halves seeding together so
+// that mistake can't happen again.
+//
 // Reused per test: edit TEST below to the next test's content, then run
 // `node scripts/seedListeningTest.js` from backend/. Safe to re-run — skips
-// if a test with this exact name already exists. Each past run's content is
-// preserved in git history (see log for prior seeds under this filename).
+// whichever half (test / each section) already exists by name. Each past
+// run's content is preserved in git history (see log for prior seeds under
+// this filename).
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const mongoose = require('mongoose');
 const ListeningTest = require('../models/ListeningTest');
+const ListeningSection = require('../models/ListeningSection');
+
+// Section titles are often left as the generic "Part N" placeholder when the
+// source text has no distinct topic name — give those a unique, searchable
+// title in the standalone-section library instead of many rows all
+// literally called "Part 1". Keep in sync with
+// scripts/seedListeningSectionsFromTests.js's identical helper.
+function sectionTitle(testName, sec) {
+  const t = (sec.title || '').trim();
+  return /^Part \d$/.test(t) ? `${testName} – Part ${sec.partNumber}` : t;
+}
 
 const TEST = {
   name: 'Cam 21 - Test 4',
@@ -294,12 +321,44 @@ const TEST = {
 
 async function runSeed() {
   const existing = await ListeningTest.findOne({ name: TEST.name }).lean();
+  let doc;
   if (existing) {
     console.log(`[SeedListeningTest] "${TEST.name}" already exists (_id=${existing._id}) – skip`);
-    return existing;
+    doc = existing;
+  } else {
+    doc = await ListeningTest.create(TEST);
+    console.log(`[SeedListeningTest] Inserted "${TEST.name}" (_id=${doc._id}, ${doc.totalQuestions} questions)`);
   }
-  const doc = await ListeningTest.create(TEST);
-  console.log(`[SeedListeningTest] Inserted "${TEST.name}" (_id=${doc._id}, ${doc.totalQuestions} questions)`);
+
+  // Always also ensure the 4 standalone ListeningSection docs exist — see
+  // the IMPORTANT note at the top of this file for why.
+  let sectionsInserted = 0, sectionsSkipped = 0;
+  for (const sec of TEST.sections) {
+    const title = sectionTitle(TEST.name, sec);
+    const existingSection = await ListeningSection.findOne({ title, partNumber: sec.partNumber }).lean();
+    if (existingSection) {
+      console.log(`[SeedListeningTest] Section "${title}" (Part ${sec.partNumber}) already exists (_id=${existingSection._id}) – skip`);
+      sectionsSkipped++;
+      continue;
+    }
+    const sectionDoc = await ListeningSection.create({
+      partNumber: sec.partNumber,
+      title,
+      description: sec.description || '',
+      audioUrl: '',
+      audioFileName: '',
+      audioDuration: 0,
+      transcript: sec.transcript || '',
+      questionRange: sec.questionRange,
+      questionGroups: sec.questionGroups,
+      isActive: true,
+      isActualTest: true,
+    });
+    console.log(`[SeedListeningTest] Inserted section "${title}" (Part ${sec.partNumber}, _id=${sectionDoc._id})`);
+    sectionsInserted++;
+  }
+  console.log(`[SeedListeningTest] Sections: inserted=${sectionsInserted} skipped=${sectionsSkipped}`);
+
   return doc;
 }
 
@@ -314,4 +373,4 @@ if (require.main === module) {
   })().catch(e => { console.error('[SeedListeningTest] FAILED', e); process.exit(1); });
 }
 
-module.exports = { runSeed, TEST };
+module.exports = { runSeed, TEST, sectionTitle };
