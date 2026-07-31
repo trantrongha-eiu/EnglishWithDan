@@ -15,7 +15,7 @@
 :root {
   --blue:#3d8bff; --blue-dark:#2c78f0; --blue-light:#eff6ff;
   --red:#e53935;  --red-light:#fef2f2;
-  --dark:var(--bg, #000000); --gray:#64748b;
+  --dark:#0f172a; --gray:#64748b;
   --white:#fff;
   --font:'Plus Jakarta Sans',sans-serif;
 }
