@@ -653,12 +653,12 @@
          STATIC_COURSES is only the offline/API-failure fallback — keep it
          in sync with backend/scripts/seedCourses.js's seed content. ── */
     const STATIC_COURSES = [
-      { title: 'IELTS Mất Gốc → 6.0+', subtitle: 'Học viên chưa có nền tảng', description: 'Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.', imageUrl: 'img/course-starter.jpg', placeholder: '🌱', level: 'Mất gốc', levelColor: 'red', duration: '6–8 tháng', classSize: 'Nhóm nhỏ ≤ 8 người' },
-      { title: 'IELTS 3.0 → 6.0+', subtitle: 'Band 3.0–4.5', description: 'Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.', imageUrl: 'img/course-3to6.jpg', placeholder: '📈', level: 'Cơ bản → Nâng cao', levelColor: 'blue', duration: '4–5 tháng', classSize: 'Nhóm nhỏ ≤ 8 người' },
-      { title: 'IELTS 6.0 → 7.0+', subtitle: 'Band 5.5–6.5', description: 'Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening. Mục tiêu 7.0–7.5.', imageUrl: 'img/course-6to7.jpg', placeholder: '🚀', level: 'Nâng cao', levelColor: 'green', duration: '3–4 tháng', classSize: '1–1 hoặc nhóm nhỏ' },
-      { title: 'IELTS Speaking Chuyên Sâu', subtitle: 'Học viên muốn đột phá Speaking', description: 'Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.', imageUrl: 'img/course-speaking.jpg', placeholder: '🎤', level: 'Chuyên sâu', levelColor: 'purple', duration: '6–8 tuần', classSize: '1–1 hoặc nhóm 4' },
-      { title: 'Giao Tiếp Tiếng Anh Cơ Bản', subtitle: 'Người mất gốc hoặc mới bắt đầu', description: 'Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.', imageUrl: 'img/course-comm.jpg', placeholder: '💬', level: 'Giao tiếp', levelColor: 'blue', duration: '3 tháng', classSize: 'Nhóm nhỏ ≤ 10' },
-      { title: 'Tiếng Anh Giao Tiếp Văn Phòng', subtitle: 'Người đi làm, dân văn phòng', description: 'Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.', imageUrl: 'img/course-business.jpg', placeholder: '💼', level: 'Business', levelColor: 'green', duration: '2–3 tháng', classSize: 'Nhóm hoặc 1–1' },
+      { title: 'IELTS Mất Gốc → 6.0+', subtitle: 'Học viên chưa có nền tảng', description: 'Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.', imageUrl: 'img/course-starter.jpg', placeholder: '🌱', level: 'Mất gốc', levelColor: 'red', duration: '6–8 tháng', classSize: 'Nhóm nhỏ ≤ 8 người', price: 'Liên hệ tư vấn' },
+      { title: 'IELTS 3.0 → 6.0+', subtitle: 'Band 3.0–4.5', description: 'Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.', imageUrl: 'img/course-3to6.jpg', placeholder: '📈', level: 'Cơ bản → Nâng cao', levelColor: 'blue', duration: '4–5 tháng', classSize: 'Nhóm nhỏ ≤ 8 người', price: 'Liên hệ tư vấn' },
+      { title: 'IELTS 6.0 → 7.0+', subtitle: 'Band 5.5–6.5', description: 'Chuyên sâu Writing Task 2, Speaking Band 7, kỹ thuật Skimming/Scanning cho Reading và dự đoán Listening. Mục tiêu 7.0–7.5.', imageUrl: 'img/course-6to7.jpg', placeholder: '🚀', level: 'Nâng cao', levelColor: 'green', duration: '3–4 tháng', classSize: '1–1 hoặc nhóm nhỏ', price: 'Liên hệ tư vấn' },
+      { title: 'IELTS Speaking Chuyên Sâu', subtitle: 'Học viên muốn đột phá Speaking', description: 'Phát âm chuẩn, fluency, từ vựng band 7+, chiến lược trả lời Part 1–3. Luyện mock test 1–1 với giáo viên.', imageUrl: 'img/course-speaking.jpg', placeholder: '🎤', level: 'Chuyên sâu', levelColor: 'purple', duration: '6–8 tuần', classSize: '1–1 hoặc nhóm 4', price: '2.500.000đ / khóa' },
+      { title: 'Giao Tiếp Tiếng Anh Cơ Bản', subtitle: 'Người mất gốc hoặc mới bắt đầu', description: 'Phát âm, hội thoại thực tế hàng ngày, tự tin giao tiếp với người nước ngoài. Không cần nền tảng trước.', imageUrl: 'img/course-comm.jpg', placeholder: '💬', level: 'Giao tiếp', levelColor: 'blue', duration: '3 tháng', classSize: 'Nhóm nhỏ ≤ 10', price: '900.000đ / tháng' },
+      { title: 'Tiếng Anh Giao Tiếp Văn Phòng', subtitle: 'Người đi làm, dân văn phòng', description: 'Email chuyên nghiệp, meeting, thuyết trình, đàm phán bằng tiếng Anh. Từ vựng Business English thực chiến.', imageUrl: 'img/course-business.jpg', placeholder: '💼', level: 'Business', levelColor: 'green', duration: '2–3 tháng', classSize: 'Nhóm hoặc 1–1', price: 'Liên hệ tư vấn' },
     ];
     const COURSE_CIRCLE_BG = { red: 'rgba(220,38,38,.13)', blue: 'rgba(37,99,235,.13)', green: 'rgba(22,163,74,.13)', purple: 'rgba(124,58,237,.13)' };
 
@@ -674,6 +674,7 @@
       const level       = escHtml(c.level || '');
       const placeholder = escHtml(c.placeholder || '📚');
       const imageUrl    = escHtml(c.imageUrl || '');
+      const price       = escHtml(c.price || 'Liên hệ tư vấn');
       const lvClass     = 'lv-' + (['red', 'blue', 'green', 'purple'].includes(c.levelColor) ? c.levelColor : 'blue');
       const circleBg    = COURSE_CIRCLE_BG[c.levelColor] || COURSE_CIRCLE_BG.blue;
       return `<div class="course-card">
@@ -690,6 +691,7 @@
             ${c.duration ? `<span><i class="fas fa-clock"></i> ${duration}</span>` : ''}
             ${c.classSize ? `<span><i class="fas fa-users"></i> ${classSize}</span>` : ''}
           </div>
+          <div class="course-price">${price}</div>
           <div class="course-cta">
             <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Tư vấn ngay</a>
           </div>
