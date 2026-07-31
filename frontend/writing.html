@@ -274,12 +274,14 @@
     <!-- Task type cards -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px" id="practice-task-select">
       <div class="wr-pcard" id="pcard-t1" onclick="showPracticeTaskList(1)">
+        <span id="pcard-t1-badge" class="wr-pcard-badge" style="display:none"></span>
         <div class="wr-pcard-emoji">📊</div>
         <div class="wr-pcard-name">Task 1</div>
         <div class="wr-pcard-desc">Graph / Chart / Table / Map<br/>Tối thiểu <strong>150 từ</strong></div>
         <button id="btn-practice-t1" class="btn-primary" style="margin-top:14px;width:100%;font-size:13px" onclick="event.stopPropagation();showPracticeTaskList(1)">Chọn đề Task 1</button>
       </div>
       <div class="wr-pcard" id="pcard-t2" onclick="showPracticeTaskList(2)">
+        <span id="pcard-t2-badge" class="wr-pcard-badge" style="display:none"></span>
         <div class="wr-pcard-emoji">📝</div>
         <div class="wr-pcard-name">Task 2</div>
         <div class="wr-pcard-desc">Essay / Discussion / Opinion<br/>Tối thiểu <strong>250 từ</strong></div>

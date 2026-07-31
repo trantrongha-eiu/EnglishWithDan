@@ -1073,6 +1073,7 @@ body {
    PRACTICE TASK SELECTION CARDS
 ══════════════════════════════════════════════ */
 .wr-pcard {
+  position: relative;
   border: 2px solid #e5e7eb;
   border-radius: 14px;
   padding: 24px;
@@ -1088,6 +1089,26 @@ body {
 [data-theme="dark"] .wr-pcard-name  { color: #f9fafb; }
 .wr-pcard-desc  { font-size: 12px; color: #6b7280; }
 [data-theme="dark"] .wr-pcard-desc  { color: #94a3b8; }
+
+/* Unsaved-draft count badge, top-right corner of the Task 1/2 picker card
+   — same red-pill style as the top nav's navTask2Badge. */
+.wr-pcard-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
 
 /* ══════════════════════════════════════════════
    FOOTER WORD-COUNT SUMMARY

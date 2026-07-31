@@ -1290,12 +1290,13 @@ function clearPracticeAutoSave(taskType, taskId) {
 }
 
 // ── Server-side draft helpers ───────────────────
-async function saveDraftToServer() {
+async function saveDraftToServer(opts = {}) {
   if (!practiceState.task) return;
   const ta = document.getElementById('pw-textarea');
   try {
     await apiFetch('/api/writing/practice/draft', {
       method: 'POST',
+      keepalive: !!opts.keepalive,
       body: JSON.stringify({
         taskType:  practiceState.taskType,
         task:      practiceState.task,
@@ -1312,6 +1313,24 @@ async function saveDraftToServer() {
     console.error('saveDraftToServer failed:', err);
   }
 }
+
+// Reliability net for the "most recent essay wasn't saved" bug: the only
+// server-side autosave triggers used to be a 5-minute stopwatch tick and
+// the in-app "Thoát" button — a student who just closes the tab, hits the
+// browser back button, or switches apps on mobile before either of those
+// fires ends up with nothing synced past whatever the localStorage mirror
+// had (device/browser-local only, invisible on any other session). pagehide
+// fires reliably in all of those cases; keepalive keeps the POST alive past
+// the point where a plain fetch would get cancelled by the page unloading.
+function _flushPracticeDraftOnLeave() {
+  if (!practiceState.task) return;
+  savePracticeToStorage();
+  saveDraftToServer({ keepalive: true });
+}
+window.addEventListener('pagehide', _flushPracticeDraftOnLeave);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') _flushPracticeDraftOnLeave();
+});
 
 async function loadDraftsFromServer() {
   try {
@@ -1349,8 +1368,19 @@ async function checkPracticeRestoreBanner() {
     const existing = merged.get(key);
     if (!existing || d.savedAt > existing.savedAt) merged.set(key, d);
   }
-  const drafts = [...merged.values()].sort((a, b) => b.savedAt - a.savedAt);
+  // The server caps stored drafts at 2 per taskType (writingService.saveDraft),
+  // but localStorage can accumulate more than that (different prompts tried
+  // across several days, never capped client-side) — re-apply the same
+  // "top 2 per taskType" limit here so the restore list never shows more
+  // than what a student can actually resume.
+  const byType = new Map();
+  for (const d of [...merged.values()].sort((a, b) => b.savedAt - a.savedAt)) {
+    const list = byType.get(d.taskType) || [];
+    if (list.length < 2) { list.push(d); byType.set(d.taskType, list); }
+  }
+  const drafts = [...byType.values()].flat().sort((a, b) => b.savedAt - a.savedAt);
   practiceState.restorableDrafts = drafts;
+  _updatePracticeCardBadges(drafts);
 
   // Two banner instances share this state: one on screen-practice (shown
   // after clicking "Luyện tập lẻ"), one on screen-key (the landing screen,
@@ -1387,6 +1417,20 @@ async function checkPracticeRestoreBanner() {
     listEl.innerHTML = itemsHtml;
     banner.style.display = 'block';
   }
+}
+
+// Mirrors the top-nav's navTask2Badge (js/nav.js) — a small red count badge
+// on the Task 1 / Task 2 picker cards showing how many unsaved drafts of
+// that type are waiting to be resumed.
+function _updatePracticeCardBadges(drafts) {
+  const counts = { 1: 0, 2: 0 };
+  for (const d of drafts) counts[d.taskType] = (counts[d.taskType] || 0) + 1;
+  [1, 2].forEach(t => {
+    const el = document.getElementById(`pcard-t${t}-badge`);
+    if (!el) return;
+    el.textContent = counts[t];
+    el.style.display = counts[t] > 0 ? 'flex' : 'none';
+  });
 }
 
 function restorePracticeWrite(idx) {
