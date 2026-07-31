@@ -107,6 +107,31 @@
     return word;
   }
 
+  // A plain browser dblclick only ever selects a single word — there is no
+  // native gesture that produces a "double-click on a 2-3 word phrase".
+  // Students who want to save a phrase instead drag-select it (mousedown,
+  // drag across the words, mouseup), which never fires dblclick at all, so
+  // the popup silently never appeared for multi-word selections even though
+  // the extraction/lookup logic below already accepts up to 3 words. This
+  // mouseup listener is the multi-word counterpart to _extractDoubleClickedWord:
+  // it only acts when the mouseup left behind a selection that spans more
+  // than one word, so it never double-fires for an ordinary double-click
+  // (that stays on the dblclick listener) and never fires for a plain
+  // single click (collapsed/empty selection) or a quiz-answer/input click.
+  function _extractDragSelectedPhrase(e) {
+    var target = e.target;
+    if (target && target.closest && target.closest(ANSWER_BUTTON_SELECTOR)) return '';
+    if (target && (target.tagName === 'TEXTAREA' ||
+        (target.tagName === 'INPUT' && TEXT_INPUT_TYPES[target.type]))) return '';
+    var sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return '';
+    if (!target || !target.contains(sel.anchorNode)) return '';
+    var word = sel.toString().trim();
+    if (!/\s/.test(word)) return ''; // single word — let dblclick handle it
+    if (word.split(/\s+/).length > 3 || word.length < 2) return '';
+    return word;
+  }
+
   // gate (optional): fn returning falsy skips the lookup entirely — used by
   // Reading/Listening, where double-click lookup only fires while their own
   // toolbar "Dict" tool is toggled on and a review/practice/retry screen is
@@ -115,6 +140,7 @@
     var el = document.getElementById(containerId);
     if (!el) return;
     if (el._dictHandler) el.removeEventListener('dblclick', el._dictHandler);
+    if (el._dictMouseupHandler) el.removeEventListener('mouseup', el._dictMouseupHandler);
     el._dictSource = source || 'other';
     el._dictGate = gate || null;
     el._dictHandler = function (e) {
@@ -124,7 +150,15 @@
       _source = el._dictSource;
       lookupWord(word, e.clientX, e.clientY);
     };
+    el._dictMouseupHandler = function (e) {
+      if (el._dictGate && !el._dictGate()) return;
+      var word = _extractDragSelectedPhrase(e);
+      if (!word) return;
+      _source = el._dictSource;
+      lookupWord(word, e.clientX, e.clientY);
+    };
     el.addEventListener('dblclick', el._dictHandler);
+    el.addEventListener('mouseup', el._dictMouseupHandler);
   }
 
   async function lookupWord(word, x, y) {
