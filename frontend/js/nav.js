@@ -267,6 +267,8 @@
         // the whole point is it keeps showing on every visit until an admin
         // clears studyReminderCount (student caught up on their work).
         if ((u.studyReminderCount || 0) >= 3) _showStudyWarningBanner(u.studyReminderCount);
+
+        if (u.role === 'student') _showStreak35Notice();
       });
     }
   }
@@ -339,6 +341,37 @@
       window.removeEventListener('resize', applyOffset);
       document.documentElement.style.setProperty('--expiry-banner-height', baseOffset + 'px');
       banner.remove();
+    });
+  }
+
+  // One-time popup explaining the new "35 words/day" streak-eligibility
+  // rule (backend: streakBonusService.reachedDailyWordThreshold) — added
+  // after several students were farming the streak by saving a single
+  // throwaway vocab word a day. Shown once ever per browser (localStorage,
+  // not sessionStorage — this is an announcement, not a per-visit warning)
+  // to every logged-in student.
+  var STREAK35_NOTICE_KEY = 'ews_seen_streak35_notice';
+  function _showStreak35Notice() {
+    if (localStorage.getItem(STREAK35_NOTICE_KEY)) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'nav-streak35-notice-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+    overlay.innerHTML =
+      '<div style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:420px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
+        '<div style="font-size:44px;margin-bottom:10px">🔥📖</div>' +
+        '<h3 style="font-size:18px;font-weight:800;margin-bottom:10px">Cập nhật cơ chế giữ chuỗi lửa 🔥</h3>' +
+        '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px;text-align:left">' +
+          'Để chuỗi lửa phản ánh đúng việc học thật, từ nay mỗi ngày bạn cần <strong>học tối thiểu 35 từ vựng</strong> ' +
+          '(thêm từ mới, đổi trạng thái ôn từ, hoặc làm quiz từ vựng — cộng dồn tất cả trong ngày) thì mới được tính là "đã học" và cộng chuỗi lửa hôm đó.' +
+        '</p>' +
+        '<button id="nav-streak35-notice-close" style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer">Đã hiểu</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    document.getElementById('nav-streak35-notice-close').addEventListener('click', function () {
+      localStorage.setItem(STREAK35_NOTICE_KEY, '1');
+      overlay.remove();
     });
   }
 })();
