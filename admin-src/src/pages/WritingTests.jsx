@@ -538,6 +538,21 @@ export default function WritingTests() {
     });
   }
 
+  // One bulk toggle per tab — each acts on that tab's own filtered (search/
+  // status) list, not just the current page, and flips between hide-all/
+  // show-all depending on whether anything in that filtered set is still visible.
+  function bulkToggle(list, endpointFor, label, reload) {
+    if (list.filtered.length === 0) return;
+    const targetActive = !list.filtered.some(x => x.isActive !== false);
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${list.filtered.length} ${label} đang lọc?`, async () => {
+      try {
+        await Promise.all(list.filtered.map(x => apiFetch(endpointFor(x._id), { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${list.filtered.length} ${label}`);
+        reload();
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   return (
     <>
       {(showT1Modal || editTask1) && (
@@ -565,10 +580,32 @@ export default function WritingTests() {
 
       <div className="section-header">
         <h2 className="section-title">Đề Writing</h2>
-        {tab === 'task1' && <button className="btn btn-primary" onClick={() => { setEditTask1(null); setShowT1Modal(true); }}>+ Thêm Task 1</button>}
-        {tab === 'task2' && <button className="btn btn-primary" onClick={() => { setEditTask2(null); setShowT2Modal(true); }}>+ Thêm Task 2</button>}
-        {tab === 'samples' && <button className="btn btn-primary" onClick={() => { setEditSample(null); setShowSampleModal(true); }}>+ Upload bài mẫu</button>}
-        {tab === 'exams' && <button className="btn btn-primary" onClick={() => { setEditExam(null); setShowExamModal(true); }}>+ Thêm đề thi</button>}
+        <div style={{ display: 'flex', gap: 8 }}>
+          {tab === 'task1' && <>
+            <button className="btn btn-ghost" onClick={() => bulkToggle(task1List, id => `/admin/writing-task1/${id}`, 'prompt Task 1', loadT1)} disabled={task1List.filtered.length === 0}>
+              {task1List.filtered.some(x => x.isActive !== false) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+            </button>
+            <button className="btn btn-primary" onClick={() => { setEditTask1(null); setShowT1Modal(true); }}>+ Thêm Task 1</button>
+          </>}
+          {tab === 'task2' && <>
+            <button className="btn btn-ghost" onClick={() => bulkToggle(task2List, id => `/admin/writing-task2/${id}`, 'prompt Task 2', loadT2)} disabled={task2List.filtered.length === 0}>
+              {task2List.filtered.some(x => x.isActive !== false) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+            </button>
+            <button className="btn btn-primary" onClick={() => { setEditTask2(null); setShowT2Modal(true); }}>+ Thêm Task 2</button>
+          </>}
+          {tab === 'samples' && <>
+            <button className="btn btn-ghost" onClick={() => bulkToggle(samplesList, id => `/admin/writing/samples/${id}`, 'bài mẫu', loadSamples)} disabled={samplesList.filtered.length === 0}>
+              {samplesList.filtered.some(x => x.isActive !== false) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+            </button>
+            <button className="btn btn-primary" onClick={() => { setEditSample(null); setShowSampleModal(true); }}>+ Upload bài mẫu</button>
+          </>}
+          {tab === 'exams' && <>
+            <button className="btn btn-ghost" onClick={() => bulkToggle(examsList, id => `/admin/writing-exams/${id}`, 'đề thi', loadExams)} disabled={examsList.filtered.length === 0}>
+              {examsList.filtered.some(x => x.isActive !== false) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+            </button>
+            <button className="btn btn-primary" onClick={() => { setEditExam(null); setShowExamModal(true); }}>+ Thêm đề thi</button>
+          </>}
+        </div>
       </div>
 
       <div className="inner-tabs-nav">

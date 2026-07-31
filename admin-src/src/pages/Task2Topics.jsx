@@ -305,6 +305,29 @@ export default function Task2Topics() {
     } catch (e) { showToast(e.message, 'error'); }
   }
 
+  // The list is server-paginated (only the current page lives in `topics`),
+  // so "tất cả" has to re-fetch every topic matching the current filter —
+  // unpaginated — before it can act on more than just this page.
+  async function bulkToggleTopics() {
+    try {
+      const params = new URLSearchParams({ page: 1, limit: 5000 });
+      if (weekFilter !== 'all') params.set('week', weekFilter);
+      if (typeFilter !== 'all') params.set('essayType', typeFilter);
+      if (search) params.set('search', search);
+      const d = await apiFetch(`/admin/task2/topics?${params}`);
+      const all = d.topics || [];
+      if (all.length === 0) return;
+      const targetActive = !all.some(t => t.isActive);
+      confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${all.length} topic đang lọc?`, async () => {
+        try {
+          await Promise.all(all.map(t => apiFetch(`/admin/task2/topics/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+          showToast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${all.length} topic`, 'success');
+          forceReload();
+        } catch (e) { showToast(e.message, 'error'); }
+      });
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
   function deleteQuestion(qid) {
     if (!activeTopic) return;
     confirm('Xóa câu hỏi này? Không thể hoàn tác.', async () => {
@@ -345,6 +368,9 @@ export default function Task2Topics() {
           <p className="page-subtitle">{total} topic — quản lý câu hỏi luyện viết IELTS Task 2</p>
         </div>
         <div style={{ display:'flex', gap:8 }}>
+          <button className="btn btn-ghost" onClick={bulkToggleTopics} disabled={topics.length === 0}>
+            {topics.some(t => t.isActive) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
           <button className="btn btn-primary" onClick={() => { setEditingTopic(null); setShowTopicModal(true); }}>+ Thêm Topic</button>
         </div>
       </div>

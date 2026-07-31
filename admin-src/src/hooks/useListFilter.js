@@ -48,6 +48,10 @@ export function useListFilter(items, {
     sortBy, setSortBy,
     page, setPage,
     paged,
+    // Full filtered (but unpaginated) list — needed by bulk actions like
+    // "hide/show all" that must act on everything matching the current
+    // search/status filter, not just the current page's 20 rows.
+    filtered: sorted,
     filteredCount: filtered.length,
     pageSize,
   };

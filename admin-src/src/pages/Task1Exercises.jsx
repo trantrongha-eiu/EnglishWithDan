@@ -350,6 +350,30 @@ export default function Task1Exercises() {
   function closeModal() { setShowModal(false); setEditEx(null); }
   function forceReload() { setPage(1); setTick(t => t + 1); }
 
+  // The list is server-paginated (only the current 20-row page lives in
+  // `exercises`), so "tất cả" has to re-fetch every row matching the current
+  // filter — unpaginated — before it can act on more than just this page.
+  async function bulkToggle() {
+    try {
+      const qs = new URLSearchParams({ page: 1, limit: 5000 });
+      if (levelFilter) qs.set('level', levelFilter);
+      if (skillFilter) qs.set('skillType', skillFilter);
+      if (typeFilter) qs.set('type', typeFilter);
+      if (search) qs.set('search', search);
+      const d = await apiFetch(`/admin/task1/exercises?${qs}`);
+      const all = d.exercises || [];
+      if (all.length === 0) return;
+      const targetActive = !all.some(x => x.isActive !== false);
+      confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${all.length} câu hỏi đang lọc?`, async () => {
+        try {
+          await Promise.all(all.map(x => apiFetch(`/admin/task1/exercises/${x._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+          toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${all.length} câu hỏi`);
+          forceReload();
+        } catch (e) { toast(e.message, 'error'); }
+      });
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
   return (
     <>
       {(showModal || editEx) && (
@@ -359,6 +383,9 @@ export default function Task1Exercises() {
       <div className="section-header">
         <h2 className="section-title">Task 1 Grammar Exercises</h2>
         <div style={{ display:'flex', gap:8 }}>
+          <button className="btn btn-ghost btn-sm" onClick={bulkToggle} disabled={exercises.length === 0}>
+            {exercises.some(x => x.isActive !== false) ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
           <button className="btn btn-primary btn-sm" onClick={() => { setEditEx(null); setShowModal(true); }}>
             + Thêm câu hỏi
           </button>

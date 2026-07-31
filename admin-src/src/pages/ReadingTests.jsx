@@ -17,7 +17,7 @@ export default function ReadingTests() {
   const [passageStats, setPassageStats] = useState(null);
   const {
     search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
-    page, setPage, paged, filteredCount, pageSize,
+    page, setPage, paged, filtered, filteredCount, pageSize,
   } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
 
   const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
@@ -46,6 +46,22 @@ export default function ReadingTests() {
     });
   }
 
+  // Acts on everything matching the current search/status filter (not just
+  // the current page) — if any of those are still visible, this hides all
+  // of them; once they're all hidden, the same button flips to show all.
+  const anyVisibleInFilter = filtered.some(t => t.isActive !== false);
+  function bulkToggle() {
+    if (filtered.length === 0) return;
+    const targetActive = !anyVisibleInFilter;
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} bộ đề đang lọc?`, async () => {
+      try {
+        await Promise.all(filtered.map(t => apiFetch(`/admin/tests/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} bộ đề`);
+        load();
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   function copyLink(id) {
     const url = `https://englishwithdan.onrender.com/reading.html?testId=${id}`;
     navigator.clipboard.writeText(url)
@@ -57,7 +73,12 @@ export default function ReadingTests() {
     <>
       <div className="section-header">
         <h2 className="section-title">Bộ đề Reading ({filteredCount})</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new')}>+ Thêm bộ đề</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
+            {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
+          <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new')}>+ Thêm bộ đề</button>
+        </div>
       </div>
 
       {passageStats && (

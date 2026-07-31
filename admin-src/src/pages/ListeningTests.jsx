@@ -86,7 +86,7 @@ export default function ListeningTests() {
   const [audioTest, setAudioTest] = useState(null);
   const {
     search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
-    page, setPage, paged, filteredCount, pageSize,
+    page, setPage, paged, filtered, filteredCount, pageSize,
   } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
 
   const load = () => apiFetch('/admin/listening/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
@@ -104,6 +104,19 @@ export default function ListeningTests() {
     confirm(`Xóa vĩnh viễn đề listening "${name}"? Không thể khôi phục!`, async () => {
       try { await apiFetch(`/admin/listening/tests/${id}/permanent`, { method: 'DELETE' }); toast('Đã xóa vĩnh viễn'); load(); }
       catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
+  const anyVisibleInFilter = filtered.some(t => t.isActive !== false);
+  function bulkToggle() {
+    if (filtered.length === 0) return;
+    const targetActive = !anyVisibleInFilter;
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} đề đang lọc?`, async () => {
+      try {
+        await Promise.all(filtered.map(t => apiFetch(`/admin/listening/tests/${t._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} đề`);
+        load();
+      } catch (e) { toast(e.message, 'error'); }
     });
   }
 
@@ -137,7 +150,12 @@ export default function ListeningTests() {
 
       <div className="section-header">
         <h2 className="section-title">Đề Listening ({filteredCount})</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/listening-tests/new')}>+ Thêm đề</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
+            {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
+          <button className="btn btn-primary" onClick={() => navigate('/listening-tests/new')}>+ Thêm đề</button>
+        </div>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>

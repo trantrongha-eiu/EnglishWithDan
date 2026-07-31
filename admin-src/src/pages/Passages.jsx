@@ -271,6 +271,19 @@ export default function Passages() {
     });
   }
 
+  const anyVisibleInFilter = filtered.some(p => p.isActive !== false);
+  function bulkToggle() {
+    if (filtered.length === 0) return;
+    const targetActive = !anyVisibleInFilter;
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} bài đọc đang lọc?`, async () => {
+      try {
+        await Promise.all(filtered.map(p => apiFetch(`/admin/passages/${p._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} bài đọc`);
+        load();
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   function closeModal() { setShowModal(false); setEditId(null); }
 
   return (
@@ -284,7 +297,12 @@ export default function Passages() {
 
       <div className="section-header">
         <h2 className="section-title">Bài đọc ({filtered.length})</h2>
-        <button className="btn btn-primary" onClick={() => { setEditId(null); setShowModal(true); }}>+ Thêm bài đọc</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
+            {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
+          <button className="btn btn-primary" onClick={() => { setEditId(null); setShowModal(true); }}>+ Thêm bài đọc</button>
+        </div>
       </div>
 
       <div className="filter-bar" style={{ marginBottom: 16, display: 'flex', gap: 10 }}>

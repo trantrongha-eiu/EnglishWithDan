@@ -206,7 +206,7 @@ export default function ListeningSections() {
   const partFiltered = sections.filter(s => partFilter === 'all'
     || (partFilter === 'actual' ? s.isActualTest : String(s.partNumber) === partFilter));
   const {
-    search, setSearch, page, setPage, paged, filteredCount, pageSize,
+    search, setSearch, page, setPage, paged, filtered, filteredCount, pageSize,
   } = useListFilter(partFiltered, { searchKeys: ['title'] });
 
   async function toggleActive(id, isActive) {
@@ -215,6 +215,19 @@ export default function ListeningSections() {
       toast(isActive ? 'Đã ẩn section' : 'Đã hiện section');
       load();
     } catch (e) { toast(e.message, 'error'); }
+  }
+
+  const anyVisibleInFilter = filtered.some(s => s.isActive !== false);
+  function bulkToggle() {
+    if (filtered.length === 0) return;
+    const targetActive = !anyVisibleInFilter;
+    confirm(`${targetActive ? 'Hiện' : 'Ẩn'} tất cả ${filtered.length} section đang lọc?`, async () => {
+      try {
+        await Promise.all(filtered.map(s => apiFetch(`/admin/listening/sections/${s._id}`, { method: 'PUT', body: JSON.stringify({ isActive: targetActive }) })));
+        toast(`Đã ${targetActive ? 'hiện' : 'ẩn'} ${filtered.length} section`);
+        load();
+      } catch (e) { toast(e.message, 'error'); }
+    });
   }
 
   async function del(id, title) {
@@ -253,6 +266,9 @@ export default function ListeningSections() {
       <div className="section-header">
         <h2 className="section-title">Bài lẻ Listening ({filteredCount})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
+            {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
+          </button>
           <button className="btn btn-ghost" onClick={() => setShowAssemble(true)}>🎧 Tạo Full Test</button>
           <button className="btn btn-primary" onClick={() => navigate('/listening-sections/new')}>+ Thêm section</button>
         </div>
