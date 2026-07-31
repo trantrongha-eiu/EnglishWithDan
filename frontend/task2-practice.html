@@ -159,6 +159,8 @@
     .t2-dot-current{background:#6366f1;transform:scale(1.35);box-shadow:0 0 0 2px #c7d2fe}
     [data-theme="dark"] .t2-q-dot{background:var(--border2, #333333)}
     [data-theme="dark"] .t2-dot-current{box-shadow:0 0 0 2px #3730a3}
+    #q-dots .t2-q-dot{cursor:pointer}
+    #q-dots .t2-q-dot:hover{transform:scale(1.5)}
     /* ── Practice context strip ── */
     .t2-ctx-strip{display:flex;align-items:center;gap:8px;padding:7px 20px;background:#f9fafb;border-bottom:1px solid #e5e7eb;flex-wrap:wrap;font-size:12px}
     [data-theme="dark"] .t2-ctx-strip{background:var(--surface, #0d0d0d);border-bottom-color:var(--border2, #333333)}
@@ -1128,7 +1130,7 @@ function renderPractice() {
     <div class="t2-q-dots" id="q-dots">
       ${state.questions.map((q, i) => {
         const st = (state.questionStatus || [])[i] || 'pending';
-        return `<span class="t2-q-dot ${st === 'correct' ? 't2-dot-ok' : st === 'wrong' ? 't2-dot-err' : i === state.currentIdx ? 't2-dot-current' : ''}" data-qi="${i}" title="Câu ${i+1}"></span>`;
+        return `<span class="t2-q-dot ${st === 'correct' ? 't2-dot-ok' : st === 'wrong' ? 't2-dot-err' : i === state.currentIdx ? 't2-dot-current' : ''}" data-qi="${i}" title="Câu ${i+1}" onclick="goToQuestion(${i})"></span>`;
       }).join('')}
     </div>
     <div class="wp-exercise-meta" style="padding:8px 20px">
@@ -1435,6 +1437,14 @@ function nextPractice() {
   if (state.currentIdx >= state.questions.length) {
     state.view = 'done'; render(); savePracticeAttempt(); return;
   }
+  state.mcSelected = null; state.rearrangeAnswer = [];
+  render();
+}
+
+function goToQuestion(i) {
+  if (state._isSubmitting || i === state.currentIdx) return;
+  clearTimeout(_autoNextTimer);
+  state.currentIdx = i;
   state.mcSelected = null; state.rearrangeAnswer = [];
   render();
 }
