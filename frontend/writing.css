@@ -224,7 +224,7 @@ body {
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   cursor: pointer;
   user-select: none;
 }
@@ -245,7 +245,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   transition: all .15s;
 }
 .task-nav-btn.active   { background: #e53935; color: #fff; border-color: #e53935; }
@@ -265,7 +265,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   transition: background .15s;
 }
 .arrow-btn:hover { background: #f3f4f6; }
@@ -335,7 +335,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   transition: background .15s;
 }
 .btn-secondary:hover { background: #f3f4f6; }
@@ -386,7 +386,7 @@ body {
 .history-table th {
   background: #f8f9fb;
   font-weight: 700;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
 }
 
 .history-table td { color: #555; }
@@ -411,7 +411,7 @@ body {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   transition: all .15s;
 }
 .btn-view-attempt:hover { background: #f3f4f6; border-color: #9ca3af; }
@@ -428,7 +428,7 @@ body {
   cursor: pointer;
   transition: all .15s;
 }
-.btn-hist-filter:hover { border-color: #9ca3af; color: var(--border2, #333333); }
+.btn-hist-filter:hover { border-color: #9ca3af; color: var(--text2, #333333); }
 .btn-hist-filter.active { background: #3d8bff; border-color: #3d8bff; color: #fff; }
 
 /* ══════════════════════════════════════════════
@@ -493,7 +493,7 @@ body {
   flex-shrink: 0;
   transition: background .15s, color .15s;
 }
-.review-modal-close:hover { background: #f3f4f6; color: var(--border2, #333333); }
+.review-modal-close:hover { background: #f3f4f6; color: var(--text2, #333333); }
 [data-theme="dark"] .review-modal-close:hover { background: var(--border2, #333333); color: #e5e7eb; }
 
 .review-modal-body {
@@ -792,7 +792,7 @@ body {
   font-size: 12px;
   margin-bottom: 3px;
 }
-.fb-crit-label   { color: var(--border2, #333333); }
+.fb-crit-label   { color: var(--text2, #333333); }
 .fb-crit-track   { background: #e5e7eb; border-radius: 99px; height: 6px; }
 .fb-crit-comment { font-size: 11px; color: #6b7280; margin-top: 3px; font-style: italic; white-space: pre-wrap; }
 
@@ -888,7 +888,7 @@ body {
   border-radius: 20px;
   background: #fff;
   font-size: 13px;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   outline: none;
   transition: border-color .2s;
   width: 220px;
@@ -1035,7 +1035,7 @@ body {
 .wr-restore-btn-row      { display: flex; gap: 8px; }
 .wr-restore-btn-primary  { background: #f59e0b; color: #fff; border: none; border-radius: 7px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
 .wr-restore-btn-primary:hover { background: #d97706; }
-.wr-restore-btn-secondary { background: #f3f4f6; color: var(--border2, #333333); border: 1px solid #e5e7eb; border-radius: 7px; padding: 6px 14px; font-size: 12px; cursor: pointer; transition: background .15s; }
+.wr-restore-btn-secondary { background: #f3f4f6; color: var(--text2, #333333); border: 1px solid #e5e7eb; border-radius: 7px; padding: 6px 14px; font-size: 12px; cursor: pointer; transition: background .15s; }
 .wr-restore-btn-secondary:hover { background: #e5e7eb; }
 [data-theme="dark"] .wr-restore-banner          { background: #1c1a00; border-color: #d97706; }
 [data-theme="dark"] .wr-restore-banner-title     { color: #fbbf24; }
@@ -1093,7 +1093,7 @@ body {
    FOOTER WORD-COUNT SUMMARY
 ══════════════════════════════════════════════ */
 .wr-footer-wc         { font-size: 12px; color: #6b7280; display: flex; gap: 10px; align-items: center; }
-.wr-footer-wc strong  { color: var(--border2, #333333); }
+.wr-footer-wc strong  { color: var(--text2, #333333); }
 [data-theme="dark"] .wr-footer-wc        { color: #9ca3af; }
 [data-theme="dark"] .wr-footer-wc strong { color: #e5e7eb; }
 
@@ -1438,7 +1438,7 @@ body {
 
 .wt-task-card-prompt {
   font-size: 13px;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   line-height: 1.65;
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -1469,7 +1469,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--border2, #333333);
+  color: var(--text2, #333333);
   transition: all .15s;
   font-family: 'Inter', sans-serif;
 }
