@@ -26,6 +26,9 @@ const SKILL_META = {
   'writing-practice':  { color: '#f97316', label: '✍ Writing lẻ' },
   'task1-practice':    { color: '#fb923c', label: '📊 Task 1' },
   'task2-practice':    { color: 'var(--danger)', label: '📝 Task 2' },
+  'task2-template':    { color: '#8b5cf6', label: '📚 Task 2 Templates' },
+  'essential-grammar': { color: '#0ea5e9', label: '📘 Ngữ pháp' },
+  'vocabulary-lesson':  { color: '#14b8a6', label: '🗂 Từ vựng' },
 };
 
 function skillBadge(skill) {
@@ -169,6 +172,9 @@ export default function StudentHistory() {
           <option value="task1-practice">📊 Task 1 Practice</option>
           <option value="task2-practice">📝 Task 2 Practice</option>
           <option value="speaking">🎤 Speaking</option>
+          <option value="task2-template">📚 Task 2 Templates</option>
+          <option value="essential-grammar">📘 Ngữ pháp</option>
+          <option value="vocabulary-lesson">🗂 Từ vựng</option>
         </select>
       </div>
 

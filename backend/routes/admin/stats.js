@@ -15,6 +15,9 @@ const WritingPracticeAttempt = require('../../models/WritingPracticeAttempt');
 const Task1Attempt    = require('../../models/Task1Attempt');
 const Task2Attempt    = require('../../models/Task2Attempt');
 const SpeakingAttempt = require('../../models/SpeakingAttempt');
+const Task2TemplateAttempt      = require('../../models/Task2TemplateAttempt');
+const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttemptLog');
+const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
 const User            = require('../../models/User');
 const Passage         = require('../../models/Passage');
 const VocabUnit        = require('../../models/VocabUnit');
@@ -177,8 +180,9 @@ router.get('/history', auth, teacherOnly, async (req, res) => {
   }
 });
 
-// GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening + Writing + Speaking)
-// Fans out across 9 heterogeneous attempt collections (no single-collection
+// GET /api/admin/recent-attempts – tất cả bài nộp gần nhất (Reading + Listening +
+// Writing + Speaking + Task1/Task2 + Task2 Templates + Essential Grammar + Vocabulary Lessons)
+// Fans out across 12 heterogeneous attempt collections (no single-collection
 // union to page against), so this can't do textbook skip/limit pagination —
 // each collection is queried for its own top-LIMIT rows, merged, sorted,
 // then capped again in JS. What THIS fixes (StudentHistory.jsx admin-panel
@@ -209,6 +213,9 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       Task1Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       SpeakingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      Task2TemplateAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
     ]);
     const total = counts.reduce((a, b) => a + b, 0);
     function normUser(u) {
@@ -219,7 +226,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     }
 
     const [reading, listening, writing, listeningPractice, readingPractice,
-           wpAttempts, task1Attempts, task2Attempts, speakingAttempts] = await Promise.all([
+           wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
+           task2TemplateAttempts, grammarAttempts, vocabLessonAttempts] = await Promise.all([
       TestAttempt.find({ status: 'completed', ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -271,6 +279,23 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
         .select('-transcript').lean()
+        .catch(() => []),
+      Task2TemplateAttempt.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .lean()
+        .catch(() => []),
+      EssentialGrammarAttemptLog.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .populate('lessonId', 'title')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-wrongQuestions').lean()
+        .catch(() => []),
+      VocabularyLessonAttemptLog.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .populate('lessonId', 'title')
+        .sort({ createdAt: -1 }).limit(LIMIT)
+        .select('-wrongWords').lean()
         .catch(() => [])
     ]);
 
@@ -281,6 +306,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     // Grouped by userId too since, unlike that student-only view, this
     // endpoint can span every student — sessionId (a client Date.now()
     // string) is not guaranteed unique across different students.
+    const TPL_MODE_LABELS = { cloze: 'Cloze', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
     const TASK1_SKILL_LABELS = {
       noun_phrase: 'Noun Phrase', data_description: 'Mô tả Data',
       comparison: 'So sánh', trend_language: 'Xu hướng',
@@ -403,6 +429,37 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: null,
         totalQuestions: null,
         duration: h.duration
+      })),
+      ...task2TemplateAttempts.map(h => ({
+        _id: h._id, skill: 'task2-template',
+        testName: h.templateName || h.templateType || '–',
+        testMeta: `${TPL_MODE_LABELS[h.mode] || h.mode || 'Cloze'}${h.isExam ? ' · Thi thử' : ''}`,
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: null,
+        correctCount: h.correctItems,
+        totalQuestions: h.totalItems,
+        duration: h.timeTakenSec || null
+      })),
+      ...grammarAttempts.map(h => ({
+        _id: h._id, skill: 'essential-grammar',
+        testName: h.lessonId?.title || 'Essential Grammar',
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: null,
+        correctCount: h.correct,
+        totalQuestions: h.total,
+        duration: h.timeSpent || null
+      })),
+      ...vocabLessonAttempts.map(h => ({
+        _id: h._id, skill: 'vocabulary-lesson',
+        testName: h.lessonId?.title || 'Vocabulary Lesson',
+        userId: normUser(h.userId),
+        date: h.createdAt,
+        bandScore: null,
+        correctCount: h.correct,
+        totalQuestions: h.total,
+        duration: h.timeSpent || null
       }))
     ];
 
