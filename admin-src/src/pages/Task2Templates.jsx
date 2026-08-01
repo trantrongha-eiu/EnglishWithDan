@@ -213,11 +213,10 @@ function AttemptsTab() {
   const { isAdmin } = useAuth();
 
   const load = useCallback((skip = 0, append = false) => {
-    setLoading(true);
     const params = new URLSearchParams({ limit: PAGE_SIZE, skip });
     if (mode) params.set('mode', mode);
     if (examOnly) params.set('isExam', 'true');
-    apiFetch(`/admin/task2/templates/attempts?${params}`)
+    return apiFetch(`/admin/task2/templates/attempts?${params}`)
       .then(data => {
         setAttempts(prev => append ? [...prev, ...(data.attempts || [])] : (data.attempts || []));
         setTotal(data.total || 0);
@@ -225,6 +224,15 @@ function AttemptsTab() {
       .catch(e => showToast(e.message, 'error'))
       .finally(() => setLoading(false));
   }, [mode, examOnly]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Flip loading=true synchronously during render (not in an effect) the
+  // moment a filter changes — same pattern as the main component's `load`
+  // above, for the same reason (react-hooks/set-state-in-effect audit).
+  const [prevFilters, setPrevFilters] = useState([mode, examOnly]);
+  if (prevFilters[0] !== mode || prevFilters[1] !== examOnly) {
+    setPrevFilters([mode, examOnly]);
+    setLoading(true);
+  }
 
   useEffect(() => { load(0, false); }, [load]);
 
