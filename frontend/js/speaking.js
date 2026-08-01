@@ -45,6 +45,15 @@ const state = {
   recognition:      null,
   isRecording:      false,
   recordStartTime:  null,
+  // Snapshot of getElapsedSeconds() taken the instant recording actually
+  // stops (_finishRecordingUI) — analyzeTranscript() sends this, not a
+  // fresh getElapsedSeconds() call, since a student can spend anywhere
+  // from seconds to several minutes reviewing/editing the transcript
+  // before clicking "Phân tích": calling getElapsedSeconds() live at that
+  // point folded all of that idle review time into the reported duration,
+  // so admin saw wildly inflated "thời gian" values (e.g. 12+ minutes for
+  // a Part 1 answer) that didn't match how long the student actually spoke.
+  _frozenDurationSeconds: 0,
   elapsedTimer:     null,
   prepTimer:        null,
   speakTimer:       null,
@@ -683,6 +692,7 @@ function resetPractice() {
   state.isRecording    = false;
   state._recordBusy    = false; // force-stopping here, outside toggleRecord()'s own flow
   state.recordStartTime = null;
+  state._frozenDurationSeconds = 0;
   state._analyzing      = false;
 
   hidePrepTimer();
@@ -741,6 +751,7 @@ function clearTranscript() {
 function _finishRecordingUI() {
   state.isRecording = false;
   state._recordBusy = false;
+  state._frozenDurationSeconds = getElapsedSeconds();
   stopElapsedTimer();
   hideSpeakCountdown();
 
@@ -982,6 +993,7 @@ function _startRecordingGuarded() {
     state._userStoppedRecording = false;
     state._restartAttempts = 0;
     state._recognitionEverStarted = false;
+    state._frozenDurationSeconds = 0;
     state.finalTranscript = '';
     state.recognition.start();
     state.isRecording = true;
@@ -1054,7 +1066,9 @@ async function analyzeTranscript() {
   if (!transcript) return;
 
   const question = state.currentQuestion?.question || '';
-  const duration = getElapsedSeconds();
+  // Frozen at the moment recording stopped, not live — see the
+  // _frozenDurationSeconds field comment for why.
+  const duration = state._frozenDurationSeconds;
 
   const section  = document.getElementById('feedback-section');
   const loading  = document.getElementById('feedback-loading');
