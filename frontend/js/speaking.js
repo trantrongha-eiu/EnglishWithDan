@@ -63,6 +63,13 @@ const state = {
   finalTranscript:        '',
   _userStoppedRecording:  false,
   _restartAttempts:       0,
+  // Separate from _restartAttempts (which now resets on real speech — see
+  // onresult — so it only tracks a *consecutive* failure streak for the
+  // dead-mic cap). This one only ever resets in _startRecordingGuarded, so
+  // onstart can still tell "genuine first start of this session" apart from
+  // "resumed after a transparent auto-restart" regardless of how many times
+  // _restartAttempts itself has been reset by then.
+  _recognitionEverStarted: false,
   // True from the moment the record button is clicked until start()/stop()
   // actually settles (onstart/onerror/onend, all async). Without this, a
   // second click landing in that gap — a fast double-tap, or just an
@@ -85,6 +92,7 @@ const state = {
   seqFinalTranscript: '',
   _seqUserStoppedRecording: false,
   _seqRestartAttempts:      0,
+  _seqRecognitionEverStarted: false,
   seqActive:          false,
   seqTextRevealed:    false,
   seqSilenceTimer:    null,
@@ -781,11 +789,13 @@ function setupRecognition() {
 
     // Only (re)start the timers — and the raw-audio capture for the
     // playback button — on the genuine first start of this session.
-    // state._restartAttempts is already >0 by the time onstart fires again
-    // after a transparent auto-restart (see onend below), so the elapsed/
-    // countdown timers keep running through the gap instead of resetting,
-    // and we don't re-acquire a second audio-capture stream mid-answer.
-    if (state._restartAttempts === 0) {
+    // state._recognitionEverStarted is already true by the time onstart
+    // fires again after a transparent auto-restart (see onend below), so
+    // the elapsed/countdown timers keep running through the gap instead of
+    // resetting, and we don't re-acquire a second audio-capture stream
+    // mid-answer.
+    if (!state._recognitionEverStarted) {
+      state._recognitionEverStarted = true;
       startElapsedTimer();
       startSpeakCountdown();
       _startAudioCapture();
@@ -793,6 +803,14 @@ function setupRecognition() {
   };
 
   state.recognition.onresult = (e) => {
+    // Real speech came through this session, so the mic/recognition is
+    // clearly alive — reset the restart-attempt counter (see onend below).
+    // Without this, the cap counts restarts across the ENTIRE recording, so
+    // Chrome's routine ~10-15s auto-restarts during a long, healthy Part 2
+    // answer with a few natural pauses would exhaust the cap and cut the
+    // recording off around a minute in — long before the actual 2-minute
+    // limit — which is exactly what students were reporting.
+    state._restartAttempts = 0;
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
@@ -816,7 +834,11 @@ function setupRecognition() {
     // pause while thinking, or just a long Part 2 monologue, is enough to
     // trigger it. That's not the student choosing to stop, so transparently
     // resume instead of cutting their transcript off mid-answer. Capped at
-    // 6 attempts so a genuinely dead mic doesn't loop forever.
+    // 6 CONSECUTIVE attempts with no speech captured in between (onresult
+    // resets the counter) so a genuinely dead mic doesn't loop forever —
+    // previously the cap counted restarts across the whole recording, so a
+    // healthy long Part 2 answer with a few natural pauses could exhaust it
+    // and get cut off around a minute in, well before the real 2-minute limit.
     if (state.isRecording && !state._userStoppedRecording && state._restartAttempts < 6) {
       state._restartAttempts++;
       const recStatus = document.getElementById('rec-status');
@@ -959,6 +981,7 @@ function _startRecordingGuarded() {
   try {
     state._userStoppedRecording = false;
     state._restartAttempts = 0;
+    state._recognitionEverStarted = false;
     state.finalTranscript = '';
     state.recognition.start();
     state.isRecording = true;
@@ -1605,7 +1628,8 @@ function setupSeqRecognition() {
     if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm...'; recStatus.classList.add('live'); }
     // Only (re)start timers on the genuine first start — see the matching
     // comment in setupRecognition(); same Chrome auto-stop concern applies here.
-    if (state._seqRestartAttempts === 0) {
+    if (!state._seqRecognitionEverStarted) {
+      state._seqRecognitionEverStarted = true;
       startSeqElapsedTimer();
       const q = state.seqQueue[state.seqIndex];
       if (q && q.part === 2) startSeqSpeakCountdown();
@@ -1614,6 +1638,10 @@ function setupSeqRecognition() {
   };
 
   state.seqRecognition.onresult = (e) => {
+    // See setupRecognition()'s onresult — resets the restart-attempt streak
+    // on real speech so routine Chrome auto-restarts during a long, healthy
+    // answer don't exhaust the dead-mic cap and cut the recording off early.
+    state._seqRestartAttempts = 0;
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
@@ -1672,6 +1700,7 @@ function startSeqRecording() {
   try {
     state._seqUserStoppedRecording = false;
     state._seqRestartAttempts = 0;
+    state._seqRecognitionEverStarted = false;
     state.seqFinalTranscript = '';
     state.seqRecognition.start();
   } catch (e) {
