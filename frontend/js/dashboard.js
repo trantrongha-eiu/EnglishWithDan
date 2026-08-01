@@ -35,14 +35,21 @@ let _retryWordList = null;      // set by retryWrongWords, consumed by startPrac
 
 // ── Session streak tracking ────────────────────
 let sessionAnsweredCount = 0;
-let _streakReportedThisSession = false;
+// How much of sessionAnsweredCount/correctAnswers has already been sent to
+// /vocabbook/practice-complete — reporting is batched in groups of 5 rather
+// than once per session (see _reportSessionStreak()), so both of these
+// track "as of the last successful report", not "ever reported at all".
+let _lastReportedAnsweredCount = 0;
+let _lastReportedCorrectCount = 0;
+let _streakReportInFlight = false; // prevents two overlapping /practice-complete calls, not a "never again" gate
 let _persistedThisSession = false; // prevent double-counting wrongCount on multiple showResults calls
 
 // ── Búa Daniel (streak-restore hammer) ─────────
 let _hammerState = { streakHammers: 0, canUseHammer: false };
-// _reportSessionStreak() fires as soon as sessionAnsweredCount hits 5 — for
-// any unit longer than 5 words that's mid-quiz, long before the student
-// reaches the Results screen. A transient toast shown at that moment is
+// _reportSessionStreak() fires every 5 new answers (first as soon as
+// sessionAnsweredCount hits 5, then again at 10, 15, ...) — for any unit
+// longer than 5 words that's mid-quiz, long before the student reaches
+// the Results screen. A transient toast shown at that moment is
 // gone by the time they actually get there, so a hammer award needs to be
 // announced ON the Results screen instead of immediately: if resultsMode
 // is already visible when the award arrives, show the banner right away;
@@ -119,7 +126,7 @@ document.addEventListener('fullscreenchange', () => {
 
 function _countAnswer() {
     sessionAnsweredCount++;
-    if (!_streakReportedThisSession && sessionAnsweredCount >= 5) {
+    if (sessionAnsweredCount - _lastReportedAnsweredCount >= 5) {
         _reportSessionStreak();
     }
 }
@@ -1825,24 +1832,47 @@ function _applyStreakResult(d) {
     loadWeeklyProgress();
 }
 
+// Reports only the answers/correct-count since the LAST successful report
+// (a "batch"), not the whole session — the backend's daily word-engagement
+// total (see streakBonusService.reachedDailyWordThreshold, gating the
+// streak at 35 words/day) is accumulated server-side via $inc, so sending
+// the running session total on every call would massively over-count once
+// a session crosses 5 answers more than once. Previously this fired once
+// per session and then never again (a `_streakReportedThisSession` flag
+// that only ever flipped true), which silently capped every session's
+// contribution at its first 5 answers no matter how long the student kept
+// going — the exact reason "học hơn 35 chữ vẫn không cộng chuỗi lửa" reports
+// started after the 35-word threshold shipped: a single long session could
+// never report more than 5 words toward that day's total.
 async function _reportSessionStreak() {
-    if (_streakReportedThisSession) return;
-    if (sessionAnsweredCount < 5) return;
-    _streakReportedThisSession = true;
+    if (_streakReportInFlight) return;
+    const batchAnswered = sessionAnsweredCount - _lastReportedAnsweredCount;
+    if (batchAnswered < 5) return;
+    const batchCorrect = correctAnswers - _lastReportedCorrectCount;
+    _streakReportInFlight = true;
+    // Snapshot before the await — sessionAnsweredCount/correctAnswers can
+    // keep advancing while this request is in flight (the next answer's
+    // _countAnswer() call doesn't wait for us), so what we mark "reported"
+    // must match exactly what this specific request's body claimed.
+    const reportedAnswered = sessionAnsweredCount;
+    const reportedCorrect  = correctAnswers;
     try {
         const isParaphrase = _isParaphraseUnitSession();
         const res = await fetch(`${API}/vocabbook/practice-complete`, {
             method: 'POST', headers: authH(),
             body: JSON.stringify({
-                wordsAnswered: sessionAnsweredCount,
-                correctAnswered: correctAnswers,
+                wordsAnswered: batchAnswered,
+                correctAnswered: batchCorrect,
                 unitId: isParaphrase ? currentUnit._id : null,
                 unitType: isParaphrase ? 'paraphrase' : null
             })
         });
         const d = await window.ApiClient.handleResponse(res);
+        _lastReportedAnsweredCount = reportedAnswered;
+        _lastReportedCorrectCount  = reportedCorrect;
         _applyStreakResult(d);
-    } catch { /* silent */ }
+    } catch { /* silent — batch stays unreported, picked up by the next trigger */ }
+    finally { _streakReportInFlight = false; }
 }
 
 function startPractice(mode) {
@@ -1857,7 +1887,8 @@ function startPractice(mode) {
     wrongAnswers   = 0;
     answered = false;
     sessionAnsweredCount = 0;
-    _streakReportedThisSession = false;
+    _lastReportedAnsweredCount = 0;
+    _lastReportedCorrectCount = 0;
     const wrongListEl = document.getElementById('wrong-words-list');
     if (wrongListEl) wrongListEl.style.display = 'none';
 
