@@ -58,6 +58,7 @@
 /listening       /listening.html        200
 /writing         /writing.html          200
 /writing/practice /writing-practice.html 200
+/writing/templates /task2-template.html  200
 /speaking        /speaking.html         200
 
 # ── 404 fallback — must stay last ─────────────────────────────────────

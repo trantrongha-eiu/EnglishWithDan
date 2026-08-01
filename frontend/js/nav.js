@@ -29,7 +29,7 @@
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
         { href: 'task1-practice.html',   icon: 'fa-chart-bar',  label: 'Task 1 Grammar' },
         { href: 'task2-practice.html',   icon: 'fa-edit',       label: 'Task 2 Writing', badgeId: 'navTask2Badge' },
-        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
+        { href: '/writing/templates',   icon: 'fa-book-open',  label: 'Task 2 Templates' },
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
       ]
     },
@@ -40,6 +40,20 @@
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
 
+  // Base match: supports both plain filenames (compared against the current
+  // page's filename) and absolute clean paths like "/writing/templates"
+  // (compared against location.pathname) — the latter is also matched when
+  // the visitor lands directly on the underlying .html file, since Render's
+  // rewrite keeps the address bar on the clean path but a direct hit or old
+  // bookmark won't.
+  function navBaseActive(base) {
+    if (base.charAt(0) === '/') {
+      if (location.pathname.replace(/\/$/, '') === base) return true;
+      return base === '/writing/templates' && page === 'task2-template.html';
+    }
+    return base === page;
+  }
+
   // Subset-param match: child href is active when the current page filename matches
   // AND every query param in the child href is present in the current URL.
   // A child with no query string is only active when the current URL also has no query string.
@@ -47,7 +61,7 @@
     var ci = cHref.indexOf('?');
     var cBase   = ci === -1 ? cHref : cHref.slice(0, ci);
     var cSearch = ci === -1 ? '' : cHref.slice(ci + 1);
-    if (cBase !== page) return false;
+    if (!navBaseActive(cBase)) return false;
     if (!cSearch) return !location.search;
     var cParams  = new URLSearchParams(cSearch);
     var curParams = new URLSearchParams(location.search);
