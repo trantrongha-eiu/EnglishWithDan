@@ -330,9 +330,11 @@ function switchTask(num) {
   // Left panel
   const leftPanel = document.getElementById('exam-left-panel');
   if (num === 1) {
+    // Prompt text first, then the chart/diagram — matches the actual IELTS
+    // paper layout (read the instructions, then look at the graph).
     leftPanel.innerHTML = `
-      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" loading="lazy" style="max-width:100%;border-radius:8px;margin-bottom:12px" />` : ''}
       <div class="task-prompt" style="white-space:pre-wrap">${escHtml(task.prompt || '')}</div>
+      ${task.imageUrl ? `<img src="${escHtml(task.imageUrl)}" alt="Task 1 chart/diagram" loading="lazy" style="max-width:100%;border-radius:8px;margin-top:12px" />` : ''}
     `;
   } else {
     leftPanel.innerHTML = `
@@ -1690,11 +1692,13 @@ function renderPracticeWriteScreen(taskType, task) {
   if (si) { si.textContent = ''; }
 
   const leftPanel = document.getElementById('pw-left-panel');
-  let html = '';
+  // Prompt text first, then the chart/diagram — matches the actual IELTS
+  // paper layout (read the instructions, then look at the graph), not the
+  // other way round.
+  let html = `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   if (taskType === 1 && task.imageUrl) {
-    html += `<img src="${task.imageUrl}" alt="Task 1 image" loading="lazy" style="max-width:100%;border-radius:8px;margin-bottom:12px;border:1px solid #e5e7eb" />`;
+    html += `<img src="${task.imageUrl}" alt="Task 1 image" loading="lazy" style="max-width:100%;border-radius:8px;margin-top:12px;border:1px solid #e5e7eb" />`;
   }
-  html += `<p style="font-size:13px;line-height:1.75;color:var(--text1,#111)">${escHtml(task.prompt || '')}</p>`;
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
   // exam — setupDictionaryDouble() is idempotent (removes any previous
