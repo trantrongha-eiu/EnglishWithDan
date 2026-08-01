@@ -233,33 +233,45 @@ function xpFor(exercise, userAnswer) {
   return feedback.isCorrect === true ? 15 : feedback.isCorrect === null ? 8 : 5;
 }
 
+// Groups the batch into one aggregate row per (topic, level) present in it
+// — a batch normally covers a single topic+level, but the "Tất cả" topic
+// filter lets a student mix topics/levels in one sitting, so each distinct
+// combination present still gets its own row rather than being averaged
+// together. This is the "wait until the student finishes, then send
+// correct/total for the topic" behavior (audit finding, 2026-08-02) — was
+// previously one raw per-sentence row per attempt.
 async function saveBatch(studentId, attempts) {
   const ids = [...new Set(attempts.map(a => a.exerciseId).filter(Boolean))];
   const exercises = await WPExercise.find({ _id: { $in: ids } }).lean();
   const exMap = Object.fromEntries(exercises.map(e => [e._id.toString(), e]));
 
-  const docs = attempts
-    .map(a => {
-      const ex = exMap[String(a.exerciseId)];
-      if (!ex) return null;
-      return {
-        studentId, exerciseId: a.exerciseId, level: ex.level, type: ex.type, topic: ex.topicKey,
-        userAnswer: a.userAnswer || '', xpEarned: xpFor(ex, a.userAnswer)
-      };
-    })
-    .filter(Boolean);
+  const groups = {};
+  for (const a of attempts) {
+    const ex = exMap[String(a.exerciseId)];
+    if (!ex) continue;
+    const key = `${ex.topicKey}::${ex.level}`;
+    const xp = xpFor(ex, a.userAnswer);
+    if (!groups[key]) groups[key] = { studentId, topic: ex.topicKey, level: ex.level, types: [], totalItems: 0, correctItems: 0, xpEarned: 0 };
+    const g = groups[key];
+    g.totalItems++;
+    if (xp === 15) g.correctItems++;
+    g.xpEarned += xp;
+    if (!g.types.includes(ex.type)) g.types.push(ex.type);
+  }
 
+  const docs = Object.values(groups);
   if (docs.length) await WritingPracticeAttempt.insertMany(docs);
-  return docs.length;
+  return docs.reduce((s, d) => s + d.totalItems, 0);
 }
 
 async function saveSingle(studentId, { exerciseId, userAnswer }) {
   const exercise = await WPExercise.findById(exerciseId).lean();
   if (!exercise) return null;
 
+  const xp = xpFor(exercise, userAnswer);
   await new WritingPracticeAttempt({
-    studentId, exerciseId: exerciseId.toString(), level: exercise.level, type: exercise.type,
-    topic: exercise.topicKey, userAnswer, xpEarned: xpFor(exercise, userAnswer)
+    studentId, topic: exercise.topicKey, level: exercise.level, types: [exercise.type],
+    totalItems: 1, correctItems: xp === 15 ? 1 : 0, xpEarned: xp
   }).save();
   return true;
 }
@@ -267,18 +279,18 @@ async function saveSingle(studentId, { exerciseId, userAnswer }) {
 async function getHistory(studentId, limit) {
   return WritingPracticeAttempt.find({ studentId })
     .sort({ createdAt: -1 }).limit(limit)
-    .select('level type topic xpEarned createdAt').lean();
+    .select('level types topic totalItems correctItems xpEarned createdAt').lean();
 }
 
 async function getMyStats(studentId) {
   const [totals, byLevelAgg] = await Promise.all([
     WritingPracticeAttempt.aggregate([
       { $match: { studentId } },
-      { $group: { _id: null, totalXP: { $sum: '$xpEarned' }, totalDone: { $sum: 1 } } }
+      { $group: { _id: null, totalXP: { $sum: '$xpEarned' }, totalDone: { $sum: '$totalItems' } } }
     ]),
     WritingPracticeAttempt.aggregate([
       { $match: { studentId } },
-      { $group: { _id: '$level', count: { $sum: 1 } } }
+      { $group: { _id: '$level', count: { $sum: '$totalItems' } } }
     ])
   ]);
   const byLevel = {};

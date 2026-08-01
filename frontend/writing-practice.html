@@ -2203,7 +2203,11 @@ function renderWpHistory(attempts) {
     body.innerHTML = '<div class="t1-hist-empty"><div class="t1-hist-empty-icon">📭</div><p>Chưa có lịch sử. Hãy bắt đầu luyện tập!</p></div>';
     return;
   }
-  const total   = attempts.length;
+  // Rows are now one per topic completion (correct/total), not one per
+  // sentence — a legacy row saved before this change has no totalItems and
+  // counts as a single sentence ("1/1"), same fallback the admin panel uses.
+  const itemCount = a => a.totalItems ?? 1;
+  const total   = attempts.reduce((s, a) => s + itemCount(a), 0);
   const totalXP = attempts.reduce((s, a) => s + (a.xpEarned || 0), 0);
 
   // Group by date (day)
@@ -2220,15 +2224,17 @@ function renderWpHistory(attempts) {
   const rows = allDays
     .slice(0, 30)
     .map(d => {
-      const xp  = d.list.reduce((s, a) => s + (a.xpEarned || 0), 0);
+      const xp      = d.list.reduce((s, a) => s + (a.xpEarned || 0), 0);
+      const done    = d.list.reduce((s, a) => s + itemCount(a), 0);
+      const correct = d.list.reduce((s, a) => s + (a.correctItems ?? (a.xpEarned >= 15 ? 1 : 0)), 0);
       const date = new Date(d.date).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
-      const types = [...new Set(d.list.map(a => TYPE_LABELS_WP[a.type]).filter(Boolean))];
+      const types = [...new Set(d.list.flatMap(a => a.types || (a.type ? [a.type] : [])).map(t => TYPE_LABELS_WP[t]).filter(Boolean))];
       const levels = [...new Set(d.list.map(a => LEVEL_LABELS_WP[a.level]).filter(Boolean))];
       return `<div class="t1-hist-row">
         <div class="t1-hist-row-date">${date}</div>
         <div class="t1-hist-row-skills">${levels.join(' · ')}${types.length ? ' · ' + types.slice(0,2).join(', ') : ''}</div>
         <div class="t1-hist-row-stats">
-          <span class="t1-hist-row-count">${d.list.length} bài</span>
+          <span class="t1-hist-row-count">${correct}/${done} câu đúng</span>
           <span class="t1-hist-row-xp">+${xp} XP</span>
         </div>
       </div>`;

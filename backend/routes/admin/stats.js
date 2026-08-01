@@ -256,7 +256,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       WritingPracticeAttempt.find({ ...(uid && { studentId: uid }) })
         .populate('studentId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
-        .select('-userAnswer').lean()
+        .lean()
         .catch(() => []),
       // Task1Attempt stores ONE row per individual question (saveBatch()
       // insertMany's the whole practice session's questions as separate
@@ -395,12 +395,12 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       ...wpAttempts.map(h => ({
         _id: h._id, skill: 'writing-practice',
         testName: h.topic || '–',
-        testMeta: `${h.type || ''} · Lv${h.level || '?'}`,
+        testMeta: `Lv${h.level || '?'}`,
         userId: normUser(h.studentId),
         date: h.createdAt,
         bandScore: null,
-        correctCount: null,
-        totalQuestions: null,
+        correctCount: h.correctItems,
+        totalQuestions: h.totalItems,
         duration: null
       })),
       ...task1SessionRows,

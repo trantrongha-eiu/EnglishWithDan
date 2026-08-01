@@ -409,16 +409,24 @@ export default function WritingPractice() {
             </div>
             <div className="table-wrap">
               <table className="table">
-                <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>LOẠI</th><th>CHỦ ĐỀ</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
+                <thead><tr><th>HỌC SINH</th><th>LEVEL</th><th>CHỦ ĐỀ</th><th>ĐÚNG/TỔNG</th><th>XP</th><th>NGÀY</th><th></th></tr></thead>
                 <tbody>
                   {attRows.length === 0
                     ? <tr><td colSpan={7} className="table-empty">Chưa có lịch sử</td></tr>
-                    : attRows.map(a => (
+                    : attRows.map(a => {
+                      // Legacy rows saved before the per-topic aggregation (audit
+                      // finding, 2026-08-02) have no totalItems/correctItems —
+                      // they were one row per sentence, so treat each as "1/1".
+                      const total   = a.totalItems ?? 1;
+                      const correct = a.correctItems ?? (a.xpEarned >= 15 ? 1 : 0);
+                      const pct = total ? Math.round((correct / total) * 100) : 0;
+                      const color = pct >= 70 ? 'var(--green)' : pct >= 50 ? 'var(--yellow)' : 'var(--danger)';
+                      return (
                       <tr key={a._id}>
                         <td><strong>{a.studentId?.username || '–'}</strong></td>
                         <td>{levelBadge(a.level)}</td>
-                        <td>{typeBadge(a.type)}</td>
                         <td style={{ fontSize: 12 }}>{a.topic || '–'}</td>
+                        <td><span style={{ color, fontWeight: 700 }}>{correct}/{total}</span></td>
                         <td><span style={{ color: 'var(--yellow)', fontWeight: 700 }}>+{a.xpEarned || 0}</span></td>
                         <td style={{ fontSize: 12 }}>{formatDate(a.createdAt).split(' ')[0]}</td>
                         <td>
@@ -430,7 +438,8 @@ export default function WritingPractice() {
                           }}>🗑</button>}
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                 </tbody>
               </table>
             </div>
