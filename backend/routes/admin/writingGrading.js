@@ -35,11 +35,12 @@ const aiGradeLimiter = rateLimit({
 // WRITING AI GRADING
 // ══════════════════════════════════════════════════
 
-async function gradeTaskWithAI(taskType, prompt, answer, wordCount) {
+async function gradeTaskWithAI(taskType, prompt, answer, wordCount, imageUrl = '') {
   const minWords      = taskType === 1 ? 150 : 250;
   const isUnderLength = wordCount < minWords;
   const isIncomplete  = answer.trim().length > 0 && !answer.trim().match(/[.!?]["']?\s*$/);
   const taLabel       = taskType === 1 ? 'Task Achievement' : 'Task Response';
+  const hasImage       = taskType === 1 && !!imageUrl;
 
   // ─── TASK 1: Task Achievement (IDP Academic Band Descriptors) ──────────────
   const task1TA = `TASK ACHIEVEMENT (TA) – Task 1 Academic (IDP Band Descriptors):
@@ -54,7 +55,8 @@ Band 3: Does not address the task or completely misunderstood. Presents limited 
 MANDATORY PENALTIES (enforce strictly — these override the content score):
 • Under 150 words (this essay: ${wordCount} words): TA score MUST be capped at Band 5 maximum. State in Vietnamese comment: "Em chỉ viết ${wordCount} từ, dưới mức tối thiểu 150 từ — bài bị giới hạn tối đa Band 5 cho tiêu chí này."
 • No overview anywhere in the essay: TA score MUST be capped at Band 5 maximum. Mention absence of overview in comment.
-• Essay cut off mid-sentence (no ending .!?): TA score MUST be capped at Band 4 maximum. Mention in comment.`;
+• Essay cut off mid-sentence (no ending .!?): TA score MUST be capped at Band 4 maximum. Mention in comment.${hasImage ? `
+• DATA ACCURACY (checked against the attached chart/graph/table image — this is now verifiable, not a guess): any number, trend, comparison, or ranking the student states that CONTRADICTS what the image actually shows is a factual error, not a style issue. Two or more such contradictions cap TA at Band 5 maximum; even one significant contradiction (e.g. claiming a value rose when the image shows it fell) should visibly lower the TA score. Cite the real figure from the image in the Vietnamese comment when this penalty applies.` : ''}`;
 
   // ─── TASK 2: Task Response (IDP Band Descriptors) ─────────────────────────
   const task2TR = `TASK RESPONSE (TR) – Task 2 (IDP Band Descriptors):
@@ -130,18 +132,18 @@ ${sharedDescriptors}
 
 ═══════════════════════════════════════════
 TASK PROMPT: ${prompt}
-
+${hasImage ? `\nThe actual chart/graph/table image for this task is attached below as an image input — this is the real, ground-truth data source, not just a description of it. Read every axis, label, legend, and value in it before scoring.\n` : ''}
 ═══════════════════════════════════════════
 INSTRUCTIONS:
 
 STEP 1 – SCORES (4–9 per criterion):
 • Pick the band whose FULL descriptor BEST fits the writing evidence. When the essay sits between two bands, award the LOWER band unless the higher band is clearly and consistently demonstrated throughout the full essay.
-• For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.
-• For each criterion write 1–2 sentences in Vietnamese using IDP descriptor language, addressing the student as "em". If a mandatory penalty was applied, the comment MUST state the reason (word count, no overview, incomplete essay, or no position) in plain Vietnamese.
+• For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.${hasImage ? ' This includes the DATA ACCURACY penalty — check the essay against the attached image before scoring TA.' : ''}
+• For each criterion write 1–2 sentences in Vietnamese using IDP descriptor language, addressing the student as "em". If a mandatory penalty was applied, the comment MUST state the reason (word count, no overview, incomplete essay, no position, or data inaccuracy) in plain Vietnamese.
 
 STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY):
 Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
-• Mark as "issue" ONLY for CLEAR, OBJECTIVE problems: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement. The criterion badge must directly match the problem.
+• Mark as "issue" ONLY for CLEAR, OBJECTIVE problems: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement.${hasImage ? ' For Task 1, a sentence stating a number, trend, or comparison that does NOT match the attached image is also an "issue" (criterion: TA) — quote the correct figure from the image in the "issue" field.' : ''} The criterion badge must directly match the problem.
 • Mark as "ok" if the sentence is grammatically correct and fulfils its purpose — even if simple. Do NOT mark "issue" just because a fancier version exists.
 • NEVER flag a sentence as CC "issue" for lacking cohesive devices if it ALREADY opens with: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc.
 • When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure.
@@ -155,7 +157,7 @@ CRITICAL RULES:
 • All comment/issue/overallFeedback MUST be in Vietnamese; "better" MUST be in English
 • Use encouraging teacher tone in Vietnamese; address student as "em"`;
 
-  const result = await checkEssay(questionContext, answer);
+  const result = await checkEssay(questionContext, answer, hasImage ? imageUrl : '');
 
   // Server-side enforcement of IDP mandatory penalties (safety net — overrides AI if ignored)
   if (result.ta) {
@@ -192,8 +194,9 @@ router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, aiGradeLimiter,
       : (attempt.task2Snapshot?.prompt || '');
     const taskAnswer = isTask1 ? (attempt.task1Answer || '') : (attempt.task2Answer || '');
     const wordCount  = isTask1 ? (attempt.wordCount1 || 0) : (attempt.wordCount2 || 0);
+    const imageUrl   = isTask1 ? (attempt.task1Snapshot?.imageUrl || '') : '';
 
-    const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount);
+    const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount, imageUrl);
 
     const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
     await WritingAttempt.findByIdAndUpdate(req.params.id, {

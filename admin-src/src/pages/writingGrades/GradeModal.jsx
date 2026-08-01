@@ -112,7 +112,16 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     } finally { setGradingTask(0); }
   }
 
-  function buildManualTask(manual) {
+  // Switching a task to manual mode only ever lets the teacher edit
+  // scores/comments (setMode() below never copies sentenceFeedback into
+  // `manuals`) — but manually overriding the band score doesn't mean the
+  // AI's sentence-by-sentence corrections became wrong, so they're carried
+  // over here from the AI result rather than discarded. Previously this
+  // always sent `sentenceFeedback: []`, which silently dropped the
+  // per-sentence analysis for any task confirmed in manual mode even
+  // though the other task (still on 'ai' mode) kept its own — exactly the
+  // "Task 1 has no sentence-by-sentence, Task 2 does" report.
+  function buildManualTask(manual, aiSentenceFeedback) {
     const num = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
     return {
       bandScore:       num(manual.bandScore),
@@ -121,7 +130,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
       lr:  { score: num(manual.lr?.score),  comment: manual.lr?.comment  || '' },
       gra: { score: num(manual.gra?.score), comment: manual.gra?.comment || '' },
       overallFeedback: manual.overallFeedback || '',
-      sentenceFeedback: []
+      sentenceFeedback: aiSentenceFeedback || []
     };
   }
 
@@ -129,8 +138,8 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     if (!overallBand) return toast('Nhập band tổng thể trước khi xác nhận', 'error');
     setConfirming(true);
     try {
-      const task1Data = hasTask1 ? (modes.task1 === 'manual' ? buildManualTask(manuals.task1) : (ai.task1 || null)) : null;
-      const task2Data = hasTask2 ? (modes.task2 === 'manual' ? buildManualTask(manuals.task2) : (ai.task2 || null)) : null;
+      const task1Data = hasTask1 ? (modes.task1 === 'manual' ? buildManualTask(manuals.task1, ai.task1?.sentenceFeedback) : (ai.task1 || null)) : null;
+      const task2Data = hasTask2 ? (modes.task2 === 'manual' ? buildManualTask(manuals.task2, ai.task2?.sentenceFeedback) : (ai.task2 || null)) : null;
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
         method: 'PUT',
         body: JSON.stringify({ task1: task1Data, task2: task2Data, overallBand: parseFloat(overallBand), adminNote })
@@ -175,13 +184,23 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
             <div style={{ textAlign: 'center', padding: 40, color: 'var(--text3)' }}>Đang tải bài làm...</div>
           ) : (
             <>
-              {/* Warning: confirmed but missing sentence feedback */}
-              {isEffectivelyConfirmed && !attempt.grading?.task1?.sentenceFeedback?.length && !attempt.grading?.task2?.sentenceFeedback?.length && (
-                <div style={{ background: '#fffbeb', border: '1px solid #f59e0b', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#92400e', display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 14 }}>
-                  <span style={{ flexShrink: 0 }}>⚠️</span>
-                  <span>Bài này <strong>chưa có phân tích câu chi tiết</strong>. Chấm lại AI rồi bấm Xác nhận để học sinh nhận được phần sửa lỗi từng câu.</span>
-                </div>
-              )}
+              {/* Warning: confirmed but missing sentence feedback — checked per task
+                  (not "both missing"), so a task confirmed in manual mode without
+                  carrying over the AI's sentence analysis doesn't silently pass
+                  just because the other task still has its own. */}
+              {isEffectivelyConfirmed && (() => {
+                const missing = [
+                  hasTask1 && !attempt.grading?.task1?.sentenceFeedback?.length ? 'Task 1' : null,
+                  hasTask2 && !attempt.grading?.task2?.sentenceFeedback?.length ? 'Task 2' : null,
+                ].filter(Boolean);
+                if (!missing.length) return null;
+                return (
+                  <div style={{ background: '#fffbeb', border: '1px solid #f59e0b', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#92400e', display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 14 }}>
+                    <span style={{ flexShrink: 0 }}>⚠️</span>
+                    <span><strong>{missing.join(' và ')}</strong> chưa có phân tích câu chi tiết. Chấm lại AI (hoặc chuyển về chế độ AI nếu đang sửa tay) rồi bấm Xác nhận để học sinh nhận được phần sửa lỗi từng câu.</span>
+                  </div>
+                );
+              })()}
 
               {hasTask1 && (
                 <TaskPanel title="Task 1"
