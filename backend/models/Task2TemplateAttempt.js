@@ -10,6 +10,11 @@ const task2TemplateAttemptSchema = new mongoose.Schema({
   // feature. Defaults to 'cloze' so old rows and old callers (which never
   // send this field) keep meaning exactly what they always meant.
   mode:         { type: String, enum: ['cloze', 'translation', 'chunks', 'build', 'dictation'], default: 'cloze' },
+  // Set when this attempt came from "Chế độ thi thử" (timed, single-pass,
+  // no hints) rather than regular self-paced practice — lets admin/history
+  // tell timed test runs apart from ordinary practice sessions.
+  isExam:       { type: Boolean, default: false },
+  timeTakenSec: { type: Number },
   createdAt:    { type: Date, default: Date.now }
 });
 

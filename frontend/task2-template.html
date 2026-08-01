@@ -638,8 +638,11 @@
       </button>
     </div>
 
-    <!-- Toolbar (every non-Cloze mode — no exam/VI-toggle, each mode has its own way of showing VI) -->
+    <!-- Toolbar (every non-Cloze mode — no VI-toggle, each mode has its own way of showing VI) -->
     <div class="tpl-toolbar" id="tpl-toolbar-other" style="display:none">
+      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn-other" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, một lượt duy nhất, nộp bài để xem điểm">
+        <i class="fas fa-clock"></i> <span id="tpl-exam-label-other">Thi thử</span>
+      </button>
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
@@ -975,11 +978,19 @@ let _tplScores     = {};
 let _pendingTypeId   = null;
 let _pendingExamSwitch = false;
 
-// Exam mode state
+// Exam mode state — _examMode/_examTimerInterval/_examTimeLeft/_examStartTime
+// are shared by all 5 modes (one exam runs at a time). _examScopeMode records
+// which mode the running exam covers (Cloze grades by scanning its own DOM
+// inputs on submit; Translation/Chunks/Build/Dictation instead tally as they
+// go via _examSessionCorrect/_examSessionTotal since they're one-item-at-a-
+// -time flows, not a single page of inputs).
 let _examMode          = false;
+let _examScopeMode     = null;
 let _examTimerInterval = null;
 let _examTimeLeft      = 1800;
 let _examStartTime     = null;
+let _examSessionCorrect = 0;
+let _examSessionTotal   = 0;
 
 function saveTplScores() {
   localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
@@ -1540,7 +1551,7 @@ function doSwitchType(typeId) {
 // ── Learning mode switch (Cloze / Translation / Chunks / Build / Dictation) ──
 function switchTplMode(mode) {
   if (mode === _tplActiveMode) return;
-  if (_examMode) exitExamMode(); // exam mode only exists for Cloze
+  if (_examMode) exitExamMode(); // an exam run never survives a mode switch
   if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
   saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // save the session we're leaving
   _tplActiveMode = mode;
@@ -1593,15 +1604,16 @@ function renderTranslationMode() {
 
   const { si, ii, item } = flat[_transIdx];
   const key = `${si}-${ii}`;
-  const alreadyOk = modeData[key]?.status === 'ok';
+  const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
   const target = _fullEnglishSentence(item);
   _transHintLevel = 0;
 
   area.innerHTML = `
+    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dịch câu`)}
     <div class="t2-mode-enter">
       <div class="t2-trans-progress-hdr">
         <span>Câu ${_transIdx + 1} / ${flat.length}</span>
-        <span id="trans-done-count">${done}/${flat.length} đã đúng · ${pct}%</span>
+        <span id="trans-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng · ${pct}%`}</span>
       </div>
       <div class="t2-trans-card">
         <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
@@ -1611,7 +1623,7 @@ function renderTranslationMode() {
         <div class="t2-trans-actions" id="trans-actions">
           ${!alreadyOk ? `
             <button class="t2-trans-btn t2-trans-btn--check" onclick="checkTranslation()"><i class="fas fa-check"></i> Kiểm tra</button>
-            <button class="t2-trans-btn t2-trans-btn--hint" id="trans-hint-btn" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>
+            ${_examMode ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" id="trans-hint-btn" onclick="showTranslationHint()"><i class="fas fa-lightbulb"></i> Gợi ý</button>`}
             <button class="t2-trans-btn t2-trans-btn--skip" onclick="skipTranslation()"><i class="fas fa-forward"></i> Bỏ qua</button>
           ` : `
             <button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
@@ -1623,7 +1635,7 @@ function renderTranslationMode() {
     </div>`;
 
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = pct + '%';
+  if (fill) fill.style.width = (_examMode ? Math.round(_transIdx / flat.length * 100) : pct) + '%';
 
   if (alreadyOk) {
     const resultEl = document.getElementById('trans-result');
@@ -1723,29 +1735,36 @@ function checkTranslation() {
   const actionsEl  = document.getElementById('trans-actions');
   input.disabled = true;
 
+  if (_examMode) _examSessionTotal++;
+
   if (diff.isPerfect) {
-    setModeItemResult('translation', _tplActiveType, si, ii, 'ok');
+    if (_examMode) _examSessionCorrect++;
+    else setModeItemResult('translation', _tplActiveType, si, ii, 'ok');
     resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
     resultEl.innerHTML = `🎉 <b>Hoàn hảo!</b><div style="margin-top:6px">${renderDiffHtml(diff)}</div>`;
     playOk();
-    updateXPStorage(5);
-    _spawnTransXpPop(resultEl, '+5 XP ⭐');
-    _spawnPerfectParticles(resultEl);
+    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
   } else {
-    setModeItemResult('translation', _tplActiveType, si, ii, 'err');
+    if (!_examMode) setModeItemResult('translation', _tplActiveType, si, ii, 'err');
     resultEl.className = 't2-trans-result t2-trans-result--ok vis';
     resultEl.innerHTML = `${renderDiffHtml(diff)}<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(target)}</div>`;
     playWrong();
-    if (diff.accuracy >= 60) updateXPStorage(1);
+    if (!_examMode && diff.accuracy >= 60) updateXPStorage(1);
   }
 
   actionsEl.innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
-  _updateModeProgressHeader('translation', flat, 'trans-done-count');
-  updateModeOverallBadge();
-  renderTabs();
+  if (_examMode) {
+    const countEl = document.getElementById('trans-done-count');
+    if (countEl) countEl.textContent = `${_examSessionCorrect}/${_examSessionTotal} đã đúng`;
+  } else {
+    _updateModeProgressHeader('translation', flat, 'trans-done-count');
+    updateModeOverallBadge();
+    renderTabs();
+  }
 }
 
 function showTranslationHint() {
+  if (_examMode) return; // hint button is hidden during exam mode
   const flat = _tplFlatItems(_tplActiveType);
   const target = _fullEnglishSentence(flat[_transIdx].item);
   const words = target.split(' ');
@@ -1775,6 +1794,7 @@ function showTranslationHint() {
 function skipTranslation() {
   const flat = _tplFlatItems(_tplActiveType);
   const { si, ii } = flat[_transIdx];
+  if (_examMode) { _examSessionTotal++; nextTranslation(); return; }
   setModeItemResult('translation', _tplActiveType, si, ii, 'skip');
   nextTranslation();
 }
@@ -1782,7 +1802,12 @@ function skipTranslation() {
 function nextTranslation() {
   const flat = _tplFlatItems(_tplActiveType);
   if (!flat.length) return;
-  _transIdx = (_transIdx + 1) % flat.length;
+  if (_examMode) {
+    if (_transIdx + 1 >= flat.length) { finishExam(); return; }
+    _transIdx++;
+  } else {
+    _transIdx = (_transIdx + 1) % flat.length;
+  }
   renderTranslationMode();
 }
 
@@ -1907,7 +1932,9 @@ function renderChunksMode() {
   const modeData = _modeProgress[_tplActiveType]?.chunks || {};
   const remembered = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (flat.length ? Math.round(remembered / flat.length * 100) : 0) + '%';
+  if (fill) fill.style.width = (_examMode
+    ? Math.round(_chunkIdx / _chunkQueue.length * 100)
+    : (flat.length ? Math.round(remembered / flat.length * 100) : 0)) + '%';
 
   if (_chunkIdx >= _chunkQueue.length) {
     area.innerHTML = `
@@ -1928,10 +1955,11 @@ function renderChunksMode() {
   const chunks = chunkSentence(target);
 
   area.innerHTML = `
+    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Chunks`)}
     <div class="t2-mode-enter">
       <div class="t2-trans-progress-hdr">
         <span>Thẻ ${_chunkIdx + 1} / ${_chunkQueue.length}</span>
-        <span id="chunk-done-count">${remembered}/${flat.length} đã nhớ</span>
+        <span id="chunk-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã nhớ` : `${remembered}/${flat.length} đã nhớ`}</span>
       </div>
       <div class="t2-flip-wrap" onclick="flipChunkCard()">
         <div class="t2-flip-card" id="chunk-flip-card">
@@ -1967,6 +1995,16 @@ function flipChunkCard() {
 function answerChunk(remembered) {
   if (!_chunkFlipped) return;
   const { si, ii } = _chunkQueue[_chunkIdx];
+
+  if (_examMode) {
+    _examSessionTotal++;
+    if (remembered) { _examSessionCorrect++; playOk(); } else { playWrong(); }
+    _chunkIdx++;
+    if (_chunkIdx >= _chunkQueue.length) finishExam();
+    else renderChunksMode();
+    return;
+  }
+
   setModeItemResult('chunks', _tplActiveType, si, ii, remembered ? 'ok' : 'err');
   if (remembered) {
     _chunkSessionRemembered++;
@@ -2042,7 +2080,9 @@ function renderBuildMode() {
   const modeData = _modeProgress[_tplActiveType]?.build || {};
   const done = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (flat.length ? Math.round(done / flat.length * 100) : 0) + '%';
+  if (fill) fill.style.width = (_examMode
+    ? Math.round(_buildIdx / _buildQueue.length * 100)
+    : (flat.length ? Math.round(done / flat.length * 100) : 0)) + '%';
 
   if (_buildIdx >= _buildQueue.length) {
     area.innerHTML = `
@@ -2076,10 +2116,11 @@ function renderBuildMode() {
   const allPlaced = _buildAnswer.length === _buildBank.length;
 
   area.innerHTML = `
+    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Build`)}
     <div class="t2-mode-enter">
       <div class="t2-trans-progress-hdr">
         <span>Câu ${_buildIdx + 1} / ${_buildQueue.length}</span>
-        <span>${done}/${flat.length} đã đúng</span>
+        <span>${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng`}</span>
       </div>
       <div class="t2-trans-card">
         <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
@@ -2136,30 +2177,41 @@ function checkBuild() {
   const answerArea   = document.getElementById('build-answer-area');
   document.querySelectorAll('#build-bank button, .t2-trans-btn').forEach(b => { b.disabled = true; });
 
+  // Advances past the current round; in exam mode ends the pass with
+  // finishExam() once the last item has been attempted.
+  function advance() {
+    if (_examMode && _buildIdx + 1 >= _buildQueue.length) { finishExam(); return; }
+    _buildIdx++;
+    _buildRoundKey = null;
+    renderBuildMode();
+  }
+
+  if (_examMode) _examSessionTotal++;
+
   if (isCorrect) {
-    setModeItemResult('build', _tplActiveType, si, ii, 'ok');
+    if (_examMode) _examSessionCorrect++;
+    else setModeItemResult('build', _tplActiveType, si, ii, 'ok');
     answerArea.classList.add('t2-build-success');
     resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
     resultEl.innerHTML = `🎉 <b>Chính xác!</b>`;
     playOk();
-    updateXPStorage(5);
-    _spawnTransXpPop(resultEl, '+5 XP ⭐');
-    _spawnPerfectParticles(resultEl);
-    setTimeout(() => { _buildIdx++; _buildRoundKey = null; renderBuildMode(); }, 900);
+    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
+    setTimeout(advance, 900);
   } else {
-    setModeItemResult('build', _tplActiveType, si, ii, 'err');
+    if (!_examMode) setModeItemResult('build', _tplActiveType, si, ii, 'err');
     answerArea.classList.add('t2-build-shake');
     setTimeout(() => answerArea.classList.remove('t2-build-shake'), 500);
     resultEl.className = 't2-trans-result t2-trans-result--ok vis';
     resultEl.innerHTML = `❌ Chưa đúng thứ tự.<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(_buildTargetPieces.join(' '))}</div>`;
     playWrong();
-    // Review queue: wrong -> repeat after 3 templates (same rule as Chunks).
-    const reinsertAt = Math.min(_buildQueue.length, _buildIdx + 1 + 3);
-    _buildQueue.splice(reinsertAt, 0, { si, ii });
-    setTimeout(() => { _buildIdx++; _buildRoundKey = null; renderBuildMode(); }, 2200);
+    if (!_examMode) {
+      // Review queue: wrong -> repeat after 3 templates (same rule as Chunks).
+      const reinsertAt = Math.min(_buildQueue.length, _buildIdx + 1 + 3);
+      _buildQueue.splice(reinsertAt, 0, { si, ii });
+    }
+    setTimeout(advance, 2200);
   }
-  updateModeOverallBadge();
-  renderTabs();
+  if (!_examMode) { updateModeOverallBadge(); renderTabs(); }
 }
 
 // ── Mode 4: Dictation — listen (browser Speech Synthesis, no recorded
@@ -2217,14 +2269,15 @@ function renderDictationMode() {
 
   const { si, ii, item } = flat[_dictIdx];
   const key = `${si}-${ii}`;
-  const alreadyOk = modeData[key]?.status === 'ok';
+  const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
   const target = _fullEnglishSentence(item);
 
   area.innerHTML = `
+    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dictation`)}
     <div class="t2-mode-enter">
       <div class="t2-trans-progress-hdr">
         <span>Câu ${_dictIdx + 1} / ${flat.length}</span>
-        <span id="dict-done-count">${done}/${flat.length} đã đúng · ${pct}%</span>
+        <span id="dict-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng · ${pct}%`}</span>
       </div>
       <div class="t2-trans-card">
         <div class="t2-dict-controls">
@@ -2242,7 +2295,7 @@ function renderDictationMode() {
         <div class="t2-trans-actions" id="dict-actions">
           ${!alreadyOk ? `
             <button class="t2-trans-btn t2-trans-btn--check" onclick="checkDictation()"><i class="fas fa-check"></i> Kiểm tra</button>
-            <button class="t2-trans-btn t2-trans-btn--hint" onclick="revealDictation()"><i class="fas fa-eye"></i> Xem đáp án</button>
+            ${_examMode ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" onclick="revealDictation()"><i class="fas fa-eye"></i> Xem đáp án</button>`}
           ` : `
             <button class="t2-trans-btn t2-trans-btn--next" onclick="nextDictation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
           `}
@@ -2252,7 +2305,7 @@ function renderDictationMode() {
     </div>`;
 
   const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = pct + '%';
+  if (fill) fill.style.width = (_examMode ? Math.round(_dictIdx / flat.length * 100) : pct) + '%';
 
   if (alreadyOk) {
     const resultEl = document.getElementById('dict-result');
@@ -2277,29 +2330,36 @@ function checkDictation() {
   const actionsEl = document.getElementById('dict-actions');
   input.disabled = true;
 
+  if (_examMode) _examSessionTotal++;
+
   if (diff.isPerfect) {
-    setModeItemResult('dictation', _tplActiveType, si, ii, 'ok');
+    if (_examMode) _examSessionCorrect++;
+    else setModeItemResult('dictation', _tplActiveType, si, ii, 'ok');
     resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
     resultEl.innerHTML = `🎉 <b>Hoàn hảo!</b><div style="margin-top:6px">${renderDiffHtml(diff)}</div>`;
     playOk();
-    updateXPStorage(5);
-    _spawnTransXpPop(resultEl, '+5 XP ⭐');
-    _spawnPerfectParticles(resultEl);
+    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
   } else {
-    setModeItemResult('dictation', _tplActiveType, si, ii, 'err');
+    if (!_examMode) setModeItemResult('dictation', _tplActiveType, si, ii, 'err');
     resultEl.className = 't2-trans-result t2-trans-result--ok vis';
     resultEl.innerHTML = `${renderDiffHtml(diff)}<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(target)}</div>`;
     playWrong();
-    if (diff.accuracy >= 60) updateXPStorage(1);
+    if (!_examMode && diff.accuracy >= 60) updateXPStorage(1);
   }
 
   actionsEl.innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextDictation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
-  _updateModeProgressHeader('dictation', flat, 'dict-done-count');
-  updateModeOverallBadge();
-  renderTabs();
+  if (_examMode) {
+    const countEl = document.getElementById('dict-done-count');
+    if (countEl) countEl.textContent = `${_examSessionCorrect}/${_examSessionTotal} đã đúng`;
+  } else {
+    _updateModeProgressHeader('dictation', flat, 'dict-done-count');
+    updateModeOverallBadge();
+    renderTabs();
+  }
 }
 
 function revealDictation() {
+  if (_examMode) return; // "Xem đáp án" is hidden during exam mode
   const flat = _tplFlatItems(_tplActiveType);
   const { si, ii, item } = flat[_dictIdx];
   const target = _fullEnglishSentence(item);
@@ -2319,7 +2379,12 @@ function nextDictation() {
   const flat = _tplFlatItems(_tplActiveType);
   if (!flat.length) return;
   if ('speechSynthesis' in window) speechSynthesis.cancel();
-  _dictIdx = (_dictIdx + 1) % flat.length;
+  if (_examMode) {
+    if (_dictIdx + 1 >= flat.length) { finishExam(); return; }
+    _dictIdx++;
+  } else {
+    _dictIdx = (_dictIdx + 1) % flat.length;
+  }
   renderDictationMode();
 }
 
@@ -2337,20 +2402,33 @@ function enterExamMode() {
     if (btn) btn.classList.remove('active');
     if (lbl) lbl.textContent = 'Tiếng Việt';
   }
-  _examMode     = true;
-  _examTimeLeft = 1800;
+  _examMode      = true;
+  _examScopeMode = _tplActiveMode;
+  _examTimeLeft  = 1800;
   _examStartTime = Date.now();
+  _examSessionCorrect = 0;
+  _examSessionTotal   = 0;
+
+  // Reset the active mode to the start of one fresh, single pass — exam runs
+  // never resume mid-session and never touch persisted practice progress
+  // (mirrors Cloze, whose exam cards ignore _tplScores while _examMode).
+  if (_examScopeMode === 'translation') { _transIdx = 0; _transHintLevel = 0; }
+  else if (_examScopeMode === 'dictation') { _dictIdx = 0; if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+  else if (_examScopeMode === 'chunks') { _chunkQueueType = null; }
+  else if (_examScopeMode === 'build')  { _buildQueueType = null; }
+
   renderTplContent();
   _examTimerInterval = setInterval(tickExamTimer, 1000);
   updateExamBtn();
   window.onbeforeunload = e => { if (_examMode) { e.preventDefault(); e.returnValue = ''; } };
-  showToast('⏱ Bắt đầu thi thử! Không có gợi ý – nộp bài khi xong.', 'info', 3000);
+  showToast('⏱ Bắt đầu thi thử! Không có gợi ý – một lượt duy nhất, nộp bài khi xong.', 'info', 3000);
 }
 
 function exitExamMode() {
   clearInterval(_examTimerInterval);
   _examTimerInterval = null;
   _examMode      = false;
+  _examScopeMode = null;
   _examStartTime = null;
   window.onbeforeunload = null;
   renderTplContent();
@@ -2358,11 +2436,14 @@ function exitExamMode() {
 }
 
 function updateExamBtn() {
-  const btn = document.getElementById('tpl-exam-btn');
-  const lbl = document.getElementById('tpl-exam-label');
-  if (!btn || !lbl) return;
-  btn.classList.toggle('active', _examMode);
-  lbl.textContent = _examMode ? 'Đang thi' : 'Thi thử';
+  ['tpl-exam-btn', 'tpl-exam-btn-other'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.classList.toggle('active', _examMode);
+  });
+  ['tpl-exam-label', 'tpl-exam-label-other'].forEach(id => {
+    const lbl = document.getElementById(id);
+    if (lbl) lbl.textContent = _examMode ? 'Đang thi' : 'Thi thử';
+  });
 }
 
 function tickExamTimer() {
@@ -2376,8 +2457,76 @@ function tickExamTimer() {
     clearInterval(_examTimerInterval);
     _examTimerInterval = null;
     showToast('⏰ Hết giờ! Bài đang được chấm tự động...', 'warn', 3000);
-    setTimeout(submitExam, 1000);
+    setTimeout(() => { if (_examScopeMode === 'cloze') submitExam(); else finishExam(); }, 1000);
   }
+}
+
+// ── Exam bar / result-card helpers — shared by Translation/Chunks/Build/
+// Dictation exam variants (Cloze keeps its own inline bar + submitExam(),
+// which grades by scanning its own DOM inputs instead of a running tally) ──
+function renderExamBarHtml(label) {
+  if (!_examMode) return '';
+  return `<div class="t2-exam-bar" id="exam-bar">
+    <span class="t2-exam-timer" id="exam-time-display">${fmtTime(_examTimeLeft)}</span>
+    <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${escHtml(label)} · Chế độ thi thử</span>
+    <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát</button>
+  </div>`;
+}
+
+// Ends the current single-pass exam for Translation/Chunks/Build/Dictation,
+// saves the result (isExam:true, so it's distinguishable in admin/history
+// from ordinary practice), and shows a summary card in place of the mode's
+// normal content.
+function finishExam() {
+  clearInterval(_examTimerInterval);
+  _examTimerInterval = null;
+  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
+  const mode = _examScopeMode;
+  const correct = _examSessionCorrect, total = _examSessionTotal;
+  _examMode      = false;
+  _examScopeMode = null;
+  _examStartTime = null;
+  window.onbeforeunload = null;
+  updateExamBtn();
+
+  const pct  = total ? Math.round(correct / total * 100) : 0;
+  const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
+  showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
+    pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
+  if (pct >= 80) updateXPStorage(20);
+  saveExamAttemptToServer(mode, correct, total, timeTaken);
+
+  const area = document.getElementById('tpl-content-area');
+  if (area) area.innerHTML = `
+    <div class="t2-mode-enter">
+      <div class="t2-soon-card t2-chunk-done-card">
+        <div class="t2-soon-icon">📋</div>
+        <div class="t2-soon-title">${pct}% · ${correct}/${total}</div>
+        <div class="t2-soon-sub">${rank}<br>⏱ Thời gian: ${fmtTime(timeTaken)}</div>
+        <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="enterExamMode()"><i class="fas fa-redo"></i> Thi lại</button>
+        <button class="t2-tpl-reset-btn" style="margin:8px auto 0;display:block" onclick="renderTplContent()"><i class="fas fa-times"></i> Về luyện tập bình thường</button>
+      </div>
+    </div>`;
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = '0%';
+}
+
+async function saveExamAttemptToServer(mode, correct, total, timeTakenSec) {
+  const token = window.AuthService.getToken();
+  if (!token || !total) return;
+  const type = TPL_DATA[_tplActiveType];
+  const typeMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
+  try {
+    const res = await fetch(`${API}/api/task2template/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({
+        templateType: _tplActiveType, templateName: typeMeta?.label || type?.name || _tplActiveType,
+        totalItems: total, correctItems: correct, mode, isExam: true, timeTakenSec,
+      })
+    });
+    await window.ApiClient.handleResponse(res);
+  } catch {}
 }
 
 function submitExam() {
@@ -2448,6 +2597,7 @@ function submitExam() {
   showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
     pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
   if (pct >= 80) updateXPStorage(20);
+  saveExamAttemptToServer('cloze', correct, total, timeTaken);
 }
 
 // Delegates to js/shared/utils.js (single source of truth — student UI

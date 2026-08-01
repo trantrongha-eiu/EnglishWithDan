@@ -185,8 +185,140 @@ function ItemModal({ item, onClose, onSaved }) {
   );
 }
 
+// ── Exam/practice results tab ────────────────────────────────────────────
+const ATTEMPT_MODE_LABELS = { cloze: 'Cloze', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
+
+function studentLabel(u) {
+  if (!u) return '(đã xoá tài khoản)';
+  const name = [u.firstName, u.lastName].filter(Boolean).join(' ');
+  return name || u.username || u.email || '(?)';
+}
+
+function fmtAttemptTime(secs) {
+  if (secs == null) return '–';
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function AttemptsTab() {
+  const [attempts, setAttempts] = useState([]);
+  const [total, setTotal]       = useState(0);
+  const [loading, setLoading]   = useState(false);
+  const [mode, setMode]         = useState('');
+  const [examOnly, setExamOnly] = useState(false);
+  const PAGE_SIZE = 50;
+
+  const showToast = useToast();
+  const confirm   = useConfirm();
+  const { isAdmin } = useAuth();
+
+  const load = useCallback((skip = 0, append = false) => {
+    setLoading(true);
+    const params = new URLSearchParams({ limit: PAGE_SIZE, skip });
+    if (mode) params.set('mode', mode);
+    if (examOnly) params.set('isExam', 'true');
+    apiFetch(`/admin/task2/templates/attempts?${params}`)
+      .then(data => {
+        setAttempts(prev => append ? [...prev, ...(data.attempts || [])] : (data.attempts || []));
+        setTotal(data.total || 0);
+      })
+      .catch(e => showToast(e.message, 'error'))
+      .finally(() => setLoading(false));
+  }, [mode, examOnly]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { load(0, false); }, [load]);
+
+  function deleteAttempt(a) {
+    confirm('Xoá kết quả này? Không thể hoàn tác.', async () => {
+      try {
+        await apiFetch(`/admin/task2/templates/attempts/${a._id}`, { method: 'DELETE' });
+        showToast('Đã xoá', 'success');
+        setAttempts(prev => prev.filter(x => x._id !== a._id));
+        setTotal(t => t - 1);
+      } catch (e) { showToast(e.message, 'error'); }
+    });
+  }
+
+  return (
+    <>
+      <div className="filter-bar" style={{ marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
+        <select className="form-input" style={{ width: 160 }} value={mode} onChange={e => setMode(e.target.value)}>
+          <option value="">Tất cả chế độ</option>
+          {Object.entries(ATTEMPT_MODE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+        </select>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text2)' }}>
+          <input type="checkbox" checked={examOnly} onChange={e => setExamOnly(e.target.checked)} />
+          Chỉ chế độ thi thử
+        </label>
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text3)' }}>
+          {total} kết quả · tự động xoá sau 30 ngày
+        </div>
+      </div>
+
+      <div className="table-container">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Học viên</th>
+              <th>Template</th>
+              <th style={{ width: 90 }}>Chế độ</th>
+              <th style={{ width: 90, textAlign: 'center' }}>Loại</th>
+              <th style={{ width: 100, textAlign: 'center' }}>Điểm</th>
+              <th style={{ width: 70, textAlign: 'center' }}>Thời gian</th>
+              <th style={{ width: 110 }}>Ngày</th>
+              <th style={{ width: 50, textAlign: 'right' }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {!loading && attempts.length === 0 && (
+              <tr><td colSpan={8} style={{ textAlign: 'center', color: 'var(--text3)', padding: 40 }}>Chưa có kết quả nào.</td></tr>
+            )}
+            {attempts.map(a => {
+              const pct = a.totalItems > 0 ? Math.round((a.correctItems / a.totalItems) * 100) : 0;
+              const badgeCls = pct >= 70 ? '#dcfce7' : pct >= 50 ? '#fef3c7' : '#fee2e2';
+              const badgeColor = pct >= 70 ? '#166534' : pct >= 50 ? '#92400e' : '#b91c1c';
+              return (
+                <tr key={a._id}>
+                  <td>{studentLabel(a.userId)}</td>
+                  <td>
+                    <div style={{ fontWeight: 600, fontSize: 13 }}>{a.templateName || a.templateType}</div>
+                  </td>
+                  <td><span style={{ fontSize: 12, color: '#6366f1', fontWeight: 600 }}>{ATTEMPT_MODE_LABELS[a.mode] || a.mode}</span></td>
+                  <td style={{ textAlign: 'center' }}>
+                    {a.isExam
+                      ? <span style={{ fontSize: 11, fontWeight: 700, color: '#ea580c', background: '#fff7ed', borderRadius: 10, padding: '2px 8px' }}>⏱ Thi thử</span>
+                      : <span style={{ fontSize: 11, color: 'var(--text3)' }}>Luyện tập</span>}
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <span style={{ background: badgeCls, color: badgeColor, borderRadius: 6, padding: '2px 8px', fontSize: 12, fontWeight: 700 }}>
+                      {a.correctItems}/{a.totalItems} · {pct}%
+                    </span>
+                  </td>
+                  <td style={{ textAlign: 'center', fontSize: 12, color: 'var(--text3)' }}>{fmtAttemptTime(a.timeTakenSec)}</td>
+                  <td style={{ fontSize: 12, color: 'var(--text3)' }}>{new Date(a.createdAt).toLocaleDateString('vi-VN')}</td>
+                  <td style={{ textAlign: 'right' }}>
+                    {isAdmin && <button className="btn btn-danger btn-sm btn-icon" title="Xoá" onClick={() => deleteAttempt(a)}>🗑️</button>}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {loading && <div style={{ textAlign: 'center', padding: 16, color: 'var(--text3)' }}>Đang tải...</div>}
+      {!loading && attempts.length < total && (
+        <div style={{ textAlign: 'center', marginTop: 12 }}>
+          <button className="btn btn-ghost" onClick={() => load(attempts.length, true)}>Tải thêm</button>
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────
 export default function Task2Templates() {
+  const [tab, setTab] = useState('content'); // 'content' | 'attempts'
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading]     = useState(false);
   const [search, setSearch]       = useState('');
@@ -359,19 +491,43 @@ export default function Task2Templates() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Task 2 Templates</h1>
-          <p className="page-subtitle">{templates.length} template — câu luyện điền từ theo dạng bài IELTS Task 2</p>
+          <p className="page-subtitle">
+            {tab === 'content'
+              ? `${templates.length} template — câu luyện điền từ theo dạng bài IELTS Task 2`
+              : 'Kết quả luyện tập & thi thử của học viên (Cloze / Dịch câu / Chunks / Build / Dictation)'}
+          </p>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => confirm('Seed lại toàn bộ 7 template mặc định? Dữ liệu hiện tại sẽ bị ghi đè.', () => seedTemplates(true))}>
-            🔄 Seed lại
-          </button>
-          <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => seedTemplates(false)}>
-            📥 Seed lần đầu
-          </button>
-          <button className="btn btn-primary" onClick={() => { setEditingMeta(null); setShowTplMeta(true); }}>+ Thêm Template</button>
-        </div>
+        {tab === 'content' && (
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => confirm('Seed lại toàn bộ 7 template mặc định? Dữ liệu hiện tại sẽ bị ghi đè.', () => seedTemplates(true))}>
+              🔄 Seed lại
+            </button>
+            <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => seedTemplates(false)}>
+              📥 Seed lần đầu
+            </button>
+            <button className="btn btn-primary" onClick={() => { setEditingMeta(null); setShowTplMeta(true); }}>+ Thêm Template</button>
+          </div>
+        )}
       </div>
 
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, borderBottom: '1px solid var(--border)' }}>
+        <button
+          onClick={() => setTab('content')}
+          style={{ padding: '9px 16px', fontSize: 13, fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer',
+            color: tab === 'content' ? '#6366f1' : 'var(--text3)', borderBottom: tab === 'content' ? '2px solid #6366f1' : '2px solid transparent' }}>
+          📋 Quản lý nội dung
+        </button>
+        <button
+          onClick={() => setTab('attempts')}
+          style={{ padding: '9px 16px', fontSize: 13, fontWeight: 700, background: 'none', border: 'none', cursor: 'pointer',
+            color: tab === 'attempts' ? '#6366f1' : 'var(--text3)', borderBottom: tab === 'attempts' ? '2px solid #6366f1' : '2px solid transparent' }}>
+          📊 Kết quả luyện tập / thi thử
+        </button>
+      </div>
+
+      {tab === 'attempts' && <AttemptsTab />}
+
+      {tab === 'content' && <>
       {/* Search */}
       <div className="filter-bar" style={{ marginBottom: 16 }}>
         <input className="filter-search" placeholder="Tìm template..." value={search}
@@ -531,6 +687,7 @@ export default function Task2Templates() {
           </table>
         </div>
       )}
+      </>}
 
       {/* Modals */}
       {showTplMeta && (

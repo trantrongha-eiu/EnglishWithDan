@@ -7,6 +7,8 @@ const auth    = require('../../middleware/auth');
 const { teacherOnly, escapeRegex } = require('./_shared');
 
 const Task2Template = require('../../models/Task2Template');
+const Task2TemplateAttempt = require('../../models/Task2TemplateAttempt');
+const task2TemplateService = require('../../services/task2TemplateService');
 
 const router = express.Router();
 
@@ -230,6 +232,30 @@ router.post('/task2/templates/seed', auth, teacherOnly, async (req, res) => {
     if (force) await Task2Template.deleteMany({});
     await Task2Template.insertMany(SEED_TEMPLATES);
     res.json({ success: true, message: `Đã seed ${SEED_TEMPLATES.length} template mặc định.` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// GET /api/admin/task2/templates/attempts  (before :id route — student results,
+// including "Chế độ thi thử" runs, across Cloze/Translation/Chunks/Build/Dictation)
+router.get('/task2/templates/attempts', auth, teacherOnly, async (req, res) => {
+  try {
+    const { limit = 100, skip = 0, mode, isExam, templateType } = req.query;
+    const { attempts, total } = await task2TemplateService.listAttemptsForAdmin({
+      limit: Math.min(parseInt(limit) || 100, 500), skip: parseInt(skip) || 0, mode, isExam, templateType,
+    });
+    res.json({ success: true, attempts, total });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/task2/templates/attempts/:id
+router.delete('/task2/templates/attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    await Task2TemplateAttempt.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
