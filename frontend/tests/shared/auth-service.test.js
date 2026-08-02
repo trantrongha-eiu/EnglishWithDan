@@ -105,7 +105,7 @@ describe('logout', () => {
 
     withMockLocation((loc) => {
       window.AuthService.logout();
-      expect(loc.href).toBe('login.html');
+      expect(loc.href).toBe('/login.html');
     });
 
     expect(localStorage.getItem('token')).toBeNull();
@@ -116,7 +116,7 @@ describe('logout', () => {
     window.AuthService.setToken('tok');
     withMockLocation((loc) => {
       window.AuthService.logout('inactive');
-      expect(loc.href).toBe('login.html?reason=inactive');
+      expect(loc.href).toBe('/login.html?reason=inactive');
     });
   });
 });
@@ -208,7 +208,7 @@ describe('checkInactiveLogout', () => {
 
     withMockLocation((loc) => {
       expect(window.AuthService.checkInactiveLogout()).toBe(true);
-      expect(loc.href).toBe('login.html?reason=inactive');
+      expect(loc.href).toBe('/login.html?reason=inactive');
     });
     expect(window.AuthService.getToken()).toBeNull();
   });
@@ -222,7 +222,7 @@ describe('getPostLoginRedirect', () => {
   test('sends staff to /admin/ and students to dashboard.html when there is no ?next=', () => {
     setSearch('');
     expect(window.AuthService.getPostLoginRedirect({ role: 'admin' })).toBe('/admin/');
-    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('dashboard.html');
+    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('/dashboard.html');
   });
 
   test('honors a safe ?next= whose admin-ness matches the user role', () => {
@@ -232,19 +232,19 @@ describe('getPostLoginRedirect', () => {
 
   test('ignores ?next= when its admin-ness does NOT match the user role (student given an admin next)', () => {
     setSearch('?next=' + encodeURIComponent('/admin/#/students'));
-    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('dashboard.html');
+    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('/dashboard.html');
   });
 
   test('ignores an unsafe ?next= (open-redirect attempt) and falls back to the default', () => {
     setSearch('?next=' + encodeURIComponent('https://evil.com'));
-    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('dashboard.html');
+    expect(window.AuthService.getPostLoginRedirect({ role: 'student' })).toBe('/dashboard.html');
   });
 });
 
 describe('buildLoginUrl', () => {
   test('URL-encodes the destination as a ?next= param on login.html', () => {
     expect(window.AuthService.buildLoginUrl('/reading/test/abc?x=1')).toBe(
-      'login.html?next=' + encodeURIComponent('/reading/test/abc?x=1')
+      '/login.html?next=' + encodeURIComponent('/reading/test/abc?x=1')
     );
   });
 });
