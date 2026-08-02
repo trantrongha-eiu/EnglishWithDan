@@ -700,6 +700,260 @@ Trích dẫn: "At the same time, I think the species' small brains are a distrac
 Phân tích: Tác giả cho rằng kích thước não chỉ là yếu tố GÂY XAO LÃNG (distraction) khỏi vấn đề thật sự, không phải yếu tố then chốt để xác định khả năng làm nghệ thuật — trái với ý câu hỏi. → NO`,
     },
   },
+  // ── Cam 21 - Test 4 ──────────────────────────────────────────────────
+  {
+    title: 'The problems and benefits created by the spread of the water hyacinth in Kenya',
+    category: 'passage1',
+    explanations: {
+      1: `Vị trí: Đoạn 2.
+
+Trích dẫn: "the plant arrived with Belgian colonists in Rwanda, who liked the look of its glossy leaves and delicate purple flowers floating in their ponds."
+
+Phân tích: Người Bỉ mang cây này đến vì thích vẻ đẹp của nó (glossy leaves, purple flowers) để trang trí trong ao — đúng là mục đích trang trí (decorative). → TRUE`,
+
+      2: `Vị trí: Đoạn 2.
+
+Trích dẫn: "it had 'escaped' out of the country via the Kagera river and made its way downstream to Lake Victoria."
+
+Phân tích: Cây tự "trốn thoát" theo dòng sông Kagera đến hồ Victoria, không phải do ngư dân mang tới. → FALSE`,
+
+      3: `Vị trí: Đoạn 3.
+
+Trích dẫn: "the boats that once brought the fish to shore by the hundreds struggle to navigate through the mass of plants."
+
+Phân tích: Thuyền bè gặp khó khăn (struggle) khi len lỏi qua đám thực vật dày đặc. → TRUE`,
+
+      4: `Vị trí: Toàn bài không đề cập.
+
+Phân tích: Bài chỉ nói bèo lục bình cản trở tuyến đường đánh cá và tạo nơi trú ẩn cho muỗi truyền bệnh, không hề đề cập việc các hoá chất do cây tiết ra ảnh hưởng đến số lượng cá. → NOT GIVEN`,
+
+      5: `Vị trí: Đoạn 3.
+
+Trích dẫn: "About three out of four families in Kenya depend on wood or charcoal to cook their daily meals... Using solid fuels like these for cooking increases indoor pollution."
+
+Phân tích: Bài chỉ nói chung về tác hại của nhiên liệu rắn (gỗ và than củi), không so sánh cụ thể mức độ độc hại giữa than củi và gỗ. → NOT GIVEN`,
+
+      6: `Vị trí: Đoạn 4.
+
+Trích dẫn: "on the shores of Lake Victoria, huge piles of water hyacinth that villagers had taken out of the water in an attempt to clear it were a common sight."
+
+Phân tích: Người dân vẫn vớt được những đống bèo khổng lồ (huge piles) ra khỏi hồ, tức là hoàn toàn không phải "không thể" loại bỏ. → FALSE`,
+
+      7: `Vị trí: Đoạn 4.
+
+Trích dẫn: "It's a magic combination that has captivated researchers' imaginations since as early as the 1980s when, across the world, they began to explore its potential as a biofuel."
+
+Phân tích: Các nhà khoa học bắt đầu nghiên cứu tiềm năng biogas của bèo lục bình từ những năm 1980 — tức là thế kỷ trước (thế kỷ 20). → TRUE`,
+
+      8: `Vị trí: Đoạn 6.
+
+Trích dẫn: "The community received a pair of donated biogas digesters – machines that would transform a mix of water hyacinth and cow dung into biogas for cooking."
+
+Phân tích: Hỗn hợp đưa vào máy phân huỷ gồm bèo lục bình và phân bò (cow dung).`,
+
+      9: `Vị trí: Đoạn 7.
+
+Trích dẫn: "The mixture goes in one end... and over the next 20 to 30 days, it goes through a fermentation process and breaks down, giving off gas that comes out the other end."
+
+Phân tích: Hỗn hợp trải qua quá trình lên men (fermentation process) trong 20-30 ngày.`,
+
+      10: `Vị trí: Đoạn 7.
+
+Trích dẫn: "From there, the clean-burning gas is passed through pipes to the point of use, just like traditional domestic gas."
+
+Phân tích: Khí gas được dẫn tới nơi sử dụng qua hệ thống ống (pipes).`,
+
+      11: `Vị trí: Đoạn 8.
+
+Trích dẫn: "they don't have to devote a lot of time every day to gathering firewood, which is a great relief."
+
+Phân tích: Phụ nữ không còn phải tốn nhiều thời gian (time) mỗi ngày để đi lấy củi.`,
+
+      12: `Vị trí: Đoạn 8.
+
+Trích dẫn: "As a result, they're able to make more money for their families from other enterprises."
+
+Phân tích: Nhờ tiết kiệm thời gian, họ có thể kiếm thêm tiền (money) từ các công việc khác.`,
+
+      13: `Vị trí: Đoạn 10.
+
+Trích dẫn: "unless the price of the machines drops, it's pretty clear that most communities will never be able to afford any, since they sell for about $750."
+
+Phân tích: Giá thành (price) của máy phân huỷ biogas là rào cản khiến hầu hết các cộng đồng không đủ khả năng mua.`,
+    },
+  },
+  {
+    title: "How could multilingualism benefit India's poorest schoolchildren?",
+    category: 'passage2',
+    explanations: {
+      14: `Vị trí: Đoạn 1.
+
+Trích dẫn: "The crowded and bustling streets of Delhi teem with life... as more than 20 million people go about their daily lives."
+
+Phân tích: Delhi có mật độ dân số dày đặc (dense population) với hơn 20 triệu người sinh sống.`,
+
+      15: `Vị trí: Đoạn 1.
+
+Trích dẫn: "many millions more have recently made India's capital their home, having moved from surrounding neighbourhoods, cities and states or across the country..."
+
+Phân tích: Những người mới chuyển đến sinh sống ở Delhi chính là những người nhập cư mới (new immigrants).`,
+
+      16: `Vị trí: Đoạn 1.
+
+Trích dẫn: "having moved from surrounding neighbourhoods, cities and states or across the country..."
+
+Phân tích: "surrounding neighbourhoods" (khu vực lân cận) được diễn đạt lại thành "nearby district".`,
+
+      17: `Vị trí: Đoạn 1.
+
+Trích dẫn: "...often in the hope of gaining better jobs and a better life."
+
+Phân tích: Họ đến Delhi với hy vọng có được cơ hội việc làm (employment opportunities) tốt hơn.`,
+
+      18: `Vị trí: Đoạn 2.
+
+Trích dẫn: "The overriding aim of the four-year project, called 'Multilingualism and Multiliteracy', is to find out why..."
+
+Phân tích: "overriding aim" (mục tiêu bao trùm) được diễn đạt lại thành "primary objective" (mục tiêu chính).`,
+
+      19: `Vị trí: Đoạn 2.
+
+Trích dẫn: "...the many benefits of speaking more than one language, observed in schools in Europe for instance, do not apply to many of India's schoolchildren."
+
+Phân tích: Học sinh Ấn Độ không có được những lợi ích tương tự (similar advantages) mà học sinh đa ngôn ngữ ở châu Âu có được.`,
+
+      20: `Vị trí: Đoạn 3.
+
+Trích dẫn: "over 50% of children in Standard 5 [ten-year-olds] cannot read a Standard 2 [seven-year-olds] task fluently, and just under 50% of them cannot solve a Standard 2 subtraction task."
+
+Phân tích: Tỉ lệ trẻ 10 tuổi KHÔNG đọc trôi chảy (hơn 50%) còn CAO HƠN tỉ lệ không giải được bài toán trừ (dưới 50%) — nghĩa là các em làm bài đọc kém hơn (không phải tốt hơn) so với bài toán. → NO`,
+
+      21: `Vị trí: Đoạn 3.
+
+Trích dẫn: "low educational achievement can lead to many of these students dropping out of school – a problem disproportionately affecting female students."
+
+Phân tích: Bài chỉ nói học sinh nữ bị ảnh hưởng nhiều hơn bởi tình trạng bỏ học, không hề đề cập việc Tsimpli gặp khó khăn thuyết phục các em nữ THAM GIA nghiên cứu. → NOT GIVEN`,
+
+      22: `Vị trí: Đoạn 4.
+
+Trích dẫn: "Tsimpli and her colleagues are investigating whether these low learning outcomes could be caused by an Indian school system where the language that children are taught in often differs from the language used at home."
+
+Phân tích: Đúng như câu hỏi paraphrase — nhóm nghiên cứu muốn tìm hiểu mối liên hệ giữa kết quả học tập kém và việc học bằng ngôn ngữ không quen thuộc. → YES`,
+
+      23: `Vị trí: Đoạn 5.
+
+Trích dẫn: "They intend to look not only at test results, but also at variables such as the standard of schooling, the environment and the teaching practices themselves."
+
+Phân tích: Nhóm nghiên cứu CÓ dự định xem xét cả phương pháp giảng dạy (teaching practices), trái ngược với ý "quyết định không nghiên cứu" trong câu hỏi. → NO`,
+
+      24: `Vị trí: Đoạn 6.
+
+Trích dẫn: "the medium of instruction used in schools, especially English, may hold back those children who have little familiarity with, or exposure to, the language before starting school... English instruction for children from low socio-economic areas might not be the best way for them to learn."
+
+Phân tích: Việc dạy bằng tiếng Anh có thể gây bất lợi thêm cho trẻ em nghèo, những em vốn đã ít tiếp xúc với ngôn ngữ này. → C "Poor children may be disadvantaged further by being instructed in English."`,
+
+      25: `Vị trí: Đoạn 7.
+
+Trích dẫn: "We are not suggesting that English be withdrawn – that ship has sailed – but we perhaps have to think more about learner needs."
+
+Phân tích: "that ship has sailed" (con tàu đã rời bến) là thành ngữ chỉ việc gì đó đã quá muộn để thay đổi — ở đây nghĩa là quá muộn để loại bỏ hoàn toàn tiếng Anh khỏi việc giảng dạy. → D "It is too late to remove English completely as a language of instruction in schools."`,
+
+      26: `Vị trí: Đoạn 8.
+
+Trích dẫn: "an unanticipated finding has been that children from slum backgrounds do not seem to lag behind children from other urban poor backgrounds – and in some cases outperform them (e.g. in numeracy and literacy tasks)."
+
+Phân tích: Phát hiện bất ngờ là khả năng đọc viết/tính toán của trẻ em khu ổ chuột không hề thấp hơn (thậm chí có thể vượt trội) so với trẻ em nghèo đô thị khác. → D "The literacy and numeracy skills of slum children are not lower than those of children from other urban poor backgrounds."`,
+    },
+  },
+  {
+    title: 'The Globemakers: The Curious Story of an Ancient Craft',
+    category: 'passage3',
+    explanations: {
+      27: `Vị trí: Đoạn 1.
+
+Trích dẫn: "What seemed simple enough to start with triggered an almost obsessive, decade-long journey, marked by a series of obstacles that would have deterred anyone less determined."
+
+Phân tích: Việc tưởng chừng đơn giản hoá ra lại là một nhiệm vụ đầy thách thức (challenging task), kéo dài cả thập kỷ.`,
+
+      28: `Vị trí: Đoạn 1.
+
+Trích dẫn: "...marked by a series of obstacles that would have deterred anyone less determined."
+
+Phân tích: "a series of obstacles" (hàng loạt trở ngại) được diễn đạt lại thành "numerous problems".`,
+
+      29: `Vị trí: Đoạn 2.
+
+Trích dẫn: "obtaining such a globe was not simply a matter of a quick online order and a repressed sigh at the shipping costs."
+
+Phân tích: Việc mua một quả địa cầu không đơn giản như một lần đặt hàng qua mạng (internet purchase).`,
+
+      30: `Vị trí: Đoạn 3.
+
+Trích dẫn: "Bellerby came across shoddy commercial versions designed for school classrooms and genuine antiques in auction houses that would have bust his budget."
+
+Phân tích: "shoddy commercial versions" (những phiên bản thương mại kém chất lượng) được diễn đạt lại thành "inferior makes".`,
+
+      31: `Vị trí: Đoạn 3.
+
+Trích dẫn: "...shoddy commercial versions designed for school classrooms..."
+
+Phân tích: Những phiên bản kém chất lượng này được thiết kế cho mục đích giáo dục (educational use) — dùng trong lớp học.`,
+
+      32: `Vị trí: Đoạn 3.
+
+Trích dẫn: "Even his trips to Morocco and India, where surely the knowledge of artisan cartographers had been preserved, drew a blank."
+
+Phân tích: Ông hy vọng tìm được nơi còn lưu giữ kỹ năng cần thiết (necessary skills) làm địa cầu thủ công, nhưng không thành công.`,
+
+      33: `Vị trí: Đoạn 2.
+
+Trích dẫn: "contrary to stubbornly held popular views of our ancestors' geographical ignorance, we have known that the world is spherical since at least the 6th century BCE."
+
+Phân tích: Bài khẳng định quan niệm phổ biến rằng tổ tiên chúng ta thiếu hiểu biết về địa lý là SAI (contrary to) — con người đã biết trái đất hình cầu từ rất sớm. → NO`,
+
+      34: `Vị trí: Đoạn 2.
+
+Trích dẫn: "The ancient Greek philosopher Plato in his work Phaedo likened it to a leather ball..."
+
+Phân tích: Bài chỉ nêu việc Plato so sánh trái đất với quả bóng da, không hề đề cập việc ông có bị chỉ trích vì điều này hay không. → NOT GIVEN`,
+
+      35: `Vị trí: Đoạn 2.
+
+Trích dẫn: "the accolade of producing the first recorded globe goes to the ancient Greek philosopher Crates of Mallus, who is said to have made one in around 150 BCE."
+
+Phân tích: Bài chỉ nói Crates of Mallus là người đầu tiên làm ra quả địa cầu được ghi nhận, không đề cập đến độ chính xác của nó. → NOT GIVEN`,
+
+      36: `Vị trí: Đoạn 2.
+
+Trích dẫn: "Surely, Bellerby reasoned, a good-quality globe wouldn't be difficult to find."
+
+Phân tích: Bellerby ban đầu tin rằng việc tìm một quả địa cầu chất lượng tốt sẽ không khó khăn gì. → YES`,
+
+      37: `Vị trí: Đoạn 5.
+
+Trích dẫn: "Right at the end of the process, he learnt that the paper had stretched slightly and so the final one overlapped the first by a centimetre..."
+
+Phân tích: Ông phát hiện ra một vấn đề bất ngờ (unexpected issue) — giấy bị giãn ra khiến các mảnh bản đồ không khớp hoàn toàn. → B "he became aware of an unexpected issue."`,
+
+      38: `Vị trí: Đoạn 6.
+
+Trích dẫn: "Bellerby clearly found a kindred spirit in Martin Behaim..." / "Something of Bellerby's unflinching ambition is reflected in the even more heroic efforts of the Italian cartographer Vincenzo Coronelli..."
+
+Phân tích: Người viết nhắc đến các nhà làm địa cầu xưa vì Bellerby có những điểm chung với từng người trong số họ (kindred spirit, tham vọng tương đồng). → C "Bellerby had something in common with each of them."`,
+
+      39: `Vị trí: Đoạn 7.
+
+Trích dẫn: "Bellerby's book is also a lament for the fading away of centuries-old traditions... many of these have now retired or passed away."
+
+Phân tích: Cuốn sách của Bellerby còn là một lời than tiếc (lament) cho sự mai một của các kỹ năng làm địa cầu truyền thống. → D "He regrets the loss of many globe-making skills."`,
+
+      40: `Vị trí: Đoạn cuối.
+
+Trích dẫn: "His book... is hardly a blueprint for commercial success."
+
+Phân tích: Người viết nhận xét cuốn sách không phải là một "bản thiết kế" hướng dẫn cách kinh doanh thành công. → A "It does not tell you how to create a profitable business."`,
+    },
+  },
 ];
 
 async function runSeed() {
