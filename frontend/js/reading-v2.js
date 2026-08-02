@@ -617,6 +617,12 @@ function savePracticeToStorage() {
   try {
     const passage = state.passages[0];
     if (!passage) return;
+    // Nothing answered yet — don't create a "resume" entry there's nothing to
+    // resume. Otherwise merely opening a passage (or retrying one already
+    // submitted, via retryReset -> startPractice) and leaving without
+    // answering anything leaves a stale "đã trả lời 0 câu" banner that reads
+    // as unfinished work even though the real, scored attempt was submitted.
+    if (Object.keys(state.answers || {}).length === 0) { clearPracticeStorage(); return; }
     localStorage.setItem(_PRACTICE_KEY, JSON.stringify({
       passageId: _retryState.practicePassageId,
       category:  _retryState.practiceCategory,
