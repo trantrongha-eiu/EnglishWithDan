@@ -8,13 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/tokens.css"/>
-  <link rel="stylesheet" href="css/components.css"/>
-  <link rel="stylesheet" href="writing-practice.css"/>
-  <link rel="stylesheet" href="css/mobile.css"/>
-  <link rel="stylesheet" href="css/dictionary-popup.css"/>
-  <script src="js/theme.js"></script>
-  <script src="js/shared/visit-tracker.js"></script>
+  <link rel="stylesheet" href="/css/tokens.css"/>
+  <link rel="stylesheet" href="/css/components.css"/>
+  <link rel="stylesheet" href="/writing-practice.css"/>
+  <link rel="stylesheet" href="/css/mobile.css"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css"/>
+  <script src="/js/theme.js"></script>
+  <script src="/js/shared/visit-tracker.js"></script>
   <style>
     .t2-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(2px)}
     .t2-quit-overlay.hidden{display:none}
@@ -525,15 +525,15 @@
   </style>
 </head>
 <body>
-<script src="js/shared/auth-service.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/nav.js"></script>
-<script src="js/upgrade-modal.js"></script>
-<script src="js/shared/utils.js"></script>
-<script src="js/shared/toast.js"></script>
-<script src="js/shared/api-client.js"></script>
-<script src="js/shared/dictionary-lookup.js"></script>
-<script src="js/shared/sound-effects.js"></script>
+<script src="/js/shared/auth-service.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/upgrade-modal.js"></script>
+<script src="/js/shared/utils.js"></script>
+<script src="/js/shared/toast.js"></script>
+<script src="/js/shared/api-client.js"></script>
+<script src="/js/shared/dictionary-lookup.js"></script>
+<script src="/js/shared/sound-effects.js"></script>
 
 <!-- Type switch confirm modal -->
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
@@ -581,10 +581,10 @@
         <i class="fas fa-link"></i> Sao chép link
       </button>
       <div class="tpl-sb-nav-links">
-        <a href="writing-practice.html" class="tpl-sb-nav-link"><i class="fas fa-house"></i> Giao tiếp</a>
-        <a href="task1-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-chart-bar"></i> Task 1</a>
-        <a href="task2-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-edit"></i> Task 2</a>
-        <a href="essential-grammar.html" class="tpl-sb-nav-link"><i class="fas fa-graduation-cap"></i> Ngữ pháp</a>
+        <a href="/writing-practice.html" class="tpl-sb-nav-link"><i class="fas fa-house"></i> Giao tiếp</a>
+        <a href="/task1-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-chart-bar"></i> Task 1</a>
+        <a href="/task2-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-edit"></i> Task 2</a>
+        <a href="/essential-grammar.html" class="tpl-sb-nav-link"><i class="fas fa-graduation-cap"></i> Ngữ pháp</a>
       </div>
     </div>
   </aside>
@@ -2735,7 +2735,7 @@ async function loadTplHistory() {
   body.innerHTML = '<div class="tpl-hist-loading"><div class="tpl-hist-loading-icon">⏳</div><p>Đang tải...</p></div>';
   const token = window.AuthService.getToken();
   if (!token) {
-    body.innerHTML = `<div style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:12px">🔒</div><p style="color:#555;font-size:14px">Vui lòng đăng nhập để xem lịch sử luyện tập.</p><a href="login.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">Đăng nhập</a></div>`;
+    body.innerHTML = `<div style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:12px">🔒</div><p style="color:#555;font-size:14px">Vui lòng đăng nhập để xem lịch sử luyện tập.</p><a href="/login.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">Đăng nhập</a></div>`;
     return;
   }
   try {

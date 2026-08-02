@@ -113,7 +113,11 @@
 
   function logout(reason) {
     clearSession();
-    var url = reason ? 'login.html?reason=' + encodeURIComponent(reason) : 'login.html';
+    // Root-relative (leading "/") — some pages are reached through a
+    // nested clean URL (e.g. /writing/templates) where the browser's
+    // current path has an extra segment; a bare "login.html" would then
+    // resolve to "/writing/login.html" (404) instead of "/login.html".
+    var url = reason ? '/login.html?reason=' + encodeURIComponent(reason) : '/login.html';
     window.location.href = url;
   }
 
@@ -129,7 +133,7 @@
   // Used by page-load guards to send an unauthenticated visitor to login
   // while remembering where they were headed.
   function buildLoginUrl(dest) {
-    return 'login.html?next=' + encodeURIComponent(dest);
+    return '/login.html?next=' + encodeURIComponent(dest);
   }
 
   // Centralizes the role-matched "where does this user land after
@@ -139,7 +143,7 @@
     var staff = isStaff(user);
     var next = getSafeNext();
     if (next && next.admin === staff) return next.url;
-    return staff ? '/admin/' : 'dashboard.html';
+    return staff ? '/admin/' : '/dashboard.html';
   }
 
   // ── Page guards (callable, not auto-run — see file header) ──
@@ -163,7 +167,7 @@
     if (!isLoggedIn()) return false;
     var user = getUser();
     if (!user) return false;
-    window.location.href = isStaff(user) ? '/admin/' : 'dashboard.html';
+    window.location.href = isStaff(user) ? '/admin/' : '/dashboard.html';
     return true;
   }
 
