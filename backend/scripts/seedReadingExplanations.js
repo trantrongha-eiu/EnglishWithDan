@@ -444,6 +444,262 @@ Trích dẫn: "These examples demonstrate that there is no AI solution for every
 Phân tích: Chủ đề xuyên suốt bài là cảnh báo về giới hạn và rủi ro của AI, chứ không phải AI là giải pháp cho mọi vấn đề. → B "Why AI may not be the answer to our problems"`,
     },
   },
+  // ── Cam 21 - Test 3 ──────────────────────────────────────────────────
+  {
+    title: 'Saving the saiga',
+    category: 'passage1',
+    explanations: {
+      1: `Vị trí: Đoạn 2.
+
+Trích dẫn: "The swollen nostrils of the nose serve several purposes: they filter out dust and cool the blood during hot, dry summers, and they warm the cold air before it enters the saiga's lungs in winter."
+
+Phân tích: Lỗ mũi sưng phồng có chức năng lọc bụi (filter out dust) ra khỏi không khí hít vào.`,
+
+      2: `Vị trí: Đoạn 2.
+
+Trích dẫn: "...they filter out dust and cool the blood during hot, dry summers..."
+
+Phân tích: Vào mùa hè, mũi giúp làm mát máu (blood) của saiga.`,
+
+      3: `Vị trí: Đoạn 2.
+
+Trích dẫn: "Other seasonal adaptations include a heavy winter coat that the saiga sheds when the weather warms up."
+
+Phân tích: Saiga mọc một lớp lông dày (coat) vào mùa đông và rụng đi khi thời tiết ấm lên.`,
+
+      4: `Vị trí: Đoạn 4.
+
+Trích dẫn: "Male saiga are a particular target, because their horns are highly prized by traditional medicine practitioners."
+
+Phân tích: Saiga đực bị săn bắt chủ yếu vì sừng (horns) của chúng được giới y học cổ truyền ưa chuộng.`,
+
+      5: `Vị trí: Đoạn 5.
+
+Trích dẫn: "Another threat to the survival of the saiga is loss of habitat, as a result of agricultural expansion and human settlement."
+
+Phân tích: Việc mở rộng nông nghiệp và khu dân cư làm thu hẹp môi trường sống (habitat) của saiga.`,
+
+      6: `Vị trí: Đoạn 5.
+
+Trích dẫn: "Physical barriers such as railways, pipelines and fences can block the seasonal migration routes of this transboundary species."
+
+Phân tích: Các rào chắn vật lý (đường sắt, ống dẫn, hàng rào) chặn các tuyến đường di cư (routes) theo mùa của saiga.`,
+
+      7: `Vị trí: Đoạn 7.
+
+Trích dẫn: "The steppe region has also become increasingly arid in recent years, and many of the smaller streams that the species normally depended on have dried up and vanished."
+
+Phân tích: Biến đổi khí hậu khiến các dòng suối nhỏ (streams) mà saiga phụ thuộc bị khô cạn và biến mất.`,
+
+      8: `Vị trí: Đoạn 1.
+
+Trích dẫn: "Today, the saiga is largely confined to a single country: Kazakhstan. This country is estimated to be home to well over 90% of the global saiga population, with Russia, Mongolia and Uzbekistan accounting for the rest."
+
+Phân tích: Hơn 90% quần thể saiga toàn cầu tập trung ở Kazakhstan, hoàn toàn không phân bố đều (evenly) giữa 4 quốc gia như câu hỏi nêu. → FALSE`,
+
+      9: `Vị trí: Đoạn 3.
+
+Trích dẫn: "Legal protection ensured its survival for a while, and numbers steadily recovered throughout most of the 20th century."
+
+Phân tích: Số lượng saiga PHỤC HỒI (recovered) trong phần lớn thế kỷ 20, trái ngược với "falling" (suy giảm) trong câu hỏi. → FALSE`,
+
+      10: `Vị trí: Đoạn 4.
+
+Trích dẫn: "Poaching reached epidemic levels after misguided conservationists tried to relieve the pressure on threatened African rhinos by actively encouraging the use of saiga horns in traditional medicine as an alternative to those of rhinos. Male saiga were almost wiped out, leading to a population crash..."
+
+Phân tích: Nỗ lực bảo vệ tê giác châu Phi (khuyến khích dùng sừng saiga thay thế) đã gây ra hệ quả nghiêm trọng, khiến saiga đực gần như bị xoá sổ → có tác động đáng kể (dù là tiêu cực) đến quần thể saiga. → TRUE`,
+
+      11: `Vị trí: Đoạn 7 (và toàn bài).
+
+Trích dẫn: "Climate change poses a further threat. Although well adapted to cold winters and hot summers, saiga struggle to cope with temperature extremes and unpredictable fluctuations in climate."
+
+Phân tích: Bài chỉ nói về tác động của biến đổi khí hậu đến RIÊNG loài saiga, không hề so sánh mức độ đe doạ này với các khu vực khác trên thế giới. → NOT GIVEN`,
+
+      12: `Vị trí: Đoạn 8.
+
+Trích dẫn: "Its purpose is to protect and restore Kazakhstan's steppe, semi-desert and desert ecosystems and the many species they support, including the critically endangered saiga."
+
+Phân tích: Sáng kiến Altyn Dala được lập ra để bảo vệ nhiều loài (many species) trong hệ sinh thái, không chỉ riêng saiga. → TRUE`,
+
+      13: `Vị trí: Đoạn 8.
+
+Trích dẫn: "In 2022 the United Nations recognised the initiative as a World Restoration Flagship project, an accolade reserved for the ten best examples of large-scale ecosystem restoration around the globe."
+
+Phân tích: Bài chỉ nói về việc dự án được LHQ công nhận là "World Restoration Flagship", không hề đề cập việc danh hiệu này có mang lại thêm nguồn tài trợ quốc tế hay không. → NOT GIVEN`,
+    },
+  },
+  {
+    title: 'The problems of getting around the city of Dar es Salaam',
+    category: 'passage2',
+    explanations: {
+      14: `Vị trí: Đoạn 1.
+
+Trích dẫn: "United Nations projections anticipate it will become a megacity within seven years as its population passes 10 million, reaching 13.4 million by 2035."
+
+Phân tích: Bài chỉ đưa ra các dự báo dân số hiện tại, không hề so sánh với các dự báo TRƯỚC ĐÂY để kết luận tốc độ tăng có nhanh hơn dự đoán cũ hay không. → NOT GIVEN`,
+
+      15: `Vị trí: Đoạn 2.
+
+Trích dẫn: "Today, four out of five of its people live in single-storey informal settlements on the spreading edges of the city..."
+
+Phân tích: Đa số cư dân sống trong các khu định cư MỘT TẦNG (single-storey), trái ngược với "high-rise blocks" (nhà cao tầng) trong câu hỏi. → FALSE`,
+
+      16: `Vị trí: Đoạn 3.
+
+Trích dẫn: "A single suburban rail line serves residents in a few areas to the south but is tiny in the context of the wider city."
+
+Phân tích: Bài chỉ mô tả quy mô nhỏ bé của tuyến đường sắt ngoại ô, không hề đề cập việc cư dân có được tham vấn ý kiến về tuyến đường này hay không. → NOT GIVEN`,
+
+      17: `Vị trí: Đoạn 4.
+
+Trích dẫn: "Nearly all the expansion is happening on the periphery, and nearly all takes place informally without any agreed strategy."
+
+Phân tích: Hầu hết sự phát triển hiện tại diễn ra một cách tự phát (informally), không theo quy hoạch (unplanned). → TRUE`,
+
+      18: `Vị trí: Đoạn 5.
+
+Trích dẫn: "Unlike many cities on the continent, Dar es Salaam isn't trying to build a metro. It has chosen a less exciting but cheaper and more achievable method: the bus."
+
+Phân tích: Dar es Salaam chọn hướng đi KHÁC với nhiều thành phố châu Phi khác (không xây tàu điện ngầm mà chọn xe buýt), trái ngược với ý "làm theo kế hoạch mà nhiều thành phố châu Phi đã áp dụng". → FALSE`,
+
+      19: `Vị trí: Đoạn 6.
+
+Trích dẫn: "The DART bus rapid transit (BRT) system runs on bus lanes separated from other traffic, mostly in the middle of the road to reduce stoppages."
+
+Phân tích: Xe buýt chạy trên các làn đường riêng (lanes) để giảm tình trạng dừng/chậm trễ.`,
+
+      20: `Vị trí: Đoạn 6.
+
+Trích dẫn: "Ticket purchase and control takes place at stations prior to boarding..."
+
+Phân tích: Hành khách mua và kiểm soát vé TRƯỚC KHI lên xe (boarding).`,
+
+      21: `Vị trí: Đoạn 6.
+
+Trích dẫn: "...the buses are step-free, which means the entire route is accessible to people using wheelchairs or who are travelling with baby buggies."
+
+Phân tích: Thiết kế không bậc thềm giúp người dùng xe lăn (wheelchairs) tiếp cận toàn bộ tuyến đường.`,
+
+      22: `Vị trí: Đoạn 7.
+
+Trích dẫn: "...complaining that drivers often refuse to turn on the air conditioning to save fuel."
+
+Phân tích: Tài xế thường không bật điều hoà để tiết kiệm nhiên liệu (fuel).`,
+
+      23: `Vị trí: Đoạn 8.
+
+Trích dẫn: "A shortage of buses after a serious flood at the main depot during the rainy season means the system is carrying 200,000 people a day – half the expected capacity."
+
+Phân tích: Trận lũ lụt (flood) nghiêm trọng tại kho xe chính đã gây ra tình trạng thiếu xe buýt.`,
+
+      24: `Vị trí: Đoạn 8.
+
+Trích dẫn: "Smartcards can't be used as the mechanical readers aren't working either, forcing passengers to buy individual paper tickets for every journey."
+
+Phân tích: Do đầu đọc thẻ hỏng, hành khách không thể sử dụng thẻ thông minh (smartcards).`,
+
+      25: `Vị trí: Đoạn 8.
+
+Trích dẫn: "Staff stand by the gates and tear tickets as people enter."
+
+Phân tích: Nhân viên đứng tại các cổng soát vé (gates) và xé vé thủ công thay vì dùng máy quét.`,
+
+      26: `Vị trí: Đoạn 8.
+
+Trích dẫn: "As a result, queues are considerable at peak times."
+
+Phân tích: Hàng dài (queues) hình thành đáng kể vào giờ cao điểm do phải xếp hàng xé vé thủ công.`,
+    },
+  },
+  {
+    title: 'Rethinking the Past',
+    category: 'passage3',
+    explanations: {
+      27: `Vị trí: Đoạn 2.
+
+Trích dẫn: "One is the growing evidence that many supposedly 'advanced' behaviours... can be traced much further back in time than we thought... And the other is that we have badly misunderstood gender roles in prehistoric societies..."
+
+Phân tích: Tác giả nêu rõ hai thay đổi/phát hiện quan trọng trong hiểu biết về thời tiền sử (hành vi "tiên tiến" xuất hiện sớm hơn; vai trò giới bị hiểu sai). → A "pinpointing some key changes in our understanding of prehistory"`,
+
+      28: `Vị trí: Đoạn 6.
+
+Trích dẫn: "Evolution usually works by incremental steps and so does technology. The first birds weren't great at flying, and the first mobile phones weren't great at, well, anything really."
+
+Phân tích: Ví dụ về điện thoại di động đời đầu minh hoạ cho luận điểm rằng sự phát triển thường diễn ra dần dần, từng bước nhỏ. → A "most developments happen in a gradual way."`,
+
+      29: `Vị trí: Đoạn 7.
+
+Trích dẫn: "Archaeology was invented by individuals with now unfashionably patriarchal views about gender, and those notions fed into their research. Today's researchers are trying to unpick this stuff..."
+
+Phân tích: "this stuff" chỉ những nghiên cứu trước đây bị ảnh hưởng bởi quan điểm gia trưởng lỗi thời — "unpick" nghĩa là các nhà nghiên cứu ngày nay đang xem xét/đánh giá lại chúng. → D "reevaluating research influenced by outdated beliefs about society."`,
+
+      30: `Vị trí: Đoạn cuối.
+
+Trích dẫn: "Inequality, authoritarianism and patriarchy aren't inevitable. They're choices, and prehistory shows us that we can choose differently."
+
+Phân tích: Tác giả ngụ ý rằng việc nghiên cứu quá khứ cho thấy bất bình đẳng không phải điều tất yếu — con người ngày nay có thể lựa chọn khác đi, tức là hướng tới một xã hội công bằng hơn. → A "Studying past societies could help us create a fairer society today."`,
+
+      31: `Vị trí: Đoạn 3.
+
+Trích dẫn: "researchers found buried logs that had been shaped with stone tools so that they interlocked... This would be unsurprising if they weren't 476,000 years old. That's almost 200,000 years before our species, Homo sapiens, evolved."
+
+Phân tích: Cấu trúc gỗ được chế tác tinh xảo có niên đại còn trước cả khi loài người hiện đại xuất hiện, cho thấy Homo sapiens không phải loài duy nhất có khả năng chế tác phức tạp. → E "Homo sapiens was probably not the only species capable of sophisticated workmanship."`,
+
+      32: `Vị trí: Đoạn 3.
+
+Trích dẫn: "we now know that extinct hominins such as the Denisovans lived on the frozen heights of high-altitude regions 200,000 years ago – upending the old notion that such environments were only settled by modern humans around 3,600 years ago."
+
+Phân tích: Người Denisovan (loài đã tuyệt chủng) từng sinh sống ở vùng núi cao khắc nghiệt rất lâu trước khi loài người hiện đại xuất hiện ở đó. → F "other species managed to survive in harsh environments before the arrival of Homo sapiens."`,
+
+      33: `Vị trí: Đoạn 8.
+
+Trích dẫn: "a meta-analysis published in June 2023 compiled data on several dozen foraging societies and found women hunted in 80 per cent of them."
+
+Phân tích: Nghiên cứu tháng 6/2023 cho thấy phụ nữ cũng tham gia săn bắt ở phần lớn xã hội hái lượm — trái với giả định trước đây rằng việc kiếm ăn/săn bắt chỉ do nam giới đảm nhiệm. → D "experts may have been mistaken about who looked for food in early human communities."`,
+
+      34: `Vị trí: Đoạn 8.
+
+Trích dẫn: "an Iberian leader from around 4000 years ago turned out to be female, not male as many had assumed, when proteins in her teeth were analysed."
+
+Phân tích: Vị thủ lĩnh này thực chất là nữ chứ không phải nam như nhiều người từng cho là — cho thấy các giả định trước đây về việc ai nắm quyền lực trong xã hội tiền sử là không chính xác. → B "previous assumptions about who had power in the prehistoric world were inaccurate."`,
+
+      35: `Vị trí: Đoạn 4.
+
+Trích dẫn: "We have had evidence for a long time now that Neanderthals painted on cave walls. Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells."
+
+Phân tích: Bài cho biết có thể có loài khác (Homo erectus) làm nghệ thuật còn SỚM HƠN cả Neanderthal, nên tranh vẽ trong hang của Neanderthal khó có thể là tác phẩm nghệ thuật đầu tiên. → NO`,
+
+      36: `Vị trí: Đoạn 4.
+
+Trích dẫn: "Even earlier species, such as Homo erectus, may also have made art, for example by engraving patterns on shells."
+
+Phân tích: Bài chỉ đề cập khả năng khắc hoa văn lên vỏ sò, hoàn toàn không nói về mức độ phổ biến hay hiếm gặp của loại hiện vật này. → NOT GIVEN`,
+
+      37: `Vị trí: Đoạn 4–5.
+
+Trích dẫn: "researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated." / "The dispute has only been heightened by the way the results were released, in a non-traditional journal..."
+
+Phân tích: Bài chỉ nói cách CÔNG BỐ kết quả (qua một tạp chí phi truyền thống) là khác thường, chứ không đề cập PHƯƠNG PHÁP nghiên cứu/khảo sát tại hang Rising Star có gì bất thường hay không. → NOT GIVEN`,
+
+      38: `Vị trí: Đoạn 4.
+
+Trích dẫn: "researchers have found what seem to be etchings – resembling rudimentary artwork – on the cave walls, though these have yet to be firmly dated."
+
+Phân tích: Cụm "have yet to be firmly dated" (chưa được xác định niên đại chắc chắn) cho thấy tuổi của các hình khắc này vẫn chưa rõ ràng. → YES`,
+
+      39: `Vị trí: Đoạn 5.
+
+Trích dẫn: "The dispute has only been heightened by the way the results were released, in a non-traditional journal that publishes peer reviews publicly alongside the paper."
+
+Phân tích: Cách công bố kết quả (qua tạp chí phi truyền thống) đã làm tranh cãi xung quanh phát hiện này thêm gay gắt (heightened). → YES`,
+
+      40: `Vị trí: Đoạn 5.
+
+Trích dẫn: "At the same time, I think the species' small brains are a distraction... other properties, such as the brain's internal wiring, are surely equally important and may explain how a species like H. naledi might have been capable of complex behaviours, despite their small brains."
+
+Phân tích: Tác giả cho rằng kích thước não chỉ là yếu tố GÂY XAO LÃNG (distraction) khỏi vấn đề thật sự, không phải yếu tố then chốt để xác định khả năng làm nghệ thuật — trái với ý câu hỏi. → NO`,
+    },
+  },
 ];
 
 async function runSeed() {
