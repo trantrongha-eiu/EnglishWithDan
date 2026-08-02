@@ -190,6 +190,260 @@ Trích dẫn: "It is now widely consumed, having been adopted in the making of s
 Phân tích: Bài khẳng định HFCS được sử dụng rộng rãi trong nước giải khát và nhiều loại thực phẩm chế biến sẵn. → YES`,
     },
   },
+  // ── Cam 21 - Test 2 ──────────────────────────────────────────────────
+  {
+    title: 'Do animals dream?',
+    category: 'passage1',
+    explanations: {
+      1: `Vị trí: Đoạn 2.
+
+Trích dẫn: "researchers compared the brain patterns of rats running through a maze when awake with their brain patterns during REM sleep. They found the patterns were very similar and concluded that the sleeping rats were dreaming about going through the maze."
+
+Phân tích: Đoạn 2 nói về loài chuột (rats) — bằng chứng "brain patterns giống nhau khi thức và khi ngủ" khớp đúng với dòng "similar brain patterns were observed when active and sleeping" trong bảng.`,
+
+      2: `Vị trí: Đoạn 3.
+
+Trích dẫn: "the recordings revealed both REM and non-REM sleep... REM sleep activity was high in brain regions involved in processing visual information, especially images related to physical activities such as flying"
+
+Phân tích: Vùng não hoạt động mạnh khi chim bồ câu ngủ REM là vùng xử lý thông tin thị giác → "visual".`,
+
+      3: `Vị trí: Đoạn 4.
+
+Trích dẫn: "whales and dolphins, which do not shut down their entire brain when they sleep, but only half of it, keeping the rest awake."
+
+Phân tích: Cá voi và cá heo chỉ để một nửa (half) bộ não nghỉ khi ngủ, nửa còn lại vẫn thức.`,
+
+      4: `Vị trí: Đoạn 4.
+
+Trích dẫn: "It's thought that they don't experience REM sleep because during REM sleep animals are more vulnerable to extremes of temperature."
+
+Phân tích: Trong giấc ngủ REM, động vật dễ bị ảnh hưởng bởi nhiệt độ (temperature) khắc nghiệt hơn, nên cá voi/cá heo được cho là tránh giai đoạn này.`,
+
+      5: `Vị trí: Đoạn 4.
+
+Trích dẫn: "They also show no sign of REM sleep, suggesting that they may only experience non-REM dreams, which are less vivid."
+
+Phân tích: Giấc mơ non-REM của cá voi/cá heo được mô tả là "less vivid" (kém sống động) — khớp với "not very vivid" trong bảng.`,
+
+      6: `Vị trí: Đoạn 5.
+
+Trích dẫn: "It is believed that when events are replayed in dreams, this helps to integrate memories into longer-term storage."
+
+Phân tích: Đúng như câu hỏi paraphrase — việc "phát lại" sự kiện trong giấc mơ giúp hình thành trí nhớ dài hạn. → TRUE`,
+
+      7: `Vị trí: Đoạn 6.
+
+Trích dẫn: "We are quick to interpret the twitching limbs and quiet barks of sleeping dogs, but the truth is that we don't know if there is an internal experience of chasing rabbits that comes along with that."
+
+Phân tích: Bài khẳng định con người KHÔNG THỂ biết chắc trải nghiệm/nội dung giấc mơ của chó, trái ngược với ý "có thể biết được loại giấc mơ" trong câu hỏi. → FALSE`,
+
+      8: `Vị trí: Đoạn 7 (và toàn bài không có đoạn nào khác nhắc lại).
+
+Trích dẫn: "In 2019, while making a documentary, David Scheel of Alaska Pacific University in the USA housed an octopus named Heidi in a tank in his living room."
+
+Phân tích: Bài chỉ kể lại việc Scheel làm phim tài liệu và quan sát Heidi, không hề đề cập việc bộ phim này có ảnh hưởng đến các nghiên cứu khác về giấc ngủ của bạch tuộc hay không. → NOT GIVEN`,
+
+      9: `Vị trí: Đoạn 8.
+
+Trích dẫn: "Costello, as the octopus was called, thrashed around, extended his mantle as if trying to make himself look bigger, and squirted ink as though he were being attacked by a predator."
+
+Phân tích: Hành vi của Costello cho thấy nó phản ứng NHƯ ĐANG BỊ TẤN CÔNG (phòng thủ trước kẻ săn mồi), chứ không phải như đang đi săn mồi. → FALSE`,
+
+      10: `Vị trí: Đoạn 8.
+
+Trích dẫn: "The nightmare study is intriguing, says Scheel, but is only based on one animal. He argues that as well as outward behaviour, brain imaging is needed to show that the octopuses are replaying sequences of activities from their waking lives in dreams."
+
+Phân tích: Scheel cho rằng nghiên cứu hiện tại mới chỉ dựa trên một cá thể và cần thêm bằng chứng (chụp ảnh não) — thể hiện quan điểm cần nghiên cứu sâu hơn. → TRUE`,
+
+      11: `Vị trí: Đoạn 9.
+
+Trích dẫn: "The trouble is that we will never be able to experience any animal's dreams. That goes for other humans' dreams too."
+
+Phân tích: Bài khẳng định con người "sẽ không bao giờ" trải nghiệm được giấc mơ của người khác, trái ngược hoàn toàn với ý "sắp có thể chia sẻ giấc mơ" trong câu hỏi. → FALSE`,
+
+      12: `Vị trí: Đoạn 9.
+
+Trích dẫn: "vision is the dominant sense for many humans, and so our dreams are heavily visual too. Dogs primarily navigate the world using smell while spiders rely much more on vibrations."
+
+Phân tích: Đoạn 9 chỉ nhắc đến thị giác (người), khứu giác (chó) và rung động (nhện) là giác quan chủ đạo, hoàn toàn không đề cập đến thính giác (hearing) ở bất kỳ loài nào. → NOT GIVEN`,
+
+      13: `Vị trí: Toàn bài không đề cập.
+
+Phân tích: Bài không có bất kỳ thông tin nào về việc mối quan tâm/nghiên cứu lý do con người mơ đã tăng lên trong thời gian gần đây. → NOT GIVEN`,
+    },
+  },
+  {
+    title: 'Mapungubwe',
+    category: 'passage2',
+    explanations: {
+      14: `Vị trí: Đoạn E.
+
+Trích dẫn: "The figures may have been used in ceremonies as offerings to ancestors, but their precise function is not known."
+
+Phân tích: Cụm "but their precise function is not known" thể hiện rõ sự KHÔNG CHẮC CHẮN về mục đích sử dụng thật sự của các đồ vật (figures) này. → E`,
+
+      15: `Vị trí: Đoạn G.
+
+Trích dẫn: "The kingdom of Mapungubwe was already in decline by the late 13th century, probably because overpopulation placed too much stress on local resources, a situation that may have been brought to a crisis point by a series of droughts."
+
+Phân tích: Hạn hán (droughts) — một yếu tố khí hậu — được cho là đã làm trầm trọng thêm các vấn đề mà Mapungubwe gặp phải. → G`,
+
+      16: `Vị trí: Đoạn C.
+
+Trích dẫn: "There were some grander residences dotted around the outskirts of Babandyanalo, and these probably belonged to male relatives of the king."
+
+Phân tích: Đoạn C nêu rõ nơi ở (những dinh thự lớn hơn ở ngoại vi Babandyanalo) được cho là của các thành viên nam trong hoàng tộc. → C`,
+
+      17: `Vị trí: Đoạn D.
+
+Trích dẫn: "The presence of glass beads, almost certainly from India, indicate there was trade of some sort with other states on the coast who, in turn, traded with merchants travelling from India by sea."
+
+Phân tích: "merchants travelling... by sea" chính là những thương nhân mang hàng hoá đến bằng đường biển. → D`,
+
+      18: `Vị trí: Đoạn B.
+
+Trích dẫn: "The total population of Mapungubwe at its peak in the mid-13th century was around 5,000 people."
+
+Phân tích: Đây là con số ước tính cụ thể (khoảng 5.000 người) về quy mô mà cộng đồng Mapungubwe đã phát triển tới. → B`,
+
+      19: `Vị trí: Đoạn A.
+
+Trích dẫn: "cattle herding and other types of farming brought plenty of food and a surplus that could be traded for needed goods."
+
+Phân tích: Sản phẩm nông nghiệp dư thừa (surplus từ chăn nuôi/trồng trọt) được đem trao đổi lấy hàng hoá khác. → A`,
+
+      20: `Vị trí: Đoạn F.
+
+Trích dẫn: "These objects were all found at the royal burial site and date to c. 1150."
+
+Phân tích: Các đồ vật bằng vàng được tìm thấy ngay tại khu lăng mộ hoàng gia (royal burial site) → khớp phương án B "Items of gold were placed close to where Mapungubwe kings were buried."`,
+
+      21: `Vị trí: Đoạn F.
+
+Trích dẫn: "A type of decoration, found nowhere else except Great Zimbabwe, involved the crafting of gold into small rectangular sheets and carving geometrical patterns into it."
+
+Phân tích: Kiểu trang trí vàng này của Mapungubwe chỉ xuất hiện thêm ở một vương quốc khác là Great Zimbabwe → khớp phương án D "The way gold was decorated in Mapungubwe was also practised in another kingdom." (A sai vì đoạn F nói vàng chưa từng được dùng như tiền tệ; C, E không được đề cập.)`,
+
+      22: `Vị trí: Đoạn E.
+
+Trích dẫn: "Archaeological discoveries reveal that pottery was produced on a scale large enough to suggest the presence of professional potters, and is another indicator of the prosperity of Mapungubwe society."
+
+Phân tích: Đây chính là từ mô tả điều mà số lượng gốm sứ được sản xuất chuyên nghiệp thể hiện. → "prosperity"`,
+
+      23: `Vị trí: Đoạn E.
+
+Trích dẫn: "There are also ceramic discs, and whistles."
+
+Phân tích: Sau "ceramic discs" (đĩa gốm tròn), vật được liệt kê tiếp theo là "whistles" (còi) — đúng thứ tự trong bài.`,
+
+      24: `Vị trí: Đoạn E.
+
+Trích dẫn: "small figures of highly stylised humans with elongated bodies and short limbs have been found."
+
+Phân tích: "elongated" (kéo dài) trong bài được paraphrase thành "stretched" trong tóm tắt, cùng bổ nghĩa cho "bodies".`,
+
+      25: `Vị trí: Đoạn E.
+
+Trích dẫn: "The figures may have been used in ceremonies as offerings to ancestors"
+
+Phân tích: Các nghi lễ được cho là để dâng lễ vật tôn vinh tổ tiên (ancestors).`,
+
+      26: `Vị trí: Đoạn E.
+
+Trích dẫn: "Other discoveries include small jewellery items made from locally sourced copper."
+
+Phân tích: Đồ trang sức (jewellery) được làm từ đồng — kim loại khai thác tại địa phương.`,
+    },
+  },
+  {
+    title: 'Artificial Intelligence',
+    category: 'passage3',
+    explanations: {
+      27: `Vị trí: Đoạn 1.
+
+Trích dẫn: "hysteria about the future of artificial intelligence (AI) is everywhere... Just looking at the media headlines, you might think that we are already living in a future where AI has infiltrated every aspect of society."
+
+Phân tích: Đoạn 1 mô tả cách công chúng/truyền thông nhìn nhận AI (sự cuồng nhiệt, tin tức giật gân), chứ không phải dự đoán riêng của tác giả. → B "describing a public perception of AI"`,
+
+      28: `Vị trí: Đoạn 2.
+
+Trích dẫn: "this mindset actually jeopardises the value of machine intelligence by disregarding important AI safety principles and setting unrealistic expectations about what AI can really do for humanity."
+
+Phân tích: Tác giả chỉ ra một rủi ro cụ thể của tư duy "AI solutionism". → A "points out a risk involved."`,
+
+      29: `Vị trí: Đoạn 4.
+
+Trích dẫn: "While many politicians proclaim the transformative effects of the coming 'AI revolution', they fail to realise the complexity around deploying advanced machine learning systems in the real world."
+
+Phân tích: Các chính trị gia không nhận thức được sự phức tạp khi triển khai AI trong thực tế. → C "be unaware of the challenges of implementing national AI initiatives."`,
+
+      30: `Vị trí: Đoạn 5.
+
+Trích dẫn: "adding a neural network to a system of government does not mean it will be instantaneously more inclusive or fair."
+
+Phân tích: Bài phủ định niềm tin sai lầm rằng chỉ cần thêm neural network là hệ thống sẽ công bằng/bình đẳng hơn ("fair"/"inclusive") → từ cần điền là "equality".`,
+
+      31: `Vị trí: Đoạn 6.
+
+Trích dẫn: "the public sector typically does not have the appropriate data infrastructure to support advanced machine learning."
+
+Phân tích: "data infrastructure" trong bài được paraphrase thành "framework" trong bài tóm tắt.`,
+
+      32: `Vị trí: Đoạn 6.
+
+Trích dẫn: "data is spread across different government departments that each require special permissions to be accessed."
+
+Phân tích: "special permissions" (sự cho phép đặc biệt) được paraphrase thành "approval".`,
+
+      33: `Vị trí: Đoạn 6.
+
+Trích dẫn: "the public sector typically lacks the human talent with the right technological capabilities to fully reap the benefits of machine intelligence."
+
+Phân tích: "technological capabilities" trong bài được paraphrase thành "skills" trong bài tóm tắt.`,
+
+      34: `Vị trí: Đoạn 11.
+
+Trích dẫn: "Even though it was developed to deliver the best recommendations, human experts found it hard to trust the machine."
+
+Phân tích: Việc chuyên gia khó "trust" (tin tưởng) chương trình AI liên quan trực tiếp đến "reliability" (độ tin cậy) của nó.`,
+
+      35: `Vị trí: Đoạn 12.
+
+Trích dẫn: "The system was found to amplify structural racial discrimination and was later abandoned."
+
+Phân tích: "racial discrimination" (sự phân biệt chủng tộc) trong bài được paraphrase thành "prejudices" (định kiến) trong bài tóm tắt.`,
+
+      36: `Vị trí: Đoạn 7.
+
+Trích dẫn: "Stuart Russell, a professor of computer science at the University of California, Berkeley, has long advocated a more sensible and realistic approach that focuses on simple everyday applications of AI instead of the hypothetical takeover by super-intelligent robots."
+
+Phân tích: Đề xuất của Russell được mô tả là "sensible and realistic" (hợp lý, thực tế) — trái ngược với "impractical" (không thực tế) trong câu hỏi. → NO`,
+
+      37: `Vị trí: Đoạn 7.
+
+Trích dẫn: "Similarly, Rodney Brooks, professor of robotics at Massachusetts Institute of Technology, writes that 'almost all innovations in robotics and AI take far, far, longer to be really widely deployed than people in the field and outside the field imagine'."
+
+Phân tích: Bài chỉ trích dẫn quan điểm của Brooks, không hề đề cập việc quan điểm này có bị ai chỉ trích hay không. → NOT GIVEN`,
+
+      38: `Vị trí: Đoạn 8.
+
+Trích dẫn: "Many researchers have warned against the rolling out of AI without appropriate security standards and defence mechanisms. Still, AI security remains an often overlooked topic when machine learning systems are installed."
+
+Phân tích: Bài nói an ninh AI THƯỜNG BỊ BỎ QUA (often overlooked), trái ngược hoàn toàn với ý "luôn được tính đến" (always taken into account) trong câu hỏi. → NO`,
+
+      39: `Vị trí: Đoạn 9.
+
+Trích dẫn: "If we are to reap the benefits and minimise the potential harms of AI, we must start thinking about how machine learning can be meaningfully applied... This means we need to have a discussion about AI ethics and the distrust that many people have towards machine learning."
+
+Phân tích: Đúng như câu hỏi paraphrase — để hưởng lợi và giảm thiểu tác hại của AI, cần thảo luận/khám phá mối lo ngại (distrust) của công chúng. → YES`,
+
+      40: `Vị trí: Toàn bài, đặc biệt đoạn cuối.
+
+Trích dẫn: "These examples demonstrate that there is no AI solution for everything. Using AI simply for the sake of AI may not always be productive or useful, and not every issue is best addressed by applying machine intelligence to it. All solutions come with a cost and not everything that can be automated should be."
+
+Phân tích: Chủ đề xuyên suốt bài là cảnh báo về giới hạn và rủi ro của AI, chứ không phải AI là giải pháp cho mọi vấn đề. → B "Why AI may not be the answer to our problems"`,
+    },
+  },
 ];
 
 async function runSeed() {
