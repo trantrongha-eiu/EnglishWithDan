@@ -238,7 +238,6 @@
      mode for this page ── -->
 <div class="wp-mini-stats">
   <div class="wp-xp-badge" id="eg-header-progress"><i class="fas fa-graduation-cap"></i> <span id="header-eg-progress">0/37</span></div>
-  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
 </div>
 
 <div class="eg-layout">
@@ -292,12 +291,9 @@ let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{}');
 let quizState = null; // { total, answered, correct, lessonKey } — reset per lesson render
 
 // playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
-// (single source of truth — student UI audit Nhóm 2, 2026-07-25).
-
-function initUser() {
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = isSoundEnabled() ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-}
+// (single source of truth — student UI audit Nhóm 2, 2026-07-25). The
+// on/off toggle button itself now lives in the global nav (js/nav.js),
+// which syncs its own icon — initUser() no longer has anything to do.
 
 function getScore(key) { return scores[key] || null; }
 function isCompleted(key) { const s = scores[key]; return !!(s && s.completed); }
@@ -370,7 +366,6 @@ async function initEssentialGrammar() {
 
     renderSidebarShell();
     if (currentKey) selectLesson(currentKey, true, false);
-    initUser();
     updateHeaderProgressBadge();
 
     // Browser back/forward between lessons — the URL bar has already

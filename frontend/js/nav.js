@@ -113,6 +113,7 @@
     '<a href="dashboard.html" class="nav-brand"><img src="img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
+      '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
       '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
       '<a href="profile.html" id="navUserWidget" title="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
@@ -194,6 +195,11 @@
       drawer.classList.remove('open');
       ham.classList.remove('open');
     }
+  });
+
+  // ── Sound toggle button ────────────────────────────────────
+  document.getElementById('globalSoundBtn').addEventListener('click', function () {
+    if (typeof toggleWpSound === 'function') toggleWpSound();
   });
 
   // ── Dark mode button ──────────────────────────────────────

@@ -292,13 +292,6 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 .hammer-earned-banner{margin:10px 0;padding:12px 14px;background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:12px;text-align:center;font-weight:700;color:#92400e;font-size:14px}
 .hammer-earned-banner .hammer-earned-icon{width:26px;height:26px;vertical-align:middle;margin-right:6px;border-radius:6px}
 [data-theme="dark"] .hammer-earned-banner{background:linear-gradient(135deg,#451a03,#78350f);border-color:#92400e;color:#fde68a}
-.btn-sound-toggle{
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  width:100%;margin-top:6px;padding:8px;
-  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
-  font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);
-}
-
 /* ══════════════════════════════════════════
    MAIN CONTENT
 ══════════════════════════════════════════ */
@@ -901,14 +894,6 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   font-size:11px;font-weight:700;color:var(--text3);
   text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;
 }
-.sheet-sound-btn{
-  width:100%;padding:10px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:var(--radius-sm);font-size:13px;font-weight:600;
-  cursor:pointer;color:var(--text2);
-  display:flex;align-items:center;justify-content:center;gap:6px;
-}
-
 /* ── Show/hide by screen size ── */
 @media(max-width:768px){
   /* Ẩn sidebar desktop */

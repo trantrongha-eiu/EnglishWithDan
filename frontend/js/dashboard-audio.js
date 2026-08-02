@@ -8,22 +8,17 @@
    extraction in this pass does.
 ══════════════════════════════════════════════ */
 
-let soundEnabled = true;
-
-const correctSound = new Audio('./sounds/correct.mp3');
-const wrongSound   = new Audio('./sounds/incorrect.mp3');
+// Sound on/off is now the global nav toggle (js/shared/sound-effects.js,
+// localStorage 'wp_sound') — these two functions keep their names (many
+// call sites across dashboard.js/dashboard-lesson.js) but now read that
+// shared flag instead of an own, unpersisted local variable.
+const correctSound = new Audio('/sounds/correct.mp3');
+const wrongSound   = new Audio('/sounds/incorrect.mp3');
 correctSound.volume = 0.5;
 wrongSound.volume   = 0.5;
 
-function toggleSound() {
-    soundEnabled = !soundEnabled;
-    const text = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
-    document.getElementById('soundToggle').textContent = text;
-    const mob = document.getElementById('soundToggleMob');
-    if (mob) mob.textContent = text;
-}
-function playCorrectSound() { if (soundEnabled) { correctSound.currentTime = 0; correctSound.play().catch(()=>{}); } }
-function playWrongSound()   { if (soundEnabled) { wrongSound.currentTime   = 0; wrongSound.play().catch(()=>{}); } }
+function playCorrectSound() { if (!window.isSoundEnabled || window.isSoundEnabled()) { correctSound.currentTime = 0; correctSound.play().catch(()=>{}); } }
+function playWrongSound()   { if (!window.isSoundEnabled || window.isSoundEnabled()) { wrongSound.currentTime   = 0; wrongSound.play().catch(()=>{}); } }
 
 /* ══════════════════════════════════════════════
    SPEAK WORD — multi-layer fallback

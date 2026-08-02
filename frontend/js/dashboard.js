@@ -24,7 +24,7 @@ let currentWord = null;
 let isFlipped = false;
 let hintUsed = false;
 let answered = false;
-// soundEnabled moved to js/dashboard-audio.js
+// Sound on/off is now the shared js/shared/sound-effects.js toggle
 
 // ── Spaced Repetition & Mixed Mode ─────────────
 let wrongWordSet = new Set();   // word strings that were answered wrong this session
@@ -319,8 +319,9 @@ function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 // place rather than removed, to avoid touching unrelated markup.
 
 function pad(n) { return String(n).padStart(2, '0'); }
-// toggleSound()/playCorrectSound()/playWrongSound() moved to
-// js/dashboard-audio.js alongside speakWord() and the sound-effect state.
+// playCorrectSound()/playWrongSound() live in js/dashboard-audio.js
+// alongside speakWord(); the on/off toggle itself is the shared global nav
+// button (js/shared/sound-effects.js).
 function shuffleArray(a) {
     for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -2862,7 +2863,6 @@ function startDifficultWordsPractice() {
 window.loadMyBooks        = loadMyBooks;
 window.loadUnit           = loadUnit;
 window.showMode           = showMode;
-window.toggleSound        = toggleSound;
 window.toggleDashFullscreen = toggleDashFullscreen;
 window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;

@@ -243,6 +243,7 @@
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/upgrade-modal.js"></script>
+<script src="js/shared/sound-effects.js"></script>
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/api-client.js"></script>
@@ -283,7 +284,6 @@
 <div class="wp-mini-stats">
   <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
   <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up"></i></button>
 </div>
 
 <!-- Desktop stats widget -->
@@ -738,24 +738,9 @@ async function safeJson(res) {
   return window.ApiClient.handleResponse(res);
 }
 
-// ── Audio ────────────────────────────────────────────────
-const _sndCorrect = new Audio('./sounds/correct.mp3');
-const _sndWrong   = new Audio('./sounds/incorrect.mp3');
-_sndCorrect.volume = 0.5;
-_sndWrong.volume   = 0.5;
-let _soundEnabled = localStorage.getItem('wp_sound') !== 'off';
-
-function playOk()    { if (!_soundEnabled) return; _sndCorrect.currentTime = 0; _sndCorrect.play().catch(()=>{}); }
-function playWrong() { if (!_soundEnabled) return; _sndWrong.currentTime   = 0; _sndWrong.play().catch(()=>{}); }
-function toggleWpSound() {
-  _soundEnabled = !_soundEnabled;
-  localStorage.setItem('wp_sound', _soundEnabled ? 'on' : 'off');
-  const btn = document.getElementById('wp-sound-toggle');
-  btn.innerHTML = _soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
-}
+// Sound effects (playOk/playWrong) and the on/off toggle now live in the
+// shared js/shared/sound-effects.js, used via the global nav button.
 document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('wp-sound-toggle');
-  btn.innerHTML = _soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
   // #wp-main is a stable container across every state/mode (welcome, exercise,
   // test, done) — one registration here covers all of them via bubbling.
   // Gated by _t1DictGate so double-click lookup is disabled during an active

@@ -559,7 +559,6 @@
 <div class="wp-mini-stats">
   <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
   <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
 </div>
 
 <!-- ══ LAYOUT: SIDEBAR + MAIN ══ -->
@@ -715,8 +714,6 @@ function updateXPStorage(earned) {
   document.getElementById('header-streak').textContent = stored.streak || 0;
 }
 function initUser() {
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = isSoundEnabled() ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   loadXPFromStorage();
 }
 

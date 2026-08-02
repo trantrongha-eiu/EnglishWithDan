@@ -253,6 +253,7 @@
 <script src="js/auth.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/upgrade-modal.js"></script>
+<script src="js/shared/sound-effects.js"></script>
 <script src="js/shared/utils.js"></script>
 <script src="js/shared/toast.js"></script>
 <script src="js/shared/api-client.js"></script>
@@ -265,7 +266,6 @@
 <div class="wp-mini-stats">
   <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
   <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-  <button onclick="toggleWpSound()" class="wp-logout-btn" id="wp-sound-toggle" title="Bật/tắt âm thanh"><i class="fas fa-volume-up" id="sound-icon"></i></button>
 </div>
 
 <!-- ── Mobile stats bar ── -->
@@ -666,32 +666,9 @@
 // ════════════════════════════════════════════════════════
 const API = 'https://englishwithdan.onrender.com';
 
-// ── Audio ────────────────────────────────────────────────
-const _wpCorrectSound = new Audio('./sounds/correct.mp3');
-const _wpWrongSound   = new Audio('./sounds/incorrect.mp3');
-_wpCorrectSound.volume = 0.5;
-_wpWrongSound.volume   = 0.5;
-let _wpSoundEnabled = localStorage.getItem('wp_sound') !== 'off';
-
-function playCorrectSound() {
-  if (!_wpSoundEnabled) return;
-  _wpCorrectSound.currentTime = 0;
-  _wpCorrectSound.play().catch(() => {});
-}
-function playWrongSound() {
-  if (!_wpSoundEnabled) return;
-  _wpWrongSound.currentTime = 0;
-  _wpWrongSound.play().catch(() => {});
-}
-function toggleWpSound() {
-  _wpSoundEnabled = !_wpSoundEnabled;
-  localStorage.setItem('wp_sound', _wpSoundEnabled ? 'on' : 'off');
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _wpSoundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-}
+// Sound effects (playOk/playWrong) and the on/off toggle now live in the
+// shared js/shared/sound-effects.js, used via the global nav button.
 document.addEventListener('DOMContentLoaded', () => {
-  const icon = document.getElementById('sound-icon');
-  if (icon) icon.className = _wpSoundEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
   // #wp-main is a stable container across every state/mode — one
   // registration here covers all of them via event bubbling.
   // Gated by _wpDictGate so double-click lookup is disabled during an active
@@ -1515,11 +1492,11 @@ function showFeedback(userAnswer, data) {
   } else if (isCorrect) {
     banner.className = 'wp-result-banner wp-result-correct';
     banner.textContent = '✅ Chính xác! Rất tốt!';
-    playCorrectSound();
+    playOk();
   } else {
     banner.className = 'wp-result-banner wp-result-wrong';
     banner.textContent = '❌ Chưa đúng – xem đáp án gợi ý';
-    playWrongSound();
+    playWrong();
   }
   const stEl = document.getElementById('student-answer-display');
   stEl.className = 'wp-cmp-text ' + (isExpand ? '' : isCorrect ? 'wp-answer-good' : 'wp-answer-bad');
