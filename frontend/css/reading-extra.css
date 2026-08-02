@@ -74,6 +74,14 @@
     /* Explanation inline cho fill-blank trong table/note-form */
     .rq-inline-expl {
       display: block;
+      /* .rq-inline-wrap (parent) sets white-space:nowrap to keep its own
+         badge+answer glued together on one line — that's an inherited
+         property, so without resetting it here this block inherits nowrap
+         too and refuses to wrap, ballooning the table column (and the
+         whole table) instead of wrapping the explanation text. */
+      white-space: normal;
+      overflow-wrap: break-word;
+      max-width: 480px;
       margin-top: 6px;
       font-size: 12.5px;
       color: #374151;
