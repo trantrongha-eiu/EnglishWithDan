@@ -1,4 +1,5 @@
 const userService = require('../../../services/userService');
+const User = require('../../../models/User');
 const WritingAttempt = require('../../../models/WritingAttempt');
 const SpeakingAttempt = require('../../../models/SpeakingAttempt');
 const VocabActivity = require('../../../models/VocabActivity');
@@ -23,6 +24,38 @@ describe('userService.getStats — previousStreak', () => {
     // snapshotted the dead 12-day streak before zeroing learningStreak.
     expect(stats.streak).toBe(0);
     expect(stats.previousStreak).toBe(12);
+  });
+});
+
+describe('userService.getStats — resetIfStale race with a concurrent updateStreak()', () => {
+  // Regression for: student studies enough to earn today's streak, but a
+  // near-simultaneous page-load's stale reset-save lands afterward and
+  // stomps it back to 0 ("studied today but streak still reset"). The fix
+  // guards the reset write with the exact lastActivityDate read, so a
+  // concurrent write in between makes the guard a no-op and getStats()
+  // re-fetches instead of trusting its now-stale in-memory reset.
+  afterEach(() => jest.restoreAllMocks());
+
+  test('does not clobber a streak the student just earned in a concurrent request', async () => {
+    const staleDate = daysAgo(3);
+    const user = await createStudent({ extra: { learningStreak: 12, lastActivityDate: staleDate } });
+
+    // Simulate vocabBookService.completePractice()'s updateStreak() write
+    // landing in between getStats()'s read and its guarded reset write.
+    const realUpdateOne = User.updateOne.bind(User);
+    jest.spyOn(User, 'updateOne').mockImplementationOnce(async (...args) => {
+      await User.collection.updateOne(
+        { _id: user._id },
+        { $set: { learningStreak: 1, previousStreak: 12, lastActivityDate: new Date() } }
+      );
+      return realUpdateOne(...args); // now runs against the changed lastActivityDate -> guard fails
+    });
+
+    const stats = await userService.getStats(user._id);
+
+    expect(stats.streak).toBe(1); // the just-studied value, not stomped back to 0
+    const fresh = await User.findById(user._id).lean();
+    expect(fresh.learningStreak).toBe(1);
   });
 });
 

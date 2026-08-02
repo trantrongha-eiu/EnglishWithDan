@@ -97,9 +97,34 @@ async function getStats(userId) {
     User.findById(userId).select('learningStreak previousStreak lastActivityDate totalStudyMinutes streakHammers streakLostAt')
   ]);
 
-  // Reset streak nếu học sinh bỏ lỡ >= 2 ngày, để hiển thị đúng khi mở trang
+  // Reset streak nếu học sinh bỏ lỡ >= 2 ngày, để hiển thị đúng khi mở trang.
+  //
+  // This used to be a plain `user.save()` (fire-and-forget, unawaited), which
+  // raced with a concurrent updateStreak() write (vocabBookService, e.g. the
+  // student opens this page right as a qualifying study session finishes
+  // elsewhere): whichever save landed in Mongo LAST won, and if the stale
+  // reset landed after the study session's write, it silently stomped the
+  // just-earned streak back to 0 — "I studied today but my streak reset"
+  // reports were this. Guard the write with the exact lastActivityDate we
+  // read: it only applies if nothing else has advanced it since (i.e.
+  // nobody studied in between). If the guard fails, re-fetch instead of
+  // trusting our now-stale in-memory reset.
   const wasReset = user.resetIfStale();
-  if (wasReset) user.save().catch(() => {});
+  if (wasReset) {
+    const result = await User.updateOne(
+      { _id: userId, lastActivityDate: user.lastActivityDate },
+      { $set: { learningStreak: user.learningStreak, previousStreak: user.previousStreak, streakLostAt: user.streakLostAt } }
+    );
+    if (result.modifiedCount !== 1) {
+      const fresh = await User.findById(userId).select('learningStreak previousStreak lastActivityDate streakHammers streakLostAt');
+      if (fresh) {
+        user.learningStreak = fresh.learningStreak;
+        user.previousStreak = fresh.previousStreak;
+        user.lastActivityDate = fresh.lastActivityDate;
+        user.streakLostAt = fresh.streakLostAt;
+      }
+    }
+  }
 
   const avgReading = readingAttempts.length
     ? (readingAttempts.reduce((s, a) => s + a.bandScore, 0) / readingAttempts.length).toFixed(1)
