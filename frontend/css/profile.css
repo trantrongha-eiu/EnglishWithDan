@@ -114,6 +114,7 @@ body { background: var(--bg); padding-top: var(--nav-height); }
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white; text-decoration: none; font-size: 12.5px; font-weight: 700;
   transition: var(--transition); letter-spacing: .01em;
+  border: none; cursor: pointer; font-family: inherit;
 }
 .plan-upgrade-link:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(245,87,108,.35); }
 

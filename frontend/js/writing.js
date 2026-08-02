@@ -47,7 +47,7 @@ function _handleQuotaError(e) {
     confirmDialog(
       e.body.code === 'DAILY_LIMIT_REACHED' ? 'Đã hết lượt miễn phí hôm nay' : 'Cần nâng cấp Premium',
       e.body.message || 'Nâng cấp Premium để dùng không giới hạn.',
-      () => { location.href = 'profile.html#plan'; },
+      () => { if (window.openUpgradeModal) openUpgradeModal(); else location.href = 'profile.html#plan'; },
       { confirmLabel: 'Nâng cấp ngay', confirmClass: 'btn-primary' }
     );
     return true;

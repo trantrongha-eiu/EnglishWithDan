@@ -3398,10 +3398,8 @@ document.addEventListener('click', e => {
 });
 
 // Premium upgrade modal (openUpgradeModal, closeUpgradeModal,
-// selectUpgradePlan, submitUpgradeRequest, copyUpgradeAccount, and the
-// UPGRADE_PRICES/_upgradeSettings state behind them) moved to
-// js/reading-upgrade-modal.js — loaded alongside this file, see
-// reading.html. Nothing else in this file touches that state.
+// selectUpgradePlan, submitUpgradeRequest, copyUpgradeAccount) is now the
+// shared, site-wide js/upgrade-modal.js component — see reading.html.
 
 window.goToRdPage = goToRdPage;
 window.goToRdPracticePage = goToRdPracticePage;
