@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
@@ -120,9 +120,14 @@ const DEFAULT_RANGES = { 1: { start: 1, end: 10 }, 2: { start: 11, end: 20 }, 3:
 export default function ListeningSectionEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/listening-sections');
+  // Captured once at mount so it survives the "new" -> real-id URL swap
+  // that autosave does mid-session (that replace navigation doesn't carry
+  // page state forward on its own).
+  const [returnPage] = useState(() => location.state?.page);
+  const goBack = () => navigate('/listening-sections', returnPage ? { state: { page: returnPage } } : undefined);
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -232,7 +237,7 @@ export default function ListeningSectionEdit() {
         toast('Đã lưu section ✓');
       }
       setIsDirty(false);
-      navigate('/listening-sections');
+      goBack();
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }

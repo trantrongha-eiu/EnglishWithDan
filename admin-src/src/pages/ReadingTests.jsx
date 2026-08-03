@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -10,6 +10,7 @@ import { useListFilter } from '../hooks/useListFilter';
 
 export default function ReadingTests() {
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
@@ -18,7 +19,7 @@ export default function ReadingTests() {
   const {
     search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
     page, setPage, paged, filtered, filteredCount, pageSize,
-  } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
+  } = useListFilter(tests, { searchKeys: ['name', 'seriesName'], initialPage: location.state?.page || 1 });
 
   const load = () => apiFetch('/admin/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function ReadingTests() {
           <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
             {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
           </button>
-          <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new')}>+ Thêm bộ đề</button>
+          <button className="btn btn-primary" onClick={() => navigate('/reading-tests/new', { state: { page } })}>+ Thêm bộ đề</button>
         </div>
       </div>
 
@@ -133,7 +134,7 @@ export default function ReadingTests() {
                   <td>
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyLink(t._id)} title="Copy link chia sẻ">🔗</button>
-                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/reading-tests/${t._id}`)} title="Sửa">✏️</button>
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/reading-tests/${t._id}`, { state: { page } })} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
                       {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)} title="Xóa vĩnh viễn">🗑</button>}
                     </div>

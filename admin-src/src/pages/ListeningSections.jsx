@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -184,6 +184,7 @@ function AudioUploadModal({ section, onClose, onUploaded }) {
 
 export default function ListeningSections() {
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
@@ -207,7 +208,7 @@ export default function ListeningSections() {
     || (partFilter === 'actual' ? s.isActualTest : String(s.partNumber) === partFilter));
   const {
     search, setSearch, page, setPage, paged, filtered, filteredCount, pageSize,
-  } = useListFilter(partFiltered, { searchKeys: ['title'] });
+  } = useListFilter(partFiltered, { searchKeys: ['title'], initialPage: location.state?.page || 1 });
 
   async function toggleActive(id, isActive) {
     try {
@@ -270,7 +271,7 @@ export default function ListeningSections() {
             {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
           </button>
           <button className="btn btn-ghost" onClick={() => setShowAssemble(true)}>🎧 Tạo Full Test</button>
-          <button className="btn btn-primary" onClick={() => navigate('/listening-sections/new')}>+ Thêm section</button>
+          <button className="btn btn-primary" onClick={() => navigate('/listening-sections/new', { state: { page } })}>+ Thêm section</button>
         </div>
       </div>
 
@@ -348,7 +349,7 @@ export default function ListeningSections() {
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm btn-icon"
-                          onClick={() => navigate(`/listening-sections/${s._id}`)} title="Sửa">✏️</button>
+                          onClick={() => navigate(`/listening-sections/${s._id}`, { state: { page } })} title="Sửa">✏️</button>
                         <button className="btn btn-ghost btn-sm btn-icon"
                           onClick={() => setAudioSection(s)} title="Upload audio">🎵</button>
                         <button className="btn btn-ghost btn-sm btn-icon"

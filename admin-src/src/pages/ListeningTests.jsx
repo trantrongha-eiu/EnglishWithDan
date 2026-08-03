@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch, formatDate, API } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -79,6 +79,7 @@ function AudioUploadModal({ test, onClose, onUploaded }) {
 
 export default function ListeningTests() {
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const confirm = useConfirm();
   const { isAdmin } = useAuth();
@@ -87,7 +88,7 @@ export default function ListeningTests() {
   const {
     search, setSearch, statusFilter, setStatusFilter, sortBy, setSortBy,
     page, setPage, paged, filtered, filteredCount, pageSize,
-  } = useListFilter(tests, { searchKeys: ['name', 'seriesName'] });
+  } = useListFilter(tests, { searchKeys: ['name', 'seriesName'], initialPage: location.state?.page || 1 });
 
   const load = () => apiFetch('/admin/listening/tests').then(d => setTests(d.tests || [])).catch(e => toast(e.message, 'error'));
   useEffect(() => { load(); }, []);
@@ -154,7 +155,7 @@ export default function ListeningTests() {
           <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
             {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}
           </button>
-          <button className="btn btn-primary" onClick={() => navigate('/listening-tests/new')}>+ Thêm đề</button>
+          <button className="btn btn-primary" onClick={() => navigate('/listening-tests/new', { state: { page } })}>+ Thêm đề</button>
         </div>
       </div>
 
@@ -208,7 +209,7 @@ export default function ListeningTests() {
                   <td>
                     <div className="row-actions">
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => copyLink(t._id)} title="Copy link">🔗</button>
-                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/listening-tests/${t._id}`)} title="Sửa">✏️</button>
+                      <button className="btn btn-ghost btn-sm btn-icon" onClick={() => navigate(`/listening-tests/${t._id}`, { state: { page } })} title="Sửa">✏️</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => setAudioTest(t)} title="Upload audio">🎵</button>
                       <button className="btn btn-ghost btn-sm btn-icon" onClick={() => toggleActive(t._id, t.isActive !== false)} title={t.isActive !== false ? 'Ẩn' : 'Hiện'}>{t.isActive !== false ? '🙈' : '👁'}</button>
                       {isAdmin && <button className="btn btn-danger btn-sm btn-icon" onClick={() => del(t._id, t.name)}>🗑</button>}

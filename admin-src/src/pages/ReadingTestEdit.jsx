@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 
 export default function ReadingTestEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/reading-tests');
+  // Captured once at mount so it survives any later same-route navigation
+  // (e.g. the "new" -> real-id URL swap on autosave) that doesn't itself
+  // carry the page number forward.
+  const [returnPage] = useState(() => location.state?.page);
+  const goBack = () => navigate('/reading-tests', returnPage ? { state: { page: returnPage } } : undefined);
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);

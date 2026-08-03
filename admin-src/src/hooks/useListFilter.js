@@ -14,11 +14,12 @@ export function useListFilter(items, {
   dateKey = 'createdAt',
   statusKey = 'isActive',
   pageSize = DEFAULT_PAGE_SIZE,
+  initialPage = 1,
 } = {}) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [sortBy, setSortBy] = useState('date-desc');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
 
   const filtered = items.filter(item => {
     if (search) {

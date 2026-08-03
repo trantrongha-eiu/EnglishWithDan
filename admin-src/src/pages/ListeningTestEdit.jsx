@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { API, apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import QuestionGroupBuilder from '../components/QuestionGroupBuilder';
@@ -146,9 +146,14 @@ function buildSections(sections) {
 export default function ListeningTestEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const toast = useToast();
   const isNew = id === 'new';
-  const goBack = () => navigate('/listening-tests');
+  // Captured once at mount so it survives the "new" -> real-id URL swap
+  // that autosave does mid-session (that replace navigation doesn't carry
+  // page state forward on its own).
+  const [returnPage] = useState(() => location.state?.page);
+  const goBack = () => navigate('/listening-tests', returnPage ? { state: { page: returnPage } } : undefined);
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -197,7 +202,7 @@ export default function ListeningTestEdit() {
         toast('Đã lưu đề Listening');
       }
       setIsDirty(false);
-      navigate('/listening-tests');
+      goBack();
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
   }
