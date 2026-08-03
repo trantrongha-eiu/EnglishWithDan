@@ -2422,15 +2422,37 @@ function enterExamMode() {
   showToast('⏱ Bắt đầu thi thử! Không có gợi ý – một lượt duy nhất, nộp bài khi xong.', 'info', 3000);
 }
 
+// Exiting mid-exam (the "Thoát" button) used to just silently cancel — no
+// result shown, nothing saved, so a partial attempt vanished without a
+// trace and admin had no record of it. Now it grades whatever was actually
+// attempted and reports it exactly like finishing/submitting normally does,
+// unless literally nothing was answered yet (nothing to report).
 function exitExamMode() {
   clearInterval(_examTimerInterval);
   _examTimerInterval = null;
+
+  const mode = _examScopeMode;
+  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
+  const { correct, total } = mode === 'cloze'
+    ? _scoreClozeSoFar()
+    : { correct: _examSessionCorrect, total: _examSessionTotal };
+
   _examMode      = false;
   _examScopeMode = null;
   _examStartTime = null;
   window.onbeforeunload = null;
-  renderTplContent();
   updateExamBtn();
+
+  if (total === 0) {
+    renderTplContent();
+    return;
+  }
+
+  saveExamAttemptToServer(mode, correct, total, timeTaken);
+  const area = document.getElementById('tpl-content-area');
+  if (area) area.innerHTML = _renderExamResultCard(correct, total, timeTaken);
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = '0%';
 }
 
 function updateExamBtn() {
@@ -2475,6 +2497,33 @@ function renderExamBarHtml(label) {
 // saves the result (isExam:true, so it's distinguishable in admin/history
 // from ordinary practice), and shows a summary card in place of the mode's
 // normal content.
+// Score-tier mascot image — same breakpoints/assets as task1-practice.html,
+// task2-practice.html and writing-practice.html's exam-result cards, so the
+// "thi thử" mode here matches the rest of the Writing family instead of
+// showing text-only results.
+function _examTierImageSrc(pct) {
+  return pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
+       : pct >= 50 ? 'img/writingbelow60%25.jpg'
+       : pct >= 45 ? 'img/writingbelow50%25.jpg'
+       : 'img/writingbelow45%25.jpg';
+}
+
+function _renderExamResultCard(correct, total, timeTaken) {
+  const pct  = total ? Math.round(correct / total * 100) : 0;
+  const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
+  return `
+    <div class="t2-mode-enter">
+      <div class="t2-soon-card t2-chunk-done-card">
+        <img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
+        <div class="t2-soon-icon">📋</div>
+        <div class="t2-soon-title">${pct}% · ${correct}/${total}</div>
+        <div class="t2-soon-sub">${rank}<br>⏱ Thời gian: ${fmtTime(timeTaken)}</div>
+        <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="enterExamMode()"><i class="fas fa-redo"></i> Thi lại</button>
+        <button class="t2-tpl-reset-btn" style="margin:8px auto 0;display:block" onclick="renderTplContent()"><i class="fas fa-times"></i> Về luyện tập bình thường</button>
+      </div>
+    </div>`;
+}
+
 function finishExam() {
   clearInterval(_examTimerInterval);
   _examTimerInterval = null;
@@ -2487,26 +2536,43 @@ function finishExam() {
   window.onbeforeunload = null;
   updateExamBtn();
 
-  const pct  = total ? Math.round(correct / total * 100) : 0;
-  const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
+  const pct = total ? Math.round(correct / total * 100) : 0;
   showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
     pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
   if (pct >= 80) updateXPStorage(20);
   saveExamAttemptToServer(mode, correct, total, timeTaken);
 
   const area = document.getElementById('tpl-content-area');
-  if (area) area.innerHTML = `
-    <div class="t2-mode-enter">
-      <div class="t2-soon-card t2-chunk-done-card">
-        <div class="t2-soon-icon">📋</div>
-        <div class="t2-soon-title">${pct}% · ${correct}/${total}</div>
-        <div class="t2-soon-sub">${rank}<br>⏱ Thời gian: ${fmtTime(timeTaken)}</div>
-        <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="enterExamMode()"><i class="fas fa-redo"></i> Thi lại</button>
-        <button class="t2-tpl-reset-btn" style="margin:8px auto 0;display:block" onclick="renderTplContent()"><i class="fas fa-times"></i> Về luyện tập bình thường</button>
-      </div>
-    </div>`;
+  if (area) area.innerHTML = _renderExamResultCard(correct, total, timeTaken);
   const fill = document.getElementById('tpl-progress-fill');
   if (fill) fill.style.width = '0%';
+}
+
+// Scores whatever Cloze blanks have actually been typed into so far — used
+// when the student exits mid-exam rather than clicking Nộp bài. Only counts
+// items with at least one non-empty blank as "attempted"; blanks the student
+// never reached don't count against them (unlike submitExam(), which grades
+// every item because the whole exam was actually completed there).
+function _scoreClozeSoFar() {
+  const type = TPL_DATA[_tplActiveType];
+  if (!type) return { correct: 0, total: 0 };
+  let correct = 0, total = 0;
+  type.sections.forEach((sec, si) => {
+    sec.items.forEach((item, ii) => {
+      const key = `${_tplActiveType}-${si}-${ii}`;
+      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+      let attempted = false, allOk = true;
+      answers.forEach((ans, bi) => {
+        const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
+        const inp = document.getElementById(inpId);
+        const uv  = inp ? inp.value.trim() : '';
+        if (uv) attempted = true;
+        if (uv.toLowerCase() !== ans.toLowerCase()) allOk = false;
+      });
+      if (attempted) { total++; if (allOk) correct++; }
+    });
+  });
+  return { correct, total };
 }
 
 async function saveExamAttemptToServer(mode, correct, total, timeTakenSec) {
