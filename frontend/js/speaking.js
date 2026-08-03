@@ -1538,6 +1538,11 @@ function loadSeqQuestion() {
   const recIndicator = document.getElementById('seq-rec-indicator');
   const recStatus     = document.getElementById('seq-rec-status');
 
+  // Dict lookup was never wired up on this screen at all — off during a
+  // full mock test (where it'd be an unfair aid), on during ordinary
+  // part-by-part sequential practice (seqIsFullMock stays false there).
+  setupDictionaryDouble('seq-question-card', 'speaking-sequential', () => !state.seqIsFullMock);
+
   if (partBadge)  partBadge.textContent  = `Part ${q.part}`;
   if (topicBadge) topicBadge.textContent = q.topic || '';
   if (qText) { qText.textContent = q.question; qText.style.display = 'none'; }

@@ -1123,7 +1123,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   _primeDictVoice(); // load available voices ahead of Dictation mode's first Play
   // #tpl-content-area is a stable container that render() only ever
   // innerHTML's into — one registration here covers every cloze type/card.
-  setupDictionaryDouble('tpl-content-area', 'task2-template');
+  // Gate: off during an active "thi thử" run (_examMode), on otherwise —
+  // ordinary practice, or once exitExamMode()/finishExam()/submitExam()
+  // has already flipped _examMode back to false to show the result card.
+  setupDictionaryDouble('tpl-content-area', 'task2-template', () => !_examMode);
   // Restore type from URL param
   const _urlParams = new URLSearchParams(location.search);
   const _urlType   = _urlParams.get('type');

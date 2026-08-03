@@ -502,7 +502,13 @@ function renderLessonContent(lesson) {
     + '</div>';
 
   document.getElementById('eg-main-content').innerHTML = html;
-  if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('eg-main-content', 'essential-grammar');
+  // Gate: off while the mini-quiz on this lesson still has unanswered
+  // questions (each answer reveals correct/wrong + explanation immediately,
+  // so looking up the question text first would be a hint); on otherwise.
+  if (typeof setupDictionaryDouble === 'function') {
+    setupDictionaryDouble('eg-main-content', 'essential-grammar',
+      () => !quizState || quizState.answered >= quizState.total);
+  }
 }
 
 function navFooterBtn(lesson, dir) {

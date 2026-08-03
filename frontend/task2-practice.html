@@ -561,7 +561,11 @@ document.addEventListener('DOMContentLoaded', () => {
   loadWeeks();
   // #app is a stable container that render() only ever innerHTML's into —
   // one registration here covers every view (weeks/topics/practice/exam/...).
-  setupDictionaryDouble('app', 'task2-practice');
+  // Gate: dict lookup must be off during an active "thi thử" run — only
+  // active for ordinary practice, or once exam results are being shown
+  // (state.view === 'examDone').
+  setupDictionaryDouble('app', 'task2-practice',
+    () => state.currentMode !== 'exam' || state.view === 'examDone');
 });
 
 function initUser() {

@@ -31,6 +31,12 @@ let wrongWordSet = new Set();   // word strings that were answered wrong this se
 let requeuedWords = new Set();  // prevent infinite requeue
 let mixedQueue = [];            // [{word, type}] for mixed mode
 let mixedIndex = 0;
+// Gates dictionary double-click/highlight lookup off during any scored vocab
+// quiz (multipleChoice/fillBlank/listening/translation/mixed — all started
+// via startPractice()), on during non-quiz browsing (word list/study mode/
+// flashcard review) and once showResults() ends the session (both on normal
+// completion and via stopPractice()'s early exit).
+let _vocabQuizActive = false;
 let _retryWordList = null;      // set by retryWrongWords, consumed by startPractice
 
 // ── Session streak tracking ────────────────────
@@ -1877,6 +1883,7 @@ async function _reportSessionStreak() {
 }
 
 function startPractice(mode) {
+    _vocabQuizActive = true;
     wrongWordSet.clear();
     requeuedWords.clear();
     _persistedThisSession = false;
@@ -2133,7 +2140,7 @@ function showMixedQuestion() {
           </div>`;
         setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
     }
-    setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz');
+    setupDictionaryDouble('mixQuestionWrap', 'vocab-quiz', () => !_vocabQuizActive);
 }
 
 function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showMixedQuestion(); }
@@ -2222,7 +2229,7 @@ function showMultipleChoiceQuestion() {
         `<button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`
     ).join('');
     document.getElementById('mcBtnNext').style.display = 'none';
-    setupDictionaryDouble('multipleChoiceMode', 'vocab-quiz');
+    setupDictionaryDouble('multipleChoiceMode', 'vocab-quiz', () => !_vocabQuizActive);
 }
 function generateOptions(cw) {
     const opts  = [cw.meaning];
@@ -2281,7 +2288,7 @@ function showFillBlankQuestion() {
     document.getElementById('fbBtnNext').style.display   = 'none';
     document.getElementById('quick-btns').style.display  = 'none';
     document.getElementById('fbInputArea').style.display = 'none';
-    setupDictionaryDouble('flashcard', 'vocab-flashcard');
+    setupDictionaryDouble('flashcard', 'vocab-flashcard', () => !_vocabQuizActive);
 
     // FIX: re-enable buttons bị disable từ lần trước
     document.querySelectorAll('.btn-remembered,.btn-not-remembered').forEach(b => b.disabled = false);
@@ -2390,7 +2397,7 @@ function showListeningQuestion() {
     document.getElementById('listenBtnNext').style.display = 'none';
     // FIX: bỏ auto-play speakWord() — người dùng tự bấm nút "Phát Âm Thanh"
     // Thiết bị Android không Google TTS sẽ crash/im lặng nếu auto-play
-    setupDictionaryDouble('listeningMode', 'vocab-quiz');
+    setupDictionaryDouble('listeningMode', 'vocab-quiz', () => !_vocabQuizActive);
 }
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
@@ -2425,7 +2432,7 @@ function showTranslationQuestion() {
     document.getElementById('transExample').innerHTML =
         exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
             `<strong class="highlight-word">${wordEsc}</strong>`);
-    setupDictionaryDouble('transExample', 'vocab-quiz');
+    setupDictionaryDouble('transExample', 'vocab-quiz', () => !_vocabQuizActive);
     document.getElementById('transWordHighlight').innerHTML = `Translate: <strong>${wordEsc}</strong> <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Pronounce" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
@@ -2465,6 +2472,7 @@ function checkTranslation() {
 
 /* ── Results ── */
 function showResults(mode) {
+    _vocabQuizActive = false;
     _clearAutoNext();
     ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
         .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });

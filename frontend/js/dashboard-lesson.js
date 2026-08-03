@@ -538,7 +538,7 @@ function renderQuizQuestion() {
         `);
         renderRearrangeTiles();
     }
-    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-tab-quiz', 'vocab-lesson-quiz');
+    if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-tab-quiz', 'vocab-lesson-quiz', () => !isQuizInProgress());
 }
 
 /* ── Question generators ── */
