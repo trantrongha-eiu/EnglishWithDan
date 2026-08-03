@@ -587,7 +587,7 @@ export default function Task2Templates() {
                       <span style={{ color: tpl.isActive ? 'var(--green)' : 'var(--danger)', fontWeight: 700 }}>{tpl.isActive ? '✓' : '✗'}</span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: 5, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                      <div className="row-actions" style={{ justifyContent: 'flex-end' }}>
                         <button className="btn btn-ghost btn-sm btn-icon" title="Quản lý sections & items"
                           onClick={() => expandTpl(tpl)}
                           style={{ background: activeId === tpl._id ? '#6366f1' : undefined, color: activeId === tpl._id ? '#fff' : undefined, borderColor: activeId === tpl._id ? '#6366f1' : undefined }}>

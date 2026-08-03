@@ -346,6 +346,16 @@
       flex-wrap: wrap;
     }
 
+    /* Several pages (ListeningSections, ListeningTests, Passages, ReadingTests,
+       Vocabulary, VocabularyLessons, WritingTests) render their action-button
+       group as a plain inline-styled `<div style={{display:'flex',gap:8}}>`
+       with no wrap, which pushed the whole page into horizontal scroll on
+       narrow screens once 3 buttons no longer fit on one line. Harmless at
+       desktop widths since flex-wrap only engages when needed. */
+    .section-header > div {
+      flex-wrap: wrap;
+    }
+
     .section-title {
       font-size: 16px;
       font-weight: 700;

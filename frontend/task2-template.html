@@ -265,10 +265,19 @@
 
     /* ── Mobile: sidebar → horizontal scroll ── */
     @media(max-width:768px){
-      .tpl-layout{flex-direction:column}
+      /* align-items:stretch (overriding the desktop flex-start) so .tpl-main
+         is forced to viewport width instead of shrink-to-fit sizing to its
+         widest non-wrapping child (e.g. .t2-mode-tabs), which pushed the
+         whole page into horizontal scroll. */
+      .tpl-layout{flex-direction:column;align-items:stretch}
       .tpl-sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:2px solid #e5e7eb}
       .tpl-sidebar-top,.tpl-sidebar-footer{display:none}
       .tpl-type-nav{display:flex;flex-direction:row;overflow-x:auto;padding:0;scrollbar-width:none;
+        /* min-width:0 is required here: as a column-flex child of .tpl-sidebar,
+           this element's default min-width:auto lets its flex-shrink:0 tab
+           buttons force it (and the whole page) wider than the viewport
+           instead of actually scrolling within overflow-x:auto. */
+        min-width:0;
         /* Right-edge fade — visual hint that there's more to scroll (Type 05-07
            were otherwise clipped with no affordance on narrow screens). */
         -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent 100%);

@@ -488,7 +488,7 @@ export default function Users() {
                   <td style={{ fontSize: 12 }}>{formatDate(u.createdAt)}</td>
                   <td style={{ fontSize: 12, color: ls.color, whiteSpace: 'nowrap' }}>{ls.text}</td>
                   <td>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <div className="row-actions">
                       {u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/students/${u._id}`)} title="Xem lịch sử làm bài + hoạt động từ vựng">👁 Chi tiết</button>}
                       {isAdmin && <button className="btn btn-ghost btn-sm" onClick={() => setEditId(u._id)}>✏️ Sửa</button>}
                       {isAdmin && u.role === 'student' && <button className="btn btn-ghost btn-sm" onClick={() => setPlanUser(u)} title="Quản lý gói">⭐ Gói</button>}
