@@ -872,6 +872,9 @@ const unit10 = [
   ['personal information', 'thông tin cá nhân', 'Never share your personal information with strangers online.', 'private details about a person, such as their address or phone number'],
 ];
 
+// Fixed pairing (1-2, 3-4, 5-6, 7-8, 9-10) per the "cứ 2 units là thành 1
+// bài học" convention — replaces the earlier ad-hoc grouping (which had
+// paired 4-5/6-7/8-9 and left 3 and 10 standalone).
 const lessons = [
   {
     title: 'Mindset 0 Unit 1-2',
@@ -881,44 +884,32 @@ const lessons = [
     words: dedupeWords([...unit1, ...unit2]),
   },
   {
-    // Standalone, same reasoning as Unit 10 above — Unit 3 doesn't have a
-    // natural pair yet since Unit 4 is already grouped with Unit 5.
-    title: 'Mindset 0 Unit 3',
-    description: 'Hobbies, Leisure and Entertainment — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
-    difficulty: 'A2',
+    title: 'Mindset 0 Unit 3-4',
+    description: 'Hobbies, Leisure and Entertainment · Travel and Holidays — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
+    difficulty: 'B1',
     order: 11,
-    words: dedupeWords(unit3),
+    words: dedupeWords([...unit3, ...unit4]),
   },
   {
-    title: 'Mindset 0 Unit 4-5',
-    description: 'Travel and Holidays · Food and Eating Habits — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
+    title: 'Mindset 0 Unit 5-6',
+    description: 'Food and Eating Habits · Transport and Places in Town — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
     difficulty: 'B1',
-    order: 6,
-    words: dedupeWords([...unit4, ...unit5]),
+    order: 12,
+    words: dedupeWords([...unit5, ...unit6]),
   },
   {
-    title: 'Mindset 0 Unit 6-7',
-    description: 'Transport and Places in Town · Health and Fitness — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
+    title: 'Mindset 0 Unit 7-8',
+    description: 'Health and Fitness · Education and Learning — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
     difficulty: 'B1',
-    order: 7,
-    words: dedupeWords([...unit6, ...unit7]),
+    order: 13,
+    words: dedupeWords([...unit7, ...unit8]),
   },
   {
-    title: 'Mindset 0 Unit 8-9',
-    description: 'Education and Learning · Career and Jobs — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
+    title: 'Mindset 0 Unit 9-10',
+    description: 'Career and Jobs · Technology — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
     difficulty: 'B1',
-    order: 8,
-    words: dedupeWords([...unit8, ...unit9]),
-  },
-  {
-    // Standalone — Unit 11 (to pair with per the 2-units-per-lesson
-    // convention) hasn't been compiled yet; add it here and rename to
-    // "Mindset 0 Unit 10-11" once it is.
-    title: 'Mindset 0 Unit 10',
-    description: 'Technology — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing',
-    difficulty: 'B1',
-    order: 9,
-    words: dedupeWords(unit10),
+    order: 14,
+    words: dedupeWords([...unit9, ...unit10]),
   },
 ];
 
