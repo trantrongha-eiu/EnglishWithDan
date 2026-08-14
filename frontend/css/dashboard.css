@@ -157,6 +157,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .todays-lesson-meta{font-size:12px;color:var(--text2);margin-bottom:8px}
 .todays-lesson-progress-row{display:flex;align-items:center;gap:10px}
 .todays-lesson-progress-text{font-size:12px;font-weight:700;color:var(--text2);flex-shrink:0}
+/* Icon + Start button eat most of a narrow screen's width, leaving the
+   info column only ~155-160px — barely enough for "TODAY'S LESSON" +
+   "Đổi bài" side by side, so both wrapped onto two lines each. Shrink the
+   fixed-width chrome and tighten the switch button to free up room. */
+@media(max-width:640px){
+  .todays-lesson-card{gap:12px;padding:14px 16px}
+  .todays-lesson-icon{font-size:24px}
+  .todays-lesson-card>.btn{padding:8px 14px;font-size:13px;white-space:nowrap}
+  .todays-lesson-label-row{gap:6px}
+  .todays-lesson-switch-btn{font-size:10px;gap:3px}
+}
 
 /* Rearrange quiz type — click letters/words in order to rebuild the answer */
 .rearrange-slots{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:10px;border:1.5px dashed var(--border2);border-radius:var(--radius-sm);margin-bottom:14px}
