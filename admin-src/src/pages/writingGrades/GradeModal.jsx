@@ -273,7 +273,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
               )}
 
               {!hasAiResult && !hasManualResult && !isConfirmed && (hasTask1 || hasTask2) && (
-                <div style={{ border: '1px dashed var(--border)', borderRadius: 10, padding: '16px 20px', marginTop: 4, opacity: 0.6 }}>
+                <div style={{ border: '1px dashed var(--border)', borderRadius: 10, padding: '16px 20px', marginTop: 4, background: 'var(--surface2)' }}>
                   <div style={{ fontSize: 13, color: 'var(--text3)', textAlign: 'center' }}>
                     Chấm AI hoặc nhập thủ công ít nhất một task để xác nhận điểm
                   </div>
