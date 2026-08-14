@@ -146,7 +146,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 [data-theme="dark"] .todays-lesson-card{background:linear-gradient(135deg,#1a2233 0%,#241a33 100%)}
 .todays-lesson-icon{font-size:32px;color:var(--blue);flex-shrink:0}
 .todays-lesson-info{flex:1;min-width:0}
+.todays-lesson-label-row{display:flex;align-items:center;gap:10px;position:relative}
 .todays-lesson-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+.todays-lesson-switch-btn{
+  background:none;border:none;color:var(--blue);font-size:11px;font-weight:700;
+  cursor:pointer;padding:0;font-family:inherit;display:inline-flex;align-items:center;gap:4px;
+}
+.todays-lesson-switch-btn:hover{text-decoration:underline}
 .todays-lesson-title{font-size:16px;font-weight:800;color:var(--text);margin:2px 0}
 .todays-lesson-meta{font-size:12px;color:var(--text2);margin-bottom:8px}
 .todays-lesson-progress-row{display:flex;align-items:center;gap:10px}

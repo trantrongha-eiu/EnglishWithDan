@@ -53,7 +53,63 @@ async function loadClassroomAndTodaysLesson() {
     }
     renderClassroomSidebar();
     syncSheetClassroom();
+    setupTodaysLessonPicker();
     await renderTodaysLessonCard();
+}
+
+// Shared by buildClassroomPicker() and the Today's Lesson "Đổi bài" picker —
+// same grouped-by-targetClass markup so a student sees one consistent list
+// no matter which of the two pickers they open.
+function _lessonPickerGroupedHtml(lessons) {
+    if (!lessons.length) return '<div class="up-empty">Chưa có bài học nào</div>';
+    const groups = new Map();
+    lessons.forEach(l => {
+        const key = l.targetClass || '';
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(l);
+    });
+    const keys = [...groups.keys()].sort((a, b) => {
+        if (a === '') return 1;
+        if (b === '') return -1;
+        return a.localeCompare(b, 'vi', { numeric: true });
+    });
+    return keys.map(key => `
+        <div class="up-group-label">${key ? `Lớp ${escHtml(key)}` : 'Chung (mọi lớp)'}</div>
+        ${groups.get(key).map(l => `
+            <div class="up-item" data-id="${l._id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(l.title)}</span>
+                <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
+            </div>
+        `).join('')}
+    `).join('');
+}
+
+// "Đổi bài" picker on the Today's Lesson card — lets a student swap which
+// lesson that card (and its Start/Continue/Review button) points to,
+// instead of always defaulting to the most-recently-assigned one.
+function setupTodaysLessonPicker() {
+    const btn = document.getElementById('todays-lesson-switch-btn');
+    const dd  = document.getElementById('todays-lesson-picker-dd');
+    if (!btn || !dd || btn._wired) return;
+    btn._wired = true;
+    let isOpen = false;
+    function open() {
+        dd.innerHTML = _lessonPickerGroupedHtml(lessonState.publicLessons);
+        dd.style.display = 'block';
+        isOpen = true;
+    }
+    function close() { dd.style.display = 'none'; isOpen = false; }
+    btn.addEventListener('click', e => { e.stopPropagation(); isOpen ? close() : open(); });
+    dd.addEventListener('mousedown', e => {
+        const item = e.target.closest('.up-item');
+        if (!item) return;
+        e.preventDefault();
+        close();
+        renderTodaysLessonCard(item.dataset.id);
+    });
+    document.addEventListener('mousedown', e => {
+        if (isOpen && !dd.contains(e.target) && e.target !== btn) close();
+    });
 }
 
 // Home screen's "Top 10 Quiz điểm cao" card — mirrors loadStreakLeaderboard()
@@ -140,27 +196,7 @@ function buildClassroomPicker(container, opts) {
     // every lesson (own class + other classes + unscoped) was one flat list
     // with only a difficulty badge, no class indicator at all.
     function render() {
-        if (!lessons.length) { dd.innerHTML = '<div class="up-empty">Chưa có bài học nào</div>'; return; }
-        const groups = new Map();
-        lessons.forEach(l => {
-            const key = l.targetClass || '';
-            if (!groups.has(key)) groups.set(key, []);
-            groups.get(key).push(l);
-        });
-        const keys = [...groups.keys()].sort((a, b) => {
-            if (a === '') return 1;
-            if (b === '') return -1;
-            return a.localeCompare(b, 'vi', { numeric: true });
-        });
-        dd.innerHTML = keys.map(key => `
-            <div class="up-group-label">${key ? `Lớp ${escHtml(key)}` : 'Chung (mọi lớp)'}</div>
-            ${groups.get(key).map(l => `
-                <div class="up-item" data-id="${l._id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                    <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(l.title)}</span>
-                    <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
-                </div>
-            `).join('')}
-        `).join('');
+        dd.innerHTML = _lessonPickerGroupedHtml(lessons);
     }
     function open() { render(); dd.style.display = 'block'; isOpen = true; }
     function close() { dd.style.display = 'none'; isOpen = false; }
@@ -178,7 +214,10 @@ function buildClassroomPicker(container, opts) {
     });
 }
 
-async function renderTodaysLessonCard() {
+// lessonIdOverride: when a student picks a different lesson via the
+// "Đổi bài" dropdown, this card shows/starts THAT lesson instead of the
+// default "most recently assigned" one.
+async function renderTodaysLessonCard(lessonIdOverride) {
     const card = document.getElementById('todays-lesson-card');
     if (!card) return;
     const lessons = lessonState.publicLessons;
@@ -186,7 +225,8 @@ async function renderTodaysLessonCard() {
 
     // Lessons are sorted ascending by `order` (teacher's session sequence) —
     // the last one is the most recently assigned, i.e. "today's".
-    const today = lessons[lessons.length - 1];
+    const today = (lessonIdOverride && lessons.find(l => l._id === lessonIdOverride))
+        || lessons[lessons.length - 1];
     card.style.display = 'flex';
     document.getElementById('todays-lesson-title').textContent = today.title;
     document.getElementById('todays-lesson-meta').textContent  = `${today.difficulty} · ${today.wordCount} từ`;
