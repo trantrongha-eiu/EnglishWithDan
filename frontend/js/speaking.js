@@ -387,6 +387,7 @@ function renderQuestionItems(questions, emptyMessage) {
     item.innerHTML = `
       <div class="q-item-meta">
         <span class="q-item-badge ${badgeClass}">Part ${q.part}</span>
+        ${q.attempted ? '<span class="q-item-attempted-badge" title="Bạn đã luyện câu này rồi — bấm để làm lại"><i class="fas fa-check-circle"></i> Đã luyện · Làm lại</span>' : ''}
       </div>
       <div class="q-item-text">${escHtml(q.question)}</div>`;
     item.onclick = () => selectQuestion(q, item);

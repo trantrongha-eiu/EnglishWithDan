@@ -28,11 +28,24 @@ async function getRandomQuestion({ topic, part }) {
   return SpeakingQuestion.findOne(filter).skip(skip).lean();
 }
 
-async function listQuestions({ topic, part }) {
+// userId is optional (some callers may not have an authenticated user), in
+// which case every question is simply reported as not-yet-attempted.
+async function listQuestions({ topic, part, userId }) {
   const filter = { isActive: true };
   if (topic && topic !== 'all') filter.topic = topic;
   if (part && part !== 'all') filter.part = Number(part);
-  return SpeakingQuestion.find(filter).sort({ part: 1, topic: 1 }).lean();
+  const questions = await SpeakingQuestion.find(filter).sort({ part: 1, topic: 1 }).lean();
+
+  let attemptedIds = new Set();
+  if (userId && questions.length) {
+    const ids = await SpeakingAttempt.distinct('questionId', {
+      userId,
+      questionId: { $in: questions.map(q => q._id) },
+    });
+    attemptedIds = new Set(ids.filter(Boolean).map(id => id.toString()));
+  }
+  for (const q of questions) q.attempted = attemptedIds.has(q._id.toString());
+  return questions;
 }
 
 // Lets AI errors (including .isOverloaded) propagate — the controller

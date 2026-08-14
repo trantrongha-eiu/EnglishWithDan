@@ -43,6 +43,7 @@
     .t2-week-num{font-size:22px;font-weight:800;color:#6366f1;margin-bottom:4px}
     .t2-week-label{font-size:12px;color:#6b7280}
     .t2-week-draft-pill{display:inline-flex;align-items:center;gap:3px;background:#f59e0b;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px}
+    .t2-topic-redo-pill{display:inline-flex;align-items:center;gap:3px;background:#10b981;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0}
     [data-theme="dark"] .t2-week-card{background:var(--surface, #0d0d0d);border-color:var(--border2, #333333);color:#f1f5f9}
     [data-theme="dark"] .t2-week-card:hover{border-color:#818cf8;background:#1e1b4b}
     [data-theme="dark"] .t2-week-card.has-draft{border-color:#d97706;background:#1c1a0e}
@@ -833,7 +834,10 @@ function renderTopics() {
             <div class="t2-topic-prompt">${_escHtml(t.prompt)}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            ${isTopicCompleted(t._id) ? '<i class="fas fa-check-circle wp-item-done-icon" style="margin-left:0" title="Đã hoàn thành (≥80%)"></i>' : ''}
+            ${isTopicCompleted(t._id) ? `
+              <i class="fas fa-check-circle wp-item-done-icon" style="margin-left:0" title="Đã hoàn thành (≥80%)"></i>
+              <span class="t2-topic-redo-pill" title="Bấm để luyện lại chủ đề này"><i class="fas fa-redo" style="font-size:9px"></i> Làm lại</span>
+            ` : ''}
             <i class="fas fa-chevron-right" style="color:#9ca3af;font-size:18px"></i>
           </div>
         </div>`;

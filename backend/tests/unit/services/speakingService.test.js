@@ -66,6 +66,34 @@ describe('speakingService.listQuestions', () => {
     const travelPart1 = await speakingService.listQuestions({ topic: 'Travel', part: 1 });
     expect(travelPart1.length).toBe(1);
   });
+
+  test('marks attempted:false for every question when no userId is given', async () => {
+    await createSpeakingQuestion({ topic: 'Travel', part: 1 });
+    const result = await speakingService.listQuestions({ topic: 'all', part: 'all' });
+    expect(result.every(q => q.attempted === false)).toBe(true);
+  });
+
+  test('marks attempted:true only for questions this user has an attempt on', async () => {
+    const student = await createStudent();
+    const attempted = await createSpeakingQuestion({ topic: 'Travel', part: 1 });
+    const untouched = await createSpeakingQuestion({ topic: 'Food', part: 1 });
+    await SpeakingAttempt.create({ userId: student._id, questionId: attempted._id, topic: 'Travel', part: 1 });
+
+    const result = await speakingService.listQuestions({ topic: 'all', part: 'all', userId: student._id });
+    const byId = Object.fromEntries(result.map(q => [q._id.toString(), q.attempted]));
+    expect(byId[attempted._id.toString()]).toBe(true);
+    expect(byId[untouched._id.toString()]).toBe(false);
+  });
+
+  test("does not leak one user's attempts onto another user's attempted flag", async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const q = await createSpeakingQuestion({ topic: 'Travel', part: 1 });
+    await SpeakingAttempt.create({ userId: studentA._id, questionId: q._id, topic: 'Travel', part: 1 });
+
+    const resultB = await speakingService.listQuestions({ topic: 'all', part: 'all', userId: studentB._id });
+    expect(resultB[0].attempted).toBe(false);
+  });
 });
 
 describe('speakingService.saveAttempt', () => {

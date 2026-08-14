@@ -18,7 +18,7 @@ exports.getRandom = catchAsync(async (req, res) => {
 // ── GET /api/speaking/questions ──────────────────────────────
 exports.getQuestions = catchAsync(async (req, res) => {
   const { topic, part } = req.query;
-  const questions = await speakingService.listQuestions({ topic, part });
+  const questions = await speakingService.listQuestions({ topic, part, userId: req.user._id });
   res.json({ success: true, questions });
 });
 

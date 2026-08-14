@@ -112,6 +112,7 @@
     [data-theme="dark"] .t1-skill-tab{border-color:var(--border2, #333333);color:#64748b}
     [data-theme="dark"] .t1-skill-tab.active{border-color:#f87171;color:#f87171;background:#2d1111}
     .t1-skill-list{display:flex;flex-direction:column;gap:6px}
+    .t1-skill-redo-pill{display:inline-flex;align-items:center;gap:3px;background:#10b981;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;flex-shrink:0;margin-left:6px}
 
     /* ── Data context box ── */
     .t1-data-ctx{background:#fefce8;border:1.5px solid #fde047;border-radius:10px;padding:10px 14px;margin:8px 0;font-size:13px;color:#713f12}
@@ -864,6 +865,7 @@ function updateSkillTabChecks() {
   document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(btn => {
     const skill = btn.dataset.skill;
     let icon = btn.querySelector('.wp-item-done-icon');
+    let redoPill = btn.querySelector('.t1-skill-redo-pill');
     if (skill !== 'all' && isSkillCompleted(skill)) {
       if (!icon) {
         icon = document.createElement('i');
@@ -871,8 +873,16 @@ function updateSkillTabChecks() {
         icon.title = 'Đã hoàn thành (≥80%)';
         btn.appendChild(icon);
       }
-    } else if (icon) {
-      icon.remove();
+      if (!redoPill) {
+        redoPill = document.createElement('span');
+        redoPill.className = 't1-skill-redo-pill';
+        redoPill.title = 'Bấm để luyện lại kỹ năng này';
+        redoPill.innerHTML = '<i class="fas fa-redo" style="font-size:8px"></i> Làm lại';
+        btn.appendChild(redoPill);
+      }
+    } else {
+      if (icon) icon.remove();
+      if (redoPill) redoPill.remove();
     }
   });
 }

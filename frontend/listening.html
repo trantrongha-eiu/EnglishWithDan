@@ -1935,7 +1935,12 @@
             renderQNav('q-nav-grid-rv', true);
             setupDictionaryDouble('transcript-body', 'listening', _ltDictGate);
             setupDictionaryDouble('review-questions-inner', 'listening', _ltDictGate);
-            setTool('none');
+            // Auto-enable Dict lookup on entering review — the transcript's
+            // own hint text ("Double-click để tra từ") promises this works
+            // immediately, and leaving Highlight mode's crosshair cursor
+            // dangling here would be the actual leftover-state problem, not
+            // Dict (which has no such visual side effect to clean up).
+            setTool('dict', true);
             showScreen('review');
         }
 
@@ -2722,8 +2727,12 @@
         // ══════════════════════════════════════════════
         // TOOL
         // ══════════════════════════════════════════════
-        function setTool(tool) {
-            const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
+        function setTool(tool, force) {
+            // force skips the toggle-off check — used to unconditionally turn a
+            // tool ON (e.g. auto-enabling Dict when a review screen appears)
+            // without accidentally toggling it back off if it happened to
+            // already be on.
+            const next = (!force && tool !== 'none' && state.tool === tool) ? 'none' : tool;
             state.tool = next;
             document.querySelectorAll('.tool-btn-rv, #lt-practice-toolbar .tool-btn').forEach(b => b.classList.remove('active'));
             if (next === 'highlight') {
@@ -3646,7 +3655,13 @@
         }
 
         _ltPracticeSubmitted = true;
-        setTool('none');
+        // Auto-enable Dict lookup now that the transcript is visible — same
+        // reasoning as goToReview(): the hint text promises double-click
+        // works immediately, and a student who had Dict on while answering
+        // (to look up words in the questions) would otherwise have it
+        // silently switched off right as the transcript they actually want
+        // to look words up in appears.
+        setTool('dict', true);
 
         // Lưu kết quả lên server — server tự grade lại để đảm bảo tính chính xác
         const answersToSave = (reviewSection.questionGroups || []).flatMap(g =>
