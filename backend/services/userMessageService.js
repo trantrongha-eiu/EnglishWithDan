@@ -6,15 +6,18 @@ const User = require('../models/User');
 
 async function getUnreadCount(uid) {
   const [personal, broadcast] = await Promise.all([
-    Message.countDocuments({ toId: uid, isBroadcast: false, isRead: false, deletedBy: { $ne: uid } }),
+    Message.countDocuments({ toId: uid, isBroadcast: false, isPeer: { $ne: true }, isRead: false, deletedBy: { $ne: uid } }),
     Message.countDocuments({ isBroadcast: true, readBy: { $ne: uid }, deletedBy: { $ne: uid } })
   ]);
   return personal + broadcast;
 }
 
 async function listMessages(uid, page, limit) {
+  // isPeer excluded — student-to-student chat (services/peerService.js)
+  // lives in the same collection but has its own thread/conversation-list
+  // views, kept out of the teacher "Hộp thư" inbox.
   const filter = {
-    $or: [{ toId: uid, isBroadcast: false }, { isBroadcast: true }],
+    $or: [{ toId: uid, isBroadcast: false, isPeer: { $ne: true } }, { isBroadcast: true }],
     deletedBy: { $ne: uid }
   };
   const [messages, total] = await Promise.all([

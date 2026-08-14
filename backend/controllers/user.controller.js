@@ -2,6 +2,11 @@ const { isImageDataUri } = require('../utils/validation');
 const catchAsync = require('../middleware/catchAsync');
 const userService = require('../services/userService');
 const userMessageService = require('../services/userMessageService');
+const peerService = require('../services/peerService');
+
+function displayName(user) {
+  return (`${user.firstName || ''} ${user.lastName || ''}`.trim()) || user.username;
+}
 
 // ── GET /api/user/profile ────────────────────────────────────
 exports.getProfile = catchAsync(async (req, res) => {
@@ -140,4 +145,62 @@ exports.claimGift = messageGuard(async (req, res) => {
     streakHammers: result.streakHammers,
     streak: result.streak,
   });
+});
+
+// ── PEER (student-to-student profile view + chat + block/report) ────
+// See services/peerService.js for the privacy reasoning behind the narrow
+// profile field set and the isPeer-flagged Message rows.
+
+// ── GET /api/user/peer/:id/profile ───────────────────────────
+exports.getPeerProfile = messageGuard(async (req, res) => {
+  const result = await peerService.getPeerProfile(req.user._id, req.params.id);
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  res.json({ success: true, profile: result.profile });
+});
+
+// ── GET /api/user/peer/conversations ─────────────────────────
+exports.listPeerConversations = messageGuard(async (req, res) => {
+  const conversations = await peerService.listConversations(req.user._id);
+  res.json({ success: true, conversations });
+});
+
+// ── GET /api/user/peer/:id/thread ────────────────────────────
+exports.getPeerThread = messageGuard(async (req, res) => {
+  const result = await peerService.getThread(req.user._id, req.params.id);
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  res.json({ success: true, messages: result.messages });
+});
+
+// ── POST /api/user/peer/:id/message ──────────────────────────
+exports.sendPeerMessage = messageGuard(async (req, res) => {
+  const { body } = req.body;
+  const result = await peerService.sendPeerMessage(req.user._id, displayName(req.user), req.params.id, body);
+  if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+  if (result.status === 'self') return res.status(400).json({ success: false, message: 'Không thể tự nhắn tin cho chính mình' });
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  if (result.status === 'blocked') return res.status(403).json({ success: false, message: 'Không thể gửi tin nhắn cho người này' });
+  res.status(201).json({ success: true, message: result.message });
+});
+
+// ── POST /api/user/peer/:id/block ────────────────────────────
+exports.blockPeer = messageGuard(async (req, res) => {
+  const result = await peerService.blockUser(req.user._id, req.params.id);
+  if (result.status === 'self') return res.status(400).json({ success: false, message: 'Không thể tự chặn chính mình' });
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  res.json({ success: true });
+});
+
+// ── DELETE /api/user/peer/:id/block ──────────────────────────
+exports.unblockPeer = messageGuard(async (req, res) => {
+  await peerService.unblockUser(req.user._id, req.params.id);
+  res.json({ success: true });
+});
+
+// ── POST /api/user/peer/:id/report ───────────────────────────
+exports.reportPeer = messageGuard(async (req, res) => {
+  const { reason, messageId } = req.body;
+  const result = await peerService.reportUser(req.user._id, displayName(req.user), req.params.id, reason, messageId);
+  if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Vui lòng nhập lý do báo cáo' });
+  if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  res.status(201).json({ success: true });
 });

@@ -6,6 +6,7 @@ const auth    = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
 
 const Message = require('../../models/Message');
+const Report  = require('../../models/Report');
 
 const router = express.Router();
 
@@ -134,6 +135,36 @@ router.delete('/messages/:id', auth, teacherOnly, async (req, res) => {
   try {
     await Message.findOneAndDelete({ _id: req.params.id, fromId: req.user._id });
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ══════════════════════════════════════════════════
+// REPORTS (học sinh báo cáo học sinh khác khi chat — xem services/peerService.js)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/reports?status=open|resolved (default: open)
+router.get('/reports', auth, teacherOnly, async (req, res) => {
+  try {
+    const status = ['open', 'resolved'].includes(req.query.status) ? req.query.status : 'open';
+    const reports = await Report.find({ status })
+      .populate('messageId', 'body createdAt')
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .lean();
+    res.json({ success: true, reports });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// PATCH /api/admin/reports/:id/resolve
+router.patch('/reports/:id/resolve', auth, teacherOnly, async (req, res) => {
+  try {
+    const report = await Report.findByIdAndUpdate(req.params.id, { status: 'resolved' }, { new: true });
+    if (!report) return res.status(404).json({ success: false, message: 'Không tìm thấy báo cáo' });
+    res.json({ success: true, report });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -134,11 +134,12 @@ async function loadQuizLeaderboard() {
             const avatar = r.avatar
                 ? `<img class="dan-lb-avatar" src="${escHtml(r.avatar)}" alt="">`
                 : `<span class="dan-lb-avatar-placeholder">${escHtml((r.name || '?')[0].toUpperCase())}</span>`;
+            const isMe = r.userId === myId;
             return `
-                <div class="dan-lb-row${r.userId === myId ? ' is-me' : ''}">
+                <div class="dan-lb-row${isMe ? ' is-me' : ' dan-lb-clickable'}"${isMe ? '' : ` onclick="window.openPeerProfile('${r.userId}')"`}>
                     <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
                     ${avatar}
-                    <span class="dan-lb-name">${escHtml(r.name)}${r.userId === myId ? ' (Bạn)' : ''}</span>
+                    <span class="dan-lb-name">${escHtml(r.name)}${isMe ? ' (Bạn)' : ''}</span>
                     <span class="dan-lb-quiz-score">${r.score}% <span class="dan-lb-quiz-time">· ${mm(r.timeSpent)}</span></span>
                 </div>`;
         }).join('');

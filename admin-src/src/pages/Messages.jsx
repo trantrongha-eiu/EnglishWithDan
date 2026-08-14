@@ -36,10 +36,16 @@ export default function Messages() {
   const [page, setPage] = useState(1);
 
   // Received messages state (student replies, payment notices, ...)
-  const [box, setBox] = useState('sent'); // 'sent' | 'received'
+  const [box, setBox] = useState('sent'); // 'sent' | 'received' | 'reports'
   const [received, setReceived] = useState([]);
   const [receivedTotal, setReceivedTotal] = useState(0);
   const [receivedPage, setReceivedPage] = useState(1);
+
+  // Reports state — students reporting each other from peer chat (see
+  // services/peerService.js). Small volume expected, so no pagination —
+  // just an open/resolved filter.
+  const [reports, setReports] = useState([]);
+  const [reportStatus, setReportStatus] = useState('open'); // 'open' | 'resolved'
 
   // Online users
   const [onlineIds, setOnlineIds] = useState(new Set());
@@ -48,6 +54,7 @@ export default function Messages() {
     loadStudents();
     loadMessages(1);
     loadReceived(1);
+    loadReports('open');
     loadOnline();
   }, []);
 
@@ -71,6 +78,26 @@ export default function Messages() {
       const d = await apiFetch(`/admin/messages/received?page=${p}&limit=${PAGE}`);
       setReceived(d.messages || []);
       setReceivedTotal(d.total || 0);
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  async function loadReports(status = reportStatus) {
+    try {
+      const d = await apiFetch(`/admin/reports?status=${status}`);
+      setReports(d.reports || []);
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
+  function switchReportStatus(status) {
+    setReportStatus(status);
+    loadReports(status);
+  }
+
+  async function resolveReport(id) {
+    try {
+      await apiFetch(`/admin/reports/${id}/resolve`, { method: 'PATCH' });
+      toast('Đã đánh dấu xử lý');
+      loadReports(reportStatus);
     } catch (e) { toast(e.message, 'error'); }
   }
 
@@ -264,6 +291,9 @@ export default function Messages() {
         <button className={`btn btn-sm ${box === 'received' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setBox('received')}>
           📥 Đã nhận ({receivedTotal})
         </button>
+        <button className={`btn btn-sm ${box === 'reports' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setBox('reports')}>
+          🚩 Báo cáo{reportStatus === 'open' ? ` (${reports.length})` : ''}
+        </button>
       </div>
 
       {box === 'sent' ? (
@@ -322,7 +352,7 @@ export default function Messages() {
             <Pagination page={page} total={total} pageSize={PAGE} onPage={p => { setPage(p); loadMessages(p); }} />
           </div>
         </>
-      ) : (
+      ) : box === 'received' ? (
         <>
           {/* ── Received messages table (student replies, payment notices, ...) ── */}
           <div className="table-wrap">
@@ -358,6 +388,43 @@ export default function Messages() {
           </div>
           <div style={{ marginTop: 12 }}>
             <Pagination page={receivedPage} total={receivedTotal} pageSize={PAGE} onPage={p => { setReceivedPage(p); loadReceived(p); }} />
+          </div>
+        </>
+      ) : (
+        <>
+          {/* ── Reports (peer-chat abuse reports from students) ── */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <button className={`btn btn-sm ${reportStatus === 'open' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchReportStatus('open')}>Chưa xử lý</button>
+            <button className={`btn btn-sm ${reportStatus === 'resolved' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchReportStatus('resolved')}>Đã xử lý</button>
+          </div>
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>NGƯỜI BÁO CÁO</th><th>BỊ BÁO CÁO</th><th>LÝ DO</th><th>TIN NHẮN LIÊN QUAN</th><th>THỜI GIAN</th><th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.length === 0
+                  ? <tr><td colSpan={6} className="table-empty">Không có báo cáo nào</td></tr>
+                  : reports.map(r => (
+                    <tr key={r._id}>
+                      <td><strong>{r.reporterName}</strong></td>
+                      <td><strong>{r.reportedName}</strong></td>
+                      <td style={{ maxWidth: 260, fontSize: 13, color: 'var(--text2)' }}>{r.reason}</td>
+                      <td style={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12, color: 'var(--text3)' }}>
+                        {r.messageId?.body || <span>—</span>}
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text3)' }}>{formatDate(r.createdAt)}</td>
+                      <td>
+                        {reportStatus === 'open' && (
+                          <button className="btn btn-ghost btn-sm" onClick={() => resolveReport(r._id)}>✓ Đã xử lý</button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
           </div>
         </>
       )}

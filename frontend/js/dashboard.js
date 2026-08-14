@@ -508,11 +508,12 @@ async function loadStreakLeaderboard() {
                 : `<span class="dan-lb-avatar-placeholder">${_esc((r.name || '?')[0].toUpperCase())}</span>`;
             const tier = getFireTier(r.streak);
             const streakStyle = tier.cls ? '' : (tier.color ? ` style="color:${tier.color}"` : '');
+            const isMe = r._id === myId;
             return `
-                <div class="dan-lb-row${r._id === myId ? ' is-me' : ''}">
+                <div class="dan-lb-row${isMe ? ' is-me' : ' dan-lb-clickable'}"${isMe ? '' : ` onclick="window.openPeerProfile('${r._id}')"`}>
                     <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
                     ${avatar}
-                    <span class="dan-lb-name">${_esc(r.name)}${r._id === myId ? ' (Bạn)' : ''}</span>
+                    <span class="dan-lb-name">${_esc(r.name)}${isMe ? ' (Bạn)' : ''}</span>
                     <span class="dan-lb-streak${tier.cls ? ' ' + tier.cls : ''}"${streakStyle}><i class="fas fa-fire"></i> ${r.streak}</span>
                 </div>`;
         }).join('');

@@ -1155,6 +1155,53 @@
   </div>
 </div>
 
+
+<!-- ══ MODAL: Peer profile (click a name in a leaderboard) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-profile">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3><i class="fas fa-id-card"></i> Hồ sơ học sinh</h3>
+      <button class="modal-close" onclick="closePeerProfile()">✕</button>
+    </div>
+    <div class="modal-body" id="peer-profile-body"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Peer chat (1-1 messaging between students) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-chat">
+  <div class="modal-box modal-md peer-chat-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-comment-dots"></i> <span id="peer-chat-name">...</span></h3>
+      <button class="modal-close" onclick="closePeerChat()">✕</button>
+    </div>
+    <div class="peer-chat-messages" id="peer-chat-messages"></div>
+    <div class="peer-chat-input-row">
+      <textarea id="peer-chat-input" class="peer-chat-input" placeholder="Nhắn gì đó..." rows="1"
+        onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendPeerChatMessage();}"></textarea>
+      <button id="peer-chat-send-btn" class="btn btn-primary" onclick="sendPeerChatMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: Report a student (from profile card or a specific chat message) ══ -->
+<div class="modal-overlay hidden" id="modal-peer-report">
+  <div class="modal-box modal-sm">
+    <div class="modal-header">
+      <h3 id="peer-report-title">Báo cáo</h3>
+      <button class="modal-close" onclick="closePeerReport()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Báo cáo sẽ được gửi tới giáo viên để xem xét.</p>
+      <textarea id="peer-report-reason" class="peer-chat-input" style="width:100%;min-height:90px" placeholder="Mô tả lý do báo cáo..." maxlength="500"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePeerReport()">Hủy</button>
+      <button class="btn btn-danger" onclick="submitPeerReport()"><i class="fas fa-flag"></i> Gửi báo cáo</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/shared/peer-profile.js"></script>
 <script src="js/dashboard-audio.js"></script>
 <script src="js/dashboard-lesson.js"></script>
 <script src="js/dashboard.js"></script>
