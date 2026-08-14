@@ -504,6 +504,12 @@ function setQuestion(q) {
   const hintsBox = document.getElementById('hints-box');
   if (hintsBox) { hintsBox.style.display = 'none'; hintsBox.dataset.forQuestion = ''; }
 
+  // Scratch notes — same reset-on-question-change rule, but NOT cleared by
+  // retryQuestion() (which calls resetPractice(), not setQuestion()), so
+  // notes survive a retry of the same question.
+  const notesTa = document.getElementById('notes-textarea');
+  if (notesTa) notesTa.value = '';
+
   readQuestion();
 
   if (q.part === 2) {
