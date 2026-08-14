@@ -612,6 +612,87 @@
         const partHlCache = {};  // exam mode  : { partIdx: questionsPanelHTML }
         const partHlCacheRv = {};  // review mode: { partIdx: { transcript, questions } }
 
+        /* ── Highlights surviving submission (localStorage, keyed by attemptId) ──
+           goToReview() re-renders review-questions-inner fresh (adds correct/
+           wrong indicators live exam markup doesn't have), which used to wipe
+           any highlight made in questions-panel during the live exam. Passage
+           markup (transcript) is identical live/review so raw HTML can be
+           reused directly; questions markup can't, so only the highlighted
+           TEXT is persisted and re-applied afterward via _reapplyTextHighlights. */
+        let _pendingReviewQuestionHl = {}; // partIdx -> string[], consumed once by the fresh-render path
+
+        function _lHlStorageKey(attemptId) { return `ews_listening_hl_${attemptId}`; }
+
+        function _extractHlTexts(html) {
+            if (!html) return [];
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return Array.from(div.querySelectorAll('.hl')).map(el => el.textContent).filter(Boolean);
+        }
+
+        function _reapplyTextHighlights(container, texts) {
+            if (!container || !texts || !texts.length) return;
+            texts.forEach(text => {
+                if (!text || !text.trim()) return;
+                const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+                    acceptNode(node) {
+                        if (node.parentElement && node.parentElement.closest('.hl, .radio-opt, .checkbox-opt, input, textarea, select, button')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        return node.nodeValue.includes(text) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+                    }
+                });
+                const node = walker.nextNode();
+                if (!node) return;
+                const idx = node.nodeValue.indexOf(text);
+                if (idx === -1) return;
+                try {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + text.length);
+                    const span = document.createElement('span');
+                    span.className = 'hl';
+                    range.surroundContents(span);
+                } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
+            });
+        }
+
+        function _saveListeningHighlightsToStorage() {
+            const attemptId = state.isReview ? state.reviewResult?.attemptId : state.attemptId;
+            if (!attemptId) return;
+            if (state.isReview) {
+                const tb = document.getElementById('transcript-body');
+                const rv = document.getElementById('review-questions-inner');
+                if (tb && rv) partHlCacheRv[state.partIdx] = { transcript: tb.innerHTML, questions: rv.innerHTML };
+            } else {
+                const qp = document.getElementById('questions-panel');
+                if (qp) partHlCache[state.partIdx] = qp.innerHTML;
+            }
+            const data = {};
+            let hasAny = false;
+            if (state.isReview) {
+                for (const idx in partHlCacheRv) {
+                    const entry = partHlCacheRv[idx];
+                    const questionTexts = _extractHlTexts(entry.questions);
+                    const hasTranscriptHl = !!(entry.transcript && entry.transcript.includes('class="hl"'));
+                    if (hasTranscriptHl || questionTexts.length) {
+                        data[idx] = { transcript: hasTranscriptHl ? entry.transcript : null, questionTexts };
+                        hasAny = true;
+                    }
+                }
+            } else {
+                for (const idx in partHlCache) {
+                    const questionTexts = _extractHlTexts(partHlCache[idx]);
+                    if (questionTexts.length) { data[idx] = { transcript: null, questionTexts }; hasAny = true; }
+                }
+            }
+            try {
+                const key = _lHlStorageKey(attemptId);
+                if (hasAny) localStorage.setItem(key, JSON.stringify(data));
+                else localStorage.removeItem(key);
+            } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+        }
+
         const audio = document.getElementById('audio-player');
 
         // ══════════════════════════════════════════════
@@ -1341,14 +1422,28 @@
             document.querySelectorAll('#snf-section-btns .snf-section-btn')
                 .forEach((b, i) => b.classList.toggle('active', i === idx));
             if (isReview) {
-                if (partHlCacheRv[idx] !== undefined) {
+                const cachedRv = partHlCacheRv[idx];
+                // cachedRv.questions is only ever set by THIS branch caching a tab
+                // it's switching away from (already fully rendered this session) —
+                // a cache entry seeded from localStorage on entering review (see
+                // goToReview) carries a transcript snapshot but leaves questions
+                // undefined on purpose, since review questions markup must always
+                // be freshly rendered (correct/wrong indicators) and only
+                // re-highlighted afterward.
+                if (cachedRv !== undefined && cachedRv.questions !== undefined) {
                     // Restore highlights from cache
-                    document.getElementById('transcript-body').innerHTML = partHlCacheRv[idx].transcript;
-                    document.getElementById('review-questions-inner').innerHTML = partHlCacheRv[idx].questions;
+                    document.getElementById('transcript-body').innerHTML = cachedRv.transcript;
+                    document.getElementById('review-questions-inner').innerHTML = cachedRv.questions;
                 } else {
+                    if (cachedRv?.transcript) {
+                        document.getElementById('transcript-body').innerHTML = cachedRv.transcript;
+                    } else {
+                        const section = getSortedSections(true)[idx];
+                        renderTranscript(section?.transcript || '');
+                    }
                     renderReviewPartQuestions(idx);
-                    const section = getSortedSections(true)[idx];
-                    renderTranscript(section?.transcript || '');
+                    const pending = _pendingReviewQuestionHl[idx];
+                    if (pending?.length) _reapplyTextHighlights(document.getElementById('review-questions-inner'), pending);
                 }
                 // Scroll về đầu sau khi switch part
                 const rvInner = document.getElementById('review-questions-inner');
@@ -1923,15 +2018,36 @@
             state.isReview = true;
             state.partIdx = 0;
             for (const k in partHlCacheRv) delete partHlCacheRv[k];
+
+            // Restore highlights made while taking this exam (see _saveListeningHighlightsToStorage)
+            _pendingReviewQuestionHl = {};
+            try {
+                const raw = localStorage.getItem(_lHlStorageKey(r.attemptId));
+                if (raw) {
+                    const saved = JSON.parse(raw);
+                    for (const idx in saved) {
+                        if (saved[idx].transcript) partHlCacheRv[idx] = { transcript: saved[idx].transcript, questions: undefined };
+                        if (saved[idx].questionTexts?.length) _pendingReviewQuestionHl[idx] = saved[idx].questionTexts;
+                    }
+                }
+            } catch { /* malformed/unavailable — just skip restoring */ }
+
             document.getElementById('review-title').textContent = r.testName;
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
             audio.src = r.audioUrl || '';
             audio.load();
             audio.currentTime = 0;
             const firstSection = (r.sections || [])[0];
-            renderTranscript(firstSection?.transcript || '');
+            const cachedFirst = partHlCacheRv[0];
+            if (cachedFirst?.transcript) {
+                document.getElementById('transcript-body').innerHTML = cachedFirst.transcript;
+            } else {
+                renderTranscript(firstSection?.transcript || '');
+            }
             buildPartTabs('part-tabs-rv', true);
             renderReviewPartQuestions(0);
+            const pendingFirst = _pendingReviewQuestionHl[0];
+            if (pendingFirst?.length) _reapplyTextHighlights(document.getElementById('review-questions-inner'), pendingFirst);
             renderQNav('q-nav-grid-rv', true);
             setupDictionaryDouble('transcript-body', 'listening', _ltDictGate);
             setupDictionaryDouble('review-questions-inner', 'listening', _ltDictGate);
@@ -2637,8 +2753,12 @@
         function setupHighlight() {
             document.addEventListener('mouseup', e => {
                 if (state.tool !== 'highlight') return;
-                // Don't highlight when clicking on interactive inputs
-                if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop')) return;
+                // Don't highlight when clicking on interactive inputs — .radio-opt/
+                // .checkbox-opt are display:flex with a gap, so surroundContents()
+                // splitting their text node into [before, <span class="hl">, after]
+                // turns each fragment into its own flex item, and the gap gets
+                // inserted between them too — the option's letters visibly spread apart.
+                if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop, .radio-opt, .checkbox-opt')) return;
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
@@ -2659,6 +2779,8 @@
                 state._justHighlighted = true;
                 setTimeout(() => { state._justHighlighted = false; }, 0);
                 sel.removeAllRanges();
+                if (inPracticeQ || inPracticeTb) window._saveLtPracticeHighlightsToStorage?.();
+                else _saveListeningHighlightsToStorage();
             });
         }
 
@@ -2977,6 +3099,37 @@
     function _ltGetAllQs(section) {
         return (section?.questionGroups || []).flatMap(g => g.questions || []);
     }
+
+    // Single-section practice equivalent of _saveListeningHighlightsToStorage()
+    // (defined in the previous <script> block, shared via the page's global
+    // lexical scope) — keyed by sectionId since practice attempts don't get an
+    // id until after they're submitted. _doSubmitLTPractice() replaces
+    // lt-practice-questions-inner wholesale on submit (review adds correct/
+    // wrong indicators the live practice markup doesn't have), which is what
+    // wiped out any highlight made there — this function's saved snapshot is
+    // what lets that submit path re-apply them afterward via
+    // _reapplyTextHighlights, and lets loadLTPracticeReview() (opening a past
+    // attempt from history, after a full page reload) restore them too.
+    function _ltHlStorageKey(sectionId) { return `ews_listening_hl_lt_${sectionId}`; }
+
+    function _saveLtPracticeHighlightsToStorage() {
+        const sectionId = _ltPracticeSectionId;
+        if (!sectionId) return;
+        const questionsInner  = document.getElementById('lt-practice-questions-inner');
+        const transcriptInner = document.getElementById('lt-practice-transcript-body');
+        const transcriptHtml = transcriptInner ? transcriptInner.innerHTML : '';
+        const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
+        const hasTranscriptHl = transcriptHtml.includes('class="hl"');
+        try {
+            const key = _ltHlStorageKey(sectionId);
+            if (hasTranscriptHl || questionTexts.length) {
+                localStorage.setItem(key, JSON.stringify({ transcript: hasTranscriptHl ? transcriptHtml : null, questionTexts }));
+            } else {
+                localStorage.removeItem(key);
+            }
+        } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+    }
+    window._saveLtPracticeHighlightsToStorage = _saveLtPracticeHighlightsToStorage;
 
     /* ── Stopwatch ───────────────────────────────────────────────────────── */
     function _startLTPracticeTimer(totalQ) {
@@ -3601,6 +3754,10 @@
 
         // Re-render with review data
         const inner = document.getElementById('lt-practice-questions-inner');
+        // Capture highlights made during practice before the innerHTML swap
+        // below wipes them (review markup adds correct/wrong indicators the
+        // live practice markup doesn't have, so raw HTML can't be reused).
+        const savedQuestionHl = _extractHlTexts(inner.innerHTML);
         const ltPracImgSrc = pct >= 75 ? 'img/above7.5.jpg'
                             : pct >= 60 ? 'img/band_6_7.jpg'
                             : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
@@ -3627,6 +3784,7 @@
 
         inner.innerHTML = html;
         inner.scrollTop = 0;
+        if (savedQuestionHl.length) _reapplyTextHighlights(inner, savedQuestionHl);
 
         // Update Q-nav with correct/wrong/skipped colors
         const navPr = document.getElementById('lt-practice-q-nav');
@@ -3653,6 +3811,8 @@
                 tp.style.display = 'none';
             }
         }
+
+        _saveLtPracticeHighlightsToStorage();
 
         _ltPracticeSubmitted = true;
         // Auto-enable Dict lookup now that the transcript is visible — same
@@ -3823,6 +3983,14 @@
             if (!data.success || !data.section) return;
             const { attempt, section } = data;
 
+            // Restore highlights saved locally while this practice attempt was
+            // taken (see _saveLtPracticeHighlightsToStorage).
+            let _savedLtHl = null;
+            try {
+                const raw = localStorage.getItem(_ltHlStorageKey(attempt.sectionId));
+                if (raw) _savedLtHl = JSON.parse(raw);
+            } catch { /* malformed/unavailable — just skip restoring */ }
+
             // Build reviewSection: merge saved answers onto the full section
             const reviewSection = JSON.parse(JSON.stringify(section));
             const answerMap = {};
@@ -3895,12 +4063,17 @@
             const inner = document.getElementById('lt-practice-questions-inner');
             inner.innerHTML = html;
             inner.scrollTop = 0;
+            if (_savedLtHl?.questionTexts?.length) _reapplyTextHighlights(inner, _savedLtHl.questionTexts);
 
             // Show transcript if available
             const tp = document.getElementById('lt-practice-transcript-panel');
             const tb = document.getElementById('lt-practice-transcript-body');
             if (tp && tb) {
-                if (section.transcript) {
+                if (_savedLtHl?.transcript) {
+                    tb.innerHTML = _savedLtHl.transcript;
+                    tp.style.display = '';
+                    setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
+                } else if (section.transcript) {
                     tb.innerHTML = section.transcript.split('\n').map(l =>
                         l.trim() ? `<p style="margin-bottom:8px">${escHtml(l)}</p>` : '<br>'
                     ).join('');

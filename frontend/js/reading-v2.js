@@ -64,6 +64,123 @@ let _practiceElapsedSec = 0;
 const passageHlCache = {};   // exam mode  : { passageIdx: passageInnerHTML }
 const reviewHlCache = {};   // review mode: { passageIdx: passageInnerHTML }
 
+/* ── Highlights surviving submission (localStorage, keyed by attemptId) ──
+   Exam-mode highlights lived only in passageHlCache/reviewHlCache — both
+   in-memory and both wiped the moment exam mode ended, so anything a
+   student highlighted while taking the test was gone the instant they
+   submitted. The passage panel renders identical markup in exam and review
+   (see the shared `passage-title`/`passage-text` template), so its raw
+   highlighted HTML can be reused directly; the questions panel does NOT
+   (review adds correct/wrong indicators and explanations exam markup never
+   has), so only the highlighted TEXT is saved for that panel and
+   re-applied by matching it against the freshly-rendered review markup. */
+let _pendingReviewQuestionHl = {}; // passageIdx -> string[], consumed once by switchReviewPassage()'s fresh-render path
+
+function _readingHlStorageKey(attemptId) { return `ews_reading_hl_${attemptId}`; }
+
+function _extractHlTexts(html) {
+  if (!html) return [];
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return Array.from(div.querySelectorAll('.hl')).map(el => el.textContent).filter(Boolean);
+}
+
+// Finds the first still-unhighlighted occurrence of `text` in `container`
+// and wraps it in a <span class="hl"> — used to re-apply highlights saved
+// from exam mode onto review's freshly-rendered (structurally different)
+// questions markup. Best-effort: a highlight whose text no longer appears
+// verbatim (or that spanned multiple text nodes) is silently skipped
+// rather than breaking the render.
+function _reapplyTextHighlights(container, texts) {
+  if (!container || !texts || !texts.length) return;
+  texts.forEach(text => {
+    if (!text || !text.trim()) return;
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (node.parentElement && node.parentElement.closest('.hl, .radio-opt, .checkbox-opt, input, textarea, select, button')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return node.nodeValue.includes(text) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      }
+    });
+    const node = walker.nextNode();
+    if (!node) return;
+    const idx = node.nodeValue.indexOf(text);
+    if (idx === -1) return;
+    try {
+      const range = document.createRange();
+      range.setStart(node, idx);
+      range.setEnd(node, idx + text.length);
+      const span = document.createElement('span');
+      span.className = 'hl';
+      range.surroundContents(span);
+    } catch { /* text spans multiple nodes — skip rather than corrupt the DOM */ }
+  });
+}
+
+// Called after every highlight is made in exam mode. Flushes the current
+// (live) passage tab into passageHlCache first — otherwise the tab the
+// student is actively highlighting on would never get captured until they
+// switch away from it — then serializes anything highlighted so far to
+// localStorage so it survives the page fully reloading after submission.
+function _saveReadingHighlightsToStorage() {
+  if (!state.attemptId || state.isReview) return;
+  const passageInner = document.getElementById('passage-inner');
+  const questionsInner = document.getElementById('questions-inner');
+  if (passageInner || questionsInner) {
+    passageHlCache[state.currentPassageIdx] = {
+      passage: passageInner ? passageInner.innerHTML : null,
+      questions: questionsInner ? questionsInner.innerHTML : null,
+    };
+  }
+  const data = {};
+  let hasAny = false;
+  for (const idx in passageHlCache) {
+    const entry = passageHlCache[idx];
+    const questionTexts = _extractHlTexts(entry.questions);
+    const hasPassageHl = !!(entry.passage && entry.passage.includes('class="hl"'));
+    if (hasPassageHl || questionTexts.length) {
+      data[idx] = { passage: hasPassageHl ? entry.passage : null, questionTexts };
+      hasAny = true;
+    }
+  }
+  try {
+    const key = _readingHlStorageKey(state.attemptId);
+    if (hasAny) localStorage.setItem(key, JSON.stringify(data));
+    else localStorage.removeItem(key);
+  } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+}
+
+// Single-passage practice/retry ("Luyện: <passage title>") equivalent of
+// _saveReadingHighlightsToStorage() above — keyed by passageId (stable
+// across attempts, not per-attempt) since practice attempts don't get an
+// id until after they're submitted. _doSubmitRetry() replaces
+// #retry-questions-inner wholesale on submit (review adds correct/wrong
+// indicators the live practice markup doesn't have), which is what wiped
+// out any highlight made there — this function's saved snapshot is what
+// lets that submit path re-apply them afterward via _reapplyTextHighlights,
+// and lets loadPracticeReview() (opening a past attempt from history,
+// after a full page reload) restore them too.
+function _retryHlStorageKey(passageId) { return `ews_reading_hl_retry_${passageId}`; }
+
+function _saveRetryHighlightsToStorage() {
+  const passageId = _retryState?.practicePassageId;
+  if (!passageId) return;
+  const passageInner = document.getElementById('retry-passage-inner');
+  const questionsInner = document.getElementById('retry-questions-inner');
+  const passageHtml = passageInner ? passageInner.innerHTML : '';
+  const questionTexts = _extractHlTexts(questionsInner ? questionsInner.innerHTML : '');
+  const hasPassageHl = passageHtml.includes('class="hl"');
+  try {
+    const key = _retryHlStorageKey(passageId);
+    if (hasPassageHl || questionTexts.length) {
+      localStorage.setItem(key, JSON.stringify({ passage: hasPassageHl ? passageHtml : null, questionTexts }));
+    } else {
+      localStorage.removeItem(key);
+    }
+  } catch { /* localStorage full/unavailable — highlights just won't survive reload */ }
+}
+
 /* ── Stopwatch helpers ──────────────────────────────────────────────── */
 function _startPracticeTimer(totalQ) {
   _practiceStartTime = Date.now();
@@ -2549,6 +2666,24 @@ function renderReview(attempt) {
   state.currentPassageIdx = 0;
   for (const k in reviewHlCache) delete reviewHlCache[k];
 
+  // Restore highlights made while taking this exam, saved to localStorage
+  // as each one was made (see _saveReadingHighlightsToStorage) — passage
+  // markup is identical between exam/review so its raw HTML is reused
+  // directly; questions markup differs (review adds correct/wrong
+  // indicators), so only the highlighted text is restored, re-applied by
+  // switchReviewPassage()'s fresh-render path via _pendingReviewQuestionHl.
+  _pendingReviewQuestionHl = {};
+  try {
+    const raw = localStorage.getItem(_readingHlStorageKey(attempt._id));
+    if (raw) {
+      const saved = JSON.parse(raw);
+      for (const idx in saved) {
+        if (saved[idx].passage) reviewHlCache[idx] = { passage: saved[idx].passage, questions: undefined };
+        if (saved[idx].questionTexts?.length) _pendingReviewQuestionHl[idx] = saved[idx].questionTexts;
+      }
+    }
+  } catch { /* malformed/unavailable — just skip restoring */ }
+
   document.getElementById('review-title').textContent = attempt.testName || 'Review';
   const badge = document.getElementById('review-band-badge');
   if (badge) badge.textContent = `Band: ${attempt.bandScore?.toFixed(1)}`;
@@ -2597,16 +2732,28 @@ function switchReviewPassage(idx) {
   const { reviewMap } = state.reviewData;
 
   const cached = reviewHlCache[idx];
-  if (cached !== undefined) {
+  // cached.questions is only ever set by THIS function caching a tab it's
+  // switching away from (i.e. already fully rendered once this session) —
+  // a cache entry seeded from localStorage on entering review (see
+  // renderReview) carries a passage snapshot but leaves questions
+  // undefined on purpose, since review questions markup must always be
+  // freshly rendered (correct/wrong indicators) and only re-highlighted
+  // afterward.
+  if (cached !== undefined && cached.questions !== undefined) {
     if (rvPassageInner) rvPassageInner.innerHTML = cached.passage ?? '';
     if (rvQuestionsInner) rvQuestionsInner.innerHTML = cached.questions ?? '';
   } else {
     if (rvPassageInner) {
-      rvPassageInner.innerHTML =
-        `<div class="passage-title">${escHtml(p.title)}</div>
+      rvPassageInner.innerHTML = (cached && cached.passage)
+        ? cached.passage
+        : `<div class="passage-title">${escHtml(p.title)}</div>
      <div class="passage-text">${p.content || ''}</div>`;
     }
-    if (rvQuestionsInner) rvQuestionsInner.innerHTML = renderPassageQuestions(p, true, reviewMap);
+    if (rvQuestionsInner) {
+      rvQuestionsInner.innerHTML = renderPassageQuestions(p, true, reviewMap);
+      const savedTexts = _pendingReviewQuestionHl[idx];
+      if (savedTexts && savedTexts.length) _reapplyTextHighlights(rvQuestionsInner, savedTexts);
+    }
   }
 
   // Scroll both panels to top when switching to a new passage
@@ -2882,6 +3029,10 @@ function _doSubmitRetry() {
     : '';
   const qi = document.getElementById('retry-questions-inner');
   if (qi) {
+    // Capture highlights made during practice before the innerHTML swap
+    // below wipes them (review markup adds correct/wrong indicators the
+    // live practice markup doesn't have, so raw HTML can't be reused).
+    const savedQuestionHl = _extractHlTexts(qi.innerHTML);
     qi.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
         ${rdPracImgHtml}
@@ -2893,6 +3044,8 @@ function _doSubmitRetry() {
         </div>${timeLine}
       </div>`
       + renderPassageQuestions(passage, true, retryReviewMap);
+    if (savedQuestionHl.length) _reapplyTextHighlights(qi, savedQuestionHl);
+    _saveRetryHighlightsToStorage();
   }
 
   const badge = document.getElementById('retry-score-badge');
@@ -3037,8 +3190,19 @@ async function loadPracticeReview(attemptId) {
     document.getElementById('retry-title').textContent = passage.title || 'Xem lại bài lẻ';
     document.getElementById('retry-score-badge').style.display = 'none';
 
+    // Restore highlights saved locally while this practice attempt was taken
+    // (see _saveRetryHighlightsToStorage) — passage markup is identical
+    // between practice/review so its raw HTML is reused directly; questions
+    // markup differs (review adds correct/wrong indicators), so only the
+    // highlighted text is restored, re-applied below via _reapplyTextHighlights.
+    let _savedRetryHl = null;
+    try {
+      const raw = localStorage.getItem(_retryHlStorageKey(attempt.passageId));
+      if (raw) _savedRetryHl = JSON.parse(raw);
+    } catch { /* malformed/unavailable — just skip restoring */ }
+
     // Fill passage text (left panel)
-    document.getElementById('retry-passage-inner').innerHTML =
+    document.getElementById('retry-passage-inner').innerHTML = _savedRetryHl?.passage ||
       `<div class="passage-title">${escHtml(passage.title || '')}</div>
        <div class="passage-text">${passage.content || ''}</div>`;
 
@@ -3085,6 +3249,7 @@ async function loadPracticeReview(attemptId) {
         </div>
       </div>`
       + renderPassageQuestions(passage, true, reviewMap);
+    if (_savedRetryHl?.questionTexts?.length) _reapplyTextHighlights(inner, _savedRetryHl.questionTexts);
 
     document.getElementById('retry-footer-btns').innerHTML =
       `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
@@ -3221,8 +3386,12 @@ document.addEventListener('mouseup', e => {
   const inPassage = e.target.closest('.split-passage') || e.target.closest('.review-passage');
   const inQuestions = e.target.closest('.split-questions') || e.target.closest('.review-q-panel');
   if (!inPassage && !inQuestions) return;
-  // Don't highlight when clicking on interactive inputs
-  if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone')) return;
+  // Don't highlight when clicking on interactive inputs — .radio-opt/
+  // .checkbox-opt are display:flex with a gap, so surroundContents()
+  // splitting their text node into [before, <span class="hl">, after]
+  // turns each fragment into its own flex item, and the gap gets inserted
+  // between them too — the option's letters visibly spread apart.
+  if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .radio-opt, .checkbox-opt')) return;
   const sel = window.getSelection();
   if (!sel || sel.isCollapsed) return;
   const range = sel.getRangeAt(0);
@@ -3230,6 +3399,8 @@ document.addEventListener('mouseup', e => {
   span.className = 'hl';
   try { range.surroundContents(span); } catch { }
   sel.removeAllRanges();
+  if (_retryState) _saveRetryHighlightsToStorage();
+  else _saveReadingHighlightsToStorage();
 });
 
 /* ══════════════════════════════════════════════════════════════════════
