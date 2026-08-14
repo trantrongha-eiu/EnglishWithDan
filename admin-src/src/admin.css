@@ -1569,7 +1569,7 @@ body { display: block; }
 
 /* ── LIGHT THEME ── */
 [data-theme="light"] {
-  --bg:       #f4f6fb;
+  --bg:       #e6eaf3;
   --surface:  #ffffff;
   --surface2: #eef0f7;
   --border:   #dde1ee;
