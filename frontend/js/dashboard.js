@@ -1271,6 +1271,21 @@ async function createBook() {
 let _lookupPhonetic = '';
 let _lookupPartOfSpeech = '';
 
+// MyMemory TM "segment" fields are frequently glossary scrapes, not real
+// sentences (e.g. "Mammal class\t83" — a tab-separated glossary row), so a
+// bare word-count check isn't enough to treat one as an example sentence.
+// Shared by lookupNewWord (single "Add vocabulary") and _fetchWordInfo
+// (bulk import), which both fall back to MyMemory when dictionaryapi.dev
+// (Wiktionary-sourced) has no example — which is common even for everyday
+// words like "mammal".
+function _looksLikeSentence(seg) {
+    if (/[\t\r\n]/.test(seg)) return false;
+    const words = seg.split(/\s+/);
+    if (words.length < 3) return false;
+    if (/^\d+$/.test(words[words.length - 1])) return false;
+    return true;
+}
+
 function openAddWordManual() {
     const wordCount = currentBookData?.words?.length ?? 0;
     if (wordCount >= 300) {
@@ -1305,16 +1320,17 @@ async function lookupNewWord(word) {
             const [dictRes, gtRes, memRes] = await Promise.allSettled([
                 fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${enc(word)}`),
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
-                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`)
+                fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null)
             ]);
+            const memMatches = (memRes.status === 'fulfilled' && memRes.value && memRes.value.matches) || [];
 
             // ── Dictionary API ──
+            const examples = [];
             if (dictRes.status === 'fulfilled' && dictRes.value.ok) {
                 const data = await dictRes.value.json();
                 _lookupPhonetic     = data[0]?.phonetics?.find(p => p.text)?.text || '';
                 _lookupPartOfSpeech = data[0]?.meanings?.[0]?.partOfSpeech || '';
 
-                const examples = [];
                 for (const entry of data) {
                     for (const meaning of entry.meanings || []) {
                         for (const def of meaning.definitions || []) {
@@ -1325,27 +1341,43 @@ async function lookupNewWord(word) {
                     }
                     if (examples.length >= 5) break;
                 }
+            }
 
-                if (examples.length && !document.getElementById('aw-example').value) {
-                    document.getElementById('aw-example').value = examples[0];
+            // dictionaryapi.dev (Wiktionary-sourced) very often has zero
+            // example sentences even for common words — fall back to
+            // MyMemory's sentence-level TM matches (segment = English
+            // source text) that actually contain the word as a whole word,
+            // rather than leaving the example field permanently empty.
+            if (examples.length < 3 && memMatches.length) {
+                const wordRe = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+                for (const m of memMatches) {
+                    if (examples.length >= 3) break;
+                    const seg = (m.segment || '').trim();
+                    if (!seg || seg.toLowerCase() === word.toLowerCase()) continue;
+                    if (!_looksLikeSentence(seg) || !wordRe.test(seg)) continue;
+                    if (!examples.includes(seg)) examples.push(seg);
                 }
-                if (suggestWrap) {
-                    if (!examples.length) { suggestWrap.innerHTML = ''; }
-                    else {
-                        suggestWrap.innerHTML =
-                            '<div class="example-suggestion-label">💡 Ví dụ phổ biến — bấm để chọn:</div>' +
-                            examples.map(ex => {
-                                const attr = ex.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-                                const html = ex.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                                return `<button class="example-suggestion" data-ex="${attr}" onclick="selectExampleSuggestion(this)">${html}</button>`;
-                            }).join('');
-                        const firstBtn = suggestWrap.querySelector('.example-suggestion');
-                        if (firstBtn && !document.getElementById('aw-example').dataset.userEdited) {
-                            firstBtn.classList.add('selected');
-                        }
+            }
+
+            if (examples.length && !document.getElementById('aw-example').value) {
+                document.getElementById('aw-example').value = examples[0];
+            }
+            if (suggestWrap) {
+                if (!examples.length) { suggestWrap.innerHTML = ''; }
+                else {
+                    suggestWrap.innerHTML =
+                        '<div class="example-suggestion-label">💡 Ví dụ phổ biến — bấm để chọn:</div>' +
+                        examples.map(ex => {
+                            const attr = ex.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+                            const html = ex.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                            return `<button class="example-suggestion" data-ex="${attr}" onclick="selectExampleSuggestion(this)">${html}</button>`;
+                        }).join('');
+                    const firstBtn = suggestWrap.querySelector('.example-suggestion');
+                    if (firstBtn && !document.getElementById('aw-example').dataset.userEdited) {
+                        firstBtn.classList.add('selected');
                     }
                 }
-            } else if (suggestWrap) { suggestWrap.innerHTML = ''; }
+            }
 
             // ── Vietnamese meaning: Google Translate (primary) + MyMemory (alternatives) ──
             if (meaningSugWrap) {
@@ -1361,15 +1393,27 @@ async function lookupNewWord(word) {
                     }
                 }
 
-                // Alternatives: MyMemory ranked by quality
-                if (memRes.status === 'fulfilled' && memRes.value.ok) {
-                    const tData = await memRes.value.json();
-                    const matches = (tData.matches || [])
-                        .filter(m => m.translation && typeof m.translation === 'string')
+                // Alternatives: MyMemory, ranked by quality — but only TM
+                // entries whose SOURCE segment is the word itself count as
+                // a genuine "other meaning". MyMemory is a fuzzy-matched
+                // translation-memory search, not a dictionary: for a
+                // rare/short query it can return entire unrelated sentences
+                // that merely scored some fuzzy similarity (e.g. querying
+                // "inexplicably" returning "Bubaye inexplicably falls" with
+                // quality "0"), and treating their translation as a "meaning"
+                // produced nonsense suggestions.
+                if (memMatches.length) {
+                    const normWord = word.trim().toLowerCase().replace(/[.,!?;:'"]+$/, '');
+                    const matches = memMatches
+                        .filter(m => m.translation && typeof m.translation === 'string' && m.segment)
+                        .filter(m => m.segment.trim().toLowerCase().replace(/[.,!?;:'"]+$/, '') === normWord)
                         .sort((a, b) => (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0));
                     for (const m of matches) {
                         if (meanings.length >= 4) break;
-                        const val = m.translation.trim();
+                        // Trim trailing punctuation left over from a comma-separated
+                        // glossary-style TM segment (e.g. segment "mammal," yielding
+                        // translation "động vật có vú,").
+                        const val = m.translation.trim().replace(/[,.;:]+$/, '').trim();
                         if (!val || val.toLowerCase() === word.toLowerCase()) continue;
                         if (/^[a-z0-9\s\-,.']+$/i.test(val) && !/[àáảãạăắặẳẵằâấầẩẫậèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵđ]/i.test(val)) continue;
                         if (!seen.has(val.toLowerCase())) {
@@ -3014,19 +3058,42 @@ async function parseBulkInput() {
 }
 
 async function _fetchWordInfo(word) {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if (!res.ok) return { phonetic: '', partOfSpeech: '', example: '' };
-    const data = await res.json();
-    const entry    = Array.isArray(data) ? data[0] : null;
-    if (!entry) return { phonetic: '', partOfSpeech: '', example: '' };
-    const phonetic    = entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '';
-    const meaning     = entry.meanings?.[0];
-    const partOfSpeech = meaning?.partOfSpeech || '';
-    let example = '';
-    for (const m of entry.meanings || []) {
-        const def = m.definitions?.find(d => d.example);
-        if (def) { example = def.example; break; }
+    const [dictRes, memRes] = await Promise.allSettled([
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`),
+        fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null),
+    ]);
+
+    let phonetic = '', partOfSpeech = '', example = '';
+    if (dictRes.status === 'fulfilled' && dictRes.value.ok) {
+        const data = await dictRes.value.json();
+        const entry = Array.isArray(data) ? data[0] : null;
+        if (entry) {
+            phonetic     = entry.phonetic || entry.phonetics?.find(p => p.text)?.text || '';
+            partOfSpeech = entry.meanings?.[0]?.partOfSpeech || '';
+            for (const m of entry.meanings || []) {
+                const def = m.definitions?.find(d => d.example);
+                if (def) { example = def.example; break; }
+            }
+        }
     }
+
+    // dictionaryapi.dev (Wiktionary-sourced) very often has zero example
+    // sentences even for common words ("mammal" has none) — fall back to
+    // MyMemory's sentence-level TM matches (segment = English source text)
+    // that actually contain the word as a whole word, same fallback used
+    // by the single "Add vocabulary" lookup.
+    if (!example) {
+        const memMatches = (memRes.status === 'fulfilled' && memRes.value && memRes.value.matches) || [];
+        if (memMatches.length) {
+            const wordRe = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+            const candidate = memMatches.find(m => {
+                const seg = (m.segment || '').trim();
+                return seg && seg.toLowerCase() !== word.toLowerCase() && _looksLikeSentence(seg) && wordRe.test(seg);
+            });
+            if (candidate) example = candidate.segment.trim();
+        }
+    }
+
     return { phonetic, partOfSpeech, example };
 }
 

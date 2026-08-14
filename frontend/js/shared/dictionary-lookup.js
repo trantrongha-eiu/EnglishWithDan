@@ -43,6 +43,33 @@
   var _cache = new Map();
   var _pendingWordData = null;
 
+  // MyMemory is a fuzzy-matched translation-MEMORY search, not a dictionary —
+  // for a rare/short query it happily returns whole unrelated sentences that
+  // merely score some fuzzy similarity (e.g. querying "inexplicably" can
+  // return a match whose segment is "Bubaye inexplicably falls", quality "0",
+  // match 0.5). Treating that match's translation as an "other meaning" of
+  // the single word is wrong — only a match whose segment IS the word itself
+  // (a real word-level TM entry) is a genuine alternate meaning; anything
+  // else is a sentence-level entry, useful only as an example sentence.
+  function _normForMatch(s) {
+    return String(s || '').trim().toLowerCase().replace(/[.,!?;:'"]+$/, '');
+  }
+  function _escRegExp(s) {
+    return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  // Public-corpora TM entries are often glossary scrapes, not real sentences
+  // (e.g. "Mammal class\t83" — a tab-separated glossary row, not usage in
+  // context) — require actual sentence shape before treating a segment as
+  // an example: no tab/control chars, no trailing bare-number token, and
+  // enough words to be a real clause rather than a 2-word phrase pairing.
+  function _looksLikeSentence(seg) {
+    if (/[\t\r\n]/.test(seg)) return false;
+    var words = seg.split(/\s+/);
+    if (words.length < 3) return false;
+    if (/^\d+$/.test(words[words.length - 1])) return false;
+    return true;
+  }
+
   async function _vocabFetch(path, opts) {
     opts = opts || {};
     var res = await fetch(VOCAB_API_BASE + path, Object.assign({}, opts, {
@@ -207,16 +234,39 @@
     var otherMeanings = [];
     if (memRes.status === 'fulfilled') {
       var seen = {}; seen[primaryMeaning.toLowerCase()] = true;
+      var normWord = _normForMatch(word);
       var matches = ((memRes.value && memRes.value.matches) || [])
-        .filter(function (m) { return m.translation && typeof m.translation === 'string'; })
+        .filter(function (m) { return m.translation && typeof m.translation === 'string' && m.segment; })
         .sort(function (a, b) { return (parseFloat(b.quality) || 0) - (parseFloat(a.quality) || 0); });
       for (var k = 0; k < matches.length; k++) {
-        var val = matches[k].translation.trim();
+        // Only a match whose SOURCE segment is the queried word itself is a
+        // genuine word-level meaning — sentence-level fuzzy matches are
+        // handled separately below as example candidates, not meanings.
+        if (_normForMatch(matches[k].segment) !== normWord) continue;
+        // Trim trailing punctuation left over from a comma-separated
+        // glossary-style TM segment (e.g. segment "mammal," yielding
+        // translation "động vật có vú,").
+        var val = matches[k].translation.trim().replace(/[,.;:]+$/, '').trim();
         if (!val || val.length > 45 || seen[val.toLowerCase()]) continue;
         if (/^[a-z0-9\s\-,.'"!?()\[\]]+$/i.test(val)) continue;
         seen[val.toLowerCase()] = true;
         otherMeanings.push(val);
         if (otherMeanings.length >= 3) break;
+      }
+
+      // Sentence-level matches that actually contain the word as a whole
+      // word are still useful — as EXAMPLE sentences, not as "meanings".
+      // dictionaryapi.dev (Wiktionary-sourced) very often has zero example
+      // sentences even for common words, so this fills the gap.
+      if (examples.length < 3) {
+        var wordRe = new RegExp('\\b' + _escRegExp(normWord) + '\\b', 'i');
+        for (var m2 = 0; m2 < matches.length && examples.length < 3; m2++) {
+          var seg = matches[m2].segment.trim();
+          var normSeg = _normForMatch(seg);
+          if (normSeg === normWord) continue; // that's a meaning entry, not a sentence
+          if (!_looksLikeSentence(seg) || !wordRe.test(seg)) continue;
+          if (examples.indexOf(seg) === -1) examples.push(seg);
+        }
       }
     }
 
