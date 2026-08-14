@@ -106,37 +106,6 @@ describe('writingService.submitPractice', () => {
   });
 });
 
-describe('writingService.findPendingPracticeAttempt', () => {
-  test('returns null when the user has no pending practice attempt', async () => {
-    const student = await createStudent();
-    const result = await writingService.findPendingPracticeAttempt(student._id);
-    expect(result).toBeFalsy();
-  });
-
-  test('returns the attempt when gradingStatus is pending or ai_done', async () => {
-    const student = await createStudent();
-    const task1 = await createWritingTask1();
-    const attemptId = await writingService.submitPractice(student._id, {
-      taskType: 1, taskId: task1._id, answer: 'x', wordCount: 10,
-    });
-
-    const found = await writingService.findPendingPracticeAttempt(student._id);
-    expect(found).toBeTruthy();
-    expect(found._id.toString()).toBe(attemptId.toString());
-  });
-
-  test('does not return an attempt once gradingStatus is confirmed', async () => {
-    const student = await createStudent();
-    await WritingAttempt.create({
-      userId: student._id, submissionType: 'practice', examName: 'X',
-      gradingStatus: 'confirmed', status: 'completed',
-    });
-
-    const found = await writingService.findPendingPracticeAttempt(student._id);
-    expect(found).toBeFalsy();
-  });
-});
-
 describe('writingService.markFeedbackRead', () => {
   test('returns not_found for a missing attempt', async () => {
     const result = await writingService.markFeedbackRead(new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId());

@@ -75,12 +75,6 @@ async function listPracticeTasks(taskType) {
   return Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
 }
 
-async function findPendingPracticeAttempt(userId) {
-  return WritingAttempt.findOne({
-    userId, submissionType: 'practice', gradingStatus: { $in: ['pending', 'ai_done'] }
-  }).select('_id submittedAt').lean();
-}
-
 async function getPracticeTask(taskType) {
   const Model = taskType === 1 ? WritingTask1 : WritingTask2;
   return randomDoc(Model);
@@ -186,7 +180,7 @@ async function getSampleFilters() {
 }
 
 module.exports = {
-  startExam, submitExam, listPracticeTasks, findPendingPracticeAttempt, getPracticeTask, submitPractice,
+  startExam, submitExam, listPracticeTasks, getPracticeTask, submitPractice,
   getPracticeHistory, getDrafts, saveDraft, deleteDraft, getUnreadFeedbackCount, markFeedbackRead,
   getMyHistory, getAttempt, listSamples, getSampleFilters,
 };

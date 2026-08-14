@@ -183,7 +183,7 @@ async function _openDirectPracticeTask(taskType, taskId) {
       const serverDrafts = await loadDraftsFromServer();
       saved = serverDrafts.find(isSameTask) || null;
     }
-    if (isSameTask(saved) && !practiceState.hasPending) {
+    if (isSameTask(saved)) {
       _applyPracticeDraft(saved);
     } else {
       startPracticeTask(taskType, taskId, false);
@@ -1120,8 +1120,7 @@ const practiceState = {
   page: 1,
   wordCount: 0,
   stopwatchInterval: null,
-  seconds: 0,
-  hasPending: false
+  seconds: 0
 };
 
 // ── Practice task list – pagination ─────────────────────
@@ -1142,10 +1141,6 @@ function _renderTaskPage() {
     itemsEl.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px">Không tìm thấy đề nào phù hợp.</p>';
     return;
   }
-
-  const pendingBanner = practiceState.hasPending
-    ? `<div class="wr-pending-notice" style="margin-bottom:12px"><p class="wr-pending-title">⏳ Bạn đang có bài chờ chấm</p><p class="wr-pending-desc">Vui lòng đợi giáo viên trả bài trước khi nộp bài mới. Bạn vẫn có thể đọc đề để chuẩn bị.</p></div>`
-    : '';
 
   const cards = pageTasks.map((t, i) => {
     const idx = start + i + 1;
@@ -1171,7 +1166,7 @@ function _renderTaskPage() {
       </div>`
     : `<p style="text-align:center;font-size:12px;color:#9ca3af;padding:6px 0">${total} đề</p>`;
 
-  itemsEl.innerHTML = pendingBanner + `<div class="wt-task-grid">${cards}</div>` + pgHtml;
+  itemsEl.innerHTML = `<div class="wt-task-grid">${cards}</div>` + pgHtml;
 
   itemsEl.querySelectorAll('.wt-task-card').forEach(card => {
     card.addEventListener('click', () => startPracticeTask(taskType, card.dataset.id));
@@ -1436,10 +1431,6 @@ function _updatePracticeCardBadges(drafts) {
 }
 
 function restorePracticeWrite(idx) {
-  if (practiceState.hasPending) {
-    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài.', 'info');
-    return;
-  }
   const saved = practiceState.restorableDrafts?.[idx];
   if (!saved) return;
 
@@ -1498,27 +1489,10 @@ function showPracticeMode(pushHistory = true) {
 
 async function loadPracticeHistory(taskTypeFilter = null) {
   const listEl = document.getElementById('practice-history-list');
-  const noticeEl = document.getElementById('practice-pending-notice');
-  const descEl   = document.getElementById('practice-pending-desc');
   listEl.innerHTML = '<div class="spinner"></div>';
   try {
     const d = await apiFetch('/api/writing/practice/history');
     const allAttempts = d.attempts || [];
-
-    // Pending notice only in home mode (not in sidebar)
-    if (!taskTypeFilter) {
-      const pending = allAttempts.find(a => a.gradingStatus === 'pending' || a.gradingStatus === 'ai_done');
-      practiceState.hasPending = !!pending;
-      if (pending) {
-        noticeEl.style.display = '';
-        const taskLabel = ((pending.examName || '').includes('Task 1') || (pending.wordCount1 || 0) > 0) ? 'Task 1' : 'Task 2';
-        const gradingLabel = pending.gradingStatus === 'ai_done' ? 'AI đã chấm, đang chờ giáo viên xác nhận' : 'đang chờ chấm';
-        const date = new Date(pending.submittedAt).toLocaleDateString('vi-VN');
-        descEl.textContent = `Bài ${taskLabel} nộp ngày ${date} ${gradingLabel}. Kết quả sẽ hiện trong lịch sử sau khi được xác nhận.`;
-      } else {
-        noticeEl.style.display = 'none';
-      }
-    }
 
     const attempts = taskTypeFilter
       ? allAttempts.filter(a => {
@@ -1653,10 +1627,6 @@ function filterWritingTasks(query) {
 }
 
 function startPracticeTask(taskType, taskId, pushHistory = true) {
-  if (practiceState.hasPending) {
-    showToast('Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên trả bài trước khi làm bài mới.', 'info', 5000);
-    return;
-  }
   const task = practiceState.tasks.find(t => String(t._id) === String(taskId));
   if (!task) { showToast('Không tìm thấy đề bài', 'error'); return; }
 

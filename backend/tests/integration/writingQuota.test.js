@@ -8,7 +8,6 @@ const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createWritingTask1, createWritingTask2 } = require('../factories/contentFactory');
-const WritingAttempt = require('../../models/WritingAttempt');
 
 describe('POST /api/writing/start — daily quota (writingExam, 2/day)', () => {
   test('a free student can start twice, then gets 403 DAILY_LIMIT_REACHED on the 3rd', async () => {
@@ -48,27 +47,16 @@ describe('POST /api/writing/start — daily quota (writingExam, 2/day)', () => {
 });
 
 describe('POST /api/writing/practice/submit — daily quota (writingPractice, 3/day)', () => {
-  // submitPractice's own business rule blocks a 2nd submission while the
-  // previous one is still ungraded (findPendingPracticeAttempt) — unrelated
-  // to the daily quota, but it means each successive call in this test must
-  // have its predecessor marked graded first, or every call past the first
-  // would 429 for that reason instead of exercising the quota.
-  async function markAllConfirmed(userId) {
-    await WritingAttempt.updateMany({ userId }, { $set: { gradingStatus: 'confirmed' } });
-  }
-
   test('a free student can submit 3 practice attempts, then gets 403 DAILY_LIMIT_REACHED on the 4th', async () => {
     const user = await createStudent({ plan: 'free' });
     const token = signTokenFor(user);
     const body = { taskType: 2, answer: 'This is a practice essay answer for the quota test.', wordCount: 10 };
 
     for (let i = 0; i < 3; i++) {
-      await markAllConfirmed(user._id);
       const res = await request(app).post('/api/writing/practice/submit').set('Authorization', `Bearer ${token}`).send(body);
       expect(res.status).toBe(201);
     }
 
-    await markAllConfirmed(user._id);
     const fourth = await request(app).post('/api/writing/practice/submit').set('Authorization', `Bearer ${token}`).send(body);
     expect(fourth.status).toBe(403);
     expect(fourth.body).toMatchObject({
@@ -87,7 +75,6 @@ describe('POST /api/writing/practice/submit — daily quota (writingPractice, 3/
     const body = { taskType: 2, answer: 'Teacher test answer, long enough to be valid.', wordCount: 10 };
 
     for (let i = 0; i < 4; i++) {
-      await markAllConfirmed(user._id);
       const res = await request(app).post('/api/writing/practice/submit').set('Authorization', `Bearer ${token}`).send(body);
       expect(res.status).toBe(201);
     }

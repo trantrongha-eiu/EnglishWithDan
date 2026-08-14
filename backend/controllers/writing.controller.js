@@ -45,11 +45,6 @@ exports.getPracticeTask = guard(async (req, res) => {
   const taskType = parseInt(req.query.taskType);
   if (taskType !== 1 && taskType !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
 
-  const pending = await writingService.findPendingPracticeAttempt(req.user._id);
-  if (pending) {
-    return res.status(429).json({ success: false, pendingId: pending._id, message: 'Bạn còn bài đang chờ chấm. Vui lòng đợi giáo viên chấm xong trước khi nộp bài mới.' });
-  }
-
   const task = await writingService.getPracticeTask(taskType);
   if (!task) return res.status(404).json({ success: false, message: 'Chưa có đề bài. Vui lòng liên hệ giáo viên.' });
   res.json({ success: true, task, taskType });
@@ -60,9 +55,6 @@ exports.submitPractice = guard(async (req, res) => {
   const tNum = parseInt(taskType);
   if (tNum !== 1 && tNum !== 2) return res.status(400).json({ success: false, message: 'taskType phải là 1 hoặc 2' });
   if (!answer.trim()) return res.status(400).json({ success: false, message: 'Bài làm không được để trống' });
-
-  const pending = await writingService.findPendingPracticeAttempt(req.user._id);
-  if (pending) return res.status(429).json({ success: false, message: 'Bạn còn bài đang chờ chấm.' });
 
   const attemptId = await writingService.submitPractice(req.user._id, { taskType: tNum, taskId, answer, wordCount });
   res.status(201).json({ success: true, attemptId });
