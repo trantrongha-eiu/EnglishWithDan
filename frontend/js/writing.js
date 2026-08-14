@@ -1865,6 +1865,12 @@ async function submitPractice() {
     stopPracticeStopwatch();
     clearPracticeAutoSave(practiceState.taskType, practiceState.task?._id);
     deleteDraftFromServer(practiceState.taskType, practiceState.task?._id);
+    // Must happen before window.onbeforeunload is cleared below: a student
+    // closing the tab/switching apps right after "Đã nộp bài!" fires
+    // pagehide/visibilitychange, and _flushPracticeDraftOnLeave() only
+    // checks `practiceState.task` — leaving it set would silently resave
+    // (resurrect) the exact draft just deleted above.
+    practiceState.task = null;
     window.onbeforeunload = null;
     document.getElementById('practice-submit-modal').classList.remove('open');
     const label = `Task ${practiceState.taskType} (${practiceState.wordCount} từ)`;
