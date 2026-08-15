@@ -20,7 +20,7 @@ export function ConfirmProvider({ children }) {
             <div className="modal-header">
               <h3 className="modal-title">Xác nhận</h3>
             </div>
-            <div style={{ padding: '20px 24px', color: 'var(--text2)', lineHeight: 1.6 }}>
+            <div style={{ padding: '20px 24px', color: 'var(--text)', lineHeight: 1.6 }}>
               {state.msg}
             </div>
             <div style={{ display: 'flex', gap: 10, padding: '0 24px 20px', justifyContent: 'flex-end' }}>

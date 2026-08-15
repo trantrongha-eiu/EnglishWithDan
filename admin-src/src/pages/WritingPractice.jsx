@@ -64,8 +64,8 @@ function TypeGuide({ type }) {
   const g = TYPE_GUIDE[type];
   if (!g) return null;
   return (
-    <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)', marginBottom: 4 }}>
-      <strong style={{ color: 'var(--blue)' }}>{g.title}</strong> — {g.desc}
+    <div className="hint-box" style={{ borderRadius: 8, padding: '10px 14px', lineHeight: 1.65, marginBottom: 4 }}>
+      <strong style={{ color: 'var(--text)' }}>{g.title}</strong> — {g.desc}
       <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
         {g.fields.map(f => (
           <li key={f.name}><strong>{f.name}:</strong> {f.hint}</li>

@@ -337,7 +337,7 @@ function ImportJsonModal({ onClose, onImported }) {
         <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
 
           {/* Cấu trúc JSON */}
-          <div style={{ background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 10, padding: '12px 14px' }}>
+          <div className="hint-box" style={{ borderRadius: 10, padding: '12px 14px' }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: 8 }}>📖 Cấu trúc JSON</div>
             <pre style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--text2)', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-wrap' }}>{`[
   {

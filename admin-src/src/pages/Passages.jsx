@@ -68,7 +68,7 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
             <div style={{ textAlign: 'center', padding: 32, color: 'var(--text3)' }}>Đang tải...</div>
           ) : (
             <>
-              <div style={{ marginBottom: 14, padding: 12, background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, fontSize: 12, color: 'var(--text2)', lineHeight: 1.7 }}>
+              <div className="hint-box" style={{ marginBottom: 14, padding: 12, borderRadius: 8, lineHeight: 1.7 }}>
                 <strong style={{ color: 'var(--blue)' }}>Hướng dẫn nhập câu hỏi Reading:</strong>
                 <ul style={{ margin: '6px 0 0 0', paddingLeft: 16 }}>
                   <li><strong>True/False/NG:</strong> Nhóm "Câu hỏi thường". Câu hỏi là statement, đáp án: <code>TRUE</code> / <code>FALSE</code> / <code>NOT GIVEN</code></li>
@@ -199,7 +199,7 @@ function PassageModal({ passageId, onClose, onSaved }) {
             </div>
             <div className="form-group">
               <label className="form-label">Nội dung bài đọc <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(HTML)</span></label>
-              <div style={{ fontSize: 11, background: 'rgba(61,139,255,.08)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 7, padding: '9px 12px', marginBottom: 6, color: 'var(--text2)', lineHeight: 1.75 }}>
+              <div className="hint-box" style={{ fontSize: 11, borderRadius: 7, padding: '9px 12px', marginBottom: 6, lineHeight: 1.75 }}>
                 <strong>Định dạng HTML</strong> — frontend render trực tiếp bằng <code>innerHTML</code>.<br />
                 <strong>Thẻ thường dùng:</strong> <code>&lt;p&gt;...&lt;/p&gt;</code> đoạn văn · <code>&lt;strong&gt;</code> in đậm · <code>&lt;em&gt;</code> in nghiêng · <code>&lt;br&gt;</code> xuống dòng.<br />
                 <strong>Đoạn có ký tự (Matching Headings):</strong> Thêm ký tự A, B, C trước mỗi đoạn để học sinh ghép tiêu đề:<br />

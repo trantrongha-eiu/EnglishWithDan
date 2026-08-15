@@ -47,6 +47,14 @@
       --radius: 12px;
       --radius-sm: 8px;
       --shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      /* Hint/notice-box background+border — previously each page inlined its
+         own rgba(61,139,255,.06-.1) tint, which read as barely-there on a
+         near-black surface (too little contrast against --surface) and, on
+         GuideBox's toggle button, sat directly under var(--blue) text of
+         the same hue — the two blended together instead of standing apart. */
+      --info-bg: rgba(61, 139, 255, .16);
+      --info-bg-strong: rgba(61, 139, 255, .24);
+      --info-border: rgba(61, 139, 255, .45);
     }
 
     body {
@@ -889,7 +897,7 @@
       display: block;
       font-size: 12px;
       font-weight: 700;
-      color: var(--text2);
+      color: var(--text);
       text-transform: uppercase;
       letter-spacing: .5px;
       margin-bottom: 7px;
@@ -1551,6 +1559,25 @@ body { display: block; }
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr:hover td { background: rgba(255,255,255,.025); }
 
+/* ── HINT / INFO BOX (blue notice panels used across admin forms) ── */
+.hint-box {
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.hint-box strong { color: var(--text); }
+.hint-box code {
+  background: rgba(255, 255, 255, .08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--mono);
+}
+[data-theme="light"] .hint-box code { background: rgba(0, 0, 0, .07); }
+
 /* ── FILTER SEARCH INPUT ── */
 .filter-search {
   background: var(--bg);
@@ -1594,6 +1621,13 @@ body { display: block; }
   --yellow:   #b45309;
   --purple:   #7c3aed;
   --accent2:  #c62828;
+  /* Solid tints instead of low-alpha overlays — on a white --surface, a
+     6-10% blue overlay used on dark theme reads as almost invisible, so
+     light mode gets its own clearly-visible flat colors instead of
+     reusing the dark-tuned alpha values. */
+  --info-bg:        #dce9ff;
+  --info-bg-strong: #c7dcfd;
+  --info-border:    #a9c8f5;
 }
 
 /* Fix hardcoded rgba values that invert in light mode */

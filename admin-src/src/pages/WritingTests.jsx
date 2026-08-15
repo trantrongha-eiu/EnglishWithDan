@@ -110,8 +110,8 @@ function Task1Modal({ task, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
-          <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
-            <strong style={{ color: 'var(--blue)' }}>Các dạng Task 1:</strong>
+          <div className="hint-box" style={{ borderRadius: 8, padding: '10px 14px', lineHeight: 1.65 }}>
+            <strong style={{ color: 'var(--text)' }}>Các dạng Task 1:</strong>
             <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>
               <li><strong>Bar chart:</strong> "The bar chart below shows the number of..."</li>
               <li><strong>Line graph:</strong> "The graph below shows changes in..."</li>
@@ -214,8 +214,8 @@ function Task2Modal({ task, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
-          <div style={{ background: 'rgba(61,139,255,.07)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, lineHeight: 1.65, color: 'var(--text2)' }}>
-            <strong style={{ color: 'var(--blue)' }}>Các dạng đề Task 2:</strong>
+          <div className="hint-box" style={{ borderRadius: 8, padding: '10px 14px', lineHeight: 1.65 }}>
+            <strong style={{ color: 'var(--text)' }}>Các dạng đề Task 2:</strong>
             <ul style={{ margin: '5px 0 0 0', paddingLeft: 16 }}>
               <li><strong>Opinion:</strong> "...To what extent do you agree or disagree?"</li>
               <li><strong>Discussion:</strong> "Discuss both views and give your own opinion."</li>

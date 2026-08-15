@@ -59,7 +59,7 @@ function AudioUploader({ audioUrl, audioDuration, onUploaded }) {
       <label className="form-label">Audio của section</label>
 
       {audioUrl && !replacing && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px', background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.25)', borderRadius: 8 }}>
+        <div className="hint-box" style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: '12px 14px', borderRadius: 8 }}>
           <audio controls src={audioUrl} style={{ width: '100%', height: 36 }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 11, color: 'var(--text3)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

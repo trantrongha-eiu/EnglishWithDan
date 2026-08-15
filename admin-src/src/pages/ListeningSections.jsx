@@ -92,7 +92,7 @@ function AssembleModal({ sections, onClose, onSuccess }) {
             </div>
           </div>
 
-          <div style={{ background: 'rgba(61,139,255,.06)', border: '1px solid rgba(61,139,255,.2)', borderRadius: 8, padding: '10px 14px', fontSize: 12, color: 'var(--text2)' }}>
+          <div className="hint-box" style={{ borderRadius: 8, padding: '10px 14px' }}>
             💡 Sau khi tạo xong, vào <strong>Đề Listening</strong> để upload 1 file audio dài cho toàn bộ đề.
           </div>
 
