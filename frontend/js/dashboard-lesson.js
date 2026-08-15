@@ -76,9 +76,9 @@ function _lessonPickerGroupedHtml(lessons) {
     return keys.map(key => `
         <div class="up-group-label">${key ? `Lớp ${escHtml(key)}` : 'Chung (mọi lớp)'}</div>
         ${groups.get(key).map(l => `
-            <div class="up-item" data-id="${l._id}" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-                <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(l.title)}</span>
-                <span class="classroom-item-badge">${escHtml(l.difficulty)}</span>
+            <div class="up-item" data-id="${l._id}" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                <span style="flex:1;min-width:0;white-space:normal;word-break:break-word;line-height:1.35">${escHtml(l.title)}</span>
+                <span class="classroom-item-badge" style="flex-shrink:0;margin-top:1px">${escHtml(l.difficulty)}</span>
             </div>
         `).join('')}
     `).join('');
