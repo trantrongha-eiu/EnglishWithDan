@@ -1618,7 +1618,10 @@ body { display: block; }
 [data-theme="light"] .badge-green  { color: #047857; background: rgba(4,120,87,.1); }
 [data-theme="light"] .badge-yellow { color: #b45309; background: rgba(180,83,9,.12); }
 [data-theme="light"] .badge-purple { color: #7c3aed; background: rgba(124,58,237,.1); }
-[data-theme="light"] .badge-red    { color: #c62828; background: rgba(198,40,40,.1); }
+/* #c62828 on its own pastel pill was only ~4.8:1 — right on the AA line,
+   which read as "too similar" in practice (e.g. the "Chờ chấm" badge in
+   Chấm bài). #991b1b gets this to ~7:1. */
+[data-theme="light"] .badge-red    { color: #991b1b; background: rgba(198,40,40,.1); }
 
 /* Theme toggle button size */
 .theme-toggle { font-size: 16px; }
