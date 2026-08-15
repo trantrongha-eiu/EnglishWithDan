@@ -88,7 +88,10 @@ async function getThread(uid, otherId, limit = 100) {
     isPeer: true,
     $or: [{ fromId: uid, toId: otherId }, { fromId: otherId, toId: uid }],
   };
-  const messages = await Message.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
+  const [messages, otherUser] = await Promise.all([
+    Message.find(filter).sort({ createdAt: -1 }).limit(limit).lean(),
+    User.findById(otherId).select('lastSeen').lean(),
+  ]);
   messages.reverse();
 
   await Message.updateMany(
@@ -96,7 +99,10 @@ async function getThread(uid, otherId, limit = 100) {
     { $set: { isRead: true } }
   );
 
-  return { status: 'ok', messages };
+  // peerLastSeen powers the "Đang hoạt động / hoạt động X phút trước"
+  // presence line in the chat header — re-fetched on every thread poll
+  // (peer-chat-widget.js's 5s interval) so it stays reasonably live.
+  return { status: 'ok', messages, peerLastSeen: otherUser?.lastSeen || null };
 }
 
 // One row per conversation partner: latest message + unread count. Powers
@@ -124,7 +130,7 @@ async function listConversations(uid) {
 
   if (!rows.length) return [];
   const partnerIds = rows.map(r => r._id);
-  const users = await User.find({ _id: { $in: partnerIds } }).select('firstName lastName username avatar').lean();
+  const users = await User.find({ _id: { $in: partnerIds } }).select('firstName lastName username avatar lastSeen').lean();
   const byId = new Map(users.map(u => [u._id.toString(), u]));
 
   return rows.map(r => {
@@ -133,6 +139,7 @@ async function listConversations(uid) {
       userId: r._id,
       name: u ? ((`${u.firstName || ''} ${u.lastName || ''}`.trim()) || u.username) : '(Đã xoá tài khoản)',
       avatar: u?.avatar || '',
+      lastSeen: u?.lastSeen || null,
       lastMessage: r.lastMessage,
       lastAt: r.lastAt,
       isLastFromMe: String(r.lastFromId) === String(uid),

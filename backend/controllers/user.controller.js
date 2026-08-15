@@ -168,7 +168,7 @@ exports.listPeerConversations = messageGuard(async (req, res) => {
 exports.getPeerThread = messageGuard(async (req, res) => {
   const result = await peerService.getThread(req.user._id, req.params.id);
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
-  res.json({ success: true, messages: result.messages });
+  res.json({ success: true, messages: result.messages, peerLastSeen: result.peerLastSeen });
 });
 
 // ── POST /api/user/peer/:id/message ──────────────────────────

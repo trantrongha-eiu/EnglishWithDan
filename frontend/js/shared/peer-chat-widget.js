@@ -65,6 +65,39 @@
     return Math.floor(diff / 86400) + ' ngày trước';
   }
 
+  function _pad2(n) { return n < 10 ? '0' + n : String(n); }
+
+  function _hm(d) { return _pad2(d.getHours()) + ':' + _pad2(d.getMinutes()); }
+
+  // Messenger-style per-message stamp: bare time for today, "Hôm qua HH:mm"
+  // for yesterday, "dd/MM HH:mm" further back.
+  function _fmtMsgStamp(iso) {
+    var d = new Date(iso);
+    var now = new Date();
+    var sameDay = d.toDateString() === now.toDateString();
+    if (sameDay) return _hm(d);
+    var yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+    if (d.toDateString() === yesterday.toDateString()) return 'Hôm qua ' + _hm(d);
+    return _pad2(d.getDate()) + '/' + _pad2(d.getMonth() + 1) + ' ' + _hm(d);
+  }
+
+  // "Online" threshold matches the admin panel's own definition (lastSeen
+  // within 5 minutes — backend/routes/admin/users.js's /online-users), so a
+  // student sees the same notion of "online" a teacher would.
+  var ONLINE_MS = 5 * 60 * 1000;
+  function _formatPresence(lastSeen) {
+    if (!lastSeen) return { text: '', online: false };
+    var diff = Date.now() - new Date(lastSeen).getTime();
+    if (diff < ONLINE_MS) return { text: 'Đang hoạt động', online: true };
+    var mins = Math.floor(diff / 60000);
+    if (mins < 60) return { text: 'Hoạt động ' + mins + ' phút trước', online: false };
+    var hours = Math.floor(diff / 3600000);
+    if (hours < 24) return { text: 'Hoạt động ' + hours + ' giờ trước', online: false };
+    var days = Math.floor(diff / 86400000);
+    if (days < 7) return { text: 'Hoạt động ' + days + ' ngày trước', online: false };
+    return { text: '', online: false };
+  }
+
   function _avatarHtml(avatar, name, cls) {
     return avatar
       ? '<img class="' + cls + '" src="' + escHtml(avatar) + '" alt="">'
@@ -86,7 +119,13 @@
       '.pcw-panel{position:absolute;bottom:64px;right:0;width:330px;max-width:calc(100vw - 24px);height:440px;max-height:calc(100vh - 110px);background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.22);display:none;flex-direction:column;overflow:hidden}' +
       '.pcw-panel.open{display:flex}' +
       '.pcw-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
-      '.pcw-header-title{font-weight:800;font-size:14.5px;color:var(--text,#111827);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.pcw-header-titles{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}' +
+      '.pcw-header-title{font-weight:800;font-size:14.5px;color:var(--text,#111827);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.pcw-header-sub{font-size:11px;color:var(--text3,#9ca3af);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;min-height:14px}' +
+      '.pcw-header-sub.online{color:var(--green,#22c55e)}' +
+      '.pcw-online-dot{width:7px;height:7px;border-radius:50%;background:var(--green,#22c55e);flex-shrink:0}' +
+      '.pcw-avatar-wrap{position:relative;flex-shrink:0}' +
+      '.pcw-avatar-wrap .pcw-online-dot{position:absolute;bottom:0;right:0;border:2px solid var(--surface,#fff)}' +
       '.pcw-icon-btn{background:none;border:none;color:var(--text3,#6b7280);cursor:pointer;font-size:15px;padding:4px;border-radius:6px;flex-shrink:0}' +
       '.pcw-icon-btn:hover{background:var(--surface2,#f3f4f6);color:var(--text,#111827)}' +
       '.pcw-list{flex:1;overflow-y:auto}' +
@@ -104,10 +143,12 @@
       '.pcw-conv-dot{width:9px;height:9px;border-radius:50%;background:var(--blue,#3d8bff)}' +
       '.pcw-empty{margin:auto;padding:24px;text-align:center;color:var(--text3,#9ca3af);font-size:13px}' +
       '.pcw-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}' +
-      '.pcw-row{display:flex;max-width:80%}' +
-      '.pcw-row.mine{align-self:flex-end}' +
+      '.pcw-row{display:flex;flex-direction:column;max-width:80%}' +
+      '.pcw-row.mine{align-self:flex-end;align-items:flex-end}' +
+      '.pcw-row:not(.mine){align-items:flex-start}' +
       '.pcw-bubble{background:var(--surface2,#f3f4f6);color:var(--text,#111827);padding:8px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;word-break:break-word;white-space:pre-wrap}' +
       '.pcw-bubble.mine{background:var(--blue,#3d8bff);color:#fff}' +
+      '.pcw-msg-time{font-size:10px;color:var(--text3,#9ca3af);margin:2px 4px 0}' +
       '.pcw-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
       '.pcw-input{flex:1;resize:none;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:8px 11px;font-family:inherit;font-size:13.5px;background:var(--bg,var(--surface,#fff));color:var(--text,#111827);max-height:80px}' +
       '.pcw-input:focus{outline:none;border-color:var(--blue,#3d8bff)}' +
@@ -196,8 +237,9 @@
     list.className = 'pcw-list';
     list.innerHTML = _conversations.map(function (c) {
       var unread = c.unread > 0;
+      var online = _formatPresence(c.lastSeen).online;
       return '<div class="pcw-conv-row' + (unread ? ' unread' : '') + '" data-peer="' + c.userId + '">' +
-        _avatarHtml(c.avatar, c.name, 'pcw-conv-avatar') +
+        '<span class="pcw-avatar-wrap">' + _avatarHtml(c.avatar, c.name, 'pcw-conv-avatar') + (online ? '<span class="pcw-online-dot"></span>' : '') + '</span>' +
         '<div class="pcw-conv-info">' +
           '<div class="pcw-conv-name">' + escHtml(c.name) + '</div>' +
           '<div class="pcw-conv-preview">' + (c.isLastFromMe ? 'Bạn: ' : '') + escHtml(c.lastMessage || '') + '</div>' +
@@ -214,20 +256,24 @@
       row.addEventListener('click', function () {
         var peerId = row.getAttribute('data-peer');
         var conv = _conversations.filter(function (c) { return String(c.userId) === peerId; })[0];
-        _openThread(peerId, conv ? conv.name : '', conv ? conv.avatar : '');
+        _openThread(peerId, conv ? conv.name : '', conv ? conv.avatar : '', conv ? conv.lastSeen : null);
       });
     });
   }
 
   // ── Thread view ───────────────────────────────────────────────────
-  function _openThread(peerId, peerName, avatar) {
+  function _openThread(peerId, peerName, avatar, lastSeen) {
     _activePeerId = peerId;
     _activePeerName = peerName;
     _view = 'thread';
+    var presence = _formatPresence(lastSeen);
     _header.innerHTML =
       '<button class="pcw-icon-btn" id="pcw-back-btn" title="Quay lại"><i class="fas fa-arrow-left"></i></button>' +
-      _avatarHtml(avatar, peerName, 'pcw-conv-avatar') +
-      '<span class="pcw-header-title">' + escHtml(peerName) + '</span>' +
+      '<span class="pcw-avatar-wrap">' + _avatarHtml(avatar, peerName, 'pcw-conv-avatar') + (presence.online ? '<span class="pcw-online-dot"></span>' : '') + '</span>' +
+      '<div class="pcw-header-titles">' +
+        '<span class="pcw-header-title">' + escHtml(peerName) + '</span>' +
+        '<span class="pcw-header-sub' + (presence.online ? ' online' : '') + '" id="pcw-header-presence">' + escHtml(presence.text) + '</span>' +
+      '</div>' +
       '<button class="pcw-icon-btn" id="pcw-close-btn" title="Đóng"><i class="fas fa-times"></i></button>';
     document.getElementById('pcw-back-btn').addEventListener('click', function () {
       _activePeerId = null;
@@ -263,6 +309,27 @@
     _threadPollTimer = null;
   }
 
+  // Refreshes just the header's presence subtitle + avatar dot — called on
+  // every thread poll (THREAD_POLL_MS) so "Đang hoạt động" / "Hoạt động X
+  // phút trước" stays reasonably live without re-rendering the whole header
+  // (which would lose focus/scroll state).
+  function _updateHeaderPresence(lastSeen) {
+    var sub = document.getElementById('pcw-header-presence');
+    if (!sub) return;
+    var presence = _formatPresence(lastSeen);
+    sub.textContent = presence.text;
+    sub.classList.toggle('online', presence.online);
+    var wrap = _header.querySelector('.pcw-avatar-wrap');
+    if (wrap) {
+      var dot = wrap.querySelector('.pcw-online-dot');
+      if (presence.online && !dot) {
+        wrap.insertAdjacentHTML('beforeend', '<span class="pcw-online-dot"></span>');
+      } else if (!presence.online && dot) {
+        dot.remove();
+      }
+    }
+  }
+
   async function _renderThread() {
     if (!_activePeerId) return;
     var list = document.getElementById('pcw-messages');
@@ -277,10 +344,14 @@
       } else {
         list.innerHTML = d.messages.map(function (m) {
           var mine = m.fromId === myId || (m.fromId && m.fromId._id === myId);
-          return '<div class="pcw-row' + (mine ? ' mine' : '') + '"><div class="pcw-bubble' + (mine ? ' mine' : '') + '">' + escHtml(m.body) + '</div></div>';
+          return '<div class="pcw-row' + (mine ? ' mine' : '') + '">' +
+            '<div class="pcw-bubble' + (mine ? ' mine' : '') + '">' + escHtml(m.body) + '</div>' +
+            '<div class="pcw-msg-time">' + _fmtMsgStamp(m.createdAt) + '</div>' +
+          '</div>';
         }).join('');
         if (wasNearBottom) list.scrollTop = list.scrollHeight;
       }
+      _updateHeaderPresence(d.peerLastSeen);
       // Reading the thread marks it read server-side — reflect that locally
       // so the badge doesn't wait for the next 20s poll to clear.
       var conv = _conversations.filter(function (c) { return String(c.userId) === String(_activePeerId); })[0];
@@ -344,7 +415,7 @@
       el.addEventListener('click', function () {
         _panelOpen = true;
         _panel.classList.add('open');
-        _openThread(conv.userId, conv.name, conv.avatar);
+        _openThread(conv.userId, conv.name, conv.avatar, conv.lastSeen);
       });
     }
   }
