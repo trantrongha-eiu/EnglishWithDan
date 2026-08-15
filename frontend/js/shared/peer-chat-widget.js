@@ -81,6 +81,20 @@
     return _pad2(d.getDate()) + '/' + _pad2(d.getMonth() + 1) + ' ' + _hm(d);
   }
 
+  // Three-state status for MY last message, shown Messenger-style under it:
+  //  - "Đã xem": the recipient has opened this thread (isRead, set server-
+  //    side by getThread() when they fetch it).
+  //  - "Đã nhận": not read yet, but the recipient has been active on the
+  //    site (peerLastSeen) since this message was sent — there's no push
+  //    delivery in this polling-based chat, so "delivered" is approximated
+  //    as "their client would have picked it up by now."
+  //  - "Đã gửi": neither of the above yet.
+  function _msgStatus(m, peerLastSeen) {
+    if (m.isRead) return 'Đã xem';
+    if (peerLastSeen && new Date(peerLastSeen).getTime() >= new Date(m.createdAt).getTime()) return 'Đã nhận';
+    return 'Đã gửi';
+  }
+
   // "Online" threshold matches the admin panel's own definition (lastSeen
   // within 5 minutes — backend/routes/admin/users.js's /online-users), so a
   // student sees the same notion of "online" a teacher would.
@@ -149,6 +163,7 @@
       '.pcw-bubble{background:var(--surface2,#f3f4f6);color:var(--text,#111827);padding:8px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;word-break:break-word;white-space:pre-wrap}' +
       '.pcw-bubble.mine{background:var(--blue,#3d8bff);color:#fff}' +
       '.pcw-msg-time{font-size:10px;color:var(--text3,#9ca3af);margin:2px 4px 0}' +
+      '.pcw-msg-status{font-size:10px;color:var(--text3,#9ca3af);margin:1px 4px 0}' +
       '.pcw-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
       '.pcw-input{flex:1;resize:none;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:8px 11px;font-family:inherit;font-size:13.5px;background:var(--bg,var(--surface,#fff));color:var(--text,#111827);max-height:80px}' +
       '.pcw-input:focus{outline:none;border-color:var(--blue,#3d8bff)}' +
@@ -342,11 +357,22 @@
       if (!d.messages.length) {
         list.innerHTML = '<div class="pcw-empty">Chưa có tin nhắn nào. Gửi lời chào đầu tiên nhé!</div>';
       } else {
-        list.innerHTML = d.messages.map(function (m) {
+        var lastMineIdx = -1;
+        d.messages.forEach(function (m, i) {
           var mine = m.fromId === myId || (m.fromId && m.fromId._id === myId);
+          if (mine) lastMineIdx = i;
+        });
+        list.innerHTML = d.messages.map(function (m, i) {
+          var mine = m.fromId === myId || (m.fromId && m.fromId._id === myId);
+          // Status line only under MY latest message (Messenger shows it
+          // there, not repeated under every one of my messages).
+          var statusHtml = (mine && i === lastMineIdx)
+            ? '<div class="pcw-msg-status">' + escHtml(_msgStatus(m, d.peerLastSeen)) + '</div>'
+            : '';
           return '<div class="pcw-row' + (mine ? ' mine' : '') + '">' +
             '<div class="pcw-bubble' + (mine ? ' mine' : '') + '">' + escHtml(m.body) + '</div>' +
             '<div class="pcw-msg-time">' + _fmtMsgStamp(m.createdAt) + '</div>' +
+            statusHtml +
           '</div>';
         }).join('');
         if (wasNearBottom) list.scrollTop = list.scrollHeight;
