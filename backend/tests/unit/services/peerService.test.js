@@ -77,14 +77,22 @@ describe('peerService.sendPeerMessage / getThread / listConversations', () => {
     expect(result.status).toBe('not_found');
   });
 
-  test('peer messages never leak into the teacher-inbox unread count', async () => {
+  test('peer messages never leak into the teacher-inbox message list, but do count toward the nav unread badge', async () => {
     const a = await createStudent();
     const b = await createStudent();
     const userMessageService = require('../../../services/userMessageService');
 
     await peerService.sendPeerMessage(a._id, 'A', b._id, 'Chào bạn!');
+
+    // listMessages() is the teacher/admin "Hộp thư" inbox view — peer chat
+    // has its own separate conversation/thread UI, so it must stay excluded here.
+    const { messages } = await userMessageService.listMessages(b._id, 1, 30);
+    expect(messages.some(m => m.isPeer)).toBe(false);
+
+    // getUnreadCount() feeds the site-wide nav badge instead, which should
+    // reflect every message the student hasn't read yet, peer chat included.
     const unread = await userMessageService.getUnreadCount(b._id);
-    expect(unread).toBe(0);
+    expect(unread).toBe(1);
   });
 
   test('listConversations returns one row per partner with the latest message and unread count', async () => {

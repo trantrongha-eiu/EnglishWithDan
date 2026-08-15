@@ -246,10 +246,22 @@
   if (token) {
     var headers = window.AuthService ? window.AuthService.authHeader() : { Authorization: 'Bearer ' + token };
 
-    fetch(API + '/user/messages/unread-count', { headers: headers })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { if (d.count > 0) showBadge('navInboxBadge', d.count); })
-      .catch(function () {});
+    // Inbox badge (teacher/admin messages + peer student-to-student chat,
+    // see backend userMessageService.getUnreadCount) polls on an interval
+    // instead of a single fetch on page load — previously a message that
+    // arrived while the student was browsing never showed up on the
+    // "Hộp thư" icon until the next full page load/navigation. Unconditional
+    // showBadge() call (not gated on count > 0) so the badge also clears
+    // itself once the student reads the message in another tab.
+    var INBOX_POLL_MS = 20000;
+    function _pollInboxBadge() {
+      fetch(API + '/user/messages/unread-count', { headers: headers })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { showBadge('navInboxBadge', d.count || 0); })
+        .catch(function () {});
+    }
+    _pollInboxBadge();
+    setInterval(_pollInboxBadge, INBOX_POLL_MS);
 
     fetch(API + '/writing/unread-feedback-count', { headers: headers })
       .then(function (r) { return r.json(); })

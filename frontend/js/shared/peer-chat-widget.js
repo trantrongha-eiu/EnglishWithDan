@@ -113,7 +113,13 @@
       '.pcw-input:focus{outline:none;border-color:var(--blue,#3d8bff)}' +
       '.pcw-send-btn{background:var(--blue,#3d8bff);color:#fff;border:none;border-radius:10px;width:36px;flex-shrink:0;cursor:pointer;font-size:14px}' +
       '.pcw-send-btn:disabled{opacity:.5;cursor:default}' +
-      '@media(max-width:480px){#pcw-root{bottom:12px;right:12px}.pcw-panel{width:calc(100vw - 24px);right:-4px}}';
+      // Stacks the launcher above the floating Zalo contact button
+      // (.zalo-float/.zalo-btn, css/main.css) instead of sitting directly on
+      // top of it when both appear on the same page — applied conditionally
+      // via _buildWidget()'s runtime check, so pages without a Zalo button
+      // keep the normal corner-hugging position.
+      '#pcw-root.pcw-above-zalo{bottom:100px}' +
+      '@media(max-width:480px){#pcw-root{bottom:12px;right:12px}.pcw-panel{width:calc(100vw - 24px);right:-4px}#pcw-root.pcw-above-zalo{bottom:80px}}';
     document.head.appendChild(s);
   }
 
@@ -124,6 +130,7 @@
     _injectStyles();
     _root = document.createElement('div');
     _root.id = 'pcw-root';
+    if (document.querySelector('.zalo-float, .zalo-btn')) _root.classList.add('pcw-above-zalo');
     _root.innerHTML =
       '<div class="pcw-panel" id="pcw-panel">' +
         '<div class="pcw-header" id="pcw-header"></div>' +

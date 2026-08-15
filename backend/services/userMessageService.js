@@ -5,11 +5,19 @@ const Message = require('../models/Message');
 const User = require('../models/User');
 
 async function getUnreadCount(uid) {
-  const [personal, broadcast] = await Promise.all([
+  // Feeds the "Hộp thư" nav badge, so it needs to reflect every kind of
+  // message a student can receive — teacher/admin personal + broadcast, AND
+  // peer (student-to-student) chat. Peer messages were previously excluded
+  // entirely here (they're deliberately excluded from listMessages(), which
+  // is the teacher inbox view, but that exclusion had leaked into this count
+  // too) — a student with unread peer messages saw no badge at all unless
+  // they also had an unread teacher message.
+  const [personal, broadcast, peer] = await Promise.all([
     Message.countDocuments({ toId: uid, isBroadcast: false, isPeer: { $ne: true }, isRead: false, deletedBy: { $ne: uid } }),
-    Message.countDocuments({ isBroadcast: true, readBy: { $ne: uid }, deletedBy: { $ne: uid } })
+    Message.countDocuments({ isBroadcast: true, readBy: { $ne: uid }, deletedBy: { $ne: uid } }),
+    Message.countDocuments({ toId: uid, isPeer: true, isRead: false, deletedBy: { $ne: uid } })
   ]);
-  return personal + broadcast;
+  return personal + broadcast + peer;
 }
 
 async function listMessages(uid, page, limit) {
