@@ -132,6 +132,28 @@ export default function Messages() {
     });
   }
 
+  async function deleteAllSent() {
+    confirm(`Xóa TOÀN BỘ ${total} thư đã gửi? Không thể hoàn tác.`, async () => {
+      try {
+        await apiFetch('/admin/messages', { method: 'DELETE' });
+        toast('Đã xóa toàn bộ thư đã gửi');
+        setPage(1);
+        loadMessages(1);
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
+  async function deleteAllReceived() {
+    confirm(`Xóa TOÀN BỘ ${receivedTotal} thư đã nhận? Không thể hoàn tác.`, async () => {
+      try {
+        await apiFetch('/admin/messages/received', { method: 'DELETE' });
+        toast('Đã xóa toàn bộ thư đã nhận');
+        setReceivedPage(1);
+        loadReceived(1);
+      } catch (e) { toast(e.message, 'error'); }
+    });
+  }
+
   async function loadOnline() {
     try {
       const d = await apiFetch('/admin/online-users');
@@ -298,6 +320,11 @@ export default function Messages() {
 
       {box === 'sent' ? (
         <>
+          {isAdmin && total > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+              <button className="btn btn-danger btn-sm" onClick={deleteAllSent}>🗑 Xóa toàn bộ</button>
+            </div>
+          )}
           {/* ── Sent messages table ── */}
           <div className="table-wrap">
             <table className="table">
@@ -354,6 +381,11 @@ export default function Messages() {
         </>
       ) : box === 'received' ? (
         <>
+          {isAdmin && receivedTotal > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+              <button className="btn btn-danger btn-sm" onClick={deleteAllReceived}>🗑 Xóa toàn bộ</button>
+            </div>
+          )}
           {/* ── Received messages table (student replies, payment notices, ...) ── */}
           <div className="table-wrap">
             <table className="table">

@@ -84,6 +84,21 @@ router.delete('/messages/received/:id', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// DELETE /api/admin/messages/received – xóa toàn bộ thư đã nhận (soft-delete
+// cho người xem này — không ảnh hưởng bản ghi phía người gửi, cùng cơ chế
+// deletedBy với xóa từng thư ở trên).
+router.delete('/messages/received', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await Message.updateMany(
+      { toId: req.user._id, deletedBy: { $ne: req.user._id } },
+      { $addToSet: { deletedBy: req.user._id } }
+    );
+    res.json({ success: true, deletedCount: result.modifiedCount });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // POST /api/admin/messages  – gửi thư mới
 router.post('/messages', auth, teacherOnly, async (req, res) => {
   try {
@@ -135,6 +150,18 @@ router.delete('/messages/:id', auth, teacherOnly, async (req, res) => {
   try {
     await Message.findOneAndDelete({ _id: req.params.id, fromId: req.user._id });
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/messages – xóa toàn bộ thư đã gửi (bởi chính người dùng
+// này — hard-delete, cùng cơ chế với xóa từng thư ở trên; không đụng tới
+// thư do admin/giáo viên khác gửi).
+router.delete('/messages', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await Message.deleteMany({ fromId: req.user._id });
+    res.json({ success: true, deletedCount: result.deletedCount });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

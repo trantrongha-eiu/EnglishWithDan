@@ -134,6 +134,63 @@ describe('DELETE /api/admin/messages/received/:id', () => {
   });
 });
 
+describe('DELETE /api/admin/messages (bulk, sent)', () => {
+  test('admin can delete all of their own sent messages in one call, leaving other senders untouched', async () => {
+    const admin = await createAdmin();
+    const otherAdmin = await createAdmin();
+    const student = await createStudent();
+    await Message.create([
+      { fromId: admin._id, fromName: admin.username, toId: student._id, body: 'msg1', isBroadcast: false },
+      { fromId: admin._id, fromName: admin.username, toId: student._id, body: 'msg2', isBroadcast: false },
+      { fromId: otherAdmin._id, fromName: otherAdmin.username, toId: student._id, body: 'not mine', isBroadcast: false },
+    ]);
+
+    const res = await request(app).delete('/api/admin/messages').set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.deletedCount).toBe(2);
+
+    expect(await Message.countDocuments({ fromId: admin._id })).toBe(0);
+    expect(await Message.countDocuments({ fromId: otherAdmin._id })).toBe(1);
+  });
+
+  test('a teacher is blocked from bulk-deleting sent messages', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).delete('/api/admin/messages').set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(res.status).toBe(403);
+  });
+});
+
+describe('DELETE /api/admin/messages/received (bulk)', () => {
+  test('admin can soft-delete all received messages in one call, leaving other recipients untouched', async () => {
+    const admin = await createAdmin();
+    const otherAdmin = await createAdmin();
+    const student = await createStudent();
+    await Message.create([
+      { fromId: student._id, fromName: student.username, toId: admin._id, body: 'r1', isBroadcast: false },
+      { fromId: student._id, fromName: student.username, toId: admin._id, body: 'r2', isBroadcast: false },
+      { fromId: student._id, fromName: student.username, toId: otherAdmin._id, body: 'not mine', isBroadcast: false },
+    ]);
+
+    const res = await request(app).delete('/api/admin/messages/received').set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.deletedCount).toBe(2);
+
+    const listRes = await request(app).get('/api/admin/messages/received').set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(listRes.body.total).toBe(0);
+
+    // Soft delete — documents still exist, and the other admin's inbox is untouched.
+    expect(await Message.countDocuments({ toId: admin._id })).toBe(2);
+    const otherListRes = await request(app).get('/api/admin/messages/received').set('Authorization', `Bearer ${signTokenFor(otherAdmin)}`);
+    expect(otherListRes.body.total).toBe(1);
+  });
+
+  test('a teacher is blocked from bulk-deleting received messages', async () => {
+    const teacher = await createTeacher();
+    const res = await request(app).delete('/api/admin/messages/received').set('Authorization', `Bearer ${signTokenFor(teacher)}`);
+    expect(res.status).toBe(403);
+  });
+});
+
 describe('GET /api/user/activity-heatmap', () => {
   test('requires authentication', async () => {
     const res = await request(app).get('/api/user/activity-heatmap');
