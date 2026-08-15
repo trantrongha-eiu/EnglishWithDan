@@ -24,5 +24,10 @@ EssentialGrammarAttemptLogSchema.index({ userId: 1, lessonId: 1, createdAt: -1 }
 // Admin: hoạt động gần đây / breakdown toàn lesson, và nguồn cho "câu sai
 // nhiều" (aggregate theo lessonId, không quan tâm ai làm).
 EssentialGrammarAttemptLogSchema.index({ lessonId: 1, createdAt: -1 });
+// Retention: auto-delete 3 months after the attempt was logged — student
+// practice history isn't kept indefinitely (unlike VocabBook, the personal
+// saved-word notebooks, which have no expiry). EssentialGrammarAttempt (the
+// Best Score/Attempt Count aggregate row) is untouched — only this log.
+EssentialGrammarAttemptLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('EssentialGrammarAttemptLog', EssentialGrammarAttemptLogSchema);

@@ -24,5 +24,9 @@ const ListeningPracticeAttemptSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 ListeningPracticeAttemptSchema.index({ userId: 1, submittedAt: -1 });
+// Retention: auto-delete 3 months after the attempt was created — student
+// practice history isn't kept indefinitely (unlike VocabBook, the personal
+// saved-word notebooks, which have no expiry).
+ListeningPracticeAttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('ListeningPracticeAttempt', ListeningPracticeAttemptSchema);

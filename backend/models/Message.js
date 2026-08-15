@@ -38,5 +38,14 @@ MessageSchema.index({ fromId: 1, createdAt: -1 });
 // covers both without needing an $or across two separate indexes.
 MessageSchema.index({ isPeer: 1, fromId: 1, toId: 1, createdAt: 1 });
 MessageSchema.index({ isPeer: 1, toId: 1, fromId: 1, createdAt: 1 });
+// Retention: auto-delete peer (student-to-student) chat messages 3 months
+// after they were sent — a partial TTL index so it only ever matches
+// isPeer:true rows. Teacher/admin messages, broadcasts, and gift messages
+// (giftHammers/giftStreakDays, which a student may not have claimed yet)
+// are untouched regardless of age.
+MessageSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: 90 * 24 * 60 * 60, partialFilterExpression: { isPeer: true } }
+);
 
 module.exports = mongoose.model('Message', MessageSchema);

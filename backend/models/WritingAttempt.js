@@ -91,5 +91,11 @@ const WritingAttemptSchema = new mongoose.Schema({
 
 WritingAttemptSchema.index({ userId: 1, submittedAt: -1 });
 WritingAttemptSchema.index({ examId: 1, submittedAt: -1 });
+// Retention: auto-delete 3 months after the attempt was created, no
+// exception for gradingStatus/feedbackRead (confirmed decision — a
+// submission still pending/unread at 3 months is deleted like any other).
+// Student practice/exam history isn't kept indefinitely (unlike VocabBook,
+// the personal saved-word notebooks, which have no expiry).
+WritingAttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('WritingAttempt', WritingAttemptSchema);

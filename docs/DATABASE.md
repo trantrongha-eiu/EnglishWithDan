@@ -9,7 +9,7 @@ Grouping matches ARCHITECTURE.md's Database architecture section exactly: **Iden
 ## Patterns across the schema
 
 - **`userId`/`studentId` naming is inconsistent, on purpose or not.** Most models that belong to a student use `userId` (`VocabBook`, `TestAttempt`, `DifficultWord`, `TuitionFee` uses `studentId`, `WritingPracticeAttempt` uses `studentId`, `Task2Draft` uses `userId`). There's no single convention — if you're writing a query or an aggregation that joins across attempt types, double-check the field name per model rather than assuming `userId` everywhere.
-- **TTL auto-expiry is used for exactly two kinds of collection**: high-volume practice-drill attempts that don't need to be retained forever (`Task1Attempt` 30d, `Task2Attempt` 60d, `Task2TemplateAttempt` 30d, `WritingPracticeAttempt` 30d), and autosave drafts that are meaningless once stale (`WritingDraft` 30d from last save, `Task2Draft` 7d from last save). Notably, the higher-stakes attempt types — `TestAttempt` (reading), `ListeningAttempt`, `WritingAttempt`, `SpeakingAttempt`, `ReadingPracticeAttempt`, `ListeningPracticeAttempt` — have **no** TTL and are retained indefinitely (subject to manual admin deletion via `routes/admin/attempts.js`). That split looks deliberate: the ones without TTL are the ones shown back to the student as history/feedback and reviewed by teachers (writing/speaking grading in particular depends on them persisting), while the TTL'd ones are disposable drill exhaust.
+- **TTL auto-expiry is now the default for almost every student attempt/history collection — a 3-month (90d) retention policy.** High-volume practice-drill attempts (`Task1Attempt` 30d, `Task2Attempt` 60d, `Task2TemplateAttempt` 30d, `WritingPracticeAttempt` 30d) and autosave drafts (`WritingDraft` 30d from last save, `Task2Draft` 7d from last save) keep their own shorter windows. The attempt/history types that used to be retained indefinitely — `TestAttempt` (reading), `ListeningAttempt`, `WritingAttempt`, `SpeakingAttempt`, `ReadingPracticeAttempt`, `ListeningPracticeAttempt`, `VocabularyLessonAttemptLog`, `EssentialGrammarAttemptLog` — now expire 90 days after creation too, **no exception for `WritingAttempt.gradingStatus`/`feedbackRead`** (confirmed decision: a submission still pending/unread at 3 months is deleted like any other). Peer (student-to-student) chat messages in `Message` also expire after 90 days via a **partial** TTL index (`partialFilterExpression: { isPeer: true }`) so admin/teacher/broadcast/gift messages are untouched regardless of age. Explicitly exempt from this policy: `VocabBook` (personal saved-word notebooks), `DifficultWord` (student-curated "words I got wrong" list), and the aggregate rows `VocabularyLessonAttempt`/`EssentialGrammarAttempt` (Best Score/Attempt Count state, not a log) — none of these have any TTL. Manual admin deletion via `routes/admin/attempts.js` still works regardless of TTL.
 - **Deleting a `User` doesn't cascade.** `DELETE /api/admin/users/:id` (`backend/routes/admin/users.js`) is a plain `User.findByIdAndDelete` — no corresponding cleanup of that user's `TestAttempt`/`WritingAttempt`/`VocabBook`/`TuitionFee`/`Message`/etc. documents. Consistent with ARCHITECTURE.md's "no transactions anywhere" — there's no multi-collection cleanup step at all, transactional or otherwise. In practice this means a deleted user leaves orphaned child documents with a `userId` that no longer resolves; nothing in the codebase queries for or reports on this, so it's silent.
 - **`WPLesson` is effectively write-only.** `WPExercise.lessonId` refs it, and `services/writingPracticeService.js` and `scripts/seedWritingPractice.js` both create/upsert `WPLesson` docs as a side effect of importing exercises (dedup key: `topicKey`+`level`) — but a repo-wide grep for `lessonId` turns up only the write sites; nothing ever `.populate('lessonId')`s or otherwise reads a `WPLesson`'s own fields (`titleVi`, `lessonType`, `grammarFocus`, `difficulty`) back out. The collection accumulates real documents, they're just never read. Less clear-cut than `AccessKey` (there's no unused *feature* here, just unused *fields*), but worth knowing before assuming lesson metadata is used anywhere in what students see.
 - **Content models are almost entirely unindexed beyond `{isActive}`-shaped compound indexes** (or nothing at all — see `WritingExam`, `WritingTask1`, `WritingTask2`, `SpeakingQuestion`, `SpeakingMaterial`, `WritingSample`, `WPLesson`, `Course`). This tracks with them being low-cardinality, admin-curated collections (dozens to low hundreds of documents) rather than something a missing index would meaningfully slow down — different from the attempt/user collections, where every index earns its keep against real per-request query volume (see the indexing pass called out in README's history, phase 3).
@@ -361,9 +361,9 @@ Student-generated, one document per exam/practice session. As a group these carr
 
 **Relationships:** References `User` (`userId`), `ReadingTest` (`testId`), `Passage` (`passagesUsed[]`). Referenced by nothing.
 
-**Indexes:** `{ status: 1, endTime: -1 }`, `{ userId: 1, status: 1 }`, `{ testId: 1, status: 1 }`.
+**Indexes:** `{ status: 1, endTime: -1 }`, `{ userId: 1, status: 1 }`, `{ testId: 1, status: 1 }`, TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created as `status: 'in-progress'` when a student starts a test (`services/readingService.js`), updated to `completed`/`timeout` on submit with final scoring filled in. Hard-deletable by admin (`routes/admin/attempts.js`). No TTL — retained indefinitely as the student's exam history.
+**Lifecycle:** Created as `status: 'in-progress'` when a student starts a test (`services/readingService.js`), updated to `completed`/`timeout` on submit with final scoring filled in. Hard-deletable by admin (`routes/admin/attempts.js`). TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
 **Common queries:**
 ```js
@@ -380,9 +380,9 @@ TestAttempt.find({ userId, status: 'completed' }).sort(...)                     
 
 **Relationships:** References `User`, `ListeningTest`. Referenced by nothing.
 
-**Indexes:** `{ userId: 1, submittedAt: -1 }`, `{ userId: 1, status: 1 }`, `{ testId: 1, submittedAt: -1 }` (plus a redundant field-level `index: true` on `userId`).
+**Indexes:** `{ userId: 1, submittedAt: -1 }`, `{ userId: 1, status: 1 }`, `{ testId: 1, submittedAt: -1 }` (plus a redundant field-level `index: true` on `userId`), TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created on submit (not on start — no in-progress row) by `services/listeningService.js`. Hard-deletable by admin. No TTL.
+**Lifecycle:** Created on submit (not on start — no in-progress row) by `services/listeningService.js`. Hard-deletable by admin. TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
 **Common queries:**
 ```js
@@ -399,9 +399,9 @@ ListeningAttempt.aggregate([...])                              // admin stats/le
 
 **Relationships:** References `User`, `WritingExam` (`examId`), `WritingTask1` (`task1Id`), `WritingTask2` (`task2Id`). Referenced by nothing.
 
-**Indexes:** `{ userId: 1, submittedAt: -1 }`, `{ examId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`, `submissionType`, `feedbackRead`).
+**Indexes:** `{ userId: 1, submittedAt: -1 }`, `{ examId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`, `submissionType`, `feedbackRead`), TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created on submit with `gradingStatus: 'pending'`. Updated to `ai_done` once Gemini grades it (`services/geminiService.js` via `writingService.js`), then to `confirmed` when a teacher reviews/overrides via `routes/admin/writingGrading.js`. `feedbackRead` flips to `true` the first time the student views a confirmed grade. Hard-deletable by admin. No TTL — this is graded work product, retained.
+**Lifecycle:** Created on submit with `gradingStatus: 'pending'`. Updated to `ai_done` once Gemini grades it (`services/geminiService.js` via `writingService.js`), then to `confirmed` when a teacher reviews/overrides via `routes/admin/writingGrading.js`. `feedbackRead` flips to `true` the first time the student views a confirmed grade. Hard-deletable by admin. TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`, no exception for `gradingStatus`/`feedbackRead` (a still-pending or unread submission is deleted at 3 months like any other).
 
 **Common queries:**
 ```js
@@ -418,9 +418,9 @@ WritingAttempt.find({ userId }).sort({ submittedAt: -1 }).limit(50).select('-tas
 
 **Relationships:** References `User`, `SpeakingQuestion`. Referenced by nothing.
 
-**Indexes:** `{ userId: 1, createdAt: -1 }`.
+**Indexes:** `{ userId: 1, createdAt: -1 }`, TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created with `status: 'pending'` when a student submits a transcript, updated to `analyzed` (with `aiFeedback` populated) or `error` after the Gemini call in `services/speakingService.js`. Hard-deletable by admin. No TTL.
+**Lifecycle:** Created with `status: 'pending'` when a student submits a transcript, updated to `analyzed` (with `aiFeedback` populated) or `error` after the Gemini call in `services/speakingService.js`. Hard-deletable by admin. TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
 **Common queries:**
 ```js
@@ -491,9 +491,9 @@ Task2TemplateAttempt.find({ userId })
 
 **Relationships:** References `User`, `Passage`. Referenced by nothing.
 
-**Indexes:** `{ userId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`).
+**Indexes:** `{ userId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`), TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created on submit by `services/readingService.js`. Never updated afterward. Hard-deletable by admin. No TTL — unlike the Task1/Task2 drill attempts, single-passage Reading practice history is retained indefinitely (see "Patterns across the schema").
+**Lifecycle:** Created on submit by `services/readingService.js`. Never updated afterward. Hard-deletable by admin. TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
 **Common queries:**
 ```js
@@ -510,9 +510,9 @@ ReadingPracticeAttempt.findOne({ _id: attemptId, userId }).lean()
 
 **Relationships:** References `User`, `ListeningSection`. Referenced by nothing.
 
-**Indexes:** `{ userId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`).
+**Indexes:** `{ userId: 1, submittedAt: -1 }` (plus field-level `index: true` on `userId`), TTL `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
-**Lifecycle:** Created on submit by `services/listeningService.js`. Never updated. Hard-deletable by admin. No TTL.
+**Lifecycle:** Created on submit by `services/listeningService.js`. Never updated. Hard-deletable by admin. TTL — `{ createdAt: 1 }` with `expireAfterSeconds: 90 days`.
 
 **Common queries:**
 ```js
@@ -687,9 +687,9 @@ UpgradeRequest.findOne({ userId }).sort({ createdAt: -1 })        // student's l
 
 ### Message
 
-**Purpose:** In-app inbox — either a direct message from admin/teacher to a specific student (`toId` set) or a broadcast to everyone (`isBroadcast: true`, `toId: null`). Used for tuition reminders (via `cron/tuitionReminder.js`) as well as manual admin messaging.
+**Purpose:** In-app inbox — either a direct message from admin/teacher to a specific student (`toId` set) or a broadcast to everyone (`isBroadcast: true`, `toId: null`). Used for tuition reminders (via `cron/tuitionReminder.js`) as well as manual admin messaging. Also doubles as the storage for student-to-student peer chat (`isPeer: true` — see `services/peerService.js`), which reuses the same `fromId`/`toId`/`body` shape rather than a separate collection; `isPeer` keeps the teacher-inbox queries (`userMessageService.js`) and peer-chat queries mutually exclusive.
 
-**Key fields:** `fromId`/`fromName` (denormalized sender name, avoids a populate on every inbox render), `toId` (`null` for broadcasts), `isBroadcast`, `isRead` (personal messages only), `readBy[]`/`deletedBy[]` (broadcasts need per-user read/delete tracking since there's one document shared by every recipient, unlike personal messages which have their own `isRead`).
+**Key fields:** `fromId`/`fromName` (denormalized sender name, avoids a populate on every inbox render), `toId` (`null` for broadcasts), `isBroadcast`, `isPeer` (student-to-student chat, see above), `isRead` (personal/peer messages), `readBy[]`/`deletedBy[]` (broadcasts need per-user read/delete tracking since there's one document shared by every recipient, unlike personal messages which have their own `isRead`), `giftHammers`/`giftStreakDays`/`claimedBy[]` (an admin compensation gift attached to a message, claimed independently per recipient for broadcasts).
 
 **Relationships:** References `User` twice — `fromId`, `toId`. Referenced by nothing.
 
@@ -697,8 +697,10 @@ UpgradeRequest.findOne({ userId }).sort({ createdAt: -1 })        // student's l
 - `{ toId: 1, isBroadcast: 1, isRead: 1 }` — serves the unread-count badge, described in the schema comment as polled on effectively every page load.
 - `{ isBroadcast: 1, createdAt: -1 }` — broadcast feed.
 - `{ fromId: 1, createdAt: -1 }` — admin "sent messages" view.
+- `{ isPeer: 1, fromId: 1, toId: 1, createdAt: 1 }` and `{ isPeer: 1, toId: 1, fromId: 1, createdAt: 1 }` — peer-chat thread/conversation-list queries, covering both message directions.
+- TTL, **partial**: `{ createdAt: 1 }` with `expireAfterSeconds: 90 days` and `partialFilterExpression: { isPeer: true }` — only peer chat messages expire; admin/teacher messages, broadcasts, and gift messages are retained regardless of age (an unclaimed `giftHammers`/`giftStreakDays` gift must not silently disappear).
 
-**Lifecycle:** Created by admins (manual) or by the cron job (automated tuition reminders, `Message.insertMany` for bulk fan-out). Updated when marked read (`isRead` for personal, `readBy` push for broadcast) or soft-deleted (`deletedBy` push — messages are never hard-deleted from a recipient's perspective, only from the sender's own "sent" view via `findOneAndDelete({_id, fromId: req.user._id})`). No TTL.
+**Lifecycle:** Created by admins (manual), by the cron job (automated tuition reminders, `Message.insertMany` for bulk fan-out), or by a student messaging another student (`peerService.sendPeerMessage`, `isPeer: true`). Updated when marked read (`isRead` for personal/peer, `readBy` push for broadcast) or soft-deleted (`deletedBy` push — messages are never hard-deleted from a recipient's perspective, only from the sender's own "sent" view via `findOneAndDelete({_id, fromId: req.user._id})`). No TTL for non-peer messages; peer messages TTL at 90 days (see Indexes above).
 
 **Common queries:**
 ```js

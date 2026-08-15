@@ -51,6 +51,10 @@ const TestAttemptSchema = new mongoose.Schema({
 TestAttemptSchema.index({ status: 1, endTime: -1 });
 TestAttemptSchema.index({ userId: 1, status: 1 });
 TestAttemptSchema.index({ testId: 1, status: 1 });
+// Retention: auto-delete 3 months after the attempt was created — student
+// practice/exam history isn't kept indefinitely (unlike VocabBook, the
+// personal saved-word notebooks, which have no expiry).
+TestAttemptSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 // ─── Tính band score theo thang IELTS chính thức ───────────────────────────
 TestAttemptSchema.methods.calculateBandScore = function () {
