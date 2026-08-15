@@ -26,8 +26,11 @@ exports.reorderBooks = guard(async (req, res) => {
 });
 
 exports.completePractice = guard(async (req, res) => {
-  const { wordsAnswered = 0, correctAnswered = 0, unitId = null, unitType = null } = req.body;
-  const result = await vocabBookService.completePractice(req.user, { wordsAnswered, correctAnswered, unitId, unitType });
+  const { wordsAnswered = 0, correctAnswered = 0, unitId = null, unitType = null, sessionId = null } = req.body;
+  // Must be a plain string (not e.g. a Mongo query-operator object) — it's
+  // used as an exact-match filter value in vocabBookService.
+  const safeSessionId = typeof sessionId === 'string' && sessionId ? sessionId.slice(0, 100) : null;
+  const result = await vocabBookService.completePractice(req.user, { wordsAnswered, correctAnswered, unitId, unitType, sessionId: safeSessionId });
   if (result.status === 'not_student') return res.json({ success: true });
   if (result.status === 'too_few') return res.json({ success: false, message: 'Cần ít nhất 5 từ để tính streak' });
   res.json({

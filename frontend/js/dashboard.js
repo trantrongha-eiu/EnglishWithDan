@@ -48,6 +48,15 @@ let sessionAnsweredCount = 0;
 let _lastReportedAnsweredCount = 0;
 let _lastReportedCorrectCount = 0;
 let _streakReportInFlight = false; // prevents two overlapping /practice-complete calls, not a "never again" gate
+// Fresh per startPractice() call — sent with every batched /practice-complete
+// report so the backend can scope the streak-bonus tier to THIS session's
+// own running accuracy instead of re-evaluating it on every 5-answer batch
+// (see backend/services/vocabBookService.js's reserveStreakBonusForSession
+// for the "học xong ngay lập tức được 5 lửa" bug this fixes).
+let _vocabSessionId = null;
+function _newVocabSessionId() {
+    return 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
 let _persistedThisSession = false; // prevent double-counting wrongCount on multiple showResults calls
 
 // ── Búa Daniel (streak-restore hammer) ─────────
@@ -1916,7 +1925,8 @@ async function _reportSessionStreak() {
                 wordsAnswered: batchAnswered,
                 correctAnswered: batchCorrect,
                 unitId: isParaphrase ? currentUnit._id : null,
-                unitType: isParaphrase ? 'paraphrase' : null
+                unitType: isParaphrase ? 'paraphrase' : null,
+                sessionId: _vocabSessionId
             })
         });
         const d = await window.ApiClient.handleResponse(res);
@@ -1942,6 +1952,7 @@ function startPractice(mode) {
     sessionAnsweredCount = 0;
     _lastReportedAnsweredCount = 0;
     _lastReportedCorrectCount = 0;
+    _vocabSessionId = _newVocabSessionId();
     const wrongListEl = document.getElementById('wrong-words-list');
     if (wrongListEl) wrongListEl.style.display = 'none';
 

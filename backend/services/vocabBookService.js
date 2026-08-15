@@ -4,6 +4,46 @@
 const VocabBook = require('../models/VocabBook');
 const VocabActivity = require('../models/VocabActivity');
 const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
+const VocabPracticeSession = require('../models/VocabPracticeSession');
+
+// A dashboard.js practice session reports in batches of 5 answers (see
+// _reportSessionStreak()) so the 35-word/day engagement threshold stays
+// accurate even for a long session that never reaches a results screen.
+// That batching used to ALSO re-run the streak-bonus tier on each batch's
+// own 5-word accuracy — once the day's word threshold was crossed mid-
+// session, every following batch reserved another bonus on top, letting a
+// single long session claim the whole shared +5/day cap by itself
+// (reported by students as "học xong ngay lập tức được 5 lửa"). Fixed by
+// scoping the bonus tier to the SESSION's own running accuracy (tracked in
+// VocabPracticeSession, keyed by the sessionId the frontend generates once
+// per startPractice() call and sends with every batch) — a session's total
+// contribution is capped at bonusForAccuracy's max (2), same as one
+// Reading/Listening submission, no matter how many batches it's reported
+// in. Distinct sessions (or callers that don't pass a sessionId at all —
+// dashboard-lesson.js's finishLessonQuiz() reports a whole quiz in one
+// call, and reading/listening submit once per test) still each get their
+// own independent shot at the shared daily cap, exactly as before.
+async function reserveStreakBonusForSession(userId, sessionId, wordsAnswered, correctAnswered, batchAccuracy) {
+  if (!sessionId) {
+    // No session to scope against — same behavior as before this fix.
+    return reserveDailyStreakBonus(userId, bonusForAccuracy(batchAccuracy));
+  }
+  const session = await VocabPracticeSession.findOneAndUpdate(
+    { userId, sessionId },
+    { $inc: { wordsAnswered, wordsCorrect: correctAnswered }, $setOnInsert: { userId, sessionId } },
+    { upsert: true, new: true }
+  );
+  const sessionAccuracy = session.wordsAnswered > 0 ? session.wordsCorrect / session.wordsAnswered : 0;
+  const targetBonus = bonusForAccuracy(sessionAccuracy);
+  const rawBonus = Math.max(0, targetBonus - session.bonusGranted);
+  if (rawBonus <= 0) return 0;
+
+  const appliedBonus = await reserveDailyStreakBonus(userId, rawBonus);
+  if (appliedBonus > 0) {
+    await VocabPracticeSession.updateOne({ userId, sessionId }, { $inc: { bonusGranted: appliedBonus } });
+  }
+  return appliedBonus;
+}
 
 // Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay
 // (Vietnam local day — same convention as User.getVNDay/effectiveStreak; using
@@ -58,7 +98,7 @@ async function reorderBooks(userId, order) {
   ));
 }
 
-async function completePractice(user, { wordsAnswered, correctAnswered = 0, unitId = null, unitType = null }) {
+async function completePractice(user, { wordsAnswered, correctAnswered = 0, unitId = null, unitType = null, sessionId = null }) {
   if (user.role !== 'student') return { status: 'not_student' };
   if (wordsAnswered < 5) return { status: 'too_few' };
 
@@ -68,14 +108,16 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: wordsAnswered });
 
   const accuracy = Math.max(0, Math.min(1, correctAnswered / wordsAnswered));
-  const rawBonus = bonusForAccuracy(accuracy);
-  const appliedBonus = qualifiesToday ? await reserveDailyStreakBonus(user._id, rawBonus) : 0;
 
   // Always called once qualified (even with bonus 0) so lastActivityDate
   // still advances today — a sub-80% session keeps the day-chain alive
   // without growing it. Below the word threshold, skip entirely: today
   // shouldn't count as "studied" yet.
-  if (qualifiesToday) user.updateStreak(appliedBonus, { allowSameDayStack: true });
+  let appliedBonus = 0;
+  if (qualifiesToday) {
+    appliedBonus = await reserveStreakBonusForSession(user._id, sessionId, wordsAnswered, correctAnswered, accuracy);
+    user.updateStreak(appliedBonus, { allowSameDayStack: true });
+  }
 
   // Búa Daniel: clearing a Paraphrase Unit at >=90% earns 1 hammer, but only
   // the first time that specific unit is ever cleared at that bar.

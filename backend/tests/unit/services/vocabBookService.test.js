@@ -397,6 +397,65 @@ describe('vocabBookService', () => {
       expect(fourth.streak).toBe(5);
     });
 
+    describe('sessionId scoping (regression: "học xong ngay lập tức được 5 lửa")', () => {
+      // dashboard.js's _reportSessionStreak() reports one long, continuous
+      // practice session in batches of 5 answers (first at 5, then again at
+      // 10, 15, ...), all tagged with the same sessionId. Before this fix,
+      // each batch independently re-ran the accuracy → bonus tier on just
+      // that batch's own 5 words, so a single ~45-word session could claim
+      // the entire shared +5/day cap by itself the moment it crossed the
+      // 35-word threshold and kept going for a couple more batches.
+
+      it('a single session reported across multiple batches is capped at +2 total, even at 100% accuracy throughout', async () => {
+        const student = await createStudent();
+        const sessionId = 'sess-1';
+        // Batch 1: 35/35 — crosses the 35-word threshold on this exact call.
+        const b1 = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35, sessionId });
+        expect(b1.bonusApplied).toBe(2);
+        expect(b1.streak).toBe(2);
+
+        // Batch 2 of the SAME session: still 100% accuracy — must NOT grant
+        // another +2 on top just because the day's word threshold is still
+        // crossed; the session already claimed its own +2.
+        const b2 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
+        expect(b2.bonusApplied).toBe(0);
+        expect(b2.streak).toBe(2);
+
+        // Batch 3, same session, same story — repeated batches never add more.
+        const b3 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
+        expect(b3.bonusApplied).toBe(0);
+        expect(b3.streak).toBe(2);
+      });
+
+      it('two DIFFERENT sessions the same day can each still contribute toward the shared +5 cap', async () => {
+        const student = await createStudent();
+        const first = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35, sessionId: 'sess-A' });
+        expect(first.bonusApplied).toBe(2);
+
+        // A second, genuinely separate session (new sessionId) still gets
+        // its own independent shot at the remaining cap.
+        const second = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId: 'sess-B' });
+        expect(second.bonusApplied).toBe(2);
+        expect(second.streak).toBe(4);
+      });
+
+      it('a session that starts below 90% but improves over later batches can still top up to the higher tier once', async () => {
+        const student = await createStudent();
+        const sessionId = 'sess-improving';
+        // First batch of the session: 28/35 = 80% → tier 1. Also crosses the
+        // word threshold in this same call.
+        const b1 = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 28, sessionId });
+        expect(b1.bonusApplied).toBe(1);
+        expect(b1.streak).toBe(1);
+
+        // Second batch, perfect score: session-wide accuracy is now
+        // (28+5)/(35+5) = 33/40 = 82.5% — still only tier 1, so no top-up.
+        const b2 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
+        expect(b2.bonusApplied).toBe(0);
+        expect(b2.streak).toBe(1);
+      });
+    });
+
     it('the daily bonus cap resets on a new Vietnam calendar day, not a global lifetime cap', async () => {
       const VocabActivity = require('../../../models/VocabActivity');
       const student = await createStudent();
