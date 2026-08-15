@@ -198,6 +198,28 @@ describe('writingService.getDrafts / saveDraft / deleteDraft', () => {
     expect(drafts).toHaveLength(0);
   });
 
+  test('does not save a draft with 0 words and an empty/whitespace-only answer', async () => {
+    const student = await createStudent();
+    const task = { _id: 'task-empty', prompt: 'p1' };
+
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: '', wordCount: 0, seconds: 32 });
+    expect(await writingService.getDrafts(student._id)).toHaveLength(0);
+
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: '   ', wordCount: 0, seconds: 40 });
+    expect(await writingService.getDrafts(student._id)).toHaveLength(0);
+  });
+
+  test('emptying out a previously-saved draft deletes it instead of upserting blank content', async () => {
+    const student = await createStudent();
+    const task = { _id: 'task-cleared', prompt: 'p1' };
+
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: 'some text', wordCount: 2, seconds: 10 });
+    expect(await writingService.getDrafts(student._id)).toHaveLength(1);
+
+    await writingService.saveDraft(student._id, { taskType: 1, task, answer: '', wordCount: 0, seconds: 15 });
+    expect(await writingService.getDrafts(student._id)).toHaveLength(0);
+  });
+
   test('keeps up to 2 drafts per {userId, taskType}, evicting the oldest beyond that', async () => {
     const student = await createStudent();
 

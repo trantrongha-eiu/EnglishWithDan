@@ -1219,11 +1219,22 @@ function _practiceSaveKey(taskType, taskId) {
 function savePracticeToStorage() {
   if (!practiceState.task) return;
   const ta = document.getElementById('pw-textarea');
+  const answer = ta?.value || '';
+  const key = _practiceSaveKey(practiceState.taskType, practiceState.task._id);
+  // Nothing written yet (or it was written then deleted) — there's nothing
+  // worth resuming, so don't leave a 0-word ghost draft behind (it used to
+  // trip the "bài luyện tập chưa nộp" banner on the next visit for a task
+  // the student never actually started). Clears any stale entry too, in
+  // case this task had real content before that's since been erased.
+  if (!practiceState.wordCount && !answer.trim()) {
+    try { localStorage.removeItem(key); } catch (_) {}
+    return;
+  }
   try {
-    localStorage.setItem(_practiceSaveKey(practiceState.taskType, practiceState.task._id), JSON.stringify({
+    localStorage.setItem(key, JSON.stringify({
       taskType:  practiceState.taskType,
       task:      practiceState.task,
-      answer:    ta?.value || '',
+      answer,
       wordCount: practiceState.wordCount,
       seconds:   practiceState.seconds,
       savedAt:   Date.now()
@@ -1244,6 +1255,10 @@ function _updateSaveIndicator(ts) {
 
 function saveDraftManual() {
   if (!practiceState.task) return;
+  if (!practiceState.wordCount) {
+    showToast('Chưa viết gì để lưu nháp', 'info', 2500);
+    return;
+  }
   savePracticeToStorage();
   saveDraftToServer();
   showToast('Đã lưu nháp ✓ — bạn có thể thoát và tiếp tục sau', 'success', 3000);

@@ -117,8 +117,19 @@ async function getDrafts(userId) {
 // the oldest beyond 2 for that type so a student can have two different
 // Task 1 essays (or two Task 2s) in progress at once without one silently
 // overwriting the other, but can't accumulate an unbounded number.
+//
+// A student who opens a task and leaves without typing anything (or types
+// something then deletes it all) has nothing worth resuming — saving that
+// as a draft only produced a false "bài luyện tập chưa nộp" banner on their
+// next visit. Skip the write entirely in that case, and delete any earlier
+// draft for this exact task that's now been emptied out, instead of upserting
+// blank content over it.
 async function saveDraft(userId, { taskType, task, answer = '', wordCount = 0, seconds = 0 }) {
   const taskId = String(task._id);
+  if (!wordCount && !answer.trim()) {
+    await WritingDraft.deleteOne({ userId, taskType, taskId });
+    return;
+  }
   await WritingDraft.findOneAndUpdate(
     { userId, taskType, taskId },
     { taskType, taskId, task, answer, wordCount, seconds, savedAt: new Date() },
