@@ -1117,6 +1117,7 @@ const practiceState = {
   task: null,
   tasks: [],
   filteredTasks: [],
+  taskScores: {},   // taskId -> { band, attemptId } for confirmed/graded attempts
   page: 1,
   wordCount: 0,
   stopwatchInterval: null,
@@ -1148,10 +1149,16 @@ function _renderTaskPage() {
       ? `<img src="${escHtml(t.imageUrl)}" alt="" class="wt-task-card-img" loading="lazy" />`
       : '';
     const promptPreview = (t.prompt || '').slice(0, 200) + ((t.prompt || '').length > 200 ? '…' : '');
+    const done = (practiceState.taskScores || {})[String(t._id)];
+    const bandColor = done ? (done.band >= 7 ? '#16a34a' : done.band >= 5.5 ? '#2563eb' : '#d97706') : '';
+    const bandHtml = done
+      ? `<span class="wt-task-card-band" style="color:${bandColor};border-color:${bandColor}">Band ${done.band}</span>`
+      : '';
     return `<div class="wt-task-card" data-id="${escHtml(String(t._id))}">
       <div class="wt-task-card-header">
         <span class="wt-task-card-num">${idx}</span>
-        <button class="btn-primary wt-task-card-btn" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">Làm bài</button>
+        ${bandHtml}
+        <button class="btn-primary wt-task-card-btn" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">${done ? 'Làm lại' : 'Làm bài'}</button>
       </div>
       ${imgHtml}
       <div class="wt-task-card-prompt">${escHtml(promptPreview)}</div>
@@ -1518,7 +1525,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
 
     if (!attempts.length) {
       listEl.innerHTML = '<p style="color:#9ca3af;font-size:14px;text-align:center;padding:24px 0">Chưa có bài luyện tập nào.</p>';
-      return;
+      return attempts;
     }
 
     const STATUS = {
@@ -1549,7 +1556,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
             </div>
           </div>`;
       }).join('');
-      return;
+      return attempts;
     }
 
     // Home mode → full table
@@ -1576,8 +1583,10 @@ async function loadPracticeHistory(taskTypeFilter = null) {
       }).join('')}
       </tbody>
     </table>`;
+    return attempts;
   } catch (e) {
     listEl.innerHTML = '<p style="color:#ef4444;font-size:13px">Không tải được lịch sử.</p>';
+    return [];
   }
 }
 
@@ -1602,10 +1611,11 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
   const searchEl = document.getElementById('writing-task-search');
   if (searchEl) searchEl.value = '';
 
-  loadPracticeHistory(taskType);
-
   try {
-    const d = await apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`);
+    const [d, attempts] = await Promise.all([
+      apiFetch(`/api/writing/practice/tasks?taskType=${taskType}`),
+      loadPracticeHistory(taskType),
+    ]);
     if (!d.success || !d.tasks || !d.tasks.length) {
       itemsEl.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:24px">Chưa có đề bài nào. Vui lòng liên hệ giáo viên.</p>';
       return;
@@ -1613,10 +1623,28 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
     practiceState.tasks = d.tasks;
     practiceState.filteredTasks = d.tasks;
     practiceState.page = 1;
+    practiceState.taskScores = buildTaskScoreMap(taskType, attempts);
     _renderTaskPage();
   } catch (e) {
     itemsEl.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">Lỗi tải đề: ${escHtml(e.message)}</p>`;
   }
+}
+
+// Most recent CONFIRMED (graded) attempt per task, keyed by taskId — used to
+// show a band-score badge + "Làm lại" instead of "Làm bài" on task cards the
+// student has already completed. attempts is sorted newest-first already
+// (backend orders by submittedAt desc), so the first match per key wins.
+function buildTaskScoreMap(taskType, attempts) {
+  const idField = taskType === 1 ? 'task1Id' : 'task2Id';
+  const map = {};
+  (attempts || []).forEach(a => {
+    if (a.gradingStatus !== 'confirmed' || a.grading?.overallBand == null) return;
+    const tid = a[idField];
+    if (!tid) return;
+    const key = String(tid);
+    if (!map[key]) map[key] = { band: a.grading.overallBand, attemptId: a._id };
+  });
+  return map;
 }
 
 function hidePracticeTaskList() {

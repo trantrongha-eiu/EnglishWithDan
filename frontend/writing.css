@@ -1133,53 +1133,6 @@ body {
 .pw-instructions-text { font-size: 12px; color: #777; margin: 0; }
 [data-theme="dark"] .pw-instructions-text { color: #9ca3af; }
 
-/* ══════════════════════════════════════════════
-   PAGE HEADER – gradient bar (history + practice)
-══════════════════════════════════════════════ */
-.wr-page-header {
-  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-}
-.wr-page-header::before {
-  content: '✍️';
-  position: absolute;
-  font-size: 160px;
-  opacity: .07;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  line-height: 1;
-}
-.wr-page-header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 24px 8px;
-  gap: 12px;
-  position: relative;
-  z-index: 1;
-}
-.wr-page-header-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: #fff;
-  margin: 0;
-}
-.wr-page-header-back {
-  color: rgba(255,255,255,.85) !important;
-  border-color: rgba(255,255,255,.3) !important;
-  background: rgba(255,255,255,.1) !important;
-}
-.wr-page-header-back:hover {
-  background: rgba(255,255,255,.22) !important;
-  border-color: rgba(255,255,255,.45) !important;
-  color: #fff !important;
-}
-[data-theme="dark"] .wr-page-header { background: linear-gradient(135deg, #0f1736 0%, #1e2a6e 100%); }
-
 /* ── Done screens on gradient: card stays bright ── */
 #screen-done.active .done-card,
 #screen-practice-done.active .done-card {
@@ -1295,7 +1248,6 @@ body {
     order: 0;
   }
 
-  .wr-page-header-inner   { padding: 8px 16px 6px; }
   .history-body           { padding: 16px; }
   .key-card               { padding: 32px 24px; }
   .exam-topbar            { padding: 0 10px; gap: 8px; }
@@ -1435,6 +1387,16 @@ body {
   flex-shrink: 0;
   font-size: 12px !important;
   padding: 5px 14px !important;
+  white-space: nowrap;
+}
+
+.wt-task-card-band {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border: 1.5px solid;
+  border-radius: 20px;
   white-space: nowrap;
 }
 
