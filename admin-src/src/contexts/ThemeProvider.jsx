@@ -3,7 +3,7 @@ import { ThemeContext } from './ThemeContext';
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(
-    () => localStorage.getItem('admin-theme') || 'dark'
+    () => localStorage.getItem('admin-theme') || 'light'
   );
 
   useEffect(() => {

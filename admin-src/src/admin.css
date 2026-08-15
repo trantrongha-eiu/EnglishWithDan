@@ -44,9 +44,15 @@
       --danger: #f87171;
       --font: 'Plus Jakarta Sans', sans-serif;
       --mono: 'JetBrains Mono', monospace;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --shadow: 0 4px 24px rgba(0, 0, 0, .35);
+      /* --radius/--radius-sm match the public site's tokens.css exactly
+         (14px/9px) — were 12px/8px, a small but visible corner-rounding
+         mismatch between the two apps. */
+      --radius: 14px;
+      --radius-sm: 9px;
+      --shadow: 0 2px 12px rgba(0, 0, 0, .5);
+      --shadow-md: 0 6px 24px rgba(0, 0, 0, .6);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, .7);
+      --z-toast: 1100;
       /* Hint/notice-box background+border — previously each page inlined its
          own rgba(61,139,255,.06-.1) tint, which read as barely-there on a
          near-black surface (too little contrast against --surface) and, on
@@ -282,11 +288,16 @@
       padding: 20px 22px;
       position: relative;
       overflow: hidden;
-      transition: border-color .2s;
+      box-shadow: var(--shadow);
+      transition: border-color .2s, transform .2s;
     }
 
+    /* Soft elevation + lift-on-hover, matching the public site's
+       .stat-card/.card (frontend/css/components.css) — admin cards
+       previously had no shadow at all, only a border-color hover change. */
     .stat-card:hover {
       border-color: var(--border2);
+      transform: translateY(-2px);
     }
 
     .stat-card::after {
@@ -436,6 +447,7 @@
       border-radius: var(--radius);
       padding: 20px 22px;
       margin-bottom: 28px;
+      box-shadow: var(--shadow);
     }
 
     .visits-chart-header {
@@ -557,6 +569,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
+      box-shadow: var(--shadow);
       overflow: hidden;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -656,6 +669,7 @@
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       padding: 8px 16px;
       border-radius: var(--radius-sm);
@@ -678,7 +692,7 @@
     }
 
     .btn-ghost {
-      background: var(--surface2);
+      background: var(--surface);
       color: var(--text2);
       border: 1px solid var(--border);
     }
@@ -1094,82 +1108,62 @@
       margin: 0 6px;
     }
 
-    /* ── TOAST ── */
-    #toast {
+    /* ── TOAST ──
+       Matches the public site's toast (frontend/css/components.css /
+       js/shared/toast.js): stacked container, FA icon instead of a bare
+       dot, colored left border per type, generous --radius corners. Was
+       previously a single #toast/.toast dot-indicator element that could
+       only show one message at a time and read as much lower-weight than
+       the student-facing toasts. #toast (the old vanilla-JS id-based
+       variant) had no markup left referencing it anywhere in admin-src —
+       removed rather than carried forward unused. */
+    .toast-container {
       position: fixed;
       bottom: 28px;
       right: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      box-shadow: var(--shadow);
-      z-index: 999;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all .25s;
+      z-index: var(--z-toast);
       display: flex;
-      align-items: center;
-      gap: 8px;
-      max-width: 340px;
-    }
-
-    #toast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    #toast.success .toast-dot {
-      background: var(--green);
-    }
-
-    #toast.error .toast-dot {
-      background: var(--accent);
-    }
-
-    #toast.info .toast-dot {
-      background: var(--blue);
-    }
-
-    /* React class-based toast (ToastContext) */
-    .toast {
-      position: fixed;
-      bottom: 28px;
-      right: 28px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      box-shadow: var(--shadow);
-      z-index: 9999;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all .25s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      max-width: 340px;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 360px;
       pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      color: var(--text);
+      font-size: 13px;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all .25s;
+      pointer-events: auto;
     }
     .toast.show {
       transform: translateY(0);
       opacity: 1;
     }
-    .toast.success .toast-dot { background: var(--green); }
-    .toast.error   .toast-dot { background: var(--accent); }
-    .toast.info    .toast-dot { background: var(--blue); }
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error   { border-left: 3px solid var(--accent); }
+    .toast.warning { border-left: 3px solid var(--yellow); }
+    .toast.info    { border-left: 3px solid var(--blue); }
 
-    .toast-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .toast-icon {
+      font-size: 16px;
+      line-height: 1;
       flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .toast-msg {
+      font-weight: 500;
+      line-height: 1.5;
     }
 
     /* ── VOCAB WORDS TABLE ── */
@@ -1335,7 +1329,7 @@
       .btn-sm { font-size: 12px; padding: 5px 10px; }
 
       /* Toast bottom-center */
-      #toast { right: 12px; left: 12px; bottom: 16px; max-width: none; }
+      .toast-container { right: 12px; left: 12px; bottom: 16px; max-width: none; }
 
       /* Table scroll shadow indicator */
       .table-wrap {
@@ -1596,18 +1590,26 @@ body { display: block; }
 
 /* ── LIGHT THEME ── */
 [data-theme="light"] {
-  --bg:       #e6eaf3;
+  /* Neutrals aligned to the public site's frontend/css/tokens.css light
+     palette (light is now admin's default theme too, matching the student
+     site — see ThemeProvider.jsx) so both apps share one "light mode" look
+     instead of two similar-but-different off-white palettes. */
+  --bg:       #f7f8fc;
   --surface:  #ffffff;
-  --surface2: #eef0f7;
-  --border:   #dde1ee;
-  --border2:  #c6cce0;
-  --text:     #1a1d2e;
-  --text2:    #5a6280;
-  --text3:    #6b7280; /* darker than the original #9298b0 — that was ~2.9:1 on
-                           white (fails WCAG AA even for large text); this
-                           hits ~4.8:1 while staying visibly more muted than
-                           --text2/--text */
-  --shadow:   0 4px 24px rgba(0,0,0,.07);
+  --surface2: #f3f4f6;
+  --border:   #e5e7eb;
+  --border2:  #d1d5db;
+  --text:     #111827;
+  --text2:    #6b7280;
+  --text3:    #6b7280; /* deliberately NOT tokens.css's #9ca3af — that value
+                           (and the public site's, which shares it) measures
+                           ~2.6:1 on white, under WCAG AA for normal text.
+                           This darker pick (~4.8:1) keeps the contrast fix
+                           made earlier for this panel rather than
+                           reintroducing the same bug for consistency's sake. */
+  --shadow:    0 2px 12px rgba(0,0,0,.07);
+  --shadow-md: 0 6px 24px rgba(0,0,0,.1);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.18);
   --danger:   #dc2626;
   /* --blue/--green/--yellow/--purple/--accent2 below are deliberately darker
      than their dark-theme values: the dark-theme shades are pastel/light so
