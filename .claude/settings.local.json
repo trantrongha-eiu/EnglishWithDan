@@ -10,7 +10,11 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(grep -r \"WebSocket\\\\|socket\\\\|SSE\\\\|EventSource\" /c/Users/ASUS/Desktop/EnglishWithDan/backend/*.js /c/Users/ASUS/Desktop/EnglishWithDan/backend/routes/*.js)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(node --check models/Task2TemplateAttempt.js)",
+      "Bash(node --check services/task2TemplateService.js)",
+      "Bash(node --check controllers/task2Template.controller.js)",
+      "Bash(npx jest *)"
     ]
   }
 }
