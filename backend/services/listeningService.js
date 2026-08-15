@@ -16,21 +16,20 @@ const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
+const { bandScoreTable } = require('../utils/bandScore');
 
 function flattenQuestions(sections) {
   return sections.flatMap(s => s.questionGroups.flatMap(g => g.questions));
 }
 
+// Kept as a thin wrapper (rather than calling bandScoreTable directly at the
+// call site) so existing callers/tests referencing listeningService.calcBandScore
+// keep working — this used to carry its own copy-pasted conversion ladder,
+// which had drifted out of sync with utils/bandScore.js's table (the one
+// ListeningAttempt's own calculateBandScore() method uses). Delegating here
+// removes that second, divergence-prone copy.
 function calcBandScore(correct) {
-  const bandMap = [
-    [39, 9.0], [37, 8.5], [35, 8.0], [32, 7.5], [30, 7.0],
-    [26, 6.5], [23, 6.0], [18, 5.5], [16, 5.0], [13, 4.5],
-    [10, 4.0], [8, 3.5], [6, 3.0], [4, 2.5]
-  ];
-  for (const [threshold, band] of bandMap) {
-    if (correct >= threshold) return band;
-  }
-  return 2.0;
+  return bandScoreTable('listening', correct);
 }
 
 // getUserAnswer(questionNumber) -> trimmed string ('' if unanswered).
