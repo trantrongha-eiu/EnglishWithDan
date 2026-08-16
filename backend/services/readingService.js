@@ -137,28 +137,41 @@ async function listTestsForUser(userId) {
     const key = a.testId.toString();
     if (!attemptMap[key] || attemptMap[key].endTime < a.endTime) attemptMap[key] = a;
   });
-  return tests.map(t => ({ ...t, lastAttempt: attemptMap[t._id.toString()] || null }));
+  // isFixed tells the frontend whether to show the "câu hỏi ngẫu nhiên mỗi
+  // lần" disclaimer — only true for the random-sample test(s); a fixed
+  // test always serves the same 3 passages (see startTest()).
+  return tests.map(t => ({ ...t, isFixed: (t.passageIds || []).length === 3, lastAttempt: attemptMap[t._id.toString()] || null }));
 }
 
 async function startTest(testId, userId) {
   const test = await ReadingTest.findById(testId);
   if (!test) return { status: 'not_found' };
 
+  const safeFields = '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation -questions.correctAnswer -questions.explanation';
   const safeProject = { $project: {
     'questionGroups.questions.correctAnswer': 0,
     'questionGroups.questions.explanation': 0,
     'questions.correctAnswer': 0,
     'questions.explanation': 0,
   } };
-  const [p1arr, p2arr, p3arr] = await Promise.all([
-    Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
-    Passage.aggregate([{ $match: { category: 'passage2', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
-    Passage.aggregate([{ $match: { category: 'passage3', isActive: true } }, { $sample: { size: 1 } }, safeProject])
-  ]);
 
-  if (!p1arr[0] || !p2arr[0] || !p3arr[0]) return { status: 'insufficient_data' };
-
-  const passages = [p1arr[0], p2arr[0], p3arr[0]];
+  let passages;
+  if (test.passageIds && test.passageIds.length === 3) {
+    // Fixed test: always the same 3 passages, in the passage1/2/3 order
+    // they were assigned at creation time — not $sample.
+    const raw = await Passage.find({ _id: { $in: test.passageIds }, isActive: true }).select(safeFields).lean();
+    const byId = new Map(raw.map(p => [p._id.toString(), p]));
+    passages = test.passageIds.map(id => byId.get(id.toString())).filter(Boolean);
+    if (passages.length !== 3) return { status: 'insufficient_data' };
+  } else {
+    const [p1arr, p2arr, p3arr] = await Promise.all([
+      Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage2', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage3', isActive: true } }, { $sample: { size: 1 } }, safeProject])
+    ]);
+    if (!p1arr[0] || !p2arr[0] || !p3arr[0]) return { status: 'insufficient_data' };
+    passages = [p1arr[0], p2arr[0], p3arr[0]];
+  }
 
   const attempt = new TestAttempt({ userId, testId, passagesUsed: passages.map(p => p._id), startTime: new Date() });
   await attempt.save();

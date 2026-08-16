@@ -361,3 +361,66 @@ describe('readingService.submitTest — streak bonus', () => {
     expect(result.streak).toBe(1);
   });
 });
+
+describe('readingService.startTest — fixed vs. random passage selection', () => {
+  test('a test with 3 passageIds always serves those exact passages, in order', async () => {
+    const student = await createStudent();
+    const p1 = await createPassage({ category: 'passage1', title: 'Fixed P1', isActualTest: true });
+    const p2 = await createPassage({ category: 'passage2', title: 'Fixed P2', isActualTest: true });
+    const p3 = await createPassage({ category: 'passage3', title: 'Fixed P3', isActualTest: true });
+    const test = await createReadingTest({ name: 'Actual Mocktest 1', passageIds: [p1._id, p2._id, p3._id] });
+
+    const result = await readingService.startTest(test._id, student._id);
+
+    expect(result.status).toBe('ok');
+    expect(result.passages.map(p => p.title)).toEqual(['Fixed P1', 'Fixed P2', 'Fixed P3']);
+
+    // Repeating startTest for the same fixed test yields the same passages
+    // again — no $sample randomness involved.
+    const result2 = await readingService.startTest(test._id, student._id);
+    expect(result2.passages.map(p => p.title)).toEqual(['Fixed P1', 'Fixed P2', 'Fixed P3']);
+  });
+
+  test('a test with no passageIds falls back to random sampling from isActualTest passages', async () => {
+    const student = await createStudent();
+    await createPassage({ category: 'passage1', isActualTest: true });
+    await createPassage({ category: 'passage2', isActualTest: true });
+    await createPassage({ category: 'passage3', isActualTest: true });
+    const test = await createReadingTest({ name: 'MockTest Đề Random' });
+
+    const result = await readingService.startTest(test._id, student._id);
+
+    expect(result.status).toBe('ok');
+    expect(result.passages).toHaveLength(3);
+    expect(result.passages.map(p => p.category)).toEqual(['passage1', 'passage2', 'passage3']);
+  });
+
+  test('a fixed test whose passage was deactivated in the meantime fails gracefully', async () => {
+    const student = await createStudent();
+    const p1 = await createPassage({ category: 'passage1', isActualTest: true, isActive: false });
+    const p2 = await createPassage({ category: 'passage2', isActualTest: true });
+    const p3 = await createPassage({ category: 'passage3', isActualTest: true });
+    const test = await createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
+
+    const result = await readingService.startTest(test._id, student._id);
+    expect(result.status).toBe('insufficient_data');
+  });
+});
+
+describe('readingService.listTestsForUser — isFixed flag', () => {
+  test('marks a 3-passageIds test as fixed and a passageIds-less test as not fixed', async () => {
+    const student = await createStudent();
+    const p1 = await createPassage({ category: 'passage1' });
+    const p2 = await createPassage({ category: 'passage2' });
+    const p3 = await createPassage({ category: 'passage3' });
+    await createReadingTest({ name: 'Actual Mocktest 1', passageIds: [p1._id, p2._id, p3._id] });
+    await createReadingTest({ name: 'MockTest Đề Random' });
+
+    const tests = await readingService.listTestsForUser(student._id);
+    const fixed = tests.find(t => t.name === 'Actual Mocktest 1');
+    const random = tests.find(t => t.name === 'MockTest Đề Random');
+
+    expect(fixed.isFixed).toBe(true);
+    expect(random.isFixed).toBe(false);
+  });
+});

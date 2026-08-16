@@ -65,6 +65,7 @@ async function createReadingTest(overrides = {}) {
     seriesName: overrides.seriesName || '',
     testNumber: overrides.testNumber ?? 1,
     isActive: overrides.isActive ?? true,
+    passageIds: overrides.passageIds || [],
   });
 }
 

@@ -530,9 +530,11 @@ function testCard(t) {
       <div class="test-card-meta">40 câu · 60 phút</div>
       ${done ? `<div class="test-card-last">Lần cuối: <span class="band-mini">${band}</span> · ${cor}/${tot} câu${t.lastAttempt?.endTime ? ' · ' + new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : ''}</div>` : ''}
       <button class="btn-do-test${_userPlan !== 'premium' ? ' btn-upgrade-lock' : ''}" onclick="goToStartTest('${t._id}','${escH(t.name)}')">
-        ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? 'Làm test mới' : 'Bắt đầu')}
+        ${_userPlan !== 'premium' ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói' : (done ? (t.isFixed ? 'Làm lại' : 'Làm test mới') : 'Bắt đầu')}
       </button>
-      <div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>
+      ${t.isFixed
+        ? `<div class="test-card-random-note"><i class="fas fa-list-ol"></i> Passage 1, 2, 3 cố định</div>`
+        : `<div class="test-card-random-note"><i class="fas fa-shuffle"></i> Câu hỏi ngẫu nhiên mỗi lần</div>`}
       ${done ? `<button class="btn-redo-test" onclick="loadReviewByTest('${t._id}')">Xem lại kết quả</button>` : ''}
     </div>
   </div>`;
