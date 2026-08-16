@@ -50,9 +50,15 @@
     return data;
   }
 
+  // AuthService stores the login response's user object as-is, and
+  // authService.js's userPayload() keys it "id", not "_id" — so u._id is
+  // always undefined here. That's not just a no-op: with myId undefined,
+  // `m.fromId._id === myId` below short-circuits to `undefined === undefined`
+  // (true) for every plain-string fromId, silently marking EVERY message in
+  // EVERY peer thread as "mine".
   function _myId() {
     var u = window.AuthService.getUser();
-    return u && u._id;
+    return u && u.id;
   }
 
   function _initial(name) { return (name || '?').trim().charAt(0).toUpperCase() || '?'; }
@@ -430,11 +436,11 @@
       } else {
         var lastMineIdx = -1;
         d.messages.forEach(function (m, i) {
-          var mine = m.fromId === myId || (m.fromId && m.fromId._id === myId);
+          var mine = !!myId && (m.fromId === myId || (m.fromId && m.fromId._id === myId));
           if (mine) lastMineIdx = i;
         });
         list.innerHTML = d.messages.map(function (m, i) {
-          var mine = m.fromId === myId || (m.fromId && m.fromId._id === myId);
+          var mine = !!myId && (m.fromId === myId || (m.fromId && m.fromId._id === myId));
           // Status line only under MY latest message (Messenger shows it
           // there, not repeated under every one of my messages).
           var statusHtml = (mine && i === lastMineIdx)
