@@ -160,6 +160,11 @@
   document.body.appendChild(drawer);
 
   // ── Nav visibility helpers ────────────────────────────────
+  // Also hides the floating peer-chat bubble (js/shared/peer-chat-widget.js)
+  // while it's active — on Reading/Listening/Writing exam screens it sits
+  // right on top of the submit button (student-reported overlap). Guarded
+  // with a null check since not every page that calls hideTopNav() has the
+  // widget included.
   window.hideTopNav = function () {
     var n = document.getElementById('globalTopNav');
     var d = document.getElementById('globalMobileNav');
@@ -167,6 +172,8 @@
     if (d) d.style.display = 'none';
     document.body.classList.remove('has-global-nav');
     document.documentElement.style.setProperty('--nav-height', '0px');
+    var pcw = document.getElementById('pcw-root');
+    if (pcw) pcw.style.display = 'none';
   };
   window.showTopNav = function () {
     var n = document.getElementById('globalTopNav');
@@ -175,6 +182,8 @@
     if (d) d.style.display = '';
     document.body.classList.add('has-global-nav');
     document.documentElement.style.removeProperty('--nav-height');
+    var pcw = document.getElementById('pcw-root');
+    if (pcw) pcw.style.display = '';
   };
 
   // ── Hamburger toggle ──────────────────────────────────────
