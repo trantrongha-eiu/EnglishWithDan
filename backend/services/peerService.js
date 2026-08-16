@@ -148,6 +148,32 @@ async function listConversations(uid) {
   });
 }
 
+// Full active-student roster for the peer-chat widget's "start a new
+// conversation" list — unlike listConversations() (existing threads only),
+// this is every student a viewer COULD message: excludes themselves,
+// banned accounts, and anyone blocked either direction (matches
+// sendPeerMessage's own block check, so nobody appears in the list only to
+// get a "blocked" error on the first message).
+async function listActiveStudents(viewerId) {
+  const [students, blocks] = await Promise.all([
+    User.find({ role: 'student', isBanned: { $ne: true }, _id: { $ne: viewerId } })
+      .select('firstName lastName username avatar lastSeen').lean(),
+    Block.find({ $or: [{ blockerId: viewerId }, { blockedId: viewerId }] }).select('blockerId blockedId').lean(),
+  ]);
+  const blockedIds = new Set(blocks.map(b =>
+    String(b.blockerId) === String(viewerId) ? String(b.blockedId) : String(b.blockerId)
+  ));
+  return students
+    .filter(u => !blockedIds.has(String(u._id)))
+    .map(u => ({
+      _id: u._id,
+      name: (`${u.firstName || ''} ${u.lastName || ''}`.trim()) || u.username,
+      avatar: u.avatar || '',
+      lastSeen: u.lastSeen || null,
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+}
+
 async function blockUser(blockerId, blockedId) {
   if (!mongoose.isValidObjectId(blockedId)) return { status: 'not_found' };
   if (String(blockerId) === String(blockedId)) return { status: 'self' };
@@ -182,6 +208,6 @@ async function reportUser(reporterId, reporterName, reportedId, reason, messageI
 }
 
 module.exports = {
-  getPeerProfile, sendPeerMessage, getThread, listConversations,
+  getPeerProfile, sendPeerMessage, getThread, listConversations, listActiveStudents,
   blockUser, unblockUser, reportUser, isBlockedEitherWay,
 };

@@ -21,6 +21,7 @@ router.post('/messages/:id/claim', auth, userCtrl.claimGift);
 
 // ── PEER (student profile view + chat + block/report) ────────────
 router.get('/peer/conversations',  auth, userCtrl.listPeerConversations);
+router.get('/peer/students',       auth, userCtrl.listActiveStudents);
 router.get('/peer/:id/profile',    auth, userCtrl.getPeerProfile);
 router.get('/peer/:id/thread',     auth, userCtrl.getPeerThread);
 router.post('/peer/:id/message',   auth, userCtrl.sendPeerMessage);

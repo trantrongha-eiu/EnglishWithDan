@@ -190,3 +190,33 @@ describe('peerService.reportUser', () => {
     expect(result.status).toBe('empty');
   });
 });
+
+describe('peerService.listActiveStudents', () => {
+  test('excludes the viewer themselves, banned students, teachers/admins, and anyone blocked either direction', async () => {
+    const me = await createStudent({ firstName: 'Me', lastName: '' });
+    const other = await createStudent({ firstName: 'Other', lastName: '' });
+    const banned = await createStudent({ firstName: 'Banned', lastName: '', isBanned: true });
+    const teacher = await createTeacher({ firstName: 'Teacher', lastName: '' });
+    const iBlocked = await createStudent({ firstName: 'IBlocked', lastName: '' });
+    const blockedMe = await createStudent({ firstName: 'BlockedMe', lastName: '' });
+
+    await peerService.blockUser(me._id, iBlocked._id);
+    await peerService.blockUser(blockedMe._id, me._id);
+
+    const list = await peerService.listActiveStudents(me._id);
+    const names = list.map(s => s.name);
+
+    expect(names).toContain('Other');
+    expect(names).not.toContain('Me');
+    expect(names).not.toContain('Banned');
+    expect(names).not.toContain('Teacher');
+    expect(names).not.toContain('IBlocked');
+    expect(names).not.toContain('BlockedMe');
+  });
+
+  test('returns an empty list when the viewer is the only student', async () => {
+    const me = await createStudent();
+    const list = await peerService.listActiveStudents(me._id);
+    expect(list).toEqual([]);
+  });
+});

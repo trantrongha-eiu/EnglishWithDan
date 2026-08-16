@@ -33,7 +33,8 @@
   var _activePeerName = '';
   var _threadPollTimer = null;
   var _panelOpen = false;
-  var _view = 'list'; // 'list' | 'thread'
+  var _view = 'list'; // 'list' | 'thread' | 'students'
+  var _allStudents = null; // cached roster for the "start a new chat" list — fetched once per page load
 
   async function _api(path, opts) {
     opts = opts || {};
@@ -134,7 +135,7 @@
       '.pcw-panel.open{display:flex}' +
       '.pcw-header{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
       '.pcw-header-titles{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}' +
-      '.pcw-header-title{font-weight:800;font-size:14.5px;color:var(--text,#111827);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '.pcw-header-title{flex:1;min-width:0;font-weight:800;font-size:14.5px;color:var(--text,#111827);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
       '.pcw-header-sub{font-size:11px;color:var(--text3,#9ca3af);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px;min-height:14px}' +
       '.pcw-header-sub.online{color:var(--green,#22c55e)}' +
       '.pcw-online-dot{width:7px;height:7px;border-radius:50%;background:var(--green,#22c55e);flex-shrink:0}' +
@@ -156,6 +157,9 @@
       '.pcw-conv-time{font-size:10.5px;color:var(--text3,#9ca3af)}' +
       '.pcw-conv-dot{width:9px;height:9px;border-radius:50%;background:var(--blue,#3d8bff)}' +
       '.pcw-empty{margin:auto;padding:24px;text-align:center;color:var(--text3,#9ca3af);font-size:13px}' +
+      '.pcw-search-wrap{padding:10px 12px;border-bottom:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
+      '.pcw-search-input{width:100%;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:8px 11px;font-family:inherit;font-size:13.5px;background:var(--bg,var(--surface,#fff));color:var(--text,#111827)}' +
+      '.pcw-search-input:focus{outline:none;border-color:var(--blue,#3d8bff)}' +
       '.pcw-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}' +
       '.pcw-row{display:flex;flex-direction:column;max-width:80%}' +
       '.pcw-row.mine{align-self:flex-end;align-items:flex-end}' +
@@ -238,7 +242,9 @@
     _stopThreadPoll();
     _header.innerHTML =
       '<span class="pcw-header-title">Tin nhắn</span>' +
+      '<button class="pcw-icon-btn" id="pcw-new-chat-btn" title="Nhắn tin cho bạn học khác"><i class="fas fa-user-plus"></i></button>' +
       '<button class="pcw-icon-btn" id="pcw-close-btn" title="Đóng"><i class="fas fa-times"></i></button>';
+    document.getElementById('pcw-new-chat-btn').addEventListener('click', _renderStudentList);
     document.getElementById('pcw-close-btn').addEventListener('click', function () {
       _panelOpen = false;
       _panel.classList.remove('open');
@@ -272,6 +278,71 @@
         var peerId = row.getAttribute('data-peer');
         var conv = _conversations.filter(function (c) { return String(c.userId) === peerId; })[0];
         _openThread(peerId, conv ? conv.name : '', conv ? conv.avatar : '', conv ? conv.lastSeen : null);
+      });
+    });
+  }
+
+  // ── Student roster view (start a new conversation) ─────────────────
+  // "Tin nhắn" previously only ever showed EXISTING conversations — the
+  // only way to message someone new was to find them on the leaderboard
+  // first. This lists every active (non-banned, non-blocked) student.
+  async function _renderStudentList() {
+    _view = 'students';
+    _stopThreadPoll();
+    _header.innerHTML =
+      '<button class="pcw-icon-btn" id="pcw-back-btn" title="Quay lại"><i class="fas fa-arrow-left"></i></button>' +
+      '<span class="pcw-header-title">Nhắn tin cho bạn học</span>' +
+      '<button class="pcw-icon-btn" id="pcw-close-btn" title="Đóng"><i class="fas fa-times"></i></button>';
+    document.getElementById('pcw-back-btn').addEventListener('click', _renderList);
+    document.getElementById('pcw-close-btn').addEventListener('click', function () {
+      _panelOpen = false;
+      _panel.classList.remove('open');
+    });
+
+    _body.innerHTML =
+      '<div class="pcw-search-wrap"><input class="pcw-search-input" id="pcw-student-search" placeholder="Tìm bạn học..." autocomplete="off"></div>' +
+      '<div class="pcw-list" id="pcw-student-list"><div class="pcw-empty">Đang tải...</div></div>';
+
+    var searchInp = document.getElementById('pcw-student-search');
+    searchInp.addEventListener('input', function () { _renderStudentRows(searchInp.value); });
+    setTimeout(function () { searchInp.focus(); }, 50);
+
+    if (_allStudents === null) {
+      try {
+        var d = await _api('/user/peer/students');
+        _allStudents = d.students || [];
+      } catch (e) {
+        _allStudents = [];
+      }
+    }
+    if (_view === 'students') _renderStudentRows('');
+  }
+
+  function _renderStudentRows(query) {
+    var listEl = document.getElementById('pcw-student-list');
+    if (!listEl) return;
+    var q = (query || '').trim().toLowerCase();
+    var rows = (_allStudents || []).filter(function (s) {
+      return !q || (s.name || '').toLowerCase().indexOf(q) !== -1;
+    });
+    if (!rows.length) {
+      listEl.innerHTML = '<div class="pcw-empty">' +
+        ((_allStudents || []).length ? 'Không tìm thấy bạn học nào.' : 'Chưa có bạn học nào khác.') +
+        '</div>';
+      return;
+    }
+    listEl.innerHTML = rows.map(function (s) {
+      var online = _formatPresence(s.lastSeen).online;
+      return '<div class="pcw-conv-row" data-peer="' + s._id + '">' +
+        '<span class="pcw-avatar-wrap">' + _avatarHtml(s.avatar, s.name, 'pcw-conv-avatar') + (online ? '<span class="pcw-online-dot"></span>' : '') + '</span>' +
+        '<div class="pcw-conv-info"><div class="pcw-conv-name">' + escHtml(s.name) + '</div></div>' +
+      '</div>';
+    }).join('');
+    listEl.querySelectorAll('.pcw-conv-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var peerId = row.getAttribute('data-peer');
+        var s = (_allStudents || []).filter(function (x) { return String(x._id) === peerId; })[0];
+        _openThread(peerId, s ? s.name : '', s ? s.avatar : '', s ? s.lastSeen : null);
       });
     });
   }

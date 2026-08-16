@@ -164,6 +164,14 @@ exports.listPeerConversations = messageGuard(async (req, res) => {
   res.json({ success: true, conversations });
 });
 
+// ── GET /api/user/peer/students ───────────────────────────────
+// Full active-student roster, for starting a new conversation with someone
+// not already in the conversation list — see peerService.listActiveStudents.
+exports.listActiveStudents = messageGuard(async (req, res) => {
+  const students = await peerService.listActiveStudents(req.user._id);
+  res.json({ success: true, students });
+});
+
 // ── GET /api/user/peer/:id/thread ────────────────────────────
 exports.getPeerThread = messageGuard(async (req, res) => {
   const result = await peerService.getThread(req.user._id, req.params.id);
