@@ -416,8 +416,9 @@ async function generateImprovedAnswer(question, part = 1, transcript, _attempt =
 
 // ── Sample Answer (Part 1 / 2 / 3) ─────────────────────────────────
 // Each part gets its own shape/rules since a real IELTS answer looks
-// completely different across them: Part 1 is 2-4 short conversational
-// sentences (O.R.E.), Part 2 is a ~2-minute cue-card monologue, Part 3
+// completely different across them: Part 1 is 3-4 short conversational
+// sentences with Opinion/Reason/Example each as its own beat (O.R.E.),
+// Part 2 is a ~2-minute cue-card monologue, Part 3
 // is a more developed discussion answer. Part 2/3 additionally target
 // Band 7.5+: a noticeably wide range of collocations plus 1-2 natural
 // (never forced) idioms.
@@ -462,14 +463,20 @@ Return this exact JSON (no other text):
   // Part 1 (default)
   return `IELTS Speaking Part 1 question: "${question}"
 
-Write a natural, spoken-sounding sample answer following these rules:
-- Length: exactly 2-4 sentences. Never a one-word/one-line answer like "Yes." or "I like it." — the examiner needs to hear you speak. Never a long, over-prepared Part-2-style monologue either — Part 1 must stay short and conversational.
-- Structure: a direct opinion or answer first, then a brief Reason, then a short concrete Example — adapt naturally if the question is factual rather than opinion-based (a direct answer + brief elaboration + short example still works the same way).
-- Include at least one natural filler word or discourse marker somewhere in the answer (e.g. "Well,", "Actually,", "To be honest,", "I mean,", "You know,", "Honestly,", or any similarly natural spoken connector — it doesn't have to be from this exact list) so it sounds like real spontaneous speech, not a scripted essay.
+Write a natural, spoken-sounding sample answer following the O.R.E. formula, targeting Band 7.5+.
+
+Rules:
+- Length: 3-4 sentences. Never a one-word/one-line answer like "Yes." or "I like it." — the examiner needs to hear you speak. Never a long, over-prepared Part-2-style monologue either — Part 1 must stay short and conversational. Two sentences is NOT enough: Reason and Example must each get their own distinct sentence, not be fused together into one crowded sentence.
+- Structure — three separate beats, each clearly its own sentence:
+  1. Opinion/direct answer: a clear, direct answer to the question.
+  2. Reason: briefly explain WHY, using its own sentence (e.g. starting with "That's because...", "Mainly because...", "Since...").
+  3. Example: a short, concrete, specific example or detail (a real-sounding situation, place, person, or moment) — not a vague restatement of the reason.
+  Adapt naturally if the question is factual rather than opinion-based (a direct answer + brief elaboration + short concrete example still works the same way).
+- Filler words: use AT MOST ONE natural filler/discourse marker in the whole answer (e.g. "Well,", "Actually,", "To be honest,", "I mean,", "You know,", "Honestly,") and only if it fits naturally — do NOT open multiple sentences with one, and do NOT reuse "actually"/"honestly" as a crutch. Most native speakers don't need one in every sentence; sounding natural comes from varied, concrete phrasing and normal contractions ("I'd say", "it's", "I don't"), not from stacking discourse markers.
 - Natural spoken English a real IELTS candidate would actually say out loud — not bookish, not overly formal, not obviously memorized.
 
 Return this exact JSON (no other text):
-{"sampleAnswer": "<the 2-4 sentence answer>"}`;
+{"sampleAnswer": "<the 3-4 sentence O.R.E. answer>"}`;
 }
 
 async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt = 0) {
