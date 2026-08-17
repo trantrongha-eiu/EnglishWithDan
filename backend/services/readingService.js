@@ -6,6 +6,7 @@
 // shape that differs from listening's, and the review flagged the two as
 // independently implemented; only proven-identical logic gets merged
 // across files (see listeningService.js's own comment on this).
+const mongoose = require('mongoose');
 const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
@@ -355,8 +356,65 @@ async function getRandomPracticePassage(category) {
   return arr[0] || null;
 }
 
+// ── Admin – Attempts history / stats ─────────────────────────────────────
+// Mirrors listeningService's listAdminAttempts/getAdminAttemptsStats — the
+// generic /admin/history and /admin/recent-attempts (routes/admin/stats.js)
+// already surface individual Reading attempts, but neither does per-test
+// aggregation (attempt count/avg band per bộ đề) or a top-students
+// leaderboard, which is what a dedicated Reading analytics page needs.
+async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
+  const filter = { status: 'completed' };
+  if (testId) filter.testId = testId;
+  if (userId) filter.userId = userId;
+  const [attempts, total] = await Promise.all([
+    TestAttempt.find(filter)
+      .populate('userId', 'firstName lastName username email')
+      .populate('testId', 'name testNumber')
+      .sort({ endTime: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .select('-answers -passagesUsed'),
+    TestAttempt.countDocuments(filter)
+  ]);
+  return { attempts, total };
+}
+
+async function getAdminAttemptsStats(testId) {
+  const match = { status: 'completed', ...(testId ? { testId: new mongoose.Types.ObjectId(testId) } : {}) };
+  const [overview, byTest, topStudents] = await Promise.all([
+    TestAttempt.aggregate([
+      { $match: match },
+      { $group: { _id: null, totalAttempts: { $sum: 1 }, avgBand: { $avg: '$bandScore' }, avgCorrect: { $avg: '$correctCount' }, maxBand: { $max: '$bandScore' }, minBand: { $min: '$bandScore' } } }
+    ]),
+    TestAttempt.aggregate([
+      { $match: match },
+      { $group: { _id: '$testId', totalAttempts: { $sum: 1 }, avgBand: { $avg: '$bandScore' }, avgCorrect: { $avg: '$correctCount' } } },
+      { $sort: { totalAttempts: -1 } },
+      { $limit: 20 },
+      { $lookup: { from: 'readingtests', localField: '_id', foreignField: '_id', as: 'test' } },
+      { $unwind: { path: '$test', preserveNullAndEmptyArrays: true } },
+      { $project: { totalAttempts: 1, avgBand: 1, avgCorrect: 1, testName: { $ifNull: ['$test.name', 'Đã xóa'] } } }
+    ]),
+    TestAttempt.aggregate([
+      { $match: match },
+      { $group: { _id: '$userId', bestBand: { $max: '$bandScore' }, avgBand: { $avg: '$bandScore' }, attempts: { $sum: 1 } } },
+      { $sort: { bestBand: -1 } },
+      { $limit: 10 },
+      { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'user' } },
+      { $unwind: '$user' },
+      { $project: { bestBand: 1, avgBand: 1, attempts: 1, 'user.firstName': 1, 'user.lastName': 1, 'user.username': 1, 'user.email': 1 } }
+    ])
+  ]);
+  return {
+    overview: overview[0] || { totalAttempts: 0, avgBand: 0, avgCorrect: 0, maxBand: 0, minBand: 0 },
+    byTest,
+    topStudents
+  };
+}
+
 module.exports = {
   listTestsForUser, startTest, submitTest, getAttemptReview, getHistory,
   listPracticePassages, getPracticePassageById, savePractice,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
+  listAdminAttempts, getAdminAttemptsStats,
 };

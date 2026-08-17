@@ -27,6 +27,7 @@ import Task1Exercises from './pages/Task1Exercises';
 import Task2Topics from './pages/Task2Topics';
 import Task2Templates from './pages/Task2Templates';
 import StudentHistory from './pages/StudentHistory';
+import ReadingStats from './pages/ReadingStats';
 import VocabActivity from './pages/VocabActivity';
 import StudentDetail from './pages/StudentDetail';
 import Messages from './pages/Messages';
@@ -70,6 +71,7 @@ export default function App() {
                 <Route path="task2-exercises" element={<Task2Topics />} />
                 <Route path="task2-templates" element={<Task2Templates />} />
                 <Route path="history" element={<StudentHistory />} />
+                <Route path="reading-stats" element={<ReadingStats />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />
                 <Route path="students/:id" element={<StudentDetail />} />
                 <Route path="messages" element={<Messages />} />

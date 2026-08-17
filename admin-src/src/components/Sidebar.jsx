@@ -26,6 +26,7 @@ const NAV = [
   { to: '/task2-templates', icon: '📄', label: 'Task 2 Templates' },
   { section: 'HỌC SINH' },
   { to: '/history',         icon: '🕓', label: 'Lịch sử làm bài' },
+  { to: '/reading-stats',   icon: '📊', label: 'Thống kê Reading' },
   { to: '/writing-grades',  icon: '✍️', label: 'Chấm bài Writing', badge: true },
   { to: '/vocab-activity',  icon: '📈', label: 'Hoạt động từ vựng' },
   { to: '/messages',        icon: '✉️', label: 'Hộp thư', messagesBadge: true },

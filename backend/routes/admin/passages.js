@@ -9,6 +9,7 @@ const { teacherOnly, uploadImageDataUri } = require('./_shared');
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
 const ListeningTest = require('../../models/ListeningTest');
+const readingController = require('../../controllers/reading.controller');
 
 const router = express.Router();
 
@@ -203,6 +204,16 @@ router.delete('/tests/:id/permanent', auth, teacherOnly, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
+
+// ══════════════════════════════════════════════════
+// READING TEST ATTEMPTS (Admin thống kê — mirrors Listening's
+// /listening/attempts + /listening/attempts/stats in routes/admin/listening.js)
+// ══════════════════════════════════════════════════
+
+// GET /api/admin/reading-tests/attempts — paginated, filterable by testId/userId
+router.get('/reading-tests/attempts', auth, teacherOnly, readingController.listAdminAttempts);
+// GET /api/admin/reading-tests/attempts/stats — overview + per-test + top-students, optionally scoped to one testId
+router.get('/reading-tests/attempts/stats', auth, teacherOnly, readingController.getAdminAttemptsStats);
 
 // ══════════════════════════════════════════════════
 // LISTENING TESTS (cho dropdown key)

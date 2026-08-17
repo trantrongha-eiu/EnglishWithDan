@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const readingService = require('../../../services/readingService');
 const { bandScoreTable } = require('../../../utils/bandScore');
 const { createStudent } = require('../../factories/userFactory');
-const { createPassage, createReadingTest, createTestAttempt } = require('../../factories/contentFactory');
+const { createPassage, createReadingTest, createTestAttempt, createCompletedTestAttempt } = require('../../factories/contentFactory');
 
 async function makeAttempt({ student, groups, status = 'in-progress' }) {
   const test = await createReadingTest();
@@ -422,5 +422,76 @@ describe('readingService.listTestsForUser — isFixed flag', () => {
 
     expect(fixed.isFixed).toBe(true);
     expect(random.isFixed).toBe(false);
+  });
+});
+
+describe('readingService.listAdminAttempts / getAdminAttemptsStats', () => {
+  test('listAdminAttempts only returns completed attempts, populated with user/test, newest first', async () => {
+    const student = await createStudent();
+    const test = await createReadingTest({ name: 'Cambridge 18 Test 1' });
+    await createTestAttempt({ userId: student._id, testId: test._id, status: 'in-progress' }); // excluded
+    const older = await createCompletedTestAttempt({ userId: student._id, testId: test._id, bandScore: 6, endTime: new Date(Date.now() - 60000) });
+    const newer = await createCompletedTestAttempt({ userId: student._id, testId: test._id, bandScore: 7, endTime: new Date() });
+
+    const { attempts, total } = await readingService.listAdminAttempts({ page: 1, limit: 50 });
+
+    expect(total).toBe(2);
+    expect(attempts.map(a => a._id.toString())).toEqual([newer._id.toString(), older._id.toString()]);
+    expect(attempts[0].userId.username).toBe(student.username);
+    expect(attempts[0].testId.name).toBe('Cambridge 18 Test 1');
+  });
+
+  test('listAdminAttempts filters by testId and userId', async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const testA = await createReadingTest();
+    const testB = await createReadingTest();
+    await createCompletedTestAttempt({ userId: studentA._id, testId: testA._id });
+    await createCompletedTestAttempt({ userId: studentB._id, testId: testB._id });
+
+    const byTest = await readingService.listAdminAttempts({ testId: testA._id, page: 1, limit: 50 });
+    expect(byTest.total).toBe(1);
+    expect(byTest.attempts[0].testId._id.toString()).toBe(testA._id.toString());
+
+    const byUser = await readingService.listAdminAttempts({ userId: studentB._id, page: 1, limit: 50 });
+    expect(byUser.total).toBe(1);
+    expect(byUser.attempts[0].userId._id.toString()).toBe(studentB._id.toString());
+  });
+
+  test('getAdminAttemptsStats computes overview/byTest/topStudents from completed attempts only', async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const test = await createReadingTest({ name: 'Stats Test' });
+    await createTestAttempt({ userId: studentA._id, testId: test._id, status: 'in-progress' }); // excluded
+    await createCompletedTestAttempt({ userId: studentA._id, testId: test._id, bandScore: 6, correctCount: 24 });
+    await createCompletedTestAttempt({ userId: studentB._id, testId: test._id, bandScore: 8, correctCount: 36 });
+
+    const stats = await readingService.getAdminAttemptsStats();
+
+    expect(stats.overview.totalAttempts).toBe(2);
+    expect(stats.overview.avgBand).toBeCloseTo(7, 5);
+    expect(stats.overview.maxBand).toBe(8);
+    expect(stats.overview.minBand).toBe(6);
+
+    expect(stats.byTest).toHaveLength(1);
+    expect(stats.byTest[0].testName).toBe('Stats Test');
+    expect(stats.byTest[0].totalAttempts).toBe(2);
+
+    expect(stats.topStudents).toHaveLength(2);
+    expect(stats.topStudents[0].bestBand).toBe(8);
+    expect(stats.topStudents[0].user.username).toBe(studentB.username);
+  });
+
+  test('getAdminAttemptsStats scoped to one testId excludes attempts on other tests', async () => {
+    const student = await createStudent();
+    const testA = await createReadingTest();
+    const testB = await createReadingTest();
+    await createCompletedTestAttempt({ userId: student._id, testId: testA._id, bandScore: 5 });
+    await createCompletedTestAttempt({ userId: student._id, testId: testB._id, bandScore: 9 });
+
+    const stats = await readingService.getAdminAttemptsStats(testA._id);
+
+    expect(stats.overview.totalAttempts).toBe(1);
+    expect(stats.overview.avgBand).toBe(5);
   });
 });

@@ -94,3 +94,15 @@ exports.getRandomPracticePassage = guard(null, async (req, res) => {
   if (!passage) return res.status(404).json({ success: false, message: 'Chưa có bài đọc cho loại này' });
   res.json({ success: true, passage });
 });
+
+// ── Admin – Attempts history / stats ─────────────────────────────────────
+exports.listAdminAttempts = guard(null, async (req, res) => {
+  const { testId, userId, page = 1, limit = 50 } = req.query;
+  const { attempts, total } = await readingService.listAdminAttempts({ testId, userId, page, limit });
+  res.json({ success: true, attempts, total, page: Number(page), limit: Number(limit) });
+});
+
+exports.getAdminAttemptsStats = guard(null, async (req, res) => {
+  const stats = await readingService.getAdminAttemptsStats(req.query.testId);
+  res.json({ success: true, ...stats });
+});
