@@ -225,7 +225,10 @@
         <div class="review-topbar">
             <button class="btn-ghost" onclick="showScreen('list')"><i class="fas fa-arrow-left"></i> Về trang chủ</button>
             <span class="exam-title" id="review-title" style="flex:1">Xem lại bài</span>
-            <span class="review-band-badge" id="review-band-badge">Band –</span>
+            <span class="exam-band-mid" style="display:inline-flex;align-items:center;gap:8px">
+                <img id="review-result-img" class="exam-band-thumb" src="" alt="" style="display:none;width:34px;height:34px;border-radius:8px;object-fit:cover">
+                <span class="review-band-badge" id="review-band-badge">Band –</span>
+            </span>
             <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')"><i class="fas fa-highlighter"></i> Bôi màu</button>
             <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')"><i class="fas fa-book"></i> Tra từ</button>
             <button class="tool-btn-rv" id="tool-translate-rv" onmousedown="event.preventDefault()" onclick="translateSelected()"><i class="fas fa-language"></i> Dịch (T)</button>
@@ -2013,6 +2016,19 @@
         // ══════════════════════════════════════════════
         // REVIEW
         // ══════════════════════════════════════════════
+        // Shared band→result-image mapping (also used on the review screen so
+        // the same funny/celebratory picture that appears right after
+        // submitting still shows up when reopening the review later, e.g.
+        // via "Xem lại" from the test list or history).
+        function resultImgSrcForBand(band) {
+            return band >= 7.5 ? 'img/above7.5.jpg'
+                 : band >= 6.0 ? 'img/band_6_7.jpg'
+                 : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
+                 : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
+                 : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
+                 :                'img/verylowscore.jpg';
+        }
+
         function goToReview() {
             const r = state.reviewResult;
             if (!r) return;
@@ -2035,6 +2051,8 @@
 
             document.getElementById('review-title').textContent = r.testName;
             document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
+            const reviewImgEl = document.getElementById('review-result-img');
+            if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(r.bandScore || 0); reviewImgEl.style.display = ''; }
             audio.src = r.audioUrl || '';
             audio.load();
             audio.currentTime = 0;
@@ -2709,15 +2727,7 @@
 
                 // Result image (full listening test only — section practice uses inline ls-result-bar)
                 const imgEl = document.getElementById('result-img');
-                if (imgEl) {
-                    const imgSrc = band >= 7.5 ? 'img/above7.5.jpg'
-                                 : band >= 6.0 ? 'img/band_6_7.jpg'
-                                 : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
-                                 : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
-                                 : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-                                 :                'img/verylowscore.jpg';
-                    imgEl.src = imgSrc; imgEl.style.display = '';
-                }
+                if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
 
                 // Message (funny/sarcastic for very low scores)
                 const isLow = band < 5.0;

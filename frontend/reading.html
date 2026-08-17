@@ -263,7 +263,10 @@
           onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
-      <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
+      <div class="exam-band-mid">
+        <img id="review-result-img" class="exam-band-thumb" src="" alt="" style="display:none">
+        <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
+      </div>
       <div class="exam-bar-right">
         <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ"><i class="fas fa-link"></i></button>
         <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>

@@ -2578,6 +2578,18 @@ function openSubmitErrorModal() {
   m.style.display = 'flex';
 }
 
+// Shared band→result-image mapping (also used on the review screen so the
+// same funny/celebratory picture that appears right after submitting still
+// shows up when reopening the review later, e.g. via "Xem lại kết quả").
+function resultImgSrcForBand(band) {
+  return band >= 7.5 ? 'img/above7.5.jpg'
+       : band >= 6.0 ? 'img/band_6_7.jpg'
+       : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
+       : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
+       : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
+       :                'img/verylowscore.jpg';
+}
+
 function showResult(r) {
   document.getElementById('result-band').textContent = r.bandScore?.toFixed(1) || '–';
   document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions} câu đúng`;
@@ -2590,15 +2602,7 @@ function showResult(r) {
 
   // Result image (full reading test only — passage practice uses inline rd-result-bar)
   const imgEl = document.getElementById('result-img');
-  if (imgEl) {
-    const imgSrc = band >= 7.5 ? 'img/above7.5.jpg'
-                 : band >= 6.0 ? 'img/band_6_7.jpg'
-                 : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
-                 : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
-                 : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-                 :                'img/verylowscore.jpg';
-    imgEl.src = imgSrc; imgEl.style.display = '';
-  }
+  if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
 
   // Motivational message (funny/sarcastic for very low scores)
   const isLow = band < 5.0;
@@ -2689,6 +2693,8 @@ function renderReview(attempt) {
   document.getElementById('review-title').textContent = attempt.testName || 'Review';
   const badge = document.getElementById('review-band-badge');
   if (badge) badge.textContent = `Band: ${attempt.bandScore?.toFixed(1)}`;
+  const reviewImgEl = document.getElementById('review-result-img');
+  if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(attempt.bandScore || 0); reviewImgEl.style.display = ''; }
 
   // Build reviewMap: { questionNumber: { userAnswer, correctAnswer, isCorrect, explanation } }
   const reviewMap = {};
