@@ -14,6 +14,7 @@
       children: [
         { href: 'listening.html?mode=full',   icon: 'fa-headphones', label: 'Full đề' },
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
+        { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
       ]
     },
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',

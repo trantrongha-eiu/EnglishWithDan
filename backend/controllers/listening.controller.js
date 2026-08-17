@@ -131,6 +131,13 @@ exports.getPracticeSectionById = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
+exports.listDictationSections = async (req, res) => {
+  try {
+    const sections = await listeningService.listDictationSections();
+    res.json({ success: true, sections });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
 // ── Admin CRUD for practice sections ─────────────────────────────────────
 exports.listAdminSections = async (req, res) => {
   try {

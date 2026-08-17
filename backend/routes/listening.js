@@ -19,6 +19,12 @@ const listeningController = require('../controllers/listening.controller');
 router.get('/practice/list', auth, listeningController.listPracticeSections);
 router.get('/practice/by-id/:id', auth, listeningController.getPracticeSectionById);
 
+// STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
+// sections have already been through scripts/bulkAlignListeningDictation.js;
+// fetching one section's full data (audioUrl + dictationSentences) reuses
+// /practice/by-id/:id above, which already returns the whole document.
+router.get('/dictation/list', auth, listeningController.listDictationSections);
+
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/tests', auth, listeningController.listStudentTests);
 

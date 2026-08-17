@@ -311,6 +311,32 @@ async function getPracticeSectionById(id) {
   return ListeningSection.findOne({ _id: id, isActive: true }).lean();
 }
 
+// ── Dictation practice (sentence-by-sentence chép chính tả) ─────────────
+// Cuts across part/actualTest the way listPracticeSections() doesn't —
+// dictation availability tracks scripts/bulkAlignListeningDictation.js's
+// rollout, not the part-1..4 practice catalogue, so this is deliberately a
+// separate, simpler listing. getPracticeSectionById() above already returns
+// the full document (including dictationSentences + transcript), so
+// fetching one section for practice reuses that existing endpoint rather
+// than duplicating it here.
+async function listDictationSections() {
+  const sections = await ListeningSection.find({
+    isActive: true,
+    dictationSentences: { $exists: true, $not: { $size: 0 } },
+  })
+    .select('_id title partNumber audioDuration isActualTest dictationSentences')
+    .sort({ partNumber: 1, title: 1 })
+    .lean();
+  return sections.map(s => ({
+    _id: s._id,
+    title: s.title,
+    partNumber: s.partNumber,
+    audioDuration: s.audioDuration,
+    isActualTest: s.isActualTest,
+    sentenceCount: s.dictationSentences.length,
+  }));
+}
+
 async function listAdminSections() {
   return ListeningSection.find().sort({ partNumber: 1, createdAt: -1 });
 }
@@ -638,7 +664,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById,
+  listPracticeSections, getPracticeSectionById, listDictationSections,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent,
   assembleTest,
   listStudentTests, startTest, submitTest,

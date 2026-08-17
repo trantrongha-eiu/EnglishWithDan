@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Luyện Dictation – EnglishWithDan</title>
+  <meta name="description" content="Luyện nghe chép chính tả (dictation) IELTS Listening theo từng câu, dựa trên các bài Listening có sẵn."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/tokens.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/mobile.css"/>
+  <script src="js/theme.js"></script>
+  <script src="js/shared/visit-tracker.js"></script>
+  <style>
+    body { background: var(--bg); }
+    .dict-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+
+    /* ── Picker screen ── */
+    .dict-picker-head { margin-bottom: 20px; }
+    .dict-picker-head h1 { font-size: var(--fs-h2); font-weight: 800; color: var(--text); margin: 0 0 6px; }
+    .dict-picker-head p { color: var(--text2); font-size: var(--fs-body-sm); margin: 0; }
+    .dict-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .dict-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; gap: 8px;
+    }
+    .dict-card:hover { border-color: var(--brand); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .dict-card-badges { display: flex; gap: 6px; align-items: center; }
+    .dict-badge {
+      font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: var(--radius-pill);
+      background: var(--brand-light); color: var(--brand);
+    }
+    .dict-card-title { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.35; }
+    .dict-card-meta { font-size: 12px; color: var(--text3); display: flex; gap: 12px; }
+    .dict-empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+    .dict-empty i { font-size: 32px; margin-bottom: 10px; display: block; }
+
+    /* ── Practice screen ── */
+    #screen-practice { display: none; }
+    #screen-practice.active { display: block; }
+    #screen-list.hidden { display: none; }
+    .dict-practice-top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .dict-back-btn {
+      background: var(--surface2); border: none; color: var(--text2); width: 36px; height: 36px;
+      border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .dict-back-btn:hover { background: var(--border); }
+    .dict-practice-title { font-size: 17px; font-weight: 800; color: var(--text); }
+    .dict-practice-sub { font-size: 12px; color: var(--text3); }
+
+    .dict-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 800px) { .dict-layout { grid-template-columns: 1fr; } }
+
+    .dict-sidebar {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px; position: sticky; top: calc(var(--nav-height, 64px) + 20px);
+    }
+    .dict-sidebar-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text3); margin-bottom: 10px; cursor: pointer; }
+    .dict-num-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-height: 340px; overflow-y: auto; }
+    .dict-num-btn {
+      width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2);
+      color: var(--text2); font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .dict-num-btn.current { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .dict-num-btn.done { background: var(--success-light); border-color: var(--success); color: var(--success); }
+    .dict-num-btn.current.done { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+    .dict-main { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+    .dict-nav-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .dict-nav-arrow { background: none; border: none; color: var(--text2); font-size: 16px; cursor: pointer; padding: 4px 8px; }
+    .dict-nav-arrow:disabled { opacity: .3; cursor: default; }
+    .dict-counter { font-weight: 800; color: var(--text); font-size: 15px; }
+    .dict-word-count { margin-left: auto; font-size: 12px; color: var(--text3); background: var(--surface2); padding: 3px 10px; border-radius: var(--radius-pill); }
+
+    .dict-audio-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .dict-play-btn {
+      width: 42px; height: 42px; border-radius: 50%; background: var(--brand); color: #fff; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+    }
+    .dict-play-btn:hover { background: var(--brand-dark); }
+    .dict-restart-btn {
+      width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); color: var(--text2); border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .dict-progress-wrap { flex: 1; height: 5px; background: var(--surface2); border-radius: var(--radius-pill); overflow: hidden; }
+    .dict-progress-fill { height: 100%; background: var(--brand); width: 0%; transition: width .1s linear; }
+    .dict-time { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 76px; text-align: right; }
+    .dict-speed-btn {
+      background: var(--surface2); border: none; color: var(--text2); font-size: 12px; font-weight: 700;
+      border-radius: var(--radius-pill); padding: 6px 10px; cursor: pointer; flex-shrink: 0;
+    }
+
+    .dict-input {
+      width: 100%; min-height: 90px; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      padding: 14px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); resize: vertical;
+    }
+    .dict-input:focus { outline: none; border-color: var(--brand); }
+    .dict-hint-row { font-size: 12px; color: var(--text3); margin: 8px 0 14px; }
+    .dict-hint-row kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: inherit; }
+
+    .dict-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .dict-btn { border: none; border-radius: var(--radius-sm); padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .dict-btn-ghost { background: var(--surface2); color: var(--text2); }
+    .dict-btn-ghost:hover { background: var(--border); }
+    .dict-btn-primary { background: var(--brand); color: #fff; }
+    .dict-btn-primary:hover { background: var(--brand-dark); }
+    .dict-btn-primary:disabled { opacity: .5; cursor: default; }
+
+    .dict-result { margin-top: 18px; padding: 16px; border-radius: var(--radius-sm); display: none; }
+    .dict-result.show { display: block; }
+    .dict-result.correct { background: var(--success-light); }
+    .dict-result.wrong { background: var(--danger-light); }
+    .dict-result-label { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+    .dict-result.correct .dict-result-label { color: var(--success); }
+    .dict-result.wrong .dict-result-label { color: var(--danger); }
+    .dict-diff { font-size: 16px; line-height: 1.8; }
+    .dict-diff .w-match { color: var(--text); }
+    .dict-diff .w-miss { color: var(--danger); text-decoration: line-through; opacity: .7; }
+    .dict-diff .w-extra { color: var(--text3); text-decoration: line-through; }
+
+    .dict-script-toggle {
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none;
+    }
+    .dict-script-toggle-label { font-size: 14px; font-weight: 700; color: var(--text); }
+    .dict-script-body { display: none; margin-top: 12px; font-size: 15px; line-height: 1.7; color: var(--text); }
+    .dict-script-body.show { display: block; }
+    .dict-script-word { cursor: pointer; }
+    .dict-script-word:hover { color: var(--brand); text-decoration: underline; }
+
+    .dict-session-stat { font-size: 12px; color: var(--text3); text-align: center; margin-top: 10px; }
+    .dict-loading { text-align: center; padding: 80px 20px; color: var(--text3); }
+    .dict-loading i { font-size: 26px; margin-bottom: 10px; display: block; }
+  </style>
+</head>
+
+<body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/shared/peer-chat-widget.js"></script>
+<script src="js/upgrade-modal.js"></script>
+<script src="js/shared/sound-effects.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
+<script src="js/shared/api-client.js"></script>
+
+<div class="dict-wrap">
+
+  <!-- ══════════════ PICKER SCREEN ══════════════ -->
+  <div id="screen-list">
+    <div class="dict-picker-head">
+      <h1><i class="fas fa-keyboard"></i> Luyện Dictation</h1>
+      <p>Nghe và chép chính tả từng câu — chọn một bài Listening bên dưới để bắt đầu.</p>
+    </div>
+    <div id="dict-grid" class="dict-grid">
+      <div class="dict-loading"><i class="fas fa-spinner fa-spin"></i>Đang tải danh sách...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ PRACTICE SCREEN ══════════════ -->
+  <div id="screen-practice">
+    <div class="dict-practice-top">
+      <button class="dict-back-btn" onclick="backToList()" title="Quay lại"><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <div class="dict-practice-title" id="dict-section-title">—</div>
+        <div class="dict-practice-sub" id="dict-section-sub"></div>
+      </div>
+    </div>
+
+    <div class="dict-layout">
+      <div class="dict-sidebar">
+        <div class="dict-sidebar-head"><span>Danh sách câu</span> <span id="dict-session-score"></span></div>
+        <div class="dict-num-grid" id="dict-num-grid"></div>
+      </div>
+
+      <div class="dict-main">
+        <div class="dict-nav-row">
+          <button class="dict-nav-arrow" id="dict-prev-btn" onclick="dictGoTo(dictIndex - 1)"><i class="fas fa-chevron-left"></i></button>
+          <span class="dict-counter">Câu <span id="dict-cur-num">1</span>/<span id="dict-total-num">1</span></span>
+          <button class="dict-nav-arrow" id="dict-next-btn" onclick="dictGoTo(dictIndex + 1)"><i class="fas fa-chevron-right"></i></button>
+          <span class="dict-word-count" id="dict-word-count">0 từ</span>
+        </div>
+
+        <div class="dict-audio-row">
+          <button class="dict-play-btn" id="dict-play-btn" onclick="dictTogglePlay()"><i class="fas fa-play"></i></button>
+          <button class="dict-restart-btn" onclick="dictRestart()" title="Nghe lại từ đầu câu"><i class="fas fa-undo"></i></button>
+          <div class="dict-progress-wrap"><div class="dict-progress-fill" id="dict-progress-fill"></div></div>
+          <span class="dict-time" id="dict-time">0:00 / 0:00</span>
+          <button class="dict-speed-btn" id="dict-speed-btn" onclick="dictCycleSpeed()">1x</button>
+        </div>
+
+        <textarea class="dict-input" id="dict-input" placeholder="Nhập những gì bạn nghe được..."></textarea>
+        <div class="dict-hint-row">
+          <i class="fas fa-info-circle"></i> Nhấn <kbd>Enter</kbd> để kiểm tra (Shift+Enter để xuống dòng).
+        </div>
+
+        <div class="dict-actions">
+          <button class="dict-btn dict-btn-ghost" onclick="dictRetry()">Làm lại</button>
+          <button class="dict-btn dict-btn-primary" id="dict-check-btn" onclick="dictCheck()">Kiểm tra</button>
+        </div>
+
+        <div class="dict-result" id="dict-result">
+          <div class="dict-result-label" id="dict-result-label"></div>
+          <div class="dict-diff" id="dict-diff"></div>
+        </div>
+
+        <div class="dict-script-toggle" onclick="dictToggleScript()">
+          <span class="dict-script-toggle-label"><i class="fas fa-file-alt"></i> Xem script câu này</span>
+          <i class="fas fa-chevron-down" id="dict-script-chevron"></i>
+        </div>
+        <div class="dict-script-body" id="dict-script-body"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<audio id="dict-audio" preload="metadata"></audio>
+
+<script>
+const API = 'https://englishwithdan.onrender.com/api';
+function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
+function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
+function fmtTime(s) { if (!isFinite(s) || s < 0) s = 0; return Math.floor(s / 60) + ':' + pad(s % 60); }
+
+let dictSections = [];      // picker list
+let dictSection  = null;    // currently open section (full doc incl. dictationSentences + audioUrl)
+let dictIndex    = 0;       // current sentence index
+let dictDone     = new Set(); // indices answered correctly this session
+let dictSpeeds   = [1, 1.25, 1.5, 0.75];
+let dictSpeedIdx = 0;
+const audio = document.getElementById('dict-audio');
+
+/* ══════════════ PICKER ══════════════ */
+async function loadDictList() {
+  try {
+    const res = await fetch(`${API}/listening/dictation/list`, { headers: authH() });
+    const data = await window.ApiClient.handleResponse(res);
+    dictSections = data.sections || [];
+  } catch (e) {
+    document.getElementById('dict-grid').innerHTML = `<div class="dict-empty"><i class="fas fa-triangle-exclamation"></i>Không tải được danh sách. Vui lòng thử lại.</div>`;
+    return;
+  }
+  renderDictList();
+}
+
+function renderDictList() {
+  const grid = document.getElementById('dict-grid');
+  if (!dictSections.length) {
+    grid.innerHTML = `<div class="dict-empty"><i class="fas fa-keyboard"></i>Chưa có bài nào sẵn sàng để luyện Dictation.</div>`;
+    return;
+  }
+  grid.innerHTML = dictSections.map(s => `
+    <div class="dict-card" onclick="openDictSection('${s._id}')">
+      <div class="dict-card-badges">
+        <span class="dict-badge">${s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber}</span>
+      </div>
+      <div class="dict-card-title">${escHtml(s.title)}</div>
+      <div class="dict-card-meta">
+        <span><i class="fas fa-list-ol"></i> ${s.sentenceCount} câu</span>
+        ${s.audioDuration ? `<span><i class="fas fa-clock"></i> ${fmtTime(s.audioDuration)}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════ OPEN A SECTION ══════════════ */
+async function openDictSection(id) {
+  document.getElementById('screen-list').classList.add('hidden');
+  document.getElementById('screen-practice').classList.add('active');
+  document.getElementById('dict-section-title').textContent = 'Đang tải...';
+  try {
+    const res = await fetch(`${API}/listening/practice/by-id/${id}`, { headers: authH() });
+    const data = await window.ApiClient.handleResponse(res);
+    dictSection = data.section;
+  } catch (e) {
+    toast('Không tải được bài này.', 'error');
+    backToList();
+    return;
+  }
+  if (!dictSection || !(dictSection.dictationSentences || []).length) {
+    toast('Bài này chưa có dữ liệu dictation.', 'error');
+    backToList();
+    return;
+  }
+  audio.src = dictSection.audioUrl;
+  dictIndex = 0;
+  dictDone = new Set();
+  document.getElementById('dict-section-title').textContent = dictSection.title;
+  document.getElementById('dict-section-sub').textContent = (dictSection.isActualTest ? 'Actual Test' : 'Part ' + dictSection.partNumber) + ' · ' + dictSection.dictationSentences.length + ' câu';
+  document.getElementById('dict-total-num').textContent = dictSection.dictationSentences.length;
+  renderNumGrid();
+  dictGoTo(0);
+  syncViewUrl(id);
+}
+
+function backToList() {
+  audio.pause();
+  document.getElementById('screen-practice').classList.remove('active');
+  document.getElementById('screen-list').classList.remove('hidden');
+  history.replaceState({}, '', 'dictation.html');
+}
+
+function syncViewUrl(id) {
+  const url = new URL(location.href);
+  url.searchParams.set('sectionId', id);
+  history.replaceState({}, '', url);
+}
+
+function renderNumGrid() {
+  const grid = document.getElementById('dict-num-grid');
+  grid.innerHTML = dictSection.dictationSentences.map((_, i) => `
+    <button class="dict-num-btn${i === dictIndex ? ' current' : ''}${dictDone.has(i) ? ' done' : ''}" data-i="${i}" onclick="dictGoTo(${i})">${i + 1}</button>
+  `).join('');
+}
+
+/* ══════════════ SENTENCE NAVIGATION ══════════════ */
+function dictGoTo(i) {
+  const sentences = dictSection.dictationSentences;
+  if (i < 0 || i >= sentences.length) return;
+  audio.pause();
+  dictIndex = i;
+  document.getElementById('dict-cur-num').textContent = i + 1;
+  document.getElementById('dict-prev-btn').disabled = i === 0;
+  document.getElementById('dict-next-btn').disabled = i === sentences.length - 1;
+  document.getElementById('dict-input').value = '';
+  document.getElementById('dict-result').classList.remove('show', 'correct', 'wrong');
+  document.getElementById('dict-script-body').classList.remove('show');
+  document.getElementById('dict-script-chevron').className = 'fas fa-chevron-down';
+  document.getElementById('dict-check-btn').disabled = false;
+  const sentence = sentences[i];
+  document.getElementById('dict-word-count').textContent = sentence.text.trim().split(/\s+/).length + ' từ';
+  document.getElementById('dict-script-body').innerHTML = sentence.text.split(/\s+/).map(w =>
+    `<span class="dict-script-word" onclick="speakWord('${escHtml(w.replace(/[^a-zA-Z']/g, ''))}')">` + escHtml(w) + '</span>'
+  ).join(' ');
+  updateDictProgress(0);
+  document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
+  document.getElementById('dict-input').focus();
+}
+
+function speakWord(word) {
+  if (!word || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US';
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+/* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared
+   audio file, using this sentence's start/end timestamps) ══════════════ */
+function currentSentence() { return dictSection.dictationSentences[dictIndex]; }
+
+function dictTogglePlay() {
+  if (audio.paused) {
+    if (audio.currentTime < currentSentence().start || audio.currentTime >= currentSentence().end) {
+      audio.currentTime = currentSentence().start;
+    }
+    audio.play();
+    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    audio.pause();
+    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-play"></i>';
+  }
+}
+
+function dictRestart() {
+  audio.currentTime = currentSentence().start;
+  audio.play();
+  document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-pause"></i>';
+}
+
+function dictCycleSpeed() {
+  dictSpeedIdx = (dictSpeedIdx + 1) % dictSpeeds.length;
+  audio.playbackRate = dictSpeeds[dictSpeedIdx];
+  document.getElementById('dict-speed-btn').textContent = dictSpeeds[dictSpeedIdx] + 'x';
+}
+
+function updateDictProgress(ratio) {
+  document.getElementById('dict-progress-fill').style.width = (Math.min(1, Math.max(0, ratio)) * 100) + '%';
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (!dictSection) return;
+  const s = currentSentence();
+  const dur = s.end - s.start || 1;
+  updateDictProgress((audio.currentTime - s.start) / dur);
+  document.getElementById('dict-time').textContent = fmtTime(Math.max(0, audio.currentTime - s.start)) + ' / ' + fmtTime(dur);
+  if (audio.currentTime >= s.end) {
+    audio.pause();
+    document.getElementById('dict-play-btn').innerHTML = '<i class="fas fa-play"></i>';
+  }
+});
+
+/* ══════════════ CHECK ANSWER (word-level diff against the correct,
+   human-verified sentence — not the ASR's own wording) ══════════════ */
+function normWord(w) { return w.toLowerCase().replace(/[^a-z0-9']/g, ''); }
+
+function dictCheck() {
+  const typed = document.getElementById('dict-input').value.trim();
+  const correct = currentSentence().text;
+  const typedWords = typed.split(/\s+/).filter(Boolean);
+  const correctWords = correct.split(/\s+/).filter(Boolean);
+
+  // Simple LCS-based word diff — small sentences (a few dozen words at
+  // most), so an O(n*m) table is trivial.
+  const n = typedWords.length, m = correctWords.length;
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      dp[i][j] = normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])
+        ? dp[i - 1][j - 1] + 1
+        : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  const matchedCorrectIdx = new Set();
+  let i = n, j = m;
+  while (i > 0 && j > 0) {
+    if (normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])) {
+      matchedCorrectIdx.add(j - 1);
+      i--; j--;
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) i--;
+    else j--;
+  }
+
+  const isPerfect = matchedCorrectIdx.size === m && n === m;
+  const diffHtml = correctWords.map((w, idx) =>
+    `<span class="${matchedCorrectIdx.has(idx) ? 'w-match' : 'w-miss'}">${escHtml(w)}</span>`
+  ).join(' ');
+
+  const resultEl = document.getElementById('dict-result');
+  resultEl.classList.add('show');
+  resultEl.classList.toggle('correct', isPerfect);
+  resultEl.classList.toggle('wrong', !isPerfect);
+  document.getElementById('dict-result-label').textContent = isPerfect
+    ? '✓ Chính xác!'
+    : `Đúng ${matchedCorrectIdx.size}/${m} từ — phần bôi đỏ là từ bạn thiếu/sai:`;
+  document.getElementById('dict-diff').innerHTML = diffHtml;
+  document.getElementById('dict-check-btn').disabled = true;
+
+  if (isPerfect) {
+    dictDone.add(dictIndex);
+    document.querySelector(`.dict-num-btn[data-i="${dictIndex}"]`)?.classList.add('done');
+    document.getElementById('dict-session-score').textContent = `${dictDone.size}/${dictSection.dictationSentences.length} ✓`;
+  }
+}
+
+function dictRetry() {
+  document.getElementById('dict-input').value = '';
+  document.getElementById('dict-result').classList.remove('show', 'correct', 'wrong');
+  document.getElementById('dict-check-btn').disabled = false;
+  document.getElementById('dict-input').focus();
+}
+
+function dictToggleScript() {
+  const body = document.getElementById('dict-script-body');
+  const chevron = document.getElementById('dict-script-chevron');
+  const show = !body.classList.contains('show');
+  body.classList.toggle('show', show);
+  chevron.className = show ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+}
+
+document.getElementById('dict-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!document.getElementById('dict-check-btn').disabled) dictCheck();
+  }
+});
+
+/* ══════════════ INIT ══════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const sectionId = new URLSearchParams(location.search).get('sectionId');
+  loadDictList().then(() => {
+    if (sectionId) openDictSection(sectionId);
+  });
+});
+</script>
+</body>
+</html>

@@ -64,6 +64,20 @@ const ListeningSectionSchema = new mongoose.Schema({
   questionGroups:  [LSGroupSchema],
   isActive:        { type: Boolean, default: true },
   isActualTest:    { type: Boolean, default: false },
+  // Sentence-level dictation practice ("chép chính tả từng câu") — one
+  // start/end timestamp pair (seconds into audioUrl) per sentence, derived
+  // by aligning `transcript` (this section's verified, human-authored
+  // text — always what's shown/checked against, never the ASR's own
+  // wording) against Groq Whisper's word-level timestamps for the SAME
+  // audio. See scripts/bulkAlignListeningDictation.js. Empty until a
+  // section has been run through that alignment.
+  dictationSentences: [{
+    text:  { type: String, required: true },
+    start: { type: Number, required: true },
+    end:   { type: Number, required: true },
+    _id: false,
+  }],
+  dictationAlignedAt: { type: Date, default: null },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });
