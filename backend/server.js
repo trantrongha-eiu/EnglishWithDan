@@ -147,6 +147,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'WritingTip seed error', { errorMessage: e.message });
     }
+    // Auto-seed Speaking Tips strategy articles (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runSpeakingTipsSeed } = require('./scripts/seedSpeakingTips');
+      logger.startup('SpeakingTip seeding...');
+      await runSpeakingTipsSeed();
+      logger.startup('SpeakingTip seed done');
+    } catch (e) {
+      logger.error('startup', 'SpeakingTip seed error', { errorMessage: e.message });
+    }
     // Auto-seed Speaking question bank (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runSpeakingSeed } = require('./scripts/seedSpeakingQuestions');

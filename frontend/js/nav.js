@@ -27,7 +27,13 @@
         { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
       ]
     },
-    { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking' },
+    { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking',
+      children: [
+        { href: 'speaking.html',                    icon: 'fa-microphone', label: 'Luyện tập' },
+        { href: 'speaking.html?tab=materials',      icon: 'fa-book-open',  label: 'Tài liệu' },
+        { href: 'speaking.html?tab=speaking-tips',  icon: 'fa-lightbulb',  label: 'Speaking Tips' },
+      ]
+    },
     { href: 'writing-practice.html', icon: 'fa-pencil-alt',  label: 'Luyện viết',
       children: [
         { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },

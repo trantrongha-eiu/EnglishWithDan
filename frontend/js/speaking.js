@@ -211,6 +211,9 @@ function showScreen(id) {
   } else if (tabParam === 'history') {
     showScreen('screen-history');
     loadHistory();
+  } else if (tabParam === 'speaking-tips') {
+    showScreen('screen-speaking-tips');
+    if (typeof initSpeakingTips === 'function') initSpeakingTips();
   }
   // else 'home' — screen-home is already the active screen in the static HTML.
 
@@ -226,6 +229,9 @@ function showScreen(id) {
       showScreen('screen-materials');
       loadMaterialFilters();
       loadMaterials();
+    } else if (tab === 'speaking-tips') {
+      showScreen('screen-speaking-tips');
+      if (typeof initSpeakingTips === 'function') initSpeakingTips();
     } else {
       showScreen('screen-home');
     }
@@ -268,6 +274,7 @@ function goHistory(fromScreen) {
   loadHistory();
 }
 function goMaterials() { showScreen('screen-materials'); syncTabUrl('materials'); loadMaterialFilters(); loadMaterials(); }
+function goSpeakingTips() { showScreen('screen-speaking-tips'); syncTabUrl('speaking-tips'); if (typeof initSpeakingTips === 'function') initSpeakingTips(); }
 
 // ══════════════════════════════════════════════════════
 // PRACTICE SCREEN

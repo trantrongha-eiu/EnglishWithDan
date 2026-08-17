@@ -1,0 +1,126 @@
+/* ══════════════════════════════════════════════════════════════
+   Speaking Tips screen — same collapsible category-sidebar pattern as
+   reading.html's .rt-* / listening.html's .lst-* / writing.html's .wst-*
+   Tips panels (sst- prefix here). Amber accent, matching the home-screen
+   card's icon color.
+   ══════════════════════════════════════════════════════════════ */
+.sst-layout { display: flex; align-items: flex-start; gap: 0; padding: 16px 24px 24px; min-height: calc(100vh - 140px); }
+.sst-sidebar {
+  width: 280px; flex-shrink: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+  overflow-y: auto; max-height: 78vh; position: sticky; top: 90px;
+}
+[data-theme="dark"] .sst-sidebar { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
+.sst-main { flex: 1; min-width: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; margin-left: 16px; }
+[data-theme="dark"] .sst-main { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
+
+.sst-cat-list { padding: 6px 0; }
+.sst-cat-group { border-bottom: 1px solid #f9fafb; }
+[data-theme="dark"] .sst-cat-group { border-color: var(--bg, #000000); }
+.sst-cat-header {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 11px 14px; border: none;
+  background: none; text-align: left; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700;
+  color: #374151; transition: background .15s;
+}
+.sst-cat-header:hover { background: #f9fafb; }
+[data-theme="dark"] .sst-cat-header { color: #e2e8f0; }
+[data-theme="dark"] .sst-cat-header:hover { background: rgba(255,255,255,.04); }
+.sst-cat-chevron { margin-left: auto; font-size: 10px; color: #9ca3af; transition: transform .2s; }
+.sst-cat-group.collapsed .sst-cat-chevron { transform: rotate(-90deg); }
+.sst-cat-count { font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; border-radius: 8px; padding: 1px 6px; }
+[data-theme="dark"] .sst-cat-count { background: var(--border2, #333333); color: #64748b; }
+.sst-lesson-list { display: flex; flex-direction: column; padding: 0 6px 6px; }
+.sst-cat-group.collapsed .sst-lesson-list { display: none; }
+.sst-lesson-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 22px; border-radius: 8px;
+  border: none; background: none; text-align: left; cursor: pointer; font-family: inherit; font-size: 12.5px;
+  color: #4b5563; transition: background .15s, color .15s; width: 100%;
+}
+.sst-lesson-item:hover { background: #fffbeb; color: #b45309; }
+.sst-lesson-item.active { background: #fef3c7; color: #92400e; font-weight: 700; }
+[data-theme="dark"] .sst-lesson-item { color: #94a3b8; }
+[data-theme="dark"] .sst-lesson-item:hover { background: #451a03; color: #fcd34d; }
+[data-theme="dark"] .sst-lesson-item.active { background: #451a03; color: #fcd34d; }
+.sst-lesson-icon { flex-shrink: 0; font-size: 13px; }
+.sst-lesson-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sst-lesson-item .sst-done-icon { color: #16a34a; font-size: 11px; flex-shrink: 0; }
+
+.sst-hero { background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%); padding: 22px 26px; color: #fff; border-radius: 12px 12px 0 0; }
+.sst-hero-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; opacity: .9; margin-bottom: 4px; }
+.sst-hero-title { font-size: 21px; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 10px; }
+.sst-content { padding: 20px 26px 30px; }
+
+.sst-block { margin-bottom: 22px; }
+.sst-block-label {
+  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; color: #b45309; margin-bottom: 10px;
+}
+[data-theme="dark"] .sst-block-label { color: #fcd34d; }
+
+.sst-overview-text { font-size: 14.5px; line-height: 1.8; color: #374151; white-space: pre-line; }
+[data-theme="dark"] .sst-overview-text { color: #cbd5e1; }
+
+.sst-step-item { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f3f4f6; }
+[data-theme="dark"] .sst-step-item { border-color: var(--bg, #000000); }
+.sst-step-item:last-child { border-bottom: none; }
+.sst-step-num {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: #fef3c7; color: #92400e;
+  font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+[data-theme="dark"] .sst-step-num { background: #451a03; color: #fcd34d; }
+.sst-step-title { font-size: 13.5px; font-weight: 700; color: #111827; margin-bottom: 2px; white-space: pre-line; }
+[data-theme="dark"] .sst-step-title { color: #f1f5f9; }
+.sst-step-desc { font-size: 13px; color: #6b7280; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .sst-step-desc { color: #94a3b8; }
+
+.sst-list-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 6px; }
+[data-theme="dark"] .sst-list-title { color: #f1f5f9; }
+.sst-list-item { display: flex; gap: 8px; padding: 6px 0; font-size: 13px; color: #374151; line-height: 1.6; }
+[data-theme="dark"] .sst-list-item { color: #cbd5e1; }
+.sst-list-item i { color: #b45309; margin-top: 3px; font-size: 8px; flex-shrink: 0; }
+[data-theme="dark"] .sst-list-item i { color: #fcd34d; }
+
+.sst-example-item { background: #f9fafb; border: 1px solid #f3f4f6; border-left: 3px solid #b45309; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+[data-theme="dark"] .sst-example-item { background: var(--bg, #000000); border-color: var(--surface, #0d0d0d); border-left-color: #fbbf24; }
+.sst-example-label { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 6px; }
+[data-theme="dark"] .sst-example-label { color: #fcd34d; }
+.sst-example-row { font-size: 13px; color: #374151; margin-bottom: 4px; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .sst-example-row { color: #cbd5e1; }
+.sst-example-row strong { color: #92400e; margin-right: 4px; }
+[data-theme="dark"] .sst-example-row strong { color: #fcd34d; }
+.sst-example-note { font-size: 12.5px; color: #6b7280; font-style: italic; margin-top: 4px; white-space: pre-line; }
+[data-theme="dark"] .sst-example-note { color: #94a3b8; }
+
+.sst-callout { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+[data-theme="dark"] .sst-callout { background: #451a03; border-color: #92400e; }
+.sst-callout-title { font-size: 12.5px; font-weight: 700; color: #92400e; margin-bottom: 3px; }
+[data-theme="dark"] .sst-callout-title { color: #fcd34d; }
+.sst-callout-text { font-size: 13px; color: #78350f; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .sst-callout-text { color: #fde68a; }
+
+.sst-table-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+[data-theme="dark"] .sst-table-title { color: #f1f5f9; }
+.sst-table-wrap { overflow-x: auto; }
+.sst-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.sst-table th { background: #fef3c7; color: #92400e; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #fde68a; }
+[data-theme="dark"] .sst-table th { background: #451a03; color: #fcd34d; border-color: #92400e; }
+.sst-table td { padding: 8px 10px; border: 1px solid #f3f4f6; color: #374151; }
+[data-theme="dark"] .sst-table td { border-color: var(--surface, #0d0d0d); color: #cbd5e1; }
+
+.sst-summary-box {
+  background: linear-gradient(135deg, #fef3c7, #fffbeb); border: 1.5px solid #fcd34d; border-radius: 12px;
+  padding: 14px 16px; font-size: 13.5px; color: #78350f; font-weight: 600; line-height: 1.7; white-space: pre-line;
+}
+[data-theme="dark"] .sst-summary-box { background: linear-gradient(135deg, #451a03, var(--surface, #0d0d0d)); border-color: #92400e; color: #fcd34d; }
+
+.sst-loading { padding: 60px 20px; text-align: center; color: #9ca3af; }
+.sst-loading-icon { font-size: 28px; margin-bottom: 10px; }
+.sst-no-results { padding: 20px 14px; text-align: center; color: #9ca3af; font-size: 12.5px; }
+
+@media (max-width: 900px) {
+  .sst-layout { flex-direction: column; padding: 12px 16px 20px; }
+  .sst-sidebar { width: 100%; max-height: 320px; position: static; margin-bottom: 16px; }
+  .sst-main { margin-left: 0; }
+  .sst-hero { padding: 16px 16px; border-radius: 12px 12px 0 0; }
+  .sst-hero-title { font-size: 18px; }
+  .sst-content { padding: 16px 16px 22px; }
+}

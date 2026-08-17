@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/pdf-viewer.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <link rel="stylesheet" href="css/dictionary-popup.css" />
+  <link rel="stylesheet" href="css/speaking-extra.css" />
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
 </head>
@@ -113,6 +114,16 @@
         <div class="sp-home-card-body">
           <div class="sp-home-card-title">Tài liệu</div>
           <div class="sp-home-card-desc">Đề mẫu và tài liệu luyện tập theo quý</div>
+        </div>
+        <i class="fas fa-chevron-right sp-home-card-arrow"></i>
+      </div>
+      <div class="sp-home-card" onclick="goSpeakingTips()">
+        <div class="sp-home-card-icon-wrap sp-card-amber">
+          <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="sp-home-card-body">
+          <div class="sp-home-card-title">Speaking Tips</div>
+          <div class="sp-home-card-desc">Chiến lược Part 1, 2, 3 và cách phát triển câu trả lời theo từng band điểm</div>
         </div>
         <i class="fas fa-chevron-right sp-home-card-arrow"></i>
       </div>
@@ -612,6 +623,31 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════
+     SCREEN – SPEAKING TIPS
+═══════════════════════════════════════════ -->
+<div id="screen-speaking-tips" class="screen">
+  <div class="sp-page-header">
+    <div class="sp-page-header-inner">
+      <h2 class="sp-page-header-title">💡 Speaking Tips</h2>
+      <button class="btn-secondary" onclick="goHome()">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </button>
+    </div>
+  </div>
+
+  <div class="sst-layout">
+    <aside class="sst-sidebar" id="sst-sidebar">
+      <div class="sst-cat-list" id="sst-cat-list"></div>
+    </aside>
+    <div class="sst-main">
+      <div id="sst-main-content">
+        <div class="sst-loading"><div class="sst-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- History detail modal -->
 <div class="modal-overlay" id="history-modal">
   <div class="sp-modal">
@@ -685,6 +721,7 @@
 
 <script src="js/speaking-timer.js"></script>
 <script src="js/speaking-audio-store.js"></script>
+<script src="js/speaking-tips.js"></script>
 <script src="js/speaking.js"></script>
 </body>
 </html>
