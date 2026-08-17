@@ -129,6 +129,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'ReadingTip seed error', { errorMessage: e.message });
     }
+    // Auto-seed Listening Tips strategy articles (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runListeningTipsSeed } = require('./scripts/seedListeningTips');
+      logger.startup('ListeningTip seeding...');
+      await runListeningTipsSeed();
+      logger.startup('ListeningTip seed done');
+    } catch (e) {
+      logger.error('startup', 'ListeningTip seed error', { errorMessage: e.message });
+    }
     // Auto-seed Speaking question bank (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runSpeakingSeed } = require('./scripts/seedSpeakingQuestions');

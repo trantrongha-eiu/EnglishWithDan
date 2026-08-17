@@ -59,10 +59,11 @@
                 </div>
             </div>
 
-            <!-- Mode tabs: Full đề / Bài lẻ -->
+            <!-- Mode tabs: Full đề / Bài lẻ / Listening Tips -->
             <div class="rmode-tabs-bar">
                 <button id="ls-mode-full" class="rmode-tab rmode-active" onclick="setListeningMode('full')"><i class="fas fa-headphones"></i> Full đề</button>
                 <button id="ls-mode-lele" class="rmode-tab" onclick="setListeningMode('lele')"><i class="fas fa-music"></i> Bài lẻ</button>
+                <button id="ls-mode-tips" class="rmode-tab" onclick="setListeningMode('tips')"><i class="fas fa-lightbulb"></i> Listening Tips</button>
             </div>
 
 
@@ -121,6 +122,20 @@
                     <div class="plele-content">
                         <div id="lt-section-list"></div>
                         <div id="lt-practice-pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listening Tips panel -->
+            <div id="listening-tips-panel" class="hidden">
+                <div class="lst-layout">
+                    <aside class="lst-sidebar" id="lst-sidebar">
+                        <div class="lst-cat-list" id="lst-cat-list"></div>
+                    </aside>
+                    <div class="lst-main">
+                        <div id="lst-main-content">
+                            <div class="lst-loading"><div class="lst-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -848,7 +863,7 @@
                     document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
                         t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
                     );
-                    setListeningMode(mode === 'full' ? 'full' : 'lele', false);
+                    setListeningMode(mode === 'full' ? 'full' : mode === 'tips' ? 'tips' : 'lele', false);
                     return;
                 }
                 showScreen('list');
@@ -857,6 +872,8 @@
                         t.classList.toggle('plele-active', String(t.dataset.part) === String(part))
                     );
                     setListeningMode('lele', false);
+                } else if (mode === 'tips') {
+                    setListeningMode('tips', false);
                 } else {
                     setListeningMode('full', false);
                 }
@@ -898,6 +915,10 @@
                     t.classList.toggle('plele-active', String(t.dataset.part) === String(partParam))
                 );
                 setListeningMode('lele', false);
+                showScreen('list');
+            } else if (modeParam === 'tips') {
+                history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
+                setListeningMode('tips', false);
                 showScreen('list');
             } else {
                 history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
@@ -3230,17 +3251,21 @@
     /* ── Mode switch (Full đề ↔ Bài lẻ) ─────────────────────────────────── */
     function setListeningMode(mode, pushHistory = true) {
         const isLele = mode === 'lele';
+        const isTips = mode === 'tips';
         if (pushHistory) {
             const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
             const part = activeTab?.dataset.part ?? 1;
             if (isLele) {
                 history.pushState({ screen: 'list', mode: 'single', part }, '', `?mode=single&part=${part}`);
+            } else if (isTips) {
+                history.pushState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
             } else {
                 history.pushState({ screen: 'list', mode: 'full' }, '', '?mode=full');
             }
         }
-        document.getElementById('ls-mode-full')?.classList.toggle('rmode-active', !isLele);
+        document.getElementById('ls-mode-full')?.classList.toggle('rmode-active', !isLele && !isTips);
         document.getElementById('ls-mode-lele')?.classList.toggle('rmode-active', isLele);
+        document.getElementById('ls-mode-tips')?.classList.toggle('rmode-active', isTips);
 
         const picker   = document.getElementById('lele-picker-lt');
         const wrapper  = document.getElementById('tests-wrapper');
@@ -3248,20 +3273,24 @@
         const filterBar= document.getElementById('ls-filter-bar');
         const subtitle = document.getElementById('ls-mode-subtitle');
         const title    = document.getElementById('ls-mode-title');
+        const tipsPanel= document.getElementById('listening-tips-panel');
 
         const leleHdrBtns = document.getElementById('lele-header-btns');
         const testsPag    = document.getElementById('tests-pagination');
         if (picker)       picker.classList.toggle('hidden', !isLele);
-        if (wrapper)      wrapper.style.display    = isLele ? 'none' : '';
-        if (banner)       banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
-        if (filterBar)    filterBar.style.display  = isLele ? 'none' : '';
+        if (wrapper)      wrapper.style.display    = (isLele || isTips) ? 'none' : '';
+        if (banner)       banner.style.display     = (isLele || isTips) ? 'none' : (banner._resumeData ? 'flex' : 'none');
+        if (filterBar)    filterBar.style.display  = (isLele || isTips) ? 'none' : '';
         if (leleHdrBtns)  leleHdrBtns.style.display= isLele ? 'flex' : 'none';
-        if (testsPag)     testsPag.style.display   = isLele ? 'none' : '';
+        if (testsPag)     testsPag.style.display   = (isLele || isTips) ? 'none' : '';
+        if (tipsPanel)    tipsPanel.classList.toggle('hidden', !isTips);
         if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; _ltSearchVal = ''; }
-        if (subtitle)  subtitle.style.display   = isLele ? 'none' : '';
+        if (subtitle)  subtitle.style.display   = (isLele || isTips) ? 'none' : '';
         if (title) {
             title.innerHTML = isLele
                 ? 'Luyện tập <span class="ls-tag-blue">Listening Bài lẻ</span>'
+                : isTips
+                ? 'Luyện tập <span class="ls-tag-blue">Listening Tips</span>'
                 : 'Luyện tập <span class="tag-red">Listening Full đề</span>';
         }
         if (isLele) {
@@ -3272,6 +3301,8 @@
                 const part = rawPart === 'actual' ? 'actual' : (parseInt(rawPart) || 1);
                 loadPracticeSections(part);
             }
+        } else if (isTips) {
+            if (typeof initListeningTips === 'function') initListeningTips();
         }
     }
 
@@ -4186,6 +4217,7 @@
         return true;
     };
     </script>
+    <script src="/js/listening-tips.js"></script>
 </body>
 
 </html>
