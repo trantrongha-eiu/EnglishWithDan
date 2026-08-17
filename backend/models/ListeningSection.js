@@ -78,6 +78,13 @@ const ListeningSectionSchema = new mongoose.Schema({
     _id: false,
   }],
   dictationAlignedAt: { type: Date, default: null },
+  // Set when a bulk-alignment attempt rejects this section (failed strict
+  // validation) or hits a permanent error (e.g. audio file too large for
+  // Groq's free-tier 25MB cap) — lets the default bulk run skip it on
+  // future passes instead of re-burning quota on a doomed-to-fail-again
+  // section every single hour. Cleared automatically on a later success.
+  dictationSkippedAt:  { type: Date, default: null },
+  dictationSkipReason: { type: String, default: '' },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });

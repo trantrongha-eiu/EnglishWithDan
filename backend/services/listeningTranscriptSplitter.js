@@ -41,6 +41,29 @@ const PART_LABEL_LINE = /^part\s*\d+\s*$/i;
 // alignment step tolerates (see listeningAlignmentService's null-fallback).
 const SENTENCE_BOUNDARY = /(?<=[.!?])\s+(?=[A-Z0-9"'])/;
 
+// Inline editorial markers like "(Q11)" or "(Q29/Q30)" flag where a
+// fill-in-blank answer falls in the transcript text — they're never spoken
+// in the audio, so Whisper can never match them, which guaranteed exactly
+// one "missing word" (and a strict-validation rejection) for every sentence
+// that contained one. Strip them before tokenizing/displaying; students
+// shouldn't see these either.
+const QUESTION_ANNOTATION = /\(\s*Q\d+(?:\s*[/,]\s*Q?\d+)*\s*\)/gi;
+// Square-bracket stage directions like "[laughs]" or "[pause]" describe a
+// non-verbal sound, not spoken words — Whisper never transcribes them
+// either, for the same reason as above. Parentheses are left alone here
+// since real spoken asides use them too (only the Q-annotation form above
+// is stripped from parens).
+const STAGE_DIRECTION = /\[[^\]]*\]/g;
+
+function stripQuestionAnnotations(line) {
+  return line
+    .replace(QUESTION_ANNOTATION, ' ')
+    .replace(STAGE_DIRECTION, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([.,!?])/g, '$1')
+    .trim();
+}
+
 function stripSpeakerPrefix(line) {
   // Inline speaker label at the start of a paragraph block, e.g.
   // "WOMAN   I've been meaning..." or "Interviewer: So tell me about...".
@@ -64,6 +87,37 @@ function stripTranscriptHeaderGlue(line) {
   return m[1].trim() || null;
 }
 
+// A dictation unit of 1-2 words ("Fine.", "Oh, hello.") gives the forced-
+// aligner almost no context to anchor on reliably — a single short/common
+// word can spuriously match the wrong occurrence elsewhere in the audio
+// (e.g. into the pre-dialogue instructions), producing a broken near-zero
+// or wildly wrong duration. Merging it into an adjacent sentence gives the
+// aligner enough surrounding words to lock onto the right position, and
+// incidentally matches what a dictation exercise should feel like anyway —
+// one complete, meaningful spoken turn per unit, not a stray fragment.
+const MIN_UNIT_WORDS = 3;
+
+function wordCount(s) { return s.trim().split(/\s+/).filter(Boolean).length; }
+
+function mergeTinyFragments(sentences, minWords = MIN_UNIT_WORDS) {
+  if (sentences.length <= 1) return sentences.slice();
+  const merged = [];
+  for (const s of sentences) {
+    if (merged.length && wordCount(merged[merged.length - 1]) < minWords) {
+      merged[merged.length - 1] = merged[merged.length - 1] + ' ' + s;
+    } else {
+      merged.push(s);
+    }
+  }
+  // A trailing fragment has no "next" sentence to merge forward into —
+  // fold it backward onto the previous unit instead.
+  if (merged.length > 1 && wordCount(merged[merged.length - 1]) < minWords) {
+    const tail = merged.pop();
+    merged[merged.length - 1] = merged[merged.length - 1] + ' ' + tail;
+  }
+  return merged;
+}
+
 function splitTranscriptIntoSentences(rawTranscript) {
   if (!rawTranscript || !rawTranscript.trim()) return [];
 
@@ -85,12 +139,12 @@ function splitTranscriptIntoSentences(rawTranscript) {
 
   const sentences = [];
   for (const line of lines) {
-    const content = stripSpeakerPrefix(line);
+    const content = stripQuestionAnnotations(stripSpeakerPrefix(line));
     if (!content) continue;
     const parts = content.split(SENTENCE_BOUNDARY).map(s => s.trim()).filter(Boolean);
     sentences.push(...parts);
   }
-  return sentences;
+  return mergeTinyFragments(sentences);
 }
 
-module.exports = { splitTranscriptIntoSentences };
+module.exports = { splitTranscriptIntoSentences, mergeTinyFragments, MIN_UNIT_WORDS, stripQuestionAnnotations };

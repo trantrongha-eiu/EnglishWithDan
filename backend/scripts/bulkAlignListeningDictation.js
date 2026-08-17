@@ -6,44 +6,56 @@
 //
 // For every ListeningSection with a non-empty transcript + audioUrl and no
 // dictationSentences yet, this: splits the transcript into sentences
-// (listeningTranscriptSplitter), transcribes the audio via Groq Whisper
-// with word-level timestamps (listeningAlignmentService), aligns the known
-// sentences against those timestamps, and saves the result. Safe to re-run:
-// only processes sections where dictationSentences is still empty, so an
-// interrupted run can just be run again to pick up where it left off.
+// (listeningTranscriptSplitter — merges any sub-3-word fragment into its
+// neighbour, since a lone word like "Fine." gives the aligner nothing to
+// anchor on reliably), transcribes the audio via Groq Whisper with
+// word-level timestamps (listeningAlignmentService — which also skips past
+// the audio's pre-dialogue instructions via a 4-word anchor match, so they
+// can never be mismatched into), aligns the known sentences against those
+// timestamps, and — only if EVERY sentence passes strict validation (100%
+// word match + a plausible speech rate, see validateAlignment()) — saves
+// the result. A section that fails validation is never saved as-is, rather
+// than shipping a partially-broken practice unit — see dictationSkippedAt
+// below. Safe to re-run: the default filter only picks up sections that are
+// still genuinely untried, so an interrupted run can just be run again to
+// pick up where it left off.
+//
+// A section that fails (rejected by validateAlignment, or a permanent error
+// like Groq's 413 "file too large") is marked with dictationSkippedAt so
+// the DEFAULT run leaves it alone from then on — otherwise every hourly
+// re-run would spend its limited quota re-attempting the same handful of
+// deterministically-doomed sections first, before ever reaching untried
+// ones (this is exactly what happened before this flag existed: the same
+// ~7 sections ate most of each run's quota, run after run).
 //
 // Usage:
-//   node backend/scripts/bulkAlignListeningDictation.js               # all missing
-//   node backend/scripts/bulkAlignListeningDictation.js --limit 20    # cap this run
-//   node backend/scripts/bulkAlignListeningDictation.js --force       # re-align even if already done
-//   node backend/scripts/bulkAlignListeningDictation.js --delay 2000  # ms between sections (default 1500)
+//   node backend/scripts/bulkAlignListeningDictation.js                  # untried sections only
+//   node backend/scripts/bulkAlignListeningDictation.js --limit 20       # cap this run
+//   node backend/scripts/bulkAlignListeningDictation.js --include-skipped # also retry previously-skipped sections (e.g. after a transcript/code fix)
+//   node backend/scripts/bulkAlignListeningDictation.js --force          # re-align EVERYTHING, including already-successful sections
+//   node backend/scripts/bulkAlignListeningDictation.js --delay 2000     # ms between sections (default 1500)
 'use strict';
 
 require('dotenv').config();
 
 function parseArgs(argv) {
-  const args = { limit: Infinity, force: false, delay: 1500 };
+  const args = { limit: Infinity, force: false, delay: 1500, includeSkipped: false };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--limit') args.limit = parseInt(argv[++i], 10) || Infinity;
     else if (argv[i] === '--force') args.force = true;
     else if (argv[i] === '--delay') args.delay = parseInt(argv[++i], 10) || 1500;
+    else if (argv[i] === '--include-skipped') args.includeSkipped = true;
   }
   return args;
 }
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-// A section is flagged for manual review (logged, not blocked) if the
-// overall word-match rate against the ASR is suspiciously low — usually
-// means the transcript text doesn't actually match this audio file (wrong
-// pairing) rather than an alignment-algorithm problem.
-const REVIEW_THRESHOLD = 0.85;
-
 async function run() {
   const mongoose = require('mongoose');
   const ListeningSection = require('../models/ListeningSection');
   const { splitTranscriptIntoSentences } = require('../services/listeningTranscriptSplitter');
-  const { transcribeWithWordTimestamps, alignSentences } = require('../services/listeningAlignmentService');
+  const { transcribeWithWordTimestamps, alignSentences, validateAlignment } = require('../services/listeningAlignmentService');
 
   const args = parseArgs(process.argv.slice(2));
 
@@ -56,6 +68,9 @@ async function run() {
   // matches the second case and silently skipped every real document.
   if (!args.force) {
     filter.$or = [{ dictationSentences: { $exists: false } }, { dictationSentences: { $size: 0 } }];
+    // { field: null } matches both "missing" and "explicitly null" in
+    // Mongo, so this works uniformly for pre-existing docs too.
+    if (!args.includeSkipped) filter.dictationSkippedAt = null;
   }
 
   const totalMissing = await ListeningSection.countDocuments(filter);
@@ -63,7 +78,8 @@ async function run() {
 
   console.log(`[bulkAlign] ${totalMissing} section(s) need alignment; processing ${sections.length} this run.`);
 
-  let ok = 0, failed = 0, needsReview = [];
+  let ok = 0, rejected = 0, failed = 0;
+  const rejectedList = [];
   for (const [i, section] of sections.entries()) {
     const tag = `[${i + 1}/${sections.length}] "${section.title}"`;
     try {
@@ -71,6 +87,10 @@ async function run() {
       if (sentences.length === 0) {
         console.log(`${tag} SKIP — 0 sentences after splitting`);
         failed++;
+        await ListeningSection.updateOne(
+          { _id: section._id },
+          { $set: { dictationSkippedAt: new Date(), dictationSkipReason: 'error: 0 sentences after splitting' } }
+        ).catch(() => {});
         continue;
       }
 
@@ -80,26 +100,35 @@ async function run() {
 
       const asrWords = await transcribeWithWordTimestamps(audioBuffer, 'section.mp3');
       const aligned = alignSentences(sentences, asrWords);
+      const { valid, issues } = validateAlignment(aligned);
 
-      let matched = 0, total = 0;
-      aligned.forEach(a => { matched += a.matchedWords; total += a.totalWords; });
-      const matchRate = total > 0 ? matched / total : 0;
+      if (!valid) {
+        rejected++;
+        rejectedList.push({ title: section.title, issues });
+        console.log(`${tag} REJECTED — ${issues.length}/${aligned.length} sentence(s) failed strict validation:`);
+        issues.forEach(iss => console.log(`    #${iss.index} "${iss.text}" — ${iss.reason}`));
+        await ListeningSection.updateOne(
+          { _id: section._id },
+          { $set: {
+              dictationSkippedAt: new Date(),
+              dictationSkipReason: issues.map(iss => `#${iss.index} ${iss.reason}`).join('; ').slice(0, 500),
+            }
+          }
+        );
+        continue;
+      }
 
       await ListeningSection.updateOne(
         { _id: section._id },
         { $set: {
             dictationSentences: aligned.map(a => ({ text: a.text, start: a.start, end: a.end })),
             dictationAlignedAt: new Date(),
+            dictationSkippedAt: null,
+            dictationSkipReason: '',
           }
         }
       );
-
-      if (matchRate < REVIEW_THRESHOLD) {
-        needsReview.push({ title: section.title, matchRate });
-        console.log(`${tag} OK but LOW MATCH RATE ${(matchRate * 100).toFixed(1)}% — flagged for review`);
-      } else {
-        console.log(`${tag} OK — ${aligned.length} sentences, ${(matchRate * 100).toFixed(1)}% word match`);
-      }
+      console.log(`${tag} OK — ${aligned.length} sentences, 100% verified (every word matched, plausible timing)`);
       ok++;
     } catch (err) {
       if (err.isRateLimited) {
@@ -116,14 +145,21 @@ async function run() {
       }
       failed++;
       console.error(`${tag} FAIL: ${err.message}`);
+      // Permanent errors (e.g. Groq's 413 "file too large") will fail
+      // identically every time — skip on future default runs rather than
+      // re-attempting a doomed call each hour.
+      await ListeningSection.updateOne(
+        { _id: section._id },
+        { $set: { dictationSkippedAt: new Date(), dictationSkipReason: `error: ${err.message}`.slice(0, 500) } }
+      ).catch(() => {});
     }
     if (i < sections.length - 1) await sleep(args.delay);
   }
 
-  console.log(`\n[bulkAlign] Done. ${ok} aligned, ${failed} failed, ${totalMissing - ok} still missing.`);
-  if (needsReview.length) {
-    console.log(`[bulkAlign] ${needsReview.length} section(s) flagged for manual review (match rate < ${REVIEW_THRESHOLD * 100}%):`);
-    needsReview.forEach(r => console.log(`  - "${r.title}": ${(r.matchRate * 100).toFixed(1)}%`));
+  console.log(`\n[bulkAlign] Done. ${ok} accepted, ${rejected} rejected (failed strict validation), ${failed} errored, ${totalMissing - ok - rejected - failed} still pending.`);
+  if (rejectedList.length) {
+    console.log(`[bulkAlign] ${rejectedList.length} section(s) rejected — marked skipped, won't be retried by default (use --include-skipped or --force):`);
+    rejectedList.forEach(r => console.log(`  - "${r.title}" (${r.issues.length} bad sentence(s))`));
   }
 
   await mongoose.disconnect();

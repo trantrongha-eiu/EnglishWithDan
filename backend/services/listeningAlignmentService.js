@@ -125,6 +125,31 @@ function globalAlign(knownTokens, asrTokens) {
   return pairs;
 }
 
+// Cambridge-style listening audio opens with spoken instructions ("You will
+// hear a conversation about...") that are never part of the transcript we
+// align against. Left alone, the global alignment's DP is free to match the
+// FIRST known word against a coincidentally-similar word anywhere earlier
+// in that instructional preamble — most dangerous for the first sentence,
+// since there's no earlier matched neighbour to constrain it. Anchoring on
+// a run of ANCHOR_LEN consecutive exact-matching words (a coincidence at
+// that length is vanishingly unlikely) finds where the real transcript
+// content actually starts and discards every ASR word before it, so the
+// preamble is never a candidate match for anything.
+const ANCHOR_LEN = 4;
+
+function findAnchorOffset(knownWordsFlat, asrTokens, anchorLen = ANCHOR_LEN) {
+  if (knownWordsFlat.length < anchorLen) return 0; // too short a transcript to anchor reliably — skip
+  const needle = knownWordsFlat.slice(0, anchorLen);
+  for (let j = 0; j + anchorLen <= asrTokens.length; j++) {
+    let allMatch = true;
+    for (let k = 0; k < anchorLen; k++) {
+      if (asrTokens[j + k] !== needle[k]) { allMatch = false; break; }
+    }
+    if (allMatch) return j;
+  }
+  return 0; // no clean anchor found — fall back to aligning the full stream
+}
+
 // Aligns known sentences (string[]) against ASR word timestamps, returning
 // [{ text, start, end, matchedWords, totalWords }] — one per known
 // sentence, in order. A sentence with zero directly-matched ASR words
@@ -140,7 +165,10 @@ function alignSentences(knownSentences, asrWords) {
     sentenceWordRanges.push([start, knownWordsFlat.length]);
   }
 
-  const asrTokens = asrWords.map(w => normalizeWord(w.word));
+  const fullAsrTokens = asrWords.map(w => normalizeWord(w.word));
+  const anchorOffset = findAnchorOffset(knownWordsFlat, fullAsrTokens);
+  asrWords = asrWords.slice(anchorOffset);
+  const asrTokens = fullAsrTokens.slice(anchorOffset);
   const pairs = globalAlign(knownWordsFlat, asrTokens);
 
   const knownToAsr = new Array(knownWordsFlat.length).fill(null);
@@ -151,11 +179,14 @@ function alignSentences(knownSentences, asrWords) {
   const results = knownSentences.map((sentence, s) => {
     const [wStart, wEnd] = sentenceWordRanges[s];
     let firstAsr = null, lastAsr = null, matchedWords = 0;
+    const unmatchedTokens = [];
     for (let k = wStart; k < wEnd; k++) {
       if (knownToAsr[k] !== null) {
         if (firstAsr === null) firstAsr = knownToAsr[k];
         lastAsr = knownToAsr[k];
         matchedWords++;
+      } else {
+        unmatchedTokens.push(knownWordsFlat[k]);
       }
     }
     return {
@@ -164,6 +195,7 @@ function alignSentences(knownSentences, asrWords) {
       end: lastAsr !== null ? asrWords[lastAsr].end : null,
       matchedWords,
       totalWords: wEnd - wStart,
+      unmatchedTokens,
     };
   });
 
@@ -181,4 +213,49 @@ function alignSentences(knownSentences, asrWords) {
   return results;
 }
 
-module.exports = { transcribeWithWordTimestamps, alignSentences, tokenizeSentence, globalAlign, normalizeWord };
+// Strict quality gate — the product requirement here is "100% accuracy",
+// so this rejects a section entirely rather than shipping a mix of good and
+// broken sentences. Two independent checks per sentence:
+//  1. matchedWords === totalWords — every word in the sentence found its
+//     own ASR word (not just "most of them"); a partial match means the
+//     displayed text and the played audio have genuinely drifted apart.
+//  2. Plausible speech rate — natural English conversation runs roughly
+//     1.5-4 words/second; a sentence timed far outside that (e.g. "Fine."
+//     clocking in at 0.01s, or a sentence spanning a 30s dead-air gap) is a
+//     symptom of an alignment that locked onto the wrong part of the audio,
+//     even if every word technically "matched" something.
+const MIN_WORDS_PER_SECOND = 0.5;
+const MAX_WORDS_PER_SECOND = 6;
+
+// Hesitation sounds ("um", "uh", "hmm"...) are genuinely spoken, so they
+// stay in the displayed/checked transcript text — but Whisper transcribes
+// them inconsistently (drops them, or spells them differently each time),
+// so requiring them to match like any other word rejected nearly every
+// real conversational section (interviews/Part-1/Part-3 dialogue is full
+// of them). A sentence is still accepted if every UNMATCHED word is one of
+// these — every word that actually carries meaning still had to match.
+const FILLER_WORDS = new Set(['um', 'umm', 'uh', 'uhh', 'erm', 'hmm', 'mm', 'mmhmm', 'ah', 'ahh', 'huh']);
+
+function validateAlignment(results) {
+  const issues = [];
+  results.forEach((r, i) => {
+    if (r.matchedWords !== r.totalWords) {
+      const unmatched = r.unmatchedTokens || [];
+      if (!unmatched.every(t => FILLER_WORDS.has(t))) {
+        issues.push({ index: i, text: r.text, reason: `chỉ khớp ${r.matchedWords}/${r.totalWords} từ (thiếu: ${unmatched.join(', ')})` });
+        return;
+      }
+    }
+    const duration = r.end - r.start;
+    const wps = duration > 0 ? r.totalWords / duration : Infinity;
+    if (duration <= 0 || wps > MAX_WORDS_PER_SECOND || wps < MIN_WORDS_PER_SECOND) {
+      issues.push({ index: i, text: r.text, reason: `thời lượng bất thường (${duration.toFixed(2)}s cho ${r.totalWords} từ)` });
+    }
+  });
+  return { valid: issues.length === 0, issues };
+}
+
+module.exports = {
+  transcribeWithWordTimestamps, alignSentences, validateAlignment,
+  tokenizeSentence, globalAlign, normalizeWord, findAnchorOffset,
+};
