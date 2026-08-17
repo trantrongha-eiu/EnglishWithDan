@@ -941,7 +941,7 @@
         let _userPlan = 'free';
         // Premium upgrade modal state now lives in the shared js/upgrade-modal.js
         let _lsPage = 1;
-        const LS_PAGE_SIZE = 9;
+        const LS_PAGE_SIZE = 8; // 4-column grid → exactly 2 full rows per page (matches Reading)
         let _testListCache = null; // { tests, userPlan } — avoids refetching /listening/tests on every list-screen return
         let _testListCacheAt = 0;
         const TEST_LIST_CACHE_TTL_MS = 60000;
@@ -986,7 +986,13 @@
             }
         }
 
-        // Group filtered tests into pages where each page holds complete groups (no group split)
+        // Group filtered tests into pages of at most LS_PAGE_SIZE cards each.
+        // A named series (e.g. "Actual Tests") stays together across
+        // consecutive cards where possible, but a series bigger than
+        // LS_PAGE_SIZE on its own (e.g. 15 tests) is split into ≤LS_PAGE_SIZE
+        // chunks up front — otherwise a single oversized series would blow
+        // straight through the cap and show more than 8 cards on one page,
+        // the exact "not actually capped" bug this was written to avoid.
         function getGroupedPages(tests) {
             const groupMap = {};
             const groupOrder = [];
@@ -995,7 +1001,13 @@
                 if (!groupMap[g]) { groupMap[g] = []; groupOrder.push(g); }
                 groupMap[g].push(t);
             });
-            const groups = groupOrder.map(g => ({ name: g, tests: groupMap[g] }));
+            const groups = [];
+            groupOrder.forEach(g => {
+                const list = groupMap[g];
+                for (let i = 0; i < list.length; i += LS_PAGE_SIZE) {
+                    groups.push({ name: g, tests: list.slice(i, i + LS_PAGE_SIZE) });
+                }
+            });
             const pages = [];
             let curPage = [], curCount = 0;
             groups.forEach(group => {
