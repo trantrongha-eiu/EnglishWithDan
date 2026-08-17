@@ -53,6 +53,12 @@ const UserSchema = new mongoose.Schema({
   // Cleared back to 0 as soon as the student studies again (updateStreak()).
   previousStreak:       { type: Number, default: 0 },
   lastActivityDate:     { type: Date, default: null },
+  // Timestamp of the most recent real vocab-practice batch (see
+  // vocabBookService.completePractice) — unlike lastActivityDate above,
+  // this is vocab-only (not also bumped by Reading/Listening tests), so
+  // nav.js can nudge a student who's fallen behind specifically on vocab
+  // even if their overall streak looks fine.
+  lastVocabStudyDate:   { type: Date, default: null },
   // VN-day timestamp of the most recent streak-to-0 reset (whichever of
   // resetIfStale()/updateStreak() detected it first) — powers the 3-day
   // "búa Daniel" (streak-restore hammer) eligibility window.

@@ -310,6 +310,7 @@
         if ((u.studyReminderCount || 0) >= 3) _showStudyWarningBanner(u.studyReminderCount);
 
         if (u.role === 'student') _showStreak35Notice();
+        if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
       });
     }
   }
@@ -413,6 +414,56 @@
     document.getElementById('nav-streak35-notice-close').addEventListener('click', function () {
       localStorage.setItem(STREAK35_NOTICE_KEY, '1');
       overlay.remove();
+    });
+  }
+
+  // Nudges a student who's gone quiet on vocab specifically — lastVocabStudyDate
+  // (set in vocabBookService.completePractice, see backend/models/User.js) is
+  // vocab-only, unlike the shared lastActivityDate a Reading/Listening test
+  // also bumps, so this can catch a real vocab gap even when the overall
+  // streak looks healthy. Re-shown once per calendar day (not once-ever like
+  // the streak35 notice above) for as long as the gap persists — sessionStorage
+  // would refire every tab/page nav, localStorage keyed by today's date lets it
+  // reappear tomorrow without spamming this same session/day.
+  var VOCAB_INACTIVITY_DAYS = 2; // "2 ngày liên tục" per the product ask
+  var VOCAB_INACTIVITY_SHOWN_KEY = 'ews_vocab_inactivity_shown_date';
+  function _showVocabInactivityNotice(lastVocabStudyDate) {
+    // No vocab practice yet at all (brand-new student) — that's not "long
+    // time no study", it's "never started"; a different nudge, not this one.
+    if (!lastVocabStudyDate) return;
+    var daysSince = Math.floor((Date.now() - new Date(lastVocabStudyDate).getTime()) / 86400000);
+    if (daysSince < VOCAB_INACTIVITY_DAYS) return;
+
+    var todayStr = new Date().toDateString();
+    if (localStorage.getItem(VOCAB_INACTIVITY_SHOWN_KEY) === todayStr) return;
+    localStorage.setItem(VOCAB_INACTIVITY_SHOWN_KEY, todayStr);
+
+    var overlay = document.createElement('div');
+    overlay.id = 'nav-vocab-inactivity-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px';
+    overlay.innerHTML =
+      '<div style="background:var(--surface,#fff);color:var(--text,#111827);border-radius:16px;max-width:400px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,.3)">' +
+        '<div style="font-size:44px;margin-bottom:10px">📖😴</div>' +
+        '<h3 style="font-size:18px;font-weight:800;margin-bottom:10px">Đã ' + daysSince + ' ngày bạn chưa học từ vựng!</h3>' +
+        '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px">' +
+          'Ôn tập đều đặn giúp bạn nhớ từ lâu hơn. Chọn một sổ từ vựng và học ngay nào!' +
+        '</p>' +
+        '<div style="display:flex;gap:10px;justify-content:center">' +
+          '<button id="nav-vocab-inactivity-later" style="background:var(--surface2,#f3f4f6);color:var(--text,#111827);border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
+          '<button id="nav-vocab-inactivity-go" style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Học ngay</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    document.getElementById('nav-vocab-inactivity-later').addEventListener('click', function () {
+      overlay.remove();
+    });
+    // dashboard.html is the vocab-book page itself (list of the student's own
+    // sổ) — navigating there (rather than deep-linking into a specific book)
+    // is deliberate: the student picks which sổ to study, per the product ask.
+    document.getElementById('nav-vocab-inactivity-go').addEventListener('click', function () {
+      overlay.remove();
+      location.href = 'dashboard.html';
     });
   }
 })();

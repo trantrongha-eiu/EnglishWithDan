@@ -119,6 +119,13 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   if (user.role !== 'student') return { status: 'not_student' };
   if (wordsAnswered < 5) return { status: 'too_few' };
 
+  // Stamped on every real batch, independent of the streak-threshold gating
+  // below — powers nav.js's "haven't studied vocab in N days" nudge, which
+  // needs to know about vocab practice specifically even on a day that
+  // didn't reach the 35-word streak bar or that had other streak activity
+  // (Reading/Listening) masking a real vocab gap in lastActivityDate.
+  user.lastVocabStudyDate = new Date();
+
   // Only counts toward the streak once today's cumulative word-engagement
   // (this call plus any earlier add/update/practice activity today) reaches
   // VOCAB_STREAK_WORD_THRESHOLD — see reachedDailyWordThreshold().

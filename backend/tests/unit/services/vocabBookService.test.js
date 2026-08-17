@@ -343,6 +343,19 @@ describe('vocabBookService', () => {
       expect(fresh.lastActivityDate).toBeNull(); // day doesn't count as "studied" yet
     });
 
+    // lastVocabStudyDate powers nav.js's "haven't studied vocab in N days"
+    // popup — deliberately stamped even below the streak threshold (unlike
+    // lastActivityDate above), since a below-threshold session is still real
+    // vocab practice that should clear the inactivity nudge.
+    it('stamps lastVocabStudyDate on every real batch, even below the streak threshold', async () => {
+      const student = await createStudent();
+      await vocabBookService.completePractice(student, { wordsAnswered: 10, correctAnswered: 10 });
+
+      const fresh = await require('../../../models/User').findById(student._id);
+      expect(fresh.lastVocabStudyDate).not.toBeNull();
+      expect(Date.now() - fresh.lastVocabStudyDate.getTime()).toBeLessThan(5000);
+    });
+
     it('streak unlocks once cumulative words that day cross the threshold, across separate sessions', async () => {
       const student = await createStudent();
       const first = await vocabBookService.completePractice(student, { wordsAnswered: 20, correctAnswered: 20 });
