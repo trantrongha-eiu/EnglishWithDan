@@ -32,6 +32,19 @@ const HEADER_LINE = /^❓?\s*Transcript\s*$/i;
 // A third source format has no "❓ Transcript" wrapper at all, just a bare
 // "PART 1" / "Part 2" section-label line before the dialogue starts.
 const PART_LABEL_LINE = /^part\s*\d+\s*$/i;
+// A standalone parenthetical production note describing dead air/silence
+// between question blocks ("(An interval of 30 seconds)", "(A pause)") —
+// never spoken, so it's dropped as its own line rather than tokenized.
+const INTERVAL_NOTE_LINE = /^\(\s*(?:an?\s+)?(?:interval|pause|break)\b[^)]*\)\s*$/i;
+// Standard IELTS boilerplate spoken between question blocks in the FULL
+// test recording ("Before you hear the rest of the conversation, you have
+// some time to look at questions 26 to 30 on page 7.") — present in the
+// transcript because it's part of the official source document, but a
+// standalone "bài lẻ" section's audio is trimmed to just the
+// conversation/talk, so this line was never actually spoken in it (0/N
+// words ever match). Content varies (question range, page number) but the
+// fixed opening phrase is a reliable, low-risk-of-false-positive anchor.
+const PRE_INTERVAL_INSTRUCTION_LINE = /^before you hear the rest of the (?:conversation|talk)\b/i;
 
 // Splits into sentences on '.', '!', '?' followed by whitespace + a capital
 // letter (or end of string) — avoids splitting mid-abbreviation in the
@@ -67,7 +80,11 @@ function stripQuestionAnnotations(line) {
 function stripSpeakerPrefix(line) {
   // Inline speaker label at the start of a paragraph block, e.g.
   // "WOMAN   I've been meaning..." or "Interviewer: So tell me about...".
-  const m = line.match(/^([A-Z][A-Za-z]{0,20}|[A-Z][A-Z\s]{0,20})[:\s]{2,}(.*)$/);
+  // Also matches two+ names joined by "&" for a shared line of dialogue
+  // spoken/reacted to together, e.g. "Helen & Bob: Right." or
+  // "Andy & Bob: Fair enough." — without this, both names were tokenized
+  // as if spoken, guaranteeing a mismatch since Whisper never says them.
+  const m = line.match(/^((?:[A-Z][A-Za-z]{0,20})(?:\s*&\s*[A-Z][A-Za-z]{0,20})*|[A-Z][A-Z\s]{0,20})[:\s]{2,}(.*)$/);
   if (m && m[2].trim()) return m[2].trim();
   return line;
 }
@@ -133,14 +150,14 @@ function splitTranscriptIntoSentences(rawTranscript) {
   }
 
   const lines = rawLines
-    .filter(l => !PART_LABEL_LINE.test(l) && !SPEAKER_LABEL_LINE.test(l))
+    .filter(l => !PART_LABEL_LINE.test(l) && !SPEAKER_LABEL_LINE.test(l) && !INTERVAL_NOTE_LINE.test(l))
     .map(stripTranscriptHeaderGlue)
     .filter(l => l !== null && l !== '');
 
   const sentences = [];
   for (const line of lines) {
     const content = stripQuestionAnnotations(stripSpeakerPrefix(line));
-    if (!content) continue;
+    if (!content || PRE_INTERVAL_INSTRUCTION_LINE.test(content)) continue;
     const parts = content.split(SENTENCE_BOUNDARY).map(s => s.trim()).filter(Boolean);
     sentences.push(...parts);
   }
