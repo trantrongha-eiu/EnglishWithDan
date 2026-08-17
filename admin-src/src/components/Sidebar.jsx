@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../utils/api';
@@ -36,6 +36,7 @@ const NAV = [
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [onlineExpanded, setOnlineExpanded] = useState(false);
   const [pendingGrades, setPendingGrades] = useState(0);
   const [pendingUpgrades, setPendingUpgrades] = useState(0);
   const [pendingTuition, setPendingTuition] = useState(0);
@@ -92,17 +93,34 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', boxShadow: '0 0 5px #22c55e' }} />
                 {onlineUsers.length} đang online
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {onlineUsers.slice(0, 5).map(u => (
-                  <div key={u._id} style={{ fontSize: 11, color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
+              <div style={{
+                display: 'flex', flexDirection: 'column', gap: 3,
+                ...(onlineExpanded ? { maxHeight: 220, overflowY: 'auto', paddingRight: 2 } : {}),
+              }}>
+                {(onlineExpanded ? onlineUsers : onlineUsers.slice(0, 5)).map(u => (
+                  <Link
+                    key={u._id}
+                    to={`/students/${u._id}`}
+                    onClick={onClose}
+                    title={`Xem hồ sơ ${u.username}`}
+                    style={{ fontSize: 11, color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden', textDecoration: 'none' }}
+                  >
                     <span style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{u.username}</span>
-                  </div>
+                  </Link>
                 ))}
-                {onlineUsers.length > 5 && (
-                  <div style={{ fontSize: 10, color: 'var(--green)', fontWeight: 600, paddingLeft: 10 }}>+{onlineUsers.length - 5} khác</div>
-                )}
               </div>
+              {onlineUsers.length > 5 && (
+                <button
+                  onClick={() => setOnlineExpanded(v => !v)}
+                  style={{
+                    marginTop: 4, paddingLeft: 10, background: 'none', border: 'none', cursor: 'pointer',
+                    fontSize: 10, color: 'var(--green)', fontWeight: 700, textDecoration: 'underline',
+                  }}
+                >
+                  {onlineExpanded ? 'Thu gọn' : `Xem thêm ${onlineUsers.length - 5}`}
+                </button>
+              )}
             </div>
           )}
         </div>
