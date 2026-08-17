@@ -60,13 +60,16 @@
         </div>
       </div>
 
-      <!-- Mode tabs: Full đề / Bài lẻ -->
+      <!-- Mode tabs: Full đề / Bài lẻ / Reading Tips -->
       <div class="rmode-tabs-bar">
         <button id="rmode-full" class="rmode-tab rmode-active" onclick="setReadingMode('full')">
           <i class="fas fa-file-alt"></i> Full đề
         </button>
         <button id="rmode-lele" class="rmode-tab" onclick="setReadingMode('lele')">
           <i class="fas fa-book-open"></i> Bài lẻ
+        </button>
+        <button id="rmode-tips" class="rmode-tab" onclick="setReadingMode('tips')">
+          <i class="fas fa-lightbulb"></i> Reading Tips
         </button>
       </div>
 
@@ -127,6 +130,20 @@
         <!-- Các test group render bởi JS -->
       </div>
       <div id="tests-pagination"></div>
+
+      <!-- Reading Tips panel -->
+      <div id="reading-tips-panel" class="hidden">
+        <div class="rt-layout">
+          <aside class="rt-sidebar" id="rt-sidebar">
+            <div class="rt-cat-list" id="rt-cat-list"></div>
+          </aside>
+          <div class="rt-main">
+            <div id="rt-main-content">
+              <div class="rt-loading"><div class="rt-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải...</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -513,6 +530,7 @@
 
 
   <script src="/js/reading-v2.js"></script>
+  <script src="/js/reading-tips.js"></script>
   <!-- INLINE OVERRIDE: multi-answer-group cluster – không bị CDN cache -->
   <script>
     // Override renderMultiAnswerCluster – checkbox UI cho "Choose TWO/THREE Letters"

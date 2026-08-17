@@ -120,6 +120,15 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'EssentialGrammarLesson seed error', { errorMessage: e.message });
     }
+    // Auto-seed Reading Tips strategy articles (always run – replaceOne+upsert is idempotent)
+    try {
+      const { runSeed: runReadingTipsSeed } = require('./scripts/seedReadingTips');
+      logger.startup('ReadingTip seeding...');
+      await runReadingTipsSeed();
+      logger.startup('ReadingTip seed done');
+    } catch (e) {
+      logger.error('startup', 'ReadingTip seed error', { errorMessage: e.message });
+    }
     // Auto-seed Speaking question bank (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runSpeakingSeed } = require('./scripts/seedSpeakingQuestions');

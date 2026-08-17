@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.querySelectorAll('.plele-tab').forEach(t =>
         t.classList.toggle('plele-active', t.dataset.category === category)
       );
-      setReadingMode(mode === 'full' ? 'full' : 'lele', false);
+      setReadingMode(mode === 'full' ? 'full' : mode === 'tips' ? 'tips' : 'lele', false);
       return;
     }
 
@@ -319,6 +319,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           t.classList.toggle('plele-active', t.dataset.category === category)
         );
         setReadingMode('lele', false);
+      } else if (mode === 'tips') {
+        setReadingMode('tips', false);
       } else {
         setReadingMode('full', false);
       }
@@ -390,6 +392,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       t.classList.toggle('plele-active', t.dataset.category === categoryParam)
     );
     setReadingMode('lele', false);
+  } else if (modeParam === 'tips') {
+    history.replaceState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
+    setReadingMode('tips', false);
   } else {
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
   }
@@ -844,16 +849,20 @@ function dismissPracticeResume() {
 ══════════════════════════════════════════════════════════════════════ */
 function setReadingMode(mode, pushHistory = true) {
   const isLele = mode === 'lele';
+  const isTips = mode === 'tips';
   if (pushHistory) {
     const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'passage1';
     if (isLele) {
       history.pushState({ screen: 'list', mode: 'single', category: cat }, '', `?mode=single&category=${cat}`);
+    } else if (isTips) {
+      history.pushState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
     } else {
       history.pushState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     }
   }
-  document.getElementById('rmode-full')?.classList.toggle('rmode-active', !isLele);
+  document.getElementById('rmode-full')?.classList.toggle('rmode-active', !isLele && !isTips);
   document.getElementById('rmode-lele')?.classList.toggle('rmode-active', isLele);
+  document.getElementById('rmode-tips')?.classList.toggle('rmode-active', isTips);
 
   const picker     = document.getElementById('practice-picker');
   const wrapper    = document.getElementById('tests-wrapper');
@@ -861,20 +870,24 @@ function setReadingMode(mode, pushHistory = true) {
   const filterBar  = document.getElementById('list-filter-bar');
   const subtitle   = document.getElementById('list-mode-subtitle');
   const title      = document.getElementById('list-mode-title');
+  const tipsPanel  = document.getElementById('reading-tips-panel');
 
   const leleHdrBtns = document.getElementById('lele-header-btns');
   const testsPag    = document.getElementById('tests-pagination');
   if (picker)       picker.classList.toggle('hidden', !isLele);
-  if (wrapper)      wrapper.style.display    = isLele ? 'none' : '';
-  if (banner)       banner.style.display     = isLele ? 'none' : (banner._resumeData ? 'flex' : 'none');
-  if (filterBar)    filterBar.style.display  = isLele ? 'none' : '';
+  if (wrapper)      wrapper.style.display    = (isLele || isTips) ? 'none' : '';
+  if (banner)       banner.style.display     = (isLele || isTips) ? 'none' : (banner._resumeData ? 'flex' : 'none');
+  if (filterBar)    filterBar.style.display  = (isLele || isTips) ? 'none' : '';
   if (leleHdrBtns)  leleHdrBtns.style.display = isLele ? 'flex' : 'none';
-  if (testsPag)     testsPag.style.display   = isLele ? 'none' : '';
+  if (testsPag)     testsPag.style.display   = (isLele || isTips) ? 'none' : '';
+  if (tipsPanel)    tipsPanel.classList.toggle('hidden', !isTips);
   if (!isLele) { const inp = document.getElementById('practice-search-input'); if (inp) inp.value = ''; }
-  if (subtitle)  subtitle.style.display  = isLele ? 'none' : '';
+  if (subtitle)  subtitle.style.display  = (isLele || isTips) ? 'none' : '';
   if (title) {
     title.innerHTML = isLele
       ? 'Luyện tập <span class="rd-tag-blue">Reading Bài lẻ</span>'
+      : isTips
+      ? 'Luyện tập <span class="rd-tag-blue">Reading Tips</span>'
       : 'Luyện tập <span class="tag-red">Reading Full đề</span>';
   }
 
@@ -886,6 +899,8 @@ function setReadingMode(mode, pushHistory = true) {
       loadPracticePassages(cat);
     }
     checkResumePractice();
+  } else if (isTips) {
+    if (typeof initReadingTips === 'function') initReadingTips();
   }
 }
 
