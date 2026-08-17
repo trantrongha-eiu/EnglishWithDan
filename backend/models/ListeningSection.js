@@ -85,6 +85,12 @@ const ListeningSectionSchema = new mongoose.Schema({
   // section every single hour. Cleared automatically on a later success.
   dictationSkippedAt:  { type: Date, default: null },
   dictationSkipReason: { type: String, default: '' },
+  // True only for failures no transcript/code fix can ever resolve (e.g.
+  // audio file too large for Groq's free-tier 25MB cap) — --include-skipped
+  // deliberately excludes these (only --force retries them) so a bulk run
+  // doesn't re-attempt the same doomed section every single time, unlike a
+  // content-validation rejection which a transcript-cleaning fix might fix.
+  dictationSkipPermanent: { type: Boolean, default: false },
 }, { timestamps: true });
 
 ListeningSectionSchema.index({ partNumber: 1, isActive: 1 });

@@ -31,8 +31,8 @@
 // Usage:
 //   node backend/scripts/bulkAlignListeningDictation.js                  # untried sections only
 //   node backend/scripts/bulkAlignListeningDictation.js --limit 20       # cap this run
-//   node backend/scripts/bulkAlignListeningDictation.js --include-skipped # also retry previously-skipped sections (e.g. after a transcript/code fix)
-//   node backend/scripts/bulkAlignListeningDictation.js --force          # re-align EVERYTHING, including already-successful sections
+//   node backend/scripts/bulkAlignListeningDictation.js --include-skipped # also retry content-rejected sections (e.g. after a transcript/code fix) — still skips permanent failures like "file too large"
+//   node backend/scripts/bulkAlignListeningDictation.js --force          # re-align EVERYTHING, including already-successful and permanently-failed sections
 //   node backend/scripts/bulkAlignListeningDictation.js --delay 2000     # ms between sections (default 1500)
 'use strict';
 
@@ -70,7 +70,13 @@ async function run() {
     filter.$or = [{ dictationSentences: { $exists: false } }, { dictationSentences: { $size: 0 } }];
     // { field: null } matches both "missing" and "explicitly null" in
     // Mongo, so this works uniformly for pre-existing docs too.
+    // --include-skipped retries content-validation rejections (a transcript
+    // fix might resolve those) but still excludes permanent failures like
+    // "file too large" — no transcript/code change can ever fix those, so
+    // retrying them is pure wasted time on every single run. Only --force
+    // (skipped this whole block) touches those.
     if (!args.includeSkipped) filter.dictationSkippedAt = null;
+    else filter.dictationSkipPermanent = { $ne: true };
   }
 
   const totalMissing = await ListeningSection.countDocuments(filter);
@@ -125,6 +131,7 @@ async function run() {
             dictationAlignedAt: new Date(),
             dictationSkippedAt: null,
             dictationSkipReason: '',
+            dictationSkipPermanent: false,
           }
         }
       );
@@ -145,12 +152,19 @@ async function run() {
       }
       failed++;
       console.error(`${tag} FAIL: ${err.message}`);
-      // Permanent errors (e.g. Groq's 413 "file too large") will fail
-      // identically every time — skip on future default runs rather than
-      // re-attempting a doomed call each hour.
+      // isFileTooLarge (Groq 413) will fail identically forever — no
+      // transcript/code fix can ever resolve it, so mark it permanent so
+      // even --include-skipped leaves it alone. Other errors (network
+      // blips, unexpected exceptions) might be transient or fixable, so
+      // they only get the regular skip (still retried by --include-skipped).
       await ListeningSection.updateOne(
         { _id: section._id },
-        { $set: { dictationSkippedAt: new Date(), dictationSkipReason: `error: ${err.message}`.slice(0, 500) } }
+        { $set: {
+            dictationSkippedAt: new Date(),
+            dictationSkipReason: `error: ${err.message}`.slice(0, 500),
+            dictationSkipPermanent: !!err.isFileTooLarge,
+          }
+        }
       ).catch(() => {});
     }
     if (i < sections.length - 1) await sleep(args.delay);

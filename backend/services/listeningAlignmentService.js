@@ -68,6 +68,14 @@ async function transcribeWithWordTimestamps(audioBuffer, filename = 'audio.mp3')
       const m = errText.match(/try again in ([\d.]+)(m)?([\d.]+)?s/);
       if (m) err.retryAfterSeconds = m[2] ? (parseFloat(m[1]) * 60 + parseFloat(m[3] || 0)) : parseFloat(m[1]);
     }
+    // 413 (file exceeds Groq free-tier's 25MB cap) can never succeed by
+    // retrying — only compressing/re-uploading the source audio fixes it,
+    // which no amount of transcript/code changes can do. Flagged so the
+    // bulk script can stop re-attempting it on every run (unlike a content
+    // rejection, which a transcript-cleaning fix might resolve).
+    if (res.status === 413) {
+      err.isFileTooLarge = true;
+    }
     throw err;
   }
 
