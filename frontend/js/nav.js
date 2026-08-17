@@ -8,6 +8,7 @@
       children: [
         { href: 'reading.html?mode=full',   icon: 'fa-file-alt',   label: 'Full đề' },
         { href: 'reading.html?mode=single', icon: 'fa-book-open',  label: 'Bài lẻ' },
+        { href: 'reading.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Reading Tips' },
       ]
     },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
@@ -15,6 +16,7 @@
         { href: 'listening.html?mode=full',   icon: 'fa-headphones', label: 'Full đề' },
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
         { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
+        { href: 'listening.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Listening Tips' },
       ]
     },
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
@@ -22,6 +24,7 @@
         { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
         { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1' },
         { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2' },
+        { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
       ]
     },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking' },
