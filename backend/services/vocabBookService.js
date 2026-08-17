@@ -2,6 +2,7 @@
 
 // Extracted from routes/vocabBook.js, verbatim logic.
 const VocabBook = require('../models/VocabBook');
+const VocabUnit = require('../models/VocabUnit');
 const VocabActivity = require('../models/VocabActivity');
 const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
 const VocabPracticeSession = require('../models/VocabPracticeSession');
@@ -43,6 +44,22 @@ async function reserveStreakBonusForSession(userId, sessionId, wordsAnswered, co
     await VocabPracticeSession.updateOne({ userId, sessionId }, { $inc: { bonusGranted: appliedBonus } });
   }
   return appliedBonus;
+}
+
+// Búa Daniel eligibility: dashboard.js reports a Paraphrase Unit practice
+// run in 5-answer batches (_reportSessionStreak()), each carrying the same
+// unitId/sessionId — accumulates those batches' word counts on the shared
+// VocabPracticeSession doc so completePractice() can tell "answered a batch
+// of 5" apart from "answered every word in the unit". Runs unconditionally
+// (unlike reserveStreakBonusForSession, gated behind the daily 35-word
+// threshold) so a unit's opening batches are never dropped from the total.
+async function trackUnitProgress(userId, sessionId, wordsAnswered, correctAnswered) {
+  const session = await VocabPracticeSession.findOneAndUpdate(
+    { userId, sessionId },
+    { $inc: { unitWordsAnswered: wordsAnswered, unitWordsCorrect: correctAnswered }, $setOnInsert: { userId, sessionId } },
+    { upsert: true, new: true }
+  );
+  return { wordsAnswered: session.unitWordsAnswered, wordsCorrect: session.unitWordsCorrect };
 }
 
 // Fire-and-forget, không chặn response — cộng dồn activity vào bản ghi ngày hôm nay
@@ -119,14 +136,28 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
     user.updateStreak(appliedBonus, { allowSameDayStack: true });
   }
 
-  // Búa Daniel: clearing a Paraphrase Unit at >=90% earns 1 hammer, but only
-  // the first time that specific unit is ever cleared at that bar.
+  // Búa Daniel: earns 1 hammer only once EVERY word in the Paraphrase
+  // Unit's list has been answered across the whole session (accumulated via
+  // trackUnitProgress, since dashboard.js reports in 5-answer batches — a
+  // single batch's own accuracy used to be enough to award the hammer after
+  // as few as 5-6 of a 100-word unit, see the incident this fixed) at a
+  // cumulative accuracy of >=90%, and only the first time that unit is
+  // ever cleared at that bar.
   let hammerEarned = false;
-  if (unitType === 'paraphrase' && unitId && accuracy >= 0.9 &&
+  if (unitType === 'paraphrase' && unitId && sessionId &&
       !user.hammerAwardedUnits.some(id => id.equals(unitId))) {
-    user.hammerAwardedUnits.push(unitId);
-    user.streakHammers += 1;
-    hammerEarned = true;
+    const [cumulative, unit] = await Promise.all([
+      trackUnitProgress(user._id, sessionId, wordsAnswered, correctAnswered),
+      VocabUnit.findById(unitId).select('words').lean(),
+    ]);
+    const totalUnitWords = unit ? unit.words.filter(w => w.word && w.meaning).length : Infinity;
+    const cumulativeAccuracy = cumulative.wordsAnswered > 0
+      ? cumulative.wordsCorrect / cumulative.wordsAnswered : 0;
+    if (cumulative.wordsAnswered >= totalUnitWords && cumulativeAccuracy >= 0.9) {
+      user.hammerAwardedUnits.push(unitId);
+      user.streakHammers += 1;
+      hammerEarned = true;
+    }
   }
 
   await user.save();

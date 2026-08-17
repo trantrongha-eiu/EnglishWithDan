@@ -501,27 +501,88 @@ describe('vocabBookService', () => {
     });
 
     describe('Búa Daniel (streak-restore hammer)', () => {
-      it('awards 1 hammer for a paraphrase unit cleared at >=90% accuracy', async () => {
+      it('awards 1 hammer once a small unit is fully answered at >=90% cumulative accuracy', async () => {
         const student = await createStudent();
-        const unit = await createVocabUnit();
+        const unit = await createVocabUnit({ words: makeWords(5) });
 
         const result = await vocabBookService.completePractice(student, {
-          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase', sessionId: 'sess-1'
         });
 
         expect(result.hammerEarned).toBe(true);
         expect(result.streakHammers).toBe(1);
       });
 
-      it('does not award a second hammer for re-clearing the same unit', async () => {
+      // Regression test for the exact bug reported: a 100-word unit's first
+      // 5-6 word batch hit 90%+ on its own and awarded the hammer immediately,
+      // long before the student had gone through the rest of the unit.
+      it('does NOT award a hammer for a single early batch of a larger unit', async () => {
         const student = await createStudent();
-        const unit = await createVocabUnit();
+        const unit = await createVocabUnit({ words: makeWords(100) });
+
+        const result = await vocabBookService.completePractice(student, {
+          wordsAnswered: 6, correctAnswered: 6, unitId: unit._id, unitType: 'paraphrase', sessionId: 'sess-1'
+        });
+
+        expect(result.hammerEarned).toBe(false);
+        expect(result.streakHammers).toBe(0);
+      });
+
+      it('awards the hammer once cumulative batches across the session cover the whole unit at >=90%', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit({ words: makeWords(12) });
+        const sessionId = 'sess-full-unit';
+
+        const b1 = await vocabBookService.completePractice(student, {
+          wordsAnswered: 6, correctAnswered: 6, unitId: unit._id, unitType: 'paraphrase', sessionId
+        });
+        expect(b1.hammerEarned).toBe(false); // only 6/12 words answered so far
+
+        const b2 = await vocabBookService.completePractice(student, {
+          wordsAnswered: 6, correctAnswered: 6, unitId: unit._id, unitType: 'paraphrase', sessionId
+        });
+        expect(b2.hammerEarned).toBe(true); // now 12/12 at 100% cumulative
+        expect(b2.streakHammers).toBe(1);
+      });
+
+      it('does not award the hammer when cumulative accuracy across the full unit is below 90%', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit({ words: makeWords(10) });
+        const sessionId = 'sess-low-acc';
 
         await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase', sessionId
+        });
+        // Cumulative: 9/10 correct = 90% exactly once these 5 land — drop one
+        // more to push it under the bar despite covering the full unit.
+        const b2 = await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 3, unitId: unit._id, unitType: 'paraphrase', sessionId
+        });
+
+        expect(b2.hammerEarned).toBe(false); // 8/10 = 80% cumulative
+        expect(b2.streakHammers).toBe(0);
+      });
+
+      it('does not award a hammer without a sessionId to accumulate against', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit({ words: makeWords(5) });
+
+        const result = await vocabBookService.completePractice(student, {
           wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
         });
+
+        expect(result.hammerEarned).toBe(false);
+      });
+
+      it('does not award a second hammer for re-clearing the same unit', async () => {
+        const student = await createStudent();
+        const unit = await createVocabUnit({ words: makeWords(5) });
+
+        await vocabBookService.completePractice(student, {
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase', sessionId: 'sess-a'
+        });
         const second = await vocabBookService.completePractice(student, {
-          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase'
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: 'paraphrase', sessionId: 'sess-b'
         });
 
         expect(second.hammerEarned).toBe(false);
@@ -530,15 +591,15 @@ describe('vocabBookService', () => {
 
       it('does not award a hammer below 90% accuracy or for non-paraphrase sessions', async () => {
         const student = await createStudent();
-        const unit = await createVocabUnit();
+        const unit = await createVocabUnit({ words: makeWords(5) });
 
         const belowBar = await vocabBookService.completePractice(student, {
-          wordsAnswered: 5, correctAnswered: 4, unitId: unit._id, unitType: 'paraphrase'
+          wordsAnswered: 5, correctAnswered: 4, unitId: unit._id, unitType: 'paraphrase', sessionId: 'sess-below'
         });
         expect(belowBar.hammerEarned).toBe(false);
 
         const notParaphrase = await vocabBookService.completePractice(student, {
-          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: null
+          wordsAnswered: 5, correctAnswered: 5, unitId: unit._id, unitType: null, sessionId: 'sess-not-para'
         });
         expect(notParaphrase.hammerEarned).toBe(false);
       });

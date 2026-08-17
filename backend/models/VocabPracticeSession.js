@@ -12,6 +12,14 @@ const VocabPracticeSessionSchema = new mongoose.Schema({
   wordsAnswered: { type: Number, default: 0 },
   wordsCorrect:  { type: Number, default: 0 },
   bonusGranted:  { type: Number, default: 0 },
+  // Separate running totals for Búa Daniel eligibility (see
+  // vocabBookService.trackUnitProgress) — deliberately NOT reused from
+  // wordsAnswered/wordsCorrect above, since those only accumulate once the
+  // day's 35-word streak threshold has been reached (gated in
+  // completePractice), which would silently drop a unit's opening batches
+  // from the hammer's "answered every word in the unit" count.
+  unitWordsAnswered: { type: Number, default: 0 },
+  unitWordsCorrect:  { type: Number, default: 0 },
   // Sessions are only ever relevant for a few hours — auto-expire after 24h
   // so this collection doesn't grow unbounded.
   createdAt:     { type: Date, default: Date.now, expires: 86400 },
