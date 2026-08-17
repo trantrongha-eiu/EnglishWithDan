@@ -555,12 +555,19 @@ function applyTestFilters() {
 
 function getFilteredTests() {
   const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
-  return allTests.filter(t => {
-    const done = !!t.lastAttempt;
-    const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
-    const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
-    return matchFilter && matchSearch;
-  });
+  return allTests
+    .filter(t => {
+      const done = !!t.lastAttempt;
+      const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
+      const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
+      return matchFilter && matchSearch;
+    })
+    // Random-passage tests (isFixed:false) bubble to the front — the API
+    // sorts alphabetically by name, which buried "MockTest Đề Random" on
+    // the last page since "M" sorts after "A" ("Actual Mocktest ..."), even
+    // though it's the one test worth surfacing first. Stable sort keeps the
+    // existing alphabetical order within each group.
+    .sort((a, b) => (a.isFixed === b.isFixed) ? 0 : (a.isFixed ? 1 : -1));
 }
 
 function rerenderFilteredTests() {
