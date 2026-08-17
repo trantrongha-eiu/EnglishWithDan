@@ -54,6 +54,7 @@ async function getPeerProfile(viewerId, targetId) {
       streak: stats.streak,
       reading: { avgBand: stats.reading.avgBand, total: stats.reading.total },
       listening: { avgBand: stats.listening.avgBand, total: stats.listening.total },
+      writing: { avgBand: stats.writing.avgBand, total: stats.writing.total },
       speaking: { avgBand: speakingAvgBand, total: stats.speaking.total },
       isBlockedByMe: !!blockedByMe,
       isSelf: String(viewerId) === String(targetId),

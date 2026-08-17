@@ -81,6 +81,7 @@
       '<div class="peer-band-grid">' +
         _bandRow('Reading', p.reading.avgBand, p.reading.total) +
         _bandRow('Listening', p.listening.avgBand, p.listening.total) +
+        _bandRow('Writing', p.writing.avgBand, p.writing.total) +
         _bandRow('Speaking', p.speaking.avgBand, p.speaking.total) +
       '</div>' +
       '<div class="peer-profile-actions">' +

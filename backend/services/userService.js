@@ -84,7 +84,7 @@ async function getStats(userId) {
       .limit(10)
       .lean(),
     WritingAttempt.find({ userId })
-      .select('wordCount1 wordCount2 timeTaken createdAt')
+      .select('wordCount1 wordCount2 timeTaken createdAt grading.overallBand')
       .sort({ createdAt: -1 })
       .limit(10)
       .lean(),
@@ -132,6 +132,16 @@ async function getStats(userId) {
   const avgListening = listeningAttempts.length
     ? (listeningAttempts.reduce((s, a) => s + a.bandScore, 0) / listeningAttempts.length).toFixed(1)
     : null;
+  // Only teacher-confirmed bands count (grading.overallBand) — an AI-only
+  // grade (aiGrading, gradingStatus 'pending'/'ai_done') isn't treated as a
+  // real score anywhere else in the app either (see routes/admin/stats.js's
+  // recent-attempts: `bandScore: h.grading?.overallBand ?? null`), so an
+  // attempt awaiting review is simply excluded from the average rather than
+  // counted as ungraded/zero.
+  const gradedWriting = writingAttempts.filter(a => a.grading?.overallBand != null);
+  const avgWriting = gradedWriting.length
+    ? (gradedWriting.reduce((s, a) => s + a.grading.overallBand, 0) / gradedWriting.length).toFixed(1)
+    : null;
 
   return {
     streak: user.learningStreak || 0,
@@ -142,7 +152,7 @@ async function getStats(userId) {
     canUseHammer: user.canUseHammer(),
     reading: { total: readingAttempts.length, avgBand: avgReading, history: readingAttempts },
     listening: { total: listeningAttempts.length, avgBand: avgListening, history: listeningAttempts },
-    writing: { total: writingAttempts.length, history: writingAttempts },
+    writing: { total: writingAttempts.length, avgBand: avgWriting, history: writingAttempts },
     speaking: { total: speakingAttempts.length, history: speakingAttempts }
   };
 }
