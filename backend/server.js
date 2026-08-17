@@ -16,6 +16,7 @@ cloudinary.config({
 const app = require('./app');
 const tuitionCron = require('./cron/tuitionReminder');
 const attemptTimeoutSweepCron = require('./cron/attemptTimeoutSweep');
+const writingAutoGradeCron = require('./cron/writingAutoGrade');
 
 // ── Process-level safety nets (Phase 11) ────────────────────────
 // An uncaught exception leaves the process in an unknown state — log it
@@ -140,6 +141,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'AttemptTimeoutSweep cron failed to start', { errorMessage: e.message });
     }
+    // Start Writing Task 1/2 AI auto-grading cron
+    try {
+      writingAutoGradeCron.start();
+    } catch (e) {
+      logger.error('startup', 'WritingAutoGrade cron failed to start', { errorMessage: e.message });
+    }
   })
   .catch(err => logger.error('startup', 'MongoDB initial connection failed', { errorMessage: err.message }));
 
@@ -159,6 +166,7 @@ function shutdown(signal) {
 
   tuitionCron.stop();
   attemptTimeoutSweepCron.stop();
+  writingAutoGradeCron.stop();
 
   server.close(async () => {
     logger.shutdown('HTTP server closed (no longer accepting new connections)');
