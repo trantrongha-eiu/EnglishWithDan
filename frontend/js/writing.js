@@ -79,7 +79,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (typeof window.hideTopNav === 'function') {
-    const NAV_SCREENS = ['screen-key', 'screen-history', 'screen-practice', 'screen-samples'];
+    const NAV_SCREENS = ['screen-key', 'screen-history', 'screen-practice', 'screen-samples', 'screen-writing-tips'];
     NAV_SCREENS.includes(id) ? window.showTopNav() : window.hideTopNav();
   }
 }
@@ -121,6 +121,11 @@ function showScreen(id) {
     return;
   }
 
+  if (params.get('view') === 'writing-tips') {
+    openWritingTips();
+    return;
+  }
+
   checkRestoreBanner();
 })();
 
@@ -148,6 +153,9 @@ window.addEventListener('popstate', e => {
     else showPracticeMode(false);
   } else if (s === 'samples') {
     showScreen('screen-samples');
+  } else if (s === 'writing-tips') {
+    showScreen('screen-writing-tips');
+    initWritingTips();
   } else {
     showScreen('screen-key');
     checkRestoreBanner();
@@ -1215,7 +1223,7 @@ const _PRACTICE_MAX_AGE     = 24 * 60 * 60 * 1000; // 24h
 (function() {
   var _p = new URLSearchParams(location.search);
   var _tt = parseInt(_p.get('taskType'));
-  if ((_tt === 1 || _tt === 2) || _p.get('view') === 'samples') return;
+  if ((_tt === 1 || _tt === 2) || _p.get('view') === 'samples' || _p.get('view') === 'writing-tips') return;
   checkPracticeRestoreBanner();
 })();
 

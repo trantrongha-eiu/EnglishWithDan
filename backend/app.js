@@ -108,6 +108,7 @@ app.use('/api/task2template',   require('./routes/task2Template'));
 app.use('/api/essential-grammar', require('./routes/essentialGrammar'));
 app.use('/api/reading-tips',    require('./routes/readingTip'));
 app.use('/api/listening-tips',  require('./routes/listeningTip'));
+app.use('/api/writing-tips',    require('./routes/writingTip'));
 app.use('/api/difficult-words', require('./routes/difficultWords'));
 app.use('/api/tuition',        require('./routes/tuition'));
 app.use('/api/upgrade',        require('./routes/upgrade'));

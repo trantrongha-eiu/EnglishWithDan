@@ -1,0 +1,126 @@
+/* ══════════════════════════════════════════════════════════════
+   Writing Tips screen — same collapsible category-sidebar pattern as
+   reading.html's .rt-* / listening.html's .lst-* Tips panels (wst- prefix
+   here). Emerald accent to stay visually distinct from Reading's red/orange
+   and Listening's blue.
+   ══════════════════════════════════════════════════════════════ */
+.wst-layout { display: flex; align-items: flex-start; gap: 0; padding: 16px 24px 24px; min-height: calc(100vh - 140px); }
+.wst-sidebar {
+  width: 280px; flex-shrink: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+  overflow-y: auto; max-height: 78vh; position: sticky; top: 90px;
+}
+[data-theme="dark"] .wst-sidebar { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
+.wst-main { flex: 1; min-width: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; margin-left: 16px; }
+[data-theme="dark"] .wst-main { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
+
+.wst-cat-list { padding: 6px 0; }
+.wst-cat-group { border-bottom: 1px solid #f9fafb; }
+[data-theme="dark"] .wst-cat-group { border-color: var(--bg, #000000); }
+.wst-cat-header {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 11px 14px; border: none;
+  background: none; text-align: left; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700;
+  color: #374151; transition: background .15s;
+}
+.wst-cat-header:hover { background: #f9fafb; }
+[data-theme="dark"] .wst-cat-header { color: #e2e8f0; }
+[data-theme="dark"] .wst-cat-header:hover { background: rgba(255,255,255,.04); }
+.wst-cat-chevron { margin-left: auto; font-size: 10px; color: #9ca3af; transition: transform .2s; }
+.wst-cat-group.collapsed .wst-cat-chevron { transform: rotate(-90deg); }
+.wst-cat-count { font-size: 10px; font-weight: 600; color: #9ca3af; background: #f3f4f6; border-radius: 8px; padding: 1px 6px; }
+[data-theme="dark"] .wst-cat-count { background: var(--border2, #333333); color: #64748b; }
+.wst-lesson-list { display: flex; flex-direction: column; padding: 0 6px 6px; }
+.wst-cat-group.collapsed .wst-lesson-list { display: none; }
+.wst-lesson-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 22px; border-radius: 8px;
+  border: none; background: none; text-align: left; cursor: pointer; font-family: inherit; font-size: 12.5px;
+  color: #4b5563; transition: background .15s, color .15s; width: 100%;
+}
+.wst-lesson-item:hover { background: #ecfdf5; color: #059669; }
+.wst-lesson-item.active { background: #d1fae5; color: #047857; font-weight: 700; }
+[data-theme="dark"] .wst-lesson-item { color: #94a3b8; }
+[data-theme="dark"] .wst-lesson-item:hover { background: #064e3b; color: #6ee7b7; }
+[data-theme="dark"] .wst-lesson-item.active { background: #064e3b; color: #6ee7b7; }
+.wst-lesson-icon { flex-shrink: 0; font-size: 13px; }
+.wst-lesson-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wst-lesson-item .wst-done-icon { color: #16a34a; font-size: 11px; flex-shrink: 0; }
+
+.wst-hero { background: linear-gradient(135deg, #34d399 0%, #059669 100%); padding: 22px 26px; color: #fff; border-radius: 12px 12px 0 0; }
+.wst-hero-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; opacity: .9; margin-bottom: 4px; }
+.wst-hero-title { font-size: 21px; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 10px; }
+.wst-content { padding: 20px 26px 30px; }
+
+.wst-block { margin-bottom: 22px; }
+.wst-block-label {
+  display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; color: #059669; margin-bottom: 10px;
+}
+[data-theme="dark"] .wst-block-label { color: #6ee7b7; }
+
+.wst-overview-text { font-size: 14.5px; line-height: 1.8; color: #374151; white-space: pre-line; }
+[data-theme="dark"] .wst-overview-text { color: #cbd5e1; }
+
+.wst-step-item { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f3f4f6; }
+[data-theme="dark"] .wst-step-item { border-color: var(--bg, #000000); }
+.wst-step-item:last-child { border-bottom: none; }
+.wst-step-num {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: #d1fae5; color: #047857;
+  font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+[data-theme="dark"] .wst-step-num { background: #064e3b; color: #6ee7b7; }
+.wst-step-title { font-size: 13.5px; font-weight: 700; color: #111827; margin-bottom: 2px; white-space: pre-line; }
+[data-theme="dark"] .wst-step-title { color: #f1f5f9; }
+.wst-step-desc { font-size: 13px; color: #6b7280; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .wst-step-desc { color: #94a3b8; }
+
+.wst-list-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 6px; }
+[data-theme="dark"] .wst-list-title { color: #f1f5f9; }
+.wst-list-item { display: flex; gap: 8px; padding: 6px 0; font-size: 13px; color: #374151; line-height: 1.6; }
+[data-theme="dark"] .wst-list-item { color: #cbd5e1; }
+.wst-list-item i { color: #059669; margin-top: 3px; font-size: 8px; flex-shrink: 0; }
+[data-theme="dark"] .wst-list-item i { color: #6ee7b7; }
+
+.wst-example-item { background: #f9fafb; border: 1px solid #f3f4f6; border-left: 3px solid #059669; border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+[data-theme="dark"] .wst-example-item { background: var(--bg, #000000); border-color: var(--surface, #0d0d0d); border-left-color: #34d399; }
+.wst-example-label { font-size: 12px; font-weight: 700; color: #047857; margin-bottom: 6px; }
+[data-theme="dark"] .wst-example-label { color: #6ee7b7; }
+.wst-example-row { font-size: 13px; color: #374151; margin-bottom: 4px; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .wst-example-row { color: #cbd5e1; }
+.wst-example-row strong { color: #047857; margin-right: 4px; }
+[data-theme="dark"] .wst-example-row strong { color: #6ee7b7; }
+.wst-example-note { font-size: 12.5px; color: #6b7280; font-style: italic; margin-top: 4px; white-space: pre-line; }
+[data-theme="dark"] .wst-example-note { color: #94a3b8; }
+
+.wst-callout { background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+[data-theme="dark"] .wst-callout { background: #022c22; border-color: #065f46; }
+.wst-callout-title { font-size: 12.5px; font-weight: 700; color: #047857; margin-bottom: 3px; }
+[data-theme="dark"] .wst-callout-title { color: #6ee7b7; }
+.wst-callout-text { font-size: 13px; color: #065f46; line-height: 1.6; white-space: pre-line; }
+[data-theme="dark"] .wst-callout-text { color: #a7f3d0; }
+
+.wst-table-title { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+[data-theme="dark"] .wst-table-title { color: #f1f5f9; }
+.wst-table-wrap { overflow-x: auto; }
+.wst-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.wst-table th { background: #d1fae5; color: #047857; padding: 8px 10px; text-align: left; font-weight: 700; border: 1px solid #a7f3d0; }
+[data-theme="dark"] .wst-table th { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
+.wst-table td { padding: 8px 10px; border: 1px solid #f3f4f6; color: #374151; }
+[data-theme="dark"] .wst-table td { border-color: var(--surface, #0d0d0d); color: #cbd5e1; }
+
+.wst-summary-box {
+  background: linear-gradient(135deg, #d1fae5, #ecfdf5); border: 1.5px solid #6ee7b7; border-radius: 12px;
+  padding: 14px 16px; font-size: 13.5px; color: #065f46; font-weight: 600; line-height: 1.7; white-space: pre-line;
+}
+[data-theme="dark"] .wst-summary-box { background: linear-gradient(135deg, #022c22, var(--surface, #0d0d0d)); border-color: #065f46; color: #6ee7b7; }
+
+.wst-loading { padding: 60px 20px; text-align: center; color: #9ca3af; }
+.wst-loading-icon { font-size: 28px; margin-bottom: 10px; }
+.wst-no-results { padding: 20px 14px; text-align: center; color: #9ca3af; font-size: 12.5px; }
+
+@media (max-width: 900px) {
+  .wst-layout { flex-direction: column; padding: 12px 16px 20px; }
+  .wst-sidebar { width: 100%; max-height: 320px; position: static; margin-bottom: 16px; }
+  .wst-main { margin-left: 0; }
+  .wst-hero { padding: 16px 16px; border-radius: 12px 12px 0 0; }
+  .wst-hero-title { font-size: 18px; }
+  .wst-content { padding: 16px 16px 22px; }
+}

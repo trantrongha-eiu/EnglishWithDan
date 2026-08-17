@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/pdf-viewer.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <link rel="stylesheet" href="css/dictionary-popup.css" />
+  <link rel="stylesheet" href="css/writing-extra.css" />
   <script src="js/theme.js"></script>
   <script src="js/shared/visit-tracker.js"></script>
 </head>
@@ -64,6 +65,7 @@
         <button class="btn-secondary" onclick="showPracticeMode()"><i class="fas fa-dumbbell"></i> Luyện tập lẻ</button>
         <button class="btn-secondary" onclick="openHistoryModal()"><i class="fas fa-history"></i> Xem lịch sử</button>
         <button class="btn-secondary" onclick="loadWritingSamples()"><i class="fas fa-file-alt"></i> Tài liệu mẫu</button>
+        <button class="btn-secondary" onclick="openWritingTips()"><i class="fas fa-lightbulb"></i> Writing Tips</button>
       </div>
     </div>
   </div>
@@ -246,6 +248,27 @@
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCREEN 5b – WRITING TIPS
+═══════════════════════════════════════════ -->
+<div id="screen-writing-tips" class="screen">
+  <div class="wsampl-topbar">
+    <h2 class="wsampl-topbar-title"><i class="fas fa-lightbulb"></i> Writing Tips</h2>
+    <button class="btn-secondary" onclick="exitWritingTips()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+  </div>
+
+  <div class="wst-layout">
+    <aside class="wst-sidebar" id="wst-sidebar">
+      <div class="wst-cat-list" id="wst-cat-list"></div>
+    </aside>
+    <div class="wst-main">
+      <div id="wst-main-content">
+        <div class="wst-loading"><div class="wst-loading-icon"><i class="fas fa-spinner fa-spin"></i></div>Đang tải...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -524,6 +547,7 @@
 </div>
 
 <script src="js/writing-autosave.js"></script>
+<script src="js/writing-tips.js"></script>
 <script src="js/writing.js"></script>
 </body>
 </html>
