@@ -838,11 +838,17 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
    MOBILE FAB + BOTTOM SHEET
 ══════════════════════════════════════════ */
 
-/* FAB — nút tròn góc dưới phải, chỉ hiện trên mobile */
+/* FAB — nút tròn góc dưới phải, chỉ hiện trên mobile.
+   bottom:92px, not 24px — js/shared/peer-chat-widget.js's #pcw-root sits at
+   bottom:20px, right:20px on EVERY page (52px launcher button, z-index
+   1050), so at the old bottom:24px this FAB shared almost the exact same
+   footprint and always lost to the chat widget's higher z-index, making
+   the "chọn sổ" menu button completely unreachable on mobile. 92px clears
+   the chat launcher's top edge (20+52=72px) with a visible gap. */
 .mob-fab{
   display:none;
   position:fixed;
-  bottom:24px;right:20px;
+  bottom:92px;right:20px;
   z-index:120;
   width:56px;height:56px;
   background:linear-gradient(135deg,var(--blue) 0%,#2563eb 100%);
@@ -982,9 +988,10 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   /* Thêm padding bottom để content không bị FAB che. .app-layout itself
      never scrolls (it's the outer flex shell) — the actual scrolling
      happens inside #book-welcome/#book-content, which need their own
-     clearance for the fixed-position FAB (56px + 24px bottom offset). */
-  .app-layout{padding-bottom:80px}
-  #book-welcome,#book-content{padding-bottom:100px}
+     clearance for the fixed-position FAB (56px + 92px bottom offset —
+     raised above the peer-chat widget's launcher button, see .mob-fab). */
+  .app-layout{padding-bottom:148px}
+  #book-welcome,#book-content{padding-bottom:168px}
 
   /* Both Top-10 leaderboards stacking at full length back-to-back made the
      Home page an extremely long scroll on mobile before reaching anything
