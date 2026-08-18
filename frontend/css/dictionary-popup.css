@@ -87,7 +87,13 @@
 .dict-vocab-modal {
   position: fixed; inset: 0; background: rgba(0,0,0,.45);
   display: flex; align-items: center; justify-content: center;
-  z-index: 950; padding: 16px;
+  /* Same reasoning as .dict-popup above: "Lưu từ" inside the dict-popup
+     opens this modal next, and dict lookup is enabled inside writing.html's
+     #review-modal-body and #pw-analysis-body — both live inside a
+     .modal-overlay (z-index:1100). At 950 this rendered invisibly behind
+     that backdrop the moment a student tried to save a word from either of
+     those (bug found via live testing, not just theoretical). */
+  z-index: 1150; padding: 16px;
 }
 .dict-vocab-modal.hidden { display: none; }
 .dict-vocab-box {

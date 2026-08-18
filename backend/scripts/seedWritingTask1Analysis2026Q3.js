@@ -395,10 +395,10 @@ Overall, City C experienced the most dramatic change, rising from zero conferenc
       },
       {
         title: '2. Body 1 – City A và City B',
-        content: `Nên viết: City A (dao động mạnh: 35 → 20 → 30 → 20 → 30 → 20), City B (ổn định: quanh mức 28-30 suốt giai đoạn).
+        content: `Nên viết: City A (dao động mạnh: 35 → 20 → 30 → 20 → 30 → 20), City B (khá ổn định: quanh mức 28-30 phần lớn giai đoạn, chỉ giảm nhẹ xuống 25 vào 2010).
 
 Topic sentence:
-City B remained fairly constant throughout the period, fluctuating only slightly between 28 and 30 conferences.
+City B remained relatively constant for most of the period, at around 28 to 30 conferences, before dipping slightly to 25 by 2010.
 
 Cấu trúc hay:
 - fluctuate / fluctuate considerably
@@ -410,10 +410,10 @@ Cấu trúc hay:
       },
       {
         title: '3. Body 2 – City C',
-        content: `Nên viết: City C (0 năm 1965, tăng dần qua các mốc, đạt khoảng 30 vào 2010 — gần bằng 2 thành phố kia).
+        content: `Nên viết: City C (0 năm 1965, tăng lên khoảng 30 vào 1995, giảm nhẹ xuống ~25 vào 2005, rồi tăng lại lên khoảng 30 vào 2010 — gần bằng 2 thành phố kia).
 
 Topic sentence:
-City C showed a completely different pattern, starting at zero in 1965 and increasing steadily to reach a similar level to the other two cities by 2010.
+City C showed a completely different pattern, starting at zero in 1965 and rising to a level similar to the other two cities by 2010, despite a temporary dip in 2005.
 
 Cấu trúc hay:
 - start at zero

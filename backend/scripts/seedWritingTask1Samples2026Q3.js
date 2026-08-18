@@ -76,8 +76,8 @@ const SAMPLES = [
     sampleSections: [
       { title: 'Introduction', content: 'The line graph shows the number of international conferences held in three different cities between 1965 and 2010.' },
       { title: 'Overview', content: 'Overall, City C experienced the most dramatic change over the period, rising from zero conferences in 1965 to a level comparable with the other two cities by 2010, while City B remained the most stable of the three throughout.' },
-      { title: 'Body 1', content: 'In 1965, City A hosted the highest number of conferences, at 35, while City B held approximately 30 and City C held none at all. Over the following decades, City A fluctuated considerably, falling to 20 in 1975 before rising again to 30 in 1985, and continuing this pattern of sharp rises and falls until 2010, when it stood at 20. City B, by contrast, changed only slightly throughout the period, remaining within a narrow band of roughly 28 to 30 conferences.' },
-      { title: 'Body 2', content: 'City C showed a completely different trajectory. Starting from zero in 1965, the number of conferences held there rose steadily, reaching around 20 by 1985 and continuing to climb until it reached approximately 30 by 2010, a level similar to that of the other two cities.' },
+      { title: 'Body 1', content: 'In 1965, City A hosted the highest number of conferences, at 35, while City B held approximately 30 and City C held none at all. Over the following decades, City A fluctuated considerably, falling to 20 in 1975 before rising again to 30 in 1985, and continuing this pattern of sharp rises and falls until 2010, when it stood at 20. City B, by contrast, remained relatively stable at around 28 to 30 conferences for most of the period, before dipping slightly to 25 by 2010.' },
+      { title: 'Body 2', content: 'City C showed a completely different trajectory. Starting from zero in 1965, the number of conferences held there rose steadily to reach around 30 by 1995, before falling back to approximately 25 in 2005 and then recovering to roughly 30 by 2010, a level similar to that of the other two cities.' },
     ],
   },
   {
