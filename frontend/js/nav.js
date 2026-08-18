@@ -646,9 +646,19 @@
   // practical proxy to "once per login" without spamming the modal on
   // every single page navigation within one sitting).
   var TRIAL_EXPIRED_SHOWN_KEY = 'ews_trial_expired_shown';
-  function _showTrialExpiredModalOnce() {
+  function _showTrialExpiredModalOnce(attempt) {
     if (sessionStorage.getItem(TRIAL_EXPIRED_SHOWN_KEY)) return;
+    if (typeof window.openUpgradeModal !== 'function') {
+      // Defense-in-depth: correctness normally comes from upgrade-modal.js
+      // loading before nav.js in every page's <script> order, but a future
+      // page that gets that order wrong shouldn't silently lose this modal
+      // (the sessionStorage flag below is also deliberately NOT set until
+      // this actually succeeds) — retry briefly instead of giving up.
+      attempt = attempt || 0;
+      if (attempt < 20) setTimeout(function () { _showTrialExpiredModalOnce(attempt + 1); }, 100);
+      return;
+    }
     sessionStorage.setItem(TRIAL_EXPIRED_SHOWN_KEY, '1');
-    if (window.openUpgradeModal) window.openUpgradeModal('trial_expired');
+    window.openUpgradeModal('trial_expired');
   }
 })();

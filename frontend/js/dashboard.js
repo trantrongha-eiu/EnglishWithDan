@@ -673,6 +673,15 @@ function bookDrop(e, targetIdx) {
     e.preventDefault();
     e.currentTarget.classList.remove('drag-over');
     if (_dragBookIdx === null || _dragBookIdx === targetIdx) return;
+    // Same free-plan gate as openBook() — PUT /vocabbook/reorder is
+    // premium-gated server-side now, so block the reorder itself (before
+    // any local mutation) instead of letting saveBookOrder()'s PUT 403 into
+    // a confusing "couldn't save order, reloading..." toast.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        _dragBookIdx = null;
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     const moved = myBooks.splice(_dragBookIdx, 1)[0];
     myBooks.splice(targetIdx, 0, moved);
     _dragBookIdx = null;
@@ -1271,6 +1280,14 @@ function openAddBookModal() {
     setTimeout(() => document.getElementById('new-book-name').focus(), 100);
 }
 async function createBook() {
+    // Same free-plan gate as openBook() — POST /vocabbook is premium-gated
+    // server-side now (list stays open so a locked-out user still sees
+    // their books, but creating a new one doesn't), so block here too
+    // instead of letting the request 403 into a bare error toast.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     const name = document.getElementById('new-book-name').value.trim();
     if (!name) { toast('Notebook name cannot be empty', 'error'); return; }
     try {
@@ -1654,6 +1671,13 @@ async function loadUnits() {
 }
 
 async function loadUnit(unitNumberOverride, push = true, modeOverride) {
+    // Same free-plan gate as openBook()/openLesson() — GET /vocab/unit/:number
+    // is premium-gated server-side now, so block here too instead of letting
+    // the request 403 into a bare error toast.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     const sel = document.getElementById('unitSelect');
     const num = unitNumberOverride ?? sel?.value;
     if (!num) { toast('Vui lòng chọn một Paraphrase Unit trước', 'error'); return; }

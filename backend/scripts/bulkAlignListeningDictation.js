@@ -73,7 +73,16 @@ async function run() {
   // point is re-aligning specific sections regardless of their current
   // dictationSentences/skipped state (e.g. already-aligned-but-stale ones).
   if (args.ids) {
-    filter._id = { $in: args.ids.map(id => new (require('mongoose').Types.ObjectId)(id)) };
+    // A single malformed id (e.g. a copy-paste typo) must not abort the
+    // whole run before any section is touched — skip and report it instead,
+    // same "don't let one bad input take down the batch" spirit as the
+    // per-section try/catch below.
+    const validIds = [];
+    for (const id of args.ids) {
+      try { validIds.push(new mongoose.Types.ObjectId(id)); }
+      catch (err) { console.error(`[bulkAlign] Skipping invalid --ids entry "${id}": ${err.message}`); }
+    }
+    filter._id = { $in: validIds };
   } else if (!args.force) {
     // Existing docs predate this field entirely (no retroactive default on
     // already-saved documents), so "not yet aligned" means EITHER the field

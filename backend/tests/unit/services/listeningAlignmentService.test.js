@@ -1,10 +1,10 @@
 'use strict';
 
-const { selectDictationSentences, validateAlignment } = require('../../../services/listeningAlignmentService');
+const { selectDictationSentences } = require('../../../services/listeningAlignmentService');
 
 // Builds an alignSentences()-shaped result row without needing a real ASR
 // call — matchedWords/totalWords/unmatchedTokens are exactly what
-// selectDictationSentences/validateAlignment actually read.
+// selectDictationSentences actually reads.
 function row({ text, start, end, totalWords, matchedWords, unmatchedTokens = [] }) {
   return { text, start, end, totalWords, matchedWords: matchedWords ?? totalWords, unmatchedTokens };
 }
@@ -90,17 +90,5 @@ describe('listeningAlignmentService.selectDictationSentences', () => {
     const { kept, dropped } = selectDictationSentences(results);
     expect(kept.map(k => k.text)).toEqual([results[0].text, results[3].text]);
     expect(dropped).toHaveLength(2);
-  });
-});
-
-// Sanity — validateAlignment (the previous all-or-nothing gate) is kept in
-// the module for any future caller wanting a strict pass/fail, unchanged by
-// this phase's addition of selectDictationSentences.
-describe('listeningAlignmentService.validateAlignment (unchanged all-or-nothing gate)', () => {
-  it('is valid only when every sentence passes', () => {
-    const good = row({ text: 'A perfectly fine sentence with enough words in it.', start: 0, end: 3, totalWords: 9 });
-    const bad = row({ text: 'Okay.', start: 3, end: 3.01, totalWords: 1 });
-    expect(validateAlignment([good]).valid).toBe(true);
-    expect(validateAlignment([good, bad]).valid).toBe(false);
   });
 });

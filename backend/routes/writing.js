@@ -11,14 +11,13 @@ const writingController = require('../controllers/writing.controller');
 // content-serving point (same convention as reading.js/listening.js's full-
 // test gates), submitPractice gates the point a practice essay would
 // otherwise consume a teacher grading slot for a locked-out user.
-const examGate = requirePremium();
-const practiceGate = requirePremium();
+const fullAccess = requirePremium();
 
 // ══════════════════════════════════════════════════
 // POST /api/writing/start
 // Returns exam + random task1 + random task2
 // ══════════════════════════════════════════════════
-router.post('/start', auth, examGate, writingController.startExam);
+router.post('/start', auth, fullAccess, writingController.startExam);
 
 // ══════════════════════════════════════════════════
 // POST /api/writing/submit
@@ -30,7 +29,7 @@ router.post('/submit', auth, writingController.submitExam);
 // ══════════════════════════════════════════════════
 router.get('/practice/tasks', auth, writingController.listPracticeTasks);
 router.get('/practice/task', auth, writingController.getPracticeTask);
-router.post('/practice/submit', auth, practiceGate, writingController.submitPractice);
+router.post('/practice/submit', auth, fullAccess, writingController.submitPractice);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // ══════════════════════════════════════════════════

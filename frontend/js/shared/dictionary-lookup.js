@@ -87,7 +87,16 @@
       throw new Error('Unauthorized');
     }
     var data = await res.json().catch(function () { return {}; });
-    if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
+    if (!res.ok) {
+      // .status/.body match ApiClient.handleResponse's shape (js/shared/
+      // api-client.js) so callers can use the same err.status===403 &&
+      // err.body.requiresPremium check as writing.js/speaking.js instead of
+      // only getting a bare message with no way to detect "needs upgrade".
+      var err = new Error(data.message || ('HTTP ' + res.status));
+      err.status = res.status;
+      err.body = data;
+      throw err;
+    }
     return data;
   }
 
@@ -396,8 +405,20 @@
       if (nameInput) nameInput.value = '';
       await saveDictWordToBook(res.book._id);
     } catch (e) {
-      showVocabToast('Lỗi tạo sổ mới', 'error');
+      _handleVocabSaveError(e, 'Lỗi tạo sổ mới');
     }
+  }
+
+  // Shared by createDictBookAndSave/saveDictWordToBook — a trial-expired
+  // free account gets vocabbook writes 403'd server-side now (see
+  // backend/routes/vocabBook.js), so surface the upgrade modal instead of
+  // a generic "failed to save" toast that gives no indication why.
+  function _handleVocabSaveError(e, fallbackMsg) {
+    if (e && e.status === 403 && e.body && e.body.requiresPremium) {
+      if (window.openUpgradeModal) window.openUpgradeModal('trial_expired');
+      return;
+    }
+    showVocabToast((e && e.message) || fallbackMsg, 'error');
   }
 
   async function saveDictWordToBook(bookId) {
@@ -412,7 +433,7 @@
       showVocabToast(msg, res.success ? 'success' : 'info');
       _pendingWordData = null;
     } catch (e) {
-      showVocabToast('Lỗi lưu từ', 'error');
+      _handleVocabSaveError(e, 'Lỗi lưu từ');
     }
   }
 

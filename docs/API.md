@@ -489,7 +489,7 @@ Only `isActive:true` units are returned, sorted by `unitNumber`. `Cache-Control:
 
 ### GET /api/vocab/unit/:number
 **Auth:** Bearer token required
-**Permissions:** any authenticated user
+**Permissions:** `hasFullAccess` (premium, staff, or a free account within its first 24h — see `backend/utils/plan.js`); `GET /api/vocab/units` above stays ungated so the unit picker is still visible, but opening one is gated
 **Rate limit:** none
 
 **Request**
@@ -1668,7 +1668,7 @@ Same multer audio constraints as the test-audio upload.
 Note: this controller's shared `guard()` wrapper deliberately leaks the raw `err.message` to the client on unhandled 500s (unlike most other files in this doc, which return a generic `'Lỗi server'`) — a preserved-not-fixed inconsistency called out in the controller's own top-of-file comment.
 
 ### POST /api/writing/start
-**Auth:** Bearer token required · **Permissions:** any authenticated user (no premium gate — writing is explicitly free)
+**Auth:** Bearer token required · **Permissions:** `hasFullAccess` (premium, staff, or a free account within its first 24h — see `backend/utils/plan.js`); 403 `{ success:false, message, code:'PLAN_REQUIRED', requiresPremium:true }` once the trial has expired
 
 **Response** (200)
 ```json
@@ -1729,7 +1729,7 @@ Note: this controller's shared `guard()` wrapper deliberately leaks the raw `err
 ---
 
 ### POST /api/writing/practice/submit
-**Auth:** Bearer token required
+**Auth:** Bearer token required · **Permissions:** `hasFullAccess` (same gate as `/start` above)
 
 **Request**
 - Body: `{ "taskType": 1, "taskId": "...", "answer": "The chart shows...", "wordCount": 165 }`

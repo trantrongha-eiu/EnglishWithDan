@@ -221,9 +221,8 @@ function alignSentences(knownSentences, asrWords) {
   return results;
 }
 
-// Strict quality gate — the product requirement here is "100% accuracy",
-// so this rejects a section entirely rather than shipping a mix of good and
-// broken sentences. Two independent checks per sentence:
+// Per-sentence quality bounds used by selectDictationSentences below. Two
+// independent checks per sentence:
 //  1. matchedWords === totalWords — every word in the sentence found its
 //     own ASR word (not just "most of them"); a partial match means the
 //     displayed text and the played audio have genuinely drifted apart.
@@ -244,38 +243,18 @@ const MAX_WORDS_PER_SECOND = 6;
 // these — every word that actually carries meaning still had to match.
 const FILLER_WORDS = new Set(['um', 'umm', 'uh', 'uhh', 'erm', 'hmm', 'mm', 'mmhmm', 'ah', 'ahh', 'huh']);
 
-function validateAlignment(results) {
-  const issues = [];
-  results.forEach((r, i) => {
-    if (r.matchedWords !== r.totalWords) {
-      const unmatched = r.unmatchedTokens || [];
-      if (!unmatched.every(t => FILLER_WORDS.has(t))) {
-        issues.push({ index: i, text: r.text, reason: `chỉ khớp ${r.matchedWords}/${r.totalWords} từ (thiếu: ${unmatched.join(', ')})` });
-        return;
-      }
-    }
-    const duration = r.end - r.start;
-    const wps = duration > 0 ? r.totalWords / duration : Infinity;
-    if (duration <= 0 || wps > MAX_WORDS_PER_SECOND || wps < MIN_WORDS_PER_SECOND) {
-      issues.push({ index: i, text: r.text, reason: `thời lượng bất thường (${duration.toFixed(2)}s cho ${r.totalWords} từ)` });
-    }
-  });
-  return { valid: issues.length === 0, issues };
-}
-
-// Per-sentence selection — unlike validateAlignment's all-or-nothing gate
-// (reject the WHOLE section over a single bad sentence), this keeps
-// whichever sentences are both accurately timed AND substantive, silently
-// dropping the rest. Per product decision: a dictation section doesn't need
-// EVERY sentence from the passage — spelled-out words/phone numbers/emails
+// Per-sentence selection — unlike an all-or-nothing gate that would reject
+// the WHOLE section over a single bad sentence, this keeps whichever
+// sentences are both accurately timed AND substantive, silently dropping the
+// rest. Per product decision: a dictation section doesn't need EVERY
+// sentence from the passage — spelled-out words/phone numbers/emails
 // (exactly what routinely fails the word-match check, since Whisper
 // transcribes digits/letters-said-aloud inconsistently) and short filler
 // turns ("Okay.", "Hello.", "Right.") aren't useful listening-fill-in
 // practice anyway, even when their timing happens to be perfectly accurate.
 // Three independent reasons a sentence gets dropped:
-//   1. Word-mismatch — same rule as validateAlignment (filler-word unmatched
-//      tokens still pass).
-//   2. Implausible speech rate — same MIN/MAX_WORDS_PER_SECOND bounds.
+//   1. Word-mismatch (filler-word unmatched tokens still pass).
+//   2. Implausible speech rate — MIN/MAX_WORDS_PER_SECOND bounds.
 //   3. Too short to be a substantive dictation unit (< minWords), independent
 //      of whether it aligned perfectly.
 const MIN_DICTATION_WORDS = 6;
@@ -305,6 +284,6 @@ function selectDictationSentences(results, minWords = MIN_DICTATION_WORDS) {
 }
 
 module.exports = {
-  transcribeWithWordTimestamps, alignSentences, validateAlignment, selectDictationSentences,
+  transcribeWithWordTimestamps, alignSentences, selectDictationSentences,
   tokenizeSentence, globalAlign, normalizeWord, findAnchorOffset,
 };
