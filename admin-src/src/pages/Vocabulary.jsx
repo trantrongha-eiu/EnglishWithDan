@@ -114,8 +114,15 @@ function WordsModal({ unit, onClose }) {
     e.preventDefault();
     setSaving(true);
     try {
-      await apiFetch(`/vocab/admin/units/${unit._id}/words`, { method: 'POST', body: JSON.stringify({ ...form, type: wordType }) });
-      toast(`Đã thêm "${form.word}"`);
+      // A duplicate word (case-insensitive, same unit) comes back as a 200
+      // with success:false (backend/controllers/vocab.controller.js's
+      // addWord) rather than an HTTP error, so this must be checked
+      // explicitly — apiFetch only throws on !res.ok, and this used to be
+      // silently treated as success: a false "Đã thêm" toast plus a
+      // phantom row appended to the table that was never actually saved.
+      const d = await apiFetch(`/vocab/admin/units/${unit._id}/words`, { method: 'POST', body: JSON.stringify({ ...form, type: wordType }) });
+      if (!d.success) { toast(d.message, 'error'); return; }
+      toast(d.message || `Đã thêm "${form.word}"`);
       setWords(w => [...w, { ...form, type: wordType }]);
       setForm(f => ({ ...f, word: '', meaning: '', example: '', phonetic: '', paraphrase: '', explanation: '' }));
     } catch (err) { toast(err.message, 'error'); }

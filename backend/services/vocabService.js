@@ -221,7 +221,7 @@ async function splitAllUnits(chunkSize) {
   return { status: 'ok', unitCount: largeUnits.length, totalCreated, results };
 }
 
-async function importUnits(data) {
+async function importUnits(data, replace = false) {
   const results = [];
 
   for (const unitData of data) {
@@ -235,7 +235,19 @@ async function importUnits(data) {
       existing.title = unitData.title || existing.title;
       existing.description = unitData.description || existing.description;
       existing.level = unitData.level || existing.level;
-      if (unitData.words?.length) existing.words = unitData.words;
+      // `replace` used to be accepted by the frontend/route but silently
+      // dropped here — every re-import unconditionally wiped existing.words
+      // regardless of the "Ghi đè" checkbox. Same replace-vs-merge-by-word
+      // convention as bulkAddWords() above.
+      if (unitData.words?.length) {
+        if (replace) {
+          existing.words = unitData.words;
+        } else {
+          const existingWords = new Set(existing.words.map(w => w.word.toLowerCase()));
+          const newWords = unitData.words.filter(w => !existingWords.has(w.word?.toLowerCase()));
+          existing.words.push(...newWords);
+        }
+      }
       existing.markModified('words');
       await existing.save();
       results.push({ unitNumber: unitData.unitNumber, status: 'updated', wordCount: existing.words.length });

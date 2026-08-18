@@ -174,7 +174,8 @@ exports.splitAllUnits = async (req, res) => {
 exports.importUnits = async (req, res) => {
   try {
     const data = Array.isArray(req.body) ? req.body : [req.body];
-    const { created, updated, results } = await vocabService.importUnits(data);
+    const replace = req.query.replace === 'true';
+    const { created, updated, results } = await vocabService.importUnits(data, replace);
     res.json({ success: true, message: `Import xong: ${created} tạo mới, ${updated} cập nhật`, results });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

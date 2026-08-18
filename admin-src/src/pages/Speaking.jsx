@@ -344,6 +344,8 @@ export default function Speaking() {
     setHistLoading(true);
     try {
       const qs = new URLSearchParams({ page, limit: 40 });
+      if (histPartFilter) qs.set('part', histPartFilter);
+      if (histSearch.trim()) qs.set('search', histSearch.trim());
       const d = await apiFetch(`/admin/speaking/history?${qs}`);
       setHistory(d.attempts || []);
       setHistTotal(d.total || 0);
@@ -360,6 +362,18 @@ export default function Speaking() {
       loadHistory(1);
     }
   }, [tab]);
+
+  // Search/part filter now runs server-side (see loadHistory) — it used to
+  // only filter whichever single 40-row page was already loaded, so a
+  // matching student/question sitting on a later page looked exactly like
+  // "no results" next to a "0 / 340 bài" counter. Debounced so typing
+  // doesn't fire a request per keystroke; skipped on first mount (that
+  // load is handled by the effect above) and while another tab is active.
+  useEffect(() => {
+    if (tab !== 'history' || !histLoaded.current) return;
+    const t = setTimeout(() => loadHistory(1), 350);
+    return () => clearTimeout(t);
+  }, [histSearch, histPartFilter]);
 
   function delQ(id, q) {
     confirm(`Xóa câu hỏi "${q.slice(0, 40)}..."?`, async () => {
@@ -383,19 +397,6 @@ export default function Speaking() {
   const filteredM = materials.filter(m =>
     !search || m.title?.toLowerCase().includes(search.toLowerCase()) || m.topic?.toLowerCase().includes(search.toLowerCase())
   );
-
-  // Filter history client-side by username/question/topic + part
-  const filteredHist = history.filter(a => {
-    if (histPartFilter && String(a.part) !== histPartFilter) return false;
-    if (histSearch) {
-      const q = histSearch.toLowerCase();
-      const user = a.userId || {};
-      if (!((user.username || '').toLowerCase().includes(q) ||
-            (a.question || '').toLowerCase().includes(q) ||
-            (a.topic || '').toLowerCase().includes(q))) return false;
-    }
-    return true;
-  });
 
   return (
     <>
@@ -446,7 +447,7 @@ export default function Speaking() {
         )}
         {tab === 'history' && (
           <span style={{ marginLeft:'auto', fontSize:13, color:'var(--text3,#888)', alignSelf:'center' }}>
-            {filteredHist.length} / {histTotal} bài
+            {history.length} / {histTotal} bài
           </span>
         )}
       </div>
@@ -532,9 +533,9 @@ export default function Speaking() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredHist.length === 0
+                  {history.length === 0
                     ? <tr><td colSpan={11} className="table-empty">Không có dữ liệu</td></tr>
-                    : filteredHist.map(a => {
+                    : history.map(a => {
                       const fb = a.aiFeedback || {};
                       const user = a.userId || {};
                       const BandCell = ({ v }) => (

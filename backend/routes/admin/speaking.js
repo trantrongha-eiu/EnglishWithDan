@@ -8,6 +8,7 @@ const { teacherOnly, uploadPdfMemory, uploadPdfBuffer } = require('./_shared');
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const SpeakingMaterial = require('../../models/SpeakingMaterial');
 const SpeakingAttempt  = require('../../models/SpeakingAttempt');
+const User             = require('../../models/User');
 
 const router = express.Router();
 
@@ -18,7 +19,10 @@ const router = express.Router();
 // GET /api/admin/speaking/questions
 router.get('/speaking/questions', auth, teacherOnly, async (req, res) => {
   try {
-    const questions = await SpeakingQuestion.find().sort({ topic: 1, part: 1, createdAt: -1 });
+    // DELETE below is a soft delete (isActive: false, same as Materials) —
+    // this list must exclude those or a "deleted" question just reappears
+    // on the next reload/refetch (e.g. after adding a new one).
+    const questions = await SpeakingQuestion.find({ isActive: { $ne: false } }).sort({ topic: 1, part: 1, createdAt: -1 });
     res.json({ success: true, questions });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -138,9 +142,25 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
 // GET /api/admin/speaking/history  — tất cả lượt luyện của học sinh
 router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
   try {
-    const { page = 1, limit = 40, userId } = req.query;
+    const { page = 1, limit = 40, userId, part, search } = req.query;
     const filter = {};
     if (userId) filter.userId = userId;
+    if (part) filter.part = Number(part);
+    // search used to only be applied client-side against whatever single
+    // 40-row page happened to already be loaded (admin-src/src/pages/
+    // Speaking.jsx) — a student whose matching attempts sat on a later
+    // page looked exactly like "no history", with the total/matched
+    // counters right next to each other implying otherwise. userId isn't
+    // text-searchable directly, so resolve matching usernames first.
+    if (search && search.trim()) {
+      const regex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      const matchingUsers = await User.find({ username: regex }).select('_id').lean();
+      filter.$or = [
+        { userId: { $in: matchingUsers.map(u => u._id) } },
+        { question: regex },
+        { topic: regex },
+      ];
+    }
     const skip = (Number(page) - 1) * Number(limit);
     const [attempts, total] = await Promise.all([
       SpeakingAttempt.find(filter)
