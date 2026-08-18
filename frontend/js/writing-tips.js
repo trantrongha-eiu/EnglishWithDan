@@ -191,3 +191,11 @@ function wstRenderSummary(text) {
   return '<div class="wst-block"><div class="wst-block-label"><i class="fas fa-flag-checkered"></i> Tóm tắt</div>'
     + '<div class="wst-summary-box">' + escHtml(text) + '</div></div>';
 }
+
+// Reference material, not a gradeable drill — double-click word lookup is on
+// unconditionally, no exam/quiz gate needed. #wst-main-content already
+// exists in writing.html's static markup by the time this script runs, so
+// this can attach once here rather than after every render.
+if (typeof setupDictionaryDouble === 'function') {
+  setupDictionaryDouble('wst-main-content', 'writing-tips');
+}

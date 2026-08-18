@@ -174,3 +174,11 @@ function lstRenderSummary(text) {
   return '<div class="lst-block"><div class="lst-block-label"><i class="fas fa-flag-checkered"></i> Tóm tắt</div>'
     + '<div class="lst-summary-box">' + escHtml(text) + '</div></div>';
 }
+
+// Reference material, not a gradeable drill — double-click word lookup is on
+// unconditionally, no exam/quiz gate needed. #lst-main-content already
+// exists in listening.html's static markup by the time this script runs, so
+// this can attach once here rather than after every render.
+if (typeof setupDictionaryDouble === 'function') {
+  setupDictionaryDouble('lst-main-content', 'listening-tips');
+}

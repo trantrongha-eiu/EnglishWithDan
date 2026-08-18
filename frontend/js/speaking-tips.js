@@ -176,3 +176,11 @@ function sstRenderSummary(text) {
   return '<div class="sst-block"><div class="sst-block-label"><i class="fas fa-flag-checkered"></i> Tóm tắt</div>'
     + '<div class="sst-summary-box">' + escHtml(text) + '</div></div>';
 }
+
+// Reference material, not a gradeable drill — double-click word lookup is on
+// unconditionally, no exam/quiz gate needed. #sst-main-content already
+// exists in speaking.html's static markup by the time this script runs, so
+// this can attach once here rather than after every render.
+if (typeof setupDictionaryDouble === 'function') {
+  setupDictionaryDouble('sst-main-content', 'speaking-tips');
+}

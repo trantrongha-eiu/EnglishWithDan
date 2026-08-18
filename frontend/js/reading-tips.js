@@ -176,3 +176,11 @@ function rtRenderSummary(text) {
   return '<div class="rt-block"><div class="rt-block-label"><i class="fas fa-flag-checkered"></i> Tóm tắt</div>'
     + '<div class="rt-summary-box">' + escHtml(text) + '</div></div>';
 }
+
+// Reference material, not a gradeable drill (see file header) — double-click
+// word lookup is on unconditionally, no exam/quiz gate needed. #rt-main-
+// content already exists in reading.html's static markup by the time this
+// script runs, so this can attach once here rather than after every render.
+if (typeof setupDictionaryDouble === 'function') {
+  setupDictionaryDouble('rt-main-content', 'reading-tips');
+}
