@@ -25,9 +25,12 @@ describe('GET /api/listening/tests', () => {
 });
 
 describe('POST /api/listening/tests/:id/start (premium gate)', () => {
-  test('a free-plan student is blocked with 403 PLAN_REQUIRED', async () => {
+  // Free-plan gating is now the 24h-trial rule (backend/utils/plan.js's
+  // hasFullAccess) — see reading.test.js's matching describe block for the
+  // same note.
+  test('a free-plan student whose 24h trial has expired is blocked with 403 PLAN_REQUIRED', async () => {
     const test = await createListeningTest();
-    const user = await createStudent();
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
     const token = signTokenFor(user);
     const res = await request(app)
       .post(`/api/listening/tests/${test._id}/start`)
@@ -35,6 +38,17 @@ describe('POST /api/listening/tests/:id/start (premium gate)', () => {
       .send({});
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a freshly-created free-plan student (still inside the 24h trial) passes the gate', async () => {
+    const test = await createListeningTest();
+    const user = await createStudent({ extra: { createdAt: new Date() } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .post(`/api/listening/tests/${test._id}/start`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({});
+    expect(res.status).not.toBe(403);
   });
 
   test('a premium student passes the gate and can fetch the test', async () => {

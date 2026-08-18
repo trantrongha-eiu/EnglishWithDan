@@ -1,12 +1,16 @@
 /**
  * backend/middleware/requirePremium.js
- * Chặn truy cập nếu user không phải premium (hoặc admin/teacher).
+ * Chặn truy cập nếu user không có full access: không phải premium, không
+ * phải admin/teacher, và đã hết 24h dùng thử miễn phí kể từ lúc tạo tài
+ * khoản (xem backend/utils/plan.js — hasFullAccess là nguồn sự thật duy
+ * nhất cho luật này).
  * Phải dùng sau middleware `auth` (cần req.user đã được gán).
  */
-function requirePremium(message = 'Bạn cần nâng cấp lên Premium để dùng tính năng này') {
+const { hasFullAccess } = require('../utils/plan');
+
+function requirePremium(message = 'Tài khoản dùng thử miễn phí 1 ngày của bạn đã hết hạn. Nâng cấp Premium để tiếp tục sử dụng.') {
   return (req, res, next) => {
-    const isPremium = req.user.plan === 'premium' || ['admin', 'teacher'].includes(req.user.role);
-    if (isPremium) return next();
+    if (hasFullAccess(req.user)) return next();
     return res.status(403).json({ success: false, message, code: 'PLAN_REQUIRED', requiresPremium: true });
   };
 }

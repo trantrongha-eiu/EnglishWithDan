@@ -1,8 +1,10 @@
-// Unit tests for utils/plan.js — computePlanExpiry(currentExpiresAt, months).
-// Locks in the "stacking" behavior: an active (still-in-the-future) plan's
-// remaining time is preserved and the new months are added on top of it,
-// while an expired/absent plan starts counting fresh from now.
-const { computePlanExpiry } = require('../../../utils/plan');
+// Unit tests for utils/plan.js — computePlanExpiry(currentExpiresAt, months),
+// and isWithinTrial/hasFullAccess (the free-plan trial-window gate).
+// computePlanExpiry: locks in the "stacking" behavior: an active
+// (still-in-the-future) plan's remaining time is preserved and the new
+// months are added on top of it, while an expired/absent plan starts
+// counting fresh from now.
+const { computePlanExpiry, isWithinTrial, hasFullAccess } = require('../../../utils/plan');
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const TOLERANCE_MS = 5000; // allow a few seconds of test-execution drift
@@ -64,5 +66,51 @@ describe('computePlanExpiry', () => {
     const expectedMax = after + 6 * 30 * DAY_MS + TOLERANCE_MS;
     expect(result.getTime()).toBeGreaterThanOrEqual(expectedMin);
     expect(result.getTime()).toBeLessThanOrEqual(expectedMax);
+  });
+});
+
+describe('isWithinTrial', () => {
+  test('true for an account created just now', () => {
+    expect(isWithinTrial({ createdAt: new Date() })).toBe(true);
+  });
+
+  test('true for an account created 23 hours ago (just inside the window)', () => {
+    expect(isWithinTrial({ createdAt: new Date(Date.now() - 23 * 60 * 60 * 1000) })).toBe(true);
+  });
+
+  test('false for an account created 25 hours ago (just outside the window)', () => {
+    expect(isWithinTrial({ createdAt: new Date(Date.now() - 25 * 60 * 60 * 1000) })).toBe(false);
+  });
+
+  test('false when createdAt is missing', () => {
+    expect(isWithinTrial({})).toBe(false);
+  });
+
+  test('false when user itself is null/undefined', () => {
+    expect(isWithinTrial(null)).toBe(false);
+    expect(isWithinTrial(undefined)).toBe(false);
+  });
+});
+
+describe('hasFullAccess', () => {
+  test('true for a premium user regardless of createdAt', () => {
+    expect(hasFullAccess({ plan: 'premium', role: 'student', createdAt: new Date(Date.now() - 30 * DAY_MS) })).toBe(true);
+  });
+
+  test('true for admin/teacher regardless of plan or createdAt', () => {
+    expect(hasFullAccess({ plan: 'free', role: 'admin', createdAt: new Date(Date.now() - 30 * DAY_MS) })).toBe(true);
+    expect(hasFullAccess({ plan: 'free', role: 'teacher', createdAt: new Date(Date.now() - 30 * DAY_MS) })).toBe(true);
+  });
+
+  test('true for a free student still inside the 24h trial', () => {
+    expect(hasFullAccess({ plan: 'free', role: 'student', createdAt: new Date() })).toBe(true);
+  });
+
+  test('false for a free student whose trial has expired', () => {
+    expect(hasFullAccess({ plan: 'free', role: 'student', createdAt: new Date(Date.now() - 2 * DAY_MS) })).toBe(false);
+  });
+
+  test('false for no user at all', () => {
+    expect(hasFullAccess(null)).toBe(false);
   });
 });

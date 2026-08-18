@@ -8,12 +8,22 @@ const { createStudent, createPremiumStudent, signTokenFor } = require('../factor
 const { createSpeakingAttempt } = require('../factories/contentFactory');
 
 describe('GET /api/speaking/topics (premium gate)', () => {
-  test('a free-plan student is blocked with 403 PLAN_REQUIRED', async () => {
-    const user = await createStudent();
+  // Free-plan gating is now the 24h-trial rule (backend/utils/plan.js's
+  // hasFullAccess) — see reading.test.js's matching describe block for the
+  // same note.
+  test('a free-plan student whose 24h trial has expired is blocked with 403 PLAN_REQUIRED', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
     const token = signTokenFor(user);
     const res = await request(app).get('/api/speaking/topics').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a freshly-created free-plan student (still inside the 24h trial) is allowed through', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date() } });
+    const token = signTokenFor(user);
+    const res = await request(app).get('/api/speaking/topics').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
   });
 
   test('a premium student is allowed through', async () => {

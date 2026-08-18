@@ -80,23 +80,15 @@ const UserSchema = new mongoose.Schema({
   resetOTPExpires:    { type: Date, default: null },
   resetOTPAttempts:   { type: Number, default: 0 },
   lastSeen:           { type: Date, default: null },
-  // Subscription plan
+  // Subscription plan. Free-plan gating is a single rule now, computed live
+  // from `createdAt` (see backend/utils/plan.js's hasFullAccess): full
+  // access to everything for the first 24h, then a hard lock everywhere —
+  // no more per-feature quotas (the old writingExam/writingPractice daily
+  // counters this replaced are gone; --force re-deriving from createdAt
+  // needs no migration since every doc already has one via {timestamps:true}).
   plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
   planExpiresAt:  { type: Date, default: null },
   planStartedAt:  { type: Date, default: null },
-  // Daily usage counters for free-plan quotas on Writing (see
-  // middleware/dailyLimit.js) — reset whenever `date` (VN-day boundary,
-  // same convention as lastActivityDate/getVNDay) no longer matches today.
-  // Never consulted for premium/admin/teacher, who bypass the limit
-  // entirely, so this stays all-zero for them. Reading/Listening practice
-  // stay fully premium-locked at the frontend instead of a quota (decided
-  // 2026-07-26 — they were already a hard lock, so a daily quota would have
-  // been a relaxation, not a restriction).
-  freeUsage: {
-    date:            { type: Date, default: null },
-    writingExam:     { type: Number, default: 0 },
-    writingPractice: { type: Number, default: 0 },
-  },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 

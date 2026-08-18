@@ -37,7 +37,11 @@ function userPayload(user) {
     planExpiresAt: user.planExpiresAt || null,
     planStartedAt: user.planStartedAt || null,
     studyReminderCount: user.studyReminderCount || 0,
-    lastVocabStudyDate: user.lastVocabStudyDate || null
+    lastVocabStudyDate: user.lastVocabStudyDate || null,
+    // Anchor for the free-plan 24h trial window (backend/utils/plan.js's
+    // hasFullAccess) — the frontend needs this to compute
+    // AuthService.hasPremiumAccess() without a round trip per check.
+    createdAt: user.createdAt || null
   };
 }
 

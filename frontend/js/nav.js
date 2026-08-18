@@ -473,6 +473,16 @@
 
         if (u.role === 'student') _showStreak35Notice();
         if (u.role === 'student') _showVocabInactivityNotice(u.lastVocabStudyDate);
+
+        // Free-plan trial expired (24h from account creation, see
+        // backend/utils/plan.js's hasFullAccess) — surface the paywall
+        // proactively rather than waiting for the student to hit a locked
+        // action. Every locked action already shows this same modal on its
+        // own (reading-v2.js/listening.html/speaking.js/writing.js/
+        // dashboard.js), so this is purely "tell them right away" on top.
+        if (u.role === 'student' && !window.AuthService.hasPremiumAccess(u)) {
+          _showTrialExpiredModalOnce();
+        }
       });
     }
   }
@@ -627,5 +637,18 @@
       overlay.remove();
       location.href = 'dashboard.html';
     });
+  }
+
+  // Free-plan trial expired — shows the shared upgrade paywall
+  // (js/upgrade-modal.js) once per browser session (sessionStorage, not
+  // localStorage — a JWT session can persist across many days/browser
+  // restarts without a real re-login, so "once per session" is the closest
+  // practical proxy to "once per login" without spamming the modal on
+  // every single page navigation within one sitting).
+  var TRIAL_EXPIRED_SHOWN_KEY = 'ews_trial_expired_shown';
+  function _showTrialExpiredModalOnce() {
+    if (sessionStorage.getItem(TRIAL_EXPIRED_SHOWN_KEY)) return;
+    sessionStorage.setItem(TRIAL_EXPIRED_SHOWN_KEY, '1');
+    if (window.openUpgradeModal) window.openUpgradeModal('trial_expired');
   }
 })();

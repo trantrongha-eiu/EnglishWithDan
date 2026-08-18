@@ -29,6 +29,12 @@
   'use strict';
 
   var TEN_DAYS_MS = 10 * 24 * 60 * 60 * 1000;
+  // Free-plan gating: a brand-new account gets full access to every
+  // feature for 24h from creation, then everything locks (mirrors
+  // backend/utils/plan.js's TRIAL_DURATION_MS — kept as a separate
+  // constant since frontend/backend are different runtimes, just need the
+  // same value).
+  var TRIAL_DURATION_MS = 24 * 60 * 60 * 1000;
 
   // ── Storage primitives ──────────────────────────────────────
   function getToken() { return localStorage.getItem('token'); }
@@ -66,11 +72,23 @@
     var u = userOverride || getUser();
     return !!u && u.plan === 'premium';
   }
-  // Staff (admin/teacher) always has premium-equivalent access, matching
-  // the server-side rule in backend/middleware/requirePremium.js.
+  // True for the first 24h after account creation — the free-plan trial
+  // window (backend/utils/plan.js's isWithinTrial is the server-side
+  // source of truth this mirrors). Requires `u.createdAt`, which only
+  // reaches the cached user object via userPayload()/refreshPlan() — see
+  // those for why an old cached user might momentarily read false here
+  // until the next refreshPlan() call fills it in.
+  function isWithinTrial(userOverride) {
+    var u = userOverride || getUser();
+    if (!u || !u.createdAt) return false;
+    return (Date.now() - new Date(u.createdAt).getTime()) < TRIAL_DURATION_MS;
+  }
+  // Staff (admin/teacher) always has full access, matching the server-side
+  // rule in backend/utils/plan.js's hasFullAccess — premium OR staff OR
+  // still inside the free-plan 24h trial window.
   function hasPremiumAccess(userOverride) {
     var u = userOverride || getUser();
-    return isPremiumCached(u) || isStaff(u);
+    return isPremiumCached(u) || isStaff(u) || isWithinTrial(u);
   }
 
   // Re-verifies plan with the server and merges the fresh value back into
@@ -91,6 +109,10 @@
         u.planStartedAt = d.user.planStartedAt;
         u.studyReminderCount = d.user.studyReminderCount || 0;
         u.lastVocabStudyDate = d.user.lastVocabStudyDate || null;
+        // Needed by isWithinTrial()/hasPremiumAccess() — a user cached
+        // before this field existed self-heals here on their very next
+        // page load (nav.js already calls refreshPlan() unconditionally).
+        u.createdAt = d.user.createdAt || u.createdAt || null;
         setUser(u);
         return u;
       })
@@ -218,7 +240,7 @@
     clearSession: clearSession,
     isLoggedIn: isLoggedIn,
     getRole: getRole, isAdmin: isAdmin, isTeacher: isTeacher, isStaff: isStaff,
-    isPremiumCached: isPremiumCached, hasPremiumAccess: hasPremiumAccess, refreshPlan: refreshPlan,
+    isPremiumCached: isPremiumCached, isWithinTrial: isWithinTrial, hasPremiumAccess: hasPremiumAccess, refreshPlan: refreshPlan,
     authHeader: authHeader,
     login: login, logout: logout,
     getSafeNext: getSafeNext, buildLoginUrl: buildLoginUrl, getPostLoginRedirect: getPostLoginRedirect,

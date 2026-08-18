@@ -721,6 +721,15 @@ function syncViewUrl(mode, st) {
 }
 
 function openBook(bookId, push = true) {
+    // Vocab used to be free/ungated (the intentional free-tier hook); now
+    // gated the same as every other skill (full access for 24h, then
+    // locked — see backend/utils/plan.js's hasFullAccess). Gating this one
+    // entry point covers every deeper action (add/edit word, practice...)
+    // since none of them are reachable without opening a book first.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     const doOpen = async () => {
         _clearAutoNext(); // cancel any pending flashcard auto-advance from the session just left
         currentBookId = bookId;

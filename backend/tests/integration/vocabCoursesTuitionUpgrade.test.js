@@ -42,6 +42,61 @@ describe('Vocab book — scoped to the owning user', () => {
   });
 });
 
+describe('Vocab book — free-plan 24h trial gating', () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  test('a free student whose account is 2 days old is blocked from opening/creating/practicing (list stays open)', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * DAY_MS) } });
+    const token = signTokenFor(user);
+    const book = await createVocabBook({ userId: user._id, name: 'Old book' });
+
+    // The list itself stays reachable — matches Reading/Listening still
+    // showing their test list to a locked-out free user.
+    const listRes = await request(app).get('/api/vocabbook').set('Authorization', `Bearer ${token}`);
+    expect(listRes.status).toBe(200);
+
+    const getRes = await request(app).get(`/api/vocabbook/${book._id}`).set('Authorization', `Bearer ${token}`);
+    expect(getRes.status).toBe(403);
+    expect(getRes.body.code).toBe('PLAN_REQUIRED');
+
+    const createRes = await request(app)
+      .post('/api/vocabbook')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'New book' });
+    expect(createRes.status).toBe(403);
+
+    const wordRes = await request(app)
+      .post(`/api/vocabbook/${book._id}/words`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ word: 'apple', meaning: 'táo' });
+    expect(wordRes.status).toBe(403);
+  });
+
+  test('a freshly-created free student (still inside the 24h trial) has full access', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date() } });
+    const token = signTokenFor(user);
+    const book = await createVocabBook({ userId: user._id, name: 'Fresh book' });
+
+    const getRes = await request(app).get(`/api/vocabbook/${book._id}`).set('Authorization', `Bearer ${token}`);
+    expect(getRes.status).toBe(200);
+
+    const createRes = await request(app)
+      .post('/api/vocabbook')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Another book' });
+    expect(createRes.status).toBe(201);
+  });
+
+  test('a premium student is never blocked, regardless of account age', async () => {
+    const user = await createStudent({ extra: { plan: 'premium', createdAt: new Date(Date.now() - 30 * DAY_MS) } });
+    const token = signTokenFor(user);
+    const book = await createVocabBook({ userId: user._id, name: 'Premium book' });
+
+    const getRes = await request(app).get(`/api/vocabbook/${book._id}`).set('Authorization', `Bearer ${token}`);
+    expect(getRes.status).toBe(200);
+  });
+});
+
 describe('GET /api/courses', () => {
   test('is public and unauthenticated', async () => {
     await createCourse({ title: 'IELTS Foundation', isActive: true });

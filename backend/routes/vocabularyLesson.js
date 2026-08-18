@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const rateLimit = require('express-rate-limit');
 const auth = require('../middleware/auth');
+const requirePremium = require('../middleware/requirePremium');
 const logger = require('../utils/logger');
 const ctrl = require('../controllers/vocabularyLesson.controller');
 
@@ -78,12 +79,15 @@ router.get('/admin/:id/export.csv', auth, teacherOnly, ctrl.exportLessonStudents
 
 // ══════════════════════════════════════════════════════
 // PUBLIC — chi tiết 1 bài học, phải đứng SAU khối /admin ở trên
+// Gated: full access for a free account's first 24h, then locked — same
+// rule as every other Vocab surface (VocabBook, VocabUnit). "/" (list)
+// stays open above so a locked-out student still sees the lesson list.
 // ══════════════════════════════════════════════════════
-router.get('/:id', auth, ctrl.getPublicLesson);
+router.get('/:id', auth, requirePremium(), ctrl.getPublicLesson);
 
 // Tiến độ học — 2-3 segment nên không xung đột thứ tự với "/:id" hay "/admin/*" ở trên.
-router.get('/:id/attempt', auth, ctrl.getAttempt);
-router.post('/:id/attempt', auth, ctrl.submitAttempt);
-router.get('/:id/attempt/history', auth, ctrl.getMyAttemptHistory);
+router.get('/:id/attempt', auth, requirePremium(), ctrl.getAttempt);
+router.post('/:id/attempt', auth, requirePremium(), ctrl.submitAttempt);
+router.get('/:id/attempt/history', auth, requirePremium(), ctrl.getMyAttemptHistory);
 
 module.exports = router;

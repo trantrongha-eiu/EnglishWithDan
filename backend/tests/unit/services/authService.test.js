@@ -330,6 +330,15 @@ describe('authService.userPayload / signToken', () => {
     expect(payload.email).toBe('e@test.local');
   });
 
+  // createdAt is the anchor the frontend needs to compute the free-plan 24h
+  // trial window (AuthService.hasPremiumAccess()) without an extra round
+  // trip — regression guard for it being silently dropped again.
+  test('userPayload includes createdAt', () => {
+    const created = new Date('2026-01-01T00:00:00.000Z');
+    const payload = authService.userPayload({ _id: 'abc', role: 'student', createdAt: created });
+    expect(payload.createdAt).toBe(created);
+  });
+
   test('signToken produces a verifiable JWT carrying the user id', () => {
     const token = authService.signToken('someUserId123');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

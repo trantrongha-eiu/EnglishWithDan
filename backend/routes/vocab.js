@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
+const requirePremium = require('../middleware/requirePremium');
 const vocabController = require('../controllers/vocab.controller');
 
 // Middleware chỉ cho teacher/admin
@@ -16,8 +17,12 @@ const teacherOnly = (req, res, next) => {
 // ══════════════════════════════════════════════════════
 // PUBLIC (học sinh – cần đăng nhập)
 // ══════════════════════════════════════════════════════
+// /units (list) stays open like vocabBook.js's listBooks — so a locked-out
+// student's dashboard still shows the unit list instead of an error page.
+// /unit/:number (actual paraphrase content) is gated: full access for a
+// free account's first 24h, then locked — same rule as every other skill.
 router.get('/units', auth, vocabController.listUnits);
-router.get('/unit/:number', auth, vocabController.getUnit);
+router.get('/unit/:number', auth, requirePremium(), vocabController.getUnit);
 
 // ══════════════════════════════════════════════════════
 // ADMIN – quản lý vocab units

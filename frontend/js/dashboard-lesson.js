@@ -256,6 +256,12 @@ async function renderTodaysLessonCard(lessonIdOverride) {
    LESSON DETAIL — open/close + tabs
 ────────────────────────────────────────────── */
 function openLesson(lessonId, push = true) {
+    // Same free-plan gate as openBook()/loadUnit() in dashboard.js — full
+    // access for a free account's first 24h, then locked.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     const doOpen = async () => {
         if (typeof _clearAutoNext === 'function') _clearAutoNext();
         document.getElementById('view-mybook').style.display = 'none';

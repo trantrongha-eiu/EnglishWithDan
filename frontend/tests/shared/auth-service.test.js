@@ -168,6 +168,35 @@ describe('premium helpers', () => {
   });
 });
 
+describe('free-plan 24h trial window', () => {
+  test('isWithinTrial is true for an account created just now', () => {
+    window.AuthService.setUser({ role: 'student', plan: 'free', createdAt: new Date().toISOString() });
+    expect(window.AuthService.isWithinTrial()).toBe(true);
+  });
+
+  test('isWithinTrial is false for an account created more than 24h ago', () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+    window.AuthService.setUser({ role: 'student', plan: 'free', createdAt: twoDaysAgo });
+    expect(window.AuthService.isWithinTrial()).toBe(false);
+  });
+
+  test('isWithinTrial is false when createdAt is missing (fails closed)', () => {
+    window.AuthService.setUser({ role: 'student', plan: 'free' });
+    expect(window.AuthService.isWithinTrial()).toBe(false);
+  });
+
+  test('hasPremiumAccess is true for a free student still inside the trial window', () => {
+    window.AuthService.setUser({ role: 'student', plan: 'free', createdAt: new Date().toISOString() });
+    expect(window.AuthService.hasPremiumAccess()).toBe(true);
+  });
+
+  test('hasPremiumAccess is false for a free student whose trial has expired', () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+    window.AuthService.setUser({ role: 'student', plan: 'free', createdAt: twoDaysAgo });
+    expect(window.AuthService.hasPremiumAccess()).toBe(false);
+  });
+});
+
 describe('authHeader', () => {
   test('returns an empty object when there is no token', () => {
     expect(window.AuthService.authHeader()).toEqual({});

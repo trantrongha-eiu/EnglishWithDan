@@ -1,22 +1,45 @@
 // Integration tests for a representative slice of the Writing API: /start
-// (free — no premium gate), ownership scoping on /my-history, and the
-// forbidden-vs-not-found split on GET /attempt/:id (writingService.getAttempt).
+// (gated by the free-plan 24h trial, same as every other skill — see
+// backend/utils/plan.js's hasFullAccess), ownership scoping on
+// /my-history, and the forbidden-vs-not-found split on GET /attempt/:id
+// (writingService.getAttempt).
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, signTokenFor } = require('../factories/userFactory');
 const { createWritingTask1, createWritingTask2, createWritingAttempt } = require('../factories/contentFactory');
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 describe('POST /api/writing/start', () => {
-  test('a free-plan student can start (writing has no premium gate)', async () => {
+  test('a freshly-created free-plan student can start (still inside the 24h trial)', async () => {
     await createWritingTask1();
     await createWritingTask2();
-    const user = await createStudent({ plan: 'free' });
+    const user = await createStudent({ plan: 'free', extra: { createdAt: new Date() } });
     const token = signTokenFor(user);
     const res = await request(app).post('/api/writing/start').set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.exam.task1).toBeTruthy();
     expect(res.body.exam.task2).toBeTruthy();
+  });
+
+  test('a free-plan student whose 24h trial has expired is blocked', async () => {
+    await createWritingTask1();
+    await createWritingTask2();
+    const user = await createStudent({ plan: 'free', extra: { createdAt: new Date(Date.now() - 2 * DAY_MS) } });
+    const token = signTokenFor(user);
+    const res = await request(app).post('/api/writing/start').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('a premium student can start regardless of account age', async () => {
+    await createWritingTask1();
+    await createWritingTask2();
+    const user = await createStudent({ plan: 'premium', extra: { createdAt: new Date(Date.now() - 30 * DAY_MS) } });
+    const token = signTokenFor(user);
+    const res = await request(app).post('/api/writing/start').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
   });
 
   test('requires authentication', async () => {

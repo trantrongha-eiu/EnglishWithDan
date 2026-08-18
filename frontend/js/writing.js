@@ -37,15 +37,18 @@ async function apiFetch(path, opts = {}) {
 // bottom-center pill — a deliberate consistency normalization, not a bug.
 
 // ──────────────────────────────────────────────────────
-// Free-plan quota upsell (backend/middleware/dailyLimit.js) — /start and
-// /practice/submit respond 403 requiresPremium:true when a free user hits
-// their daily cap. Returns true if it handled the error (caller should
-// skip its own generic toast), false for any other error.
+// Full-access upsell — /start and /practice/submit respond 403
+// requiresPremium:true once a free account's 24h trial has expired (see
+// backend/middleware/requirePremium.js). Reactive fallback for whenever the
+// proactive hasPremiumAccess() check below can't run first (e.g. the trial
+// expires mid-session, between the proactive check and the actual request).
+// Returns true if it handled the error (caller should skip its own generic
+// toast), false for any other error.
 // ──────────────────────────────────────────────────────
 function _handleQuotaError(e) {
   if (e?.status === 403 && e.body?.requiresPremium) {
     confirmDialog(
-      e.body.code === 'DAILY_LIMIT_REACHED' ? 'Đã hết lượt miễn phí hôm nay' : 'Cần nâng cấp Premium',
+      'Cần nâng cấp Premium',
       e.body.message || 'Nâng cấp Premium để dùng không giới hạn.',
       () => { if (window.openUpgradeModal) openUpgradeModal(); else location.href = 'profile.html#plan'; },
       { confirmLabel: 'Nâng cấp ngay', confirmClass: 'btn-primary' }
@@ -203,9 +206,16 @@ async function _openDirectPracticeTask(taskType, taskId) {
 
 
 // ──────────────────────────────────────────────────────
-// Start exam (no key required — writing is free)
+// Start exam (no access key required — gated by full-access trial/premium
+// instead, same as Reading/Listening/Speaking. Proactive check mirrors
+// reading-v2.js's startPractice() idiom; _handleQuotaError above is the
+// reactive fallback if the trial expires mid-session.)
 // ──────────────────────────────────────────────────────
 async function startExam() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) openUpgradeModal();
+    return;
+  }
   const btn = document.getElementById('btn-start');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; }
 
@@ -1678,6 +1688,10 @@ function filterWritingTasks(query) {
 }
 
 function startPracticeTask(taskType, taskId, pushHistory = true) {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) openUpgradeModal();
+    return;
+  }
   const task = practiceState.tasks.find(t => String(t._id) === String(taskId));
   if (!task) { showToast('Không tìm thấy đề bài', 'error'); return; }
 
