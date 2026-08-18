@@ -3,7 +3,18 @@
 // Extracted from routes/task1Practice.js, verbatim logic.
 const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
-const { levenshtein, NUM_WORDS } = require('../utils/textMatch');
+const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
+
+// Practice-mode types that show a "word count + first-letter" hint under the
+// question text — the same free-text sentence types as task2PracticeService,
+// plus data_transform (Task 1's "describe this data point as a sentence"
+// type, which is functionally identical to translation/error_correction:
+// one full sentence typed into the same answer-box view). Not fill_blank
+// (single word/short phrase, shown inline in the sentence — a letter-hint
+// there would give away a 2-3 letter preposition almost entirely), not
+// rearrange (word bank already shown), not multiple_choice/paraphrase_choose
+// (options already shown).
+const HINT_TYPES = new Set(['translation', 'error_correction', 'data_transform']);
 
 function normalize(str) {
   return (str || '')
@@ -93,6 +104,24 @@ function localCheck(exercise, userAnswer) {
   return { isCorrect: false, score: 0, feedbackVi: '❌ Chưa đúng — xem đáp án mẫu bên dưới.' };
 }
 
+// primaryAnswer was previously left on the client payload unstripped — for
+// translation/error_correction/data_transform it's the exact correct
+// sentence, and for fill_blank it's the exact correct word, so it leaked
+// the answer key before the student ever submitted (checkAnswer()/
+// checkTest()/saveBatch() all re-read the exercise straight from the DB,
+// never from client-sent data, so the client never legitimately needed it
+// pre-submission). Mirrors task2PracticeService's identical fix.
+function sanitizeExerciseForClient(ex, opts = {}) {
+  const { includeHints = true } = opts;
+  const { primaryAnswer, ...rest } = ex; // eslint-disable-line no-unused-vars
+  if (includeHints && HINT_TYPES.has(ex.type) && primaryAnswer) {
+    const hint = buildAnswerHint(primaryAnswer);
+    rest.answerWordCount  = hint.wordCount;
+    rest.answerLetterHint = hint.pattern;
+  }
+  return rest;
+}
+
 async function getMeta() {
   const agg = await Task1Exercise.aggregate([
     { $match: { isActive: true } },
@@ -134,7 +163,8 @@ async function listExercises({ level = 'all', skillType = 'all', module: mod = '
     .select('-sampleAnswers -correctOptionIndex')
     .sort({ orderIndex: 1 })
     .lean();
-  return { exercises, total: exercises.length };
+  const safe = exercises.map(ex => sanitizeExerciseForClient(ex));
+  return { exercises: safe, total: safe.length };
 }
 
 async function checkAnswer(exerciseId, userAnswer) {
@@ -177,7 +207,12 @@ async function getTestQuestions({ level = 'all', count = 10 }) {
     { $sample: { size: parseInt(count) } }
   ]);
 
-  return exercises.map(({ sampleAnswers, correctOptionIndex, ...rest }) => rest); // eslint-disable-line no-unused-vars
+  // No word-count/letter hints in Thi thử (exam) mode — the mode is meant to
+  // simulate the real, hint-free test, matching the intro copy ("Không có
+  // gợi ý — giống thi thật").
+  return exercises
+    .map(({ sampleAnswers, correctOptionIndex, ...rest }) => rest) // eslint-disable-line no-unused-vars
+    .map(ex => sanitizeExerciseForClient(ex, { includeHints: false }));
 }
 
 async function checkTest(answers) {
