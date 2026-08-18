@@ -70,7 +70,7 @@ export function ManualGradeForm({ value, onChange, disabled }) {
 }
 
 export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiResult, confirmedResult,
-  isGrading, isConfirmed, onGrade, aiDisabled, mode, onModeChange, manualData, onManualChange }) {
+  isGrading, busy, isConfirmed, onGrade, aiDisabled, mode, onModeChange, manualData, onManualChange }) {
   const [expanded, setExpanded] = useState(false);
   const hasAnswer = !!(answer && answer.trim());
   const displayBand = isConfirmed
@@ -136,7 +136,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
       {isConfirmed ? (
         <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>
           <span style={{ fontSize: 11, color: 'var(--text3)' }}>Chấm lại để cập nhật phản hồi cho học sinh:</span>
-          <button className="btn btn-sm btn-ghost" onClick={onGrade} disabled={isGrading || aiDisabled}
+          <button className="btn btn-sm btn-ghost" onClick={onGrade} disabled={busy || aiDisabled}
             title={aiDisabled ? 'AI đang quá tải — chờ vài phút rồi thử lại' : 'Chấm lại bằng AI, sau đó bấm Xác nhận để gửi cho học sinh'}>
             {isGrading ? '⏳ Đang chấm lại...' : '🔄 Chấm lại AI'}
           </button>
@@ -157,7 +157,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
             onClick={() => onModeChange('manual')}>✏️ Thủ công</button>
           {mode === 'ai' && (
             <div style={{ marginLeft: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-              <button className="btn btn-primary btn-sm" onClick={onGrade} disabled={isGrading || aiDisabled}
+              <button className="btn btn-primary btn-sm" onClick={onGrade} disabled={busy || aiDisabled}
                 title={aiDisabled ? 'AI đang quá tải — chờ vài phút rồi thử lại' : ''}>
                 {isGrading ? '⏳ Đang chấm AI...' : aiResult ? '🔄 Chấm lại AI' : '▶ Chấm AI'}
               </button>

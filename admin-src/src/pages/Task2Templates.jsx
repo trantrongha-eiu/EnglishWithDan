@@ -387,7 +387,17 @@ export default function Task2Templates() {
       await apiFetch(`/admin/task2/templates/${updatedTpl._id}`, { method: 'PUT', body: JSON.stringify({ sections: updatedTpl.sections }) });
       showToast('Đã lưu thay đổi', 'success');
       reload();
-    } catch (e) { showToast(e.message, 'error'); }
+    } catch (e) {
+      showToast(e.message, 'error');
+      // Roll back the optimistic local edit to what's actually persisted —
+      // otherwise a failed save silently stays in activeTpl and gets
+      // re-sent (and could succeed unnoticed, or mask which edit failed)
+      // on the next mutation instead of the admin re-doing it explicitly.
+      try {
+        const data = await apiFetch(`/admin/task2/templates/${updatedTpl._id}`);
+        setActiveTpl(JSON.parse(JSON.stringify(data.template)));
+      } catch { /* keep the optimistic state if even the rollback fetch fails */ }
+    }
     finally { setSavingTpl(false); }
   }
 

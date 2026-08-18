@@ -89,6 +89,15 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
   }
 
   async function gradeTask(taskNum) {
+    // Re-grading a task straight from the confirmed view (the "🔄 Chấm lại
+    // AI" button TaskPanel shows when isConfirmed) used to flip the whole
+    // attempt out of "confirmed" without first snapshotting the OTHER
+    // task's already-confirmed grade into modes/manuals — so confirming
+    // again after this reGrade would fall through to `ai.<otherTask> ||
+    // null` and silently wipe a manually-graded task's saved result.
+    // enterEditMode() populates modes/manuals from the confirmed data for
+    // BOTH tasks first, exactly as if "✏️ Sửa điểm" had been clicked.
+    if (isConfirmed && !reEditing) enterEditMode();
     setGradingTask(taskNum);
     setAiOverloaded(false);
     try {
@@ -134,8 +143,21 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     };
   }
 
+  // Per-task readiness — the confirm SECTION's own visibility gate below is
+  // deliberately an OR across both tasks (so it shows as soon as either one
+  // has a result), but the actual confirm ACTION must not let a present
+  // task go out with no result at all (previously nothing stopped
+  // confirming with only Task 1 graded, silently sending Task 2 as null).
+  function taskReady(taskKey) {
+    return modes[taskKey] === 'manual'
+      ? manuals[taskKey]?.bandScore !== ''
+      : ai[taskKey]?.bandScore != null;
+  }
+
   async function confirmGrade() {
     if (!overallBand) return toast('Nhập band tổng thể trước khi xác nhận', 'error');
+    if (hasTask1 && !taskReady('task1')) return toast('Task 1 chưa có điểm — chấm AI hoặc nhập thủ công trước khi xác nhận', 'error');
+    if (hasTask2 && !taskReady('task2')) return toast('Task 2 chưa có điểm — chấm AI hoặc nhập thủ công trước khi xác nhận', 'error');
     setConfirming(true);
     try {
       const task1Data = hasTask1 ? (modes.task1 === 'manual' ? buildManualTask(manuals.task1, ai.task1?.sentenceFeedback) : (ai.task1 || null)) : null;
@@ -208,7 +230,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                   imageUrl={attempt.task1Snapshot?.imageUrl || ''}
                   answer={attempt.task1Answer} wordCount={attempt.wordCount1} minWords={150}
                   aiResult={ai.task1} confirmedResult={confirmed.task1}
-                  isGrading={gradingTask === 1} isConfirmed={isEffectivelyConfirmed}
+                  isGrading={gradingTask === 1} busy={gradingTask !== 0} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(1)} aiDisabled={aiOverloaded}
                   mode={modes.task1} onModeChange={m => setMode('task1', m)}
                   manualData={manuals.task1} onManualChange={d => updateManual('task1', d)} />
@@ -219,7 +241,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                   imageUrl={null}
                   answer={attempt.task2Answer} wordCount={attempt.wordCount2} minWords={250}
                   aiResult={ai.task2} confirmedResult={confirmed.task2}
-                  isGrading={gradingTask === 2} isConfirmed={isEffectivelyConfirmed}
+                  isGrading={gradingTask === 2} busy={gradingTask !== 0} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(2)} aiDisabled={aiOverloaded}
                   mode={modes.task2} onModeChange={m => setMode('task2', m)}
                   manualData={manuals.task2} onManualChange={d => updateManual('task2', d)} />

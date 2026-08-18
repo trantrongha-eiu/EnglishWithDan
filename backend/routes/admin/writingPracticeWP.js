@@ -91,7 +91,7 @@ router.get('/wp-attempts', auth, teacherOnly, async (req, res) => {
     const { limit = 100, skip = 0 } = req.query;
     const [attempts, total] = await Promise.all([
       WritingPracticeAttempt.find({})
-        .populate('studentId', 'username displayName')
+        .populate('studentId', 'username firstName')
         .sort({ createdAt: -1 })
         .skip(+skip).limit(+limit).lean(),
       WritingPracticeAttempt.countDocuments()
