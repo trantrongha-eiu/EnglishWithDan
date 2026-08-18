@@ -36,6 +36,16 @@ describe('useListFilter', () => {
     expect(result.current.page).toBe(1);
   });
 
+  it('clamps to the last valid page when the underlying item count shrinks (e.g. after a delete)', () => {
+    const many = Array.from({ length: 25 }, (_, i) => ({ name: `Item ${i}`, isActive: true, createdAt: `2026-01-${String(i + 1).padStart(2, '0')}` }));
+    const { result, rerender } = renderHook(({ items }) => useListFilter(items, { pageSize: 10 }), { initialProps: { items: many } });
+    act(() => result.current.setPage(3)); // page 3 of 3 (items 20-24)
+    expect(result.current.page).toBe(3);
+    rerender({ items: many.slice(0, 5) }); // shrunk to 5 items — page 3 no longer exists
+    expect(result.current.page).toBe(1);
+    expect(result.current.paged).toHaveLength(5);
+  });
+
   it('supports a custom nameKey for sorting', () => {
     const prompts = [{ prompt: 'B', createdAt: 1 }, { prompt: 'A', createdAt: 2 }];
     const { result } = renderHook(() => useListFilter(prompts, { nameKey: 'prompt', searchKeys: ['prompt'] }));

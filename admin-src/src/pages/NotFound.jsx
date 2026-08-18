@@ -7,7 +7,7 @@ export default function NotFound() {
       <div style={{ fontSize: 64, marginBottom: 16 }}>404</div>
       <h2 style={{ color: 'var(--text)', marginBottom: 8 }}>Trang không tồn tại</h2>
       <p style={{ color: 'var(--text2)', marginBottom: 24 }}>Route này không có trong admin panel.</p>
-      <button className="btn btn-primary" onClick={() => nav('/admin/dashboard')}>← Về Dashboard</button>
+      <button className="btn btn-primary" onClick={() => nav('/dashboard')}>← Về Dashboard</button>
     </div>
   );
 }
