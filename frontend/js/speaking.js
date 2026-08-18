@@ -645,10 +645,10 @@ function replaySampleAnswer() {
 }
 
 // ──────────────────────────────────────────────────────
-// Hints (vocab + ideas derived from the sample answer, without revealing
-// it) — a lighter-touch nudge a student can reach for before jumping
-// straight to the full Sample Answer. Mirrors showSampleAnswer()'s
-// toggle-closed/loading/error handling exactly.
+// Hints (vocab generated alongside the sample answer, without revealing
+// the sample text itself) — a lighter-touch nudge a student can reach for
+// before jumping straight to the full Sample Answer. Mirrors
+// showSampleAnswer()'s toggle-closed/loading/error handling exactly.
 // ──────────────────────────────────────────────────────
 async function showHints() {
   const q = state.currentQuestion;
@@ -666,7 +666,6 @@ async function showHints() {
   box.dataset.forQuestion = q.question;
   box.style.display = 'block';
   document.getElementById('hints-vocab').innerHTML = '<div class="spinner"></div>';
-  document.getElementById('hints-ideas').innerHTML = '';
   btn.disabled = true;
 
   try {
@@ -686,17 +685,11 @@ async function showHints() {
 
 function renderHints(hints) {
   const vocabEl = document.getElementById('hints-vocab');
-  const ideasEl = document.getElementById('hints-ideas');
   const vocab = hints?.vocab || [];
-  const ideas = hints?.ideas || [];
 
   vocabEl.innerHTML = vocab.length
     ? vocab.map(v => `<span class="hint-chip">${escHtml(v)}</span>`).join('')
     : '<span class="hints-empty">Không có gợi ý từ vựng.</span>';
-
-  ideasEl.innerHTML = ideas.length
-    ? `<ul class="hint-ideas-list">${ideas.map(i => `<li>${escHtml(i)}</li>`).join('')}</ul>`
-    : '<span class="hints-empty">Không có gợi ý ý tưởng.</span>';
 }
 
 function resetPractice() {

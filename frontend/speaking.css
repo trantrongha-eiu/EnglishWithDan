@@ -582,7 +582,7 @@ body {
   white-space: pre-wrap;
 }
 
-/* Hints (vocab/ideas derived from the sample answer, without revealing it)
+/* Hints (vocab generated alongside the sample answer, without revealing it)
    — deliberately blue, not amber, so it reads as a lighter-touch nudge
    distinct from the full "Sample Answer" reveal. */
 .q-hints-btn {
@@ -620,15 +620,6 @@ body {
   letter-spacing: .3px;
   margin-bottom: 10px;
 }
-.hints-section-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: .3px;
-  margin: 10px 0 6px;
-}
-.hints-section-label:first-of-type { margin-top: 0; }
 .hint-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .hint-chip {
   display: inline-block;
@@ -639,13 +630,6 @@ body {
   color: #1e40af;
   font-size: 13px;
   font-weight: 600;
-}
-.hint-ideas-list {
-  margin: 0;
-  padding-left: 18px;
-  font-size: 13.5px;
-  color: #374151;
-  line-height: 1.8;
 }
 .hints-empty { font-size: 13px; color: #9ca3af; }
 
@@ -1735,9 +1719,7 @@ body {
 [data-theme="dark"] .q-hints-btn:hover    { background: #234876; }
 [data-theme="dark"] .hints-box            { background: #111f30; border-color: #3b82f6; }
 [data-theme="dark"] .hints-header         { color: #93c5fd; }
-[data-theme="dark"] .hints-section-label  { color: #9ca3af; }
 [data-theme="dark"] .hint-chip            { background: #1e293b; border-color: #1d4ed8; color: #93c5fd; }
-[data-theme="dark"] .hint-ideas-list      { color: #d1d5db; }
 [data-theme="dark"] .hints-empty          { color: #6b7280; }
 [data-theme="dark"] .q-topic-badge        { background: #374151; color: #9ca3af; }
 [data-theme="dark"] .q-part-badge         { background: #3b1a1a; color: #fca5a5; border-color: #7f1d1d; }

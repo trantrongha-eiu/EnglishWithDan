@@ -296,6 +296,8 @@ async function createSpeakingQuestion(overrides = {}) {
     question: overrides.question || 'Describe your hometown.',
     cueCard: overrides.cueCard || '',
     isActive: overrides.isActive ?? true,
+    sampleAnswer: overrides.sampleAnswer ?? '',
+    hints: overrides.hints ?? { vocab: [] },
   });
 }
 

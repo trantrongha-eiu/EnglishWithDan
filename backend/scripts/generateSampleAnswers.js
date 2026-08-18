@@ -59,8 +59,10 @@ async function run() {
   let ok = 0, failed = 0;
   for (const [i, q] of questions.entries()) {
     try {
-      const { sampleAnswer } = await generateSampleAnswer(q.question, q.part, q.cueCard || '');
-      await SpeakingQuestion.updateOne({ _id: q._id }, { $set: { sampleAnswer } });
+      const { sampleAnswer, vocab } = await generateSampleAnswer(q.question, q.part, q.cueCard || '');
+      const $set = { sampleAnswer };
+      if (vocab?.length) $set['hints.vocab'] = vocab;
+      await SpeakingQuestion.updateOne({ _id: q._id }, { $set });
       ok++;
       console.log(`[${i + 1}/${questions.length}] OK  Part ${q.part} · ${q.topic} · "${q.question.slice(0, 60)}..."`);
     } catch (err) {

@@ -440,7 +440,7 @@ Rules:
 - Grammar range appropriate for Band 7.5+: varied tenses, at least one complex sentence (relative clause, conditional, or similar), natural cohesive devices — but it must still sound like natural spoken English, not a written essay read aloud.
 
 Return this exact JSON (no other text):
-{"sampleAnswer": "<the full spoken-style answer>"}`;
+{"sampleAnswer": "<the full spoken-style answer>", "vocab": ["<4-6 useful collocations/phrases you actually used above, 2-4 words each, e.g. \\"strike a balance\\">"]}`;
   }
 
   if (part === 3) {
@@ -457,7 +457,7 @@ Rules:
 - Grammar range appropriate for Band 7.5+: varied tenses, complex sentences (relative clauses, conditionals, passive where natural), hedging language ("tend to", "arguably", "it could be argued that") where it fits.
 
 Return this exact JSON (no other text):
-{"sampleAnswer": "<the answer>"}`;
+{"sampleAnswer": "<the answer>", "vocab": ["<4-6 useful collocations/phrases you actually used above, 2-4 words each>"]}`;
   }
 
   // Part 1 (default)
@@ -476,7 +476,7 @@ Rules:
 - Natural spoken English a real IELTS candidate would actually say out loud — not bookish, not overly formal, not obviously memorized.
 
 Return this exact JSON (no other text):
-{"sampleAnswer": "<the 3-4 sentence O.R.E. answer>"}`;
+{"sampleAnswer": "<the 3-4 sentence O.R.E. answer>", "vocab": ["<2-4 useful collocations/phrases you actually used above, 2-4 words each>"]}`;
 }
 
 async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt = 0) {
@@ -510,85 +510,13 @@ async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt =
   }
 
   try {
-    return extractJson(rawText);
+    const parsed = extractJson(rawText);
+    parsed.vocab = Array.isArray(parsed.vocab) ? parsed.vocab.slice(0, 8).map(String) : [];
+    return parsed;
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('generateSampleAnswer: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return generateSampleAnswer(question, part, cueCard, _attempt + 1);
-    }
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
-  }
-}
-
-// ── Speaking Hints (vocab + ideas, derived from the sample answer) ────
-// Deliberately NOT a fresh "write me an answer" generation — takes the
-// existing sample answer as source material and extracts a lighter-touch
-// nudge (a few vocab phrases + idea prompts) without handing over full
-// sentences, so a student can build an original answer instead of just
-// memorizing/reciting the sample. See speakingService.getSpeakingHints for
-// the cache-aside logic (persists onto the same SpeakingQuestion doc).
-const HINTS_SYSTEM = `You are an experienced IELTS Speaking coach. You will be given a model sample answer and must extract study hints from it — useful vocabulary and the underlying ideas — WITHOUT quoting full sentences, so a student can build their own original answer instead of memorizing yours.
-Respond ONLY with valid JSON — no markdown, no extra text.`;
-
-function buildHintsPrompt(question, part, sampleAnswerText) {
-  return `IELTS Speaking Part ${part} question: "${question}"
-
-Model sample answer (reference only — never quote it back verbatim):
-"""
-${sampleAnswerText}
-"""
-
-From this sample answer, extract STUDY HINTS a student can use to build their OWN original answer:
-- vocab: 4-6 useful words/collocations/phrases actually used in (or naturally fitting) the sample answer — short phrases only (2-4 words each), e.g. "strike a balance", "a great way to unwind". No full sentences.
-- ideas: 2-4 short idea prompts capturing the STRUCTURE of the answer's content, written as brief fragments (NOT full sentences, NOT the sample's exact wording) — e.g. "why it helps you relax after a long day", "a specific time you did this recently". These should point the student toward the same ideas without giving them the exact words to say.
-
-Return this exact JSON (no other text):
-{"vocab": ["...", "..."], "ideas": ["...", "..."]}`;
-}
-
-async function generateSpeakingHints(question, part = 1, sampleAnswerText, _attempt = 0) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
-
-  const ai = new GoogleGenAI({ apiKey });
-  const content = buildHintsPrompt(question, part, sampleAnswerText);
-
-  let rawText;
-  try {
-    const result = await withTimeout(
-      ai.models.generateContent({
-        // MODEL not MODEL_FAST — unlike gradeT2Question (runs on every
-        // practice attempt), this is cached once per question forever,
-        // same call-frequency profile as generateSampleAnswer above, not a
-        // per-answer grading call.
-        model: MODEL,
-        contents: content,
-        config: {
-          systemInstruction: HINTS_SYSTEM,
-          responseMimeType: 'application/json',
-          temperature: 0.5,
-          maxOutputTokens: 500,
-          thinkingConfig: { thinkingBudget: 0 }
-        }
-      }),
-      20000,
-      'AI phản hồi quá lâu, vui lòng thử lại sau ít phút.'
-    );
-    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
-  } catch (err) {
-    logger.ai('generateSpeakingHints: Gemini API error', { status: err.status, errorMessage: err.message });
-    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại sau ít phút.');
-  }
-
-  try {
-    const parsed = extractJson(rawText);
-    parsed.vocab = Array.isArray(parsed.vocab) ? parsed.vocab.slice(0, 8).map(String) : [];
-    parsed.ideas = Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5).map(String) : [];
-    return parsed;
-  } catch (parseErr) {
-    if (_attempt < 1) {
-      logger.ai('generateSpeakingHints: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return generateSpeakingHints(question, part, sampleAnswerText, _attempt + 1);
     }
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
   }
@@ -673,12 +601,11 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
 }
 
 module.exports = {
-  checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints,
+  checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer,
   // Exported for services/groqService.js's Gemini-overload fallback only —
   // not meant as general-purpose utilities for other callers.
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,
   SAMPLE_ANSWER_SYSTEM, buildSampleAnswerPrompt,
-  HINTS_SYSTEM, buildHintsPrompt,
   IMPROVE_ANSWER_SYSTEM, buildImproveAnswerPrompt,
   extractJson,
 };

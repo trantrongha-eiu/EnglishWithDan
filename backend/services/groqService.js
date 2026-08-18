@@ -17,12 +17,11 @@ const logger = require('../utils/logger');
 const {
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,
   SAMPLE_ANSWER_SYSTEM, buildSampleAnswerPrompt,
-  HINTS_SYSTEM, buildHintsPrompt,
   IMPROVE_ANSWER_SYSTEM, buildImproveAnswerPrompt,
   extractJson,
 } = require('./geminiService');
 
-const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_MODEL = 'openai/gpt-oss-120b'; // llama-3.3-70b-versatile was deprecated/removed from Groq's catalog (404 model_not_found) — this silently broke every Gemini-overload fallback path until caught
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Shared low-level call — every function below hits the same OpenAI-
@@ -52,6 +51,13 @@ async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, lab
         ],
         temperature: 0.3,
         max_tokens: maxTokens,
+        // GROQ_MODEL (gpt-oss) is a reasoning model — without this it burns
+        // hundreds of hidden reasoning tokens out of maxTokens before ever
+        // writing the visible JSON, routinely truncating longer completions
+        // (e.g. a Part 2 sample answer) even though maxTokens looks generous.
+        // 'low' cut reasoning_tokens from ~965 to ~7 in testing with no
+        // observed quality loss for this app's short grading/generation tasks.
+        reasoning_effort: 'low',
         ...(json ? { response_format: { type: 'json_object' } } : {})
       }),
       signal: controller.signal
@@ -95,30 +101,13 @@ async function generateSampleAnswerGroq(question, part = 1, cueCard = '', _attem
     { maxTokens: 1024, label: 'generateSampleAnswerGroq' }
   );
   try {
-    return extractJson(rawText);
+    const parsed = extractJson(rawText);
+    parsed.vocab = Array.isArray(parsed.vocab) ? parsed.vocab.slice(0, 8).map(String) : [];
+    return parsed;
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('generateSampleAnswerGroq: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return generateSampleAnswerGroq(question, part, cueCard, _attempt + 1);
-    }
-    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử');
-  }
-}
-
-async function generateSpeakingHintsGroq(question, part = 1, sampleAnswerText, _attempt = 0) {
-  const rawText = await _callGroq(
-    HINTS_SYSTEM, buildHintsPrompt(question, part, sampleAnswerText),
-    { maxTokens: 500, label: 'generateSpeakingHintsGroq' }
-  );
-  try {
-    const parsed = extractJson(rawText);
-    parsed.vocab = Array.isArray(parsed.vocab) ? parsed.vocab.slice(0, 8).map(String) : [];
-    parsed.ideas = Array.isArray(parsed.ideas) ? parsed.ideas.slice(0, 5).map(String) : [];
-    return parsed;
-  } catch (parseErr) {
-    if (_attempt < 1) {
-      logger.ai('generateSpeakingHintsGroq: JSON parse failed, retrying', { errorMessage: parseErr.message });
-      return generateSpeakingHintsGroq(question, part, sampleAnswerText, _attempt + 1);
     }
     throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử');
   }
@@ -141,5 +130,5 @@ async function generateImprovedAnswerGroq(question, part = 1, transcript, _attem
 }
 
 module.exports = {
-  checkSpeakingGroq, generateSampleAnswerGroq, generateSpeakingHintsGroq, generateImprovedAnswerGroq,
+  checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq,
 };

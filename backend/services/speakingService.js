@@ -4,9 +4,9 @@
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
-const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer, generateSpeakingHints } = require('./geminiService');
+const { checkSpeaking, generateSampleAnswer, generateImprovedAnswer } = require('./geminiService');
 const {
-  checkSpeakingGroq, generateSampleAnswerGroq, generateSpeakingHintsGroq, generateImprovedAnswerGroq
+  checkSpeakingGroq, generateSampleAnswerGroq, generateImprovedAnswerGroq
 } = require('./groqService');
 
 async function listTopics(part) {
@@ -105,6 +105,9 @@ async function gradeSpeaking(questionText, transcript, partNum) {
 // requested, then persists the result so every later view (any student,
 // any time) is instant and free. questionId is optional — falls back to a
 // plain, uncached generation for e.g. ad-hoc questions with no bank entry.
+// The same generation call also returns `vocab` (see buildSampleAnswerPrompt)
+// — cached alongside the sample so getSpeakingHints below never needs its
+// own separate AI call.
 async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
   if (questionId) {
     const cached = await SpeakingQuestion.findById(questionId).select('sampleAnswer').lean();
@@ -118,7 +121,9 @@ async function getSampleAnswer(questionId, questionText, partNum, cueCard) {
   if (questionId && data.sampleAnswer) {
     // Fire-and-forget — a failed cache write must never fail the response
     // the student is already waiting on.
-    SpeakingQuestion.updateOne({ _id: questionId }, { $set: { sampleAnswer: data.sampleAnswer } })
+    const $set = { sampleAnswer: data.sampleAnswer };
+    if (data.vocab?.length) $set['hints.vocab'] = data.vocab;
+    SpeakingQuestion.updateOne({ _id: questionId }, { $set })
       .catch(err => console.error('[Speaking] sampleAnswer cache write failed:', err.message));
   }
 
@@ -133,37 +138,38 @@ async function getImprovedAnswer(questionText, partNum, transcript) {
   );
 }
 
-// Cache-aside against SpeakingQuestion.hints — mirrors getSampleAnswer's
-// pattern. Derives hints from the sample answer (generating + caching that
-// too, internally, if it isn't cached yet) without ever exposing the full
-// sample-answer text through this endpoint — a student who's only opened
-// "Hints" never sees the sample answer unless they separately click that
-// button too.
+// Cache-aside against SpeakingQuestion.hints.vocab — vocab rides along on
+// the SAME sample-answer generation call (see getSampleAnswer above and
+// buildSampleAnswerPrompt's schema), never a separate "extract hints from
+// the sample" AI call, so opening Hints is free once either button has ever
+// been clicked for this question. Never persists/exposes the full sample
+// text if it wasn't already cached — a student who's only opened "Hints"
+// still never sees the sample answer unless they separately click that
+// button too. A question whose sampleAnswer was cached before vocab
+// existed on this schema self-heals here (one extra generation, then
+// cached forever), same pattern as authService's createdAt self-heal.
 async function getSpeakingHints(questionId, questionText, partNum, cueCard) {
-  let sourceSampleAnswer = null;
+  let cached = null;
   if (questionId) {
-    const cached = await SpeakingQuestion.findById(questionId).select('sampleAnswer hints').lean();
-    if (cached?.hints && (cached.hints.vocab?.length || cached.hints.ideas?.length)) {
-      return { hints: cached.hints };
-    }
-    sourceSampleAnswer = cached?.sampleAnswer || null;
+    cached = await SpeakingQuestion.findById(questionId).select('sampleAnswer hints').lean();
+    if (cached?.hints?.vocab?.length) return { hints: { vocab: cached.hints.vocab } };
   }
 
-  if (!sourceSampleAnswer) {
-    const sampleData = await getSampleAnswer(questionId, questionText, partNum, cueCard);
-    sourceSampleAnswer = sampleData.sampleAnswer;
-  }
-
-  const hints = await _withGroqFallback(
-    generateSpeakingHints, generateSpeakingHintsGroq, 'hints', [questionText, partNum, sourceSampleAnswer]
+  const data = await _withGroqFallback(
+    generateSampleAnswer, generateSampleAnswerGroq, 'sampleAnswer', [questionText, partNum, cueCard]
   );
 
-  if (questionId && (hints.vocab?.length || hints.ideas?.length)) {
-    SpeakingQuestion.updateOne({ _id: questionId }, { $set: { hints } })
-      .catch(err => console.error('[Speaking] hints cache write failed:', err.message));
+  if (questionId) {
+    const $set = {};
+    if (data.vocab?.length) $set['hints.vocab'] = data.vocab;
+    if (!cached?.sampleAnswer && data.sampleAnswer) $set.sampleAnswer = data.sampleAnswer;
+    if (Object.keys($set).length) {
+      SpeakingQuestion.updateOne({ _id: questionId }, { $set })
+        .catch(err => console.error('[Speaking] hints cache write failed:', err.message));
+    }
   }
 
-  return { hints };
+  return { hints: { vocab: data.vocab || [] } };
 }
 
 // The prompt asks for strengths/improvements as plain text strings, but the

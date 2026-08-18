@@ -12,13 +12,13 @@ const SpeakingQuestionSchema = new mongoose.Schema({
   // every student cost zero extra AI calls. See scripts/generateSampleAnswers.js
   // for bulk pre-generation across the whole question bank.
   sampleAnswer: { type: String, default: '' },
-  // Vocab/idea hints derived FROM sampleAnswer (not a fresh generation) —
+  // Vocab hints — generated in the SAME AI call as sampleAnswer (see
+  // geminiService.buildSampleAnswerPrompt), not a separate extraction call —
   // a lighter-touch nudge students can use instead of jumping straight to
   // the full sample answer. Same lazy-cache-once-per-question pattern as
   // sampleAnswer; see speakingService.getSpeakingHints.
   hints: {
-    vocab: { type: [String], default: [] },
-    ideas: { type: [String], default: [] }
+    vocab: { type: [String], default: [] }
   }
 }, { timestamps: true });
 

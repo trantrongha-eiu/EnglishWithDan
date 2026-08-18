@@ -318,6 +318,93 @@ describe('speakingService.gradeSpeaking', () => {
   });
 });
 
+describe('speakingService.getSampleAnswer', () => {
+  afterEach(() => jest.clearAllMocks());
+
+  test('serves a cached sampleAnswer with zero Gemini calls', async () => {
+    const q = await createSpeakingQuestion({ sampleAnswer: 'Already cached answer.' });
+    const result = await speakingService.getSampleAnswer(q._id.toString(), q.question, q.part, '');
+    expect(result.sampleAnswer).toBe('Already cached answer.');
+    expect(geminiService.generateSampleAnswer).not.toHaveBeenCalled();
+  });
+
+  test('generates and caches sampleAnswer + vocab together on a cache miss', async () => {
+    const q = await createSpeakingQuestion({ sampleAnswer: '' });
+    geminiService.generateSampleAnswer.mockResolvedValue({
+      sampleAnswer: 'Fresh answer.', vocab: ['strike a balance', 'take a keen interest'],
+    });
+
+    const result = await speakingService.getSampleAnswer(q._id.toString(), q.question, q.part, '');
+    expect(result.sampleAnswer).toBe('Fresh answer.');
+
+    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
+    const SpeakingQuestion = require('../../../models/SpeakingQuestion');
+    const saved = await SpeakingQuestion.findById(q._id).lean();
+    expect(saved.sampleAnswer).toBe('Fresh answer.');
+    expect(saved.hints.vocab).toEqual(['strike a balance', 'take a keen interest']);
+  });
+});
+
+describe('speakingService.getSpeakingHints', () => {
+  afterEach(() => jest.clearAllMocks());
+
+  test('serves cached hints.vocab with zero AI calls when already cached', async () => {
+    const q = await createSpeakingQuestion({
+      sampleAnswer: 'Cached sample.',
+      hints: { vocab: ['a great way to unwind'] },
+    });
+    const result = await speakingService.getSpeakingHints(q._id.toString(), q.question, q.part, '');
+    expect(result.hints.vocab).toEqual(['a great way to unwind']);
+    expect(geminiService.generateSampleAnswer).not.toHaveBeenCalled();
+  });
+
+  test('never needs a separate hints-extraction AI call — vocab rides on the sample generation', async () => {
+    const q = await createSpeakingQuestion({ sampleAnswer: '' });
+    geminiService.generateSampleAnswer.mockResolvedValue({
+      sampleAnswer: 'Freshly generated sample.', vocab: ['make a lasting impression'],
+    });
+
+    const result = await speakingService.getSpeakingHints(q._id.toString(), q.question, q.part, '');
+    expect(result.hints.vocab).toEqual(['make a lasting impression']);
+    expect(geminiService.generateSampleAnswer).toHaveBeenCalledTimes(1);
+
+    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
+    const SpeakingQuestion = require('../../../models/SpeakingQuestion');
+    const saved = await SpeakingQuestion.findById(q._id).lean();
+    expect(saved.hints.vocab).toEqual(['make a lasting impression']);
+    expect(saved.sampleAnswer).toBe('Freshly generated sample.'); // no sampleAnswer was cached yet, so this regen's is kept
+  });
+
+  test('self-heals a legacy question that has a cached sampleAnswer but no vocab yet, without overwriting the existing sampleAnswer', async () => {
+    const q = await createSpeakingQuestion({ sampleAnswer: 'Original curated answer.', hints: { vocab: [] } });
+    geminiService.generateSampleAnswer.mockResolvedValue({
+      sampleAnswer: 'A different regenerated answer.', vocab: ['a specific time you did this'],
+    });
+
+    const result = await speakingService.getSpeakingHints(q._id.toString(), q.question, q.part, '');
+    expect(result.hints.vocab).toEqual(['a specific time you did this']);
+
+    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
+    const SpeakingQuestion = require('../../../models/SpeakingQuestion');
+    const saved = await SpeakingQuestion.findById(q._id).lean();
+    expect(saved.sampleAnswer).toBe('Original curated answer.'); // untouched — never clobbered
+    expect(saved.hints.vocab).toEqual(['a specific time you did this']);
+  });
+
+  test('falls back to Groq for vocab generation on a plain Gemini error', async () => {
+    process.env.GROQ_API_KEY = 'test-key';
+    const q = await createSpeakingQuestion({ sampleAnswer: '' });
+    geminiService.generateSampleAnswer.mockRejectedValue(new Error('Gemini failed'));
+    groqService.generateSampleAnswerGroq.mockResolvedValue({
+      sampleAnswer: 'From groq.', vocab: ['from groq vocab'],
+    });
+
+    const result = await speakingService.getSpeakingHints(q._id.toString(), q.question, q.part, '');
+    expect(result.hints.vocab).toEqual(['from groq vocab']);
+    expect(groqService.generateSampleAnswerGroq).toHaveBeenCalled();
+  });
+});
+
 describe('speakingService.retryGrading', () => {
   afterEach(() => jest.clearAllMocks());
 
