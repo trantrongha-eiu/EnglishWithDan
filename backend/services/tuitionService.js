@@ -165,6 +165,21 @@ async function getAdminSummary() {
   return unpaidStudents.length;
 }
 
+// Cross-period unpaid total per student — Tuition.jsx's "⚠️ Tổng nợ" badge
+// used to derive this by summing only whatever `fees` page/filter (usually
+// a single month) happened to already be loaded, understating real arrears
+// for any student owing across multiple months/courses. Scoped to isPaid:
+// false only, no month/year filter, so it always reflects true total debt.
+async function getUnpaidByStudent() {
+  const rows = await TuitionFee.aggregate([
+    { $match: { isPaid: false } },
+    { $group: { _id: '$studentId', total: { $sum: '$amount' } } },
+  ]);
+  const map = {};
+  for (const r of rows) map[String(r._id)] = r.total;
+  return map;
+}
+
 async function listStudents() {
   return User.find({ role: { $in: ['student', 'teacher'] } }, 'username email firstName lastName').sort('username').lean();
 }
@@ -183,7 +198,7 @@ async function createFee({ studentId, feeType, month, year, courseName, amount, 
 }
 
 async function updateFee(id, body, sender) {
-  const { amount, isPaid, note, courseName, month, year } = body;
+  const { amount, isPaid, note, courseName, month, year, feeType } = body;
   const fee = await TuitionFee.findById(id);
   if (!fee) return null;
 
@@ -202,6 +217,12 @@ async function updateFee(id, body, sender) {
   if (courseName !== undefined) fee.courseName = courseName;
   if (month      !== undefined) fee.month      = Number(month);
   if (year       !== undefined) fee.year       = Number(year);
+  // Was never read here — the "Loại học phí" select in Tuition.jsx's edit
+  // form let the admin change it, save, and get a success toast, while the
+  // record silently kept its old feeType (and, if switching monthly→course,
+  // kept showing/filtering under its old month/year with the newly-typed
+  // courseName orphaned on the record with nothing referencing it).
+  if (feeType    !== undefined) fee.feeType    = feeType;
 
   // Fee details changed after the student already confirmed payment under the
   // old figures — clear that confirmation so admin doesn't mistake it for
@@ -310,7 +331,7 @@ async function notifyPayment(feeId, student) {
 
 module.exports = {
   getSettings, updateSettings, uploadQr, deleteQr,
-  listFees, getSummary, getAdminSummary, listStudents,
+  listFees, getSummary, getAdminSummary, getUnpaidByStudent, listStudents,
   createFee, updateFee, deleteFee,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,

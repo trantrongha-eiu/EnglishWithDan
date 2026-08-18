@@ -80,4 +80,28 @@ describe('GET /api/admin/recent-attempts — Task1 session grouping', () => {
     const task1Rows = res.body.attempts.filter(a => a.skill === 'task1-practice');
     expect(task1Rows).toHaveLength(2);
   });
+
+  test('top-level `total` counts Task1 SESSIONS, not raw per-question docs — StudentHistory.jsx\'s "hasMore" depends on this actually terminating', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const token = signTokenFor(teacher);
+
+    // One session of 5 answered questions = 5 raw Task1Attempt docs, but
+    // exactly 1 row/session — total must reflect the latter.
+    for (let i = 0; i < 5; i++) {
+      await makeAttempt(student._id, { sessionId: 'sess-many-questions', isCorrect: i % 2 === 0 });
+    }
+
+    const res = await request(app)
+      .get('/api/admin/recent-attempts')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const task1Rows = res.body.attempts.filter(a => a.skill === 'task1-practice');
+    expect(task1Rows).toHaveLength(1);
+    // Before the fix this asserted 5 (the raw doc count) — `total` must
+    // match how many rows can actually ever be returned, not how many raw
+    // docs back them.
+    expect(res.body.total).toBe(1);
+  });
 });

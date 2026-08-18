@@ -50,6 +50,11 @@ exports.getSummary = guard('error:', async (req, res) => {
   res.json({ success: true, summary, courseSummary });
 });
 
+exports.getUnpaidByStudent = guard('error:', async (req, res) => {
+  const unpaidByStudent = await tuitionService.getUnpaidByStudent();
+  res.json({ success: true, unpaidByStudent });
+});
+
 exports.getAdminSummary = guard('error:', async (req, res) => {
   const unpaidStudentCount = await tuitionService.getAdminSummary();
   res.json({ success: true, unpaidStudentCount });

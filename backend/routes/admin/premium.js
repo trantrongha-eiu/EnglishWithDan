@@ -89,20 +89,38 @@ router.get('/upgrade-requests', auth, adminOnly, async (req, res) => {
 router.put('/upgrade-requests/:id/approve', auth, adminOnly, async (req, res) => {
   try {
     const { adminNote } = req.body;
-    // Only username is used below — field-limit the populate so it doesn't
-    // pull the full User document (password hash, resetOTP, etc.)
-    const request = await UpgradeRequest.findById(req.params.id).populate('userId', 'username');
-    if (!request) return res.status(404).json({ success: false, message: 'Không tìm thấy yêu cầu' });
-    if (request.status !== 'pending') {
-      return res.status(400).json({ success: false, message: 'Yêu cầu đã được xử lý' });
+    // Atomically claim the request — status:'pending' in the FILTER means
+    // only the first of two concurrent approve calls (a double-click, or
+    // two admin sessions racing) actually flips it to 'approved' here; the
+    // loser gets null back and never reaches grantPremium() below, closing
+    // a race that could otherwise grant `months` of premium twice for one
+    // paid request (the old findById-then-save-later shape had no such
+    // guard). Only username is used below — field-limit the populate so it
+    // doesn't pull the full User document (password hash, resetOTP, etc.)
+    const request = await UpgradeRequest.findOneAndUpdate(
+      { _id: req.params.id, status: 'pending' },
+      { status: 'approved', adminNote: adminNote || '', reviewedBy: req.user._id, reviewedAt: new Date() },
+      { new: true }
+    ).populate('userId', 'username');
+    if (!request) {
+      const exists = await UpgradeRequest.exists({ _id: req.params.id });
+      return res.status(exists ? 400 : 404).json({
+        success: false,
+        message: exists ? 'Yêu cầu đã được xử lý' : 'Không tìm thấy yêu cầu'
+      });
     }
 
-    const updatedUser = await grantPremium(request.userId._id, request.months);
-    request.status = 'approved';
-    request.adminNote = adminNote || '';
-    request.reviewedBy = req.user._id;
-    request.reviewedAt = new Date();
-    await request.save();
+    let updatedUser;
+    try {
+      updatedUser = await grantPremium(request.userId._id, request.months);
+      if (!updatedUser) throw new Error('Không tìm thấy tài khoản học sinh');
+    } catch (grantErr) {
+      // Grant failed after the request was already claimed as 'approved' —
+      // roll it back to 'pending' so it isn't stuck approved with no
+      // premium actually applied, and the admin can just retry.
+      await UpgradeRequest.findByIdAndUpdate(request._id, { status: 'pending', reviewedBy: null, reviewedAt: null });
+      throw grantErr;
+    }
 
     res.json({ success: true, message: `Đã nâng cấp Premium cho ${updatedUser.username} đến ${updatedUser.planExpiresAt.toLocaleDateString('vi-VN')}` });
   } catch (err) {

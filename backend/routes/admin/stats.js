@@ -203,6 +203,28 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
   try {
     const LIMIT = Math.min(parseInt(req.query.limit) || 80, 2000);
     const uid = req.query.userId || null;
+    // Task1Attempt stores one raw doc PER QUESTION, not per session (see the
+    // grouping comment further down) — countDocuments() here used to count
+    // those raw rows directly into `total`, wildly overstating it relative
+    // to the per-session rows actually ever returned/displayed. hasMore =
+    // all.length < total (StudentHistory.jsx) then never became false for
+    // any student with real Task1 practice history: "Tải thêm" stayed
+    // clickable forever past the true end of their data. Count distinct
+    // sessions instead, using the exact same grouping key (sessionId, or an
+    // hour-bucket fallback for older docs saved before sessionId existed)
+    // as the row-building code below.
+    async function countTask1Sessions() {
+      const match = uid ? { userId: new mongoose.Types.ObjectId(uid) } : {};
+      const result = await Task1Attempt.aggregate([
+        { $match: match },
+        { $group: { _id: {
+          userId: '$userId',
+          sessKey: { $ifNull: ['$sessionId', { $dateToString: { format: '%Y-%m-%dT%H', date: '$createdAt' } }] }
+        } } },
+        { $count: 'total' }
+      ]).catch(() => []);
+      return result[0]?.total || 0;
+    }
     const counts = await Promise.all([
       TestAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }),
       ListeningAttempt.countDocuments({ status: 'completed', ...(uid && { userId: uid }) }).catch(() => 0),
@@ -210,7 +232,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       ListeningPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       ReadingPracticeAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       WritingPracticeAttempt.countDocuments({ ...(uid && { studentId: uid }) }).catch(() => 0),
-      Task1Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
+      countTask1Sessions(),
       Task2Attempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       SpeakingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),
       Task2TemplateAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0),

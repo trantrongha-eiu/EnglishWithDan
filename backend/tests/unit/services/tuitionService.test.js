@@ -32,6 +32,27 @@ describe('tuitionService', () => {
   });
 
   describe('updateFee', () => {
+    it('actually persists a feeType change instead of silently dropping it', async () => {
+      const student = await createStudent();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 500000,
+      });
+
+      const updated = await tuitionService.updateFee(fee._id, { feeType: 'course', courseName: 'IELTS Advanced' });
+      expect(updated.feeType).toBe('course');
+      expect(updated.courseName).toBe('IELTS Advanced');
+    });
+
+    it('leaves feeType unchanged when not supplied in the update', async () => {
+      const student = await createStudent();
+      const fee = await createTuitionFee({
+        studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 500000,
+      });
+
+      const updated = await tuitionService.updateFee(fee._id, { amount: 600000 });
+      expect(updated.feeType).toBe('monthly');
+    });
+
     it('clears studentNotified when amount changed while unpaid and previously notified', async () => {
       const student = await createStudent();
       const fee = await createTuitionFee({
@@ -322,6 +343,35 @@ describe('tuitionService', () => {
 
       const messages = await Message.find({ fromId: admin._id });
       expect(messages).toHaveLength(0);
+    });
+  });
+
+  describe('getUnpaidByStudent', () => {
+    it('sums unpaid amounts ACROSS periods, not just the current one — the "Tổng nợ" fix', async () => {
+      const student = await createStudent();
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 500000, isPaid: false });
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 2, year: 2026, amount: 300000, isPaid: false });
+      await createTuitionFee({ studentId: student._id, feeType: 'course', courseName: 'IELTS Advanced', amount: 2000000, isPaid: false });
+
+      const map = await tuitionService.getUnpaidByStudent();
+      expect(map[String(student._id)]).toBe(2800000);
+    });
+
+    it('excludes paid fees from the total', async () => {
+      const student = await createStudent();
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 500000, isPaid: true });
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 2, year: 2026, amount: 300000, isPaid: false });
+
+      const map = await tuitionService.getUnpaidByStudent();
+      expect(map[String(student._id)]).toBe(300000);
+    });
+
+    it('omits a student entirely once every fee is paid', async () => {
+      const student = await createStudent();
+      await createTuitionFee({ studentId: student._id, feeType: 'monthly', month: 1, year: 2026, amount: 500000, isPaid: true });
+
+      const map = await tuitionService.getUnpaidByStudent();
+      expect(map[String(student._id)]).toBeUndefined();
     });
   });
 });

@@ -32,6 +32,7 @@ router.delete('/settings/qr', auth, adminOnly, tuitionController.deleteQr);
 router.get('/', auth, adminOnly, tuitionController.listFees);
 router.get('/summary', auth, adminOnly, tuitionController.getSummary);
 router.get('/admin-summary', auth, adminOnly, tuitionController.getAdminSummary);
+router.get('/unpaid-by-student', auth, adminOnly, tuitionController.getUnpaidByStudent);
 router.get('/students-list', auth, adminOnly, tuitionController.listStudents);
 router.post('/', auth, adminOnly, tuitionController.createFee);
 router.put('/:id', auth, adminOnly, tuitionController.updateFee);

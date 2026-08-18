@@ -20,6 +20,11 @@ export default function Tuition() {
   const [fees, setFees]     = useState([]);
   const [total, setTotal]   = useState(0);
   const [feeStats, setFeeStats] = useState({ totalAmount: 0, paidAmount: 0, pendingNotify: 0 });
+  // Cross-period unpaid total per student (studentId -> amount), for the
+  // "⚠️ Tổng nợ" warning badge — fetched from /tuition/unpaid-by-student
+  // (not derived from the currently-filtered `fees` page, which understated
+  // debt for any student owing across multiple months/courses).
+  const [unpaidByStudent, setUnpaidByStudent] = useState({});
   const [page, setPage]     = useState(1);
   const [filter, setFilter] = useState({
     month: String(CUR_MONTH), year: String(CUR_YEAR),
@@ -102,6 +107,14 @@ export default function Tuition() {
       setTotal(d.total || 0);
       if (d.stats) setFeeStats(d.stats);
     } catch (e) { toast(e.message, 'error'); }
+    loadUnpaidByStudent(); // independent of the fee-list filter above, so it always reflects true cross-period debt
+  }
+
+  async function loadUnpaidByStudent() {
+    try {
+      const d = await apiFetch('/tuition/unpaid-by-student');
+      setUnpaidByStudent(d.unpaidByStudent || {});
+    } catch { /* stale/missing debt badge on failure — non-critical, next loadFees() retries */ }
   }
 
   async function loadSummary() {
@@ -298,14 +311,10 @@ export default function Tuition() {
   const unpaidAmount  = totalAmount - paidAmount;
   const pendingNotify = feeStats.pendingNotify || 0;
 
-  // ── accumulated unpaid per student (for warning icon in table) ──
-  const studentDebtMap = fees.reduce((map, f) => {
-    if (!f.isPaid) {
-      const sid = f.studentId?._id || f.studentId;
-      map[sid] = (map[sid] || 0) + (f.amount || 0);
-    }
-    return map;
-  }, {});
+  // ── accumulated unpaid per student, across ALL periods (for warning icon
+  // in table) — see loadUnpaidByStudent() above, not derived from the
+  // current (usually single-month) filtered `fees` page.
+  const studentDebtMap = unpaidByStudent;
 
   return (
     <>

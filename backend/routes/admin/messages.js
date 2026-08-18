@@ -176,12 +176,21 @@ router.delete('/messages', auth, teacherOnly, async (req, res) => {
 router.get('/reports', auth, teacherOnly, async (req, res) => {
   try {
     const status = ['open', 'resolved'].includes(req.query.status) ? req.query.status : 'open';
-    const reports = await Report.find({ status })
-      .populate('messageId', 'body createdAt')
-      .sort({ createdAt: -1 })
-      .limit(200)
-      .lean();
-    res.json({ success: true, reports });
+    // Same silently-truncating-count class of bug already fixed for
+    // /recent-attempts — the 200 cap on `reports` stayed, but `total` now
+    // lets the UI show "loaded N/total" instead of presenting the loaded
+    // count as if it were the true one (Messages.jsx's tab badge used to
+    // render reports.length directly, so a backlog past the 200th open
+    // report went permanently unnoticed with no on-screen indication).
+    const [reports, total] = await Promise.all([
+      Report.find({ status })
+        .populate('messageId', 'body createdAt')
+        .sort({ createdAt: -1 })
+        .limit(200)
+        .lean(),
+      Report.countDocuments({ status }),
+    ]);
+    res.json({ success: true, reports, total });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -45,10 +45,17 @@ export default function Messages() {
   // services/peerService.js). Small volume expected, so no pagination —
   // just an open/resolved filter.
   const [reports, setReports] = useState([]);
+  const [reportsTotal, setReportsTotal] = useState(0);
   const [reportStatus, setReportStatus] = useState('open'); // 'open' | 'resolved'
 
-  // Online users
-  const [onlineIds, setOnlineIds] = useState(new Set());
+  // Online users — full user objects straight from /admin/online-users
+  // (which already returns username/role/lastSeen for whoever is actually
+  // online right now), NOT cross-referenced against the `students` list
+  // below. That list is separately capped at the 500 most-recently-created
+  // students (for the message-recipient picker) — any online student whose
+  // account predates the newest 500 signups used to silently vanish from
+  // this panel even though /admin/online-users correctly reported them.
+  const [onlineStudents, setOnlineStudents] = useState([]);
 
   useEffect(() => {
     loadStudents();
@@ -85,6 +92,11 @@ export default function Messages() {
     try {
       const d = await apiFetch(`/admin/reports?status=${status}`);
       setReports(d.reports || []);
+      // Backend still hard-caps the list at 200 (see backend/routes/admin/
+      // messages.js) but now also returns the true count, so the badge
+      // below can show "loaded/total" instead of presenting the loaded
+      // (possibly truncated) count as if it were everything.
+      setReportsTotal(d.total ?? (d.reports || []).length);
     } catch (e) { toast(e.message, 'error'); }
   }
 
@@ -157,7 +169,7 @@ export default function Messages() {
   async function loadOnline() {
     try {
       const d = await apiFetch('/admin/online-users');
-      setOnlineIds(new Set((d.users || []).filter(u => u.role !== 'admin').map(u => u._id)));
+      setOnlineStudents((d.users || []).filter(u => u.role === 'student'));
     } catch { /* ignore */ }
   }
 
@@ -303,7 +315,7 @@ export default function Messages() {
       )}
 
       {/* ── Online users quick panel ── */}
-      <OnlinePanel onlineIds={onlineIds} students={students} onRefresh={loadOnline} />
+      <OnlinePanel onlineStudents={onlineStudents} onRefresh={loadOnline} />
 
       {/* ── Sent / Received tabs ── */}
       <div style={{ display: 'flex', gap: 8, marginTop: 20, marginBottom: 12 }}>
@@ -314,7 +326,10 @@ export default function Messages() {
           📥 Đã nhận ({receivedTotal})
         </button>
         <button className={`btn btn-sm ${box === 'reports' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setBox('reports')}>
-          🚩 Báo cáo{reportStatus === 'open' ? ` (${reports.length})` : ''}
+          🚩 Báo cáo{reportStatus === 'open' ? ` (${reportsTotal})` : ''}
+          {reportStatus === 'open' && reportsTotal > reports.length && (
+            <span title={`Chỉ tải ${reports.length}/${reportsTotal} báo cáo mới nhất`} style={{ marginLeft: 4 }}>⚠️</span>
+          )}
         </button>
       </div>
 
@@ -464,8 +479,7 @@ export default function Messages() {
   );
 }
 
-function OnlinePanel({ onlineIds, students, onRefresh }) {
-  const onlineStudents = students.filter(s => onlineIds.has(s._id));
+function OnlinePanel({ onlineStudents, onRefresh }) {
   return (
     <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: 16, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
