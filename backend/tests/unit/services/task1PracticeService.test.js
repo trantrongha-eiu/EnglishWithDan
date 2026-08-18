@@ -57,13 +57,18 @@ describe('listExercises — answer-key stripping and word/letter hints', () => {
     expect(dataTransform.answerWordCount).toBe(8);
   });
 
-  test('does not add a hint for fill_blank, rearrange, or multiple_choice', async () => {
+  test('fill_blank gets a word count (needed by showFillBlankView\'s hint-chip-count logic) but never the letter pattern', async () => {
     await seedExercises();
     const { exercises } = await svc.listExercises({});
     const fillBlank = exercises.find(e => e.type === 'fill_blank');
-    const mc = exercises.find(e => e.type === 'multiple_choice');
-    expect(fillBlank.answerWordCount).toBeUndefined();
+    expect(fillBlank.answerWordCount).toBe(1); // "of"
     expect(fillBlank.answerLetterHint).toBeUndefined();
+  });
+
+  test('does not add a word count or letter hint for multiple_choice', async () => {
+    await seedExercises();
+    const { exercises } = await svc.listExercises({});
+    const mc = exercises.find(e => e.type === 'multiple_choice');
     expect(mc.answerWordCount).toBeUndefined();
     expect(mc.answerLetterHint).toBeUndefined();
   });

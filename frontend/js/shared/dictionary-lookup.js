@@ -462,7 +462,15 @@
         // A word already present in the book comes back as skippedDup, not
         // addedCount — it's still genuinely saved from an earlier visit, so
         // the caller's "mark as learned" bookkeeping should count it too.
-        if (cb) cb(items.map(function (w) { return w.word; }));
+        // skippedLimit is different: the book was already full (300-word
+        // cap) and those specific words were NOT saved anywhere. The
+        // endpoint only returns counts, not which words landed in which
+        // bucket, so there's no safe way to mark just a subset here — firing
+        // the callback for the whole batch would let a full VocabBook
+        // silently satisfy Task 2's "vocab saved" practice gate for words
+        // that were never actually saved. The toast above already surfaces
+        // the cap via bulkRes.message, so just skip the callback.
+        if (cb && !bulkRes.skippedLimit) cb(items.map(function (w) { return w.word; }));
       } catch (e) {
         _handleVocabSaveError(e, 'Lỗi lưu từ');
       }

@@ -5,16 +5,22 @@ const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
 const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
 
-// Practice-mode types that show a "word count + first-letter" hint under the
-// question text — the same free-text sentence types as task2PracticeService,
-// plus data_transform (Task 1's "describe this data point as a sentence"
-// type, which is functionally identical to translation/error_correction:
-// one full sentence typed into the same answer-box view). Not fill_blank
+// Practice-mode types that show a visible "word count + first-letter" hint
+// under the question text — free-text sentence answers only. Not fill_blank
 // (single word/short phrase, shown inline in the sentence — a letter-hint
 // there would give away a 2-3 letter preposition almost entirely), not
 // rearrange (word bank already shown), not multiple_choice/paraphrase_choose
 // (options already shown).
 const HINT_TYPES = new Set(['translation', 'error_correction', 'data_transform']);
+
+// fill_blank doesn't get the visible letter-hint, but showFillBlankView()
+// (task1-practice.html) still needs the answer's word count client-side to
+// decide how many hint chips to reveal (2 for a short answer, 3 for a
+// longer one) — previously read straight off ex.primaryAnswer, which broke
+// the moment primaryAnswer got stripped below. answerWordCount alone is
+// safe to expose (unlike the full text or the letter pattern) since a bare
+// number reveals nothing about the actual word.
+const WORD_COUNT_TYPES = new Set([...HINT_TYPES, 'fill_blank']);
 
 function normalize(str) {
   return (str || '')
@@ -114,10 +120,13 @@ function localCheck(exercise, userAnswer) {
 function sanitizeExerciseForClient(ex, opts = {}) {
   const { includeHints = true } = opts;
   const { primaryAnswer, ...rest } = ex; // eslint-disable-line no-unused-vars
-  if (includeHints && HINT_TYPES.has(ex.type) && primaryAnswer) {
+  if (includeHints && primaryAnswer && WORD_COUNT_TYPES.has(ex.type)) {
     const hint = buildAnswerHint(primaryAnswer);
-    rest.answerWordCount  = hint.wordCount;
-    rest.answerLetterHint = hint.pattern;
+    rest.answerWordCount = hint.wordCount;
+    // Only the sentence-answer types also get the letter-blanked pattern —
+    // for fill_blank's single word/short phrase that would give away
+    // almost the entire answer (e.g. "of" -> "o_").
+    if (HINT_TYPES.has(ex.type)) rest.answerLetterHint = hint.pattern;
   }
   return rest;
 }

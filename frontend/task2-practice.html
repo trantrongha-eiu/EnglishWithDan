@@ -1773,7 +1773,15 @@ async function loadVocab() {
     if (!state.vocab.length) { showToast('Topic này chưa có từ vựng', 'warn'); return; }
     // Cache the total so the Luyện tập gate (isVocabLearned) can tell "fully
     // saved" apart from "never even opened this tab" without a second fetch.
-    _vocabTotalMap[state.selectedTopic._id] = state.vocab.length;
+    // Unique term COUNT, not state.vocab.length — isVocabLearned compares
+    // this against _savedTermsForTopic(...).size, which is a Set keyed by
+    // term and can never exceed the number of distinct terms. If a topic
+    // ever had two vocab entries sharing the same term (dedup edge case,
+    // not currently in seed data but not schema-enforced either), using the
+    // raw array length here would make the two counts permanently
+    // incomparable — isVocabLearned would stay false forever even after
+    // every visible "Lưu" button already shows "Đã lưu".
+    _vocabTotalMap[state.selectedTopic._id] = new Set(state.vocab.map(v => v.term)).size;
     localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
     state.view = 'vocab'; render();
   } catch { showToast('Lỗi tải từ vựng', 'error'); }

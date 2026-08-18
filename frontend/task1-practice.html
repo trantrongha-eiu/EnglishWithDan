@@ -1460,7 +1460,7 @@ function showFillBlankView(ex) {
   const hRow = document.getElementById('fill-hints-row');
   hRow.innerHTML = '';
   if (ex.hints?.length) {
-    const ansWords = (ex.primaryAnswer || ex.sampleAnswers?.[0] || '').trim().split(/\s+/).length;
+    const ansWords = ex.answerWordCount || 1;
     const hintCount = ansWords <= 6 ? 2 : 3;
     const lbl = document.createElement('span');
     lbl.className = 't1-hint-label'; lbl.textContent = '💡 Gợi ý:';
