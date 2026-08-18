@@ -221,7 +221,16 @@ async function mergeBooks(destId, userId, sourceIds) {
   const dest = await VocabBook.findOne({ _id: destId, userId });
   if (!dest) return { status: 'dest_not_found' };
 
-  const sources = await VocabBook.find({ _id: { $in: sourceIds }, userId, isDefault: false }).lean();
+  // The frontend's own merge picker already excludes the destination book
+  // from the source checklist, but that's client-side UX only — without
+  // this, a request that included destId in sourceIds (a future frontend
+  // regression, or a direct/replayed API call) would merge the book into
+  // itself (a no-op, since its own words are already in existingWords
+  // below) and then get caught by the unconditional deleteMany() at the
+  // end, deleting the very book it was just merged into.
+  const destIdStr = destId.toString();
+  const filteredSourceIds = sourceIds.filter(id => id.toString() !== destIdStr);
+  const sources = await VocabBook.find({ _id: { $in: filteredSourceIds }, userId, isDefault: false }).lean();
   if (!sources.length) return { status: 'no_valid_sources' };
 
   const existingWords = new Set(dest.words.map(w => w.word.toLowerCase().trim()));
@@ -300,7 +309,18 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
     wordDoc.lastReviewedAt = srs.lastReviewedAt;
   }
   if (note !== undefined) wordDoc.note = note;
-  if (word !== undefined) wordDoc.word = word.trim();
+  if (word !== undefined) {
+    // addWord() rejects a case-insensitive duplicate on create, but editing
+    // an EXISTING word's text to match another word already in the same
+    // book was never checked — the edit-word modal (dashboard.js's
+    // saveEditWord()) does expose the word-text field, so this was a real,
+    // reachable way to end up with two entries for the same word.
+    const trimmed = word.trim();
+    const wordIdStr = wordId.toString();
+    const dup = book.words.find(w => w._id.toString() !== wordIdStr && w.word.toLowerCase() === trimmed.toLowerCase());
+    if (dup) return { status2: 'duplicate' };
+    wordDoc.word = trimmed;
+  }
   if (meaning !== undefined) wordDoc.meaning = meaning;
   if (example !== undefined) wordDoc.example = example;
   if (phonetic !== undefined) wordDoc.phonetic = phonetic;

@@ -145,6 +145,28 @@ describe('vocabBookService', () => {
       const fresh = await require('../../../models/User').findById(student._id);
       expect(fresh.learningStreak).toBe(0);
     });
+
+    it('rejects editing a word\'s text to match another word already in the same book (case-insensitive), same duplicate rule as addWord', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple' }, { word: 'banana' }] });
+      const bananaId = book.words[1]._id;
+
+      const result = await vocabBookService.updateWord(book._id, bananaId, student._id, student, { word: 'APPLE' });
+      expect(result.status2).toBe('duplicate');
+
+      const reloaded = await VocabBook.findById(book._id);
+      expect(reloaded.words.find(w => w._id.toString() === bananaId.toString()).word).toBe('banana'); // unchanged
+    });
+
+    it('allows renaming a word to its own current text (not a false-positive duplicate against itself)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple' }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { word: 'Apple' });
+      expect(result.status2).toBe('ok');
+      expect(result.word.word).toBe('Apple');
+    });
   });
 
   describe('updateWord — spaced repetition (Leitner box)', () => {
@@ -401,6 +423,19 @@ describe('vocabBookService', () => {
 
       const result = await vocabBookService.mergeBooks(fakeId, student._id, [src._id]);
       expect(result.status).toBe('dest_not_found');
+    });
+
+    it('including the destination id in sourceIds does not delete the destination book (defense-in-depth against a client sending its own target as a source)', async () => {
+      const student = await createStudent();
+      const dest = await createVocabBook({ userId: student._id, words: [{ word: 'existing' }] });
+      const src = await createVocabBook({ userId: student._id, words: [{ word: 'foo' }] });
+
+      const result = await vocabBookService.mergeBooks(dest._id, student._id, [dest._id, src._id]);
+      expect(result.status).toBe('ok');
+
+      const reloadedDest = await VocabBook.findById(dest._id);
+      expect(reloadedDest).toBeTruthy(); // must survive — the frontend already excludes this case, but the server must not depend on that
+      expect(reloadedDest.words.map(w => w.word).sort()).toEqual(['existing', 'foo']);
     });
   });
 

@@ -108,6 +108,7 @@ exports.updateWord = guard(async (req, res) => {
   const result = await vocabBookService.updateWord(req.params.id, req.params.wordId, req.user._id, req.user, req.body);
   if (result.status2 === 'book_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   if (result.status2 === 'word_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
+  if (result.status2 === 'duplicate') return res.status(409).json({ success: false, message: 'Từ này đã có trong sổ' });
   res.json({ success: true, word: result.word });
 });
 
