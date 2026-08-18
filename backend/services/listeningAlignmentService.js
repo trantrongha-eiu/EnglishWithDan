@@ -263,7 +263,48 @@ function validateAlignment(results) {
   return { valid: issues.length === 0, issues };
 }
 
+// Per-sentence selection — unlike validateAlignment's all-or-nothing gate
+// (reject the WHOLE section over a single bad sentence), this keeps
+// whichever sentences are both accurately timed AND substantive, silently
+// dropping the rest. Per product decision: a dictation section doesn't need
+// EVERY sentence from the passage — spelled-out words/phone numbers/emails
+// (exactly what routinely fails the word-match check, since Whisper
+// transcribes digits/letters-said-aloud inconsistently) and short filler
+// turns ("Okay.", "Hello.", "Right.") aren't useful listening-fill-in
+// practice anyway, even when their timing happens to be perfectly accurate.
+// Three independent reasons a sentence gets dropped:
+//   1. Word-mismatch — same rule as validateAlignment (filler-word unmatched
+//      tokens still pass).
+//   2. Implausible speech rate — same MIN/MAX_WORDS_PER_SECOND bounds.
+//   3. Too short to be a substantive dictation unit (< minWords), independent
+//      of whether it aligned perfectly.
+const MIN_DICTATION_WORDS = 6;
+
+function selectDictationSentences(results, minWords = MIN_DICTATION_WORDS) {
+  const kept = [];
+  const dropped = [];
+  results.forEach((r, i) => {
+    const unmatched = r.unmatchedTokens || [];
+    const wordsOk = r.matchedWords === r.totalWords || unmatched.every(t => FILLER_WORDS.has(t));
+    const duration = r.end - r.start;
+    const wps = duration > 0 ? r.totalWords / duration : Infinity;
+    const timingOk = duration > 0 && wps <= MAX_WORDS_PER_SECOND && wps >= MIN_WORDS_PER_SECOND;
+    const substantive = r.totalWords >= minWords;
+
+    if (wordsOk && timingOk && substantive) {
+      kept.push({ text: r.text, start: r.start, end: r.end });
+      return;
+    }
+    let reason;
+    if (!wordsOk) reason = `từ không khớp Whisper (thiếu: ${unmatched.join(', ')})`;
+    else if (!timingOk) reason = `thời lượng bất thường (${duration.toFixed(2)}s cho ${r.totalWords} từ)`;
+    else reason = `câu quá ngắn (${r.totalWords} từ < ${minWords})`;
+    dropped.push({ index: i, text: r.text, reason });
+  });
+  return { kept, dropped };
+}
+
 module.exports = {
-  transcribeWithWordTimestamps, alignSentences, validateAlignment,
+  transcribeWithWordTimestamps, alignSentences, validateAlignment, selectDictationSentences,
   tokenizeSentence, globalAlign, normalizeWord, findAnchorOffset,
 };
