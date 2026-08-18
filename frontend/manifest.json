@@ -1,0 +1,15 @@
+{
+  "name": "EnglishWithDan — Luyện thi IELTS",
+  "short_name": "EnglishWithDan",
+  "description": "Nền tảng luyện thi IELTS: Reading, Listening, Writing, Speaking, Vocabulary — cùng thầy Daniel Hà.",
+  "start_url": "/dashboard.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fc",
+  "theme_color": "#e53935",
+  "lang": "vi",
+  "icons": [
+    { "src": "/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

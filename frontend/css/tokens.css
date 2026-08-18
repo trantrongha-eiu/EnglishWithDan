@@ -71,6 +71,12 @@
   --shadow-md: 0 6px 24px rgba(0,0,0,.1);
   --shadow-lg: 0 16px 48px rgba(0,0,0,.18);
 
+  /* ── Type ───────────────────────────────────────────── */
+  /* The site's actual body font (dashboard.css, reading/listening/writing —
+     everywhere except login.html/register.html, which are being migrated
+     off a stray 'Poppins' onto this same token). */
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+
   /* ── Type scale ─────────────────────────────────────── */
   --fs-display: 40px; --lh-display: 1.1;
   --fs-h1:      32px; --lh-h1:      1.2;

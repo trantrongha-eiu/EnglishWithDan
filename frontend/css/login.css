@@ -5,8 +5,8 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -91,7 +91,7 @@
 
         /* Login Card */
         .login-card {
-            background: white;
+            background: var(--surface);
             border-radius: 30px;
             padding: 50px 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -129,7 +129,7 @@
         }
 
         .daniel {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -138,7 +138,7 @@
         }
 
         .ha {
-            color: #f093fb;
+            color: var(--brand);
             margin-left: 8px;
             animation: bounce 2s infinite;
         }
@@ -170,7 +170,7 @@
         }
 
         .tagline {
-            color: #6b7280;
+            color: var(--text2);
             font-size: 14px;
             font-weight: 500;
             letter-spacing: 1px;
@@ -180,12 +180,12 @@
         .welcome-text {
             font-size: 28px;
             font-weight: 700;
-            color: #1f2937;
+            color: var(--text);
             margin-bottom: 8px;
         }
 
         .subtitle {
-            color: #6b7280;
+            color: var(--text2);
             font-size: 15px;
             margin-bottom: 30px;
         }
@@ -201,7 +201,7 @@
 
         .form-group label {
             display: block;
-            color: #374151;
+            color: var(--text);
             font-weight: 500;
             margin-bottom: 8px;
             font-size: 14px;
@@ -218,7 +218,7 @@
             left: 15px;
             width: 20px;
             height: 20px;
-            color: #9ca3af;
+            color: var(--text3);
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -228,19 +228,19 @@
         .form-group input {
             width: 100%;
             padding: 14px 15px 14px 45px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border);
             border-radius: 12px;
             /* <16px triggers iOS Safari's auto-zoom-on-focus (student UI
                audit, Nhóm 4, 2026-07-26). */
             font-size: 16px;
             transition: all 0.3s;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-family);
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #f5576c;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px var(--brand-light);
         }
 
         .toggle-password {
@@ -255,13 +255,13 @@
         .eye-icon {
             width: 20px;
             height: 20px;
-            color: #9ca3af;
+            color: var(--text3);
             transition: color 0.3s;
             font-size: 16px;
         }
 
         .toggle-password:hover .eye-icon {
-            color: #f5576c;
+            color: var(--brand);
         }
 
         /* Form Options */
@@ -278,32 +278,32 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: #4b5563;
+            color: var(--text2);
         }
 
         .remember-me input[type="checkbox"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
-            accent-color: #f5576c;
+            accent-color: var(--brand);
         }
 
         .forgot-password {
-            color: #f5576c;
+            color: var(--brand);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
         }
 
         .forgot-password:hover {
-            color: #d63651;
+            color: var(--brand-dark);
         }
 
         /* Login Button */
         .btn-login {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -321,7 +321,7 @@
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 25px rgba(229, 57, 53, 0.3);
         }
 
         .btn-login:active {
@@ -349,7 +349,7 @@
             display: flex;
             align-items: center;
             margin: 25px 0;
-            color: #9ca3af;
+            color: var(--text3);
             font-size: 13px;
             font-weight: 500;
         }
@@ -359,7 +359,7 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: #e5e7eb;
+            background: var(--border);
         }
 
         .divider span {
@@ -376,9 +376,9 @@
 
         .btn-social {
             padding: 12px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border);
             border-radius: 12px;
-            background: white;
+            background: var(--surface);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -390,7 +390,7 @@
         }
 
         .btn-social:hover {
-            border-color: #d1d5db;
+            border-color: var(--border2);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
@@ -411,23 +411,23 @@
         .register-prompt {
             text-align: center;
             padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border);
         }
 
         .register-prompt p {
-            color: #6b7280;
+            color: var(--text2);
             font-size: 15px;
         }
 
         .register-link {
-            color: #f5576c;
+            color: var(--brand);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         .register-link:hover {
-            color: #d63651;
+            color: var(--brand-dark);
             text-decoration: underline;
         }
 
@@ -521,39 +521,39 @@
             text-align: center;
             font-size: 22px;
             font-weight: 700;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border);
             border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-family);
             outline: none;
             transition: border-color .2s;
         }
-        .otp-input:focus { border-color: #f5576c; box-shadow: 0 0 0 3px rgba(245,87,108,.15); }
+        .otp-input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-light); }
 
         /* ── Forgot-password modal (was fully inline-styled — moved to
            classes so [data-theme="dark"] overrides above can apply; inline
            style always beats an external selector) ── */
         .fm-modal-box {
-            background: #fff; border-radius: 20px; padding: 36px 32px;
+            background: var(--surface); border-radius: 20px; padding: 36px 32px;
             width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
             animation: slideInLeft .4s ease-out;
         }
-        .fm-title { font-size: 22px; font-weight: 700; color: #1f2937; margin-bottom: 6px; }
-        .fm-subtitle { color: #6b7280; font-size: 14px; }
-        .fm-hint { font-size: 14px; color: #6b7280; text-align: center; margin-bottom: 16px; }
+        .fm-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+        .fm-subtitle { color: var(--text2); font-size: 14px; }
+        .fm-hint { font-size: 14px; color: var(--text2); text-align: center; margin-bottom: 16px; }
         .fm-input {
-            width: 100%; padding: 13px 16px; border: 2px solid #e5e7eb; border-radius: 12px;
-            font-size: 16px; font-family: 'Poppins', sans-serif; outline: none; transition: border .3s;
+            width: 100%; padding: 13px 16px; border: 2px solid var(--border); border-radius: 12px;
+            font-size: 16px; font-family: var(--font-family); outline: none; transition: border .3s;
         }
         /* Was inline onfocus/onblur JS setting this.style.borderColor directly
            — moved to CSS now that .fm-input is a real class. */
-        .fm-input:focus { border-color: #667eea; }
+        .fm-input:focus { border-color: var(--brand); }
         .fm-btn-primary {
-            width: 100%; padding: 14px; background: linear-gradient(135deg,#667eea,#764ba2);
+            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
             color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
-            cursor: pointer; font-family: 'Poppins', sans-serif;
+            cursor: pointer; font-family: var(--font-family);
         }
-        .fm-resend-hint { text-align: center; margin-top: 12px; font-size: 13px; color: #6b7280; }
-        .fm-link-btn { background: none; border: none; color: #667eea; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif; }
+        .fm-resend-hint { text-align: center; margin-top: 12px; font-size: 13px; color: var(--text2); }
+        .fm-link-btn { background: none; border: none; color: var(--brand); cursor: pointer; font-weight: 600; font-family: var(--font-family); }
 
         /* ── Site footer ── */
         .site-footer {

@@ -160,7 +160,7 @@
     <!-- Top bar -->
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát"><i class="fas fa-times"></i></button>
+        <button class="exam-exit-btn" onclick="confirmExit()" title="Thoát" aria-label="Thoát"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="exam-title">Loading...</span>
       </div>
       <div class="exam-timer" id="exam-timer">
@@ -172,8 +172,8 @@
           <span id="prog-answered">0</span>/<span id="prog-total">40</span>
         </div>
         <span class="exam-autosave-lbl" id="exam-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
-        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
-        <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
+        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" aria-label="Toàn màn hình" id="btn-fullscreen"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
+        <button class="btn-icon-sm" id="btn-settings" onclick="toggleSettings()" title="Cài đặt" aria-label="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
 
@@ -276,7 +276,7 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" title="Thoát"
+        <button class="exam-exit-btn" title="Thoát" aria-label="Thoát"
           onclick="state.isReview && !state.submitted ? loadTests(true) : showScreen('result')"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="review-title">Review</span>
       </div>
@@ -285,8 +285,8 @@
         <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
       </div>
       <div class="exam-bar-right">
-        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ"><i class="fas fa-link"></i></button>
-        <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
+        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" aria-label="Sao chép link chia sẻ"><i class="fas fa-link"></i></button>
+        <button class="btn-icon-sm" id="btn-settings-rv" onclick="toggleSettings()" title="Cài đặt" aria-label="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
 
@@ -334,16 +334,16 @@
 
     <div class="exam-bar">
       <div class="exam-bar-left">
-        <button class="exam-exit-btn" onclick="confirmCloseRetry()" title="Thoát"><i class="fas fa-times"></i></button>
+        <button class="exam-exit-btn" onclick="confirmCloseRetry()" title="Thoát" aria-label="Thoát"><i class="fas fa-times"></i></button>
         <span class="exam-title-txt" id="retry-title">Làm lại passage</span>
       </div>
       <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
         <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
-        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" id="btn-copy-link-rt"><i class="fas fa-link"></i></button>
-        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" id="btn-fullscreen-rt"><i class="fas fa-expand" id="fs-icon-retry"></i></button>
-        <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt"><i class="fas fa-cog"></i></button>
+        <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" aria-label="Sao chép link chia sẻ" id="btn-copy-link-rt"><i class="fas fa-link"></i></button>
+        <button class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình" aria-label="Toàn màn hình" id="btn-fullscreen-rt"><i class="fas fa-expand" id="fs-icon-retry"></i></button>
+        <button class="btn-icon-sm" id="btn-settings-rt" onclick="toggleSettings()" title="Cài đặt" aria-label="Cài đặt"><i class="fas fa-cog"></i></button>
       </div>
     </div>
     <div id="practice-prog-bar" class="practice-prog-bar" style="display:none">
@@ -390,7 +390,7 @@
     <div class="modal-box modal-lg">
       <div class="modal-header">
         <h3>Lịch sử làm bài</h3>
-        <button class="modal-close" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
+        <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll">
         <table class="history-table">
@@ -434,7 +434,7 @@
     <div class="modal-box modal-lg">
       <div class="modal-header">
         <h3>📋 Lịch sử luyện bài lẻ – Reading</h3>
-        <button class="modal-close" onclick="closeModal('modal-practice-history')"><i class="fas fa-times"></i></button>
+        <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-practice-history')"><i class="fas fa-times"></i></button>
       </div>
       <div class="modal-body-scroll">
         <table class="history-table">
@@ -464,8 +464,8 @@
     <div class="dict-header">
       <span class="dict-word" id="dict-word"></span>
       <span class="dict-phonetic" id="dict-phonetic"></span>
-      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
-      <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+      <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+      <button class="dict-close" onclick="closeDictPopup()" aria-label="Đóng"><i class="fas fa-times"></i></button>
     </div>
     <div id="dict-body" class="dict-body"></div>
   </div>
@@ -476,7 +476,7 @@
   <div id="translate-popup" class="translate-popup hidden">
     <div class="translate-popup-header">
       <span class="translate-popup-lang">🌐 Dịch sang tiếng Việt</span>
-      <button class="translate-popup-close" onclick="closeTranslatePopup()"><i class="fas fa-times"></i></button>
+      <button class="translate-popup-close" onclick="closeTranslatePopup()" aria-label="Đóng"><i class="fas fa-times"></i></button>
     </div>
     <div id="translate-src" class="translate-src"></div>
     <div id="translate-result" class="translate-result"></div>
@@ -487,7 +487,7 @@
     <div class="dict-vocab-box">
       <div class="dict-vocab-header">
         <h3>📚 Lưu vào sổ từ vựng</h3>
-        <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+        <button class="dict-vocab-close" onclick="closeVocabPickerModal()" aria-label="Đóng"><i class="fas fa-times"></i></button>
       </div>
       <div class="dict-vocab-body">
         <div id="dict-vocab-book-list"></div>

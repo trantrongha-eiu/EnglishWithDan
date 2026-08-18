@@ -17,7 +17,12 @@ const SavedWordSchema = new mongoose.Schema({
   // Nguồn gốc: từ reading hay từ vocab unit
   source:      { type: String, default: '' },    // 'reading' | 'unit-5'
   savedAt:     { type: Date, default: Date.now },
-  wrongCount:  { type: Number, default: 0 }      // số lần trả lời sai tích lũy
+  wrongCount:  { type: Number, default: 0 },     // số lần trả lời sai tích lũy
+  // Spaced repetition (Leitner box, 6 mức 0-5 — xem vocabBookService.computeSrs
+  // cho công thức). nextReviewAt=null nghĩa là "chưa từng ôn, due ngay".
+  srsBox:         { type: Number, default: 0 },
+  nextReviewAt:   { type: Date, default: null },
+  lastReviewedAt: { type: Date, default: null }
 }, { _id: true });
 
 // Mỗi "sổ" = 1 topic/chủ đề

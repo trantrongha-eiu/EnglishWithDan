@@ -13,6 +13,7 @@ router.post('/streak/use-hammer', auth, userCtrl.useHammer);
 
 // ── INBOX ─────────────────────────────────────────────────────
 router.get('/messages/unread-count', auth, userCtrl.getUnreadMessageCount);
+router.get('/notifications', auth, userCtrl.getRecentNotifications);
 router.get('/messages', auth, userCtrl.listMessages);
 router.patch('/messages/:id/read', auth, userCtrl.markMessageRead);
 router.delete('/messages/:id', auth, userCtrl.deleteMessage);

@@ -7,6 +7,13 @@ const MessageSchema = new mongoose.Schema({
   subject:     { type: String, default: '' },
   body:        { type: String, required: true },
   isBroadcast: { type: Boolean, default: false },
+  // Notification-center category, for the nav.js bell dropdown (see
+  // userMessageService.getRecentNotifications). Every NEW write sets this
+  // explicitly at its call site (grep `Message.create`/`Message.insertMany`)
+  // — the 'personal' default only exists so older documents written before
+  // this field existed still render as something sensible, not as a
+  // migration requirement.
+  type: { type: String, enum: ['broadcast', 'personal', 'reminder', 'gift'], default: 'personal' },
   // Student-to-student chat message (see services/peerService.js) — kept in
   // the same collection/shape as admin/teacher messages (fromId/toId/body
   // already generic), but flagged so the teacher-inbox queries in

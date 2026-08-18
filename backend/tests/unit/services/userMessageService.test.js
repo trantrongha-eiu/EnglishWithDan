@@ -74,3 +74,58 @@ describe('userMessageService.replyToMessage', () => {
     expect(result.status).toBe('not_found');
   });
 });
+
+describe('userMessageService.getRecentNotifications', () => {
+  test('includes personal messages addressed to the user and site-wide broadcasts', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: 'Riêng', type: 'reminder' });
+    await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: null, isBroadcast: true, body: 'Thông báo chung', type: 'broadcast' });
+
+    const notifications = await userMessageService.getRecentNotifications(student._id);
+
+    expect(notifications).toHaveLength(2);
+    expect(notifications.map(n => n.type).sort()).toEqual(['broadcast', 'reminder']);
+  });
+
+  test('excludes peer (student-to-student) chat messages', async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    await Message.create({ fromId: studentB._id, fromName: studentB.username, toId: studentA._id, body: 'Chào bạn', isPeer: true });
+
+    const notifications = await userMessageService.getRecentNotifications(studentA._id);
+    expect(notifications).toHaveLength(0);
+  });
+
+  test('excludes a message this user has soft-deleted', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const msg = await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: 'Xoá đi' });
+    await Message.updateOne({ _id: msg._id }, { $addToSet: { deletedBy: student._id } });
+
+    const notifications = await userMessageService.getRecentNotifications(student._id);
+    expect(notifications).toHaveLength(0);
+  });
+
+  test('does not leak another student\'s personal message', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: studentB._id, body: 'Chỉ cho B' });
+
+    const notifications = await userMessageService.getRecentNotifications(studentA._id);
+    expect(notifications).toHaveLength(0);
+  });
+
+  test('respects the limit parameter and sorts newest first', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    for (let i = 0; i < 5; i++) {
+      await Message.create({ fromId: teacher._id, fromName: teacher.username, toId: student._id, body: `msg${i}` });
+    }
+
+    const notifications = await userMessageService.getRecentNotifications(student._id, 3);
+    expect(notifications).toHaveLength(3);
+    expect(notifications[0].createdAt.getTime()).toBeGreaterThanOrEqual(notifications[2].createdAt.getTime());
+  });
+});

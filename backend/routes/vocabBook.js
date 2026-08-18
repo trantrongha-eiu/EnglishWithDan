@@ -12,6 +12,10 @@ router.put('/reorder', auth, vocabBookController.reorderBooks);
 // POST /api/vocabbook/practice-complete
 router.post('/practice-complete', auth, vocabBookController.completePractice);
 
+// GET /api/vocabbook/review/due  – từ cần ôn tập hôm nay (spaced repetition)
+// — must stay above /:id, same reason as /reorder and /practice-complete.
+router.get('/review/due', auth, vocabBookController.getDueWords);
+
 // GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
 router.get('/:id', auth, vocabBookController.getBook);
 

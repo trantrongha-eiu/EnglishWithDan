@@ -20,6 +20,26 @@ async function getUnreadCount(uid) {
   return personal + broadcast + peer;
 }
 
+// Bell-dropdown feed (nav.js) — deliberately NOT the same query as
+// listMessages() above: this excludes reply-threading concerns and just
+// wants "the last N things worth notifying this user about", peer chat
+// excluded (isPeer messages already have their own dedicated UX in
+// inbox.html — mixing them into the bell would duplicate that surface).
+async function getRecentNotifications(uid, limit = 15) {
+  const filter = {
+    $or: [{ toId: uid, isBroadcast: false, isPeer: { $ne: true } }, { isBroadcast: true }],
+    deletedBy: { $ne: uid }
+  };
+  const messages = await Message.find(filter).sort({ createdAt: -1 }).limit(limit).lean();
+  return messages.map(m => ({
+    ...m,
+    isRead: m.isBroadcast
+      ? (m.readBy || []).some(id => id.toString() === uid.toString())
+      : m.isRead,
+    giftClaimed: (m.claimedBy || []).some(id => id.toString() === uid.toString())
+  }));
+}
+
 async function listMessages(uid, page, limit) {
   // isPeer excluded — student-to-student chat (services/peerService.js)
   // lives in the same collection but has its own thread/conversation-list
@@ -125,4 +145,4 @@ async function claimGift(id, uid) {
   };
 }
 
-module.exports = { getUnreadCount, listMessages, markRead, deleteMessage, replyToMessage, claimGift };
+module.exports = { getUnreadCount, getRecentNotifications, listMessages, markRead, deleteMessage, replyToMessage, claimGift };

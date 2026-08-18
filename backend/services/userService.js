@@ -20,13 +20,14 @@ async function getProfile(userId, currentPlan) {
   return user;
 }
 
-async function updateProfile(userId, { firstName, lastName, bio, studyMotto, targetBand }) {
+async function updateProfile(userId, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate }) {
   const update = {};
   if (firstName !== undefined) update.firstName = firstName.trim();
   if (lastName !== undefined) update.lastName = lastName.trim();
   if (bio !== undefined) update.bio = bio.trim().slice(0, 200);
   if (studyMotto !== undefined) update.studyMotto = studyMotto.trim().slice(0, 80);
   if (targetBand !== undefined) update.targetBand = targetBand === '' || targetBand === null ? null : Number(targetBand);
+  if (targetExamDate !== undefined) update.targetExamDate = targetExamDate === '' || targetExamDate === null ? null : new Date(targetExamDate);
 
   return User.findByIdAndUpdate(userId, update, { new: true })
     .select('-password -resetOTP -resetOTPExpires')
@@ -65,34 +66,73 @@ async function uploadAvatar(userId, imageBase64) {
   return { avatar: result.secure_url, user };
 }
 
+// Recent-history list size for each skill — feeds both the profile.html
+// "recent activity" list and the band-trend chart, which wants more than a
+// handful of points to be a meaningful trend. The average/total below are
+// computed separately via aggregation over the WHOLE history, not this
+// bounded list, so bumping this only affects chart resolution, never accuracy.
+const STATS_HISTORY_LIMIT = 30;
+
 async function getStats(userId) {
   const [
     readingAttempts,
     listeningAttempts,
     writingAttempts,
     speakingAttempts,
+    readingAgg,
+    listeningAgg,
+    writingAgg,
+    writingTotal,
+    speakingAgg,
     user
   ] = await Promise.all([
     TestAttempt.find({ userId, status: 'completed' })
       .select('bandScore createdAt')
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(STATS_HISTORY_LIMIT)
       .lean(),
     ListeningAttempt.find({ userId, status: 'completed' })
       .select('bandScore createdAt')
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(STATS_HISTORY_LIMIT)
       .lean(),
     WritingAttempt.find({ userId })
       .select('wordCount1 wordCount2 timeTaken createdAt grading.overallBand')
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(STATS_HISTORY_LIMIT)
       .lean(),
-    SpeakingAttempt.find({ userId })
+    SpeakingAttempt.find({ userId, status: 'analyzed' })
       .select('aiFeedback.overallBand createdAt')
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(STATS_HISTORY_LIMIT)
       .lean(),
+    // Average/total computed over the FULL history via aggregation, not the
+    // bounded .find() above — a long-history student's average used to
+    // silently only reflect their most recent 10 attempts.
+    TestAttempt.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'completed' } },
+      { $group: { _id: null, avg: { $avg: '$bandScore' }, count: { $sum: 1 } } },
+    ]),
+    ListeningAttempt.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'completed' } },
+      { $group: { _id: null, avg: { $avg: '$bandScore' }, count: { $sum: 1 } } },
+    ]),
+    // Same "only teacher-confirmed bands count" rule as before, expressed as
+    // a $match instead of a post-fetch .filter().
+    WritingAttempt.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), 'grading.overallBand': { $ne: null } } },
+      { $group: { _id: null, avg: { $avg: '$grading.overallBand' }, count: { $sum: 1 } } },
+    ]),
+    // Writing's total is deliberately every submission (graded or still
+    // pending review) — unlike the average above, which only makes sense
+    // over graded attempts. Badges like "Cây viết" (>=3 bài Writing) and the
+    // peer-profile count should reflect submissions made, not just how many
+    // a teacher has gotten to grading yet.
+    WritingAttempt.countDocuments({ userId }),
+    SpeakingAttempt.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId), status: 'analyzed' } },
+      { $group: { _id: null, avg: { $avg: '$aiFeedback.overallBand' }, count: { $sum: 1 } } },
+    ]),
     // NOT leaned: resetIfStale()/save() below need a real Mongoose document.
     User.findById(userId).select('learningStreak previousStreak lastActivityDate totalStudyMinutes streakHammers streakLostAt')
   ]);
@@ -126,22 +166,18 @@ async function getStats(userId) {
     }
   }
 
-  const avgReading = readingAttempts.length
-    ? (readingAttempts.reduce((s, a) => s + a.bandScore, 0) / readingAttempts.length).toFixed(1)
-    : null;
-  const avgListening = listeningAttempts.length
-    ? (listeningAttempts.reduce((s, a) => s + a.bandScore, 0) / listeningAttempts.length).toFixed(1)
-    : null;
-  // Only teacher-confirmed bands count (grading.overallBand) — an AI-only
-  // grade (aiGrading, gradingStatus 'pending'/'ai_done') isn't treated as a
-  // real score anywhere else in the app either (see routes/admin/stats.js's
-  // recent-attempts: `bandScore: h.grading?.overallBand ?? null`), so an
-  // attempt awaiting review is simply excluded from the average rather than
-  // counted as ungraded/zero.
-  const gradedWriting = writingAttempts.filter(a => a.grading?.overallBand != null);
-  const avgWriting = gradedWriting.length
-    ? (gradedWriting.reduce((s, a) => s + a.grading.overallBand, 0) / gradedWriting.length).toFixed(1)
-    : null;
+  // Note: "only teacher-confirmed bands count" for the writing AVERAGE
+  // (grading.overallBand) — an AI-only grade (aiGrading, gradingStatus
+  // 'pending'/'ai_done') isn't treated as a real score anywhere else in the
+  // app either (see routes/admin/stats.js's recent-attempts: `bandScore:
+  // h.grading?.overallBand ?? null`), so an attempt awaiting review is
+  // excluded from the average — enforced by writingAgg's $match above
+  // instead of a post-fetch .filter(). writingTotal deliberately counts
+  // every submission regardless of grading status (see its query above).
+  const avgReading   = readingAgg[0]   ? readingAgg[0].avg.toFixed(1)   : null;
+  const avgListening = listeningAgg[0] ? listeningAgg[0].avg.toFixed(1) : null;
+  const avgWriting   = writingAgg[0]   ? writingAgg[0].avg.toFixed(1)   : null;
+  const avgSpeaking  = speakingAgg[0]  ? speakingAgg[0].avg.toFixed(1)  : null;
 
   return {
     streak: user.learningStreak || 0,
@@ -150,10 +186,10 @@ async function getStats(userId) {
     totalStudyMinutes: user.totalStudyMinutes || 0,
     streakHammers: user.streakHammers || 0,
     canUseHammer: user.canUseHammer(),
-    reading: { total: readingAttempts.length, avgBand: avgReading, history: readingAttempts },
-    listening: { total: listeningAttempts.length, avgBand: avgListening, history: listeningAttempts },
-    writing: { total: writingAttempts.length, avgBand: avgWriting, history: writingAttempts },
-    speaking: { total: speakingAttempts.length, history: speakingAttempts }
+    reading: { total: readingAgg[0] ? readingAgg[0].count : 0, avgBand: avgReading, history: readingAttempts },
+    listening: { total: listeningAgg[0] ? listeningAgg[0].count : 0, avgBand: avgListening, history: listeningAttempts },
+    writing: { total: writingTotal, avgBand: avgWriting, history: writingAttempts },
+    speaking: { total: speakingAgg[0] ? speakingAgg[0].count : 0, avgBand: avgSpeaking, history: speakingAttempts }
   };
 }
 

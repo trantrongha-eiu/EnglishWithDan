@@ -17,8 +17,8 @@ exports.getProfile = catchAsync(async (req, res) => {
 
 // ── PUT /api/user/profile ────────────────────────────────────
 exports.updateProfile = catchAsync(async (req, res) => {
-  const { firstName, lastName, bio, studyMotto, targetBand } = req.body;
-  const user = await userService.updateProfile(req.user._id, { firstName, lastName, bio, studyMotto, targetBand });
+  const { firstName, lastName, bio, studyMotto, targetBand, targetExamDate } = req.body;
+  const user = await userService.updateProfile(req.user._id, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate });
   res.json({ success: true, user });
 });
 
@@ -96,6 +96,13 @@ function messageGuard(handler) {
 exports.getUnreadMessageCount = messageGuard(async (req, res) => {
   const count = await userMessageService.getUnreadCount(req.user._id);
   res.json({ success: true, count });
+});
+
+// ── GET /api/user/notifications — bell dropdown feed (nav.js) ──
+exports.getRecentNotifications = messageGuard(async (req, res) => {
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 15));
+  const notifications = await userMessageService.getRecentNotifications(req.user._id, limit);
+  res.json({ success: true, notifications });
 });
 
 // ── GET /api/user/messages ────────────────────────────────────

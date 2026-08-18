@@ -285,6 +285,7 @@ describe('tuitionService', () => {
       const messages = await Message.find({ toId: student._id });
       expect(messages).toHaveLength(1);
       expect(messages[0].fromId.toString()).toBe(admin._id.toString());
+      expect(messages[0].type).toBe('reminder');
     });
 
     it('returns null for a missing fee', async () => {
@@ -311,6 +312,7 @@ describe('tuitionService', () => {
 
       const messages = await Message.find({ fromId: admin._id });
       expect(messages).toHaveLength(2);
+      expect(messages.every(m => m.type === 'reminder')).toBe(true);
     });
 
     it('returns 0 and creates no messages when nothing to remind', async () => {

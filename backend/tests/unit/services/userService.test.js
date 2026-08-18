@@ -1,9 +1,11 @@
 const userService = require('../../../services/userService');
 const User = require('../../../models/User');
+const TestAttempt = require('../../../models/TestAttempt');
 const WritingAttempt = require('../../../models/WritingAttempt');
 const SpeakingAttempt = require('../../../models/SpeakingAttempt');
 const VocabActivity = require('../../../models/VocabActivity');
 const { createStudent } = require('../../factories/userFactory');
+const { createCompletedTestAttempt } = require('../../factories/contentFactory');
 
 // createdAt is normally stamped by Mongoose's timestamps plugin at creation
 // time — bypass it with a raw collection update so tests can pin an exact
@@ -79,6 +81,90 @@ describe('userService.getStats — búa Daniel fields', () => {
     const stats = await userService.getStats(user._id);
 
     expect(stats.canUseHammer).toBe(false);
+  });
+});
+
+describe('userService.getStats — averages computed over full history, not just the last N', () => {
+  it('reading avgBand reflects ALL completed attempts, not just the 10 most recent', async () => {
+    const student = await createStudent();
+    // 5 older attempts at band 5.0
+    for (let i = 0; i < 5; i++) {
+      const a = await createCompletedTestAttempt({ userId: student._id, bandScore: 5.0 });
+      await forceCreatedAt(TestAttempt, a._id, new Date(Date.now() - (20 - i) * 86400000).toISOString());
+    }
+    // 10 newer attempts at band 9.0 — a "last 10 only" average would see only these and report 9.0.
+    for (let i = 0; i < 10; i++) {
+      const a = await createCompletedTestAttempt({ userId: student._id, bandScore: 9.0 });
+      await forceCreatedAt(TestAttempt, a._id, new Date(Date.now() - (9 - i) * 86400000).toISOString());
+    }
+
+    const stats = await userService.getStats(student._id);
+
+    // True average across all 15: (5*5.0 + 10*9.0) / 15 = 7.7
+    expect(stats.reading.avgBand).toBe('7.7');
+    expect(stats.reading.total).toBe(15);
+  });
+
+  it('writing.total counts every submission (graded or still pending review), unlike the average', async () => {
+    const student = await createStudent();
+    await WritingAttempt.create({ userId: student._id, submissionType: 'exam', grading: { overallBand: 7.0 } });
+    await WritingAttempt.create({ userId: student._id, submissionType: 'exam', grading: { overallBand: 6.0 } });
+    await WritingAttempt.create({ userId: student._id, submissionType: 'exam' }); // still awaiting a teacher grade
+
+    const stats = await userService.getStats(student._id);
+
+    expect(stats.writing.total).toBe(3); // all 3 submissions count
+    expect(stats.writing.avgBand).toBe('6.5'); // average only over the 2 graded ones
+  });
+});
+
+describe('userService.updateProfile — targetExamDate', () => {
+  it('sets targetExamDate from an ISO date string', async () => {
+    const student = await createStudent();
+    const examDate = '2026-12-05';
+
+    const updated = await userService.updateProfile(student._id, { targetExamDate: examDate });
+
+    expect(new Date(updated.targetExamDate).toISOString().slice(0, 10)).toBe('2026-12-05');
+  });
+
+  it('clears targetExamDate when set to an empty string', async () => {
+    const student = await createStudent({ extra: { targetExamDate: new Date('2026-12-05') } });
+
+    const updated = await userService.updateProfile(student._id, { targetExamDate: '' });
+
+    expect(updated.targetExamDate).toBeNull();
+  });
+
+  it('leaves targetExamDate untouched when not present in the update payload', async () => {
+    const original = new Date('2026-12-05');
+    const student = await createStudent({ extra: { targetExamDate: original } });
+
+    const updated = await userService.updateProfile(student._id, { firstName: 'New Name' });
+
+    expect(new Date(updated.targetExamDate).getTime()).toBe(original.getTime());
+  });
+});
+
+describe('userService.getStats — speaking avgBand', () => {
+  test('averages only analyzed attempts, excluding pending ones whose overallBand defaults to 0', async () => {
+    const user = await createStudent();
+    await SpeakingAttempt.create({ userId: user._id, status: 'analyzed', aiFeedback: { overallBand: 6 } });
+    await SpeakingAttempt.create({ userId: user._id, status: 'analyzed', aiFeedback: { overallBand: 8 } });
+    await SpeakingAttempt.create({ userId: user._id, status: 'pending' }); // overallBand defaults to 0 — must not drag the average down
+
+    const stats = await userService.getStats(user._id);
+
+    expect(stats.speaking.avgBand).toBe('7.0');
+    expect(stats.speaking.total).toBe(2); // pending attempt excluded from total too
+  });
+
+  test('avgBand is null when the student has no analyzed speaking attempts', async () => {
+    const user = await createStudent();
+
+    const stats = await userService.getStats(user._id);
+
+    expect(stats.speaking.avgBand).toBeNull();
   });
 });
 

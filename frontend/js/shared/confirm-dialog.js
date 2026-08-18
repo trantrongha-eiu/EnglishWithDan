@@ -43,7 +43,7 @@
     modal.id = 'shared-confirm-modal';
     modal.className = 'modal-overlay hidden';
     modal.innerHTML =
-      '<div class="modal-box modal-sm">' +
+      '<div class="modal-box modal-sm" role="dialog" aria-modal="true" aria-labelledby="shared-confirm-title">' +
         '<div class="modal-body" style="text-align:center;padding-top:24px">' +
           '<h3 id="shared-confirm-title" style="margin-bottom:8px"></h3>' +
           '<p id="shared-confirm-msg" style="color:var(--text2);font-size:14px"></p>' +
@@ -55,9 +55,15 @@
       '</div>';
     document.body.appendChild(modal);
 
-    function close() { modal.classList.add('hidden'); }
+    var _triggerEl = null;
+    function close() {
+      modal.classList.add('hidden');
+      if (_triggerEl && typeof _triggerEl.focus === 'function') _triggerEl.focus();
+    }
     modal._close = close;
+    modal._captureTrigger = function () { _triggerEl = document.activeElement; };
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    modal.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
     return modal;
   }
@@ -65,6 +71,7 @@
   window.confirmDialog = function (title, message, onOk, opts) {
     opts = opts || {};
     var modal = ensureModal();
+    modal._captureTrigger();
     document.getElementById('shared-confirm-title').textContent = title;
     document.getElementById('shared-confirm-msg').textContent = message;
     var okBtn = document.getElementById('shared-confirm-ok');
@@ -76,6 +83,10 @@
     okBtn.onclick = function () { modal._close(); onOk(); };
     document.getElementById('shared-confirm-cancel').onclick = modal._close;
     modal.classList.remove('hidden');
+    // Cancel gets initial focus, not the (usually destructive) confirm
+    // button — a keyboard/screen-reader user hitting Enter immediately
+    // after the dialog opens shouldn't accidentally confirm a delete.
+    document.getElementById('shared-confirm-cancel').focus();
   };
 
   // Back-compat aliases — exact original button labels preserved.

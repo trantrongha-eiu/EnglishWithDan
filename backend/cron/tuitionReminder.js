@@ -3,7 +3,7 @@ const TuitionFee      = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
-const { buildReminderBody } = require('../services/tuitionService');
+const { buildReminderBody, sendTuitionReminderEmail } = require('../services/tuitionService');
 
 async function runReminders() {
   try {
@@ -50,15 +50,20 @@ async function runReminders() {
       byStudent[sid].fees.push(fee);
     });
 
-    const msgs = Object.values(byStudent).map(({ student, fees }) => ({
+    const groups = Object.values(byStudent);
+    const msgs = groups.map(({ student, fees }) => ({
       fromId:   admin._id,
       fromName: admin.username,
       toId:     student._id,
       subject:  `📅 Nhắc nhở học phí tháng ${currentMonth}/${currentYear}`,
       body:     buildReminderBody(fees),
+      type:     'reminder',
     }));
 
     await Message.insertMany(msgs);
+    // Best-effort email alongside the in-app message — a student who hasn't
+    // opened the app since the reminder cron ran would otherwise never see it.
+    await Promise.all(groups.map(({ student, fees }) => sendTuitionReminderEmail(student, fees)));
     console.log(`[TuitionCron] Sent ${msgs.length} auto-reminders (day ${today}/${currentMonth}/${currentYear})`);
   } catch (e) {
     console.error('[TuitionCron] Error:', e.message);

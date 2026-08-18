@@ -42,6 +42,12 @@ exports.completePractice = guard(async (req, res) => {
   });
 });
 
+exports.getDueWords = guard(async (req, res) => {
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 30));
+  const words = await vocabBookService.getDueWords(req.user._id, limit);
+  res.json({ success: true, words });
+});
+
 exports.getBook = guard(async (req, res) => {
   const book = await vocabBookService.getBook(req.params.id, req.user._id);
   if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });

@@ -80,9 +80,9 @@
   var overlay = document.createElement('div');
   overlay.id = 'um-overlay';
   overlay.innerHTML =
-    '<div id="um-card">' +
+    '<div id="um-card" role="dialog" aria-modal="true" aria-labelledby="um-title">' +
       '<div id="um-card-header">' +
-        '<button id="um-close" title="Đóng">✕</button>' +
+        '<button id="um-close" title="Đóng" aria-label="Đóng">✕</button>' +
         '<div style="font-size:28px;margin-bottom:6px">⭐</div>' +
         '<h3 id="um-title" style="margin:0 0 4px;font-size:20px;font-weight:700">Nâng cấp Premium</h3>' +
         '<p id="um-desc" style="margin:0;font-size:13px;opacity:.85">Truy cập đầy đủ ngân hàng đề thi IELTS thật — Reading · Listening · Writing · Speaking · Vocabulary</p>' +
@@ -112,9 +112,9 @@
   var successOverlay = document.createElement('div');
   successOverlay.id = 'um-success-overlay';
   successOverlay.innerHTML =
-    '<div id="um-success-card">' +
+    '<div id="um-success-card" role="dialog" aria-modal="true" aria-labelledby="um-success-title">' +
       '<div id="um-success-icon">🎉</div>' +
-      '<h3>Đăng ký gói thành công!</h3>' +
+      '<h3 id="um-success-title">Đăng ký gói thành công!</h3>' +
       '<p>Yêu cầu nâng cấp của bạn đã được ghi nhận. Admin sẽ kiểm tra và kích hoạt Premium cho tài khoản của bạn trong vòng 24 giờ.</p>' +
       '<button id="um-success-ok">Đã hiểu</button>' +
     '</div>';
@@ -122,6 +122,8 @@
 
   overlay.addEventListener('click', function (e) { if (e.target === overlay) closeUpgradeModal(); });
   successOverlay.addEventListener('click', function (e) { if (e.target === successOverlay) closeUpgradeSuccessModal(); });
+  overlay.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUpgradeModal(); });
+  successOverlay.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUpgradeSuccessModal(); });
   document.getElementById('um-close').addEventListener('click', closeUpgradeModal);
   document.getElementById('um-success-ok').addEventListener('click', closeUpgradeSuccessModal);
   document.getElementById('um-submit-btn').addEventListener('click', submitUpgradeRequest);
@@ -129,8 +131,11 @@
     btn.addEventListener('click', function () { selectUpgradePlan(parseInt(btn.dataset.months, 10)); });
   });
 
+  var _umTriggerEl = null;
   async function openUpgradeModal() {
+    _umTriggerEl = document.activeElement;
     overlay.classList.add('open');
+    document.getElementById('um-close').focus();
     var user = window.AuthService ? window.AuthService.getUser() : null;
     var isPremium = user && user.plan === 'premium';
     var titleEl = document.getElementById('um-title');
@@ -153,8 +158,14 @@
     selectUpgradePlan(1);
   }
 
-  function closeUpgradeModal() { overlay.classList.remove('open'); }
-  function closeUpgradeSuccessModal() { successOverlay.classList.remove('open'); }
+  function closeUpgradeModal() {
+    overlay.classList.remove('open');
+    if (_umTriggerEl && typeof _umTriggerEl.focus === 'function') _umTriggerEl.focus();
+  }
+  function closeUpgradeSuccessModal() {
+    successOverlay.classList.remove('open');
+    if (_umTriggerEl && typeof _umTriggerEl.focus === 'function') _umTriggerEl.focus();
+  }
 
   function selectUpgradePlan(months) {
     overlay.querySelectorAll('.um-plan-btn').forEach(function (b) { b.classList.remove('active'); });

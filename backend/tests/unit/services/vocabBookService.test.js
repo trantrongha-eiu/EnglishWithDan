@@ -147,6 +147,115 @@ describe('vocabBookService', () => {
     });
   });
 
+  describe('updateWord — spaced repetition (Leitner box)', () => {
+    it('marking da-thuoc promotes a fresh word from box 0 to box 1 (1-day interval)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'da-thuoc' });
+
+      expect(result.word.srsBox).toBe(1);
+      const daysUntilReview = Math.round((result.word.nextReviewAt - result.word.lastReviewedAt) / 86400000);
+      expect(daysUntilReview).toBe(1);
+    });
+
+    it('repeated da-thuoc reviews keep promoting the box, capped at box 5 (30-day interval)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc', srsBox: 5 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'da-thuoc' });
+
+      expect(result.word.srsBox).toBe(5); // already at the top box, stays capped
+      const daysUntilReview = Math.round((result.word.nextReviewAt - result.word.lastReviewedAt) / 86400000);
+      expect(daysUntilReview).toBe(30);
+    });
+
+    it('marking chua-thuoc resets the box to 0, due again immediately', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'da-thuoc', srsBox: 4 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'chua-thuoc' });
+
+      expect(result.word.srsBox).toBe(0);
+      expect(result.word.nextReviewAt.getTime()).toBe(result.word.lastReviewedAt.getTime());
+    });
+
+    it('marking nho-so-so demotes by one box but never below box 1', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'da-thuoc', srsBox: 3 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, { status: 'nho-so-so' });
+      expect(result.word.srsBox).toBe(2);
+
+      const result2 = await vocabBookService.updateWord(book._id, result.word._id, student._id, student, { status: 'nho-so-so' });
+      const result3 = await vocabBookService.updateWord(book._id, result2.word._id, student._id, student, { status: 'nho-so-so' });
+      expect(result3.word.srsBox).toBe(1); // floors at 1, doesn't reach 0 via nho-so-so alone
+    });
+
+    it('ignores a client-supplied srsBox/nextReviewAt — the schedule is always server-computed', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc' }] });
+      const wordId = book.words[0]._id;
+      const fakeFarFuture = new Date(Date.now() + 365 * 86400000);
+
+      const result = await vocabBookService.updateWord(book._id, wordId, student._id, student, {
+        status: 'da-thuoc', srsBox: 999, nextReviewAt: fakeFarFuture,
+      });
+
+      expect(result.word.srsBox).toBe(1); // computed from real prior box (0), not the client's 999
+      expect(result.word.nextReviewAt.getTime()).not.toBe(fakeFarFuture.getTime());
+    });
+  });
+
+  describe('getDueWords', () => {
+    it('includes a never-reviewed word (nextReviewAt null) immediately', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [{ word: 'fresh', nextReviewAt: null }] });
+
+      const due = await vocabBookService.getDueWords(student._id);
+      expect(due.map(d => d.word.word)).toContain('fresh');
+    });
+
+    it('excludes a word whose nextReviewAt is in the future', async () => {
+      const student = await createStudent();
+      const future = new Date(Date.now() + 10 * 86400000);
+      await createVocabBook({ userId: student._id, words: [{ word: 'notdue', nextReviewAt: future }] });
+
+      const due = await vocabBookService.getDueWords(student._id);
+      expect(due.map(d => d.word.word)).not.toContain('notdue');
+    });
+
+    it('includes a word whose nextReviewAt has already passed', async () => {
+      const student = await createStudent();
+      const past = new Date(Date.now() - 86400000);
+      await createVocabBook({ userId: student._id, words: [{ word: 'overdue', nextReviewAt: past }] });
+
+      const due = await vocabBookService.getDueWords(student._id);
+      expect(due.map(d => d.word.word)).toContain('overdue');
+    });
+
+    it('only returns due words belonging to the requesting user', async () => {
+      const owner = await createStudent();
+      const other = await createStudent();
+      await createVocabBook({ userId: owner._id, words: [{ word: 'mine', nextReviewAt: null }] });
+
+      const due = await vocabBookService.getDueWords(other._id);
+      expect(due).toHaveLength(0);
+    });
+
+    it('respects the limit parameter', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: makeWords(10).map(w => ({ ...w, nextReviewAt: null })) });
+
+      const due = await vocabBookService.getDueWords(student._id, 3);
+      expect(due).toHaveLength(3);
+    });
+  });
+
   describe('deleteBook', () => {
     it('refuses to delete a default book', async () => {
       const student = await createStudent();

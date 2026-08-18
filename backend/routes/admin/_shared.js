@@ -8,8 +8,7 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { effectiveStreak } = require('../../utils/streak');
-
-function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+const { escapeRegex } = require('../../utils/strings');
 
 // Upload a base64 image data URI to Cloudinary, return the secure URL.
 // Shared by every admin route that lets teachers attach an inline image

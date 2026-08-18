@@ -35,12 +35,6 @@ async function getPeerProfile(viewerId, targetId) {
   if (!target || target.role !== 'student') return { status: 'not_found' };
 
   const stats = await getStats(targetId);
-  const spkBands = (stats.speaking.history || [])
-    .map(h => h.aiFeedback?.overallBand)
-    .filter(Boolean);
-  const speakingAvgBand = spkBands.length
-    ? (spkBands.reduce((a, b) => a + b, 0) / spkBands.length).toFixed(1)
-    : null;
 
   const blockedByMe = await Block.findOne({ blockerId: viewerId, blockedId: targetId }).select('_id').lean();
 
@@ -55,7 +49,7 @@ async function getPeerProfile(viewerId, targetId) {
       reading: { avgBand: stats.reading.avgBand, total: stats.reading.total },
       listening: { avgBand: stats.listening.avgBand, total: stats.listening.total },
       writing: { avgBand: stats.writing.avgBand, total: stats.writing.total },
-      speaking: { avgBand: speakingAvgBand, total: stats.speaking.total },
+      speaking: { avgBand: stats.speaking.avgBand, total: stats.speaking.total },
       isBlockedByMe: !!blockedByMe,
       isSelf: String(viewerId) === String(targetId),
     },

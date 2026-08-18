@@ -101,6 +101,7 @@ app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/courses',         require('./routes/courses'));
+app.use('/api/search',          require('./routes/search'));
 app.use('/api/writing-practice', require('./routes/writingPractice'));
 app.use('/api/task1',           require('./routes/task1Practice'));
 app.use('/api/task2',           require('./routes/task2Practice'));

@@ -123,12 +123,26 @@
     '<a href="dashboard.html" class="nav-brand"><img src="img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
-      '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
-      '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
-      '<a href="profile.html" id="navUserWidget" title="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
+      '<button class="btn-dark-mode" id="globalSoundBtn" title="Bật/tắt âm thanh" aria-label="Bật/tắt âm thanh"><span class="sound-toggle-icon">🔊</span></button>' +
+      '<button class="btn-dark-mode" id="globalDarkBtn" title="Chế độ tối/sáng" aria-label="Chuyển chế độ tối/sáng"><span class="dark-toggle-icon">🌙</span></button>' +
+      '<div class="nav-search-wrap" style="position:relative">' +
+        '<button class="btn-dark-mode" id="globalSearchBtn" title="Tìm kiếm" aria-label="Tìm kiếm" aria-haspopup="true" aria-expanded="false"><i class="fas fa-search"></i></button>' +
+        '<div class="nav-search-panel" id="globalSearchPanel">' +
+          '<input type="text" id="globalSearchInput" class="nav-search-input" placeholder="Tìm đề Reading, Listening, bài học từ vựng...">' +
+          '<div class="nav-search-results" id="globalSearchResults"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="nav-bell-wrap" style="position:relative">' +
+        '<button class="btn-dark-mode" id="globalBellBtn" title="Thông báo" aria-label="Thông báo" aria-haspopup="true" aria-expanded="false"><i class="fas fa-bell"></i><span id="navBellBadge" class="nav-bell-badge" style="display:none">0</span></button>' +
+        '<div class="nav-bell-panel" id="globalBellPanel">' +
+          '<div class="nav-bell-panel-header">Thông báo</div>' +
+          '<div class="nav-bell-panel-list" id="globalBellList"><div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<a href="profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
       '</a>' +
-      '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>' +
+      '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>' +
       '<button class="hamburger" id="globalHamburger" aria-label="Mở menu"><span></span><span></span><span></span></button>' +
     '</div>';
   document.body.insertBefore(nav, document.body.firstChild);
@@ -261,6 +275,141 @@
     });
   }
 
+  // ── Site-wide search ────────────────────────────────────────
+  var searchBtn = document.getElementById('globalSearchBtn');
+  var searchPanel = document.getElementById('globalSearchPanel');
+  var searchInput = document.getElementById('globalSearchInput');
+  var searchResults = document.getElementById('globalSearchResults');
+  var _searchDebounce = null;
+
+  function openSearchPanel() {
+    searchPanel.classList.add('open');
+    searchBtn.setAttribute('aria-expanded', 'true');
+    searchInput.focus();
+  }
+  function closeSearchPanel() {
+    searchPanel.classList.remove('open');
+    searchBtn.setAttribute('aria-expanded', 'false');
+  }
+  function _renderSearchResults(results) {
+    if (!results.length) {
+      searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Không tìm thấy kết quả nào</div>';
+      return;
+    }
+    var byCategory = {};
+    var order = [];
+    results.forEach(function (r) {
+      if (!byCategory[r.category]) { byCategory[r.category] = []; order.push(r.category); }
+      byCategory[r.category].push(r);
+    });
+    searchResults.innerHTML = order.map(function (cat) {
+      var items = byCategory[cat].map(function (r) {
+        return '<a href="' + r.url + '" class="nav-search-item">' + r.label + '</a>';
+      }).join('');
+      return '<div class="nav-search-group"><div class="nav-search-group-label">' + cat + '</div>' + items + '</div>';
+    }).join('');
+  }
+  if (searchBtn) {
+    searchBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (searchPanel.classList.contains('open')) closeSearchPanel(); else openSearchPanel();
+    });
+    searchInput.addEventListener('input', function () {
+      clearTimeout(_searchDebounce);
+      var q = searchInput.value.trim();
+      if (!q) { searchResults.innerHTML = ''; return; }
+      _searchDebounce = setTimeout(function () {
+        searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i></div>';
+        var headers = window.AuthService ? window.AuthService.authHeader() : {};
+        fetch(API + '/search?q=' + encodeURIComponent(q), { headers: headers })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { _renderSearchResults(d.results || []); })
+          .catch(function () {
+            searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Lỗi tìm kiếm.</div>';
+          });
+      }, 300);
+    });
+    document.addEventListener('click', function (e) {
+      if (!searchPanel.classList.contains('open')) return;
+      if (searchPanel.contains(e.target) || searchBtn.contains(e.target)) return;
+      closeSearchPanel();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeSearchPanel();
+    });
+  }
+
+  // ── Notification bell ──────────────────────────────────────
+  // Deliberately does NOT excludes/re-fetches on its own poll loop — the
+  // badge count reuses the exact same /user/messages/unread-count response
+  // _pollInboxBadge() already fetches every 20s for navInboxBadge, so this
+  // is just a second showBadge() call, not a second network request. The
+  // dropdown LIST (a different, richer payload) is fetched lazily, only
+  // when the student actually opens the panel.
+  var NOTIF_TYPE_ICON = { broadcast: '📢', reminder: '⏰', gift: '🎁', personal: '✉️' };
+  var bellBtn = document.getElementById('globalBellBtn');
+  var bellPanel = document.getElementById('globalBellPanel');
+  var bellList = document.getElementById('globalBellList');
+  var _bellLoaded = false;
+
+  function _renderBellList(notifications) {
+    if (!notifications.length) {
+      bellList.innerHTML = '<div style="padding:28px 16px;text-align:center;color:var(--text3);font-size:13px">🔔<br><br>Chưa có thông báo nào</div>';
+      return;
+    }
+    bellList.innerHTML = notifications.map(function (n) {
+      var icon = NOTIF_TYPE_ICON[n.type] || '✉️';
+      var subject = n.subject || (n.isBroadcast ? 'Thông báo chung' : 'Tin nhắn');
+      var date = new Date(n.createdAt).toLocaleDateString('vi-VN');
+      var unreadCls = !n.isRead ? ' unread' : '';
+      var snippet = (n.body || '').replace(/\s+/g, ' ').trim();
+      if (snippet.length > 80) snippet = snippet.slice(0, 80) + '…';
+      return '<a href="inbox.html" class="nav-bell-item' + unreadCls + '">' +
+        '<span class="nav-bell-icon">' + icon + '</span>' +
+        '<span class="nav-bell-item-body">' +
+          '<span class="nav-bell-item-subject">' + subject + '</span>' +
+          '<span class="nav-bell-item-snippet">' + snippet + '</span>' +
+          '<span class="nav-bell-item-date">' + date + '</span>' +
+        '</span>' +
+      '</a>';
+    }).join('');
+  }
+
+  function _loadBellList() {
+    bellList.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+    var headers = window.AuthService ? window.AuthService.authHeader() : {};
+    fetch(API + '/user/notifications?limit=15', { headers: headers })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { _renderBellList(d.notifications || []); })
+      .catch(function () {
+        bellList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Không thể tải thông báo.</div>';
+      });
+  }
+
+  function openBellPanel() {
+    bellPanel.classList.add('open');
+    bellBtn.setAttribute('aria-expanded', 'true');
+    if (!_bellLoaded) { _bellLoaded = true; _loadBellList(); }
+  }
+  function closeBellPanel() {
+    bellPanel.classList.remove('open');
+    bellBtn.setAttribute('aria-expanded', 'false');
+  }
+  if (bellBtn) {
+    bellBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (bellPanel.classList.contains('open')) closeBellPanel(); else openBellPanel();
+    });
+    document.addEventListener('click', function (e) {
+      if (!bellPanel.classList.contains('open')) return;
+      if (bellPanel.contains(e.target) || bellBtn.contains(e.target)) return;
+      closeBellPanel();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeBellPanel();
+    });
+  }
+
   var token = window.AuthService ? window.AuthService.getToken() : localStorage.getItem('token');
   if (token) {
     var headers = window.AuthService ? window.AuthService.authHeader() : { Authorization: 'Bearer ' + token };
@@ -276,7 +425,10 @@
     function _pollInboxBadge() {
       fetch(API + '/user/messages/unread-count', { headers: headers })
         .then(function (r) { return r.json(); })
-        .then(function (d) { showBadge('navInboxBadge', d.count || 0); })
+        .then(function (d) {
+          showBadge('navInboxBadge', d.count || 0);
+          showBadge('navBellBadge', d.count || 0);
+        })
         .catch(function () {});
     }
     _pollInboxBadge();

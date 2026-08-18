@@ -6,6 +6,8 @@ const TuitionFee = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
 const Message = require('../models/Message');
 const User = require('../models/User');
+const emailService = require('./emailService');
+const { escapeHtml } = require('../utils/escapeHtml');
 
 // Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
 // below, and cron/tuitionReminder.js's daily auto-remind — so there's one
@@ -27,6 +29,26 @@ function buildReminderBody(fees) {
   const lines = fees.map(f => `• ${feeLabel(f)}: ${fmtVNDAmount(f.amount)} VND`).join('\n');
   const total = fees.reduce((s, f) => s + (f.amount || 0), 0);
   return `📢 Nhắc nhở học phí\n\nBạn đang có ${fees.length} khoản học phí chưa thanh toán:\n${lines}\n\nTổng cộng: ${fmtVNDAmount(total)} VND\n\nVui lòng vào trang Hồ sơ → Học phí để xem thông tin chuyển khoản và xác nhận thanh toán.\n\nCảm ơn bạn! 🙏`;
+}
+
+// Additive notification channel for tuition reminders — the in-app Message
+// (above/below call sites) is still created unconditionally either way; this
+// is best-effort only, so a student who never checks the inbox still hears
+// about an unpaid fee. Does NOT touch the payment/confirmation flow itself,
+// which stays fully manual (see docs/PRODUCT_FEATURE_AUDIT.md).
+async function sendTuitionReminderEmail(student, fees, customMessage) {
+  if (!student?.email) return;
+  const bodyText = customMessage || buildReminderBody(fees);
+  const html = `
+    <div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;background:#f8f9fb;padding:32px 24px;border-radius:12px">
+      <div style="text-align:center;margin-bottom:20px;font-size:20px;font-weight:800">
+        <span style="color:#3d8bff">Daniel</span><span style="color:#e53935">Hà</span>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:24px;border:1px solid #e5e7eb;white-space:pre-line;color:#111;font-size:14px;line-height:1.7">
+        ${escapeHtml(bodyText)}
+      </div>
+    </div>`;
+  await emailService.sendEmail(student.email, 'Nhắc nhở học phí — EnglishWithDan', html);
 }
 
 async function getSettings() {
@@ -204,6 +226,7 @@ async function updateFee(id, body, sender) {
       toId: fee.studentId,
       subject: `Đã xác nhận thanh toán học phí ${feeLabel(fee)}`,
       body: `✅ Học phí của bạn đã được xác nhận thanh toán:\n• Kỳ: ${feeLabel(fee)}\n• Số tiền: ${fmtVNDAmount(fee.amount)} VND\n\nCảm ơn bạn! 🙏`,
+      type: 'personal',
     });
   }
 
@@ -223,13 +246,15 @@ async function sendReminder(feeId, customMessage, sender) {
     toId: fee.studentId._id,
     subject: `Nhắc nhở học phí ${feeLabel(fee)}`,
     body: customMessage || buildReminderBody([fee]),
+    type: 'reminder',
   });
+  await sendTuitionReminderEmail(fee.studentId, [fee], customMessage);
   return true;
 }
 
 async function sendBulkReminders({ month, year, customMessage }, sender) {
   const fees = await TuitionFee.find({ month: Number(month), year: Number(year), isPaid: false })
-    .populate('studentId', 'username _id').lean();
+    .populate('studentId', 'username email _id').lean();
   if (!fees.length) return 0;
   const monthLabel = `tháng ${month}/${year}`;
   const msgs = fees.map(fee => ({
@@ -237,8 +262,12 @@ async function sendBulkReminders({ month, year, customMessage }, sender) {
     toId: fee.studentId._id,
     subject: `Nhắc nhở học phí ${monthLabel}`,
     body: customMessage || buildReminderBody([fee]),
+    type: 'reminder',
   }));
   await Message.insertMany(msgs);
+  // Best-effort, in parallel — one slow/failed mailbox must not delay or
+  // block the others (sendTuitionReminderEmail already fails open per-call).
+  await Promise.all(fees.map(fee => sendTuitionReminderEmail(fee.studentId, [fee], customMessage)));
   return msgs.length;
 }
 
@@ -273,6 +302,7 @@ async function notifyPayment(feeId, student) {
       toId: admin._id,
       subject: `[Học phí] ${student.username} đã thanh toán ${monthLabel}`,
       body: `Học viên ${student.username} (${student.email}) vừa xác nhận đã chuyển khoản học phí ${monthLabel}.\n\nSố tiền: ${amount} VND\n\nVui lòng kiểm tra và đánh dấu đã thu trong trang Quản lý học phí.`,
+      type: 'personal',
     })));
   }
   return { status: 'ok' };
@@ -284,5 +314,5 @@ module.exports = {
   createFee, updateFee, deleteFee,
   sendReminder, sendBulkReminders,
   getMySummary, getMyFees, notifyPayment,
-  buildReminderBody,
+  buildReminderBody, sendTuitionReminderEmail,
 };

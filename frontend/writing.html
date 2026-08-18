@@ -87,7 +87,7 @@
     </div>
     <div class="exam-topbar-right">
       <span class="exam-autosave-label" id="btn-autosave" title="Tự động lưu"><i class="fas fa-cloud-upload-alt"></i></span>
-      <button class="exam-topbar-btn" id="btn-fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
+      <button class="exam-topbar-btn" id="btn-fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình" aria-label="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-exam"></i></button>
       <button class="exam-topbar-btn" onclick="toggleHideTimer()" id="btn-hide-timer">Ẩn</button>
       <button class="exam-topbar-btn exam-submit-topbar-btn" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
     </div>
@@ -135,8 +135,8 @@
       <button class="task-nav-btn"        id="btn-task-2" onclick="switchTask(2)">2</button>
     </div>
     <div class="footer-spacer"></div>
-    <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous"><i class="fas fa-chevron-left"></i></button>
-    <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next"><i class="fas fa-chevron-right"></i></button>
+    <button class="arrow-btn" id="btn-prev" onclick="switchTask(state.currentTask - 1)" title="Previous" aria-label="Task trước"><i class="fas fa-chevron-left"></i></button>
+    <button class="arrow-btn" id="btn-next" onclick="switchTask(state.currentTask + 1)" title="Next" aria-label="Task sau"><i class="fas fa-chevron-right"></i></button>
     <button class="btn-submit-exam" onclick="confirmSubmit()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
   </div>
 </div>
@@ -183,7 +183,7 @@
         <button class="btn-hist-filter active" id="hf-all"      onclick="setHistoryFilter('all',this)">Tất cả</button>
         <button class="btn-hist-filter"        id="hf-exam"     onclick="setHistoryFilter('exam',this)"><i class="fas fa-trophy"></i> Thi</button>
         <button class="btn-hist-filter"        id="hf-practice" onclick="setHistoryFilter('practice',this)"><i class="fas fa-pencil-alt"></i> Luyện</button>
-        <button class="review-modal-close" onclick="closeHistoryModal()"><i class="fas fa-times"></i></button>
+        <button class="review-modal-close" aria-label="Đóng" onclick="closeHistoryModal()"><i class="fas fa-times"></i></button>
       </div>
     </div>
     <div class="review-modal-body" id="history-content">
@@ -417,7 +417,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Thoát bài luyện?</h3>
-      <button class="review-modal-close" onclick="document.getElementById('practice-exit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
+      <button class="review-modal-close" aria-label="Đóng" onclick="document.getElementById('practice-exit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">Bài viết chưa nộp sẽ được <strong>lưu nháp tự động</strong>. Bạn có thể vào lại để tiếp tục viết sau.</p>
@@ -434,7 +434,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Nộp bài luyện tập?</h3>
-      <button class="review-modal-close" onclick="document.getElementById('practice-submit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
+      <button class="review-modal-close" aria-label="Đóng" onclick="document.getElementById('practice-submit-modal').classList.remove('open')"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
@@ -456,7 +456,7 @@
   <div class="review-modal">
     <div class="review-modal-header">
       <h3 id="review-modal-title">Xem lại bài làm</h3>
-      <button class="review-modal-close" onclick="closeReviewModal()"><i class="fas fa-times"></i></button>
+      <button class="review-modal-close" aria-label="Đóng" onclick="closeReviewModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" id="review-modal-body">
       <div class="spinner"></div>
@@ -475,7 +475,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Thoát khỏi bài thi?</h3>
-      <button class="review-modal-close" onclick="closeExitModal()"><i class="fas fa-times"></i></button>
+      <button class="review-modal-close" aria-label="Đóng" onclick="closeExitModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
@@ -496,7 +496,7 @@
   <div class="review-modal" style="max-width:420px">
     <div class="review-modal-header">
       <h3>Nộp bài?</h3>
-      <button class="review-modal-close" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
+      <button class="review-modal-close" aria-label="Đóng" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="review-modal-body" style="padding:20px">
       <p class="wr-modal-text">
@@ -519,8 +519,8 @@
   <div class="dict-header">
     <span class="dict-word" id="dict-word"></span>
     <span class="dict-phonetic" id="dict-phonetic"></span>
-    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
-    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()" aria-label="Đóng"><i class="fas fa-times"></i></button>
   </div>
   <div id="dict-body" class="dict-body"></div>
 </div>
@@ -529,7 +529,7 @@
   <div class="dict-vocab-box">
     <div class="dict-vocab-header">
       <h3>📚 Lưu vào sổ từ vựng</h3>
-      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()" aria-label="Đóng"><i class="fas fa-times"></i></button>
     </div>
     <div class="dict-vocab-body">
       <div id="dict-vocab-book-list"></div>

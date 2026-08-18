@@ -1,6 +1,7 @@
 'use strict';
 
 // Extracted from routes/vocabBook.js, verbatim logic.
+const mongoose = require('mongoose');
 const VocabBook = require('../models/VocabBook');
 const VocabUnit = require('../models/VocabUnit');
 const VocabActivity = require('../models/VocabActivity');
@@ -177,6 +178,24 @@ async function completePractice(user, { wordsAnswered, correctAnswered = 0, unit
   };
 }
 
+// Spaced repetition (Leitner box). 6 boxes (0-5), interval in days per box —
+// index = box, so SRS_INTERVAL_DAYS[srsBox] is always the interval that was
+// just earned. 'da-thuoc' promotes a box (further out), 'nho-so-so' demotes
+// by one but never below box 1 (a "kinda remembered" miss isn't as costly as
+// a full miss), 'chua-thuoc' resets to box 0 (due again immediately).
+const SRS_INTERVAL_DAYS = [0, 1, 3, 7, 14, 30];
+
+function computeSrs(prevBox, status) {
+  let srsBox = prevBox || 0;
+  if (status === 'da-thuoc') srsBox = Math.min(srsBox + 1, SRS_INTERVAL_DAYS.length - 1);
+  else if (status === 'nho-so-so') srsBox = Math.max(srsBox - 1, 1);
+  else if (status === 'chua-thuoc') srsBox = 0;
+
+  const now = new Date();
+  const nextReviewAt = new Date(now.getTime() + SRS_INTERVAL_DAYS[srsBox] * 24 * 60 * 60 * 1000);
+  return { srsBox, nextReviewAt, lastReviewedAt: now };
+}
+
 async function getBook(id, userId) {
   return VocabBook.findOne({ _id: id, userId });
 }
@@ -269,7 +288,17 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
   if (!wordDoc) return { status2: 'word_not_found' };
 
   const hadStatusChange = status !== undefined && status !== wordDoc.status;
-  if (status !== undefined) wordDoc.status = status;
+  if (status !== undefined) {
+    wordDoc.status = status;
+    // Server computes the SRS schedule — never trust a client-supplied
+    // srsBox/nextReviewAt (see updateWord's caller list: PATCH accepts an
+    // arbitrary body today, and this is the one part of it that must stay
+    // server-authoritative).
+    const srs = computeSrs(wordDoc.srsBox, status);
+    wordDoc.srsBox = srs.srsBox;
+    wordDoc.nextReviewAt = srs.nextReviewAt;
+    wordDoc.lastReviewedAt = srs.lastReviewedAt;
+  }
   if (note !== undefined) wordDoc.note = note;
   if (word !== undefined) wordDoc.word = word.trim();
   if (meaning !== undefined) wordDoc.meaning = meaning;
@@ -350,7 +379,26 @@ async function deleteWords(bookId, userId, wordIds) {
   return { status: 'ok' };
 }
 
+// Words due for review "today": nextReviewAt in the past, OR never reviewed
+// at all (a freshly-saved word should show up in the queue right away).
+// $unwind across a user's books' embedded word arrays — capped at 300
+// words/book x 15 books/user max, comfortably small for this per-request
+// aggregation (see docs/PRODUCT_FEATURE_AUDIT.md's SRS phase for why no
+// dedicated index was added: revisit only if that cap assumption changes).
+async function getDueWords(userId, limit = 30) {
+  const now = new Date();
+  return VocabBook.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $unwind: '$words' },
+    { $match: { $or: [{ 'words.nextReviewAt': { $lte: now } }, { 'words.nextReviewAt': null }] } },
+    { $sort: { 'words.nextReviewAt': 1 } },
+    { $limit: limit },
+    { $project: { _id: 0, bookId: '$_id', bookName: '$name', word: '$words' } },
+  ]);
+}
+
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
+  getDueWords,
 };

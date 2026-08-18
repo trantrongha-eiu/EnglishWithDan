@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
   // Profile customization
   studyMotto:   { type: String, default: '', maxlength: 80 },
   targetBand:   { type: Number, default: null, min: 4, max: 9 },
+  // Study planner (lightweight — see docs/PRODUCT_FEATURE_AUDIT.md): a
+  // self-set exam date, purely informational. No scheduling/reminders are
+  // derived from it beyond the client-side "days remaining" banner.
+  targetExamDate: { type: Date, default: null },
   // Free-text class label ("6", "6.5", ...) assigned by admin/teacher —
   // scopes which Vocabulary Lessons a student sees (see
   // vocabularyLessonService.listPublicLessons). Empty = unassigned; an

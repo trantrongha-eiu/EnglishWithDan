@@ -118,6 +118,7 @@ router.post('/messages', auth, teacherOnly, async (req, res) => {
       isBroadcast:    !!isBroadcast,
       giftHammers:    hammers,
       giftStreakDays: streakDays,
+      type:           isBroadcast ? 'broadcast' : (hammers > 0 || streakDays > 0) ? 'gift' : 'personal',
     });
     await msg.save();
     res.status(201).json({ success: true, message: msg });

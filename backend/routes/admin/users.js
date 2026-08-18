@@ -144,6 +144,7 @@ router.post('/users/:id/remind', auth, teacherOnly, async (req, res) => {
       toId:     student._id,
       subject:  subject?.trim() || '⚠️ Nhắc nhở học tập',
       body,
+      type: 'reminder',
     });
 
     res.json({ success: true, studyReminderCount: student.studyReminderCount });
