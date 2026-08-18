@@ -863,6 +863,15 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   background:linear-gradient(135deg,#6b7280 0%,#374151 100%);
   box-shadow:0 4px 16px rgba(0,0,0,.25);
 }
+/* peer-chat-widget.js's own @media(max-width:480px) rule moves #pcw-root
+   from right:20px to right:12px on small phones — without a matching
+   change here the two buttons' right edges drift apart on exactly that
+   breakpoint (most real Android phones), reading as visibly "lệch" even
+   though they no longer overlap vertically. Keep this in sync with that
+   file's breakpoint value. */
+@media(max-width:480px){
+  .mob-fab{right:12px}
+}
 
 /* Backdrop */
 .mob-backdrop{
