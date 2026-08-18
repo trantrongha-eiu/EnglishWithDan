@@ -39,6 +39,9 @@ router.get('/practice/list', auth, readingController.listPracticePassages);
 // GET /api/reading/practice/by-id/:id
 router.get('/practice/by-id/:id', auth, readingController.getPracticePassageById);
 
+// GET /api/reading/practice/answer-key/:id — fetched only at submit time
+router.get('/practice/answer-key/:id', auth, readingController.getPassageAnswerKey);
+
 // POST /api/reading/practice/save
 router.post('/practice/save', auth, readingController.savePractice);
 

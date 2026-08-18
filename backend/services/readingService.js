@@ -12,6 +12,7 @@ const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
+const { bandScoreTable } = require('../utils/bandScore');
 
 function safeQ(q) {
   return {
@@ -57,6 +58,20 @@ function gradeOne(rawUser, rawCorrect) {
   return alts.some(alt => alt === userLow);
 }
 
+// "Choose TWO/THREE letters A-G" clusters: the frontend writes the SAME
+// selected-letters JSON array (e.g. '["A","D"]') to every question number
+// in the cluster (toggleMultiAnswer() in reading-v2.js), while each
+// individual question's own correctAnswer is a single letter — a question
+// is correct if the student's one shared selection includes THAT
+// question's letter (naturally gives partial credit per question, matching
+// how IELTS scores these).
+function gradeMultiAnswerGroup(rawUser, rawCorrect) {
+  try {
+    const userArr = JSON.parse(rawUser || '[]').map(s => String(s).toUpperCase().trim());
+    return userArr.includes((rawCorrect || '').toUpperCase().trim());
+  } catch { return false; }
+}
+
 // Shared by submitTest() and savePractice() — grades every question group
 // of a passage against an answersMap ({questionNumber: userAnswer}) using
 // the real correctAnswer/interchangeableAnswers-pool logic. Extracted so
@@ -69,8 +84,17 @@ function gradeGroups(groups, answersMap) {
   for (const group of groups) {
     const qs = group.questions || [];
     const isTFNG = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+    // Admins toggle interchangeableAnswers ("Hoán đổi thứ tự") ON for
+    // multi-answer-group clusters too (that's literally what the admin
+    // UI's checkbox label means), but the pool-matching branch below
+    // compares a whole JSON-array userAnswer against single-letter pool
+    // entries via indexOf — never matches. Route these to
+    // gradeMultiAnswerGroup() instead, same as the TFNG exclusion just
+    // above (a real question type needing its own dedicated match logic,
+    // not shared-pool matching).
+    const isMultiAnswerGroup = qs.some(q => q.type === 'multi-answer-group');
 
-    if (group.interchangeableAnswers && qs.length > 0 && !isTFNG) {
+    if (group.interchangeableAnswers && qs.length > 0 && !isTFNG && !isMultiAnswerGroup) {
       const correctPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
       const remainingPool = [...correctPool];
       for (const q of qs) {
@@ -90,7 +114,9 @@ function gradeGroups(groups, answersMap) {
         const rawUser = (answersMap[q.questionNumber] || '').toString().trim();
         const rawCorrect = (q.correctAnswer || '').trim();
         const answered = rawUser !== '';
-        const isCorrect = gradeOne(rawUser, rawCorrect);
+        const isCorrect = q.type === 'multi-answer-group'
+          ? gradeMultiAnswerGroup(rawUser, rawCorrect)
+          : gradeOne(rawUser, rawCorrect);
         if (!answered) skippedCount++;
         else if (isCorrect) correctCount++;
         else wrongCount++;
@@ -187,7 +213,22 @@ async function startTest(testId, userId) {
 }
 
 async function submitTest(attemptId, answers, user) {
-  const attempt = await TestAttempt.findOne({ _id: attemptId, userId: user._id, status: 'in-progress' });
+  // Atomically claim this attempt (status: 'in-progress' -> 'completed')
+  // before doing any grading work, instead of a plain findOne() followed
+  // later by attempt.save() — the read-then-write gap let two concurrent
+  // submit calls (a double-click, or a client-side timeout retry racing a
+  // slow-but-successful first request) both pass the read, both grade
+  // independently, and both save with last-write-wins, with no protection
+  // against a duplicate-processed submission. {new: false} returns the
+  // PRE-claim snapshot (passagesUsed/startTime, needed below) while the
+  // status flip itself has already atomically happened — a racing second
+  // call's own claim attempt will find status no longer 'in-progress' and
+  // get null back. Mirrors listeningService.js's equivalent fix.
+  const attempt = await TestAttempt.findOneAndUpdate(
+    { _id: attemptId, userId: user._id, status: 'in-progress' },
+    { status: 'completed' },
+    { new: false }
+  );
   if (!attempt) return null;
 
   const passagesRaw = await Passage.find({ _id: { $in: attempt.passagesUsed } }).lean();
@@ -211,23 +252,27 @@ async function submitTest(attemptId, answers, user) {
 
   const endTime = new Date();
   const duration = Math.max(0, Math.floor((endTime - attempt.startTime) / 1000));
+  const totalQuestions = gradedAnswers.length;
+  const bandScore = bandScoreTable('reading', correctCount);
 
-  attempt.answers = gradedAnswers;
-  attempt.correctCount = correctCount;
-  attempt.wrongCount = wrongCount;
-  attempt.skippedCount = skippedCount;
-  attempt.totalQuestions = gradedAnswers.length;
-  attempt.bandScore = attempt.calculateBandScore();
-  attempt.endTime = endTime;
-  attempt.duration = duration;
-  attempt.status = 'completed';
-  await attempt.save();
+  // A plain findByIdAndUpdate rather than mutating+saving the `attempt`
+  // instance above — that instance is the PRE-claim snapshot returned by
+  // {new: false} (status still reads 'in-progress' in memory even though
+  // the DB row was already atomically flipped to 'completed'); writing
+  // through it directly risks Mongoose version-check friction against the
+  // update that already happened. This second write only fills in the
+  // grading fields, which is safe unconditionally now — the atomic claim
+  // above already guarantees only one caller ever reaches this point.
+  await TestAttempt.findByIdAndUpdate(attempt._id, {
+    answers: gradedAnswers, correctCount, wrongCount, skippedCount,
+    totalQuestions, bandScore, endTime, duration,
+  });
 
   let bonusApplied = 0;
   if (user.role === 'student') {
     // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
     // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
-    const accuracy = attempt.totalQuestions > 0 ? correctCount / attempt.totalQuestions : 0;
+    const accuracy = totalQuestions > 0 ? correctCount / totalQuestions : 0;
     const rawBonus = bonusForAccuracy(accuracy);
     bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
     user.updateStreak(bonusApplied, { allowSameDayStack: true });
@@ -235,8 +280,8 @@ async function submitTest(attemptId, answers, user) {
   }
 
   return {
-    attemptId: attempt._id, bandScore: attempt.bandScore, correctCount, wrongCount, skippedCount,
-    totalQuestions: attempt.totalQuestions, duration, bonusApplied, streak: user.learningStreak,
+    attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount,
+    totalQuestions, duration, bonusApplied, streak: user.learningStreak,
   };
 }
 
@@ -300,7 +345,39 @@ async function listPracticePassages(category, userId) {
 }
 
 async function getPracticePassageById(id) {
-  return Passage.findOne({ _id: id, isActive: true }).lean();
+  // Same field-stripping as startTest()'s safeFields — this is the
+  // pre-submission fetch (starting or resuming an in-progress practice
+  // attempt, see reading-v2.js's startPractice()/resumePractice()), never
+  // the post-submission review. Without this, the raw document (every
+  // question's correctAnswer + explanation, both `required` fields) was
+  // sent straight to the client before the student had answered anything
+  // — visible in a DevTools Network tab or by just replaying the request.
+  const safeFields = '-questionGroups.questions.correctAnswer -questionGroups.questions.explanation -questions.correctAnswer -questions.explanation';
+  return Passage.findOne({ _id: id, isActive: true }).select(safeFields).lean();
+}
+
+// Reveals a practice passage's answer key (correctAnswer + explanation per
+// questionNumber) — called only at the moment the student submits their
+// practice attempt (reading-v2.js's _doSubmitRetry()), never on opening the
+// passage. getPracticePassageById() above deliberately withholds these same
+// fields; the frontend's own instant local grading (no server round-trip
+// needed to show a score/explanation) still works exactly as before, it
+// just fetches the key at submit-time instead of already having it in hand
+// from the moment practice started — closing the "read the Network tab
+// before answering" gap without changing the review UX at all.
+async function getPassageAnswerKey(id) {
+  const passage = await Passage.findOne({ _id: id, isActive: true })
+    .select('questionGroups.questions.questionNumber questionGroups.questions.correctAnswer questionGroups.questions.explanation questions.questionNumber questions.correctAnswer questions.explanation')
+    .lean();
+  if (!passage) return null;
+  const answerKey = {};
+  (passage.questionGroups || []).forEach(g => (g.questions || []).forEach(q => {
+    answerKey[q.questionNumber] = { correctAnswer: q.correctAnswer, explanation: q.explanation || '' };
+  }));
+  (passage.questions || []).forEach(q => {
+    answerKey[q.questionNumber] = { correctAnswer: q.correctAnswer, explanation: q.explanation || '' };
+  });
+  return answerKey;
 }
 
 async function savePractice(body, userId) {
@@ -414,7 +491,7 @@ async function getAdminAttemptsStats(testId) {
 
 module.exports = {
   listTestsForUser, startTest, submitTest, getAttemptReview, getHistory,
-  listPracticePassages, getPracticePassageById, savePractice,
+  listPracticePassages, getPracticePassageById, getPassageAnswerKey, savePractice,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
   listAdminAttempts, getAdminAttemptsStats,
 };

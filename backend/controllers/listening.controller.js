@@ -131,6 +131,17 @@ exports.getPracticeSectionById = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
+// Answer key only — called at submit time, not on opening the section. See
+// listeningService.getSectionAnswerKey's own comment for why this exists
+// as a separate endpoint instead of just being part of the fetch above.
+exports.getSectionAnswerKey = async (req, res) => {
+  try {
+    const answerKey = await listeningService.getSectionAnswerKey(req.params.id);
+    if (!answerKey) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
+    res.json({ success: true, answerKey });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
 exports.listDictationSections = async (req, res) => {
   try {
     const sections = await listeningService.listDictationSections();
@@ -222,7 +233,11 @@ exports.startTest = async (req, res) => {
 exports.submitTest = async (req, res) => {
   try {
     const result = await listeningService.submitTest(req.params.id, req.body, req.user);
-    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy đề' });
+    // Also returned when attemptId was given but no longer matches an
+    // in-progress attempt (already submitted, or belongs to someone else) —
+    // same generic phrasing readingService's equivalent path uses, since
+    // it's accurate for both "test not found" and "not in progress".
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài thi đang làm' });
     res.json({ success: true, result });
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };

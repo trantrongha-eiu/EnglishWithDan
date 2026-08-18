@@ -164,6 +164,58 @@ describe('readingService.submitTest — interchangeableAnswers pooling', () => {
     expect(result.correctCount).toBe(0);
     expect(result.wrongCount).toBe(2);
   });
+
+  test('multi-answer-group ("Choose TWO/THREE letters") questions inside an interchangeableAnswers group are graded correctly, not via pool-matching', async () => {
+    const student = await createStudent();
+    // The frontend writes the SAME selected-letters JSON array to every
+    // question number in the cluster (toggleMultiAnswer() in
+    // reading-v2.js) — each question's own correctAnswer is a single
+    // letter, correct if the shared selection includes it.
+    const { attempt } = await makeAttempt({
+      student,
+      groups: [{
+        groupType: 'plain',
+        interchangeableAnswers: true, // admins toggle this ON for these clusters too — must not route to pool-matching
+        questions: [
+          { questionNumber: 1, type: 'multi-answer-group', questionText: 'Q1', correctAnswer: 'A' },
+          { questionNumber: 2, type: 'multi-answer-group', questionText: 'Q2', correctAnswer: 'D' },
+        ],
+      }],
+    });
+
+    const selected = JSON.stringify(['A', 'D']);
+    const result = await readingService.submitTest(attempt._id, {
+      1: selected,
+      2: selected,
+    }, student);
+
+    expect(result.correctCount).toBe(2);
+    expect(result.wrongCount).toBe(0);
+  });
+
+  test('multi-answer-group gives partial credit when only some of the shared selection is correct', async () => {
+    const student = await createStudent();
+    const { attempt } = await makeAttempt({
+      student,
+      groups: [{
+        groupType: 'plain',
+        interchangeableAnswers: true,
+        questions: [
+          { questionNumber: 1, type: 'multi-answer-group', questionText: 'Q1', correctAnswer: 'A' },
+          { questionNumber: 2, type: 'multi-answer-group', questionText: 'Q2', correctAnswer: 'D' },
+        ],
+      }],
+    });
+
+    const selected = JSON.stringify(['A', 'F']); // only "A" is actually correct
+    const result = await readingService.submitTest(attempt._id, {
+      1: selected,
+      2: selected,
+    }, student);
+
+    expect(result.correctCount).toBe(1);
+    expect(result.wrongCount).toBe(1);
+  });
 });
 
 describe('readingService.submitTest — server-side re-grading integrity', () => {
@@ -223,6 +275,29 @@ describe('readingService.submitTest — server-side re-grading integrity', () =>
 
     const result = await readingService.submitTest(attempt._id, { 1: 'x' }, student);
     expect(result).toBeNull();
+  });
+
+  test('a resubmit on the same attemptId after a successful submit is rejected — atomic claim prevents a duplicate-processed submission', async () => {
+    const student = await createStudent();
+    const { attempt } = await makeAttempt({
+      student,
+      groups: [{ questions: [{ questionNumber: 1, type: 'fill-blank', questionText: 'Q1', correctAnswer: 'x' }] }],
+    });
+
+    const first = await readingService.submitTest(attempt._id, { 1: 'x' }, student);
+    expect(first).not.toBeNull();
+    expect(first.correctCount).toBe(1);
+
+    // A retry (e.g. a client-side timeout racing a slow-but-successful
+    // first request) reusing the SAME attemptId must be rejected, not
+    // silently re-graded and re-saved a second time.
+    const retry = await readingService.submitTest(attempt._id, { 1: 'x' }, student);
+    expect(retry).toBeNull();
+
+    const TestAttempt = require('../../../models/TestAttempt');
+    const saved = await TestAttempt.findById(attempt._id).lean();
+    expect(saved.status).toBe('completed');
+    expect(saved.correctCount).toBe(1); // unchanged by the rejected retry
   });
 });
 

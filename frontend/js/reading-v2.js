@@ -288,12 +288,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const category = e.state?.category || 'passage1';
     const isSingle = mode === 'single' || mode === 'lele';
 
-    // If an active practice session is running, clean it up before navigating
+    // If an active practice session is running, clean it up before navigating.
+    // Deliberately does NOT clearPracticeStorage() here (unlike closeRetry(),
+    // the in-app "Chọn bài khác" exit, which does) — the browser Back button
+    // bypasses that button's confirmCloseRetry() gate entirely, so this used
+    // to silently discard the student's answer draft with no warning at all,
+    // even though savePracticeToStorage() had already been saving it as they
+    // worked specifically so the "Bài dở dang... Tiếp tục" resume banner
+    // could offer it back. Leaving the draft alone here means Back just acts
+    // like closing the tab — the existing resume flow recovers it naturally
+    // the next time the student opens practice mode, no confirm dialog needed.
     if (_practiceMode || _retryState?.isPractice) {
       window.onbeforeunload = null;
       _clearPracticeTimer();
       _hidePracticeHUD();
-      clearPracticeStorage();
       _retryState = null;
       _practiceMode = false;
       const listEl = document.getElementById('practice-passage-list');
@@ -363,7 +371,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (testIdParam) {
     const test = allTests.find(t => t._id === testIdParam);
     if (test) {
-      if (_userPlan === 'premium') {
+      // Same hasPremiumAccess() fix as goToStartTest() below (Phase 5
+      // audit finding) — was raw `_userPlan === 'premium'` here too, which
+      // never included the staff bypass or the free-trial 24h window
+      // hasPremiumAccess() applies, wrongly paywalling a legitimate
+      // trial/staff user who opens a direct/shared test link.
+      if (window.AuthService.hasPremiumAccess()) {
         if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}`);
         state.testId = test._id;
         state.testName = test.name;
@@ -1196,19 +1209,19 @@ function _enterPracticeScreen(passage, category, passageId) {
     state.timer = null;
   }
 
-  // Build correctMap từ passage (backend trả đầy đủ đáp án)
+  // correctAnswer/explanation are no longer sent by the practice-fetch
+  // endpoint at all (security fix — see backend/services/readingService.js's
+  // getPracticePassageById) — correctMap starts empty and is fetched
+  // just-in-time at submit time instead (see _doSubmitRetry()).
   const correctMap = {};
-  getAllQuestionsFromPassage(passage).forEach(q => {
-    if (q.correctAnswer !== undefined) correctMap[q.questionNumber] = q.correctAnswer;
-  });
 
-  // Deep-clone và xóa đáp án trước khi render
+  // Deep-clone trước khi render (userAnswer/isCorrect never present on a
+  // fresh practice fetch either, but stripped defensively in case this
+  // passage object is ever reused from a state that had them)
   const cleanPassage = JSON.parse(JSON.stringify(passage));
   getAllQuestionsFromPassage(cleanPassage).forEach(q => {
-    delete q.correctAnswer;  // ẩn đáp án trong lúc làm bài
     delete q.userAnswer;
     delete q.isCorrect;
-    // giữ lại q.explanation để submitRetry() dùng khi hiện kết quả
   });
 
   // Lưu _retryState với flag isPractice để submitRetry/closeRetry dùng đúng
@@ -2952,12 +2965,38 @@ function submitRetry() {
   if (!_retryState) { showVocabToast('Lỗi: không tìm thấy dữ liệu bài luyện', 'error'); return; }
   const answered = Object.values(state.answers).filter(a => a && a !== '[]').length;
   if (answered === 0) { showVocabToast('Hãy trả lời ít nhất 1 câu trước khi kiểm tra', 'info'); return; }
-  try { _doSubmitRetry(); } catch(e) { console.error('[submitRetry]', e); showVocabToast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
+  _doSubmitRetry().catch(e => { console.error('[submitRetry]', e); showVocabToast('Lỗi hiển thị kết quả: ' + e.message, 'error'); });
 }
-function _doSubmitRetry() {
+async function _doSubmitRetry() {
   const passage = state.passages[0];
   const allQ = getAllQuestionsFromPassage(passage);
-  const { correctMap } = _retryState;
+  let { correctMap } = _retryState;
+
+  // Standalone practice mode's initial passage fetch no longer includes
+  // correctAnswer (security fix — see backend/services/readingService.js's
+  // getPracticePassageById: answers used to be visible in the Network tab
+  // before the student answered anything), so correctMap starts empty here
+  // for a genuine first-time practice submit. Fetch it now, at the moment
+  // of submitting — the student has already committed their answers, so
+  // this reveals nothing they haven't already locked in. The "retry from
+  // exam review" and "view a past practice attempt" paths already populate
+  // correctMap from legitimate post-submission data, so this is skipped
+  // for them (they're not backend-stripped, so correctMap is never empty).
+  if (_retryState.isPractice && _retryState.practicePassageId && !Object.keys(correctMap || {}).length) {
+    try {
+      const keyRes = await apiFetch(`/api/reading/practice/answer-key/${_retryState.practicePassageId}`);
+      if (keyRes.success && keyRes.answerKey) {
+        correctMap = {};
+        Object.entries(keyRes.answerKey).forEach(([qNum, v]) => { correctMap[qNum] = v.correctAnswer; });
+        allQ.forEach(q => {
+          const key = keyRes.answerKey[q.questionNumber];
+          if (key) q.explanation = key.explanation;
+        });
+        _retryState.correctMap = correctMap;
+      }
+    } catch (e) { console.error('[_doSubmitRetry] answer-key fetch failed', e); }
+  }
+
   let correct = 0, wrong = 0, skipped = 0;
   const retryReviewMap = {};
 

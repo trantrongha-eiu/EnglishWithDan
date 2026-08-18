@@ -65,6 +65,15 @@ exports.getPracticePassageById = guard(null, async (req, res) => {
   res.json({ success: true, passage });
 });
 
+// Answer key only — called at submit time, not on opening the passage.
+// See readingService.getPassageAnswerKey's own comment for why this exists
+// as a separate endpoint instead of just being part of the fetch above.
+exports.getPassageAnswerKey = guard(null, async (req, res) => {
+  const answerKey = await readingService.getPassageAnswerKey(req.params.id);
+  if (!answerKey) return res.status(404).json({ success: false, message: 'Không tìm thấy bài đọc' });
+  res.json({ success: true, answerKey });
+});
+
 exports.savePractice = guard('[Reading practice save]', async (req, res) => {
   const { passageId, answers } = req.body;
   if (!passageId || !Array.isArray(answers)) {

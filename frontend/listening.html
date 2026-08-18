@@ -1279,6 +1279,19 @@
             audio.addEventListener('ended', () => {
                 if (!state.isReview) updateExamAudioStatus(false);
             });
+            // Genuine load failure (bad/missing audioUrl, network error,
+            // unsupported format) — previously nothing listened for this at
+            // all, so a broken audio file failed completely silently with no
+            // indication to the student that anything was wrong.
+            audio.addEventListener('error', () => {
+                console.error('[audio] load error:', audio.error);
+                if (state.isReview) return;
+                const el = document.getElementById('exam-audio-status');
+                if (el) {
+                    el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Lỗi tải audio — vui lòng liên hệ giáo viên';
+                    el.style.color = '#dc2626';
+                }
+            });
         }
 
         // Cached seek-bar elements — onTimeUpdate fires many times/sec during
@@ -1384,9 +1397,27 @@
             clearInterval(_asoTimer);
             document.getElementById('audio-start-overlay').classList.add('hidden');
             const playNowBtn = document.getElementById('aso-play-now-btn');
+            // "Playing" status is set by the audio element's own 'play' event
+            // listener (setupAudioEvents()) — only fires on genuine playback
+            // start, unlike the unconditional updateExamAudioStatus(true) this
+            // used to call immediately regardless of outcome. That's what let
+            // audio.play()'s rejection get silently swallowed: this is called
+            // from unattended setInterval countdowns (the 30s reading-time
+            // auto-start, or resumeExam()'s 5s auto-countdown) with no user
+            // gesture in the call stack, exactly when a browser's autoplay
+            // policy is most likely to block it — the student would see a
+            // confident green "Playing" pill while hearing nothing, with no
+            // way to recover on a one-time-only, no-rewind audio.
             if (playNowBtn) playNowBtn.classList.add('hidden');
-            audio.play().catch(() => { });
-            updateExamAudioStatus(true);
+            audio.play().catch(err => {
+                console.error('[startAudioPlay] play() failed:', err);
+                if (playNowBtn) playNowBtn.classList.remove('hidden');
+                const el = document.getElementById('exam-audio-status');
+                if (el) {
+                    el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không tự phát được — bấm "Phát ngay"';
+                    el.style.color = '#dc2626';
+                }
+            });
         }
 
         function updateExamAudioStatus(playing, countdown) {
@@ -2699,6 +2730,44 @@
         // ══════════════════════════════════════════════
         function confirmSubmit() { updateFooter(); openModal('modal-submit'); }
 
+        // Shared by submitExam()'s success path and its timeout-retry recovery
+        // path (fetches the same shape from GET /listening/history/:attemptId
+        // when a resubmit is correctly rejected because the exam was actually
+        // already saved server-side).
+        function _renderExamResult(r) {
+            state.reviewResult = r;
+            state.submitted = true;
+            // refresh test list để cập nhật trạng thái đã làm
+            _testListCache = null; // force a fresh fetch so the new "done" status isn't stale
+            loadTestList();
+            document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
+            document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
+            document.getElementById('r-correct').textContent = r.correctCount;
+            document.getElementById('r-wrong').textContent = r.wrongCount;
+            document.getElementById('r-skip').textContent = r.skippedCount;
+
+            const band = r.bandScore || 0;
+
+            // Result image (full listening test only — section practice uses inline ls-result-bar)
+            const imgEl = document.getElementById('result-img');
+            if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
+
+            // Message (funny/sarcastic for very low scores)
+            const isLow = band < 5.0;
+            document.getElementById('result-emoji').textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
+            if (isLow) {
+                const funnyMsgs = [
+                    'Hmm, hôm nay tai không muốn làm việc à? 😅 Nghe lại nhiều lần, tốc độ sẽ quen thôi!',
+                    'Lần này nghe hơi... trật nhỉ 🎧 Luyện shadowing mỗi ngày, tuần sau sẽ khác liền!',
+                    'Band này thấp hơn cả giọng hát của mình 🎤 Nhưng không sao, cứ luyện là lên!',
+                ];
+                document.getElementById('result-msg').textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+            } else {
+                document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
+            }
+            showScreen('result');
+        }
+
         async function submitExam() {
             closeModal('modal-submit');
             if (state.submitted) return;
@@ -2743,41 +2812,30 @@
                 clearTimeout(submitTimeout);
                 const data = await safeJson(res);
                 if (!data.success) throw new Error(data.message);
-                const r = data.result;
-                state.reviewResult = r;
                 overlay.style.display = 'none';
                 if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
-                // refresh test list để cập nhật trạng thái đã làm
-                _testListCache = null; // force a fresh fetch so the new "done" status isn't stale
-                loadTestList();
-                document.getElementById('result-band').textContent = r.bandScore.toFixed(1);
-                document.getElementById('result-total').textContent = `${r.correctCount}/${r.totalQuestions || 40} câu đúng`;
-                document.getElementById('r-correct').textContent = r.correctCount;
-                document.getElementById('r-wrong').textContent = r.wrongCount;
-                document.getElementById('r-skip').textContent = r.skippedCount;
-
-                const band = r.bandScore || 0;
-
-                // Result image (full listening test only — section practice uses inline ls-result-bar)
-                const imgEl = document.getElementById('result-img');
-                if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
-
-                // Message (funny/sarcastic for very low scores)
-                const isLow = band < 5.0;
-                document.getElementById('result-emoji').textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
-                if (isLow) {
-                    const funnyMsgs = [
-                        'Hmm, hôm nay tai không muốn làm việc à? 😅 Nghe lại nhiều lần, tốc độ sẽ quen thôi!',
-                        'Lần này nghe hơi... trật nhỉ 🎧 Luyện shadowing mỗi ngày, tuần sau sẽ khác liền!',
-                        'Band này thấp hơn cả giọng hát của mình 🎤 Nhưng không sao, cứ luyện là lên!',
-                    ];
-                    document.getElementById('result-msg').textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
-                } else {
-                    document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
-                }
-                showScreen('result');
+                _renderExamResult(data.result);
             } catch (err) {
                 clearTimeout(submitTimeout);
+                // A slow/timed-out request can still succeed server-side after the
+                // client gives up waiting (see backend/services/listeningService.js's
+                // submitTest — attemptId no longer matches an in-progress row once
+                // it's completed, so a naive retry used to silently create a
+                // duplicate attempt; it now correctly 404s instead). Recover the
+                // REAL already-graded result from history rather than just
+                // showing "submission failed" when the exam was actually saved.
+                if (state.attemptId) {
+                    try {
+                        const rres = await fetch(`${API}/listening/history/${state.attemptId}`, { headers: authH() });
+                        const rdata = await safeJson(rres);
+                        if (rdata.success && rdata.result) {
+                            overlay.style.display = 'none';
+                            toast('Bài thi đã được nộp trước đó — đang hiện kết quả.', 'info');
+                            _renderExamResult(rdata.result);
+                            return;
+                        }
+                    } catch { /* fall through to the generic error below */ }
+                }
                 overlay.style.display = 'none';
                 toast('Lỗi nộp bài: ' + err.message, 'error');
                 state.submitted = false;
@@ -3726,9 +3784,37 @@
     /* ── Submit + grade ──────────────────────────────────────────────────── */
     function submitLTPractice() {
         if (!_ltCleanSection || !_ltOrigSection) { toast('Lỗi: không tìm thấy dữ liệu bài luyện. Vui lòng tải lại trang.', 'error'); return; }
-        try { _doSubmitLTPractice(); } catch(e) { console.error('[submitLTPractice]', e); toast('Lỗi hiển thị kết quả: ' + e.message, 'error'); }
+        _doSubmitLTPractice().catch(e => { console.error('[submitLTPractice]', e); toast('Lỗi hiển thị kết quả: ' + e.message, 'error'); });
     }
-    function _doSubmitLTPractice() {
+    async function _doSubmitLTPractice() {
+
+        // Fresh practice sessions (startPracticeSection -> _enterLTPracticeScreen)
+        // no longer get correctAnswer/explanation in the initial fetch at all
+        // (security fix — see backend/services/listeningService.js's
+        // getPracticeSectionById: answers used to be visible in the Network tab
+        // before the student had even pressed play), so fetch them now, at the
+        // moment of submitting — the student has already committed their
+        // answers, so this reveals nothing they haven't already locked in.
+        // loadLTPracticeReview() (viewing a PAST submitted attempt) already
+        // populates _ltOrigSection with real correctAnswer values from that
+        // attempt's own history endpoint and sets _ltPracticeSubmitted=true
+        // before this function could ever run again, so this fetch is skipped
+        // for that path.
+        const _ltFirstQ = _ltGetAllQs(_ltOrigSection)[0];
+        if (_ltPracticeSectionId && _ltFirstQ && !_ltFirstQ.correctAnswer) {
+            try {
+                const keyRes = await fetch(`${API}/listening/practice/answer-key/${_ltPracticeSectionId}`, { headers: authH() });
+                const keyData = await safeJson(keyRes);
+                if (keyData.success && keyData.answerKey) {
+                    for (const group of _ltOrigSection.questionGroups || []) {
+                        for (const q of group.questions || []) {
+                            const key = keyData.answerKey[q.questionNumber];
+                            if (key) { q.correctAnswer = key.correctAnswer; q.explanation = key.explanation; }
+                        }
+                    }
+                }
+            } catch (e) { console.error('[_doSubmitLTPractice] answer-key fetch failed', e); }
+        }
 
         const elapsed = _stopLTPracticeTimer();
         const allQ    = _ltGetAllQs(_ltOrigSection);
@@ -4055,6 +4141,17 @@
                     const saved = answerMap[q.questionNumber];
                     q.userAnswer = saved?.userAnswer || '';
                     q.isCorrect  = saved?.isCorrect  || false;
+                    // ListeningPracticeAttempt.answers[] freezes correctAnswer
+                    // as of when this attempt was actually graded — `section`
+                    // above is the LIVE, possibly-since-edited document. Without
+                    // this, isCorrect (frozen, correct) could contradict the
+                    // displayed "correct answer" text (live, since changed):
+                    // e.g. an admin fixes a typo'd answer key after a student
+                    // attempted it, and the review then shows the student's
+                    // answer marked ✗ wrong while displaying a "correct answer"
+                    // identical to what they typed — reads as a bug even though
+                    // each half was accurate for its own point in time.
+                    if (saved?.correctAnswer !== undefined) q.correctAnswer = saved.correctAnswer;
                 }
             }
 

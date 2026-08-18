@@ -42,8 +42,20 @@ function gradeQuestionGroups(questionGroups, getUserAnswer, extraFields = () => 
 
   for (const group of questionGroups) {
     const qs = group.questions || [];
+    // TFNG/yes-no-ng never uses pool matching — each question has its own
+    // fixed answer (this guard existed once already, in the pre-refactor
+    // routes/listening.js, and was dropped when this shared function was
+    // extracted — a real regression, not a fresh bug). Same for
+    // multi-answer-group ("Choose TWO/THREE letters"): admins toggle
+    // interchangeableAnswers ON for these clusters too (that's what the
+    // admin UI's "Hoán đổi thứ tự" checkbox label means), but pool-matching
+    // compares a whole JSON-array userAnswer against single-letter pool
+    // entries via indexOf — never matches. Both route to the dedicated
+    // per-type checks in the else branch below instead.
+    const isTFNG = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
+    const isMultiAnswerGroup = qs.some(q => q.type === 'multi-answer-group');
 
-    if (group.interchangeableAnswers && qs.length > 0) {
+    if (group.interchangeableAnswers && qs.length > 0 && !isTFNG && !isMultiAnswerGroup) {
       const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
       for (const q of qs) {
         const num = q.questionNumber;
@@ -216,8 +228,15 @@ async function updateTranscript(id, sectionTranscripts) {
 }
 
 // ── Admin – Attempts history / stats ─────────────────────────────────────
+// status: 'completed' matches readingService.js's equivalent filters —
+// startTest() persists an 'in-progress' row the moment a student opens a
+// test (so an abandoned session leaves a record instead of vanishing, see
+// the test above this one), but every abandoned/never-submitted session
+// (bandScore 0, correctCount 0) was being counted here too, dragging down
+// avgBand/avgCorrect and inflating totalAttempts/the admin attempts list
+// with sessions nobody ever actually finished.
 async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
-  const filter = {};
+  const filter = { status: 'completed' };
   if (testId) filter.testId = testId;
   if (userId) filter.userId = userId;
   const [attempts, total] = await Promise.all([
@@ -233,7 +252,7 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
 }
 
 async function getAdminAttemptsStats(testId) {
-  const match = testId ? { testId: new mongoose.Types.ObjectId(testId) } : {};
+  const match = { status: 'completed', ...(testId ? { testId: new mongoose.Types.ObjectId(testId) } : {}) };
   const [overview, byTest, topStudents] = await Promise.all([
     ListeningAttempt.aggregate([
       { $match: match },
@@ -308,7 +327,19 @@ async function listPracticeSections(query, userId) {
 }
 
 async function getPracticeSectionById(id) {
-  return ListeningSection.findOne({ _id: id, isActive: true }).lean();
+  // Same intent as startTest()'s manual field mapping above ("correctAnswer
+  // intentionally omitted") — this is the pre-submission fetch (starting or
+  // resuming an in-progress practice attempt), never the post-submission
+  // review. Without this, the raw document (every question's correctAnswer
+  // + explanation, both present on LSQuestionSchema) was sent straight to
+  // the client before the student had answered anything — visible in a
+  // DevTools Network tab or by just replaying the request. transcript is
+  // deliberately still included: the review screen (loadLTPracticeReview)
+  // reads it off this same pre-fetched object post-submission rather than
+  // re-fetching, so stripping it here would break that display.
+  return ListeningSection.findOne({ _id: id, isActive: true })
+    .select('-questionGroups.questions.correctAnswer -questionGroups.questions.explanation')
+    .lean();
 }
 
 // ── Dictation practice (sentence-by-sentence chép chính tả) ─────────────
@@ -507,8 +538,20 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   const test = await ListeningTest.findById(id);
   if (!test) return null;
 
-  const startTime = startTimeRaw ? new Date(startTimeRaw) : null;
   const now = new Date();
+  // Prefer the server's OWN recorded startTime (set by startTest() when
+  // this attempt row was first created) over the client-supplied value —
+  // a tampered or stale startTime (e.g. restored from an old localStorage
+  // payload) previously corrupted timeTaken/startTime with no server-side
+  // check at all. Only falls back to the client value for the legacy path
+  // (no attemptId / a genuinely unmatched one), where there's no server
+  // record to trust instead.
+  let serverStartTime = null;
+  if (attemptId) {
+    const existing = await ListeningAttempt.findOne({ _id: attemptId, userId: user._id || user.id }).select('startTime').lean();
+    if (existing) serverStartTime = existing.startTime;
+  }
+  const startTime = serverStartTime || (startTimeRaw ? new Date(startTimeRaw) : null);
   const maxSecs = (test.audioDuration || 40) * 60;
   const timeTaken = startTime ? Math.min(Math.max(0, Math.round((now - startTime) / 1000)), maxSecs) : 0;
 
@@ -537,18 +580,29 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
 
   // Update the SAME row startTest() created (status: 'in-progress' -> 'completed')
   // instead of inserting a second row — keeps exactly one attempt per
-  // session, matching Reading's TestAttempt pattern. Falls back to a fresh
-  // insert if no matching in-progress row is found (e.g. attemptId missing —
-  // an in-flight session from just before this fix deployed), so submission
-  // never breaks even for a session that started under the old behavior.
-  let attempt = attemptId
-    ? await ListeningAttempt.findOneAndUpdate(
-        { _id: attemptId, userId: fields.userId, status: 'in-progress' },
-        fields,
-        { new: true }
-      )
-    : null;
-  if (!attempt) attempt = await ListeningAttempt.create(fields);
+  // session, matching Reading's TestAttempt pattern (readingService.js's
+  // submitTest strictly requires an in-progress attemptId and 404s
+  // otherwise — no create-fallback at all). Only falls back to a fresh
+  // insert when attemptId itself is absent (a legitimately old/pre-
+  // migration session with no attemptId concept — startTest() has created
+  // one on every call for a while now, so this is a rare legacy path, not
+  // the normal case). If attemptId WAS given but doesn't match an
+  // in-progress row — already completed (a timeout-retry racing a slow
+  // response, see listening.html's submitExam(), or a resubmission with
+  // now-revealed answers trying to fabricate a better score) or belongs to
+  // someone else — this must NOT silently mint a second completed attempt;
+  // reject it instead, same as Reading.
+  let attempt = null;
+  if (attemptId) {
+    attempt = await ListeningAttempt.findOneAndUpdate(
+      { _id: attemptId, userId: fields.userId, status: 'in-progress' },
+      fields,
+      { new: true }
+    );
+    if (!attempt) return null;
+  } else {
+    attempt = await ListeningAttempt.create(fields);
+  }
 
   let bonusApplied = 0;
   if (user.role === 'student') {
@@ -620,6 +674,26 @@ async function getHistoryDetail(attemptId, userId) {
   };
 }
 
+// Reveals a practice section's answer key (correctAnswer + explanation per
+// questionNumber) — called only at the moment the student submits their
+// practice attempt (listening.html's _doSubmitLTPractice()), never on
+// opening the section. getPracticeSectionById() above deliberately
+// withholds these same fields; the frontend's own instant local grading
+// (no server round-trip needed to show a score/explanation) still works
+// exactly as before, it just fetches the key at submit-time instead of
+// already having it in hand from the moment practice started.
+async function getSectionAnswerKey(id) {
+  const section = await ListeningSection.findOne({ _id: id, isActive: true })
+    .select('questionGroups.questions.questionNumber questionGroups.questions.correctAnswer questionGroups.questions.explanation')
+    .lean();
+  if (!section) return null;
+  const answerKey = {};
+  (section.questionGroups || []).forEach(g => (g.questions || []).forEach(q => {
+    answerKey[q.questionNumber] = { correctAnswer: q.correctAnswer, explanation: q.explanation || '' };
+  }));
+  return answerKey;
+}
+
 // ── Practice attempts (single-section, no premium gate) ─────────────────
 async function savePractice({ sectionId, sectionTitle, partNumber, answers, timeTaken }, userId) {
   const section = await ListeningSection.findById(sectionId).lean();
@@ -664,7 +738,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById, listDictationSections,
+  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent,
   assembleTest,
   listStudentTests, startTest, submitTest,

@@ -18,6 +18,7 @@ const listeningController = require('../controllers/listening.controller');
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/practice/list', auth, listeningController.listPracticeSections);
 router.get('/practice/by-id/:id', auth, listeningController.getPracticeSectionById);
+router.get('/practice/answer-key/:id', auth, listeningController.getSectionAnswerKey);
 
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
 // sections have already been through scripts/bulkAlignListeningDictation.js;

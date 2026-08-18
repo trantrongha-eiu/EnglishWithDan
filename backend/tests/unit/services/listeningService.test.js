@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const listeningService = require('../../../services/listeningService');
 const ListeningAttempt = require('../../../models/ListeningAttempt');
 const { createStudent } = require('../../factories/userFactory');
-const { createListeningTest, createListeningSection } = require('../../factories/contentFactory');
+const { createListeningTest, createListeningSection, createListeningAttempt } = require('../../factories/contentFactory');
 
 describe('listeningService.calcBandScore', () => {
   test('matches the official raw-score threshold table at key boundaries', () => {
@@ -112,6 +112,33 @@ describe('listeningService.startTest / submitTest — attempt persistence', () =
     expect(saved.status).toBe('completed');
   });
 
+  test('submitTest() rejects (returns null) a resubmit with an attemptId that is already completed — does not fabricate a duplicate attempt', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+
+    const started = await listeningService.startTest(test._id.toString(), student._id);
+    await listeningService.submitTest(
+      test._id.toString(),
+      { answers: { 1: 'yes', 2: 'no' }, attemptId: started.attemptId },
+      student
+    );
+
+    // A retry (e.g. a client-side timeout racing a slow-but-successful
+    // first submit — see listening.html's submitExam()) reusing the SAME
+    // attemptId must be rejected, not silently create a second completed
+    // attempt — especially since the resubmit could carry answers the
+    // student only knows because the first submit's response revealed them.
+    const retryResult = await listeningService.submitTest(
+      test._id.toString(),
+      { answers: { 1: 'yes', 2: 'no' }, attemptId: started.attemptId },
+      student
+    );
+
+    expect(retryResult).toBeNull();
+    const count = await ListeningAttempt.countDocuments({ userId: student._id, testId: test._id });
+    expect(count).toBe(1); // still exactly one attempt, not two
+  });
+
   test("getHistory() excludes in-progress rows (a student's own history shouldn't show unfinished attempts)", async () => {
     const student = await createStudent();
     const test = await makeSimpleTest();
@@ -190,6 +217,47 @@ describe('listeningService.submitTest — grading through the real test document
     const student = await createStudent();
     const result = await listeningService.submitTest(new mongoose.Types.ObjectId().toString(), { answers: {} }, student);
     expect(result).toBeNull();
+  });
+});
+
+// Regression coverage for the multi-answer-group half of a fix applied to
+// gradeQuestionGroups()'s interchangeableAnswers pool-matching. (A TFNG
+// exclusion was fixed alongside it, matching Reading's own gradeGroups()
+// and this function's pre-refactor ancestor in routes/listening.js — but
+// TFNG/yes-no-ng aren't valid Listening question types at the schema level
+// (ListeningTest/ListeningSection's type enum has no such value, unlike
+// Passage's), so that half is defensive/unreachable, not something a real
+// document can exercise; no test can construct one.)
+describe('listeningService.submitTest — interchangeableAnswers must not swallow multi-answer-group', () => {
+  async function makeInterchangeableTest(groupQuestions) {
+    return createListeningTest({
+      sections: [{
+        partNumber: 1,
+        title: 'Part 1',
+        questionRange: { start: 1, end: groupQuestions.length },
+        questionGroups: [{
+          groupType: 'plain',
+          interchangeableAnswers: true, // admins toggle this ON for these clusters too — must not route to pool-matching
+          questions: groupQuestions,
+        }],
+      }],
+    });
+  }
+
+  test('multi-answer-group questions inside an interchangeableAnswers group are graded via array-includes, not pool-matched', async () => {
+    const student = await createStudent();
+    const test = await makeInterchangeableTest([
+      { questionNumber: 1, type: 'multi-answer-group', questionText: 'Q1', correctAnswer: 'A' },
+      { questionNumber: 2, type: 'multi-answer-group', questionText: 'Q2', correctAnswer: 'D' },
+    ]);
+
+    const selected = JSON.stringify(['A', 'D']);
+    const result = await listeningService.submitTest(test._id.toString(), {
+      answers: { 1: selected, 2: selected },
+    }, student);
+
+    expect(result.correctCount).toBe(2);
+    expect(result.wrongCount).toBe(0);
   });
 });
 
@@ -304,5 +372,40 @@ describe('listeningService.submitTest — streak bonus', () => {
 
     expect(result.bonusApplied).toBe(1);
     expect(result.streak).toBe(1);
+  });
+});
+
+// Regression coverage: startTest() persists an 'in-progress' ListeningAttempt
+// row the moment a student opens a test (so an abandoned session isn't lost
+// entirely), but listAdminAttempts/getAdminAttemptsStats had no status
+// filter at all — unlike readingService.js's equivalents, which explicitly
+// scope to status:'completed'. Every abandoned/never-submitted session
+// (bandScore 0, correctCount 0) was counted in admin-facing totals/averages
+// and shown in the admin attempts list as if it were a real submission.
+describe('listeningService.listAdminAttempts / getAdminAttemptsStats', () => {
+  test('listAdminAttempts only returns completed attempts', async () => {
+    const student = await createStudent();
+    const test = await createListeningTest({ name: 'Cambridge 18 Test 1' });
+    await createListeningAttempt({ userId: student._id, testId: test._id, status: 'in-progress' }); // excluded
+    const completed = await createListeningAttempt({ userId: student._id, testId: test._id, bandScore: 7 });
+
+    const { attempts, total } = await listeningService.listAdminAttempts({ page: 1, limit: 50 });
+
+    expect(total).toBe(1);
+    expect(attempts.map(a => a._id.toString())).toEqual([completed._id.toString()]);
+  });
+
+  test('getAdminAttemptsStats computes overview from completed attempts only', async () => {
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const test = await createListeningTest({ name: 'Stats Test' });
+    await createListeningAttempt({ userId: studentA._id, testId: test._id, status: 'in-progress', bandScore: 0, correctCount: 0 }); // excluded
+    await createListeningAttempt({ userId: studentA._id, testId: test._id, bandScore: 6, correctCount: 24 });
+    await createListeningAttempt({ userId: studentB._id, testId: test._id, bandScore: 8, correctCount: 36 });
+
+    const stats = await listeningService.getAdminAttemptsStats();
+
+    expect(stats.overview.totalAttempts).toBe(2); // not 3 — the in-progress row is excluded
+    expect(stats.overview.avgBand).toBeCloseTo(7, 5); // not dragged down by the 0-scored in-progress row
   });
 });
