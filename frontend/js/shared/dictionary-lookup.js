@@ -352,9 +352,13 @@
   }
 
   var _pickerRequestSeq = 0;
+  var _pendingBulkWords = null;
+  var _pendingBulkCallback = null;
 
-  async function openVocabBookPicker(wordData) {
-    _pendingWordData = wordData;
+  // Shared by openVocabBookPicker/openVocabBookPickerBulk — both just need
+  // "list my books into the modal, let the user pick one" before the actual
+  // save (single word vs bulk) happens in saveDictWordToBook.
+  async function _loadBooksIntoPicker() {
     var modal = document.getElementById('dict-vocab-modal');
     var listEl = document.getElementById('dict-vocab-book-list');
     if (!modal || !listEl) return;
@@ -385,6 +389,27 @@
       if (requestId !== _pickerRequestSeq) return;
       listEl.innerHTML = '<div class="rd-vocab-loading" style="color:#e53935">Lỗi tải sổ từ vựng</div>';
     }
+  }
+
+  async function openVocabBookPicker(wordData) {
+    _pendingWordData = wordData;
+    _pendingBulkWords = null;
+    _pendingBulkCallback = null;
+    await _loadBooksIntoPicker();
+  }
+
+  // items: [{word, meaning, example, ...}] — used by Task 2's "Lưu tất cả
+  // vào sổ" / per-word "Lưu" buttons on the vocab list (task2-practice.html),
+  // which already have term/definition/example from the topic's
+  // vocabularyList and don't need a fresh dictionary lookup first.
+  // onSaved(savedWords), if given, fires after a successful save with the
+  // list of `word` strings that were part of this batch — used to mark
+  // those terms as "saved" for the practice-mode vocab gate.
+  async function openVocabBookPickerBulk(items, onSaved) {
+    _pendingBulkWords = items;
+    _pendingBulkCallback = onSaved || null;
+    _pendingWordData = null;
+    await _loadBooksIntoPicker();
   }
 
   function closeVocabPickerModal() {
@@ -422,6 +447,27 @@
   }
 
   async function saveDictWordToBook(bookId) {
+    if (_pendingBulkWords) {
+      var items = _pendingBulkWords;
+      var cb = _pendingBulkCallback;
+      try {
+        var bulkRes = await _vocabFetch('/vocabbook/' + bookId + '/words/bulk', {
+          method: 'POST',
+          body: JSON.stringify({ words: items })
+        });
+        closeVocabPickerModal();
+        showVocabToast(bulkRes.message || ('✓ Đã lưu ' + (bulkRes.addedCount || 0) + ' từ vào sổ'), 'success');
+        _pendingBulkWords = null;
+        _pendingBulkCallback = null;
+        // A word already present in the book comes back as skippedDup, not
+        // addedCount — it's still genuinely saved from an earlier visit, so
+        // the caller's "mark as learned" bookkeeping should count it too.
+        if (cb) cb(items.map(function (w) { return w.word; }));
+      } catch (e) {
+        _handleVocabSaveError(e, 'Lỗi lưu từ');
+      }
+      return;
+    }
     if (!_pendingWordData) return;
     try {
       var res = await _vocabFetch('/vocabbook/' + bookId + '/words', {
@@ -437,12 +483,13 @@
     }
   }
 
-  window.setupDictionaryDouble = setupDictionaryDouble;
-  window.selectDictMeaning     = selectDictMeaning;
-  window.closeDictPopup        = closeDictPopup;
-  window.speakDictWord         = speakDictWord;
-  window.saveDictWordToVocab   = saveDictWordToVocab;
-  window.saveDictWordToBook    = saveDictWordToBook;
-  window.createDictBookAndSave = createDictBookAndSave;
-  window.closeVocabPickerModal = closeVocabPickerModal;
+  window.setupDictionaryDouble    = setupDictionaryDouble;
+  window.selectDictMeaning        = selectDictMeaning;
+  window.closeDictPopup           = closeDictPopup;
+  window.speakDictWord            = speakDictWord;
+  window.saveDictWordToVocab      = saveDictWordToVocab;
+  window.saveDictWordToBook       = saveDictWordToBook;
+  window.createDictBookAndSave    = createDictBookAndSave;
+  window.closeVocabPickerModal    = closeVocabPickerModal;
+  window.openVocabBookPickerBulk  = openVocabBookPickerBulk;
 })();

@@ -44,3 +44,75 @@ describe('saveAttempt', () => {
     expect(saved.correctCount).toBe(1);
   });
 });
+
+describe('getTopicQuestions — answer-key stripping and word/letter hints', () => {
+  async function makeTopic() {
+    return Task2Topic.create({
+      week: 2, block: 'cause_effect', orderIndex: 1,
+      topicName: 'Hint Topic', essayType: 'cause_effect',
+      prompt: 'Test prompt',
+      questions: [
+        {
+          questionId: 'q_translation', level: 'beginner', orderIndex: 1, type: 'translation',
+          questionText: 'Dịch câu này', correctAnswer: 'Many students study online.',
+          modelAnswer: 'Many students study online.',
+        },
+        {
+          questionId: 'q_fillblank', level: 'beginner', orderIndex: 2, type: 'fill_blank',
+          questionText: 'Fill it', correctAnswer: 'years',
+        },
+      ],
+    });
+  }
+
+  test('never exposes correctAnswer or modelAnswer before submission', async () => {
+    const topic = await makeTopic();
+    const { questions } = await svc.getTopicQuestions(topic._id.toString(), 'all');
+    for (const q of questions) {
+      expect(q.correctAnswer).toBeUndefined();
+      expect(q.modelAnswer).toBeUndefined();
+    }
+  });
+
+  test('adds a word-count + first-letter hint for translation, derived from the answer but not revealing it', async () => {
+    const topic = await makeTopic();
+    const { questions } = await svc.getTopicQuestions(topic._id.toString(), 'all');
+    const q = questions.find(q => q.type === 'translation');
+    expect(q.answerWordCount).toBe(4); // "Many students study online."
+    expect(q.answerLetterHint).toBe('M___ s_______ s____ o_____.');
+    expect(q.answerLetterHint.toLowerCase()).not.toContain('many students study online');
+  });
+
+  test('does not add a hint for question types outside the hinted set (e.g. fill_blank)', async () => {
+    const topic = await makeTopic();
+    const { questions } = await svc.getTopicQuestions(topic._id.toString(), 'all');
+    const q = questions.find(q => q.type === 'fill_blank');
+    expect(q.answerWordCount).toBeUndefined();
+    expect(q.answerLetterHint).toBeUndefined();
+  });
+});
+
+describe('getExam — no answer-key or hints leaked, matches "no hints" exam design', () => {
+  test('exam questions never carry answerWordCount/answerLetterHint even for translation', async () => {
+    await Task2Topic.create({
+      week: 3, block: 'cause_effect', orderIndex: 1,
+      topicName: 'Exam Hint Topic', essayType: 'cause_effect',
+      prompt: 'Test prompt',
+      questions: [
+        {
+          questionId: 'q_translation', level: 'beginner', orderIndex: 1, type: 'translation',
+          questionText: 'Dịch câu này', correctAnswer: 'Many students study online.',
+          modelAnswer: 'Many students study online.',
+        },
+      ],
+    });
+    const { questions } = await svc.getExam({ week: 3, level: 'all', count: 10 });
+    expect(questions.length).toBeGreaterThan(0);
+    for (const q of questions) {
+      expect(q.correctAnswer).toBeUndefined();
+      expect(q.modelAnswer).toBeUndefined();
+      expect(q.answerWordCount).toBeUndefined();
+      expect(q.answerLetterHint).toBeUndefined();
+    }
+  });
+});

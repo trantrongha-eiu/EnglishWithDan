@@ -91,6 +91,36 @@
     .t2-structure-hint-label{font-weight:700;white-space:nowrap;flex-shrink:0}
     [data-theme="dark"] .t2-structure-hint{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd}
 
+    /* ── Answer word-count / letter-pattern hint ── */
+    .t2-answer-hint{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 2px;font-size:12px}
+    .t2-answer-hint-count{background:#f3f4f6;color:#4b5563;border-radius:20px;padding:2px 10px;font-weight:700;white-space:nowrap}
+    .t2-answer-hint-pattern{font-family:'Courier New',monospace;letter-spacing:1px;color:#9ca3af;font-weight:700}
+    [data-theme="dark"] .t2-answer-hint-count{background:var(--surface, #0d0d0d);color:#94a3b8}
+    [data-theme="dark"] .t2-answer-hint-pattern{color:#64748b}
+
+    /* ── Vocab-gate banner (select screen) ── */
+    .t2-vocab-gate-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#eff6ff;border:1.5px solid #bae6fd;border-radius:12px;padding:12px 16px;margin-top:16px;flex-wrap:wrap}
+    .t2-vocab-gate-info{font-size:13px;color:#0369a1;line-height:1.5}
+    [data-theme="dark"] .t2-vocab-gate-banner{background:#0c1e30;border-color:#1e4060}
+    [data-theme="dark"] .t2-vocab-gate-info{color:#7dd3fc}
+
+    /* ── Vocab "save all" button — deliberately its own class, NOT
+       .t2-start-btn: startSession()'s finally block resets whichever
+       element matches `.t2-start-btn` by a bare querySelector() after
+       render() has already swapped the DOM, so reusing that class here
+       let it clobber this button's label back to "Bắt đầu". ── */
+    .t2-vocab-saveall-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:4px;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(118,75,162,.35)}
+    .t2-vocab-saveall-btn:hover{opacity:.9}
+    .t2-vocab-saveall-btn:disabled{opacity:.6;cursor:default}
+
+    /* ── Vocab card save button ── */
+    .t2-vocab-save-btn{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;transition:all .15s}
+    .t2-vocab-save-btn:hover{border-color:#6366f1;color:#6366f1}
+    .t2-vocab-save-btn.saved{border-color:#16a34a;color:#16a34a;cursor:default}
+    .t2-vocab-save-btn:disabled{opacity:.8;cursor:default}
+    [data-theme="dark"] .t2-vocab-save-btn{border-color:var(--border2, #333333);color:#94a3b8}
+    [data-theme="dark"] .t2-vocab-save-btn.saved{border-color:#4ade80;color:#4ade80}
+
     /* ── AI grading badge ── */
     .t2-ai-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;letter-spacing:.3px}
     [data-theme="dark"] .t2-ai-badge{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
@@ -170,11 +200,6 @@
     .t2-ctx-divider{color:#d1d5db}
     .t2-ctx-name{font-weight:600;color:#374151;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     [data-theme="dark"] .t2-ctx-name{color:#cbd5e1}
-    /* ── Model answer toggle ── */
-    .t2-toggle-model{background:none;border:1.5px solid #d1d5db;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;color:#6b7280;cursor:pointer;margin-top:8px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
-    .t2-toggle-model:hover{border-color:#6366f1;color:#6366f1}
-    [data-theme="dark"] .t2-toggle-model{border-color:var(--border2, #333333);color:#94a3b8}
-
     /* ── Quit modal ── */
     .t2-quit-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:10000;backdrop-filter:blur(2px)}
     .t2-quit-overlay.hidden{display:none}
@@ -614,6 +639,35 @@ function topicCompletedCount() {
   return Object.values(_topicScores).filter(s => s.completed).length;
 }
 
+// ── Vocab-learned gate — Luyện tập requires the topic's vocab to have been
+// opened (Từ vựng tab, which caches its total word count below) AND every
+// one of those terms saved into a VocabBook first. Same localStorage-keyed-
+// by-topicId convention as _topicScores above; there is no server-side field
+// for "has this student learned this topic's vocab" to check instead. ──
+const VOCAB_TOTAL_KEY = 't2_vocab_total';
+const VOCAB_SAVED_KEY = 't2_vocab_saved';
+let _vocabTotalMap = JSON.parse(localStorage.getItem(VOCAB_TOTAL_KEY) || '{}');
+let _vocabSavedMap  = JSON.parse(localStorage.getItem(VOCAB_SAVED_KEY) || '{}');
+
+function _savedTermsForTopic(topicId) {
+  return new Set(_vocabSavedMap[topicId] || []);
+}
+
+function _markVocabTermsSaved(topicId, terms) {
+  const set = _savedTermsForTopic(topicId);
+  terms.forEach(t => set.add(t));
+  _vocabSavedMap[topicId] = Array.from(set);
+  localStorage.setItem(VOCAB_SAVED_KEY, JSON.stringify(_vocabSavedMap));
+}
+
+function isVocabLearned(topicId) {
+  if (!topicId) return false;
+  const total = _vocabTotalMap[topicId];
+  if (total === undefined) return false; // never opened the Từ vựng tab yet
+  if (total <= 0) return true; // topic genuinely has no vocab list — nothing to gate on
+  return _savedTermsForTopic(topicId).size >= total;
+}
+
 function topicStatusRowHtml(topicId) {
   const s = _topicScores[topicId];
   let html = '';
@@ -923,6 +977,12 @@ function renderSelect() {
         </label>
       </div>
 
+      ${state.currentMode === 'practice' && !isVocabLearned(t._id) ? `
+      <div class="t2-vocab-gate-banner">
+        <div class="t2-vocab-gate-info">📖 Bạn cần học từ vựng và lưu vào sổ trước khi có thể luyện tập chủ đề này.</div>
+        <button class="t2-resume-btn" onclick="setMode2('vocab')"><i class="fas fa-book"></i> Học từ vựng ngay</button>
+      </div>` : ''}
+
       ${state.draft && state.draft.sessionDone < (state.draft.questionIds?.length || 0) ? `
       <div class="t2-draft-banner">
         <div class="t2-draft-info">📌 Còn <strong>${(state.draft.questionIds?.length || 0) - state.draft.sessionDone} câu chưa làm</strong> từ phiên trước <span style="color:#6b7280;font-size:12px">· ${new Date(state.draft.savedAt).toLocaleDateString('vi-VN')}</span></div>
@@ -967,6 +1027,10 @@ async function startSession() {
 //  PRACTICE MODE
 // ════════════════════════════════════════════════════════
 async function startPractice() {
+  if (!isVocabLearned(state.selectedTopic?._id)) {
+    showToast('Bạn cần học từ vựng và lưu vào sổ trước khi có thể luyện tập', 'warn', 4000);
+    return;
+  }
   try {
     const params = new URLSearchParams({ level: state.selectedLevel });
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
@@ -1158,8 +1222,7 @@ function renderPractice() {
       <div class="wp-result-banner" id="result-banner"></div>
       <div id="comparison-box">
         <div class="wp-cmp-row wp-cmp-student"><span class="wp-cmp-label">📝 Câu của bạn:</span><span id="student-answer-display" class="wp-cmp-text"></span></div>
-        <div class="wp-cmp-row wp-cmp-sample hidden" id="model-answer-row"><span class="wp-cmp-label">✅ Đáp án mẫu:</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
-        <button class="t2-toggle-model" id="toggle-model-btn" onclick="toggleModelAnswer()"><i class="fas fa-eye"></i> Xem đáp án mẫu</button>
+        <div class="wp-cmp-row wp-cmp-sample" id="model-answer-row"><span class="wp-cmp-label">✅ Đáp án mẫu:</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
       </div>
       <div class="t2-explanation hidden" id="explanation-box">
         <div class="t2-exp-title">💡 Giải thích</div>
@@ -1223,9 +1286,15 @@ function renderQuestion(q) {
   }
   // translation, error_correction, short_writing, paraphrase
   const isLong = ['short_writing','paraphrase'].includes(q.type);
+  const answerHint = q.answerWordCount ? `
+  <div class="t2-answer-hint">
+    <span class="t2-answer-hint-count">📏 ${q.answerWordCount} từ</span>
+    <span class="t2-answer-hint-pattern">${_escHtml(q.answerLetterHint || '')}</span>
+  </div>` : '';
   return `
   <div class="wp-task-label">${typeLbl}</div>
   <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+  ${answerHint}
   ${structureHint}
   ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
   <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
@@ -1702,26 +1771,59 @@ async function loadVocab() {
     const data = await apiFetch(`/api/task2/vocabulary/${state.selectedTopic._id}`);
     state.vocab = data.vocabularyList || [];
     if (!state.vocab.length) { showToast('Topic này chưa có từ vựng', 'warn'); return; }
+    // Cache the total so the Luyện tập gate (isVocabLearned) can tell "fully
+    // saved" apart from "never even opened this tab" without a second fetch.
+    _vocabTotalMap[state.selectedTopic._id] = state.vocab.length;
+    localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
     state.view = 'vocab'; render();
   } catch { showToast('Lỗi tải từ vựng', 'error'); }
 }
 
 function renderVocab() {
   const t = state.selectedTopic;
+  const savedSet = _savedTermsForTopic(t._id);
+  const allSaved = state.vocab.length > 0 && state.vocab.every(v => savedSet.has(v.term));
   return `
     <div class="t2-nav"><div class="t2-nav-crumb"><button class="t2-back-btn" onclick="state.view='select';render()"><i class="fas fa-arrow-left"></i> Quay lại</button></div></div>
     <div style="padding:0 20px 8px">
       <h2 class="t2-page-h2" style="font-size:18px">📖 Từ vựng: ${_escHtml(t.topicEmoji)} ${_escHtml(t.topicName)}</h2>
-      <p class="t2-page-sub" style="font-size:13px">${state.vocab.length} từ / cụm từ quan trọng</p>
+      <p class="t2-page-sub" style="font-size:13px">${state.vocab.length} từ / cụm từ quan trọng · cần lưu hết vào sổ để mở khoá Luyện tập</p>
+      <button class="t2-vocab-saveall-btn" onclick="saveAllVocabToBook()" ${allSaved ? 'disabled' : ''}>
+        <i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả vào sổ' : 'Lưu tất cả vào sổ'}
+      </button>
     </div>
     <div class="t2-vocab-grid">
-      ${state.vocab.map(v => `
+      ${state.vocab.map((v, i) => {
+        const isSaved = savedSet.has(v.term);
+        return `
         <div class="t2-vocab-card">
           <div class="t2-vocab-term">${_escHtml(v.term)}</div>
           <div class="t2-vocab-def">${_escHtml(v.definitionVi || '')}</div>
           ${v.example ? `<div class="t2-vocab-ex">"${_escHtml(v.example)}"</div>` : ''}
-        </div>`).join('')}
+          <button class="t2-vocab-save-btn${isSaved ? ' saved' : ''}" onclick="saveOneVocabToBook(${i})" ${isSaved ? 'disabled' : ''}>
+            <i class="fas fa-${isSaved ? 'check' : 'plus'}"></i> ${isSaved ? 'Đã lưu' : 'Lưu'}
+          </button>
+        </div>`;
+      }).join('')}
     </div>`;
+}
+
+function saveOneVocabToBook(idx) {
+  const v = state.vocab[idx];
+  if (!v || !window.openVocabBookPickerBulk) return;
+  window.openVocabBookPickerBulk([{ word: v.term, meaning: v.definitionVi || '', example: v.example || '' }], terms => {
+    _markVocabTermsSaved(state.selectedTopic._id, terms);
+    if (state.view === 'vocab') render();
+  });
+}
+
+function saveAllVocabToBook() {
+  if (!state.vocab.length || !window.openVocabBookPickerBulk) return;
+  const items = state.vocab.map(v => ({ word: v.term, meaning: v.definitionVi || '', example: v.example || '' }));
+  window.openVocabBookPickerBulk(items, terms => {
+    _markVocabTermsSaved(state.selectedTopic._id, terms);
+    if (state.view === 'vocab') render();
+  });
 }
 
 // ════════════════════════════════════════════════════════
@@ -1891,16 +1993,6 @@ function checkSubmitEnabled() {
   if (q.type === 'rearrange') { btn.disabled = state.rearrangeAnswer.length === 0; return; }
   if (q.type === 'fill_blank') { btn.disabled = !(document.getElementById('fill-input')?.value?.trim()); return; }
   btn.disabled = !(document.getElementById('answer-box')?.value?.trim());
-}
-
-function toggleModelAnswer() {
-  const row = document.getElementById('model-answer-row');
-  const btn = document.getElementById('toggle-model-btn');
-  if (!row || !btn) return;
-  row.classList.toggle('hidden');
-  btn.innerHTML = row.classList.contains('hidden')
-    ? '<i class="fas fa-eye"></i> Xem đáp án mẫu'
-    : '<i class="fas fa-eye-slash"></i> Ẩn đáp án';
 }
 
 // ════════════════════════════════════════════════════════

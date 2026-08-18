@@ -21,4 +21,20 @@ function levenshtein(a, b) {
 const NUM_WORDS = { '1':'one','2':'two','3':'three','4':'four','5':'five',
   '6':'six','7':'seven','8':'eight','9':'nine','10':'ten' };
 
-module.exports = { levenshtein, NUM_WORDS };
+// Turns "Many universities have started" into a safe-to-reveal pattern like
+// "M___ u___________ h___ s_______" — first letter + underscores for the
+// rest, punctuation left as-is. Never reveals the actual answer text. Used
+// by task1PracticeService/task2PracticeService to show a "word count +
+// first letter" hint under free-text sentence questions without leaking
+// the answer key before submission.
+function buildAnswerHint(answer) {
+  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
+  const pattern = words.map(w => {
+    const first = w.charAt(0);
+    const rest = w.slice(1).replace(/[a-zA-Z]/g, '_');
+    return first + rest;
+  }).join(' ');
+  return { wordCount: words.length, pattern };
+}
+
+module.exports = { levenshtein, NUM_WORDS, buildAnswerHint };

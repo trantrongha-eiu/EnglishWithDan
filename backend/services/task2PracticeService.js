@@ -10,10 +10,15 @@ const Task2Attempt = require('../models/Task2Attempt');
 const Task2Template = require('../models/Task2Template');
 const Task2Draft = require('../models/Task2Draft');
 const { gradeT2Question } = require('./geminiService');
-const { levenshtein } = require('../utils/textMatch');
+const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
 
 const AI_GRADED_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
 const AUTO_DERIVE_TYPES = new Set(['translation', 'rearrange', 'error_correction', 'paraphrase']);
+// Practice-mode types that show a "word count + first-letter" hint under the
+// question text. Scoped to short free-text sentence answers, not the
+// paragraph-length short_writing/paraphrase types (a letter-blanked hint
+// pattern for a whole paragraph would be unreadable, not helpful).
+const HINT_TYPES = new Set(['translation', 'error_correction']);
 
 function deriveSentenceStructure(q) {
   if (q.sentenceStructure) return q.sentenceStructure;
@@ -110,12 +115,27 @@ function autoGrade(q, userAnswer) {
   return keywordMatch(userAnswer, q.fallbackKeywords, q.modelAnswer);
 }
 
-function sanitizeQuestionForClient(q) {
-  const { correctAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
+function sanitizeQuestionForClient(q, opts = {}) {
+  const { includeHints = true } = opts;
+  // modelAnswer was previously left in `rest` unstripped — for
+  // translation/error_correction/rearrange/paraphrase/short_writing it's set
+  // to the exact same text as correctAnswer, so it leaked the answer key to
+  // the client before the student ever submitted (checkAnswer()/submitExam()
+  // both re-read the question straight from the DB, never from client-sent
+  // data, so the client never legitimately needed it pre-submission).
+  const { correctAnswer, modelAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
   if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
     rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
   }
   rest.sentenceStructure = deriveSentenceStructure(q) || undefined;
+  if (includeHints && HINT_TYPES.has(q.type)) {
+    const answerText = correctAnswer || modelAnswer || '';
+    if (answerText) {
+      const hint = buildAnswerHint(answerText);
+      rest.answerWordCount  = hint.wordCount;
+      rest.answerLetterHint = hint.pattern;
+    }
+  }
   return rest;
 }
 
@@ -147,7 +167,10 @@ async function getTopicQuestions(topicId, level) {
   if (level !== 'all') questions = questions.filter(q => q.level === level);
   questions = questions.sort((a, b) => a.orderIndex - b.orderIndex);
 
-  const safe = questions.map(sanitizeQuestionForClient);
+  // Explicit arrow, not a bare `.map(sanitizeQuestionForClient)` reference —
+  // Array.map passes (element, index, array), and index would otherwise be
+  // mistaken for the `opts` param.
+  const safe = questions.map(q => sanitizeQuestionForClient(q));
   return { questions: safe, topicName: topic.topicName, topicEmoji: topic.topicEmoji, prompt: topic.prompt, essayType: topic.essayType };
 }
 
@@ -215,7 +238,10 @@ async function getExam({ week = 'all', level = 'all', count = 10 }) {
     [allQ[i], allQ[j]] = [allQ[j], allQ[i]];
   }
   const selected = allQ.slice(0, parseInt(count));
-  const safe = selected.map(sanitizeQuestionForClient);
+  // No word-count/letter hints in Thi thử (exam) mode — the mode is meant to
+  // simulate the real, hint-free test, matching the intro copy ("Không có
+  // gợi ý — giống thi thật").
+  const safe = selected.map(q => sanitizeQuestionForClient(q, { includeHints: false }));
   return { questions: safe, total: safe.length };
 }
 
