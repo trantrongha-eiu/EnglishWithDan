@@ -126,8 +126,18 @@ export default function QuestionGroupBuilder({ groups = [], onChange, context = 
       const nonEmpty = (qForm.options || []).filter(o => o.trim());
       if (nonEmpty.length < 2) { toast('Vui lòng nhập ít nhất 2 lựa chọn (A, B, C…)', 'error'); return; }
     }
-    if (['multiple-choice', 'true-false-ng', 'yes-no-ng'].includes(qForm.type) && !qForm.questionText.trim()) {
-      toast('Vui lòng nhập nội dung câu hỏi (statement)', 'error'); return;
+    // The backend schema (Passage/ListeningSection/ListeningTest) requires
+    // questionText unconditionally for every question, regardless of type —
+    // this used to only enforce it client-side for 3 types, so a fill-blank
+    // question added under a table/note-form/summary-completion/drag-drop
+    // group (auto-assigned type:'fill-blank', whose own guidance treats the
+    // per-question textarea as unnecessary since the blanks live in that
+    // group's tableConfig/noteConfig/etc.) could be "added" successfully
+    // here and only fail once the WHOLE passage/section/test is saved,
+    // with a raw Mongoose validation error the admin has no way to trace
+    // back to which question caused it.
+    if (!qForm.questionText.trim()) {
+      toast('Vui lòng nhập nội dung câu hỏi (statement/văn bản có chỗ trống)', 'error'); return;
     }
     const q = {
       questionNumber: qForm.questionNumber,

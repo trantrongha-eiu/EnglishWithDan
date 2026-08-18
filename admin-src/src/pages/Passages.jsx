@@ -26,6 +26,12 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  // Was previously inferred only from `saving` — the moment `saving` flipped
+  // back to false (success OR a failed PUT) the header showed a green "✓ Đã
+  // lưu", and it showed that even during the 700ms debounce window before
+  // any request had been sent at all. isDirty tracks the real "does the
+  // server have my latest edit" state instead.
+  const [isDirty, setIsDirty] = useState(false);
   const saveTimer = useRef(null);
 
   useEffect(() => {
@@ -40,27 +46,44 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
     setSaving(true);
     try {
       await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify({ questionGroups: updatedGroups }) });
+      setIsDirty(false);
     } catch (e) { toast(e.message, 'error'); }
     finally { setSaving(false); }
   }
 
   function handleGroupsChange(updated) {
     setGroups(updated);
+    setIsDirty(true);
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persist(updated), 700);
+  }
+
+  // The modal had no unsaved-changes guard at all — the debounced persist()
+  // above only fires 700ms after the last edit, and its useEffect cleanup
+  // (fired on unmount, i.e. whenever the modal closes) just cancels that
+  // pending timer via clearTimeout, so any edit in the last 700ms before
+  // closing was silently dropped with no warning. Flush immediately instead
+  // of losing it.
+  async function handleClose() {
+    if (isDirty) {
+      clearTimeout(saveTimer.current);
+      await persist(groups);
+    }
+    onClose();
   }
 
   const totalQs = groups.reduce((n, g) => n + (g.questions?.length || 0), 0);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleClose}>
       <div className="modal" style={{ maxWidth: 860, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">📝 Câu hỏi — {passageTitle}</h3>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {saving && <span style={{ fontSize: 12, color: 'var(--text3)' }}>Đang lưu...</span>}
-            {!saving && totalQs > 0 && <span style={{ fontSize: 12, color: 'var(--green)' }}>✓ Đã lưu</span>}
-            <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+            {!saving && isDirty && <span style={{ fontSize: 12, color: 'var(--yellow)', fontWeight: 600 }}>● Chưa lưu</span>}
+            {!saving && !isDirty && totalQs > 0 && <span style={{ fontSize: 12, color: 'var(--green)' }}>✓ Đã lưu</span>}
+            <button className="modal-close" onClick={handleClose} aria-label="Đóng">✕</button>
           </div>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
