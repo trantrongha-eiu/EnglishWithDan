@@ -12,6 +12,10 @@ const WritingTask2Schema = new mongoose.Schema({
   },
   prompt:         { type: String, required: true },
   sampleSections: { type: [SampleSectionSchema], default: [] },
+  // "Phân tích đề" guide — essay type, which stance/argument to pick, and
+  // how to split Body 1/Body 2, band-6.5-appropriate. Same {title, content}
+  // shape as WritingTask1's analysisSections/sampleSections.
+  analysisSections: { type: [SampleSectionSchema], default: [] },
   isActive:       { type: Boolean, default: true }
 }, { timestamps: true });
 

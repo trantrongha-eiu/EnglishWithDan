@@ -1120,7 +1120,8 @@ function closeHistoryModal() {
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   const overlay = ['wr-history-modal', 'exit-modal-overlay', 'confirm-modal-overlay',
-                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal'];
+                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal',
+                   'pw-analysis-modal'];
   for (const id of overlay) {
     const el = document.getElementById(id);
     if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }
@@ -1734,6 +1735,16 @@ function renderPracticeWriteScreen(taskType, task) {
   if (taskType === 1 && task.imageUrl) {
     html += `<img src="${task.imageUrl}" alt="Task 1 image" loading="lazy" style="max-width:100%;border-radius:8px;margin-top:12px;border:1px solid #e5e7eb" />`;
   }
+  // "Phân tích đề" — available for both Task 1 (how to pick overview
+  // highlights + split Body 1/2 from the chart) and Task 2 (which stance/
+  // argument to pick + split Body 1/2 for the essay). Meant to be read
+  // WHILE planning/writing (unlike the sample-essay toggle, which hides the
+  // textarea to discourage copying), so it opens in a modal instead of
+  // swapping panels.
+  const hasAnalysis = Array.isArray(task.analysisSections) && task.analysisSections.some(s => s.content?.trim());
+  if (hasAnalysis) {
+    html += `<button class="btn-secondary" style="margin-top:12px;width:100%" onclick="openAnalysisModal()"><i class="fas fa-search"></i> Phân tích đề</button>`;
+  }
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
   // exam — setupDictionaryDouble() is idempotent (removes any previous
@@ -1779,6 +1790,23 @@ function togglePracticeSample(on) {
     if (on) samplePanel.scrollTop = 0;
   }
   if (hint) hint.style.display = on ? '' : 'none';
+}
+
+function openAnalysisModal() {
+  const sections = practiceState.task?.analysisSections;
+  if (!Array.isArray(sections) || !sections.length) return;
+  const body = document.getElementById('pw-analysis-body');
+  body.innerHTML = sections.filter(s => s.content?.trim()).map(s => `
+    <div class="pw-analysis-section">
+      <div class="pw-analysis-section-title"><span>${escHtml(s.title)}</span></div>
+      <div class="pw-analysis-section-body">${escHtml(s.content)}</div>
+    </div>`).join('');
+  setupDictionaryDouble('pw-analysis-body', 'writing-practice-analysis');
+  document.getElementById('pw-analysis-modal').classList.add('open');
+}
+
+function closeAnalysisModal() {
+  document.getElementById('pw-analysis-modal').classList.remove('open');
 }
 
 function copySampleSection(btn, idx) {

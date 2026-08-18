@@ -13,6 +13,11 @@ const WritingTask1Schema = new mongoose.Schema({
   },
   prompt:         { type: String, required: true },
   sampleSections: { type: [SampleSectionSchema], default: [] },
+  // "Phân tích đề" guide — how to pick overview highlights and structure
+  // Body 1/Body 2 for THIS specific chart, band-6.5-appropriate. Same
+  // {title, content} shape as sampleSections so the frontend can reuse the
+  // exact same rendering/copy-button markup for both panels.
+  analysisSections: { type: [SampleSectionSchema], default: [] },
   isActive:       { type: Boolean, default: true }
 }, { timestamps: true });
 

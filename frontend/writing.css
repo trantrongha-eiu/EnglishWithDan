@@ -443,7 +443,7 @@ body {
    display:none regardless of .hidden — caught via live browser testing.
 ══════════════════════════════════════════════ */
 #wr-history-modal, #practice-exit-modal, #practice-submit-modal,
-#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay {
+#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay, #pw-analysis-modal {
   display: none;
   position: fixed;
   inset: 0;
@@ -454,7 +454,8 @@ body {
   padding: 16px;
 }
 #wr-history-modal.open, #practice-exit-modal.open, #practice-submit-modal.open,
-#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open { display: flex; }
+#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open,
+#pw-analysis-modal.open { display: flex; }
 
 .review-modal {
   background: #fff;
@@ -1001,6 +1002,36 @@ body {
   border-radius: 6px;
   padding: 2px 8px;
 }
+
+/* "Phân tích đề" modal — blue theme, deliberately distinct from the green
+   sample-essay panel above so students don't mistake analysis guidance
+   (how to plan the overview/body) for a ready-made essay to copy. */
+.pw-analysis-section {
+  border: 1.5px solid #bae6fd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.pw-analysis-section:last-child { margin-bottom: 0; }
+.pw-analysis-section-title {
+  background: #e0f2fe;
+  padding: 7px 12px 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0369a1;
+  border-bottom: 1px solid #bae6fd;
+}
+.pw-analysis-section-body {
+  background: #f0f9ff;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: #0c4a6e;
+  white-space: pre-wrap;
+}
+[data-theme="dark"] .pw-analysis-section { border-color: #1e4060; }
+[data-theme="dark"] .pw-analysis-section-title { background: #0f2d45; color: #7dd3fc; border-color: #1e4060; }
+[data-theme="dark"] .pw-analysis-section-body { background: #0c1e30; color: #bae6fd; }
 
 /* Dark mode */
 [data-theme="dark"] .pw-sample-bar { background: #1a1f2e; border-color: #2d3748; }
