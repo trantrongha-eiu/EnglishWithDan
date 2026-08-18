@@ -2811,6 +2811,13 @@ async function updateDifficultBadge() {
 
 /* Open the modal and load words */
 async function openDifficultWordsModal() {
+    // Same free-plan gate as openBook()/openLesson() — GET /difficult-words
+    // is premium-gated server-side now, so block here too instead of
+    // opening an empty modal that just shows a generic load-error.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
     openModal('modal-difficult-words');
     const body = document.getElementById('difficult-words-body');
     body.innerHTML = '<div style="text-align:center;padding:32px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
@@ -2818,7 +2825,12 @@ async function openDifficultWordsModal() {
     try {
         const data = await fetch(`${API}/difficult-words`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r));
         _renderDifficultWords(data.words || []);
-    } catch {
+    } catch (err) {
+        if (err.status === 403 && err.body?.requiresPremium) {
+            closeDifficultWordsModal();
+            if (window.openUpgradeModal) openUpgradeModal('trial_expired');
+            return;
+        }
         body.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3)">Không thể tải danh sách. Vui lòng thử lại.</div>';
     }
 }

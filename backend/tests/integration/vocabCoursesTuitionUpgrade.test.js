@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../../app');
 const { createStudent, signTokenFor } = require('../factories/userFactory');
 const { createVocabBook, createCourse, createTuitionFee } = require('../factories/contentFactory');
+const DifficultWord = require('../../models/DifficultWord');
 
 describe('Vocab book — scoped to the owning user', () => {
   test('a student can create and fetch their own book', async () => {
@@ -94,6 +95,56 @@ describe('Vocab book — free-plan 24h trial gating', () => {
 
     const getRes = await request(app).get(`/api/vocabbook/${book._id}`).set('Authorization', `Bearer ${token}`);
     expect(getRes.status).toBe(200);
+  });
+});
+
+// Difficult Words was missed during the original free-plan 24h-trial
+// rollout that gated every other skill area (Vocab Book above included) —
+// unlike VocabBook, there's no "list stays open" carve-out here since the
+// frontend's badge/modal fetch already degrades gracefully on any failure
+// (dashboard.js's updateDifficultBadge()/openDifficultWordsModal()).
+describe('Difficult words — free-plan 24h trial gating', () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  test('a free student whose account is 2 days old is blocked from listing/reporting/editing/deleting', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * DAY_MS) } });
+    const token = signTokenFor(user);
+    const word = await DifficultWord.create({ userId: user._id, word: 'apple', wrongCount: 3 });
+
+    const listRes = await request(app).get('/api/difficult-words').set('Authorization', `Bearer ${token}`);
+    expect(listRes.status).toBe(403);
+    expect(listRes.body.code).toBe('PLAN_REQUIRED');
+
+    const reportRes = await request(app)
+      .post('/api/difficult-words/report')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ words: [{ word: 'banana' }], source: 'test' });
+    expect(reportRes.status).toBe(403);
+
+    const updateRes = await request(app)
+      .patch(`/api/difficult-words/${word._id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ meaning: 'táo' });
+    expect(updateRes.status).toBe(403);
+
+    const deleteRes = await request(app).delete(`/api/difficult-words/${word._id}`).set('Authorization', `Bearer ${token}`);
+    expect(deleteRes.status).toBe(403);
+  });
+
+  test('a freshly-created free student (still inside the 24h trial) has full access', async () => {
+    const user = await createStudent({ extra: { createdAt: new Date() } });
+    const token = signTokenFor(user);
+
+    const listRes = await request(app).get('/api/difficult-words').set('Authorization', `Bearer ${token}`);
+    expect(listRes.status).toBe(200);
+  });
+
+  test('a premium student is never blocked, regardless of account age', async () => {
+    const user = await createStudent({ extra: { plan: 'premium', createdAt: new Date(Date.now() - 30 * DAY_MS) } });
+    const token = signTokenFor(user);
+
+    const listRes = await request(app).get('/api/difficult-words').set('Authorization', `Bearer ${token}`);
+    expect(listRes.status).toBe(200);
   });
 });
 
