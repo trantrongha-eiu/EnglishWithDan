@@ -503,11 +503,11 @@
           <button class="tab-btn active" data-tab="learn" onclick="switchLessonTab('learn')"><i class="fas fa-book-open"></i> Learn</button>
           <button class="tab-btn" data-tab="quiz" onclick="switchLessonTab('quiz')"><i class="fas fa-check-circle"></i> Quiz</button>
           <button class="tab-btn" data-tab="results" onclick="switchLessonTab('results')"><i class="fas fa-chart-bar"></i> Results</button>
+          <button class="lesson-saveall-btn" id="lesson-saveall-btn" onclick="saveAllLessonVocabToBook()" style="display:none"></button>
         </div>
       </div>
       <div class="mode-body" id="lesson-tab-body" style="flex:1;overflow-y:auto;padding:24px">
         <div id="lesson-tab-learn">
-          <div class="lesson-learn-header" id="lesson-learn-header"></div>
           <div class="vocab-grid" id="lesson-learn-grid"></div>
         </div>
         <div id="lesson-tab-quiz" style="display:none"></div>

@@ -381,21 +381,19 @@ function saveAllLessonVocabToBook() {
 
 function renderLearnTab() {
     const grid = document.getElementById('lesson-learn-grid');
-    const header = document.getElementById('lesson-learn-header');
+    const saveAllBtn = document.getElementById('lesson-saveall-btn');
     if (!grid) return;
     const words = lessonState.currentLesson?.words || [];
-    if (header) {
+    if (saveAllBtn) {
         if (!words.length) {
-            header.innerHTML = '';
+            saveAllBtn.style.display = 'none';
         } else {
             const lessonId = lessonState.currentLesson._id;
             const savedSet = _savedTermsForLesson(lessonId);
             const allSaved = words.every(w => savedSet.has(w.word));
-            header.innerHTML = `
-                <p>${words.length} từ / cụm từ · lưu vào sổ để ôn tập lại sau</p>
-                <button class="lesson-saveall-btn" onclick="saveAllLessonVocabToBook()" ${allSaved ? 'disabled' : ''}>
-                    <i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả vào sổ' : 'Lưu tất cả vào sổ'}
-                </button>`;
+            saveAllBtn.style.display = '';
+            saveAllBtn.disabled = allSaved;
+            saveAllBtn.innerHTML = `<i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả' : `Lưu tất cả (${words.length})`}`;
         }
     }
     if (!words.length) { grid.innerHTML = '<div class="classroom-empty">Bài học chưa có từ vựng</div>'; return; }
