@@ -372,7 +372,7 @@ function _markLessonVocabTermsSaved(lessonId, terms) {
 function saveAllLessonVocabToBook() {
     const words = lessonState.currentLesson?.words || [];
     if (!words.length || !window.openVocabBookPickerBulk) return;
-    const items = words.map(w => ({ word: w.word, meaning: w.meaning || '', example: w.example || '' }));
+    const items = words.map(w => ({ word: w.word, meaning: w.meaning || '', example: w.example || '', collocations: w.collocations || [] }));
     window.openVocabBookPickerBulk(items, terms => {
         _markLessonVocabTermsSaved(lessonState.currentLesson._id, terms);
         renderLearnTab();

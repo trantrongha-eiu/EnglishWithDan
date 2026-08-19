@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard(), refreshReviewDueCard()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard(), refreshReviewDueCard(), loadMyVocabStats()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,
     // or a plain reload) — same "restore on load" idiom as reading-v2.js's
@@ -495,6 +495,29 @@ async function useHammer() {
     finally { if (btn) btn.disabled = false; }
 }
 
+// "My Vocabulary" stat tiles — aggregate totals across ALL of a student's
+// books (GET /vocabbook/stats), distinct from the per-book counters already
+// shown in the sidebar/book-detail view (those only ever reflect ONE book).
+// Hidden entirely rather than showing all-zero tiles when a brand new
+// student has no words saved anywhere yet.
+async function loadMyVocabStats() {
+    const wrap = document.getElementById('myvocab-stats');
+    if (!wrap) return;
+    try {
+        const res = await fetch(`${API}/vocabbook/stats`, { headers: authH() });
+        const data = await window.ApiClient.handleResponse(res);
+        const s = data.stats || {};
+        if (!s.totalWords) { wrap.style.display = 'none'; return; }
+        document.getElementById('myvocab-saved').textContent = s.totalWords;
+        document.getElementById('myvocab-review').textContent = s.dueToday;
+        document.getElementById('myvocab-weak').textContent = s.weak;
+        document.getElementById('myvocab-mastered').textContent = s.mastered;
+        wrap.style.display = '';
+    } catch {
+        wrap.style.display = 'none';
+    }
+}
+
 const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
 async function loadStreakLeaderboard() {
@@ -745,9 +768,11 @@ function openBook(bookId, push = true) {
         _isHardWordsSession = false;
         selectedWordIds.clear();
 
-        // Clear search when switching books
+        // Clear search + status filter when switching books
         const searchEl = document.getElementById('book-search');
         if (searchEl) searchEl.value = '';
+        currentStatusFilter = null;
+        document.querySelectorAll('.stat-dot[data-status]').forEach(el => el.classList.remove('active'));
 
         document.querySelectorAll('.book-item').forEach(el => el.classList.remove('active'));
         const item = document.getElementById(`bi-${bookId}`);
@@ -814,14 +839,13 @@ function renderBookContent(book) {
         document.getElementById('book-progress-fill').style.width = pct + '%';
     });
 
-    // Re-apply active search filter, otherwise render full list
+    // Re-apply any active search query and/or status-chip filter, otherwise
+    // render the full list.
     const searchEl = document.getElementById('book-search');
-    const q = searchEl?.value.trim().toLowerCase();
-    if (q) {
-        const filtered = book.words.filter(w =>
-            w.word.toLowerCase().includes(q) ||
-            (w.meaning || '').toLowerCase().includes(q) ||
-            (w.note || '').toLowerCase().includes(q));
+    const q = searchEl?.value.trim().toLowerCase() || '';
+    const isFiltered = !!(q || currentStatusFilter);
+    if (isFiltered) {
+        const filtered = _applyWordFilters(book.words, q);
         renderWordsTable(filtered);
         const totalEl = document.getElementById('stat-total');
         const limitEl = document.getElementById('stat-limit-label');
@@ -906,6 +930,7 @@ function renderWordsTable(words) {
       <td style="color:var(--text2)">${_esc(w.meaning || '–')}</td>
       <td style="max-width:240px">
         ${w.example ? `<div style="font-size:12px;font-style:italic;color:var(--text2)">${_esc(w.example)}</div>` : ''}
+        ${w.collocations?.length ? `<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:4px">${w.collocations.map(c => `<span class="colloc-chip">${_esc(c)}</span>`).join('')}</div>` : ''}
       </td>
       <td style="color:var(--text3);font-size:12px">${_esc(w.note || '')}</td>
       <td style="display:flex;gap:4px">
@@ -923,24 +948,49 @@ function renderWordsTable(words) {
 
 /* ── Word search / filter ── */
 let _filterTimer = null;
+// Click a Mastered/So-so/Not-yet stat chip to filter the table to just that
+// status (click the same one again to clear). Combines with the search box
+// — both apply together, same as e.g. a spreadsheet's filter+search.
+let currentStatusFilter = null;
+
+function filterByStatus(status) {
+    currentStatusFilter = currentStatusFilter === status ? null : status;
+    document.querySelectorAll('.stat-dot[data-status]').forEach(el => {
+        el.classList.toggle('active', el.dataset.status === currentStatusFilter);
+    });
+    if (currentBookData) renderBookContent(currentBookData);
+}
+
+// Shared by renderBookContent (re-applying an active filter after a data
+// refresh) and filterWords (typing in the search box) — was hand-duplicated
+// in both places before, one of which silently never applied the status
+// filter at all.
+function _applyWordFilters(words, query) {
+    let result = words;
+    if (query) {
+        result = result.filter(w =>
+            w.word.toLowerCase().includes(query) ||
+            (w.meaning || '').toLowerCase().includes(query) ||
+            (w.note || '').toLowerCase().includes(query));
+    }
+    if (currentStatusFilter) result = result.filter(w => w.status === currentStatusFilter);
+    return result;
+}
+
 function filterWords(q) {
     clearTimeout(_filterTimer);
     _filterTimer = setTimeout(() => {
         if (!currentBookData) return;
         const query = q.trim().toLowerCase();
         const all   = currentBookData.words;
-        const words = query
-            ? all.filter(w =>
-                w.word.toLowerCase().includes(query) ||
-                (w.meaning || '').toLowerCase().includes(query) ||
-                (w.note || '').toLowerCase().includes(query))
-            : all;
+        const words = _applyWordFilters(all, query);
         renderWordsTable(words);
         // Update total count label to show filtered result
         const totalEl    = document.getElementById('stat-total');
         const limitEl    = document.getElementById('stat-limit-label');
-        if (totalEl) totalEl.textContent = query ? words.length : all.length;
-        if (limitEl) limitEl.textContent = query ? ` / ${all.length} words` : ' / 300 words';
+        const isFiltered = !!(query || currentStatusFilter);
+        if (totalEl) totalEl.textContent = isFiltered ? words.length : all.length;
+        if (limitEl) limitEl.textContent = isFiltered ? ` / ${all.length} words` : ' / 300 words';
     }, 120);
 }
 
@@ -966,6 +1016,7 @@ async function updateWordStatus(wordId, status, selectEl) {
             body: JSON.stringify({ status })
         });
         await window.ApiClient.handleResponse(res);
+        if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
         // Confetti only after server confirms — not on optimistic update
         if (w && status === 'da-thuoc') checkBookCompletion();
     } catch {

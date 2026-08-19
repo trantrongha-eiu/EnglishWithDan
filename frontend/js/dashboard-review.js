@@ -50,6 +50,7 @@ async function openReviewDueModal() {
     if (!items.length) {
         toast('🎉 Không còn từ nào cần ôn lúc này!', 'success');
         refreshReviewDueCard();
+        if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
         return;
     }
     _startReviewDueQuiz(items);
@@ -112,7 +113,10 @@ window._onReviewDueSessionComplete = function (mode) {
             method: 'PATCH', headers: authH(),
             body: JSON.stringify({ status }),
         }).catch(() => {});
-    })).then(() => refreshReviewDueCard());
+    })).then(() => {
+        refreshReviewDueCard();
+        if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
+    });
 };
 
 window.openReviewDueModal = openReviewDueModal;

@@ -191,6 +191,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   .review-due-card>.btn{padding:8px 14px;font-size:13px;white-space:nowrap}
 }
 
+/* "My Vocabulary" — aggregate stat tiles across all books (GET /vocabbook/stats) */
+.myvocab-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.myvocab-tile{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 14px;text-align:center;
+}
+.myvocab-tile--clickable{cursor:pointer;transition:box-shadow .15s,transform .15s}
+.myvocab-tile--clickable:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.myvocab-tile-value{font-size:26px;font-weight:800;color:var(--text)}
+.myvocab-tile-value--blue{color:var(--blue,#3d8bff)}
+.myvocab-tile-value--red{color:#e53935}
+.myvocab-tile-value--green{color:var(--success,#16a34a)}
+.myvocab-tile-label{font-size:12px;color:var(--text3);margin-top:4px;font-weight:600}
+@media(max-width:640px){
+  .myvocab-stats{grid-template-columns:repeat(2,1fr)}
+  .myvocab-tile{padding:12px 10px}
+  .myvocab-tile-value{font-size:22px}
+}
+
 /* Rearrange quiz type — click letters/words in order to rebuild the answer */
 .rearrange-hint{font-size:13px;color:var(--text2);font-style:italic;margin-bottom:12px;min-height:18px}
 .rearrange-hint i.fa-spinner{color:var(--text3)}
@@ -364,6 +383,14 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 
 .book-stats{display:flex;gap:16px;font-size:12px;flex-wrap:wrap}
 .stat-dot{display:flex;align-items:center;gap:5px;font-weight:600}
+.stat-dot[data-status]{cursor:pointer;padding:3px 8px;border-radius:12px;border:1px solid transparent;transition:all .15s}
+.stat-dot[data-status]:hover{background:var(--surface2)}
+.stat-dot[data-status].active{background:var(--brand-light,#fef2f2);border-color:var(--brand);color:var(--brand)}
+
+.colloc-chip{
+  display:inline-block;font-size:10px;font-weight:600;color:var(--text2);
+  background:var(--surface2,#f3f4f6);border-radius:8px;padding:2px 7px;
+}
 .dot-green{width:8px;height:8px;border-radius:50%;background:var(--green)}
 .dot-yellow{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
 .dot-gray{width:8px;height:8px;border-radius:50%;background:var(--border2)}

@@ -412,6 +412,12 @@
     if (!_currentData || !_word) return;
     var meaningEl = document.getElementById('dict-primary-meaning');
     var meaning = (meaningEl && meaningEl.textContent.trim()) || _currentData.primaryMeaning;
+    // Only included if the student already opened the Collocations tab for
+    // this word (session-local _collocCache, populated by
+    // loadDictCollocations) — saving never triggers a fresh Gemini call on
+    // its own, so a word saved without visiting that tab just has none.
+    var cachedColloc = _collocCache.get(_word.toLowerCase());
+    var collocations = cachedColloc ? cachedColloc.map(function (c) { return c.phrase; }) : [];
     closeDictPopup();
     await openVocabBookPicker({
       word: _word,
@@ -419,7 +425,8 @@
       example: _currentData.examples[0] || '',
       phonetic: _currentData.phonetic,
       partOfSpeech: _currentData.partOfSpeech,
-      source: _source
+      source: _source,
+      collocations: collocations
     });
   }
 

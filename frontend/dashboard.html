@@ -114,6 +114,28 @@
             <button class="btn btn-primary" onclick="openReviewDueModal()">Ôn ngay</button>
           </div>
 
+          <!-- "My Vocabulary" — aggregate stats across ALL of the student's books
+               (existing per-book counters in the sidebar/book view only ever show
+               ONE book's numbers) -->
+          <div class="myvocab-stats" id="myvocab-stats" style="display:none">
+            <div class="myvocab-tile">
+              <div class="myvocab-tile-value" id="myvocab-saved">0</div>
+              <div class="myvocab-tile-label">Đã lưu</div>
+            </div>
+            <div class="myvocab-tile myvocab-tile--clickable" onclick="openReviewDueModal()">
+              <div class="myvocab-tile-value myvocab-tile-value--blue" id="myvocab-review">0</div>
+              <div class="myvocab-tile-label">Cần ôn lại</div>
+            </div>
+            <div class="myvocab-tile">
+              <div class="myvocab-tile-value myvocab-tile-value--red" id="myvocab-weak">0</div>
+              <div class="myvocab-tile-label">Từ yếu</div>
+            </div>
+            <div class="myvocab-tile">
+              <div class="myvocab-tile-value myvocab-tile-value--green" id="myvocab-mastered">0</div>
+              <div class="myvocab-tile-label">Đã thuộc</div>
+            </div>
+          </div>
+
           <div class="dash-home-grid">
             <!-- Left column: intro + streak mascot -->
             <div class="dash-home-col dash-home-col--left">
@@ -244,9 +266,9 @@
             <button class="btn-help-guide" onclick="openGuideModal()" title="Hướng dẫn sử dụng" aria-label="Hướng dẫn sử dụng"><i class="fas fa-question-circle"></i></button>
           </div>
           <div class="book-stats">
-            <span class="stat-dot"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Mastered</span>
-            <span class="stat-dot"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
-            <span class="stat-dot"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
+            <span class="stat-dot" data-status="da-thuoc" title="Lọc: chỉ hiện từ đã thuộc" onclick="filterByStatus('da-thuoc')"><span class="dot-green"></span><span id="stat-da-thuoc">0</span> Mastered</span>
+            <span class="stat-dot" data-status="nho-so-so" title="Lọc: chỉ hiện từ nhớ sơ sơ" onclick="filterByStatus('nho-so-so')"><span class="dot-yellow"></span><span id="stat-nho-so-so">0</span> So-so</span>
+            <span class="stat-dot" data-status="chua-thuoc" title="Lọc: chỉ hiện từ chưa thuộc" onclick="filterByStatus('chua-thuoc')"><span class="dot-gray"></span><span id="stat-chua-thuoc">0</span> Not yet</span>
             <span style="color:var(--text3);font-size:12px">·</span>
             <span style="font-size:12px;font-weight:600;color:var(--text2)"><span id="stat-total">0</span><span id="stat-limit-label"> / 300 words</span></span>
           </div>
