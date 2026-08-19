@@ -227,6 +227,10 @@ async function _openDirectPracticeTask(taskType, taskId) {
 // reactive fallback if the trial expires mid-session.)
 // ──────────────────────────────────────────────────────
 async function startExam() {
+  // "Phân tích đề" (like sample-answer hints) is a practice-only aid — the
+  // timed exam should never show it. Same belt-and-suspenders reset as
+  // renderPracticeWriteScreen()/showPracticeTaskList() (see 9c82207).
+  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
