@@ -4,6 +4,16 @@
 
 const API = 'https://englishwithdan.onrender.com';
 
+// Force a fresh reload when this page is restored from the browser's
+// back-forward cache (bfcache) — bfcache restores the exact in-memory JS
+// instance from before navigation, bypassing the network entirely, so a
+// browser that still has an OLD copy of this page open (from before a
+// deploy) keeps running the OLD script forever on every back/forward nav,
+// no matter how many times the server-side file gets fixed. Reported live:
+// a modal-cleanup fix kept "not working" for a returning tab even though
+// the deployed writing.js/.css both had the fix — this is why.
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
+
 // ──────────────────────────────────────────────────────
 // Auth helpers
 // ──────────────────────────────────────────────────────
