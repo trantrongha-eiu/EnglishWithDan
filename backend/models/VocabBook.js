@@ -25,6 +25,12 @@ const SavedWordSchema = new mongoose.Schema({
   collocations:[{ type: String }],
   savedAt:     { type: Date, default: Date.now },
   wrongCount:  { type: Number, default: 0 },     // số lần trả lời sai tích lũy
+  // Learning evidence: số lần trả lời ĐÚNG tích lũy qua recordPracticeResult
+  // (vocabBookService) — riêng biệt với srsBox (mức Leitner). Một câu đúng
+  // không đồng nghĩa "đã thuộc"; correctCount cho phép phân biệt "mới đúng
+  // 1 lần" với "đã đúng nhiều lần liên tiếp" khi cần, dù status hiện tại
+  // được suy ra trực tiếp từ srsBox (xem statusFromBox()).
+  correctCount:{ type: Number, default: 0 },
   // Spaced repetition (Leitner box, 6 mức 0-5 — xem vocabBookService.computeSrs
   // cho công thức). nextReviewAt=null nghĩa là "chưa từng ôn, due ngay".
   srsBox:         { type: Number, default: 0 },

@@ -30,6 +30,10 @@ router.get('/review/due', auth, fullAccess, vocabBookController.getDueWords);
 // — must stay above /:id, same reason as /reorder and /review/due.
 router.get('/stats', auth, fullAccess, vocabBookController.getVocabStats);
 
+// GET /api/vocabbook/weak  – top N từ yếu (wrongCount>=3) trên TẤT CẢ sổ,
+// dùng cho Weakness card + tile "Từ yếu" trên dashboard — must stay above /:id.
+router.get('/weak', auth, fullAccess, vocabBookController.getWeakWords);
+
 // GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
 router.get('/:id', auth, fullAccess, vocabBookController.getBook);
 
@@ -50,6 +54,12 @@ router.post('/:id/words', auth, fullAccess, vocabBookController.addWord);
 
 // PATCH /api/vocabbook/:id/words/:wordId  – cập nhật trạng thái / ghi chú / nội dung từ
 router.patch('/:id/words/:wordId', auth, fullAccess, vocabBookController.updateWord);
+
+// POST /api/vocabbook/:id/words/:wordId/practice-result  – ghi nhận 1 câu trả
+// lời đúng/sai từ bất kỳ chế độ luyện tập nào (Flashcard/Quiz/Listen/
+// Translate/Mixed/Review-due) — SRS box + status được server tính lại từ
+// bằng chứng thật, không phải client tự báo "đã thuộc".
+router.post('/:id/words/:wordId/practice-result', auth, fullAccess, vocabBookController.recordPracticeResult);
 
 // DELETE /api/vocabbook/:id/words/:wordId  – xoá 1 từ
 router.delete('/:id/words/:wordId', auth, fullAccess, vocabBookController.deleteWord);

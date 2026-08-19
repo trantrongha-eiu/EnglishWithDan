@@ -89,6 +89,32 @@ describe('vocabBookService', () => {
       expect(result.status).toBe('duplicate');
     });
 
+    it('normalizes trim+case before comparing — "Tolerant", "tolerant", " tolerant " are the same item', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'Tolerant', meaning: 'khoan dung' }] });
+      const result = await vocabBookService.addWord(book._id, student, { word: ' tolerant ', meaning: 'khoan dung 2' });
+      expect(result.status).toBe('duplicate');
+
+      const reloaded = await VocabBook.findById(book._id);
+      expect(reloaded.words).toHaveLength(1); // still just the original — no partial insert
+    });
+
+    it('two concurrent addWord calls for the same word only create one entry (race-condition regression — see production incident "tolerant" saved twice 165ms apart)', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+
+      const [r1, r2] = await Promise.all([
+        vocabBookService.addWord(book._id, student, { word: 'tolerant', meaning: 'khoan dung' }),
+        vocabBookService.addWord(book._id, student, { word: 'Tolerant', meaning: 'khoan dung' }),
+      ]);
+      const statuses = [r1.status, r2.status].sort();
+      expect(statuses).toEqual(['duplicate', 'ok']); // one wins, one correctly rejected — never both 'ok'
+
+      const reloaded = await VocabBook.findById(book._id);
+      const matches = reloaded.words.filter(w => w.word.toLowerCase() === 'tolerant');
+      expect(matches).toHaveLength(1);
+    });
+
     it('returns not_found for a missing book', async () => {
       const student = await createStudent();
       const fakeId = new mongoose.Types.ObjectId();
@@ -267,6 +293,73 @@ describe('vocabBookService', () => {
     });
   });
 
+  describe('recordPracticeResult (Task 7 — graded-practice SRS evidence)', () => {
+    it('a correct answer promotes the box by ONE level, not straight to mastered', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc', srsBox: 0 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, true);
+
+      expect(result.status2).toBe('ok');
+      expect(result.word.srsBox).toBe(1);
+      expect(result.word.status).toBe('nho-so-so'); // box 1 — NOT 'da-thuoc' off a single correct answer
+      expect(result.word.correctCount).toBe(1);
+    });
+
+    it('reaching mastered requires the box to climb to 3, i.e. several correct answers without a miss', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'chua-thuoc', srsBox: 0 }] });
+      let wordId = book.words[0]._id;
+
+      let r = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, true);
+      expect(r.word.status).toBe('nho-so-so'); // box 1
+      r = await vocabBookService.recordPracticeResult(book._id, r.word._id, student._id, true);
+      expect(r.word.status).toBe('nho-so-so'); // box 2 — still not mastered
+      r = await vocabBookService.recordPracticeResult(book._id, r.word._id, student._id, true);
+      expect(r.word.srsBox).toBe(3);
+      expect(r.word.status).toBe('da-thuoc'); // box 3 — mastered only now
+    });
+
+    it('a wrong answer resets the box to 0 and increments wrongCount, even from a high box', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', status: 'da-thuoc', srsBox: 4, wrongCount: 1 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, false);
+
+      expect(result.word.srsBox).toBe(0);
+      expect(result.word.status).toBe('chua-thuoc');
+      expect(result.word.wrongCount).toBe(2);
+    });
+
+    it('box promotion is capped at 5, same ceiling as the manual da-thuoc path', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', srsBox: 5 }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.recordPracticeResult(book._id, wordId, student._id, true);
+      expect(result.word.srsBox).toBe(5);
+    });
+
+    it('returns book_not_found for another user\'s book (ownership scoping)', async () => {
+      const studentA = await createStudent();
+      const studentB = await createStudent();
+      const book = await createVocabBook({ userId: studentA._id, words: [{ word: 'apple' }] });
+      const wordId = book.words[0]._id;
+
+      const result = await vocabBookService.recordPracticeResult(book._id, wordId, studentB._id, true);
+      expect(result.status2).toBe('book_not_found');
+    });
+
+    it('returns word_not_found for a missing wordId', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+      const result = await vocabBookService.recordPracticeResult(book._id, new mongoose.Types.ObjectId(), student._id, true);
+      expect(result.status2).toBe('word_not_found');
+    });
+  });
+
   describe('getDueWords', () => {
     it('includes a never-reviewed word (nextReviewAt null) immediately', async () => {
       const student = await createStudent();
@@ -406,7 +499,7 @@ describe('vocabBookService', () => {
         userId: student._id,
         words: [{
           word: 'studied', srsBox: 3, lastReviewedAt: reviewedAt, nextReviewAt: nextReview,
-          collocations: ['study hard', 'study abroad'],
+          collocations: ['study hard', 'study abroad'], wrongCount: 2, correctCount: 5,
         }],
       });
 
@@ -418,6 +511,11 @@ describe('vocabBookService', () => {
       expect(merged.lastReviewedAt.toISOString()).toBe(reviewedAt.toISOString());
       expect(merged.nextReviewAt.toISOString()).toBe(nextReview.toISOString());
       expect(merged.collocations).toEqual(['study hard', 'study abroad']);
+      // correctCount is new (Priority 1.5, Task 7) — regression guard against
+      // the exact class of bug already found once for srsBox/wrongCount: a
+      // merge silently dropping a field back to its schema default.
+      expect(merged.wrongCount).toBe(2);
+      expect(merged.correctCount).toBe(5);
     });
 
     it('skips default books passed as a source (silently excluded)', async () => {
@@ -599,6 +697,69 @@ describe('vocabBookService', () => {
 
       const stats = await vocabBookService.getVocabStats(student._id);
       expect(stats.totalWords).toBe(0);
+    });
+  });
+
+  describe('getWeakWords', () => {
+    it('only returns words at or above the weak threshold (wrongCount>=3)', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'safe', wrongCount: 2 },
+        { word: 'weak1', wrongCount: 3 },
+        { word: 'weak2', wrongCount: 8 },
+      ] });
+
+      const words = await vocabBookService.getWeakWords(student._id);
+      expect(words.map(w => w.word.word).sort()).toEqual(['weak1', 'weak2']);
+    });
+
+    it('sorts by wrongCount descending', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'low', wrongCount: 3 },
+        { word: 'high', wrongCount: 9 },
+        { word: 'mid', wrongCount: 5 },
+      ] });
+
+      const words = await vocabBookService.getWeakWords(student._id);
+      expect(words.map(w => w.word.word)).toEqual(['high', 'mid', 'low']);
+    });
+
+    it('respects the limit parameter', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: makeWords(10).map(w => ({ ...w, wrongCount: 5 })) });
+
+      const words = await vocabBookService.getWeakWords(student._id, 3);
+      expect(words).toHaveLength(3);
+    });
+
+    it('aggregates across multiple books, carrying each word\'s own bookId/bookName', async () => {
+      const student = await createStudent();
+      const bookA = await createVocabBook({ userId: student._id, name: 'Book A', words: [{ word: 'a-weak', wrongCount: 4 }] });
+      const bookB = await createVocabBook({ userId: student._id, name: 'Book B', words: [{ word: 'b-weak', wrongCount: 4 }] });
+
+      const words = await vocabBookService.getWeakWords(student._id);
+      expect(words).toHaveLength(2);
+      const byName = Object.fromEntries(words.map(w => [w.word.word, w]));
+      expect(String(byName['a-weak'].bookId)).toBe(String(bookA._id));
+      expect(byName['a-weak'].bookName).toBe('Book A');
+      expect(String(byName['b-weak'].bookId)).toBe(String(bookB._id));
+    });
+
+    it('only returns the given user\'s own weak words, never another student\'s', async () => {
+      const student = await createStudent();
+      const other = await createStudent();
+      await createVocabBook({ userId: other._id, words: [{ word: 'not-mine', wrongCount: 9 }] });
+
+      const words = await vocabBookService.getWeakWords(student._id);
+      expect(words).toHaveLength(0);
+    });
+
+    it('returns an empty array when nothing meets the threshold', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [{ word: 'fine', wrongCount: 1 }] });
+      const words = await vocabBookService.getWeakWords(student._id);
+      expect(words).toEqual([]);
     });
   });
 

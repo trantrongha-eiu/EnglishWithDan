@@ -53,6 +53,20 @@ exports.getVocabStats = guard(async (req, res) => {
   res.json({ success: true, stats });
 });
 
+exports.getWeakWords = guard(async (req, res) => {
+  const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 20));
+  const words = await vocabBookService.getWeakWords(req.user._id, limit);
+  res.json({ success: true, words });
+});
+
+exports.recordPracticeResult = guard(async (req, res) => {
+  const correct = req.body.correct === true;
+  const result = await vocabBookService.recordPracticeResult(req.params.id, req.params.wordId, req.user._id, correct);
+  if (result.status2 === 'book_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+  if (result.status2 === 'word_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
+  res.json({ success: true, word: result.word });
+});
+
 exports.getBook = guard(async (req, res) => {
   const book = await vocabBookService.getBook(req.params.id, req.user._id);
   if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });

@@ -7,6 +7,7 @@ const VocabUnit = require('../models/VocabUnit');
 const VocabActivity = require('../models/VocabActivity');
 const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
 const VocabPracticeSession = require('../models/VocabPracticeSession');
+const { escapeRegex } = require('../utils/strings');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
 // _reportSessionStreak()) so the 35-word/day engagement threshold stays
@@ -196,6 +197,52 @@ function computeSrs(prevBox, status) {
   return { srsBox, nextReviewAt, lastReviewedAt: now };
 }
 
+// Derives the student-facing status label from SRS box alone — the single
+// source of truth recordPracticeResult() uses so "mastered" always means
+// "survived several spaced reviews without a miss", never "got it right
+// once". Box 3+ = interval >= 7 days (SRS_INTERVAL_DAYS), i.e. promoted
+// through box 0->1->2->3 without a reset in between. Deliberately NOT used
+// by updateWord()'s manual status dropdown — a student's own explicit
+// self-report stays exactly what they picked; this only governs the
+// automatic evidence path from graded practice.
+function statusFromBox(box) {
+  if (box >= 3) return 'da-thuoc';
+  if (box >= 1) return 'nho-so-so';
+  return 'chua-thuoc';
+}
+
+// Records ONE piece of learning evidence from a graded practice answer
+// (Flashcard/Quiz/Listen/Translate/Mixed/Review-due — see dashboard.js's
+// _syncPracticeEvidence(), the single call site every practice mode
+// ultimately funnels through). Reuses computeSrs()'s existing Leitner
+// movement rules instead of a second SRS implementation:
+//   - correct: same box-promotion computeSrs() already does for a manual
+//     'da-thuoc' — promotes ONE level, does not jump straight to mastered.
+//   - wrong: same reset-to-0 computeSrs() already does for 'chua-thuoc'.
+// status is then re-derived from the resulting box via statusFromBox() —
+// "repeated correct answers" is what earns mastery, never a single answer.
+async function recordPracticeResult(bookId, wordId, userId, correct) {
+  const book = await VocabBook.findOne({ _id: bookId, userId });
+  if (!book) return { status2: 'book_not_found' };
+
+  const wordDoc = book.words.id(wordId);
+  if (!wordDoc) return { status2: 'word_not_found' };
+
+  if (correct) {
+    wordDoc.correctCount = (wordDoc.correctCount || 0) + 1;
+  } else {
+    wordDoc.wrongCount = (wordDoc.wrongCount || 0) + 1;
+  }
+  const srs = computeSrs(wordDoc.srsBox, correct ? 'da-thuoc' : 'chua-thuoc');
+  wordDoc.srsBox = srs.srsBox;
+  wordDoc.nextReviewAt = srs.nextReviewAt;
+  wordDoc.lastReviewedAt = srs.lastReviewedAt;
+  wordDoc.status = statusFromBox(wordDoc.srsBox);
+
+  await book.save();
+  return { status2: 'ok', word: wordDoc };
+}
+
 async function getBook(id, userId) {
   return VocabBook.findOne({ _id: id, userId });
 }
@@ -244,7 +291,7 @@ async function mergeBooks(destId, userId, sourceIds) {
         dest.words.push({
           word: w.word, meaning: w.meaning, example: w.example, phonetic: w.phonetic,
           partOfSpeech: w.partOfSpeech, status: w.status, note: w.note, source: w.source,
-          wrongCount: w.wrongCount, savedAt: w.savedAt, collocations: w.collocations || [],
+          wrongCount: w.wrongCount, correctCount: w.correctCount, savedAt: w.savedAt, collocations: w.collocations || [],
           srsBox: w.srsBox, nextReviewAt: w.nextReviewAt, lastReviewedAt: w.lastReviewedAt,
         });
         existingWords.add(key);
@@ -281,16 +328,32 @@ function sanitizeCollocations(raw) {
 }
 
 async function addWord(bookId, user, { word, meaning, example, phonetic, partOfSpeech, source, note, collocations }) {
-  const book = await VocabBook.findOne({ _id: bookId, userId: user._id });
-  if (!book) return { status: 'not_found' };
+  const trimmed = word.trim();
 
+  // Ownership + soft cap check first (a small residual race on the 300-word
+  // cap specifically is unchanged from before and out of scope here — the
+  // fix below targets the duplicate race, which is what actually happened
+  // in production, see incident: "tolerant" saved twice 165ms apart).
+  const book = await VocabBook.findOne({ _id: bookId, userId: user._id }).select('name words');
+  if (!book) return { status: 'not_found' };
   if (book.words.length >= 300) return { status: 'limit_reached', bookName: book.name };
 
-  const duplicate = book.words.find(w => w.word.toLowerCase() === word.toLowerCase().trim());
-  if (duplicate) return { status: 'duplicate' };
+  // Atomic check-and-insert: the "no case-insensitive match already exists"
+  // condition lives in the FILTER of this single findOneAndUpdate, so MongoDB
+  // evaluates it against the document's latest state at write time — not a
+  // snapshot from an earlier .find() read. Two requests racing to save the
+  // same word can no longer both pass a stale duplicate check before either
+  // commits; the second one's filter simply fails to match once the first
+  // has landed, and it falls through to the 'duplicate' branch below.
+  const dupPattern = new RegExp(`^${escapeRegex(trimmed)}$`, 'i');
+  const newWord = { word: trimmed, meaning, example, phonetic, partOfSpeech, source, note, collocations: sanitizeCollocations(collocations) || [] };
+  const updated = await VocabBook.findOneAndUpdate(
+    { _id: bookId, userId: user._id, words: { $not: { $elemMatch: { word: dupPattern } } } },
+    { $push: { words: newWord } },
+    { new: true }
+  ).select('name words');
 
-  book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note, collocations: sanitizeCollocations(collocations) || [] });
-  await book.save();
+  if (!updated) return { status: 'duplicate' };
 
   if (user.role === 'student') {
     if (await reachedDailyWordThreshold(user._id, { wordsAdded: 1 })) {
@@ -299,7 +362,7 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
     }
   }
 
-  return { status: 'ok', bookName: book.name, word: book.words[book.words.length - 1] };
+  return { status: 'ok', bookName: updated.name, word: updated.words[updated.words.length - 1] };
 }
 
 async function updateWord(bookId, wordId, userId, user, { status, note, word, meaning, example, phonetic, partOfSpeech, wrongCount, collocations }) {
@@ -464,8 +527,33 @@ async function getVocabStats(userId) {
   return result || { totalWords: 0, mastered: 0, reviewing: 0, notYet: 0, weak: 0, dueToday: 0 };
 }
 
+// Cross-book weak-word list for the dashboard's Weakness card / "Từ yếu"
+// tile — same wrongCount>=3 threshold getVocabStats() already counts by,
+// now returning the actual words (not just a count) so the frontend can
+// launch a practice session without fetching all of a user's books/words
+// just to filter client-side. $sort+$limit BEFORE $project keeps this a
+// single small aggregation regardless of how many books/words a user has.
+async function getWeakWords(userId, limit = 20) {
+  return VocabBook.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $unwind: '$words' },
+    { $match: { 'words.wrongCount': { $gte: WEAK_WRONG_COUNT_THRESHOLD } } },
+    { $sort: { 'words.wrongCount': -1 } },
+    { $limit: limit },
+    { $project: {
+        _id: 0,
+        bookId: '$_id',
+        bookName: '$name',
+        word: {
+          _id: '$words._id', word: '$words.word', meaning: '$words.meaning',
+          wrongCount: '$words.wrongCount', status: '$words.status', srsBox: '$words.srsBox',
+        },
+      } },
+  ]);
+}
+
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
-  getDueWords, getVocabStats,
+  getDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
 };
