@@ -669,3 +669,80 @@ describe('getQuizLeaderboard', () => {
     expect(await svc.getQuizLeaderboard(2)).toHaveLength(2);
   });
 });
+
+describe('getLessonAttemptLeaderboard', () => {
+  test('ranks by best score desc, then attempt count asc as the tiebreaker', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent({ firstName: 'A', lastName: 'Student' });
+    const studentB = await createStudent({ firstName: 'B', lastName: 'Student' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 1, totalCount: 2, timeSpent: 5 }); // 50%
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 }); // 100%
+
+    const board = await svc.getLessonAttemptLeaderboard(lesson._id);
+    expect(board[0].userId.toString()).toBe(String(studentB._id));
+    expect(board[0].bestScore).toBe(100);
+    expect(board[1].userId.toString()).toBe(String(studentA._id));
+  });
+
+  test('same best score: fewer attempts ranks higher', async () => {
+    const teacher = await createTeacher();
+    const studentA = await createStudent();
+    const studentB = await createStudent();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 });
+    await svc.submitAttempt(studentA._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 }); // 2 attempts to get 100%
+    await svc.submitAttempt(studentB._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 }); // 1 attempt
+
+    const board = await svc.getLessonAttemptLeaderboard(lesson._id);
+    expect(board[0].userId.toString()).toBe(String(studentB._id));
+    expect(board[0].attemptCount).toBe(1);
+    expect(board[1].userId.toString()).toBe(String(studentA._id));
+    expect(board[1].attemptCount).toBe(2);
+  });
+
+  test('is scoped to the given lesson only, not other lessons', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const lessonA = await svc.importLesson(teacher._id, GOOD_LESSON);
+    const lessonB = await svc.importLesson(teacher._id, GOOD_LESSON.replace('Week 12 - Environment', 'Week 13 - Health'));
+
+    await svc.submitAttempt(student._id, lessonA._id, { correctCount: 2, totalCount: 2, timeSpent: 5 });
+
+    expect(await svc.getLessonAttemptLeaderboard(lessonA._id)).toHaveLength(1);
+    expect(await svc.getLessonAttemptLeaderboard(lessonB._id)).toHaveLength(0);
+  });
+
+  test('excludes teacher/admin attempts from the student-facing board', async () => {
+    const teacher = await createTeacher();
+    const admin = await createAdmin();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+
+    await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 });
+    await svc.submitAttempt(admin._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 });
+
+    expect(await svc.getLessonAttemptLeaderboard(lesson._id)).toEqual([]);
+  });
+
+  test('falls back to username when the student has no first/last name set', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent({ firstName: '', lastName: '', username: 'nonameuser2' });
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    await svc.submitAttempt(student._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 });
+
+    const board = await svc.getLessonAttemptLeaderboard(lesson._id);
+    expect(board[0].name).toBe('nonameuser2');
+  });
+
+  test('respects the limit parameter', async () => {
+    const teacher = await createTeacher();
+    const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
+    for (let i = 0; i < 3; i++) {
+      const s = await createStudent();
+      await svc.submitAttempt(s._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 5 });
+    }
+    expect(await svc.getLessonAttemptLeaderboard(lesson._id, 2)).toHaveLength(2);
+  });
+});

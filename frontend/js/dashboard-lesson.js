@@ -941,13 +941,16 @@ async function renderResultsTab() {
 
     let attempt = null;
     let history = [];
+    let leaderboard = [];
     try {
-        const [attemptRes, historyRes] = await Promise.all([
+        const [attemptRes, historyRes, lbRes] = await Promise.all([
             fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, { headers: authH() }),
             fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt/history`, { headers: authH() }),
+            fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/leaderboard`, { headers: authH() }),
         ]);
         if (attemptRes.ok) { const d = await attemptRes.json(); attempt = d.attempt; }
         if (historyRes.ok) { const d = await historyRes.json(); history = d.history || []; }
+        if (lbRes.ok) { const d = await lbRes.json(); leaderboard = d.leaderboard || []; }
     } catch (err) { /* best-effort */ }
 
     const session = (lessonState.lastSession && lessonState.lastSession.lessonId === lessonState.currentLesson._id)
@@ -1001,6 +1004,40 @@ async function renderResultsTab() {
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value" style="color:var(--blue)">${attempt.bestScore}%</div><div class="lesson-results-stat-label">Best Score</div></div>
                 <div class="lesson-results-stat"><div class="lesson-results-stat-value">${attempt.attemptCount}</div><div class="lesson-results-stat-label">Attempt Count</div></div>
             </div>`;
+    }
+
+    // Every student who's attempted THIS lesson, ranked by best score desc
+    // (attempt count asc as the tiebreaker) — see
+    // vocabularyLessonService.getLessonAttemptLeaderboard(). Same row
+    // markup/classes as loadQuizLeaderboard()'s global "Top 10 Quiz điểm
+    // cao" card and loadStreakLeaderboard() in dashboard.js, just scoped to
+    // this one lesson instead of a cross-lesson average or streak length.
+    {
+        const myId = window.AuthService?.getUser()?._id;
+        html += `
+            <div style="margin-bottom:20px">
+                <div class="dan-lb-title"><i class="fas fa-trophy"></i> Bảng xếp hạng bài này</div>
+                <div class="dan-lb-list">`;
+        if (!leaderboard.length) {
+            html += '<div class="dan-lb-empty">Chưa có ai làm quiz này — hãy là người đầu tiên!</div>';
+        } else {
+            html += leaderboard.map((r, i) => {
+                const rank = i + 1;
+                const medal = typeof RANK_MEDAL !== 'undefined' ? RANK_MEDAL[rank] : null;
+                const avatar = r.avatar
+                    ? `<img class="dan-lb-avatar" src="${escHtml(r.avatar)}" alt="">`
+                    : `<span class="dan-lb-avatar-placeholder">${escHtml((r.name || '?')[0].toUpperCase())}</span>`;
+                const isMe = r.userId === myId;
+                return `
+                    <div class="dan-lb-row${isMe ? ' is-me' : ' dan-lb-clickable'}"${isMe ? '' : ` onclick="window.openPeerProfile('${r.userId}')"`}>
+                        <span class="dan-lb-rank${medal ? ' top' + rank : ''}">${medal || rank}</span>
+                        ${avatar}
+                        <span class="dan-lb-name">${escHtml(r.name)}${isMe ? ' (Bạn)' : ''}</span>
+                        <span class="dan-lb-quiz-score">${r.bestScore}% <span class="dan-lb-quiz-time">· ${r.attemptCount} lần</span></span>
+                    </div>`;
+            }).join('');
+        }
+        html += `</div></div>`;
     }
 
     if (history.length) {

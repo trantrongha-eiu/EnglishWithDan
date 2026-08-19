@@ -147,6 +147,32 @@ async function getQuizLeaderboard(limit = 10) {
   return rows.map(r => ({ ...r, name: r.name || r.username }));
 }
 
+// Per-lesson "who's best at THIS quiz" board — every student's own best
+// score for the one lesson being viewed (not an average across lessons
+// like getQuizLeaderboard above), ranked highest-first, attempt count as
+// the tiebreaker (fewer attempts to reach the same score ranks higher).
+// Reads VocabularyLessonAttempt directly (one row per userId+lessonId, no
+// aggregation needed) rather than getLessonStudentBreakdown's admin
+// version, which sorts by lastAttempt and includes fields (attemptCount,
+// timeSpent per row) not meant for a peer-facing leaderboard.
+async function getLessonAttemptLeaderboard(lessonId, limit = 50) {
+  const rows = await VocabularyLessonAttempt.find({ lessonId })
+    .populate('userId', 'username firstName lastName avatar role')
+    .sort({ bestScore: -1, attemptCount: 1 })
+    .limit(limit)
+    .lean();
+  return rows
+    .filter(r => r.userId && r.userId.role === 'student') // dropped user, or a teacher/admin test attempt
+    .map(r => ({
+      userId: r.userId._id,
+      name: `${r.userId.firstName || ''} ${r.userId.lastName || ''}`.trim() || r.userId.username,
+      username: r.userId.username,
+      avatar: r.userId.avatar,
+      bestScore: r.bestScore,
+      attemptCount: r.attemptCount,
+    }));
+}
+
 // ══════════════════════════════════════════════════════
 // Import limits — protect the parser/DB from pathological pastes with
 // friendly, specific errors instead of relying on MongoDB's own 16MB/
@@ -473,6 +499,7 @@ module.exports = {
   submitAttempt,
   getAttemptHistory,
   getQuizLeaderboard,
+  getLessonAttemptLeaderboard,
   listAdminLessons,
   getAdminLesson,
   importLesson,

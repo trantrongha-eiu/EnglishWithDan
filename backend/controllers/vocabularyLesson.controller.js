@@ -43,6 +43,17 @@ exports.getAttempt = async (req, res) => {
   }
 };
 
+exports.getLessonLeaderboard = async (req, res) => {
+  try {
+    const lesson = await vocabularyLessonService.getPublicLesson(req.params.id);
+    if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
+    const leaderboard = await vocabularyLessonService.getLessonAttemptLeaderboard(req.params.id);
+    res.json({ success: true, leaderboard });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 exports.submitAttempt = async (req, res) => {
   try {
     const lesson = await vocabularyLessonService.getPublicLesson(req.params.id);

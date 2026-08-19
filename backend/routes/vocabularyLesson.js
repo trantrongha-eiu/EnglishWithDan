@@ -89,5 +89,6 @@ router.get('/:id', auth, requirePremium(), ctrl.getPublicLesson);
 router.get('/:id/attempt', auth, requirePremium(), ctrl.getAttempt);
 router.post('/:id/attempt', auth, requirePremium(), ctrl.submitAttempt);
 router.get('/:id/attempt/history', auth, requirePremium(), ctrl.getMyAttemptHistory);
+router.get('/:id/leaderboard', auth, requirePremium(), ctrl.getLessonLeaderboard);
 
 module.exports = router;
