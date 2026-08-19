@@ -2650,6 +2650,13 @@ function showResults(mode) {
         _persistWrongCounts();
     }
     if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
+
+    // Cross-book "Ôn tập hôm nay" spaced-repetition session — owned by
+    // dashboard-review.js, which can't hook into its own session's
+    // completion from outside since this function is the one place every
+    // practice mode ends at. Optional so this file stays unaware of that
+    // feature's details.
+    if (typeof window._onReviewDueSessionComplete === 'function') window._onReviewDueSessionComplete(mode);
 }
 
 /* ══════════════════════════════════════════════
