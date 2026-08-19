@@ -143,6 +143,11 @@ window.addEventListener('popstate', e => {
     window.onbeforeunload = null;
     practiceState.task = null;
     document.getElementById('practice-exit-modal')?.classList.remove('open');
+    // "Phân tích đề" was left open (only its own close button/backdrop-click/
+    // Escape ever removed .open) — without this, navigating back from the
+    // write screen left it showing, empty, on top of whatever screen came
+    // next (reported live: showed blank over the task-list screen).
+    document.getElementById('pw-analysis-modal')?.classList.remove('open');
   }
 
   if (s === 'practice-list') {
@@ -1610,6 +1615,10 @@ async function loadPracticeHistory(taskTypeFilter = null) {
 }
 
 async function showPracticeTaskList(taskType, pushHistory = true) {
+  // Belt-and-suspenders: the task LIST screen must never show a "Phân tích
+  // đề" modal left open from a previous task's write screen (reported live
+  // — showed blank over this exact screen).
+  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   if (pushHistory) {
     history.pushState({ screen: 'practice-list', taskType }, '', `writing.html?taskType=${taskType}`);
   }
@@ -1716,6 +1725,11 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
 }
 
 function renderPracticeWriteScreen(taskType, task) {
+  // Defensive reset — closes any "Phân tích đề" modal left open from a
+  // previous task if this screen was reached by a path that skips
+  // exitPracticeWrite()/popstate's own cleanup (e.g. resuming a different
+  // draft directly).
+  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   const minWords = taskType === 1 ? 150 : 250;
   document.getElementById('pw-task-label').textContent = `Task ${taskType} – Luyện tập`;
   document.getElementById('pw-title-label').textContent = `Task ${taskType} – Luyện tập`;
@@ -1887,6 +1901,7 @@ function confirmExitPractice() {
 
 function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
+  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   stopPracticeStopwatch();
   savePracticeToStorage();
   saveDraftToServer();
