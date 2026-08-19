@@ -304,10 +304,82 @@
       : '';
 
     document.getElementById('dict-body').innerHTML =
-      '<div class="dict-primary-row">' +
-        '<span class="dict-primary-meaning" id="dict-primary-meaning">' + escHtml(data.primaryMeaning) + '</span>' +
-        '<button class="dict-save-btn" onclick="saveDictWordToVocab()"><i class="fas fa-plus"></i> Lưu từ</button>' +
-      '</div>' + chipsHtml + exHtml;
+      '<div class="dict-tabs">' +
+        '<button class="dict-tab active" data-tab="meaning" onclick="switchDictTab(\'meaning\')">Nghĩa</button>' +
+        '<button class="dict-tab" data-tab="collocations" onclick="switchDictTab(\'collocations\')">Collocations</button>' +
+      '</div>' +
+      '<div class="dict-tab-panel" id="dict-tab-meaning">' +
+        '<div class="dict-primary-row">' +
+          '<span class="dict-primary-meaning" id="dict-primary-meaning">' + escHtml(data.primaryMeaning) + '</span>' +
+          '<button class="dict-save-btn" onclick="saveDictWordToVocab()"><i class="fas fa-plus"></i> Lưu từ</button>' +
+        '</div>' + chipsHtml + exHtml +
+      '</div>' +
+      '<div class="dict-tab-panel" id="dict-tab-collocations" style="display:none"></div>';
+  }
+
+  // ── Collocations tab — lazy: only fetched when the student actually
+  // clicks the tab, not on every lookup (most lookups only want the
+  // meaning). Backend caches per-word globally (Gemini called at most once
+  // EVER per word across all students — see dictionaryCollocationService.js),
+  // this Map is just this tab's own session-local cache so re-opening the
+  // same word's popup twice in one visit doesn't even hit the network again.
+  var _collocCache = new Map();
+  var _collocSeq = 0;
+
+  function switchDictTab(tab) {
+    var tabs = document.querySelectorAll('.dict-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].dataset.tab === tab);
+    var meaningPanel = document.getElementById('dict-tab-meaning');
+    var collocPanel = document.getElementById('dict-tab-collocations');
+    if (meaningPanel) meaningPanel.style.display = tab === 'meaning' ? '' : 'none';
+    if (collocPanel) collocPanel.style.display = tab === 'collocations' ? '' : 'none';
+    if (tab === 'collocations') loadDictCollocations();
+  }
+
+  async function loadDictCollocations() {
+    var word = _word;
+    var key = word.toLowerCase();
+    var panel = document.getElementById('dict-tab-collocations');
+    if (!panel) return;
+
+    if (_collocCache.has(key)) { renderCollocations(_collocCache.get(key)); return; }
+
+    // Guards against a stale response landing after the student has already
+    // double-clicked a DIFFERENT word (closing/reopening the popup) — only
+    // the most recent request's result is ever written to the DOM.
+    var requestId = ++_collocSeq;
+    panel.innerHTML = '<div class="dict-loading">Đang tra collocations...</div>';
+    try {
+      var res = await _vocabFetch('/dictionary/' + encodeURIComponent(word) + '/collocations');
+      if (requestId !== _collocSeq) return;
+      var list = res.collocations || [];
+      _collocCache.set(key, list);
+      renderCollocations(list);
+    } catch (e) {
+      if (requestId !== _collocSeq) return;
+      if (e && e.status === 403 && e.body && e.body.requiresPremium) {
+        panel.innerHTML = '<div class="dict-colloc-empty">Tính năng Collocations dành cho thành viên Premium.</div>';
+        return;
+      }
+      panel.innerHTML = '<div class="dict-colloc-empty">Không tải được collocations. ' +
+        '<button class="dict-colloc-retry" onclick="loadDictCollocations()">Thử lại</button></div>';
+    }
+  }
+
+  function renderCollocations(list) {
+    var panel = document.getElementById('dict-tab-collocations');
+    if (!panel) return;
+    if (!list.length) {
+      panel.innerHTML = '<div class="dict-colloc-empty">Không tìm thấy collocation phổ biến cho từ này.</div>';
+      return;
+    }
+    panel.innerHTML = list.map(function (c) {
+      return '<div class="dict-colloc-item">' +
+        '<div class="dict-colloc-phrase">' + escHtml(c.phrase) + '</div>' +
+        '<div class="dict-colloc-meaning">' + escHtml(c.meaning) + '</div>' +
+        (c.example ? '<div class="dict-colloc-example">"' + escHtml(c.example) + '"</div>' : '') +
+        '</div>';
+    }).join('');
   }
 
   function selectDictMeaning(btn, val) {
@@ -493,6 +565,8 @@
 
   window.setupDictionaryDouble    = setupDictionaryDouble;
   window.selectDictMeaning        = selectDictMeaning;
+  window.switchDictTab            = switchDictTab;
+  window.loadDictCollocations     = loadDictCollocations;
   window.closeDictPopup           = closeDictPopup;
   window.speakDictWord            = speakDictWord;
   window.saveDictWordToVocab      = saveDictWordToVocab;

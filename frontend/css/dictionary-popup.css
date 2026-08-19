@@ -67,6 +67,28 @@
 .dict-ex-section { border-top: 1px solid #f3f4f6; padding-top: 8px; display: flex; flex-direction: column; gap: 5px; }
 .dict-ex-item { font-size: 12px; font-style: italic; color: #6b7280; line-height: 1.5; border-left: 3px solid #dbeafe; padding-left: 8px; }
 
+/* ── Meaning / Collocations tabs ── */
+.dict-tabs { display: flex; gap: 2px; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; }
+.dict-tab {
+  background: none; border: none; cursor: pointer; font-family: inherit;
+  font-size: 12px; font-weight: 700; color: #9ca3af; padding: 6px 4px 8px;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s;
+}
+.dict-tab:hover { color: #374151; }
+.dict-tab.active { color: #e53935; border-bottom-color: #e53935; }
+.dict-tab-panel + .dict-tab-panel { margin-top: 0; }
+
+.dict-colloc-item { padding: 8px 0; border-top: 1px solid #f3f4f6; }
+.dict-colloc-item:first-child { border-top: none; padding-top: 0; }
+.dict-colloc-phrase { font-size: 14px; font-weight: 700; color: #1e3a8a; }
+.dict-colloc-meaning { font-size: 12px; color: #374151; margin-top: 2px; }
+.dict-colloc-example { font-size: 12px; font-style: italic; color: #6b7280; line-height: 1.5; margin-top: 3px; border-left: 3px solid #dbeafe; padding-left: 8px; }
+.dict-colloc-empty { text-align: center; padding: 16px 8px; color: #9ca3af; font-size: 12px; }
+.dict-colloc-retry {
+  display: block; margin: 8px auto 0; background: none; border: 1px solid #d1d5db;
+  border-radius: 8px; padding: 4px 12px; font-size: 12px; color: #374151; cursor: pointer;
+}
+
 [data-theme="dark"] .dict-popup            { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); box-shadow: 0 10px 36px rgba(0,0,0,.5); }
 [data-theme="dark"] .dict-word             { color: #93c5fd; }
 [data-theme="dark"] .dict-phonetic         { color: #9ca3af; }
@@ -80,6 +102,16 @@
 [data-theme="dark"] .dict-meaning-chip.active { background: #1e3a8a; border-color: #2563eb; color: #bfdbfe; }
 [data-theme="dark"] .dict-ex-section       { border-top-color: var(--border2, #333333); }
 [data-theme="dark"] .dict-ex-item          { color: #9ca3af; border-left-color: var(--border2, #333333); }
+[data-theme="dark"] .dict-tabs             { border-bottom-color: var(--border2, #333333); }
+[data-theme="dark"] .dict-tab              { color: #6b7280; }
+[data-theme="dark"] .dict-tab:hover        { color: #d1d5db; }
+[data-theme="dark"] .dict-tab.active       { color: #f87171; border-bottom-color: #f87171; }
+[data-theme="dark"] .dict-colloc-item      { border-top-color: var(--border2, #333333); }
+[data-theme="dark"] .dict-colloc-phrase    { color: #93c5fd; }
+[data-theme="dark"] .dict-colloc-meaning   { color: #d1d5db; }
+[data-theme="dark"] .dict-colloc-example   { color: #9ca3af; border-left-color: var(--border2, #333333); }
+[data-theme="dark"] .dict-colloc-empty     { color: #6b7280; }
+[data-theme="dark"] .dict-colloc-retry     { border-color: var(--border2, #333333); color: #d1d5db; }
 
 /* ── Vocab book-picker modal (self-contained: not tied to any page's
       own .modal-overlay convention, so this file can be dropped into
