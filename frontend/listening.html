@@ -2855,12 +2855,12 @@
         function setupHighlight() {
             document.addEventListener('mouseup', e => {
                 if (state.tool !== 'highlight') return;
-                // Don't highlight when clicking on interactive inputs — .radio-opt/
-                // .checkbox-opt are display:flex with a gap, so surroundContents()
-                // splitting their text node into [before, <span class="hl">, after]
-                // turns each fragment into its own flex item, and the gap gets
-                // inserted between them too — the option's letters visibly spread apart.
-                if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop, .radio-opt, .checkbox-opt')) return;
+                // Don't highlight when clicking on interactive inputs. .radio-opt/
+                // .checkbox-opt themselves ARE display:flex, but their option text
+                // sits inside a nested <label> (not a flex item's direct text node),
+                // so surroundContents() splitting it doesn't create new flex items —
+                // safe to allow highlighting inside them.
+                if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop')) return;
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
                 const range = sel.getRangeAt(0);
