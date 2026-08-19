@@ -2,7 +2,15 @@ const { GoogleGenAI } = require('@google/genai');
 const logger = require('../utils/logger');
 
 const MODEL      = 'gemini-2.5-flash'; // essay / speaking (low frequency, high quality)
-const MODEL_FAST = 'gemini-2.0-flash'; // per-answer grading (1 500 RPD free vs 20 RPD)
+// Was 'gemini-2.0-flash' (a dated, pinned version) — Google retired it
+// (confirmed 2026-08-19: every call started failing with a 404 "no longer
+// available" error, silently breaking gradeT2Question/Task 2 practice
+// grading in production). Using the '-latest' alias instead of another
+// pinned dated version so this can't go stale the same way again — Google
+// keeps '-latest' pointed at whatever their current fast/cheap tier model
+// is, at the cost of the exact model shifting under us over time (verified
+// working with real API calls before landing this fix).
+const MODEL_FAST = 'gemini-flash-lite-latest'; // per-answer grading (cheap, high daily quota)
 
 /**
  * Classifies a Gemini API error as a quota/overload condition (retryable
@@ -600,8 +608,81 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
   }
 }
 
+// ── Dictionary Collocations ─────────────────────────────────────────
+// One-shot lookup, not a grading call — cheap MODEL_FAST, short output cap.
+// Called at most ONCE per distinct word across the whole system; see
+// services/dictionaryCollocationService.js for the cache-first wrapper that
+// makes sure of that (this function itself has no caching/dedup logic).
+const COLLOCATIONS_SYSTEM = `You are an English-Vietnamese dictionary assistant for IELTS learners.
+Respond ONLY with valid JSON — no markdown, no extra text.`;
+
+function buildCollocationsPrompt(word) {
+  return `English word or phrase: "${word}"
+
+List 4-6 common, natural English collocations using this word — the kind that actually appear in IELTS Writing/Speaking (verb+noun, adjective+noun, or preposition combinations a native speaker would really use), not rare or overly technical ones.
+
+For each collocation give:
+- phrase: the full collocation (must include the target word/phrase itself)
+- meaning: accurate, natural Vietnamese translation of the collocation as a whole
+- example: one natural English sentence using it
+
+Return this exact JSON (no other text):
+{"collocations": [{"phrase": "...", "meaning": "...", "example": "..."}]}
+
+If "${word}" is not a real English word/phrase, or genuinely has no common collocations, return {"collocations": []} — never invent unnatural ones just to fill the list.`;
+}
+
+async function generateCollocations(word, _attempt = 0) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  let rawText;
+  try {
+    const result = await withTimeout(
+      ai.models.generateContent({
+        model: MODEL_FAST,
+        contents: buildCollocationsPrompt(word),
+        config: {
+          systemInstruction: COLLOCATIONS_SYSTEM,
+          responseMimeType: 'application/json',
+          temperature: 0.3,
+          maxOutputTokens: 600,
+        }
+      }),
+      15000,
+      'AI phản hồi quá lâu, vui lòng thử lại.'
+    );
+    rawText = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  } catch (err) {
+    logger.ai('generateCollocations: Gemini API error', { status: err.status, errorMessage: err.message });
+    throw classifyGeminiError(err, 'AI đang quá tải, vui lòng thử lại.');
+  }
+
+  try {
+    const parsed = extractJson(rawText);
+    const list = Array.isArray(parsed.collocations) ? parsed.collocations : [];
+    return list
+      .filter(c => c && c.phrase && c.meaning)
+      .slice(0, 8)
+      .map(c => ({
+        phrase:  String(c.phrase).slice(0, 200),
+        meaning: String(c.meaning).slice(0, 300),
+        example: String(c.example || '').slice(0, 300),
+      }));
+  } catch (parseErr) {
+    if (_attempt < 1) {
+      logger.ai('generateCollocations: JSON parse failed, retrying', { errorMessage: parseErr.message });
+      return generateCollocations(word, _attempt + 1);
+    }
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+  }
+}
+
 module.exports = {
   checkEssay, checkSpeaking, gradeT2Question, generateSampleAnswer, generateImprovedAnswer,
+  generateCollocations,
   // Exported for services/groqService.js's Gemini-overload fallback only —
   // not meant as general-purpose utilities for other callers.
   SPEAKING_SYSTEM, buildSpeakingGradingPrompt,

@@ -98,6 +98,7 @@ app.use('/api/admin',    require('./routes/admin'));
 app.use('/api/listening',require('./routes/listening'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
+app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/courses',         require('./routes/courses'));
