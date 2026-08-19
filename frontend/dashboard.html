@@ -126,7 +126,7 @@
               <div class="myvocab-tile-value myvocab-tile-value--blue" id="myvocab-review">0</div>
               <div class="myvocab-tile-label">Cần ôn lại</div>
             </div>
-            <div class="myvocab-tile">
+            <div class="myvocab-tile myvocab-tile--clickable" id="myvocab-weak-tile" onclick="practiceWeakVocab()">
               <div class="myvocab-tile-value myvocab-tile-value--red" id="myvocab-weak">0</div>
               <div class="myvocab-tile-label">Từ yếu</div>
             </div>
@@ -137,11 +137,24 @@
           </div>
 
           <!-- "Điểm cần cải thiện" — weakest question type/criterion per skill,
-               derived from existing Reading/Listening/Writing/Speaking history.
-               Hidden when there isn't enough history yet in any skill. -->
+               derived from existing Reading/Listening/Writing/Speaking/Vocabulary
+               history. Three distinct states below (never shown at once): chips
+               (has signal), empty (not enough data yet — NOT the same as an API
+               error, see loadWeaknessProfile()), error (request actually failed). -->
           <div class="weakness-card" id="weakness-card" style="display:none">
             <div class="weakness-card-title"><i class="fas fa-bullseye"></i> Điểm cần cải thiện</div>
-            <div class="weakness-chips" id="weakness-chips"></div>
+            <div class="weakness-chips" id="weakness-chips" style="display:none"></div>
+            <div class="weakness-state" id="weakness-empty-state" style="display:none">
+              <div class="weakness-state-icon"><i class="fas fa-seedling"></i></div>
+              <div class="weakness-state-title">Personalized insights are not ready yet.</div>
+              <div class="weakness-state-sub">Complete a few practice sessions to discover your weak areas.</div>
+              <a class="btn btn-primary btn-sm" href="reading.html">Start Practicing</a>
+            </div>
+            <div class="weakness-state" id="weakness-error-state" style="display:none">
+              <div class="weakness-state-icon weakness-state-icon--error"><i class="fas fa-triangle-exclamation"></i></div>
+              <div class="weakness-state-title">Unable to load your insights.</div>
+              <button class="btn btn-ghost btn-sm" onclick="loadWeaknessProfile()">Try Again</button>
+            </div>
           </div>
 
           <div class="dash-home-grid">

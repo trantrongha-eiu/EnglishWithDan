@@ -38,6 +38,14 @@ let mixedIndex = 0;
 // completion and via stopPractice()'s early exit).
 let _vocabQuizActive = false;
 let _retryWordList = null;      // set by retryWrongWords, consumed by startPractice
+// Real VocabBook words (have a Mongo _id) answered at least once this
+// session, keyed by _id — populated centrally in _countAnswer() so every
+// practice mode (Flashcard/Quiz/Listen/Translate/Mixed/Review-due/Weak-
+// vocab) feeds the SAME end-of-session sync (_syncPracticeEvidence in
+// showResults()) instead of each mode persisting evidence its own way.
+// Words without a real _id (Paraphrase/curriculum Units) are never added
+// here — there's no SRS state on the server to update for them.
+let _vocabWordsSeen = new Map();
 
 // ── Session streak tracking ────────────────────
 let sessionAnsweredCount = 0;
@@ -141,6 +149,11 @@ document.addEventListener('fullscreenchange', () => {
 
 function _countAnswer() {
     sessionAnsweredCount++;
+    // Every check*/markAs* function calls _countAnswer() exactly once per
+    // answer, after wrongWordSet/correctAnswers already reflect this
+    // answer's outcome — the single hook point where "this word was seen
+    // this session" can be recorded without touching each mode individually.
+    if (currentWord?._id) _vocabWordsSeen.set(currentWord._id, currentWord);
     if (sessionAnsweredCount - _lastReportedAnsweredCount >= 5) {
         _reportSessionStreak();
     }
@@ -552,47 +565,94 @@ const SPEAKING_CRITERIA_LABELS = { fluency: 'Độ trôi chảy', vocabulary: 'T
 // (Reading/Listening) or grading criterion (Writing/Speaking) the student
 // has enough history on to trust (see weaknessService.MIN_SAMPLE_SIZE).
 // Hidden entirely for a student with no signal yet in any skill.
+// Cached by the fetch below purely for _weaknessCardHasVocabSignal() to read
+// synchronously elsewhere on the page (e.g. deciding whether the "Từ yếu"
+// tile's click target should launch practice or explain there's nothing to
+// practice yet) — always re-fetched fresh before actually launching a
+// practice session (see practiceWeakVocab()), never trusted as the source
+// of truth for an action.
+let _cachedWeakVocabCount = null;
+
+// Shows exactly one of three states — never silently identical to another:
+//   1. Chips: at least one skill (incl. Vocabulary) has enough history.
+//   2. Empty: request succeeded, genuinely not enough data yet anywhere.
+//   3. Error: the request itself failed (network/500/etc.) — distinct
+//      message + a Try Again button, so a real outage never looks like
+//      "you just haven't practiced enough".
 async function loadWeaknessProfile() {
-    const card = document.getElementById('weakness-card');
-    const list = document.getElementById('weakness-chips');
-    if (!card || !list) return;
+    const card       = document.getElementById('weakness-card');
+    const list       = document.getElementById('weakness-chips');
+    const emptyState = document.getElementById('weakness-empty-state');
+    const errorState = document.getElementById('weakness-error-state');
+    if (!card || !list || !emptyState || !errorState) return;
+
+    card.style.display = '';
+    list.style.display = 'none';
+    emptyState.style.display = 'none';
+    errorState.style.display = 'none';
+
+    let data, weakVocab;
     try {
-        const res = await fetch(`${API}/weakness`, { headers: authH() });
-        const data = await window.ApiClient.handleResponse(res);
+        [data, weakVocab] = await Promise.all([
+            fetch(`${API}/weakness`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r)),
+            fetch(`${API}/vocabbook/weak?limit=20`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r)),
+        ]);
+    } catch {
+        errorState.style.display = '';
+        return;
+    }
 
-        const chips = [];
-        if (data.reading?.length) {
-            const w = data.reading[0];
-            chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'reading.html' });
-        }
-        if (data.listening?.length) {
-            const w = data.listening[0];
-            chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'listening.html' });
-        }
-        if (data.writing?.length) {
-            const w = data.writing[0];
-            chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'writing.html' });
-        }
-        if (data.speaking?.length) {
-            const w = data.speaking[0];
-            chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'speaking.html' });
-        }
+    const weakWords = weakVocab.words || [];
+    _cachedWeakVocabCount = weakWords.length;
 
-        if (!chips.length) { card.style.display = 'none'; return; }
-        list.innerHTML = chips.map(c => `
-            <a class="weakness-chip weakness-chip--${c.color}" href="${c.href}">
+    const chips = [];
+    if (data.reading?.length) {
+        const w = data.reading[0];
+        chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'reading.html' });
+    }
+    if (data.listening?.length) {
+        const w = data.listening[0];
+        chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'listening.html' });
+    }
+    if (data.writing?.length) {
+        const w = data.writing[0];
+        chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'writing.html' });
+    }
+    if (data.speaking?.length) {
+        const w = data.speaking[0];
+        chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'speaking.html' });
+    }
+    if (weakWords.length) {
+        chips.push({
+            icon: 'fa-bookmark', color: 'green', skill: 'Vocabulary',
+            label: weakWords.length >= 20 ? '20+ weak words' : `${weakWords.length} weak words`,
+            detail: 'Practice weak vocabulary', href: null, action: 'practiceWeakVocab()',
+        });
+    }
+
+    if (!chips.length) {
+        emptyState.style.display = '';
+        return;
+    }
+
+    list.innerHTML = chips.map(c => {
+        // href-based chips (Reading/Listening/Writing/Speaking) are real
+        // <a> links; the Vocabulary chip launches a JS action instead, same
+        // clickable-<div> convention as .myvocab-tile--clickable.
+        const tag = c.href ? 'a' : 'div';
+        const attrs = c.href ? `href="${c.href}"` : `onclick="${c.action}" role="button" tabindex="0"`;
+        return `
+            <${tag} class="weakness-chip weakness-chip--${c.color}" ${attrs}>
                 <div class="weakness-chip-icon"><i class="fas ${c.icon}"></i></div>
                 <div class="weakness-chip-body">
                     <div class="weakness-chip-skill">${c.skill}</div>
                     <div class="weakness-chip-label">${c.label}</div>
                     <div class="weakness-chip-detail">${c.detail}</div>
                 </div>
-            </a>
-        `).join('');
-        card.style.display = '';
-    } catch {
-        card.style.display = 'none';
-    }
+            </${tag}>
+        `;
+    }).join('');
+    list.style.display = '';
 }
 
 const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
@@ -2102,6 +2162,7 @@ function startPractice(mode) {
     _vocabQuizActive = true;
     wrongWordSet.clear();
     requeuedWords.clear();
+    _vocabWordsSeen.clear();
     _persistedThisSession = false;
     _isDifficultPractice = false;
     mixedQueue = [];
@@ -2772,19 +2833,14 @@ function showResults(mode) {
             wrongListEl.style.display = 'none';
         }
     }
-    // Ghi nhận số lần sai vào DB — chỉ 1 lần mỗi session để tránh double-count
-    if (_isBookPractice && wrongWordSet.size > 0 && !_persistedThisSession) {
+    // Sync graded-practice evidence (SRS box, wrongCount/correctCount,
+    // derived status) to the server — chỉ 1 lần mỗi session để tránh
+    // double-count, same guard the old wrongCount-only persist used.
+    if (_vocabWordsSeen.size > 0 && !_persistedThisSession) {
         _persistedThisSession = true;
-        _persistWrongCounts();
+        _syncPracticeEvidence();
     }
     if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
-
-    // Cross-book "Ôn tập hôm nay" spaced-repetition session — owned by
-    // dashboard-review.js, which can't hook into its own session's
-    // completion from outside since this function is the one place every
-    // practice mode ends at. Optional so this file stays unaware of that
-    // feature's details.
-    if (typeof window._onReviewDueSessionComplete === 'function') window._onReviewDueSessionComplete(mode);
 }
 
 /* ══════════════════════════════════════════════
@@ -2889,18 +2945,46 @@ function retryWrongWords() {
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
-/* ── Ghi nhận từ hay sai vào database (fire-and-forget) ── */
-async function _persistWrongCounts() {
-    if (!currentBookId || !currentBookData?.words) return;
-    wrongWordSet.forEach(wordStr => {
-        const w = currentBookData.words.find(x => x.word === wordStr);
-        if (!w) return;
-        w.wrongCount = (w.wrongCount || 0) + 1;
-        fetch(`${API}/vocabbook/${currentBookId}/words/${w._id}`, {
-            method: 'PATCH', headers: authH(),
-            body: JSON.stringify({ wrongCount: w.wrongCount })
-        }).catch(() => {});
-    });
+/* ── Sync graded-practice evidence to the server (fire-and-forget) ──
+   Single call site every practice mode funnels through at session end —
+   replaces the old _persistWrongCounts() (wrongCount-only, in-book practice
+   only) AND dashboard-review.js's former per-word status PATCH (review-due
+   only). Server computes the actual SRS box movement, wrongCount/
+   correctCount, and derived status (see vocabBookService.recordPracticeResult) —
+   this only decides WHICH book each word belongs to and whether it was
+   "ever wrong this session" (wins over any correct answer along the way,
+   same rule the old review-due flow already used — not "last answer wins"). */
+async function _syncPracticeEvidence() {
+    if (!_vocabWordsSeen.size) return;
+    const calls = [];
+    for (const w of _vocabWordsSeen.values()) {
+        const bookId = w._reviewBookId || (_isBookPractice ? currentBookId : null);
+        if (!bookId) continue; // no resolvable book context (e.g. a curriculum Unit word) — nothing to sync
+        const correct = !wrongWordSet.has(w.word);
+        calls.push(
+            fetch(`${API}/vocabbook/${bookId}/words/${w._id}/practice-result`, {
+                method: 'POST', headers: authH(),
+                body: JSON.stringify({ correct })
+            })
+            .then(r => window.ApiClient.handleResponse(r))
+            // Reflect the server-computed outcome (status/srsBox/wrongCount/
+            // correctCount) back onto THIS word object. For a book-practice
+            // session `w` is the exact same object referenced by
+            // currentBookData.words (openFlashcardMode/practiceHardWords
+            // build currentUnit.words from that array, never a deep copy),
+            // so this is what closeUnitView()'s re-render actually reads —
+            // without it, the table would show pre-session wrongCount/status
+            // until the next full page load. For review-due/weak-vocab
+            // sessions `w` is a throwaway spread copy with nothing reading
+            // it afterward, so the assign is harmless there.
+            .then(data => { if (data?.word) Object.assign(w, data.word); })
+            .catch(() => {})
+        );
+    }
+    if (!calls.length) return;
+    await Promise.all(calls);
+    if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
+    if (typeof refreshReviewDueCard === 'function') refreshReviewDueCard();
 }
 
 /* ══════════════════════════════════════════════

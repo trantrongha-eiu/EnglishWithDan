@@ -13,10 +13,11 @@
  * thuộc/So-so/Đã thuộc" button list — clicking them had no visible effect,
  * and self-reported mastery is a weaker signal than a graded quiz anyway),
  * this launches the SAME mixed-mode quiz screen every other practice flow
- * already uses, then grades each word's outcome itself: each due word is
- * tagged with its own _reviewBookId so the SRS status PATCH (same endpoint
- * markReviewWord used to call by hand) can be sent to the right book once
- * the quiz ends. See _onReviewDueSessionComplete below.
+ * already uses. Each due word is tagged with its own _reviewBookId so
+ * dashboard.js's shared _syncPracticeEvidence() (called from showResults()
+ * for EVERY practice mode, not just this one) knows which book to PATCH —
+ * this file no longer grades words itself; see that function's comment for
+ * why "ever wrong this session" wins over any correct answer along the way.
  */
 
 async function refreshReviewDueCard() {
@@ -62,10 +63,9 @@ function _startReviewDueQuiz(items) {
     currentBookId = null; // so closing the session lands back on the dashboard home, not a stale book
     currentUnit = {
         // Each due word carries its own bookId from the /review/due
-        // aggregation — tagged onto the word object here so
-        // _onReviewDueSessionComplete below can PATCH the right book
-        // without needing to thread a second parallel array through the
-        // whole quiz engine.
+        // aggregation — tagged onto the word object here so dashboard.js's
+        // _syncPracticeEvidence() can PATCH the right book without needing
+        // to thread a second parallel array through the whole quiz engine.
         words: items.map(it => ({ ...it.word, _reviewBookId: it.bookId })),
         title: 'Ôn tập hôm nay',
     };
@@ -78,45 +78,48 @@ function _startReviewDueQuiz(items) {
     showMode('mixed');
 }
 
-// Called by dashboard.js's showResults() at the end of EVERY practice mode;
-// no-ops unless this was a review-due session that just finished a mixed
-// round (also fires again after "Ôn lại từ sai" retries a subset — see note
-// below). Detected from the words themselves (every word in this session
-// carries the _reviewBookId tag _startReviewDueQuiz adds) rather than a
-// separate boolean flag — a flag would need to be reset by every OTHER
-// session-starting entry point in dashboard.js (openFlashcardMode,
-// loadUnit, practiceHardWords, ...) to avoid misfiring on an unrelated
-// later session in the same page load; deriving it from currentUnit's own
-// data needs no such bookkeeping, since every entry point already replaces
-// currentUnit wholesale before its own session starts.
-//
-// Grades each word actually asked this round from the mixed engine's own
-// session state: never missed → 'da-thuoc' (SRS box advances); missed at
-// least once → 'chua-thuoc' (SRS resets, due again immediately). Not a
-// 3-way split like the old self-report buttons — the quiz doesn't cleanly
-// distinguish "missed once then got it right" from "missed twice" without
-// invasive changes to the answer-handling code in dashboard.js, and
-// resetting on ANY miss is a reasonable, common SRS default (same idea as
-// Anki's "Again").
-window._onReviewDueSessionComplete = function (mode) {
-    if (mode !== 'mixed') return;
-    // A retried word appears twice in mixedQueue (original + requeue) — dedupe by _id.
-    const seen = new Set();
-    const words = (mixedQueue || [])
-        .map(item => item.word)
-        .filter(w => w && w._id && w._reviewBookId && !seen.has(w._id) && seen.add(w._id));
-    if (!words.length) return;
-
-    Promise.all(words.map(w => {
-        const status = wrongWordSet.has(w.word) ? 'chua-thuoc' : 'da-thuoc';
-        return fetch(`${API}/vocabbook/${w._reviewBookId}/words/${w._id}`, {
-            method: 'PATCH', headers: authH(),
-            body: JSON.stringify({ status }),
-        }).catch(() => {});
-    })).then(() => {
-        refreshReviewDueCard();
-        if (typeof loadMyVocabStats === 'function') loadMyVocabStats();
-    });
-};
-
 window.openReviewDueModal = openReviewDueModal;
+
+// ── Weak vocabulary practice — "Từ yếu" dashboard tile + Weakness card's
+// Vocabulary chip. Same cross-book launcher shape as _startReviewDueQuiz
+// above (words tagged with their own _reviewBookId so the shared
+// _syncPracticeEvidence() in dashboard.js's showResults() can PATCH each
+// one back to the right book), sourced from GET /vocabbook/weak instead of
+// the due-today queue. Always fetches fresh rather than trusting
+// loadWeaknessProfile()'s cached count — that count may be stale by the
+// time the student actually clicks.
+async function practiceWeakVocab() {
+    let data;
+    try {
+        data = await fetch(`${API}/vocabbook/weak?limit=20`, { headers: authH() })
+            .then(r => window.ApiClient.handleResponse(r));
+    } catch {
+        toast('Không thể tải danh sách từ yếu. Vui lòng thử lại', 'error');
+        return;
+    }
+    const items = data.words || [];
+    if (!items.length) {
+        toast('🎉 Bạn chưa có từ nào bị đánh dấu yếu!', 'success');
+        return;
+    }
+    _startWeakVocabQuiz(items);
+}
+
+function _startWeakVocabQuiz(items) {
+    _isBookPractice = false;
+    _isHardWordsSession = false;
+    currentBookId = null; // so closing the session lands back on the dashboard home, not a stale book
+    currentUnit = {
+        words: items.map(it => ({ ...it.word, _reviewBookId: it.bookId })),
+        title: 'Ôn từ yếu',
+    };
+    document.getElementById('view-mybook').style.display = 'none';
+    const lessonView = document.getElementById('view-lesson');
+    if (lessonView) lessonView.style.display = 'none';
+    document.getElementById('view-unit').style.display = 'flex';
+    document.getElementById('unitTitle').textContent = `🔥 Ôn từ yếu – ${items.length} từ`;
+    if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
+    showMode('mixed');
+}
+
+window.practiceWeakVocab = practiceWeakVocab;
