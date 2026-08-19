@@ -349,10 +349,55 @@ function switchLessonTab(tab) {
 /* ──────────────────────────────────────────────
    LEARN TAB
 ────────────────────────────────────────────── */
+// Same localStorage convention as task2-practice.html's Task 2 vocab-save
+// tracking (t2_vocab_saved) — separate key since these are two independent
+// content types (Lesson words vs a Task 2 topic's vocabularyList), but
+// there's no server-side "has this student saved this lesson's words"
+// field to check instead, so a client-side saved-terms set is the only way
+// to show "Đã lưu tất cả" after a page reload.
+const LESSON_VOCAB_SAVED_KEY = 'lesson_vocab_saved';
+let _lessonVocabSavedMap = JSON.parse(localStorage.getItem(LESSON_VOCAB_SAVED_KEY) || '{}');
+
+function _savedTermsForLesson(lessonId) {
+    return new Set(_lessonVocabSavedMap[lessonId] || []);
+}
+
+function _markLessonVocabTermsSaved(lessonId, terms) {
+    const set = _savedTermsForLesson(lessonId);
+    terms.forEach(t => set.add(t));
+    _lessonVocabSavedMap[lessonId] = Array.from(set);
+    localStorage.setItem(LESSON_VOCAB_SAVED_KEY, JSON.stringify(_lessonVocabSavedMap));
+}
+
+function saveAllLessonVocabToBook() {
+    const words = lessonState.currentLesson?.words || [];
+    if (!words.length || !window.openVocabBookPickerBulk) return;
+    const items = words.map(w => ({ word: w.word, meaning: w.meaning || '', example: w.example || '' }));
+    window.openVocabBookPickerBulk(items, terms => {
+        _markLessonVocabTermsSaved(lessonState.currentLesson._id, terms);
+        renderLearnTab();
+    });
+}
+
 function renderLearnTab() {
     const grid = document.getElementById('lesson-learn-grid');
+    const header = document.getElementById('lesson-learn-header');
     if (!grid) return;
     const words = lessonState.currentLesson?.words || [];
+    if (header) {
+        if (!words.length) {
+            header.innerHTML = '';
+        } else {
+            const lessonId = lessonState.currentLesson._id;
+            const savedSet = _savedTermsForLesson(lessonId);
+            const allSaved = words.every(w => savedSet.has(w.word));
+            header.innerHTML = `
+                <p>${words.length} từ / cụm từ · lưu vào sổ để ôn tập lại sau</p>
+                <button class="lesson-saveall-btn" onclick="saveAllLessonVocabToBook()" ${allSaved ? 'disabled' : ''}>
+                    <i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả vào sổ' : 'Lưu tất cả vào sổ'}
+                </button>`;
+        }
+    }
     if (!words.length) { grid.innerHTML = '<div class="classroom-empty">Bài học chưa có từ vựng</div>'; return; }
 
     // data-word-idx is a plain array index (never lesson text) — the actual
