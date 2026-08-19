@@ -96,6 +96,26 @@ describe('vocabBookService', () => {
       expect(result.status).toBe('not_found');
     });
 
+    it('saves collocations passed from the dictionary popup, capped at 10 and 100 chars each', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+      const longPhrase = 'x'.repeat(150);
+      const tooMany = Array.from({ length: 15 }, (_, i) => `phrase ${i}`);
+      const result = await vocabBookService.addWord(book._id, student, {
+        word: 'benefit', meaning: 'lợi ích', collocations: [...tooMany, longPhrase],
+      });
+      expect(result.status).toBe('ok');
+      expect(result.word.collocations).toHaveLength(10);
+      expect(result.word.collocations[0]).toBe('phrase 0');
+    });
+
+    it('defaults to an empty collocations array when none are given', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+      const result = await vocabBookService.addWord(book._id, student, { word: 'apple', meaning: 'táo' });
+      expect(result.word.collocations).toEqual([]);
+    });
+
     it('adding a single word does not grant a streak on its own (anti-farming: needs 35/day)', async () => {
       const student = await createStudent();
       const book = await createVocabBook({ userId: student._id, words: [] });
@@ -133,6 +153,20 @@ describe('vocabBookService', () => {
 
       const fresh = await require('../../../models/User').findById(student._id);
       expect(fresh.learningStreak).toBe(0);
+    });
+
+    it('updates collocations when provided, leaves them untouched when omitted', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [{ word: 'apple', collocations: ['old phrase'] }] });
+      const wordId = book.words[0]._id;
+
+      await vocabBookService.updateWord(book._id, wordId, student._id, student, { note: 'just a note' });
+      let reloaded = await VocabBook.findById(book._id);
+      expect(reloaded.words[0].collocations).toEqual(['old phrase']); // untouched
+
+      await vocabBookService.updateWord(book._id, wordId, student._id, student, { collocations: ['new phrase'] });
+      reloaded = await VocabBook.findById(book._id);
+      expect(reloaded.words[0].collocations).toEqual(['new phrase']); // replaced
     });
 
     it('does not grant a streak when nothing but non-status fields change', async () => {
@@ -363,6 +397,29 @@ describe('vocabBookService', () => {
       expect(reloaded.words.map(w => w.word).sort()).toEqual(['bar', 'baz', 'existing', 'foo'].sort());
     });
 
+    it('preserves each word\'s SRS progress and collocations after merging (not reset to fresh)', async () => {
+      const student = await createStudent();
+      const dest = await createVocabBook({ userId: student._id, words: [] });
+      const reviewedAt = new Date('2026-01-01T00:00:00Z');
+      const nextReview = new Date('2026-02-01T00:00:00Z');
+      const src = await createVocabBook({
+        userId: student._id,
+        words: [{
+          word: 'studied', srsBox: 3, lastReviewedAt: reviewedAt, nextReviewAt: nextReview,
+          collocations: ['study hard', 'study abroad'],
+        }],
+      });
+
+      await vocabBookService.mergeBooks(dest._id, student._id, [src._id]);
+
+      const reloaded = await VocabBook.findById(dest._id);
+      const merged = reloaded.words.find(w => w.word === 'studied');
+      expect(merged.srsBox).toBe(3);
+      expect(merged.lastReviewedAt.toISOString()).toBe(reviewedAt.toISOString());
+      expect(merged.nextReviewAt.toISOString()).toBe(nextReview.toISOString());
+      expect(merged.collocations).toEqual(['study hard', 'study abroad']);
+    });
+
     it('skips default books passed as a source (silently excluded)', async () => {
       const student = await createStudent();
       const dest = await createVocabBook({ userId: student._id, words: [] });
@@ -465,6 +522,83 @@ describe('vocabBookService', () => {
       const fakeId = new mongoose.Types.ObjectId();
       const result = await vocabBookService.bulkAddWords(fakeId, student, [{ word: 'x' }]);
       expect(result.status).toBe('not_found');
+    });
+
+    it('carries per-item collocations through (e.g. VocabularyLesson "Lưu tất cả")', async () => {
+      const student = await createStudent();
+      const book = await createVocabBook({ userId: student._id, words: [] });
+      await vocabBookService.bulkAddWords(book._id, student, [
+        { word: 'benefit', meaning: 'lợi ích', collocations: ['mutual benefit', 'economic benefit'] },
+        { word: 'apple', meaning: 'táo' }, // no collocations given
+      ]);
+
+      const reloaded = await VocabBook.findById(book._id);
+      const benefit = reloaded.words.find(w => w.word === 'benefit');
+      const apple = reloaded.words.find(w => w.word === 'apple');
+      expect(benefit.collocations).toEqual(['mutual benefit', 'economic benefit']);
+      expect(apple.collocations).toEqual([]);
+    });
+  });
+
+  describe('getVocabStats', () => {
+    it('sums totals across ALL of a user\'s books, not just one', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'a', status: 'da-thuoc' },
+        { word: 'b', status: 'nho-so-so' },
+      ] });
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'c', status: 'chua-thuoc' },
+        { word: 'd', status: 'da-thuoc' },
+      ] });
+
+      const stats = await vocabBookService.getVocabStats(student._id);
+      expect(stats.totalWords).toBe(4);
+      expect(stats.mastered).toBe(2);
+      expect(stats.reviewing).toBe(1);
+      expect(stats.notYet).toBe(1);
+    });
+
+    it('counts a word as "weak" once wrongCount reaches the threshold (3) — matches dashboard.js\'s "Ôn lại từ hay sai" button', async () => {
+      const student = await createStudent();
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'a', wrongCount: 0 },
+        { word: 'b', wrongCount: 2 },
+        { word: 'c', wrongCount: 3 },
+        { word: 'd', wrongCount: 5 },
+      ] });
+
+      const stats = await vocabBookService.getVocabStats(student._id);
+      expect(stats.weak).toBe(2);
+    });
+
+    it('counts a word as due today when nextReviewAt is null (never reviewed) or in the past', async () => {
+      const student = await createStudent();
+      const past = new Date(Date.now() - 86400000);
+      const future = new Date(Date.now() + 86400000);
+      await createVocabBook({ userId: student._id, words: [
+        { word: 'never-reviewed', nextReviewAt: null },
+        { word: 'overdue', nextReviewAt: past },
+        { word: 'not-due-yet', nextReviewAt: future },
+      ] });
+
+      const stats = await vocabBookService.getVocabStats(student._id);
+      expect(stats.dueToday).toBe(2);
+    });
+
+    it('returns all-zero stats for a user with no words saved anywhere', async () => {
+      const student = await createStudent();
+      const stats = await vocabBookService.getVocabStats(student._id);
+      expect(stats).toEqual({ totalWords: 0, mastered: 0, reviewing: 0, notYet: 0, weak: 0, dueToday: 0 });
+    });
+
+    it('only counts the given user\'s own books, never another student\'s', async () => {
+      const student = await createStudent();
+      const other = await createStudent();
+      await createVocabBook({ userId: other._id, words: [{ word: 'not-mine', status: 'da-thuoc' }] });
+
+      const stats = await vocabBookService.getVocabStats(student._id);
+      expect(stats.totalWords).toBe(0);
     });
   });
 

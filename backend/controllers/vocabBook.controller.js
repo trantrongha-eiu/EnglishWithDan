@@ -48,6 +48,11 @@ exports.getDueWords = guard(async (req, res) => {
   res.json({ success: true, words });
 });
 
+exports.getVocabStats = guard(async (req, res) => {
+  const stats = await vocabBookService.getVocabStats(req.user._id);
+  res.json({ success: true, stats });
+});
+
 exports.getBook = guard(async (req, res) => {
   const book = await vocabBookService.getBook(req.params.id, req.user._id);
   if (!book) return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });

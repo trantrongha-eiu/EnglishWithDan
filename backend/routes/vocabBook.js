@@ -26,6 +26,10 @@ router.post('/practice-complete', auth, fullAccess, vocabBookController.complete
 // — must stay above /:id, same reason as /reorder and /practice-complete.
 router.get('/review/due', auth, fullAccess, vocabBookController.getDueWords);
 
+// GET /api/vocabbook/stats  – tổng số từ/đã thuộc/cần ôn/yếu trên TẤT CẢ sổ
+// — must stay above /:id, same reason as /reorder and /review/due.
+router.get('/stats', auth, fullAccess, vocabBookController.getVocabStats);
+
 // GET /api/vocabbook/:id  – lấy chi tiết 1 sổ (có words)
 router.get('/:id', auth, fullAccess, vocabBookController.getBook);
 

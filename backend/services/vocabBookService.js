@@ -244,7 +244,8 @@ async function mergeBooks(destId, userId, sourceIds) {
         dest.words.push({
           word: w.word, meaning: w.meaning, example: w.example, phonetic: w.phonetic,
           partOfSpeech: w.partOfSpeech, status: w.status, note: w.note, source: w.source,
-          wrongCount: w.wrongCount, savedAt: w.savedAt
+          wrongCount: w.wrongCount, savedAt: w.savedAt, collocations: w.collocations || [],
+          srsBox: w.srsBox, nextReviewAt: w.nextReviewAt, lastReviewedAt: w.lastReviewedAt,
         });
         existingWords.add(key);
         addedCount++;
@@ -267,7 +268,19 @@ async function deleteBook(id, userId) {
   return { status: 'ok' };
 }
 
-async function addWord(bookId, user, { word, meaning, example, phonetic, partOfSpeech, source, note }) {
+// Client-supplied collocation list (dictionary popup / VocabularyLesson
+// carry-over) — cap both item count and per-item length so a malformed or
+// abusive payload can't bloat a word subdocument.
+const MAX_COLLOCATIONS_PER_WORD = 10;
+function sanitizeCollocations(raw) {
+  if (!Array.isArray(raw)) return undefined;
+  return raw
+    .map(c => String(c || '').trim().slice(0, 100))
+    .filter(Boolean)
+    .slice(0, MAX_COLLOCATIONS_PER_WORD);
+}
+
+async function addWord(bookId, user, { word, meaning, example, phonetic, partOfSpeech, source, note, collocations }) {
   const book = await VocabBook.findOne({ _id: bookId, userId: user._id });
   if (!book) return { status: 'not_found' };
 
@@ -276,7 +289,7 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
   const duplicate = book.words.find(w => w.word.toLowerCase() === word.toLowerCase().trim());
   if (duplicate) return { status: 'duplicate' };
 
-  book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note });
+  book.words.push({ word: word.trim(), meaning, example, phonetic, partOfSpeech, source, note, collocations: sanitizeCollocations(collocations) || [] });
   await book.save();
 
   if (user.role === 'student') {
@@ -289,7 +302,7 @@ async function addWord(bookId, user, { word, meaning, example, phonetic, partOfS
   return { status: 'ok', bookName: book.name, word: book.words[book.words.length - 1] };
 }
 
-async function updateWord(bookId, wordId, userId, user, { status, note, word, meaning, example, phonetic, partOfSpeech, wrongCount }) {
+async function updateWord(bookId, wordId, userId, user, { status, note, word, meaning, example, phonetic, partOfSpeech, wrongCount, collocations }) {
   const book = await VocabBook.findOne({ _id: bookId, userId });
   if (!book) return { status2: 'book_not_found' };
 
@@ -326,6 +339,7 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
   if (phonetic !== undefined) wordDoc.phonetic = phonetic;
   if (partOfSpeech !== undefined) wordDoc.partOfSpeech = partOfSpeech;
   if (wrongCount !== undefined) wordDoc.wrongCount = Math.max(0, Number(wrongCount) || 0);
+  if (collocations !== undefined) wordDoc.collocations = sanitizeCollocations(collocations) || [];
 
   await book.save();
 
@@ -372,7 +386,8 @@ async function bulkAddWords(bookId, user, words) {
       phonetic: (item.phonetic || '').trim(),
       partOfSpeech: (item.partOfSpeech || '').trim(),
       source: 'bulk-import',
-      note: ''
+      note: '',
+      collocations: sanitizeCollocations(item.collocations) || [],
     });
     existingWords.add(key);
     addedCount++;
@@ -417,8 +432,40 @@ async function getDueWords(userId, limit = 30) {
   ]);
 }
 
+// A word gotten wrong this many times or more counts as "weak" — matches
+// the existing ">= 3" convention dashboard.js's "Ôn lại từ hay sai" button
+// already uses (frontend/js/dashboard.js's renderBookContent/hardBtn and
+// retryWrongWords), so this stat and that button always agree on the same
+// number. Distinct from (and not required to match) the separate
+// DifficultWord feature, which tracks a different, cross-source wrong-word
+// list with its own semantics.
+const WEAK_WRONG_COUNT_THRESHOLD = 3;
+
+// "My Vocabulary" dashboard totals — summed across ALL of a user's books in
+// one aggregation pass (unlike listBooks(), which returns PER-BOOK counts
+// and fetches every book's full words[] into JS to compute them). Used by
+// the vocab home screen's stat tiles (Saved/To review/Weak/Mastered).
+async function getVocabStats(userId) {
+  const now = new Date();
+  const [result] = await VocabBook.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    { $unwind: '$words' },
+    { $group: {
+        _id: null,
+        totalWords: { $sum: 1 },
+        mastered:   { $sum: { $cond: [{ $eq: ['$words.status', 'da-thuoc'] }, 1, 0] } },
+        reviewing:  { $sum: { $cond: [{ $eq: ['$words.status', 'nho-so-so'] }, 1, 0] } },
+        notYet:     { $sum: { $cond: [{ $eq: ['$words.status', 'chua-thuoc'] }, 1, 0] } },
+        weak:       { $sum: { $cond: [{ $gte: ['$words.wrongCount', WEAK_WRONG_COUNT_THRESHOLD] }, 1, 0] } },
+        dueToday:   { $sum: { $cond: [{ $or: [{ $lte: ['$words.nextReviewAt', now] }, { $eq: ['$words.nextReviewAt', null] }] }, 1, 0] } },
+      } },
+    { $project: { _id: 0, totalWords: 1, mastered: 1, reviewing: 1, notYet: 1, weak: 1, dueToday: 1 } },
+  ]);
+  return result || { totalWords: 0, mastered: 0, reviewing: 0, notYet: 0, weak: 0, dueToday: 0 };
+}
+
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, deleteBook, addWord, updateWord, deleteWord, bulkAddWords, deleteWords,
-  getDueWords,
+  getDueWords, getVocabStats,
 };

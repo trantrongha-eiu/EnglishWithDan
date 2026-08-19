@@ -17,6 +17,12 @@ const SavedWordSchema = new mongoose.Schema({
   note:        { type: String, default: '' },    // ghi chú cá nhân
   // Nguồn gốc: từ reading hay từ vocab unit
   source:      { type: String, default: '' },    // 'reading' | 'unit-5'
+  // Cụm collocation phổ biến của từ — string đơn giản (chỉ phrase, không kèm
+  // nghĩa/ví dụ riêng), cùng quy ước với VocabularyLesson's LessonWordSchema.
+  // Nguồn: dictionary popup's Collocations tab (js/shared/dictionary-lookup.js
+  // -> GET /api/dictionary/:word/collocations) khi lưu từ, hoặc carry-over từ
+  // VocabularyLesson khi "Lưu tất cả vào sổ".
+  collocations:[{ type: String }],
   savedAt:     { type: Date, default: Date.now },
   wrongCount:  { type: Number, default: 0 },     // số lần trả lời sai tích lũy
   // Spaced repetition (Leitner box, 6 mức 0-5 — xem vocabBookService.computeSrs
