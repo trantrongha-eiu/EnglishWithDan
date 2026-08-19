@@ -192,6 +192,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 }
 
 /* Rearrange quiz type — click letters/words in order to rebuild the answer */
+.rearrange-hint{font-size:13px;color:var(--text2);font-style:italic;margin-bottom:12px;min-height:18px}
+.rearrange-hint i.fa-spinner{color:var(--text3)}
 .rearrange-slots{display:flex;flex-wrap:wrap;gap:8px;min-height:44px;padding:10px;border:1.5px dashed var(--border2);border-radius:var(--radius-sm);margin-bottom:14px}
 .rearrange-slot-tile{
   background:var(--brand-light,#fef2f2);border:1px solid var(--brand);color:var(--brand);

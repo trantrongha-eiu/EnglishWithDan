@@ -620,13 +620,15 @@ function renderQuizQuestion() {
         shuffleArray(shuffled);
         lessonState.quiz.rearrangeTokens = { original: tokens, remaining: shuffled, picked: [] };
         container.innerHTML = shell(`
-            <div class="question-number">Rearrange — sắp xếp lại câu đúng chứa từ "${escHtml(q.word.word)}"</div>
+            <div class="question-number">Rearrange — sắp xếp lại câu đúng chứa từ "${escHtml(q.word.word)}" (${escHtml(q.word.meaning)})</div>
+            <div class="rearrange-hint" id="qRearrangeHint"><i class="fas fa-spinner fa-spin"></i> Đang dịch câu...</div>
             <div class="rearrange-slots" id="qRearrangeSlots"></div>
             <div class="rearrange-tiles" id="qRearrangeTiles"></div>
             <div id="qFeedback"></div>
             <button class="btn-next" id="qBtnNext" style="display:none" onclick="nextQuizQuestion()">Next <i class="fas fa-arrow-right"></i></button>
         `);
         renderRearrangeTiles();
+        translateRearrangeSentence(q.word.example);
     }
     if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('lesson-tab-quiz', 'vocab-lesson-quiz', () => !isQuizInProgress());
 }
@@ -774,6 +776,39 @@ function showQuizFeedback(correct, word, answerText) {
             ${word.example ? `<div class="quiz-answer-example">"${escHtml(word.example)}"</div>` : ''}
         </div>` : '';
     el.innerHTML = verdict + detail;
+}
+
+// Google Translate has no SLA and this fires on every rearrange question,
+// so abort instead of hanging the hint forever — same 7s timeout pattern
+// listening.html's translateSelected() already uses for the same API.
+function _fetchWithTimeout(url, ms = 7000) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+}
+
+// Guards against a stale translation landing after the student has already
+// moved to the next question (Next tapped quickly, or a rearrange question
+// re-rendered) — only the MOST RECENT call's result is ever written to the
+// DOM, same _requestSeq pattern dictionary-lookup.js uses for its own
+// picker loads.
+let _rearrangeTranslateSeq = 0;
+async function translateRearrangeSentence(sentence) {
+    const requestId = ++_rearrangeTranslateSeq;
+    const hintEl = document.getElementById('qRearrangeHint');
+    if (!hintEl) return;
+    try {
+        const res = await _fetchWithTimeout(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${encodeURIComponent(sentence)}`);
+        const data = await res.json();
+        const translated = data?.[0]?.map(s => s?.[0]).filter(Boolean).join('') || '';
+        if (requestId !== _rearrangeTranslateSeq) return; // a newer question already replaced this one
+        hintEl.innerHTML = translated
+            ? `<i class="fas fa-language"></i> ${escHtml(translated)}`
+            : '';
+    } catch (err) {
+        if (requestId !== _rearrangeTranslateSeq) return;
+        hintEl.innerHTML = ''; // best-effort hint — quietly disappear rather than block the quiz
+    }
 }
 
 function renderRearrangeTiles() {
