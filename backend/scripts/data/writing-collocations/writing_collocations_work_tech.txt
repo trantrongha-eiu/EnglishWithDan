@@ -1,0 +1,374 @@
+@lesson
+title=Task 2 - Work (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Work
+difficulty=B2
+order=0
+
+@word
+word=working long hours
+meaning=làm việc nhiều giờ
+pos=phrase
+example=Employees who are working long hours every week often report higher levels of stress and fatigue.
+definition=Spending more time at work than the standard schedule requires, often extending into evenings or weekends.
+collocations=extended hours of work|long working hours|work overtime
+distractors=taking regular breaks|working part-time|flexible working hours
+
+@word
+word=have a negative impact on
+meaning=có ảnh hưởng tiêu cực đến
+pos=verb phrase
+example=Excessive workloads can have a negative impact on employees' mental and physical health.
+definition=To cause a harmful or unfavourable effect on something.
+collocations=have an adverse effect on|take a toll on|have a detrimental effect on
+distractors=have a positive impact on|make no difference to|be irrelevant to
+
+@word
+word=work productivity
+meaning=năng suất làm việc
+pos=noun phrase
+example=Companies that offer flexible schedules often see an increase in work productivity.
+definition=The rate at which employees produce goods or complete tasks within a given period of time.
+collocations=labour productivity|workplace efficiency|output per employee
+distractors=job security|staff turnover|working conditions
+
+@word
+word=suffer from health issues
+meaning=mắc các vấn đề sức khỏe
+pos=verb phrase
+example=People who work excessively long hours are more likely to suffer from health issues such as high blood pressure.
+definition=To experience physical or mental illnesses or medical problems.
+collocations=suffer from various ailments|experience health problems|be prone to illness
+distractors=maintain good health|recover quickly|enjoy a balanced diet
+
+@word
+word=chronic fatigue
+meaning=sự mệt mỏi kinh niên
+ipa=/ˈkrɒnɪk fəˈtiːɡ/
+pos=noun phrase
+example=Overworked employees frequently complain of chronic fatigue and an inability to concentrate.
+definition=A persistent state of physical or mental tiredness that does not improve with rest.
+collocations=persistent exhaustion|constant tiredness|burnout
+distractors=sudden energy|renewed motivation|physical fitness
+
+@word
+word=anxiety disorders
+meaning=chứng rối loạn lo âu
+ipa=/æŋˈzaɪəti dɪsˈɔːdəz/
+pos=noun phrase
+example=Prolonged exposure to workplace stress can lead to the development of anxiety disorders.
+definition=Mental health conditions characterised by excessive, persistent worry and nervousness.
+collocations=mental health problems|stress-related illness|psychological strain
+distractors=job promotion|career progression|financial stability
+
+@word
+word=failing health
+meaning=sức khỏe suy giảm
+pos=noun phrase
+example=Many workers only realise the value of leisure time once they experience failing health.
+definition=A gradual decline in a person's physical condition or wellbeing.
+collocations=declining health|deteriorating health|poor physical condition
+distractors=improving fitness|robust health|full recovery
+
+@word
+word=take sick leave
+meaning=xin nghỉ ốm
+pos=verb phrase
+example=Employees under constant pressure are more likely to take sick leave.
+definition=To be officially absent from work because of illness, usually with pay.
+collocations=call in sick|be signed off work|request medical leave
+distractors=take annual leave|work overtime|attend a meeting
+
+@word
+word=poor work performance
+meaning=hiệu suất làm việc kém
+pos=noun phrase
+example=A lack of adequate rest is often linked to poor work performance.
+definition=A low standard of achievement or output in one's job.
+collocations=underperformance|substandard output|declining efficiency
+distractors=outstanding performance|steady improvement|job satisfaction
+
+@word
+word=feel exhausted
+meaning=cảm thấy kiệt sức
+pos=verb phrase
+example=By the end of a demanding week, many employees feel exhausted both mentally and physically.
+definition=To experience an extreme lack of energy or strength.
+collocations=feel drained|be worn out|be burnt out
+distractors=feel refreshed|feel motivated|feel content
+
+@word
+word=have serious consequences for
+meaning=gây hậu quả nghiêm trọng cho
+pos=verb phrase
+example=Ignoring employees' work-life balance can have serious consequences for a company's productivity.
+definition=To result in significant negative outcomes that affect someone or something.
+collocations=take a heavy toll on|have far-reaching effects on|lead to negative outcomes for
+distractors=have minimal effects on|bring immediate benefits to|make little difference to
+
+@word
+word=a hectic working schedule
+meaning=lịch trình làm việc bận rộn
+pos=noun phrase
+example=A hectic working schedule leaves little time for family or relaxation.
+definition=An extremely busy timetable of work-related activities.
+collocations=a demanding workload|a busy schedule|a packed agenda
+distractors=a flexible timetable|a relaxed pace|free time
+
+@word
+word=take family trips
+meaning=đi du lịch cùng gia đình
+pos=verb phrase
+example=Parents who work fewer hours are able to take family trips more regularly.
+definition=To go on holidays or short journeys together as a family.
+collocations=spend quality time with family|go on family holidays|enjoy family outings
+distractors=work overtime|attend business meetings|stay late at the office
+
+@word
+word=overworked employees
+meaning=những nhân viên làm việc quá sức
+pos=noun phrase
+example=Overworked employees are more prone to making mistakes and losing motivation.
+definition=Workers who are required to do more work than is reasonable or healthy.
+collocations=overburdened staff|exhausted workers|burnt-out employees
+distractors=well-rested staff|highly motivated workers|part-time employees
+
+@word
+word=devote time to
+meaning=dành thời gian cho
+pos=verb phrase
+example=Successful professionals still need to devote time to their families and personal wellbeing.
+definition=To give a significant amount of time to a particular activity or purpose.
+collocations=spend time on|dedicate time to|set aside time for
+distractors=waste time on|neglect|postpone indefinitely
+
+@word
+word=family bonds
+meaning=mối quan hệ gia đình
+pos=noun phrase
+example=Long working hours can gradually weaken family bonds.
+definition=The close emotional connections and relationships between family members.
+collocations=family ties|close relationships|family cohesion
+distractors=professional networks|business partnerships|social status
+
+@word
+word=a nine-to-five job
+meaning=công việc hành chính (từ 9h sáng đến 5h chiều)
+pos=noun phrase
+example=Not everyone thrives in a nine-to-five job with a fixed daily routine.
+definition=A standard full-time job with fixed working hours, typically from morning to late afternoon.
+collocations=a regular office job|a fixed working schedule|a conventional job
+distractors=a freelance career|shift work|a part-time position
+
+@word
+word=job satisfaction
+meaning=sự hài lòng trong công việc
+pos=noun phrase
+example=Employees who feel valued at work tend to report higher job satisfaction.
+definition=The sense of fulfilment and contentment a person feels about their job.
+collocations=career fulfilment|work satisfaction|professional contentment
+distractors=job insecurity|workplace conflict|financial pressure
+
+@word
+word=pursue a career
+meaning=theo đuổi sự nghiệp
+pos=verb phrase
+example=Many graduates choose to pursue a career in a field unrelated to their degree.
+definition=To work towards developing and advancing in a chosen profession.
+collocations=build a career|follow a career path|advance professionally
+distractors=abandon a career|take early retirement|change one's hobby
+
+@word
+word=a well-paid job
+meaning=công việc có mức lương cao
+pos=noun phrase
+example=Job security often matters more to workers than simply having a well-paid job.
+definition=A position of employment that offers a high salary.
+collocations=earn a high salary|a lucrative position|a highly paid role
+distractors=a voluntary position|an unpaid internship|a minimum-wage job
+
+@lesson
+title=Task 2 - Technology (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Technology
+difficulty=B2
+order=0
+
+@word
+word=technological advances
+meaning=những tiến bộ công nghệ
+pos=noun phrase
+example=Technological advances have transformed the way people communicate with one another.
+definition=Improvements or new developments in technology.
+collocations=technological developments|scientific breakthroughs|innovations in technology
+distractors=technological setbacks|outdated equipment|manual labour
+
+@word
+word=keep in touch with
+meaning=giữ liên lạc với
+pos=verb phrase
+example=Social media allows people to keep in touch with friends who live abroad.
+definition=To maintain regular communication with someone.
+collocations=stay connected with|remain in contact with|keep up with
+distractors=lose contact with|avoid communication with|ignore
+
+@word
+word=loved ones
+meaning=những người thân yêu
+pos=noun phrase
+example=Video calls make it easier for people to see their loved ones despite the distance.
+definition=Family members or close friends for whom one feels deep affection.
+collocations=close relatives|family members|dear friends
+distractors=distant acquaintances|business colleagues|strangers
+
+@word
+word=expand one's network
+meaning=mở rộng mạng lưới quan hệ
+pos=verb phrase
+example=Professional platforms enable users to expand their network and find new opportunities.
+definition=To increase the number of professional or social contacts one has.
+collocations=build connections|broaden one's contacts|grow a professional network
+distractors=narrow one's focus|reduce contact|isolate oneself
+
+@word
+word=telecommunication services
+meaning=các dịch vụ viễn thông
+pos=noun phrase
+example=Reliable telecommunication services are essential for businesses operating across different countries.
+definition=Services that allow people to communicate over long distances, such as phone and internet networks.
+collocations=communication networks|internet connectivity|mobile network services
+distractors=postal services|public transport|manufacturing industries
+
+@word
+word=an internet-connected device
+meaning=thiết bị kết nối internet
+pos=noun phrase
+example=Almost every household now owns an internet-connected device of some kind.
+definition=A piece of equipment, such as a phone or computer, that can access the internet.
+collocations=a smart device|a digital gadget|a connected smartphone
+distractors=an offline appliance|a manual tool|a paper document
+
+@word
+word=multitask
+meaning=làm nhiều việc cùng lúc
+ipa=/ˌmʌltiˈtɑːsk/
+pos=verb
+example=Modern technology enables employees to multitask more efficiently than ever before.
+definition=To do several tasks at the same time.
+collocations=do multiple tasks simultaneously|juggle several activities|handle tasks concurrently
+distractors=focus on a single task|procrastinate|work sequentially
+
+@word
+word=suffer from social isolation
+meaning=chịu sự cô lập xã hội
+pos=verb phrase
+example=Critics argue that excessive screen time can cause people to suffer from social isolation.
+definition=To experience a lack of meaningful contact or interaction with other people.
+collocations=feel socially isolated|become withdrawn|experience loneliness
+distractors=build strong friendships|enjoy an active social life|feel a sense of community
+
+@word
+word=browse the internet
+meaning=lướt web
+pos=verb phrase
+example=Many teenagers spend several hours a day browsing the internet on their phones.
+definition=To look through websites and online content casually, without a specific goal.
+collocations=surf the web|scroll through social media|search online
+distractors=read printed books|attend a lecture|write a letter
+
+@word
+word=interactive activities
+meaning=các hoạt động mang tính tương tác
+pos=noun phrase
+example=Educational apps often include interactive activities to keep learners engaged.
+definition=Tasks or exercises that require active participation and response from the user.
+collocations=engaging exercises|hands-on tasks|participatory learning
+distractors=passive learning|one-way lectures|rote memorisation
+
+@word
+word=face-to-face interaction
+meaning=sự tương tác trực tiếp, mặt đối mặt
+pos=noun phrase
+example=Some experts fear that reliance on technology is reducing face-to-face interaction among young people.
+definition=Direct communication between people who are physically present with each other.
+collocations=in-person contact|direct communication|personal interaction
+distractors=online chatting|written correspondence|automated messaging
+
+@word
+word=face-to-face meetings
+meaning=các cuộc họp gặp mặt trực tiếp
+pos=noun phrase
+example=Despite the rise of digital tools, face-to-face meetings remain important for building trust.
+definition=Meetings in which participants are physically present in the same location.
+collocations=in-person meetings|physical meetings|direct meetings
+distractors=virtual meetings|email exchanges|phone messages
+
+@word
+word=virtual meetings
+meaning=các cuộc họp trực tuyến
+pos=noun phrase
+example=Virtual meetings have become the norm for companies with employees working remotely.
+definition=Meetings conducted online through video or audio conferencing rather than in person.
+collocations=online meetings|video conferences|remote meetings
+distractors=face-to-face meetings|written reports|casual conversations
+
+@word
+word=discourage real interaction
+meaning=ngăn cản sự tương tác thực sự
+pos=verb phrase
+example=Some sociologists claim that constant smartphone use can discourage real interaction between family members.
+definition=To reduce or prevent genuine, meaningful communication between people.
+collocations=hinder genuine communication|reduce face-to-face contact|weaken personal connections
+distractors=promote open dialogue|strengthen relationships|encourage teamwork
+
+@word
+word=the loss of traditional culture
+meaning=sự mất đi văn hóa truyền thống
+pos=noun phrase
+example=Globalisation and technology are often blamed for the loss of traditional culture in many societies.
+definition=The gradual disappearance of long-established customs, values, and practices.
+collocations=cultural erosion|the decline of local customs|the disappearance of heritage
+distractors=cultural preservation|the revival of tradition|cultural exchange
+
+@word
+word=improve the quality of life
+meaning=cải thiện chất lượng cuộc sống
+pos=verb phrase
+example=Advances in medical technology have significantly improved the quality of life for many patients.
+definition=To make people's living conditions or general wellbeing better.
+collocations=enhance living standards|raise the standard of living|boost overall wellbeing
+distractors=lower living standards|worsen conditions|increase inequality
+
+@word
+word=access to information
+meaning=sự tiếp cận thông tin
+pos=noun phrase
+example=The internet has given ordinary people unprecedented access to information.
+definition=The ability to obtain or reach data, facts, or knowledge.
+collocations=availability of information|information access|the ability to obtain data
+distractors=restriction of information|information overload|censorship
+
+@word
+word=social networking sites
+meaning=các trang mạng xã hội
+pos=noun phrase
+example=Social networking sites have changed the way people share news and opinions.
+definition=Online platforms that allow users to create profiles and connect with others.
+collocations=social media platforms|online communities|networking apps
+distractors=news broadcasting channels|print publications|government websites
+
+@word
+word=become overly dependent on technology
+meaning=trở nên quá phụ thuộc vào công nghệ
+pos=verb phrase
+example=Critics warn that children who become overly dependent on technology may struggle with basic problem-solving skills.
+definition=To rely on technology to an excessive degree, often losing the ability to function without it.
+collocations=rely heavily on gadgets|become tech-dependent|lose independence from devices
+distractors=use technology sparingly|develop self-reliance|maintain a healthy balance
+
+@word
+word=information overload
+meaning=sự quá tải thông tin
+pos=noun phrase
+example=With news updates arriving constantly, many people experience information overload.
+definition=The state of receiving more information than a person can process or absorb effectively.
+collocations=data overload|information fatigue|overwhelming amounts of data
+distractors=information scarcity|a lack of resources|limited access to news

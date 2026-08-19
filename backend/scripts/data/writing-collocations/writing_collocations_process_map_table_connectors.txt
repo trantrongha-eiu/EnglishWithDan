@@ -1,0 +1,623 @@
+@lesson
+title=Task 1 - Process Diagram (Collocations)
+description=Collocation vocabulary for describing process diagrams in IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=is added to
+meaning=được thêm vào
+ipa=/ɪz ˈædɪd tuː/
+pos=verb phrase
+example=Sugar and flavouring are added to the mixture before it is heated.
+definition=Used to describe an ingredient or component being introduced into a process at a particular stage.
+collocations=is mixed into|is combined with|is introduced into
+distractors=is removed from|is extracted from|is discarded from
+
+@word
+word=passes through
+meaning=đi qua
+ipa=/ˈpɑːsɪz θruː/
+pos=verb phrase
+example=The water then passes through a series of filters to remove impurities.
+definition=Used to describe material or a substance moving through a stage, machine, or filter in a process.
+collocations=goes through|travels through|moves through
+distractors=flows out of|is processed by|is sent to
+
+@word
+word=flows out of
+meaning=chảy ra khỏi
+ipa=/fləʊz aʊt ɒv/
+pos=verb phrase
+example=Excess liquid flows out of the tank through a small valve at the base.
+definition=Used to describe a liquid or gas leaving a container or stage of a process.
+collocations=is drained from|is discharged from|exits from
+distractors=passes through|is added to|is formed into
+
+@word
+word=is processed by
+meaning=được xử lý bởi
+ipa=/ɪz ˈprəʊsest baɪ/
+pos=verb phrase
+example=The raw sewage is processed by a treatment plant before being released into the river.
+definition=Used to describe a material or component being treated or handled by a machine or stage in a process.
+collocations=is treated by|is handled by|undergoes processing
+distractors=is sent to|goes into|is transported to
+
+@word
+word=is formed into
+meaning=được tạo hình thành
+ipa=/ɪz fɔːmd ˈɪntuː/
+pos=verb phrase
+example=The molten glass is formed into sheets before it cools.
+definition=Used to describe raw material being shaped into a particular product at a certain stage.
+collocations=is shaped into|is moulded into|is turned into
+distractors=is sent to|passes through|is transported to
+
+@word
+word=is sent to
+meaning=được gửi đến
+ipa=/ɪz sent tuː/
+pos=verb phrase
+example=Once packaged, the finished products are sent to a distribution centre.
+definition=Used to describe a component or product being transported to the next stage or location.
+collocations=is transported to|is delivered to|is transferred to
+distractors=is extracted from|is stored at|is discarded from
+
+@word
+word=goes into
+meaning=đi vào
+ipa=/gəʊz ˈɪntuː/
+pos=verb phrase
+example=After sorting, the recyclable material goes into a separate container.
+definition=Used to describe material entering a stage, container, or machine in a process.
+collocations=enters|is fed into|is placed into
+distractors=flows out of|is removed from|is discarded from
+
+@word
+word=the process begins with
+meaning=quá trình bắt đầu với
+ipa=/ðə ˈprəʊses bɪˈgɪnz wɪð/
+pos=phrase
+example=The process begins with raw cocoa beans being delivered to the factory.
+definition=Used to introduce the first stage of a process being described.
+collocations=the first stage involves|the process starts with|it all starts with
+distractors=the process ends with|the cycle then repeats itself|once this step is completed
+
+@word
+word=firstly
+meaning=đầu tiên
+ipa=/ˈfɜːstli/
+pos=adverb
+example=Firstly, the timber is cut into small pieces before being sent for drying.
+definition=Used to introduce the first step in a sequence of stages.
+collocations=first of all|to begin with|initially
+distractors=subsequently|finally|following that
+
+@word
+word=following that
+meaning=sau đó
+ipa=/ˈfɒləʊɪŋ ðæt/
+pos=phrase
+example=Following that, the mixture is heated to a temperature of 200 degrees.
+definition=Used to introduce a stage that occurs immediately after the previous one.
+collocations=after that|next|after this step
+distractors=firstly|finally|the process begins with
+
+@word
+word=subsequently
+meaning=tiếp theo đó
+ipa=/ˈsʌbsɪkwəntli/
+pos=adverb
+example=Subsequently, the bottles are sealed and labelled ready for shipping.
+definition=Used to describe a stage that happens after another, later in the sequence.
+collocations=after this|later in the process|then
+distractors=firstly|once this step is completed|the cycle then repeats itself
+
+@word
+word=once this step is completed
+meaning=khi bước này hoàn thành
+ipa=/wʌns ðɪs step ɪz kəmˈpliːtɪd/
+pos=phrase
+example=Once this step is completed, the finished tins move along the conveyor belt for packing.
+definition=Used to indicate that the next stage only begins after the current one is finished.
+collocations=after this step is finished|when this stage is complete|upon completion of this stage
+distractors=the process begins with|the cycle then repeats itself|following that
+
+@word
+word=finally
+meaning=cuối cùng
+ipa=/ˈfaɪnəli/
+pos=adverb
+example=Finally, the packaged goods are loaded onto lorries for distribution.
+definition=Used to introduce the last stage in a sequence of a process.
+collocations=lastly|in the last stage|at the end of the process
+distractors=firstly|subsequently|following that
+
+@word
+word=the process continues indefinitely
+meaning=quá trình tiếp tục vô thời hạn
+ipa=/ðə ˈprəʊses kənˈtɪnjuːz ɪndɪˈfɪnətli/
+pos=phrase
+example=Water evaporates, condenses and falls as rain, and the process continues indefinitely.
+definition=Used to describe a cyclical process that has no fixed end point and keeps repeating.
+collocations=the cycle repeats without end|the process goes on continuously|this continues in a loop
+distractors=the process begins with|finally|once this step is completed
+
+@word
+word=the cycle then repeats itself
+meaning=chu kỳ sau đó lặp lại
+ipa=/ðə ˈsaɪkl ðen rɪˈpiːts ɪtˈself/
+pos=phrase
+example=The vapour condenses into clouds, falls as precipitation, and the cycle then repeats itself.
+definition=Used at the end of a description of a cyclical process to show that the whole sequence starts again from the beginning.
+collocations=the process starts over again|the cycle begins anew|this cycle continues indefinitely
+distractors=the process begins with|finally|following that
+
+@lesson
+title=Task 1 - Map (Collocations)
+description=Collocation vocabulary for describing maps and changes to a location in IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=is located to the north of
+meaning=nằm ở phía bắc của
+ipa=/ɪz ləʊˈkeɪtɪd tuː ðə nɔːθ ɒv/
+pos=phrase
+example=The new shopping centre is located to the north of the town, close to the motorway.
+definition=Used to describe the position of a place relative to another, indicating it lies in the northern direction.
+collocations=is situated to the north of|lies to the north of|is positioned north of
+distractors=is adjacent to|runs perpendicular to|extends across
+
+@word
+word=is situated in the southern part of
+meaning=nằm ở phần phía nam của
+ipa=/ɪz ˈsɪtjueɪtɪd ɪn ðə ˈsʌðən pɑːt ɒv/
+pos=phrase
+example=The old railway station is situated in the southern part of the city.
+definition=Used to describe a location that lies within the southern section of an area.
+collocations=is located in the south of|lies in the southern area of|is found in the south of
+distractors=runs along|is adjacent to|spans a length of
+
+@word
+word=was constructed
+meaning=được xây dựng
+ipa=/wɒz kənˈstrʌktɪd/
+pos=verb phrase
+example=A new car park was constructed on the site of the former factory.
+definition=Used to describe a building or structure being built during the period shown on the map.
+collocations=was built|was erected|was put up
+distractors=was demolished|was flattened|was removed
+
+@word
+word=was demolished
+meaning=bị phá dỡ
+ipa=/wɒz dɪˈmɒlɪʃt/
+pos=verb phrase
+example=The old cinema was demolished to make way for a housing estate.
+definition=Used to describe a building or structure being knocked down or destroyed.
+collocations=was torn down|was pulled down|was destroyed
+distractors=was constructed|was expanded|was widened
+
+@word
+word=was flattened to make way for
+meaning=bị san phẳng để nhường chỗ cho
+ipa=/wɒz ˈflætnd tuː meɪk weɪ fɔː/
+pos=phrase
+example=The area of woodland was flattened to make way for a new retail park.
+definition=Used to describe land being cleared, usually of trees or buildings, so that something new can be built.
+collocations=was cleared for|was levelled for|was removed to make room for
+distractors=was constructed|was widened|runs perpendicular to
+
+@word
+word=runs perpendicular to
+meaning=chạy vuông góc với
+ipa=/rʌnz ˌpɜːpənˈdɪkjʊlə tuː/
+pos=phrase
+example=The new access road runs perpendicular to the main highway.
+definition=Used to describe one road, path, or structure crossing another at a right angle.
+collocations=crosses at a right angle to|intersects at right angles with|meets at a right angle
+distractors=runs along|is adjacent to|spans a length of
+
+@word
+word=runs along
+meaning=chạy dọc theo
+ipa=/rʌnz əˈlɒŋ/
+pos=phrase
+example=A footpath runs along the riverbank from the bridge to the park.
+definition=Used to describe a road, path, or line following the same direction as another feature.
+collocations=extends along|follows the line of|stretches along
+distractors=runs perpendicular to|is adjacent to|extends across
+
+@word
+word=extends across
+meaning=trải dài qua
+ipa=/ɪkˈstendz əˈkrɒs/
+pos=phrase
+example=The new bridge extends across the river, connecting the two districts.
+definition=Used to describe a structure stretching from one side of an area to the other.
+collocations=stretches across|spans|reaches across
+distractors=is adjacent to|runs along|was expanded to accommodate
+
+@word
+word=is adjacent to
+meaning=nằm liền kề với
+ipa=/ɪz əˈdʒeɪsnt tuː/
+pos=phrase
+example=The new supermarket is adjacent to the residential area on the east side.
+definition=Used to describe something located right next to another feature or building.
+collocations=is next to|borders|is right beside
+distractors=is located to the north of|runs perpendicular to|extends across
+
+@word
+word=was expanded to accommodate
+meaning=được mở rộng để đáp ứng
+ipa=/wɒz ɪkˈspændɪd tuː əˈkɒmədeɪt/
+pos=phrase
+example=The car park was expanded to accommodate the growing number of visitors.
+definition=Used to describe an area or building being made larger in order to meet increased demand.
+collocations=was enlarged to cope with|was extended to meet demand|was made bigger to fit
+distractors=was demolished|was flattened to make way for|was removed to make room for
+
+@word
+word=spans a length of
+meaning=trải dài một chiều dài
+ipa=/spænz ə leŋθ ɒv/
+pos=phrase
+example=The new pedestrian bridge spans a length of roughly 200 metres.
+definition=Used to state the total length that a structure covers or stretches across.
+collocations=has a length of|stretches for|extends for a length of
+distractors=extends across|is adjacent to|runs along
+
+@word
+word=was widened
+meaning=được mở rộng (chiều rộng)
+ipa=/wɒz ˈwaɪdnd/
+pos=verb phrase
+example=The main road was widened to reduce traffic congestion in the town centre.
+definition=Used to describe a road or path being made broader than before.
+collocations=was made wider|was broadened|was extended in width
+distractors=was demolished|was flattened to make way for|was constructed
+
+@word
+word=was removed to make room for
+meaning=bị dỡ bỏ để nhường chỗ cho
+ipa=/wɒz rɪˈmuːvd tuː meɪk ruːm fɔː/
+pos=phrase
+example=The old car park was removed to make room for a new library.
+definition=Used to describe a feature being taken away so that something else can be built in its place.
+collocations=was cleared to make space for|was taken away to allow for|was replaced by
+distractors=was expanded to accommodate|was widened|runs perpendicular to
+
+@word
+word=in a clockwise direction
+meaning=theo chiều kim đồng hồ
+ipa=/ɪn ə ˈklɒkwaɪz dɪˈrekʃn/
+pos=phrase
+example=Visitors are directed to walk around the exhibition in a clockwise direction.
+definition=Used to describe movement or layout that follows the same direction as a clock's hands.
+collocations=clockwise around|moving clockwise|in a clockwise route
+distractors=to the northeast of|runs perpendicular to|is adjacent to
+
+@word
+word=to the northeast of
+meaning=về phía đông bắc của
+ipa=/tuː ðə ˌnɔːθˈiːst ɒv/
+pos=phrase
+example=A new industrial estate was built to the northeast of the town centre.
+definition=Used to describe a location positioned in the direction between north and east relative to another point.
+collocations=in the northeastern part of|to the north-east of|situated northeast of
+distractors=is located to the north of|is adjacent to|in a clockwise direction
+
+@lesson
+title=Task 1 - Table (Collocations)
+description=Collocation vocabulary for describing and comparing data in tables in IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=the table shows
+meaning=bảng cho thấy
+ipa=/ðə ˈteɪbl ʃəʊz/
+pos=phrase
+example=The table shows the number of tourists visiting four European cities between 2000 and 2020.
+definition=Used to introduce what information the table presents.
+collocations=the table illustrates|the table displays|the table presents
+distractors=the table compares|the table gives details about|the table summarizes
+
+@word
+word=the table gives details about
+meaning=bảng cung cấp chi tiết về
+ipa=/ðə ˈteɪbl gɪvz ˈdiːteɪlz əˈbaʊt/
+pos=phrase
+example=The table gives details about household spending on food, transport, and leisure in three countries.
+definition=Used to introduce the specific categories of information contained in the table.
+collocations=the table provides information on|the table outlines|the table breaks down
+distractors=the table shows|the table compares|the table summarizes
+
+@word
+word=the table compares
+meaning=bảng so sánh
+ipa=/ðə ˈteɪbl kəmˈpeəz/
+pos=verb phrase
+example=The table compares the proportion of men and women in full-time employment in five countries.
+definition=Used to introduce data that contrasts two or more categories, groups, or time periods.
+collocations=the table contrasts|the table sets side by side|the table draws a comparison between
+distractors=the table shows|the table gives details about|remain stable at
+
+@word
+word=experience a sharp increase
+meaning=trải qua sự gia tăng mạnh
+ipa=/ɪkˈspɪəriəns ə ʃɑːp ɪnˈkriːs/
+pos=verb phrase
+example=Sales of electric cars experienced a sharp increase between 2015 and 2020.
+definition=Used to describe a figure rising quickly and by a large amount.
+collocations=rise sharply|climb dramatically|surge
+distractors=remain stable at|experience a gradual decline|fluctuate throughout the period
+
+@word
+word=rise steadily
+meaning=tăng đều đặn
+ipa=/raɪz ˈstedɪli/
+pos=verb phrase
+example=The number of university graduates rose steadily throughout the decade.
+definition=Used to describe a figure increasing gradually and consistently over time.
+collocations=increase steadily|grow gradually|climb consistently
+distractors=drop sharply|fluctuate throughout the period|remain stable at
+
+@word
+word=climb to a peak of
+meaning=tăng lên đến đỉnh điểm là
+ipa=/klaɪm tuː ə piːk ɒv/
+pos=phrase
+example=Unemployment climbed to a peak of 12% in 2010 before falling again.
+definition=Used to describe a figure rising until it reaches its highest point.
+collocations=reach a peak of|rise to a high of|hit a peak of
+distractors=drop sharply|remain stable at|be considerably higher than
+
+@word
+word=experience a gradual decline
+meaning=trải qua sự suy giảm dần dần
+ipa=/ɪkˈspɪəriəns ə ˈgrædʒuəl dɪˈklaɪn/
+pos=verb phrase
+example=The population of the rural town experienced a gradual decline over the following twenty years.
+definition=Used to describe a figure decreasing slowly and steadily over a period of time.
+collocations=decrease gradually|fall slowly|decline steadily
+distractors=experience a sharp increase|rise steadily|climb to a peak of
+
+@word
+word=drop sharply
+meaning=giảm mạnh
+ipa=/drɒp ˈʃɑːpli/
+pos=verb phrase
+example=Coal production dropped sharply after the new environmental regulations were introduced.
+definition=Used to describe a figure falling quickly and by a large amount.
+collocations=fall sharply|decline dramatically|plunge
+distractors=rise steadily|remain stable at|be far more popular than
+
+@word
+word=remain stable at
+meaning=duy trì ổn định ở mức
+ipa=/rɪˈmeɪn ˈsteɪbl æt/
+pos=verb phrase
+example=The birth rate remained stable at around 12 per 1,000 people throughout the period.
+definition=Used to describe a figure staying at roughly the same level without significant change.
+collocations=stay unchanged at|stabilize at|hold steady at
+distractors=fluctuate throughout the period|climb to a peak of|drop sharply
+
+@word
+word=fluctuate throughout the period
+meaning=dao động trong suốt giai đoạn
+ipa=/ˈflʌktʃueɪt θruːˈaʊt ðə ˈpɪəriəd/
+pos=verb phrase
+example=Oil prices fluctuated throughout the period, rising and falling several times.
+definition=Used to describe a figure that goes up and down repeatedly rather than following a steady trend.
+collocations=be volatile over the period|vary considerably over time|rise and fall irregularly
+distractors=remain stable at|rise steadily|experience a gradual decline
+
+@word
+word=be far more popular than
+meaning=phổ biến hơn nhiều so với
+ipa=/biː fɑː mɔː ˈpɒpjʊlə ðæn/
+pos=phrase
+example=Online shopping was far more popular than in-store shopping among younger consumers.
+definition=Used to compare two categories, showing that one is preferred considerably more than the other.
+collocations=be considerably more popular than|be much more favoured than|outstrip in popularity
+distractors=be considerably higher than|twice as many...as|double the amount of
+
+@word
+word=twice as many...as
+meaning=gấp đôi số lượng...so với
+ipa=/twaɪs æz ˈmeni æz/
+pos=phrase
+example=Twice as many students chose science subjects as chose arts subjects.
+definition=Used to state that one quantity is exactly double another when making a comparison.
+collocations=double the number of...compared to|two times as many...as|the number is double that of
+distractors=be far more popular than|be considerably higher than|double the amount of
+
+@word
+word=double the amount of
+meaning=gấp đôi số lượng của
+ipa=/ˈdʌbl ði əˈmaʊnt ɒv/
+pos=phrase
+example=Households in the city spent double the amount of money on rent compared to those in rural areas.
+definition=Used to describe a quantity that is exactly twice as large as another.
+collocations=twice the amount of|two times the quantity of|triple the amount of
+distractors=twice as many...as|be considerably higher than|be far more popular than
+
+@word
+word=be considerably higher than
+meaning=cao hơn đáng kể so với
+ipa=/biː kənˈsɪdərəbli ˈhaɪə ðæn/
+pos=phrase
+example=Life expectancy in Japan was considerably higher than in the other countries surveyed.
+definition=Used to compare figures, showing that one is noticeably and significantly greater than another.
+collocations=be significantly higher than|be markedly higher than|be much greater than
+distractors=be significantly lower than|remain stable at|fluctuate throughout the period
+
+@word
+word=be significantly lower than
+meaning=thấp hơn đáng kể so với
+ipa=/biː sɪgˈnɪfɪkəntli ˈləʊə ðæn/
+pos=phrase
+example=Spending on entertainment was significantly lower than spending on housing in every country listed.
+definition=Used to compare figures, showing that one is noticeably and considerably smaller than another.
+collocations=be considerably lower than|be much less than|be markedly lower than
+distractors=be considerably higher than|be far more popular than|double the amount of
+
+@lesson
+title=Task 1 - Connectors and Linking Words (Collocations)
+description=Essay-structuring linking phrases for organizing ideas clearly in IELTS Writing Task 1 reports
+difficulty=B1
+order=0
+
+@word
+word=furthermore
+meaning=hơn nữa
+ipa=/ˈfɜːðəmɔː/
+pos=adverb
+example=Furthermore, the proportion of elderly residents is expected to double by 2040.
+definition=Used at the start of a sentence to add an extra point that supports or extends the previous one.
+collocations=moreover|in addition|additionally
+distractors=nevertheless|as a result|due to
+
+@word
+word=in addition to this
+meaning=thêm vào đó
+ipa=/ɪn əˈdɪʃn tuː ðɪs/
+pos=phrase
+example=In addition to this, the report shows a steady rise in renewable energy production.
+definition=Used to introduce a further piece of information related to the point just made.
+collocations=additionally|furthermore|also
+distractors=on the other hand|due to|consequently
+
+@word
+word=not only...but also
+meaning=không những...mà còn
+ipa=/nɒt ˈəʊnli bʌt ˈɔːlsəʊ/
+pos=phrase
+example=Not only did car ownership rise sharply, but public transport usage also increased.
+definition=Used to emphasise two related points together, showing that both are true.
+collocations=as well as|in addition to|along with
+distractors=on the other hand|due to|to sum up
+
+@word
+word=moreover
+meaning=hơn nữa, ngoài ra
+ipa=/mɔːrˈəʊvə/
+pos=adverb
+example=Moreover, the data indicates that female graduates now outnumber male graduates in most fields.
+definition=Used to introduce an additional, often stronger, point supporting the previous statement.
+collocations=furthermore|in addition|besides
+distractors=nevertheless|therefore|because of
+
+@word
+word=as well as
+meaning=cũng như
+ipa=/æz wel æz/
+pos=phrase
+example=As well as increasing in size, the city's population became noticeably more diverse.
+definition=Used to link two related pieces of information within the same sentence.
+collocations=along with|in addition to|not only...but also
+distractors=on the other hand|due to|to sum up
+
+@word
+word=secondly
+meaning=thứ hai
+ipa=/ˈsekəndli/
+pos=adverb
+example=Secondly, the figures reveal a marked decline in coal consumption after 2015.
+definition=Used to introduce the second point in a list or sequence of ideas.
+collocations=second|in the second place|next
+distractors=for instance|as a result|nevertheless
+
+@word
+word=thirdly
+meaning=thứ ba
+ipa=/ˈθɜːdli/
+pos=adverb
+example=Thirdly, it is worth noting that spending on healthcare rose in every region surveyed.
+definition=Used to introduce the third point in a list or sequence of ideas.
+collocations=third|in the third place|finally
+distractors=for instance|due to|on the other hand
+
+@word
+word=for instance
+meaning=ví dụ như
+ipa=/fɔː ˈɪnstəns/
+pos=phrase
+example=Several sectors saw growth; for instance, the technology industry expanded by 15%.
+definition=Used to introduce a specific example that illustrates a general point.
+collocations=for example|specifically|to illustrate
+distractors=as a result|nevertheless|to sum up
+
+@word
+word=as a result
+meaning=kết quả là
+ipa=/æz ə rɪˈzʌlt/
+pos=phrase
+example=Fuel prices rose considerably; as a result, fewer people chose to travel by car.
+definition=Used to introduce a consequence or outcome caused by the situation just described.
+collocations=consequently|therefore|thus
+distractors=furthermore|due to|on the other hand
+
+@word
+word=consequently
+meaning=do đó
+ipa=/ˈkɒnsɪkwəntli/
+pos=adverb
+example=Manufacturing costs increased sharply; consequently, retail prices also went up.
+definition=Used to show that a result or effect follows directly from what was previously stated.
+collocations=as a result|therefore|thus
+distractors=moreover|nevertheless|for instance
+
+@word
+word=due to
+meaning=do bởi, vì
+ipa=/djuː tuː/
+pos=preposition
+example=Due to improved public transport links, car usage in the city centre declined.
+definition=Used to introduce the cause or reason behind a fact or trend.
+collocations=owing to|because of|as a result of
+distractors=as a result|consequently|to sum up
+
+@word
+word=nevertheless
+meaning=tuy nhiên, dù vậy
+ipa=/ˌnevəðəˈles/
+pos=adverb
+example=The company invested heavily in advertising; nevertheless, sales continued to fall.
+definition=Used to introduce a contrasting point despite what has just been stated.
+collocations=however|nonetheless|despite this
+distractors=furthermore|as a result|due to
+
+@word
+word=on the other hand
+meaning=mặt khác
+ipa=/ɒn ði ˈʌðə hænd/
+pos=phrase
+example=Spending on education rose in urban areas; on the other hand, it declined in rural regions.
+definition=Used to introduce a contrasting point or an alternative perspective to the one just given.
+collocations=in contrast|conversely|by contrast
+distractors=moreover|as a result|for instance
+
+@word
+word=to sum up
+meaning=tóm lại
+ipa=/tuː sʌm ʌp/
+pos=phrase
+example=To sum up, the data reveals a clear shift towards renewable sources of energy.
+definition=Used to introduce a brief final summary of the main points at the end of a report.
+collocations=in summary|overall|in conclusion
+distractors=for instance|due to|nevertheless
+
+@word
+word=in conclusion
+meaning=kết luận lại
+ipa=/ɪn kənˈkluːʒn/
+pos=phrase
+example=In conclusion, the chart shows that renewable energy use grew steadily while fossil fuel use declined.
+definition=Used to introduce the final closing statement that summarises the overall trends described.
+collocations=to sum up|to conclude|overall
+distractors=as a result|not only...but also|secondly

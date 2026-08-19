@@ -1,0 +1,527 @@
+@lesson
+title=Task 1 - Bar Chart (Collocations)
+description=Collocation vocabulary for describing bar charts in IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=reach a peak of
+meaning=đạt đỉnh ở mức
+ipa=/riːtʃ ə piːk ɒv/
+pos=verb phrase
+example=Coffee consumption reached a peak of 15 kg per person in 2015 before falling back.
+definition=To rise to the highest point shown in a set of data before declining or leveling off.
+collocations=hit a peak of|peak at|climb to a peak of
+distractors=hit a trough of|remain unchanged at|drop to a low of
+
+@word
+word=hit a trough of
+meaning=chạm đáy ở mức
+ipa=/hɪt ə trɒf ɒv/
+pos=verb phrase
+example=Unemployment hit a trough of 3% in 2008 before rising again the following year.
+definition=To fall to the lowest point recorded in a set of data.
+collocations=reach a low of|bottom out at|fall to a trough of
+distractors=reach a peak of|remain stable at|climb steadily to
+
+@word
+word=account for over a quarter of
+meaning=chiếm hơn một phần tư trong
+ipa=/əˈkaʊnt fɔːr ˈəʊvər ə ˈkwɔːtər ɒv/
+pos=verb phrase
+example=Renewable sources accounted for over a quarter of total electricity generation in 2020.
+definition=To make up more than 25% of a total figure.
+collocations=make up more than a quarter of|comprise upwards of 25% of|represent over one in four of
+distractors=account for less than a tenth of|remain below 5% of|decrease to under 10% of
+
+@word
+word=make up a significant proportion of
+meaning=chiếm một tỷ trọng đáng kể trong
+ipa=/meɪk ʌp ə sɪɡˈnɪfɪkənt prəˈpɔːʃən ɒv/
+pos=verb phrase
+example=Manufacturing jobs made up a significant proportion of total employment in the region.
+definition=To form a large or notable share of a whole.
+collocations=constitute a large share of|represent a substantial portion of|account for a considerable share of
+distractors=make up a negligible proportion of|remain the smallest category of|show a minor share of
+
+@word
+word=amount to a total of
+meaning=lên tới tổng cộng
+ipa=/əˈmaʊnt tuː ə ˈtəʊtl ɒv/
+pos=verb phrase
+example=Total exports amounted to a total of $50 million by the end of the decade.
+definition=To add up to a specified overall figure.
+collocations=total|add up to|reach a combined total of
+distractors=decrease to a total of|average out at|fall short of a total of
+
+@word
+word=stand at
+meaning=ở mức (chỉ số hiện tại)
+ipa=/stænd æt/
+pos=verb phrase
+example=The figure for car ownership stood at 45% in the final year shown.
+definition=To be at a particular level or value at a given point in time.
+collocations=be recorded at|sit at|register a figure of
+distractors=climb steadily to|plunge to|fluctuate around
+
+@word
+word=remain unchanged at
+meaning=không thay đổi, giữ nguyên ở mức
+ipa=/rɪˈmeɪn ʌnˈtʃeɪndʒd æt/
+pos=verb phrase
+example=The proportion of male graduates remained unchanged at around 40% throughout the period.
+definition=To stay at the same level over a period of time, with no notable increase or decrease.
+collocations=stay constant at|hold steady at|remain static at
+distractors=rise steadily to|fluctuate wildly around|drop suddenly to
+
+@word
+word=maintain a steady level of
+meaning=duy trì ở một mức ổn định
+ipa=/meɪnˈteɪn ə ˈstedi ˈlevl ɒv/
+pos=verb phrase
+example=Household spending on food maintained a steady level of roughly 20% across all five years.
+definition=To stay consistently at approximately the same level without major fluctuation.
+collocations=stay at a consistent level of|remain fairly stable at|keep a constant level of
+distractors=see a dramatic rise in|undergo a sharp decline in|experience wide fluctuation in
+
+@word
+word=see a sharp increase in
+meaning=chứng kiến sự gia tăng mạnh trong
+ipa=/siː ə ʃɑːp ɪnˈkriːs ɪn/
+pos=verb phrase
+example=The chart shows that the city saw a sharp increase in the number of tourists after 2012.
+definition=To experience a fast and large rise in a value or quantity.
+collocations=experience a steep rise in|witness a marked increase in|undergo a rapid growth in
+distractors=see a sharp decrease in|experience a slight increase in|remain flat throughout
+
+@word
+word=experience a gradual decline in
+meaning=trải qua sự suy giảm từ từ trong
+ipa=/ɪkˈspɪəriəns ə ˈɡrædʒuəl dɪˈklaɪn ɪn/
+pos=verb phrase
+example=The region experienced a gradual decline in coal production between 2000 and 2015.
+definition=To undergo a slow, steady decrease over time.
+collocations=undergo a slow decrease in|see a steady fall in|witness a gentle drop in
+distractors=see a sudden surge in|experience a sharp increase in|remain constant in
+
+@word
+word=climb to a high of
+meaning=tăng lên đến mức cao là
+ipa=/klaɪm tuː ə haɪ ɒv/
+pos=verb phrase
+example=Petrol prices climbed to a high of $1.80 per litre in the third quarter.
+definition=To rise to a stated maximum figure.
+collocations=rise to a peak of|increase to a high of|surge to a maximum of
+distractors=fall to a low of|level off at|dip slightly to
+
+@word
+word=plateau at
+meaning=chững lại, đi ngang ở mức
+ipa=/ˈplætəʊ æt/
+pos=verb phrase
+example=After years of growth, sales plateaued at around 2,000 units per month.
+definition=To stop increasing or decreasing and remain at a constant level after a period of change.
+collocations=level off at|flatten out at|stabilise at
+distractors=peak sharply at|continue climbing to|drop abruptly to
+
+@word
+word=fluctuate considerably
+meaning=biến động đáng kể
+ipa=/ˈflʌktʃueɪt kənˈsɪdərəbli/
+pos=adverbial phrase
+example=Rainfall figures fluctuated considerably from one month to the next.
+definition=To rise and fall irregularly and by a large margin over time.
+collocations=vary widely|show considerable fluctuation|rise and fall erratically
+distractors=remain constant throughout|increase steadily|decrease at a uniform rate
+
+@word
+word=twice as much as
+meaning=gấp đôi so với
+ipa=/twaɪs æz mʌtʃ æz/
+pos=comparative phrase
+example=Spending on transport was twice as much as spending on entertainment in 2019.
+definition=Used to compare two quantities where the first is double the second.
+collocations=double the amount of|two times as high as|twofold higher than
+distractors=half as much as|roughly the same as|three times as much as
+
+@word
+word=three times as high as
+meaning=cao gấp ba lần so với
+ipa=/θriː taɪmz æz haɪ æz/
+pos=comparative phrase
+example=The bar for London was three times as high as the bar for Manchester.
+definition=Used to show that one figure is three times the size of another.
+collocations=threefold higher than|triple the figure of|three times greater than
+distractors=a third as high as|roughly equal to|twice as high as
+
+@word
+word=by contrast
+meaning=ngược lại, trái lại
+ipa=/baɪ ˈkɒntrɑːst/
+pos=discourse marker
+example=Male participation rose steadily; by contrast, female participation remained flat.
+definition=Used to introduce a fact or trend that is notably different from what was just described.
+collocations=in contrast|on the other hand|whereas
+distractors=similarly|in the same way|likewise
+
+@word
+word=in the same way as
+meaning=theo cùng một cách như
+ipa=/ɪn ðə seɪm weɪ æz/
+pos=comparative phrase
+example=Bar C increased in the same way as Bar A did over the period shown.
+definition=Used to show that two trends or figures behave similarly.
+collocations=similarly to|likewise|just as
+distractors=in contrast to|unlike|as opposed to
+
+@lesson
+title=Task 1 - Line Chart (Collocations)
+description=Collocation vocabulary for describing line charts and trends in IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=rise steadily
+meaning=tăng đều đặn
+ipa=/raɪz ˈstedɪli/
+pos=verb phrase
+example=The number of internet users rose steadily from 2000 to 2010.
+definition=To increase at a consistent, even rate over time without sharp jumps.
+collocations=increase gradually|climb consistently|grow at a steady rate
+distractors=fall steadily|fluctuate wildly|remain flat
+
+@word
+word=climb gradually to
+meaning=tăng dần lên đến
+ipa=/klaɪm ˈɡrædʒuəli tuː/
+pos=verb phrase
+example=Average temperatures climbed gradually to 22 degrees by the end of the decade.
+definition=To increase slowly and continuously up to a stated level.
+collocations=rise gradually to|edge up to|increase incrementally to
+distractors=plummet abruptly to|drop gradually to|stay level at
+
+@word
+word=increase sharply
+meaning=tăng mạnh, tăng đột ngột
+ipa=/ɪnˈkriːs ˈʃɑːpli/
+pos=verb phrase
+example=Online sales increased sharply after the launch of the mobile app in 2018.
+definition=To rise quickly and by a large amount in a short period.
+collocations=rise sharply|surge dramatically|jump abruptly
+distractors=decrease sharply|level off gradually|dip slightly
+
+@word
+word=grow rapidly
+meaning=tăng trưởng nhanh chóng
+ipa=/ɡrəʊ ˈræpɪdli/
+pos=verb phrase
+example=The city's population grew rapidly between 1990 and 2000, nearly doubling in size.
+definition=To increase quickly over a short span of time.
+collocations=expand quickly|increase at a rapid pace|surge forward
+distractors=shrink rapidly|grow sluggishly|remain unchanged
+
+@word
+word=a steady upward trend
+meaning=xu hướng tăng đều đặn
+ipa=/ə ˈstedi ˈʌpwəd trend/
+pos=noun phrase
+example=The line graph shows a steady upward trend in average wages over the decade.
+definition=A consistent pattern of gradual increase over an extended period.
+collocations=a gradual increase|a consistent rise|an upward trajectory
+distractors=a steady downward trend|a sudden spike|a period of stagnation
+
+@word
+word=drop dramatically
+meaning=giảm mạnh, giảm đột ngột
+ipa=/drɒp drəˈmætɪkli/
+pos=verb phrase
+example=Newspaper circulation dropped dramatically after the rise of online news.
+definition=To decrease suddenly and by a large amount.
+collocations=fall dramatically|plummet|collapse sharply
+distractors=rise dramatically|decline gradually|hold steady
+
+@word
+word=fall steeply
+meaning=giảm dốc, giảm nhanh
+ipa=/fɔːl ˈstiːpli/
+pos=verb phrase
+example=Birth rates fell steeply in the years following the economic crisis.
+definition=To decrease quickly at a sharp angle on a graph.
+collocations=decline steeply|drop sharply|plunge
+distractors=rise steeply|decline gradually|remain constant
+
+@word
+word=decline significantly
+meaning=suy giảm đáng kể
+ipa=/dɪˈklaɪn sɪɡˈnɪfɪkəntli/
+pos=verb phrase
+example=Public transport usage declined significantly during the period shown on the graph.
+definition=To decrease by a large and noteworthy amount.
+collocations=fall substantially|decrease markedly|drop considerably
+distractors=increase significantly|remain largely unchanged|fluctuate slightly
+
+@word
+word=decrease slightly
+meaning=giảm nhẹ
+ipa=/dɪˈkriːs ˈslaɪtli/
+pos=verb phrase
+example=The number of visitors decreased slightly in the second quarter before recovering.
+definition=To fall by a small, minor amount.
+collocations=dip a little|fall marginally|drop slightly
+distractors=decrease sharply|increase slightly|remain identical
+
+@word
+word=a downward trajectory
+meaning=quỹ đạo đi xuống
+ipa=/ə ˈdaʊnwəd trəˈdʒektəri/
+pos=noun phrase
+example=After 2015, the line follows a downward trajectory, ending well below its starting point.
+definition=A continuous pattern of decline shown over time on a graph.
+collocations=a downward trend|a declining pattern|a falling curve
+distractors=an upward trajectory|a flat trajectory|a fluctuating pattern
+
+@word
+word=dip before recovering
+meaning=giảm nhẹ rồi phục hồi
+ipa=/dɪp bɪˈfɔːr rɪˈkʌvərɪŋ/
+pos=verb phrase
+example=Exports dipped before recovering to reach a new high by the end of the period.
+definition=To fall briefly and then rise again afterward.
+collocations=fall temporarily before rebounding|drop and then bounce back|decline briefly then recover
+distractors=peak before declining sharply|remain flat throughout|rise steadily without interruption
+
+@word
+word=remain stable at
+meaning=giữ ổn định ở mức
+ipa=/rɪˈmeɪn ˈsteɪbl æt/
+pos=verb phrase
+example=The exchange rate remained stable at around 1.3 for most of the decade.
+definition=To stay at roughly the same level with little or no change.
+collocations=stay steady at|hold constant at|show little change around
+distractors=climb steadily from|fall sharply from|fluctuate erratically around
+
+@word
+word=stay consistently above
+meaning=luôn duy trì ở mức trên
+ipa=/steɪ kənˈsɪstəntli əˈbʌv/
+pos=verb phrase
+example=Male life expectancy stayed consistently above 70 years throughout the entire period.
+definition=To remain at a level higher than a given figure for the whole time shown.
+collocations=remain persistently higher than|stay above|hold a position above
+distractors=stay consistently below|fluctuate around|dip briefly under
+
+@word
+word=level off
+meaning=chững lại, đi ngang
+ipa=/ˈlevl ɒf/
+pos=verb phrase
+example=Growth in subscriber numbers leveled off after reaching 10 million in 2019.
+definition=To stop rising or falling and become flat after a period of change.
+collocations=flatten out|plateau|stabilise
+distractors=take off sharply|nosedive|resume climbing
+
+@word
+word=peak sharply before falling
+meaning=đạt đỉnh đột ngột rồi giảm xuống
+ipa=/piːk ˈʃɑːpli bɪˈfɔːr ˈfɔːlɪŋ/
+pos=verb phrase
+example=Demand peaked sharply before falling back to its original level by year end.
+definition=To rise quickly to a maximum point and then decrease afterward.
+collocations=spike before dropping back|surge then decline|climb to a peak then fall
+distractors=bottom out before rising|remain flat throughout|decline steadily without a peak
+
+@word
+word=bottom out at
+meaning=chạm đáy ở mức
+ipa=/ˈbɒtəm aʊt æt/
+pos=verb phrase
+example=House prices bottomed out at their lowest point in 2011 before beginning to recover.
+definition=To reach the lowest point of a decline before stabilising or rising again.
+collocations=hit rock bottom at|reach a low point of|touch a minimum of
+distractors=peak at|level off at|climb steadily to
+
+@word
+word=hit an all-time high of
+meaning=đạt mức cao kỷ lục là
+ipa=/hɪt ən ɔːl-taɪm haɪ ɒv/
+pos=verb phrase
+example=Electricity consumption hit an all-time high of 500 kWh in January.
+definition=To reach the highest value ever recorded in the data shown.
+collocations=reach a record high of|set a new peak of|reach an unprecedented level of
+distractors=hit an all-time low of|remain below average at|decline to a record low of
+
+@lesson
+title=Task 1 - Pie Chart (Collocations)
+description=Collocation vocabulary for describing proportions and percentages in pie charts for IELTS Writing Task 1
+difficulty=B2
+order=0
+
+@word
+word=one in twenty
+meaning=một phần hai mươi (5%)
+ipa=/wʌn ɪn ˈtwenti/
+pos=noun phrase
+example=Only one in twenty respondents chose public transport as their main mode of travel.
+definition=A proportion equal to 5%, expressed as a ratio.
+collocations=5% of|a twentieth of|a very small minority of
+distractors=one in five|one in two|nearly all of
+
+@word
+word=one in ten
+meaning=một phần mười (10%)
+ipa=/wʌn ɪn ten/
+pos=noun phrase
+example=One in ten workers in the sector were employed on a part-time basis.
+definition=A proportion equal to 10%, expressed as a ratio.
+collocations=10% of|a tenth of|a small minority of
+distractors=one in five|nine in ten|half of
+
+@word
+word=less than a fifth of
+meaning=chưa đến một phần năm (dưới 20%)
+ipa=/les ðæn ə fɪfθ ɒv/
+pos=noun phrase
+example=Less than a fifth of the budget was allocated to healthcare.
+definition=A proportion below 20% of a whole.
+collocations=under 20% of|fewer than one in five|just below a fifth of
+distractors=more than a fifth of|exactly a fifth of|over a third of
+
+@word
+word=a fifth of
+meaning=một phần năm (20%)
+ipa=/ə fɪfθ ɒv/
+pos=noun phrase
+example=A fifth of household income was spent on rent in the capital city.
+definition=A proportion equal to 20% of a whole.
+collocations=20% of|one in five|two tenths of
+distractors=a quarter of|a tenth of|two fifths of
+
+@word
+word=a quarter of
+meaning=một phần tư (25%)
+ipa=/ə ˈkwɔːtər ɒv/
+pos=noun phrase
+example=A quarter of the survey respondents said they preferred working from home.
+definition=A proportion equal to 25% of a whole.
+collocations=25% of|one in four|a fourth of
+distractors=a third of|a fifth of|half of
+
+@word
+word=less than a third of
+meaning=chưa đến một phần ba (dưới 33%)
+ipa=/les ðæn ə θɜːd ɒv/
+pos=noun phrase
+example=Less than a third of the land was used for agricultural purposes.
+definition=A proportion below approximately 33% of a whole.
+collocations=under a third of|fewer than one in three|just under 30% of
+distractors=more than a third of|exactly a third of|two thirds of
+
+@word
+word=more than a third of
+meaning=hơn một phần ba (trên 33%)
+ipa=/mɔːr ðæn ə θɜːd ɒv/
+pos=noun phrase
+example=More than a third of the respondents rated the service as excellent.
+definition=A proportion above approximately 33% of a whole.
+collocations=over a third of|just over 35% of|above one in three
+distractors=less than a third of|under a quarter of|barely a fifth of
+
+@word
+word=two fifths of
+meaning=hai phần năm (40%)
+ipa=/tuː fɪfθs ɒv/
+pos=noun phrase
+example=Two fifths of the total energy supply came from renewable sources.
+definition=A proportion equal to 40% of a whole.
+collocations=40% of|four tenths of|just under half of
+distractors=three fifths of|a fifth of|half of
+
+@word
+word=just under half of
+meaning=gần một nửa (khoảng 45%)
+ipa=/dʒʌst ˈʌndər hɑːf ɒv/
+pos=noun phrase
+example=Just under half of the population lived in urban areas by the end of the period.
+definition=A proportion slightly below 50% of a whole.
+collocations=nearly half of|almost 50% of|slightly less than half of
+distractors=just over half of|exactly half of|less than a quarter of
+
+@word
+word=exactly half of
+meaning=đúng một nửa (50%)
+ipa=/ɪɡˈzæktli hɑːf ɒv/
+pos=noun phrase
+example=Exactly half of the respondents said they exercised at least twice a week.
+definition=A proportion equal to precisely 50% of a whole.
+collocations=50% of|one half of|precisely half of
+distractors=just under half of|two thirds of|a third of
+
+@word
+word=just over half of
+meaning=hơn một nửa một chút (khoảng 55%)
+ipa=/dʒʌst ˈəʊvər hɑːf ɒv/
+pos=noun phrase
+example=Just over half of consumers said they preferred online shopping to in-store shopping.
+definition=A proportion slightly above 50% of a whole.
+collocations=slightly more than half of|marginally over 50% of|a small majority of
+distractors=just under half of|a large majority of|less than a fifth of
+
+@word
+word=three fifths of
+meaning=ba phần năm (60%)
+ipa=/θriː fɪfθs ɒv/
+pos=noun phrase
+example=Three fifths of the company's revenue came from overseas markets.
+definition=A proportion equal to 60% of a whole.
+collocations=60% of|six tenths of|more than half of
+distractors=two fifths of|a third of|three quarters of
+
+@word
+word=two thirds of
+meaning=hai phần ba (khoảng 65-67%)
+ipa=/tuː θɜːdz ɒv/
+pos=noun phrase
+example=Two thirds of graduates found employment within six months of finishing their degree.
+definition=A proportion equal to approximately 65-67% of a whole.
+collocations=around 65% of|a substantial majority of|the vast majority of
+distractors=one third of|a quarter of|less than half of
+
+@word
+word=three-quarters of
+meaning=ba phần tư (75%)
+ipa=/θriː ˈkwɔːtəz ɒv/
+pos=noun phrase
+example=Three-quarters of the households surveyed owned at least one car.
+definition=A proportion equal to 75% of a whole.
+collocations=75% of|three in four|the overwhelming majority of
+distractors=a quarter of|two thirds of|half of
+
+@word
+word=four-fifths of
+meaning=bốn phần năm (80%)
+ipa=/fɔː fɪfθs ɒv/
+pos=noun phrase
+example=Four-fifths of the respondents agreed that public transport should be improved.
+definition=A proportion equal to 80% of a whole.
+collocations=80% of|eight tenths of|the vast majority of
+distractors=a fifth of|three fifths of|half of
+
+@word
+word=a small fraction of
+meaning=một phần nhỏ trong
+ipa=/ə smɔːl ˈfrækʃən ɒv/
+pos=noun phrase
+example=Only a small fraction of the total budget was spent on marketing.
+definition=A minor or negligible proportion of a whole.
+collocations=a tiny proportion of|a minor share of|a negligible percentage of
+distractors=the majority of|a substantial proportion of|almost all of
+
+@word
+word=make up an equal share of
+meaning=chiếm một tỷ lệ ngang nhau trong
+ipa=/meɪk ʌp ən ˈiːkwəl ʃeər ɒv/
+pos=verb phrase
+example=Men and women made up an equal share of the workforce in that sector.
+definition=To each represent the same proportion of a total.
+collocations=account for the same proportion as|be equal in proportion to|represent identical shares of
+distractors=make up a far larger share of|represent a negligible share of|be double the share of

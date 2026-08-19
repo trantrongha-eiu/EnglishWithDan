@@ -1,0 +1,331 @@
+@lesson
+title=Task 2 - Health (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Health
+difficulty=B2
+order=0
+
+@word
+word=excessive consumption of
+meaning=việc tiêu thụ quá mức
+example=Excessive consumption of sugary drinks has been linked to a sharp rise in childhood obesity.
+definition=The act of eating or drinking far more of something than is healthy or necessary.
+collocations=overconsumption of|excessive intake of|overindulge in
+distractors=moderate use of|complete avoidance of|occasional enjoyment of
+
+@word
+word=sedentary lifestyle
+meaning=lối sống thụ động (ít vận động)
+example=A sedentary lifestyle, combined with a poor diet, is one of the main causes of modern health problems.
+definition=A way of living that involves little or no physical exercise, typically spent sitting for long periods.
+collocations=inactive lifestyle|lack of physical activity|desk-bound routine
+distractors=active lifestyle|balanced routine|outdoor lifestyle
+
+@word
+word=junk food
+meaning=đồ ăn vặt / thức ăn có hại
+example=Many governments are considering taxing junk food to discourage unhealthy eating habits.
+definition=Food that is quick and convenient to eat but low in nutritional value and high in calories, fat, sugar or salt.
+collocations=fast food|processed food|pre-made food
+distractors=organic food|home-cooked meal|nutritious food
+
+@word
+word=have a balanced diet
+meaning=có chế độ ăn lành mạnh/cân bằng
+example=Nutritionists recommend that people have a balanced diet consisting of fruit, vegetables, protein and whole grains.
+definition=To regularly eat a variety of foods in the right proportions needed for good health.
+collocations=have a healthy diet|maintain a nutritious diet|eat a well-balanced diet
+distractors=have an imbalanced diet|follow a strict diet|skip meals regularly
+
+@word
+word=have an imbalanced diet
+meaning=có chế độ ăn không lành mạnh
+example=Teenagers who have an imbalanced diet, heavy in fat and sugar, are more prone to weight-related illnesses.
+definition=To regularly eat food that lacks the right variety or proportion of nutrients needed for good health.
+collocations=have an unhealthy diet|eat poorly|follow a poor diet
+distractors=have a balanced diet|eat in moderation|follow a strict regime
+
+@word
+word=rapid weight gain
+meaning=sự tăng cân nhanh chóng
+example=Consuming large quantities of processed food can lead to rapid weight gain over a short period of time.
+definition=A quick and significant increase in a person's body weight, usually caused by poor diet or inactivity.
+collocations=sudden weight increase|significant weight gain|excessive weight gain
+distractors=gradual weight loss|steady muscle growth|stable body weight
+
+@word
+word=weight problems
+meaning=các vấn đề về cân nặng
+example=Children who spend hours in front of screens are increasingly likely to develop weight problems.
+definition=Health issues related to having a body weight that is significantly above or below what is considered healthy.
+collocations=weight-related issues|obesity issues|weight management problems
+distractors=growth spurts|height differences|muscle fatigue
+
+@word
+word=obesity
+meaning=sự béo phì
+example=Obesity has become a major public health concern in many developed countries.
+definition=A medical condition in which a person has an excessive amount of body fat, increasing the risk of health problems.
+collocations=obese|obesity rate|tackle obesity
+distractors=malnutrition|dehydration|exhaustion
+
+@word
+word=childhood obesity
+meaning=béo phì ở trẻ em
+example=Childhood obesity rates have tripled over the past three decades due to sedentary habits and poor diets.
+definition=The condition of being seriously overweight during childhood, often linked to future health complications.
+collocations=child obesity|obesity among children|rising obesity rates in children
+distractors=childhood malnutrition|adolescent growth|infant mortality
+
+@word
+word=take regular exercise
+meaning=tập thể dục thường xuyên
+example=People who take regular exercise are less likely to suffer from cardiovascular disease in later life.
+definition=To engage in physical activity on a consistent, ongoing basis in order to stay fit and healthy.
+collocations=engage in physical activity|exercise regularly|stay physically active
+distractors=take occasional walks|rest frequently|avoid strenuous activity
+
+@word
+word=physical activity
+meaning=hoạt động thể chất
+example=Schools should encourage more physical activity to counter the effects of sedentary lifestyles among students.
+definition=Any bodily movement that requires energy expenditure, such as walking, sports or exercise.
+collocations=physical exercise|regular activity|active pursuits
+distractors=mental relaxation|academic study|passive entertainment
+
+@word
+word=make healthier food choices
+meaning=lựa chọn thực phẩm lành mạnh hơn
+example=Clear nutritional labelling can help consumers make healthier food choices when shopping for groceries.
+definition=To select foods that are more beneficial to one's health rather than convenient or appealing options.
+collocations=choose nutritious food|opt for healthier alternatives|make informed dietary choices
+distractors=indulge in unhealthy snacks|ignore nutritional labels|eat impulsively
+
+@word
+word=public health campaign
+meaning=chiến dịch cộng đồng vì sức khỏe
+example=The government launched a public health campaign to raise awareness of the dangers of smoking.
+definition=An organised effort by public authorities to inform and educate people about a health-related issue.
+collocations=health awareness campaign|nationwide health initiative|awareness-raising campaign
+distractors=advertising campaign|political campaign|fundraising drive
+
+@word
+word=impose taxes on fast food
+meaning=đánh thuế nặng lên thức ăn nhanh
+example=Some economists argue that governments should impose taxes on fast food to reduce its consumption.
+definition=To require producers or sellers of fast food to pay an additional charge, usually to discourage consumption.
+collocations=tax junk food heavily|introduce a sugar tax|levy duties on unhealthy products
+distractors=subsidise healthy food|ban advertising entirely|regulate food prices
+
+@word
+word=suffer from health issues
+meaning=mắc hàng loạt vấn đề sức khỏe
+example=People who consume excessive amounts of processed food often suffer from a range of health issues later in life.
+definition=To experience negative physical or mental conditions as a result of an underlying cause.
+collocations=experience health problems|be prone to illness|develop medical conditions
+distractors=recover from illness|enjoy good health|remain unaffected
+
+@word
+word=home-cooked meal
+meaning=thức ăn được nấu tại nhà
+example=Families who regularly eat home-cooked meals tend to consume fewer calories and less salt than those who rely on takeaways.
+definition=Food that is prepared at home rather than bought ready-made or eaten at a restaurant.
+collocations=home-cooked food|homemade meal|freshly prepared food
+distractors=takeaway meal|ready-made meal|fast-food order
+
+@word
+word=be at higher risk of heart disease
+meaning=có tỷ lệ cao mắc phải bệnh tim
+example=Individuals who lead sedentary lives are at higher risk of heart disease than those who exercise regularly.
+definition=To have an increased likelihood of developing a cardiovascular illness compared with the general population.
+collocations=be prone to cardiovascular illness|increase the risk of heart problems|be vulnerable to chronic disease
+distractors=be immune to illness|show no symptoms|be in peak condition
+
+@word
+word=average life expectancy
+meaning=tuổi thọ trung bình
+example=Countries with better healthcare systems and healthier diets tend to have a higher average life expectancy.
+definition=The average number of years a person is expected to live, based on statistical data.
+collocations=life span|longevity|mortality rate
+distractors=birth rate|population growth|literacy rate
+
+@word
+word=treatment costs
+meaning=chi phí chữa trị
+example=The rising treatment costs associated with obesity place a significant burden on national healthcare budgets.
+definition=The amount of money required to medically treat an illness or condition.
+collocations=medical expenses|healthcare costs|cost of treatment
+distractors=insurance premiums|research funding|living expenses
+
+@word
+word=the prevalence of fast food
+meaning=việc thịnh hành của thức ăn nhanh
+example=The prevalence of fast food outlets in urban areas has contributed to unhealthy eating patterns among young people.
+definition=How widespread or common fast food is within a particular society or area.
+collocations=the widespread availability of junk food|the popularity of processed food|the proliferation of fast-food chains
+distractors=the scarcity of fresh produce|the decline of home cooking|the shortage of restaurants
+
+@lesson
+title=Task 2 - Crime (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Crime
+difficulty=B2
+order=0
+
+@word
+word=commit a crime
+meaning=thực hiện hành vi phạm tội
+example=Many young offenders commit a crime out of desperation rather than genuine malice.
+definition=To carry out an illegal act.
+collocations=commit an offence|break the law|engage in criminal activity
+distractors=report a crime|prevent a crime|witness a crime
+
+@word
+word=reoffend
+meaning=tái phạm
+example=Without proper rehabilitation, many former inmates reoffend within a few years of their release.
+definition=To commit another crime after having already been punished for a previous one.
+collocations=commit crimes again|relapse into crime|repeat offending
+distractors=surrender to police|serve a sentence|seek parole
+
+@word
+word=lawbreakers
+meaning=kẻ phạm tội
+example=Harsher penalties are intended to deter lawbreakers from committing further offences.
+definition=People who break the law or commit crimes.
+collocations=offenders|criminals|delinquents
+distractors=law enforcement officers|witnesses|victims
+
+@word
+word=engage in criminal activities
+meaning=tham gia hoạt động phạm pháp
+example=Unemployed youths are sometimes more likely to engage in criminal activities to earn money.
+definition=To take part in actions that are against the law.
+collocations=participate in illegal activities|get involved in crime|turn to crime
+distractors=volunteer for community service|pursue higher education|seek legitimate employment
+
+@word
+word=minor crimes
+meaning=các tội nhẹ
+example=Courts often impose community service rather than prison sentences for minor crimes such as shoplifting.
+definition=Relatively small, less serious criminal offences that usually carry lighter punishments.
+collocations=petty crimes|petty offences|low-level offences
+distractors=serious crimes|violent crimes|capital offences
+
+@word
+word=serious crimes
+meaning=các tội nặng
+example=Serious crimes such as robbery and murder typically result in lengthy prison sentences.
+definition=Grave and severe criminal offences that cause significant harm and carry heavy punishments.
+collocations=violent crimes|major offences|grave offences
+distractors=minor crimes|petty offences|misdemeanours
+
+@word
+word=receive capital punishment
+meaning=nhận án tử hình
+example=In some countries, individuals convicted of murder still receive capital punishment.
+definition=To be sentenced to death as a legal penalty for a crime.
+collocations=receive the death penalty|be sentenced to death|face execution
+distractors=receive a suspended sentence|be granted parole|receive a fine
+
+@word
+word=receive a prison sentence
+meaning=nhận án tù
+example=The defendant received a prison sentence of ten years for the armed robbery.
+definition=To be legally ordered to spend a period of time in prison as punishment for a crime.
+collocations=be sent to prison|be incarcerated|serve time behind bars
+distractors=be acquitted|be released on bail|receive a warning
+
+@word
+word=life imprisonment
+meaning=tù chung thân
+example=The judge sentenced the murderer to life imprisonment without the possibility of parole.
+definition=A punishment in which a convicted criminal is kept in prison for the rest of their life or a very long time.
+collocations=a life sentence|whole-life sentence|indefinite imprisonment
+distractors=a short custodial sentence|community service|a fixed-term sentence
+
+@word
+word=impose stricter punishments
+meaning=áp đặt hình phạt nặng nề hơn
+example=Some politicians argue that the government should impose stricter punishments to reduce repeat offending.
+definition=To enforce harsher penalties for those who break the law.
+collocations=toughen penalties|enforce harsher sentences|increase the severity of punishment
+distractors=relax sentencing guidelines|offer amnesty|reduce penalties
+
+@word
+word=provide vocational training
+meaning=cung cấp đào tạo nghề
+example=Prisons that provide vocational training help inmates develop skills that reduce the likelihood of reoffending.
+definition=To offer practical instruction in a trade or skill that prepares someone for employment.
+collocations=offer education programmes|provide job skills training|equip offenders with practical skills
+distractors=impose solitary confinement|extend prison sentences|restrict visitation rights
+
+@word
+word=commit crimes as a means of survival
+meaning=phạm tội như cách kiếm sống
+example=In areas of extreme poverty, some individuals commit crimes as a means of survival rather than out of malice.
+definition=To break the law because it is seen as necessary to obtain money or resources to live.
+collocations=turn to crime out of necessity|resort to criminal activity for income|commit crimes to make a living
+distractors=commit crimes for entertainment|break the law out of boredom|offend for thrill-seeking
+
+@word
+word=be released from prison
+meaning=được thả ra tù
+example=Former inmates often struggle to find employment after being released from prison.
+definition=To be officially allowed to leave prison after completing a sentence or being granted parole.
+collocations=be granted parole|be set free|complete one's sentence
+distractors=be taken into custody|be denied bail|be re-arrested
+
+@word
+word=rehabilitation programme
+meaning=chương trình cải tạo
+example=Effective rehabilitation programmes can significantly lower the rate of reoffending among former prisoners.
+definition=A structured scheme designed to help offenders reform their behaviour and reintegrate into society.
+collocations=reform programme|reintegration scheme|correctional programme
+distractors=surveillance programme|sentencing guideline|police patrol
+
+@word
+word=pose a serious threat to society
+meaning=gây mối đe dọa nghiêm trọng cho xã hội
+example=Repeat violent offenders pose a serious threat to society if they are not adequately monitored.
+definition=To represent a significant danger or risk to the safety and wellbeing of the public.
+collocations=endanger public safety|jeopardise community welfare|present a risk to the public
+distractors=contribute to social welfare|support community development|enhance public trust
+
+@word
+word=act as a deterrent
+meaning=đóng vai trò như sự răn đe
+example=Advocates of the death penalty claim that it acts as a deterrent to potential murderers.
+definition=To discourage someone from doing something through fear of the consequences.
+collocations=serve as a deterrent|discourage criminal behaviour|prevent future offending
+distractors=encourage repeat offending|reward good behaviour|have no effect on behaviour
+
+@word
+word=security cameras
+meaning=camera an ninh
+example=The installation of security cameras in public areas has helped reduce street crime significantly.
+definition=Devices used to monitor and record activity in an area for safety and crime-prevention purposes.
+collocations=surveillance cameras|CCTV systems|home surveillance equipment
+distractors=traffic signals|street lighting|public announcements
+
+@word
+word=crime prevention programme
+meaning=chương trình phòng chống tội phạm
+example=Local authorities have introduced crime prevention programmes aimed at keeping young people away from gangs.
+definition=An organised initiative designed to reduce the occurrence of crime in a community.
+collocations=community policing initiative|anti-crime scheme|neighbourhood watch programme
+distractors=job recruitment scheme|health awareness campaign|environmental protection plan
+
+@word
+word=juvenile crime
+meaning=tội phạm vị thành niên
+example=Many experts believe that a lack of parental guidance is a major cause of juvenile crime.
+definition=Criminal behaviour committed by young people who are under the legal age of adulthood.
+collocations=youth crime|underage offending|delinquency among minors
+distractors=organised crime|corporate crime|cybercrime
+
+@word
+word=be wrongly convicted
+meaning=bị kết tội oan
+example=Advances in DNA testing have revealed that a number of people were wrongly convicted of crimes they did not commit.
+definition=To be found guilty of a crime in a court of law despite being innocent.
+collocations=be falsely accused|suffer a miscarriage of justice|be exonerated later
+distractors=be rightfully punished|plead guilty voluntarily|confess to the crime

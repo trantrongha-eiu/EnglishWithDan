@@ -1,0 +1,411 @@
+@lesson
+title=Task 2 - Government Spending (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Government Spending
+difficulty=B2
+order=0
+
+@word
+word=public money
+meaning=ngân sách nhà nước
+ipa=/ˈpʌblɪk ˈmʌni/
+pos=noun phrase
+example=Many citizens believe public money should be prioritised for healthcare and education rather than defence.
+definition=Money that belongs to the government and comes from taxpayers, used to fund public services and projects.
+collocations=government money|national budgets|taxpayers' money
+distractors=private savings|corporate profit|personal income
+
+@word
+word=allocate funding to
+meaning=phân bổ ngân sách cho
+ipa=/ˈæləkeɪt ˈfʌndɪŋ tuː/
+pos=verb phrase
+example=The government has decided to allocate more funding to renewable energy projects this year.
+definition=To officially give a particular amount of money for a specific purpose.
+collocations=invest in|spend money on|channel funds into
+distractors=borrow money from|save money for|donate privately to
+
+@word
+word=essential sectors
+meaning=những lĩnh vực quan trọng
+ipa=/ɪˈsenʃl ˈsektəz/
+pos=noun phrase
+example=Healthcare and education are widely regarded as essential sectors that deserve the largest share of the national budget.
+definition=Areas of the economy or society considered vital and necessary for a country's development.
+collocations=key industries|core areas of the economy|priority sectors
+distractors=luxury markets|entertainment industry|minor departments
+
+@word
+word=health care
+meaning=chăm sóc sức khỏe
+ipa=/helθ keə/
+pos=noun
+example=Increased spending on health care has led to shorter waiting times in public hospitals.
+definition=The organised provision of medical services to people, including prevention, diagnosis, and treatment.
+collocations=medical services|public health|healthcare system
+distractors=fitness training|health insurance premium|beauty treatment
+
+@word
+word=invest in education
+meaning=đầu tư vào giáo dục
+ipa=/ɪnˈvest ɪn ˌedjuˈkeɪʃn/
+pos=verb phrase
+example=Countries that invest in education tend to have a more skilled and productive workforce in the long run.
+definition=To spend money on schools, teachers, and educational resources with the expectation of future benefits.
+collocations=fund schooling|improve educational standards|expand access to education
+distractors=cut school budgets|privatise universities|reduce teacher salaries
+
+@word
+word=a huge amount of money
+meaning=khoản tiền khổng lồ
+ipa=/ə hjuːdʒ əˈmaʊnt əv ˈmʌni/
+pos=noun phrase
+example=Building a new metro system requires a huge amount of money, which some argue could be better spent elsewhere.
+definition=A very large sum of money spent on a particular project or purpose.
+collocations=a substantial sum|a significant portion of the budget|considerable expenditure
+distractors=a modest fee|a small donation|pocket change
+
+@word
+word=a waste of money
+meaning=sự lãng phí tiền bạc
+ipa=/ə weɪst əv ˈmʌni/
+pos=noun phrase
+example=Critics argue that funding space exploration is a waste of money when many citizens still lack basic services.
+definition=Spending on something that produces little or no useful benefit relative to its cost.
+collocations=money-wasting|an inefficient use of funds|squandering public resources
+distractors=a wise investment|cost-effective spending|a valuable contribution
+
+@word
+word=provide financial support for
+meaning=hỗ trợ tài chính cho
+ipa=/prəˈvaɪd faɪˈnænʃl səˈpɔːt fɔː/
+pos=verb phrase
+example=The state should provide financial support for small businesses affected by economic downturns.
+definition=To give money or resources to help a person, group, or organisation meet its needs.
+collocations=offer subsidies to|fund assistance for|grant financial aid to
+distractors=impose taxes on|withdraw support from|restrict access to
+
+@word
+word=financial resources
+meaning=nguồn lực tài chính
+ipa=/faɪˈnænʃl rɪˈzɔːsɪz/
+pos=noun phrase
+example=Developing countries often lack the financial resources needed to build modern infrastructure.
+definition=The money and funds that an organisation or government has available to spend.
+collocations=budgetary resources|fiscal capacity|available funds
+distractors=natural resources|human resources|technical expertise
+
+@word
+word=government incentives
+meaning=trợ cấp/ưu đãi của chính phủ
+ipa=/ˈɡʌvənmənt ɪnˈsentɪvz/
+pos=noun phrase
+example=Government incentives such as tax breaks encourage companies to invest in green technology.
+definition=Financial benefits or rewards offered by the state to encourage a particular kind of behaviour.
+collocations=tax breaks|subsidies|grants
+distractors=fines|regulations|import tariffs
+
+@word
+word=provide public services
+meaning=cung cấp dịch vụ công
+ipa=/prəˈvaɪd ˈpʌblɪk ˈsɜːvɪsɪz/
+pos=verb phrase
+example=Local authorities are responsible for providing public services such as waste collection and street lighting.
+definition=To supply essential services, such as transport, sanitation, or education, that are available to all citizens.
+collocations=deliver essential services|maintain public infrastructure|offer community services
+distractors=sell private goods|outsource labour|charge admission fees
+
+@word
+word=create job opportunities
+meaning=tạo cơ hội việc làm
+ipa=/kriˈeɪt dʒɒb ˌɒpəˈtjuːnɪtiz/
+pos=verb phrase
+example=Government investment in infrastructure projects can create job opportunities for thousands of local workers.
+definition=To generate new positions of employment, often through public spending or new industries.
+collocations=generate employment|boost the job market|reduce unemployment
+distractors=cut staff numbers|freeze hiring|lay off workers
+
+@word
+word=support people living in poverty
+meaning=hỗ trợ người nghèo
+ipa=/səˈpɔːt ˈpiːpl ˈlɪvɪŋ ɪn ˈpɒvəti/
+pos=verb phrase
+example=Welfare programmes are designed to support people living in poverty by providing food and housing assistance.
+definition=To provide financial or material help to individuals who lack sufficient income to meet basic needs.
+collocations=alleviate poverty|assist low-income families|provide welfare benefits
+distractors=raise cost of living|increase taxation|reduce minimum wage
+
+@word
+word=government funding for
+meaning=sự hỗ trợ tài chính của chính phủ cho
+ipa=/ˈɡʌvənmənt ˈfʌndɪŋ fɔː/
+pos=noun phrase
+example=Government funding for scientific research has led to numerous medical breakthroughs.
+definition=Money provided by the state to support a particular project, sector, or group of people.
+collocations=state subsidy for|public investment in|financial backing for
+distractors=private donation to|corporate sponsorship of|personal loan for
+
+@word
+word=rely on alternative sources of support
+meaning=dựa vào nguồn hỗ trợ khác
+ipa=/rɪˈlaɪ ɒn ɔːlˈtɜːnətɪv ˈsɔːsɪz əv səˈpɔːt/
+pos=verb phrase
+example=When government aid is reduced, families often have to rely on alternative sources of support, such as charities.
+definition=To depend on other means of financial or material help besides the usual one.
+collocations=turn to charitable organisations|seek private funding|depend on community assistance
+distractors=refuse all assistance|become self-sufficient overnight|avoid financial aid
+
+@word
+word=cut costs related to
+meaning=cắt giảm chi phí liên quan đến
+ipa=/kʌt kɒsts rɪˈleɪtɪd tuː/
+pos=verb phrase
+example=The council decided to cut costs related to non-essential administrative expenses.
+definition=To reduce the amount of money spent on a particular activity or service.
+collocations=reduce expenditure on|trim the budget for|lower spending on
+distractors=increase investment in|expand funding for|raise wages for
+
+@word
+word=be responsible for
+meaning=chịu trách nhiệm về
+ipa=/biː rɪˈspɒnsəbl fɔː/
+pos=verb phrase
+example=Local governments are responsible for maintaining roads and public parks within their jurisdiction.
+definition=To have a duty to take care of or deal with a particular task or issue.
+collocations=be in charge of|be accountable for|have jurisdiction over
+distractors=be exempt from|be unaware of|be indifferent to
+
+@word
+word=social security
+meaning=an sinh xã hội
+ipa=/ˈsəʊʃl sɪˈkjʊərəti/
+pos=noun phrase
+example=A strong social security system ensures that elderly and unemployed citizens receive a basic income.
+definition=A government system that provides financial assistance to people who are elderly, unemployed, or unable to work.
+collocations=welfare benefits|pension scheme|unemployment benefits
+distractors=private insurance|stock investment|personal savings account
+
+@word
+word=infrastructure investment
+meaning=đầu tư cơ sở hạ tầng
+ipa=/ˈɪnfrəstrʌktʃər ɪnˈvestmənt/
+pos=noun phrase
+example=Infrastructure investment in roads and bridges is essential for supporting long-term economic growth.
+definition=The spending of money on the construction and maintenance of physical structures such as roads, bridges, and utilities.
+collocations=capital expenditure on infrastructure|public works spending|infrastructure development
+distractors=consumer spending|advertising budget|entertainment funding
+
+@word
+word=research spending
+meaning=chi tiêu cho nghiên cứu
+ipa=/rɪˈsɜːtʃ ˈspendɪŋ/
+pos=noun phrase
+example=Research spending in the field of renewable energy has accelerated the development of cheaper solar panels.
+definition=Money allocated by governments or institutions to fund scientific or academic investigation.
+collocations=funding for scientific research|R&D investment|academic grants
+distractors=marketing budget|military spending on weapons|travel expenses
+
+@lesson
+title=Task 2 - Transportation (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Transportation
+difficulty=B2
+order=0
+
+@word
+word=commute by car
+meaning=đi làm bằng xe hơi
+ipa=/kəˈmjuːt baɪ kɑː/
+pos=verb phrase
+example=A growing number of workers commute by car every day, which contributes significantly to urban air pollution.
+definition=To travel regularly, usually to work, using a private car.
+collocations=drive to work|travel by private vehicle|make a daily commute
+distractors=walk to the office|work from home|cycle occasionally
+
+@word
+word=use public transport
+meaning=sử dụng phương tiện công cộng
+ipa=/juːz ˈpʌblɪk ˈtrænspɔːt/
+pos=verb phrase
+example=City authorities are encouraging residents to use public transport instead of private vehicles to reduce congestion.
+definition=To travel using buses, trains, or other transport services available to the general public.
+collocations=take the bus or train|rely on mass transit|opt for public transportation
+distractors=drive a private car|hire a taxi daily|ride a personal motorbike
+
+@word
+word=the most popular mode of transport
+meaning=phương thức di chuyển phổ biến nhất
+ipa=/ðə məʊst ˈpɒpjələ məʊd əv ˈtrænspɔːt/
+pos=noun phrase
+example=In many Asian cities, the motorbike remains the most popular mode of transport due to its affordability.
+definition=The type of transportation that the majority of people choose to use.
+collocations=preferred means of travel|dominant form of commuting|commonest way to get around
+distractors=the least used vehicle type|an outdated transport method|a rarely chosen option
+
+@word
+word=commuting costs
+meaning=chi phí đi lại
+ipa=/kəˈmjuːtɪŋ kɒsts/
+pos=noun phrase
+example=Rising fuel prices have significantly increased commuting costs for people who drive to work.
+definition=The money spent on travelling regularly between home and work.
+collocations=travel expenses|transportation expenditure|cost of daily travel
+distractors=housing costs|grocery expenses|tuition fees
+
+@word
+word=commute long distances
+meaning=đi quãng đường dài để đi làm
+ipa=/kəˈmjuːt lɒŋ ˈdɪstənsɪz/
+pos=verb phrase
+example=Many employees have to commute long distances every day because affordable housing is far from city centres.
+definition=To travel a considerable distance regularly, usually between home and work.
+collocations=travel far to work|endure a lengthy commute|cross the city daily
+distractors=live within walking distance|work remotely full-time|relocate closer to the office
+
+@word
+word=daily commute
+meaning=việc đi lại hàng ngày
+ipa=/ˈdeɪli kəˈmjuːt/
+pos=noun phrase
+example=The daily commute can take up more than two hours for people living in the suburbs.
+definition=The regular journey made each day between one's home and place of work or study.
+collocations=daily travel|routine journey to work|everyday commuting
+distractors=weekend getaway|annual holiday trip|occasional business travel
+
+@word
+word=driving under the influence
+meaning=lái xe khi say rượu
+ipa=/ˈdraɪvɪŋ ˈʌndər ði ˈɪnfluəns/
+pos=noun phrase
+example=Driving under the influence of alcohol remains one of the leading causes of fatal road accidents.
+definition=Operating a vehicle while impaired by alcohol or drugs, which is illegal in most countries.
+collocations=drink-driving|impaired driving|driving while intoxicated
+distractors=defensive driving|careful driving|driving with a valid licence
+
+@word
+word=run a red light
+meaning=vượt đèn đỏ
+ipa=/rʌn ə red laɪt/
+pos=verb phrase
+example=Drivers who run a red light put pedestrians and other road users at serious risk.
+definition=To drive through a traffic signal after it has turned red, which is illegal.
+collocations=jump a traffic light|ignore traffic signals|break traffic rules
+distractors=stop at a crossing|yield to pedestrians|obey traffic signs
+
+@word
+word=pedestrian
+meaning=người đi bộ
+ipa=/pəˈdestriən/
+pos=noun
+example=Wider pavements and clearer crossings can make cities much safer for every pedestrian.
+definition=A person who is walking, especially in a town or city, rather than travelling in a vehicle.
+collocations=pedestrian crossing|pedestrian zone|pedestrian safety
+distractors=cyclist|motorist|passenger
+
+@word
+word=cycle lanes
+meaning=làn đường dành cho xe đạp
+ipa=/ˈsaɪkl leɪnz/
+pos=noun phrase
+example=Building more cycle lanes encourages commuters to choose bicycles over cars for short trips.
+definition=Sections of a road specifically marked and reserved for the use of bicycles.
+collocations=bike lanes|dedicated cycling routes|bicycle paths
+distractors=bus-only lanes|pedestrian walkways|motorway shoulders
+
+@word
+word=improve road traffic safety
+meaning=cải thiện an toàn giao thông
+ipa=/ɪmˈpruːv rəʊd ˈtræfɪk ˈseɪfti/
+pos=verb phrase
+example=Installing more traffic lights and signage can significantly improve road traffic safety in busy areas.
+definition=To make roads and driving conditions less dangerous and reduce the risk of accidents.
+collocations=enhance road safety|make roads safer|strengthen traffic regulations
+distractors=increase traffic volume|deregulate driving laws|ignore safety standards
+
+@word
+word=reduce traffic accidents
+meaning=giảm tai nạn giao thông
+ipa=/rɪˈdjuːs ˈtræfɪk ˈæksɪdənts/
+pos=verb phrase
+example=Stricter enforcement of speed limits has helped reduce traffic accidents in residential areas.
+definition=To lower the number of collisions and incidents that occur on roads.
+collocations=lower the accident rate|prevent road collisions|minimise driving hazards
+distractors=increase road fatalities|worsen traffic conditions|raise accident statistics
+
+@word
+word=driving offence
+meaning=vi phạm luật giao thông
+ipa=/ˈdraɪvɪŋ əˈfens/
+pos=noun phrase
+example=Repeated driving offences can eventually lead to a permanent ban from operating a vehicle.
+definition=An act that breaks traffic laws, such as speeding or driving without a licence.
+collocations=traffic violation|breach of driving law|motoring offence
+distractors=parking permit|vehicle registration|driving lesson
+
+@word
+word=licence suspension
+meaning=đình chỉ bằng lái
+ipa=/ˈlaɪsns səˈspenʃn/
+pos=noun phrase
+example=A licence suspension is often imposed on drivers caught committing serious traffic offences.
+definition=The temporary withdrawal of a person's legal permission to drive.
+collocations=revoke a driving licence|ban from driving|lose driving privileges
+distractors=licence renewal|driving certification|vehicle insurance
+
+@word
+word=install speed cameras
+meaning=lắp đặt camera bắn tốc độ
+ipa=/ɪnˈstɔːl spiːd ˈkæmərəz/
+pos=verb phrase
+example=Local authorities have decided to install speed cameras along the highway to discourage reckless driving.
+definition=To set up automated devices that detect and record vehicles exceeding the speed limit.
+collocations=set up traffic monitoring devices|deploy speed enforcement technology|use radar detectors
+distractors=remove traffic signs|lower fuel taxes|widen the motorway
+
+@word
+word=speeding
+meaning=lái xe quá tốc độ
+ipa=/ˈspiːdɪŋ/
+pos=noun
+example=Speeding is one of the most common causes of serious traffic accidents on motorways.
+definition=The act of driving a vehicle faster than the legal speed limit.
+collocations=exceeding the speed limit|reckless driving|excessive speed
+distractors=defensive driving|cautious braking|lawful overtaking
+
+@word
+word=traffic congestion
+meaning=ùn tắc giao thông
+ipa=/ˈtræfɪk kənˈdʒestʃən/
+pos=noun phrase
+example=Traffic congestion during rush hour can add an extra hour to a commuter's daily journey.
+definition=A situation in which roads are so crowded with vehicles that traffic moves very slowly or not at all.
+collocations=traffic jams|gridlock|heavy traffic
+distractors=free-flowing traffic|smooth commute|light traffic
+
+@word
+word=congestion charges
+meaning=phí ùn tắc giao thông
+ipa=/kənˈdʒestʃən ˈtʃɑːdʒɪz/
+pos=noun phrase
+example=Several major cities have introduced congestion charges to discourage drivers from entering the city centre during peak hours.
+definition=Fees imposed on vehicles entering busy urban areas to reduce traffic congestion.
+collocations=congestion pricing|toll fees|road usage charges
+distractors=fuel subsidies|parking discounts|free public transit passes
+
+@word
+word=ban cars from city centres
+meaning=cấm xe hơi khỏi trung tâm thành phố
+ipa=/bæn kɑːz frəm ˈsɪti ˈsentəz/
+pos=verb phrase
+example=Some European cities have started to ban cars from city centres in order to lower pollution levels and promote walking.
+definition=To prohibit private vehicles from entering the central areas of a city.
+collocations=create car-free zones|restrict vehicle access|pedestrianise city centres
+distractors=widen city roads|build more car parks|subsidise fuel prices
+
+@word
+word=reduce car dependency
+meaning=giảm sự phụ thuộc vào xe hơi
+ipa=/rɪˈdjuːs kɑː dɪˈpendənsi/
+pos=verb phrase
+example=Investing in efficient public transport networks can help reduce car dependency in major cities.
+definition=To lower the extent to which people rely on private cars for daily transportation.
+collocations=decrease reliance on private vehicles|promote alternative transport|encourage car-free lifestyles
+distractors=increase vehicle ownership|expand motorway networks|lower car prices

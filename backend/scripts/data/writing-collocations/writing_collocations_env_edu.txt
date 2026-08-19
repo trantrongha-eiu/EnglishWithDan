@@ -1,0 +1,363 @@
+@lesson
+title=Task 2 - Environment (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Environment
+difficulty=B2
+order=0
+
+@word
+word=greenhouse gas emissions
+meaning=khí thải nhà kính
+pos=noun phrase
+example=Governments must cut greenhouse gas emissions if they want to slow the rate of global warming.
+definition=The release of gases such as carbon dioxide and methane that trap heat in the Earth's atmosphere.
+collocations=carbon emissions|reduce emissions|cut greenhouse gases
+distractors=air pollution levels|noise pollution|water contamination
+
+@word
+word=the greenhouse effect
+meaning=hiệu ứng nhà kính
+pos=noun phrase
+example=The greenhouse effect occurs when heat from the sun becomes trapped in the atmosphere by gases such as carbon dioxide.
+definition=The process by which heat is trapped near the Earth's surface by gases in the atmosphere, causing the planet to warm.
+collocations=global warming|the ozone effect|atmospheric warming
+distractors=the domino effect|the ripple effect|the multiplier effect
+
+@word
+word=global warming
+meaning=sự nóng lên toàn cầu
+pos=noun phrase
+example=Global warming is widely regarded as one of the most pressing environmental issues of the twenty-first century.
+definition=A gradual increase in the Earth's overall temperature, largely caused by human activity.
+collocations=climate change|rising temperatures|the greenhouse effect
+distractors=seasonal change|weather forecasting|ozone depletion
+
+@word
+word=rising global temperatures
+meaning=nhiệt độ trung bình toàn cầu tăng lên
+pos=noun phrase
+example=Rising global temperatures have already led to longer and more severe heatwaves in many regions.
+definition=A gradual increase in the average temperature of the Earth's atmosphere over time.
+collocations=average global temperatures|record-high temperatures|a warming planet
+distractors=falling humidity levels|changing wind patterns|increased rainfall
+
+@word
+word=human activity
+meaning=hoạt động của con người
+pos=noun phrase
+example=Scientists agree that human activity, particularly the burning of fossil fuels, is the main driver of climate change.
+definition=Actions carried out by people, especially industrial and economic ones, that affect the natural environment.
+collocations=industrial activity|human intervention|man-made causes
+distractors=natural disasters|volcanic activity|solar cycles
+
+@word
+word=deforestation
+meaning=nạn phá rừng
+ipa=/diːˌfɒrɪˈsteɪʃn/
+pos=noun
+example=Large-scale deforestation in the Amazon has destroyed vital habitats and accelerated carbon dioxide levels in the atmosphere.
+definition=The clearing or cutting down of forests, usually to make way for agriculture or urban development.
+collocations=forest clearance|illegal logging|cutting and burning trees
+distractors=reforestation|soil erosion|urban sprawl
+
+@word
+word=release emissions into the atmosphere
+meaning=thải khí thải ra bầu khí quyển
+pos=verb phrase
+example=Factories that burn coal release harmful emissions into the atmosphere every day.
+definition=To let gases or pollutants escape into the air, usually as a by-product of industrial processes.
+collocations=produce emissions|emit greenhouse gases|discharge pollutants
+distractors=absorb carbon dioxide|filter out toxins|store waste underground
+
+@word
+word=the burning of fossil fuels
+meaning=việc đốt nhiên liệu hóa thạch
+pos=noun phrase
+example=The burning of fossil fuels such as coal and oil remains the single largest source of carbon emissions worldwide.
+definition=The process of burning coal, oil, or natural gas to produce energy, which releases carbon dioxide.
+collocations=fossil fuel consumption|coal-fired power|non-renewable energy use
+distractors=solar power generation|nuclear energy production|wind energy production
+
+@word
+word=ozone layer depletion
+meaning=sự suy giảm tầng ô-zôn
+pos=noun phrase
+example=Ozone layer depletion allows more harmful ultraviolet radiation to reach the Earth's surface.
+definition=The gradual thinning of the layer of ozone gas in the upper atmosphere that protects the Earth from UV radiation.
+collocations=the hole in the ozone layer|UV radiation exposure|atmospheric damage
+distractors=soil erosion|air pollution|acid rain
+
+@word
+word=melting polar ice caps
+meaning=sự tan chảy của các tảng băng ở cực
+pos=noun phrase
+example=The melting of the polar ice caps is causing sea levels to rise at an alarming rate.
+definition=The gradual disappearance of the thick layers of ice at the North and South Poles due to rising temperatures.
+collocations=melting glaciers|shrinking ice sheets|thawing permafrost
+distractors=rising humidity|expanding deserts|falling sea levels
+
+@word
+word=rising sea levels
+meaning=mực nước biển dâng cao
+pos=noun phrase
+example=Rising sea levels threaten to submerge low-lying coastal cities within the next century.
+definition=A gradual increase in the average height of the world's oceans, largely caused by melting ice and thermal expansion.
+collocations=coastal flooding|sea level rise|encroaching tides
+distractors=falling groundwater levels|shrinking rainforests|declining biodiversity
+
+@word
+word=extreme weather conditions
+meaning=những điều kiện thời tiết khắc nghiệt
+pos=noun phrase
+example=Extreme weather conditions, including droughts and hurricanes, have become more frequent as the climate changes.
+definition=Unusually severe or unpredictable weather events, such as storms, floods, droughts, or heatwaves.
+collocations=natural disasters|severe droughts|unpredictable weather patterns
+distractors=mild climates|seasonal changes|stable weather systems
+
+@word
+word=put pressure on natural resources
+meaning=đặt áp lực lên tài nguyên thiên nhiên
+pos=verb phrase
+example=Rapid population growth continues to put heavy pressure on the planet's limited natural resources.
+definition=To place excessive demand on the Earth's raw materials, such as water, land, and minerals.
+collocations=strain natural resources|deplete resources|overexploit the environment
+distractors=conserve resources|replenish supplies|protect ecosystems
+
+@word
+word=wildlife habitats
+meaning=môi trường sống của động vật hoang dã
+pos=noun phrase
+example=Urban expansion has destroyed countless wildlife habitats, forcing many species to migrate or die out.
+definition=The natural environments in which wild animals and plants live and thrive.
+collocations=natural habitats|ecosystems|biodiversity hotspots
+distractors=agricultural land|residential areas|industrial zones
+
+@word
+word=the extinction of species
+meaning=sự tuyệt chủng của các loài
+pos=noun phrase
+example=Deforestation and pollution are accelerating the extinction of species at an unprecedented rate.
+definition=The complete disappearance of a type of animal or plant from the Earth.
+collocations=endangered species|loss of biodiversity|species decline
+distractors=species migration|population growth|animal domestication
+
+@word
+word=introduce legislation
+meaning=ban hành luật
+pos=verb phrase
+example=Many countries have introduced legislation to limit carbon emissions from heavy industry.
+definition=To formally propose and enact a new law, often to regulate harmful behaviour.
+collocations=pass laws|enforce regulations|implement environmental policies
+distractors=repeal legislation|ignore regulations|delay reforms
+
+@word
+word=renewable energy
+meaning=năng lượng tái tạo
+pos=noun phrase
+example=Investing in renewable energy sources such as solar and wind power can significantly reduce a country's carbon footprint.
+definition=Energy produced from natural sources that are naturally replenished, such as sunlight, wind, and water.
+collocations=solar power|wind energy|clean energy
+distractors=fossil fuels|non-renewable resources|nuclear waste
+
+@word
+word=raise public awareness
+meaning=nâng cao nhận thức cộng đồng
+pos=verb phrase
+example=Environmental groups are working hard to raise public awareness about the dangers of plastic pollution.
+definition=To help the general public understand and become more informed about a particular issue.
+collocations=increase public understanding|educate the public|promote environmental education
+distractors=lower public spending|reduce taxation|limit public access
+
+@word
+word=public awareness campaigns
+meaning=các chiến dịch nâng cao nhận thức cộng đồng
+pos=noun phrase
+example=Public awareness campaigns have encouraged many households to recycle more of their waste.
+definition=Organised efforts, often through media and events, to inform and influence public attitudes or behaviour.
+collocations=promote public campaigns|advertising campaigns|educational initiatives
+distractors=marketing strategies|political rallies|fundraising events
+
+@word
+word=pose a serious threat
+meaning=gây ra mối đe dọa nghiêm trọng
+pos=verb phrase
+example=Rising sea levels pose a serious threat to island nations and coastal communities around the world.
+definition=To present a significant risk or danger to something, such as people, wildlife, or the environment.
+collocations=present a danger|constitute a risk|jeopardise the future
+distractors=offer a solution|provide a benefit|guarantee safety
+
+@lesson
+title=Task 2 - Education (Collocations)
+description=Collocation vocabulary for IELTS Writing Task 2 essays on Education
+difficulty=B2
+order=0
+
+@word
+word=single-sex schools
+meaning=trường học một giới (chỉ nam hoặc chỉ nữ)
+pos=noun phrase
+example=Some parents believe that single-sex schools help students concentrate better on their studies without distractions.
+definition=Schools that only admit students of one gender, either all boys or all girls.
+collocations=separate schools|single-gender education|all-boys or all-girls schools
+distractors=mixed schools|boarding schools|vocational schools
+
+@word
+word=co-educational schools
+meaning=trường học nam nữ cùng học
+pos=noun phrase
+example=Co-educational schools allow boys and girls to interact and learn how to work together from an early age.
+definition=Schools that admit both male and female students and educate them together.
+collocations=mixed schools|integrated schools|gender-mixed classrooms
+distractors=single-sex schools|private tutoring|online learning
+
+@word
+word=focus on academic subjects
+meaning=tập trung vào các môn học học thuật
+pos=verb phrase
+example=Without the distraction of the opposite sex, some students may focus on academic subjects more effectively.
+definition=To direct one's attention and effort primarily towards school subjects such as science, maths, and literature.
+collocations=concentrate on studies|prioritise coursework|dedicate time to learning
+distractors=neglect schoolwork|avoid revision|skip lessons
+
+@word
+word=achieve higher academic results
+meaning=đạt được kết quả học tập cao hơn
+pos=verb phrase
+example=Research suggests that students in smaller classes tend to achieve higher academic results than those in overcrowded ones.
+definition=To reach a better level of performance or higher grades in school or university studies.
+collocations=get higher academic results|improve grades|excel academically
+distractors=lower dropout rates|reduce tuition fees|increase attendance
+
+@word
+word=interact and take part in group work
+meaning=tương tác và tham gia hoạt động nhóm
+pos=verb phrase
+example=In co-educational classrooms, students learn to interact and take part in group work with peers of both genders.
+definition=To communicate with others and participate actively in collaborative tasks or projects.
+collocations=engage in teamwork|collaborate with classmates|participate in discussions
+distractors=work in isolation|study independently|avoid classroom participation
+
+@word
+word=a wide range of skills
+meaning=một loạt các kỹ năng đa dạng
+pos=noun phrase
+example=Extracurricular activities help students develop a wide range of skills beyond the standard curriculum.
+definition=A broad variety of different abilities or competencies gained through study or practice.
+collocations=learn a wide range of skills|diverse abilities|a broad skill set
+distractors=a narrow specialisation|a single qualification|a fixed curriculum
+
+@word
+word=communication skills
+meaning=kỹ năng giao tiếp
+pos=noun phrase
+example=Group projects give students the chance to build strong communication skills that will benefit them in the workplace.
+definition=The abilities needed to express ideas clearly and interact effectively with other people.
+collocations=teamwork skills|interpersonal skills|public speaking ability
+distractors=technical skills|financial literacy|physical fitness
+
+@word
+word=gender equality
+meaning=bình đẳng giới
+pos=noun phrase
+example=Co-educational schooling is often seen as a way of promoting gender equality from a young age.
+definition=The state of equal treatment, rights, and opportunities for people regardless of their gender.
+collocations=co-existence|equal opportunities|social equality
+distractors=academic competition|social hierarchy|economic disparity
+
+@word
+word=explore different perspectives
+meaning=khám phá những quan điểm khác nhau
+pos=verb phrase
+example=Studying alongside classmates from different backgrounds allows students to explore different perspectives on the world.
+definition=To consider and understand a range of viewpoints or ways of thinking that differ from one's own.
+collocations=broaden one's outlook|consider diverse viewpoints|develop open-mindedness
+distractors=reinforce stereotypes|ignore other opinions|follow a single viewpoint
+
+@word
+word=pass/fail an exam
+meaning=đậu/rớt kỳ thi
+pos=verb phrase
+example=Many students feel enormous pressure because their future career prospects depend on whether they pass or fail an exam.
+definition=To achieve (or not achieve) the required standard in a formal academic test.
+collocations=sit an exam|obtain a passing grade|meet the required standard
+distractors=drop out of school|retake a course|apply for a scholarship
+
+@word
+word=drop out of school
+meaning=bỏ học
+pos=verb phrase
+example=Students who struggle academically without adequate support are more likely to drop out of school altogether.
+definition=To leave school before completing one's education, without graduating.
+collocations=leave education early|quit school|discontinue studies
+distractors=graduate with honours|study abroad|repeat a grade
+
+@word
+word=gain in-depth knowledge
+meaning=có được kiến thức sâu sắc
+pos=verb phrase
+example=Specialising early allows students to gain in-depth knowledge of a particular subject area.
+definition=To acquire a detailed and thorough understanding of a specific topic or field.
+collocations=develop expertise|acquire specialist knowledge|deepen one's understanding
+distractors=have a superficial understanding|lack basic skills|forget key concepts
+
+@word
+word=study abroad
+meaning=du học
+pos=verb phrase
+example=An increasing number of students choose to study abroad in order to experience a different culture and education system.
+definition=To pursue one's education in a foreign country, rather than in one's home country.
+collocations=go abroad for university|attend an overseas institution|pursue an international education
+distractors=drop out of school|study part-time|take a gap year
+
+@word
+word=gain international qualifications
+meaning=có được bằng cấp quốc tế
+pos=verb phrase
+example=Students who gain international qualifications often find it easier to secure jobs with multinational companies.
+definition=To obtain academic certificates or degrees that are recognised across different countries.
+collocations=earn a recognised degree|obtain certification|achieve accreditation
+distractors=fail to graduate|lose a scholarship|drop a subject
+
+@word
+word=improve educational outcomes
+meaning=nâng cao đầu ra của giáo dục (kết quả giáo dục)
+pos=verb phrase
+example=Smaller class sizes have been shown to improve educational outcomes for students of all abilities.
+definition=To achieve better results in terms of student learning, grades, and overall academic success.
+collocations=raise standards|boost academic performance|enhance learning outcomes
+distractors=increase school fees|reduce classroom size|extend the school day
+
+@word
+word=top international league tables
+meaning=đứng đầu bảng xếp hạng giáo dục quốc tế
+pos=noun phrase
+example=Countries that invest heavily in teacher training often top international league tables in education.
+definition=To rank highest among countries or institutions when comparing educational performance globally.
+collocations=rank highly internationally|lead global rankings|outperform other countries academically
+distractors=fall behind in rankings|receive low scores|lose accreditation
+
+@word
+word=encourage independent learning
+meaning=thúc đẩy việc tự học
+pos=verb phrase
+example=Universities aim to encourage independent learning so that students can research and think critically on their own.
+definition=To promote a style of studying in which learners take responsibility for their own education with minimal supervision.
+collocations=foster self-study|promote autonomous learning|develop critical thinking
+distractors=enforce strict supervision|discourage self-study|rely on rote memorisation
+
+@word
+word=peaceful co-existence
+meaning=sự chung sống hòa bình
+pos=noun phrase
+example=Mixed schools are thought to foster peaceful co-existence between students of different genders and backgrounds.
+definition=The state of different groups living or studying together harmoniously, without conflict.
+collocations=gender equality|social harmony|mutual respect
+distractors=fierce competition|social division|academic rivalry
+
+@word
+word=core subjects
+meaning=những môn học nòng cốt
+pos=noun phrase
+example=Most secondary school curricula require students to study core subjects such as mathematics, science, and English.
+definition=The essential, compulsory subjects that form the foundation of a school curriculum.
+collocations=compulsory subjects|the standard curriculum|foundational courses
+distractors=extracurricular activities|elective subjects|vocational training
