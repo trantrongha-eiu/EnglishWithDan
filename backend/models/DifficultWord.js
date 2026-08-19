@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const guardAgainstMassDelete = require('../utils/guardAgainstMassDelete');
 
 const DifficultWordSchema = new mongoose.Schema({
     userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -14,5 +15,7 @@ const DifficultWordSchema = new mongoose.Schema({
 }, { timestamps: false });
 
 DifficultWordSchema.index({ userId: 1, word: 1 }, { unique: true });
+
+DifficultWordSchema.plugin(guardAgainstMassDelete);
 
 module.exports = mongoose.model('DifficultWord', DifficultWordSchema);

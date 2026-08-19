@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const guardAgainstMassDelete = require('../utils/guardAgainstMassDelete');
 
 // Mỗi từ được lưu vào sổ
 const SavedWordSchema = new mongoose.Schema({
@@ -44,5 +45,7 @@ const VocabBookSchema = new mongoose.Schema({
 // Every book/word CRUD op filters by userId (see services/vocabBookService.js) —
 // was previously unindexed, forcing a full collection scan per request.
 VocabBookSchema.index({ userId: 1 });
+
+VocabBookSchema.plugin(guardAgainstMassDelete);
 
 module.exports = mongoose.model('VocabBook', VocabBookSchema);

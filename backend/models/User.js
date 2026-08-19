@@ -206,4 +206,6 @@ UserSchema.methods.applyGiftStreak = function (days) {
   this.lastActivityDate = getVNDay(new Date());
 };
 
+UserSchema.plugin(require('../utils/guardAgainstMassDelete'));
+
 module.exports = mongoose.model('User', UserSchema);
