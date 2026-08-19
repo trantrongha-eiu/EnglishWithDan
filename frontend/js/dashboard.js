@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
     // waterfall instead of a single parallel batch).
-    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard(), refreshReviewDueCard(), loadMyVocabStats()]);
+    await Promise.all([loadMyBooks(), loadUnits(), loadStreakAndUpdateMascot(), loadWeeklyProgress(), updateDifficultBadge(), loadStreakLeaderboard(), loadClassroomAndTodaysLesson(), loadQuizLeaderboard(), refreshReviewDueCard(), loadMyVocabStats(), loadWeaknessProfile()]);
 
     // Restore whichever book/unit the URL points at (deep link, bookmark,
     // or a plain reload) — same "restore on load" idiom as reading-v2.js's
@@ -515,6 +515,83 @@ async function loadMyVocabStats() {
         wrap.style.display = '';
     } catch {
         wrap.style.display = 'none';
+    }
+}
+
+// Vietnamese labels for the raw enum values weaknessService returns —
+// question `type` (Reading/Listening) and grading `criterion` (Writing/
+// Speaking). Listening reuses most of Reading's type names but has its own
+// enum (e.g. 'matching' instead of 'matching-headings'), so both maps are
+// kept separate rather than merged.
+const READING_TYPE_LABELS = {
+    'true-false-ng': 'True/False/Not Given',
+    'yes-no-ng': 'Yes/No/Not Given',
+    'multiple-choice': 'Trắc nghiệm',
+    'multi-answer-group': 'Chọn nhiều đáp án',
+    'fill-blank': 'Điền từ',
+    'sentence-completion': 'Hoàn thành câu',
+    'matching-headings': 'Nối tiêu đề',
+    'matching-info': 'Nối thông tin',
+    'checkbox': 'Chọn nhiều đáp án',
+    'map-labelling': 'Gắn nhãn bản đồ',
+};
+const LISTENING_TYPE_LABELS = {
+    'multiple-choice': 'Trắc nghiệm',
+    'fill-blank': 'Điền từ',
+    'sentence-completion': 'Hoàn thành câu',
+    'matching': 'Nối thông tin',
+    'map-labelling': 'Gắn nhãn bản đồ',
+    'checkbox': 'Chọn nhiều đáp án',
+    'multi-answer-group': 'Chọn nhiều đáp án',
+    'matching-info': 'Nối thông tin',
+};
+const WRITING_CRITERIA_LABELS = { ta: 'Task Achievement/Response', cc: 'Mạch lạc & Liên kết', lr: 'Từ vựng', gra: 'Ngữ pháp' };
+const SPEAKING_CRITERIA_LABELS = { fluency: 'Độ trôi chảy', vocabulary: 'Từ vựng', grammar: 'Ngữ pháp', pronunciation: 'Phát âm' };
+
+// "Điểm cần cải thiện" — shows, per skill, the single weakest question type
+// (Reading/Listening) or grading criterion (Writing/Speaking) the student
+// has enough history on to trust (see weaknessService.MIN_SAMPLE_SIZE).
+// Hidden entirely for a student with no signal yet in any skill.
+async function loadWeaknessProfile() {
+    const card = document.getElementById('weakness-card');
+    const list = document.getElementById('weakness-chips');
+    if (!card || !list) return;
+    try {
+        const res = await fetch(`${API}/weakness`, { headers: authH() });
+        const data = await window.ApiClient.handleResponse(res);
+
+        const chips = [];
+        if (data.reading?.length) {
+            const w = data.reading[0];
+            chips.push({ icon: 'fa-book-open', color: 'blue', skill: 'Reading', label: READING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'reading.html' });
+        }
+        if (data.listening?.length) {
+            const w = data.listening[0];
+            chips.push({ icon: 'fa-headphones', color: 'purple', skill: 'Listening', label: LISTENING_TYPE_LABELS[w.type] || w.type, detail: `${Math.round(w.accuracy * 100)}% đúng`, href: 'listening.html' });
+        }
+        if (data.writing?.length) {
+            const w = data.writing[0];
+            chips.push({ icon: 'fa-pen-nib', color: 'pink', skill: 'Writing', label: WRITING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'writing.html' });
+        }
+        if (data.speaking?.length) {
+            const w = data.speaking[0];
+            chips.push({ icon: 'fa-microphone', color: 'orange', skill: 'Speaking', label: SPEAKING_CRITERIA_LABELS[w.criterion] || w.criterion, detail: `Band ${w.avgScore.toFixed(1)}`, href: 'speaking.html' });
+        }
+
+        if (!chips.length) { card.style.display = 'none'; return; }
+        list.innerHTML = chips.map(c => `
+            <a class="weakness-chip weakness-chip--${c.color}" href="${c.href}">
+                <div class="weakness-chip-icon"><i class="fas ${c.icon}"></i></div>
+                <div class="weakness-chip-body">
+                    <div class="weakness-chip-skill">${c.skill}</div>
+                    <div class="weakness-chip-label">${c.label}</div>
+                    <div class="weakness-chip-detail">${c.detail}</div>
+                </div>
+            </a>
+        `).join('');
+        card.style.display = '';
+    } catch {
+        card.style.display = 'none';
     }
 }
 
