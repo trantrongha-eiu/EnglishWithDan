@@ -88,6 +88,13 @@ const state = {
 // ──────────────────────────────────────────────────────
 // Screen management
 // ──────────────────────────────────────────────────────
+// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
+// help during the live timed full-mock exam (#screen-exam) — writing.js
+// has no dict-lookup gate of its own to mirror (dictionary-lookup.js's
+// pw-* call sites here are all ungated, unlike task1/task2-practice), so
+// this checks the exam screen's own active/inactive state directly.
+window.__ewsExamActive = () => !!document.getElementById('screen-exam')?.classList.contains('active');
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');

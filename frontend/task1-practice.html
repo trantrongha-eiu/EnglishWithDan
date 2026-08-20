@@ -774,6 +774,10 @@ function _t1DictGate() {
   return !el || el.style.display === 'none';
 }
 
+// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
+// live-test condition as _t1DictGate above, just inverted (true = block).
+window.__ewsExamActive = () => !_t1DictGate();
+
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 // ════════════════════════════════════════════════════════

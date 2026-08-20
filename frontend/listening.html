@@ -2911,6 +2911,12 @@
                 (state.isReview || window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.());
         }
 
+        // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
+        // help during a live timed attempt — same condition as _ltDictGate
+        // above, minus its own "Dict tool toggled on" requirement.
+        window.__ewsExamActive = () =>
+            !(state.isReview || window.isLtPracticeSubmitted?.() || window.isLtPracticeActive?.());
+
         // Dictionary/translate lookups hit 3rd-party APIs with no SLA — abort instead of hanging forever.
         function fetchWithTimeout(url, ms = 7000) {
             const ctrl = new AbortController();

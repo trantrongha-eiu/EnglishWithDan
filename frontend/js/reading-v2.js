@@ -3363,6 +3363,12 @@ function fetchWithTimeout(url, ms = 7000) {
 setupDictionaryDouble('pageBody', 'reading',
   () => state.tool === 'dict' && (state.isReview || _practiceMode || _retryState));
 
+// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
+// help during a live timed attempt — same review/practice/retry condition
+// as the dictionary-lookup gate above, just without that feature's own
+// "Dict tool toggled on" requirement (the icon isn't tied to that toolbar).
+window.__ewsExamActive = () => !(state.isReview || _practiceMode || _retryState);
+
 /* ══════════════════════════════════════════════════════════════════════
    TRANSLATE POPUP  (T key / toolbar button)
    Toolbar buttons use onmousedown=preventDefault to keep selection alive

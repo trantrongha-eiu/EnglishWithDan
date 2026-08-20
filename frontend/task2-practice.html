@@ -593,6 +593,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // (state.view === 'examDone').
   setupDictionaryDouble('app', 'task2-practice',
     () => state.currentMode !== 'exam' || state.view === 'examDone');
+
+  // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
+  // exam condition as the dict-lookup gate above, just inverted.
+  window.__ewsExamActive = () => state.currentMode === 'exam' && state.view !== 'examDone';
 });
 
 function initUser() {

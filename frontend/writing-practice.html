@@ -689,6 +689,10 @@ function _wpDictGate() {
   return !el || el.style.display === 'none';
 }
 
+// "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
+// live-test condition as _wpDictGate above, just inverted (true = block).
+window.__ewsExamActive = () => !_wpDictGate();
+
 // showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
 
 // ════════════════════════════════════════════════════════

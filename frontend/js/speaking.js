@@ -1589,6 +1589,11 @@ function loadSeqQuestion() {
   // part-by-part sequential practice (seqIsFullMock stays false there).
   setupDictionaryDouble('seq-question-card', 'speaking-sequential', () => !state.seqIsFullMock);
 
+  // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
+  // full-mock condition as the dict-lookup gate above. Single-question
+  // practice (screen-practice) has no gate at all, same as dict-lookup.
+  window.__ewsExamActive = () => state.seqIsFullMock;
+
   if (partBadge)  partBadge.textContent  = `Part ${q.part}`;
   if (topicBadge) topicBadge.textContent = q.topic || '';
   if (qText) { qText.textContent = q.question; qText.style.display = 'none'; }

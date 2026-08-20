@@ -80,6 +80,21 @@
     return words.length > 3 && text.length <= MAX_LEN;
   }
 
+  // Reading/Listening/Writing/Speaking each already gate their own
+  // double-click word-lookup (dictionary-lookup.js's setupDictionaryDouble
+  // `gate` param) behind "is this a live timed exam attempt, not practice/
+  // review" — a different local variable per page (state.isReview,
+  // _examMode, state.seqIsFullMock, ...), no single global flag exists.
+  // Rather than duplicating each page's exam-detection logic here, every
+  // exam/full-mock screen sets window.__ewsExamActive to a function
+  // returning true while that screen is live; read lazily (not at load
+  // time) so it works regardless of script-load order between nav.js's
+  // dynamically-injected <script> tag and each page's own inline script.
+  function isExamActive() {
+    try { return !!(window.__ewsExamActive && window.__ewsExamActive()); }
+    catch (e) { return false; }
+  }
+
   function eventCoords(e) {
     if (e.changedTouches && e.changedTouches.length) {
       return { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY };
@@ -132,6 +147,7 @@
     if (popup && popup.contains(e.target)) return;
     var target = e.target;
     setTimeout(function () {
+      if (isExamActive()) { hideAll(); return; }
       var text = extractSelectedText(target);
       if (!qualifies(text)) { hideIcon(); return; }
       _pendingText = text.trim();
@@ -144,6 +160,7 @@
   }
 
   function onIconClick() {
+    if (isExamActive()) { hideAll(); return; }
     var text = _pendingText;
     if (!text) return;
     var rect = icon.getBoundingClientRect();
