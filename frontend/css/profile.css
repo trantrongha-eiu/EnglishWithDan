@@ -11,7 +11,14 @@ body { background: var(--bg); padding-top: var(--nav-height); }
 /* Composes with nav.js's fixed premium-expiry/study-warning banners
    (student UI audit, Nhóm 3, 2026-07-25) — omitting --expiry-banner-height
    let those banners overlap the top of this sticky sidebar while scrolled. */
-.profile-sidebar { display: flex; flex-direction: column; gap: 14px; position: sticky; top: calc(var(--nav-height) + var(--expiry-banner-height, 0px) + 16px); }
+/* min-width:0 overrides the grid item default of min-width:auto — without
+   it, a track can't shrink below the min-content width of its contents
+   (tab bar buttons, band-item rows, etc.), so at the 768px breakpoint below
+   where this becomes a single 1fr column, the whole page was blowing out
+   to ~2x the viewport width and scrolling horizontally instead of actually
+   going full-width. */
+.profile-sidebar { display: flex; flex-direction: column; gap: 14px; position: sticky; top: calc(var(--nav-height) + var(--expiry-banner-height, 0px) + 16px); min-width: 0; }
+main { min-width: 0; }
 
 /* ── Profile card ── */
 .profile-card {
