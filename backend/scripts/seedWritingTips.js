@@ -5,11 +5,13 @@
 const general = require("./writingTipsData/general");
 const byType = require("./writingTipsData/byType");
 const byBand = require("./writingTipsData/byBand");
+const realWorldExamples = require("./writingTipsData/realWorldExamples");
 
 const lessons = [
   ...general,
   ...byType,
   ...byBand,
+  ...realWorldExamples,
 ];
 
 async function runSeed() {
