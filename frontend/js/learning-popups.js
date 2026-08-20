@@ -69,7 +69,7 @@
     .lp-session-min{font-size:12.5px;color:var(--text2,#555);font-weight:600;}
     .lp-session-action{font-size:13.5px;margin-bottom:3px;}
     .lp-session-reason{font-size:12.5px;color:var(--text3,#888);margin-bottom:10px;}
-    .lp-session-start{display:inline-block;padding:8px 16px;border-radius:8px;background:var(--brand,#4f46e5);color:#fff;text-decoration:none;font-size:13px;font-weight:700;}
+    .lp-session-start{display:inline-block;padding:8px 16px;border-radius:8px;background:var(--brand,#4f46e5);color:#fff;text-decoration:none;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;}
     .lp-total{font-size:13px;color:var(--text2,#555);margin-bottom:12px;}
     .lp-day-block{margin-bottom:14px;}
     .lp-day-block-head{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--text2,#555);}
@@ -242,11 +242,34 @@
           </div>
           <div class="lp-session-action">${escHtml(s.action)}</div>
           <div class="lp-session-reason">Why? ${escHtml(s.reason)}</div>
-          <a class="lp-session-start" href="${escHtml(s.practiceUrl)}" data-category="${escHtml(s.category)}">Start ${escHtml(CATEGORY_LABEL[s.category] || '')}</a>
+          ${s.category === 'vocabulary'
+            ? `<button class="lp-session-start" data-category="vocabulary" data-rec="${escHtml(s.recommendationType || '')}">Start Vocabulary</button>`
+            : `<a class="lp-session-start" href="${escHtml(s.practiceUrl)}" data-category="${escHtml(s.category)}">Start ${escHtml(CATEGORY_LABEL[s.category] || '')}</a>`}
         </div>`).join('');
-    body().querySelectorAll('.lp-session-start').forEach(btn => {
+    body().querySelectorAll('a.lp-session-start').forEach(btn => {
       btn.addEventListener('click', () => markStart(btn.dataset.category));
     });
+    // Vocabulary has no standalone practice page — its Start button always
+    // lives on this same page (dashboard.html), so a plain <a href> to the
+    // page it's already on did nothing (silently no-op navigation). Close
+    // the popup and invoke the real launcher directly instead — the same
+    // functions the dashboard's own "Ôn tập hôm nay"/"Từ yếu" tiles call.
+    const vocabBtn = body().querySelector('button.lp-session-start[data-category="vocabulary"]');
+    if (vocabBtn) {
+      vocabBtn.addEventListener('click', () => {
+        markStart('vocabulary');
+        close();
+        if (vocabBtn.dataset.rec === 'VOCAB_WEAK' && typeof window.practiceWeakVocab === 'function') {
+          window.practiceWeakVocab();
+        } else if (typeof window.openReviewDueModal === 'function') {
+          window.openReviewDueModal();
+        } else {
+          // Fallback for the unlikely case this popup ever runs on a page
+          // that doesn't have dashboard-review.js loaded.
+          window.location.href = 'dashboard.html';
+        }
+      });
+    }
     foot().innerHTML = '<button class="lp-btn lp-btn-ghost" id="lp-view-weekly">View Weekly Plan</button>';
     document.getElementById('lp-view-weekly').addEventListener('click', openWeeklyFlow);
   }
