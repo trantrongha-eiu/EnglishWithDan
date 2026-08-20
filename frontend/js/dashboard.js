@@ -2445,36 +2445,46 @@ function showMixedQuestion() {
 
 function advanceMixed() { mixedIndex++; currentQuestionIndex = mixedIndex; showMixedQuestion(); }
 
-function checkMixedMC(btn, selected, correct) {
+// ── Shared answer-checking helpers ──────────────────────────────────────
+// Each of MC / Listening / Translation has both a standalone mode AND a
+// Mixed-mode sub-type that graded a question the exact same way, differing
+// only in which DOM ids they read/write — see comments at each call site.
+
+function _checkMCAnswer(btn, selected, correct, optionsSelector, nextBtnId) {
     if (answered) return; answered = true;
-    document.querySelectorAll('#mixAnswerOptions .answer-option').forEach(b => b.classList.add('opt-locked'));
+    // .opt-locked (class, not the native `disabled` attribute) — disabling
+    // for real would stop the button from ever firing dblclick again,
+    // breaking double-click word lookup on the option just answered.
+    document.querySelectorAll(`${optionsSelector} .answer-option`).forEach(b => b.classList.add('opt-locked'));
     if (selected === correct) {
         btn.classList.add('correct'); correctAnswers++; playCorrectSound();
     } else {
         btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
-        document.querySelectorAll('#mixAnswerOptions .answer-option')
+        document.querySelectorAll(`${optionsSelector} .answer-option`)
             .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     }
     // Called after correctAnswers/wrongAnswers are tallied for THIS answer —
     // _reportSessionStreak() (triggered once sessionAnsweredCount hits 5)
     // reads those counts, so it must see the current answer's result too.
     _countAnswer();
-    document.getElementById('mixBtnNext').style.display = 'flex';
+    document.getElementById(nextBtnId).style.display = 'flex';
 }
 
-function checkMixedListen() {
+function _checkExactWordMatch(inputId, feedbackId, nextBtnId) {
     if (answered) return; answered = true;
-    const ua = document.getElementById('mixListenInput')?.value.trim().toLowerCase() || '';
-    document.getElementById('mixListenInput').disabled = true;
+    const inputEl = document.getElementById(inputId);
+    const ua = inputEl?.value.trim().toLowerCase() || '';
+    inputEl.disabled = true;
     const ok = ua === currentWord.word.toLowerCase();
+    const feedbackEl = document.getElementById(feedbackId);
     if (ok) {
-        document.getElementById('mixListenFeedback').innerHTML =
+        feedbackEl.innerHTML =
             `<div class="feedback-correct">✅ Correct! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
         correctAnswers++; playCorrectSound();
     } else {
-        document.getElementById('mixListenFeedback').innerHTML =
+        feedbackEl.innerHTML =
             `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
              <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Listen again</button></div>`;
         wrongAnswers++; playWrongSound();
@@ -2482,24 +2492,45 @@ function checkMixedListen() {
         requeueWrongWord(currentWord);
     }
     _countAnswer();
-    document.getElementById('mixBtnNext').style.display = 'flex';
+    document.getElementById(nextBtnId).style.display = 'flex';
+}
+
+// minWordLen: standalone Translation mode and Mixed mode's translation
+// sub-type used to duplicate this exact fuzzy-match algorithm with one
+// subtle difference — Mixed filtered out single-letter words before
+// comparing (`length > 1`) while standalone Translation kept them
+// (`filter(Boolean)`, i.e. length >= 1). Preserved here via this param
+// instead of silently unifying the two (a real, if minor, behavioural
+// difference — not something this cleanup should change).
+function _isMeaningMatch(userAnswer, correctMeaningRaw, minWordLen) {
+    const ua    = (userAnswer || '').trim().toLowerCase();
+    const caRaw = (correctMeaningRaw || '').toLowerCase();
+    const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
+    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
+    return alts.some(alt => {
+        const normAlt = norm(alt), normUa = norm(ua);
+        if (normUa === normAlt) return true;
+        const altWords = normAlt.split(/\s+/).filter(w => w.length >= minWordLen);
+        const uaWords  = normUa.split(/\s+/).filter(w => w.length >= minWordLen);
+        if (altWords.length === 0) return false;
+        return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
+    });
+}
+
+function checkMixedMC(btn, selected, correct) {
+    _checkMCAnswer(btn, selected, correct, '#mixAnswerOptions', 'mixBtnNext');
+}
+
+function checkMixedListen() {
+    _checkExactWordMatch('mixListenInput', 'mixListenFeedback', 'mixBtnNext');
 }
 
 function checkMixedTrans() {
     if (answered) return; answered = true;
-    const ua    = document.getElementById('mixTransInput')?.value.trim().toLowerCase() || '';
-    document.getElementById('mixTransInput').disabled = true;
-    const caRaw = currentWord.meaning.toLowerCase();
-    const alts  = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    const norm  = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
-    const ok    = alts.some(alt => {
-        const na = norm(alt), nu = norm(ua);
-        if (nu === na) return true;
-        const aw = na.split(/\s+/).filter(w => w.length > 1);
-        const uw = nu.split(/\s+/).filter(w => w.length > 1);
-        if (aw.length === 0) return false;
-        return aw.every(w => uw.some(u => u.includes(w) || w.includes(u)));
-    });
+    const inputEl = document.getElementById('mixTransInput');
+    const ua = inputEl?.value.trim().toLowerCase() || '';
+    inputEl.disabled = true;
+    const ok = _isMeaningMatch(ua, currentWord.meaning, 2);
     if (ok) {
         document.getElementById('mixTransFeedback').innerHTML =
             `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
@@ -2543,22 +2574,7 @@ function generateOptions(cw) {
     return opts;
 }
 function checkMultipleChoice(btn, selected, correct) {
-    if (answered) return; answered = true;
-    // .opt-locked (class, not the native `disabled` attribute) — disabling
-    // for real would stop the button from ever firing dblclick again,
-    // breaking double-click word lookup on the option just answered.
-    document.querySelectorAll('#mcAnswerOptions .answer-option').forEach(b => b.classList.add('opt-locked'));
-    if (selected === correct) {
-        btn.classList.add('correct'); correctAnswers++; playCorrectSound();
-    } else {
-        btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
-        wrongWordSet.add(currentWord.word);
-        requeueWrongWord(currentWord);
-        document.querySelectorAll('#mcAnswerOptions .answer-option')
-            .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
-    }
-    _countAnswer();
-    document.getElementById('mcBtnNext').style.display = 'flex';
+    _checkMCAnswer(btn, selected, correct, '#mcAnswerOptions', 'mcBtnNext');
 }
 function escH(s) { return (s || '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
@@ -2701,24 +2717,7 @@ function showListeningQuestion() {
 }
 function playAudio() { speakWord(currentWord?.word); }
 function checkListening() {
-    if (answered) return; answered = true;
-    const ua = document.getElementById('listenInput').value.trim().toLowerCase();
-    document.getElementById('listenInput').disabled = true;
-    const ok = ua === currentWord.word.toLowerCase();
-    if (ok) {
-        document.getElementById('listenFeedback').innerHTML =
-            `<div class="feedback-correct">✅ Correct! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
-        correctAnswers++; playCorrectSound();
-    } else {
-        document.getElementById('listenFeedback').innerHTML =
-            `<div class="feedback-wrong">❌ Answer: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
-       <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Listen again</button></div>`;
-        wrongAnswers++; playWrongSound();
-        wrongWordSet.add(currentWord.word);
-        requeueWrongWord(currentWord);
-    }
-    _countAnswer();
-    document.getElementById('listenBtnNext').style.display = 'flex';
+    _checkExactWordMatch('listenInput', 'listenFeedback', 'listenBtnNext');
 }
 
 /* ── Translation ── */
@@ -2742,19 +2741,10 @@ function showTranslationQuestion() {
 }
 function checkTranslation() {
     if (answered) return; answered = true;
-    const ua     = document.getElementById('transInput').value.trim().toLowerCase();
-    document.getElementById('transInput').disabled = true;
-    const caRaw  = currentWord.meaning.toLowerCase();
-    const alts   = caRaw.split(/[\/,]/).map(s => s.trim()).filter(s => s.length > 0);
-    const norm   = s => s.replace(/[^a-z0-9àáâãèéêìíòóôõùúăđĩũơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹý一-鿿㐀-䶿가-힯]/gi, '').trim();
-    const ok     = alts.some(alt => {
-        const normAlt = norm(alt), normUa = norm(ua);
-        if (normUa === normAlt) return true;
-        const altWords = normAlt.split(/\s+/).filter(Boolean);
-        const uaWords  = normUa.split(/\s+/).filter(Boolean);
-        if (altWords.length === 0) return false;
-        return altWords.every(w => uaWords.some(u => u.includes(w) || w.includes(u)));
-    });
+    const inputEl = document.getElementById('transInput');
+    const ua = inputEl.value.trim().toLowerCase();
+    inputEl.disabled = true;
+    const ok = _isMeaningMatch(ua, currentWord.meaning, 1);
     if (ok) {
         document.getElementById('transFeedback').innerHTML =
             `<div class="feedback-correct">✅ Well done! Answer: <em>${_esc(currentWord.meaning)}</em></div>`;
