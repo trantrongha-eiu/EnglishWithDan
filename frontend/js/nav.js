@@ -183,6 +183,27 @@
     '</div>';
   document.body.appendChild(drawer);
 
+  // ── Sentence lookup floating bubble ("tra câu") ───────────
+  // Loaded here (rather than a <script>/<link> tag on every page) so every
+  // page that already gets the global nav also gets this for free. Absolute
+  // paths are required, not relative ones: some of these pages are served
+  // at nested clean URLs (e.g. task2-template.html at /writing/templates —
+  // see navBaseActive above), where a relative "css/x.css" would resolve
+  // against the wrong directory.
+  if (!document.getElementById('ews-sentence-lookup-css')) {
+    var slLink = document.createElement('link');
+    slLink.id = 'ews-sentence-lookup-css';
+    slLink.rel = 'stylesheet';
+    slLink.href = '/css/sentence-lookup.css';
+    document.head.appendChild(slLink);
+  }
+  if (!document.getElementById('ews-sentence-lookup-js')) {
+    var slScript = document.createElement('script');
+    slScript.id = 'ews-sentence-lookup-js';
+    slScript.src = '/js/shared/sentence-lookup.js';
+    document.body.appendChild(slScript);
+  }
+
   // ── Nav visibility helpers ────────────────────────────────
   // Also hides the floating peer-chat bubble (js/shared/peer-chat-widget.js)
   // while it's active — on Reading/Listening/Writing exam screens it sits

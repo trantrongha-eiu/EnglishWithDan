@@ -1,0 +1,144 @@
+/* ══════════════════════════════════════════════════════════════
+   sentence-lookup.css — floating "tra câu" (sentence lookup) bubble
+   Loaded site-wide by js/nav.js alongside js/shared/sentence-lookup.js.
+   Deliberately separate from dictionary-popup.css's word-lookup popup
+   (.dict-*) — this covers the complementary case (selections of MORE
+   than 3 words), so the two features never need to share markup.
+═══════════════════════════════════════════════════════════════ */
+
+.ews-sl-icon {
+  position: fixed;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand, #e53935), var(--brand2, #ff6b6b));
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1200;
+  border: 2px solid #fff;
+  animation: ews-sl-pop .22s cubic-bezier(.34,1.56,.64,1);
+  transition: transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ews-sl-icon:hover { transform: scale(1.12); }
+.ews-sl-icon.hidden { display: none; }
+
+@keyframes ews-sl-pop {
+  0%   { transform: scale(.3); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.ews-sl-popup {
+  position: fixed;
+  width: 300px;
+  max-width: calc(100vw - 16px);
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  box-shadow: 0 14px 42px rgba(0,0,0,.2);
+  z-index: 1201;
+  padding: 14px 16px 14px;
+  animation: ews-sl-pop .16s ease-out;
+}
+.ews-sl-popup.hidden { display: none; }
+
+.ews-sl-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.ews-sl-badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand, #e53935);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ews-sl-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text3, #9ca3af);
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.ews-sl-close:hover { color: var(--text, #111827); }
+
+.ews-sl-original {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text2, #6b7280);
+  line-height: 1.5;
+  border-left: 3px solid var(--border, #e5e7eb);
+  padding-left: 9px;
+  max-height: 90px;
+  overflow-y: auto;
+}
+.ews-sl-divider {
+  text-align: center;
+  color: var(--text3, #9ca3af);
+  font-size: 11px;
+  margin: 8px 0;
+}
+.ews-sl-translated {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #111827);
+  line-height: 1.5;
+  max-height: 130px;
+  overflow-y: auto;
+}
+.ews-sl-loading { text-align: center; padding: 12px 0; color: var(--text3, #9ca3af); font-size: 13px; }
+.ews-sl-error { text-align: center; padding: 6px 0; color: var(--danger, #dc2626); font-size: 12px; }
+.ews-sl-retry {
+  display: block; margin: 6px auto 0; background: none; border: 1px solid var(--border2, #d1d5db);
+  border-radius: 8px; padding: 4px 12px; font-size: 12px; color: var(--text, #111827); cursor: pointer;
+}
+
+.ews-sl-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  border-top: 1px solid var(--border, #e5e7eb);
+  padding-top: 10px;
+}
+.ews-sl-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: inherit;
+  transition: background .15s;
+}
+.ews-sl-speak { background: var(--surface2, #f3f4f6); color: var(--text, #111827); }
+.ews-sl-speak:hover { background: var(--border, #e5e7eb); }
+.ews-sl-copy { background: var(--brand, #e53935); color: #fff; }
+.ews-sl-copy:hover { background: var(--brand-dark, #c62828); }
+.ews-sl-copy.copied { background: var(--success, #16a34a); }
+
+[data-theme="dark"] .ews-sl-popup       { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); box-shadow: 0 12px 38px rgba(0,0,0,.55); }
+[data-theme="dark"] .ews-sl-close       { color: #6b7280; }
+[data-theme="dark"] .ews-sl-original    { color: #9ca3af; border-left-color: var(--border2, #333333); }
+[data-theme="dark"] .ews-sl-translated  { color: #f5f5f5; }
+[data-theme="dark"] .ews-sl-actions     { border-top-color: var(--border2, #333333); }
+[data-theme="dark"] .ews-sl-speak       { background: var(--border2, #333333); color: #e5e7eb; }
+[data-theme="dark"] .ews-sl-speak:hover { background: #4b5563; }
+[data-theme="dark"] .ews-sl-retry       { border-color: var(--border2, #333333); color: #d1d5db; }
