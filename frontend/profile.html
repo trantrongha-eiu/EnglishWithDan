@@ -155,7 +155,7 @@
           <div id="studyPlanBannerText" style="flex:1;font-size:13px;color:var(--text2);line-height:1.5"></div>
         </div>
 
-        <div class="card mb-16">
+        <div class="card mb-16 card-band-score">
           <div class="card-header">
             <span style="font-weight:700;"><i class="fas fa-chart-line"></i> Band Score của tôi</span>
           </div>
@@ -652,8 +652,22 @@
         const pd = profileResult.status === 'fulfilled' ? profileResult.value : {};
         const sd = statsResult.status === 'fulfilled' ? statsResult.value : {};
 
+        // Promise.allSettled means a stats-fetch failure alone (profile still
+        // OK) previously left every stat silently at its placeholder value
+        // (0 / '-' / "Chưa có dữ liệu") with no indication anything failed —
+        // indistinguishable from "no activity yet".
+        if (!sd.success) {
+          showToastWithTitle('error', 'Lỗi', 'Không thể tải số liệu thống kê');
+        }
+
         if (pd.success) {
           const u = pd.user;
+          // Keep the shared localStorage cache in sync — every other page
+          // (nav.js's avatar widget, dashboard's greeting, writing/reading/
+          // speaking) reads name/avatar straight from AuthService.getUser(),
+          // not from a fresh fetch, so without this a name/avatar change
+          // made here only ever showed up on THIS page until re-login.
+          if (window.AuthService && window.AuthService.setUser) window.AuthService.setUser(u);
           // Sidebar
           const avatarEl = document.getElementById('avatarDisplay');
           if (u.avatar) {
@@ -866,6 +880,7 @@
       const confirmPass     = document.getElementById('secConfirmPass').value;
       const msgEl = document.getElementById('secMsg');
 
+      if (!currentPassword) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Vui lòng nhập mật khẩu hiện tại'; return; }
       if (newPassword.length < 6) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu phải có ít nhất 6 ký tự'; return; }
       if (newPassword !== confirmPass) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu xác nhận không khớp'; return; }
 
@@ -873,7 +888,7 @@
         const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify({ currentPassword, newPassword }) });
         const data = await window.ApiClient.handleResponse(res);
         msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
-        msgEl.textContent = data.message;
+        msgEl.textContent = data.message || 'Đổi mật khẩu thành công';
         setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
         showToastWithTitle('success', 'Thành công', 'Mật khẩu đã được đổi');
         document.getElementById('secCurrentPass').value = '';
@@ -910,11 +925,22 @@
       });
     }
 
+    // FileReader.readAsDataURL + drawing to a canvas both scale with the
+    // ORIGINAL file size, before compressImage() ever gets to resize it down
+    // — an unbounded multi-hundred-MB phone photo can hang or OOM the tab
+    // on this synchronous-feeling path with no upper limit and no graceful
+    // rejection, only the generic "Đang nén ảnh" toast shown right before.
+    const MAX_AVATAR_BYTES = 20 * 1024 * 1024; // 20MB — generous, just a sanity cap
+
     async function uploadAvatar(input) {
       const file = input.files[0];
       if (!file) return;
-      // Accept any size — we will compress on client side
-      if (!file.type.startsWith('image/')) { showToastWithTitle('warning', 'Cảnh báo', 'Vui lòng chọn file ảnh'); return; }
+      if (!file.type.startsWith('image/')) { showToastWithTitle('warning', 'Cảnh báo', 'Vui lòng chọn file ảnh'); input.value = ''; return; }
+      if (file.size > MAX_AVATAR_BYTES) {
+        showToastWithTitle('warning', 'Ảnh quá lớn', 'Vui lòng chọn ảnh dưới 20MB');
+        input.value = '';
+        return;
+      }
 
       try {
         showToastWithTitle('info', 'Đang xử lý...', 'Đang nén ảnh');
@@ -931,6 +957,19 @@
         img.src = data.avatar; img.alt = 'avatar';
         img.id = 'avatarDisplay';
         wrap.insertBefore(img, wrap.firstChild);
+        // Same cache-sync reasoning as loadProfile() above — without this,
+        // the freshly-uploaded avatar only shows on this page (and only
+        // until the next page load) since every other page reads
+        // AuthService.getUser(), not a live fetch.
+        if (window.AuthService && window.AuthService.setUser && data.user) window.AuthService.setUser(data.user);
+        const navAv = document.getElementById('navAvatar');
+        if (navAv) {
+          navAv.innerHTML = '';
+          const navImg = document.createElement('img');
+          navImg.src = data.avatar; navImg.alt = 'avatar';
+          navImg.style.cssText = 'width:34px;height:34px;object-fit:cover;display:block;';
+          navAv.appendChild(navImg);
+        }
         showToastWithTitle('success', 'Thành công', 'Ảnh đại diện đã được cập nhật');
       } catch (err) { showToastWithTitle('error', 'Lỗi', err.message || 'Upload thất bại'); }
 

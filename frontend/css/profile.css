@@ -204,6 +204,11 @@ body { background: var(--bg); padding-top: var(--nav-height); }
   transform: translateX(-50%); font-size: 10px; color: #f59e0b;
   white-space: nowrap; font-weight: 600;
 }
+/* A high target band (e.g. 8.5-9.0) puts the marker near the right edge of
+   .band-bar-wrap, where its centered ::after label would otherwise be cut
+   off by .card's overflow:hidden — this is the one card that needs it
+   visible so the label can spill past the bar without being clipped. */
+.card-band-score { overflow: visible; }
 .band-score { font-weight: 700; font-size: 15px; color: var(--primary); min-width: 30px; text-align: right; }
 
 /* ── Activity ── */

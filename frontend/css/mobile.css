@@ -69,6 +69,12 @@ img { max-width: 100%; height: auto; }
   -webkit-text-fill-color: transparent;
   background-clip: text;
   white-space: nowrap;
+  /* The logo <img> has no natural "minimum content size" the way text does,
+     so without this the flex row shrinks it first (and hardest) whenever
+     .nav-links is hidden and .nav-actions' icon row doesn't fit — on a
+     375px phone this measured out to the logo being squeezed to an
+     imperceptible 13px wide while the action icons kept their full size. */
+  flex-shrink: 0;
 }
 
 .top-nav .nav-links {
@@ -588,8 +594,23 @@ img { max-width: 100%; height: auto; }
   .stat-card .stat-value { font-size: 22px; }
   .stat-card .stat-icon { width: 36px; height: 36px; font-size: 16px; }
 
-  .top-nav { padding: 0 14px; }
+  .top-nav { padding: 0 14px; gap: 8px; }
   .top-nav .nav-brand { font-size: 17px; }
+  /* nav.js sets the logo <img>'s height inline (style="height:38px"), so an
+     ordinary rule here can't win the cascade — !important is scoped to just
+     this one property, only at this breakpoint, to free up room for the
+     7-icon .nav-actions row alongside it (see flex-shrink:0 note above:
+     without shrinking the logo down deliberately here, it was flex-shrinking
+     itself down to ~13px instead). */
+  .top-nav .nav-brand img { height: 30px !important; }
+  .top-nav .nav-actions { gap: 6px; }
+  .top-nav .nav-actions .btn-dark-mode,
+  .top-nav .nav-actions #globalSearchBtn,
+  .top-nav .nav-actions #globalBellBtn { width: 34px; height: 34px; font-size: 16px; }
+  /* Logout already has its own button at the bottom of the mobile drawer
+     (#mobileLogoutBtn) — redundant here once the drawer covers it, so drop
+     it from the cramped top-bar icon row on the smallest phones. */
+  #globalLogoutBtn { display: none; }
 
   .btn { padding: 9px 16px; font-size: 13px; }
   .btn-lg { padding: 12px 24px; font-size: 15px; }

@@ -28,9 +28,18 @@ function playWrongSound()   { if (!window.isSoundEnabled || window.isSoundEnable
 ══════════════════════════════════════════════ */
 let _ttsCache = {};   // word → audio URL đã tìm được
 
+// Guards against overlapping speakWord() calls (e.g. rapidly flipping
+// flashcards, or auto-play firing for quiz question N+1 before question N's
+// utterance/fallback settled): synth.cancel() on a NEWER call fires the
+// OLDER utterance's onerror, which — without this guard — would call
+// _speakFallback() for a word the student already moved past. Only the most
+// recent speakWord() call is allowed to actually play audio.
+let _speakSeq = 0;
+
 async function speakWord(word) {
     if (!word) return;
     word = word.trim();
+    const requestId = ++_speakSeq;
 
     // ── Layer 1: Web Speech API ──────────────────
     const synth = window.speechSynthesis;
@@ -56,7 +65,7 @@ async function speakWord(word) {
                 const timer = setTimeout(async () => {
                     timedOut = true;
                     synth.cancel();
-                    await _speakFallback(word);
+                    if (requestId === _speakSeq) await _speakFallback(word, requestId);
                     resolve();
                 }, 1500);
 
@@ -64,17 +73,20 @@ async function speakWord(word) {
                 utt.onend   = () => { clearTimeout(timer); resolve(); };
                 utt.onerror = async () => {
                     clearTimeout(timer);
-                    if (!timedOut) { await _speakFallback(word); resolve(); }
+                    if (!timedOut) {
+                        if (requestId === _speakSeq) await _speakFallback(word, requestId);
+                        resolve();
+                    }
                 };
             });
         }
     }
 
     // Không có Web Speech → fallback ngay
-    await _speakFallback(word);
+    await _speakFallback(word, requestId);
 }
 
-async function _speakFallback(word) {
+async function _speakFallback(word, requestId) {
     // ── Layer 2: Cache hit ────────────────────────
     if (_ttsCache[word]) {
         _playAudioUrl(_ttsCache[word]);
@@ -84,6 +96,7 @@ async function _speakFallback(word) {
     // ── Layer 2: DictionaryAPI (MP3 thật, không CORS) ─
     try {
         const res  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+        if (requestId !== _speakSeq) return; // a newer speakWord() call has since started
         if (res.ok) {
             const data = await res.json();
             let audioUrl = '';
@@ -103,6 +116,8 @@ async function _speakFallback(word) {
             }
         }
     } catch { /* ignore */ }
+
+    if (requestId !== _speakSeq) return;
 
     // ── Layer 3: Web Speech không cần voice check (voices load trễ trên mobile) ──
     try {

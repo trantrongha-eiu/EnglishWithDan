@@ -952,12 +952,21 @@ function openBook(bookId, push = true) {
 }
 
 async function refreshCurrentBook() {
+    // Guards against a stale response landing after the student has already
+    // switched to a DIFFERENT book (e.g. rapid clicks in the sidebar before
+    // the first fetch resolves) — only apply the result if currentBookId is
+    // still the same book this call started fetching.
+    const targetId = currentBookId;
     try {
-        const res  = await fetch(`${API}/vocabbook/${currentBookId}`, { headers: authH() });
+        const res  = await fetch(`${API}/vocabbook/${targetId}`, { headers: authH() });
         const data = await window.ApiClient.handleResponse(res);
+        if (currentBookId !== targetId) return;
         currentBookData = data.book;
         renderBookContent(data.book);
-    } catch (err) { toast('Error loading notebook: ' + err.message, 'error'); }
+    } catch (err) {
+        if (currentBookId !== targetId) return;
+        toast('Error loading notebook: ' + err.message, 'error');
+    }
 }
 
 function renderBookContent(book) {
@@ -1529,6 +1538,7 @@ function openAddWordManual() {
     openModal('modal-add-word');
     setTimeout(() => document.getElementById('aw-word').focus(), 100);
 }
+let _lookupSeq = 0;
 async function lookupNewWord(word) {
     const suggestWrap   = document.getElementById('aw-example-suggestions');
     const meaningSugWrap = document.getElementById('aw-meaning-suggestions');
@@ -1542,6 +1552,7 @@ async function lookupNewWord(word) {
     }
     _lookupPhonetic = '';
     _lookupPartOfSpeech = '';
+    const requestId = ++_lookupSeq;
     lookupNewWord._t = setTimeout(async () => {
         try {
             const enc = encodeURIComponent;
@@ -1551,6 +1562,11 @@ async function lookupNewWord(word) {
                 fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=${enc(word)}`).then(r => r.json()),
                 fetch(`https://api.mymemory.translated.net/get?q=${enc(word)}&langpair=en|vi`).then(r => r.ok ? r.json() : null)
             ]);
+            // Guards against a slower earlier lookup (e.g. for "cat") resolving
+            // AFTER a faster later one (e.g. "category") and overwriting its
+            // freshly-filled suggestion fields with stale data — only the
+            // most recent lookupNewWord() call is allowed to touch the DOM.
+            if (requestId !== _lookupSeq) return;
             const memMatches = (memRes.status === 'fulfilled' && memRes.value && memRes.value.matches) || [];
 
             // ── Dictionary API ──
@@ -1863,6 +1879,7 @@ async function loadUnits() {
     } catch { }
 }
 
+let _loadUnitSeq = 0;
 async function loadUnit(unitNumberOverride, push = true, modeOverride) {
     // Same free-plan gate as openBook()/openLesson() — GET /vocab/unit/:number
     // is premium-gated server-side now, so block here too instead of letting
@@ -1874,9 +1891,14 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
     const sel = document.getElementById('unitSelect');
     const num = unitNumberOverride ?? sel?.value;
     if (!num) { toast('Vui lòng chọn một Paraphrase Unit trước', 'error'); return; }
+    const requestId = ++_loadUnitSeq;
     try {
         const res     = await fetch(`${API}/vocab/unit/${num}`, { headers: authH() });
         const newUnit = await window.ApiClient.handleResponse(res);
+        // Guards against rapid unit switching (e.g. via the <select> or a
+        // popstate-triggered loadUnit) resolving out of order — only the
+        // most recently-requested unit is allowed to become currentUnit.
+        if (requestId !== _loadUnitSeq) return;
         if (!newUnit.words) {
             toast('Unable to load Unit', 'error');
             return;
