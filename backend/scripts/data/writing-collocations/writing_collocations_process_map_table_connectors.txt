@@ -310,6 +310,636 @@ definition=Used to describe a location positioned in the direction between north
 collocations=in the northeastern part of|to the north-east of|situated northeast of
 distractors=is located to the north of|is adjacent to|in a clockwise direction
 
+@word
+word=north-east
+meaning=phía đông bắc
+ipa=/ˌnɔːθˈiːst/
+pos=noun phrase
+example=The river was located in the north-east of the town.
+definition=Used to name the direction or area that lies between north and east on a map.
+collocations=in the north-east|to the north-east of|the north-eastern part
+distractors=north-west|south-east|the northern section
+
+@word
+word=north-west
+meaning=phía tây bắc
+ipa=/ˌnɔːθˈwest/
+pos=noun phrase
+example=Most of the trees in the north-west were cut down.
+definition=Used to name the direction or area that lies between north and west on a map.
+collocations=in the north-west|to the north-west of|the north-western part
+distractors=north-east|south-west|the northern section
+
+@word
+word=south-east
+meaning=phía đông nam
+ipa=/ˌsaʊθˈiːst/
+pos=noun phrase
+example=The south-east of the town witnessed significant changes.
+definition=Used to name the direction or area that lies between south and east on a map.
+collocations=in the south-east|to the south-east of|the south-eastern part
+distractors=south-west|north-east|the southern part
+
+@word
+word=south-west
+meaning=phía tây nam
+ipa=/ˌsaʊθˈwest/
+pos=noun phrase
+example=The bicycle track in the south-west was converted into a roadway.
+definition=Used to name the direction or area that lies between south and west on a map.
+collocations=in the south-west|to the south-west of|the south-western part
+distractors=south-east|north-west|the southern part
+
+@word
+word=northern section
+meaning=khu vực phía bắc
+ipa=/ˈnɔːðən ˈsekʃn/
+pos=noun phrase
+example=In the northern section, several shops were converted into a supermarket.
+definition=Used to refer to the part of an area that lies to the north.
+collocations=the northern part|the northern area|the north of the town
+distractors=southern part|the center|downtown area
+
+@word
+word=southern part
+meaning=khu vực phía nam
+ipa=/ˈsʌðən pɑːt/
+pos=noun phrase
+example=There used to be a flower shop in the southern part.
+definition=Used to refer to the part of an area that lies to the south.
+collocations=the southern section|the southern area|the south of the town
+distractors=northern section|the center|eastern side
+
+@word
+word=eastern side
+meaning=phía đông
+ipa=/ˈiːstən saɪd/
+pos=noun phrase
+example=A residential area was built on the eastern side of the town.
+definition=Used to refer to the part of an area that lies to the east.
+collocations=the east side|the eastern part|to the east of
+distractors=western side|northern section|downtown area
+
+@word
+word=western side
+meaning=phía tây
+ipa=/ˈwestən saɪd/
+pos=noun phrase
+example=The western side of the town underwent considerable development.
+definition=Used to refer to the part of an area that lies to the west.
+collocations=the west side|the western part|to the west of
+distractors=eastern side|southern part|the center
+
+@word
+word=downtown area
+meaning=khu vực trung tâm thành phố
+ipa=/ˌdaʊnˈtaʊn ˈeəriə/
+pos=noun phrase
+example=A shopping center was constructed in the downtown area.
+definition=Used to refer to the central or main business part of a town or city.
+collocations=the city center|the town center|the central area
+distractors=residential area|open space|the northern section
+
+@word
+word=in the center of
+meaning=ở trung tâm của
+ipa=/ɪn ðə ˈsentə ɒv/
+pos=phrase
+example=A new shopping center was built in the center of the town.
+definition=Used to describe a location or feature positioned in the middle of an area.
+collocations=in the middle of|at the heart of|in the centre of
+distractors=on the shore of|to the north of|on the outskirts of
+
+@word
+word=on the shore of
+meaning=trên bờ của
+ipa=/ɒn ðə ʃɔː ɒv/
+pos=phrase
+example=A residential area was built on the shore of the lake.
+definition=Used to describe a location positioned right next to a body of water such as a lake or sea.
+collocations=by the lake|beside the lake|along the coast of
+distractors=in the center of|to the north of|in the southern part
+
+@word
+word=witness significant changes
+meaning=chứng kiến những thay đổi đáng kể
+ipa=/ˈwɪtnəs sɪɡˈnɪfɪkənt ˈtʃeɪndʒɪz/
+pos=verb phrase
+example=The south-east of the town witnessed significant changes.
+definition=Used to describe an area experiencing large or noticeable changes.
+collocations=see considerable changes|experience major changes|go through significant changes
+distractors=remain unchanged|remain intact|stay the same
+
+@word
+word=undergo significant changes
+meaning=trải qua những thay đổi đáng kể
+ipa=/ˌʌndəˈɡəʊ sɪɡˈnɪfɪkənt ˈtʃeɪndʒɪz/
+pos=verb phrase
+example=The western part of the town underwent significant changes.
+definition=Used to describe an area or feature experiencing large changes over a period of time.
+collocations=witness significant changes|experience major transformations|go through considerable change
+distractors=remain unchanged|remain in place|remain intact
+
+@word
+word=undergo considerable development
+meaning=trải qua sự phát triển đáng kể
+ipa=/ˌʌndəˈɡəʊ kənˈsɪdərəbl dɪˈveləpmənt/
+pos=verb phrase
+example=The northern section underwent considerable development.
+definition=Used to describe an area being significantly developed or improved.
+collocations=experience substantial development|see considerable growth|be considerably developed
+distractors=remain unchanged|be demolished|be removed
+
+@word
+word=be converted into
+meaning=được chuyển đổi thành
+ipa=/biː kənˈvɜːtɪd ˈɪntuː/
+pos=verb phrase
+example=The farmland was converted into a golf course.
+definition=Used to describe a building or piece of land changing its use or function into something new.
+collocations=be turned into|be transformed into|be changed into
+distractors=be replaced by|be demolished|remain unchanged
+
+@word
+word=be transformed into
+meaning=được biến đổi thành
+ipa=/biː trænsˈfɔːmd ˈɪntuː/
+pos=verb phrase
+example=The government offices were transformed into a museum.
+definition=Used to describe something changing completely into a different form or use.
+collocations=be converted into|be turned into|be redeveloped into
+distractors=be replaced by|be demolished|remain intact
+
+@word
+word=be redeveloped into
+meaning=được tái phát triển thành
+ipa=/biː ˌriːdɪˈveləpt ˈɪntuː/
+pos=verb phrase
+example=The flower shop was redeveloped into a travel agency.
+definition=Used to describe an area or building being rebuilt or reorganised for a new purpose.
+collocations=be converted into|be transformed into|be rebuilt as
+distractors=remain unchanged|be demolished|be removed
+
+@word
+word=be replaced by
+meaning=được thay thế bởi
+ipa=/biː rɪˈpleɪst baɪ/
+pos=verb phrase
+example=The open space was replaced by a shopping center.
+definition=Used to describe one feature taking the place of another that no longer exists.
+collocations=be substituted by|give way to|be superseded by
+distractors=be converted into|remain unchanged|be expanded
+
+@word
+word=give way to
+meaning=nhường chỗ cho
+ipa=/ɡɪv weɪ tuː/
+pos=verb phrase
+example=The farmland gave way to a new golf course.
+definition=Used to describe an old feature disappearing so that a new one can take its place.
+collocations=make way for|be replaced by|be superseded by
+distractors=remain in place|remain intact|be added
+
+@word
+word=make way for
+meaning=nhường chỗ cho
+ipa=/meɪk weɪ fɔː/
+pos=verb phrase
+example=The old buildings were demolished to make way for a shopping center.
+definition=Used to describe something being removed or cleared so that something new can be built.
+collocations=give way to|be cleared for|be demolished for
+distractors=remain unchanged|be added|be expanded
+
+@word
+word=be constructed
+meaning=được xây dựng
+ipa=/biː kənˈstrʌktɪd/
+pos=verb phrase
+example=A shopping center was constructed in the center of the town.
+definition=Used to describe a new building or structure being built.
+collocations=be built|be erected|be put up
+distractors=be demolished|be removed|remain unchanged
+
+@word
+word=be built
+meaning=được xây dựng
+ipa=/biː bɪlt/
+pos=verb phrase
+example=A large residential area was built near the lake.
+definition=Used to describe a new structure being constructed.
+collocations=be constructed|be erected|be put up
+distractors=be demolished|be removed|be cut down
+
+@word
+word=be added
+meaning=được thêm vào
+ipa=/biː ˈædɪd/
+pos=verb phrase
+example=Several new facilities were added to the northern section.
+definition=Used to describe a new feature or facility being introduced to an area.
+collocations=be introduced|be built|be included
+distractors=be removed|be demolished|remain unchanged
+
+@word
+word=be expanded
+meaning=được mở rộng
+ipa=/biː ɪkˈspændɪd/
+pos=verb phrase
+example=The residential area was expanded towards the east.
+definition=Used to describe an area or building being made larger.
+collocations=be enlarged|be extended|be widened
+distractors=be reduced|remain unchanged|be demolished
+
+@word
+word=be extended
+meaning=được kéo dài / mở rộng
+ipa=/biː ɪkˈstendɪd/
+pos=verb phrase
+example=The main road was extended towards the north.
+definition=Used to describe a road, building or area being made longer or larger.
+collocations=be lengthened|be expanded|be widened
+distractors=be shortened|remain unchanged|be demolished
+
+@word
+word=be demolished
+meaning=bị phá bỏ
+ipa=/biː dɪˈmɒlɪʃt/
+pos=verb phrase
+example=The old buildings were demolished to make way for new apartments.
+definition=Used to describe a building being knocked down or destroyed.
+collocations=be torn down|be pulled down|be knocked down
+distractors=be constructed|be built|remain intact
+
+@word
+word=be removed
+meaning=bị loại bỏ
+ipa=/biː rɪˈmuːvd/
+pos=verb phrase
+example=Most of the trees were removed to make space for a new road.
+definition=Used to describe something being taken away from an area.
+collocations=be taken away|be cleared|be eliminated
+distractors=be added|be constructed|remain in place
+
+@word
+word=be cut down
+meaning=bị chặt bỏ
+ipa=/biː kʌt daʊn/
+pos=verb phrase
+example=Most of the trees were cut down in the north-west.
+definition=Used to describe trees being removed, usually to clear land for development.
+collocations=be chopped down|be felled|be cleared
+distractors=be planted|remain intact|be constructed
+
+@word
+word=remain unchanged
+meaning=vẫn không thay đổi
+ipa=/rɪˈmeɪn ʌnˈtʃeɪndʒd/
+pos=verb phrase
+example=The post office, bank and library remained unchanged.
+definition=Used to describe a feature that stays the same while everything around it changes.
+collocations=stay the same|remain the same|remain as it was
+distractors=undergo significant changes|be demolished|be converted into
+
+@word
+word=remain in place
+meaning=vẫn được giữ nguyên vị trí
+ipa=/rɪˈmeɪn ɪn pleɪs/
+pos=verb phrase
+example=The main road remained in place throughout the period.
+definition=Used to describe something staying in its original position without being moved.
+collocations=stay in position|remain unmoved|stay put
+distractors=be relocated|be removed|be demolished
+
+@word
+word=remain intact
+meaning=vẫn còn nguyên vẹn
+ipa=/rɪˈmeɪn ɪnˈtækt/
+pos=verb phrase
+example=The school remained intact despite the redevelopment.
+definition=Used to describe something remaining undamaged or whole despite changes around it.
+collocations=stay intact|remain undamaged|remain whole
+distractors=be demolished|be removed|undergo significant changes
+
+@word
+word=replace
+meaning=thay thế
+ipa=/rɪˈpleɪs/
+pos=verb
+example=The new shopping center replaced most of the open space.
+definition=Used to describe one thing taking the place of another.
+collocations=substitute|take the place of|supersede
+distractors=remain|redevelop|construct
+
+@word
+word=redevelop
+meaning=tái phát triển
+ipa=/ˌriːdɪˈveləp/
+pos=verb
+example=The southern area was redeveloped into a residential district.
+definition=Used to describe rebuilding or reorganising an area for a new purpose.
+collocations=rebuild|regenerate|reconstruct
+distractors=replace|remain|demolish
+
+@word
+word=construct
+meaning=xây dựng
+ipa=/kənˈstrʌkt/
+pos=verb
+example=The authorities constructed a new road across the town.
+definition=Used to describe the act of building something new.
+collocations=build|erect|put up
+distractors=demolish|remove|redevelop
+
+@word
+word=residential area
+meaning=khu dân cư
+ipa=/ˌrezɪˈdenʃl ˈeəriə/
+pos=noun phrase
+example=A large residential area was built on the shore of the lake.
+definition=Used to refer to a part of a town where people live, usually made up of houses.
+collocations=housing area|residential district|residential zone
+distractors=open space|farmland|downtown area
+
+@word
+word=residential district
+meaning=khu dân cư
+ipa=/ˌrezɪˈdenʃl ˈdɪstrɪkt/
+pos=noun phrase
+example=The former farmland was developed into a residential district.
+definition=Used to refer to an area of a town designated mainly for housing.
+collocations=residential area|housing estate|residential zone
+distractors=shopping center|open space|golf course
+
+@word
+word=open space
+meaning=không gian trống
+ipa=/ˈəʊpən speɪs/
+pos=noun phrase
+example=A shopping center replaced most of the open space.
+definition=Used to refer to an area of land with no buildings, such as a park or field.
+collocations=green space|vacant land|undeveloped land
+distractors=residential area|shopping center|golf course
+
+@word
+word=farmland
+meaning=đất nông nghiệp
+ipa=/ˈfɑːmlænd/
+pos=noun
+example=The farmland was converted into a golf course.
+definition=Used to refer to land used for growing crops or raising animals.
+collocations=agricultural land|arable land|farming land
+distractors=open space|residential area|golf course
+
+@word
+word=golf course
+meaning=sân golf
+ipa=/ˈɡɒlf kɔːs/
+pos=noun phrase
+example=A golf course was developed in the south-east of the town.
+definition=Used to refer to a large area of land designed for playing golf.
+collocations=sports facility|recreational area|leisure facility
+distractors=farmland|open space|residential district
+
+@word
+word=government offices
+meaning=các văn phòng chính phủ
+ipa=/ˈɡʌvənmənt ˈɒfɪsɪz/
+pos=noun phrase
+example=The government offices were transformed into a museum.
+definition=Used to refer to buildings used for administrative or official government work.
+collocations=public buildings|administrative offices|official buildings
+distractors=museum|shopping center|residential accommodation
+
+@word
+word=museum
+meaning=bảo tàng
+ipa=/mjuːˈziːəm/
+pos=noun
+example=The former government offices became a museum.
+definition=Used to refer to a building where historical or cultural objects are displayed.
+collocations=art gallery|exhibition hall|heritage site
+distractors=government offices|supermarket|travel agency
+
+@word
+word=bicycle track
+meaning=đường dành cho xe đạp
+ipa=/ˈbaɪsɪkl træk/
+pos=noun phrase
+example=The bicycle track was converted into a roadway.
+definition=Used to refer to a path designed specifically for cyclists.
+collocations=cycle path|cycling lane|bike path
+distractors=roadway|footpath|main road
+
+@word
+word=roadway
+meaning=đường giao thông
+ipa=/ˈrəʊdweɪ/
+pos=noun
+example=A bicycle track was converted into a roadway.
+definition=Used to refer to a road or route used by vehicles.
+collocations=road|highway|route
+distractors=bicycle track|footpath|pedestrian path
+
+@word
+word=shopping center
+meaning=trung tâm mua sắm
+ipa=/ˈʃɒpɪŋ ˈsentə/
+pos=noun phrase
+example=A shopping center was constructed in the center of the town.
+definition=Used to refer to a building or area containing many shops.
+collocations=shopping mall|retail park|shopping complex
+distractors=supermarket|open space|residential district
+
+@word
+word=supermarket
+meaning=siêu thị
+ipa=/ˈsuːpəmɑːkɪt/
+pos=noun
+example=The butcher's shop was converted into a supermarket.
+definition=Used to refer to a large shop selling food and household goods.
+collocations=grocery store|convenience store|retail store
+distractors=shopping center|butcher's shop|flower shop
+
+@word
+word=flower shop
+meaning=cửa hàng hoa
+ipa=/ˈflaʊə ʃɒp/
+pos=noun phrase
+example=There used to be a flower shop in the southern part.
+definition=Used to refer to a small shop that sells flowers.
+collocations=florist|flower store|floral shop
+distractors=butcher's shop|travel agency|supermarket
+
+@word
+word=travel agency
+meaning=công ty du lịch
+ipa=/ˈtrævl ˈeɪdʒənsi/
+pos=noun phrase
+example=The flower shop was redeveloped into a travel agency.
+definition=Used to refer to a business that arranges trips and holidays for customers.
+collocations=tour operator|travel agent's|booking agency
+distractors=flower shop|post office|museum
+
+@word
+word=butcher's shop
+meaning=cửa hàng thịt
+ipa=/ˈbʊtʃəz ʃɒp/
+pos=noun phrase
+example=The butcher's shop was converted into a supermarket.
+definition=Used to refer to a small shop that sells meat.
+collocations=butchery|meat shop|butcher's
+distractors=flower shop|supermarket|post office
+
+@word
+word=post office
+meaning=bưu điện
+ipa=/ˈpəʊst ˈɒfɪs/
+pos=noun phrase
+example=The post office remained unchanged.
+definition=Used to refer to a building where mail and postal services are handled.
+collocations=mail office|postal service building
+distractors=bank|museum|supermarket
+
+@word
+word=residential accommodation
+meaning=khu nhà ở
+ipa=/ˌrezɪˈdenʃl əˌkɒməˈdeɪʃn/
+pos=noun phrase
+example=New residential accommodation was built in the northern section.
+definition=Used to refer to housing or living quarters built for residents.
+collocations=housing|residential units|living quarters
+distractors=government offices|shopping center|golf course
+
+@word
+word=facility
+meaning=cơ sở / tiện ích
+ipa=/fəˈsɪləti/
+pos=noun
+example=Several new facilities were added to the area.
+definition=Used to refer to a building, service or piece of equipment provided for a particular purpose.
+collocations=amenity|service|installation
+distractors=farmland|open space|roadway
+
+@word
+word=there used to be
+meaning=trước đây từng có
+ipa=/ðeə ˈjuːst tuː biː/
+pos=phrase
+example=There used to be a flower shop in the southern part.
+definition=Used to describe something that existed in the past but no longer exists.
+collocations=previously, there was|formerly, there was|in the past, there was
+distractors=there is now|there will be|nowadays, there is
+
+@word
+word=be accompanied by
+meaning=đi kèm với
+ipa=/biː əˈkʌmpənid baɪ/
+pos=verb phrase
+example=The new lake was accompanied by a large residential area.
+definition=Used to describe one change happening together with another change.
+collocations=go hand in hand with|coincide with|be paired with
+distractors=be replaced by|remain unchanged|give way to
+
+@word
+word=with + noun + being + V3
+meaning=với việc ... được ...
+ipa=/wɪð naʊn ˈbiːɪŋ/
+pos=structure
+example=The area changed considerably, with several buildings being demolished.
+definition=A grammar pattern used to add extra detail about a change happening at the same time.
+collocations=with + noun + V-ing|accompanied by + noun + V-ing
+distractors=be accompanied by|meanwhile|while
+
+@word
+word=replace most of
+meaning=thay thế phần lớn
+ipa=/rɪˈpleɪs məʊst ɒv/
+pos=verb phrase
+example=The shopping center replaced most of the open space.
+definition=Used to describe a new feature taking over the majority of an area previously used for something else.
+collocations=take up most of|replace the majority of|take over most of
+distractors=be added to|remain unchanged|be accompanied by
+
+@word
+word=throughout the period
+meaning=trong suốt giai đoạn
+ipa=/θruːˈaʊt ðə ˈpɪəriəd/
+pos=phrase
+example=The main road remained unchanged throughout the period.
+definition=Used to describe something that stays the same for the entire time shown on the map.
+collocations=over the whole period|during the entire period|the whole time
+distractors=at the beginning of the period|by the end of the period|meanwhile
+
+@word
+word=in the northern section
+meaning=ở khu vực phía bắc
+ipa=/ɪn ðə ˈnɔːðən ˈsekʃn/
+pos=phrase
+example=In the northern section, the shops were converted into a supermarket.
+definition=Used to introduce a description of changes happening in the north of the area.
+collocations=in the north of the town|in the northern part|in the north
+distractors=in the southern part|in the center|on the eastern side
+
+@word
+word=in the southern part
+meaning=ở khu vực phía nam
+ipa=/ɪn ðə ˈsʌðən pɑːt/
+pos=phrase
+example=In the southern part, the flower shop was redeveloped.
+definition=Used to introduce a description of changes happening in the south of the area.
+collocations=in the south of the town|in the southern section|in the south
+distractors=in the northern section|in the center|on the western side
+
+@word
+word=in the center
+meaning=ở trung tâm
+ipa=/ɪn ðə ˈsentə/
+pos=phrase
+example=In the center, the post office and bank remained unchanged.
+definition=Used to introduce a description of changes happening in the middle of the area.
+collocations=in the middle|at the heart of the town|centrally
+distractors=in the northern section|in the southern part|on the outskirts
+
+@word
+word=meanwhile
+meaning=trong khi đó
+ipa=/ˈmiːnwaɪl/
+pos=adverb
+example=Meanwhile, the south-east of the town underwent significant changes.
+definition=Used to introduce a new piece of information about a different part of the map, happening at the same time.
+collocations=at the same time|in the meantime|simultaneously
+distractors=while|there|throughout the period
+
+@word
+word=while
+meaning=trong khi
+ipa=/waɪl/
+pos=conjunction
+example=While the northern section was redeveloped, the central area remained unchanged.
+definition=Used to contrast two changes that are happening in different parts of the map.
+collocations=whereas|meanwhile|at the same time as
+distractors=meanwhile|there|throughout the period
+
+@word
+word=there
+meaning=ở đó
+ipa=/ðeə/
+pos=adverb
+example=A shopping center was constructed, replacing most of the open space there.
+definition=Used to refer back to a place already mentioned, avoiding repetition.
+collocations=in that area|in that location|at that spot
+distractors=here|meanwhile|while
+
+@word
+word=lengthen
+meaning=kéo dài
+ipa=/ˈleŋθən/
+pos=verb
+example=The council decided to lengthen the footpath along the river.
+definition=Used to describe making a road, path or structure longer than before.
+collocations=extend|make longer|elongate
+distractors=shorten|widen|be constructed
+
 @lesson
 title=Task 1 - Table (Collocations)
 description=Collocation vocabulary for describing and comparing data in tables in IELTS Writing Task 1
