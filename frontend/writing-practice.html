@@ -1700,6 +1700,10 @@ function showState(state) {
 }
 
 function startPractice() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   loadExercises();
 }
 
@@ -1753,6 +1757,10 @@ function stopTestTimer() {
 }
 
 async function startTest() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   // Disable ALL start-test buttons (desktop sidebar + mobile sheet)
   const allStartBtns = document.querySelectorAll('.wp-start-test-btn');
   allStartBtns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; });

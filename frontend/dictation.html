@@ -69,6 +69,20 @@
     .dict-num-btn.done { background: var(--success-light); border-color: var(--success); color: var(--success); }
     .dict-num-btn.current.done { background: var(--brand); border-color: var(--brand); color: #fff; }
 
+    /* .dict-sidebar's position:sticky above makes sense in the desktop
+       side-by-side layout (stays visible while .dict-main scrolls next to
+       it), but once .dict-layout collapses to a single column below, the
+       sidebar stacks ABOVE .dict-main in normal flow — sticky then pins it
+       to the top of the screen as the student scrolls past it, eating
+       screen space and, combined with its own internal max-height scroll,
+       creating a confusing nested-scroll trap (student-reported mobile UI
+       bug). Placed AFTER the base rules above so it wins the cascade at
+       this breakpoint instead of being overridden by them. */
+    @media (max-width: 800px) {
+      .dict-sidebar { position: static; top: auto; }
+      .dict-num-grid { max-height: none; overflow-y: visible; }
+    }
+
     .dict-main { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
     .dict-nav-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
     .dict-nav-arrow { background: none; border: none; color: var(--text2); font-size: 16px; cursor: pointer; padding: 4px 8px; }
@@ -272,6 +286,13 @@ function renderDictList() {
 
 /* ══════════════ OPEN A SECTION ══════════════ */
 async function openDictSection(id) {
+  // Same free-plan gate as reading/listening tests — browsing the list
+  // above stays free, but actually opening a section to practice requires
+  // premium (backend also enforces this on /listening/practice/by-id/:id).
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   document.getElementById('screen-list').classList.add('hidden');
   document.getElementById('screen-practice').classList.add('active');
   // Dictation has no timed exam mode — every session here is self-paced

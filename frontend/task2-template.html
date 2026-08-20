@@ -1130,6 +1130,15 @@ function _fallbackCopyTpl(url) {
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   initUser();
+  // Free-plan gate: without this, the page's own hardcoded TPL_DATA
+  // fallback (used when the /api/task2/templates fetch below 403s) would
+  // still render a fully usable practice UI — the backend gate on that
+  // route alone isn't enough since that static fallback ships in the page
+  // source regardless of plan. Stop before any rendering happens.
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   _primeDictVoice(); // load available voices ahead of Dictation mode's first Play
   // #tpl-content-area is a stable container that render() only ever
   // innerHTML's into — one registration here covers every cloze type/card.

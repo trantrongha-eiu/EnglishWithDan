@@ -909,6 +909,10 @@ function bindTopics() {
   });
 }
 async function selectTopic(id) {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   const topic = state.topics.find(t => t._id === id);
   state.selectedTopic = topic;
   state.wrongQuestionIds = [];
@@ -1626,6 +1630,10 @@ function quitExam() {
 }
 
 async function startExam() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   try {
     const level = state.selectedLevel;
     const params = new URLSearchParams({ level, count: state.examCount });

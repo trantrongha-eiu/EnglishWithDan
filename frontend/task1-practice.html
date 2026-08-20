@@ -1298,7 +1298,13 @@ async function loadExercises() {
   }
 }
 
-function startPractice() { loadExercises(); }
+function startPractice() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
+  loadExercises();
+}
 
 // ════════════════════════════════════════════════════════
 //  PRACTICE – SHOW EXERCISE
@@ -1854,6 +1860,10 @@ function selectTestCount(n) {
 }
 
 async function startTest() {
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
   const startBtns = document.querySelectorAll('.wp-start-test-btn');
   startBtns.forEach(b => { b.disabled = true; b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải...'; });
   try {
