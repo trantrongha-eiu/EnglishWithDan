@@ -654,17 +654,15 @@ body {
    MOBILE COMPONENTS
 ══════════════════════════════════════════════ */
 
-/* Mobile stats bar — sticky positioning lives here unconditionally (not
-   just inside the mobile breakpoint below) since task2-practice.html shows
-   this bar at every width via display:flex!important, not only ≤768px;
-   inert when the element is actually display:none. + 40px clears
-   .wp-mini-stats (XP/streak/sound), which floats in the same top-right
-   corner above this bar — same offset .wp-stats-widget already uses. */
+/* Mobile stats bar — deliberately NOT sticky: it used to pin itself under
+   .wp-mini-stats and stay on screen while scrolling, which meant its solid
+   white background covered whatever question/answer content scrolled up
+   underneath it (student-reported: "che khuất các thông tin khác"). This is
+   a nice-to-glance session summary, not something that needs to stay
+   visible mid-scroll, so it now just sits in normal flow near the top and
+   scrolls away with the rest of the page like any other element. */
 .wp-mobile-stats {
   display: none;
-  position: sticky;
-  top: calc(var(--nav-height, 64px) + var(--expiry-banner-height, 0px) + 40px);
-  z-index: 50;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
   padding: 8px 0;
@@ -788,7 +786,7 @@ body {
   .wp-fill-input   { font-size: 16px; }
 
   .wp-mobile-stats {
-    display: flex !important; /* position/top/z-index now live in the base rule above */
+    display: flex !important;
     box-shadow: 0 2px 8px rgba(0,0,0,.07);
   }
   .wp-mob-fab      { display: flex !important; }

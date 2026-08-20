@@ -552,6 +552,13 @@ img { max-width: 100%; height: auto; }
   #kbd-hint-panel {
     display: none !important;
   }
+
+  /* The mobile drawer (js/nav.js's #globalMobileNav) already has its own
+     logout button (#mobileLogoutBtn) whenever the hamburger is showing —
+     keeping a second logout icon in the already-tight top-bar action row
+     only crowds the logo for no benefit. Hide it for the whole range the
+     hamburger is the primary nav, not just the narrowest phones. */
+  #globalLogoutBtn { display: none; }
 }
 
 /* Tablet */
@@ -607,10 +614,8 @@ img { max-width: 100%; height: auto; }
   .top-nav .nav-actions .btn-dark-mode,
   .top-nav .nav-actions #globalSearchBtn,
   .top-nav .nav-actions #globalBellBtn { width: 34px; height: 34px; font-size: 16px; }
-  /* Logout already has its own button at the bottom of the mobile drawer
-     (#mobileLogoutBtn) — redundant here once the drawer covers it, so drop
-     it from the cramped top-bar icon row on the smallest phones. */
-  #globalLogoutBtn { display: none; }
+  /* #globalLogoutBtn is already hidden site-wide at <=1024px (see that
+     breakpoint above) — no separate rule needed here. */
 
   .btn { padding: 9px 16px; font-size: 13px; }
   .btn-lg { padding: 12px 24px; font-size: 15px; }
