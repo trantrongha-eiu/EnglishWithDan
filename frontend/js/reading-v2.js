@@ -2669,6 +2669,20 @@ function showResult(r) {
   } else {
     showScreen('result');
   }
+
+  // Priority 2C — only fires for a session actually launched via the
+  // Today's Learning popup's "Start" button (see learning-popups.js's
+  // markStart/consumeStart); a student practicing normally never sees this.
+  if (window.EWSLearning && window.EWSLearning.consumeStart('reading')) {
+    const attemptId = r.attemptId;
+    window.EWSLearning.showReviewPopup('reading', {
+      emoji: band >= 6.5 ? '🎉' : '📊',
+      scoreLabel: `${r.correctCount}/${r.totalQuestions} correct`,
+      subLabel: r.bandScore != null ? `Band ${r.bandScore.toFixed(1)}` : '',
+      nextAction: r.wrongCount > 0 ? 'Review your incorrect answers and save useful vocabulary.' : 'Great result — keep it up!',
+      onReview: attemptId ? () => loadReview(attemptId) : null,
+    });
+  }
 }
 
 function goToReview() {

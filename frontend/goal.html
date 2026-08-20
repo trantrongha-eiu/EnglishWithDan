@@ -74,6 +74,23 @@
     .plan-item-cat{font-weight:700;font-size:13px;text-transform:capitalize;min-width:80px}
     .plan-item-reason{font-size:12.5px;color:var(--text2);flex:1}
     .plan-item-min{font-size:12.5px;color:var(--text3);white-space:nowrap}
+
+    /* "Today's Learning" — the first thing on the page (§28/§30) */
+    #today-card{border:1.5px solid var(--blue);background:linear-gradient(180deg,rgba(61,139,255,.06),transparent)}
+    .today-empty{color:var(--text2);font-size:14px;text-align:center;padding:18px 10px}
+    .today-empty a{color:var(--blue);font-weight:700;text-decoration:none}
+    .today-sessions{display:flex;flex-direction:column;gap:12px}
+    .today-total{font-size:12.5px;color:var(--text3);margin-bottom:2px}
+    .today-session{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;background:var(--surface)}
+    .today-session-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+    .today-session-cat{font-weight:800;font-size:15px;text-transform:capitalize}
+    .today-session-min{font-size:12.5px;color:var(--text3);font-weight:600}
+    .today-session-reason{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+    .today-start-btn{
+      display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--radius-sm);
+      background:var(--blue);color:#fff;text-decoration:none;font-size:13.5px;font-weight:700;border:none;cursor:pointer;
+    }
+    .today-start-btn:hover{filter:brightness(.95)}
   </style>
 </head>
 <body>
@@ -89,6 +106,11 @@
 </div>
 
 <div class="goal-wrap">
+  <div class="goal-card" id="today-card">
+    <h2><i class="fas fa-sun"></i> Today's Learning</h2>
+    <div id="today-content" class="goal-loading">Loading…</div>
+  </div>
+
   <div class="goal-card">
     <h2><i class="fas fa-bullseye"></i> Your Goal</h2>
     <div id="goal-form-wrap">
@@ -231,6 +253,7 @@ async function saveGoal() {
     msgEl.textContent = 'Saved!'; msgEl.className = 'goal-msg ok';
     renderSummary(data.goal);
     loadPlan();
+    loadTodayLearning();
   } catch (e) {
     msgEl.textContent = e.message || 'Could not save your goal.';
     msgEl.className = 'goal-msg error';
@@ -284,12 +307,48 @@ async function loadPlan() {
 
 function escapeHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+async function loadTodayLearning() {
+  const el = document.getElementById('today-content');
+  el.className = 'goal-loading'; el.textContent = 'Loading…';
+  try {
+    const res = await fetch(`${API}/learning/today`, { headers: authH() });
+    const today = await window.ApiClient.handleResponse(res);
+
+    if (!today.hasGoal) {
+      el.className = 'today-empty';
+      el.innerHTML = `${escapeHtml(today.message)} <a href="#f-target">Set your goal below ↓</a>`;
+      return;
+    }
+    if (!today.hasPlan || !today.isStudyDay || !today.sessions.length) {
+      el.className = 'today-empty';
+      el.textContent = today.message || 'Nothing scheduled right now.';
+      return;
+    }
+
+    el.className = '';
+    const sessionsHtml = today.sessions.map(s => `
+      <div class="today-session">
+        <div class="today-session-head">
+          <span class="today-session-cat">${escapeHtml(s.category)}</span>
+          <span class="today-session-min">${s.minutes} min</span>
+        </div>
+        <div class="today-session-reason">${escapeHtml(s.reason)}</div>
+        <a class="today-start-btn" href="${escapeHtml(s.practiceUrl)}"><i class="fas fa-play"></i> ${escapeHtml(s.action)}</a>
+      </div>`).join('');
+    el.innerHTML = `<div class="today-total">${today.totalMinutes} min today</div><div class="today-sessions">${sessionsHtml}</div>`;
+  } catch (e) {
+    el.className = 'today-empty';
+    el.textContent = 'Unable to load today\'s learning.';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.AuthService?.getUser?.()) { window.location.href = 'login.html'; return; }
   populateBandSelects();
   document.querySelectorAll('.goal-day-chip').forEach(el => el.addEventListener('click', () => toggleDay(el)));
   loadGoal();
   loadPlan();
+  loadTodayLearning();
 });
 </script>
 </body>

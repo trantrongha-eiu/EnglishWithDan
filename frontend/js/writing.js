@@ -560,6 +560,17 @@ async function submitExam(statusOverride) {
       document.getElementById('done-wc1').textContent = wc1;
       document.getElementById('done-wc2').textContent = wc2;
       showScreen('screen-done');
+
+      // Priority 2C — only for a session launched via the Today's Learning
+      // popup's "Start" button. Writing has no immediate score (teacher/AI
+      // grading happens later), so this never fabricates one — see §12.
+      if (window.EWSLearning && window.EWSLearning.consumeStart('writing')) {
+        window.EWSLearning.showReviewPopup('writing', {
+          emoji: '✍️',
+          scoreLabel: 'Submitted',
+          nextAction: 'Self-review your response, then continue your plan. Feedback will appear here once graded.',
+        });
+      }
     } else {
       state.isSubmitting = false;
       showToast('Lỗi nộp bài: ' + (data.message || 'Vui lòng thử lại'), 'error');

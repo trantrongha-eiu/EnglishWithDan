@@ -1839,6 +1839,17 @@ async function finishSequentialSession() {
     if (feedbackBody) feedbackBody.style.display = 'block';
     if (actionsEl)    actionsEl.style.display    = 'flex';
     renderSeqFeedback(data.feedback || {});
+
+    // Priority 2C — only for a session launched via the Today's Learning
+    // popup's "Start" button. AI feedback already rendered above is the
+    // real review surface; this never recomputes or invents a score.
+    if (window.EWSLearning && window.EWSLearning.consumeStart('speaking')) {
+      window.EWSLearning.showReviewPopup('speaking', {
+        emoji: '🗣️',
+        scoreLabel: 'Session Complete',
+        nextAction: 'Review your AI feedback above, then continue your plan.',
+      });
+    }
   } catch (e) {
     console.error('finishSequentialSession:', e);
     if (loadingEl) loadingEl.style.display = 'none';

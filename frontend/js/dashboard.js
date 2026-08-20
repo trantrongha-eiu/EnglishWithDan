@@ -202,6 +202,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
 
+    // Priority 2C — popup-first learning discovery. Fire-and-forget: never
+    // blocks vocab notebook loading below, and silently no-ops on any
+    // fetch failure (see learning-popups.js's own try/catch).
+    if (window.EWSLearning) window.EWSLearning.autoShow();
+
     setupEmojiPicker();
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
@@ -2841,6 +2846,17 @@ function showResults(mode) {
         _syncPracticeEvidence();
     }
     if (wrongWordSet.size > 0) _reportDifficultWords(); // track across all sessions
+
+    // Priority 2C — only for a session launched via the Today's Learning
+    // popup's "Start" button; normal vocab practice is unaffected.
+    if (window.EWSLearning && window.EWSLearning.consumeStart('vocabulary')) {
+        window.EWSLearning.showReviewPopup('vocabulary', {
+            emoji: pct >= 80 ? '🎉' : '📚',
+            scoreLabel: `${correctAnswers}/${answered_} correct`,
+            subLabel: wrongCount > 0 ? `${wrongCount} word${wrongCount === 1 ? '' : 's'} still to review` : '',
+            nextAction: wrongCount > 0 ? 'Practice your wrong words again, then continue your plan.' : 'Great result — keep it up!',
+        });
+    }
 }
 
 /* ══════════════════════════════════════════════
