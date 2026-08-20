@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IELTS Goal &amp; Study Plan – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <script src="js/theme.js"></script>
+  <style>
+    /* Minimal, self-contained page — deliberately does not integrate with
+       js/nav.js's sidebar chrome yet (out of scope for this phase, see
+       Priority 2B's "dashboard integration comes later"). Just a header
+       with a back-link + auth-gated content. */
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif}
+    .goal-header{display:flex;align-items:center;gap:14px;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+    .goal-back{color:var(--text2);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px}
+    .goal-back:hover{color:var(--text)}
+    .goal-title{font-size:17px;font-weight:800;margin:0}
+    .goal-wrap{max-width:920px;margin:0 auto;padding:28px 20px 80px}
+    .goal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:22px}
+    .goal-card h2{font-size:15px;font-weight:800;margin:0 0 16px;display:flex;align-items:center;gap:8px}
+    .goal-card h2 i{color:var(--blue)}
+    .goal-loading{color:var(--text3);font-size:13px;padding:20px 0;text-align:center}
+
+    .goal-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:640px){.goal-form-grid{grid-template-columns:1fr}}
+    .goal-field{display:flex;flex-direction:column;gap:6px}
+    .goal-field label{font-size:12.5px;font-weight:700;color:var(--text2)}
+    .goal-field select, .goal-field input{
+      padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--bg);color:var(--text);font-size:14px;font-family:inherit;
+    }
+    .goal-days{display:flex;gap:6px;flex-wrap:wrap}
+    .goal-day-chip{
+      padding:7px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;
+      cursor:pointer;user-select:none;background:var(--bg);color:var(--text2);
+    }
+    .goal-day-chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
+    .goal-form-actions{margin-top:18px;display:flex;align-items:center;gap:12px}
+    .goal-btn{padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;border:none}
+    .goal-btn-primary{background:var(--blue);color:#fff}
+    .goal-btn-primary:hover{filter:brightness(.95)}
+    .goal-msg{font-size:13px}
+    .goal-msg.error{color:#dc2626}
+    .goal-msg.ok{color:var(--success)}
+
+    .goal-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:16px}
+    .goal-stat{text-align:center;padding:14px 10px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .goal-stat-val{font-size:22px;font-weight:800}
+    .goal-stat-label{font-size:11.5px;color:var(--text3);margin-top:2px}
+    .goal-feasibility{padding:14px 16px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.55;border-left:4px solid var(--blue);background:var(--bg)}
+    .goal-feasibility.challenging{border-left-color:#dc2626}
+    .goal-feasibility.tight{border-left-color:#f59e0b}
+    .goal-feasibility.reasonable, .goal-feasibility.on_track{border-left-color:var(--success)}
+
+    .plan-empty{color:var(--text2);font-size:14px;text-align:center;padding:20px 10px}
+    .plan-week{font-size:12.5px;color:var(--text3);margin-bottom:14px}
+    .plan-alloc{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+    .plan-alloc-row{display:grid;grid-template-columns:90px 1fr 50px;align-items:center;gap:10px;font-size:13px}
+    .plan-alloc-bar-wrap{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+    .plan-alloc-bar{height:100%;background:var(--blue);border-radius:4px}
+    .plan-alloc-min{text-align:right;color:var(--text2);font-variant-numeric:tabular-nums}
+    .plan-day{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px}
+    .plan-day-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+    .plan-day-title{font-weight:800;font-size:14px;text-transform:capitalize}
+    .plan-day-total{font-size:12px;color:var(--text3)}
+    .plan-item{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border)}
+    .plan-item:first-child{border-top:none}
+    .plan-item-cat{font-weight:700;font-size:13px;text-transform:capitalize;min-width:80px}
+    .plan-item-reason{font-size:12.5px;color:var(--text2);flex:1}
+    .plan-item-min{font-size:12.5px;color:var(--text3);white-space:nowrap}
+  </style>
+</head>
+<body>
+<script src="js/shared/auth-service.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/shared/utils.js"></script>
+<script src="js/shared/toast.js"></script>
+<script src="js/shared/api-client.js"></script>
+
+<div class="goal-header">
+  <a class="goal-back" href="dashboard.html"><i class="fas fa-arrow-left"></i> Dashboard</a>
+  <h1 class="goal-title">🎯 IELTS Goal &amp; Study Plan</h1>
+</div>
+
+<div class="goal-wrap">
+  <div class="goal-card">
+    <h2><i class="fas fa-bullseye"></i> Your Goal</h2>
+    <div id="goal-form-wrap">
+      <div class="goal-form-grid">
+        <div class="goal-field">
+          <label for="f-current">Current IELTS level (self-assessed, optional)</label>
+          <select id="f-current"><option value="">— Not set —</option></select>
+        </div>
+        <div class="goal-field">
+          <label for="f-target">Target band</label>
+          <select id="f-target"><option value="">— Choose —</option></select>
+        </div>
+        <div class="goal-field">
+          <label for="f-exam">Exam date</label>
+          <input type="date" id="f-exam" />
+        </div>
+        <div class="goal-field">
+          <label for="f-weekly">Weekly study time (minutes)</label>
+          <input type="number" id="f-weekly" min="1" step="10" placeholder="e.g. 240" />
+        </div>
+        <div class="goal-field">
+          <label for="f-session">Minutes per session</label>
+          <input type="number" id="f-session" min="5" max="240" step="5" placeholder="e.g. 60" />
+        </div>
+        <div class="goal-field">
+          <label>Study days</label>
+          <div class="goal-days" id="f-days">
+            <span class="goal-day-chip" data-day="mon">Mon</span>
+            <span class="goal-day-chip" data-day="tue">Tue</span>
+            <span class="goal-day-chip" data-day="wed">Wed</span>
+            <span class="goal-day-chip" data-day="thu">Thu</span>
+            <span class="goal-day-chip" data-day="fri">Fri</span>
+            <span class="goal-day-chip" data-day="sat">Sat</span>
+            <span class="goal-day-chip" data-day="sun">Sun</span>
+          </div>
+        </div>
+      </div>
+      <div class="goal-form-actions">
+        <button class="goal-btn goal-btn-primary" onclick="saveGoal()">Save Goal</button>
+        <span class="goal-msg" id="goal-msg"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="goal-card" id="summary-card" style="display:none">
+    <h2><i class="fas fa-chart-line"></i> Goal Summary</h2>
+    <div class="goal-summary-grid" id="summary-stats"></div>
+    <div class="goal-feasibility" id="summary-feasibility" style="display:none"></div>
+  </div>
+
+  <div class="goal-card">
+    <h2><i class="fas fa-calendar-week"></i> This Week's Study Plan</h2>
+    <div id="plan-content" class="goal-loading">Loading…</div>
+  </div>
+</div>
+
+<script>
+const API = 'https://englishwithdan.onrender.com/api';
+function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
+
+const BANDS = []; // 4.0 .. 7.5 step 0.5
+for (let b = 4.0; b <= 7.5 + 1e-9; b += 0.5) BANDS.push(Math.round(b * 10) / 10);
+const DAY_LABEL = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' };
+let selectedDays = new Set();
+
+function populateBandSelects() {
+  const currentSel = document.getElementById('f-current');
+  const targetSel = document.getElementById('f-target');
+  BANDS.forEach(b => {
+    currentSel.insertAdjacentHTML('beforeend', `<option value="${b}">${b.toFixed(1)}</option>`);
+    targetSel.insertAdjacentHTML('beforeend', `<option value="${b}">${b.toFixed(1)}</option>`);
+  });
+}
+
+function toggleDay(el) {
+  const day = el.dataset.day;
+  if (selectedDays.has(day)) { selectedDays.delete(day); el.classList.remove('active'); }
+  else { selectedDays.add(day); el.classList.add('active'); }
+}
+
+async function loadGoal() {
+  try {
+    const res = await fetch(`${API}/goals`, { headers: authH() });
+    const data = await window.ApiClient.handleResponse(res);
+    const g = data.goal;
+    if (g.currentBand != null) document.getElementById('f-current').value = g.currentBand;
+    if (g.targetBand != null) document.getElementById('f-target').value = g.targetBand;
+    if (g.examDate) document.getElementById('f-exam').value = g.examDate.slice(0, 10);
+    if (g.weeklyStudyMinutes != null) document.getElementById('f-weekly').value = g.weeklyStudyMinutes;
+    if (g.preferredSessionMinutes != null) document.getElementById('f-session').value = g.preferredSessionMinutes;
+    (g.studyDays || []).forEach(d => {
+      selectedDays.add(d);
+      document.querySelector(`.goal-day-chip[data-day="${d}"]`)?.classList.add('active');
+    });
+    renderSummary(g);
+  } catch (e) {
+    document.getElementById('goal-msg').textContent = 'Không thể tải mục tiêu.';
+    document.getElementById('goal-msg').className = 'goal-msg error';
+  }
+}
+
+function renderSummary(g) {
+  const card = document.getElementById('summary-card');
+  if (!g.hasGoal) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  const stats = document.getElementById('summary-stats');
+  const parts = [];
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.targetBand ?? '—'}</div><div class="goal-stat-label">Target band</div></div>`);
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.currentBand ?? '—'}</div><div class="goal-stat-label">Current (${g.currentBandSource === 'self_assessed' ? 'self-assessed' : '—'})</div></div>`);
+  if (g.gapBands != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.gapBands >= 0 ? '+' : ''}${g.gapBands}</div><div class="goal-stat-label">Gap</div></div>`);
+  if (g.daysRemaining != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.isPastExamDate ? 'Past' : g.daysRemaining}</div><div class="goal-stat-label">Days remaining</div></div>`);
+  if (g.weeklyStudyMinutes) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.weeklyStudyMinutes}</div><div class="goal-stat-label">Weekly minutes</div></div>`);
+  if (g.studyDays?.length) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.studyDays.length}</div><div class="goal-stat-label">Days/week</div></div>`);
+  stats.innerHTML = parts.join('');
+
+  const feasEl = document.getElementById('summary-feasibility');
+  if (g.feasibility) {
+    feasEl.style.display = '';
+    feasEl.className = `goal-feasibility ${g.feasibility.level}`;
+    feasEl.textContent = g.feasibility.message;
+  } else {
+    feasEl.style.display = 'none';
+  }
+}
+
+async function saveGoal() {
+  const msgEl = document.getElementById('goal-msg');
+  msgEl.textContent = ''; msgEl.className = 'goal-msg';
+  const body = {
+    currentBand: document.getElementById('f-current').value ? parseFloat(document.getElementById('f-current').value) : null,
+    targetBand: document.getElementById('f-target').value ? parseFloat(document.getElementById('f-target').value) : null,
+    examDate: document.getElementById('f-exam').value || null,
+    weeklyStudyMinutes: document.getElementById('f-weekly').value ? parseInt(document.getElementById('f-weekly').value, 10) : null,
+    preferredSessionMinutes: document.getElementById('f-session').value ? parseInt(document.getElementById('f-session').value, 10) : null,
+    studyDays: [...selectedDays],
+  };
+  try {
+    const res = await fetch(`${API}/goals`, { method: 'PUT', headers: authH(), body: JSON.stringify(body) });
+    const data = await window.ApiClient.handleResponse(res);
+    msgEl.textContent = 'Saved!'; msgEl.className = 'goal-msg ok';
+    renderSummary(data.goal);
+    loadPlan();
+  } catch (e) {
+    msgEl.textContent = e.message || 'Could not save your goal.';
+    msgEl.className = 'goal-msg error';
+  }
+}
+
+async function loadPlan() {
+  const el = document.getElementById('plan-content');
+  el.className = 'goal-loading'; el.textContent = 'Loading…';
+  try {
+    const res = await fetch(`${API}/study-plan/current`, { headers: authH() });
+    const plan = await window.ApiClient.handleResponse(res);
+    if (!plan.hasPlan) {
+      el.className = 'plan-empty';
+      el.textContent = plan.message || 'Set up your goal above to generate a plan.';
+      return;
+    }
+    el.className = '';
+    const maxMin = Math.max(...plan.allocation.map(a => a.minutes));
+    const allocHtml = plan.allocation.map(a => `
+      <div class="plan-alloc-row">
+        <div>${a.category}</div>
+        <div class="plan-alloc-bar-wrap"><div class="plan-alloc-bar" style="width:${maxMin ? Math.round(a.minutes / maxMin * 100) : 0}%"></div></div>
+        <div class="plan-alloc-min">${a.minutes}m</div>
+      </div>`).join('');
+
+    const sessionsHtml = plan.sessions.map(s => `
+      <div class="plan-day">
+        <div class="plan-day-head">
+          <span class="plan-day-title">${DAY_LABEL[s.day] || s.day} · ${s.date}</span>
+          <span class="plan-day-total">${s.totalMinutes} min</span>
+        </div>
+        ${s.items.map(i => `
+          <div class="plan-item">
+            <div class="plan-item-cat">${i.category}</div>
+            <div class="plan-item-reason">${escapeHtml(i.reason)}</div>
+            <div class="plan-item-min">${i.minutes} min</div>
+          </div>`).join('')}
+      </div>`).join('');
+
+    el.innerHTML = `
+      <div class="plan-week">Week of ${plan.weekStart} → ${plan.weekEnd} · ${plan.totalMinutes} min total</div>
+      <div class="plan-alloc">${allocHtml}</div>
+      ${sessionsHtml}
+    `;
+  } catch (e) {
+    el.className = 'plan-empty';
+    el.textContent = 'Unable to load your study plan.';
+  }
+}
+
+function escapeHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!window.AuthService?.getUser?.()) { window.location.href = 'login.html'; return; }
+  populateBandSelects();
+  document.querySelectorAll('.goal-day-chip').forEach(el => el.addEventListener('click', () => toggleDay(el)));
+  loadGoal();
+  loadPlan();
+});
+</script>
+</body>
+</html>

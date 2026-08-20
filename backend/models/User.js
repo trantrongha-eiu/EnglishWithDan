@@ -37,6 +37,25 @@ const UserSchema = new mongoose.Schema({
   // self-set exam date, purely informational. No scheduling/reminders are
   // derived from it beyond the client-side "days remaining" banner.
   targetExamDate: { type: Date, default: null },
+  // ── IELTS Goal + Study Plan (Priority 2B) ──────────────────────────────
+  // Reuses targetBand/targetExamDate above rather than duplicating them —
+  // goalService.js is the single place that reads/writes all of these.
+  // currentBand is deliberately separate from targetBand's schema bound
+  // (4-9): the Goal feature enforces a stricter 4.0-7.5 product-scope cap
+  // at the application layer (goalService), not here, so this field's DB-
+  // level bound stays the same permissive range targetBand already uses.
+  currentBand: { type: Number, default: null, min: 4, max: 9 },
+  // Distinguishes a student's own self-report from a number the system
+  // could derive from practice history — never silently treated the same
+  // way. Null until currentBand is ever set. See goalService.getGoal() /
+  // getEstimatedPerformance() for how "self_assessed" vs "estimated" stay
+  // visibly separate signals, never merged into one silently-authoritative
+  // number.
+  currentBandSource: { type: String, enum: ['self_assessed', 'estimated', null], default: null },
+  weeklyStudyMinutes: { type: Number, default: null, min: 1 },
+  // 3-letter weekday codes the student can realistically study on.
+  studyDays: { type: [{ type: String, enum: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] }], default: [] },
+  preferredSessionMinutes: { type: Number, default: null, min: 5, max: 240 },
   // Free-text class label ("6", "6.5", ...) assigned by admin/teacher —
   // scopes which Vocabulary Lessons a student sees (see
   // vocabularyLessonService.listPublicLessons). Empty = unassigned; an
