@@ -160,11 +160,6 @@ window.addEventListener('popstate', e => {
     window.onbeforeunload = null;
     practiceState.task = null;
     document.getElementById('practice-exit-modal')?.classList.remove('open');
-    // "Phân tích đề" was left open (only its own close button/backdrop-click/
-    // Escape ever removed .open) — without this, navigating back from the
-    // write screen left it showing, empty, on top of whatever screen came
-    // next (reported live: showed blank over the task-list screen).
-    document.getElementById('pw-analysis-modal')?.classList.remove('open');
   }
 
   if (s === 'practice-list') {
@@ -234,10 +229,6 @@ async function _openDirectPracticeTask(taskType, taskId) {
 // reactive fallback if the trial expires mid-session.)
 // ──────────────────────────────────────────────────────
 async function startExam() {
-  // "Phân tích đề" (like sample-answer hints) is a practice-only aid — the
-  // timed exam should never show it. Same belt-and-suspenders reset as
-  // renderPracticeWriteScreen()/showPracticeTaskList() (see 9c82207).
-  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
@@ -1157,8 +1148,7 @@ function closeHistoryModal() {
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   const overlay = ['wr-history-modal', 'exit-modal-overlay', 'confirm-modal-overlay',
-                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal',
-                   'pw-analysis-modal'];
+                   'review-modal-overlay', 'practice-exit-modal', 'practice-submit-modal'];
   for (const id of overlay) {
     const el = document.getElementById(id);
     if (el && el.classList.contains('open')) { el.classList.remove('open'); break; }
@@ -1647,10 +1637,6 @@ async function loadPracticeHistory(taskTypeFilter = null) {
 }
 
 async function showPracticeTaskList(taskType, pushHistory = true) {
-  // Belt-and-suspenders: the task LIST screen must never show a "Phân tích
-  // đề" modal left open from a previous task's write screen (reported live
-  // — showed blank over this exact screen).
-  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   if (pushHistory) {
     history.pushState({ screen: 'practice-list', taskType }, '', `writing.html?taskType=${taskType}`);
   }
@@ -1757,11 +1743,6 @@ function startPracticeTask(taskType, taskId, pushHistory = true) {
 }
 
 function renderPracticeWriteScreen(taskType, task) {
-  // Defensive reset — closes any "Phân tích đề" modal left open from a
-  // previous task if this screen was reached by a path that skips
-  // exitPracticeWrite()/popstate's own cleanup (e.g. resuming a different
-  // draft directly).
-  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   const minWords = taskType === 1 ? 150 : 250;
   document.getElementById('pw-task-label').textContent = `Task ${taskType} – Luyện tập`;
   document.getElementById('pw-title-label').textContent = `Task ${taskType} – Luyện tập`;
@@ -1783,13 +1764,19 @@ function renderPracticeWriteScreen(taskType, task) {
   }
   // "Phân tích đề" — available for both Task 1 (how to pick overview
   // highlights + split Body 1/2 from the chart) and Task 2 (which stance/
-  // argument to pick + split Body 1/2 for the essay). Meant to be read
-  // WHILE planning/writing (unlike the sample-essay toggle, which hides the
-  // textarea to discourage copying), so it opens in a modal instead of
-  // swapping panels.
+  // argument to pick + split Body 1/2 for the essay). Shown inline right
+  // below the prompt/image (toggled open/closed) instead of a modal — a
+  // covering modal hid the prompt itself, which defeats the point of
+  // reading the analysis WHILE looking at the chart/question.
   const hasAnalysis = Array.isArray(task.analysisSections) && task.analysisSections.some(s => s.content?.trim());
   if (hasAnalysis) {
-    html += `<button class="btn-secondary" style="margin-top:12px;width:100%" onclick="openAnalysisModal()"><i class="fas fa-search"></i> Phân tích đề</button>`;
+    const analysisHtml = task.analysisSections.filter(s => s.content?.trim()).map(s => `
+      <div class="pw-analysis-section">
+        <div class="pw-analysis-section-title"><span>${escHtml(s.title)}</span></div>
+        <div class="pw-analysis-section-body">${escHtml(s.content)}</div>
+      </div>`).join('');
+    html += `<button class="btn-secondary" id="pw-analysis-toggle-btn" style="margin-top:12px;width:100%" onclick="toggleAnalysisPanel()"><i class="fas fa-search"></i> Phân tích đề</button>`;
+    html += `<div id="pw-analysis-inline" style="display:none;margin-top:12px">${analysisHtml}</div>`;
   }
   leftPanel.innerHTML = html;
   // Dictionary lookup only in practice/review, never during the timed real
@@ -1838,21 +1825,17 @@ function togglePracticeSample(on) {
   if (hint) hint.style.display = on ? '' : 'none';
 }
 
-function openAnalysisModal() {
-  const sections = practiceState.task?.analysisSections;
-  if (!Array.isArray(sections) || !sections.length) return;
-  const body = document.getElementById('pw-analysis-body');
-  body.innerHTML = sections.filter(s => s.content?.trim()).map(s => `
-    <div class="pw-analysis-section">
-      <div class="pw-analysis-section-title"><span>${escHtml(s.title)}</span></div>
-      <div class="pw-analysis-section-body">${escHtml(s.content)}</div>
-    </div>`).join('');
-  setupDictionaryDouble('pw-analysis-body', 'writing-practice-analysis');
-  document.getElementById('pw-analysis-modal').classList.add('open');
-}
-
-function closeAnalysisModal() {
-  document.getElementById('pw-analysis-modal').classList.remove('open');
+function toggleAnalysisPanel() {
+  const panel = document.getElementById('pw-analysis-inline');
+  const btn = document.getElementById('pw-analysis-toggle-btn');
+  if (!panel) return;
+  const show = panel.style.display === 'none';
+  panel.style.display = show ? '' : 'none';
+  if (btn) {
+    btn.innerHTML = show
+      ? '<i class="fas fa-chevron-up"></i> Ẩn phân tích đề'
+      : '<i class="fas fa-search"></i> Phân tích đề';
+  }
 }
 
 function copySampleSection(btn, idx) {
@@ -1933,7 +1916,6 @@ function confirmExitPractice() {
 
 function exitPracticeWrite() {
   document.getElementById('practice-exit-modal').classList.remove('open');
-  document.getElementById('pw-analysis-modal')?.classList.remove('open');
   stopPracticeStopwatch();
   savePracticeToStorage();
   saveDraftToServer();

@@ -443,7 +443,7 @@ body {
    display:none regardless of .hidden — caught via live browser testing.
 ══════════════════════════════════════════════ */
 #wr-history-modal, #practice-exit-modal, #practice-submit-modal,
-#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay, #pw-analysis-modal {
+#review-modal-overlay, #exit-modal-overlay, #confirm-modal-overlay {
   display: none;
   position: fixed;
   inset: 0;
@@ -454,8 +454,7 @@ body {
   padding: 16px;
 }
 #wr-history-modal.open, #practice-exit-modal.open, #practice-submit-modal.open,
-#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open,
-#pw-analysis-modal.open { display: flex; }
+#review-modal-overlay.open, #exit-modal-overlay.open, #confirm-modal-overlay.open { display: flex; }
 
 .review-modal {
   background: #fff;
@@ -1003,9 +1002,12 @@ body {
   padding: 2px 8px;
 }
 
-/* "Phân tích đề" modal — blue theme, deliberately distinct from the green
-   sample-essay panel above so students don't mistake analysis guidance
-   (how to plan the overview/body) for a ready-made essay to copy. */
+/* "Phân tích đề" — shown inline below the prompt/image in .exam-left
+   (toggled open/closed, not a modal — a covering modal hid the prompt
+   itself, defeating the point of reading them side by side). Blue theme,
+   deliberately distinct from the green sample-essay panel above so
+   students don't mistake analysis guidance (how to plan the overview/
+   body) for a ready-made essay to copy. */
 .pw-analysis-section {
   border: 1.5px solid #bae6fd;
   border-radius: 10px;

@@ -121,10 +121,10 @@
   display: flex; align-items: center; justify-content: center;
   /* Same reasoning as .dict-popup above: "Lưu từ" inside the dict-popup
      opens this modal next, and dict lookup is enabled inside writing.html's
-     #review-modal-body and #pw-analysis-body — both live inside a
-     .modal-overlay (z-index:1100). At 950 this rendered invisibly behind
-     that backdrop the moment a student tried to save a word from either of
-     those (bug found via live testing, not just theoretical). */
+     #review-modal-body, which lives inside a .modal-overlay (z-index:1100).
+     At 950 this rendered invisibly behind that backdrop the moment a
+     student tried to save a word from there (bug found via live testing,
+     not just theoretical). */
   z-index: 1150; padding: 16px;
 }
 .dict-vocab-modal.hidden { display: none; }
