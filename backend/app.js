@@ -100,6 +100,7 @@ app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/weakness', require('./routes/weakness'));
+app.use('/api/recommendations', require('./routes/recommendation'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/courses',         require('./routes/courses'));
