@@ -364,22 +364,213 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: 'super-examples-10', title: '⭐ 10 Super Examples nên học thuộc', icon: '⭐', orderIndex: 46,
-    summaryText: 'Không cần học 50 facts — chỉ cần nhớ 10 ví dụ có thể tái sử dụng cho nhiều topic.',
+    category: CATEGORY, lessonKey: 'super-examples-10', title: '⭐ 20 Super Examples nên học thuộc', icon: '⭐', orderIndex: 46,
+    summaryText: 'Không cần học 50 facts — chỉ cần nhớ 20 ví dụ có thể tái sử dụng cho mọi topic, kể cả các đề siêu hiếm (space, SETI, Antarctica...).',
     blocks: [
-      overview('Không cần học thuộc 50 facts. Chỉ cần nhớ khoảng 10 examples có thể tái sử dụng cho nhiều chủ đề khác nhau.'),
+      overview('Không cần học thuộc 50 facts rời rạc. Chỉ cần nhớ khoảng 20 examples có thể tái sử dụng cho rất nhiều chủ đề khác nhau — kể cả những đề IELTS siêu hiếm mà học sinh thường không có ví dụ (space exploration, extraterrestrial life, Antarctica, biotechnology...).'),
       example([
-        { label: '1. 📱 Smartphone bans in schools', lines: [{ tag: 'CHAIN', text: 'Technology → Distraction → Education → Children → Government regulation' }], note: 'Dùng cho: Technology / Education / Children / Social media' },
-        { label: '2. 🤖 Generative AI', lines: [{ tag: 'CHAIN', text: 'AI → Personalised learning → Better access to information → But academic integrity concerns' }], note: 'Dùng cho: Education / Technology / Jobs / AI' },
-        { label: '3. 🚗 Electric vehicles', lines: [{ tag: 'CHAIN', text: 'Electric vehicles → Cleaner transport → Less dependence on fossil fuels → Potentially lower emissions' }], note: 'Dùng cho: Transport / Environment / Technology / Climate change' },
-        { label: '4. 🌫️ Air pollution', lines: [{ tag: 'CHAIN', text: 'Cars + factories → Emissions → Air pollution → Health problems' }], note: 'Dùng cho: Health / Environment / Transport / Cities / Economic development' },
-        { label: '5. 🥤 Plastic pollution', lines: [{ tag: 'CHAIN', text: 'Mass consumption → Plastic production → Waste → Environmental damage' }], note: 'Dùng cho: Environment / Consumerism / Government / Recycling' },
-        { label: '6. 🏃 Physical inactivity', lines: [{ tag: 'CHAIN', text: 'Office work + cars + screen time → Sedentary lifestyle → Less exercise → Health problems' }], note: 'Dùng cho: Health / Lifestyle / Technology / Obesity' },
-        { label: '7. 👕 Fast fashion', lines: [{ tag: 'CHAIN', text: 'Cheap clothes → Frequent purchases → More textile waste → Environmental pressure' }], note: 'Dùng cho: Consumerism / Environment / Fashion / Waste' },
-        { label: '8. 🏠 Remote work', lines: [{ tag: 'CHAIN', text: 'COVID-19 → Offices closed → Remote working → Technology adoption → Hybrid work' }], note: 'Dùng cho: Technology / Jobs / Work-life balance / Transport' },
-        { label: '9. 🌎 Smartphone global supply chain', lines: [{ tag: 'CHAIN', text: 'Design → Components → Manufacturing → Distribution → Global consumers' }], note: 'Dùng cho: Globalisation / Trade / Technology / Multinational companies' },
-        { label: '10. 🏙️ Urban traffic congestion', lines: [{ tag: 'CHAIN', text: 'Urbanisation → Population growth → More vehicles → Congestion → Pollution' }], note: 'Dùng cho: Cities / Transport / Environment / Urbanisation' },
+        {
+          label: '1. 📱 Smartphone Bans in Schools',
+          lines: [
+            { tag: 'FACT', text: 'UNESCO báo cáo rằng đến tháng 3/2026, 114 hệ thống giáo dục (khoảng 58% số quốc gia) đã có lệnh cấm hoặc hạn chế điện thoại di động trong trường học.' },
+            { tag: 'CHAIN', text: 'Technology → Smartphone use → Distraction → Reduced concentration → Government/school restrictions' },
+            { tag: 'IELTS EXAMPLE', text: 'For example, an increasing number of education systems have restricted smartphone use in schools because excessive phone use can distract students from their studies.' },
+            { tag: 'IDEA', text: "Không cần chứng minh 'điện thoại xấu'. Có thể lập luận: Technology is useful → BUT excessive use can create negative consequences → therefore reasonable regulation is necessary." },
+          ],
+          note: 'Dùng cho: Technology / Education / Children / Social media / Concentration / Government regulation',
+        },
+        {
+          label: '2. 🤖 Generative AI in Education',
+          lines: [
+            { tag: 'FACT', text: "AI tạo sinh đang được dùng để hỗ trợ học tập, trong khi các tổ chức giáo dục lo ngại về academic integrity, privacy và students' overdependence on AI." },
+            { tag: 'CHAIN', text: 'AI → Personalised learning → Faster access to information → More learning support → But potential overdependence / academic dishonesty' },
+            { tag: 'IELTS EXAMPLE', text: 'The growing use of generative AI in education illustrates both the benefits and risks of technological progress. AI can provide personalised explanations and learning materials, but excessive dependence on it may discourage students from developing independent thinking skills.' },
+            { tag: 'IDEA', text: 'Example cực tốt cho dạng Discuss both views vì cùng một fact có thể phát triển được cả advantage và disadvantage.' },
+          ],
+          note: 'Dùng cho: Technology / Education / AI / Jobs / Academic integrity',
+        },
+        {
+          label: '3. 🚗 Electric Vehicles',
+          lines: [
+            { tag: 'FACT', text: "IEA dự báo doanh số xe điện toàn cầu đạt khoảng 17 triệu chiếc trong năm 2024, chiếm hơn 1/5 số ô tô bán ra." },
+            { tag: 'CHAIN', text: 'Electric vehicles → Less petrol/diesel consumption → Cleaner transportation → Potentially lower emissions → Less dependence on fossil fuels' },
+            { tag: 'IELTS EXAMPLE', text: 'The rapid growth of electric vehicles demonstrates how technological innovation can help reduce society\'s dependence on fossil fuels.' },
+          ],
+          note: 'Dùng cho: Transport / Environment / Technology / Climate change / Government',
+        },
+        {
+          label: '4. 🌫️ Air Pollution',
+          lines: [
+            { tag: 'FACT', text: 'WHO cho biết khoảng 99% dân số thế giới đang sống ở những nơi có chất lượng không khí vượt quá hướng dẫn của WHO.' },
+            { tag: 'CHAIN', text: 'Cars + factories → Emissions → Air pollution → Respiratory/cardiovascular problems → Healthcare costs' },
+            { tag: 'IELTS EXAMPLE', text: 'Air pollution demonstrates that economic development can sometimes create hidden social costs. Although factories and vehicles contribute to economic activity, their emissions can seriously damage public health.' },
+            { tag: 'IDEA', text: 'Example rất mạnh vì nối được: ECONOMY → ENVIRONMENT → HEALTH.' },
+          ],
+          note: 'Dùng cho: Environment / Health / Transport / Cities / Industry / Economic development',
+        },
+        {
+          label: '5. 🏥 Universal Healthcare',
+          lines: [
+            { tag: 'FACT', text: 'Universal Health Coverage là mục tiêu để mọi người tiếp cận được các dịch vụ y tế thiết yếu mà không gặp khó khăn tài chính. WHO cho biết năm 2023 vẫn có khoảng 4.6 tỷ người chưa được bao phủ đầy đủ bởi dịch vụ y tế thiết yếu; năm 2022 có khoảng 2.1 tỷ người gặp khó khăn tài chính vì chi phí y tế.' },
+            { tag: 'CHAIN', text: 'Healthcare access → Early diagnosis → Early treatment → Better health outcomes → More productive population' },
+            { tag: 'CHAIN (ngược lại)', text: 'Expensive healthcare → Delayed treatment → Financial hardship → Greater inequality' },
+            { tag: 'IELTS EXAMPLE', text: 'Access to affordable healthcare is particularly important for reducing social inequality. If medical treatment is prohibitively expensive, low-income families may delay seeking professional help, potentially allowing minor health problems to become more serious.' },
+            { tag: 'COUNTRY EXAMPLE', text: "The UK's National Health Service provides a useful example of how governments can attempt to make essential healthcare accessible regardless of a person's income." },
+            { tag: 'KEY IDEA', text: 'Healthcare không chỉ là vấn đề sức khỏe: HEALTH → EQUALITY → POVERTY → PRODUCTIVITY → ECONOMY.' },
+          ],
+          note: 'Dùng cho: Healthcare / Government spending / Equality / Poverty / Quality of life / Education / Economy',
+        },
+        {
+          label: '6. 🩺 Telemedicine in Remote Areas',
+          lines: [
+            { tag: 'FACT', text: 'WHO cho biết telemedicine có khả năng mở rộng healthcare tới các cộng đồng vùng sâu vùng xa. Năm 2026, Bộ Y tế Timor-Leste phối hợp WHO triển khai chương trình telemedicine để đưa chuyên môn y tế tới cộng đồng nông thôn — bác sĩ địa phương có thể trao đổi trực tiếp với bác sĩ chuyên khoa tại bệnh viện quốc gia.' },
+            { tag: 'CHAIN', text: 'Remote areas → Few specialist doctors → Internet/telemedicine → Remote consultation → Better healthcare access' },
+            { tag: 'IELTS EXAMPLE', text: 'Timor-Leste provides a useful example of how technology can reduce geographical inequality in healthcare. Through telemedicine, doctors in remote areas can consult specialists based in the country\'s main hospital without requiring every patient to travel long distances.' },
+            { tag: 'IDEA', text: 'Technology không nhất thiết thay thế bác sĩ — technology có thể: CONNECT PATIENTS → WITH DOCTORS.' },
+          ],
+          note: 'Dùng cho: Technology / Healthcare / Rural areas / Equality / Internet / Government',
+        },
+        {
+          label: '7. 🏃 Physical Inactivity',
+          lines: [
+            { tag: 'FACT', text: 'WHO ước tính khoảng 31% người trưởng thành thế giới (~1.8 tỷ người) không đạt mức vận động thể chất được khuyến nghị.' },
+            { tag: 'CHAIN', text: 'Office work + cars + screen time → Sedentary lifestyle → Less physical activity → Health problems' },
+            { tag: 'IELTS EXAMPLE', text: 'The increasingly sedentary nature of modern life illustrates how technological and economic changes can unintentionally create public-health problems.' },
+          ],
+          note: 'Dùng cho: Health / Lifestyle / Technology / Obesity / Work',
+        },
+        {
+          label: '8. 👕 Fast Fashion',
+          lines: [
+            { tag: 'CHAIN', text: 'Cheap clothes → Frequent purchases → Shorter product lifespan → Textile waste → Environmental pressure' },
+            { tag: 'IELTS EXAMPLE', text: 'The fast-fashion industry illustrates how low prices and rapidly changing trends can encourage excessive consumption and generate large amounts of textile waste.' },
+          ],
+          note: 'Dùng cho: Consumerism / Environment / Fashion / Waste / Advertising',
+        },
+        {
+          label: '9. 🥤 Plastic Pollution',
+          lines: [
+            { tag: 'FACT', text: 'UNEP cho biết thế giới sản xuất hơn 400 triệu tấn nhựa mỗi năm.' },
+            { tag: 'CHAIN', text: 'Mass consumption → Plastic production → Single-use products → Waste → Ocean/land pollution' },
+            { tag: 'IELTS EXAMPLE', text: 'The enormous scale of global plastic production demonstrates that individual recycling alone may not be sufficient; governments and manufacturers may also need to reduce unnecessary plastic production.' },
+            { tag: 'IDEA', text: 'Individual responsibility VS Government/corporate responsibility.' },
+          ],
+          note: 'Dùng cho: Environment / Consumerism / Government / Recycling / Lifestyle',
+        },
+        {
+          label: '10. 🏠 Remote Work',
+          lines: [
+            { tag: 'FACT', text: 'COVID-19 buộc nhiều công ty chuyển sang remote working và sử dụng video conferencing, cloud computing và các nền tảng cộng tác trực tuyến.' },
+            { tag: 'CHAIN', text: 'COVID-19 → Office closures → Remote work → Technology adoption → Hybrid work' },
+            { tag: 'IELTS EXAMPLE', text: 'The COVID-19 pandemic demonstrated that technology can fundamentally change traditional working practices, as millions of employees were able to continue working remotely.' },
+            { tag: 'ADVANTAGE', text: 'Less commuting → Less traffic → More flexible working.' },
+            { tag: 'DISADVANTAGE', text: 'Less face-to-face interaction → Communication challenges → Social isolation.' },
+          ],
+          note: 'Dùng cho: Technology / Jobs / Work-life balance / Transport / Cities',
+        },
+        {
+          label: '11. 🌎 Global Supply Chains',
+          lines: [
+            { tag: 'FACT', text: 'Một smartphone có thể: design tại Mỹ, components từ nhiều quốc gia, manufacturing/assembly tại châu Á, distribution ra thị trường toàn cầu.' },
+            { tag: 'CHAIN', text: 'International specialisation → Global supply chains → Lower production costs → Cheaper products → Economic interdependence' },
+            { tag: 'IELTS EXAMPLE', text: 'The smartphone industry is a clear illustration of globalisation, as the design, manufacture and distribution of a single product can involve numerous countries.' },
+          ],
+          note: 'Dùng cho: Globalisation / International trade / Technology / Multinational companies / Economy',
+        },
+        {
+          label: '12. 🏙️ Urban Traffic Congestion',
+          lines: [
+            { tag: 'CHAIN', text: 'Urbanisation → Population growth → More vehicles → Traffic congestion → Longer commuting times → Air pollution' },
+            { tag: 'IELTS EXAMPLE', text: 'Rapid urbanisation can create severe transportation problems because population growth is often accompanied by a rise in private vehicle ownership.' },
+          ],
+          note: 'Dùng cho: Cities / Transport / Environment / Urbanisation / Quality of life',
+        },
+        {
+          label: '13. 🚲 Netherlands – Cycling',
+          lines: [
+            { tag: 'FACT', text: 'Khoảng 27% các chuyến đi tại Netherlands được thực hiện bằng xe đạp. Chính phủ hỗ trợ cycling infrastructure và cycle superhighways để khuyến khích đi xe đạp.' },
+            { tag: 'CHAIN', text: 'Cycling infrastructure → Safer cycling → More convenient → Fewer short car journeys → Less congestion/pollution' },
+            { tag: 'IELTS EXAMPLE', text: 'The Netherlands provides a useful example of how infrastructure can influence transport behaviour. Extensive cycling infrastructure has made bicycles a practical alternative to private cars for many short journeys.' },
+          ],
+          note: 'Dùng cho: Transport / Environment / Health / Cities / Government',
+        },
+        {
+          label: '14. 🇳🇴 Norway – Electric Vehicles',
+          lines: [
+            { tag: 'FACT', text: 'Norway dùng nhiều chính sách/ưu đãi để thúc đẩy xe không phát thải. Năm 2025, electric vehicles chiếm khoảng 95% doanh số xe chở khách mới.' },
+            { tag: 'CHAIN', text: 'Government incentives → Lower financial barriers → EV adoption → Less dependence on petrol/diesel → Cleaner transportation' },
+            { tag: 'IELTS EXAMPLE', text: 'Norway provides a strong example of how financial incentives can accelerate technological adoption. Government policies have helped make electric vehicles an attractive alternative to conventional cars.' },
+          ],
+          note: 'Dùng cho: Environment / Technology / Government / Transport / Climate change',
+        },
+        {
+          label: '15. 🇯🇵 Japan – Ageing Population',
+          lines: [
+            { tag: 'FACT', text: 'Năm 2024, người từ 65 tuổi trở lên chiếm 29.3% dân số Nhật Bản.' },
+            { tag: 'CHAIN', text: 'Low birth rate + longer life expectancy → Ageing population → Smaller working-age population → Labour shortages → Pressure on pensions + healthcare' },
+            { tag: 'IELTS EXAMPLE', text: 'Japan provides a clear example of the economic consequences of population ageing. As the proportion of elderly people increases, governments may face greater pressure to finance pensions and healthcare while maintaining an adequate workforce.' },
+          ],
+          note: 'Dùng cho: Ageing population / Birth rate / Healthcare / Immigration / Employment / Economy',
+        },
+        {
+          label: '16. 🏝️ Galápagos – Protecting "Untouched" Areas',
+          lines: [
+            { tag: 'FACT', text: 'Galápagos có những khu vực không dân cư được kiểm soát nghiêm ngặt với itinerary du lịch được quy hoạch. Ecuador dùng visitor management, permits, quotas, zoning, biosecurity và tourism controls để giảm tác động lên hệ sinh thái. UNESCO xác định tourism growth và invasive species là các mối đe dọa quan trọng với Galápagos.' },
+            { tag: 'CHAIN', text: 'Untouched ecosystem → Tourism interest → More visitors → Environmental pressure → Tourism restrictions → Conservation' },
+            { tag: 'IELTS EXAMPLE', text: 'The Galápagos Islands illustrate the dilemma between exploration and conservation. Although the islands attract tourists because of their unique wildlife and relatively undisturbed ecosystems, Ecuador has introduced visitor-management systems, permits and controlled itineraries to minimise environmental damage.' },
+            { tag: 'IDEA', text: 'Not everything that humans CAN explore should necessarily be explored — cực mạnh cho đề "Should humans explore every part of the planet?"' },
+          ],
+          note: 'Dùng cho: Tourism / Environment / Untouched areas / Exploration / Wildlife / Government regulation',
+        },
+        {
+          label: '17. 🧊 Antarctica – Science vs. Human Interference',
+          lines: [
+            { tag: 'FACT', text: 'Nghị định thư về môi trường của Antarctic Treaty xác định Antarctica là "a natural reserve, devoted to peace and science" — hoạt động của con người phải được lên kế hoạch để hạn chế tác động xấu. Tourism cũng chịu quy định/guidelines để không gây tổn hại môi trường và giá trị khoa học.' },
+            { tag: 'CHAIN', text: 'Remote/fragile environment → Scientific value → Human curiosity → Tourism/research → Environmental risk → Strict regulation' },
+            { tag: 'IELTS EXAMPLE', text: 'Antarctica provides a compelling example of why some remote environments may need to be protected from unrestricted human activity. Although the continent is extremely valuable for scientific research, international agreements require activities to be carefully managed in order to minimise environmental damage.' },
+            { tag: 'IDEA', text: 'Scientific exploration ≠ unlimited human access. Dùng cho đề "Should humans explore remote areas?" — YES: scientific knowledge, BUT: exploration should be controlled to protect fragile ecosystems.' },
+          ],
+          note: 'Dùng cho: Exploration / Science / Tourism / Environment / Untouched areas / International cooperation',
+        },
+        {
+          label: '18. 🪐 NASA Europa Clipper – Searching for Life Beyond Earth',
+          lines: [
+            { tag: 'FACT', text: "NASA's Europa Clipper được phóng ngày 14/10/2024, hành trình tới Europa (mặt trăng của Jupiter) để nghiên cứu xem nơi này có điều kiện phù hợp với sự sống hay không. NASA dự kiến tàu đến Jupiter năm 2030, thực hiện 49 lần bay qua Europa. Europa có bằng chứng về một đại dương nước lỏng dưới lớp băng." },
+            { tag: 'CHAIN', text: 'Space exploration → Scientific research → Search for habitable environments → Knowledge about life → Better understanding of the universe' },
+            { tag: 'IELTS EXAMPLE', text: "NASA's Europa Clipper mission provides a real-world example of the value of space exploration. The spacecraft is investigating whether Jupiter's moon Europa has conditions suitable for life, demonstrating how governments can invest in scientific research to answer fundamental questions about humanity's place in the universe." },
+            { tag: 'ARGUMENT NGƯỢC LẠI', text: 'However, such missions are extremely expensive and their benefits are often uncertain, which raises the question of whether limited public funds should instead be directed towards immediate problems such as poverty, healthcare and climate change.' },
+            { tag: 'IDEA', text: 'Example rất tốt cho dạng "Government money: Earth vs Space".' },
+          ],
+          note: 'Dùng cho: Space exploration / Science / Government spending / Technology / Human curiosity / Future',
+        },
+        {
+          label: '19. 👽 If Humans Receive a Signal From Extraterrestrial Intelligence',
+          lines: [
+            { tag: 'FACT', text: 'Theo các nguyên tắc SETI được cập nhật tháng 6/2026: nếu phát hiện tín hiệu được xác nhận từ extraterrestrial intelligence, các nhà khoa học nên tham vấn quốc tế, cân nhắc liệu có nên phản hồi, không gửi reply nếu chưa có kết quả tham vấn — các cuộc tham vấn nên qua UN và các tổ chức quốc tế đại diện rộng rãi.' },
+            { tag: 'CHAIN', text: 'Possible ET signal → Scientific verification → International consultation → Ethical/legal discussion → Coordinated response' },
+            { tag: 'IELTS EXAMPLE', text: 'The international principles developed for SETI demonstrate that even a hypothetical discovery of extraterrestrial intelligence would require international cooperation. Scientists are encouraged to verify a potential signal carefully and consult international bodies before any response is sent.' },
+            { tag: 'IDEA', text: 'Even hypothetical technological developments can create ethical and international questions that cannot be solved by one country alone. Dùng cho: "Should scientists be allowed to do anything they want?", "Should governments cooperate on scientific research?", "Who should make decisions about potentially dangerous discoveries?"' },
+          ],
+          note: 'Dùng cho: Extraterrestrial life / Science / International cooperation / Ethics / Government / Technology',
+        },
+        {
+          label: '20. 🧬 Scientific Discovery → Ethics → Government Regulation',
+          lines: [
+            { tag: 'FRAMEWORK', text: 'Scientific discovery → New capability → Potential benefits → Potential risks → Ethical concerns → Government regulation' },
+            { tag: 'IELTS EXAMPLE', text: 'Advances in biotechnology illustrate why scientific progress often needs to be accompanied by ethical and legal safeguards. Although new technologies can potentially improve healthcare, governments may need to regulate their use when they raise concerns about safety, privacy or human rights.' },
+            { tag: 'IDEA', text: 'Dùng khung này khi đề hỏi về genetic engineering, cloning, AI, biotechnology, human experimentation, scientific research — những topic học sinh thường không có ví dụ cụ thể.' },
+          ],
+          note: 'Dùng cho: Science / Technology / Medicine / Ethics / Government / Human rights',
+        },
       ]),
+      steps([
+        { title: '① Real-world case', description: 'Tìm một ví dụ gần nhất mà bạn biết — không cần đúng 100% chủ đề.' },
+        { title: '② What happened?', description: 'Chuyện gì đã thực sự xảy ra trong ví dụ đó?' },
+        { title: '③ Why did it happen?', description: 'Nguyên nhân/động lực đằng sau là gì?' },
+        { title: '④ What was the consequence?', description: 'Hậu quả hoặc kết quả quan sát được là gì?' },
+        { title: '⑤ What does it prove?', description: 'Điều này chứng minh hoặc hỗ trợ luận điểm gì cho bài viết của bạn?' },
+      ]),
+      callout('Ví dụ áp dụng Master Formula', 'Đề: "Should humans explore remote areas that have remained untouched?"\n\nHọc sinh nghĩ đến Antarctica → Scientific research happens there → But the environment is extremely fragile → Therefore international regulations limit human impact → Therefore exploration should be controlled rather than unrestricted.\n\nĐây chính là cách biến một fact thành một IELTS argument: FACT → CHAIN → EXPLANATION → ARGUMENT — thay vì học thuộc một đống quốc gia và số liệu rời rạc.'),
     ],
   }),
 
