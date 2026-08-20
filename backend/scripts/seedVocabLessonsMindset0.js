@@ -885,6 +885,23 @@ const lessons = [
     order: 14,
     words: dedupeWords([...unit9, ...unit10]),
   },
+
+  // ── Split single-unit lessons (added alongside the combined pairs above,
+  // not replacing them — the combined docs already seeded to the DB are
+  // left untouched here; an admin can unpublish/remove them from the
+  // admin panel once these are reviewed). order 40-49 is a fresh, unused
+  // range chosen to avoid colliding with the combined pairs (10-14) or the
+  // IELTS Speaking topics (19-35) — see seedVocabLessonsIeltsSpeakingTopics.js.
+  { title: 'Mindset 0 Unit 1',  description: 'Daily Life — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'A2', order: 40, words: dedupeWords([...unit1]) },
+  { title: 'Mindset 0 Unit 2',  description: 'House and Home — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'A2', order: 41, words: dedupeWords([...unit2]) },
+  { title: 'Mindset 0 Unit 3',  description: 'Hobbies, Leisure and Entertainment — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 42, words: dedupeWords([...unit3]) },
+  { title: 'Mindset 0 Unit 4',  description: 'Travel and Holidays — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 43, words: dedupeWords([...unit4]) },
+  { title: 'Mindset 0 Unit 5',  description: 'Food and Eating Habits — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 44, words: dedupeWords([...unit5]) },
+  { title: 'Mindset 0 Unit 6',  description: 'Transport and Places in Town — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 45, words: dedupeWords([...unit6]) },
+  { title: 'Mindset 0 Unit 7',  description: 'Jobs, Work and Study — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 46, words: dedupeWords([...unit7]) },
+  { title: 'Mindset 0 Unit 8',  description: 'Health and Medicine — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 47, words: dedupeWords([...unit8]) },
+  { title: 'Mindset 0 Unit 9',  description: 'Language — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 48, words: dedupeWords([...unit9]) },
+  { title: 'Mindset 0 Unit 10', description: 'Technology — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 49, words: dedupeWords([...unit10]) },
 ];
 
 function toWordDoc([word, meaning, example, definition]) {

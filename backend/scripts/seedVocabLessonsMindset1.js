@@ -572,6 +572,21 @@ const lessons = [
     order: 18,
     words: dedupeWords([...unit7, ...unit8]),
   },
+
+  // ── Split single-unit lessons (added alongside the combined pairs above,
+  // not replacing them — the combined docs already seeded to the DB are
+  // left untouched here; an admin can unpublish/remove them from the
+  // admin panel once these are reviewed). order 50-57 is a fresh, unused
+  // range chosen to avoid colliding with the combined pairs (15-18) or the
+  // IELTS Speaking topics (19-35) — see seedVocabLessonsIeltsSpeakingTopics.js.
+  { title: 'Mindset 1 Unit 1', description: 'Relationships — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 50, words: dedupeWords([...unit1]) },
+  { title: 'Mindset 1 Unit 2', description: 'Places and Buildings — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 51, words: dedupeWords([...unit2]) },
+  { title: 'Mindset 1 Unit 3', description: 'Education and Employment — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 52, words: dedupeWords([...unit3]) },
+  { title: 'Mindset 1 Unit 4', description: 'Food and Drink — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 53, words: dedupeWords([...unit4]) },
+  { title: 'Mindset 1 Unit 5', description: 'Consumerism — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 54, words: dedupeWords([...unit5]) },
+  { title: 'Mindset 1 Unit 6', description: 'Leisure Time — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 55, words: dedupeWords([...unit6]) },
+  { title: 'Mindset 1 Unit 7', description: 'Fame and the Media — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 56, words: dedupeWords([...unit7]) },
+  { title: 'Mindset 1 Unit 8', description: 'Natural World — từ vựng & cụm từ tự nhiên hay dùng trong IELTS Speaking/Writing', difficulty: 'B1', order: 57, words: dedupeWords([...unit8]) },
 ];
 
 function toWordDoc([word, meaning, example, definition]) {
