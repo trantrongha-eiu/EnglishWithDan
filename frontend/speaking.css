@@ -481,6 +481,10 @@ body {
   line-height: 1.5;
 }
 
+/* Mobile-only "jump back to question list" affordance — hidden on desktop
+   where the sidebar is always visible alongside the practice content. */
+.mob-change-q-btn { display: none; }
+
 /* ── Question card ── */
 .question-card {
   background: #fff;
@@ -1704,6 +1708,8 @@ body {
    Nhóm 2, 2026-07-25). .practice-empty-desc's #6b7280 is already
    dark-mode-safe (same muted gray reused as-is elsewhere in dark mode). */
 [data-theme="dark"] .practice-empty-title  { color: #f9fafb; }
+[data-theme="dark"] .mob-change-q-btn      { background: #111827; border-color: #374151; color: #e5e7eb; }
+[data-theme="dark"] .mob-change-q-btn:active { background: #374151; }
 [data-theme="dark"] .question-card         { background: #1f2937; border-color: #374151; }
 [data-theme="dark"] .q-text               { color: #f9fafb; }
 [data-theme="dark"] .q-cue                { background: #111827; color: #d1d5db; }
@@ -1852,6 +1858,24 @@ body {
     overflow: visible;
     padding: 20px 16px;
   }
+  .mob-change-q-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 9px 12px;
+    margin-bottom: 4px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .mob-change-q-btn:active { background: #f3f4f6; }
   .score-grid {
     grid-template-columns: 1fr 1fr;
   }

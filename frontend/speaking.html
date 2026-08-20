@@ -210,6 +210,12 @@
       <!-- Practice content (shown after question selected) -->
       <div id="practice-content" style="display:none">
 
+        <!-- Mobile-only: jump back up to the question list without manually
+             scrolling past the whole practice card + recording area. -->
+        <button class="mob-change-q-btn" onclick="document.querySelector('.practice-sidebar')?.scrollIntoView({behavior:'smooth',block:'start'})">
+          <i class="fas fa-arrow-up"></i> Đổi câu hỏi khác
+        </button>
+
         <!-- Question card -->
         <div class="question-card" id="question-card">
           <div class="q-meta">
@@ -316,7 +322,7 @@
           <!-- Loading state -->
           <div class="feedback-loading" id="feedback-loading">
             <div class="spinner"></div>
-            <p>Gemini AI đang phân tích câu trả lời của bạn...</p>
+            <p id="feedback-loading-text">Gemini AI đang phân tích câu trả lời của bạn...</p>
           </div>
 
           <!-- Error state -->
@@ -536,7 +542,7 @@
   <div class="seq-results feedback-section" id="seq-results" style="display:none">
     <div class="feedback-loading" id="seq-feedback-loading">
       <div class="spinner"></div>
-      <p>Gemini AI đang phân tích cả buổi luyện tập...</p>
+      <p id="seq-feedback-loading-text">Gemini AI đang phân tích cả buổi luyện tập...</p>
     </div>
     <div id="seq-feedback-body" style="display:none"></div>
     <div class="seq-results-actions" id="seq-results-actions" style="display:none">

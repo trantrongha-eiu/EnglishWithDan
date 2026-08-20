@@ -478,6 +478,14 @@ async function loadRandomQuestion() {
 
     document.getElementById('practice-empty').style.display   = 'none';
     document.getElementById('practice-content').style.display = 'block';
+
+    // Same mobile auto-scroll as selectQuestion() — without this, tapping
+    // "Random" left the student stranded above the sidebar's own scrollable
+    // question list, having to manually scroll past it to see the new
+    // question that just loaded.
+    if (window.innerWidth <= 768) {
+      document.getElementById('practice-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   } catch (e) {
     console.error('loadRandomQuestion:', e);
     showToast('Không thể tải câu hỏi. Vui lòng thử lại.', 'error');
@@ -1066,6 +1074,35 @@ function toggleRecord() {
 // ──────────────────────────────────────────────────────
 // AI Analysis
 // ──────────────────────────────────────────────────────
+
+// Rotates the loading-state message every ~2.4s instead of leaving one
+// static line for the whole (sometimes 10-20s+) Gemini call — makes the
+// wait feel shorter and gives the student a sense of what's actually
+// happening, rather than a bare spinner. Shared by both single-question
+// analyzeTranscript() and the whole-session finishSequentialSession().
+const FEEDBACK_LOADING_MESSAGES = [
+  'Gemini AI đang nghe và đọc câu trả lời của bạn...',
+  'Đang chấm Fluency & Coherence...',
+  'Đang chấm Lexical Resource & Grammatical Range...',
+  'Đang ước tính Pronunciation từ transcript...',
+  'Đang tổng hợp nhận xét và gợi ý cải thiện...',
+];
+let _feedbackLoadingTimer = null;
+function _startFeedbackLoadingMessages(textElId) {
+  _stopFeedbackLoadingMessages();
+  const el = document.getElementById(textElId);
+  if (!el) return;
+  let i = 0;
+  el.textContent = FEEDBACK_LOADING_MESSAGES[0];
+  _feedbackLoadingTimer = setInterval(() => {
+    i = (i + 1) % FEEDBACK_LOADING_MESSAGES.length;
+    el.textContent = FEEDBACK_LOADING_MESSAGES[i];
+  }, 2400);
+}
+function _stopFeedbackLoadingMessages() {
+  if (_feedbackLoadingTimer) { clearInterval(_feedbackLoadingTimer); _feedbackLoadingTimer = null; }
+}
+
 async function analyzeTranscript() {
   if (state._analyzing) return; // already in flight — ignore a double click
   const ta         = document.getElementById('transcript-textarea');
@@ -1089,6 +1126,7 @@ async function analyzeTranscript() {
   if (loading) loading.style.display = 'flex';
   if (results) results.style.display = 'none';
   if (errorBox) errorBox.classList.add('hidden');
+  _startFeedbackLoadingMessages('feedback-loading-text');
   section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   const questionId = state.currentQuestion?._id;
@@ -1141,6 +1179,7 @@ async function analyzeTranscript() {
     if (errorBox) errorBox.classList.remove('hidden');
     console.error('analyzeTranscript:', e);
   } finally {
+    _stopFeedbackLoadingMessages();
     state._analyzing = false;
     if (btnAnalyze) btnAnalyze.disabled = !ta?.value.trim();
   }
@@ -1823,6 +1862,7 @@ async function finishSequentialSession() {
   if (loadingEl)      loadingEl.style.display      = 'flex';
   if (feedbackBody)   feedbackBody.style.display   = 'none';
   if (actionsEl)       actionsEl.style.display       = 'none';
+  _startFeedbackLoadingMessages('seq-feedback-loading-text');
 
   try {
     const data = await apiFetch('/api/speaking/analyze', {
@@ -1835,6 +1875,7 @@ async function finishSequentialSession() {
         duration:   state.seqTotalElapsed,
       }),
     });
+    _stopFeedbackLoadingMessages();
     if (loadingEl)    loadingEl.style.display    = 'none';
     if (feedbackBody) feedbackBody.style.display = 'block';
     if (actionsEl)    actionsEl.style.display    = 'flex';
@@ -1852,6 +1893,7 @@ async function finishSequentialSession() {
     }
   } catch (e) {
     console.error('finishSequentialSession:', e);
+    _stopFeedbackLoadingMessages();
     if (loadingEl) loadingEl.style.display = 'none';
     if (feedbackBody) {
       feedbackBody.style.display = 'block';
