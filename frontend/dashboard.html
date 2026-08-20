@@ -33,16 +33,6 @@
 <script src="js/shared/dictionary-lookup.js"></script>
 <script src="js/shared/score-message.js"></script>
 
-<!-- Priority 2C — manual re-entry point for the Today's Learning popup
-     (the popup itself only auto-shows once per day; this stays available
-     on every visit since goal.html isn't in the shared nav — see §31). -->
-<!-- left:20px (not right:20px) — the right side is already occupied by
-     js/shared/peer-chat-widget.js's #pcw-root (bottom:20px;right:20px) and,
-     on some pages, a Zalo chat bubble stacked above it. -->
-<button id="today-plan-fab" onclick="window.EWSLearning && window.EWSLearning.openToday()"
-  title="Today's IELTS Plan" aria-label="Today's IELTS Plan"
-  style="position:fixed;left:20px;bottom:20px;z-index:900;width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#4f46e5,#4338ca);color:#fff;font-size:22px;box-shadow:0 6px 20px rgba(79,70,229,.4);cursor:pointer;">🔔</button>
-
 <div class="app-layout">
 
   <!-- ── SIDEBAR (desktop only) ── -->
@@ -112,17 +102,6 @@
               </div>
             </div>
             <button class="btn btn-primary" id="todays-lesson-btn">Start</button>
-          </div>
-
-          <!-- "Ôn tập hôm nay" — spaced-repetition review queue, hidden when nothing is due -->
-          <div class="review-due-card" id="review-due-card" style="display:none">
-            <div class="review-due-icon"><i class="fas fa-brain"></i></div>
-            <div class="review-due-info">
-              <div class="review-due-label">Ôn tập hôm nay</div>
-              <div class="review-due-title" id="review-due-title">—</div>
-              <div class="review-due-meta">Từ đã đến lịch ôn lại, theo trí nhớ ngắn hạn của bạn</div>
-            </div>
-            <button class="btn btn-primary" onclick="openReviewDueModal()">Ôn ngay</button>
           </div>
 
           <!-- "My Vocabulary" — aggregate stats across ALL of the student's books

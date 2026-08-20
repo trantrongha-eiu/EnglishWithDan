@@ -202,11 +202,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     }
 
-    // Priority 2C — popup-first learning discovery. Fire-and-forget: never
-    // blocks vocab notebook loading below, and silently no-ops on any
-    // fetch failure (see learning-popups.js's own try/catch).
-    if (window.EWSLearning) window.EWSLearning.autoShow();
-
     setupEmojiPicker();
     // All four are independent fetches — was awaiting loadMyBooks/loadUnits
     // first, then firing these two afterward for no reason (a network
