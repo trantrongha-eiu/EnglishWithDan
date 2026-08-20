@@ -30,10 +30,15 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    // Auto-expire plan nếu đã hết hạn
+    // Auto-expire plan nếu đã hết hạn. planExpiresAt/planStartedAt are
+    // deliberately left in place (not cleared) — they're the only signal
+    // the frontend has to tell "this account WAS premium and it just
+    // expired" (show renew-Premium copy) apart from "this is a free
+    // account whose 24h trial ran out" (show trial-expired copy); see
+    // frontend/js/nav.js's _showTrialExpiredModalOnce().
     if (user.plan === 'premium' && user.planExpiresAt && user.planExpiresAt < new Date()) {
       user.plan = 'free';
-      User.updateOne({ _id: user._id }, { plan: 'free', planExpiresAt: null, planStartedAt: null }).catch(() => {});
+      User.updateOne({ _id: user._id }, { plan: 'free' }).catch(() => {});
     }
 
     req.user = user;
