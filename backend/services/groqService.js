@@ -64,7 +64,7 @@ async function _callGroq(system, userPrompt, { maxTokens = 768, json = true, lab
     });
   } catch (err) {
     logger.ai(`${label}: network/timeout error`, { errorMessage: err.message });
-    throw new Error('Groq không phản hồi kịp thời.');
+    throw new Error('Groq không phản hồi kịp thời.', { cause: err });
   } finally {
     clearTimeout(timer);
   }
@@ -91,7 +91,7 @@ async function checkSpeakingGroq(question, transcript, part = 1, _attempt = 0) {
       logger.ai('checkSpeakingGroq: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return checkSpeakingGroq(question, transcript, part, _attempt + 1);
     }
-    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 
@@ -109,7 +109,7 @@ async function generateSampleAnswerGroq(question, part = 1, cueCard = '', _attem
       logger.ai('generateSampleAnswerGroq: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return generateSampleAnswerGroq(question, part, cueCard, _attempt + 1);
     }
-    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Groq không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 

@@ -119,7 +119,7 @@ function localCheck(exercise, userAnswer) {
 // pre-submission). Mirrors task2PracticeService's identical fix.
 function sanitizeExerciseForClient(ex, opts = {}) {
   const { includeHints = true } = opts;
-  const { primaryAnswer, ...rest } = ex; // eslint-disable-line no-unused-vars
+  const { primaryAnswer, ...rest } = ex;
   if (includeHints && primaryAnswer && WORD_COUNT_TYPES.has(ex.type)) {
     const hint = buildAnswerHint(primaryAnswer);
     rest.answerWordCount = hint.wordCount;

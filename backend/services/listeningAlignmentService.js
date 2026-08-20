@@ -48,7 +48,7 @@ async function transcribeWithWordTimestamps(audioBuffer, filename = 'audio.mp3')
     });
   } catch (err) {
     logger.ai('listeningAlignment: Groq transcription network/timeout error', { errorMessage: err.message });
-    throw new Error('Groq không phản hồi kịp thời khi transcribe audio.');
+    throw new Error('Groq không phản hồi kịp thời khi transcribe audio.', { cause: err });
   } finally {
     clearTimeout(timer);
   }

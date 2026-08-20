@@ -27,7 +27,6 @@ function shuffle(arr) {
 }
 
 async function runSeed() {
-  const mongoose = require('mongoose');
   const Passage = require('../models/Passage');
   const ReadingTest = require('../models/ReadingTest');
 

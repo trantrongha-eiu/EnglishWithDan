@@ -19,7 +19,6 @@ const SERIES = ['Cam 15', 'Cam 16', 'Cam 17', 'Cam 20', 'Cam 21'];
 const TEST_NUMBERS = [1, 2, 3, 4];
 
 async function runSeed() {
-  const mongoose = require('mongoose');
   const Passage = require('../models/Passage');
   const ReadingTest = require('../models/ReadingTest');
 

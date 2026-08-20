@@ -1,5 +1,5 @@
 'use strict';
-const { overview, steps, list, callout, example, lesson } = require('./builder');
+const { steps, list, callout, example, lesson } = require('./builder');
 
 const CATEGORY = 'Chiến lược & Xử lý tình huống phòng thi';
 

@@ -157,7 +157,7 @@ async function _checkEssayCore(question, essay, imagePart, _attempt) {
       return _checkEssayCore(question, essay, imagePart, _attempt + 1);
     }
     logger.ai('checkEssay: JSON parse failed after retry', { rawTextPreview: rawText?.slice(0, 500) });
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 
@@ -344,7 +344,7 @@ async function checkSpeaking(question, transcript, part = 1, _attempt = 0) {
       logger.ai('checkSpeaking: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return checkSpeaking(question, transcript, part, _attempt + 1);
     }
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 
@@ -526,7 +526,7 @@ async function generateSampleAnswer(question, part = 1, cueCard = '', _attempt =
       logger.ai('generateSampleAnswer: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return generateSampleAnswer(question, part, cueCard, _attempt + 1);
     }
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 
@@ -604,7 +604,7 @@ Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
       logger.ai('gradeT2Question: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return gradeT2Question({ type, questionText, modelAnswer, userAnswer }, _attempt + 1);
     }
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 
@@ -676,7 +676,7 @@ async function generateCollocations(word, _attempt = 0) {
       logger.ai('generateCollocations: JSON parse failed, retrying', { errorMessage: parseErr.message });
       return generateCollocations(word, _attempt + 1);
     }
-    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử');
+    throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });
   }
 }
 

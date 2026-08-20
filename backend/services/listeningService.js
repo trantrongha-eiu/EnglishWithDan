@@ -73,7 +73,7 @@ function gradeQuestionGroups(questionGroups, getUserAnswer, extraFields = () => 
         const num = q.questionNumber;
         const ua = getUserAnswer(num);
         const ca = (q.correctAnswer || '').trim();
-        let isCorrect = false;
+        let isCorrect;
         if (q.type === 'multi-answer-group') {
           try {
             const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
@@ -592,7 +592,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   // now-revealed answers trying to fabricate a better score) or belongs to
   // someone else — this must NOT silently mint a second completed attempt;
   // reject it instead, same as Reading.
-  let attempt = null;
+  let attempt;
   if (attemptId) {
     attempt = await ListeningAttempt.findOneAndUpdate(
       { _id: attemptId, userId: fields.userId, status: 'in-progress' },

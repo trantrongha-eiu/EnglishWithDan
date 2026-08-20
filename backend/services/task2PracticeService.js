@@ -123,7 +123,7 @@ function sanitizeQuestionForClient(q, opts = {}) {
   // the client before the student ever submitted (checkAnswer()/submitExam()
   // both re-read the question straight from the DB, never from client-sent
   // data, so the client never legitimately needed it pre-submission).
-  const { correctAnswer, modelAnswer, ...rest } = q; // eslint-disable-line no-unused-vars
+  const { correctAnswer, modelAnswer, ...rest } = q;
   if (q.type === 'rearrange' && (!rest.baseWords || !rest.baseWords.length) && correctAnswer) {
     rest.baseWords = correctAnswer.replace(/[.,!?;:]/g, '').split(/\s+/).filter(Boolean);
   }

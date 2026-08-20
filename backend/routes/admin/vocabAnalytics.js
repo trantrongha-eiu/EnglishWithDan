@@ -312,7 +312,6 @@ router.get('/vocab-activity/:userId', auth, teacherOnly, async (req, res) => {
     // Chuyển thành mảng đủ cho mọi slot (ngày/tháng/năm)
     let data;
     if (view === 'day') {
-      const daysInMonth = labels.length;
       const map = {};
       raw.forEach(r => { map[r._id] = r; });
       data = labels.map((lbl, i) => {
