@@ -31,7 +31,19 @@ function needsGrading(attempt, taskNum) {
 const DELAY_MS = 3000;
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
+// Guards against the 20-minute cron tick and an overload retry (below)
+// overlapping — a run can take a while (sequential grading + DELAY_MS
+// between calls), so without this a slow run could still be in flight when
+// the next tick fires.
+let isRunning = false;
+let retryTimer = null;
+
 async function runAutoGrade() {
+  if (isRunning) {
+    console.log('[WritingAutoGrade] Previous run still in progress, skipping this tick');
+    return;
+  }
+  isRunning = true;
   try {
     // Anything already 'confirmed' has a teacher-finalized grade and is
     // never touched again. 'pending' and 'ai_done' are the only states
@@ -73,9 +85,12 @@ async function runAutoGrade() {
       } catch (err) {
         if (err.isOverloaded) {
           // Gemini is overloaded/out of quota right now — every remaining
-          // call this run would fail the same way. Stop; the next
-          // scheduled run (3h later) picks up whatever's still pending.
-          console.error(`[WritingAutoGrade] STOPPED — Gemini overloaded/quota reached (${err.message}). ${jobs.length - i} task(s) left for next run.`);
+          // call this run would fail the same way. Stop this run, but
+          // don't just wait for the next 20-minute tick: schedule a
+          // one-off retry sooner (5 minutes) so a temporary overload
+          // doesn't sit ungraded for most of the normal interval.
+          console.error(`[WritingAutoGrade] STOPPED — Gemini overloaded/quota reached (${err.message}). ${jobs.length - i} task(s) left; retrying in ${RETRY_MS / 60000} minutes.`);
+          scheduleRetry();
           break;
         }
         failed++;
@@ -87,19 +102,32 @@ async function runAutoGrade() {
     console.log(`[WritingAutoGrade] Done. ${graded} graded, ${failed} failed.`);
   } catch (e) {
     console.error('[WritingAutoGrade] Error:', e.message);
+  } finally {
+    isRunning = false;
   }
+}
+
+const RETRY_MS = 5 * 60 * 1000; // 5 minutes
+
+function scheduleRetry() {
+  if (retryTimer) return; // an overload retry is already pending
+  retryTimer = setTimeout(() => {
+    retryTimer = null;
+    runAutoGrade();
+  }, RETRY_MS);
 }
 
 let task = null;
 
 function start() {
-  // Every 3 hours, on the hour (00:00, 03:00, 06:00, ...).
-  task = cron.schedule('0 */3 * * *', runAutoGrade);
-  console.log('[WritingAutoGrade] Cron scheduled (every 3 hours)');
+  // Every 20 minutes.
+  task = cron.schedule('*/20 * * * *', runAutoGrade);
+  console.log('[WritingAutoGrade] Cron scheduled (every 20 minutes)');
 }
 
 function stop() {
   if (task) task.stop();
+  if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
 }
 
 module.exports = { start, stop, runAutoGrade };
