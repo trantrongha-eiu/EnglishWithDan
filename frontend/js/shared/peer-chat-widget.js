@@ -119,6 +119,39 @@
     return { text: '', online: false };
   }
 
+  var EMOJI_LIST = [
+    '😀', '😁', '😂', '🤣', '😊', '🙂', '😉', '😍', '😘', '😜', '🤔', '😎',
+    '😭', '😢', '😡', '😱', '🥳', '🥰', '😴', '🤗', '😅', '🙄', '😏', '🤩',
+    '👍', '👎', '👏', '🙏', '💪', '✌️', '🤝', '👋', '🔥', '💯', '❤️', '💕',
+    '💔', '⭐', '✅', '❌', '🎉', '😇', '🐱', '🐶', '☕', '📚', '✏️', '🎯'
+  ];
+
+  function _toggleEmojiPopup() {
+    var pop = document.getElementById('pcw-emoji-popup');
+    if (!pop) return;
+    var open = pop.classList.toggle('open');
+    if (open && !pop.dataset.built) {
+      pop.dataset.built = '1';
+      pop.innerHTML = EMOJI_LIST.map(function (e) {
+        return '<button type="button" class="pcw-emoji-item">' + e + '</button>';
+      }).join('');
+      pop.querySelectorAll('.pcw-emoji-item').forEach(function (btn) {
+        btn.addEventListener('click', function () { _insertEmoji(btn.textContent); });
+      });
+    }
+  }
+
+  function _insertEmoji(emoji) {
+    var ta = document.getElementById('pcw-input');
+    if (!ta) return;
+    var start = ta.selectionStart != null ? ta.selectionStart : ta.value.length;
+    var end = ta.selectionEnd != null ? ta.selectionEnd : ta.value.length;
+    ta.value = ta.value.slice(0, start) + emoji + ta.value.slice(end);
+    var pos = start + emoji.length;
+    ta.focus();
+    ta.setSelectionRange(pos, pos);
+  }
+
   function _avatarHtml(avatar, name, cls) {
     return avatar
       ? '<img class="' + cls + '" src="' + escHtml(avatar) + '" alt="">'
@@ -170,13 +203,18 @@
       '.pcw-row{display:flex;flex-direction:column;max-width:80%}' +
       '.pcw-row.mine{align-self:flex-end;align-items:flex-end}' +
       '.pcw-row:not(.mine){align-items:flex-start}' +
-      '.pcw-bubble{background:var(--surface2,#f3f4f6);color:var(--text,#111827);padding:8px 12px;border-radius:14px;font-size:13.5px;line-height:1.45;word-break:break-word;white-space:pre-wrap}' +
-      '.pcw-bubble.mine{background:var(--blue,#3d8bff);color:#fff}' +
+      '.pcw-bubble{background:var(--surface2,#f3f4f6);color:var(--text,#111827);padding:8px 12px;border-radius:16px 16px 16px 4px;font-size:13.5px;line-height:1.45;word-break:break-word;white-space:pre-wrap}' +
+      '.pcw-bubble.mine{background:var(--blue,#3d8bff);color:#fff;border-radius:16px 16px 4px 16px}' +
       '.pcw-msg-time{font-size:10px;color:var(--text3,#9ca3af);margin:2px 4px 0}' +
       '.pcw-msg-status{font-size:10px;color:var(--text3,#9ca3af);margin:1px 4px 0}' +
-      '.pcw-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
+      '.pcw-input-row{position:relative;display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border,#e5e7eb);flex-shrink:0}' +
       '.pcw-input{flex:1;resize:none;border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:8px 11px;font-family:inherit;font-size:13.5px;background:var(--bg,var(--surface,#fff));color:var(--text,#111827);max-height:80px}' +
       '.pcw-input:focus{outline:none;border-color:var(--blue,#3d8bff)}' +
+      '.pcw-emoji-btn{font-size:19px;line-height:1;flex-shrink:0}' +
+      '.pcw-emoji-popup{position:absolute;left:8px;right:8px;bottom:calc(100% + 4px);background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:8px;display:none;grid-template-columns:repeat(7,1fr);gap:2px;max-height:150px;overflow-y:auto;z-index:5}' +
+      '.pcw-emoji-popup.open{display:grid}' +
+      '.pcw-emoji-item{background:none;border:none;cursor:pointer;font-size:19px;padding:4px;border-radius:6px;line-height:1.2}' +
+      '.pcw-emoji-item:hover{background:var(--surface2,#f3f4f6)}' +
       '.pcw-send-btn{background:var(--blue,#3d8bff);color:#fff;border:none;border-radius:10px;width:36px;flex-shrink:0;cursor:pointer;font-size:14px}' +
       '.pcw-send-btn:disabled{opacity:.5;cursor:default}' +
       // Stacks the launcher above the floating Zalo contact button
@@ -380,10 +418,13 @@
     _body.innerHTML =
       '<div class="pcw-messages" id="pcw-messages"></div>' +
       '<div class="pcw-input-row">' +
+        '<div class="pcw-emoji-popup" id="pcw-emoji-popup"></div>' +
+        '<button class="pcw-icon-btn pcw-emoji-btn" id="pcw-emoji-btn" title="Emoji" type="button">😊</button>' +
         '<textarea class="pcw-input" id="pcw-input" rows="1" placeholder="Nhắn tin..."></textarea>' +
         '<button class="pcw-send-btn" id="pcw-send-btn" title="Gửi"><i class="fas fa-paper-plane"></i></button>' +
       '</div>';
 
+    document.getElementById('pcw-emoji-btn').addEventListener('click', _toggleEmojiPopup);
     document.getElementById('pcw-send-btn').addEventListener('click', _sendMessage);
     document.getElementById('pcw-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); _sendMessage(); }
@@ -475,6 +516,8 @@
         body: JSON.stringify({ body: body }),
       });
       if (ta) ta.value = '';
+      var pop = document.getElementById('pcw-emoji-popup');
+      if (pop) pop.classList.remove('open');
       await _renderThread();
     } catch (e) {
       if (window.showToastWithTitle) window.showToastWithTitle('error', 'Không gửi được', e.message || '');
@@ -522,6 +565,14 @@
       });
     }
   }
+
+  document.addEventListener('click', function (e) {
+    var pop = document.getElementById('pcw-emoji-popup');
+    var btn = document.getElementById('pcw-emoji-btn');
+    if (!pop || !pop.classList.contains('open')) return;
+    if (pop.contains(e.target) || (btn && btn.contains(e.target))) return;
+    pop.classList.remove('open');
+  });
 
   _buildWidget();
   _pollConversations();
