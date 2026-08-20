@@ -3,9 +3,18 @@
 const goalService = require('../../../services/goalService');
 const User = require('../../../models/User');
 const { createStudent } = require('../../factories/userFactory');
+const { todayVNDate } = require('../../../services/streakBonusService');
 
-const future = days => new Date(Date.now() + days * 86400000);
-const past = days => new Date(Date.now() - days * 86400000);
+// goalService.getGoal() computes daysRemaining from todayVNDate() (VN-midnight),
+// not from the precise current instant — see streakBonusService.js's
+// todayVNDate(). future()/past() must anchor to that same VN-midnight, not
+// Date.now(), or these tests flake depending on what hour it happens to be
+// in Vietnam when the suite runs: Date.now() can be up to ~24h ahead of
+// todayVNDate() (whenever it's already past midnight VN time but not yet a
+// full UTC day later), which was silently inflating daysRemaining by up to
+// a day and intermittently failing the <=90 / <=1 assertions below.
+const future = days => new Date(todayVNDate().getTime() + days * 86400000);
+const past = days => new Date(todayVNDate().getTime() - days * 86400000);
 
 describe('goalService.validateGoalInput', () => {
   it('accepts a fully valid goal', () => {
