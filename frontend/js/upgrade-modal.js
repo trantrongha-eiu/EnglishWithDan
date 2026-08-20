@@ -134,7 +134,9 @@
   var _umTriggerEl = null;
   // reason (optional): 'trial_expired' shows a message specific to the
   // free-plan 24h trial running out (backend/utils/plan.js's
-  // hasFullAccess) instead of the generic upgrade pitch — every other
+  // hasFullAccess); 'premium_expired' is for an account that WAS premium
+  // and just lapsed (nav.js tells the two apart via planExpiresAt — see
+  // its own comment) — otherwise the generic upgrade pitch; every other
   // caller can keep passing nothing.
   async function openUpgradeModal(reason) {
     _umTriggerEl = document.activeElement;
@@ -144,7 +146,10 @@
     var isPremium = user && user.plan === 'premium';
     var titleEl = document.getElementById('um-title');
     var descEl  = document.getElementById('um-desc');
-    if (reason === 'trial_expired') {
+    if (reason === 'premium_expired') {
+      titleEl.textContent = 'Gói Premium đã hết hạn';
+      descEl.textContent  = 'Gói Premium của bạn vừa hết hạn — gia hạn ngay để tiếp tục học không giới hạn (Reading · Listening · Writing · Speaking · Vocabulary).';
+    } else if (reason === 'trial_expired') {
       titleEl.textContent = 'Hết hạn dùng thử';
       descEl.textContent  = 'Gói dùng thử 1 ngày của bạn đã kết thúc — nâng cấp Premium để tiếp tục học không giới hạn (Reading · Listening · Writing · Speaking · Vocabulary).';
     } else if (isPremium) {

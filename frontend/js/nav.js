@@ -501,8 +501,14 @@
         // action. Every locked action already shows this same modal on its
         // own (reading-v2.js/listening.html/speaking.js/writing.js/
         // dashboard.js), so this is purely "tell them right away" on top.
+        // planExpiresAt distinguishes the two copies: backend/middleware/
+        // auth.js deliberately no longer clears it when downgrading an
+        // expired premium account to free, so its presence here means
+        // "this account WAS premium and it just lapsed" (renew copy)
+        // rather than "this is a free account whose 24h trial ran out"
+        // (trial-expired copy).
         if (u.role === 'student' && !window.AuthService.hasPremiumAccess(u)) {
-          _showTrialExpiredModalOnce();
+          _showTrialExpiredModalOnce(0, u.planExpiresAt ? 'premium_expired' : 'trial_expired');
         }
       });
     }
@@ -667,7 +673,7 @@
   // practical proxy to "once per login" without spamming the modal on
   // every single page navigation within one sitting).
   var TRIAL_EXPIRED_SHOWN_KEY = 'ews_trial_expired_shown';
-  function _showTrialExpiredModalOnce(attempt) {
+  function _showTrialExpiredModalOnce(attempt, reason) {
     if (sessionStorage.getItem(TRIAL_EXPIRED_SHOWN_KEY)) return;
     if (typeof window.openUpgradeModal !== 'function') {
       // Defense-in-depth: correctness normally comes from upgrade-modal.js
@@ -676,10 +682,10 @@
       // (the sessionStorage flag below is also deliberately NOT set until
       // this actually succeeds) — retry briefly instead of giving up.
       attempt = attempt || 0;
-      if (attempt < 20) setTimeout(function () { _showTrialExpiredModalOnce(attempt + 1); }, 100);
+      if (attempt < 20) setTimeout(function () { _showTrialExpiredModalOnce(attempt + 1, reason); }, 100);
       return;
     }
     sessionStorage.setItem(TRIAL_EXPIRED_SHOWN_KEY, '1');
-    window.openUpgradeModal('trial_expired');
+    window.openUpgradeModal(reason || 'trial_expired');
   }
 })();
