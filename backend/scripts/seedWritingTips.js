@@ -6,12 +6,14 @@ const general = require("./writingTipsData/general");
 const byType = require("./writingTipsData/byType");
 const byBand = require("./writingTipsData/byBand");
 const realWorldExamples = require("./writingTipsData/realWorldExamples");
+const task1Types = require("./writingTipsData/task1Types");
 
 const lessons = [
   ...general,
   ...byType,
   ...byBand,
   ...realWorldExamples,
+  ...task1Types,
 ];
 
 async function runSeed() {
