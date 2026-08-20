@@ -241,19 +241,78 @@ function CreateUserModal({ onClose, onSaved }) {
   );
 }
 
+// Mirrors frontend/profile.html's compressImage() — resize to maxSize on
+// the longest edge and re-encode as JPEG so the base64 payload stays small
+// before it's sent to the avatar upload endpoint.
+function compressImage(file, maxSize, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = e => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
+          else { width = Math.round(width * maxSize / height); height = maxSize; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+const MAX_AVATAR_BYTES = 20 * 1024 * 1024; // 20MB — sanity cap before compression
+
 function UserModal({ userId, onClose, onSaved }) {
   const toast = useToast();
   const { isAdmin } = useAuth();
-  const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', className: '', isBanned: false, newPassword: '' });
+  const [form, setForm] = useState({ username: '', email: '', role: 'student', firstName: '', lastName: '', className: '', isBanned: false, newPassword: '', avatar: '' });
   const [loading, setLoading] = useState(false);
+  const [avatarBusy, setAvatarBusy] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
     apiFetch(`/admin/users/${userId}`).then(d => {
       const u = d.user;
-      setForm({ username: u.username || '', email: u.email || '', role: u.role || 'student', firstName: u.firstName || '', lastName: u.lastName || '', className: u.className || '', isBanned: !!u.isBanned, newPassword: '' });
+      setForm({ username: u.username || '', email: u.email || '', role: u.role || 'student', firstName: u.firstName || '', lastName: u.lastName || '', className: u.className || '', isBanned: !!u.isBanned, newPassword: '', avatar: u.avatar || '' });
     }).catch(e => toast(e.message, 'error'));
   }, [userId]);
+
+  async function pickAvatar(e) {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { toast('Vui lòng chọn file ảnh', 'error'); return; }
+    if (file.size > MAX_AVATAR_BYTES) { toast('Ảnh quá lớn, vui lòng chọn ảnh dưới 20MB', 'error'); return; }
+
+    setAvatarBusy(true);
+    try {
+      const imageBase64 = await compressImage(file, 600, 0.85);
+      const d = await apiFetch(`/admin/users/${userId}/avatar`, { method: 'POST', body: JSON.stringify({ imageBase64 }) });
+      setForm(f => ({ ...f, avatar: d.user.avatar || '' }));
+      toast('Đã cập nhật avatar');
+      onSaved();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setAvatarBusy(false); }
+  }
+
+  async function removeAvatar() {
+    setAvatarBusy(true);
+    try {
+      await apiFetch(`/admin/users/${userId}/avatar`, { method: 'DELETE' });
+      setForm(f => ({ ...f, avatar: '' }));
+      toast('Đã xóa avatar');
+      onSaved();
+    } catch (err) { toast(err.message, 'error'); }
+    finally { setAvatarBusy(false); }
+  }
 
   async function save(e) {
     e.preventDefault();
@@ -279,6 +338,27 @@ function UserModal({ userId, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <form onSubmit={save} style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {isAdmin && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, background: 'var(--surface2,#e5e7eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 700, color: 'var(--text2,#6b7280)' }}>
+                {form.avatar
+                  ? <img src={form.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : (form.username || '?').charAt(0).toUpperCase()}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <label className="btn btn-ghost btn-sm" style={{ cursor: avatarBusy ? 'default' : 'pointer', opacity: avatarBusy ? .6 : 1 }}>
+                  {avatarBusy ? 'Đang xử lý...' : '📷 Đổi avatar'}
+                  <input type="file" accept="image/*" onChange={pickAvatar} disabled={avatarBusy} style={{ display: 'none' }} />
+                </label>
+                {form.avatar && (
+                  <button type="button" className="btn btn-ghost btn-sm" disabled={avatarBusy}
+                    style={{ color: 'var(--danger)' }} onClick={removeAvatar}>
+                    🗑 Xóa avatar
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
           <div className="form-group">
             <label className="form-label">Username</label>
             <input className="form-input" value={form.username} onChange={set('username')} required />

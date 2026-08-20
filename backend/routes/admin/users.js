@@ -6,6 +6,8 @@ const bcrypt  = require('bcryptjs');
 const auth    = require('../../middleware/auth');
 const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
 const logger  = require('../../utils/logger');
+const { isImageDataUri } = require('../../utils/validation');
+const cloudinaryService = require('../../services/cloudinaryService');
 
 const User = require('../../models/User');
 const Message = require('../../models/Message');
@@ -99,6 +101,40 @@ router.put('/users/:id', auth, adminOnly, async (req, res) => {
     res.json({ success: true, user });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// POST /api/admin/users/:id/avatar – admin đặt/thay avatar cho user (chỉ admin)
+router.post('/users/:id/avatar', auth, adminOnly, async (req, res) => {
+  try {
+    const { imageBase64 } = req.body;
+    if (!imageBase64) return res.status(400).json({ success: false, message: 'Thiếu ảnh' });
+    if (!isImageDataUri(imageBase64)) return res.status(400).json({ success: false, message: 'Dữ liệu ảnh không hợp lệ' });
+
+    const result = await cloudinaryService.uploadImage(imageBase64, {
+      folder: 'avatars',
+      transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }]
+    });
+    const user = await User.findByIdAndUpdate(req.params.id, { avatar: result.secure_url }, { new: true })
+      .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    logger.security('Admin changed a user avatar', { actorId: String(req.user._id), targetId: String(user._id) });
+    res.json({ success: true, user, message: 'Đã cập nhật avatar' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id/avatar – xóa avatar của user, về mặc định (chỉ admin)
+router.delete('/users/:id/avatar', auth, adminOnly, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, { avatar: '' }, { new: true })
+      .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
+    if (!user) return res.status(404).json({ success: false, message: 'Không tìm thấy người dùng' });
+    logger.security('Admin removed a user avatar', { actorId: String(req.user._id), targetId: String(user._id) });
+    res.json({ success: true, user, message: 'Đã xóa avatar' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
