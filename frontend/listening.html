@@ -1022,6 +1022,10 @@
                 _pendingListeningReview = data.pending || null;
             } catch (e) { _pendingListeningReview = null; }
 
+            if (_pendingListeningReview && window.showReviewRequiredPopup) {
+                window.showReviewRequiredPopup(_pendingListeningReview, () => _goToPendingReview(_pendingListeningReview));
+            }
+
             const wrap = document.getElementById('tests-wrapper');
             if (!wrap) return;
             let banner = document.getElementById('review-required-banner');

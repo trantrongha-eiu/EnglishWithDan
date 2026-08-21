@@ -694,6 +694,10 @@ async function _checkPendingReviewBanner() {
     _pendingReadingReview = res.pending || null;
   } catch { _pendingReadingReview = null; }
 
+  if (_pendingReadingReview && window.showReviewRequiredPopup) {
+    window.showReviewRequiredPopup(_pendingReadingReview, () => _goToPendingReview(_pendingReadingReview));
+  }
+
   const wrap = document.getElementById('tests-wrapper');
   if (!wrap) return;
   let banner = document.getElementById('review-required-banner');

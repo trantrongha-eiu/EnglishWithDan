@@ -92,8 +92,54 @@
       '.rd-complete{text-align:center;padding:30px 10px}' +
       '.rd-complete-emoji{font-size:44px;margin-bottom:10px}' +
       '.rd-complete-stats{font-size:13px;color:var(--text2,#374151);line-height:1.8;margin:14px 0}' +
-      '@media(max-width:480px){#rd-root{width:100vw;max-width:100vw}}';
+      '@media(max-width:480px){#rd-root{width:100vw;max-width:100vw}}' +
+
+      // Popup that fires the moment the student lands on the Reading/
+      // Listening page with an unfinished review — distinct from the
+      // slide-over drawer above (that's the actual guided-review UI; this
+      // is just the "heads up, you're locked" notice).
+      '#rd-popup-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1450;display:none;align-items:center;justify-content:center;padding:16px}' +
+      '#rd-popup-backdrop.open{display:flex}' +
+      '.rd-popup-box{background:var(--surface,#fff);border-radius:16px;max-width:380px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}' +
+      '.rd-popup-emoji{font-size:38px;margin-bottom:10px}' +
+      '.rd-popup-title{font-weight:800;font-size:16.5px;color:var(--text,#111827);margin-bottom:8px}' +
+      '.rd-popup-text{font-size:13.5px;color:var(--text2,#374151);line-height:1.6;margin-bottom:20px}' +
+      '.rd-popup-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue,#3d8bff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px}' +
+      '.rd-popup-dismiss{background:none;border:none;color:var(--text3,#9ca3af);font-size:12.5px;cursor:pointer;padding:6px}';
     document.head.appendChild(s);
+  }
+
+  // Shown at most once per page load (loadTests()/loadTestList() re-run this
+  // check on every list-screen re-entry — without a guard, navigating back
+  // to the list a few times would pop this up repeatedly and get annoying;
+  // the persistent banner already stays up as the standing reminder).
+  var _popupShownThisLoad = false;
+  function showReviewRequiredPopup(pending, onGoToReview) {
+    if (_popupShownThisLoad || !pending) return;
+    _popupShownThisLoad = true;
+    _injectStyles();
+    var backdrop = document.getElementById('rd-popup-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'rd-popup-backdrop';
+      document.body.appendChild(backdrop);
+    }
+    backdrop.innerHTML =
+      '<div class="rd-popup-box">' +
+        '<div class="rd-popup-emoji">🔒</div>' +
+        '<div class="rd-popup-title">Cần hoàn thành Review trước</div>' +
+        '<div class="rd-popup-text">Bạn cần review lại các câu <strong>đã làm sai</strong> và lưu từ vựng cần thiết ở đề trước — câu đã làm đúng thì không cần review — trước khi có thể bắt đầu đề mới.</div>' +
+        '<button class="rd-popup-btn" id="rd-popup-go-btn">Vào Review ngay</button>' +
+        '<button class="rd-popup-dismiss" id="rd-popup-dismiss-btn">Để sau</button>' +
+      '</div>';
+    backdrop.classList.add('open');
+    document.getElementById('rd-popup-dismiss-btn').addEventListener('click', function () {
+      backdrop.classList.remove('open');
+    });
+    document.getElementById('rd-popup-go-btn').addEventListener('click', function () {
+      backdrop.classList.remove('open');
+      if (onGoToReview) onGoToReview();
+    });
   }
 
   var _rd = null; // { review, opts, idx, taxonomy, vocabCount }
@@ -315,4 +361,5 @@
   }
 
   window.openReviewDrawer = openReviewDrawer;
+  window.showReviewRequiredPopup = showReviewRequiredPopup;
 })();
