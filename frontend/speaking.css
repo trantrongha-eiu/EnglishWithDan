@@ -62,6 +62,16 @@ body {
 }
 .btn-secondary:hover { background: #f3f4f6; }
 
+/* Buttons on this page are pills/circles/rounded cards — the browser's
+   default focus outline is a square box that clashes with them (looks like
+   a broken/misplaced border, e.g. around .mob-change-q-btn). box-shadow
+   always follows the element's own border-radius (unlike outline in some
+   browsers), so swap to a rounded glow instead of removing focus styling. */
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(229,57,53,.4);
+}
+
 /* ── Select ── */
 .sp-select {
   padding: 8px 12px;
