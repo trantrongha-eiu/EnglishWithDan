@@ -88,9 +88,12 @@ function gradeQuestionGroups(questionGroups, getUserAnswer, extraFields = () => 
 
 // Single-question comparator (fill-blank/multi-answer-group/checkbox/
 // default `/`-delimited-variants) — extracted from gradeQuestionGroups()'s
-// else-branch (mechanical, behavior-preserving) so the mandatory Review
-// System's "Try Again" retry-grading (reviewService.js) calls this exact
-// same logic instead of a second hand-written copy that could drift.
+// else-branch (mechanical, behavior-preserving refactor, no behavior
+// change). Note: this expects the ORIGINAL submission's format (a JSON-
+// encoded array/letter-set for multi-answer-group/checkbox) — the
+// mandatory Review System's isolated "Try Again" retry (reviewService.js)
+// does NOT reuse this, since a retry is always a single plain value for
+// one question, not the whole cluster's original array format.
 function matchSingleAnswer(type, rawUser, rawCorrect) {
   const ua = (rawUser || '').trim();
   const ca = (rawCorrect || '').trim();
@@ -774,6 +777,4 @@ module.exports = {
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,
   savePractice, getPracticeHistory, getPracticeHistoryDetail,
-  // Exported for reviewService.js's "Try Again" retry-grading.
-  matchSingleAnswer,
 };

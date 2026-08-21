@@ -37,13 +37,19 @@ const MistakeSchema = new mongoose.Schema({
   retryAnswer: { type: String, default: null },
   retryResult: { type: String, enum: ['correct', 'wrong'], default: null },
 
-  evidence:           { type: String, default: '' }, // short free-text note, not highlighting
-  temptingAnswerNote: { type: String, default: '' }, // "why was my answer tempting?"
-  note:               { type: String, default: '' }, // personal reflection
+  // Free-text fields get the same maxlength convention as other user-note
+  // fields elsewhere in this codebase (User.studyMotto/className) — audit
+  // finding: these had no length cap at all, so an oversized payload only
+  // ever surfaced as a generic 500 from an uncaught ValidationError.
+  // reviewService.updateMistake() also checks these explicitly before
+  // save() so the client gets a clean 400 with the actual field name.
+  evidence:           { type: String, default: '', maxlength: 1000, trim: true }, // short free-text note, not highlighting
+  temptingAnswerNote: { type: String, default: '', maxlength: 1000, trim: true }, // "why was my answer tempting?"
+  note:               { type: String, default: '', maxlength: 1000, trim: true }, // personal reflection
 
   learningPoint: {
     category: { type: String, enum: ['vocabulary', 'strategy', 'grammar', 'ielts-trap'], default: null },
-    content:  { type: String, default: '' },
+    content:  { type: String, default: '', maxlength: 500, trim: true },
   },
 
   // Set once this mistake's required fields (category/reason, confidence,

@@ -1,7 +1,7 @@
 'use strict';
 
 const reviewService = require('../services/reviewService');
-const { TAXONOMY } = require('../constants/errorTaxonomy');
+const { TAXONOMY, CATEGORIES_BY_TYPE } = require('../constants/errorTaxonomy');
 
 function guard(logTag, handler) {
   return async (req, res) => {
@@ -21,7 +21,11 @@ function validSkill(skill) {
 exports.getTaxonomy = guard(null, async (req, res) => {
   const { skill } = req.query;
   if (!validSkill(skill)) return res.status(400).json({ success: false, message: 'Thiếu hoặc sai tham số skill' });
-  res.json({ success: true, taxonomy: TAXONOMY[skill] });
+  // categoriesByType lets the frontend narrow the category picker to what's
+  // actually relevant for the mistake's own question type (audit finding —
+  // previously every category was shown regardless of type, letting a
+  // Completion question get tagged "Matching Headings").
+  res.json({ success: true, taxonomy: TAXONOMY[skill], categoriesByType: CATEGORIES_BY_TYPE[skill] });
 });
 
 exports.getPending = guard(null, async (req, res) => {
@@ -50,6 +54,7 @@ exports.updateMistake = guard('[Review updateMistake]', async (req, res) => {
   if (result.status === 'invalid_taxonomy') return res.status(400).json({ success: false, message: 'Lý do sai không hợp lệ' });
   if (result.status === 'invalid_confidence') return res.status(400).json({ success: false, message: 'Mức độ tự tin không hợp lệ' });
   if (result.status === 'invalid_learning_point') return res.status(400).json({ success: false, message: 'Learning point không hợp lệ' });
+  if (result.status === 'field_too_long') return res.status(400).json({ success: false, message: `Nội dung "${result.field}" quá dài (tối đa ${result.max} ký tự)` });
   res.json({ success: true, review: result.review, reviewCompleted: result.reviewCompleted, summary: result.summary });
 });
 

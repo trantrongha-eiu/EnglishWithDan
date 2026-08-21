@@ -49,11 +49,27 @@
   var LEARNING_LABELS = { 'vocabulary': '📚 Từ vựng', 'strategy': '🧠 Chiến lược', 'grammar': '📝 Ngữ pháp', 'ielts-trap': '⚠️ Bẫy IELTS' };
 
   var _taxonomyCache = {};
+  var _categoriesByTypeCache = {};
   async function _getTaxonomy(skill) {
     if (_taxonomyCache[skill]) return _taxonomyCache[skill];
     var d = await _api('/review/taxonomy?skill=' + encodeURIComponent(skill));
     _taxonomyCache[skill] = d.taxonomy || {};
+    _categoriesByTypeCache[skill] = d.categoriesByType || {};
     return _taxonomyCache[skill];
+  }
+
+  // Narrows the category picker to what's actually relevant for this
+  // mistake's own question type (audit finding — previously every category
+  // was shown regardless of type, letting e.g. a Completion question get
+  // tagged "Matching Headings"). Always keeps an already-saved category
+  // even if it falls outside the filtered set, so older data never loses
+  // its pre-selection.
+  function _categoriesFor(skill, questionType, alreadySelected) {
+    var all = Object.keys(_rd.taxonomy);
+    var relevant = _categoriesByTypeCache[skill] && _categoriesByTypeCache[skill][questionType];
+    var list = (relevant && relevant.length) ? relevant.filter(function (c) { return all.indexOf(c) !== -1; }) : all;
+    if (alreadySelected && list.indexOf(alreadySelected) === -1) list = list.concat(alreadySelected);
+    return list;
   }
 
   function _injectStyles() {
@@ -194,22 +210,39 @@
     if (opts && opts.onClose) opts.onClose(null);
   }
 
+  // Two phases per mistake, split specifically so the correct answer is
+  // NEVER shown before the student attempts "Try Again" — audit finding:
+  // the original single-form design showed "Đáp án đúng" at the very top
+  // of the step, before error-reason/confidence/retry were even filled in,
+  // which defeats the whole point of retry (it's supposed to distinguish a
+  // careless slip from a real gap, which is impossible if the answer was
+  // just handed over first). Phase A collects reason+confidence+retry
+  // WITHOUT revealing the correct answer; only once that's submitted (and
+  // retryResult comes back from the server) does Phase B reveal the
+  // correct answer + explanation + the optional reflection fields. A
+  // mistake resumed later picks up in whichever phase it left off in,
+  // since retryResult != null is exactly "phase A already done".
   function _renderStep() {
     if (_rd.idx === -1) { _renderComplete(); return; }
     var mistakes = _rd.review.mistakes;
     var m = mistakes[_rd.idx];
     var doneCount = mistakes.filter(function (x) { return x.completedAt; }).length;
     _progressEl.textContent = 'Câu ' + (doneCount + 1) + ' / ' + mistakes.length;
-
     var meta = (_rd.opts.getQuestionMeta && _rd.opts.getQuestionMeta(m.questionNumber)) || {};
-    var categories = Object.keys(_rd.taxonomy);
+    var isLast = (mistakes.length - doneCount) === 1;
+
+    if (m.retryResult == null) _renderPhaseA(m, meta);
+    else _renderPhaseB(m, meta, isLast);
+  }
+
+  function _renderPhaseA(m, meta) {
+    var categories = _categoriesFor(_rd.opts.skill, meta.type, m.errorCategory);
 
     _body.innerHTML =
       '<button class="rd-jump-link" id="rd-jump-btn"><i class="fas fa-arrow-up-right-from-square"></i> Xem lại đề/đoạn văn gốc</button>' +
       '<div class="rd-answers">' +
         '<div><strong>Câu ' + m.questionNumber + '</strong>' + (meta.questionText ? ': ' + escHtml(meta.questionText) : '') + '</div>' +
-        '<div>Bạn chọn: <span class="wrong">' + escHtml(m.userAnswer || '(bỏ trống)') + '</span></div>' +
-        '<div>Đáp án đúng: <span class="right">' + escHtml(m.correctAnswer) + '</span></div>' +
+        '<div>Bạn đã chọn: <span class="wrong">' + escHtml(m.userAnswer || '(bỏ trống)') + '</span></div>' +
       '</div>' +
 
       '<div class="rd-section-label">1. Vì sao bạn sai?</div>' +
@@ -228,30 +261,13 @@
         }).join('') +
       '</div>' +
 
-      '<div class="rd-section-label">3. Thử lại câu này</div>' +
+      '<div class="rd-section-label">3. Thử lại câu này (chưa hiển thị đáp án đúng)</div>' +
       (meta.options && meta.options.length
         ? '<div class="rd-chip-row" id="rd-retry-options">' +
             meta.options.map(function (o) { return '<button type="button" class="rd-chip rd-retry-opt" data-val="' + escHtml(o) + '">' + escHtml(o) + '</button>'; }).join('') +
-          '</div><input type="hidden" id="rd-retry">'
-        : '<input class="rd-input" id="rd-retry" placeholder="Nhập lại đáp án...">') +
-      '<div id="rd-retry-result"></div>' +
+          '</div><input type="hidden" id="rd-retry" value="' + escHtml(m.retryAnswer || '') + '">'
+        : '<input class="rd-input" id="rd-retry" placeholder="Nhập lại đáp án..." value="' + escHtml(m.retryAnswer || '') + '">');
 
-      '<details class="rd-optional">' +
-        '<summary>Bằng chứng / Vì sao đáp án sai lại hấp dẫn? / Ghi chú (không bắt buộc)</summary>' +
-        '<textarea class="rd-textarea" id="rd-evidence" placeholder="Bằng chứng trong bài..."></textarea>' +
-        '<textarea class="rd-textarea" id="rd-tempting" placeholder="Vì sao đáp án sai lại hấp dẫn?" style="margin-top:6px"></textarea>' +
-        '<textarea class="rd-textarea" id="rd-note" placeholder="Ghi chú của riêng bạn..." style="margin-top:6px"></textarea>' +
-      '</details>' +
-
-      '<div class="rd-section-label">4. Bạn cần nhớ điều gì?</div>' +
-      '<div class="rd-chip-row" id="rd-learning-cat">' +
-        Object.keys(LEARNING_LABELS).map(function (k) {
-          return '<button type="button" class="rd-chip' + (m.learningPoint?.category === k ? ' active' : '') + '" data-val="' + k + '">' + LEARNING_LABELS[k] + '</button>';
-        }).join('') +
-      '</div>' +
-      '<textarea class="rd-textarea" id="rd-learning-content" placeholder="VD: allocate = distribute/assign" style="margin-top:6px"></textarea>';
-
-    // Wire category -> reason cascade
     var catSel = document.getElementById('rd-category');
     var reasonSel = document.getElementById('rd-reason');
     function fillReasons(selected) {
@@ -268,14 +284,9 @@
         btn.classList.add('active');
       });
     });
-    document.querySelectorAll('#rd-learning-cat .rd-chip').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.querySelectorAll('#rd-learning-cat .rd-chip').forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-      });
-    });
     if (meta.options && meta.options.length) {
       document.querySelectorAll('.rd-retry-opt').forEach(function (btn) {
+        if (btn.getAttribute('data-val') === m.retryAnswer) btn.classList.add('active');
         btn.addEventListener('click', function () {
           document.querySelectorAll('.rd-retry-opt').forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
@@ -283,35 +294,84 @@
         });
       });
     }
-
     document.getElementById('rd-jump-btn').addEventListener('click', function () {
       if (_rd.opts.onJumpToContext) _rd.opts.onJumpToContext(m.questionNumber);
     });
 
-    _footer.innerHTML = '<button class="rd-save-btn" id="rd-save-btn">Lưu & câu tiếp theo</button>';
-    document.getElementById('rd-save-btn').addEventListener('click', _saveCurrent);
+    _footer.innerHTML = '<button class="rd-save-btn" id="rd-save-btn">Nộp câu trả lời</button>';
+    document.getElementById('rd-save-btn').addEventListener('click', function () { _submitPhaseA(m); });
   }
 
-  async function _saveCurrent() {
-    var m = _rd.review.mistakes[_rd.idx];
+  async function _submitPhaseA(m) {
     var category = document.getElementById('rd-category').value;
     var reason = document.getElementById('rd-reason').value;
     var confidenceBtn = document.querySelector('#rd-confidence .rd-chip.active');
     var retryAnswer = document.getElementById('rd-retry').value.trim();
-    var learningBtn = document.querySelector('#rd-learning-cat .rd-chip.active');
 
     if (!category || !reason) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn lý do sai'); return; }
     if (!confidenceBtn) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn mức độ tự tin'); return; }
     if (!retryAnswer) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng thử lại câu hỏi'); return; }
+
+    var btn = document.getElementById('rd-save-btn');
+    btn.disabled = true; btn.textContent = 'Đang nộp...';
+    try {
+      var patch = { errorCategory: category, errorReason: reason, confidence: confidenceBtn.getAttribute('data-val'), retryAnswer: retryAnswer };
+      var d = await _api('/review/' + _rd.review._id + '/mistakes/' + m._id, { method: 'PATCH', body: JSON.stringify(patch) });
+      _rd.review = d.review;
+      _renderStep(); // same idx — m.retryResult is now set, so this renders Phase B
+    } catch (e) {
+      window.showToastWithTitle && window.showToastWithTitle('error', 'Lỗi', e.message || 'Không nộp được');
+      btn.disabled = false; btn.textContent = 'Nộp câu trả lời';
+    }
+  }
+
+  function _renderPhaseB(m, meta, isLast) {
+    _body.innerHTML =
+      '<div class="rd-answers">' +
+        '<div><strong>Câu ' + m.questionNumber + '</strong>' + (meta.questionText ? ': ' + escHtml(meta.questionText) : '') + '</div>' +
+        '<div>Bạn đã chọn: <span class="wrong">' + escHtml(m.userAnswer || '(bỏ trống)') + '</span></div>' +
+        '<div>Đáp án đúng: <span class="right">' + escHtml(m.correctAnswer) + '</span></div>' +
+        '<div id="rd-retry-result" class="rd-retry-result ' + m.retryResult + '">' +
+          (m.retryResult === 'correct' ? '✅ Lần thử lại của bạn: ĐÚNG' : '❌ Lần thử lại của bạn (' + escHtml(m.retryAnswer || '') + '): vẫn sai') +
+        '</div>' +
+        (meta.explanation ? '<div style="margin-top:8px;color:var(--text2,#374151)">' + escHtml(meta.explanation) + '</div>' : '') +
+      '</div>' +
+
+      '<details class="rd-optional" open>' +
+        '<summary>Bằng chứng / Vì sao đáp án sai lại hấp dẫn? / Ghi chú (không bắt buộc)</summary>' +
+        '<textarea class="rd-textarea" id="rd-evidence" placeholder="Bằng chứng trong bài...">' + escHtml(m.evidence || '') + '</textarea>' +
+        '<textarea class="rd-textarea" id="rd-tempting" placeholder="Vì sao đáp án sai lại hấp dẫn?" style="margin-top:6px">' + escHtml(m.temptingAnswerNote || '') + '</textarea>' +
+        '<textarea class="rd-textarea" id="rd-note" placeholder="Ghi chú của riêng bạn..." style="margin-top:6px">' + escHtml(m.note || '') + '</textarea>' +
+      '</details>' +
+
+      '<div class="rd-section-label">Bạn cần nhớ điều gì?</div>' +
+      '<div class="rd-chip-row" id="rd-learning-cat">' +
+        Object.keys(LEARNING_LABELS).map(function (k) {
+          return '<button type="button" class="rd-chip' + (m.learningPoint && m.learningPoint.category === k ? ' active' : '') + '" data-val="' + k + '">' + LEARNING_LABELS[k] + '</button>';
+        }).join('') +
+      '</div>' +
+      '<textarea class="rd-textarea" id="rd-learning-content" placeholder="VD: allocate = distribute/assign" style="margin-top:6px">' + escHtml((m.learningPoint && m.learningPoint.content) || '') + '</textarea>';
+
+    document.querySelectorAll('#rd-learning-cat .rd-chip').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('#rd-learning-cat .rd-chip').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+
+    _footer.innerHTML = '<button class="rd-save-btn" id="rd-save-btn">' + (isLast ? 'Hoàn thành Review 🎉' : 'Lưu & câu tiếp theo') + '</button>';
+    document.getElementById('rd-save-btn').addEventListener('click', function () { _submitPhaseB(m); });
+  }
+
+  async function _submitPhaseB(m) {
+    var learningBtn = document.querySelector('#rd-learning-cat .rd-chip.active');
     if (!learningBtn) { window.showToastWithTitle && window.showToastWithTitle('warning', 'Thiếu thông tin', 'Vui lòng chọn 1 điều cần nhớ'); return; }
 
     var btn = document.getElementById('rd-save-btn');
+    var originalLabel = btn.textContent;
     btn.disabled = true; btn.textContent = 'Đang lưu...';
     try {
       var patch = {
-        errorCategory: category, errorReason: reason,
-        confidence: confidenceBtn.getAttribute('data-val'),
-        retryAnswer: retryAnswer,
         evidence: document.getElementById('rd-evidence').value,
         temptingAnswerNote: document.getElementById('rd-tempting').value,
         note: document.getElementById('rd-note').value,
@@ -319,20 +379,11 @@
       };
       var d = await _api('/review/' + _rd.review._id + '/mistakes/' + m._id, { method: 'PATCH', body: JSON.stringify(patch) });
       _rd.review = d.review;
-
-      var updated = d.review.mistakes.find(function (x) { return String(x._id) === String(m._id); });
-      if (updated && updated.retryResult) {
-        var resEl = document.getElementById('rd-retry-result');
-        resEl.className = 'rd-retry-result ' + updated.retryResult;
-        resEl.textContent = updated.retryResult === 'correct' ? '✅ Lần này bạn đã chọn đúng!' : '❌ Vẫn chưa đúng — xem lại kiến thức nhé.';
-        await new Promise(function (r) { setTimeout(r, 900); }); // let the student see the result before advancing
-      }
-
       _rd.idx = _firstIncompleteIdx(_rd.review.mistakes);
       _renderStep();
     } catch (e) {
       window.showToastWithTitle && window.showToastWithTitle('error', 'Lỗi', e.message || 'Không lưu được');
-      btn.disabled = false; btn.textContent = 'Lưu & câu tiếp theo';
+      btn.disabled = false; btn.textContent = originalLabel;
     }
   }
 

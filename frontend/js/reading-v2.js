@@ -893,8 +893,17 @@ async function resumePractice() {
       showVocabToast(`Đã khôi phục ${n} câu trả lời`, 'success');
       setTimeout(_updatePracticeProgress, 100);
     }
-  } catch {
-    showVocabToast('Không thể tiếp tục bài cũ', 'error');
+  } catch (e) {
+    // Audit finding: this endpoint is gated by the same mandatory-review
+    // check as starting a new practice — without this branch, a student
+    // trying to resume an old draft while a review is pending just saw a
+    // confusing generic error with no explanation or way forward.
+    if (e.body && e.body.code === 'REVIEW_REQUIRED') {
+      showVocabToast('Bạn cần hoàn thành review bài trước đó trước khi tiếp tục', 'warning');
+      _goToPendingReview(e.body);
+    } else {
+      showVocabToast('Không thể tiếp tục bài cũ', 'error');
+    }
   }
 }
 
@@ -2785,7 +2794,14 @@ async function _maybeOpenMandatoryReview(attemptType, attemptId, allQuestions, j
       getQuestionMeta: qNum => {
         const q = qByNum[qNum];
         if (!q) return {};
-        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null };
+        let options = (q.options && q.options.length) ? q.options : null;
+        // TFNG questions don't store an options array on the content model
+        // (the exam UI hardcodes these three labels client-side) — without
+        // this, the review drawer's retry input fell back to free-text
+        // typing instead of clean True/False/Not Given buttons.
+        if (!options && q.type === 'true-false-ng') options = ['TRUE', 'FALSE', 'NOT GIVEN'];
+        if (!options && q.type === 'yes-no-ng') options = ['YES', 'NO', 'NOT GIVEN'];
+        return { questionText: q.questionText, options, type: q.type, explanation: q.explanation };
       },
       onJumpToContext: jumpFn,
     });

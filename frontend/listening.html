@@ -1068,7 +1068,7 @@
                     getQuestionMeta: qNum => {
                         const q = qByNum[qNum];
                         if (!q) return {};
-                        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null };
+                        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null, type: q.type, explanation: q.explanation };
                     },
                     onJumpToContext: jumpFn,
                 });

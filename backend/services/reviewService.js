@@ -4,12 +4,7 @@
 // was built from (backend/models/AttemptReview.js has the schema-level
 // rationale). This service is deliberately thin: it never re-fetches
 // Passage/ListeningTest content (the frontend already has that from the
-// existing review/history-detail endpoints), and it never re-implements
-// grading — retry-grading calls back into readingService/listeningService's
-// own single-question comparators via a lazy require (readingService.js
-// requires this file at module scope for createReviewIfNeeded, so a
-// top-level require here would be circular; requiring inside the function
-// body defers it until both modules have finished loading).
+// existing review/history-detail endpoints).
 const AttemptReview = require('../models/AttemptReview');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 
@@ -20,7 +15,14 @@ const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
 // assignment; learningPoint.category is a single tap, not free text, so
 // it's required alongside the others.
 function coreFieldsFilled(m) {
-  return !!(m.errorCategory && m.errorReason && m.confidence && m.retryAnswer != null && m.learningPoint?.category);
+  // retryAnswer must be a non-empty attempt, not just "the field was
+  // touched" — `!= null` alone let a client PATCH with retryAnswer:'' and
+  // have it count as a completed retry without the student actually
+  // attempting anything (found during audit; the frontend already guards
+  // against sending an empty value, but the backend must not rely on that).
+  return !!(m.errorCategory && m.errorReason && m.confidence
+    && typeof m.retryAnswer === 'string' && m.retryAnswer.trim().length > 0
+    && m.learningPoint?.category);
 }
 
 // Filters graded answers down to the ones that need review (wrong OR
@@ -60,27 +62,51 @@ function getPendingReview(userId, skill) {
   return AttemptReview.findOne({ userId, status: 'pending', attemptType: { $in: attemptTypes } }).sort({ createdAt: 1 });
 }
 
+// Strips `correctAnswer` from any mistake that hasn't gone through "Try
+// Again" yet. Audit finding: hiding the correct answer until after retry
+// was implemented purely in the frontend's rendering order — the raw API
+// response already carried it from the start, so anyone opening devtools'
+// network tab could see it before attempting the retry, defeating the
+// whole point of the exercise. Once retryResult is set (the student has
+// submitted their retry), the answer is meant to be revealed, so it's left
+// in untouched from that point on.
+function _withheldUntilRetried(reviewDoc) {
+  if (!reviewDoc) return reviewDoc;
+  reviewDoc.mistakes = reviewDoc.mistakes.map(m => m.retryResult == null ? { ...m, correctAnswer: undefined } : m);
+  return reviewDoc;
+}
+
 async function getReviewDetail(reviewId, userId) {
-  return AttemptReview.findOne({ _id: reviewId, userId }).lean();
+  const doc = await AttemptReview.findOne({ _id: reviewId, userId }).lean();
+  return _withheldUntilRetried(doc);
 }
 
 async function getReviewByAttempt(attemptType, attemptId, userId) {
-  return AttemptReview.findOne({ attemptType, attemptId, userId }).lean();
+  const doc = await AttemptReview.findOne({ attemptType, attemptId, userId }).lean();
+  return _withheldUntilRetried(doc);
 }
 
-function gradeRetry(attemptType, questionType, rawUser, rawCorrect) {
+// The isolated "Try Again" retry is always a single value for ONE question
+// — even for cluster question types (multi-answer-group, checkbox) whose
+// ORIGINAL submission format is a JSON-encoded array/letter-set shared
+// across a whole question cluster (see readingService.gradeMultiAnswerGroup/
+// listeningService.matchSingleAnswer's own comments). Audit finding: the
+// frontend's isolated retry sends a single chip value, not a JSON array, so
+// reusing those original comparators here made JSON.parse throw on every
+// multi-answer-group/checkbox retry, silently grading it "wrong"
+// regardless of correctness. A plain single-value match (case-insensitive,
+// "/"-delimited alternates supported, matching gradeOne's own fallback
+// branch) is correct for every question type in this isolated-retry
+// context — this never needs to call back into readingService/
+// listeningService at all.
+function gradeRetry(rawUser, rawCorrect) {
   if (!rawUser) return false;
-  if (attemptType.startsWith('reading')) {
-    const { gradeOne, gradeMultiAnswerGroup } = require('./readingService');
-    return questionType === 'multi-answer-group'
-      ? gradeMultiAnswerGroup(rawUser, rawCorrect)
-      : gradeOne(rawUser, rawCorrect);
-  }
-  const { matchSingleAnswer } = require('./listeningService');
-  return matchSingleAnswer(questionType, rawUser, rawCorrect);
+  const alts = String(rawCorrect || '').split('/').map(s => s.trim().toLowerCase()).filter(Boolean);
+  return alts.includes(String(rawUser).trim().toLowerCase());
 }
 
-const PATCHABLE_FIELDS = ['confidence', 'retryAnswer', 'evidence', 'temptingAnswerNote', 'note'];
+const MAX_LEN = { evidence: 1000, temptingAnswerNote: 1000, note: 1000, 'learningPoint.content': 500 };
+const PATCHABLE_TEXT_FIELDS = ['evidence', 'temptingAnswerNote', 'note'];
 
 async function updateMistake(reviewId, mistakeId, userId, patch) {
   const review = await AttemptReview.findOne({ _id: reviewId, userId });
@@ -88,38 +114,56 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   const mistake = review.mistakes.id(mistakeId);
   if (!mistake) return { status: 'not_found' };
 
+  // Validate everything BEFORE mutating the in-memory document — audit
+  // finding: the previous version wrote patch.confidence into the
+  // subdocument via a generic field-copy loop and only checked its
+  // validity afterward. Harmless in practice (the early return skipped
+  // save()), but the wrong order for a function whose whole point is
+  // never trusting client input.
+  if (patch.confidence !== undefined && patch.confidence !== null
+      && !['very-confident', 'not-sure', 'guessing'].includes(patch.confidence)) {
+    return { status: 'invalid_confidence' };
+  }
+  let resolvedCode = null;
   if (patch.errorCategory !== undefined || patch.errorReason !== undefined) {
     const category = patch.errorCategory ?? mistake.errorCategory;
     const reason = patch.errorReason ?? mistake.errorReason;
-    const code = resolveErrorCode(skillFor(review.attemptType), category, reason);
-    if (!code) return { status: 'invalid_taxonomy' };
-    mistake.errorCategory = category;
-    mistake.errorReason = reason;
-    mistake.errorCode = code;
+    resolvedCode = resolveErrorCode(skillFor(review.attemptType), category, reason);
+    if (!resolvedCode) return { status: 'invalid_taxonomy' };
+  }
+  for (const field of PATCHABLE_TEXT_FIELDS) {
+    if (patch[field] !== undefined && String(patch[field]).length > MAX_LEN[field]) {
+      return { status: 'field_too_long', field, max: MAX_LEN[field] };
+    }
+  }
+  if (patch.learningPoint?.category !== undefined) {
+    const cat = patch.learningPoint.category;
+    if (cat !== null && !['vocabulary', 'strategy', 'grammar', 'ielts-trap'].includes(cat)) {
+      return { status: 'invalid_learning_point' };
+    }
+  }
+  if (patch.learningPoint?.content !== undefined && String(patch.learningPoint.content).length > MAX_LEN['learningPoint.content']) {
+    return { status: 'field_too_long', field: 'learningPoint.content', max: MAX_LEN['learningPoint.content'] };
   }
 
-  for (const field of PATCHABLE_FIELDS) {
+  // All validated — now safe to assign.
+  if (resolvedCode) {
+    mistake.errorCategory = patch.errorCategory ?? mistake.errorCategory;
+    mistake.errorReason = patch.errorReason ?? mistake.errorReason;
+    mistake.errorCode = resolvedCode;
+  }
+  if (patch.confidence !== undefined) mistake.confidence = patch.confidence;
+  for (const field of PATCHABLE_TEXT_FIELDS) {
     if (patch[field] !== undefined) mistake[field] = patch[field];
   }
-  if (patch.confidence !== undefined && !['very-confident', 'not-sure', 'guessing'].includes(patch.confidence)) {
-    return { status: 'invalid_confidence' };
-  }
-
   if (patch.retryAnswer !== undefined) {
+    mistake.retryAnswer = patch.retryAnswer;
     // Server-computed, never trusted from the client — grades the isolated
     // retry against this mistake's own frozen correctAnswer.
-    mistake.retryResult = gradeRetry(review.attemptType, mistake.questionType, patch.retryAnswer, mistake.correctAnswer)
-      ? 'correct' : 'wrong';
+    mistake.retryResult = gradeRetry(patch.retryAnswer, mistake.correctAnswer) ? 'correct' : 'wrong';
   }
-
   if (patch.learningPoint !== undefined) {
-    const cat = patch.learningPoint.category;
-    if (cat !== undefined) {
-      if (cat !== null && !['vocabulary', 'strategy', 'grammar', 'ielts-trap'].includes(cat)) {
-        return { status: 'invalid_learning_point' };
-      }
-      mistake.learningPoint.category = cat;
-    }
+    if (patch.learningPoint.category !== undefined) mistake.learningPoint.category = patch.learningPoint.category;
     if (patch.learningPoint.content !== undefined) mistake.learningPoint.content = patch.learningPoint.content;
   }
 
@@ -139,7 +183,12 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
   await review.save();
   return {
     status: 'ok',
-    review,
+    // toObject() + _withheldUntilRetried, not the live mongoose doc directly
+    // — this response carries every mistake in the review, not just the one
+    // just patched, so any OTHER mistake still awaiting its own retry must
+    // have its correctAnswer withheld here too, the same as the plain GET
+    // endpoints (fixed alongside the same audit finding).
+    review: _withheldUntilRetried(review.toObject()),
     reviewCompleted: review.status === 'completed',
     summary: review.status === 'completed' ? {
       mistakesReviewed: review.mistakes.length,

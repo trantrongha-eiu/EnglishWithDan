@@ -529,8 +529,4 @@ module.exports = {
   listPracticePassages, getPracticePassageById, getPassageAnswerKey, savePractice,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
   listAdminAttempts, getAdminAttemptsStats,
-  // Exported for reviewService.js's "Try Again" retry-grading — reuses the
-  // exact same single-question comparators submitTest()/savePractice()
-  // already use, instead of a second hand-written copy that could drift.
-  gradeOne, gradeMultiAnswerGroup,
 };

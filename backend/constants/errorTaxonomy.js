@@ -116,6 +116,43 @@ const listening = {
 
 const TAXONOMY = { reading, listening };
 
+// questionType -> the category list actually relevant to it. Audit finding:
+// without this, the category dropdown showed all 7-8 categories regardless
+// of the mistake's own question type, so a Completion question could be
+// tagged "Matching Headings" and vice versa — an incoherent errorCode/
+// questionType pairing that would corrupt later Recommendation Engine
+// aggregation. This is UI-side filtering only (a convenience, not a hard
+// rule) — resolveErrorCode() below still accepts ANY valid category+reason
+// pair for the skill regardless of type, so older/edge-case data never gets
+// rejected. "Vocabulary" and "Question Understanding" (and the catch-all
+// strategy/comprehension category) apply broadly, so every entry includes
+// them alongside the type-specific category. A type not listed here falls
+// back to every category for the skill.
+const READING_TYPE_CATEGORIES = {
+  'true-false-ng':       ['T/F/NG', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'yes-no-ng':           ['T/F/NG', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'matching-headings':   ['Matching Headings', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'matching-info':       ['Matching Information', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'multiple-choice':     ['Multiple Choice', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'multi-answer-group':  ['Multiple Choice', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'fill-blank':          ['Completion', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'sentence-completion': ['Completion', 'Vocabulary', 'Question Understanding', 'Search / Reading Strategy'],
+  'checkbox':            ['Completion', 'Multiple Choice', 'Vocabulary', 'Question Understanding'],
+};
+
+const LISTENING_TYPE_CATEGORIES = {
+  'multiple-choice':     ['Distractor', 'Vocabulary', 'Listening Comprehension', 'Question Understanding', 'Prediction'],
+  'multi-answer-group':  ['Distractor', 'Vocabulary', 'Listening Comprehension', 'Question Understanding', 'Prediction'],
+  'fill-blank':          ['Spelling & Grammar', 'Vocabulary', 'Listening Comprehension', 'Prediction', 'Question Understanding'],
+  'sentence-completion': ['Spelling & Grammar', 'Vocabulary', 'Listening Comprehension', 'Prediction', 'Question Understanding'],
+  'matching':            ['Vocabulary', 'Listening Comprehension', 'Question Understanding', 'Distractor'],
+  'matching-info':       ['Vocabulary', 'Listening Comprehension', 'Question Understanding', 'Distractor'],
+  'map-labelling':       ['Vocabulary', 'Listening Comprehension', 'Question Understanding'],
+  'checkbox':            ['Spelling & Grammar', 'Distractor', 'Vocabulary', 'Listening Comprehension'],
+};
+
+const CATEGORIES_BY_TYPE = { reading: READING_TYPE_CATEGORIES, listening: LISTENING_TYPE_CATEGORIES };
+
 // attemptType ('reading'|'reading-practice'|'listening'|'listening-practice')
 // -> which taxonomy table to use. Practice and full-mock attempts of the
 // same skill share one taxonomy (the mistake categories don't depend on
@@ -129,4 +166,17 @@ function resolveErrorCode(skill, category, reason) {
   return code || null;
 }
 
-module.exports = { TAXONOMY, skillFor, resolveErrorCode };
+// Category list relevant to a given question type, always including the
+// mistake's own already-saved category even if it falls outside the
+// filtered set (e.g. legacy data from before this filter existed, or a
+// questionType this table doesn't cover) — filtering must never silently
+// drop a pre-selected value the student already chose.
+function categoriesForType(skill, questionType, alreadySelected) {
+  const all = Object.keys(TAXONOMY[skill] || {});
+  const relevant = CATEGORIES_BY_TYPE[skill]?.[questionType];
+  let list = (relevant && relevant.length) ? relevant.filter(c => all.includes(c)) : all;
+  if (alreadySelected && !list.includes(alreadySelected)) list = list.concat(alreadySelected);
+  return list;
+}
+
+module.exports = { TAXONOMY, CATEGORIES_BY_TYPE, skillFor, resolveErrorCode, categoriesForType };
