@@ -13,6 +13,22 @@ jest.mock('../../../services/groqService');
 const geminiService = require('../../../services/geminiService');
 const groqService = require('../../../services/groqService');
 
+// The sampleAnswer/hints cache writes in speakingService are deliberately
+// fire-and-forget (SpeakingQuestion.updateOne(...).catch(...), never
+// awaited) so the response isn't delayed by the DB write. Waiting a fixed
+// setTimeout for that write to land is inherently racy — it passed on a
+// fast machine but flaked under `--coverage`'s heavier instrumentation
+// (a real failure seen 2026-08-21). Poll instead of sleeping a fixed amount.
+async function waitFor(predicate, { timeoutMs = 1000, intervalMs = 10 } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const result = await predicate();
+    if (result) return result;
+    if (Date.now() >= deadline) throw new Error(`waitFor: condition not met within ${timeoutMs}ms`);
+    await new Promise(resolve => setTimeout(resolve, intervalMs));
+  }
+}
+
 describe('speakingService.listTopics', () => {
   test('returns sorted distinct topics, filtered by part when given', async () => {
     await createSpeakingQuestion({ topic: 'Zebra', part: 1 });
@@ -337,9 +353,11 @@ describe('speakingService.getSampleAnswer', () => {
     const result = await speakingService.getSampleAnswer(q._id.toString(), q.question, q.part, '');
     expect(result.sampleAnswer).toBe('Fresh answer.');
 
-    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
     const SpeakingQuestion = require('../../../models/SpeakingQuestion');
-    const saved = await SpeakingQuestion.findById(q._id).lean();
+    const saved = await waitFor(async () => {
+      const doc = await SpeakingQuestion.findById(q._id).lean();
+      return doc.sampleAnswer ? doc : null;
+    });
     expect(saved.sampleAnswer).toBe('Fresh answer.');
     expect(saved.hints.vocab).toEqual(['strike a balance', 'take a keen interest']);
   });
@@ -368,9 +386,11 @@ describe('speakingService.getSpeakingHints', () => {
     expect(result.hints.vocab).toEqual(['make a lasting impression']);
     expect(geminiService.generateSampleAnswer).toHaveBeenCalledTimes(1);
 
-    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
     const SpeakingQuestion = require('../../../models/SpeakingQuestion');
-    const saved = await SpeakingQuestion.findById(q._id).lean();
+    const saved = await waitFor(async () => {
+      const doc = await SpeakingQuestion.findById(q._id).lean();
+      return doc.sampleAnswer ? doc : null;
+    });
     expect(saved.hints.vocab).toEqual(['make a lasting impression']);
     expect(saved.sampleAnswer).toBe('Freshly generated sample.'); // no sampleAnswer was cached yet, so this regen's is kept
   });
@@ -384,9 +404,11 @@ describe('speakingService.getSpeakingHints', () => {
     const result = await speakingService.getSpeakingHints(q._id.toString(), q.question, q.part, '');
     expect(result.hints.vocab).toEqual(['a specific time you did this']);
 
-    await new Promise(resolve => setTimeout(resolve, 50)); // cache write is fire-and-forget
     const SpeakingQuestion = require('../../../models/SpeakingQuestion');
-    const saved = await SpeakingQuestion.findById(q._id).lean();
+    const saved = await waitFor(async () => {
+      const doc = await SpeakingQuestion.findById(q._id).lean();
+      return doc.hints.vocab.length ? doc : null;
+    });
     expect(saved.sampleAnswer).toBe('Original curated answer.'); // untouched — never clobbered
     expect(saved.hints.vocab).toEqual(['a specific time you did this']);
   });

@@ -2,6 +2,7 @@ const cron           = require('node-cron');
 const TestAttempt     = require('../models/TestAttempt');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+const logger = require('../utils/logger');
 
 // Audit finding: a Reading/Listening attempt that's started but never
 // submitted (tab closed, browser crash, student gives up) stays
@@ -48,10 +49,14 @@ async function sweepStaleAttempts() {
       ),
     ]);
     if (reading.modifiedCount || listening.modifiedCount || speaking.modifiedCount) {
-      console.log(`[AttemptTimeoutSweep] Marked ${reading.modifiedCount} Reading + ${listening.modifiedCount} Listening stale attempt(s) as timeout, ${speaking.modifiedCount} Speaking stuck attempt(s) as error`);
+      logger.info('cron', 'AttemptTimeoutSweep: marked stale attempts', {
+        readingTimedOut: reading.modifiedCount,
+        listeningTimedOut: listening.modifiedCount,
+        speakingErrored: speaking.modifiedCount,
+      });
     }
   } catch (e) {
-    console.error('[AttemptTimeoutSweep] Error:', e.message);
+    logger.error('cron', 'AttemptTimeoutSweep run error', { errorMessage: e.message });
   }
 }
 
@@ -59,7 +64,7 @@ let task = null;
 
 function start() {
   task = cron.schedule('*/30 * * * *', sweepStaleAttempts);
-  console.log('[AttemptTimeoutSweep] Cron scheduled (every 30 min)');
+  logger.startup('AttemptTimeoutSweep cron scheduled (every 30 min)');
 }
 
 function stop() {

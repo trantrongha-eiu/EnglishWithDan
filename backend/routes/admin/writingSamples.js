@@ -3,7 +3,7 @@
 
 const express    = require('express');
 const auth       = require('../../middleware/auth');
-const { teacherOnly, uploadPdfMemory, uploadPdfBuffer } = require('./_shared');
+const { teacherOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
 
 const WritingSample = require('../../models/WritingSample');
 
@@ -24,7 +24,7 @@ router.get('/writing/samples', auth, teacherOnly, async (req, res) => {
 });
 
 // POST /api/admin/writing/samples/upload-pdf
-router.post('/writing/samples/upload-pdf', auth, teacherOnly, uploadPdfMemory.single('pdf'), async (req, res) => {
+router.post('/writing/samples/upload-pdf', auth, teacherOnly, uploadPdf, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
     const url = await uploadPdfBuffer(req.file.buffer, 'writing-samples');

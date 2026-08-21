@@ -4,6 +4,7 @@ const TuitionSettings = require('../models/TuitionSettings');
 const Message         = require('../models/Message');
 const User            = require('../models/User');
 const { buildReminderBody, sendTuitionReminderEmail } = require('../services/tuitionService');
+const logger = require('../utils/logger');
 
 async function runReminders() {
   try {
@@ -23,7 +24,7 @@ async function runReminders() {
         currentYear > settings.autoRemindEndYear ||
         (currentYear === settings.autoRemindEndYear && currentMonth > settings.autoRemindEndMonth);
       if (pastEnd) {
-        console.log('[TuitionCron] Past end date, skipping');
+        logger.info('cron', 'TuitionCron: past end date, skipping');
         return;
       }
     }
@@ -37,7 +38,7 @@ async function runReminders() {
       .populate('studentId', '_id username email').lean();
 
     if (!unpaidFees.length) {
-      console.log('[TuitionCron] No unpaid fees, nothing to remind');
+      logger.info('cron', 'TuitionCron: no unpaid fees, nothing to remind');
       return;
     }
 
@@ -64,9 +65,9 @@ async function runReminders() {
     // Best-effort email alongside the in-app message — a student who hasn't
     // opened the app since the reminder cron ran would otherwise never see it.
     await Promise.all(groups.map(({ student, fees }) => sendTuitionReminderEmail(student, fees)));
-    console.log(`[TuitionCron] Sent ${msgs.length} auto-reminders (day ${today}/${currentMonth}/${currentYear})`);
+    logger.info('cron', 'TuitionCron: sent auto-reminders', { count: msgs.length, day: today, month: currentMonth, year: currentYear });
   } catch (e) {
-    console.error('[TuitionCron] Error:', e.message);
+    logger.error('cron', 'TuitionCron run error', { errorMessage: e.message });
   }
 }
 
@@ -75,7 +76,7 @@ let task = null;
 function start() {
   // Run at 08:00 every day, check inside if today == autoRemindDay
   task = cron.schedule('0 8 * * *', runReminders, { timezone: 'Asia/Ho_Chi_Minh' });
-  console.log('[TuitionCron] Auto-remind cron scheduled (08:00 ICT daily)');
+  logger.startup('TuitionCron auto-remind cron scheduled (08:00 ICT daily)');
 }
 
 // Lets graceful shutdown (Phase 11) stop the scheduled job so the process

@@ -4,7 +4,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createCompletedTestAttempt } = require('../factories/contentFactory');
+const { createReadingTest, createCompletedTestAttempt, createPassage } = require('../factories/contentFactory');
 
 describe('GET /api/reading/tests', () => {
   test('requires authentication', async () => {
@@ -67,6 +67,56 @@ describe('POST /api/reading/start (premium gate)', () => {
     // assertion is that the premium gate itself was passed (not a 403).
     expect(res.status).not.toBe(403);
     expect([200, 400]).toContain(res.status);
+  });
+});
+
+describe('GET /api/reading/practice/by-id/:id and /api/reading/practice/:category (premium gate)', () => {
+  // Regression test for the paywall-bypass bug found in the 2026-08-21 audit:
+  // these two routes returned full passage content to any authenticated user
+  // (including a free student past the 24h trial) because requirePremium was
+  // missing here while the equivalent Listening routes already had it.
+  test('practice/by-id/:id blocks a free-plan student whose 24h trial has expired with 403 PLAN_REQUIRED', async () => {
+    const passage = await createPassage({ category: 'passage1' });
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .get(`/api/reading/practice/by-id/${passage._id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('practice/by-id/:id lets a premium student through (no 403)', async () => {
+    const passage = await createPassage({ category: 'passage1' });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .get(`/api/reading/practice/by-id/${passage._id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).not.toBe(403);
+    expect(res.status).toBe(200);
+  });
+
+  test('practice/:category (random passage) blocks a free-plan student whose 24h trial has expired with 403 PLAN_REQUIRED', async () => {
+    await createPassage({ category: 'passage2' });
+    const user = await createStudent({ extra: { createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) } });
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .get('/api/reading/practice/passage2')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('PLAN_REQUIRED');
+  });
+
+  test('practice/:category (random passage) lets a premium student through (no 403)', async () => {
+    await createPassage({ category: 'passage2' });
+    const user = await createPremiumStudent();
+    const token = signTokenFor(user);
+    const res = await request(app)
+      .get('/api/reading/practice/passage2')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).not.toBe(403);
+    expect(res.status).toBe(200);
   });
 });
 

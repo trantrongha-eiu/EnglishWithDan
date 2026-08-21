@@ -56,4 +56,18 @@ const uploadPdfMemory = multer({
   }
 });
 
-module.exports = { escapeRegex, effectiveStreak, teacherOnly, adminOnly, uploadPdfMemory, uploadImageDataUri, uploadPdfBuffer };
+// Wraps uploadPdfMemory.single('pdf') so a multer error (wrong mimetype,
+// over the 50MB limit) reaches the client as the normal
+// { success:false, message } JSON shape instead of falling through to
+// Express's generic error handler — multer reports its own errors via this
+// middleware's (err) callback, which fires before the route handler (and
+// its own try/catch) ever runs. Shared by both PDF-upload routes
+// (writing samples, speaking materials).
+function uploadPdf(req, res, next) {
+  uploadPdfMemory.single('pdf')(req, res, (err) => {
+    if (err) return res.status(400).json({ success: false, message: err.message });
+    next();
+  });
+}
+
+module.exports = { escapeRegex, effectiveStreak, teacherOnly, adminOnly, uploadPdfMemory, uploadPdf, uploadImageDataUri, uploadPdfBuffer };

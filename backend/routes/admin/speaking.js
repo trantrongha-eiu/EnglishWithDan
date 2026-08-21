@@ -3,7 +3,7 @@
 
 const express    = require('express');
 const auth       = require('../../middleware/auth');
-const { teacherOnly, uploadPdfMemory, uploadPdfBuffer } = require('./_shared');
+const { teacherOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
 
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const SpeakingMaterial = require('../../models/SpeakingMaterial');
@@ -87,7 +87,7 @@ router.get('/speaking/materials', auth, teacherOnly, async (req, res) => {
 
 // POST /api/admin/speaking/materials/upload-pdf
 // Body: multipart/form-data with field "pdf"
-router.post('/speaking/materials/upload-pdf', auth, teacherOnly, uploadPdfMemory.single('pdf'), async (req, res) => {
+router.post('/speaking/materials/upload-pdf', auth, teacherOnly, uploadPdf, async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'Thiếu file PDF' });
     const url = await uploadPdfBuffer(req.file.buffer, 'speaking-materials');

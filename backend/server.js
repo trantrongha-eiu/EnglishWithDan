@@ -2,6 +2,16 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const logger = require('./utils/logger');
 
+// Fail fast on a missing JWT_SECRET — unlike the optional integrations
+// logged below (Google OAuth, AI grading, email), auth isn't a feature that
+// degrades gracefully: without this, jwt.sign()/jwt.verify() throw
+// unpredictably at the first login/verified request instead of the server
+// refusing to start with a clear reason (2026-08-21 audit finding).
+if (!process.env.JWT_SECRET) {
+  logger.error('startup', 'JWT_SECRET is not set — refusing to start');
+  process.exit(1);
+}
+
 // Cloudinary config
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({

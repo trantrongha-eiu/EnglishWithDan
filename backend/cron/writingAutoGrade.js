@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const WritingAttempt = require('../models/WritingAttempt');
 const { gradeTaskWithAI } = require('../services/writingGradingService');
+const logger = require('../utils/logger');
 
 // Teachers previously had to click "Chấm bài bằng AI" by hand for every
 // Task 1/Task 2 submission — fine for a handful a day, but a real time sink
@@ -40,7 +41,7 @@ let retryTimer = null;
 
 async function runAutoGrade() {
   if (isRunning) {
-    console.log('[WritingAutoGrade] Previous run still in progress, skipping this tick');
+    logger.info('cron', 'WritingAutoGrade: previous run still in progress, skipping this tick');
     return;
   }
   isRunning = true;
@@ -59,11 +60,11 @@ async function runAutoGrade() {
     }
 
     if (!jobs.length) {
-      console.log('[WritingAutoGrade] Nothing pending, skipping run');
+      logger.info('cron', 'WritingAutoGrade: nothing pending, skipping run');
       return;
     }
 
-    console.log(`[WritingAutoGrade] ${jobs.length} task(s) to grade across ${attempts.length} candidate attempt(s)`);
+    logger.info('cron', 'WritingAutoGrade: tasks to grade', { taskCount: jobs.length, candidateAttempts: attempts.length });
 
     let graded = 0, failed = 0;
     for (let i = 0; i < jobs.length; i++) {
@@ -89,19 +90,21 @@ async function runAutoGrade() {
           // don't just wait for the next 20-minute tick: schedule a
           // one-off retry sooner (5 minutes) so a temporary overload
           // doesn't sit ungraded for most of the normal interval.
-          console.error(`[WritingAutoGrade] STOPPED — Gemini overloaded/quota reached (${err.message}). ${jobs.length - i} task(s) left; retrying in ${RETRY_MS / 60000} minutes.`);
+          logger.error('cron', 'WritingAutoGrade stopped — Gemini overloaded/quota reached', {
+            errorMessage: err.message, tasksRemaining: jobs.length - i, retryMinutes: RETRY_MS / 60000,
+          });
           scheduleRetry();
           break;
         }
         failed++;
-        console.error(`[WritingAutoGrade] Task ${taskNum} for attempt ${attempt._id} FAILED: ${err.message}`);
+        logger.error('cron', 'WritingAutoGrade task failed', { taskNum, attemptId: String(attempt._id), errorMessage: err.message });
       }
       if (i < jobs.length - 1) await sleep(DELAY_MS);
     }
 
-    console.log(`[WritingAutoGrade] Done. ${graded} graded, ${failed} failed.`);
+    logger.info('cron', 'WritingAutoGrade run complete', { graded, failed });
   } catch (e) {
-    console.error('[WritingAutoGrade] Error:', e.message);
+    logger.error('cron', 'WritingAutoGrade run error', { errorMessage: e.message });
   } finally {
     isRunning = false;
   }
@@ -122,7 +125,7 @@ let task = null;
 function start() {
   // Every 20 minutes.
   task = cron.schedule('*/20 * * * *', runAutoGrade);
-  console.log('[WritingAutoGrade] Cron scheduled (every 20 minutes)');
+  logger.startup('WritingAutoGrade cron scheduled (every 20 minutes)');
 }
 
 function stop() {

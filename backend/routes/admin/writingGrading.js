@@ -82,6 +82,10 @@ router.put('/writing-attempts/:id/confirm-grade', auth, teacherOnly, async (req,
       feedbackRead: false
     }, { new: false }); // get the original to read userId + examName
 
+    if (!attempt) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm' });
+    }
+
     res.json({ success: true, message: 'Đã xác nhận điểm' });
 
     // Fire-and-forget: detached from request lifecycle via setImmediate
