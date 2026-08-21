@@ -130,6 +130,7 @@
             <span style="font-weight:700;"><i class="fas fa-medal"></i> Huy hiệu</span>
           </div>
           <div class="card-body">
+            <div class="badges-summary" id="badgesSummary"></div>
             <div class="badges-grid" id="badgesGrid"></div>
           </div>
         </div>
@@ -561,24 +562,6 @@
     }
 
     // ── Badges ────────────────────────────────────────────────
-    function computeBadges(s) {
-      const badges = [];
-      const total = s.reading.total + s.listening.total;
-      if (total >= 1) badges.push({ e:'🎯', name:'Tân binh', desc:'Hoàn thành bài test đầu tiên' });
-      if (s.streak >= 7)  badges.push({ e:'🔥', name:'Chăm chỉ', desc:`Streak ${s.streak} ngày liên tục` });
-      if (s.streak >= 30) badges.push({ e:'⚡', name:'Siêu cần cù', desc:'Streak 30+ ngày' });
-      if (s.reading.total >= 5) badges.push({ e:'📖', name:'Reading Fan', desc:`${s.reading.total} bài Reading` });
-      if (s.listening.total >= 5) badges.push({ e:'🎧', name:'Listening Fan', desc:`${s.listening.total} bài Listening` });
-      const maxBand = Math.max(parseFloat(s.reading.avgBand)||0, parseFloat(s.listening.avgBand)||0);
-      if (maxBand >= 8)       badges.push({ e:'🌟', name:'Band 8+', desc:'Điểm trung bình ≥ 8.0' });
-      else if (maxBand >= 7)  badges.push({ e:'🏆', name:'Band 7+', desc:'Điểm trung bình ≥ 7.0' });
-      if (s.speaking.total >= 3) badges.push({ e:'🎙️', name:'Diễn giả', desc:`${s.speaking.total} lần Speaking` });
-      if (s.writing.total >= 3)  badges.push({ e:'✍️', name:'Cây viết', desc:`${s.writing.total} bài Writing` });
-      if (s.reading.total > 0 && s.listening.total > 0 && s.speaking.total > 0 && s.writing.total > 0)
-        badges.push({ e:'💯', name:'All-rounder', desc:'Luyện đủ 4 kĩ năng' });
-      return badges;
-    }
-
     // ── Plan card ─────────────────────────────────────────────
     function renderPlanCard(u) {
       const plan      = u.plan || 'free';
@@ -650,12 +633,14 @@
     // ── Load profile & stats ──────────────────────────────────
     async function loadProfile() {
       try {
-        const [profileResult, statsResult] = await Promise.allSettled([
+        const [profileResult, statsResult, badgesResult] = await Promise.allSettled([
           fetch(API + '/api/user/profile', { headers: headers() }).then(r => window.ApiClient.handleResponse(r)),
-          fetch(API + '/api/user/stats',   { headers: headers() }).then(r => window.ApiClient.handleResponse(r))
+          fetch(API + '/api/user/stats',   { headers: headers() }).then(r => window.ApiClient.handleResponse(r)),
+          fetch(API + '/api/badges',       { headers: headers() }).then(r => window.ApiClient.handleResponse(r))
         ]);
         const pd = profileResult.status === 'fulfilled' ? profileResult.value : {};
         const sd = statsResult.status === 'fulfilled' ? statsResult.value : {};
+        const bd = badgesResult.status === 'fulfilled' ? badgesResult.value : {};
 
         // Promise.allSettled means a stats-fetch failure alone (profile still
         // OK) previously left every stat silently at its placeholder value
@@ -770,15 +755,6 @@
             });
           }
 
-          // Badges
-          const badges = computeBadges(s);
-          if (badges.length) {
-            document.getElementById('badgesCard').style.display = 'block';
-            document.getElementById('badgesGrid').innerHTML = badges.map(b =>
-              `<div class="badge-item"><div class="badge-emoji">${b.e}</div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>`
-            ).join('');
-          }
-
           // Speaking band (from server-computed avgBand, same as Reading/Listening/Writing)
           document.getElementById('barSpeaking').style.width   = toPercent(s.speaking.avgBand);
           document.getElementById('scoreSpeaking').textContent = s.speaking.avgBand || '-';
@@ -841,10 +817,42 @@
               </tr>`).join('');
           }
         }
+
+        if (bd.success) renderBadges(bd);
       } catch (err) {
         console.error(err);
         showToastWithTitle('error', 'Lỗi', 'Không thể tải thông tin profile');
       }
+    }
+
+    // ── Badges (GET /api/badges) — shows both earned and locked, with a
+    // progress bar for locked ones so "you're close" is visible, unlike the
+    // old client-only computeBadges() this replaced (which only ever
+    // rendered badges already earned). ──────────────────────────────────
+    function renderBadges(bd) {
+      const card = document.getElementById('badgesCard');
+      const grid = document.getElementById('badgesGrid');
+      if (!bd.badges || !bd.badges.length) return;
+      card.style.display = 'block';
+      const summary = document.getElementById('badgesSummary');
+      if (summary) summary.textContent = `Đã đạt ${bd.earnedCount}/${bd.totalCount} huy hiệu`;
+      grid.innerHTML = bd.badges.map(b => {
+        if (b.earned) {
+          return `<div class="badge-item" title="${b.description}">
+            <div class="badge-emoji">${b.icon}</div>
+            <div class="badge-name">${b.name}</div>
+            <div class="badge-desc">${b.description}</div>
+          </div>`;
+        }
+        const pct = Math.round((b.progress.current / b.progress.target) * 100);
+        return `<div class="badge-item locked" title="${b.description}">
+          <div class="badge-emoji">${b.icon}</div>
+          <div class="badge-name">${b.name}</div>
+          <div class="badge-desc">${b.description}</div>
+          <div class="badge-progress"><div class="badge-progress-fill" style="width:${pct}%"></div></div>
+          <div class="badge-progress-label">${b.progress.current}/${b.progress.target}</div>
+        </div>`;
+      }).join('');
     }
 
     // ── Save profile ──────────────────────────────────────────

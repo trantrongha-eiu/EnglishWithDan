@@ -105,6 +105,7 @@ app.use('/api/review', require('./routes/review'));
 app.use('/api/goals', require('./routes/goal'));
 app.use('/api/study-plan', require('./routes/studyPlan'));
 app.use('/api/learning', require('./routes/learning'));
+app.use('/api/badges', require('./routes/badges'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/courses',         require('./routes/courses'));

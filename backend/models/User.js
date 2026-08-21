@@ -71,6 +71,13 @@ const UserSchema = new mongoose.Schema({
   studyReminderCount: { type: Number, default: 0 },
   // Stats & gamification
   learningStreak:       { type: Number, default: 0 },
+  // Highest learningStreak ever reached — learningStreak itself resets to 0
+  // on a gap, which would make a "streak" badge (see constants/badges.js)
+  // flicker unearned again after any missed day. Kept in sync by the
+  // pre('save') hook below instead of at every learningStreak mutation site
+  // (updateStreak/useHammerToRestore/applyGiftStreak) so it can't drift out
+  // of sync if a future call site is added and forgets to touch it.
+  maxLearningStreak:    { type: Number, default: 0 },
   // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()
   // — powers the "you just lost a streak" mascot state on the dashboard.
   // Cleared back to 0 as soon as the student studies again (updateStreak()).
@@ -224,6 +231,14 @@ UserSchema.methods.applyGiftStreak = function (days) {
   }
   this.lastActivityDate = getVNDay(new Date());
 };
+
+// Mongoose 9 no longer passes a next() callback to pre-save hooks —
+// synchronous middleware just returns (or throws) directly.
+UserSchema.pre('save', function () {
+  if (this.isModified('learningStreak') && this.learningStreak > this.maxLearningStreak) {
+    this.maxLearningStreak = this.learningStreak;
+  }
+});
 
 UserSchema.plugin(require('../utils/guardAgainstMassDelete'));
 
