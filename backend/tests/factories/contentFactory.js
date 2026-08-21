@@ -25,6 +25,12 @@ const TuitionFee = require('../../models/TuitionFee');
 const UpgradeRequest = require('../../models/UpgradeRequest');
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const EssentialGrammarLesson = require('../../models/EssentialGrammarLesson');
+const Task1Exercise = require('../../models/Task1Exercise');
+const Task2Topic = require('../../models/Task2Topic');
+const WritingSample = require('../../models/WritingSample');
+const WPTopic = require('../../models/WPTopic');
+const WPExercise = require('../../models/WPExercise');
+const WritingPracticeAttempt = require('../../models/WritingPracticeAttempt');
 
 let counter = 0;
 function unique(prefix) {
@@ -324,9 +330,101 @@ async function createEssentialGrammarLesson(overrides = {}) {
   });
 }
 
+// ── Task1/Task2/WritingSample/WP (admin content-management routes) ────────
+async function createTask1Exercise(overrides = {}) {
+  return Task1Exercise.create({
+    skillType: overrides.skillType || 'overview',
+    module: overrides.module ?? 1,
+    level: overrides.level || 'beginner',
+    type: overrides.type || 'fill_blank',
+    instruction: overrides.instruction || unique('Instruction'),
+    questionVi: overrides.questionVi,
+    questionEn: overrides.questionEn,
+    sentenceWithBlanks: overrides.sentenceWithBlanks,
+    orderIndex: overrides.orderIndex ?? 0,
+    isActive: overrides.isActive ?? true,
+    ...overrides.extra,
+  });
+}
+
+function defaultTask2Question(overrides = {}) {
+  return {
+    level: 'beginner',
+    type: 'fill_blank',
+    questionText: 'Fill in the ___.',
+    correctAnswer: 'blank',
+    ...overrides,
+  };
+}
+
+async function createTask2Topic(overrides = {}) {
+  return Task2Topic.create({
+    week: overrides.week ?? 1,
+    block: overrides.block || 'A',
+    topicName: overrides.topicName || unique('Topic'),
+    essayType: overrides.essayType || 'agree_disagree',
+    prompt: overrides.prompt || unique('Prompt'),
+    questions: overrides.questions || [],
+    orderIndex: overrides.orderIndex ?? 0,
+    isActive: overrides.isActive ?? true,
+    ...overrides.extra,
+  });
+}
+
+async function createWritingSample(overrides = {}) {
+  return WritingSample.create({
+    title: overrides.title || unique('Sample'),
+    quarter: overrides.quarter || 'Q1 2025',
+    topic: overrides.topic || 'Environment',
+    taskType: overrides.taskType || 'task2',
+    pdfUrl: overrides.pdfUrl || 'https://res.cloudinary.com/test/sample.pdf',
+    isActive: overrides.isActive ?? true,
+    ...overrides.extra,
+  });
+}
+
+async function createWPTopic(overrides = {}) {
+  return WPTopic.create({
+    key: overrides.key || unique('topic-key-'),
+    title: overrides.title || unique('WP Topic'),
+    titleVi: overrides.titleVi,
+    category: overrides.category || 'general',
+    levels: overrides.levels || ['beginner'],
+    orderIndex: overrides.orderIndex ?? 0,
+    isActive: overrides.isActive ?? true,
+    ...overrides.extra,
+  });
+}
+
+async function createWPExercise(overrides = {}) {
+  return WPExercise.create({
+    topicKey: overrides.topicKey || 'general',
+    level: overrides.level || 'beginner',
+    type: overrides.type || 'translation',
+    question: overrides.question || unique('Question'),
+    sampleAnswer: overrides.sampleAnswer || 'Sample answer.',
+    orderIndex: overrides.orderIndex ?? 0,
+    isActive: overrides.isActive ?? true,
+    ...overrides.extra,
+  });
+}
+
+async function createWritingPracticeAttempt(overrides = {}) {
+  return WritingPracticeAttempt.create({
+    studentId: overrides.studentId,
+    level: overrides.level || 'beginner',
+    topic: overrides.topic || 'general',
+    types: overrides.types || ['translation'],
+    totalItems: overrides.totalItems ?? 5,
+    correctItems: overrides.correctItems ?? 3,
+    xpEarned: overrides.xpEarned ?? 10,
+    ...overrides.extra,
+  });
+}
+
 module.exports = {
   unique,
-  defaultQuestion, defaultListeningQuestion,
+  defaultQuestion, defaultListeningQuestion, defaultTask2Question,
   createPassage, createReadingTest, createTestAttempt,
   createListeningSection, createListeningTest,
   createWritingTask1, createWritingTask2, createWritingExam,
@@ -335,4 +433,6 @@ module.exports = {
   createCompletedTestAttempt, createReadingPracticeAttempt,
   createListeningAttempt, createWritingAttempt, createSpeakingAttempt,
   createEssentialGrammarLesson,
+  createTask1Exercise, createTask2Topic, createWritingSample,
+  createWPTopic, createWPExercise, createWritingPracticeAttempt,
 };
