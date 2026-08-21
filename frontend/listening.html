@@ -31,6 +31,7 @@
 <script src="/js/shared/route-params.js"></script>
 <script src="/js/shared/dictionary-lookup.js"></script>
 <script src="/js/shared/highlight-remove.js"></script>
+<script src="/js/shared/review-drawer.js"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -979,6 +980,7 @@
                 if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
                 _lsPage = 1;
                 rerenderLsFilteredTests();
+                _checkPendingReviewBanner();
                 return;
             }
             try {
@@ -1000,12 +1002,73 @@
                 if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
                 _lsPage = 1;
                 rerenderLsFilteredTests();
+                _checkPendingReviewBanner();
             } catch (err) {
                 // Fallback to cached plan so premium users aren't locked out on transient network failures
                 try { _userPlan = (window.AuthService.getUser() || {}).plan || 'free'; } catch(e) {}
                 document.getElementById('tests-wrapper').innerHTML =
                     `<p class="ls-error-msg">Error loading tests: ${err.message}</p>`;
             }
+        }
+
+        // Mandatory Review System — proactive gate-check banner (mirrors
+        // reading-v2.js's _checkPendingReviewBanner()) + the jump-in helper
+        // both the proactive banner and reactive REVIEW_REQUIRED catches use.
+        let _pendingListeningReview = null;
+        async function _checkPendingReviewBanner() {
+            try {
+                const res = await fetch(`${API}/review/pending?skill=listening`, { headers: authH() });
+                const data = await safeJson(res);
+                _pendingListeningReview = data.pending || null;
+            } catch (e) { _pendingListeningReview = null; }
+
+            const wrap = document.getElementById('tests-wrapper');
+            if (!wrap) return;
+            let banner = document.getElementById('review-required-banner');
+            if (_pendingListeningReview) {
+                if (!banner) {
+                    banner = document.createElement('div');
+                    banner.id = 'review-required-banner';
+                    banner.style.cssText = 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e';
+                    banner.innerHTML = '<span>🔒 Hoàn thành review bài trước để mở khóa bài Listening mới.</span>' +
+                        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingListeningReview)">Tiếp tục Review</button>';
+                    wrap.parentNode.insertBefore(banner, wrap);
+                }
+            } else if (banner) {
+                banner.remove();
+            }
+        }
+
+        function _goToPendingReview(info) {
+            if (!info || !info.attemptId) return;
+            if (info.attemptType === 'listening') reviewFromHistory(info.attemptId);
+            else if (info.attemptType === 'listening-practice') loadLTPracticeReview(info.attemptId);
+        }
+
+        // Mandatory Review System — after showing the normal review screen,
+        // check for an unfinished guided-review doc and auto-open the drawer
+        // (shared/review-drawer.js) on top of it. `questions` is a flat array
+        // with {questionNumber, questionText, options, audioTimestamp} per
+        // question — already fetched by the caller, no extra request needed.
+        async function _maybeOpenMandatoryReview(attemptType, attemptId, questions, jumpFn) {
+            if (!window.openReviewDrawer) return;
+            try {
+                const res = await fetch(`${API}/review/by-attempt/${attemptType}/${attemptId}`, { headers: authH() });
+                const data = await safeJson(res);
+                const review = data.review;
+                if (!review || review.status !== 'pending') return;
+                const qByNum = {};
+                (questions || []).forEach(q => { qByNum[q.questionNumber] = q; });
+                window.openReviewDrawer(review, {
+                    skill: 'listening',
+                    getQuestionMeta: qNum => {
+                        const q = qByNum[qNum];
+                        if (!q) return {};
+                        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null };
+                    },
+                    onJumpToContext: jumpFn,
+                });
+            } catch (e) { /* server-side gate stands regardless */ }
         }
 
         // Group filtered tests into pages of at most LS_PAGE_SIZE cards each.
@@ -1245,7 +1308,14 @@
                 // Start periodic auto-save every 10s
                 clearInterval(_saveInterval);
                 _saveInterval = setInterval(saveExamToStorage, 10000);
-            } catch (err) { toast('Lỗi tải bài thi: ' + err.message, 'error'); }
+            } catch (err) {
+                if (err.body && err.body.code === 'REVIEW_REQUIRED') {
+                    toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
+                    _goToPendingReview(err.body);
+                } else {
+                    toast('Lỗi tải bài thi: ' + err.message, 'error');
+                }
+            }
         }
 
         // ══════════════════════════════════════════════
@@ -2142,6 +2212,11 @@
             // Dict (which has no such visual side effect to clean up).
             setTool('dict', true);
             showScreen('review');
+
+            _maybeOpenMandatoryReview('listening', r.attemptId, r.questions || [], qNum => {
+                const q = (r.questions || []).find(x => x.questionNumber === qNum);
+                if (q && q.audioTimestamp) jumpToTime(q.audioTimestamp);
+            });
         }
 
         function renderReviewPartQuestions(partIdx) {
@@ -3703,7 +3778,15 @@
                 );
             }
             _enterLTPracticeScreen(data.section, partNum, sectionId);
-        } catch(e) { toast('Lỗi: ' + (e?.message || 'Không xác định'), 'error'); console.error('[startPracticeSection]', e); }
+        } catch(e) {
+            if (e.body && e.body.code === 'REVIEW_REQUIRED') {
+                toast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
+                _goToPendingReview(e.body);
+            } else {
+                toast('Lỗi: ' + (e?.message || 'Không xác định'), 'error');
+                console.error('[startPracticeSection]', e);
+            }
+        }
         finally {
             cards.forEach(c => {
                 c.style.opacity = '';
@@ -4279,6 +4362,11 @@
             document.getElementById('lt-practice-footer-btns').innerHTML = `
                 <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
                 <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
+
+            _maybeOpenMandatoryReview('listening-practice', attemptId, _ltGetAllQs(reviewSection), qNum => {
+                const q = _ltGetAllQs(reviewSection).find(x => x.questionNumber === qNum);
+                if (q && q.audioTimestamp && section.audioUrl) jumpToTime(q.audioTimestamp);
+            });
         } catch (e) { console.error(e); }
     }
 

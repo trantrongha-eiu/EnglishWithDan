@@ -101,6 +101,7 @@ app.use('/api/speaking', require('./routes/speaking'));
 app.use('/api/dictionary', require('./routes/dictionary'));
 app.use('/api/weakness', require('./routes/weakness'));
 app.use('/api/recommendations', require('./routes/recommendation'));
+app.use('/api/review', require('./routes/review'));
 app.use('/api/goals', require('./routes/goal'));
 app.use('/api/study-plan', require('./routes/studyPlan'));
 app.use('/api/learning', require('./routes/learning'));

@@ -3,6 +3,7 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 const auth = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
+const requireReviewComplete = require('../middleware/requireReviewComplete');
 const readingController = require('../controllers/reading.controller');
 const logger = require('../utils/logger');
 
@@ -22,7 +23,7 @@ const startLimiter = rateLimit({
 router.get('/tests', auth, readingController.listTests);
 
 // POST /api/reading/start
-router.post('/start', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), readingController.startTest);
+router.post('/start', auth, startLimiter, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), requireReviewComplete('reading'), readingController.startTest);
 
 // POST /api/reading/submit
 router.post('/submit', auth, readingController.submitTest);
@@ -37,7 +38,7 @@ router.get('/history', auth, readingController.getHistory);
 router.get('/practice/list', auth, readingController.listPracticePassages);
 
 // GET /api/reading/practice/by-id/:id
-router.get('/practice/by-id/:id', auth, readingController.getPracticePassageById);
+router.get('/practice/by-id/:id', auth, requireReviewComplete('reading'), readingController.getPracticePassageById);
 
 // GET /api/reading/practice/answer-key/:id — fetched only at submit time
 router.get('/practice/answer-key/:id', auth, readingController.getPassageAnswerKey);

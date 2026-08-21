@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch sử Review – EnglishWithDan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile.css">
+  <script src="js/theme.js"></script>
+  <script src="js/shared/visit-tracker.js"></script>
+  <style>
+    body { background: var(--bg); padding-top: var(--nav-height); }
+    .rh-layout { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+    .rh-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .rh-subtitle { font-size: 13px; color: var(--text3, #9ca3af); margin-bottom: 18px; }
+    .rh-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .rh-filters select, .rh-filters input { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; background: var(--surface); color: var(--text); font-family: inherit; }
+    .rh-item { margin-bottom: 12px; }
+    .rh-item-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; font-size: 12px; color: var(--text3, #9ca3af); }
+    .rh-mistake { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; }
+    .rh-mistake:last-child { margin-bottom: 0; }
+    .rh-mistake-q { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .rh-mistake-row { color: var(--text2, #374151); margin-bottom: 3px; }
+    .rh-mistake-note { color: var(--text3, #9ca3af); font-style: italic; margin-top: 4px; }
+    .rh-empty { text-align: center; padding: 60px 20px; color: var(--text3, #9ca3af); }
+    .rh-pagination { display: flex; justify-content: center; gap: 10px; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <script src="js/shared/auth-service.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/upgrade-modal.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/shared/peer-chat-widget.js"></script>
+  <script src="js/shared/sound-effects.js"></script>
+  <script src="js/shared/utils.js"></script>
+  <script src="js/shared/toast.js"></script>
+  <script src="js/shared/api-client.js"></script>
+
+  <div class="rh-layout">
+    <div class="rh-title">📝 My Mistakes</div>
+    <div class="rh-subtitle">Lịch sử các câu sai đã review — dữ liệu tự động xóa sau 3 tháng, giống lịch sử làm bài.</div>
+
+    <div class="rh-filters">
+      <select id="rhFilterType">
+        <option value="">Tất cả</option>
+        <option value="reading">Reading (Full test)</option>
+        <option value="reading-practice">Reading (Practice)</option>
+        <option value="listening">Listening (Full test)</option>
+        <option value="listening-practice">Listening (Practice)</option>
+      </select>
+      <select id="rhFilterCategory"><option value="">Tất cả nhóm lỗi</option></select>
+      <input type="date" id="rhFilterFrom" title="Từ ngày">
+      <input type="date" id="rhFilterTo" title="Đến ngày">
+    </div>
+
+    <div id="rhList"></div>
+    <div class="rh-pagination" id="rhPagination" style="display:none">
+      <button class="btn btn-ghost btn-sm" id="rhPrevBtn">← Trước</button>
+      <span id="rhPageLabel" style="align-self:center;font-size:13px;color:var(--text2)"></span>
+      <button class="btn btn-ghost btn-sm" id="rhNextBtn">Sau →</button>
+    </div>
+  </div>
+
+  <script>
+    const API = 'https://englishwithdan.onrender.com/api';
+    function headers() { return { 'Content-Type': 'application/json', ...window.AuthService.authHeader() }; }
+
+    const ATTEMPT_TYPE_LABEL = {
+      'reading': 'Reading (Full test)', 'reading-practice': 'Reading (Practice)',
+      'listening': 'Listening (Full test)', 'listening-practice': 'Listening (Practice)',
+    };
+
+    let rhPage = 1;
+    let rhItemsRaw = []; // current page's raw items, for client-side category filtering
+
+    async function rhLoad() {
+      const listEl = document.getElementById('rhList');
+      listEl.innerHTML = '<div class="rh-empty">Đang tải...</div>';
+      const params = new URLSearchParams({ page: rhPage, limit: 10 });
+      const type = document.getElementById('rhFilterType').value;
+      const from = document.getElementById('rhFilterFrom').value;
+      const to = document.getElementById('rhFilterTo').value;
+      if (type) params.set('attemptType', type);
+      if (from) params.set('from', from);
+      if (to) params.set('to', to);
+
+      try {
+        const res = await fetch(`${API}/review/history?${params}`, { headers: headers() });
+        const data = await window.ApiClient.handleResponse(res);
+        rhItemsRaw = data.items || [];
+        rhRenderCategoryOptions(rhItemsRaw);
+        rhRenderList(rhFilterByCategory(rhItemsRaw));
+        rhRenderPagination(data.total, data.page, data.limit);
+      } catch (e) {
+        listEl.innerHTML = '<div class="rh-empty">Lỗi tải lịch sử review.</div>';
+      }
+    }
+
+    function rhFilterByCategory(items) {
+      const cat = document.getElementById('rhFilterCategory').value;
+      if (!cat) return items;
+      return items.filter(r => r.mistakes.some(m => m.errorCategory === cat));
+    }
+
+    function rhRenderCategoryOptions(items) {
+      const sel = document.getElementById('rhFilterCategory');
+      const current = sel.value;
+      const cats = [...new Set(items.flatMap(r => r.mistakes.map(m => m.errorCategory)).filter(Boolean))];
+      sel.innerHTML = '<option value="">Tất cả nhóm lỗi</option>' +
+        cats.map(c => `<option value="${escHtml(c)}"${c === current ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
+    }
+
+    function rhRenderList(items) {
+      const listEl = document.getElementById('rhList');
+      if (!items.length) {
+        listEl.innerHTML = '<div class="rh-empty">Chưa có review nào phù hợp bộ lọc.</div>';
+        return;
+      }
+      listEl.innerHTML = items.map(r => `
+        <div class="card rh-item">
+          <div class="card-body">
+            <div class="rh-item-meta">
+              <span class="badge badge-primary">${escHtml(ATTEMPT_TYPE_LABEL[r.attemptType] || r.attemptType)}</span>
+              <span>${r.completedAt ? new Date(r.completedAt).toLocaleDateString('vi-VN') : ''}</span>
+              <span>· ${r.mistakes.length} câu sai</span>
+            </div>
+            ${r.mistakes.map(m => `
+              <div class="rh-mistake">
+                <div class="rh-mistake-q">Câu ${m.questionNumber}${m.questionType ? ' · ' + escHtml(m.questionType) : ''}</div>
+                ${m.errorCategory ? `<div class="rh-mistake-row">❌ <strong>${escHtml(m.errorCategory)}</strong> — ${escHtml(m.errorReason || '')}</div>` : ''}
+                ${m.retryResult ? `<div class="rh-mistake-row">${m.retryResult === 'correct' ? '✅ Thử lại: đúng' : '❌ Thử lại: vẫn sai'}</div>` : ''}
+                ${m.note ? `<div class="rh-mistake-note">"${escHtml(m.note)}"</div>` : ''}
+                ${m.learningPoint?.content ? `<div class="rh-mistake-note">📌 ${escHtml(m.learningPoint.content)}</div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function rhRenderPagination(total, page, limit) {
+      const pag = document.getElementById('rhPagination');
+      const totalPages = Math.max(1, Math.ceil(total / limit));
+      if (totalPages <= 1) { pag.style.display = 'none'; return; }
+      pag.style.display = 'flex';
+      document.getElementById('rhPageLabel').textContent = `Trang ${page}/${totalPages}`;
+      document.getElementById('rhPrevBtn').disabled = page <= 1;
+      document.getElementById('rhNextBtn').disabled = page >= totalPages;
+    }
+
+    document.getElementById('rhFilterType').addEventListener('change', () => { rhPage = 1; rhLoad(); });
+    document.getElementById('rhFilterFrom').addEventListener('change', () => { rhPage = 1; rhLoad(); });
+    document.getElementById('rhFilterTo').addEventListener('change', () => { rhPage = 1; rhLoad(); });
+    document.getElementById('rhFilterCategory').addEventListener('change', () => rhRenderList(rhFilterByCategory(rhItemsRaw)));
+    document.getElementById('rhPrevBtn').addEventListener('click', () => { rhPage--; rhLoad(); });
+    document.getElementById('rhNextBtn').addEventListener('click', () => { rhPage++; rhLoad(); });
+
+    rhLoad();
+  </script>
+</body>
+</html>

@@ -451,6 +451,7 @@ async function loadTests(fromNav = false) {
     _rdPage = 1;
     rerenderFilteredTests();
     checkResumeExam();
+    _checkPendingReviewBanner();
     return;
   }
 
@@ -484,6 +485,7 @@ async function loadTests(fromNav = false) {
     _rdPage = 1;
     rerenderFilteredTests();
     checkResumeExam();
+    _checkPendingReviewBanner();
   } catch (e) {
     // Fallback to cached plan so premium users aren't locked out on transient network failures
     try { _userPlan = (window.AuthService.getUser() || {}).plan || 'free'; } catch(ee) {}
@@ -668,10 +670,51 @@ async function _doStartExam(testId) {
     }
     startExam(res);
   } catch (e) {
-    showVocabToast('Lỗi kết nối server', 'error');
     history.replaceState({ screen: 'list', mode: 'full' }, '', '?mode=full');
     if (btn) { btn.disabled = false; btn.textContent = 'Bắt đầu'; }
+    // Mandatory Review System — same reactive pattern as the premium gate:
+    // don't just show a generic error, jump straight into the pending review.
+    if (e.body && e.body.code === 'REVIEW_REQUIRED') {
+      showVocabToast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
+      _goToPendingReview(e.body);
+      return;
+    }
+    showVocabToast('Lỗi kết nối server', 'error');
   }
+}
+
+// Mandatory Review System — proactive gate check shown on the test-list
+// screen (mirrors the existing premium-promo-banner pattern), plus the
+// shared jump-in helper both the proactive banner and the reactive
+// REVIEW_REQUIRED catch blocks use.
+let _pendingReadingReview = null;
+async function _checkPendingReviewBanner() {
+  try {
+    const res = await apiFetch('/api/review/pending?skill=reading');
+    _pendingReadingReview = res.pending || null;
+  } catch { _pendingReadingReview = null; }
+
+  const wrap = document.getElementById('tests-wrapper');
+  if (!wrap) return;
+  let banner = document.getElementById('review-required-banner');
+  if (_pendingReadingReview) {
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'review-required-banner';
+      banner.style.cssText = 'background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13.5px;color:#92400e';
+      banner.innerHTML = '<span>🔒 Hoàn thành review bài trước để mở khóa bài Reading mới.</span>' +
+        '<button class="btn-primary" style="padding:8px 16px" onclick="_goToPendingReview(_pendingReadingReview)">Tiếp tục Review</button>';
+      wrap.parentNode.insertBefore(banner, wrap);
+    }
+  } else if (banner) {
+    banner.remove();
+  }
+}
+
+function _goToPendingReview(info) {
+  if (!info || !info.attemptId) return;
+  if (info.attemptType === 'reading') loadReview(info.attemptId);
+  else if (info.attemptType === 'reading-practice') loadPracticeReview(info.attemptId);
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -1193,7 +1236,12 @@ async function startPractice(passageId, category, _silent = false) {
     }
     _enterPracticeScreen(res.passage, category, passageId);
   } catch (e) {
-    showVocabToast('Lỗi kết nối server');
+    if (e.body && e.body.code === 'REVIEW_REQUIRED') {
+      showVocabToast('Bạn cần hoàn thành review bài trước đó trước khi bắt đầu bài mới', 'warning');
+      _goToPendingReview(e.body);
+    } else {
+      showVocabToast('Lỗi kết nối server');
+    }
   } finally {
     if (clickedBtn) { clickedBtn.innerHTML = clickedBtn._origHtml || 'Làm bài'; clickedBtn.disabled = false; }
     cards.forEach(c => { c.style.opacity = ''; c.style.pointerEvents = ''; });
@@ -2715,6 +2763,31 @@ async function loadReviewByTest(testId) {
   } catch { showVocabToast('Lỗi tải lịch sử'); }
 }
 
+// Mandatory Review System — after showing the normal review screen, check
+// whether this attempt has an unfinished guided-review doc and, if so,
+// auto-open the drawer (shared/review-drawer.js) on top of it. Silent on
+// failure: the actual gate is enforced server-side regardless of whether
+// this UI hook manages to show up.
+async function _maybeOpenMandatoryReview(attemptType, attemptId, allQuestions, jumpFn) {
+  if (!window.openReviewDrawer) return;
+  try {
+    const res = await apiFetch(`/api/review/by-attempt/${attemptType}/${attemptId}`);
+    const review = res.review;
+    if (!review || review.status !== 'pending') return;
+    const qByNum = {};
+    allQuestions.forEach(q => { qByNum[q.questionNumber] = q; });
+    window.openReviewDrawer(review, {
+      skill: 'reading',
+      getQuestionMeta: qNum => {
+        const q = qByNum[qNum];
+        if (!q) return {};
+        return { questionText: q.questionText, options: (q.options && q.options.length) ? q.options : null };
+      },
+      onJumpToContext: jumpFn,
+    });
+  } catch { /* server-side gate stands regardless */ }
+}
+
 function renderReview(attempt) {
   state.isReview = true;
   state.passages = attempt.passages;
@@ -2763,6 +2836,9 @@ function renderReview(attempt) {
   switchReviewPassage(0);
   buildReviewQNav(attempt, reviewMap);
   showScreen('review');
+
+  const allQ = attempt.passages.flatMap(getAllQuestionsFromPassage);
+  _maybeOpenMandatoryReview('reading', attempt._id, allQ, jumpToReviewQuestion);
 }
 
 function switchReviewPassage(idx) {
@@ -3341,6 +3417,8 @@ async function loadPracticeReview(attemptId) {
     document.getElementById('retry-score-badge').style.display = '';
     inner.scrollTop = 0;
     showVocabToast('Đã tải bài xem lại', 'success');
+
+    _maybeOpenMandatoryReview('reading-practice', attemptId, getAllQuestionsFromPassage(passage), jumpToRetryQuestion);
   } catch (e) {
     console.error(e);
     showVocabToast('Lỗi tải bài xem lại', 'error');

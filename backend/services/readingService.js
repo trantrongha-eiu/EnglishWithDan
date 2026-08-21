@@ -13,6 +13,21 @@ const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
+const reviewService = require('./reviewService');
+
+// questionNumber -> type, built from the passages already loaded for
+// grading — reading's gradedAnswers[] doesn't carry `type` (unlike
+// listening's, which gets it via extraFields), so this is the one piece of
+// data the mandatory Review System needs that isn't already in scope.
+function buildQuestionTypeMap(groupsPerPassage) {
+  const map = {};
+  for (const groups of groupsPerPassage) {
+    for (const group of groups) {
+      for (const q of (group.questions || [])) map[q.questionNumber] = q.type;
+    }
+  }
+  return map;
+}
 
 function safeQ(q) {
   return {
@@ -237,11 +252,13 @@ async function submitTest(attemptId, answers, user) {
 
   let correctCount = 0, wrongCount = 0, skippedCount = 0;
   const gradedAnswers = [];
+  const groupsPerPassage = [];
 
   for (const passage of passages) {
     const groups = passage.questionGroups?.length
       ? passage.questionGroups
       : [{ interchangeableAnswers: false, questions: passage.questions || [] }];
+    groupsPerPassage.push(groups);
 
     const g = gradeGroups(groups, answers);
     gradedAnswers.push(...g.gradedAnswers);
@@ -278,6 +295,14 @@ async function submitTest(attemptId, answers, user) {
     user.updateStreak(bonusApplied, { allowSameDayStack: true });
     user.save().catch(() => {});
   }
+
+  // Mandatory Review System — must be awaited (not fire-and-forget): the
+  // gate needs to be active the instant the score is returned, since the
+  // frontend's very next call checks pending-review status.
+  await reviewService.createReviewIfNeeded({
+    userId: user._id, attemptType: 'reading', attemptId: attempt._id,
+    gradedAnswers, questionTypeMap: buildQuestionTypeMap(groupsPerPassage),
+  });
 
   return {
     attemptId: attempt._id, bandScore, correctCount, wrongCount, skippedCount,
@@ -414,6 +439,16 @@ async function savePractice(body, userId) {
     wrongCount, skippedCount, timeTaken: timeTaken || 0,
     submittedAt: new Date()
   });
+
+  if (passage) {
+    await reviewService.createReviewIfNeeded({
+      userId, attemptType: 'reading-practice', attemptId: attempt._id,
+      gradedAnswers: finalAnswers, questionTypeMap: buildQuestionTypeMap([passage.questionGroups?.length
+        ? passage.questionGroups
+        : [{ questions: passage.questions || [] }]]),
+    });
+  }
+
   return attempt._id;
 }
 
@@ -494,4 +529,8 @@ module.exports = {
   listPracticePassages, getPracticePassageById, getPassageAnswerKey, savePractice,
   getPracticeHistory, getPracticeHistoryDetail, getRandomPracticePassage,
   listAdminAttempts, getAdminAttemptsStats,
+  // Exported for reviewService.js's "Try Again" retry-grading — reuses the
+  // exact same single-question comparators submitTest()/savePractice()
+  // already use, instead of a second hand-written copy that could drift.
+  gradeOne, gradeMultiAnswerGroup,
 };

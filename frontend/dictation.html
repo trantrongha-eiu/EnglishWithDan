@@ -303,7 +303,11 @@ async function openDictSection(id) {
   }
   document.getElementById('dict-section-title').textContent = 'Đang tải...';
   try {
-    const res = await fetch(`${API}/listening/practice/by-id/${id}`, { headers: authH() });
+    // ?purpose=dictation exempts this fetch from the mandatory-review gate
+    // (backend/middleware/requireReviewComplete.js) — dictation is an
+    // ungraded, non-attempt-tracked feature and must never be blocked by a
+    // pending Listening-test review.
+    const res = await fetch(`${API}/listening/practice/by-id/${id}?purpose=dictation`, { headers: authH() });
     const data = await window.ApiClient.handleResponse(res);
     dictSection = data.section;
   } catch (e) {

@@ -10,6 +10,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
+const requireReviewComplete = require('../middleware/requireReviewComplete');
 const listeningController = require('../controllers/listening.controller');
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -17,7 +18,7 @@ const listeningController = require('../controllers/listening.controller');
 // STUDENT – Bài lẻ practice
 // ══════════════════════════════════════════════════════════════════════════════
 router.get('/practice/list', auth, listeningController.listPracticeSections);
-router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
+router.get('/practice/by-id/:id', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), requireReviewComplete('listening'), listeningController.getPracticeSectionById);
 router.get('/practice/answer-key/:id', auth, listeningController.getSectionAnswerKey);
 
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
@@ -32,7 +33,7 @@ router.get('/tests', auth, listeningController.listStudentTests);
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Lấy full đề để làm bài (yêu cầu Premium)
 // ══════════════════════════════════════════════════════════════════════════════
-router.post('/tests/:id/start', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), listeningController.startTest);
+router.post('/tests/:id/start', auth, requirePremium('Bạn cần nâng cấp lên Premium để làm bài thi này'), requireReviewComplete('listening'), listeningController.startTest);
 
 // ══════════════════════════════════════════════════════════════════════════════
 // STUDENT – Nộp bài, chấm điểm & lưu attempt

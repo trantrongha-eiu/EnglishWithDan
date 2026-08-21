@@ -17,6 +17,7 @@ const ListeningSection = require('../models/ListeningSection');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
+const reviewService = require('./reviewService');
 
 function flattenQuestions(sections) {
   return sections.flatMap(s => s.questionGroups.flatMap(g => g.questions));
@@ -73,22 +74,7 @@ function gradeQuestionGroups(questionGroups, getUserAnswer, extraFields = () => 
         const num = q.questionNumber;
         const ua = getUserAnswer(num);
         const ca = (q.correctAnswer || '').trim();
-        let isCorrect;
-        if (q.type === 'multi-answer-group') {
-          try {
-            const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
-            isCorrect = uaArr.includes(ca.toUpperCase().trim());
-          } catch { isCorrect = false; }
-        } else if (q.type === 'checkbox') {
-          try {
-            const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
-            const caArr = JSON.parse(ca || '[]').map(x => x.toLowerCase().trim()).sort();
-            isCorrect = JSON.stringify(uaArr) === JSON.stringify(caArr);
-          } catch { isCorrect = false; }
-        } else {
-          const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
-          isCorrect = caVariants.includes(ua.toLowerCase());
-        }
+        const isCorrect = matchSingleAnswer(q.type, ua, ca);
         if (!ua) skipped++;
         else if (isCorrect) correct++;
         else wrong++;
@@ -98,6 +84,31 @@ function gradeQuestionGroups(questionGroups, getUserAnswer, extraFields = () => 
   }
 
   return { correct, wrong, skipped, reviewed };
+}
+
+// Single-question comparator (fill-blank/multi-answer-group/checkbox/
+// default `/`-delimited-variants) — extracted from gradeQuestionGroups()'s
+// else-branch (mechanical, behavior-preserving) so the mandatory Review
+// System's "Try Again" retry-grading (reviewService.js) calls this exact
+// same logic instead of a second hand-written copy that could drift.
+function matchSingleAnswer(type, rawUser, rawCorrect) {
+  const ua = (rawUser || '').trim();
+  const ca = (rawCorrect || '').trim();
+  if (type === 'multi-answer-group') {
+    try {
+      const uaArr = JSON.parse(ua || '[]').map(x => x.toUpperCase().trim());
+      return uaArr.includes(ca.toUpperCase().trim());
+    } catch { return false; }
+  }
+  if (type === 'checkbox') {
+    try {
+      const uaArr = JSON.parse(ua || '[]').map(x => x.toLowerCase().trim()).sort();
+      const caArr = JSON.parse(ca || '[]').map(x => x.toLowerCase().trim()).sort();
+      return JSON.stringify(uaArr) === JSON.stringify(caArr);
+    } catch { return false; }
+  }
+  const caVariants = ca.split('/').map(v => v.trim().toLowerCase()).filter(Boolean);
+  return caVariants.includes(ua.toLowerCase());
 }
 
 // Shared by /tests/:id/submit and /history/:attemptId — both built the
@@ -619,6 +630,17 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
   const reviewSections = buildReviewSections(test.sections, reviewMap);
 
+  // Mandatory Review System — must be awaited, not fire-and-forget: the
+  // gate must be active the instant the score is returned. `reviewed`
+  // already carries `type` per question (via extraFields above), so no
+  // extra query is needed to build the type map.
+  const questionTypeMap = {};
+  reviewed.forEach(r => { questionTypeMap[r.questionNumber] = r.type; });
+  await reviewService.createReviewIfNeeded({
+    userId: fields.userId, attemptType: 'listening', attemptId: attempt._id,
+    gradedAnswers: fields.answers, questionTypeMap,
+  });
+
   return {
     attemptId: attempt._id, testName: test.name, totalQuestions: total,
     correctCount: correct, wrongCount: wrong, skippedCount: skipped, bandScore, timeTaken,
@@ -718,6 +740,14 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
     timeTaken: timeTaken || 0,
     submittedAt: new Date()
   });
+
+  const questionTypeMap = {};
+  (section.questionGroups || []).forEach(g => (g.questions || []).forEach(q => { questionTypeMap[q.questionNumber] = q.type; }));
+  await reviewService.createReviewIfNeeded({
+    userId, attemptType: 'listening-practice', attemptId: attempt._id,
+    gradedAnswers, questionTypeMap,
+  });
+
   return { attemptId: attempt._id, correctCount: correct, totalQuestions: gradedAnswers.length };
 }
 
@@ -744,4 +774,6 @@ module.exports = {
   listStudentTests, startTest, submitTest,
   getHistory, getHistoryDetail,
   savePractice, getPracticeHistory, getPracticeHistoryDetail,
+  // Exported for reviewService.js's "Try Again" retry-grading.
+  matchSingleAnswer,
 };
